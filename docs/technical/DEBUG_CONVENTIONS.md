@@ -13,7 +13,7 @@ which mutation effect was called
 which values changed
 whether the stock invariant still holds
 whether a fallback was used
-whether an economic reconciliation was applied
+whether an economic adjustment was applied
 ```
 
 ## Debug naming convention
@@ -38,7 +38,7 @@ modeu5_debug_last_transferred_quantity
 modeu5_debug_last_stock_difference
 modeu5_debug_last_inconsistency_detected
 modeu5_debug_last_fallback_used
-modeu5_debug_last_imputation_mode
+modeu5_debug_last_economic_base
 ```
 
 ## Debug output levels
@@ -46,8 +46,8 @@ modeu5_debug_last_imputation_mode
 | Level | Use |
 |---|---|
 | OFF | No debug output. |
-| BASIC | Key stock, void-economy, and reconciliation values only. |
-| VERBOSE | Candidate lists, excluded scopes, formulas, fallbacks, payer decisions. |
+| BASIC | Key stock, void-economy, and Economic Base values only. |
+| VERBOSE | Candidate lists, excluded scopes, formulas, fallbacks, and affected calculations. |
 | TEST | Deterministic values for manual tests. |
 
 Recommended variable:
@@ -166,31 +166,28 @@ new_demand_multiplier
 annual_adjustment_applied
 ```
 
-## Mandatory debug for US-05 / US-05.1
+## Mandatory debug for US-05
 
 For each affected slider:
 
 ```txt
 country
 slider_name
-vanilla_slider_cost
+wealth_input
+wealth_source
+monthly_trade_income
 modeu5_slider_cost_base
-modeu5_total_void_wealth_if_correction_enabled
-modeu5_corrected_slider_cost_base_if_applicable
-modeu5_target_slider_cost
-modeu5_slider_reconciliation
-net_effective_slider_cost
-correction_mode
+formula_replacement_active
+affected_formula_call_site
 ui_display_mode
 ```
 
-Allowed `correction_mode` values:
+Allowed `formula_replacement_active` values:
 
 ```txt
-direct_slider_base_replacement
-monthly_reconciliation
-debug_only
-not_enabled
+yes
+no_unconfirmed_wealth_value
+no_unconfirmed_formula_hook
 ```
 
 ## Mandatory debug for US-10
@@ -235,7 +232,6 @@ quantity_transferred_by_candidate
 transferred_quantity
 unsatisfied_trade_quantity
 buyer_available_capacity
-exposed_to_us_06 = yes/no
 ```
 
 Standard exclusion reasons:
@@ -250,61 +246,6 @@ market_owner_stock_not_allowed
 stock_below_minimum_threshold
 wrong_market
 wrong_good
-```
-
-## Mandatory debug for US-06
-
-For each inspected trade/import/export scope:
-
-```txt
-month
-scope_type
-trade_owner
-buyer_country
-seller_country
-from_market
-to_market
-traded_goods
-used_trade_capacity
-trade_distance
-trade_range
-cost_basis_quantity
-gross_trade_income_if_available
-modeu5_transport_cost
-transport_cost_payer
-imputation_mode
-missing_trade_data
-```
-
-Monthly aggregate debug:
-
-```txt
-country
-monthly_trade_count_inspected
-monthly_import_count_inspected
-monthly_export_count_inspected
-monthly_transport_cost_total
-monthly_trade_income_reconciliation
-effective_trade_income_estimate
-ui_display_mode
-```
-
-Allowed `imputation_mode` values:
-
-```txt
-direct_trade_income_reduction
-monthly_reconciliation
-skipped_missing_data
-```
-
-Allowed `ui_display_mode` values:
-
-```txt
-vanilla_trade_tooltip
-country_modifier
-debug_window
-custom_modeu5_window
-monthly_report
 ```
 
 ## Fallback debug
@@ -322,7 +263,7 @@ TECH_01_entry_id
 
 Fallbacks must not be silent.
 
-## Do not hide reconciliation
+## Do not hide economic adjustments
 
 Any economic correction must be visible in at least one of:
 
@@ -337,10 +278,9 @@ vanilla tooltip if safely overridable
 This applies to:
 
 ```txt
-US-05 slider reconciliation
-US-05.1 void-wealth exclusion if enabled
-US-06 trade-income reconciliation
 US-00 theoretical-only production penalties
+US-04 simulated-demand fallback
+US-05 direct formula replacement status
 ```
 
 ## Error policy
@@ -361,15 +301,6 @@ If market stock differs from country stock sum:
 2. overwrite market stock with expected value
 3. log market, good, previous value, corrected value, difference
 4. do not modify country stocks
-```
-
-If a trade/import/export scope lacks required data:
-
-```txt
-1. record missing_trade_data
-2. skip or use the one accepted fallback
-3. update TECH-01
-4. do not apply silent costs
 ```
 
 If a modifier or effect is unconfirmed:

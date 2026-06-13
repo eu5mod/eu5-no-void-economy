@@ -17,7 +17,7 @@ Expose stock before decay, rate, lost quantity, stock after decay, and an annual
 ## Runtime position
 
 ```txt
-Monthly step: read immediately after step 14
+Monthly step: read immediately after step 12
 Depends on counters from: US-03
 Feeds counters to: player/modder diagnostics
 ```

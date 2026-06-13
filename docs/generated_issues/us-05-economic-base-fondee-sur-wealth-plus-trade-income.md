@@ -12,25 +12,25 @@ As a player, I want Stability and legitimacy-producing Court/Government Power co
 
 ## Functional objective
 
-Calculate `modeu5_slider_cost_base = Wealth + Trade Income` and route every ModeU5-controlled Stability or legitimacy-producing Court calculation through that Economic Base. Use visible reconciliation only for vanilla call sites that cannot be replaced and only when its inputs and effect are confirmed.
+Replace the Economic Base formula used by Stability Investment and legitimacy-producing Court/Government Power with `modeu5_slider_cost_base = Wealth + Trade Income`. Do not implement monthly reconciliation as an alternative path.
 
 ## Runtime position
 
 ```txt
-Monthly step: 19
+Monthly step: 16
 Depends on counters from: country wealth and trade income
-Feeds counters to: US-05.1 and US-05-UI
+Feeds counters to: US-05-UI
 ```
 
 ## Required scopes / values / effects
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Vanilla slider cost | country/slider | readable Stability/Court cost value | NOT_CONFIRMED | 041 |
+| Vanilla slider cost | country/slider | not required by direct formula replacement | OUT_OF_SCOPE | 041 |
 | Monthly trade income | country | `monthly_trade_income` | CONFIRMED | 042 |
-| Country wealth | country | country `wealth` or reliable aggregate | NOT_CONFIRMED | 043 |
-| ModeU5 Economic Base | country/scripted value and ModeU5-controlled call sites | `modeu5_slider_cost_base = Wealth + monthly_trade_income` | CONFIRMED | 044 |
-| Visible reconciliation | country/UI | sized modifier or gold effect with visible presentation | NOT_CONFIRMED | 045 |
+| Country wealth | country | script equivalent to GUI `Country.GetTotalWealth`, or confirmed aggregate | TO_TEST | 043 |
+| Economic Base replacement hook | economy/slider formula context | controlled call site using `modeu5_slider_cost_base = Wealth + monthly_trade_income` | TO_TEST | 044 |
+| Visible reconciliation | country/UI | not used by direct formula replacement | OUT_OF_SCOPE | 045 |
 
 ## Files expected to change
 
@@ -48,20 +48,18 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: confirmed wealth and trade-income exposure
-Optional vanilla integration depends on: readable slider cost and visible reconciliation exposure
-Blocks: US-05.1, US-05-UI
-Related US: US-00.4, US-06
+Depends on: confirmed wealth, trade-income, and Economic Base formula-hook exposure
+Blocks: US-05-UI
+Related US: US-00.4
 ```
 
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Affect only Stability Investment and legitimacy-producing Court/Government Power.
-- Route every ModeU5-controlled calculation through `modeu5_slider_cost_base`.
-- Replace a vanilla call site only when that call site is confirmed modifiable.
-- Use one visible monthly reconciliation only for a non-replaceable vanilla path and only after its inputs/effect are confirmed or one fallback is accepted.
-- Never silently reconcile a slider.
+- Replace the confirmed Economic Base formula/call site with `modeu5_slider_cost_base`.
+- Do not read the final vanilla slider cost merely to reverse-engineer or reconcile it.
+- Do not create a monthly gold/modifier reconciliation path.
 - Do not modify other expected expenses in MVP.
 
 ## US-specific boundary checks
@@ -73,9 +71,8 @@ Related US: US-00.4, US-06
 
 - [ ] Target base equals Wealth plus Trade Income.
 - [ ] Only the two specified sliders use the target.
-- [ ] Every ModeU5-controlled use of Economic Base is traceable.
-- [ ] Any enabled vanilla replacement or reconciliation mode is traceable.
-- [ ] Any enabled reconciliation is visible in UI/debug/modifier/tooltip.
+- [ ] The replaced Economic Base formula and both inputs are traceable.
+- [ ] No reconciliation modifier or gold adjustment is applied.
 - [ ] Other sliders are unchanged.
 - [ ] Missing exposure and fallback choice are recorded in TECH-01.
 
@@ -94,9 +91,9 @@ Control equal relevant slider settings
 ```txt
 ModeU5 target costs follow Wealth + Trade Income, not Tax Base
 Only Stability and qualifying Court/Government Power differ
-Any reconciliation is visible
+No reconciliation is applied
 ```
 
 ## Known limitations
 
-Monthly trade income and the ModeU5 Economic Base contract are confirmed. Country wealth remains `NOT_CONFIRMED`. Reading vanilla slider costs and applying a visible reconciliation remain optional blocked paths for vanilla call sites that cannot be redirected.
+Monthly trade income is confirmed and local vanilla GUI proves total country wealth exists through `Country.GetTotalWealth`. The gameplay-script wealth value and the modifiable Stability/Court Economic Base call site remain `TO_TEST`. Reading final slider costs and visible reconciliation are out of scope for the direct-formula design.

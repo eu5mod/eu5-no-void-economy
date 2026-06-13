@@ -64,7 +64,7 @@ Related US:
 - Add debug output.
 - Update TECH-01 if any vanilla exposure is tested.
 - Do not widen MVP.
-- Do not apply silent reconciliation.
+- Do not apply silent economic adjustments.
 - Do not implement more than one fallback path without approval.
 
 ## US-specific boundary checks
@@ -72,9 +72,9 @@ Related US:
 - [ ] If US-00: tracks void economy and future production correction, not direct monthly Estate income punishment.
 - [ ] If US-10.1: consumption inside one market remains stock resolution, not intra-market trade.
 - [ ] If US-10.2: applies only when `source_market != target_market`.
-- [ ] If US-06: cost uses `transferred_quantity` when available and never unsatisfied demand.
-- [ ] If US-05: only Stability and Court/Government Power are affected.
-- [ ] If US-05.1: feature is optional/MVP+ and must be visibly documented.
+- [ ] If US-10.2: requested, transferred, and unsatisfied quantities remain distinct.
+- [ ] If US-05: only Stability and legitimacy-producing Court/Government Power are affected.
+- [ ] If US-05: direct formula replacement is used; no reconciliation fallback is introduced.
 
 ## Acceptance criteria
 
@@ -82,7 +82,7 @@ Related US:
 - [ ] Debug output shows expected values.
 - [ ] No negative stocks persist.
 - [ ] Market stock equals sum of country stocks after validation.
-- [ ] Reconciliation, if any, is visible in debug/UI/modifier/tooltip.
+- [ ] Any economic adjustment is visible in debug/UI/modifier/tooltip.
 - [ ] Missing exposure, if any, is recorded in TECH-01.
 - [ ] `error.log` has no new blocking error.
 - [ ] Documentation updated.
@@ -113,7 +113,7 @@ Expected rejected quantity:
 Expected satisfied quantity:
 Expected unsatisfied quantity:
 Expected transferred quantity:
-Expected reconciliation if any:
+Expected economic adjustment if any:
 Expected debug output:
 ```
 

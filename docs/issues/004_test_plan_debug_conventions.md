@@ -4,7 +4,7 @@
 
 Create the testing and debug conventions that every future PR must follow.
 
-The documents must reflect the revised specification, including US-00 ledger/penalty, US-10 stock demand resolution, US-06 trade/import/export reconciliation, and the no-hidden-reconciliation rule.
+The documents must reflect the surviving specification, including US-00 ledger/penalty, US-10 stock demand resolution, US-05 direct Economic Base replacement, and the no-hidden-adjustment rule.
 
 ## Files to create
 
@@ -29,11 +29,8 @@ multi-market country test
 US-10 consumption resolution tests
 US-10 candidate exclusion tests
 US-10 inter-market capacity test
-US-06 trade/import/export cost tests
-US-06 missing data tests
-US-06 monthly reconciliation visibility test
 US-04 demand adaptation tests
-US-05 / US-05.1 slider tests
+US-05 direct Economic Base test
 static balance tests
 US-13 exposure-gated test
 PR test report template
@@ -47,14 +44,12 @@ debug levels
 mandatory debug per stock mutation
 mandatory debug for US-00
 mandatory debug for US-04
-mandatory debug for US-05 / US-05.1
+mandatory debug for US-05
 mandatory debug for US-10
-mandatory debug for US-06
 fallback debug
-reconciliation visibility rule
+economic-adjustment visibility rule
 error policy
 stock inconsistency policy
-missing trade data policy
 unconfirmed modifier/effect policy
 ```
 
@@ -66,12 +61,12 @@ unconfirmed modifier/effect policy
 - [ ] Test plan includes US-00 overproduction tests.
 - [ ] Test plan includes multi-market country test.
 - [ ] Test plan includes US-10 consumption and inter-market transfer tests.
-- [ ] Test plan includes US-06 monthly reconciliation tests.
+- [ ] Test plan includes the US-05 direct Economic Base test.
 - [ ] Debug conventions include required stock mutation debug fields.
 - [ ] Debug conventions include US-10 candidate/exclusion debug.
-- [ ] Debug conventions include US-06 inspected scope and missing data debug.
+- [ ] Debug conventions include US-05 Wealth source and formula-hook debug.
 - [ ] Debug conventions include fallback reporting.
-- [ ] Debug conventions prohibit hidden economic reconciliation.
+- [ ] Debug conventions prohibit hidden economic adjustments.
 
 ## Manual review checklist
 
@@ -80,5 +75,5 @@ unconfirmed modifier/effect policy
 - [ ] Does the test plan cover the invariant `market_good_stock = sum(country_market_good_stock)`?
 - [ ] Does the test plan cover `country × market × good` void tracking?
 - [ ] Does the test plan prevent same-market consumption from being treated as trade?
-- [ ] Does the test plan ensure US-06 uses actual transferred quantity when available?
-- [ ] Does the debug convention make fallbacks and reconciliations visible?
+- [ ] Does the test plan keep requested, transferred, and unsatisfied quantities distinct?
+- [ ] Does the debug convention make fallbacks and economic adjustments visible?

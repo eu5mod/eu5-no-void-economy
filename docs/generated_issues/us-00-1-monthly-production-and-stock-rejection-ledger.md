@@ -12,12 +12,12 @@ As a player, I want produced, stocked, and rejected quantities recorded per coun
 
 ## Functional objective
 
-Read or calculate production at its source, resolve the country credited with that production and the source location's market, then accumulate monthly `produced_quantity`, `actual_added_quantity`, and `rejected_quantity` under the derived `country × market × good` ledger key. Read stock-add outputs rather than recomputing them.
+Read or calculate production at `location × good`, resolve the ledger country and the location's market, then accumulate monthly `produced_quantity`, `actual_added_quantity`, and `rejected_quantity` under the derived `country × market × good` ledger key. Read stock-add outputs rather than recomputing them.
 
 ## Runtime position
 
 ```txt
-Monthly step: 8; reset at step 23
+Monthly step: 8; reset at step 19
 Depends on counters from: location-level production integration and modeu5_add_stock
 Feeds counters to: US-00.2, US-00.3, US-00.4
 ```
@@ -27,13 +27,13 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Production source iteration/context | country/building/location/good | `every_owned_location`, `every_buildings_in_location`, `every_goods`, saved scopes | CONFIRMED | 003, 006, 008, 029 |
-| Produced quantity at source | production source × location × good | `goods_output`, `raw_material_output`, or pre-`modeu5_add_stock` calculation | NOT_CONFIRMED | 021 |
-| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
+| Produced quantity by location and good | country → owned location × good | target-good `goods_output`; `raw_material_output` for the location RGO; aggregate by `location.market` | TO_TEST | 021 |
+| Ledger-country attribution | country-rooted cycle → owned location | current country plus `every_owned_location` and location `owner` validation | CONFIRMED | 003, 005, 011, 081 |
 | Market attribution | location → market | `market` scope link | CONFIRMED | 004 |
 | Added quantity | ModeU5 stock operation | `actual_added_quantity` | CONFIRMED | 022 |
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
 | Ledger helper | ModeU5 | `modeu5_update_production_rejection_ledger` | CONFIRMED | 024 |
-| Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 23 | CONFIRMED | 024, internal |
+| Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 19 | CONFIRMED | 024, internal |
 | Ledger keying/storage primitive | country-scoped per-good map keyed by market | `add_to_variable_map`, <code>variable_map(name&#124;key)</code>, remove/re-add updates, monthly clear | CONFIRMED | 007, 025 |
 
 ## Files expected to change
@@ -49,7 +49,7 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: source production/country/location/market exposure, modeu5_add_stock, US-01, TECH-01
+Depends on: location production/country/location/market exposure, modeu5_add_stock, US-01, TECH-01
 Blocks: US-00.2, US-00.3, US-00.4
 Related US: EPIC US-00, US-00-UI
 ```
@@ -58,10 +58,11 @@ Related US: EPIC US-00, US-00-UI
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Use `modeu5_update_production_rejection_ledger` for every ledger write.
-- Derive the ledger key from the production source: `producing_country × source_location.market × good`.
-- Do not assume `producing_country = location.owner`; verify the country credited with building/RGO/local production.
+- Derive the ledger key while iterating the country: `current_country × location.market × good`.
+- Sum location output by good; do not require building-level or RGO-level profit reconstruction.
+- Verify how location `goods_output` treats foreign-owned buildings and log the selected ownership rule.
 - Aggregate multiple producing locations into the same country/market/good entry.
-- Initialize or clear monthly entries, update them during each production stock-add transaction, and reset them only at runtime step 23.
+- Initialize or clear monthly entries, update them during each production stock-add transaction, and reset them only at runtime step 19.
 - Do not attempt to rebuild produced/added/rejected totals from end-of-month stock snapshots.
 - Do not recalculate add/reject results already returned by `modeu5_add_stock`.
 - Clamp negative rejected values to zero and log the anomaly.
@@ -71,8 +72,8 @@ Related US: EPIC US-00, US-00-UI
 ## US-specific boundary checks
 
 - [ ] Tracking remains at `country × market × good`.
-- [ ] Production may be read at production-source or `location × good` granularity; source granularity is not confused with ledger granularity.
-- [ ] The producing country is verified independently from the location owner where foreign production sources can exist.
+- [ ] Production is read at `location × good` granularity and aggregated into the ledger granularity.
+- [ ] The controlled test records how foreign-owned building output is attributed.
 - [ ] Separate markets and goods cannot overwrite one another.
 - [ ] US-00 remains measurement and future correction, not direct Estate punishment.
 
@@ -94,9 +95,9 @@ Related US: EPIC US-00, US-00-UI
 
 ```txt
 Country A has production sources in Locations L1/L2 in Market M1 and L3 in Market M2
-Include one source whose credited country must be distinguished from the location owner if exposure permits
+Include one location containing a foreign-owned building to validate `goods_output` ownership semantics
 L1 and L2 produce iron; L3 produces iron; L2 also produces grain
-Run source-level production additions with controlled rejection
+Run location-level production additions with controlled rejection
 ```
 
 ### Expected result
@@ -112,4 +113,4 @@ Counters reset only after dependent calculations
 
 ## Known limitations
 
-Source-level building/RGO quantity remains `NOT_CONFIRMED`. The ledger runs in country scope; use building `owner` for building sources and location `owner` for RGO/location sources, and log that ModeU5 attribution rule explicitly. Use only one accepted production-quantity fallback if required.
+Location `goods_output`, `raw_material_output`, country/market production totals, and the aggregation path are documented. Exact target-good syntax and foreign-building ownership semantics remain `TO_TEST`; source-level building/RGO output is not required.

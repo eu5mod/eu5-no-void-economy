@@ -2,7 +2,7 @@
 
 ## Objective
 
-Add agent instructions that prevent uncontrolled implementation, invented scope links, direct stock variable mutation, hidden economic reconciliation, and accidental MVP widening.
+Add agent instructions that prevent uncontrolled implementation, invented scope links, direct stock variable mutation, hidden economic adjustments, and accidental MVP widening.
 
 ## Files to create
 
@@ -28,8 +28,7 @@ normative yearly runtime order
 implementation roadmap
 current canonical US-00
 current canonical US-10
-current canonical US-06
-US-05 / US-05.1 boundary
+current canonical US-05
 MVP boundaries
 debug requirement
 testing rule
@@ -50,9 +49,9 @@ Runtime order is normative.
 Implementation order is only a delivery roadmap.
 US-00 is void tracking plus future production correction, not direct monthly Estate income punishment.
 US-10 same-market consumption is stock resolution, not intra-market trade.
-US-06 uses trade/import/export scopes when exposed and monthly reconciliation by default.
-US-06 must not calculate cost on unsatisfied demand.
-US-05.1 is optional/MVP+ unless needed to avoid double penalty.
+US-10.2 records requested, transferred, and unsatisfied quantities separately.
+US-05 uses direct Economic Base formula replacement only.
+US-05 remains blocked if Wealth or the formula hook is not exposed; no reconciliation fallback is added.
 When blocked, propose one fallback only.
 ```
 
@@ -66,7 +65,7 @@ When blocked, propose one fallback only.
 - [ ] Both documents distinguish runtime order from implementation order.
 - [ ] Both documents mention the canonical US-00 pipeline.
 - [ ] Both documents mention the US-10 no-intra-market-trade rule.
-- [ ] Both documents mention US-06 trade/import/export inspection and monthly reconciliation.
+- [ ] Both documents mention the US-05 direct-formula boundary.
 - [ ] Both documents instruct the agent to stop when blocked.
 
 ## Manual review checklist
@@ -76,4 +75,4 @@ When blocked, propose one fallback only.
 - [ ] Does it force debug/test output?
 - [ ] Does it identify US-00 as void tracking + production correction, not direct monthly punishment?
 - [ ] Does it prevent same-market consumption from becoming pseudo-trade?
-- [ ] Does it prevent hidden transport-cost or slider reconciliation?
+- [ ] Does it prevent deleted transport-cost or slider-reconciliation designs from returning?

@@ -204,7 +204,7 @@ Market X stock = 60
 Market Y stock = 40
 Difference Market X = 0
 Difference Market Y = 0
-Transferred quantity is exposed to US-06
+Requested, transferred, and unsatisfied quantities are recorded separately
 ```
 
 ---
@@ -253,7 +253,32 @@ No wealth created or destroyed
 
 ## US-00 void economy tests
 
-### Test 9 — No overproduction
+### Test 9 — Location production aggregation
+
+Setup:
+
+```txt
+Country A owns locations L1 and L2 in Market X
+Country A owns location L3 in Market Y
+L1 and L2 produce iron; L2 also produces grain; L3 produces iron
+One location contains a foreign-owned productive building
+```
+
+Expected:
+
+```txt
+Production is read at location × good
+L1 and L2 iron aggregate to Country A × Market X × iron
+L2 grain remains a separate ledger key
+L3 iron aggregates to Country A × Market Y × iron
+Debug identifies the exact goods_output/raw_material_output syntax used
+Foreign-building ownership behavior is logged and TECH-01 021 is updated
+No building/RGO source-level reconstruction is required
+```
+
+---
+
+### Test 10 — No overproduction
 
 Setup:
 
@@ -274,7 +299,7 @@ void wealth tracked = 0
 
 ---
 
-### Test 10 — Overproduction below buffer
+### Test 11 — Overproduction below buffer
 
 Setup:
 
@@ -302,7 +327,7 @@ The buffer affects the production penalty, not the ledger record of rejected val
 
 ---
 
-### Test 11 — Overproduction above buffer
+### Test 12 — Overproduction above buffer
 
 Setup:
 
@@ -328,7 +353,7 @@ void wealth tracked = 60
 
 ---
 
-### Test 12 — Multi-market country overproduction
+### Test 13 — Multi-market country overproduction
 
 Setup:
 
@@ -349,7 +374,7 @@ No country-wide ratio replaces market-specific values
 
 ---
 
-### Test 13 — Ledger reset ordering
+### Test 14 — Ledger reset ordering
 
 Setup:
 
@@ -368,7 +393,7 @@ Debug shows reset timing
 
 ## US-10 demand resolution tests
 
-### Test 14 — Consumption from multiple stock candidates
+### Test 15 — Consumption from multiple stock candidates
 
 Setup:
 
@@ -393,7 +418,7 @@ No trade income or transport cost is generated
 
 ---
 
-### Test 15 — Consumption with exclusions
+### Test 16 — Consumption with exclusions
 
 Setup:
 
@@ -415,7 +440,7 @@ Debug lists exclusion reason
 
 ---
 
-### Test 16 — Inter-market transfer limited by buyer capacity
+### Test 17 — Inter-market transfer limited by buyer capacity
 
 Setup:
 
@@ -432,94 +457,12 @@ transferred_quantity = 35
 unsatisfied_trade_quantity = 65
 source market stock decreases by 35
 target market stock increases by 35
-US-06 cost basis quantity = 35
-```
-
-## US-06 trade transport cost tests
-
-### Test 17 — Trade/import/export inspection with sufficient data
-
-Setup:
-
-```txt
-used_trade_capacity = 100
-trade_distance = 50
-trade_range = 100
-transport_cost_base_coefficient = 0.1
-modeu5_transport_cost_coefficient = 1.0
-```
-
-Expected:
-
-```txt
-modeu5_transport_cost = 5
-transport_cost_payer is identified
-monthly accumulator increases by 5
-imputation_mode = monthly_reconciliation unless direct income effect is confirmed
-```
-
----
-
-### Test 18 — Trade scope with missing data
-
-Setup:
-
-```txt
-A trade/import/export scope is iterated
-trade_distance or payer is missing
-```
-
-Expected:
-
-```txt
-missing_trade_data lists the missing value
-imputation_mode = skipped_missing_data or configured fallback
-No silent cost is applied
-TECH-01 is updated
-```
-
----
-
-### Test 19 — Invalid trade range
-
-Setup:
-
-```txt
-trade_range = 0
-```
-
-Expected:
-
-```txt
-modeu5_transport_cost = 0
-trade_flag = invalid_for_modeu5_transport_cost
-No division by zero
-Debug logs invalid range
-```
-
----
-
-### Test 20 — Monthly reconciliation visibility
-
-Setup:
-
-```txt
-monthly_transport_cost_total = 25
-vanilla trade income exists or estimated gross trade income exists
-```
-
-Expected:
-
-```txt
-modeu5_trade_income_reconciliation = -25
-effective_trade_income estimate is visible in debug or UI
-ui_display_mode is logged
-No hidden economic correction
+transferred_quantity recorded for diagnostics = 35
 ```
 
 ## US-04 demand adaptation tests
 
-### Test 21 — Local demand grows after full-year satisfaction
+### Test 18 — Local demand grows after full-year satisfaction
 
 Setup:
 
@@ -539,7 +482,7 @@ annual counters reset
 
 ---
 
-### Test 22 — Local demand decays after full-year shortage
+### Test 19 — Local demand decays after full-year shortage
 
 Setup:
 
@@ -559,7 +502,7 @@ annual counters reset
 
 ---
 
-### Test 23 — Mixed year does not change demand
+### Test 20 — Mixed year does not change demand
 
 Setup:
 
@@ -575,9 +518,9 @@ location_good_demand_multiplier unchanged
 annual counters reset
 ```
 
-## US-05 / US-05.1 slider tests
+## US-05 Economic Base tests
 
-### Test 24 — Slider base uses Wealth + Trade Income
+### Test 21 — Economic Base uses Wealth + Trade Income
 
 Setup:
 
@@ -593,31 +536,13 @@ Expected:
 modeu5_slider_cost_base = 1200
 Tax Base is not used for ModeU5 slider target
 Only Stability and Court/Government Power are affected
-```
-
----
-
-### Test 25 — Optional void wealth exclusion prevents double penalty
-
-Setup:
-
-```txt
-modeu5_slider_cost_base = 1200
-modeu5_total_void_wealth = 200
-US-05.1 correction enabled
-```
-
-Expected:
-
-```txt
-modeu5_corrected_slider_cost_base = 1000
-Correction is visible in debug or UI
-No other slider is modified
+No gold or modifier reconciliation is applied
+Debug identifies the Wealth source and formula call site
 ```
 
 ## Static balance tests
 
-### Test 26 — US-07 trade building overrides
+### Test 22 — US-07 trade building overrides
 
 Expected:
 
@@ -626,7 +551,7 @@ Only confirmed static building fields are changed
 Tooltips do not contradict final values
 ```
 
-### Test 27 — US-08 fixed 50 ducat base price
+### Test 23 — US-08 fixed 50 ducat base price
 
 Expected:
 
@@ -635,7 +560,7 @@ Relevant RGO/building base price = 50
 Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 ```
 
-### Test 28 — US-09 global Production Efficiency bonus
+### Test 24 — US-09 global Production Efficiency bonus
 
 Expected:
 
@@ -646,7 +571,7 @@ It is not confused with a country-specific or technology bonus
 
 ## US-13 tests
 
-### Test 29 — Non-horde conquest surcharge by age
+### Test 25 — Non-horde conquest surcharge by age
 
 Expected:
 
@@ -655,7 +580,7 @@ Non-horde Age I/II conquest cost uses vanilla + 0.40
 Non-horde Age III uses vanilla + 0.20
 Age IV+ uses vanilla
 Hordes use vanilla
-No implementation proceeds until horde and age exposure are confirmed or fallback accepted
+No implementation proceeds until the conquest-cost override is confirmed
 ```
 
 ## PR test report template

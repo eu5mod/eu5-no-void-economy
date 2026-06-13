@@ -1,6 +1,6 @@
 # US-01 — Stock national par pays, marché et bien
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -17,7 +17,7 @@ Define the country-level source-of-truth stock and capacity model at `country ×
 ## Runtime position
 
 ```txt
-Monthly step: read/write through centralized operations at steps 6-14
+Monthly step: read/write through centralized operations at steps 6-12
 Yearly step: validated/rebuilt before annual consumers
 Feeds counters to: US-00, US-02, US-03, US-10, US-11
 ```
@@ -31,9 +31,6 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 | Capacity and available capacity | ModeU5 | stock cap/scripted value | CONFIRMED | 017-018 |
 | Country × market × good storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
-| Source-location market attribution | location → market | `market` scope link | CONFIRMED | 004 |
-| Production quantity | production source → quantity | source output or accepted estimate | NOT_CONFIRMED | 021 |
-| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 
 ## Files expected to change
 
@@ -50,7 +47,7 @@ docs/tests/
 ```txt
 Depends on: core centralized stock effects, TECH-01
 Blocks: US-02, US-03, US-00, US-10, US-11
-Related US: US-01-UI, US-01-AI
+Related US: US-01-UI
 ```
 
 ## Implementation rules
@@ -58,7 +55,7 @@ Related US: US-01-UI, US-01-AI
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Treat country stock as source of truth and market stock as aggregate/cache.
 - Credit production to the same producing country and market key used by US-00.1.
-- Do not assume the location owner receives production from every building/RGO/source without confirmed exposure.
+- Keep production reading and country/market attribution in US-00.1; US-01 only accepts explicit stock-operation inputs.
 - Mutate stock only through centralized stock effects.
 - Enforce non-negative stock and capacity limits.
 - Rebuild market stock from country stocks only, never the reverse.
@@ -100,4 +97,4 @@ Each market aggregate changes by the matching actual addition
 
 ## Known limitations
 
-Variable maps, market/goods iteration, scope passing, source-location market attribution, and the ModeU5 ledger-country rule are documented. Production-source quantity remains `NOT_CONFIRMED`.
+Variable maps, market/goods iteration, scope passing, stock capacity, and centralized stock-operation outputs are documented. Production reading remains isolated in US-00.1 and does not block the US-01 stock model.

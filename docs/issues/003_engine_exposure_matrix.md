@@ -52,18 +52,13 @@ US-01 country stock
 US-02 storage capacity
 US-03 decay
 US-04 local Pop demand and yearly counters
-US-05 slider cost base and reconciliation
-US-05.1 optional void wealth exclusion
-US-06 every_trade / every_import / every_export / ordered variants
-US-06 trade owner / buyer / seller / markets / goods / capacity / distance / income
-US-06 direct trade-income imputation effect if any
-US-06 monthly reconciliation effect/modifier
+US-05 total Wealth and direct Economic Base formula hook
 US-07 trade building static fields
 US-08 RGO/building price static fields
 US-09 Production Efficiency modifier
 US-10 stock resolver scoring dependencies
 US-10 war / embargo / market access / subject / market-owner checks
-US-10 inter-market transfer exposure to US-06
+US-10 actual/desired vanilla trade quantity
 US-13 horde and age checks
 ```
 
@@ -73,7 +68,8 @@ US-13 horde and age checks
 - [ ] TECH-01 contains status definitions.
 - [ ] TECH-01 contains required source list.
 - [ ] TECH-01 contains initial entries for all required coverage areas.
-- [ ] US-06 trade/import/export fields are explicitly listed.
+- [ ] US-00.1 location-production aggregation exposure is explicitly listed.
+- [ ] US-05 Wealth and direct formula-hook exposure are explicitly listed.
 - [ ] US-10 no-intra-market-trade dependencies are explicitly listed.
 - [ ] No gameplay implementation can depend on a `TO_TEST` or `NOT_CONFIRMED` item unless fallback is approved.
 
@@ -82,8 +78,8 @@ US-13 horde and age checks
 - [ ] Are critical ModeU5 dependencies listed?
 - [ ] Are US-00 good-specific production modifiers listed?
 - [ ] Are US-05 slider dependencies listed?
-- [ ] Are US-06 trade/import/export dependencies listed?
 - [ ] Are US-10 scoring and exclusion dependencies listed?
+- [ ] Is US-10.2 vanilla per-trade quantity exposure listed?
 - [ ] Are static balance dependencies listed?
 - [ ] Are fallbacks single and explicit?
 

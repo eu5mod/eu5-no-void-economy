@@ -1,6 +1,6 @@
 # Bootstrap update summary
 
-Updated against the revised ModeU5 MVP specification.
+Updated against the surviving, reviewed ModeU5 user-story set.
 
 ## Updated documents
 
@@ -28,10 +28,9 @@ github_issue_template.md
 - US-00 is documented as ledger → ratio → void wealth → future production penalty, not direct monthly Estate-income punishment.
 - US-10 now has a clear stock-demand resolver core.
 - Same-market consumption is explicitly not ModeU5 intra-market trade.
-- US-10.2 inter-market transfer exposes `transferred_quantity` to US-06.
-- US-06 now prioritizes trade/import/export scope inspection and defaults to monthly reconciliation.
-- US-06 debug requires missing trade data, payer, imputation mode, and monthly totals.
-- US-05.1 is treated as optional/MVP+ unless needed to avoid double penalty.
-- TECH-01 now includes detailed exposure rows for US-06 and US-10.
-- TEST_PLAN now includes same-market transfer, inter-market transfer, US-10, US-06, US-04, US-05, and US-13 tests.
-- DEBUG_CONVENTIONS now prohibits hidden reconciliation.
+- US-10.2 records requested, transferred, and unsatisfied quantities without owning logistics or trade-income adjustments.
+- Deleted US-01-AI, US-02-AI, US-05.1, US-06, and US-06-UI contracts are no longer referenced by master documentation.
+- US-05 now uses direct Economic Base formula replacement only; reconciliation is out of scope.
+- TECH-01 unresolved exposure rows map only to surviving stories that actually depend on them.
+- TEST_PLAN covers the surviving stock, demand, Economic Base, static balance, and US-13 contracts.
+- DEBUG_CONVENTIONS documents direct formula visibility and omits deleted reconciliation systems.

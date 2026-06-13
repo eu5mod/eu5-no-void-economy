@@ -4,7 +4,7 @@
 
 ModeU5 adds a double-accounting layer for goods inside EU5 markets.
 
-The mod does **not** replace the vanilla economy or vanilla markets. It adds a stock, control, debug, and reconciliation layer so that goods only generate effective ModeU5 economic value when they enter a stock that can actually be consumed, transferred, or lost.
+The mod does **not** replace the vanilla economy or vanilla markets. It adds a stock, control, debug, and consistency layer so that goods only generate effective ModeU5 economic value when they enter a stock that can actually be consumed, transferred, or lost.
 
 The two stock levels are:
 
@@ -58,21 +58,17 @@ A monthly economic cycle must follow this logical sequence:
 9. Resolve Pop and Estate consumption through US-10.1.
 10. Track satisfied and unsatisfied quantities through US-10.3.
 11. Resolve inter-market transfers through US-10.2 when applicable.
-12. Expose actually transferred quantities to US-06.
-13. Calculate trade transport cost through US-06.
-14. Apply monthly decay through modeu5_decay_stock.
-15. Calculate US-00.2 overproduction ratios.
-16. Calculate US-00.4 void wealth.
-17. Calculate US-00.3 next-month production penalties.
-18. Apply or prepare US-06 trade-income reconciliation.
-19. Calculate US-05 slider base.
-20. Apply US-05.1 only if slider-base correction is enabled or needed to avoid double penalty.
-21. Display slider reconciliation if any.
-22. Validate stock consistency through modeu5_validate_stock_consistency.
-23. Reset monthly counters only after every consumer has read them.
+12. Apply monthly decay through modeu5_decay_stock.
+13. Calculate US-00.2 overproduction ratios.
+14. Calculate US-00.4 void wealth.
+15. Calculate US-00.3 next-month production penalties.
+16. Calculate the US-05 Economic Base.
+17. Display the US-05 formula inputs and result when exposure permits.
+18. Validate stock consistency through modeu5_validate_stock_consistency.
+19. Reset monthly counters only after every consumer has read them.
 ```
 
-A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation, reset annual counters, run diagnostics if enabled, and update AI signals.
+A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation, reset annual counters, and run diagnostics if enabled.
 
 ## Documentation-first rule
 
@@ -129,11 +125,10 @@ Follow this delivery order, even though it is not the runtime order:
 10. US-00.3 production penalty.
 11. US-10.0 / US-10.1 / US-10.2 / US-10.3 demand resolution.
 12. US-04 local Pop demand adaptation.
-13. US-05 slider base and optional US-05.1 correction.
-14. US-06 trade/import/export transport cost and monthly reconciliation.
-15. US-07 / US-08 / US-09 static balance changes.
-16. US-01-AI / US-02-AI / US-13 only after exposure is confirmed.
-17. UI/debug polish.
+13. US-05 direct Economic Base formula.
+14. US-07 / US-08 / US-09 static balance changes.
+15. US-13 only after exposure is confirmed.
+16. UI/debug polish.
 ```
 
 ## Current canonical US-00
@@ -151,7 +146,6 @@ production vanilla
 → US-00.4 void wealth valuation
 → US-00.3 production penalty for N+1
 → debug / UI
-→ optional export to US-05.1
 ```
 
 US-00 tracks values at:
@@ -211,59 +205,9 @@ US-10.2 handles inter-market stock transfers only when:
 source_market != target_market
 ```
 
-US-10.2 exposes `transferred_quantity` to US-06. US-06 must never calculate transport cost on unsatisfied demand.
+US-10.2 records `requested_quantity`, `transferred_quantity`, and `unsatisfied_quantity` separately for US-10.3 and diagnostics.
 
-## Current canonical US-06
-
-US-06 applies transport cost to trade/import/export exposure where the engine exposes enough data.
-
-The MVP must first attempt granular iteration over:
-
-```txt
-every_trade
-ordered_trade
-every_import
-ordered_import
-every_export
-ordered_export
-```
-
-For each exposed scope, it tries to identify:
-
-```txt
-trade_owner
-buyer_country
-seller_country
-from_market
-to_market
-traded_goods
-used_trade_capacity
-trade_distance
-trade_range
-gross_trade_income
-```
-
-The default MVP mode is monthly reconciliation by payer country:
-
-```txt
-modeu5_monthly_transport_cost_accumulator += modeu5_transport_cost
-modeu5_trade_income_reconciliation = -modeu5_monthly_transport_cost_accumulator
-```
-
-Direct trade-income imputation is allowed only if a reliable effect exists. It is not required for MVP.
-
-The transport-cost payer priority is:
-
-```txt
-1. trade_income_recipient, if exposed
-2. trade_owner, if exposed
-3. buyer_country, if exposed
-4. current country scope during iteration
-```
-
-If no reliable payer is found, skip the trade for ModeU5 reconciliation and log it.
-
-## Current canonical US-05 / US-05.1
+## Current canonical US-05
 
 US-05 concerns only:
 
@@ -278,9 +222,7 @@ Target base:
 modeu5_slider_cost_base = Wealth + Trade Income
 ```
 
-US-05.1 is optional/MVP+ unless needed to prevent a double penalty. If enabled, tracked void wealth must not increase the slider cost base.
-
-Never silently reconcile sliders. Use a tooltip, country modifier, debug event, monthly report, or custom ModeU5 panel.
+US-05 uses direct formula replacement only. Monthly gold adjustments, modifiers that emulate a cost difference, and slider reconciliation are outside the selected design. If the Wealth value or the Stability/Court formula hook is unavailable, keep US-05 blocked rather than introducing a second implementation path.
 
 ## Debug requirement
 
@@ -297,14 +239,14 @@ stock before
 stock after
 market stock difference
 fallback used
-reconciliation applied
+economic adjustment applied
 ```
 
 US-00 debug must show produced, added, rejected, ratios, buffer, penalty, good price source, void wealth, and aggregation.
 
 US-10 debug must show ordered candidates, scores, exclusions, quantities used, satisfied quantity, and unsatisfied quantity.
 
-US-06 debug must show inspected trades/imports/exports, missing data, transport cost, payer, imputation mode, and monthly reconciliation totals.
+US-05 debug must show the Wealth input, Trade Income input, resulting Economic Base, affected calculation, and whether direct replacement is active.
 
 ## Testing rule
 
@@ -339,9 +281,8 @@ feature/storage-capacity
 feature/stock-demand-resolver
 feature/consumption-resolution
 feature/inter-market-transfer
-feature/trade-transport-cost
 feature/local-pop-demand-adaptation
-feature/slider-reconciliation
+feature/economic-base
 balance/static-overrides
 ui/debug-panel
 ```

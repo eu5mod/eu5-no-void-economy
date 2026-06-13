@@ -8,7 +8,7 @@ Labels: none
 US-09 — Bonus global de Production Efficiency de +5 %
 ```
 
-As a player, I want a global +5% Production Efficiency compensation for ModeU5's added stock, decay, logistics, and reconciliation constraints.
+As a player, I want a global +5% Production Efficiency compensation for ModeU5's stock, decay, and production-correction constraints.
 
 ## Functional objective
 
@@ -58,7 +58,7 @@ Related US: US-00.3, stock-aware production pipeline
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.
 - Do not use this issue to redesign transformation formulas beyond compatibility.
-- Do not implement automatic monthly application until the recurring pulse is confirmed or one fallback is accepted.
+- Use the confirmed shared `monthly_country_pulse` dispatcher; do not register a second monthly mechanism.
 
 ## US-specific boundary checks
 

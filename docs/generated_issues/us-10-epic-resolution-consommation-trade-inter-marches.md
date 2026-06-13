@@ -17,9 +17,9 @@ Deliver one common candidate resolver, same-market consumption removal, inter-ma
 ## Runtime position
 
 ```txt
-Monthly step: 9-12
+Monthly step: 9-11
 Depends on counters from: US-01 stock/capacity and demand callers
-Feeds counters to: US-04, US-06, debug/UI
+Feeds counters to: US-04 and debug/UI
 ```
 
 ## Required scopes / values / effects
@@ -31,8 +31,8 @@ Feeds counters to: US-04, US-06, debug/UI
 | Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
 | Inter-market transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
 | Satisfaction tracking | ModeU5 | internal variables | CONFIRMED | 077 |
-| Vanilla local demand context | location × good / estate / country | runtime consumer demand inputs | NOT_CONFIRMED | 037, local check required |
-| Vanilla per-trade requested quantity | trade | exposed trade quantity/capacity | NOT_CONFIRMED | 056 |
+| Vanilla local demand context | location × good / estate / country | runtime consumer demand inputs | NOT_CONFIRMED | 037, 086 |
+| Vanilla actual/desired trade quantity | trade | script equivalent to GUI actual-moved and desired-shipment accessors | TO_TEST | 056 |
 | Automatic cycle invocation | country | `monthly_country_pulse`, `yearly_country_pulse` | CONFIRMED | 011-012 |
 
 ## Files expected to change
@@ -52,7 +52,7 @@ docs/tests/
 
 ```txt
 Depends on: US-01, US-02, core stock effects, TECH-01
-Blocks: US-04, ModeU5 transfer basis for US-06
+Blocks: US-04 and complete stock-based demand resolution
 Related US: US-10.0, US-10.1, US-10.2, US-10.3, US-10-UI
 ```
 
@@ -70,7 +70,7 @@ Related US: US-10.0, US-10.1, US-10.2, US-10.3, US-10-UI
 
 - [ ] Same-market resolution creates no trade income, transport cost, trade-capacity use, or trade profit.
 - [ ] Inter-market transfer applies only when source and target differ.
-- [ ] US-06 receives actual transferred quantity, never unsatisfied demand.
+- [ ] Actual transferred quantity remains distinct from requested and unsatisfied quantities.
 
 ## Acceptance criteria
 
@@ -79,7 +79,7 @@ Related US: US-10.0, US-10.1, US-10.2, US-10.3, US-10-UI
 - [ ] Inter-market trade respects seller stock and buyer capacity.
 - [ ] Requested, satisfied/transferred, and unsatisfied quantities reconcile.
 - [ ] The stock invariant holds after every operation.
-- [ ] Debug explains order, score, exclusion, quantity, and handoff.
+- [ ] Debug explains order, score, exclusion, and final quantities.
 - [ ] TECH-01 and complete test evidence are updated.
 
 ## Manual test scenario
@@ -98,9 +98,9 @@ Include one excluded seller
 Consumption removes stock without trade economics
 Transfer moves only actual available/capacity-limited quantity
 Unsatisfied demand is tracked
-US-06 receives only transferred quantity
+Transfer diagnostics record only the actual transferred quantity
 ```
 
 ## Known limitations
 
-Relation, market-access, ownership, ordering, and recurring country pulse exposure is documented. Runtime consumer-demand inputs and per-trade requested quantity remain `NOT_CONFIRMED`; each blocked path may use only one explicitly accepted fallback.
+Relation, market-access, ownership, ordering, recurring country pulses, and the vanilla GUI trade-quantity accessors are documented. Runtime consumer-demand inputs remain `NOT_CONFIRMED`; gameplay-script access to per-trade actual/desired quantity remains `TO_TEST`.

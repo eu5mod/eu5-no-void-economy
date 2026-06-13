@@ -12,14 +12,14 @@ As a player, I want rejected production valued economically so the void economy 
 
 ## Functional objective
 
-Value rejected production per `country × market × good`, record the price source, aggregate by market and country, and expose `modeu5_total_void_wealth` to US-05.1.
+Value rejected production per `country × market × good`, record the price source, and aggregate the result by market and country for diagnostics and balancing.
 
 ## Runtime position
 
 ```txt
-Monthly step: 16
+Monthly step: 14
 Depends on counters from: US-00.1
-Feeds counters to: US-05.1, debug/UI, future AI signals
+Feeds counters to: US-00-UI and balancing diagnostics
 ```
 
 ## Required scopes / values / effects
@@ -49,7 +49,7 @@ docs/tests/
 
 ```txt
 Depends on: US-00.1, good-price exposure, TECH-01
-Blocks: US-05.1
+Blocks: complete void-economy visibility
 Related US: US-00.3, US-00-UI
 ```
 
@@ -74,7 +74,7 @@ Related US: US-00.3, US-00-UI
 - [ ] The selected price and source are visible.
 - [ ] A fallback price is used only after explicit acceptance.
 - [ ] Estate proxy values are optional and do not mutate income.
-- [ ] US-05.1 can read the country and market aggregates.
+- [ ] Country and market aggregates are available to debug and balancing tools.
 - [ ] Debug exposes rejected quantity, price, coefficient, proxy, and totals.
 - [ ] TECH-01 and test evidence are updated.
 

@@ -17,7 +17,7 @@ Validate `market_good_stock = sum(country_market_good_stock)`, detect and log di
 ## Runtime position
 
 ```txt
-Monthly step: 22
+Monthly step: 18
 Yearly step: 1-2 and after exceptional ownership/market changes
 Depends on counters from: all centralized stock operations
 Feeds counters to: diagnostics and safe downstream reads
@@ -31,7 +31,7 @@ Feeds counters to: diagnostics and safe downstream reads
 | Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
 | Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
-| Monthly invocation | country | `monthly_country_pulse` at runtime step 22 | CONFIRMED | 011 |
+| Monthly invocation | country | `monthly_country_pulse` at runtime step 18 | CONFIRMED | 011 |
 | Yearly invocation | country | `yearly_country_pulse` before annual consumers and after exceptional rebuild triggers | CONFIRMED | 012 |
 | Deterministic debug invocation | effect scope | event triggers and logs | CONFIRMED | 013 |
 
@@ -64,7 +64,7 @@ Related US: US-01, US-03, US-10, US-00
 - Never repair country stocks from market stock.
 - Route production, consumption, transfer, decay, validation, and rebuild through centralized effects.
 - Correct negative/cap anomalies through the owning centralized operation and log them.
-- Keep any economic reconciliation visible and owned by its relevant US.
+- Keep any economic adjustment visible and owned by its relevant US.
 
 ## US-specific boundary checks
 

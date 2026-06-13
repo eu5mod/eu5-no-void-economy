@@ -20,7 +20,7 @@ Centralize request outcome tracking for consumption and inter-market transfer, c
 Monthly step: 10 after consumption; also after step 11 transfers
 Yearly step: counters read by US-04 before annual reset
 Depends on counters from: US-10.1 and US-10.2
-Feeds counters to: US-04, diagnostics, future AI/satisfaction signals
+Feeds counters to: US-04 and diagnostics
 ```
 
 ## Required scopes / values / effects

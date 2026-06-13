@@ -12,14 +12,14 @@ As a player, I want economic production to create effective ModeU5 value only wh
 
 ## Functional objective
 
-Deliver the US-00 pipeline: read production at the finest confirmed source level, resolve the country credited with production and the source location's market, read centralized stock-add results, aggregate produced/added/rejected quantities at `country × market × good`, calculate buffered overproduction and void wealth, prepare the next-month production penalty, and expose visible diagnostics. US-00 does not own or directly mutate stock.
+Deliver the US-00 pipeline: read production at `location × good`, aggregate it through the current country and location market, read centralized stock-add results, record produced/added/rejected quantities at `country × market × good`, calculate buffered overproduction and void wealth, prepare the next-month production penalty, and expose visible diagnostics. US-00 does not own or directly mutate stock.
 
 ## Runtime position
 
 ```txt
-Monthly step: 8, then 15-17; reset only at step 23
+Monthly step: 8, then 13-15; reset only at step 19
 Depends on counters from: modeu5_add_stock
-Feeds counters to: US-05.1, debug/UI, future AI signals
+Feeds counters to: debug/UI and balancing diagnostics
 ```
 
 ## Required scopes / values / effects
@@ -27,10 +27,10 @@ Feeds counters to: US-05.1, debug/UI, future AI signals
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Production source discovery | building/location/good | production iterators, output checks, saved scopes | CONFIRMED | 003-006, 008, 029 |
-| Production quantity at source | source × location × good | `goods_output`, `raw_material_output`, or pre-stock-add calculation | NOT_CONFIRMED | 021 |
-| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
+| Production quantity by location and good | country → owned location × good | target-good `goods_output`; `raw_material_output` for the location RGO | TO_TEST | 021 |
+| Ledger-country attribution | country-rooted cycle → owned location | current country plus `every_owned_location` and location `owner` validation | CONFIRMED | 003, 005, 011, 081 |
 | Market attribution | location → market | `market` scope link and saved scopes | CONFIRMED | 004, 008 |
-| Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 23 | CONFIRMED | 024, internal |
+| Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 19 | CONFIRMED | 024, internal |
 | Ledger keying/storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007, 025 |
 | Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
 | Production penalty modifier names | location × good / location | `local_<good>_output_modifier`, `local_production_efficiency` | CONFIRMED | 027-029 |
@@ -54,7 +54,7 @@ docs/tests/
 
 ```txt
 Depends on: core stock effects, US-01, US-02, US-11, TECH-01
-Blocks: US-05.1 and complete void-economy visibility
+Blocks: complete void-economy visibility
 Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 ```
 
@@ -79,7 +79,7 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 ## Acceptance criteria
 
 - [ ] Produced, added, and rejected quantities remain distinct at `country × market × good`.
-- [ ] Source-level production is attributed to the correct producing country, market, and good before aggregation.
+- [ ] Location-level production is attributed to the current ledger country, location market, and good before aggregation.
 - [ ] Overproduction, effective ratio, void wealth, and next-month penalty are traceable end to end.
 - [ ] US-00 never mutates stock directly.
 - [ ] Debug identifies inputs, price source, buffer, modifier mode, fallback, and aggregation.
@@ -109,4 +109,4 @@ No direct Estate-income mutation
 
 ## Known limitations
 
-Source-level production quantity remains blocked. Ledger-country attribution is a ModeU5 country-scope rule, not a claim about vanilla income accounting; temporary location-modifier application is documented but still requires a controlled local test.
+Location production exposure exists, but exact target-good syntax and foreign-building ownership semantics remain `TO_TEST`. Building/RGO source-level reconstruction is not required. Temporary location-modifier application is documented but still requires a controlled local test.

@@ -46,7 +46,7 @@ docs/tests/
 ```txt
 Depends on: US-10.0, US-10.1, US-10.2, US-10.3, TECH-01
 Blocks: transparent stock resolution
-Related US: US-04-UI, US-06-UI
+Related US: US-04-UI
 ```
 
 ## Implementation rules
@@ -55,7 +55,7 @@ Related US: US-04-UI, US-06-UI
 - Debug is mandatory; custom GUI is optional.
 - Show demand type, scope, requested/satisfied/unsatisfied, candidates, scores, quantities, and exclusions.
 - Explain that same-market consumption is not trade.
-- Explain that US-06 owns transport cost and trade-income reconciliation.
+- Explain that logistics costs and trade-income adjustments are outside the surviving MVP story set.
 - Keep display read-only.
 
 ## US-specific boundary checks
@@ -70,8 +70,8 @@ Related US: US-04-UI, US-06-UI
 - [ ] Stocks used, order, score, and quantity per candidate are visible.
 - [ ] Excluded candidates and reasons are visible.
 - [ ] Same-market versus inter-market behavior is explicit.
-- [ ] US-06 handoff quantity is visible for transfers.
-- [ ] No reconciliation is hidden in this display layer.
+- [ ] Requested, transferred, and unsatisfied quantities are separately visible for transfers.
+- [ ] No logistics or trade-income adjustment is hidden in this display layer.
 
 ## Manual test scenario
 
@@ -87,7 +87,7 @@ Include at-war, embargoed, empty, and wrong-market candidates where exposed
 ```txt
 Each demand shows ordered usage and exclusions
 Consumption is labeled non-trade
-Transfer shows actual quantity and US-06 ownership of transport cost
+Transfer shows actual quantity and states that logistics/trade-income adjustments are out of scope
 ```
 
 ## Known limitations

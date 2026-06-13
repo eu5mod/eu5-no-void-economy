@@ -30,7 +30,7 @@ Feeds counters to: US-10.3
 | Central removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
 | Population/type context | location | `num_pop_type`, `percentage_pop_type_in_location` | CONFIRMED | 038 |
 | Local Pop demand quantity by good | location × good | runtime vanilla Pop-demand value | NOT_CONFIRMED | 037 |
-| Estate/other consumer demand context | estate/country | reliable vanilla demand caller inputs | NOT_CONFIRMED | local check required |
+| Estate/other consumer demand context | estate/country | reliable vanilla demand caller inputs | NOT_CONFIRMED | 086 |
 | Satisfaction output | ModeU5 | requested/satisfied/unsatisfied values | CONFIRMED | 077 |
 
 ## Files expected to change

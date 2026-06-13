@@ -47,7 +47,7 @@ docs/tests/
 ```txt
 Depends on: US-01, building/location exposure, TECH-01
 Blocks: capacity-aware production and US-10.2
-Related US: US-02-UI, US-02-AI, US-07
+Related US: US-02-UI, US-07
 ```
 
 ## Implementation rules

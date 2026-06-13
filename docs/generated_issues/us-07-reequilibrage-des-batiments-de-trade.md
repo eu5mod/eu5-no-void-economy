@@ -1,6 +1,6 @@
 # US-07 — Rééquilibrage des batiments de Trade
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -28,7 +28,7 @@ Feeds counters to: US-02 capacity and trade balance
 |---|---|---|---|---|
 | Building modifier block | building type static definition | `modifier`, `raw_modifier`, and documented country modifier blocks | CONFIRMED | 063, 065 |
 | Marketplace power modifiers | location/estate | `local_burghers_estate_power`, `local_merchant_power` | CONFIRMED | 063 |
-| Exact vanilla trade-building entries and values | local vanilla building files | relevant building keys, current modifiers, costs, and capacities | NOT_CONFIRMED | 063, local check required |
+| Exact vanilla trade-building entries and values | local vanilla building files | relevant building keys, current modifiers, costs, and capacities | CONFIRMED | 083 |
 | Building price fields | building type static definition | `price`, `expensive`, `increase_per_level_cost`, age price keys | CONFIRMED | 065 |
 
 ## Files expected to change

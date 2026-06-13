@@ -30,7 +30,7 @@ Feeds counters to: displayed construction prices
 | Building price scaling fields | building type static definition | `expensive`, `increase_per_level_cost` | CONFIRMED | 065 |
 | Read building base cost | building type | `building_base_cost_in_gold` | CONFIRMED | 065 |
 | RGO price field and dynamic rules | RGO/static economy files | construction/upgrade price fields | NOT_CONFIRMED | 082 |
-| Relevant building/RGO entry list | local vanilla files | in-scope definition keys and current values | NOT_CONFIRMED | 065, 082, local check required |
+| Relevant building/RGO entry list | local vanilla files | in-scope definition keys and current values | TO_TEST | 084 |
 
 ## Files expected to change
 
@@ -91,4 +91,4 @@ No 1.2 dynamic variation remains for in-scope entries
 
 ## Known limitations
 
-Building pricing fields and age-based fallback rules are documented. RGO pricing rules and the exact in-scope vanilla building/RGO entry list remain `NOT_CONFIRMED`; `default_market_price` from TECH-01 064 is a goods market-price field and must not be treated as a construction-price field.
+Building pricing fields and age-based fallback rules are documented. RGO pricing rules remain `NOT_CONFIRMED`; the exact in-scope vanilla building/RGO entry list remains `TO_TEST`. `default_market_price` from TECH-01 064 is a goods market-price field and must not be treated as a construction-price field.

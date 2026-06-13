@@ -26,10 +26,10 @@ Feeds counters to: conquest cost calculation
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Non-horde check | attacker country | reliable generic government/horde classification | NOT_CONFIRMED | 078 |
+| Non-horde check | attacker country | `NOT = { government_type = government_type:steppe_horde }` | CONFIRMED | 078 |
 | Current age | current script context | `current_age` | CONFIRMED | 079 |
 | Conquest CB/wargoal cost | static CB/wargoal files | `conquer_cost` or equivalent override | NOT_CONFIRMED | 080 |
-| Age/government variant selection | country/CB | `current_age` plus confirmed non-horde and static cost hooks | NOT_CONFIRMED | 078-080 |
+| Age/government variant selection | country/CB | confirmed `current_age` and `steppe_horde` check plus static cost hook | NOT_CONFIRMED | 080 |
 
 ## Files expected to change
 
@@ -58,7 +58,7 @@ Related US: none
 - Prefer explicit static variants selected by confirmed age and horde checks.
 - Apply fixed additions, not an additional multiplier.
 - Keep horde and Age IV+ behavior vanilla.
-- Do not implement until all three TECH-01 exposures are confirmed.
+- Do not implement until TECH-01 080 confirms the conquest-cost override.
 
 ## US-specific boundary checks
 
@@ -97,4 +97,4 @@ Correct CB/wargoal variant and trigger path are visible in debug
 
 ## Known limitations
 
-`current_age` is documented. Generic horde/non-horde classification and a static conquest-cost override remain `NOT_CONFIRMED`, so US-13 remains excluded from implementation.
+`current_age` and the exact vanilla `government_type = government_type:steppe_horde` check are confirmed. The static conquest-cost override remains `NOT_CONFIRMED`, so US-13 remains excluded from implementation.

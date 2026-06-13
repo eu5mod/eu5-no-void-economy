@@ -17,9 +17,9 @@ When `source_market != target_market`, select source-market sellers through US-1
 ## Runtime position
 
 ```txt
-Monthly step: 11, then handoff at step 12
+Monthly step: 11
 Depends on counters from: US-10.0, US-02 capacity, trade request source
-Feeds counters to: US-10.3 and US-06
+Feeds counters to: US-10.3 and debug/UI
 ```
 
 ## Required scopes / values / effects
@@ -28,7 +28,7 @@ Feeds counters to: US-10.3 and US-06
 |---|---|---|---|---|
 | Trade/import/export iteration | country/market → trade | every/ordered trade, import, and export iterators | CONFIRMED | 047-049 |
 | Source/target markets and good | trade → market/goods | `from_market`, `to_market`, `traded_goods` | CONFIRMED | 054-055 |
-| Requested trade quantity | trade | per-trade exposed quantity/capacity | NOT_CONFIRMED | 056 |
+| Actual/desired vanilla trade quantity | trade | script equivalent to GUI `Trade.GetQuantityOfGoodsActuallyMoved` and `Trade.GetDesiredGoodsToShip` | TO_TEST | 056 |
 | Explicit ModeU5 request context | ModeU5 | source market, target market, good, requested quantity | CONFIRMED | internal |
 | Ordered source sellers | source market | confirmed US-10.0 output | CONFIRMED | 067-074 |
 | Buyer target capacity | ModeU5 | US-02/US-01 values | CONFIRMED | 017-018 |
@@ -48,7 +48,7 @@ docs/tests/
 
 ```txt
 Depends on: US-10.0, US-01, US-02, modeu5_transfer_stock, TECH-01
-Blocks: actual-quantity transport costing in US-06
+Blocks: complete inter-market stock resolution
 Related US: US-10.3, US-10-UI
 ```
 
@@ -65,7 +65,7 @@ Related US: US-10.3, US-10-UI
 ## US-specific boundary checks
 
 - [ ] No implicit transport loss is created in MVP.
-- [ ] US-06 receives `transferred_quantity`, never requested or unsatisfied quantity.
+- [ ] `transferred_quantity` is recorded separately from requested and unsatisfied quantities.
 
 ## Acceptance criteria
 
@@ -93,9 +93,9 @@ Buyer target available capacity 70
 Transferred 70; unsatisfied 30
 Source aggregate falls 70; target aggregate rises 70
 Buyer receives 70 without exceeding cap
-US-06 cost basis output is 70
+Recorded transferred quantity is 70
 ```
 
 ## Known limitations
 
-Vanilla trade iteration, source/target markets, and traded goods are documented. Per-trade requested quantity remains `NOT_CONFIRMED`; explicit ModeU5 requests may be used only as one approved fallback.
+Vanilla trade iteration, source/target markets, traded goods, and exact GUI quantity accessors are documented in local vanilla files. Their gameplay-script equivalents inside a trade iterator remain `TO_TEST`; explicit ModeU5 requests may be used only as one approved fallback.

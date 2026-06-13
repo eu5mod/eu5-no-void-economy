@@ -16,7 +16,7 @@ centralized mutation effects
 normative monthly/yearly runtime order
 US-00 void-economy ledger and production correction
 US-10 stock demand resolution
-US-06 trade/import/export transport-cost reconciliation
+US-05 direct Economic Base replacement
 mandatory TECH-01 exposure tracking
 mandatory debug/test conventions
 ```
@@ -93,7 +93,7 @@ stock logic
 monthly cycle
 void economy tracking
 US-10 demand resolver
-US-06 trade transport cost
+US-05 Economic Base implementation
 UI/debug events
 balance changes
 AI behavior

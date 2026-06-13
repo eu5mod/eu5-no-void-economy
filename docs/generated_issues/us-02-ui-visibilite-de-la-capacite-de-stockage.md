@@ -86,4 +86,4 @@ Used and available storage remain consistent with US-01
 
 ## Known limitations
 
-MVP may use a debug event rather than custom UI. Building contribution exposure remains gated by TECH-01.
+MVP may use a debug event rather than custom UI. The exact building categories and configured capacity contributions still require local vanilla-file review.

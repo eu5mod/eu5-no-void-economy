@@ -53,16 +53,15 @@ Not a runtime feature:
 
 - [ ] US-00 does not directly punish monthly Estate income.
 - [ ] US-10 same-market consumption does not create trade income, transport cost, or trade capacity usage.
-- [ ] US-10.2 inter-market transfer exposes `transferred_quantity` to US-06 where relevant.
-- [ ] US-06 does not calculate transport cost on unsatisfied demand.
+- [ ] US-10.2 records requested, transferred, and unsatisfied quantities separately.
 - [ ] US-05 affects only Stability and Court/Government Power unless explicitly approved.
-- [ ] US-05.1 is disabled/optional unless needed to avoid double penalty.
+- [ ] US-05 uses direct formula replacement and does not introduce a reconciliation fallback.
 
 ## Debug
 
 - [ ] Debug output added.
 - [ ] Fallback debug added if fallback is used.
-- [ ] Reconciliation debug added if any economic correction is applied.
+- [ ] Adjustment debug added if any economic correction is applied.
 - [ ] `error.log`, `game.log`, and `system.log` reviewed.
 
 ## Test report

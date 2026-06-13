@@ -2,7 +2,7 @@
 
 ModeU5 adds a double-accounting layer for goods inside EU5 markets.
 
-The mod does **not** replace the vanilla market system. It adds a stock, control, debug, and reconciliation layer so that economic value can be checked against goods that actually enter stock.
+The mod does **not** replace the vanilla market system. It adds a stock, control, debug, and consistency layer so that economic value can be checked against goods that actually enter stock.
 
 ## Core invariant
 
@@ -36,8 +36,8 @@ The bootstrap documents are aligned with the revised MVP specification:
 - US-00 void economy tracking and future production correction;
 - US-10 stock-based consumption and inter-market transfer resolution;
 - no ModeU5 intra-market trade simulation;
-- US-06 transport cost from exposed trade/import/export scopes, with monthly reconciliation as default;
-- US-05 slider base limited to Stability and Court/Government Power, with optional US-05.1 void-wealth exclusion where needed;
+- US-05 direct Economic Base replacement for Stability and legitimacy-producing Court/Government Power only;
+- no transport-cost, trade-income reconciliation, slider reconciliation, or AI-planning story in the surviving MVP set;
 - mandatory debug and TECH-01 exposure tracking.
 
 ## Runtime contract
@@ -56,14 +56,12 @@ previous penalties
 → US-10.1 consumption
 → US-10.3 unsatisfied demand
 → US-10.2 inter-market transfers
-→ US-06 transport cost
 → modeu5_decay_stock
 → US-00.2 ratios
 → US-00.4 void wealth
 → US-00.3 next-month penalty
-→ US-06 reconciliation
-→ US-05 slider base
-→ optional US-05.1 correction
+→ US-05 Economic Base
+→ US-05 formula visibility
 → stock consistency validation
 → monthly counter reset
 ```
@@ -77,7 +75,6 @@ validate stock
 → apply US-04 local Pop demand adaptation
 → reset annual counters
 → run annual diagnostics
-→ update AI signals
 ```
 
 ## Bootstrap content
@@ -92,8 +89,8 @@ This repository contains only scaffolding and governance documents:
 - `docs/issues/002_add_claude_agents.md`
 - `docs/issues/003_engine_exposure_matrix.md`
 - `docs/issues/004_test_plan_debug_conventions.md`
-- `docs/templates/github_issue_template.md`
-- `docs/templates/pull_request_template.md`
+- `.github/ISSUE_TEMPLATE/github_issue_template.md`
+- `.github/ISSUE_TEMPLATE/pull_request_template.md`
 - `docs/technical/TECH-01_engine_exposure_matrix.md`
 - `docs/technical/DEBUG_CONVENTIONS.md`
 - `docs/tests/TEST_PLAN.md`
@@ -115,9 +112,8 @@ main
     ├── feature/stock-demand-resolver
     ├── feature/consumption-resolution
     ├── feature/inter-market-transfer
-    ├── feature/trade-transport-cost
     ├── feature/local-pop-demand-adaptation
-    ├── feature/slider-reconciliation
+    ├── feature/economic-base
     ├── balance/static-overrides
     └── ui/debug-panel
 ```

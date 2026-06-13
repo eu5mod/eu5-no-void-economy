@@ -28,7 +28,7 @@ Feeds counters to: player understanding
 |---|---|---|---|---|
 | Building base/dynamic rules | building type static definition | documented US-08 building price fields | CONFIRMED | 065 |
 | RGO base/dynamic rules | RGO/static economy files | documented RGO price fields | NOT_CONFIRMED | 082 |
-| Native price tooltip binding | UI | vanilla building/RGO price breakdown | NOT_CONFIRMED | 014, local check required |
+| Native price tooltip binding | UI | vanilla building/RGO price breakdown | TO_TEST | 085 |
 | Localization hooks | UI | building and goods localization keys | CONFIRMED | 014 |
 
 ## Files expected to change
@@ -85,4 +85,4 @@ Only listed standard modifiers explain final price
 
 ## Known limitations
 
-Building price rules and localization hooks are documented. RGO pricing and native building/RGO price-breakdown tooltip binding remain `NOT_CONFIRMED`; documentation/debug may supplement the vanilla UI.
+Building price rules and localization hooks are documented. RGO pricing remains `NOT_CONFIRMED`; native building/RGO price-breakdown tooltip binding remains `TO_TEST`. Documentation/debug may supplement the vanilla UI.

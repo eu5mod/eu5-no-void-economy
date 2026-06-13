@@ -26,7 +26,7 @@ Feeds counters to: player understanding
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Verified vanilla and changed building values | static building files | US-07 source values and overrides | NOT_CONFIRMED | 063, local check required |
+| Verified vanilla and changed building values | static building files | US-07 source values and overrides | TO_TEST | 083 |
 | Tooltip/localization hooks | UI | building `<key>` / `<key>_desc` localization and tooltip hooks | CONFIRMED | 014 |
 | Storage contribution inputs | ModeU5/building | US-02 configuration using building iterators | CONFIRMED | 034-035 |
 

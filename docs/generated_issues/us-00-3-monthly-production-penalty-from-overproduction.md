@@ -17,7 +17,7 @@ Convert effective overproduction into a capped temporary penalty applied during 
 ## Runtime position
 
 ```txt
-Monthly step: apply previous penalty at step 1; calculate replacement at step 17
+Monthly step: apply previous penalty at step 1; calculate replacement at step 15
 Depends on counters from: US-00.2
 Feeds counters to: next monthly cycle, US-00-UI
 ```
@@ -29,7 +29,7 @@ Feeds counters to: next monthly cycle, US-00-UI
 | Effective ratio calculation/output | country × market × good | US-00.2 result using guarded `change_variable` arithmetic | CONFIRMED | 026 |
 | Read keyed ratio entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
 | Identify affected production sources/locations | building/location/market/good | production iterators, output checks, `market` link | CONFIRMED | 003-004, 029 |
-| Identify the country to penalize | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
+| Identify the country to penalize | country-rooted cycle → affected owned location | current country plus owned-location and market context | CONFIRMED | 003-005, 011, 081 |
 | Preferred modifier | location × good | `local_<good>_output_modifier` | CONFIRMED | 027 |
 | Fallback modifier | location | `local_production_efficiency` | CONFIRMED | 028 |
 | Apply temporary location modifier | location | `add_location_modifier` with duration, mode, and dynamic size | CONFIRMED | 010 |
@@ -52,7 +52,7 @@ docs/tests/
 ```txt
 Depends on: US-00.2, location/production exposure, TECH-01
 Blocks: applied void-economy correction
-Related US: US-09, US-00-UI, US-05.1
+Related US: US-09, US-00-UI
 ```
 
 ## Implementation rules
