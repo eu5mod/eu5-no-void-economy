@@ -26,9 +26,10 @@ Feeds counters to: US-02 capacity and trade balance
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Trade building definitions | static building files | vanilla building entries | TO_TEST | 063 |
-| Marketplace power modifier | building/location | `local_burghers_estate_power` or confirmed field | TO_TEST | 063 |
-| Building costs/capacity fields | static building files | vanilla fields | TO_TEST | 063 |
+| Building modifier block | building type static definition | `modifier`, `raw_modifier`, and documented country modifier blocks | CONFIRMED | 063, 065 |
+| Marketplace power modifiers | location/estate | `local_burghers_estate_power`, `local_merchant_power` | CONFIRMED | 063 |
+| Exact vanilla trade-building entries and values | local vanilla building files | relevant building keys, current modifiers, costs, and capacities | NOT_CONFIRMED | 063, local check required |
+| Building price fields | building type static definition | `price`, `expensive`, `increase_per_level_cost`, age price keys | CONFIRMED | 065 |
 
 ## Files expected to change
 
@@ -88,4 +89,4 @@ No unrelated building behavior changes
 
 ## Known limitations
 
-Exact vanilla file paths and trade-building modifier names are `TO_TEST`; no static override should be authored until confirmed locally.
+Building modifier and pricing fields, including both marketplace-power modifier names, are documented. Exact vanilla trade-building keys, source values, and capacity fields still require local vanilla-file confirmation before any override.

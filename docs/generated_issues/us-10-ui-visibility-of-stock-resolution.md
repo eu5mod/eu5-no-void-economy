@@ -1,6 +1,6 @@
 # US-10-UI — Visibility of Stock Resolution
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,10 +26,10 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Resolver/outcome records | demand/country/market/good | US-10 outputs | TO_TEST | 067-077 |
-| Debug event | country/global | event/console event | TO_TEST | 013 |
-| Localization/tooltips | UI | localization files | TO_TEST | 014 |
-| Optional custom panel | UI | ModeU5 window | TO_TEST | new entry |
+| Resolver/outcome records | demand/country/market/good | US-10 internal outputs using confirmed resolver primitives | CONFIRMED | 067-077 |
+| Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
+| Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
+| Optional custom panel | UI | ModeU5 window | OUT_OF_SCOPE | N/A |
 
 ## Files expected to change
 

@@ -26,13 +26,15 @@ Feeds counters to: US-05.1, debug/UI, future AI signals
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Production source and quantity | source × location × good | local/building/RGO output or pre-stock-add production calculation | TO_TEST | 003-006, 021 |
-| Producing-country attribution | production source → country | production owner/recipient or verified fallback | TO_TEST | 081 |
-| Market attribution | production source → location → market | source-location and market scope links | TO_TEST | 004, 008 |
+| Production source discovery | building/location/good | production iterators, output checks, saved scopes | CONFIRMED | 003-006, 008, 029 |
+| Production quantity at source | source × location × good | `goods_output`, `raw_material_output`, or pre-stock-add calculation | NOT_CONFIRMED | 021 |
+| Producing-country attribution | production source → credited country | documented output recipient/owner semantics | NOT_CONFIRMED | 081 |
+| Market attribution | location → market | `market` scope link and saved scopes | CONFIRMED | 004, 008 |
 | Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 23 | CONFIRMED | 024, internal |
-| Ledger keying/storage | country × market × good | variable maps, scoped variables, or generated keys | TO_TEST | 007, 025 |
-| Good price | market × good | market/average/base price | TO_TEST | 030 |
-| Production penalty modifier | location × good | good-specific output modifier | TO_TEST | 027-029 |
+| Ledger keying/storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007, 025 |
+| Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
+| Production penalty modifier names | location × good / location | `local_<good>_output_modifier`, `local_production_efficiency` | CONFIRMED | 027-029 |
+| Dynamic location-modifier application | location | `add_location_modifier` or equivalent | NOT_CONFIRMED | 010 |
 | Central stock-add outputs | ModeU5 | `actual_added_quantity`, `rejected_quantity` | CONFIRMED | 022-023 |
 
 ## Files expected to change
@@ -107,4 +109,4 @@ No direct Estate-income mutation
 
 ## Known limitations
 
-All vanilla production, price, location-selection, and modifier exposures remain gated by TECH-01. A theoretical-only penalty is acceptable when no reliable modifier is confirmed.
+Price, source discovery, market attribution, storage, arithmetic, and modifier names are documented. Source-level quantity, credited-country attribution, and dynamic location-modifier application remain blocked; theoretical-only penalty tracking is acceptable when no application effect is confirmed.

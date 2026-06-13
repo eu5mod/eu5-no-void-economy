@@ -29,8 +29,9 @@ Feeds counters to: US-04, diagnostics, future AI/satisfaction signals
 |---|---|---|---|---|
 | Outcome values | ModeU5 | requested/satisfied/transferred/unsatisfied | CONFIRMED | 077 |
 | Location × good counters | location/good | internal variables | CONFIRMED | 040, 077 |
-| Estate/country-market counters | estate/country/market/good | maps/scoped variables | TO_TEST | 007 |
-| Monthly/yearly reset pulses | global | on_actions | TO_TEST | 011-012 |
+| Estate/country-market counters | scoped per-good map keyed by market/target | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
+| Monthly reset pulse | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
+| Yearly read/reset pulse | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
 
 ## Files expected to change
 
@@ -94,4 +95,4 @@ Zero request changes no satisfaction counters
 
 ## Known limitations
 
-General multi-dimensional counter storage and pulse exposure remain `TO_TEST`; local Pop counters defined by ModeU5 are available once scope handling is confirmed.
+Multi-dimensional counter storage through scoped variable maps is documented. Recurring monthly and yearly invocation hooks remain `NOT_CONFIRMED`; deterministic event invocation is the available test path.

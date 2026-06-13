@@ -1,6 +1,6 @@
 # US-03-UI — Visibilité du decay mensuel
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -27,8 +27,8 @@ Feeds counters to: player/modder diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Decay transaction values | ModeU5 | US-03 debug outputs | CONFIRMED | internal |
-| Debug event/localization | event/UI | event and localization | TO_TEST | 013-014 |
-| Optional tooltip/panel | UI | modifier/custom UI | TO_TEST | new entry |
+| Debug event/localization | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
+| Optional custom panel | UI | custom ModeU5 UI | OUT_OF_SCOPE | N/A |
 
 ## Files expected to change
 
@@ -86,4 +86,4 @@ Annualized estimate is clearly non-authoritative
 
 ## Known limitations
 
-MVP may be debug-only. Live UI and tooltip integration remain `TO_TEST`.
+MVP may be debug-only using documented event, log, tooltip, and localization hooks. A custom live panel remains outside scope.

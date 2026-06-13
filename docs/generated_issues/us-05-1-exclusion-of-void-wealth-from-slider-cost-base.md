@@ -28,8 +28,11 @@ Feeds counters to: US-05-UI
 |---|---|---|---|---|
 | Country void wealth | ModeU5 | `modeu5_total_void_wealth` | CONFIRMED | 046 |
 | Market void wealth | ModeU5 | `modeu5_void_wealth_by_market` | CONFIRMED | 046 |
-| Slider target/base | country/slider | US-05 values | TO_TEST | 041-044 |
-| Visible correction | country | direct base or reconciliation | TO_TEST | 045 |
+| Read vanilla slider cost | country/slider | current Stability/Court cost value | NOT_CONFIRMED | 041 |
+| Monthly trade-income input | country | `monthly_trade_income` | CONFIRMED | 042 |
+| Country wealth input | country | country `wealth` or reliable aggregate | NOT_CONFIRMED | 043 |
+| Replace slider cost base | country/slider | direct cost-base hook | NOT_CONFIRMED | 044 |
+| Visible correction | country/UI | direct base or visible reconciliation | NOT_CONFIRMED | 045 |
 
 ## Files expected to change
 
@@ -93,4 +96,4 @@ The correction mode and effective cost are visible
 
 ## Known limitations
 
-This issue is outside the required MVP unless double-penalty prevention demands it. Slider exposure remains `TO_TEST`; debug-only calculation is acceptable when no safe effect exists.
+This issue remains outside the required MVP unless double-penalty prevention demands it. Monthly trade income is documented, but slider-cost reading, country wealth, base replacement, and a confirmed visible correction path remain `NOT_CONFIRMED`; debug-only calculation is acceptable.

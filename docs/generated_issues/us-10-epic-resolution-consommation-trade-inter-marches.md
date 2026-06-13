@@ -26,11 +26,14 @@ Feeds counters to: US-04, US-06, debug/UI
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Candidate relations/scoring | country/market | opinion, access, war, embargo, subject, owner | TO_TEST | 067-073 |
-| Deterministic ordering | script/effect | ordered iterator/sort | TO_TEST | 074 |
+| Candidate relations/scoring | country/market/location | opinion, access, war, embargo, subject, market owner | CONFIRMED | 067-073 |
+| Deterministic ordering | list/map/typed iterator | ordered iterators with `order_by` | CONFIRMED | 074 |
 | Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
 | Inter-market transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
 | Satisfaction tracking | ModeU5 | internal variables | CONFIRMED | 077 |
+| Vanilla local demand context | location × good / estate / country | runtime consumer demand inputs | NOT_CONFIRMED | 037, local check required |
+| Vanilla per-trade requested quantity | trade | exposed trade quantity/capacity | NOT_CONFIRMED | 056 |
+| Automatic cycle invocation | global | recurring monthly/yearly on_actions | NOT_CONFIRMED | 011-012 |
 
 ## Files expected to change
 
@@ -100,4 +103,4 @@ US-06 receives only transferred quantity
 
 ## Known limitations
 
-Most relation, market-access, and ordering exposure is `TO_TEST`. An own-stock-first or deterministic-bucket fallback requires explicit acceptance and must remain singular.
+Relation, market-access, ownership, and ordering exposure is documented. Runtime consumer-demand inputs, per-trade requested quantity, and recurring cycle hooks remain `NOT_CONFIRMED`; each blocked path may use only one explicitly accepted fallback.

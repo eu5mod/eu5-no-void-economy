@@ -26,10 +26,10 @@ Feeds counters to: US-11 validation and debug
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Monthly pulse | global | monthly on_action | TO_TEST | 011, 036 |
-| Country/market/good iteration | global/market/country/good | iterators and scope links | TO_TEST | 001-008 |
+| Monthly pulse | global | recurring monthly on_action | NOT_CONFIRMED | 011, 036 |
+| Country/market/good iteration | none/country/location → market/goods | documented iterators, scope links, maps, and saved scopes | CONFIRMED | 001-008 |
 | Central decay mutation | ModeU5 | `modeu5_decay_stock` | CONFIRMED | internal |
-| Decay arithmetic | scripted effect/value | multiplication/clamp | TO_TEST | 026 |
+| Decay arithmetic | scripted effect/value | `change_variable` multiply/min/max operations | CONFIRMED | 026 |
 
 ## Files expected to change
 
@@ -91,4 +91,4 @@ Total decayed 2; invariant difference 0
 
 ## Known limitations
 
-The monthly pulse and complete country/market/good iteration remain `TO_TEST`; a deterministic debug event may be the single accepted test fallback.
+Country/market/good iteration, storage, scope passing, and decay arithmetic are documented. The recurring monthly invocation hook remains `NOT_CONFIRMED`; a deterministic debug event may be the single accepted test fallback.

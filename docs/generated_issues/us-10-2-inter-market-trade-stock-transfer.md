@@ -26,8 +26,11 @@ Feeds counters to: US-10.3 and US-06
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Source/target markets, good, request | trade/import/export or ModeU5 | exposed trade data | TO_TEST | 047-056 |
-| Ordered source sellers | source market | US-10.0 output | TO_TEST | 067-074 |
+| Trade/import/export iteration | country/market → trade | every/ordered trade, import, and export iterators | CONFIRMED | 047-049 |
+| Source/target markets and good | trade → market/goods | `from_market`, `to_market`, `traded_goods` | CONFIRMED | 054-055 |
+| Requested trade quantity | trade | per-trade exposed quantity/capacity | NOT_CONFIRMED | 056 |
+| Explicit ModeU5 request context | ModeU5 | source market, target market, good, requested quantity | CONFIRMED | internal |
+| Ordered source sellers | source market | confirmed US-10.0 output | CONFIRMED | 067-074 |
 | Buyer target capacity | ModeU5 | US-02/US-01 values | CONFIRMED | 017-018 |
 | Central transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
 
@@ -95,4 +98,4 @@ US-06 cost basis output is 70
 
 ## Known limitations
 
-Vanilla trade request/source/target/good exposure is `TO_TEST`. ModeU5-simulated requests may be used only as one approved fallback.
+Vanilla trade iteration, source/target markets, and traded goods are documented. Per-trade requested quantity remains `NOT_CONFIRMED`; explicit ModeU5 requests may be used only as one approved fallback.

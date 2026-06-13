@@ -26,9 +26,9 @@ Feeds counters to: player understanding
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Changed building values | static building files | US-07 overrides | TO_TEST | 063 |
-| Tooltip/localization hooks | UI | building localization/tooltips | TO_TEST | 014 |
-| Storage contribution | ModeU5/building | US-02 configured value | TO_TEST | 034-035 |
+| Verified vanilla and changed building values | static building files | US-07 source values and overrides | NOT_CONFIRMED | 063, local check required |
+| Tooltip/localization hooks | UI | building `<key>` / `<key>_desc` localization and tooltip hooks | CONFIRMED | 014 |
+| Storage contribution inputs | ModeU5/building | US-02 configuration using building iterators | CONFIRMED | 034-035 |
 
 ## Files expected to change
 
@@ -83,4 +83,4 @@ Storage contribution is shown only where implemented
 
 ## Known limitations
 
-Tooltip hooks and exact static fields remain `TO_TEST`. Debug/documentation may supplement UI where vanilla tooltips cannot be extended safely.
+Building localization hooks and storage-contribution iteration are documented. Exact vanilla comparison values remain blocked on local building-file review; debug/documentation may supplement UI where vanilla tooltips cannot be extended safely.

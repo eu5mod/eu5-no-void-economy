@@ -1,6 +1,6 @@
 # US-00.4 — Void Wealth Valuation and Economic Proxy
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -27,11 +27,11 @@ Feeds counters to: US-05.1, debug/UI, future AI signals
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Rejected quantity output | country × market × good | US-00.1 accumulated stock-add results | CONFIRMED | 023-024, internal |
-| Read keyed rejected entry | country × market × good | variable maps, scoped variables, or generated keys | TO_TEST | 007, 025 |
-| Good price | market × good | market/average/base/scripted price | TO_TEST | 030 |
-| Estate taxable income proxy | estate | `estate_taxable_income` | TO_TEST | 031 |
-| Estate tax proxy | estate | `estate_tax` | TO_TEST | 032 |
-| Country/market aggregation | detailed ledger → market → country | keyed storage and arithmetic | TO_TEST | 007, 025-026 |
+| Read keyed rejected entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
+| Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
+| Estate tax-base proxy | country or estate | `estate_tax_base` | CONFIRMED | 031 |
+| Estate tax-percentage proxy | country | `estate_tax_percentage` | CONFIRMED | 032 |
+| Country/market aggregation | detailed ledger → market → country | variable maps and `change_variable` arithmetic | CONFIRMED | 007, 025-026 |
 
 ## Files expected to change
 
@@ -99,4 +99,4 @@ Price source is logged; no Estate income or stock is changed
 
 ## Known limitations
 
-Market price, average price, and Estate proxy exposures are `TO_TEST`. Only one configured-price fallback may be accepted and it must be identified in debug.
+Market price, default goods price, Estate tax base, and Estate tax percentage are documented. Their runtime semantics and the chosen price fallback still require controlled testing and explicit debug identification.

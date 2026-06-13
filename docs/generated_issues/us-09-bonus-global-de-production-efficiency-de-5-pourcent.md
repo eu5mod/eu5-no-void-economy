@@ -26,9 +26,10 @@ Feeds counters to: vanilla production read at step 4
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Production efficiency modifier | country/global | confirmed global modifier | TO_TEST | 066 |
-| Iterate/apply to countries | global/country | every_country + modifier effect | TO_TEST | 001, 009 |
-| Transformation compatibility | production chain | confirmed vanilla fields | TO_TEST | new entry |
+| Production efficiency modifier | country | `global_production_efficiency` | CONFIRMED | 066 |
+| Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
+| Monthly invocation at runtime step 2 | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
+| Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
 
 ## Files expected to change
 
@@ -57,7 +58,7 @@ Related US: US-00.3, stock-aware production pipeline
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.
 - Do not use this issue to redesign transformation formulas beyond compatibility.
-- Do not implement while exposure remains `TO_TEST`.
+- Do not implement automatic monthly application until the recurring pulse is confirmed or one fallback is accepted.
 
 ## US-specific boundary checks
 
@@ -90,4 +91,4 @@ Stock capacity/rejection rules still apply afterward
 
 ## Known limitations
 
-The exact production-efficiency modifier and global application mechanism are `TO_TEST`; no gameplay implementation may proceed before confirmation.
+The exact `global_production_efficiency` modifier, country iterator, and modifier-application effect are documented. Automatic monthly invocation at runtime step 2 remains `NOT_CONFIRMED`.

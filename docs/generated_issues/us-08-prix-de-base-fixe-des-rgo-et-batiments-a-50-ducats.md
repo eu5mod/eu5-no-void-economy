@@ -26,9 +26,11 @@ Feeds counters to: displayed construction prices
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Base-price field | static goods/building/RGO files | `base_price`/confirmed field | TO_TEST | 064 |
-| Dynamic pricing fields | static files | 1.2 pricing rules | TO_TEST | 065 |
-| Relevant entry list | static files | RGO/building definitions | TO_TEST | 064-065 |
+| Building price field and fallback rules | building type static definition | `price`, `p_building_<key>`, `p_expensive_building_<key>` | CONFIRMED | 065 |
+| Building price scaling fields | building type static definition | `expensive`, `increase_per_level_cost` | CONFIRMED | 065 |
+| Read building base cost | building type | `building_base_cost_in_gold` | CONFIRMED | 065 |
+| RGO price field and dynamic rules | RGO/static economy files | construction/upgrade price fields | NOT_CONFIRMED | 082 |
+| Relevant building/RGO entry list | local vanilla files | in-scope definition keys and current values | NOT_CONFIRMED | 065, 082, local check required |
 
 ## Files expected to change
 
@@ -89,4 +91,4 @@ No 1.2 dynamic variation remains for in-scope entries
 
 ## Known limitations
 
-The specification's field names must be verified against current local vanilla files. TECH-01 entries 064-065 remain `TO_TEST`.
+Building pricing fields and age-based fallback rules are documented. RGO pricing rules and the exact in-scope vanilla building/RGO entry list remain `NOT_CONFIRMED`; `default_market_price` from TECH-01 064 is a goods market-price field and must not be treated as a construction-price field.

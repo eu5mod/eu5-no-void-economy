@@ -1,6 +1,6 @@
 # US-02 — Capacité de stockage
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,9 +26,9 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Owned locations in market | country/location/market | owned-location iterator + market link | TO_TEST | 003-004, 033 |
-| Buildings in location | location | building iterator | TO_TEST | 034 |
-| Foreign compatible buildings | location | foreign-building iterator | TO_TEST | 035 |
+| Owned locations in market | country → location → market | `every_owned_location` plus location `market` | CONFIRMED | 003-004, 033 |
+| Buildings in location | location → building | `every_buildings_in_location` | CONFIRMED | 034 |
+| Foreign compatible buildings | location → building | `every_foreign_buildings_in_location` and building owner semantics | CONFIRMED | 035 |
 | Capacity variable | ModeU5 | `country_market_good_stock_cap` | CONFIRMED | 017 |
 
 ## Files expected to change
@@ -93,4 +93,4 @@ Any over-cap stock follows the documented centralized rule
 
 ## Known limitations
 
-Owned-location and building iterators are `TO_TEST`. Foreign compatible buildings may be excluded from MVP if no reliable exposure is confirmed.
+Owned-location, market, building, and foreign-building iteration are documented. Exact compatible building types and capacity contributions remain ModeU5 configuration choices that require local vanilla-file review.

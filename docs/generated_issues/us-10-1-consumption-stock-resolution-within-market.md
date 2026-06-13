@@ -26,9 +26,11 @@ Feeds counters to: US-10.3
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Ordered candidates | market/country/good | US-10.0 output | TO_TEST | 067-074 |
+| Ordered candidates | market/country/good | confirmed US-10.0 relation/access/ordering output | CONFIRMED | 067-074 |
 | Central removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
-| Pop/estate consumer context | location/estate/country | vanilla demand context | TO_TEST | 037-039, new entry |
+| Population/type context | location | `num_pop_type`, `percentage_pop_type_in_location` | CONFIRMED | 038 |
+| Local Pop demand quantity by good | location × good | runtime vanilla Pop-demand value | NOT_CONFIRMED | 037 |
+| Estate/other consumer demand context | estate/country | reliable vanilla demand caller inputs | NOT_CONFIRMED | local check required |
 | Satisfaction output | ModeU5 | requested/satisfied/unsatisfied values | CONFIRMED | 077 |
 
 ## Files expected to change
@@ -94,4 +96,4 @@ No trade cost/income/capacity use is created
 
 ## Known limitations
 
-Vanilla consumer-demand context and parts of candidate scoring are `TO_TEST`. A simulated demand source requires explicit acceptance and disclosure.
+Candidate scoring and ordering are documented. Runtime local Pop demand quantity and Estate/other consumer demand context remain `NOT_CONFIRMED`; a simulated demand source requires explicit acceptance and disclosure.

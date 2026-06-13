@@ -26,8 +26,10 @@ Feeds counters to: player understanding
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Fixed base/dynamic rule status | static files | US-08 values | TO_TEST | 064-065 |
-| Price tooltip | UI | vanilla building/RGO tooltip | TO_TEST | 014 |
+| Building base/dynamic rules | building type static definition | documented US-08 building price fields | CONFIRMED | 065 |
+| RGO base/dynamic rules | RGO/static economy files | documented RGO price fields | NOT_CONFIRMED | 082 |
+| Native price tooltip binding | UI | vanilla building/RGO price breakdown | NOT_CONFIRMED | 014, local check required |
+| Localization hooks | UI | building and goods localization keys | CONFIRMED | 014 |
 
 ## Files expected to change
 
@@ -83,4 +85,4 @@ Only listed standard modifiers explain final price
 
 ## Known limitations
 
-Native price tooltip extension remains `TO_TEST`; documentation/debug may supplement the vanilla UI if necessary.
+Building price rules and localization hooks are documented. RGO pricing and native building/RGO price-breakdown tooltip binding remain `NOT_CONFIRMED`; documentation/debug may supplement the vanilla UI.

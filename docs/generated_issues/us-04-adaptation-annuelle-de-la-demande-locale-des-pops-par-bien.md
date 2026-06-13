@@ -27,11 +27,11 @@ Feeds counters to: next year's local Pop demand simulation
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Local Pop demand by good | location × good | vanilla Pop demand | NOT_CONFIRMED | 037 |
-| Population/type inputs | location | Pop values/proxy | TO_TEST | 038 |
-| Modify vanilla demand | location/good/pop | demand modifier/effect | TO_TEST | 039 |
+| Local Pop demand by good | location × good | runtime vanilla Pop-demand value | NOT_CONFIRMED | 037 |
+| Population/type inputs | location | `num_pop_type`, `percentage_pop_type_in_location` | CONFIRMED | 038 |
+| Modify vanilla demand locally | location × good × Pop context | local dynamic demand modifier/effect | NOT_CONFIRMED | 039 |
 | Yearly counters | location × good | ModeU5 variables | CONFIRMED | 040 |
-| Yearly pulse | global | yearly on_action | TO_TEST | 012 |
+| Yearly pulse | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
 
 ## Files expected to change
 

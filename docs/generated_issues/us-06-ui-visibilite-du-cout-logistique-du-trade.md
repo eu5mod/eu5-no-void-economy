@@ -26,9 +26,10 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| US-06 outputs | trade/country | accumulators and debug records | TO_TEST | 047-061 |
-| Visible UI path | modifier/tooltip/window | country modifier/custom UI/debug | TO_TEST | 062 |
-| Localization | UI | localization files | TO_TEST | 014 |
+| ModeU5 accumulator/debug records | country/trade context | US-06 internal outputs | CONFIRMED | internal |
+| Granular vanilla trade diagnostics | trade | payer, quantity, distance, range, and income fields | NOT_CONFIRMED | 050, 052-060 |
+| Native visible UI path | modifier/tooltip/window | transport-cost UI binding | NOT_CONFIRMED | 062 |
+| Debug report and localization | event/UI | event triggers, logs, tooltips, localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change
 
@@ -89,4 +90,4 @@ Monthly total matches US-06
 
 ## Known limitations
 
-MVP may use a visible modifier or debug report rather than native trade tooltips. UI exposure remains `TO_TEST`.
+MVP can use documented debug events, logs, and localization hooks. Native trade tooltip binding and several granular trade fields remain `NOT_CONFIRMED`.

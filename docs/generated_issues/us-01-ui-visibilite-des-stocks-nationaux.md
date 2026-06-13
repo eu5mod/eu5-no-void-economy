@@ -1,6 +1,6 @@
 # US-01-UI — Visibilité des stocks nationaux
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -27,9 +27,9 @@ Feeds counters to: player/modder diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Stock/capacity values | ModeU5 | US-01 variables | CONFIRMED | 015-018 |
-| Debug event | country/global | event/console event | TO_TEST | 013 |
-| Localization/tooltips | UI | localization files | TO_TEST | 014 |
-| Optional stock panel | UI | custom ModeU5 UI | TO_TEST | new entry |
+| Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
+| Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
+| Optional stock panel | UI | custom ModeU5 UI | OUT_OF_SCOPE | N/A |
 
 ## Files expected to change
 
@@ -88,4 +88,4 @@ The full stock is clearly marked as saturated
 
 ## Known limitations
 
-MVP may provide debug events only. Custom UI and live tooltip hooks remain `TO_TEST`.
+MVP can use documented debug events, logs, and localization hooks. A custom stock panel remains outside the approved MVP.

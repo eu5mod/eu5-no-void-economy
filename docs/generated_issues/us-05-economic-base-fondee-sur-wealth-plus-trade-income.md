@@ -26,11 +26,11 @@ Feeds counters to: US-05.1 and US-05-UI
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Vanilla slider cost | country/slider | stability/court cost | TO_TEST | 041 |
-| Monthly trade income | country | monthly trade income | TO_TEST | 042 |
-| Country wealth | country | wealth/aggregate | TO_TEST | 043 |
-| Replace slider base | slider/static script | slider cost script | TO_TEST | 044 |
-| Visible reconciliation | country | modifier/money/expense effect | TO_TEST | 045 |
+| Vanilla slider cost | country/slider | readable Stability/Court cost value | NOT_CONFIRMED | 041 |
+| Monthly trade income | country | `monthly_trade_income` | CONFIRMED | 042 |
+| Country wealth | country | country `wealth` or reliable aggregate | NOT_CONFIRMED | 043 |
+| Replace slider base | slider/static script | direct slider cost-base hook | NOT_CONFIRMED | 044 |
+| Visible reconciliation | country/UI | sized modifier or gold effect with visible presentation | NOT_CONFIRMED | 045 |
 
 ## Files expected to change
 
@@ -96,4 +96,4 @@ Any reconciliation is visible
 
 ## Known limitations
 
-All required vanilla values and mutation/reconciliation paths are `TO_TEST`. Debug-only calculation is required if no safe visible gameplay effect is confirmed.
+Monthly trade income is documented. Vanilla slider cost, country wealth, direct base replacement, and a confirmed visible reconciliation path remain `NOT_CONFIRMED`; debug-only calculation is required until one safe path is accepted.

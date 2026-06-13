@@ -26,9 +26,10 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Slider cost outputs | country/slider | US-05 values | TO_TEST | 041-045 |
-| Localization/tooltips | UI | localization files | TO_TEST | 014 |
-| Visible modifier/debug event | country/UI | modifier/event | TO_TEST | 009, 013 |
+| Slider cost and correction outputs | country/slider | US-05 values and reconciliation | NOT_CONFIRMED | 041, 043-045 |
+| Monthly trade-income output | country | `monthly_trade_income` | CONFIRMED | 042 |
+| Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
+| Modifier/debug event path | country/UI | `add_country_modifier`, event triggers, logs | CONFIRMED | 009, 013 |
 
 ## Files expected to change
 
@@ -87,4 +88,4 @@ Unaffected sliders show no ModeU5 reconciliation
 
 ## Known limitations
 
-Native slider tooltip integration is `TO_TEST`; a visible country modifier or debug report is an acceptable single fallback.
+The event, modifier, logging, and localization hooks are documented. The underlying slider/wealth values and a native visible reconciliation binding remain `NOT_CONFIRMED`; a debug report is the acceptable single fallback.

@@ -28,7 +28,7 @@ Feeds counters to: player/modder diagnostics
 |---|---|---|---|---|
 | Local demand/counters | location × good | US-04 variables | CONFIRMED | 040 |
 | Demand source/fallback | location × good | vanilla or simulated demand | NOT_CONFIRMED | 037 |
-| Debug/localized display | event/UI | event and localization | TO_TEST | 013-014 |
+| Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change
 

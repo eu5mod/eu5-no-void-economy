@@ -1,6 +1,6 @@
 # US-10.0 — Stock Demand Resolver Core
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,12 +26,14 @@ Feeds counters to: US-10.1 and US-10.2
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Buyer opinion of seller | country → country | opinion value | TO_TEST | 067 |
-| Trade advantage | country/market | merchant/trade advantage | TO_TEST | 068 |
-| Market access | country/market | access trigger/value | TO_TEST | 069 |
-| Embargo/war relations | country → country | embargo/war triggers | TO_TEST | 070-071 |
-| Subject/market owner | country/market | relation/scope links | TO_TEST | 072-073 |
-| Candidate sorting | script/effect | ordered iterator/sort | TO_TEST | 074 |
+| Buyer opinion of seller | country → country | `opinion = { target = <country> value ... }` | CONFIRMED | 067 |
+| Trade advantage | market with country context | `merchant_power_in_market` | CONFIRMED | 068 |
+| Market access | location | `market_access` | CONFIRMED | 069 |
+| Embargo relations | country → country | `is_embargoed_by`, `is_embargoing` | CONFIRMED | 070 |
+| War relation | country → country | `is_at_war_with` | CONFIRMED | 071 |
+| Subject relation | country → country | `is_subject_of`, `overlord` | CONFIRMED | 072 |
+| Market owner | market → country | `owner` | CONFIRMED | 073 |
+| Candidate sorting | list/map/typed iterator | ordered iterators with `order_by` | CONFIRMED | 074 |
 
 ## Files expected to change
 
@@ -96,4 +98,4 @@ No stock changes during resolver execution
 
 ## Known limitations
 
-All vanilla scoring/relation/access and ordered-sort candidates are `TO_TEST`. Approved fallbacks must omit unavailable dimensions or use deterministic buckets, not fabricate data.
+All required relation, access, ownership, and deterministic ordering primitives are documented. Runtime tests must still validate argument syntax, score direction, and stable tie-breaking.

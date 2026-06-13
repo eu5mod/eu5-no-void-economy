@@ -26,12 +26,13 @@ Feeds counters to: next monthly cycle, US-00-UI
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Effective ratio calculation/output | country × market × good | US-00.2 result | TO_TEST | 026 |
-| Read keyed ratio entry | country × market × good | variable maps, scoped variables, or generated keys | TO_TEST | 007, 025 |
-| Identify affected production sources/locations | producing country/source/location/market/good | US-00.1 country attribution + output checks | TO_TEST | 003-004, 029, 081 |
-| Preferred modifier | location × good | good-specific local output | TO_TEST | 027 |
-| Fallback modifier | location | local production efficiency | TO_TEST | 028 |
-| Temporary location modifier | location | modifier effect | TO_TEST | 010 |
+| Effective ratio calculation/output | country × market × good | US-00.2 result using guarded `change_variable` arithmetic | CONFIRMED | 026 |
+| Read keyed ratio entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
+| Identify affected production sources/locations | building/location/market/good | production iterators, output checks, `market` link | CONFIRMED | 003-004, 029 |
+| Identify the country to penalize | production source → credited country | documented output recipient/owner semantics | NOT_CONFIRMED | 081 |
+| Preferred modifier | location × good | `local_<good>_output_modifier` | CONFIRMED | 027 |
+| Fallback modifier | location | `local_production_efficiency` | CONFIRMED | 028 |
+| Apply temporary location modifier | location | `add_location_modifier` or equivalent | NOT_CONFIRMED | 010 |
 
 ## Files expected to change
 
@@ -63,7 +64,7 @@ Related US: US-09, US-00-UI, US-05.1
 - Do not silently switch to location ownership if it would penalize a different country from the one credited in the ledger.
 - Prefer good-specific output; use local production efficiency only as the single accepted fallback.
 - If no reliable modifier exists, calculate and display a theoretical-only penalty.
-- Never mutate stock or `estate_taxable_income`.
+- Never mutate stock or Estate tax/income values.
 
 ## US-specific boundary checks
 
@@ -103,4 +104,4 @@ Debug records affected count, application mode, and fallback status
 
 ## Known limitations
 
-Good-specific output modifiers and reliable producer-location identification are `TO_TEST`. The accepted no-exposure behavior is theoretical-only tracking, not an invented modifier.
+The modifier names and producer-location discovery are documented, but dynamic location-modifier application and credited-country attribution remain `NOT_CONFIRMED`. The no-exposure behavior is theoretical-only tracking, not an invented effect.

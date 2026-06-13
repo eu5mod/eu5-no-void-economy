@@ -26,11 +26,16 @@ Feeds counters to: US-05 trade-income base, US-06-UI
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Trade/import/export iteration | country/global/market | every/ordered variants | TO_TEST | 047-049 |
-| Owner/buyer/seller/payer | trade/import/export | scope links | TO_TEST | 050-053 |
-| Markets and goods | trade/import/export | from/to market, traded good | TO_TEST | 054-055 |
-| Quantity/capacity/distance/range/income | trade/import/export | exposed values | TO_TEST | 056-059 |
-| Direct or monthly reconciliation | trade/country | effect/modifier | TO_TEST | 060-061 |
+| Trade/import/export iteration | country/market → trade | `every_trade`, `ordered_trade`, `every_import/export`, ordered variants | CONFIRMED | 047-049 |
+| Trade income recipient | trade → country | `trade_income_recipient` | NOT_CONFIRMED | 050 |
+| Trade owner | trade → country | `owner` | CONFIRMED | 051 |
+| Buyer/seller country | trade → country | `buyer_country`, `seller_country` | NOT_CONFIRMED | 052-053 |
+| Markets and goods | trade → market/goods | `from_market`, `to_market`, `traded_goods` | CONFIRMED | 054-055 |
+| Per-trade quantity/capacity | trade | exposed quantity / `used_trade_capacity` | NOT_CONFIRMED | 056 |
+| Per-trade distance/range | trade | `trade_distance`, numeric `trade_range` | NOT_CONFIRMED | 057-058 |
+| Gross income per trade | trade | `gross_trade_income` / vanilla trade income | NOT_CONFIRMED | 059 |
+| Direct trade-income reduction | trade | direct imputation effect | NOT_CONFIRMED | 060 |
+| Monthly country reconciliation | country | sized `monthly_gold_expense` / `trade_income` modifier or `add_gold` | CONFIRMED | 061 |
 | Actual transfer quantity | ModeU5 | US-10.2 output | CONFIRMED | 076 |
 
 ## Files expected to change
@@ -101,4 +106,4 @@ Monthly reconciliation equals negative accumulated cost and is visible
 
 ## Known limitations
 
-All granular vanilla trade fields and direct income effects are `TO_TEST`. If granular data is unavailable, use only the approved US-10 transfer or documented proxy path.
+Trade iteration, trade owner, source/target markets, traded goods, and country-level reconciliation effects are documented. Recipient, buyer/seller, per-trade quantity, distance, range, gross income, and direct imputation remain `NOT_CONFIRMED`; use only the approved US-10 transfer or one documented proxy path.

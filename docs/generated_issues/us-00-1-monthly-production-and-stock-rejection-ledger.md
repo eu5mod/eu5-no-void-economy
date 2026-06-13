@@ -26,15 +26,15 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Production source iteration/context | country/source → location → good | production sources, locations, produced goods, explicit scope passing | TO_TEST | 003-006, 008 |
-| Produced quantity at source | production source × location × good | local/building/RGO output or pre-`modeu5_add_stock` calculation | TO_TEST | 021 |
-| Producing-country attribution | production source → country | production owner, building owner, output recipient, or verified fallback | TO_TEST | 081 |
-| Market attribution | production source → location → market | source location and market scope link | TO_TEST | 004 |
+| Production source iteration/context | country/building/location/good | `every_owned_location`, `every_buildings_in_location`, `every_goods`, saved scopes | CONFIRMED | 003, 006, 008, 029 |
+| Produced quantity at source | production source × location × good | `goods_output`, `raw_material_output`, or pre-`modeu5_add_stock` calculation | NOT_CONFIRMED | 021 |
+| Producing-country attribution | building/RGO/location → credited country | building owner, location owner, or documented output recipient | NOT_CONFIRMED | 081 |
+| Market attribution | location → market | `market` scope link | CONFIRMED | 004 |
 | Added quantity | ModeU5 stock operation | `actual_added_quantity` | CONFIRMED | 022 |
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
 | Ledger helper | ModeU5 | `modeu5_update_production_rejection_ledger` | CONFIRMED | 024 |
 | Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 23 | CONFIRMED | 024, internal |
-| Ledger keying/storage primitive | country × market × good | variable maps, scoped variables, or generated keys | TO_TEST | 007, 025 |
+| Ledger keying/storage primitive | country-scoped per-good map keyed by market | `add_to_variable_map`, <code>variable_map(name&#124;key)</code>, remove/re-add updates, monthly clear | CONFIRMED | 007, 025 |
 
 ## Files expected to change
 
@@ -112,4 +112,4 @@ Counters reset only after dependent calculations
 
 ## Known limitations
 
-Source-level production quantity, produced-good discovery, producing-country attribution, source-location/market links, and reliable keyed-variable syntax are `TO_TEST`. The monthly ledger lifecycle is a ModeU5 contract, not a vanilla exposure. Use only one explicitly accepted production fallback, one country-attribution fallback, and one keyed-storage fallback if required.
+Source-level building/RGO quantity and the country credited with that output remain `NOT_CONFIRMED`. Source discovery, market attribution, scope passing, and keyed variable maps are documented. Use only one explicitly accepted production fallback and one country-attribution fallback if required.

@@ -1,6 +1,6 @@
 # US-02-UI — Visibilité de la capacité de stockage
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,9 +26,9 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Capacity breakdown | country × market | US-02 contribution counters | TO_TEST | 033-035 |
+| Capacity breakdown inputs | country × market | confirmed location/building iterators plus US-02 counters | CONFIRMED | 033-035 |
 | Used/available storage | ModeU5 | US-01 values | CONFIRMED | 015-018 |
-| Debug/localized display | event/UI | event and localization | TO_TEST | 013-014 |
+| Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change
 

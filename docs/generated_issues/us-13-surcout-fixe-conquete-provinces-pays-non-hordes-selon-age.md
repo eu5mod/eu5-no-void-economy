@@ -26,10 +26,10 @@ Feeds counters to: conquest cost calculation
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Non-horde check | attacker country | government/reform/horde trigger | TO_TEST | 078 |
-| Current age | global/country | age trigger/value | TO_TEST | 079 |
-| Conquest CB/wargoal cost | static CB/wargoal files | `conquer_cost` | TO_TEST | 080 |
-| Age/government variant selection | country/CB | trigger/availability rules | TO_TEST | 078-080 |
+| Non-horde check | attacker country | reliable generic government/horde classification | NOT_CONFIRMED | 078 |
+| Current age | current script context | `current_age` | CONFIRMED | 079 |
+| Conquest CB/wargoal cost | static CB/wargoal files | `conquer_cost` or equivalent override | NOT_CONFIRMED | 080 |
+| Age/government variant selection | country/CB | `current_age` plus confirmed non-horde and static cost hooks | NOT_CONFIRMED | 078-080 |
 
 ## Files expected to change
 
@@ -97,4 +97,4 @@ Correct CB/wargoal variant and trigger path are visible in debug
 
 ## Known limitations
 
-Government classification, current-age exposure, and static conquest-cost override are all `TO_TEST`. US-13 remains excluded from implementation until confirmed.
+`current_age` is documented. Generic horde/non-horde classification and a static conquest-cost override remain `NOT_CONFIRMED`, so US-13 remains excluded from implementation.

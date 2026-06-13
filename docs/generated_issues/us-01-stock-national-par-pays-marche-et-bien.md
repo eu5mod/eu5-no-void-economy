@@ -29,9 +29,10 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 | Country stock | ModeU5 | `country_market_good_stock` | CONFIRMED | 015 |
 | Market aggregate | ModeU5 | `market_good_stock` | CONFIRMED | 016 |
 | Capacity and available capacity | ModeU5 | stock cap/scripted value | CONFIRMED | 017-018 |
-| Country × market × good storage | country/market/good | maps/scoped variables | TO_TEST | 007 |
-| Market/good iteration and scope passing | global/effect | iterators/saved scopes | TO_TEST | 002, 006, 008 |
-| Production-to-stock attribution | production source → producing country + location market + good | source production, credited country, source-location market | TO_TEST | 004, 021, 081 |
+| Country × market × good storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
+| Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
+| Source-location market attribution | location → market | `market` scope link | CONFIRMED | 004 |
+| Production quantity and credited country | production source → quantity + country | source output and documented recipient semantics | NOT_CONFIRMED | 021, 081 |
 
 ## Files expected to change
 
@@ -98,4 +99,4 @@ Each market aggregate changes by the matching actual addition
 
 ## Known limitations
 
-The EU5 representation of multi-dimensional variables and market/good iteration remains `TO_TEST`; one flattened-variable fallback may be accepted if required.
+Variable maps, market/goods iteration, scope passing, and source-location market attribution are documented. Production-source quantity and the country credited with output remain `NOT_CONFIRMED`.

@@ -1,6 +1,6 @@
 # US-09-UI — Visibilité du bonus de Production Efficiency
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,8 +26,8 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Visible country/global modifier | country/UI | confirmed production modifier | TO_TEST | 009, 066 |
-| Localization/tooltips | UI | localization files | TO_TEST | 014 |
+| Visible country modifier | country/UI | `add_country_modifier` using `global_production_efficiency` and a localized description | CONFIRMED | 009, 066 |
+| Localization/tooltips | UI | modifier `desc`, `custom_tooltip`, localization keys | CONFIRMED | 014 |
 
 ## Files expected to change
 
@@ -83,4 +83,4 @@ Its source is not confused with vanilla bonuses
 
 ## Known limitations
 
-Modifier and tooltip exposure remain `TO_TEST`; debug visibility is the fallback if native modifier UI is insufficient.
+The production modifier, application effect, modifier description, tooltip, and localization hooks are documented. Runtime testing must confirm the final modifier presentation; debug visibility remains the fallback.

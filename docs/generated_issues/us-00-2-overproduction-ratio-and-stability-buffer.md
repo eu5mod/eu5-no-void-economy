@@ -1,6 +1,6 @@
 # US-00.2 — Overproduction Ratio and Stability Buffer
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -27,8 +27,8 @@ Feeds counters to: US-00.3, US-00-UI
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Monthly produced/rejected ledger outputs | country × market × good | US-00.1 accumulated transaction totals | CONFIRMED | 024, internal |
-| Read keyed ledger entries | country × market × good | variable maps, scoped variables, or generated keys | TO_TEST | 007, 025 |
-| Safe division and clamp | scripted value/effect | arithmetic operators | TO_TEST | 026 |
+| Read keyed ledger entries | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
+| Safe division and clamp | scripted value/effect | `change_variable` with `divide`, `min`, and `max` | CONFIRMED | 026 |
 | Configurable buffer | ModeU5 | scripted/config value | CONFIRMED | internal |
 
 ## Files expected to change
@@ -94,4 +94,4 @@ Case C raw/effective ratio: 0 with no error
 
 ## Known limitations
 
-EU5 scripted arithmetic and keyed-ledger storage operations remain `TO_TEST`; the US-00.1 monthly accumulation/reset lifecycle is an internal contract. No gameplay dependency may ship until required engine primitives are confirmed or one fallback is accepted.
+The required arithmetic and keyed-ledger primitives are documented. Runtime testing must still verify map replacement semantics and the explicit `produced <= 0` division guard.

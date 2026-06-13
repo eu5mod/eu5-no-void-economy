@@ -27,11 +27,13 @@ Feeds counters to: diagnostics and safe downstream reads
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Iterate countries/markets/goods | global/market/country/good | iterators and lists | TO_TEST | 001-006 |
-| Scope passing | scripted effect | saved scopes/explicit parameters | TO_TEST | 008 |
+| Iterate countries/markets/goods | none/country/location → country/market/goods | `every_country`, `every_market_in_world`, `every_goods`, owned locations and scope links | CONFIRMED | 001-006 |
+| Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
 | Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
-| Monthly/yearly/debug invocation | global/event | on_actions/events | TO_TEST | 011-013 |
+| Monthly invocation | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
+| Yearly invocation | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
+| Deterministic debug invocation | effect scope | event triggers and logs | CONFIRMED | 013 |
 
 ## Files expected to change
 
@@ -101,4 +103,4 @@ No wealth, consumption, or transfer is created
 
 ## Known limitations
 
-Global country/market/good iteration and automatic invocation points remain `TO_TEST`. Deterministic debug events may be the single accepted test fallback.
+Country/market/good iteration, scope passing, and deterministic debug events are documented. Recurring monthly and yearly invocation points remain `NOT_CONFIRMED`; deterministic debug events may be the single accepted test fallback.
