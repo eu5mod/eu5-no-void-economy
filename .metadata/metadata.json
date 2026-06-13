@@ -1,0 +1,7 @@
+{
+  "name": "ModeU5 Country Stocks Within Markets",
+  "version": "0.1.0",
+  "description": "MVP skeleton for a double-accounting stock layer inside EU5 markets.",
+  "authors": ["Pierre-Henri AUSSEIL"],
+  "status": "bootstrap"
+}
