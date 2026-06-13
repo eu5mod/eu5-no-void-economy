@@ -28,13 +28,13 @@ Feeds counters to: US-05.1, debug/UI, future AI signals
 |---|---|---|---|---|
 | Production source discovery | building/location/good | production iterators, output checks, saved scopes | CONFIRMED | 003-006, 008, 029 |
 | Production quantity at source | source × location × good | `goods_output`, `raw_material_output`, or pre-stock-add calculation | NOT_CONFIRMED | 021 |
-| Producing-country attribution | production source → credited country | documented output recipient/owner semantics | NOT_CONFIRMED | 081 |
+| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 | Market attribution | location → market | `market` scope link and saved scopes | CONFIRMED | 004, 008 |
 | Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 23 | CONFIRMED | 024, internal |
 | Ledger keying/storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007, 025 |
 | Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
 | Production penalty modifier names | location × good / location | `local_<good>_output_modifier`, `local_production_efficiency` | CONFIRMED | 027-029 |
-| Dynamic location-modifier application | location | `add_location_modifier` or equivalent | NOT_CONFIRMED | 010 |
+| Dynamic location-modifier application | location | `add_location_modifier` with duration, mode, and dynamic size | CONFIRMED | 010 |
 | Central stock-add outputs | ModeU5 | `actual_added_quantity`, `rejected_quantity` | CONFIRMED | 022-023 |
 
 ## Files expected to change
@@ -109,4 +109,4 @@ No direct Estate-income mutation
 
 ## Known limitations
 
-Price, source discovery, market attribution, storage, arithmetic, and modifier names are documented. Source-level quantity, credited-country attribution, and dynamic location-modifier application remain blocked; theoretical-only penalty tracking is acceptable when no application effect is confirmed.
+Source-level production quantity remains blocked. Ledger-country attribution is a ModeU5 country-scope rule, not a claim about vanilla income accounting; temporary location-modifier application is documented but still requires a controlled local test.

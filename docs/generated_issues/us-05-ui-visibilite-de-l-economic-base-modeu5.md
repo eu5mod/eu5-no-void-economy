@@ -26,7 +26,7 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Slider cost and correction outputs | country/slider | US-05 values and reconciliation | NOT_CONFIRMED | 041, 043-045 |
+| Slider cost and correction outputs | country/slider | US-05 values and optional reconciliation | NOT_CONFIRMED | 041, 043, 045 |
 | Monthly trade-income output | country | `monthly_trade_income` | CONFIRMED | 042 |
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
 | Modifier/debug event path | country/UI | `add_country_modifier`, event triggers, logs | CONFIRMED | 009, 013 |

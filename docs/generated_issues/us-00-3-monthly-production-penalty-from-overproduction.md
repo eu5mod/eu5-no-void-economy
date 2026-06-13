@@ -1,6 +1,6 @@
 # US-00.3 — Monthly Production Penalty from Overproduction
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -29,10 +29,10 @@ Feeds counters to: next monthly cycle, US-00-UI
 | Effective ratio calculation/output | country × market × good | US-00.2 result using guarded `change_variable` arithmetic | CONFIRMED | 026 |
 | Read keyed ratio entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
 | Identify affected production sources/locations | building/location/market/good | production iterators, output checks, `market` link | CONFIRMED | 003-004, 029 |
-| Identify the country to penalize | production source → credited country | documented output recipient/owner semantics | NOT_CONFIRMED | 081 |
+| Identify the country to penalize | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 | Preferred modifier | location × good | `local_<good>_output_modifier` | CONFIRMED | 027 |
 | Fallback modifier | location | `local_production_efficiency` | CONFIRMED | 028 |
-| Apply temporary location modifier | location | `add_location_modifier` or equivalent | NOT_CONFIRMED | 010 |
+| Apply temporary location modifier | location | `add_location_modifier` with duration, mode, and dynamic size | CONFIRMED | 010 |
 
 ## Files expected to change
 
@@ -104,4 +104,4 @@ Debug records affected count, application mode, and fallback status
 
 ## Known limitations
 
-The modifier names and producer-location discovery are documented, but dynamic location-modifier application and credited-country attribution remain `NOT_CONFIRMED`. The no-exposure behavior is theoretical-only tracking, not an invented effect.
+The required modifier names, producer-location discovery, country-rooted attribution, and temporary location-modifier effect are documented. A controlled local test must still verify month-to-month replacement and immediate recalculation behavior.

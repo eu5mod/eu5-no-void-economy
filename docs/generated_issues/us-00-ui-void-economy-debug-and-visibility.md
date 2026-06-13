@@ -28,7 +28,8 @@ Feeds counters to: player/modder diagnostics
 |---|---|---|---|---|
 | Debug/test event and logs | effect scope | `trigger_event_silently`, `trigger_event_non_silently`, `debug_log` | CONFIRMED | 013 |
 | Localized modifier/tooltip hooks | UI/localization | `custom_tooltip`, modifier `desc`, object localization keys | CONFIRMED | 014 |
-| Production-source diagnostics | source × location × good → credited country × market × good | US-00.1 attribution debug | NOT_CONFIRMED | 021, 081 |
+| Production-source quantity diagnostics | source × location × good | US-00.1 production-input debug | NOT_CONFIRMED | 021 |
+| Ledger-country attribution diagnostics | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 | US-00 keyed outputs | country-scoped per-good map keyed by market | variable-map read and iteration | CONFIRMED | 007, 025 |
 | Optional custom panel | UI | custom ModeU5 window | OUT_OF_SCOPE | N/A |
 

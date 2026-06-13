@@ -1,6 +1,6 @@
 # US-09 — Bonus global de Production Efficiency de +5 %
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -28,7 +28,7 @@ Feeds counters to: vanilla production read at step 4
 |---|---|---|---|---|
 | Production efficiency modifier | country | `global_production_efficiency` | CONFIRMED | 066 |
 | Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
-| Monthly invocation at runtime step 2 | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
+| Monthly invocation at runtime step 2 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
 
 ## Files expected to change
@@ -91,4 +91,4 @@ Stock capacity/rejection rules still apply afterward
 
 ## Known limitations
 
-The exact `global_production_efficiency` modifier, country iterator, and modifier-application effect are documented. Automatic monthly invocation at runtime step 2 remains `NOT_CONFIRMED`.
+The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` are documented. The shared monthly dispatcher must apply the compensation at runtime step 2.

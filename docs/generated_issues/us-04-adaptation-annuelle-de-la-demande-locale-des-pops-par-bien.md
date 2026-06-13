@@ -31,7 +31,7 @@ Feeds counters to: next year's local Pop demand simulation
 | Population/type inputs | location | `num_pop_type`, `percentage_pop_type_in_location` | CONFIRMED | 038 |
 | Modify vanilla demand locally | location × good × Pop context | local dynamic demand modifier/effect | NOT_CONFIRMED | 039 |
 | Yearly counters | location × good | ModeU5 variables | CONFIRMED | 040 |
-| Yearly pulse | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
+| Yearly pulse | country | `yearly_country_pulse` | CONFIRMED | 012 |
 
 ## Files expected to change
 

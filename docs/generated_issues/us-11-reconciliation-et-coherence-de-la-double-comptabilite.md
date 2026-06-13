@@ -1,6 +1,6 @@
 # US-11 — Réconciliation et cohérence de la double comptabilité
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -31,8 +31,8 @@ Feeds counters to: diagnostics and safe downstream reads
 | Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
 | Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
-| Monthly invocation | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
-| Yearly invocation | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
+| Monthly invocation | country | `monthly_country_pulse` at runtime step 22 | CONFIRMED | 011 |
+| Yearly invocation | country | `yearly_country_pulse` before annual consumers and after exceptional rebuild triggers | CONFIRMED | 012 |
 | Deterministic debug invocation | effect scope | event triggers and logs | CONFIRMED | 013 |
 
 ## Files expected to change
@@ -103,4 +103,4 @@ No wealth, consumption, or transfer is created
 
 ## Known limitations
 
-Country/market/good iteration, scope passing, and deterministic debug events are documented. Recurring monthly and yearly invocation points remain `NOT_CONFIRMED`; deterministic debug events may be the single accepted test fallback.
+Country/market/good iteration, scope passing, deterministic debug events, and monthly/yearly country pulses are documented. Runtime ordering and exceptional rebuild triggers still require controlled local tests.

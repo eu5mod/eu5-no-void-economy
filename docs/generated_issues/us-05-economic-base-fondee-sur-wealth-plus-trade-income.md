@@ -12,7 +12,7 @@ As a player, I want Stability and legitimacy-producing Court/Government Power co
 
 ## Functional objective
 
-Calculate `modeu5_slider_cost_base = Wealth + Trade Income` for only the two specified sliders; replace their base directly when exposed or apply a visible monthly reconciliation otherwise.
+Calculate `modeu5_slider_cost_base = Wealth + Trade Income` and route every ModeU5-controlled Stability or legitimacy-producing Court calculation through that Economic Base. Use visible reconciliation only for vanilla call sites that cannot be replaced and only when its inputs and effect are confirmed.
 
 ## Runtime position
 
@@ -29,7 +29,7 @@ Feeds counters to: US-05.1 and US-05-UI
 | Vanilla slider cost | country/slider | readable Stability/Court cost value | NOT_CONFIRMED | 041 |
 | Monthly trade income | country | `monthly_trade_income` | CONFIRMED | 042 |
 | Country wealth | country | country `wealth` or reliable aggregate | NOT_CONFIRMED | 043 |
-| Replace slider base | slider/static script | direct slider cost-base hook | NOT_CONFIRMED | 044 |
+| ModeU5 Economic Base | country/scripted value and ModeU5-controlled call sites | `modeu5_slider_cost_base = Wealth + monthly_trade_income` | CONFIRMED | 044 |
 | Visible reconciliation | country/UI | sized modifier or gold effect with visible presentation | NOT_CONFIRMED | 045 |
 
 ## Files expected to change
@@ -48,7 +48,8 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: confirmed wealth, trade-income, slider, and reconciliation exposure
+Depends on: confirmed wealth and trade-income exposure
+Optional vanilla integration depends on: readable slider cost and visible reconciliation exposure
 Blocks: US-05.1, US-05-UI
 Related US: US-00.4, US-06
 ```
@@ -57,8 +58,9 @@ Related US: US-00.4, US-06
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Affect only Stability Investment and legitimacy-producing Court/Government Power.
-- Prefer direct base replacement when confirmed.
-- Otherwise use one visible monthly reconciliation fallback.
+- Route every ModeU5-controlled calculation through `modeu5_slider_cost_base`.
+- Replace a vanilla call site only when that call site is confirmed modifiable.
+- Use one visible monthly reconciliation only for a non-replaceable vanilla path and only after its inputs/effect are confirmed or one fallback is accepted.
 - Never silently reconcile a slider.
 - Do not modify other expected expenses in MVP.
 
@@ -71,8 +73,9 @@ Related US: US-00.4, US-06
 
 - [ ] Target base equals Wealth plus Trade Income.
 - [ ] Only the two specified sliders use the target.
-- [ ] Direct and reconciliation modes produce traceable effective cost.
-- [ ] Reconciliation mode is visible in UI/debug/modifier/tooltip.
+- [ ] Every ModeU5-controlled use of Economic Base is traceable.
+- [ ] Any enabled vanilla replacement or reconciliation mode is traceable.
+- [ ] Any enabled reconciliation is visible in UI/debug/modifier/tooltip.
 - [ ] Other sliders are unchanged.
 - [ ] Missing exposure and fallback choice are recorded in TECH-01.
 
@@ -96,4 +99,4 @@ Any reconciliation is visible
 
 ## Known limitations
 
-Monthly trade income is documented. Vanilla slider cost, country wealth, direct base replacement, and a confirmed visible reconciliation path remain `NOT_CONFIRMED`; debug-only calculation is required until one safe path is accepted.
+Monthly trade income and the ModeU5 Economic Base contract are confirmed. Country wealth remains `NOT_CONFIRMED`. Reading vanilla slider costs and applying a visible reconciliation remain optional blocked paths for vanilla call sites that cannot be redirected.

@@ -1,6 +1,6 @@
 # US-03 — Decay mensuel des stocks
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -26,7 +26,7 @@ Feeds counters to: US-11 validation and debug
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Monthly pulse | global | recurring monthly on_action | NOT_CONFIRMED | 011, 036 |
+| Monthly decay invocation | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher → `modeu5_decay_stock` at step 14 | CONFIRMED | 011, 036 |
 | Country/market/good iteration | none/country/location → market/goods | documented iterators, scope links, maps, and saved scopes | CONFIRMED | 001-008 |
 | Central decay mutation | ModeU5 | `modeu5_decay_stock` | CONFIRMED | internal |
 | Decay arithmetic | scripted effect/value | `change_variable` multiply/min/max operations | CONFIRMED | 026 |
@@ -91,4 +91,4 @@ Total decayed 2; invariant difference 0
 
 ## Known limitations
 
-Country/market/good iteration, storage, scope passing, and decay arithmetic are documented. The recurring monthly invocation hook remains `NOT_CONFIRMED`; a deterministic debug event may be the single accepted test fallback.
+Country/market/good iteration, storage, scope passing, decay arithmetic, and `monthly_country_pulse` are documented. Decay must use the shared monthly dispatcher at runtime step 14 rather than defining a second pulse.

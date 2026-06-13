@@ -32,7 +32,8 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 | Country × market × good storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 | Source-location market attribution | location → market | `market` scope link | CONFIRMED | 004 |
-| Production quantity and credited country | production source → quantity + country | source output and documented recipient semantics | NOT_CONFIRMED | 021, 081 |
+| Production quantity | production source → quantity | source output or accepted estimate | NOT_CONFIRMED | 021 |
+| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 
 ## Files expected to change
 
@@ -99,4 +100,4 @@ Each market aggregate changes by the matching actual addition
 
 ## Known limitations
 
-Variable maps, market/goods iteration, scope passing, and source-location market attribution are documented. Production-source quantity and the country credited with output remain `NOT_CONFIRMED`.
+Variable maps, market/goods iteration, scope passing, source-location market attribution, and the ModeU5 ledger-country rule are documented. Production-source quantity remains `NOT_CONFIRMED`.

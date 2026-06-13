@@ -33,7 +33,7 @@ Feeds counters to: US-04, US-06, debug/UI
 | Satisfaction tracking | ModeU5 | internal variables | CONFIRMED | 077 |
 | Vanilla local demand context | location × good / estate / country | runtime consumer demand inputs | NOT_CONFIRMED | 037, local check required |
 | Vanilla per-trade requested quantity | trade | exposed trade quantity/capacity | NOT_CONFIRMED | 056 |
-| Automatic cycle invocation | global | recurring monthly/yearly on_actions | NOT_CONFIRMED | 011-012 |
+| Automatic cycle invocation | country | `monthly_country_pulse`, `yearly_country_pulse` | CONFIRMED | 011-012 |
 
 ## Files expected to change
 
@@ -103,4 +103,4 @@ US-06 receives only transferred quantity
 
 ## Known limitations
 
-Relation, market-access, ownership, and ordering exposure is documented. Runtime consumer-demand inputs, per-trade requested quantity, and recurring cycle hooks remain `NOT_CONFIRMED`; each blocked path may use only one explicitly accepted fallback.
+Relation, market-access, ownership, ordering, and recurring country pulse exposure is documented. Runtime consumer-demand inputs and per-trade requested quantity remain `NOT_CONFIRMED`; each blocked path may use only one explicitly accepted fallback.

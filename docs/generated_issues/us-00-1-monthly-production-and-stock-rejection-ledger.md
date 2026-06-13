@@ -28,7 +28,7 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 |---|---|---|---|---|
 | Production source iteration/context | country/building/location/good | `every_owned_location`, `every_buildings_in_location`, `every_goods`, saved scopes | CONFIRMED | 003, 006, 008, 029 |
 | Produced quantity at source | production source × location × good | `goods_output`, `raw_material_output`, or pre-`modeu5_add_stock` calculation | NOT_CONFIRMED | 021 |
-| Producing-country attribution | building/RGO/location → credited country | building owner, location owner, or documented output recipient | NOT_CONFIRMED | 081 |
+| Ledger-country attribution | country-rooted cycle; building/location → country | current country scope plus documented `owner` links | CONFIRMED | 005, 011, 081 |
 | Market attribution | location → market | `market` scope link | CONFIRMED | 004 |
 | Added quantity | ModeU5 stock operation | `actual_added_quantity` | CONFIRMED | 022 |
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
@@ -112,4 +112,4 @@ Counters reset only after dependent calculations
 
 ## Known limitations
 
-Source-level building/RGO quantity and the country credited with that output remain `NOT_CONFIRMED`. Source discovery, market attribution, scope passing, and keyed variable maps are documented. Use only one explicitly accepted production fallback and one country-attribution fallback if required.
+Source-level building/RGO quantity remains `NOT_CONFIRMED`. The ledger runs in country scope; use building `owner` for building sources and location `owner` for RGO/location sources, and log that ModeU5 attribution rule explicitly. Use only one accepted production-quantity fallback if required.

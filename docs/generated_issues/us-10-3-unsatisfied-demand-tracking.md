@@ -1,6 +1,6 @@
 # US-10.3 — Unsatisfied Demand Tracking
 
-Labels: `blocked:engine-exposure`
+Labels: none
 
 ## User Story
 
@@ -30,8 +30,8 @@ Feeds counters to: US-04, diagnostics, future AI/satisfaction signals
 | Outcome values | ModeU5 | requested/satisfied/transferred/unsatisfied | CONFIRMED | 077 |
 | Location × good counters | location/good | internal variables | CONFIRMED | 040, 077 |
 | Estate/country-market counters | scoped per-good map keyed by market/target | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
-| Monthly reset pulse | global | recurring monthly on_action | NOT_CONFIRMED | 011 |
-| Yearly read/reset pulse | global | recurring yearly on_action | NOT_CONFIRMED | 012 |
+| Monthly reset pulse | country | `monthly_country_pulse` after every monthly consumer has read counters | CONFIRMED | 011 |
+| Yearly read/reset pulse | country | `yearly_country_pulse` after US-04 has read annual counters | CONFIRMED | 012 |
 
 ## Files expected to change
 
@@ -95,4 +95,4 @@ Zero request changes no satisfaction counters
 
 ## Known limitations
 
-Multi-dimensional counter storage through scoped variable maps is documented. Recurring monthly and yearly invocation hooks remain `NOT_CONFIRMED`; deterministic event invocation is the available test path.
+Multi-dimensional counter storage through scoped variable maps and the monthly/yearly country pulses are documented. Reset ordering remains a ModeU5 dispatcher contract and must be tested with deterministic debug events.
