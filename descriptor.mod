@@ -4,5 +4,5 @@ tags={
     "Economy"
     "Balance"
 }
-name="ModeU5 Country Stocks Within Markets"
+name="No Void Economy"
 supported_version="*"

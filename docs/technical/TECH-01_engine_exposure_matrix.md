@@ -61,15 +61,15 @@ error.log after test
 | 018 | US-01 | Available stock capacity | ModeU5 | stock_cap - stock | internal scripted value | ModeU5 | CONFIRMED | N/A | Defined by mod. |
 | 019 | US-11 | Rebuild market stock from country stocks | ModeU5 | modeu5_rebuild_market_stock_from_country_stocks | internal effect | ModeU5 | CONFIRMED | N/A | Must not modify country stocks. |
 | 020 | US-11 | Validate stock consistency | ModeU5 | modeu5_validate_stock_consistency | internal effect | ModeU5 | CONFIRMED | N/A | Corrects market aggregate only. |
-| 021 | US-00.1 | Production quantity by country × market × good | country × market × good | produced_in_market / produced_in_country / local production values | value | TO_CHECK | TO_TEST | Estimate from best available production proxy | Do not invent exact value. |
+| 021 | US-00.1 | Read production quantity at its source and attribute it to the ledger key | production source × location × good, then producing country × location market × good | local/building/RGO production output or quantity calculated immediately before `modeu5_add_stock` | value / production integration output | TO_CHECK | TO_TEST | One explicit source-level production estimate if no reliable value is exposed | Do not assume a direct country × market × good vanilla value. Aggregate source quantities into the country × market × good monthly ledger. Uses 003-006, 008, and 081. |
 | 022 | US-00.1 | Actual quantity added to stock | ModeU5 | modeu5_add_stock output | internal variable | ModeU5 | CONFIRMED | N/A | Defined by mod. |
 | 023 | US-00.1 | Rejected quantity | ModeU5 | quantity_to_add - actual_added_quantity | internal variable | ModeU5 | CONFIRMED | N/A | Defined by mod. |
 | 024 | US-00.1 | Ledger helper | ModeU5 | modeu5_update_production_rejection_ledger | internal effect | ModeU5 | CONFIRMED | N/A | Must be used for all ledger writes. |
-| 025 | US-00.1 | Variable map indexed by market | country | modeu5_<good>_produced_by_market[market] | variable map | TO_CHECK | TO_TEST | Flattened per-good/per-market variables |  |
+| 025 | US-00.1 | Store and read a monthly ledger keyed by country × market × good | country / market / good | variable maps / scoped variables / generated variable names | variable storage and keying | TO_CHECK | TO_TEST | Flattened per-good/per-market variables | The ledger is ModeU5-owned: initialize or clear entries for the month, accumulate each production stock-add transaction, read them at month end, then reset at runtime step 23. Do not reconstruct it from final stock snapshots. |
 | 026 | US-00.2 | Calculate ratios with division/min/max | scripted value/effect | arithmetic operators | scripted math | TO_CHECK | TO_TEST | Store precomputed values in effects | Need safe division when produced <= 0. |
 | 027 | US-00.3 | Good-specific local output modifier | location × good | local output modifier for specific good | modifier | TO_CHECK | TO_TEST | local_production_efficiency | Preferred. |
 | 028 | US-00.3 | Local production efficiency modifier | location | local_production_efficiency | modifier | TO_CHECK | TO_TEST | theoretical_only if unavailable | Fallback may affect other goods. |
-| 029 | US-00.3 | Count affected locations producing good | country/location/good | production building / RGO / output checks | value/iterator | TO_CHECK | TO_TEST | Apply at country/market level or theoretical-only |  |
+| 029 | US-00.3 | Identify affected production sources/locations producing the good | producing country / production source / location / market / good | production building / RGO / output checks combined with US-00.1 attribution | value/iterator | TO_CHECK | TO_TEST | Apply at country/market level or theoretical-only | Must remain consistent with TECH-01 081 so the country credited in US-00.1 is the country penalized in US-00.3. |
 | 030 | US-00.4 | Good price for void wealth | market × good | market price / average price / base price | value | TO_CHECK | TO_TEST | configured scripted good price | Must log good_price_source. |
 | 031 | US-00.4 | Estate taxable income for proxy sizing | estate | estate_taxable_income | value/trigger | TO_CHECK | TO_TEST | Optional proxy only | Not primary punishment. |
 | 032 | US-00.4 | Estate tax for proxy sizing | estate | estate_tax | value/trigger | TO_CHECK | TO_TEST | Optional proxy only |  |
@@ -121,6 +121,7 @@ error.log after test
 | 078 | US-13 | Non-horde check | country | government type / horde trigger | trigger | TO_CHECK | TO_TEST | exclude US-13 until confirmed |  |
 | 079 | US-13 | Current age | global/country | current age value/trigger | trigger/value | TO_CHECK | TO_TEST | static CB variants with age trigger |  |
 | 080 | US-13 | Conquest CB/wargoal cost override | static CB/wargoal files | conquer_cost | static field | TO_CHECK | TO_TEST | no implementation until confirmed |  |
+| 081 | US-00.1 | Identify the country credited with a production source | production source / building / RGO / location | production owner / building owner / output recipient / location owner | scope link / value | TO_CHECK | TO_TEST | No fallback selected; propose one after the exposure spike | Do not assume the location owner is always the producing country. Required before assigning production to country stock and the country × market × good ledger. |
 
 ## Rule
 
