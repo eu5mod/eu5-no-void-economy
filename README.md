@@ -40,9 +40,9 @@ The bootstrap documents are aligned with the revised MVP specification:
 - no transport-cost, trade-income reconciliation, slider reconciliation, or AI-planning story in the surviving MVP set;
 - mandatory debug and TECH-01 exposure tracking.
 
-## Core operator implementation tickets
+## Core implementation tickets
 
-The six centralized operations have implementation-ready issue files:
+The six centralized operations and the two lifecycle tickets have implementation-ready issue files:
 
 ```txt
 CORE-01.1  modeu5_add_stock
@@ -51,9 +51,11 @@ CORE-01.3  modeu5_transfer_stock
 CORE-01.4  modeu5_decay_stock
 CORE-01.5  modeu5_rebuild_market_stock_from_country_stocks
 CORE-01.6  modeu5_validate_stock_consistency
+CORE-02    delayed and versioned start-game stock initialization
+CORE-03    country and territory stock succession
 ```
 
-They are stored in `docs/generated_issues/` and define the transaction contracts, confirmed map layout, debug output, dependencies, acceptance criteria, and deterministic manual tests.
+They are stored in `docs/generated_issues/` and define the transaction contracts, startup ordering, confirmed map layout, debug output, dependencies, acceptance criteria, and deterministic manual tests.
 
 ## Runtime contract
 

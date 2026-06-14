@@ -110,6 +110,27 @@ A monthly economic cycle must follow this logical sequence:
 
 A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation, reset annual counters, and run diagnostics if enabled.
 
+The monthly and yearly stock cycles must not mutate ModeU5 stock until CORE-02 has set the current schema version and marked initialization complete. A missing, failed, older unsupported, or newer incompatible initialization state fails closed and remains diagnostic-only.
+
+## Stock succession rule
+
+After initialization, permanent location ownership changes conserve stock and reassign the capacity-proportional share:
+
+```txt
+transferred_stock
+= loser_stock_before
+   * transferred_location_storage_capacity
+   / loser_storage_capacity_before
+```
+
+Use the same US-02 location-capacity helper for the numerator and capacity totals. Apply the quantity through `modeu5_transfer_stock` in the same market. The loser retains the formula's complementary share and `market_good_stock` remains unchanged.
+
+Sequential location transfers must produce the same result as one aggregate split. New-country/release hooks validate and finalize; they must not duplicate location-level transfers. Annexation finalizers transfer any residual stock of the disappearing country to its successor.
+
+CORE-02 initialization and CORE-03 succession use capacity as a proportional allocation key, not as an admission cap. They must use the centralized operators' explicit `allow_over_capacity` policy and allocate or transfer the full formula-derived quantity. Any resulting over-cap stock is valid state to report; neither lifecycle operation truncates, rejects, or erases it.
+
+Ordinary production and inter-market trade continue to use the default `enforce` policy. No other caller may bypass capacity without an explicit approved business rule.
+
 ## Documentation-first rule
 
 Before implementing any script that depends on vanilla data, verify exposure through:
@@ -157,18 +178,20 @@ Follow this delivery order, even though it is not the runtime order:
 2. CORE-01.1 through CORE-01.4 stock mutation effects.
 3. CORE-01.5 / CORE-01.6 rebuild and validation, then US-11 orchestration.
 4. Debug conventions and deterministic test events.
-5. Monthly and yearly on_actions.
-6. US-01 country × market × good stock.
-7. US-02 stock capacity.
-8. US-03 monthly decay.
-9. US-00.1 / US-00.2 / US-00.4 void economy measurement.
-10. US-00.3 production penalty.
-11. US-10.0 / US-10.1 / US-10.2 / US-10.3 demand resolution.
-12. US-04 local Pop demand adaptation.
-13. US-05 direct Economic Base formula.
-14. US-07 / US-08 / US-09 static balance changes.
-15. US-13 only after exposure is confirmed.
-16. UI/debug polish.
+5. US-01 country × market × good stock.
+6. US-02 stock capacity.
+7. CORE-02 delayed, versioned start-game initialization.
+8. CORE-03 country and territory stock succession.
+9. Monthly and yearly on_actions.
+10. US-03 monthly decay.
+11. US-00.1 / US-00.2 / US-00.4 void economy measurement.
+12. US-00.3 production penalty.
+13. US-10.0 / US-10.1 / US-10.2 / US-10.3 demand resolution.
+14. US-04 local Pop demand adaptation.
+15. US-05 direct Economic Base formula.
+16. US-07 / US-08 / US-09 static balance changes.
+17. US-13 only after exposure is confirmed.
+18. UI/debug polish.
 ```
 
 ## Current canonical US-00

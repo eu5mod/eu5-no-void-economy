@@ -8,11 +8,11 @@ Labels: none
 CORE-01.1 - Centralized add-stock operator
 ```
 
-As a ModeU5 feature author, I want one capacity-aware add operation so production can enter country and market stocks without bypassing the double-accounting invariant.
+As a ModeU5 feature author, I want one policy-aware add operation so normal production respects capacity while authoritative initialization can conserve its full allocation without bypassing the double-accounting invariant.
 
 ## Functional objective
 
-Implement `modeu5_add_stock` as the only operation that adds newly produced, gathered, or transformed goods to stock. It must calculate the stockable and rejected quantities before mutation, update the country source stock and market aggregate by the same actual quantity, and expose transaction outputs to US-00.1.
+Implement `modeu5_add_stock` as the only operation that adds goods to stock. It must default to capacity enforcement for production, support an explicit `allow_over_capacity` policy for CORE-02 initialization, calculate outputs before mutation, and update the country source stock and market aggregate by the same actual quantity.
 
 ## Runtime position
 
@@ -33,6 +33,7 @@ Feeds counters to: US-00.1, debug, CORE-01.6
 | Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
 | Add/reject outputs | transaction | `modeu5_actual_added_quantity`, `modeu5_rejected_quantity` | CONFIRMED | 022-023 |
+| Capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
 
 ## Persistent storage / variable-map contract
 
@@ -70,7 +71,7 @@ docs/technical/TECH-01_engine_exposure_matrix.md
 ## Dependencies
 
 ```txt
-Depends on: TECH-01 007, 008, 015-018, 022-023, 026; VARIABLE_MAP_STORAGE_MODEL
+Depends on: TECH-01 007, 008, 015-018, 022-023, 026, 099; VARIABLE_MAP_STORAGE_MODEL
 Blocks: CORE-01.2, CORE-01.3, CORE-01.4, CORE-01.5, US-01, US-00.1
 Related US: US-01, US-02, US-00.1, US-11
 ```
@@ -81,13 +82,18 @@ Related US: US-01, US-02, US-00.1, US-11
 - Treat missing stock and capacity entries as zero.
 - Normalize the requested quantity to at least zero and log a negative request as invalid input.
 - Calculate `available_capacity = max(0, capacity - stock_before)`.
-- Calculate `actual_added_quantity = min(requested_quantity, available_capacity)`.
+- Default `capacity_policy` to `enforce`.
+- Under `enforce`, calculate `actual_added_quantity = min(requested_quantity, available_capacity)`.
+- Under `allow_over_capacity`, calculate `actual_added_quantity = requested_quantity`.
 - Calculate `rejected_quantity = requested_quantity - actual_added_quantity`.
 - Calculate all outputs before changing either stock level.
 - Replace existing variable-map entries by read, remove, and re-add.
 - Increase country stock and market aggregate by exactly `actual_added_quantity`.
 - Do not write the US-00.1 ledger from this effect; expose outputs to its centralized ledger helper.
 - Do not create wealth, income, trade, or transport effects.
+- Permit `allow_over_capacity` only for an explicitly documented authoritative caller such as CORE-02 initialization or a future approved migration.
+- Never use `allow_over_capacity` for ordinary production or trade.
+- Expose over-cap before/after quantities in debug; do not correct them inside this operation.
 - Use generated per-good helpers or generated dispatch; do not construct map names at runtime.
 - Establish reusable internal read/replace helpers for the remaining CORE operators without exposing a second public stock-mutation path.
 - Log a pre-existing negative or over-cap country stock. Do not silently discard pre-existing stock as part of an add transaction.
@@ -97,13 +103,16 @@ Related US: US-01, US-02, US-00.1, US-11
 - [ ] Rejected quantity remains outside all stock maps.
 - [ ] Rejected quantity is exposed to US-00.1 but does not directly create a ledger write.
 - [ ] A zero-capacity or full stock rejects the complete request.
+- [ ] An authorized `allow_over_capacity` call adds the complete request and reports zero rejected quantity.
+- [ ] The transaction records which capacity policy was used.
 - [ ] A no-op request does not remove and re-add unchanged entries unnecessarily.
 
 ## Acceptance criteria
 
 - [ ] Full-capacity addition updates country and market stocks by the requested quantity.
 - [ ] Partial-capacity addition updates both stocks by the same actual quantity and exposes the remainder as rejected.
-- [ ] Stock never exceeds the capacity because of this operation.
+- [ ] `enforce` never causes stock to exceed capacity.
+- [ ] `allow_over_capacity` may exceed capacity while preserving the country/market invariant.
 - [ ] Missing entries use the documented zero default.
 - [ ] Transaction outputs remain distinct: requested, actual added, and rejected.
 - [ ] Debug exposes every mandatory stock-mutation field.
@@ -134,6 +143,27 @@ country stock after = 100
 market stock after = 100
 stock difference after = 0
 mutation_effect_called = modeu5_add_stock
+```
+
+### Authorized initialization policy
+
+```txt
+Country stock = 0
+Country capacity = 40
+Market stock = 0
+quantity_to_add = 60
+capacity_policy = allow_over_capacity
+```
+
+Expected:
+
+```txt
+actual_added_quantity = 60
+rejected_quantity = 0
+country stock after = 60
+market stock after = 60
+over_capacity_after = 20
+stock difference after = 0
 ```
 
 ## Known limitations

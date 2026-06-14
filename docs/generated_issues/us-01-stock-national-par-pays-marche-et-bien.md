@@ -87,8 +87,8 @@ docs/tests/
 
 ```txt
 Depends on: CORE-01.1 through CORE-01.6, TECH-01
-Blocks: US-02, US-03, US-00, US-10, US-11
-Related US: US-01-UI
+Blocks: US-02, CORE-02, CORE-03, US-03, US-00, US-10, US-11
+Related US: US-01-UI, CORE-02, CORE-03
 ```
 
 ## Implementation rules
@@ -99,7 +99,8 @@ Related US: US-01-UI
 - Credit production to the same producing country and market key used by US-00.1.
 - Keep production reading and country/market attribution in US-00.1; US-01 only accepts explicit stock-operation inputs.
 - Mutate stock only through centralized stock effects.
-- Enforce non-negative stock and capacity limits.
+- Enforce non-negative stock.
+- Enforce capacity for ordinary production and inter-market trade; permit the explicit CORE-02/CORE-03 `allow_over_capacity` lifecycle policy.
 - Rebuild market stock from country stocks only, never the reverse.
 - Treat missing stock and capacity entries as zero.
 - Replace existing entries by remove/re-add inside their owning centralized effect.
@@ -118,7 +119,9 @@ Related US: US-01-UI
 
 - [ ] Separate country/market/good stocks can coexist without collision.
 - [ ] Market aggregates use a market owner and goods key rather than duplicating country-map orientation.
-- [ ] Stock cannot exceed capacity or remain negative.
+- [ ] Stock cannot remain negative.
+- [ ] Ordinary `enforce` operations cannot create over-cap stock.
+- [ ] CORE-02/CORE-03 over-cap stock remains authoritative, visible, and included in market aggregates.
 - [ ] Every mutation updates the country source and market aggregate consistently.
 - [ ] Rejected quantities are exposed to US-00.1.
 - [ ] Validation restores `market_good_stock = sum(country_market_good_stock)`.

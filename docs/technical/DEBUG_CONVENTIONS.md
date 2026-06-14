@@ -56,6 +56,125 @@ Recommended variable:
 modeu5_debug_level
 ```
 
+## Mandatory debug for CORE-02 startup
+
+Global startup debug:
+
+```txt
+startup_hook
+startup_delay_days
+initialization_state_before
+initialization_mode
+schema_version_before
+schema_version_target
+existing_country_stock_detected
+existing_market_cache_detected
+opening_source_available
+monthly_gameplay_enabled
+initialization_state_after
+blocking_failure
+```
+
+For each market x good:
+
+```txt
+market
+good
+opening_quantity_source
+opening_source_quantity
+total_modeu5_capacity
+opening_target_quantity
+eligible_country_count
+allocated_quantity
+opening_allocation_difference
+over_capacity_country_count
+total_over_capacity_quantity
+rounding_residue_before
+rounding_residue_after
+market_stock_after
+stock_difference_after
+rebuild_called
+validation_passed
+```
+
+For each positive country allocation:
+
+```txt
+country
+market
+good
+country_capacity
+capacity_share
+requested_initial_quantity
+actual_initial_quantity
+capacity_policy = allow_over_capacity
+over_capacity_before
+over_capacity_after
+over_capacity_created
+stock_before
+stock_after
+mutation_effect_called = modeu5_add_stock
+```
+
+Startup must allocate the full opening source. Over-cap quantities must be labeled separately from `rejected_quantity` and `void_wealth`. A positive source with zero total capacity is a blocking `zero_total_capacity` allocation error, not truncation.
+
+## Mandatory debug for CORE-03 succession
+
+For each permanent location ownership change and good:
+
+```txt
+lifecycle_event
+location
+market
+good
+loser_country
+winner_country
+loser_stock_before
+loser_capacity_before
+transferred_location_capacity
+transfer_ratio
+requested_stock_transfer
+actual_stock_transfer
+target_capacity_policy = allow_over_capacity
+loser_capacity_after
+winner_capacity_after
+winner_over_capacity_before
+winner_over_capacity_after
+over_capacity_created
+loser_stock_after
+winner_stock_after
+market_stock_before
+market_stock_after
+stock_difference_after
+mutation_effect_called = modeu5_transfer_stock
+duplicate_transfer_prevented
+```
+
+For country creation or annexation finalization:
+
+```txt
+lifecycle_finalizer
+country
+predecessor_or_target
+affected_market_good_count
+residual_stock_before
+residual_stock_transferred
+target_capacity_policy = allow_over_capacity
+winner_over_capacity_after
+rebuild_called
+validation_passed
+```
+
+Succession transfers must explicitly show:
+
+```txt
+trade_income_generated = no
+transport_cost_generated = no
+trade_capacity_used = no
+rejected_production_recorded = no
+unsatisfied_demand_recorded = no
+```
+
 ## Mandatory debug per stock mutation
 
 Every call to a centralized stock mutation effect must expose:
@@ -74,6 +193,10 @@ market_stock_before
 market_stock_after
 country_stock_cap
 available_capacity
+capacity_policy
+over_capacity_before
+over_capacity_after
+over_capacity_created
 stock_difference_after
 mutation_effect_called
 ```
@@ -95,6 +218,7 @@ target_market_stock_before
 target_market_stock_after
 transferred_quantity
 rejected_or_unsatisfied_quantity
+target_capacity_policy
 same_market_transfer
 inter_market_transfer
 ```
@@ -130,6 +254,7 @@ actual_market_stock_after
 stock_difference_after
 negative_country_source_detected
 over_cap_country_source_detected
+over_cap_is_accounting_inconsistency = no
 ```
 
 ## Mandatory debug for US-00

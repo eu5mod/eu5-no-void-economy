@@ -12,7 +12,7 @@ As a ModeU5 feature author, I want one atomic transfer operation so ownership or
 
 ## Functional objective
 
-Implement `modeu5_transfer_stock` as one pre-calculated transaction bounded by seller stock and buyer capacity. It must support same-market ownership transfers for core accounting tests and inter-market transfers for US-10.2, without implicit loss or trade-economic side effects.
+Implement `modeu5_transfer_stock` as one pre-calculated transaction always bounded by seller stock and normally bounded by buyer capacity. It must support an explicit `allow_over_capacity` target policy for CORE-03 succession, same-market ownership transfers, and capacity-enforced inter-market transfers for US-10.2 without implicit loss or trade-economic side effects.
 
 ## Runtime position
 
@@ -33,6 +33,7 @@ Feeds counters to: US-10.2, US-10.3, US-06 if restored, debug, CORE-01.6
 | Scope passing | scripted effect | saved seller, buyer, source market, target market, and good scopes | CONFIRMED | 008 |
 | Bounded transfer arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
 | Inter-market transfer operation | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
+| Target capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
 
 ## Persistent storage / variable-map contract
 
@@ -67,7 +68,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-018, 026, 076
+Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-018, 026, 076, 099
 Blocks: US-10.2
 Related US: US-01, US-02, US-10.2, US-10.3, US-11
 ```
@@ -77,20 +78,27 @@ Related US: US-01, US-02, US-10.2, US-10.3, US-11
 - Follow all mandatory project and storage-model rules.
 - Require explicit seller, buyer, source market, target market, good, and requested quantity.
 - Calculate target available capacity before any mutation.
-- Calculate `actual_transferred_quantity = min(requested, seller_stock, target_available_capacity)`.
+- Default `target_capacity_policy` to `enforce`.
+- Under `enforce`, calculate `actual_transferred_quantity = min(requested, seller_stock, target_available_capacity)`.
+- Under `allow_over_capacity`, calculate `actual_transferred_quantity = min(requested, seller_stock)`.
 - Calculate `unsatisfied_quantity = requested - actual_transferred_quantity`.
-- Do not remove stock that the target cannot accept; unsatisfied goods remain in seller stock.
+- Under `enforce`, do not remove stock that the target cannot accept; unsatisfied goods remain in seller stock.
+- Under `allow_over_capacity`, target capacity creates no unsatisfied quantity; only seller shortage may do so.
 - Replace all affected entries only after the complete transaction has been calculated.
 - For different markets, decrease the source aggregate and increase the target aggregate by the same actual quantity.
 - For the same market and different country records, update both country records and leave the market aggregate unchanged.
 - Reject an exact source-record-to-same-source-record call as an invalid no-op: actual zero, full request unsatisfied, diagnostic reason recorded.
 - Do not create transport loss, trade income, transport cost, trade capacity use, or profit.
 - US-10.2 may call this effect only when `source_market != target_market`; same-market support exists for core ownership accounting and deterministic tests.
+- CORE-03 must call same-market transfers with `target_capacity_policy = allow_over_capacity`.
+- Never use `allow_over_capacity` for ordinary inter-market trade.
 - Use generated per-good helpers or dispatch; do not assume runtime map-name construction.
 
 ## CORE-specific boundary checks
 
-- [ ] Seller stock and buyer capacity are both hard bounds.
+- [ ] Seller stock is always a hard bound.
+- [ ] Buyer capacity is a hard bound under `enforce`.
+- [ ] Buyer capacity does not truncate an authorized `allow_over_capacity` transfer.
 - [ ] Same-market ownership transfer preserves the market aggregate.
 - [ ] Inter-market transfer preserves global quantity across source and target.
 - [ ] Unsatisfied quantity is not removed, lost, priced, or passed to transport-cost calculation as transferred quantity.
@@ -99,9 +107,10 @@ Related US: US-01, US-02, US-10.2, US-10.3, US-11
 
 - [ ] Same-market transfer changes only seller and buyer country records.
 - [ ] Inter-market transfer changes both country records and both market aggregates by the same quantity.
-- [ ] Partial transfer is bounded by the lesser of seller stock and buyer capacity.
+- [ ] Under `enforce`, partial transfer is bounded by the lesser of seller stock and buyer capacity.
 - [ ] Requested, transferred, and unsatisfied quantities remain distinct.
-- [ ] No stock becomes negative or exceeds buyer capacity because of the operation.
+- [ ] No stock becomes negative.
+- [ ] `enforce` does not exceed buyer capacity; `allow_over_capacity` may do so and reports the resulting amount.
 - [ ] No partial mutation remains if the calculated transfer is zero.
 - [ ] Debug exposes all transfer-specific fields from `DEBUG_CONVENTIONS.md`.
 - [ ] `error.log` has no new blocking error.
@@ -130,6 +139,27 @@ Buyer B Market Y stock = 100
 Market X aggregate = 70
 Market Y aggregate = 100
 both market differences = 0
+```
+
+### Authorized succession policy
+
+```txt
+Seller stock in Market X = 50
+Buyer stock in Market X = 90
+Buyer capacity in Market X = 100
+quantity_to_transfer = 50
+target_capacity_policy = allow_over_capacity
+```
+
+Expected:
+
+```txt
+actual_transferred_quantity = 50
+unsatisfied_quantity = 0
+seller stock after = 0
+buyer stock after = 140
+buyer over_capacity_after = 40
+market aggregate unchanged
 ```
 
 ## Known limitations

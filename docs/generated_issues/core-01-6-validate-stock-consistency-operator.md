@@ -86,7 +86,9 @@ Related US: US-01, US-03, US-10, US-11
 - Re-read the aggregate after rebuild and assert that the post-rebuild difference is zero.
 - Never repair country stock from market stock.
 - Never directly write the aggregate from the validation effect; delegate correction to CORE-01.5.
-- Report negative and over-cap country source anomalies separately and route any future correction through the owning centralized operation.
+- Report negative country source values as invalid.
+- Report over-cap country source values separately as valid diagnostic state when produced by CORE-02/CORE-03; validation must not delete or clamp them.
+- Route any future approved over-cap correction through the owning centralized operation.
 - Do not create or destroy wealth, consumption, transfer, or demand.
 
 ## CORE-specific boundary checks
@@ -102,6 +104,7 @@ Related US: US-01, US-03, US-10, US-11
 - [ ] Validation identifies the market, good, expected value, actual value, and signed difference.
 - [ ] Any nonzero difference calls CORE-01.5 and is corrected.
 - [ ] Country stocks remain unchanged.
+- [ ] Over-cap country stock remains included in the expected market aggregate and is not treated as an accounting divergence.
 - [ ] A second validation is a no-op with difference zero.
 - [ ] Debug records whether rebuild was called and the post-rebuild result.
 - [ ] Monthly and yearly orchestration cannot run duplicate global validation unintentionally from every country pulse.
@@ -133,4 +136,4 @@ country stocks unchanged
 
 ## Known limitations
 
-Validation reconciles the market cache only. Negative or economically invalid country source records are diagnosed but require an explicit correction through the operation that owns that country-stock change.
+Validation reconciles the market cache only. Negative country records are invalid and require an explicit correction through the operation that owns that change. Over-cap records are diagnostic state, not an accounting inconsistency.

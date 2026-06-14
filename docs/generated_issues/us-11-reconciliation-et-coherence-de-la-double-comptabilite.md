@@ -70,7 +70,8 @@ Related US: US-01, US-03, US-10, US-00
 - Never repair country stocks from market stock.
 - Route production, consumption, transfer, decay, validation, and rebuild through CORE-01.1 through CORE-01.6.
 - Keep rebuild and validation transaction logic in CORE-01.5 and CORE-01.6; US-11 owns global iteration, scheduling, and integration diagnostics.
-- Correct negative/cap anomalies through the owning centralized operation and log them.
+- Correct negative anomalies through the owning centralized operation and log them.
+- Report over-cap state without correcting it; CORE-02/CORE-03 may create valid over-cap country stocks.
 - Keep any economic adjustment visible and owned by its relevant US.
 
 ## US-specific boundary checks
@@ -86,7 +87,8 @@ Related US: US-01, US-03, US-10, US-00
 - [ ] Same-market ownership transfer leaves market aggregate unchanged.
 - [ ] Inter-market transfer updates both market aggregates correctly.
 - [ ] Rebuild fixes a deliberately corrupted market aggregate without changing country stocks.
-- [ ] No negative stock or over-cap state persists.
+- [ ] No negative stock persists.
+- [ ] Over-cap stock is reported, remains part of the authoritative country sum, and is never repaired by deleting stock.
 - [ ] Debug identifies market, good, expected stock, actual stock, difference, and correction.
 - [ ] Monthly/yearly invocation order is deterministic.
 - [ ] TECH-01, logs, and full manual test report are updated.
