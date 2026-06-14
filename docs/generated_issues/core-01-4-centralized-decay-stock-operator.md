@@ -53,11 +53,11 @@ reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
 in_game/events/
-in_game/localization/
+main_menu/localization/english/
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -75,6 +75,7 @@ Related US: US-01, US-03, US-03-UI, US-11
 - Follow all mandatory project and storage-model rules.
 - Operate on one country, market, and good record per call; US-03 owns iteration and scheduling.
 - Use the caller rate when provided and the configured ModeU5 monthly rate otherwise.
+- Use `modeu5_decay_stock_default` when the caller does not provide an override; it delegates to `modeu5_decay_stock` with `modeu5_default_monthly_decay_rate`.
 - Bound the effective decay rate to `[0, 1]` and log an out-of-range input.
 - Calculate `decayed_quantity = min(stock_before, stock_before * effective_decay_rate)`.
 - Calculate the loss from country stock only; never calculate a second independent decay from market stock.

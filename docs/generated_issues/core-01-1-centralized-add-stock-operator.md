@@ -59,10 +59,10 @@ The market aggregate is stored separately on market scope in `modeu5_market_good
 
 ```txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
 in_game/events/
-in_game/localization/
+main_menu/localization/english/
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md

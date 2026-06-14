@@ -73,6 +73,46 @@ CORE-03    country and territory stock succession
 
 They are stored in `docs/generated_issues/` and define the transaction contracts, startup ordering, confirmed map layout, debug output, dependencies, acceptance criteria, and deterministic manual tests.
 
+## Implemented core stock API
+
+CORE-01.1 through CORE-01.4 are implemented in `in_game/common/scripted_effects/`.
+
+Callers pass a literal goods token such as `wheat`; generated wrappers expand that
+token to the static `modeu5_<good>_*_by_market` map family.
+
+```txt
+modeu5_add_stock(country, market, good, quantity, capacity_policy)
+modeu5_remove_stock(country, market, good, quantity, reason)
+modeu5_transfer_stock(seller_country, buyer_country, source_market,
+                      target_market, good, quantity, target_capacity_policy)
+modeu5_decay_stock(country, market, good, decay_rate)
+modeu5_decay_stock_default(country, market, good)
+```
+
+Supported capacity policies:
+
+```txt
+enforce
+allow_over_capacity
+```
+
+`allow_over_capacity` remains reserved for CORE-02 initialization, CORE-03
+succession, deterministic tests, and separately approved migrations.
+
+Transaction outputs are temporary scope values, including:
+
+```txt
+modeu5_actual_added_quantity
+modeu5_rejected_quantity
+modeu5_actual_removed_quantity
+modeu5_actual_transferred_quantity
+modeu5_transferred_quantity
+modeu5_unsatisfied_quantity
+modeu5_decayed_quantity
+```
+
+CORE-01.5 rebuild and CORE-01.6 validation remain the next implementation layer.
+
 ## Runtime contract
 
 The runtime order is normative. The implementation roadmap is only a delivery strategy.
@@ -112,7 +152,7 @@ validate stock
 
 ## Bootstrap content
 
-This repository contains scaffolding, governance documents, and implementation-ready issue specifications:
+This repository contains the first centralized stock effects plus governance documents and implementation-ready issue specifications:
 
 - `README.md`
 - `CLAUDE.md`
@@ -129,7 +169,7 @@ This repository contains scaffolding, governance documents, and implementation-r
 - `docs/tests/TEST_PLAN.md`
 - `docs/generated_issues/core-01-*.md`
 
-No gameplay logic is implemented by these documentation tickets.
+The generated issue files remain specifications; runtime logic lives under `in_game/`.
 
 ## Suggested branch workflow
 

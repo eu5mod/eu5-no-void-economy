@@ -56,7 +56,7 @@ The market aggregate is the market-scoped `modeu5_market_good_stock[good]` cache
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
 in_game/events/
-in_game/localization/
+main_menu/localization/english/
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```

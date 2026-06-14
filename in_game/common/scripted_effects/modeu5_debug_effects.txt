@@ -1,2 +1,185 @@
-# ModeU5 placeholder file.
-# Gameplay logic intentionally not implemented in bootstrap.
+# Persistent "last transaction" snapshots used by CORE-01 diagnostics.
+# Operation codes: add = 1, remove = 2, transfer = 3, decay = 4.
+# Capacity policy codes: enforce = 0, allow_over_capacity = 1.
+
+modeu5_debug_clear_last_stock_mutation = {
+	remove_variable = modeu5_debug_last_operation
+	remove_variable = modeu5_debug_last_mutation_effect_called
+	remove_variable = modeu5_debug_last_country
+	remove_variable = modeu5_debug_last_market
+	remove_variable = modeu5_debug_last_good
+	remove_variable = modeu5_debug_last_seller_country
+	remove_variable = modeu5_debug_last_buyer_country
+	remove_variable = modeu5_debug_last_source_market
+	remove_variable = modeu5_debug_last_target_market
+	remove_variable = modeu5_debug_last_quantity_requested
+	remove_variable = modeu5_debug_last_quantity_actual
+	remove_variable = modeu5_debug_last_rejected_quantity
+	remove_variable = modeu5_debug_last_unsatisfied_quantity
+	remove_variable = modeu5_debug_last_quantity_added
+	remove_variable = modeu5_debug_last_quantity_removed
+	remove_variable = modeu5_debug_last_transferred_quantity
+	remove_variable = modeu5_debug_last_decayed_quantity
+	remove_variable = modeu5_debug_last_country_stock_before
+	remove_variable = modeu5_debug_last_country_stock_after
+	remove_variable = modeu5_debug_last_market_stock_before
+	remove_variable = modeu5_debug_last_market_stock_after
+	remove_variable = modeu5_debug_last_seller_stock_before
+	remove_variable = modeu5_debug_last_seller_stock_after
+	remove_variable = modeu5_debug_last_buyer_stock_before
+	remove_variable = modeu5_debug_last_buyer_stock_after
+	remove_variable = modeu5_debug_last_source_market_stock_before
+	remove_variable = modeu5_debug_last_source_market_stock_after
+	remove_variable = modeu5_debug_last_target_market_stock_before
+	remove_variable = modeu5_debug_last_target_market_stock_after
+	remove_variable = modeu5_debug_last_country_stock_cap
+	remove_variable = modeu5_debug_last_available_capacity
+	remove_variable = modeu5_debug_last_capacity_policy
+	remove_variable = modeu5_debug_last_remove_reason
+	remove_variable = modeu5_debug_last_decay_rate
+	remove_variable = modeu5_debug_last_over_capacity_before
+	remove_variable = modeu5_debug_last_over_capacity_after
+	remove_variable = modeu5_debug_last_over_capacity_created
+	remove_variable = modeu5_debug_last_stock_difference
+	remove_variable = modeu5_debug_last_consistency_validation_required
+	remove_variable = modeu5_debug_last_same_market_transfer
+	remove_variable = modeu5_debug_last_inter_market_transfer
+	remove_variable = modeu5_debug_last_invalid_same_record_transfer
+	remove_variable = modeu5_debug_last_trade_income_generated
+	remove_variable = modeu5_debug_last_transport_cost_generated
+	remove_variable = modeu5_debug_last_trade_capacity_used
+}
+
+modeu5_debug_capture_add_stock = {
+	scope:modeu5_country = {
+		modeu5_debug_clear_last_stock_mutation = yes
+		set_variable = { name = modeu5_debug_last_operation value = 1 }
+		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 1 }
+		set_variable = { name = modeu5_debug_last_country value = scope:modeu5_country }
+		set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
+		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+		set_variable = { name = modeu5_debug_last_quantity_requested value = scope:modeu5_quantity_requested }
+		set_variable = { name = modeu5_debug_last_quantity_actual value = scope:modeu5_actual_added_quantity }
+		set_variable = { name = modeu5_debug_last_quantity_added value = scope:modeu5_actual_added_quantity }
+		set_variable = { name = modeu5_debug_last_rejected_quantity value = scope:modeu5_rejected_quantity }
+		set_variable = { name = modeu5_debug_last_country_stock_before value = scope:modeu5_country_stock_before_raw }
+		set_variable = { name = modeu5_debug_last_country_stock_after value = scope:modeu5_country_stock_after }
+		set_variable = { name = modeu5_debug_last_market_stock_before value = scope:modeu5_market_stock_before }
+		set_variable = { name = modeu5_debug_last_market_stock_after value = scope:modeu5_market_stock_after }
+		set_variable = { name = modeu5_debug_last_country_stock_cap value = scope:modeu5_country_stock_cap }
+		set_variable = { name = modeu5_debug_last_available_capacity value = scope:modeu5_available_capacity }
+		set_variable = { name = modeu5_debug_last_capacity_policy value = scope:modeu5_capacity_policy }
+		set_variable = { name = modeu5_debug_last_over_capacity_before value = scope:modeu5_over_capacity_before }
+		set_variable = { name = modeu5_debug_last_over_capacity_after value = scope:modeu5_over_capacity_after }
+		set_variable = { name = modeu5_debug_last_over_capacity_created value = scope:modeu5_over_capacity_created }
+		set_variable = { name = modeu5_debug_last_stock_difference value = scope:modeu5_stock_difference_after }
+		set_variable = { name = modeu5_debug_last_consistency_validation_required value = scope:modeu5_consistency_validation_required }
+		set_variable = { name = modeu5_debug_last_trade_income_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_transport_cost_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_trade_capacity_used value = 0 }
+	}
+}
+
+modeu5_debug_capture_remove_stock = {
+	scope:modeu5_country = {
+		modeu5_debug_clear_last_stock_mutation = yes
+		set_variable = { name = modeu5_debug_last_operation value = 2 }
+		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 2 }
+		set_variable = { name = modeu5_debug_last_country value = scope:modeu5_country }
+		set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
+		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+		set_variable = { name = modeu5_debug_last_quantity_requested value = scope:modeu5_quantity_requested }
+		set_variable = { name = modeu5_debug_last_quantity_actual value = scope:modeu5_actual_removed_quantity }
+		set_variable = { name = modeu5_debug_last_quantity_removed value = scope:modeu5_actual_removed_quantity }
+		set_variable = { name = modeu5_debug_last_unsatisfied_quantity value = scope:modeu5_unsatisfied_quantity }
+		set_variable = { name = modeu5_debug_last_country_stock_before value = scope:modeu5_country_stock_before_raw }
+		set_variable = { name = modeu5_debug_last_country_stock_after value = scope:modeu5_country_stock_after }
+		set_variable = { name = modeu5_debug_last_market_stock_before value = scope:modeu5_market_stock_before }
+		set_variable = { name = modeu5_debug_last_market_stock_after value = scope:modeu5_market_stock_after }
+		set_variable = { name = modeu5_debug_last_country_stock_cap value = scope:modeu5_country_stock_cap }
+		set_variable = { name = modeu5_debug_last_available_capacity value = scope:modeu5_available_capacity }
+		set_variable = { name = modeu5_debug_last_remove_reason value = scope:modeu5_remove_reason }
+		set_variable = { name = modeu5_debug_last_over_capacity_before value = scope:modeu5_over_capacity_before }
+		set_variable = { name = modeu5_debug_last_over_capacity_after value = scope:modeu5_over_capacity_after }
+		set_variable = { name = modeu5_debug_last_over_capacity_created value = 0 }
+		set_variable = { name = modeu5_debug_last_stock_difference value = scope:modeu5_stock_difference_after }
+		set_variable = { name = modeu5_debug_last_consistency_validation_required value = scope:modeu5_consistency_validation_required }
+		set_variable = { name = modeu5_debug_last_trade_income_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_transport_cost_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_trade_capacity_used value = 0 }
+	}
+}
+
+modeu5_debug_capture_transfer_stock = {
+	scope:modeu5_seller_country = {
+		modeu5_debug_clear_last_stock_mutation = yes
+		set_variable = { name = modeu5_debug_last_operation value = 3 }
+		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 3 }
+		set_variable = { name = modeu5_debug_last_seller_country value = scope:modeu5_seller_country }
+		set_variable = { name = modeu5_debug_last_buyer_country value = scope:modeu5_buyer_country }
+		set_variable = { name = modeu5_debug_last_source_market value = scope:modeu5_source_market }
+		set_variable = { name = modeu5_debug_last_target_market value = scope:modeu5_target_market }
+		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+		set_variable = { name = modeu5_debug_last_quantity_requested value = scope:modeu5_quantity_requested }
+		set_variable = { name = modeu5_debug_last_quantity_actual value = scope:modeu5_actual_transferred_quantity }
+		set_variable = { name = modeu5_debug_last_transferred_quantity value = scope:modeu5_actual_transferred_quantity }
+		set_variable = { name = modeu5_debug_last_unsatisfied_quantity value = scope:modeu5_unsatisfied_quantity }
+		set_variable = { name = modeu5_debug_last_seller_stock_before value = scope:modeu5_seller_stock_before_raw }
+		set_variable = { name = modeu5_debug_last_seller_stock_after value = scope:modeu5_seller_stock_after }
+		set_variable = { name = modeu5_debug_last_buyer_stock_before value = scope:modeu5_buyer_stock_before_raw }
+		set_variable = { name = modeu5_debug_last_buyer_stock_after value = scope:modeu5_buyer_stock_after }
+		set_variable = { name = modeu5_debug_last_source_market_stock_before value = scope:modeu5_source_market_stock_before }
+		set_variable = { name = modeu5_debug_last_source_market_stock_after value = scope:modeu5_source_market_stock_after }
+		set_variable = { name = modeu5_debug_last_target_market_stock_before value = scope:modeu5_target_market_stock_before }
+		set_variable = { name = modeu5_debug_last_target_market_stock_after value = scope:modeu5_target_market_stock_after }
+		set_variable = { name = modeu5_debug_last_country_stock_cap value = scope:modeu5_buyer_stock_cap }
+		set_variable = { name = modeu5_debug_last_available_capacity value = scope:modeu5_available_capacity }
+		set_variable = { name = modeu5_debug_last_capacity_policy value = scope:modeu5_capacity_policy }
+		set_variable = { name = modeu5_debug_last_over_capacity_before value = scope:modeu5_over_capacity_before }
+		set_variable = { name = modeu5_debug_last_over_capacity_after value = scope:modeu5_over_capacity_after }
+		set_variable = { name = modeu5_debug_last_over_capacity_created value = scope:modeu5_over_capacity_created }
+		set_variable = { name = modeu5_debug_last_stock_difference value = scope:modeu5_stock_difference_after }
+		set_variable = { name = modeu5_debug_last_consistency_validation_required value = scope:modeu5_consistency_validation_required }
+		set_variable = { name = modeu5_debug_last_same_market_transfer value = scope:modeu5_same_market_transfer }
+		set_variable = {
+			name = modeu5_debug_last_inter_market_transfer
+			value = {
+				value = 1
+				subtract = scope:modeu5_same_market_transfer
+			}
+		}
+		set_variable = { name = modeu5_debug_last_invalid_same_record_transfer value = scope:modeu5_invalid_same_record_transfer }
+		set_variable = { name = modeu5_debug_last_trade_income_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_transport_cost_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_trade_capacity_used value = 0 }
+	}
+}
+
+modeu5_debug_capture_decay_stock = {
+	scope:modeu5_country = {
+		modeu5_debug_clear_last_stock_mutation = yes
+		set_variable = { name = modeu5_debug_last_operation value = 4 }
+		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 4 }
+		set_variable = { name = modeu5_debug_last_country value = scope:modeu5_country }
+		set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
+		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+		set_variable = { name = modeu5_debug_last_quantity_requested value = scope:modeu5_decayed_quantity }
+		set_variable = { name = modeu5_debug_last_quantity_actual value = scope:modeu5_decayed_quantity }
+		set_variable = { name = modeu5_debug_last_decayed_quantity value = scope:modeu5_decayed_quantity }
+		set_variable = { name = modeu5_debug_last_decay_rate value = scope:modeu5_decay_rate }
+		set_variable = { name = modeu5_debug_last_country_stock_before value = scope:modeu5_country_stock_before_raw }
+		set_variable = { name = modeu5_debug_last_country_stock_after value = scope:modeu5_country_stock_after }
+		set_variable = { name = modeu5_debug_last_market_stock_before value = scope:modeu5_market_stock_before }
+		set_variable = { name = modeu5_debug_last_market_stock_after value = scope:modeu5_market_stock_after }
+		set_variable = { name = modeu5_debug_last_country_stock_cap value = scope:modeu5_country_stock_cap }
+		set_variable = { name = modeu5_debug_last_available_capacity value = scope:modeu5_available_capacity }
+		set_variable = { name = modeu5_debug_last_over_capacity_before value = scope:modeu5_over_capacity_before }
+		set_variable = { name = modeu5_debug_last_over_capacity_after value = scope:modeu5_over_capacity_after }
+		set_variable = { name = modeu5_debug_last_over_capacity_created value = 0 }
+		set_variable = { name = modeu5_debug_last_stock_difference value = scope:modeu5_stock_difference_after }
+		set_variable = { name = modeu5_debug_last_consistency_validation_required value = scope:modeu5_consistency_validation_required }
+		set_variable = { name = modeu5_debug_last_trade_income_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_transport_cost_generated value = 0 }
+		set_variable = { name = modeu5_debug_last_trade_capacity_used value = 0 }
+	}
+}

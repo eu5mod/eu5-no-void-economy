@@ -1,2 +1,29 @@
-# ModeU5 placeholder file.
-# Gameplay logic intentionally not implemented in bootstrap.
+namespace = modeu5_debug
+
+modeu5_debug.1 = {
+	type = country_event
+	title = modeu5_debug.1.title
+	desc = modeu5_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.1.a
+		modeu5_debug_run_single_record_stock_tests = yes
+	}
+	option = {
+		name = modeu5_debug.1.b
+		modeu5_debug_run_same_market_transfer_tests = yes
+	}
+	option = {
+		name = modeu5_debug.1.c
+		modeu5_debug_run_inter_market_transfer_test = yes
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

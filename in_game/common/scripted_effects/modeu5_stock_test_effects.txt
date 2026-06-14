@@ -1,0 +1,425 @@
+# Deterministic CORE-01 manual-test helpers.
+# Capacity is test setup data; stock setup and cleanup always use CORE operators.
+
+modeu5_debug_replace_country_capacity_for_good = {
+	$country$ = {
+		if = {
+			limit = {
+				is_key_in_variable_map = {
+					name = modeu5_$good$_stock_cap_by_market
+					target = $market$
+				}
+			}
+			remove_from_variable_map = {
+				name = modeu5_$good$_stock_cap_by_market
+				key = $market$
+			}
+		}
+		add_to_variable_map = {
+			name = modeu5_$good$_stock_cap_by_market
+			key = $market$
+			value = $value$
+		}
+	}
+}
+
+modeu5_debug_run_single_record_stock_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+	capital.market = { save_temporary_scope_as = modeu5_test_market }
+
+	modeu5_debug_replace_country_capacity_for_good = {
+		good = wheat
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		value = 40
+	}
+	modeu5_remove_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 1000000
+		reason = debug_test
+	}
+	modeu5_add_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 60
+		capacity_policy = allow_over_capacity
+	}
+	if = {
+		limit = {
+			scope:modeu5_actual_added_quantity = 60
+			scope:modeu5_rejected_quantity = 0
+			scope:modeu5_over_capacity_after = 20
+			scope:modeu5_test_controller = {
+				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 60
+			}
+		}
+		set_variable = { name = modeu5_test_add_allow_over_capacity_passed value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_test_add_allow_over_capacity_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 add allow_over_capacity test failed."
+	}
+
+	modeu5_remove_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 1000000
+		reason = debug_test
+	}
+	modeu5_debug_replace_country_capacity_for_good = {
+		good = wheat
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		value = 100
+	}
+	modeu5_add_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 80
+		capacity_policy = allow_over_capacity
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_test_market_before_enforced_add
+		value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+	}
+	modeu5_add_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 50
+		capacity_policy = enforce
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_test_expected_market_after_enforced_add
+		value = {
+			value = scope:modeu5_test_market_before_enforced_add
+			add = 20
+		}
+	}
+	if = {
+		limit = {
+			scope:modeu5_actual_added_quantity = 20
+			scope:modeu5_rejected_quantity = 30
+			scope:modeu5_test_controller = {
+				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 100
+			}
+			scope:modeu5_test_market = {
+				"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_market_after_enforced_add
+			}
+		}
+		set_variable = { name = modeu5_test_add_enforce_passed value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_test_add_enforce_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 add enforce test failed."
+	}
+
+	modeu5_remove_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 150
+		reason = debug_test
+	}
+	if = {
+		limit = {
+			scope:modeu5_actual_removed_quantity = 100
+			scope:modeu5_unsatisfied_quantity = 50
+			scope:modeu5_test_controller = {
+				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 0
+			}
+		}
+		set_variable = { name = modeu5_test_remove_passed value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_test_remove_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 remove test failed."
+	}
+
+	modeu5_add_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		quantity = 100
+		capacity_policy = enforce
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_test_market_before_decay
+		value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+	}
+	modeu5_decay_stock = {
+		country = scope:modeu5_test_controller
+		market = scope:modeu5_test_market
+		good = wheat
+		decay_rate = 0.1
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_test_expected_market_after_decay
+		value = {
+			value = scope:modeu5_test_market_before_decay
+			subtract = 10
+		}
+	}
+	if = {
+		limit = {
+			scope:modeu5_decayed_quantity = 10
+			scope:modeu5_test_controller = {
+				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 90
+			}
+			scope:modeu5_test_market = {
+				"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_market_after_decay
+			}
+		}
+		set_variable = { name = modeu5_test_decay_passed value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_test_decay_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 decay test failed."
+	}
+}
+
+modeu5_debug_run_same_market_transfer_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_test_market }
+
+		modeu5_debug_replace_country_capacity_for_good = {
+			good = wheat
+			country = c:FRA
+			market = scope:modeu5_test_market
+			value = 200
+		}
+		modeu5_debug_replace_country_capacity_for_good = {
+			good = wheat
+			country = c:ENG
+			market = scope:modeu5_test_market
+			value = 100
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 50
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_add_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 90
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_market_before_same_market_transfer
+			value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+		}
+
+		modeu5_transfer_stock = {
+			seller_country = c:FRA
+			buyer_country = c:ENG
+			source_market = scope:modeu5_test_market
+			target_market = scope:modeu5_test_market
+			good = wheat
+			quantity = 50
+			target_capacity_policy = allow_over_capacity
+		}
+		if = {
+			limit = {
+				scope:modeu5_actual_transferred_quantity = 50
+				scope:modeu5_unsatisfied_quantity = 0
+				scope:modeu5_over_capacity_after = 40
+				c:FRA = {
+					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 0
+				}
+				c:ENG = {
+					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 140
+				}
+				scope:modeu5_test_market = {
+					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_market_before_same_market_transfer
+				}
+			}
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_same_market_transfer_passed value = 1 }
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_same_market_transfer_passed value = 0 }
+			}
+			error_log = "ModeU5 deterministic CORE-01 same-market transfer test failed."
+		}
+
+		modeu5_transfer_stock = {
+			seller_country = c:ENG
+			buyer_country = c:ENG
+			source_market = scope:modeu5_test_market
+			target_market = scope:modeu5_test_market
+			good = wheat
+			quantity = 10
+			target_capacity_policy = enforce
+		}
+		if = {
+			limit = {
+				scope:modeu5_actual_transferred_quantity = 0
+				scope:modeu5_unsatisfied_quantity = 10
+				scope:modeu5_invalid_same_record_transfer = 1
+			}
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_invalid_same_record_passed value = 1 }
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_invalid_same_record_passed value = 0 }
+			}
+			error_log = "ModeU5 deterministic CORE-01 invalid same-record transfer test failed."
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_test_same_market_transfer_passed value = 0 }
+		set_variable = { name = modeu5_test_invalid_same_record_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 transfer test requires FRA and ENG."
+	}
+}
+
+modeu5_debug_run_inter_market_transfer_test = {
+	save_temporary_scope_as = modeu5_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+			NOT = { c:FRA.capital.market = c:ENG.capital.market }
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_test_source_market }
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_test_target_market }
+
+		modeu5_debug_replace_country_capacity_for_good = {
+			good = wheat
+			country = c:FRA
+			market = scope:modeu5_test_source_market
+			value = 200
+		}
+		modeu5_debug_replace_country_capacity_for_good = {
+			good = wheat
+			country = c:ENG
+			market = scope:modeu5_test_target_market
+			value = 100
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_source_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_target_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_source_market
+			good = wheat
+			quantity = 100
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_add_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_target_market
+			good = wheat
+			quantity = 70
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_source_market_before_transfer
+			value = "scope:modeu5_test_source_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_target_market_before_transfer
+			value = "scope:modeu5_test_target_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_source_market_after_transfer
+			value = {
+				value = scope:modeu5_test_source_market_before_transfer
+				subtract = 30
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_target_market_after_transfer
+			value = {
+				value = scope:modeu5_test_target_market_before_transfer
+				add = 30
+			}
+		}
+
+		modeu5_transfer_stock = {
+			seller_country = c:FRA
+			buyer_country = c:ENG
+			source_market = scope:modeu5_test_source_market
+			target_market = scope:modeu5_test_target_market
+			good = wheat
+			quantity = 50
+			target_capacity_policy = enforce
+		}
+		if = {
+			limit = {
+				scope:modeu5_actual_transferred_quantity = 30
+				scope:modeu5_unsatisfied_quantity = 20
+				c:FRA = {
+					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_source_market)" = 70
+				}
+				c:ENG = {
+					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_target_market)" = 100
+				}
+				scope:modeu5_test_source_market = {
+					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_source_market_after_transfer
+				}
+				scope:modeu5_test_target_market = {
+					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_target_market_after_transfer
+				}
+			}
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_inter_market_transfer_passed value = 1 }
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				set_variable = { name = modeu5_test_inter_market_transfer_passed value = 0 }
+			}
+			error_log = "ModeU5 deterministic CORE-01 inter-market transfer test failed."
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_test_inter_market_transfer_passed value = 0 }
+		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
+	}
+}
