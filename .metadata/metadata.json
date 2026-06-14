@@ -1,9 +1,9 @@
 {
-	"name": "No Void Economy",
+	"name": "No Void Economy (NVE)",
 	"id": "modeu5_core",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "REQUIRED FOR MODEU5 SAVES. Enable before starting a campaign and keep enabled for that save. Adding or removing ModeU5 packages mid-campaign is unsupported.",
+	"short_description": "NVE removes the void-economy so that only goods sold brings money & overproducting country will adapt their production. The mode include Optional balancing options to remove PDX punitive approach to balance.",
 	"tags": [
 		"Gameplay",
 		"Trade and Economics"
