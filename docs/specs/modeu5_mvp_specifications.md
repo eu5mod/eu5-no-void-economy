@@ -550,12 +550,25 @@ Si modeu5_add_stock ne fournit pas directement produced_quantity, US-00.1 peut l
 US-00.1 ne doit pas recalculer actual_added_quantity ou rejected_quantity si ces valeurs sont déjà fournies par modeu5_add_stock.
 ### Variables persistantes
 
-L’implémentation cible repose sur des variable maps persistantes stockées sur le scope country.
-Pour chaque couple country × market × good, ModeU5 maintient :
+Le modèle logique repose sur un enregistrement unique par couple country × market × good :
+
+```txt
+production_ledger = {
+    produced
+    added
+    rejected
+}
+```
+
+Les variable maps EU5 documentées associent une clé à une seule valeur. Elles ne documentent pas une valeur structurée contenant plusieurs champs ou une map imbriquée.
+
+En l’absence d’un scope persistant unique pouvant représenter chaque enregistrement country × market × good, l’implémentation physique confirmée utilise une famille synchronisée de variable maps stockées sur le scope country :
+
 modeu5_<good>_produced_by_market[market]
 modeu5_<good>_added_by_market[market]
 modeu5_<good>_rejected_by_market[market]
-Ces variables représentent des compteurs mensuels.
+
+Ces trois valeurs sont les champs physiques d’un même enregistrement logique. Elles ne doivent pas être traitées comme trois systèmes indépendants.
 Elles sont alimentées pendant le mois, puis lues en fin de mois par US-00.2, US-00.3 et US-00.4.
 ### Règle de mise à jour
 
@@ -577,11 +590,12 @@ produced_quantity
 actual_added_quantity
 rejected_quantity
 Le helper est responsable :
-- d’identifier la map correspondant au bien ;
-- d’ajouter les valeurs mensuelles ;
+- d’identifier les champs physiques correspondant au bien ;
+- d’ajouter les valeurs mensuelles à l’enregistrement logique ;
 - de sécuriser les valeurs négatives ;
 - de logguer les anomalies ;
-- de rendre l’implémentation remplaçable si les variable maps ne sont pas fiables.
+- de conserver la cohérence des champs ;
+- de rendre l’implémentation remplaçable si un vrai scope-record persistant est confirmé ultérieurement.
 ### Reset mensuel
 
 À la fin du calcul mensuel, après calcul des ratios, de la void wealth et des malus N+1, les compteurs mensuels doivent être remis à zéro :
@@ -629,7 +643,15 @@ modeu5_<good>_added_by_market[market]
 modeu5_<good>_rejected_by_market[market]
 ### Variables produites
 
-US-00.2 produit :
+US-00.2 ajoute deux champs au même enregistrement logique country × market × good :
+
+```txt
+overproduction_ratio
+effective_overproduction_ratio
+```
+
+L’implémentation physique confirmée utilise :
+
 modeu5_<good>_overproduction_ratio_by_market[market]
 modeu5_<good>_effective_overproduction_ratio_by_market[market]
 ### Calcul du ratio de surproduction

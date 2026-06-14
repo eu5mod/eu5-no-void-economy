@@ -26,7 +26,7 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Resolver/outcome records | demand/country/market/good | US-10 internal outputs using confirmed resolver primitives | CONFIRMED | 067-077 |
+| Resolver/outcome records | demand/country/market/location/good | current transaction diagnostics plus direct reads of US-10.3 outcome maps | CONFIRMED | 007, 040, 067-077 |
 | Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
 | Optional custom panel | UI | ModeU5 window | OUT_OF_SCOPE | N/A |
@@ -57,6 +57,7 @@ Related US: US-04-UI
 - Explain that same-market consumption is not trade.
 - Explain that logistics costs and trade-income adjustments are outside the surviving MVP story set.
 - Keep display read-only.
+- Do not create a second authoritative resolver/outcome map for UI. Read US-10.3 aggregates and current transaction diagnostics directly.
 
 ## US-specific boundary checks
 

@@ -26,8 +26,8 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Capacity breakdown inputs | country × market | confirmed location/building iterators plus US-02 counters | CONFIRMED | 033-035 |
-| Used/available storage | ModeU5 | US-01 values | CONFIRMED | 015-018 |
+| Capacity breakdown inputs | country × market × good | direct reads of US-02 total and optional contribution maps | CONFIRMED | 007, 017, 033-035 |
+| Used/available storage | country × market × good | direct reads of US-01 stock map and US-02 capacity map | CONFIRMED | 007, 015-018 |
 | Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change
@@ -52,6 +52,7 @@ Related US: US-01-UI, US-03-UI
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
 - Keep the display read-only.
+- Read US-01/US-02 maps directly; do not recalculate or store a second UI capacity.
 - Separate base, commercial, logistic, and confirmed foreign contributions.
 - Show fallback/excluded contribution categories.
 - Do not require a complete custom stock ledger.

@@ -1,0 +1,261 @@
+# ModeU5 Variable-Map Storage Model
+
+## Purpose
+
+This document defines when ModeU5 user stories should use persistent variable maps and how each multidimensional value is represented.
+
+It supplements `AGENTS.md`, `CLAUDE.md`, and TECH-01 exposure `007`. It does not authorize direct stock mutation or bypass any centralized scripted effect.
+
+Engine reference:
+
+```txt
+https://eu5.paradoxwikis.com/Variable#Variable_maps
+```
+
+The official 1.1 section defines variable maps as associative arrays mapping one key scope to one value scope or number.
+
+## Selection rule
+
+Use a persistent variable map when all of the following are true:
+
+1. The value must survive the current effect or event chain.
+2. The value belongs to a stable game-object scope.
+3. One remaining dimension can be represented by a stable scope key.
+4. The value is state, a durable counter, or an intentional cache.
+
+Use local variables and saved scopes for one resolver call, one stock transaction, intermediate arithmetic, candidate scores, and other temporary data.
+
+Use static definitions or scripted/config values for fixed balance data. Do not copy static configuration into runtime maps without a demonstrated need.
+
+## Map contract
+
+Every map-owning user story must define:
+
+```txt
+logical dimensions
+logical record and fields
+record owner scope
+tuple/key
+confirmed physical map family
+physical value type
+default value
+write owner
+readers
+reset/rebuild lifecycle
+```
+
+General rules:
+
+- Map names are static identifiers. Do not assume a map name can be built dynamically from an argument or variable.
+- A native variable-map entry is one `key -> value` association. The value may be a number or a scope, but the official variable-map documentation does not define inline structs, named fields, or a nested map value.
+- Missing numeric entries must have an explicit safe default.
+- `add_to_variable_map` does not replace an existing key. Update by reading the old value, removing the key, and re-adding the replacement.
+- Preserve or save the key scope before changing scope.
+- Clear a map only at its documented lifecycle boundary.
+- Aggregate/cache maps are rebuilt from their source-of-truth maps, never the reverse.
+- Stock maps are writable only through the centralized stock effects required by `AGENTS.md`.
+
+## Logical records and physical map families
+
+ModeU5 should model related fields as one logical record:
+
+```txt
+country_market_good_record = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
+```
+
+This is domain notation, not a claim that EU5 supports an inline record as one map value.
+
+With currently documented engine exposure, one logical record is represented by a synchronized map family:
+
+```txt
+same owner scope
+same tuple key
+one native map per record field that must persist
+centralized helpers enforcing record-level updates
+```
+
+A true single-map representation would require the map value to reference a unique persistent scope for each logical record, with the fields stored as variables on that scope. No suitable persistent `country x market x good` record scope or nested-map value is currently confirmed. Track that possible optimization under TECH-01 `088`.
+
+## Canonical representations
+
+### Country x market x good
+
+Logical model:
+
+```txt
+country.country_market_good_record[market][good] = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
+```
+
+Confirmed physical model:
+
+```txt
+record owner: country
+tuple:        market × good
+shared key:   market scope
+map family:   modeu5_<good>_<field>_by_market
+map value:    one numeric field
+default:      field-specific, normally 0
+```
+
+Variable maps provide one keyed dimension on one owner scope and one value per key. Because no persistent record object is confirmed, the good and field remain encoded in static map names while the market is the shared key.
+
+Goods iteration must call generated per-good helpers when a physical map name changes by good or field. Runtime map-name construction is not assumed.
+
+All maps in the family represent one logical record. They must use the same owner, market key, default rules, and lifecycle. Centralized helpers provide record-level consistency.
+
+This logical record owns:
+
+```txt
+country stock
+country stock capacity
+US-00 produced/added/rejected ledger
+US-00 ratios, void wealth, and next-month penalty
+country/market demand outcomes that cannot live on a more specific consumer scope
+```
+
+### Market x good aggregate
+
+Logical model:
+
+```txt
+market.stock[good]
+```
+
+Physical model:
+
+```txt
+owner:    market
+map name: modeu5_market_good_stock
+key:      goods scope
+value:    numeric
+default:  0
+```
+
+This is an aggregate/cache rebuilt from country stock maps.
+
+### Location x good
+
+Logical model:
+
+```txt
+location.pop_demand_record[good] = {
+    multiplier
+    requested_quantity
+    satisfied_quantity
+    unsatisfied_quantity
+    satisfied_months
+    unsatisfied_months
+}
+```
+
+Physical model:
+
+```txt
+record owner: location
+tuple:        good
+shared key:   goods scope
+map family:   one static map per record field
+map value:    one numeric field
+default:      field-specific
+```
+
+This map family represents one logical location × good demand record shared by US-04 and US-10.3.
+
+### Country x market aggregate across goods
+
+Logical model:
+
+```txt
+country.metric[market]
+```
+
+Physical model:
+
+```txt
+owner:    country
+map name: one static aggregate map
+key:      market scope
+value:    numeric
+default:  0
+```
+
+Examples include a per-market total void-wealth diagnostic. Country-wide totals remain ordinary country variables when no keyed dimension remains.
+
+## Transaction boundary
+
+The following values should normally remain local to the current scripted effect or event chain:
+
+```txt
+requested quantity for one operation
+remaining quantity
+actual added/removed/transferred quantity
+rejected or unsatisfied quantity for one operation
+candidate score
+candidate exclusion reason
+stock before/after for one operation
+temporary arithmetic
+saved country/market/good scopes
+```
+
+Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, US-10.3, debug, or reconciliation.
+
+## All-US review
+
+| User story | Map decision | Required improvement |
+|---|---|---|
+| EPIC US-00 | Owns one logical record | Use the canonical country x market x good record backed by a synchronized map family. |
+| US-00.1 | Owns ledger fields | Treat produced/added/rejected as fields of one logical record; update their physical maps through one helper. |
+| US-00.2 | Owns ratio fields | Add raw/effective ratios to the same logical record and physical map family. |
+| US-00.3 | Owns next-month field | Add the prepared penalty field to the same logical record until N+1 application. |
+| US-00.4 | Owns valuation fields and aggregates | Add detailed valuation fields to the logical record; keep market totals and country totals as explicit aggregates. |
+| US-00-UI | Reads maps | Iterate the same map families without maintaining a UI copy. |
+| US-01 | Owns stock field and aggregate cache | Treat stock as a field of the country x market x good record and retain the separate market x good aggregate map. |
+| US-01-UI | Reads maps | Read US-01/US-02 maps directly and remain non-mutating. |
+| US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as fields of the country x market x good record. |
+| US-02-UI | Reads maps | Read the capacity maps directly; do not recalculate a second UI capacity. |
+| US-03 | Inherits US-01 maps | Iterate and mutate stock only through `modeu5_decay_stock`; no separate persistent decay-state map. |
+| US-03-UI | Reads transaction output | Keep operation diagnostics temporary unless a monthly aggregate is explicitly required. |
+| US-04 | Owns location demand-record fields | Use one logical location x good record backed by maps keyed by goods. |
+| US-04-UI | Reads maps | Read US-04 and US-10.3 location maps directly. |
+| US-05 | No map needed | Wealth, Trade Income, and Economic Base are country scalars for the calculation. |
+| US-05-UI | No map needed | Read US-05 scalar outputs; do not persist a UI copy. |
+| US-07 | No runtime map | Keep building balance in static definitions/configuration. |
+| US-07-UI | No runtime map | Read static/configured values. |
+| US-08 | No runtime map | Keep price changes in static definitions. |
+| US-08-UI | No runtime map | Read static price definitions or documented UI output. |
+| US-09 | No runtime map | Use the country modifier; no per-country shadow map. |
+| US-09-UI | No runtime map | Read the active modifier. |
+| EPIC US-10 | Mixed | Use stock and outcome maps, but keep resolver transactions temporary. |
+| US-10.0 | No persistent map | Candidate lists, scores, and exclusions are transaction-local unless a debug snapshot is explicitly requested. |
+| US-10.1 | Uses stock maps | Keep requested/remaining/satisfied values local; persist only through US-10.3. |
+| US-10.2 | Uses stock maps | Keep one transfer transaction local; persist only through US-10.3. |
+| US-10.3 | Owns outcome-record fields | Add Pop outcomes to the shared location x good demand record and use the canonical country x market x good record pattern for broader aggregates. |
+| US-10-UI | Reads maps and transaction diagnostics | Do not create a second authoritative outcome store. |
+| US-11 | Validates/rebuilds maps | Compare country source maps with market aggregate maps and repair only the aggregate. |
+| US-13 | No runtime map | Use static CB/wargoal variants and triggers. |
+
+## Review outcome
+
+The main record/map-family improvements are concentrated in US-00, US-01, US-02, US-04, US-10.3, and US-11.
+
+US-03, US-10.0, US-10.1, and US-10.2 should consume those maps but keep transaction state temporary. US-05, US-07, US-08, US-09, and US-13 do not gain useful behavior from runtime maps.
