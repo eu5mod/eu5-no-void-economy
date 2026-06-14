@@ -17,11 +17,11 @@ Expose base demand, multiplier, simulated demand, satisfaction quantities/ratio,
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   show no active demand-adaptation claim
-  optional general ModeU5 diagnostics may report "Economy Rebalance not loaded"
+  optional general ModeU5 diagnostics may report "Rebalance Economy not loaded"
 ```
 
 ## Runtime position

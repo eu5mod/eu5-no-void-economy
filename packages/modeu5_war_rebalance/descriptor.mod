@@ -1,7 +1,8 @@
 version="0.1.0"
 tags={
+	"Balance"
 	"Gameplay"
-	"Trade and Economics"
+	"Military"
 }
-name="No Void Economy"
+name="Rebalance Early Blobbing"
 supported_version="*"

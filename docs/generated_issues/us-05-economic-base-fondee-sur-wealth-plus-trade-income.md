@@ -17,7 +17,7 @@ Replace the Economic Base formula used by Stability Investment and legitimacy-pr
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   leave the vanilla Economic Base formula and all affected slider costs untouched
@@ -65,7 +65,7 @@ Related US: US-00.4
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
-- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not replace the formula when the Economy Rebalance package is absent.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not replace the formula when the Rebalance Economy package is absent.
 - Affect only Stability Investment and legitimacy-producing Court/Government Power.
 - Replace the confirmed Economic Base formula/call site with `modeu5_slider_cost_base`.
 - Do not read the final vanilla slider cost merely to reverse-engineer or reconcile it.

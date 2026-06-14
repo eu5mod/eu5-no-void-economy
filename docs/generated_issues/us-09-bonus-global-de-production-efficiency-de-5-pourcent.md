@@ -17,7 +17,7 @@ Apply a clearly identified global `+5%` production-efficiency modifier to all el
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   apply no ModeU5 Production Efficiency compensation modifier
@@ -64,7 +64,7 @@ Related US: US-00.3, stock-aware production pipeline
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
-- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not apply or retain the modifier when the Economy Rebalance package is absent.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not apply or retain the modifier when the Rebalance Economy package is absent.
 - Use exactly the confirmed modifier semantics.
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.

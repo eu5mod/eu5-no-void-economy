@@ -55,7 +55,7 @@ Mixed years and zero-demand years leave the multiplier unchanged. The annual adj
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   do not initialize or update Pop-demand multipliers
@@ -223,7 +223,7 @@ Related US:
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
-- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not run US-04 when the Economy Rebalance package is absent.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not run US-04 when the Rebalance Economy package is absent.
 - Apply only to Pop good demand.
 - Never apply to building, production, construction, or army demand.
 - Use the vanilla `pop_demand` demand definition as the primary coefficient surface.

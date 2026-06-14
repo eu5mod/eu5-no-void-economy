@@ -17,11 +17,11 @@ Expose the modifier value, ModeU5 compensation reason, affected countries, and a
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   show no ModeU5 +5% compensation modifier or tooltip
-  optional general diagnostics may report "Economy Rebalance not loaded"
+  optional general diagnostics may report "Rebalance Economy not loaded"
 ```
 
 ## Runtime position

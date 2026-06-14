@@ -17,7 +17,7 @@ Identify the confirmed static base-price and dynamic-pricing fields, set relevan
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   install no US-08 static building/RGO price override

@@ -48,19 +48,42 @@ Known vanilla warning ignored
 
 ## Package and option tests
 
-### Test P0 - default full suite
+### Test P-1 - package publication and source provenance
 
 Setup:
 
 ```txt
-Install or select the standard ModeU5 playset
-Start a clean campaign without removing a companion
+Run `./tools/validate_module_packages.sh`
+Run `./tools/install_local_packages.sh`
+Run `./tools/install_local_packages.sh --check`
+Refresh the EU5 launcher
 ```
 
 Expected:
 
 ```txt
-Core, Economy Rebalance, Trade Rebalance, and War Rebalance are all loaded
+The source package validation passes
+The launcher exposes four distinct ModeU5 entries
+Each installed package has the expected unique descriptor name
+Each `MODEU5_SOURCE.txt` reports the intended source branch and commit
+If two `No Void Economy` entries appear, the older `eu5voideco` single-package entry is disabled
+```
+
+---
+
+### Test P0 - default full suite
+
+Setup:
+
+```txt
+Enable all four ModeU5 launcher entries in one playset
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing are all loaded
 Startup diagnostics report all four matching package versions
 No Core script fabricates a package marker for content absent from the playset
 ```
@@ -72,7 +95,7 @@ No Core script fabricates a package marker for content absent from the playset
 Setup:
 
 ```txt
-Enable ModeU5 Core only
+Enable No Void Economy only
 Start a clean campaign
 ```
 
@@ -87,12 +110,12 @@ Startup debug reports Core only
 
 ---
 
-### Test P2 - Economy Rebalance
+### Test P2 - Rebalance Economy
 
 Setup:
 
 ```txt
-Enable Core + Economy Rebalance
+Enable Core + Rebalance Economy
 Start a clean campaign
 ```
 
@@ -106,12 +129,12 @@ Economy package version matches Core
 
 ---
 
-### Test P3 - Trade Rebalance
+### Test P3 - Rebalance Estate Power
 
 Setup:
 
 ```txt
-Enable Core + Trade Rebalance
+Enable Core + Rebalance Estate Power
 Start a clean campaign
 ```
 
@@ -126,12 +149,12 @@ Trade package version matches Core
 
 ---
 
-### Test P4 - War Rebalance
+### Test P4 - Rebalance Early Blobbing
 
 Setup:
 
 ```txt
-Enable Core + War Rebalance
+Enable Core + Rebalance Early Blobbing
 Start a clean campaign
 ```
 
@@ -212,6 +235,11 @@ The setting does not mutate stock or package state
 Setup:
 
 ```txt
+Refresh the launcher after installing all four packages
+Add one optional companion to a playset without Core
+Confirm that compatible Core is enabled automatically
+Disable Core while the companion remains selected
+Enable Core alone in a clean playset
 Run clean campaigns with Core only and with each optional companion package
 Inspect startup package markers and optional behavior
 ```
@@ -219,10 +247,43 @@ Inspect startup package markers and optional behavior
 Expected:
 
 ```txt
+The companion metadata identifies No Void Economy (NVE) as a dependency
+Selecting a companion automatically enables compatible Core 0.1.x
+Disabling Core does not cascade-disable selected companions
+The companion-only state is treated as invalid or causes Core to be restored before load
+Selecting Core alone does not enable optional companions
+An incompatible Core version produces a version-mismatch issue
+All four packages remain sibling entries
 Package presence, not a game rule, controls optional static overrides
 No Game Rules setting claims to unload Economy, Trade, or War packages
 Adding or removing a package still requires launcher/playset selection before campaign load
 No configuration action reseeds or mutates stock
+The installed source branch and commit are visible in `MODEU5_SOURCE.txt`
+```
+
+---
+
+### Test CFG4 - package lifecycle warning
+
+Setup:
+
+```txt
+Open the EU5 mod manager
+Hover each ModeU5 entry in the available-mod list
+Add each package to a playset and hover the selected entry
+```
+
+Expected:
+
+```txt
+No Void Economy is identified as required for ModeU5 saves
+Every package says it must be selected before campaign start
+Together, the descriptions clearly say the package set must remain unchanged for that save
+Rebalance Economy identifies its runtime systems and planned static US-08 boundary
+Rebalance Estate Power identifies its static US-07 boundary
+Rebalance Early Blobbing states that US-13 gameplay is not yet implemented
+The warning appears in both available-mod and selected-playset tooltips
+No tooltip claims that the launcher technically blocks an unsafe mid-campaign change
 ```
 
 ## Start-game initialization tests

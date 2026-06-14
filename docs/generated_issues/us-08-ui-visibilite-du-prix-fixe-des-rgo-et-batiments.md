@@ -17,7 +17,7 @@ Expose base price 50, standard modifiers, final displayed price, and removal of 
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   install no US-08-specific price tooltip/localization override
