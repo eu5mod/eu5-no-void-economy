@@ -1,4 +1,4 @@
-# US-07-UI — Visibilité du rééquilibrage des bâtiments de trade
+# US-07-UI — Trade building rebalance UI
 
 Labels: `blocked:engine-exposure`
 

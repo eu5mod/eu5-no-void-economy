@@ -1,11 +1,11 @@
-# EPIC US-10 — Résolution de la consommation et du trade inter-marchés depuis les stocks disponibles
+# EPIC US-10 — Trade & consumption résolution
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-EPIC US-10 — Résolution de la consommation et du trade inter-marchés depuis les stocks disponibles
+EPIC US-10 — Trade & consumption résolution
 ```
 
 As a player, I want consumption and inter-market exchanges resolved from actual ModeU5 stock so nonexistent goods cannot be consumed or transferred.
@@ -31,7 +31,8 @@ Feeds counters to: US-04 and debug/UI
 | Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
 | Inter-market transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
 | Satisfaction tracking | ModeU5 | internal variables | CONFIRMED | 077 |
-| Vanilla local demand context | location × good / estate / country | runtime consumer demand inputs | NOT_CONFIRMED | 037, 086 |
+| Runtime Pop requested-demand input | Pop / location × good | runtime vanilla requested-demand value | NOT_CONFIRMED | 087 |
+| Estate/other consumer requested-demand input | estate / country / consumer × good | runtime vanilla consumer-demand value | NOT_CONFIRMED | 086 |
 | Vanilla actual/desired trade quantity | trade | script equivalent to GUI actual-moved and desired-shipment accessors | TO_TEST | 056 |
 | Automatic cycle invocation | country | `monthly_country_pulse`, `yearly_country_pulse` | CONFIRMED | 011-012 |
 

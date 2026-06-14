@@ -1,11 +1,11 @@
-# US-13 — Surcoût fixe de conquête des provinces pour les pays non-hordes selon l’âge
+# US-13 — CB Rebalancing
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-US-13 — Surcoût fixe de conquête des provinces pour les pays non-hordes selon l’âge
+US-13 — CB Rebalancing
 ```
 
 As a player, I want early conquest to cost more for non-horde countries while hordes retain vanilla conquest behavior.
@@ -28,7 +28,7 @@ Feeds counters to: conquest cost calculation
 |---|---|---|---|---|
 | Non-horde check | attacker country | `NOT = { government_type = government_type:steppe_horde }` | CONFIRMED | 078 |
 | Current age | current script context | `current_age` | CONFIRMED | 079 |
-| Conquest CB/wargoal cost | static CB/wargoal files | `conquer_cost` or equivalent override | NOT_CONFIRMED | 080 |
+| Conquest CB/wargoal cost | static CB/wargoal files | `conquer_cost` or equivalent override | CONFIRMED | 080 |
 | Age/government variant selection | country/CB | confirmed `current_age` and `steppe_horde` check plus static cost hook | NOT_CONFIRMED | 080 |
 
 ## Files expected to change

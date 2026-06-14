@@ -1,11 +1,11 @@
-# US-02-UI — Visibilité de la capacité de stockage
+# US-02-UI — Storage capacity UI
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-02-UI — Visibilité de la capacité de stockage
+US-02-UI — Storage capacity UI
 ```
 
 As a player, I want to understand where storage capacity comes from and why it changes.

@@ -1,4 +1,4 @@
-# US-09-UI — Visibilité du bonus de Production Efficiency
+# US-09-UI — Production Efficiency de +5 % bonus UI
 
 Labels: none
 

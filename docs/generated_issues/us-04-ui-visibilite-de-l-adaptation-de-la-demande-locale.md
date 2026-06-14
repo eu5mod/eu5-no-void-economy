@@ -1,11 +1,11 @@
-# US-04-UI — Visibilité de l’adaptation de la demande locale
+# US-04-UI — Pop demand visibility
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-US-04-UI — Visibilité de l’adaptation de la demande locale
+US-04-UI — Pop demand visibility
 ```
 
 As a player, I want to understand why local demand for a good is increasing, decreasing, or staying stable.
@@ -27,7 +27,7 @@ Feeds counters to: player/modder diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Local demand/counters | location × good | US-04 variables | CONFIRMED | 040 |
-| Demand source/fallback | location × good | vanilla or simulated demand | NOT_CONFIRMED | 037 |
+| Unmet-need signal/fallback | country × market × good | US-04 shortage signal or US-10.3 unsatisfied Pop-demand outcome | NOT_CONFIRMED | 037 |
 | Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change

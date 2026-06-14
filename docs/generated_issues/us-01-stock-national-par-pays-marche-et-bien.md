@@ -1,4 +1,4 @@
-# US-01 — Stock national par pays, marché et bien
+# US-01 — Country stocks
 
 Labels: none
 

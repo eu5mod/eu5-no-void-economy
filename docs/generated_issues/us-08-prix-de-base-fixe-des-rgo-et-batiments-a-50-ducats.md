@@ -1,11 +1,11 @@
-# US-08 — Prix de base fixe des RGO et bâtiments à 50 ducats
+# US-08 — RGO & building price realignement
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-US-08 — Prix de base fixe des RGO et bâtiments à 50 ducats
+US-08 — RGO & building price realignement
 ```
 
 As a player, I want relevant RGOs and buildings to use a fixed base price of 50 ducats without the dynamic pricing introduced in 1.2.

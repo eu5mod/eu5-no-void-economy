@@ -1,4 +1,4 @@
-# US-05-UI — Visibilité de l’Economic Base ModeU5
+# US-05-UI — Economic Base definition UI
 
 Labels: `blocked:engine-exposure`
 

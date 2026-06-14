@@ -1,11 +1,11 @@
-# US-11 — Réconciliation et cohérence de la double comptabilité
+# US-11 — Accountring Reconciliation
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-11 — Réconciliation et cohérence de la double comptabilité
+US-11 — Accountring Reconciliation
 ```
 
 As a player, I want country stocks, market aggregates, and recognized economic outcomes to remain consistent after every major operation.

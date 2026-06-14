@@ -1,11 +1,11 @@
-# US-09 — Bonus global de Production Efficiency de +5 %
+# US-09 — Production Efficiency de +5 % bonus
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-09 — Bonus global de Production Efficiency de +5 %
+US-09 — Production Efficiency de +5 % bonus
 ```
 
 As a player, I want a global +5% Production Efficiency compensation for ModeU5's stock, decay, and production-correction constraints.

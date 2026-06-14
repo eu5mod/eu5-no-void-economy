@@ -1,11 +1,11 @@
-# US-02 — Capacité de stockage
+# US-02 — Storage capacity
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-02 — Capacité de stockage
+US-02 — Storage capacity
 ```
 
 As a player, I want storage capacity to reflect owned locations and relevant commercial, logistic, and compatible foreign buildings.

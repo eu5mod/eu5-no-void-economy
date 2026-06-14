@@ -27,7 +27,7 @@ Feeds counters to: US-00-UI and balancing diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Rejected quantity output | country × market × good | US-00.1 accumulated stock-add results | CONFIRMED | 023-024, internal |
-| Read keyed rejected entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
+| Read keyed rejected entry | country-scoped per-good map keyed by market | variable_map(name\|key) | CONFIRMED | 007, 025 |
 | Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
 | Estate tax-base proxy | country or estate | `estate_tax_base` | CONFIRMED | 031 |
 | Estate tax-percentage proxy | country | `estate_tax_percentage` | CONFIRMED | 032 |

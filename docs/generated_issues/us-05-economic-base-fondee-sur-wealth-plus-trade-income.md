@@ -1,11 +1,11 @@
-# US-05 — Economic Base fondée sur Wealth + Trade Income
+# US-05 — Economic Base definition
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-US-05 — Economic Base fondée sur Wealth + Trade Income
+US-05 — Economic Base definition
 ```
 
 As a player, I want Stability and legitimacy-producing Court/Government Power costs based on Wealth plus Trade Income rather than Tax Base.

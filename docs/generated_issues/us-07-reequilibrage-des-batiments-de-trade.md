@@ -1,11 +1,11 @@
-# US-07 — Rééquilibrage des batiments de Trade
+# US-07 — Trade building rebalance
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-07 — Rééquilibrage des batiments de Trade
+US-07 — Trade building rebalance
 ```
 
 As a player, I want trade buildings rebalanced to fit ModeU5 storage and logistics constraints.

@@ -1,11 +1,11 @@
-# US-08-UI — Visibilité du prix fixe des RGO et bâtiments
+# US-08-UI — RGO & building price realignement UI
 
 Labels: `blocked:engine-exposure`
 
 ## User Story
 
 ```txt
-US-08-UI — Visibilité du prix fixe des RGO et bâtiments
+US-08-UI — RGO & building price realignement UI
 ```
 
 As a player, I want RGO and building prices to clearly show the fixed base and any standard modifiers.

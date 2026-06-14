@@ -1,4 +1,4 @@
-# US-01-UI — Visibilité des stocks nationaux
+# US-01-UI — Country stocks UI
 
 Labels: none
 
