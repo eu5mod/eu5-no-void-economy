@@ -1,6 +1,6 @@
 # US-07-UI — Trade building rebalance UI
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:trade`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want trade-building tooltips to explain ModeU5 balance changes.
 ## Functional objective
 
 Display building name, verified vanilla and ModeU5 power values, changed operating cost, and storage capacity where applicable.
+
+## Module / availability
+
+```txt
+Package: ModeU5 Trade Rebalance
+Activation: optional companion package
+Behavior when absent:
+  install no US-07-specific tooltip/localization override
+  do not present vanilla buildings as rebalanced
+```
 
 ## Runtime position
 
@@ -50,6 +60,7 @@ Related US: US-02-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Display only confirmed, applied changes.
 - Keep tooltip values synchronized with static overrides/configuration.
 - Do not hide storage or operating-cost effects.

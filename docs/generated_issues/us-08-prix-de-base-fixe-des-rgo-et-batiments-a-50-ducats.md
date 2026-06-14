@@ -1,6 +1,6 @@
 # US-08 — RGO & building price realignement
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want relevant RGOs and buildings to use a fixed base price of 50 
 ## Functional objective
 
 Identify the confirmed static base-price and dynamic-pricing fields, set relevant RGO/productive/commercial/transformation entries to base 50, and preserve only approved standard modifiers applied afterward.
+
+## Module / availability
+
+```txt
+Package: ModeU5 Economy Rebalance
+Activation: optional companion package
+Behavior when absent:
+  install no US-08 static building/RGO price override
+  preserve vanilla construction and upgrade pricing
+```
 
 ## Runtime position
 
@@ -54,6 +64,8 @@ Related US: US-07
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
+- Keep US-08 static overrides physically outside the Core package; do not simulate deactivation with UI or runtime checks.
 - Confirm exact static fields and affected entries before overriding.
 - Set the verified base to 50 and neutralize only confirmed dynamic rules.
 - Preserve approved standard post-base modifiers.

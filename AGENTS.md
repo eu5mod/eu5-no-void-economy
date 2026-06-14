@@ -23,6 +23,30 @@ The country-level stock is the source of truth. The market-level stock is an agg
 
 If the two diverge, rebuild `market_good_stock` from country stocks. Never rebuild country stocks from market stock.
 
+## Module/package contract
+
+ModeU5 is a suite:
+
+```txt
+ModeU5 Core - Stock-Constrained Economy
+  required; cannot be disabled while ModeU5 is active
+
+ModeU5 Economy Rebalance
+  optional; US-04, US-05, US-08, US-09 and their UI stories
+
+ModeU5 Trade Rebalance
+  optional; US-07 and US-07-UI
+
+ModeU5 War Rebalance
+  optional; US-13
+```
+
+All other CORE and US stories belong to the required Core package.
+
+Companion-package presence is the source of truth for optional static overrides. Do not claim that a runtime game rule disables US-07 or US-08 while their static files remain loaded.
+
+Package selection occurs before campaign load. Adding or removing a package mid-campaign is unsupported without an explicit migration. Follow `docs/technical/MODULE_OPTION_MODEL.md`.
+
 ## Variable-map storage rule
 
 Follow:
@@ -88,7 +112,7 @@ A monthly economic cycle must follow this logical sequence:
 
 ```txt
 1. Apply previous-month production penalties.
-2. Apply global ModeU5 modifiers, including the +5% Production Efficiency compensation if enabled.
+2. If the Economy Rebalance package is loaded, apply its global ModeU5 modifiers, including the +5% Production Efficiency compensation.
 3. Recalculate stock capacities when needed.
 4. Read or estimate vanilla production.
 5. Calculate ModeU5-recognized production.
@@ -102,13 +126,13 @@ A monthly economic cycle must follow this logical sequence:
 13. Calculate US-00.2 overproduction ratios.
 14. Calculate US-00.4 void wealth.
 15. Calculate US-00.3 next-month production penalties.
-16. Calculate the US-05 Economic Base.
-17. Display the US-05 formula inputs and result when exposure permits.
+16. If the Economy Rebalance package is loaded, calculate the US-05 Economic Base.
+17. If the Economy Rebalance package is loaded, display the US-05 formula inputs and result when exposure permits.
 18. Validate stock consistency through modeu5_validate_stock_consistency.
 19. Reset monthly counters only after every consumer has read them.
 ```
 
-A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation, reset annual counters, and run diagnostics if enabled.
+A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation only when the Economy Rebalance package is loaded, reset annual counters, and run diagnostics if enabled.
 
 The monthly and yearly stock cycles must not mutate ModeU5 stock until CORE-02 has set the current schema version and marked initialization complete. A missing, failed, older unsupported, or newer incompatible initialization state fails closed and remains diagnostic-only.
 
@@ -173,8 +197,8 @@ No gameplay implementation may depend on `TO_TEST` or `NOT_CONFIRMED` exposure u
 Follow this delivery order, even though it is not the runtime order:
 
 ```txt
-0. Spike engine exposure.
-1. Bootstrap mod structure and documentation.
+0. CORE-00 module packaging contract and engine-exposure spike.
+1. Bootstrap Core and optional-package structures and documentation.
 2. CORE-01.1 through CORE-01.4 stock mutation effects.
 3. CORE-01.5 / CORE-01.6 rebuild and validation, then US-11 orchestration.
 4. Debug conventions and deterministic test events.
@@ -187,10 +211,10 @@ Follow this delivery order, even though it is not the runtime order:
 11. US-00.1 / US-00.2 / US-00.4 void economy measurement.
 12. US-00.3 production penalty.
 13. US-10.0 / US-10.1 / US-10.2 / US-10.3 demand resolution.
-14. US-04 local Pop demand adaptation.
-15. US-05 direct Economic Base formula.
-16. US-07 / US-08 / US-09 static balance changes.
-17. US-13 only after exposure is confirmed.
+14. Economy Rebalance: US-04 local Pop demand adaptation.
+15. Economy Rebalance: US-05 direct Economic Base formula.
+16. Economy and Trade Rebalance: US-07 / US-08 / US-09 static balance changes.
+17. War Rebalance: US-13 only after exposure is confirmed.
 18. UI/debug polish.
 ```
 
@@ -311,7 +335,7 @@ US-00 debug must show produced, added, rejected, ratios, buffer, penalty, good p
 
 US-10 debug must show ordered candidates, scores, exclusions, quantities used, satisfied quantity, and unsatisfied quantity.
 
-US-05 debug must show the Wealth input, Trade Income input, resulting Economic Base, affected calculation, and whether direct replacement is active.
+When the Economy Rebalance package is loaded, US-05 debug must show the Wealth input, Trade Income input, resulting Economic Base, affected calculation, and whether direct replacement is active.
 
 ## Testing rule
 

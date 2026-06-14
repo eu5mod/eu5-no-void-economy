@@ -1,6 +1,6 @@
 # US-05-UI — Economic Base definition UI
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want to understand why ModeU5 Stability and Government Power cost
 ## Functional objective
 
 Show the Wealth input, Trade Income input, resulting ModeU5 Economic Base, and which two slider calculations use the replacement formula.
+
+## Module / availability
+
+```txt
+Package: ModeU5 Economy Rebalance
+Activation: optional companion package
+Behavior when absent:
+  do not claim that ModeU5 replaced the Economic Base
+  optional general diagnostics may report "Economy Rebalance not loaded"
+```
 
 ## Runtime position
 
@@ -54,6 +64,7 @@ Related US: US-00-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Keep display logic read-only.
 - Identify the direct replacement formula and whether its call site is active.
 - Show only affected sliders.

@@ -1,6 +1,6 @@
 # US-09-UI — Production Efficiency de +5 % bonus UI
 
-Labels: none
+Labels: `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want to see that ModeU5 grants a global +5% Production Efficiency
 ## Functional objective
 
 Expose the modifier value, ModeU5 compensation reason, affected countries, and affected production through confirmed modifier/tooltips or debug.
+
+## Module / availability
+
+```txt
+Package: ModeU5 Economy Rebalance
+Activation: optional companion package
+Behavior when absent:
+  show no ModeU5 +5% compensation modifier or tooltip
+  optional general diagnostics may report "Economy Rebalance not loaded"
+```
 
 ## Runtime position
 
@@ -50,6 +60,7 @@ Related US: US-00-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Label the bonus as ModeU5 economic compensation.
 - Keep display read-only.
 - Distinguish it from vanilla national and technology modifiers.

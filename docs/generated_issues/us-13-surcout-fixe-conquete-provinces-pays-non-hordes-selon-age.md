@@ -1,6 +1,6 @@
 # US-13 — CB Rebalancing
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:war`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want early conquest to cost more for non-horde countries while ho
 ## Functional objective
 
 Provide age-specific conquest CB/wargoal variants for non-hordes: add `0.40` in Ages I-II, add `0.20` in Age III, and use vanilla cost from Age IV onward. Horde countries always use vanilla variants.
+
+## Module / availability
+
+```txt
+Package: ModeU5 War Rebalance
+Activation: optional companion package
+Behavior when absent:
+  install or select no ModeU5 conquest-cost variant
+  preserve vanilla CB/wargoal behavior
+```
 
 ## Runtime position
 
@@ -54,6 +64,7 @@ Related US: none
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Do not assume `conquer_cost` is dynamically mutable.
 - Prefer explicit static variants selected by confirmed age and horde checks.
 - Apply fixed additions, not an additional multiplier.

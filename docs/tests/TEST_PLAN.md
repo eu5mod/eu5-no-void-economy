@@ -26,6 +26,7 @@ TECH-01 entries updated
 | Multi-market country test | Test country × market split and US-10.2 inter-market transfer. |
 | Debug-only event test | Test scripted effects without relying on the full economy cycle. |
 | Missing-exposure test | Confirm that fallbacks are logged and do not silently apply gameplay effects. |
+| Package-combination test | Confirm that optional packages activate only their documented US set. |
 
 ## Required log checks
 
@@ -44,6 +45,104 @@ No new blocking error
 New warnings explained
 Known vanilla warning ignored
 ```
+
+## Package and option tests
+
+### Test P1 - Core only
+
+Setup:
+
+```txt
+Enable ModeU5 Core only
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+Core stock, void-economy, demand-resolution, decay, and validation systems are available
+US-04/05/07/08/09/13 behavior is absent
+No optional static override or modifier is present
+Startup debug reports Core only
+```
+
+---
+
+### Test P2 - Economy Rebalance
+
+Setup:
+
+```txt
+Enable Core + Economy Rebalance
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-04/05/08/09 and their UI/debug are available
+US-07 and US-13 behavior remains absent
+Economy package version matches Core
+```
+
+---
+
+### Test P3 - Trade Rebalance
+
+Setup:
+
+```txt
+Enable Core + Trade Rebalance
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-07 static values and UI are active
+US-04/05/08/09 and US-13 behavior remains absent
+Core US-02 capacity behavior remains available
+Trade package version matches Core
+```
+
+---
+
+### Test P4 - War Rebalance
+
+Setup:
+
+```txt
+Enable Core + War Rebalance
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-13 variants are active
+Economy and Trade optional behavior remains absent
+War package version matches Core
+```
+
+---
+
+### Test P5 - missing or mismatched Core
+
+Setup:
+
+```txt
+Load one companion without Core, then with an incompatible Core version
+```
+
+Expected:
+
+```txt
+Launcher blocks the invalid playset when TECH-01 103 is confirmed
+Otherwise startup diagnostics identify the unsupported playset
+No optional scripted mutation runs after mismatch detection
+```
+
+Adding or removing an optional package from an existing campaign is unsupported until a migration test is explicitly added.
 
 ## Start-game initialization tests
 

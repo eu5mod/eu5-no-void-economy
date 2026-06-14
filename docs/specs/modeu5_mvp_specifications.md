@@ -12,6 +12,29 @@ Le marché vanilla continue d’exister.
 Le mod ne remplace pas l’économie vanilla.
 Il ajoute une couche de stock, de contrôle, de mesure et de réconciliation économique.
 
+### 1.1 Architecture modulaire
+
+ModeU5 est distribué sous forme d'un package Core obligatoire et de trois packages compagnons optionnels :
+
+| Package | Disponibilité | User stories |
+|---|---|---|
+| ModeU5 Core - Stock-Constrained Economy | Obligatoire | Tous les CORE et toutes les US sauf celles listées dans les trois packages optionnels ci-dessous |
+| ModeU5 Economy Rebalance | Optionnel | US-04, US-04-UI, famille US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
+| ModeU5 Trade Rebalance | Optionnel | US-07, US-07-UI |
+| ModeU5 War Rebalance | Optionnel | US-13 |
+
+Le Core correspond à la désactivation de la void economy par la couche de stock ModeU5. Il définit l'identité du mod et ne peut pas être désactivé tant que ModeU5 est actif. Il ne doit donc pas être présenté comme une case décochable.
+
+Les packages optionnels sont sélectionnés dans le launcher avant le chargement d'une campagne. Leur ajout ou retrait en cours de campagne n'est pas supporté sans migration dédiée.
+
+Les game rules personnalisées et le trigger `has_game_rule` sont exposés par EU5. Ils peuvent contrôler un comportement scripté. Ils ne constituent toutefois pas la frontière d'activation des overrides statiques de US-07 et US-08 : si leurs fichiers statiques sont chargés, cacher leur UI ou ignorer un pulse ne restaure pas les valeurs vanilla. La présence du package compagnon est donc la source de vérité.
+
+Le contrat détaillé est défini dans :
+
+```txt
+docs/technical/MODULE_OPTION_MODEL.md
+```
+
 ## 2. Invariant de double comptabilité
 
 Le mod maintient deux niveaux de comptabilité pour chaque bien :
@@ -66,7 +89,7 @@ Chaque cycle économique mensuel doit suivre un ordre stable.
 
 | 1. | Appliquer les malus de production calculés au mois précédent. |
 | --- | --- |
-| 2. | Appliquer les modifiers globaux du mod, notamment le bonus global de Production Efficiency si activé. |
+| 2. | Si ModeU5 Economy Rebalance est chargé, appliquer le bonus global de Production Efficiency de US-09. |
 | 3. | Recalculer les capacités de stockage si nécessaire. |
 | 4. | Exécuter ou lire la production vanilla. |
 | 5. | Calculer la production reconnue par le mod. |
@@ -83,9 +106,9 @@ Chaque cycle économique mensuel doit suivre un ordre stable.
 | 16. | Calculer la void wealth via US-00.4. |
 | 17. | Calculer le malus de production du mois suivant via US-00.3. |
 | 18. | Appliquer ou préparer la réconciliation du trade income via US-06. |
-| 19. | Calculer la base économique ModeU5 des sliders via US-05. |
-| 20. | Exclure la void wealth de la base des sliders via US-05.1. |
-| 21. | Appliquer ou afficher la réconciliation des sliders. |
+| 19. | Si ModeU5 Economy Rebalance est chargé, calculer la base économique ModeU5 des sliders via US-05. |
+| 20. | Si ModeU5 Economy Rebalance est chargé et US-05.1 est implémenté, empêcher que la void wealth suivie soit comptée deux fois. |
+| 21. | Si ModeU5 Economy Rebalance est chargé, afficher les entrées et le résultat de la formule US-05 sans réconciliation silencieuse du slider vanilla. |
 | 22. | Valider la cohérence des stocks via modeu5_validate_stock_consistency. |
 | 23. | Réinitialiser les compteurs mensuels nécessaires. |
 
@@ -98,7 +121,7 @@ Chaque année, le mod exécute une séquence de sécurisation et d’ajustement.
 | --- | --- |
 | 2. | Rebuild éventuel des stocks marché depuis les stocks pays. |
 | 3. | Lire les compteurs annuels de satisfaction ou d’insatisfaction. |
-| 4. | Appliquer l’adaptation annuelle de la demande locale des Pops via US-04. |
+| 4. | Si ModeU5 Economy Rebalance est chargé, appliquer l’adaptation annuelle de la demande locale des Pops via US-04. |
 | 5. | Réinitialiser les compteurs annuels. |
 | 6. | Exécuter les diagnostics annuels de debug si activés. |
 | 7. | Mettre à jour les signaux IA liés aux stocks, capacités et pénuries. |
@@ -110,17 +133,17 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 
 | Lot | Contenu | Objectif |
 | --- | --- | --- |
-| Lot 0 | Spike technique | Vérifier ce que le moteur expose réellement |
+| Lot 0 | CORE-00 + spike technique | Définir les packages et vérifier ce que le moteur expose réellement |
 | Lot 1 | CORE-01.1 à CORE-01.6 + US-11 | Implémenter les six opérations centralisées et sécuriser l’invariant de double comptabilité |
 | Lot 2 | US-01 + US-02 + CORE-02 + CORE-03 + debug | Créer les capacités, initialiser les stocks et gérer leur succession territoriale |
 | Lot 3 | Production → stock + US-00.1 / US-00.2 / US-00.4 | Mesurer la void economy |
 | Lot 4 | US-00.3 + US-03 | Appliquer les premières contraintes économiques |
 | Lot 5 | US-10 consommation / trade inter-marchés | Faire dépendre la consommation et les transferts inter-marchés des stocks |
-| Lot 6 | US-04 | Adapter la demande locale des Pops |
-| Lot 7 | US-05 + US-05.1 | Corriger les sliders et éviter la double pénalité |
+| Lot 6 | Package Economy Rebalance : US-04 | Adapter la demande locale des Pops |
+| Lot 7 | Package Economy Rebalance : US-05 + US-05.1 | Corriger les sliders et éviter la double pénalité |
 | Lot 8 | US-06 | Ajouter le coût logistique du trade inter-marchés |
-| Lot 9 | US-07 / US-08 / US-09 | Équilibrage économique et compensation |
-| Lot 10 | US-01-AI / US-02-AI / US-13 | IA et règles périphériques |
+| Lot 9 | Packages Economy/Trade Rebalance : US-07 / US-08 / US-09 | Équilibrage optionnel et compensation |
+| Lot 10 | US-01-AI / US-02-AI + package War Rebalance : US-13 | IA et règles périphériques |
 
 ### Tickets d'implémentation des opérations centralisées
 
