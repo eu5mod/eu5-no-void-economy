@@ -1,7 +1,11 @@
 {
-  "name": "ModeU5 Country Stocks Within Markets",
+  "name": "NVE (No void economy)",
+  "id": "eu5voideco",
   "version": "0.1.0",
-  "description": "MVP skeleton for a double-accounting stock layer inside EU5 markets.",
-  "authors": ["Pierre-Henri AUSSEIL"],
-  "status": "bootstrap"
+  "supported_game_version": "1.*.*",
+  "short_description": "Goods bring money only when they are sold, not when they are produced. Remove the void economy and make the game more balanced. Optional balance changes a lot of balances changes.",
+  "tags": [
+    "Balance",
+    "Gameplay"
+  ]
 }
