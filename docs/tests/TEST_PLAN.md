@@ -45,6 +45,261 @@ New warnings explained
 Known vanilla warning ignored
 ```
 
+## Start-game initialization tests
+
+### Test S1 - delayed fresh initialization
+
+Setup:
+
+```txt
+Clean new game
+No ModeU5 schema marker
+No ModeU5 country stock
+Two countries with positive capacity in one market
+```
+
+Expected:
+
+```txt
+Immediate on_game_start does not run world-dependent initialization
+ModeU5 dispatcher runs after the documented one-day delay
+Capacity is calculated before stock
+Initialization state becomes complete
+Schema version is persisted
+Monthly ModeU5 gameplay remains disabled until completion
+```
+
+---
+
+### Test S2 - proportional opening allocation
+
+Setup:
+
+```txt
+Market X grain opening source = 200
+Country A capacity = 100
+Country B capacity = 300
+```
+
+Expected:
+
+```txt
+Country A initial stock = 50
+Country B initial stock = 150
+Market aggregate = 200
+Difference = 0
+Every positive write calls modeu5_add_stock
+US-00.1 ledger remains zero
+```
+
+---
+
+### Test S3 - opening stock exceeds total capacity
+
+Setup:
+
+```txt
+Opening source = 150
+Total capacity = 100
+```
+
+Expected:
+
+```txt
+Country A capacity = 40; initial stock = 60
+Country B capacity = 60; initial stock = 90
+Allocated stock = 150
+Total over-cap quantity = 50
+Rejected production = 0
+Void wealth = 0
+No production penalty is prepared
+```
+
+---
+
+### Test S4 - repeated invocation is idempotent
+
+Setup:
+
+```txt
+Complete S2
+Invoke the startup dispatcher again
+```
+
+Expected:
+
+```txt
+No stock is added
+Country stocks are unchanged
+Existing aggregates are validated/rebuilt only if needed
+```
+
+---
+
+### Test S5 - unversioned existing source stock
+
+Setup:
+
+```txt
+No schema marker
+At least one nonzero country stock entry
+Market aggregate missing or incorrect
+```
+
+Expected:
+
+```txt
+Country stock is preserved
+No opening allocation occurs
+Initialization fails closed
+Monthly stock gameplay remains disabled
+Explicit migration/recovery is required
+```
+
+---
+
+### Test S6 - zero capacity and residue
+
+Setup:
+
+```txt
+One market-good has zero total capacity
+Another has proportional fixed-point residue above epsilon
+```
+
+Expected:
+
+```txt
+Positive source with zero total capacity fails initialization without erasing or assigning stock
+Residue is assigned only to a country with positive capacity
+Residue write calls modeu5_add_stock
+Final allocation does not exceed opening target
+```
+
+## Country and territory succession tests
+
+### Test L1 - one conquered location
+
+Setup:
+
+```txt
+Loser stock = 100
+Loser capacity before = 200
+Transferred location capacity = 50
+```
+
+Expected:
+
+```txt
+Transfer ratio = 0.25
+Winner receives 25
+Loser retains 75
+Market aggregate unchanged
+No trade economics or demand outcome
+```
+
+---
+
+### Test L2 - sequential new-country split
+
+Setup:
+
+```txt
+Old stock = 120
+Old capacity before = 400
+New country receives locations carrying capacity 40 then 60
+```
+
+Expected:
+
+```txt
+First transfer = 12
+Second transfer = 18
+New country total = 30
+Old country remains 90
+Equivalent aggregate ratio = 100 / 400
+```
+
+---
+
+### Test L3 - full annexation residual
+
+Setup:
+
+```txt
+Country B is annexed by Country A
+Location transfers leave a rounding residual of 5 on B
+```
+
+Expected:
+
+```txt
+Post-annexation finalizer transfers residual 5 to A
+B stock key is zero/absent
+Market aggregate unchanged
+```
+
+---
+
+### Test L3B - succession ignores winner capacity
+
+Setup:
+
+```txt
+Loser stock = 100
+Loser capacity before = 200
+Transferred location capacity = 100
+Winner stock before = 90
+Winner capacity after = 100
+```
+
+Expected:
+
+```txt
+Requested and actual transfer = 50
+Loser stock after = 50
+Winner stock after = 140
+Winner over-cap quantity = 40
+Target capacity policy = allow_over_capacity
+Market aggregate unchanged
+No rejected production or unsatisfied demand is recorded
+```
+
+---
+
+### Test L4 - lifecycle duplicate prevention
+
+Setup:
+
+```txt
+Create/release a country through a path that fires location and country hooks
+```
+
+Expected:
+
+```txt
+Each location share transfers exactly once
+New/released-country finalizer performs validation only
+No duplicate stock appears
+```
+
+---
+
+### Test L5 - temporary occupation
+
+Setup:
+
+```txt
+Occupy a location without changing its owner
+```
+
+Expected:
+
+```txt
+No CORE-03 stock transfer
+Country and market stock remain unchanged
+```
+
 ## Core invariant tests
 
 ### Test 1 — Production simple through `modeu5_add_stock`
@@ -107,6 +362,31 @@ Country A stock = 100
 Market X stock = 100
 Difference = 0
 Rejected quantity is passed to US-00.1
+```
+
+---
+
+### Test 2B — Authorized initialization addition above capacity
+
+Setup:
+
+```txt
+Country A stock = 0
+Country A cap = 40
+Market X stock = 0
+Initialization allocation = 60
+capacity_policy = allow_over_capacity
+```
+
+Expected result:
+
+```txt
+Actual added = 60
+Rejected = 0
+Country A stock = 60
+Market X stock = 60
+Over-cap created = 20
+Difference = 0
 ```
 
 ---
@@ -249,6 +529,32 @@ Difference = 0
 Debug inconsistency detected = yes
 Country stocks unchanged
 No wealth created or destroyed
+```
+
+---
+
+### Test 8B — Validation delegates correction to rebuild
+
+Setup:
+
+```txt
+Country A stock = 100
+Country B stock = 50
+Market X stock = 200
+Run modeu5_validate_stock_consistency for Market X and the selected good
+```
+
+Expected result:
+
+```txt
+Expected market stock = 150
+Difference before = 50
+Inconsistency detected = yes
+modeu5_rebuild_market_stock_from_country_stocks called = yes
+Market X stock after = 150
+Difference after = 0
+Second validation performs no write
+Country stocks unchanged
 ```
 
 ## US-00 void economy tests

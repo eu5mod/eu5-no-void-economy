@@ -12,7 +12,7 @@ As a player, I want storage capacity to reflect owned locations and relevant com
 
 ## Functional objective
 
-Calculate configurable country storage capacity per market and good, recalculate it when ownership/buildings change, and expose any stock exceeding a reduced capacity to an explicit loss/decay rule.
+Calculate configurable country storage capacity per market and good, recalculate it when ownership/buildings change, and expose any over-cap stock without mutating it.
 
 ## Runtime position
 
@@ -72,8 +72,8 @@ docs/tests/
 
 ```txt
 Depends on: US-01, building/location exposure, TECH-01
-Blocks: capacity-aware production and US-10.2
-Related US: US-02-UI, US-07
+Blocks: CORE-02, CORE-03, capacity-aware production and US-10.2
+Related US: US-02-UI, CORE-02, CORE-03, US-07
 ```
 
 ## Implementation rules
@@ -82,7 +82,9 @@ Related US: US-02-UI, US-07
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Store all capacity coefficients in configuration/scripted values.
 - Do not mutate stock while merely calculating capacity.
-- Handle over-cap stock through one explicit approved rule using centralized effects.
+- Do not delete, decay, or transfer stock merely because capacity was recalculated below the current stock.
+- Expose over-cap quantity for diagnostics and future explicitly approved handling.
+- Treat capacity as an admission bound for ordinary production/trade and as a proportional weight for CORE-02/CORE-03.
 - Recalculate predictably after location/building changes.
 - Rebuild each affected capacity key from contributions, then replace the old total by remove/re-add.
 - Treat a missing capacity entry as zero and do not attempt runtime map-name construction.
@@ -99,7 +101,8 @@ Related US: US-02-UI, US-07
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location/building reduces capacity.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
-- [ ] Add-stock operations reject quantities beyond capacity.
+- [ ] Add-stock operations under `enforce` reject quantities beyond capacity.
+- [ ] CORE-02/CORE-03 may use the documented `allow_over_capacity` policy.
 - [ ] Over-cap handling is visible and centralized.
 - [ ] TECH-01 and manual test evidence are updated.
 
@@ -118,7 +121,7 @@ Record capacity, then remove one contributor
 ```txt
 Capacity equals configured contribution sum
 Removal reduces capacity by the exact configured amount
-Any over-cap stock follows the documented centralized rule
+Any over-cap stock is preserved and reported
 ```
 
 ## Known limitations
