@@ -86,7 +86,7 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: core centralized stock effects, TECH-01
+Depends on: CORE-01.1 through CORE-01.6, TECH-01
 Blocks: US-02, US-03, US-00, US-10, US-11
 Related US: US-01-UI
 ```

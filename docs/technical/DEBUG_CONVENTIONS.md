@@ -99,6 +99,39 @@ same_market_transfer
 inter_market_transfer
 ```
 
+For `modeu5_rebuild_market_stock_from_country_stocks`, debug must expose:
+
+```txt
+operation = rebuild_market_stock
+market
+good
+market_stock_before
+expected_market_stock
+market_stock_after
+correction_applied
+country_source_count
+negative_country_source_detected
+country_stocks_modified = no
+```
+
+For `modeu5_validate_stock_consistency`, debug must expose:
+
+```txt
+operation = validate_stock_consistency
+market
+good
+expected_market_stock
+actual_market_stock_before
+stock_difference_before
+inconsistency_detected
+inconsistency_severity
+rebuild_called
+actual_market_stock_after
+stock_difference_after
+negative_country_source_detected
+over_cap_country_source_detected
+```
+
 ## Mandatory debug for US-00
 
 For each `country × market × good`, expose:

@@ -251,6 +251,32 @@ Country stocks unchanged
 No wealth created or destroyed
 ```
 
+---
+
+### Test 8B — Validation delegates correction to rebuild
+
+Setup:
+
+```txt
+Country A stock = 100
+Country B stock = 50
+Market X stock = 200
+Run modeu5_validate_stock_consistency for Market X and the selected good
+```
+
+Expected result:
+
+```txt
+Expected market stock = 150
+Difference before = 50
+Inconsistency detected = yes
+modeu5_rebuild_market_stock_from_country_stocks called = yes
+Market X stock after = 150
+Difference after = 0
+Second validation performs no write
+Country stocks unchanged
+```
+
 ## US-00 void economy tests
 
 ### Test 9 — Location production aggregation

@@ -40,6 +40,21 @@ The bootstrap documents are aligned with the revised MVP specification:
 - no transport-cost, trade-income reconciliation, slider reconciliation, or AI-planning story in the surviving MVP set;
 - mandatory debug and TECH-01 exposure tracking.
 
+## Core operator implementation tickets
+
+The six centralized operations have implementation-ready issue files:
+
+```txt
+CORE-01.1  modeu5_add_stock
+CORE-01.2  modeu5_remove_stock
+CORE-01.3  modeu5_transfer_stock
+CORE-01.4  modeu5_decay_stock
+CORE-01.5  modeu5_rebuild_market_stock_from_country_stocks
+CORE-01.6  modeu5_validate_stock_consistency
+```
+
+They are stored in `docs/generated_issues/` and define the transaction contracts, confirmed map layout, debug output, dependencies, acceptance criteria, and deterministic manual tests.
+
 ## Runtime contract
 
 The runtime order is normative. The implementation roadmap is only a delivery strategy.
@@ -79,7 +94,7 @@ validate stock
 
 ## Bootstrap content
 
-This repository contains only scaffolding and governance documents:
+This repository contains scaffolding, governance documents, and implementation-ready issue specifications:
 
 - `README.md`
 - `CLAUDE.md`
@@ -94,8 +109,9 @@ This repository contains only scaffolding and governance documents:
 - `docs/technical/TECH-01_engine_exposure_matrix.md`
 - `docs/technical/DEBUG_CONVENTIONS.md`
 - `docs/tests/TEST_PLAN.md`
+- `docs/generated_issues/core-01-*.md`
 
-No gameplay logic is implemented at bootstrap stage.
+No gameplay logic is implemented by these documentation tickets.
 
 ## Suggested branch workflow
 

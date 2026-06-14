@@ -12,7 +12,7 @@ As a player, I want country stocks, market aggregates, and recognized economic o
 
 ## Functional objective
 
-Validate `market_good_stock = sum(country_market_good_stock)`, detect and log divergence, rebuild only the market aggregate from country stocks, and provide deterministic safety tests for every stock operation.
+Orchestrate CORE-01.5 and CORE-01.6 across the required markets and goods, schedule monthly/yearly checks, and provide deterministic integration tests for every stock operation.
 
 ## Runtime position
 
@@ -53,7 +53,7 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: core stock variables/effects, iteration exposure, TECH-01
+Depends on: CORE-01.1 through CORE-01.6, iteration exposure, TECH-01
 Blocks: safe monthly/yearly stock cycle and all stock-owning features
 Related US: US-01, US-03, US-10, US-00
 ```
@@ -68,7 +68,8 @@ Related US: US-01, US-03, US-10, US-00
 - Treat missing source entries as zero and replace the aggregate key by remove/re-add.
 - Use generated per-good helpers where the country source map name varies by good.
 - Never repair country stocks from market stock.
-- Route production, consumption, transfer, decay, validation, and rebuild through centralized effects.
+- Route production, consumption, transfer, decay, validation, and rebuild through CORE-01.1 through CORE-01.6.
+- Keep rebuild and validation transaction logic in CORE-01.5 and CORE-01.6; US-11 owns global iteration, scheduling, and integration diagnostics.
 - Correct negative/cap anomalies through the owning centralized operation and log them.
 - Keep any economic adjustment visible and owned by its relevant US.
 

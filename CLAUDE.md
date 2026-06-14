@@ -154,8 +154,8 @@ Follow this delivery order, even though it is not the runtime order:
 ```txt
 0. Spike engine exposure.
 1. Bootstrap mod structure and documentation.
-2. Core stock variables and centralized mutation effects.
-3. US-11 validation / rebuild / consistency layer.
+2. CORE-01.1 through CORE-01.4 stock mutation effects.
+3. CORE-01.5 / CORE-01.6 rebuild and validation, then US-11 orchestration.
 4. Debug conventions and deterministic test events.
 5. Monthly and yearly on_actions.
 6. US-01 country × market × good stock.

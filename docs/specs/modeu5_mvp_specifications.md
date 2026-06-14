@@ -111,7 +111,7 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 | Lot | Contenu | Objectif |
 | --- | --- | --- |
 | Lot 0 | Spike technique | Vérifier ce que le moteur expose réellement |
-| Lot 1 | Opérations centralisées + US-11 | Sécuriser l’invariant de double comptabilité |
+| Lot 1 | CORE-01.1 à CORE-01.6 + US-11 | Implémenter les six opérations centralisées et sécuriser l’invariant de double comptabilité |
 | Lot 2 | US-01 + US-02 + debug | Créer stocks et capacités lisibles |
 | Lot 3 | Production → stock + US-00.1 / US-00.2 / US-00.4 | Mesurer la void economy |
 | Lot 4 | US-00.3 + US-03 | Appliquer les premières contraintes économiques |
@@ -121,6 +121,21 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 | Lot 8 | US-06 | Ajouter le coût logistique du trade inter-marchés |
 | Lot 9 | US-07 / US-08 / US-09 | Équilibrage économique et compensation |
 | Lot 10 | US-01-AI / US-02-AI / US-13 | IA et règles périphériques |
+
+### Tickets d'implémentation des opérations centralisées
+
+Les six opérations centrales disposent de tickets techniques séparés dans `docs/generated_issues/` :
+
+```txt
+CORE-01.1 - modeu5_add_stock
+CORE-01.2 - modeu5_remove_stock
+CORE-01.3 - modeu5_transfer_stock
+CORE-01.4 - modeu5_decay_stock
+CORE-01.5 - modeu5_rebuild_market_stock_from_country_stocks
+CORE-01.6 - modeu5_validate_stock_consistency
+```
+
+Ces tickets implémentent le contrat de mutation et de réconciliation. Les US appelantes conservent la sélection des données, l'orchestration runtime et les effets économiques propres à leur périmètre.
 
 ## 9. Méthode d’implémentation — Double comptabilité des stocks
 
