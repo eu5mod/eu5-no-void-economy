@@ -34,6 +34,7 @@ Feeds counters to: US-10.1 and US-10.2
 | Subject relation | country → country | `is_subject_of`, `overlord` | CONFIRMED | 072 |
 | Market owner | market → country | `owner` | CONFIRMED | 073 |
 | Candidate sorting | list/map/typed iterator | ordered iterators with `order_by` | CONFIRMED | 074 |
+| Resolver transaction state | current effect/event chain | local variables, saved scopes, and ordered iterator state | CONFIRMED | 008, 074, internal |
 
 ## Files expected to change
 
@@ -57,10 +58,13 @@ Related US: US-10.3, US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Accept required demand fields and type-specific optional fields.
 - Apply hard eligibility filters before scoring.
 - Keep coefficients and allow-flags configurable.
 - Return candidates, scores, exclusions, reasons, and total available stock.
+- Keep candidate lists, scores, exclusions, and remaining quantity local to the resolver call.
+- Do not create persistent candidate maps unless a separate debug-snapshot requirement is approved.
 - Do not remove/transfer stock or create trade economics.
 - Omit unconfirmed scoring components rather than inventing values.
 

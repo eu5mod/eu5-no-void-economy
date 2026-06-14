@@ -111,8 +111,8 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 | Lot | Contenu | Objectif |
 | --- | --- | --- |
 | Lot 0 | Spike technique | Vérifier ce que le moteur expose réellement |
-| Lot 1 | Opérations centralisées + US-11 | Sécuriser l’invariant de double comptabilité |
-| Lot 2 | US-01 + US-02 + debug | Créer stocks et capacités lisibles |
+| Lot 1 | CORE-01.1 à CORE-01.6 + US-11 | Implémenter les six opérations centralisées et sécuriser l’invariant de double comptabilité |
+| Lot 2 | US-01 + US-02 + CORE-02 + CORE-03 + debug | Créer les capacités, initialiser les stocks et gérer leur succession territoriale |
 | Lot 3 | Production → stock + US-00.1 / US-00.2 / US-00.4 | Mesurer la void economy |
 | Lot 4 | US-00.3 + US-03 | Appliquer les premières contraintes économiques |
 | Lot 5 | US-10 consommation / trade inter-marchés | Faire dépendre la consommation et les transferts inter-marchés des stocks |
@@ -121,6 +121,62 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 | Lot 8 | US-06 | Ajouter le coût logistique du trade inter-marchés |
 | Lot 9 | US-07 / US-08 / US-09 | Équilibrage économique et compensation |
 | Lot 10 | US-01-AI / US-02-AI / US-13 | IA et règles périphériques |
+
+### Tickets d'implémentation des opérations centralisées
+
+Les six opérations centrales disposent de tickets techniques séparés dans `docs/generated_issues/` :
+
+```txt
+CORE-01.1 - modeu5_add_stock
+CORE-01.2 - modeu5_remove_stock
+CORE-01.3 - modeu5_transfer_stock
+CORE-01.4 - modeu5_decay_stock
+CORE-01.5 - modeu5_rebuild_market_stock_from_country_stocks
+CORE-01.6 - modeu5_validate_stock_consistency
+```
+
+Ces tickets implémentent le contrat de mutation et de réconciliation. Les US appelantes conservent la sélection des données, l'orchestration runtime et les effets économiques propres à leur périmètre.
+
+### CORE-02 - Initialisation au démarrage
+
+Après l'implémentation de US-01 et US-02, CORE-02 initialise la couche de stock une seule fois :
+
+```txt
+on_game_start
+-> délai d'un jour
+-> calcul de toutes les capacités pays x marché x bien
+-> lecture du stockpile vanilla marché x bien
+-> répartition proportionnelle selon la capacité de chaque pays
+-> ajout intégral via modeu5_add_stock avec allow_over_capacity
+-> rebuild et validation des agrégats marché
+-> activation du cycle mensuel ModeU5
+```
+
+Le démarrage est versionné et idempotent. Un chargement, une migration ou une donnée pays déjà présente ne doit jamais déclencher un second remplissage. La totalité du stock vanilla est répartie selon les poids de capacité, même si le résultat dépasse la capacité d'un ou plusieurs pays. Cet over-cap est un état visible, pas une production rejetée par US-00.
+
+### CORE-03 - Succession territoriale des stocks
+
+Lorsqu'une location change définitivement de propriétaire, une part du stock du perdant suit la part de capacité de stockage portée par cette location :
+
+```txt
+quantite_transferee
+= stock_perdant_avant
+   * capacite_location_transferee
+   / capacite_perdant_avant
+```
+
+Le transfert utilise `modeu5_transfer_stock` dans le même marché avec `target_capacity_policy = allow_over_capacity`. Il ne modifie pas le stock total du marché et la capacité du gagnant ne tronque pas la quantité calculée.
+
+Cette règle appliquée successivement produit également :
+
+```txt
+stock_nouveau_pays
+= stock_ancien_pays
+   * capacite_nouveau_pays
+   / (capacite_nouveau_pays + capacite_ancien_pays)
+```
+
+Une annexion complète transfère également tout reliquat du pays disparu vers son successeur, même si le successeur dépasse sa capacité. Aucun stock n'est détruit du seul fait d'une perte territoriale ou d'un manque de capacité chez le successeur.
 
 ## 9. Méthode d’implémentation — Double comptabilité des stocks
 
@@ -151,12 +207,23 @@ country
 market
 good
 quantity_to_add
+capacity_policy = enforce | allow_over_capacity
 ### Règle
 
-La quantité ajoutée est limitée par la capacité disponible du stock pays.
+Par défaut, la quantité ajoutée est limitée par la capacité disponible du stock pays.
 available_capacity = country_market_good_stock_cap - country_market_good_stock
-actual_added_quantity = min(quantity_to_add, available_capacity)
+
+```txt
+if capacity_policy = enforce:
+  actual_added_quantity = min(quantity_to_add, available_capacity)
+
+if capacity_policy = allow_over_capacity:
+  actual_added_quantity = quantity_to_add
+```
+
 rejected_quantity = quantity_to_add - actual_added_quantity
+
+`allow_over_capacity` est réservé à CORE-02 et à une migration explicitement approuvée. La production ordinaire utilise toujours `enforce`.
 ### Mutation atomique
 
 L’opération doit toujours mettre à jour les deux niveaux :
@@ -223,6 +290,7 @@ source_market
 target_market
 good
 quantity_to_transfer
+target_capacity_policy = enforce | allow_over_capacity
 ### Règle
 
 Le transfert est composé de deux opérations :
@@ -241,14 +309,16 @@ Cas inter-marchés
 Si le bien quitte un marché pour entrer dans un autre :
 source_market_good_stock -= actual_transferred_quantity
 target_market_good_stock += actual_added_quantity
-Si le marché cible n’a pas assez de capacité côté acheteur, la quantité non stockée est rejetée ou perdue selon les règles du mod.
+
+Sous `target_capacity_policy = enforce`, la capacité disponible de l'acheteur limite le transfert. Sous `allow_over_capacity`, seule la quantité disponible du vendeur limite le transfert. CORE-03 utilise `allow_over_capacity`; le trade inter-marchés ordinaire utilise `enforce`.
 ### Critères de validation
 
 | • | Un pays vendeur ne peut pas transférer plus que son stock disponible. |
 | --- | --- |
-| • | Un pays acheteur ne peut pas recevoir plus que sa capacité disponible. |
+| • | Avec `enforce`, un pays acheteur ne peut pas recevoir plus que sa capacité disponible. |
+| • | Avec `allow_over_capacity`, le transfert autorisé est intégral même si le pays acheteur dépasse sa capacité. |
 | • | Un transfert inter-marchés réduit le stock du marché source et augmente le stock du marché cible. |
-| • | Les quantités rejetées ne créent pas de richesse. |
+| • | Les quantités non transférées ne créent pas de richesse. |
 
 ### Opération 4 — Decay mensuel
 
@@ -375,8 +445,19 @@ Chaque cycle économique doit suivre un ordre stable.
 Toute opération de stock doit respecter les règles suivantes :
 country_market_good_stock >= 0
 market_good_stock >= 0
-country_market_good_stock <= country_market_good_stock_cap
 market_good_stock = sum(country_market_good_stock)
+
+La règle suivante dépend de la politique de transaction :
+
+```txt
+capacity_policy = enforce
+-> country_market_good_stock <= country_market_good_stock_cap
+
+capacity_policy = allow_over_capacity
+-> un over-cap est autorisé, conservé et signalé
+```
+
+CORE-02 et CORE-03 peuvent créer un over-cap. La validation comptable ne doit pas le corriger en détruisant du stock.
 Si une opération viole une de ces règles, le mod doit :
 
 | 1. | corriger la valeur ; |
@@ -550,12 +631,25 @@ Si modeu5_add_stock ne fournit pas directement produced_quantity, US-00.1 peut l
 US-00.1 ne doit pas recalculer actual_added_quantity ou rejected_quantity si ces valeurs sont déjà fournies par modeu5_add_stock.
 ### Variables persistantes
 
-L’implémentation cible repose sur des variable maps persistantes stockées sur le scope country.
-Pour chaque couple country × market × good, ModeU5 maintient :
+Le modèle logique repose sur un enregistrement unique par couple country × market × good :
+
+```txt
+production_ledger = {
+    produced
+    added
+    rejected
+}
+```
+
+Les variable maps EU5 documentées associent une clé à une seule valeur. Elles ne documentent pas une valeur structurée contenant plusieurs champs ou une map imbriquée.
+
+En l’absence d’un scope persistant unique pouvant représenter chaque enregistrement country × market × good, l’implémentation physique confirmée utilise une famille synchronisée de variable maps stockées sur le scope country :
+
 modeu5_<good>_produced_by_market[market]
 modeu5_<good>_added_by_market[market]
 modeu5_<good>_rejected_by_market[market]
-Ces variables représentent des compteurs mensuels.
+
+Ces trois valeurs sont les champs physiques d’un même enregistrement logique. Elles ne doivent pas être traitées comme trois systèmes indépendants.
 Elles sont alimentées pendant le mois, puis lues en fin de mois par US-00.2, US-00.3 et US-00.4.
 ### Règle de mise à jour
 
@@ -577,11 +671,12 @@ produced_quantity
 actual_added_quantity
 rejected_quantity
 Le helper est responsable :
-- d’identifier la map correspondant au bien ;
-- d’ajouter les valeurs mensuelles ;
+- d’identifier les champs physiques correspondant au bien ;
+- d’ajouter les valeurs mensuelles à l’enregistrement logique ;
 - de sécuriser les valeurs négatives ;
 - de logguer les anomalies ;
-- de rendre l’implémentation remplaçable si les variable maps ne sont pas fiables.
+- de conserver la cohérence des champs ;
+- de rendre l’implémentation remplaçable si un vrai scope-record persistant est confirmé ultérieurement.
 ### Reset mensuel
 
 À la fin du calcul mensuel, après calcul des ratios, de la void wealth et des malus N+1, les compteurs mensuels doivent être remis à zéro :
@@ -629,7 +724,15 @@ modeu5_<good>_added_by_market[market]
 modeu5_<good>_rejected_by_market[market]
 ### Variables produites
 
-US-00.2 produit :
+US-00.2 ajoute deux champs au même enregistrement logique country × market × good :
+
+```txt
+overproduction_ratio
+effective_overproduction_ratio
+```
+
+L’implémentation physique confirmée utilise :
+
 modeu5_<good>_overproduction_ratio_by_market[market]
 modeu5_<good>_effective_overproduction_ratio_by_market[market]
 ### Calcul du ratio de surproduction
@@ -1055,7 +1158,8 @@ Le stock est défini par :
 | • | Un pays ayant accès à un marché dispose d’un stock pour chaque bien pertinent. |
 | --- | --- |
 | • | La production nationale entre dans le stock national du pays. |
-| • | Le stock ne peut jamais dépasser sa capacité maximale. |
+| • | La production ordinaire ne peut pas faire dépasser la capacité maximale. |
+| • | CORE-02 et CORE-03 peuvent conserver un stock supérieur à la capacité et doivent l'exposer en debug. |
 | • | La production excédentaire est identifiée comme non stockée. |
 | • | La production non stockée ne doit pas générer de richesse. |
 
@@ -1119,7 +1223,8 @@ La capacité de stockage d’un pays dans un marché dépend :
 | • | Les bâtiments commerciaux augmentent la capacité. |
 | • | Les bâtiments logistiques augmentent la capacité. |
 | • | La perte d’un bâtiment ou d’une localisation réduit la capacité. |
-| • | Si la capacité devient inférieure au stock existant, l’excédent est soumis au decay ou à une perte. |
+| • | Si la capacité devient inférieure au stock existant, l’over-cap est exposé sans mutation automatique. |
+| • | Toute règle ultérieure de decay ou de perte de l’over-cap doit être approuvée et utiliser une opération centralisée. |
 
 ### Consignes d’implémentation
 
@@ -2781,7 +2886,8 @@ market_good_stock = sum(country_market_good_stock)
 | • | Lorsqu’un bien est exporté vers un autre marché, il est retiré du marché source et ajouté au marché cible. |
 | • | Lorsqu’un decay est appliqué, il est calculé au niveau pays puis répercuté au niveau marché. |
 | • | Aucune opération ne peut rendre un stock négatif. |
-| • | Aucune opération ne peut faire dépasser la capacité de stockage d’un pays. |
+| • | Les opérations en politique `enforce` ne peuvent pas faire dépasser la capacité de stockage d’un pays. |
+| • | CORE-02 et CORE-03 peuvent utiliser `allow_over_capacity`; l’excédent est conservé et visible. |
 | • | Tout écart entre stock marché et somme des stocks pays doit être détectable en debug. |
 | • | Tout écart doit pouvoir être corrigé par rebuild du stock marché. |
 | • | Les biens non stockés ne doivent pas générer de revenu économique. |

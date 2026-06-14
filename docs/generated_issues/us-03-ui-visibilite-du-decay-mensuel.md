@@ -26,7 +26,7 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Decay transaction values | ModeU5 | US-03 debug outputs | CONFIRMED | internal |
+| Decay transaction values | current effect/event chain | US-03 local before/rate/loss/after outputs plus authoritative US-01 stock-map reads | CONFIRMED | 007, 015-016, internal |
 | Debug event/localization | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 | Optional custom panel | UI | custom ModeU5 UI | OUT_OF_SCOPE | N/A |
 
@@ -52,6 +52,7 @@ Related US: US-01-UI, US-02-UI
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
 - Keep display logic read-only.
+- Do not persist a second decay history map for MVP; display the current transaction or an explicitly approved aggregate.
 - Show exact scope and mutation effect used.
 - Label annualized loss as an estimate.
 - Do not require custom GUI for MVP.

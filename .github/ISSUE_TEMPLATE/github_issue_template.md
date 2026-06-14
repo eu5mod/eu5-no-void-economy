@@ -35,6 +35,33 @@ OUT_OF_SCOPE
 TO_TEST
 ```
 
+## Persistent storage / variable-map contract
+
+Complete this section when the story owns durable multidimensional state. Otherwise state why the values remain scalar, static, or transaction-local.
+
+```txt
+logical dimensions:
+logical record and fields:
+owner scope:
+tuple/key:
+confirmed physical map family:
+physical value type:
+default value:
+write owner:
+readers:
+reset/rebuild lifecycle:
+```
+
+Rules:
+
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
+- Treat related fields as one logical record even when current engine exposure requires several synchronized physical maps.
+- Do not claim one native variable-map value contains inline fields or another map unless TECH-01 `088` is confirmed.
+- Do not assume runtime map-name construction.
+- Replace existing map entries by read, remove, and re-add.
+- Keep one-operation arithmetic, candidate state, and saved scopes transaction-local.
+- Do not duplicate source-of-truth state for UI/debug.
+
 ## Files expected to change
 
 ```txt

@@ -26,11 +26,52 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country stock | ModeU5 | `country_market_good_stock` | CONFIRMED | 015 |
-| Market aggregate | ModeU5 | `market_good_stock` | CONFIRMED | 016 |
-| Capacity and available capacity | ModeU5 | stock cap/scripted value | CONFIRMED | 017-018 |
-| Country × market × good storage | country-scoped per-good map keyed by market | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
+| Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
+| Market aggregate | market × good | logical `market_good_stock`; physical market-scoped `modeu5_market_good_stock` map keyed by goods scope | CONFIRMED | 007, 016 |
+| Capacity and available capacity | country × market × good record | logical `capacity` field; physical `modeu5_<good>_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
+
+## Variable-map storage pattern
+
+Logical country × market × good record:
+
+```txt
+country_market_good_record = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
+```
+
+US-01 owns the `stock` field. US-02 owns capacity fields. US-00 owns its ledger, ratio, valuation, and penalty fields.
+
+Confirmed physical stock field:
+
+```txt
+owner scope: country
+map name:    modeu5_<good>_stock_by_market
+key:         market scope
+value:       numeric stock
+default:     0
+writers:     centralized stock effects only
+```
+
+Market aggregate/cache:
+
+```txt
+owner scope: market
+map name:    modeu5_market_good_stock
+key:         goods scope
+value:       numeric aggregate stock
+default:     0
+rebuild:     sum country source records' stock fields
+```
 
 ## Files expected to change
 
@@ -45,20 +86,26 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: core centralized stock effects, TECH-01
-Blocks: US-02, US-03, US-00, US-10, US-11
-Related US: US-01-UI
+Depends on: CORE-01.1 through CORE-01.6, TECH-01
+Blocks: US-02, CORE-02, CORE-03, US-03, US-00, US-10, US-11
+Related US: US-01-UI, CORE-02, CORE-03
 ```
 
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Treat country stock as source of truth and market stock as aggregate/cache.
 - Credit production to the same producing country and market key used by US-00.1.
 - Keep production reading and country/market attribution in US-00.1; US-01 only accepts explicit stock-operation inputs.
 - Mutate stock only through centralized stock effects.
-- Enforce non-negative stock and capacity limits.
+- Enforce non-negative stock.
+- Enforce capacity for ordinary production and inter-market trade; permit the explicit CORE-02/CORE-03 `allow_over_capacity` lifecycle policy.
 - Rebuild market stock from country stocks only, never the reverse.
+- Treat missing stock and capacity entries as zero.
+- Replace existing entries by remove/re-add inside their owning centralized effect.
+- Do not construct per-good map names dynamically; use generated per-good helpers.
+- Treat the physical map family as an implementation of one logical record, not as unrelated variables.
 - Log requested, actual, rejected/unsatisfied, before/after, and invariant difference.
 
 ## US-specific boundary checks
@@ -71,7 +118,10 @@ Related US: US-01-UI
 ## Acceptance criteria
 
 - [ ] Separate country/market/good stocks can coexist without collision.
-- [ ] Stock cannot exceed capacity or remain negative.
+- [ ] Market aggregates use a market owner and goods key rather than duplicating country-map orientation.
+- [ ] Stock cannot remain negative.
+- [ ] Ordinary `enforce` operations cannot create over-cap stock.
+- [ ] CORE-02/CORE-03 over-cap stock remains authoritative, visible, and included in market aggregates.
 - [ ] Every mutation updates the country source and market aggregate consistently.
 - [ ] Rejected quantities are exposed to US-00.1.
 - [ ] Validation restores `market_good_stock = sum(country_market_good_stock)`.

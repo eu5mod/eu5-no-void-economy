@@ -12,7 +12,7 @@ As a player, I want storage capacity to reflect owned locations and relevant com
 
 ## Functional objective
 
-Calculate configurable country storage capacity per market and good, recalculate it when ownership/buildings change, and expose any stock exceeding a reduced capacity to an explicit loss/decay rule.
+Calculate configurable country storage capacity per market and good, recalculate it when ownership/buildings change, and expose any over-cap stock without mutating it.
 
 ## Runtime position
 
@@ -29,7 +29,33 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Owned locations in market | country → location → market | `every_owned_location` plus location `market` | CONFIRMED | 003-004, 033 |
 | Buildings in location | location → building | `every_buildings_in_location` | CONFIRMED | 034 |
 | Foreign compatible buildings | location → building | `every_foreign_buildings_in_location` and building owner semantics | CONFIRMED | 035 |
-| Capacity variable | ModeU5 | `country_market_good_stock_cap` | CONFIRMED | 017 |
+| Capacity record fields | country × market × good | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields | CONFIRMED | 017, internal |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_stock_cap_by_market` and optional contribution-field maps | CONFIRMED | 007, 017 |
+
+## Variable-map storage pattern
+
+```txt
+logical dimensions: country × market × good
+logical fields:
+  capacity
+  base_capacity
+  building_capacity
+  foreign_capacity
+
+record owner: country
+tuple:        market × good
+default:      0
+
+confirmed physical total field:
+  modeu5_<good>_stock_cap_by_market
+
+optional physical breakdown fields:
+  modeu5_<good>_base_capacity_by_market
+  modeu5_<good>_building_capacity_by_market
+  modeu5_<good>_foreign_capacity_by_market
+```
+
+The total field is authoritative for stock operations. Breakdown fields are diagnostic inputs that must sum to the total; they are not alternate capacity sources.
 
 ## Files expected to change
 
@@ -46,17 +72,22 @@ docs/tests/
 
 ```txt
 Depends on: US-01, building/location exposure, TECH-01
-Blocks: capacity-aware production and US-10.2
-Related US: US-02-UI, US-07
+Blocks: CORE-02, CORE-03, capacity-aware production and US-10.2
+Related US: US-02-UI, CORE-02, CORE-03, US-07
 ```
 
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Store all capacity coefficients in configuration/scripted values.
 - Do not mutate stock while merely calculating capacity.
-- Handle over-cap stock through one explicit approved rule using centralized effects.
+- Do not delete, decay, or transfer stock merely because capacity was recalculated below the current stock.
+- Expose over-cap quantity for diagnostics and future explicitly approved handling.
+- Treat capacity as an admission bound for ordinary production/trade and as a proportional weight for CORE-02/CORE-03.
 - Recalculate predictably after location/building changes.
+- Rebuild each affected capacity key from contributions, then replace the old total by remove/re-add.
+- Treat a missing capacity entry as zero and do not attempt runtime map-name construction.
 - Log each capacity contribution and fallback.
 
 ## US-specific boundary checks
@@ -67,9 +98,11 @@ Related US: US-02-UI, US-07
 ## Acceptance criteria
 
 - [ ] Base location and confirmed building contributions sum correctly.
+- [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location/building reduces capacity.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
-- [ ] Add-stock operations reject quantities beyond capacity.
+- [ ] Add-stock operations under `enforce` reject quantities beyond capacity.
+- [ ] CORE-02/CORE-03 may use the documented `allow_over_capacity` policy.
 - [ ] Over-cap handling is visible and centralized.
 - [ ] TECH-01 and manual test evidence are updated.
 
@@ -88,7 +121,7 @@ Record capacity, then remove one contributor
 ```txt
 Capacity equals configured contribution sum
 Removal reduces capacity by the exact configured amount
-Any over-cap stock follows the documented centralized rule
+Any over-cap stock is preserved and reported
 ```
 
 ## Known limitations
