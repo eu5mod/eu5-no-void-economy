@@ -27,7 +27,7 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market × good | logical `market_good_stock`; physical market-scoped `modeu5_market_good_stock` map keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market × good | logical `market_good_stock`; physical global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Capacity and available capacity | country × market × good record | logical `capacity` field; physical `modeu5_<good>_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 
@@ -65,9 +65,9 @@ writers:     centralized stock effects only
 Market aggregate/cache:
 
 ```txt
-owner scope: market
-map name:    modeu5_market_good_stock
-key:         goods scope
+owner scope: global variable system
+map name:    modeu5_<good>_market_stock
+key:         market scope
 value:       numeric aggregate stock
 default:     0
 rebuild:     sum country source records' stock fields

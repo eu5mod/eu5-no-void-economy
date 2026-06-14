@@ -99,9 +99,9 @@ reset/rebuild lifecycle:
 Market aggregate:
 
 ```txt
-owner scope: market
-map: modeu5_market_good_stock
-key: goods scope
+owner scope: global variable system
+map: modeu5_<good>_market_stock
+key: market scope
 default: 0
 write owner during startup: CORE-01.1 additions and CORE-01.5 rebuild
 ```

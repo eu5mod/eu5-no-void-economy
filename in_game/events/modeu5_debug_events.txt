@@ -14,14 +14,89 @@ modeu5_debug.1 = {
 	option = {
 		name = modeu5_debug.1.a
 		modeu5_debug_run_single_record_stock_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.b
 		modeu5_debug_run_same_market_transfer_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.c
 		modeu5_debug_run_inter_market_transfer_test = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_debug.2 = {
+	type = country_event
+	title = modeu5_debug.2.title
+	desc = modeu5_debug.2.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.add_allow.pass
+		trigger = { var:modeu5_test_add_allow_over_capacity_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.add_allow.fail
+		trigger = { NOT = { var:modeu5_test_add_allow_over_capacity_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.add_enforce.pass
+		trigger = { var:modeu5_test_add_enforce_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.add_enforce.fail
+		trigger = { NOT = { var:modeu5_test_add_enforce_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.remove.pass
+		trigger = { var:modeu5_test_remove_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.remove.fail
+		trigger = { NOT = { var:modeu5_test_remove_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.decay.pass
+		trigger = { var:modeu5_test_decay_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.decay.fail
+		trigger = { NOT = { var:modeu5_test_decay_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.same_market.pass
+		trigger = { var:modeu5_test_same_market_transfer_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.same_market.fail
+		trigger = { NOT = { var:modeu5_test_same_market_transfer_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.invalid_same_record.pass
+		trigger = { var:modeu5_test_invalid_same_record_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.invalid_same_record.fail
+		trigger = { NOT = { var:modeu5_test_invalid_same_record_passed = 1 } }
+	}
+	option = {
+		name = modeu5_debug.test.inter_market.pass
+		trigger = { var:modeu5_test_inter_market_transfer_passed = 1 }
+	}
+	option = {
+		name = modeu5_debug.test.inter_market.fail
+		trigger = { NOT = { var:modeu5_test_inter_market_transfer_passed = 1 } }
 	}
 	option = {
 		name = modeu5_debug.close

@@ -30,7 +30,7 @@ Feeds counters to: US-00.1, debug, CORE-01.6
 | Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
 | Country capacity field | country x market x good | country-scoped `modeu5_<good>_stock_cap_by_market` keyed by market | CONFIRMED | 007, 017 |
 | Available capacity | transaction | `max(0, stock_cap - stock)` | CONFIRMED | 018, 026 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
 | Add/reject outputs | transaction | `modeu5_actual_added_quantity`, `modeu5_rejected_quantity` | CONFIRMED | 022-023 |
 | Capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
@@ -53,7 +53,7 @@ readers: US-00.1, US-01/UI, US-03, US-10, US-11
 reset/rebuild lifecycle: stock is durable and never reset; market cache is rebuilt by CORE-01.5
 ```
 
-The market aggregate is stored separately on market scope in `modeu5_market_good_stock[good]`. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
+The market aggregate is stored separately in the global `modeu5_<good>_market_stock[market]` map because Market scope does not support variables. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
 
 ## Files expected to change
 

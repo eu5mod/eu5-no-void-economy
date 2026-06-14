@@ -27,10 +27,10 @@ expected_descriptor_names=(
 )
 
 expected_metadata_names=(
-	"No Void Economy (NVE)"
-	"Rebalance Economy"
-	"Rebalance Estate Power"
-	"Rebalance Early Blobbing"
+	"NVE : No Void Economy (Required - Core)"
+	"NVE : Economy balance patch (Optional)"
+	"NVE : Estate Power balance patch (Optional)"
+	"NVE : Early Blobbing balance patch (Optional)"
 )
 
 expected_ids=(

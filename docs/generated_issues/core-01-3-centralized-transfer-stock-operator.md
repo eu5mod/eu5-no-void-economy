@@ -29,7 +29,7 @@ Feeds counters to: US-10.2, US-10.3, US-06 if restored, debug, CORE-01.6
 |---|---|---|---|---|
 | Seller and buyer stock fields | country x market x good | country-scoped per-good stock maps keyed by market | CONFIRMED | 007, 015 |
 | Buyer capacity field | buyer x target market x good | country-scoped per-good capacity map keyed by target market | CONFIRMED | 007, 017-018 |
-| Source and target aggregates | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Source and target aggregates | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved seller, buyer, source market, target market, and good scopes | CONFIRMED | 008 |
 | Bounded transfer arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
 | Inter-market transfer operation | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
@@ -52,7 +52,7 @@ readers: US-01/UI, US-10.2, US-11
 reset/rebuild lifecycle: durable; affected market caches rebuilt by CORE-01.5
 ```
 
-The source and target market aggregates use `modeu5_market_good_stock[good]`. All requested, transferred, unsatisfied, capacity, before/after, and transfer-mode values are transaction-local except for debug or explicitly owned downstream counters.
+The source and target market aggregates use `modeu5_<good>_market_stock[market]`. All requested, transferred, unsatisfied, capacity, before/after, and transfer-mode values are transaction-local except for debug or explicitly owned downstream counters.
 
 ## Files expected to change
 

@@ -28,7 +28,7 @@ Feeds counters to: US-03-UI/debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Decay arithmetic | transaction | multiply plus bounded min/max | CONFIRMED | 026 |
 | Monthly invocation | country | caller orchestration through `monthly_country_pulse` | CONFIRMED | 011 |
 | Scope passing | scripted effect | saved country, market, and good scopes | CONFIRMED | 008 |

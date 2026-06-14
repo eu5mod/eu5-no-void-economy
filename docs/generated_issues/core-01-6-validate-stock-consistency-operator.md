@@ -29,7 +29,7 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 |---|---|---|---|---|
 | Iterate countries | none/effect | `every_country` | CONFIRMED | 001 |
 | Country source stock | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes | CONFIRMED | 008 |
 | Rebuild effect | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validation effect | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
@@ -41,9 +41,9 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 logical dimensions: market x good
 logical record and fields read: country stock source fields and market aggregate
 logical record fields written: none directly; correction delegates to CORE-01.5
-owner scope: market
-tuple/key: good scope
-confirmed physical map family: modeu5_market_good_stock
+owner scope: global variable system
+tuple/key: market scope in one static map per good
+confirmed physical map family: modeu5_<good>_market_stock
 physical value type: numeric
 default value: 0
 write owner: CORE-01.5 when validation requests rebuild

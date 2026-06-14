@@ -144,14 +144,16 @@ market.stock[good]
 Physical model:
 
 ```txt
-owner:    market
-map name: modeu5_market_good_stock
-key:      goods scope
+owner:    global variable system
+map name: modeu5_<good>_market_stock
+key:      market scope
 value:    numeric
 default:  0
 ```
 
-This is an aggregate/cache rebuilt from country stock maps.
+This is an aggregate/cache rebuilt from country stock maps. Controlled runtime
+testing on June 14, 2026 confirmed that Market scope does not support
+variables, so the aggregate cannot be stored on the market itself.
 
 ### Location x good
 
@@ -227,7 +229,7 @@ Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, 
 | CORE-01.2 | Writes stock and aggregate maps | Reuse the shared helpers and keep requested/removed/unsatisfied values transaction-local. |
 | CORE-01.3 | Writes two stock records and up to two aggregates | Calculate the complete transfer before replacement; enforce target capacity by default and allow the explicit CORE-03 lifecycle exception. |
 | CORE-01.4 | Writes stock and aggregate maps | Calculate decay from country stock only; keep decay transaction state local. |
-| CORE-01.5 | Rebuilds the market aggregate map | Sum country source maps and replace only the market-scoped aggregate key. |
+| CORE-01.5 | Rebuilds the market aggregate map | Sum country source maps and replace only the selected market key in the global per-good aggregate map. |
 | CORE-01.6 | Reads source and aggregate maps | Keep validation state local and delegate every aggregate correction to CORE-01.5. |
 | CORE-02 | Initializes capacity and stock maps once | Keep global schema/state as scalars, use capacity as the allocation weight, conserve the full opening source, and route writes through CORE-01.1 with `allow_over_capacity`. |
 | CORE-03 | Reassigns existing stock ownership after lifecycle events | Read the same stock/capacity map family, keep ratios temporary, conserve the full formula-derived transfer, and route movements through CORE-01.3 with `allow_over_capacity`. |

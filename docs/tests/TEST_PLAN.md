@@ -559,6 +559,11 @@ Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
 ```
 
+Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
+FAIL / NOT RUN rows there; do not enter `modeu5_test_*` as console commands.
+The variables remain available for scripted assertions, and failed assertions
+are also written to `error.log`.
+
 Expected pass variables on the event country:
 
 ```txt

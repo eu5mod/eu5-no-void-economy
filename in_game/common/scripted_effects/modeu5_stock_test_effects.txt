@@ -85,7 +85,7 @@ modeu5_debug_run_single_record_stock_tests = {
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_test_market_before_enforced_add
-		value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+		value = "global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)"
 	}
 	modeu5_add_stock = {
 		country = scope:modeu5_test_controller
@@ -108,9 +108,7 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_controller = {
 				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 100
 			}
-			scope:modeu5_test_market = {
-				"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_market_after_enforced_add
-			}
+			"global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)" = scope:modeu5_test_expected_market_after_enforced_add
 		}
 		set_variable = { name = modeu5_test_add_enforce_passed value = 1 }
 	}
@@ -150,7 +148,7 @@ modeu5_debug_run_single_record_stock_tests = {
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_test_market_before_decay
-		value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+		value = "global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)"
 	}
 	modeu5_decay_stock = {
 		country = scope:modeu5_test_controller
@@ -171,9 +169,7 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_controller = {
 				"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 90
 			}
-			scope:modeu5_test_market = {
-				"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_market_after_decay
-			}
+			"global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)" = scope:modeu5_test_expected_market_after_decay
 		}
 		set_variable = { name = modeu5_test_decay_passed value = 1 }
 	}
@@ -235,7 +231,7 @@ modeu5_debug_run_same_market_transfer_tests = {
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_test_market_before_same_market_transfer
-			value = "scope:modeu5_test_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+			value = "global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)"
 		}
 
 		modeu5_transfer_stock = {
@@ -258,9 +254,7 @@ modeu5_debug_run_same_market_transfer_tests = {
 				c:ENG = {
 					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_market)" = 140
 				}
-				scope:modeu5_test_market = {
-					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_market_before_same_market_transfer
-				}
+				"global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_market)" = scope:modeu5_test_market_before_same_market_transfer
 			}
 			scope:modeu5_test_controller = {
 				set_variable = { name = modeu5_test_same_market_transfer_passed value = 1 }
@@ -360,11 +354,11 @@ modeu5_debug_run_inter_market_transfer_test = {
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_test_source_market_before_transfer
-			value = "scope:modeu5_test_source_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+			value = "global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_source_market)"
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_test_target_market_before_transfer
-			value = "scope:modeu5_test_target_market.variable_map(modeu5_market_good_stock|goods:wheat)"
+			value = "global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_target_market)"
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_test_expected_source_market_after_transfer
@@ -400,12 +394,8 @@ modeu5_debug_run_inter_market_transfer_test = {
 				c:ENG = {
 					"variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_target_market)" = 100
 				}
-				scope:modeu5_test_source_market = {
-					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_source_market_after_transfer
-				}
-				scope:modeu5_test_target_market = {
-					"variable_map(modeu5_market_good_stock|goods:wheat)" = scope:modeu5_test_expected_target_market_after_transfer
-				}
+				"global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_source_market)" = scope:modeu5_test_expected_source_market_after_transfer
+				"global_variable_map(modeu5_wheat_market_stock|scope:modeu5_test_target_market)" = scope:modeu5_test_expected_target_market_after_transfer
 			}
 			scope:modeu5_test_controller = {
 				set_variable = { name = modeu5_test_inter_market_transfer_passed value = 1 }

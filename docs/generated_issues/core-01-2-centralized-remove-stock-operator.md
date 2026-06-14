@@ -28,7 +28,7 @@ Feeds counters to: US-10.1, US-10.3, debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Bounded arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
 | Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
@@ -48,7 +48,7 @@ readers: US-01/UI, US-03, US-10, US-11
 reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ```
 
-The market aggregate is the market-scoped `modeu5_market_good_stock[good]` cache. Requested, actual removed, unsatisfied, reason, and before/after values remain transaction-local except for debug snapshots.
+The market aggregate is the global `modeu5_<good>_market_stock[market]` cache. Requested, actual removed, unsatisfied, reason, and before/after values remain transaction-local except for debug snapshots.
 
 ## Files expected to change
 
