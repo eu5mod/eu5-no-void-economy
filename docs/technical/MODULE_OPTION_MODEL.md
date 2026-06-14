@@ -7,32 +7,49 @@ ModeU5 is distributed as one required core package and three optional companion 
 The required package is not a toggle. Calling it an option such as "Deactivate Void Economy" creates a misleading double negative because the player cannot disable it while using ModeU5. Use the positive package name:
 
 ```txt
-ModeU5 Core - Stock-Constrained Economy
+No Void Economy
 ```
 
 The package matrix is:
 
 | Package | Availability | User stories |
 |---|---|---|
-| ModeU5 Core - Stock-Constrained Economy | Required | CORE-00, CORE-01.1 through CORE-01.6, CORE-02, CORE-03, EPIC US-00, US-00.1 through US-00.4, US-00-UI, US-01, US-01-UI, US-02, US-02-UI, US-03, US-03-UI, EPIC US-10, US-10.0 through US-10.3, US-10-UI, US-11 |
-| ModeU5 Economy Rebalance | Default enabled; removable companion | US-04, US-04-UI, US-05 family, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
-| ModeU5 Trade Rebalance | Default enabled; removable companion | US-07, US-07-UI |
-| ModeU5 War Rebalance | Default enabled; removable companion | US-13 |
+| No Void Economy | Required | CORE-00, CORE-01.1 through CORE-01.6, CORE-02, CORE-03, EPIC US-00, US-00.1 through US-00.4, US-00-UI, US-01, US-01-UI, US-02, US-02-UI, US-03, US-03-UI, EPIC US-10, US-10.0 through US-10.3, US-10-UI, US-11 |
+| Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05 family, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
+| Rebalance Estate Power | Optional; included in the recommended playset | US-07, US-07-UI |
+| Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
 
-## Default playset
+## Recommended playset
 
-The supported default is the full suite:
+The supported default profile is the full suite:
 
 ```txt
-ModeU5 Core
-+ ModeU5 Economy Rebalance
-+ ModeU5 Trade Rebalance
-+ ModeU5 War Rebalance
+No Void Economy
++ Rebalance Economy
++ Rebalance Estate Power
++ Rebalance Early Blobbing
 ```
 
-Here, optional means that a companion may be removed in the launcher before campaign start. It does not mean disabled by default.
+Here, optional means that a companion may be removed in the launcher before campaign start. It does not mean that the recommended profile omits it.
 
-Core cannot load a missing companion's files and must never manufacture its package marker. Distributing or selecting the full launcher playset is what activates every module by default.
+Core cannot load a missing companion's files and must never manufacture its package marker. Selecting all four launcher entries activates the recommended profile.
+
+The source repository stores the companions under:
+
+```txt
+packages/modeu5_economy_rebalance/
+packages/modeu5_trade_rebalance/
+packages/modeu5_war_rebalance/
+```
+
+EU5 discovers local packages as sibling mod directories, not as selectable
+children of one loaded package. `tools/install_local_packages.sh` publishes the
+root Core payload and those three companion roots as four siblings and records
+their source branch and commit in `MODEU5_SOURCE.txt`.
+
+The installer does not edit launcher playset state. Until TECH-01 `103` is
+confirmed, the player must refresh the launcher and enable the four entries in
+the recommended playset once.
 
 ## Why packages are the source of truth
 
@@ -57,9 +74,9 @@ Therefore:
 ## Package dependencies
 
 ```txt
-ModeU5 Economy Rebalance -> must be selected with ModeU5 Core
-ModeU5 Trade Rebalance   -> must be selected with ModeU5 Core
-ModeU5 War Rebalance     -> must be selected with the matching ModeU5 Core version
+Rebalance Economy        -> must be selected with No Void Economy
+Rebalance Estate Power   -> must be selected with No Void Economy
+Rebalance Early Blobbing -> must be selected with the matching No Void Economy version
 ```
 
 US-13 has no stock-accounting dependency, but its companion package still belongs to the matching Core release so the suite has one version and support contract.
@@ -79,7 +96,7 @@ ModeU5 stock/void-economy core disabled
 
 Core initialization, centralized stock effects, stock resolution, decay, void-economy correction, validation, and mandatory debug remain enabled.
 
-### Economy Rebalance
+### Rebalance Economy
 
 When absent:
 
@@ -90,7 +107,7 @@ When absent:
 - their UI/debug stories must report the module as absent or remain hidden;
 - Core demand-outcome counters may still exist because US-10.3 owns them.
 
-### Trade Rebalance
+### Rebalance Estate Power
 
 When absent:
 
@@ -99,7 +116,7 @@ When absent:
 - US-02 remains part of Core and still owns ModeU5 storage-capacity calculations;
 - no US-07-UI tooltip or localization may claim rebalanced values.
 
-### War Rebalance
+### Rebalance Early Blobbing
 
 When absent:
 
@@ -112,7 +129,7 @@ ModeU5 configuration occurs before campaign start:
 
 ```txt
 launcher/mod playset
-  -> all four packages selected by default
+  -> select all four packages for the recommended profile
   -> remove Economy, Trade, or War before campaign start when desired
 
 EU5 Game Rules
@@ -139,6 +156,8 @@ Do not create a custom in-game configuration panel. In particular, no configurat
 ## Save and multiplayer rules
 
 - Package selection occurs in the launcher before starting or loading a campaign.
+- A source checkout is not itself four launcher choices; publish the package roots with `tools/install_local_packages.sh`.
+- Use `tools/install_local_packages.sh --check` to verify the branch and commit currently installed.
 - Adding or removing an optional package during an existing campaign is unsupported unless a dedicated migration is implemented and tested.
 - All multiplayer participants must use the same package set and versions.
 - Debug output must list the detected ModeU5 packages and versions.
@@ -147,6 +166,30 @@ Do not create a custom in-game configuration panel. In particular, no configurat
 ## Implementation boundary
 
 Packaging and option behavior must be implemented before optional balance stories.
+
+Package presence markers are package-owned:
+
+```txt
+Core:
+  modeu5_core_package_loaded
+  modeu5_core_package_version
+
+Economy companion:
+  modeu5_economy_rebalance_loaded
+  modeu5_economy_package_version
+
+Trade companion:
+  modeu5_trade_rebalance_loaded
+  modeu5_trade_package_version
+
+War companion:
+  modeu5_war_rebalance_loaded
+  modeu5_war_package_version
+```
+
+Package version variables are numeric runtime compatibility codes. Release
+`0.1.0` uses compatibility code `100`; the human-readable release remains in
+each `descriptor.mod` and `.metadata/metadata.json`.
 
 Do not add module checks inside the six centralized stock effects. The Core package owns those effects unconditionally.
 

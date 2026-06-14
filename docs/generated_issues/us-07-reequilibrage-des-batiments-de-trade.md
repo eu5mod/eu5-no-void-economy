@@ -17,7 +17,7 @@ Review confirmed vanilla trade-building fields, reduce marketplace trading/estat
 ## Module / availability
 
 ```txt
-Package: ModeU5 Trade Rebalance
+Package: Rebalance Estate Power
 Activation: optional companion package
 Behavior when absent:
   install no US-07 static building override

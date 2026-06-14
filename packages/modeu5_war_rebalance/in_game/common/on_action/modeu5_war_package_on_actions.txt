@@ -1,0 +1,15 @@
+on_game_start = {
+	on_actions = {
+		modeu5_war_rebalance_package_on_game_start
+	}
+}
+
+modeu5_war_rebalance_package_on_game_start = {
+	effect = {
+		set_global_variable = modeu5_war_rebalance_loaded
+		set_global_variable = {
+			name = modeu5_war_package_version
+			value = 100
+		}
+	}
+}

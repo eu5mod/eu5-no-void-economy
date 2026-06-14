@@ -1,0 +1,13 @@
+{
+	"name": "Rebalance Estate Power",
+	"id": "modeu5_trade_rebalance",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "Optional US-07 trade-building and estate-power rebalance. Requires the matching No Void Economy package.",
+	"tags": [
+		"Balance",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
+}

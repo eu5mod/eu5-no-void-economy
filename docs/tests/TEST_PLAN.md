@@ -48,19 +48,42 @@ Known vanilla warning ignored
 
 ## Package and option tests
 
-### Test P0 - default full suite
+### Test P-1 - package publication and source provenance
 
 Setup:
 
 ```txt
-Install or select the standard ModeU5 playset
-Start a clean campaign without removing a companion
+Run `./tools/validate_module_packages.sh`
+Run `./tools/install_local_packages.sh`
+Run `./tools/install_local_packages.sh --check`
+Refresh the EU5 launcher
 ```
 
 Expected:
 
 ```txt
-Core, Economy Rebalance, Trade Rebalance, and War Rebalance are all loaded
+The source package validation passes
+The launcher exposes four distinct ModeU5 entries
+Each installed package has the expected unique descriptor name
+Each `MODEU5_SOURCE.txt` reports the intended source branch and commit
+If two `No Void Economy` entries appear, the older `eu5voideco` single-package entry is disabled
+```
+
+---
+
+### Test P0 - default full suite
+
+Setup:
+
+```txt
+Enable all four ModeU5 launcher entries in one playset
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing are all loaded
 Startup diagnostics report all four matching package versions
 No Core script fabricates a package marker for content absent from the playset
 ```
@@ -72,7 +95,7 @@ No Core script fabricates a package marker for content absent from the playset
 Setup:
 
 ```txt
-Enable ModeU5 Core only
+Enable No Void Economy only
 Start a clean campaign
 ```
 
@@ -87,12 +110,12 @@ Startup debug reports Core only
 
 ---
 
-### Test P2 - Economy Rebalance
+### Test P2 - Rebalance Economy
 
 Setup:
 
 ```txt
-Enable Core + Economy Rebalance
+Enable Core + Rebalance Economy
 Start a clean campaign
 ```
 
@@ -106,12 +129,12 @@ Economy package version matches Core
 
 ---
 
-### Test P3 - Trade Rebalance
+### Test P3 - Rebalance Estate Power
 
 Setup:
 
 ```txt
-Enable Core + Trade Rebalance
+Enable Core + Rebalance Estate Power
 Start a clean campaign
 ```
 
@@ -126,12 +149,12 @@ Trade package version matches Core
 
 ---
 
-### Test P4 - War Rebalance
+### Test P4 - Rebalance Early Blobbing
 
 Setup:
 
 ```txt
-Enable Core + War Rebalance
+Enable Core + Rebalance Early Blobbing
 Start a clean campaign
 ```
 
@@ -223,6 +246,7 @@ Package presence, not a game rule, controls optional static overrides
 No Game Rules setting claims to unload Economy, Trade, or War packages
 Adding or removing a package still requires launcher/playset selection before campaign load
 No configuration action reseeds or mutates stock
+The installed source branch and commit are visible in `MODEU5_SOURCE.txt`
 ```
 
 ## Start-game initialization tests

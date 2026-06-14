@@ -17,7 +17,7 @@ Provide age-specific conquest CB/wargoal variants for non-hordes: add `0.40` in 
 ## Module / availability
 
 ```txt
-Package: ModeU5 War Rebalance
+Package: Rebalance Early Blobbing
 Activation: optional companion package
 Behavior when absent:
   install or select no ModeU5 conquest-cost variant

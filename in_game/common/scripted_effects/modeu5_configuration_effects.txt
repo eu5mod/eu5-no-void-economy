@@ -8,6 +8,10 @@ modeu5_initialize_configuration_state_effect = {
 		}
 		set_global_variable = modeu5_core_package_loaded
 	}
+	set_global_variable = {
+		name = modeu5_core_package_version
+		value = 100
+	}
 
 	if = {
 		limit = { has_game_rule = modeu5_debug_verbose }

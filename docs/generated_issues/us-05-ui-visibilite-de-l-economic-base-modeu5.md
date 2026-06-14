@@ -17,11 +17,11 @@ Show the Wealth input, Trade Income input, resulting ModeU5 Economic Base, and w
 ## Module / availability
 
 ```txt
-Package: ModeU5 Economy Rebalance
+Package: Rebalance Economy
 Activation: optional companion package
 Behavior when absent:
   do not claim that ModeU5 replaced the Economic Base
-  optional general diagnostics may report "Economy Rebalance not loaded"
+  optional general diagnostics may report "Rebalance Economy not loaded"
 ```
 
 ## Runtime position

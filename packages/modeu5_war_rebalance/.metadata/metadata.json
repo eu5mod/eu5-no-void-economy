@@ -1,0 +1,14 @@
+{
+	"name": "Rebalance Early Blobbing",
+	"id": "modeu5_war_rebalance",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "Optional US-13 early-conquest cost rebalance. Requires the matching No Void Economy package.",
+	"tags": [
+		"Balance",
+		"Gameplay",
+		"Military"
+	],
+	"relationships": [],
+	"game_custom_data": {}
+}

@@ -1,7 +1,7 @@
 version="0.1.0"
 tags={
-	"Gameplay"
+	"Balance"
 	"Trade and Economics"
 }
-name="No Void Economy"
+name="Rebalance Economy"
 supported_version="*"

@@ -1,7 +1,13 @@
 {
-  "name": "ModeU5 Country Stocks Within Markets",
-  "version": "0.1.0",
-  "description": "MVP skeleton for a double-accounting stock layer inside EU5 markets.",
-  "authors": ["Pierre-Henri AUSSEIL"],
-  "status": "bootstrap"
+	"name": "No Void Economy",
+	"id": "modeu5_core",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "Required ModeU5 stock accounting, void-economy correction, and consistency layer. Owns every story outside the three optional rebalance packages.",
+	"tags": [
+		"Gameplay",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
 }

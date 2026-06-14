@@ -64,17 +64,21 @@ At startup and in the general diagnostic event, expose:
 modeu5_core_package_loaded = yes
 modeu5_core_package_version
 modeu5_economy_rebalance_loaded
-modeu5_economy_rebalance_version_if_loaded
+modeu5_economy_package_version_if_loaded
 modeu5_trade_rebalance_loaded
-modeu5_trade_rebalance_version_if_loaded
+modeu5_trade_package_version_if_loaded
 modeu5_war_rebalance_loaded
-modeu5_war_rebalance_version_if_loaded
+modeu5_war_package_version_if_loaded
 package_version_mismatch
 missing_required_core
 package_selection_changed_since_save_if_detectable
 ```
 
 Optional feature debug must include its package state. It must never report an optional effect as active when the companion package is absent.
+
+For local development, each installed package also contains
+`MODEU5_SOURCE.txt`. Inspect it before reading runtime diagnostics to confirm
+that EU5 is loading the intended branch and commit.
 
 ## Pre-campaign debug configuration
 

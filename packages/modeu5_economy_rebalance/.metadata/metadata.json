@@ -1,0 +1,13 @@
+{
+	"name": "Rebalance Economy",
+	"id": "modeu5_economy_rebalance",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "Optional economy rebalance for US-04, US-05, US-08, and US-09. Requires the matching No Void Economy package.",
+	"tags": [
+		"Balance",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
+}

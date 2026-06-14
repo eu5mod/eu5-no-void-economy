@@ -15,18 +15,18 @@ As a ModeU5 player, I want one required stock/void-economy core and clearly sepa
 Package ModeU5 as:
 
 ```txt
-ModeU5 Core - Stock-Constrained Economy (required)
-ModeU5 Economy Rebalance (default enabled; removable)
-ModeU5 Trade Rebalance (default enabled; removable)
-ModeU5 War Rebalance (default enabled; removable)
+No Void Economy (required)
+Rebalance Economy (optional; included in the recommended playset)
+Rebalance Estate Power (optional; included in the recommended playset)
+Rebalance Early Blobbing (optional; included in the recommended playset)
 ```
 
-Ship a default full-suite playset, enforce package dependencies, expose the loaded package/version set in debug, and ensure a deliberately removed companion applies no runtime behavior, static override, modifier, or misleading UI.
+Publish and document the recommended full-suite playset, enforce package dependencies when launcher exposure permits, expose the loaded package/version set in debug, and ensure a deliberately removed companion applies no runtime behavior, static override, modifier, or misleading UI.
 
 ## Module / availability
 
 ```txt
-Package: ModeU5 Core
+Package: No Void Economy
 Activation: required and always active when ModeU5 is loaded
 Behavior when absent: companion packages fail closed and report the missing dependency
 ```
@@ -72,12 +72,17 @@ reset lifecycle: never reset during a campaign
 
 ```txt
 descriptor.mod or package-specific descriptors
+packages/modeu5_economy_rebalance/
+packages/modeu5_trade_rebalance/
+packages/modeu5_war_rebalance/
 main_menu/common/game_rules/
 main_menu/localization/
 in_game/common/on_action/
 in_game/common/scripted_triggers/
 in_game/common/scripted_effects/
 in_game/events/
+tools/install_local_packages.sh
+tools/validate_module_packages.sh
 docs/technical/MODULE_OPTION_MODEL.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/TEST_PLAN.md
@@ -106,6 +111,8 @@ Related US: every optional module story
 - Use the built-in Game Rules screen only for script-safe pre-campaign settings.
 - Keep launcher selection as the activation mechanism for optional packages.
 - Make the full four-package suite the default/recommended launcher playset.
+- Publish the four source package roots as sibling launcher mods.
+- Record the installed source branch and commit for local development.
 - Never manufacture a companion package marker from Core when its files are absent.
 - Do not expose a Core gameplay toggle, an in-game configuration panel, or a fresh-stock reseed action.
 
@@ -113,9 +120,9 @@ Related US: every optional module story
 
 - [ ] Core has no supported disabled state.
 - [ ] The default/recommended playset selects all four packages.
-- [ ] Economy Rebalance absence leaves US-04/05/08/09 inactive.
-- [ ] Trade Rebalance absence leaves vanilla US-07 building values untouched.
-- [ ] War Rebalance absence leaves vanilla conquest behavior untouched.
+- [ ] Rebalance Economy absence leaves US-04/05/08/09 inactive.
+- [ ] Rebalance Estate Power absence leaves vanilla US-07 building values untouched.
+- [ ] Rebalance Early Blobbing absence leaves vanilla conquest behavior untouched.
 - [ ] Missing or mismatched Core is blocked by the launcher when TECH-01 `103` is confirmed, or otherwise produces a prominent unsupported-playset diagnostic.
 - [ ] Multiplayer package/version mismatch is visible before gameplay.
 - [ ] Game rules cannot change the loaded package set.
@@ -124,7 +131,9 @@ Related US: every optional module story
 ## Acceptance criteria
 
 - [ ] The launcher can select Core alone.
+- [ ] The launcher exposes Core, Economy, Trade, and War as four distinct entries after local package installation.
 - [ ] A standard ModeU5 installation or documented playset enables all modules by default.
+- [ ] Every locally installed package identifies its source branch and commit.
 - [ ] Each optional companion declares or documents the required matching Core package.
 - [ ] Core alone loads without optional modifiers or static overrides.
 - [ ] Each optional package activates only its documented US set.
@@ -145,9 +154,9 @@ Test the default playset, then four reduced clean campaigns:
 ```txt
 1. Default full suite
 2. Core only
-3. Core + Economy Rebalance
-4. Core + Trade Rebalance
-5. Core + War Rebalance
+3. Core + Rebalance Economy
+4. Core + Rebalance Estate Power
+5. Core + Rebalance Early Blobbing
 ```
 
 ### Expected result
