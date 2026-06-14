@@ -91,10 +91,30 @@ Each optional companion declares this metadata relationship:
 }
 ```
 
-EU5 therefore has enough metadata to report a missing, inactive, or
-version-mismatched Core dependency. The launcher still presents four sibling
-mods; dependency metadata does not turn them into visually nested entries and
-does not guarantee that selecting a companion automatically enables Core.
+The controlled launcher test confirms:
+
+```txt
+enable one companion
+-> compatible Core is enabled automatically
+
+disable Core while companions are selected
+-> companions remain selected; deactivation does not cascade
+
+enable Core alone
+-> optional companions remain unselected
+```
+
+The launcher still presents four sibling mods. Dependency metadata does not
+turn them into visually nested entries.
+
+Do not make Core depend on the three companions. That would make the optional
+packages mandatory and create dependency cycles because each companion already
+depends on Core.
+
+If one-click activation of the recommended profile becomes worthwhile, add a
+separate metadata-only `ModeU5 Full Suite` package that depends on Core and all
+three companions. Such a package would simplify initial activation but would
+not be expected to cascade-disable its dependencies.
 
 Each package's `.metadata/metadata.json` starts its short description with a
 campaign-lifecycle warning. Local EU5 GUI files confirm that this description
@@ -132,10 +152,10 @@ Rebalance Early Blobbing -> must be selected with the matching No Void Economy v
 
 US-13 has no stock-accounting dependency, but its companion package still belongs to the matching Core release so the suite has one version and support contract.
 
-Launcher dependency reporting is confirmed under TECH-01 `103`. The playset
-requirement and startup version diagnostic remain mandatory because metadata
-cannot undo static overrides already loaded from an invalid companion-only
-playset.
+Launcher dependency activation is confirmed under TECH-01 `103`. Non-cascading
+deactivation means the playset requirement and startup version diagnostic
+remain mandatory: metadata cannot undo static overrides already loaded from an
+invalid companion-only playset.
 
 ## Behavior when a package is absent
 

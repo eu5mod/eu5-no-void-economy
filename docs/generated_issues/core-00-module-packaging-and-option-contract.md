@@ -111,7 +111,9 @@ Related US: every optional module story
 - Validate matching package versions before optional scripted behavior runs.
 - Do not claim startup script can undo a static companion override already loaded without Core.
 - Treat companion-without-Core as an unsupported playset and require the launcher dependency issue to be visible.
-- Do not claim dependency metadata visually nests companions or automatically enables Core.
+- Depend on Core from each companion; do not make Core depend on optional companions.
+- Do not claim dependency metadata visually nests companions or cascade-disables them.
+- Keep a metadata-only full-suite package as a separate future convenience, not part of the Core dependency graph.
 - Keep game rules subordinate to package activation.
 - Use the built-in Game Rules screen only for script-safe pre-campaign settings.
 - Keep launcher selection as the activation mechanism for optional packages.
@@ -129,6 +131,9 @@ Related US: every optional module story
 - [ ] Rebalance Estate Power absence leaves vanilla US-07 building values untouched.
 - [ ] Rebalance Early Blobbing absence leaves vanilla conquest behavior untouched.
 - [ ] Missing, inactive, or mismatched Core produces a launcher/playset dependency issue.
+- [ ] Enabling any companion automatically enables compatible Core.
+- [ ] Disabling Core is not expected to disable selected companions automatically.
+- [ ] Enabling Core alone leaves optional companions unselected.
 - [ ] Multiplayer package/version mismatch is visible before gameplay.
 - [ ] Game rules cannot change the loaded package set.
 - [ ] No custom in-game configuration panel is installed.
@@ -183,4 +188,4 @@ No custom in-game configuration panel is present
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Companion metadata declares a compatible Core dependency, but EU5 still presents the packages as sibling mods.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.

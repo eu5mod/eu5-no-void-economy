@@ -237,7 +237,9 @@ Setup:
 ```txt
 Refresh the launcher after installing all four packages
 Add one optional companion to a playset without Core
-Then activate Core version 0.1.x in that playset
+Confirm that compatible Core is enabled automatically
+Disable Core while the companion remains selected
+Enable Core alone in a clean playset
 Run clean campaigns with Core only and with each optional companion package
 Inspect startup package markers and optional behavior
 ```
@@ -246,10 +248,12 @@ Expected:
 
 ```txt
 The companion metadata identifies No Void Economy (NVE) as a dependency
-Core absent or inactive produces a missing/inactive dependency issue
-Core 0.1.x satisfies the companion dependency
+Selecting a companion automatically enables compatible Core 0.1.x
+Disabling Core does not cascade-disable selected companions
+The companion-only state is treated as invalid or causes Core to be restored before load
+Selecting Core alone does not enable optional companions
 An incompatible Core version produces a version-mismatch issue
-The launcher may keep the companion selectable as a sibling entry; it must not appear dependency-clean without compatible Core
+All four packages remain sibling entries
 Package presence, not a game rule, controls optional static overrides
 No Game Rules setting claims to unload Economy, Trade, or War packages
 Adding or removing a package still requires launcher/playset selection before campaign load
