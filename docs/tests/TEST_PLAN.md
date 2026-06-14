@@ -48,6 +48,25 @@ Known vanilla warning ignored
 
 ## Package and option tests
 
+### Test P0 - default full suite
+
+Setup:
+
+```txt
+Install or select the standard ModeU5 playset
+Start a clean campaign without removing a companion
+```
+
+Expected:
+
+```txt
+Core, Economy Rebalance, Trade Rebalance, and War Rebalance are all loaded
+Startup diagnostics report all four matching package versions
+No Core script fabricates a package marker for content absent from the playset
+```
+
+---
+
 ### Test P1 - Core only
 
 Setup:
@@ -143,6 +162,68 @@ No optional scripted mutation runs after mismatch detection
 ```
 
 Adding or removing an optional package from an existing campaign is unsupported until a migration test is explicitly added.
+
+## ModeU5 configuration tests
+
+### Test CFG1 - built-in Game Rules integration
+
+Setup:
+
+```txt
+Load Core
+Open Game Rules before starting a campaign
+Locate ModeU5 Debug Output in the General tab
+```
+
+Expected:
+
+```txt
+ModeU5 Debug Output offers Off, Basic, and Verbose
+Off is the default
+No vanilla GUI file is replaced
+No custom in-game ModeU5 configuration panel is present
+No game-rule parse error is added to error.log
+```
+
+---
+
+### Test CFG2 - debug setting initialization
+
+Setup:
+
+```txt
+Start three clean campaigns with ModeU5 Debug Output set to Off, Basic, and Verbose
+Inspect `modeu5_debug_level` after startup
+```
+
+Expected:
+
+```txt
+Off initializes `modeu5_debug_level = 0`
+Basic initializes `modeu5_debug_level = 1`
+Verbose initializes `modeu5_debug_level = 2`
+The setting does not mutate stock or package state
+```
+
+---
+
+### Test CFG3 - launcher/package boundary
+
+Setup:
+
+```txt
+Run clean campaigns with Core only and with each optional companion package
+Inspect startup package markers and optional behavior
+```
+
+Expected:
+
+```txt
+Package presence, not a game rule, controls optional static overrides
+No Game Rules setting claims to unload Economy, Trade, or War packages
+Adding or removing a package still requires launcher/playset selection before campaign load
+No configuration action reseeds or mutates stock
+```
 
 ## Start-game initialization tests
 

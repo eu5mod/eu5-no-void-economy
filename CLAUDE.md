@@ -47,6 +47,10 @@ Companion-package presence is the source of truth for optional static overrides.
 
 Package selection occurs before campaign load. Adding or removing a package mid-campaign is unsupported without an explicit migration. Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 
+The default supported playset enables Core, Economy Rebalance, Trade Rebalance, and War Rebalance together. Optional means removable before campaign start, not disabled by default. Core must never synthesize a companion package marker when that package is absent.
+
+ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level` use EU5's built-in Game Rules screen and are fixed when the campaign starts. Do not create an in-game configuration panel.
+
 ## Variable-map storage rule
 
 Follow:
@@ -373,7 +377,7 @@ feature/inter-market-transfer
 feature/local-pop-demand-adaptation
 feature/economic-base
 balance/static-overrides
-ui/debug-panel
+config/game-rules
 ```
 
 ## Do not widen MVP

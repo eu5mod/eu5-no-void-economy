@@ -16,12 +16,12 @@ Package ModeU5 as:
 
 ```txt
 ModeU5 Core - Stock-Constrained Economy (required)
-ModeU5 Economy Rebalance (optional)
-ModeU5 Trade Rebalance (optional)
-ModeU5 War Rebalance (optional)
+ModeU5 Economy Rebalance (default enabled; removable)
+ModeU5 Trade Rebalance (default enabled; removable)
+ModeU5 War Rebalance (default enabled; removable)
 ```
 
-Enforce package dependencies, expose the loaded package/version set in debug, and ensure an absent optional package applies no runtime behavior, static override, modifier, or misleading UI.
+Ship a default full-suite playset, enforce package dependencies, expose the loaded package/version set in debug, and ensure a deliberately removed companion applies no runtime behavior, static override, modifier, or misleading UI.
 
 ## Module / availability
 
@@ -74,10 +74,10 @@ reset lifecycle: never reset during a campaign
 descriptor.mod or package-specific descriptors
 main_menu/common/game_rules/
 main_menu/localization/
+in_game/common/on_action/
 in_game/common/scripted_triggers/
 in_game/common/scripted_effects/
 in_game/events/
-in_game/localization/
 docs/technical/MODULE_OPTION_MODEL.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/TEST_PLAN.md
@@ -102,50 +102,66 @@ Related US: every optional module story
 - Validate matching package versions before optional scripted behavior runs.
 - Do not claim startup script can undo a static companion override already loaded without Core.
 - Treat companion-without-Core as an unsupported playset until launcher dependency enforcement is confirmed.
-- Keep game rules optional and subordinate to package activation.
+- Keep game rules subordinate to package activation.
+- Use the built-in Game Rules screen only for script-safe pre-campaign settings.
+- Keep launcher selection as the activation mechanism for optional packages.
+- Make the full four-package suite the default/recommended launcher playset.
+- Never manufacture a companion package marker from Core when its files are absent.
+- Do not expose a Core gameplay toggle, an in-game configuration panel, or a fresh-stock reseed action.
 
 ## CORE-specific boundary checks
 
 - [ ] Core has no supported disabled state.
+- [ ] The default/recommended playset selects all four packages.
 - [ ] Economy Rebalance absence leaves US-04/05/08/09 inactive.
 - [ ] Trade Rebalance absence leaves vanilla US-07 building values untouched.
 - [ ] War Rebalance absence leaves vanilla conquest behavior untouched.
 - [ ] Missing or mismatched Core is blocked by the launcher when TECH-01 `103` is confirmed, or otherwise produces a prominent unsupported-playset diagnostic.
 - [ ] Multiplayer package/version mismatch is visible before gameplay.
+- [ ] Game rules cannot change the loaded package set.
+- [ ] No custom in-game configuration panel is installed.
 
 ## Acceptance criteria
 
 - [ ] The launcher can select Core alone.
+- [ ] A standard ModeU5 installation or documented playset enables all modules by default.
 - [ ] Each optional companion declares or documents the required matching Core package.
 - [ ] Core alone loads without optional modifiers or static overrides.
 - [ ] Each optional package activates only its documented US set.
 - [ ] Removing an optional package before a new test campaign restores the corresponding vanilla behavior.
 - [ ] Startup debug lists all detected ModeU5 package versions.
 - [ ] No optional UI claims an inactive feature is enabled.
+- [ ] The ModeU5 debug game rule offers Off, Basic, and Verbose before campaign start.
+- [ ] The selected debug rule initializes `modeu5_debug_level` without mutating stock or package state.
+- [ ] Fresh stock seeding is absent from all configuration surfaces.
 - [ ] TECH-01 and package-combination tests are updated.
 
 ## Manual test scenario
 
 ### Setup
 
-Test four clean campaigns:
+Test the default playset, then four reduced clean campaigns:
 
 ```txt
-1. Core only
-2. Core + Economy Rebalance
-3. Core + Trade Rebalance
-4. Core + War Rebalance
+1. Default full suite
+2. Core only
+3. Core + Economy Rebalance
+4. Core + Trade Rebalance
+5. Core + War Rebalance
 ```
 
 ### Expected result
 
 ```txt
-Core stock/void-economy behavior exists in all four campaigns
-US-04/05/08/09 behavior exists only in campaign 2
-US-07 behavior exists only in campaign 3
-US-13 behavior exists only in campaign 4
+All documented modules are active in the default full-suite campaign
+Core stock/void-economy behavior exists in all five campaigns
+US-04/05/08/09 behavior exists in campaigns 1 and 3
+US-07 behavior exists in campaigns 1 and 4
+US-13 behavior exists in campaigns 1 and 5
 Startup debug reports the exact package set
 No missing-dependency or stale optional effect is present
+The built-in Game Rules screen exposes the ModeU5 debug setting
+No custom in-game configuration panel is present
 ```
 
 ## Known limitations

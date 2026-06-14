@@ -15,9 +15,24 @@ The package matrix is:
 | Package | Availability | User stories |
 |---|---|---|
 | ModeU5 Core - Stock-Constrained Economy | Required | CORE-00, CORE-01.1 through CORE-01.6, CORE-02, CORE-03, EPIC US-00, US-00.1 through US-00.4, US-00-UI, US-01, US-01-UI, US-02, US-02-UI, US-03, US-03-UI, EPIC US-10, US-10.0 through US-10.3, US-10-UI, US-11 |
-| ModeU5 Economy Rebalance | Optional companion package | US-04, US-04-UI, US-05 family, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
-| ModeU5 Trade Rebalance | Optional companion package | US-07, US-07-UI |
-| ModeU5 War Rebalance | Optional companion package | US-13 |
+| ModeU5 Economy Rebalance | Default enabled; removable companion | US-04, US-04-UI, US-05 family, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
+| ModeU5 Trade Rebalance | Default enabled; removable companion | US-07, US-07-UI |
+| ModeU5 War Rebalance | Default enabled; removable companion | US-13 |
+
+## Default playset
+
+The supported default is the full suite:
+
+```txt
+ModeU5 Core
++ ModeU5 Economy Rebalance
++ ModeU5 Trade Rebalance
++ ModeU5 War Rebalance
+```
+
+Here, optional means that a companion may be removed in the launcher before campaign start. It does not mean disabled by default.
+
+Core cannot load a missing companion's files and must never manufacture its package marker. Distributing or selecting the full launcher playset is what activates every module by default.
 
 ## Why packages are the source of truth
 
@@ -37,7 +52,7 @@ Therefore:
 - do not promise one runtime checkbox that can disable US-07 or US-08 safely;
 - do not load a static override and merely hide its UI when its option is off;
 - use companion packages as the authoritative activation boundary;
-- game rules may be added later for behavior wholly controlled by scripted triggers, but they must not contradict package activation.
+- game rules may configure behavior wholly controlled by scripted triggers, such as debug output, but they must not contradict package activation.
 
 ## Package dependencies
 
@@ -90,6 +105,36 @@ When absent:
 
 - US-13 installs or selects no ModeU5 conquest-cost variant;
 - vanilla CB/wargoal behavior remains unchanged.
+
+## Configuration surfaces
+
+ModeU5 configuration occurs before campaign start:
+
+```txt
+launcher/mod playset
+  -> all four packages selected by default
+  -> remove Economy, Trade, or War before campaign start when desired
+
+EU5 Game Rules
+  -> configure script-safe settings owned by loaded packages
+```
+
+Core currently defines one native game rule:
+
+```txt
+ModeU5 Debug Output = Off / Basic / Verbose
+```
+
+The selected setting initializes `modeu5_debug_level` when the campaign starts. It is not an in-game toggle.
+
+Do not create a custom in-game configuration panel. In particular, no configuration surface may:
+
+- disable Core stock gameplay;
+- pretend that a game rule unloads a companion package;
+- imply that an unloaded static override can be enabled after startup;
+- imply that removing a loaded companion restores vanilla static definitions in the current process;
+- rerun fresh stock seeding;
+- call a stock mutation outside the centralized effects.
 
 ## Save and multiplayer rules
 

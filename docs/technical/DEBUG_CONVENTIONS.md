@@ -76,6 +76,20 @@ package_selection_changed_since_save_if_detectable
 
 Optional feature debug must include its package state. It must never report an optional effect as active when the companion package is absent.
 
+## Pre-campaign debug configuration
+
+`modeu5_debug_level` is selected through EU5's built-in Game Rules screen before the campaign starts:
+
+```txt
+Off = 0
+Basic = 1
+Verbose = 2
+```
+
+The startup configuration effect copies the selected rule to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
+
+There is no custom in-game configuration panel. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
+
 ## Mandatory debug for CORE-02 startup
 
 Global startup debug:

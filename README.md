@@ -47,11 +47,13 @@ ModeU5 uses packages rather than a misleading universal runtime toggle:
 | Package | Status | Content |
 |---|---|---|
 | ModeU5 Core - Stock-Constrained Economy | Required | Stock accounting, capacity, initialization/succession, decay, void-economy correction, demand resolution, validation, and core UI/debug |
-| ModeU5 Economy Rebalance | Optional | US-04, US-05, US-08, US-09 and their UI stories |
-| ModeU5 Trade Rebalance | Optional | US-07 and US-07-UI |
-| ModeU5 War Rebalance | Optional | US-13 |
+| ModeU5 Economy Rebalance | Default enabled; removable | US-04, US-05, US-08, US-09 and their UI stories |
+| ModeU5 Trade Rebalance | Default enabled; removable | US-07 and US-07-UI |
+| ModeU5 War Rebalance | Default enabled; removable | US-13 |
 
-The Core package is the identity of the mod and has no supported disabled state. Optional packages are selected in the launcher before campaign load. See `docs/technical/MODULE_OPTION_MODEL.md`.
+The default ModeU5 playset loads all four packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. See `docs/technical/MODULE_OPTION_MODEL.md`.
+
+ModeU5 configuration occurs before campaign start. The launcher/mod playset selects Core and optional rebalance packages. EU5's built-in Game Rules screen configures script-safe settings such as ModeU5 debug output. There is no custom in-game configuration panel.
 
 ## Core implementation tickets
 
@@ -147,7 +149,7 @@ main
     ├── feature/local-pop-demand-adaptation
     ├── feature/economic-base
     ├── balance/static-overrides
-    └── ui/debug-panel
+    └── config/game-rules
 ```
 
 ## MVP boundaries
