@@ -46,7 +46,7 @@ Feeds counters to: startup guard and debug
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Separate package descriptors | launcher/mod load | one descriptor and content root per package | CONFIRMED | internal |
-| Enforce companion dependency in launcher/playset metadata | launcher/mod descriptor | dependency field or equivalent supported by EU5 launcher | TO_TEST | 103 |
+| Declare and report companion dependency in launcher/playset metadata | launcher/mod descriptor | `relationships` dependency on `modeu5_core` version `0.1.*` | CONFIRMED | 103 |
 | Custom game-rule definitions | main menu | `main_menu/common/game_rules` | CONFIRMED | 100 |
 | Read an active game-rule setting | global script context | `has_game_rule = <setting>` | CONFIRMED | 101 |
 | Conditionally gate static building/RGO numeric overrides | static definition | game-rule-dependent static value | NOT_CONFIRMED | 102 |
@@ -110,7 +110,8 @@ Related US: every optional module story
 - Treat the warning as user guidance, not technical enforcement.
 - Validate matching package versions before optional scripted behavior runs.
 - Do not claim startup script can undo a static companion override already loaded without Core.
-- Treat companion-without-Core as an unsupported playset until launcher dependency enforcement is confirmed.
+- Treat companion-without-Core as an unsupported playset and require the launcher dependency issue to be visible.
+- Do not claim dependency metadata visually nests companions or automatically enables Core.
 - Keep game rules subordinate to package activation.
 - Use the built-in Game Rules screen only for script-safe pre-campaign settings.
 - Keep launcher selection as the activation mechanism for optional packages.
@@ -127,7 +128,7 @@ Related US: every optional module story
 - [ ] Rebalance Economy absence leaves US-04/05/08/09 inactive.
 - [ ] Rebalance Estate Power absence leaves vanilla US-07 building values untouched.
 - [ ] Rebalance Early Blobbing absence leaves vanilla conquest behavior untouched.
-- [ ] Missing or mismatched Core is blocked by the launcher when TECH-01 `103` is confirmed, or otherwise produces a prominent unsupported-playset diagnostic.
+- [ ] Missing, inactive, or mismatched Core produces a launcher/playset dependency issue.
 - [ ] Multiplayer package/version mismatch is visible before gameplay.
 - [ ] Game rules cannot change the loaded package set.
 - [ ] No custom in-game configuration panel is installed.
@@ -182,4 +183,4 @@ No custom in-game configuration panel is present
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Automatic launcher dependency enforcement remains `TO_TEST`.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Companion metadata declares a compatible Core dependency, but EU5 still presents the packages as sibling mods.

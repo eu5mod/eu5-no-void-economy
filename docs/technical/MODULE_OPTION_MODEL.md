@@ -76,9 +76,25 @@ children of one loaded package. `tools/install_local_packages.sh` publishes the
 root Core payload and those three companion roots as four siblings and records
 their source branch and commit in `MODEU5_SOURCE.txt`.
 
-The installer does not edit launcher playset state. Until TECH-01 `103` is
-confirmed, the player must refresh the launcher and enable the four entries in
-the recommended playset once.
+The installer does not edit launcher playset state. The player must refresh the
+launcher and enable the four entries in the recommended playset once.
+
+Each optional companion declares this metadata relationship:
+
+```json
+{
+  "rel_type": "dependency",
+  "id": "modeu5_core",
+  "display_name": "No Void Economy (NVE)",
+  "resource_type": "mod",
+  "version": "0.1.*"
+}
+```
+
+EU5 therefore has enough metadata to report a missing, inactive, or
+version-mismatched Core dependency. The launcher still presents four sibling
+mods; dependency metadata does not turn them into visually nested entries and
+does not guarantee that selecting a companion automatically enables Core.
 
 Each package's `.metadata/metadata.json` starts its short description with a
 campaign-lifecycle warning. Local EU5 GUI files confirm that this description
@@ -116,7 +132,10 @@ Rebalance Early Blobbing -> must be selected with the matching No Void Economy v
 
 US-13 has no stock-accounting dependency, but its companion package still belongs to the matching Core release so the suite has one version and support contract.
 
-Automatic launcher/descriptor dependency enforcement remains `TO_TEST` under TECH-01 `103`. Until confirmed, the playset requirement and startup version diagnostic are mandatory, but startup script cannot undo static overrides that were already loaded from an invalid companion-only playset.
+Launcher dependency reporting is confirmed under TECH-01 `103`. The playset
+requirement and startup version diagnostic remain mandatory because metadata
+cannot undo static overrides already loaded from an invalid companion-only
+playset.
 
 ## Behavior when a package is absent
 

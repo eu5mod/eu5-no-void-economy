@@ -87,8 +87,10 @@ source path, branch, and commit. Check what is installed with:
 
 If the launcher shows two `No Void Economy` entries, disable the older
 single-package entry backed by the `eu5voideco` path and keep the new
-`modeu5_core` entry. Automatic dependency and default-playset selection remain
-unconfirmed under TECH-01 `103`.
+`modeu5_core` entry. Each optional package declares `modeu5_core` version
+`0.1.*` as a dependency. EU5 may still display and let you select a companion
+without Core, but the playset must report the dependency as missing or
+inactive until compatible Core is enabled.
 
 ## Core implementation tickets
 

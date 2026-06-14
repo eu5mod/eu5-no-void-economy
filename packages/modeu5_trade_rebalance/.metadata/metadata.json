@@ -8,6 +8,14 @@
 		"Balance",
 		"Trade and Economics"
 	],
-	"relationships": [],
+	"relationships": [
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core",
+			"display_name": "No Void Economy (NVE)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		}
+	],
 	"game_custom_data": {}
 }
