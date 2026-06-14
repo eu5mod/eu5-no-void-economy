@@ -28,6 +28,7 @@ Feeds counters to: US-00.3, US-00-UI
 |---|---|---|---|---|
 | Monthly produced/rejected ledger outputs | country × market × good | US-00.1 accumulated transaction totals | CONFIRMED | 024, internal |
 | Read keyed ledger entries | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
+| Store ratio outputs | country-scoped per-good maps keyed by market | `modeu5_<good>_overproduction_ratio_by_market` and `modeu5_<good>_effective_overproduction_ratio_by_market` | CONFIRMED | 007, 025 |
 | Safe division and clamp | scripted value/effect | `change_variable` with `divide`, `min`, and `max` | CONFIRMED | 026 |
 | Configurable buffer | ModeU5 | scripted/config value | CONFIRMED | internal |
 
@@ -53,10 +54,13 @@ Related US: EPIC US-00, US-00-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Return zero when produced quantity is non-positive.
 - Clamp raw ratio to `[0, 1]`.
 - Calculate effective ratio as `max(0, raw_ratio - buffer)`.
 - Keep the buffer configurable and visible in debug.
+- Store raw and effective results on the country in per-good maps keyed by market, with an explicit default of zero.
+- Replace existing ratio entries by remove/re-add; do not clear the source ledger.
 - Do not mutate stock or ledger source counters.
 
 ## US-specific boundary checks
@@ -71,6 +75,7 @@ Related US: EPIC US-00, US-00-UI
 - [ ] Rejection at or below the buffer yields zero effective overproduction.
 - [ ] Rejection above the buffer subtracts exactly the configured buffer.
 - [ ] Results remain isolated by country, market, and good.
+- [ ] Ratio maps use the same country owner and market key as the US-00.1 source maps.
 - [ ] Debug shows produced, rejected, raw ratio, buffer, and effective ratio.
 - [ ] TECH-01 and test evidence are updated.
 

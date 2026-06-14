@@ -32,6 +32,7 @@ Feeds counters to: US-10.3
 | Runtime requested Pop demand quantity by good | Pop / location × good | runtime vanilla requested-demand value | NOT_CONFIRMED | 087 |
 | Estate/other consumer demand context | estate/country | reliable vanilla demand caller inputs | NOT_CONFIRMED | 086 |
 | Satisfaction output | ModeU5 | requested/satisfied/unsatisfied values | CONFIRMED | 077 |
+| Transaction state | current effect/event chain | local requested/remaining/satisfied values and saved candidate scopes | CONFIRMED | 008, internal |
 
 ## Files expected to change
 
@@ -54,9 +55,11 @@ Related US: US-04, US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Restrict candidates to the same market as the consumer.
 - Remove through `modeu5_remove_stock` only.
 - Accumulate actual removed quantity as satisfied quantity.
+- Keep one demand's requested, remaining, and satisfied quantities local; persist outcomes only through US-10.3.
 - Stop at full satisfaction or exhausted candidates.
 - Create no trade income, cost, capacity use, profit, or reconciliation.
 

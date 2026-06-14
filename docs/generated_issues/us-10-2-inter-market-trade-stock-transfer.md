@@ -33,6 +33,7 @@ Feeds counters to: US-10.3 and debug/UI
 | Ordered source sellers | source market | confirmed US-10.0 output | CONFIRMED | 067-074 |
 | Buyer target capacity | ModeU5 | US-02/US-01 values | CONFIRMED | 017-018 |
 | Central transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
+| Transaction state | current effect/event chain | local requested/remaining/transferred/unsatisfied values and saved trade scopes | CONFIRMED | 008, internal |
 
 ## Files expected to change
 
@@ -55,11 +56,13 @@ Related US: US-10.3, US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Execute only when source and target markets differ.
 - Search sellers only in the source market.
 - Transfer through `modeu5_transfer_stock` only.
 - Respect seller stock and buyer target capacity.
 - Expose requested, actual transferred, and unsatisfied quantities.
+- Keep one transfer's arithmetic and candidate state local; persist outcomes only through US-10.3.
 - Do not calculate logistics, trade income, or trade-capacity use here.
 
 ## US-specific boundary checks

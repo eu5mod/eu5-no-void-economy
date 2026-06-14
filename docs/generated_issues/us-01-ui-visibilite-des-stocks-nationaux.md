@@ -26,7 +26,7 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Stock/capacity values | ModeU5 | US-01 variables | CONFIRMED | 015-018 |
+| Stock/capacity values | country/market/good | direct reads of US-01 country stock, market aggregate, and US-02 capacity maps | CONFIRMED | 007, 015-018 |
 | Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
 | Optional stock panel | UI | custom ModeU5 UI | OUT_OF_SCOPE | N/A |
@@ -53,6 +53,7 @@ Related US: US-02-UI, US-03-UI
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
 - Keep UI read-only with respect to stock.
+- Read the authoritative maps directly and do not maintain a UI shadow copy.
 - Show empty, partial, and saturated states unambiguously.
 - Display the exact country/market/good scope.
 - Keep custom GUI outside MVP unless separately approved.

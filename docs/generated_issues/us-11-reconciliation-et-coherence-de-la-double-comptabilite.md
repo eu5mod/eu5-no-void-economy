@@ -29,6 +29,8 @@ Feeds counters to: diagnostics and safe downstream reads
 |---|---|---|---|---|
 | Iterate countries/markets/goods | none/country/location → country/market/goods | `every_country`, `every_market_in_world`, `every_goods`, owned locations and scope links | CONFIRMED | 001-006 |
 | Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
+| Country source storage | country × market × good | country-scoped `modeu5_<good>_stock_by_market` maps keyed by market | CONFIRMED | 007, 015 |
+| Market aggregate storage | market × good | market-scoped `modeu5_market_good_stock` map keyed by goods scope | CONFIRMED | 007, 016 |
 | Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
 | Monthly invocation | country | `monthly_country_pulse` at runtime step 18 | CONFIRMED | 011 |
@@ -59,8 +61,12 @@ Related US: US-01, US-03, US-10, US-00
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Country stock is always the source of truth.
 - Rebuild market aggregate from country stocks only.
+- Read country per-good stock maps keyed by market as the source and write only the market-scoped map keyed by goods.
+- Treat missing source entries as zero and replace the aggregate key by remove/re-add.
+- Use generated per-good helpers where the country source map name varies by good.
 - Never repair country stocks from market stock.
 - Route production, consumption, transfer, decay, validation, and rebuild through centralized effects.
 - Correct negative/cap anomalies through the owning centralized operation and log them.
@@ -70,6 +76,7 @@ Related US: US-01, US-03, US-10, US-00
 
 - [ ] Validation does not create, consume, or transfer goods.
 - [ ] Rebuild changes only the market aggregate/cache.
+- [ ] Rebuild preserves the different physical orientations of country source maps and the market aggregate map.
 - [ ] Small and large differences are both corrected; large differences are prominently logged.
 
 ## Acceptance criteria

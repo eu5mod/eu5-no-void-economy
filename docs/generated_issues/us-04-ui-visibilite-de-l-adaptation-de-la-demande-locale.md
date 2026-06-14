@@ -26,8 +26,8 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Local demand/counters | location × good | US-04 variables | CONFIRMED | 040 |
-| Unmet-need signal/fallback | country × market × good | US-04 shortage signal or US-10.3 unsatisfied Pop-demand outcome | NOT_CONFIRMED | 037 |
+| Local demand/counters | location × good | direct reads of US-04 multiplier and annual counter maps keyed by goods scope | CONFIRMED | 007, 040 |
+| Unmet-need signal/fallback | location × good | US-10.3 Pop outcome maps; optional market shortage signal is diagnostic only | NOT_CONFIRMED | 037, 077 |
 | Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change
@@ -52,6 +52,7 @@ Related US: US-10-UI
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
 - Keep the display read-only.
+- Read US-04 and US-10.3 location-scoped maps directly; do not maintain a UI shadow copy.
 - Label the demand source and any simulated fallback.
 - Separate location/good records.
 - Do not imply that building demand is affected.

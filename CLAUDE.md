@@ -23,6 +23,37 @@ The country-level stock is the source of truth. The market-level stock is an agg
 
 If the two diverge, rebuild `market_good_stock` from country stocks. Never rebuild country stocks from market stock.
 
+## Variable-map storage rule
+
+Follow:
+
+```txt
+docs/technical/VARIABLE_MAP_STORAGE_MODEL.md
+```
+
+Use persistent variable maps for durable multidimensional state and counters. Use local variables and saved scopes for one operation's temporary values.
+
+Canonical physical storage:
+
+```txt
+country × market × good:
+  owner = country
+  map name = one static map name per good and metric
+  key = market scope
+
+market × good aggregate:
+  owner = market
+  map name = one static map per metric
+  key = goods scope
+
+location × good:
+  owner = location
+  map name = one static map per metric
+  key = goods scope
+```
+
+Map names are static identifiers. Do not assume runtime map-name construction. Existing keys must be removed before their replacement is re-added. Missing numeric entries require an explicit safe default.
+
 ## Non-negotiable stock rule
 
 No user story may directly mutate stock variables.
@@ -166,6 +197,8 @@ modeu5_<good>_void_wealth_by_market[market]
 modeu5_<good>_void_taxable_income_proxy_by_market[market]
 modeu5_<good>_production_penalty_by_market[market]
 ```
+
+These are country-scoped, per-good variable maps keyed by market. Market-level stock uses a market-scoped `modeu5_market_good_stock` map keyed by goods scope. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
 
 All ledger writes must go through:
 

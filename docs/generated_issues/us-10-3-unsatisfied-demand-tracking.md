@@ -27,11 +27,45 @@ Feeds counters to: US-04 and diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Outcome values | ModeU5 | requested/satisfied/transferred/unsatisfied | CONFIRMED | 077 |
-| Location × good counters | location/good | internal variables | CONFIRMED | 040, 077 |
-| Estate/country-market counters | scoped per-good map keyed by market/target | variable-map add/read/remove/clear operations | CONFIRMED | 007 |
+| Outcome values | current transaction → persistent aggregate | local requested/satisfied/transferred/unsatisfied values persisted only after resolution | CONFIRMED | 077 |
+| Pop location × good counters | location-scoped maps keyed by goods | requested/satisfied/unsatisfied quantities plus US-04 annual satisfaction/shortage counters | CONFIRMED | 007, 040, 077 |
+| Estate/country-market counters | country-scoped per-good maps keyed by market | static map families per approved consumer class and outcome metric | CONFIRMED | 007, 077 |
 | Monthly reset pulse | country | `monthly_country_pulse` after every monthly consumer has read counters | CONFIRMED | 011 |
 | Yearly read/reset pulse | country | `yearly_country_pulse` after US-04 has read annual counters | CONFIRMED | 012 |
+
+## Variable-map storage pattern
+
+Pop outcomes used by US-04:
+
+```txt
+logical dimensions: location × good
+owner scope:        location
+key:                goods scope
+default:            0
+
+maps:
+  modeu5_pop_demand_requested_quantity
+  modeu5_pop_demand_satisfied_quantity
+  modeu5_pop_demand_unsatisfied_quantity
+  modeu5_pop_demand_satisfied_months
+  modeu5_pop_demand_unsatisfied_months
+```
+
+Country/market outcomes:
+
+```txt
+logical dimensions: country × market × good
+owner scope:        country
+key:                market scope
+default:            0
+
+map family:
+  modeu5_<consumer_class>_<good>_<outcome>_by_market
+```
+
+`consumer_class` and `outcome` must resolve to static approved map names. Runtime map-name construction is not assumed.
+
+One request's arithmetic remains local. US-10.3 writes only the monthly/yearly aggregates required by a named consumer.
 
 ## Files expected to change
 
@@ -54,12 +88,17 @@ Related US: US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Never mutate stock.
 - For consumption, use actual removed quantity as satisfied.
 - For inter-market trade, use actual transferred quantity as satisfied.
 - Do not update satisfaction counters when requested quantity is non-positive.
 - Reset monthly/annual counters only after relevant consumers read them.
 - Keep tracking target and fallback explicit.
+- Use location-scoped maps keyed by goods for Pop outcomes consumed by US-04.
+- Use country-scoped per-good maps keyed by market only for broader country/market outcome aggregates.
+- Treat missing counters as zero and replace existing entries by remove/re-add.
+- Do not persist resolver candidates or per-candidate scores in the outcome maps.
 
 ## US-specific boundary checks
 
@@ -71,6 +110,7 @@ Related US: US-10-UI
 - [ ] Requested equals satisfied plus unsatisfied for valid demands.
 - [ ] Zero/non-positive requests do not alter counters.
 - [ ] Pop outcomes reach US-04 with location/good scope intact.
+- [ ] Pop outcome maps and US-04 annual counters use the same location owner and goods key.
 - [ ] Estate and country-market targets remain distinct.
 - [ ] Reset ordering preserves all monthly/yearly consumers.
 - [ ] Debug shows demand context, all quantities, ratio, and tracking target.

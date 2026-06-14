@@ -29,7 +29,28 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Owned locations in market | country → location → market | `every_owned_location` plus location `market` | CONFIRMED | 003-004, 033 |
 | Buildings in location | location → building | `every_buildings_in_location` | CONFIRMED | 034 |
 | Foreign compatible buildings | location → building | `every_foreign_buildings_in_location` and building owner semantics | CONFIRMED | 035 |
-| Capacity variable | ModeU5 | `country_market_good_stock_cap` | CONFIRMED | 017 |
+| Capacity variable | country × market × good | country-scoped `modeu5_<good>_stock_cap_by_market` map keyed by market | CONFIRMED | 007, 017 |
+| Capacity contribution breakdown | country × market × good | optional per-good base/building/foreign contribution maps keyed by market | CONFIRMED | 007, internal |
+
+## Variable-map storage pattern
+
+```txt
+logical dimensions: country × market × good
+owner scope:        country
+key:                market scope
+value:              numeric capacity
+default:            0
+
+required total map:
+  modeu5_<good>_stock_cap_by_market
+
+optional debug breakdown maps:
+  modeu5_<good>_base_capacity_by_market
+  modeu5_<good>_building_capacity_by_market
+  modeu5_<good>_foreign_capacity_by_market
+```
+
+The total map is authoritative for stock operations. Breakdown maps are diagnostic inputs that must sum to the total; they are not alternate capacity sources.
 
 ## Files expected to change
 
@@ -53,10 +74,13 @@ Related US: US-02-UI, US-07
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Store all capacity coefficients in configuration/scripted values.
 - Do not mutate stock while merely calculating capacity.
 - Handle over-cap stock through one explicit approved rule using centralized effects.
 - Recalculate predictably after location/building changes.
+- Rebuild each affected capacity key from contributions, then replace the old total by remove/re-add.
+- Treat a missing capacity entry as zero and do not attempt runtime map-name construction.
 - Log each capacity contribution and fallback.
 
 ## US-specific boundary checks
@@ -67,6 +91,7 @@ Related US: US-02-UI, US-07
 ## Acceptance criteria
 
 - [ ] Base location and confirmed building contributions sum correctly.
+- [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location/building reduces capacity.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
 - [ ] Add-stock operations reject quantities beyond capacity.

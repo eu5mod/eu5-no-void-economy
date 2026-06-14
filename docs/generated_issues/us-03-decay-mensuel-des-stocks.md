@@ -27,7 +27,7 @@ Feeds counters to: US-11 validation and debug
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Monthly decay invocation | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher → `modeu5_decay_stock` at step 12 | CONFIRMED | 011, 036 |
-| Country/market/good iteration | none/country/location → market/goods | documented iterators, scope links, maps, and saved scopes | CONFIRMED | 001-008 |
+| Country/market/good iteration | country plus stock map families | generated per-good helpers iterating country map keys, with saved market/goods scopes | CONFIRMED | 001-008, 015-016 |
 | Central decay mutation | ModeU5 | `modeu5_decay_stock` | CONFIRMED | internal |
 | Decay arithmetic | scripted effect/value | `change_variable` multiply/min/max operations | CONFIRMED | 026 |
 
@@ -53,11 +53,13 @@ Related US: US-03-UI, US-11
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Apply decay at country-stock level only.
 - Route all mutation through `modeu5_decay_stock`.
 - Default to `0.01`, configurable.
 - Never calculate an independent market-level decay.
 - Prevent negative stocks and log before/after values.
+- Do not create a separate persistent decay-state map. Keep one operation's rate, before, loss, and after values local, and mutate only the US-01 stock maps through `modeu5_decay_stock`.
 
 ## US-specific boundary checks
 

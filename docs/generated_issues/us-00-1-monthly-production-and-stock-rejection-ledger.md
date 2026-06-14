@@ -34,7 +34,24 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
 | Ledger helper | ModeU5 | `modeu5_update_production_rejection_ledger` | CONFIRMED | 024 |
 | Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 19 | CONFIRMED | 024, internal |
-| Ledger keying/storage primitive | country-scoped per-good map keyed by market | `add_to_variable_map`, <code>variable_map(name&#124;key)</code>, remove/re-add updates, monthly clear | CONFIRMED | 007, 025 |
+| Ledger keying/storage primitive | country-scoped per-good maps keyed by market | `modeu5_<good>_produced_by_market`, `modeu5_<good>_added_by_market`, and `modeu5_<good>_rejected_by_market` | CONFIRMED | 007, 025 |
+
+## Variable-map storage pattern
+
+```txt
+logical dimensions: country × market × good
+owner scope:        country
+map names:          modeu5_<good>_produced_by_market
+                    modeu5_<good>_added_by_market
+                    modeu5_<good>_rejected_by_market
+key:                market scope
+value:              monthly numeric quantity
+default:            0
+write owner:        modeu5_update_production_rejection_ledger
+reset:              runtime step 19, after every monthly reader
+```
+
+The map name is static for each good. Goods iteration must route through generated per-good helpers; it must not attempt to construct a map name dynamically.
 
 ## Files expected to change
 
@@ -58,6 +75,7 @@ Related US: EPIC US-00, US-00-UI
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Use `modeu5_update_production_rejection_ledger` for every ledger write.
+- Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Derive the ledger key while iterating the country: `current_country × location.market × good`.
 - Sum location output by good; do not require building-level or RGO-level profit reconstruction.
 - Verify how location `goods_output` treats foreign-owned buildings and log the selected ownership rule.
@@ -67,6 +85,8 @@ Related US: EPIC US-00, US-00-UI
 - Do not recalculate add/reject results already returned by `modeu5_add_stock`.
 - Clamp negative rejected values to zero and log the anomaly.
 - Do not reset counters before all monthly consumers finish.
+- Treat a missing ledger key as zero.
+- Replace existing entries by read, remove, and re-add inside the centralized ledger helper.
 - Never mutate stock from this ledger.
 
 ## US-specific boundary checks
@@ -84,6 +104,8 @@ Related US: EPIC US-00, US-00-UI
 - [ ] Production from locations in different markets remains in separate ledger entries.
 - [ ] A country can hold different ledgers for the same good in two markets.
 - [ ] All writes use the centralized ledger helper.
+- [ ] The country owns the map, the market scope is the key, and the good is represented by the static per-good map name.
+- [ ] Repeated writes replace the same key without creating duplicate entries.
 - [ ] Negative and zero inputs are handled and logged safely.
 - [ ] Monthly reset occurs after US-00.2, US-00.3, and US-00.4 reads.
 - [ ] Debug shows scope, source, quantities, and available capacity when available.
