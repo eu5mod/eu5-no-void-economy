@@ -33,23 +33,32 @@ docs/technical/VARIABLE_MAP_STORAGE_MODEL.md
 
 Use persistent variable maps for durable multidimensional state and counters. Use local variables and saved scopes for one operation's temporary values.
 
-Canonical physical storage:
+Canonical logical storage:
 
 ```txt
 country × market × good:
+  one country_market_good_record with named fields
   owner = country
-  map name = one static map name per good and metric
-  key = market scope
+  tuple = market × good
 
 market × good aggregate:
+  one market_good_record/cache
   owner = market
-  map name = one static map per metric
-  key = goods scope
+  tuple = good
 
 location × good:
+  one location_good_record with named fields
   owner = location
-  map name = one static map per metric
-  key = goods scope
+  tuple = good
+```
+
+EU5 variable maps are documented as one `key -> value` association, not as inline structs or nested maps. Until TECH-01 `088` confirms a unique persistent record scope or nested-map value, represent each logical record with a synchronized map family:
+
+```txt
+same owner
+same tuple key
+one static physical map per persistent field
+centralized helpers enforcing record-level consistency
 ```
 
 Map names are static identifiers. Do not assume runtime map-name construction. Existing keys must be removed before their replacement is re-added. Missing numeric entries require an explicit safe default.
@@ -198,7 +207,7 @@ modeu5_<good>_void_taxable_income_proxy_by_market[market]
 modeu5_<good>_production_penalty_by_market[market]
 ```
 
-These are country-scoped, per-good variable maps keyed by market. Market-level stock uses a market-scoped `modeu5_market_good_stock` map keyed by goods scope. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
+These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a market-scoped `modeu5_market_good_stock` map keyed by goods scope. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
 
 All ledger writes must go through:
 

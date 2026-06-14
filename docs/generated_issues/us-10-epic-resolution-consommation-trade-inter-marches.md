@@ -31,7 +31,7 @@ Feeds counters to: US-04 and debug/UI
 | Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
 | Inter-market transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
 | Satisfaction tracking | current transaction | local requested/satisfied/transferred/unsatisfied values handed to US-10.3 | CONFIRMED | 077 |
-| Persistent outcome storage | location maps keyed by goods; country per-good maps keyed by market | US-10.3 map families | CONFIRMED | 007, 040, 077 |
+| Persistent outcome records | location × good and country × market × good | US-10.3 logical records backed by synchronized map families | CONFIRMED | 007, 040, 077 |
 | Runtime Pop requested-demand input | Pop / location × good | runtime vanilla requested-demand value | NOT_CONFIRMED | 087 |
 | Estate/other consumer requested-demand input | estate / country / consumer × good | runtime vanilla consumer-demand value | NOT_CONFIRMED | 086 |
 | Vanilla actual/desired trade quantity | trade | script equivalent to GUI actual-moved and desired-shipment accessors | TO_TEST | 056 |

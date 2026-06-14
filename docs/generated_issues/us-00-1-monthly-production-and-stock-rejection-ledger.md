@@ -34,24 +34,33 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
 | Ledger helper | ModeU5 | `modeu5_update_production_rejection_ledger` | CONFIRMED | 024 |
 | Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 19 | CONFIRMED | 024, internal |
-| Ledger keying/storage primitive | country-scoped per-good maps keyed by market | `modeu5_<good>_produced_by_market`, `modeu5_<good>_added_by_market`, and `modeu5_<good>_rejected_by_market` | CONFIRMED | 007, 025 |
+| Production-ledger record | country × market × good | one logical record with `produced`, `added`, and `rejected` fields | CONFIRMED | 024-025, internal |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_produced_by_market`, `modeu5_<good>_added_by_market`, and `modeu5_<good>_rejected_by_market` | CONFIRMED | 007, 025 |
 
 ## Variable-map storage pattern
 
 ```txt
 logical dimensions: country × market × good
-owner scope:        country
-map names:          modeu5_<good>_produced_by_market
-                    modeu5_<good>_added_by_market
-                    modeu5_<good>_rejected_by_market
-key:                market scope
-value:              monthly numeric quantity
-default:            0
-write owner:        modeu5_update_production_rejection_ledger
-reset:              runtime step 19, after every monthly reader
+logical record:
+  production_ledger = {
+    produced
+    added
+    rejected
+  }
+
+record owner:        country
+tuple:               market × good
+field defaults:      0
+write owner:         modeu5_update_production_rejection_ledger
+reset:               runtime step 19, after every monthly reader
+
+confirmed physical map family:
+  modeu5_<good>_produced_by_market[market]
+  modeu5_<good>_added_by_market[market]
+  modeu5_<good>_rejected_by_market[market]
 ```
 
-The map name is static for each good. Goods iteration must route through generated per-good helpers; it must not attempt to construct a map name dynamically.
+The three values are one logical ledger record and must be updated through one centralized helper. They are separate native maps only because a variable-map entry stores one value and no inline multi-field record is confirmed.
 
 ## Files expected to change
 
@@ -86,7 +95,8 @@ Related US: EPIC US-00, US-00-UI
 - Clamp negative rejected values to zero and log the anomaly.
 - Do not reset counters before all monthly consumers finish.
 - Treat a missing ledger key as zero.
-- Replace existing entries by read, remove, and re-add inside the centralized ledger helper.
+- Replace the physical field entries by read, remove, and re-add inside the centralized ledger helper.
+- Do not expose partial record updates: one helper call receives and validates all three ledger fields.
 - Never mutate stock from this ledger.
 
 ## US-specific boundary checks
@@ -104,7 +114,8 @@ Related US: EPIC US-00, US-00-UI
 - [ ] Production from locations in different markets remains in separate ledger entries.
 - [ ] A country can hold different ledgers for the same good in two markets.
 - [ ] All writes use the centralized ledger helper.
-- [ ] The country owns the map, the market scope is the key, and the good is represented by the static per-good map name.
+- [ ] Produced, added, and rejected are treated as one logical record for each country × market × good tuple.
+- [ ] The confirmed physical maps share the same owner, market key, good, lifecycle, and centralized writer.
 - [ ] Repeated writes replace the same key without creating duplicate entries.
 - [ ] Negative and zero inputs are handled and logged safely.
 - [ ] Monthly reset occurs after US-00.2, US-00.3, and US-00.4 reads.

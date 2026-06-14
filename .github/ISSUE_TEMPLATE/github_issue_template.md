@@ -41,10 +41,11 @@ Complete this section when the story owns durable multidimensional state. Otherw
 
 ```txt
 logical dimensions:
+logical record and fields:
 owner scope:
-map name(s):
-key scope:
-value type:
+tuple/key:
+confirmed physical map family:
+physical value type:
 default value:
 write owner:
 readers:
@@ -54,6 +55,8 @@ reset/rebuild lifecycle:
 Rules:
 
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
+- Treat related fields as one logical record even when current engine exposure requires several synchronized physical maps.
+- Do not claim one native variable-map value contains inline fields or another map unless TECH-01 `088` is confirmed.
 - Do not assume runtime map-name construction.
 - Replace existing map entries by read, remove, and re-add.
 - Keep one-operation arithmetic, candidate state, and saved scopes transaction-local.

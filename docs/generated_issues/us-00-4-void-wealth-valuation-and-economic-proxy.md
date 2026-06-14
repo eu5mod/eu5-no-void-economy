@@ -31,7 +31,8 @@ Feeds counters to: US-00-UI and balancing diagnostics
 | Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
 | Estate tax-base proxy | country or estate | `estate_tax_base` | CONFIRMED | 031 |
 | Estate tax-percentage proxy | country | `estate_tax_percentage` | CONFIRMED | 032 |
-| Detailed void-wealth storage | country-scoped per-good maps keyed by market | `modeu5_<good>_void_wealth_by_market` and optional `modeu5_<good>_void_taxable_income_proxy_by_market` | CONFIRMED | 007, 025-026 |
+| Detailed valuation record fields | country × market × good | logical `void_wealth` and optional `void_taxable_income_proxy` fields | CONFIRMED | 025-026, internal |
+| Confirmed physical detailed storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_void_wealth_by_market` and optional `modeu5_<good>_void_taxable_income_proxy_by_market` | CONFIRMED | 007, 025-026 |
 | Market/country aggregation | country × market, then country | `modeu5_void_wealth_by_market` map keyed by market plus `modeu5_total_void_wealth` scalar | CONFIRMED | 007, 025-026 |
 
 ## Files expected to change
@@ -61,7 +62,8 @@ Related US: US-00.3, US-00-UI
 - Default to `rejected_quantity × good_price × coefficient`.
 - Record `good_price_source` for every valuation.
 - Preserve the detailed level while also aggregating by market and country.
-- Store detailed values in country-scoped per-good maps keyed by market.
+- Add detailed valuation values as fields of the shared country × market × good record.
+- Physically store those fields in synchronized country-scoped per-good maps keyed by market.
 - Store the all-goods market total in one country-scoped `modeu5_void_wealth_by_market` map keyed by market.
 - Keep `modeu5_total_void_wealth` as a country scalar; do not create a one-entry map.
 - Rebuild market and country totals from the detailed void-wealth maps, never the reverse.

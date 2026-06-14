@@ -30,7 +30,7 @@ Feeds counters to: player/modder diagnostics
 | Localized modifier/tooltip hooks | UI/localization | `custom_tooltip`, modifier `desc`, object localization keys | CONFIRMED | 014 |
 | Location production diagnostics | country × location × market × good | US-00.1 `goods_output` / `raw_material_output` aggregation debug | TO_TEST | 021 |
 | Ledger-country attribution diagnostics | country-rooted cycle → owned location | current country plus owned-location and market context | CONFIRMED | 003-005, 011, 081 |
-| US-00 keyed outputs | country-scoped per-good maps keyed by market | direct reads of the US-00 ledger, ratio, void-wealth, and penalty map families | CONFIRMED | 007, 025 |
+| US-00 logical record | country × market × good | direct reads of ledger, ratio, void-wealth, and penalty fields through the confirmed map family | CONFIRMED | 007, 025 |
 | Optional custom panel | UI | custom ModeU5 window | OUT_OF_SCOPE | N/A |
 
 ## Files expected to change

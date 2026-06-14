@@ -249,13 +249,20 @@ Related US:
 
 ## Variable-map storage pattern
 
-US-04 uses the following logical model:
+US-04 and US-10.3 share the following logical location × good demand record:
 
 ```txt
-location.pop_demand_multiplier[good]
+location.pop_demand_record[good] = {
+    multiplier
+    requested_quantity
+    satisfied_quantity
+    unsatisfied_quantity
+    satisfied_months
+    unsatisfied_months
+}
 ```
 
-Primary runtime implementation uses location-scoped variable maps:
+The confirmed physical representation is a synchronized family of location-scoped variable maps because one native map entry holds one value:
 
 ```txt
 modeu5_pop_demand_multiplier

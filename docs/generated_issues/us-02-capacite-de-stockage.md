@@ -29,28 +29,33 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Owned locations in market | country → location → market | `every_owned_location` plus location `market` | CONFIRMED | 003-004, 033 |
 | Buildings in location | location → building | `every_buildings_in_location` | CONFIRMED | 034 |
 | Foreign compatible buildings | location → building | `every_foreign_buildings_in_location` and building owner semantics | CONFIRMED | 035 |
-| Capacity variable | country × market × good | country-scoped `modeu5_<good>_stock_cap_by_market` map keyed by market | CONFIRMED | 007, 017 |
-| Capacity contribution breakdown | country × market × good | optional per-good base/building/foreign contribution maps keyed by market | CONFIRMED | 007, internal |
+| Capacity record fields | country × market × good | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields | CONFIRMED | 017, internal |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_stock_cap_by_market` and optional contribution-field maps | CONFIRMED | 007, 017 |
 
 ## Variable-map storage pattern
 
 ```txt
 logical dimensions: country × market × good
-owner scope:        country
-key:                market scope
-value:              numeric capacity
-default:            0
+logical fields:
+  capacity
+  base_capacity
+  building_capacity
+  foreign_capacity
 
-required total map:
+record owner: country
+tuple:        market × good
+default:      0
+
+confirmed physical total field:
   modeu5_<good>_stock_cap_by_market
 
-optional debug breakdown maps:
+optional physical breakdown fields:
   modeu5_<good>_base_capacity_by_market
   modeu5_<good>_building_capacity_by_market
   modeu5_<good>_foreign_capacity_by_market
 ```
 
-The total map is authoritative for stock operations. Breakdown maps are diagnostic inputs that must sum to the total; they are not alternate capacity sources.
+The total field is authoritative for stock operations. Breakdown fields are diagnostic inputs that must sum to the total; they are not alternate capacity sources.
 
 ## Files expected to change
 

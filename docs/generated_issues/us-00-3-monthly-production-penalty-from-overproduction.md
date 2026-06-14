@@ -28,7 +28,7 @@ Feeds counters to: next monthly cycle, US-00-UI
 |---|---|---|---|---|
 | Effective ratio calculation/output | country × market × good | US-00.2 result using guarded `change_variable` arithmetic | CONFIRMED | 026 |
 | Read keyed ratio entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
-| Prepared N+1 penalty state | country-scoped per-good map keyed by market | `modeu5_<good>_production_penalty_by_market` | CONFIRMED | 007, 025 |
+| Prepared N+1 penalty field | country × market × good record | logical `production_penalty` field; physical `modeu5_<good>_production_penalty_by_market` map keyed by market | CONFIRMED | 007, 025 |
 | Identify affected production sources/locations | building/location/market/good | production iterators, output checks, `market` link | CONFIRMED | 003-004, 029 |
 | Identify the country to penalize | country-rooted cycle → affected owned location | current country plus owned-location and market context | CONFIRMED | 003-005, 011, 081 |
 | Preferred modifier | location × good | `local_<good>_output_modifier` | CONFIRMED | 027 |
@@ -63,7 +63,8 @@ Related US: US-09, US-00-UI
 - Calculate `-min(max_penalty, effective_ratio × coefficient)`.
 - Apply month N results only during month N+1 and replace the prior penalty monthly.
 - Persist only the prepared N+1 penalty. Keep temporary arithmetic and affected-location discovery local to the current effect chain.
-- Store the prepared value on the country in a per-good map keyed by market, with a default of zero and remove/re-add replacement.
+- Add the prepared value as the `production_penalty` field of the shared country × market × good record.
+- Physically store it on the country in a per-good map keyed by market, with a default of zero and remove/re-add replacement.
 - Use the same producing-country/source attribution established by US-00.1 when selecting penalty targets.
 - Do not silently switch to location ownership if it would penalize a different country from the one credited in the ledger.
 - Prefer good-specific output; use local production efficiency only as the single accepted fallback.

@@ -31,7 +31,8 @@ Feeds counters to: debug/UI and balancing diagnostics
 | Ledger-country attribution | country-rooted cycle → owned location | current country plus `every_owned_location` and location `owner` validation | CONFIRMED | 003, 005, 011, 081 |
 | Market attribution | location → market | `market` scope link and saved scopes | CONFIRMED | 004, 008 |
 | Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 19 | CONFIRMED | 024, internal |
-| Ledger and derived-state storage | country-scoped per-good maps keyed by market | produced/added/rejected, ratio, void-wealth, and prepared-penalty map families | CONFIRMED | 007, 025 |
+| Void-economy record | country × market × good | one logical record containing ledger, ratio, valuation, and prepared-penalty fields | CONFIRMED | 024-026, internal |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | one physical map per persistent record field | CONFIRMED | 007, 025 |
 | Good price | market × good | `market_price`; fallback `default_price` / `default_market_price` | CONFIRMED | 030 |
 | Production penalty modifier names | location × good / location | `local_<good>_output_modifier`, `local_production_efficiency` | CONFIRMED | 027-029 |
 | Dynamic location-modifier application | location | `add_location_modifier` with duration, mode, and dynamic size | CONFIRMED | 010 |
@@ -68,7 +69,8 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 - Do not equate the producing country with the location owner without confirmed exposure.
 - Accumulate the monthly ledger from production stock-add transactions; never infer it from final stock.
 - Route every ledger write through `modeu5_update_production_rejection_ledger`.
-- Keep the country as map owner, market as key, and good in each static map name for all `country × market × good` US-00 state.
+- Treat all US-00 persistent values as fields of one logical country × market × good record.
+- Keep the country as physical map owner, market as shared key, and good/field in each static map name until nested record storage is confirmed.
 - Keep one-operation quantities local until the ledger helper persists their monthly aggregates.
 - Use remove/re-add replacement and explicit zero defaults for all numeric map entries.
 - Treat void wealth as tracking/proxy data, not a direct monthly Estate-income punishment.
@@ -83,7 +85,7 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 ## Acceptance criteria
 
 - [ ] Produced, added, and rejected quantities remain distinct at `country × market × good`.
-- [ ] All US-00 detailed maps share the same owner/key convention and lifecycle.
+- [ ] All US-00 fields form one logical record and their physical maps share the same owner/key convention and lifecycle.
 - [ ] Location-level production is attributed to the current ledger country, location market, and good before aggregation.
 - [ ] Overproduction, effective ratio, void wealth, and next-month penalty are traceable end to end.
 - [ ] US-00 never mutates stock directly.

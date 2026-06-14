@@ -6,6 +6,14 @@ This document defines when ModeU5 user stories should use persistent variable ma
 
 It supplements `AGENTS.md`, `CLAUDE.md`, and TECH-01 exposure `007`. It does not authorize direct stock mutation or bypass any centralized scripted effect.
 
+Engine reference:
+
+```txt
+https://eu5.paradoxwikis.com/Variable#Variable_maps
+```
+
+The official 1.1 section defines variable maps as associative arrays mapping one key scope to one value scope or number.
+
 ## Selection rule
 
 Use a persistent variable map when all of the following are true:
@@ -25,10 +33,11 @@ Every map-owning user story must define:
 
 ```txt
 logical dimensions
-owner scope
-map name
-key scope
-value type
+logical record and fields
+record owner scope
+tuple/key
+confirmed physical map family
+physical value type
 default value
 write owner
 readers
@@ -38,12 +47,44 @@ reset/rebuild lifecycle
 General rules:
 
 - Map names are static identifiers. Do not assume a map name can be built dynamically from an argument or variable.
+- A native variable-map entry is one `key -> value` association. The value may be a number or a scope, but the official variable-map documentation does not define inline structs, named fields, or a nested map value.
 - Missing numeric entries must have an explicit safe default.
 - `add_to_variable_map` does not replace an existing key. Update by reading the old value, removing the key, and re-adding the replacement.
 - Preserve or save the key scope before changing scope.
 - Clear a map only at its documented lifecycle boundary.
 - Aggregate/cache maps are rebuilt from their source-of-truth maps, never the reverse.
 - Stock maps are writable only through the centralized stock effects required by `AGENTS.md`.
+
+## Logical records and physical map families
+
+ModeU5 should model related fields as one logical record:
+
+```txt
+country_market_good_record = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
+```
+
+This is domain notation, not a claim that EU5 supports an inline record as one map value.
+
+With currently documented engine exposure, one logical record is represented by a synchronized map family:
+
+```txt
+same owner scope
+same tuple key
+one native map per record field that must persist
+centralized helpers enforcing record-level updates
+```
+
+A true single-map representation would require the map value to reference a unique persistent scope for each logical record, with the fields stored as variables on that scope. No suitable persistent `country x market x good` record scope or nested-map value is currently confirmed. Track that possible optimization under TECH-01 `088`.
 
 ## Canonical representations
 
@@ -52,24 +93,37 @@ General rules:
 Logical model:
 
 ```txt
-country.metric[market][good]
+country.country_market_good_record[market][good] = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
 ```
 
-Physical model:
+Confirmed physical model:
 
 ```txt
-owner:    country
-map name: modeu5_<good>_<metric>_by_market
-key:      market scope
-value:    numeric
-default:  0
+record owner: country
+tuple:        market × good
+shared key:   market scope
+map family:   modeu5_<good>_<field>_by_market
+map value:    one numeric field
+default:      field-specific, normally 0
 ```
 
-Variable maps provide one keyed dimension on one owner scope. Because no persistent `country x market` object is available, the good remains encoded in a static map name and the market is the map key.
+Variable maps provide one keyed dimension on one owner scope and one value per key. Because no persistent record object is confirmed, the good and field remain encoded in static map names while the market is the shared key.
 
-Goods iteration must call generated per-good helpers when the map name changes by good. Runtime map-name construction is not assumed.
+Goods iteration must call generated per-good helpers when a physical map name changes by good or field. Runtime map-name construction is not assumed.
 
-This pattern owns:
+All maps in the family represent one logical record. They must use the same owner, market key, default rules, and lifecycle. Centralized helpers provide record-level consistency.
+
+This logical record owns:
 
 ```txt
 country stock
@@ -104,20 +158,28 @@ This is an aggregate/cache rebuilt from country stock maps.
 Logical model:
 
 ```txt
-location.metric[good]
+location.pop_demand_record[good] = {
+    multiplier
+    requested_quantity
+    satisfied_quantity
+    unsatisfied_quantity
+    satisfied_months
+    unsatisfied_months
+}
 ```
 
 Physical model:
 
 ```txt
-owner:    location
-map name: one static map per metric
-key:      goods scope
-value:    numeric
-default:  metric-specific
+record owner: location
+tuple:        good
+shared key:   goods scope
+map family:   one static map per record field
+map value:    one numeric field
+default:      field-specific
 ```
 
-This pattern owns US-04 multipliers and Pop-demand outcome counters consumed by US-04.
+This map family represents one logical location × good demand record shared by US-04 and US-10.3.
 
 ### Country x market aggregate across goods
 
@@ -161,19 +223,19 @@ Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, 
 
 | User story | Map decision | Required improvement |
 |---|---|---|
-| EPIC US-00 | Owns durable maps | Use the canonical country x market x good ledger family and map lifecycle. |
-| US-00.1 | Owns durable maps | Define concrete produced/added/rejected map families and centralized replacement writes. |
-| US-00.2 | Owns derived maps | Store raw/effective ratios in per-good maps keyed by market. |
-| US-00.3 | Owns next-month state | Store the prepared penalty in a per-good map keyed by market until N+1 application. |
-| US-00.4 | Owns detailed and aggregate maps | Keep detailed per-good maps; use one country map keyed by market for market totals and a scalar for country total. |
+| EPIC US-00 | Owns one logical record | Use the canonical country x market x good record backed by a synchronized map family. |
+| US-00.1 | Owns ledger fields | Treat produced/added/rejected as fields of one logical record; update their physical maps through one helper. |
+| US-00.2 | Owns ratio fields | Add raw/effective ratios to the same logical record and physical map family. |
+| US-00.3 | Owns next-month field | Add the prepared penalty field to the same logical record until N+1 application. |
+| US-00.4 | Owns valuation fields and aggregates | Add detailed valuation fields to the logical record; keep market totals and country totals as explicit aggregates. |
 | US-00-UI | Reads maps | Iterate the same map families without maintaining a UI copy. |
-| US-01 | Owns source and cache maps | Use country per-good stock maps keyed by market and a market map keyed by good. |
+| US-01 | Owns stock field and aggregate cache | Treat stock as a field of the country x market x good record and retain the separate market x good aggregate map. |
 | US-01-UI | Reads maps | Read US-01/US-02 maps directly and remain non-mutating. |
-| US-02 | Owns capacity maps | Store total and optional contribution breakdowns in country per-good maps keyed by market. |
+| US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as fields of the country x market x good record. |
 | US-02-UI | Reads maps | Read the capacity maps directly; do not recalculate a second UI capacity. |
 | US-03 | Inherits US-01 maps | Iterate and mutate stock only through `modeu5_decay_stock`; no separate persistent decay-state map. |
 | US-03-UI | Reads transaction output | Keep operation diagnostics temporary unless a monthly aggregate is explicitly required. |
-| US-04 | Owns location maps | Current location-scoped maps keyed by goods are the reference two-dimensional pattern. |
+| US-04 | Owns location demand-record fields | Use one logical location x good record backed by maps keyed by goods. |
 | US-04-UI | Reads maps | Read US-04 and US-10.3 location maps directly. |
 | US-05 | No map needed | Wealth, Trade Income, and Economic Base are country scalars for the calculation. |
 | US-05-UI | No map needed | Read US-05 scalar outputs; do not persist a UI copy. |
@@ -187,13 +249,13 @@ Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, 
 | US-10.0 | No persistent map | Candidate lists, scores, and exclusions are transaction-local unless a debug snapshot is explicitly requested. |
 | US-10.1 | Uses stock maps | Keep requested/remaining/satisfied values local; persist only through US-10.3. |
 | US-10.2 | Uses stock maps | Keep one transfer transaction local; persist only through US-10.3. |
-| US-10.3 | Owns outcome maps | Use location maps keyed by good for Pops and canonical country/per-good maps keyed by market for broader aggregates. |
+| US-10.3 | Owns outcome-record fields | Add Pop outcomes to the shared location x good demand record and use the canonical country x market x good record pattern for broader aggregates. |
 | US-10-UI | Reads maps and transaction diagnostics | Do not create a second authoritative outcome store. |
 | US-11 | Validates/rebuilds maps | Compare country source maps with market aggregate maps and repair only the aggregate. |
 | US-13 | No runtime map | Use static CB/wargoal variants and triggers. |
 
 ## Review outcome
 
-The main map improvements are concentrated in US-00, US-01, US-02, US-04, US-10.3, and US-11.
+The main record/map-family improvements are concentrated in US-00, US-01, US-02, US-04, US-10.3, and US-11.
 
 US-03, US-10.0, US-10.1, and US-10.2 should consume those maps but keep transaction state temporary. US-05, US-07, US-08, US-09, and US-13 do not gain useful behavior from runtime maps.

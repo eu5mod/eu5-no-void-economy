@@ -26,14 +26,32 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country stock | country × market × good | logical `country_market_good_stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
+| Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
 | Market aggregate | market × good | logical `market_good_stock`; physical market-scoped `modeu5_market_good_stock` map keyed by goods scope | CONFIRMED | 007, 016 |
-| Capacity and available capacity | country × market × good | `modeu5_<good>_stock_cap_by_market`; scripted cap minus stock | CONFIRMED | 007, 017-018 |
+| Capacity and available capacity | country × market × good record | logical `capacity` field; physical `modeu5_<good>_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 
 ## Variable-map storage pattern
 
-Country source-of-truth stock:
+Logical country × market × good record:
+
+```txt
+country_market_good_record = {
+    stock
+    capacity
+    produced
+    added
+    rejected
+    overproduction_ratio
+    effective_overproduction_ratio
+    void_wealth
+    production_penalty
+}
+```
+
+US-01 owns the `stock` field. US-02 owns capacity fields. US-00 owns its ledger, ratio, valuation, and penalty fields.
+
+Confirmed physical stock field:
 
 ```txt
 owner scope: country
@@ -52,18 +70,7 @@ map name:    modeu5_market_good_stock
 key:         goods scope
 value:       numeric aggregate stock
 default:     0
-rebuild:     sum country source maps
-```
-
-Capacity:
-
-```txt
-owner scope: country
-map name:    modeu5_<good>_stock_cap_by_market
-key:         market scope
-value:       numeric capacity
-default:     0
-writer:      US-02 capacity calculation
+rebuild:     sum country source records' stock fields
 ```
 
 ## Files expected to change
@@ -97,6 +104,7 @@ Related US: US-01-UI
 - Treat missing stock and capacity entries as zero.
 - Replace existing entries by remove/re-add inside their owning centralized effect.
 - Do not construct per-good map names dynamically; use generated per-good helpers.
+- Treat the physical map family as an implementation of one logical record, not as unrelated variables.
 - Log requested, actual, rejected/unsatisfied, before/after, and invariant difference.
 
 ## US-specific boundary checks
