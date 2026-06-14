@@ -1,5 +1,5 @@
 {
-	"name": "Rebalance Early Blobbing",
+	"name": "NVE : Early Blobbing balance patch (Optional)",
 	"id": "modeu5_war_rebalance",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
