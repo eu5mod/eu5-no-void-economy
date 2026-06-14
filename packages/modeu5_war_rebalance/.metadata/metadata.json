@@ -3,7 +3,7 @@
 	"id": "modeu5_war_rebalance",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "Optional US-13 early-conquest cost rebalance. Requires the matching No Void Economy package.",
+	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Reserved for US-13, whose gameplay override is not yet implemented. Requires No Void Economy.",
 	"tags": [
 		"Balance",
 		"Gameplay",

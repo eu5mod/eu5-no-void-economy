@@ -51,9 +51,14 @@ ModeU5 uses packages rather than a misleading universal runtime toggle:
 | Rebalance Estate Power | Optional; included in the recommended playset | US-07 and US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
 
-The recommended ModeU5 playset loads all four packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. See `docs/technical/MODULE_OPTION_MODEL.md`.
+The recommended ModeU5 playset loads all four packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. Keep the selected package set unchanged for the lifetime of that save; no package currently supports mid-campaign addition or removal. See `docs/technical/MODULE_OPTION_MODEL.md`.
 
 ModeU5 configuration occurs before campaign start. The launcher/mod playset selects Core and optional rebalance packages. EU5's built-in Game Rules screen configures script-safe settings such as ModeU5 debug output. There is no custom in-game configuration panel.
+
+The mod manager and selected-playset tooltips show this lifecycle warning from
+each package's metadata. `Rebalance Early Blobbing` is currently a reserved
+package marker: US-13 gameplay remains unimplemented until its static
+conquest-cost hook is confirmed.
 
 ### Local package installation
 

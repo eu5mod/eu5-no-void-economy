@@ -1,3 +1,4 @@
+# Snapshot package presence for a new campaign. Existing-save package changes are unsupported.
 on_game_start = {
 	on_actions = {
 		modeu5_economy_rebalance_package_on_game_start

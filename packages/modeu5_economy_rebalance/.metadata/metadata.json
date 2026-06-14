@@ -3,7 +3,7 @@
 	"id": "modeu5_economy_rebalance",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "Optional economy rebalance for US-04, US-05, US-08, and US-09. Requires the matching No Void Economy package.",
+	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Includes runtime Economy systems and planned static US-08 overrides. Requires No Void Economy.",
 	"tags": [
 		"Balance",
 		"Trade and Economics"

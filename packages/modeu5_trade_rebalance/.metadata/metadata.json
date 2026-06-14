@@ -3,7 +3,7 @@
 	"id": "modeu5_trade_rebalance",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "Optional US-07 trade-building and estate-power rebalance. Requires the matching No Void Economy package.",
+	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Intended for static US-07 building overrides. Requires No Void Economy.",
 	"tags": [
 		"Balance",
 		"Trade and Economics"

@@ -33,6 +33,13 @@ expected_ids=(
 	"modeu5_war_rebalance"
 )
 
+expected_description_prefixes=(
+	"REQUIRED FOR MODEU5 SAVES."
+	"CAMPAIGN SETUP ONLY."
+	"CAMPAIGN SETUP ONLY."
+	"CAMPAIGN SETUP ONLY."
+)
+
 for index in "${!descriptors[@]}"; do
 	descriptor="${descriptors[$index]}"
 	expected_name="${expected_names[$index]}"
@@ -48,10 +55,13 @@ if command -v jq >/dev/null 2>&1; then
 		metadata_file="${metadata_files[$index]}"
 		expected_id="${expected_ids[$index]}"
 		expected_name="${expected_names[$index]}"
+		expected_description_prefix="${expected_description_prefixes[$index]}"
 
 		test "$(jq -r '.id' "$metadata_file")" = "$expected_id"
 		test "$(jq -r '.name' "$metadata_file")" = "$expected_name"
 		test "$(jq -r '.version' "$metadata_file")" = "0.1.0"
+		test "$(jq -r '.short_description | startswith($prefix)' --arg prefix "$expected_description_prefix" "$metadata_file")" = "true"
+		jq -e '.short_description | test("before starting a campaign|mid-campaign is unsupported")' "$metadata_file" >/dev/null
 	done
 else
 	printf 'WARNING: jq is unavailable; JSON syntax was not checked.\n' >&2

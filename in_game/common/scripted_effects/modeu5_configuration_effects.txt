@@ -1,5 +1,6 @@
 # ModeU5 package selection is owned by the launcher playset.
 # The built-in game-rule screen configures diagnostic behavior only.
+# Package presence is captured for a new campaign; existing-save package changes are unsupported.
 
 modeu5_initialize_configuration_state_effect = {
 	if = {

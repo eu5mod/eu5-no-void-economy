@@ -249,6 +249,31 @@ No configuration action reseeds or mutates stock
 The installed source branch and commit are visible in `MODEU5_SOURCE.txt`
 ```
 
+---
+
+### Test CFG4 - package lifecycle warning
+
+Setup:
+
+```txt
+Open the EU5 mod manager
+Hover each ModeU5 entry in the available-mod list
+Add each package to a playset and hover the selected entry
+```
+
+Expected:
+
+```txt
+No Void Economy is identified as required for ModeU5 saves
+Every package says it must be selected before campaign start
+Together, the descriptions clearly say the package set must remain unchanged for that save
+Rebalance Economy identifies its runtime systems and planned static US-08 boundary
+Rebalance Estate Power identifies its static US-07 boundary
+Rebalance Early Blobbing states that US-13 gameplay is not yet implemented
+The warning appears in both available-mod and selected-playset tooltips
+No tooltip claims that the launcher technically blocks an unsafe mid-campaign change
+```
+
 ## Start-game initialization tests
 
 ### Test S1 - delayed fresh initialization

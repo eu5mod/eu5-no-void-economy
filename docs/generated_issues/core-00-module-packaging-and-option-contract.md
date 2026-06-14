@@ -51,6 +51,7 @@ Feeds counters to: startup guard and debug
 | Read an active game-rule setting | global script context | `has_game_rule = <setting>` | CONFIRMED | 101 |
 | Conditionally gate static building/RGO numeric overrides | static definition | game-rule-dependent static value | NOT_CONFIRMED | 102 |
 | Package/version diagnostics | global startup/debug | package-owned marker/version contract | CONFIRMED | internal |
+| Display package lifecycle warning | launcher/mod metadata | `short_description` rendered in available-mod and selected-playset tooltips | CONFIRMED | 104 |
 
 ## Persistent storage / variable-map contract
 
@@ -71,6 +72,7 @@ reset lifecycle: never reset during a campaign
 ## Files expected to change
 
 ```txt
+.metadata/metadata.json
 descriptor.mod or package-specific descriptors
 packages/modeu5_economy_rebalance/
 packages/modeu5_trade_rebalance/
@@ -91,7 +93,7 @@ docs/tests/TEST_PLAN.md
 ## Dependencies
 
 ```txt
-Depends on: TECH-01 100-103 and package-layout decision
+Depends on: TECH-01 100-104 and package-layout decision
 Blocks: implementation of US-04, US-05, US-07, US-08, US-09, US-13
 Related US: every optional module story
 ```
@@ -104,6 +106,8 @@ Related US: every optional module story
 - Do not pretend an optional static override is disabled merely by hiding its UI.
 - Do not add package checks inside centralized Core stock effects.
 - Keep package selection fixed for the campaign unless an explicit migration is implemented.
+- State that lifecycle rule in every package's mod-manager/playset description.
+- Treat the warning as user guidance, not technical enforcement.
 - Validate matching package versions before optional scripted behavior runs.
 - Do not claim startup script can undo a static companion override already loaded without Core.
 - Treat companion-without-Core as an unsupported playset until launcher dependency enforcement is confirmed.
@@ -127,6 +131,7 @@ Related US: every optional module story
 - [ ] Multiplayer package/version mismatch is visible before gameplay.
 - [ ] Game rules cannot change the loaded package set.
 - [ ] No custom in-game configuration panel is installed.
+- [ ] Every package tooltip says to select the package before campaign start and keep the package set unchanged for that save.
 
 ## Acceptance criteria
 
@@ -143,6 +148,7 @@ Related US: every optional module story
 - [ ] The ModeU5 debug game rule offers Off, Basic, and Verbose before campaign start.
 - [ ] The selected debug rule initializes `modeu5_debug_level` without mutating stock or package state.
 - [ ] Fresh stock seeding is absent from all configuration surfaces.
+- [ ] The lifecycle warning is visible from both the available-mod list and the selected playset.
 - [ ] TECH-01 and package-combination tests are updated.
 
 ## Manual test scenario
@@ -169,10 +175,11 @@ US-07 behavior exists in campaigns 1 and 4
 US-13 behavior exists in campaigns 1 and 5
 Startup debug reports the exact package set
 No missing-dependency or stale optional effect is present
+Package descriptions warn that changing the package set for an existing save is unsupported
 The built-in Game Rules screen exposes the ModeU5 debug setting
 No custom in-game configuration panel is present
 ```
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Automatic launcher dependency enforcement remains `TO_TEST`.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Automatic launcher dependency enforcement remains `TO_TEST`.

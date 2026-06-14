@@ -3,7 +3,7 @@
 	"id": "modeu5_core",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "Required ModeU5 stock accounting, void-economy correction, and consistency layer. Owns every story outside the three optional rebalance packages.",
+	"short_description": "REQUIRED FOR MODEU5 SAVES. Enable before starting a campaign and keep enabled for that save. Adding or removing ModeU5 packages mid-campaign is unsupported.",
 	"tags": [
 		"Gameplay",
 		"Trade and Economics"

@@ -34,6 +34,35 @@ Here, optional means that a companion may be removed in the launcher before camp
 
 Core cannot load a missing companion's files and must never manufacture its package marker. Selecting all four launcher entries activates the recommended profile.
 
+## Campaign lifecycle contract
+
+The package set is fixed for the lifetime of a campaign. Loading an existing
+save with the same package set is supported. Adding or removing a package from
+that save is not.
+
+| Package | Lifecycle-sensitive content | Add to an existing save | Remove from an existing save |
+|---|---|---|---|
+| No Void Economy | Start-game schema initialization and persistent stock state | Unsupported | Unsupported |
+| Rebalance Economy | Runtime US-04/05/09 systems plus planned static US-08 definitions | Unsupported | Unsupported |
+| Rebalance Estate Power | Planned static US-07 building definitions | Unsupported | Unsupported |
+| Rebalance Early Blobbing | Planned static US-13 CB/wargoal definitions; currently marker-only while the cost hook remains blocked | Unsupported | Unsupported |
+
+This restriction is package-level, even where one individual story could
+technically be evaluated at runtime:
+
+- package presence/version markers are written by `on_game_start`, not
+  rediscovered when an existing save is loaded;
+- removing a package does not remove its persistent marker or clean up
+  package-owned state already stored in the save;
+- static building, RGO, CB, and wargoal definitions are loaded with the active
+  mod set and have no confirmed save-migration contract;
+- no package currently defines the migration and cleanup needed to change that
+  set safely.
+
+The four package roots currently contain package descriptors and start-game
+markers. The lifecycle rule is established now so later story implementations
+cannot accidentally promise unsupported mid-campaign activation.
+
 The source repository stores the companions under:
 
 ```txt
@@ -50,6 +79,12 @@ their source branch and commit in `MODEU5_SOURCE.txt`.
 The installer does not edit launcher playset state. Until TECH-01 `103` is
 confirmed, the player must refresh the launcher and enable the four entries in
 the recommended playset once.
+
+Each package's `.metadata/metadata.json` starts its short description with a
+campaign-lifecycle warning. Local EU5 GUI files confirm that this description
+is displayed in both the available-mod and selected-playset tooltips. This is
+the supported warning surface under TECH-01 `104`; it informs the player but
+does not technically prevent an unsafe package-set change.
 
 ## Why packages are the source of truth
 
