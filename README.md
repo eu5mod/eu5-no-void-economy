@@ -36,15 +36,69 @@ The bootstrap documents are aligned with the revised MVP specification:
 - US-00 void economy tracking and future production correction;
 - US-10 stock-based consumption and inter-market transfer resolution;
 - no ModeU5 intra-market trade simulation;
-- US-05 direct Economic Base replacement for Stability and legitimacy-producing Court/Government Power only;
+- optional Rebalance Economy US-05 direct Economic Base replacement for Stability and legitimacy-producing Court/Government Power only;
 - no transport-cost, trade-income reconciliation, slider reconciliation, or AI-planning story in the surviving MVP set;
 - mandatory debug and TECH-01 exposure tracking.
+
+## Module choices
+
+ModeU5 uses packages rather than a misleading universal runtime toggle:
+
+| Package | Status | Content |
+|---|---|---|
+| No Void Economy | Required | Stock accounting, capacity, initialization/succession, decay, void-economy correction, demand resolution, validation, and core UI/debug |
+| Rebalance Economy | Optional; included in the recommended playset | US-04, US-05, US-08, US-09 and their UI stories |
+| Rebalance Estate Power | Optional; included in the recommended playset | US-07 and US-07-UI |
+| Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
+
+The recommended ModeU5 playset loads all four packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. Keep the selected package set unchanged for the lifetime of that save; no package currently supports mid-campaign addition or removal. See `docs/technical/MODULE_OPTION_MODEL.md`.
+
+ModeU5 configuration occurs before campaign start. The launcher/mod playset selects Core and optional rebalance packages. EU5's built-in Game Rules screen configures script-safe settings such as ModeU5 debug output. There is no custom in-game configuration panel.
+
+The mod manager and selected-playset tooltips show this lifecycle warning from
+each package's metadata. `Rebalance Early Blobbing` is currently a reserved
+package marker: US-13 gameplay remains unimplemented until its static
+conquest-cost hook is confirmed.
+
+### Local package installation
+
+The repository contains four source package roots, but EU5 discovers local
+packages as sibling directories. Publish them to the local mod directory with:
+
+```bash
+./tools/install_local_packages.sh
+```
+
+Then refresh the launcher and enable:
+
+```txt
+No Void Economy
+Rebalance Economy
+Rebalance Estate Power
+Rebalance Early Blobbing
+```
+
+The installer writes `MODEU5_SOURCE.txt` into every installed package with the
+source path, branch, and commit. Check what is installed with:
+
+```bash
+./tools/install_local_packages.sh --check
+```
+
+If the launcher shows two `No Void Economy` entries, disable the older
+single-package entry backed by the `eu5voideco` path and keep the new
+`modeu5_core` entry. Each optional package declares `modeu5_core` version
+`0.1.*` as a dependency. Selecting a companion automatically enables compatible
+Core. The reverse is intentionally not true: selecting Core alone leaves the
+optional packages unselected. Disabling Core also does not cascade-disable
+already selected companions, so review the playset before campaign load.
 
 ## Core implementation tickets
 
 The six centralized operations and the two lifecycle tickets have implementation-ready issue files:
 
 ```txt
+CORE-00    module packaging and option contract
 CORE-01.1  modeu5_add_stock
 CORE-01.2  modeu5_remove_stock
 CORE-01.3  modeu5_transfer_stock
@@ -65,7 +119,7 @@ Monthly sequence summary:
 
 ```txt
 previous penalties
-→ global modifiers
+→ Rebalance Economy global modifiers, including US-09, when loaded
 → capacity recalculation
 → production read/estimate
 → modeu5_add_stock
@@ -77,8 +131,8 @@ previous penalties
 → US-00.2 ratios
 → US-00.4 void wealth
 → US-00.3 next-month penalty
-→ US-05 Economic Base
-→ US-05 formula visibility
+→ Rebalance Economy US-05 Economic Base, when loaded
+→ Rebalance Economy US-05 formula visibility, when loaded
 → stock consistency validation
 → monthly counter reset
 ```
@@ -89,7 +143,7 @@ Yearly sequence summary:
 validate stock
 → rebuild market aggregate if needed
 → read annual satisfaction counters
-→ apply US-04 local Pop demand adaptation
+→ apply Rebalance Economy US-04 local Pop demand adaptation, when loaded
 → reset annual counters
 → run annual diagnostics
 ```
@@ -133,7 +187,7 @@ main
     ├── feature/local-pop-demand-adaptation
     ├── feature/economic-base
     ├── balance/static-overrides
-    └── ui/debug-panel
+    └── config/game-rules
 ```
 
 ## MVP boundaries

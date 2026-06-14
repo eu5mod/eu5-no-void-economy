@@ -29,7 +29,7 @@ Add one delayed, versioned, idempotent `on_game_start` pipeline that:
 Start-game step: on_game_start -> delay 1 day -> modeu5_start_game_dispatcher
 Monthly step: the monthly dispatcher must skip stock gameplay until initialization_state = complete
 Yearly step: none
-Depends on: CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02
+Depends on: CORE-00, CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02
 Feeds: all stock-owning and stock-consuming features
 ```
 
@@ -54,7 +54,6 @@ Global scalar state:
 ```txt
 modeu5_stock_schema_version
 modeu5_initialization_state
-modeu5_debug_level, only when absent
 ```
 
 Static/scripted configuration:
@@ -62,6 +61,7 @@ Static/scripted configuration:
 ```txt
 modeu5_current_stock_schema_version
 modeu5_initialization_rounding_epsilon
+modeu5_debug_level, read-only here and initialized by CORE-00 from the selected game rule
 ```
 
 Physical numeric initialization states:
@@ -269,7 +269,7 @@ docs/tests/TEST_PLAN.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02, TECH-01 089-093, 099
+Depends on: CORE-00, CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02, TECH-01 089-093, 099
 Blocks: enabling the monthly ModeU5 economic cycle
 Related US: US-01, US-02, US-03, US-04, US-11
 ```

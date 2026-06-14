@@ -1,6 +1,6 @@
 # US-08-UI — RGO & building price realignement UI
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want RGO and building prices to clearly show the fixed base and a
 ## Functional objective
 
 Expose base price 50, standard modifiers, final displayed price, and removal of dynamic 1.2 effects where the UI permits.
+
+## Module / availability
+
+```txt
+Package: Rebalance Economy
+Activation: optional companion package
+Behavior when absent:
+  install no US-08-specific price tooltip/localization override
+  do not claim that vanilla prices use the ModeU5 base
+```
 
 ## Runtime position
 
@@ -52,6 +62,7 @@ Related US: US-07-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Keep displayed base and final price synchronized with static files.
 - Do not claim dynamic rules are disabled until verified.
 - Preserve standard modifier visibility.

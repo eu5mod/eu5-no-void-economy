@@ -1,6 +1,6 @@
 # US-04-UI — Pop demand visibility
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want to understand why local demand for a good is increasing, dec
 ## Functional objective
 
 Expose base demand, multiplier, simulated demand, satisfaction quantities/ratio, annual counters, threshold, and expected annual change for each location and good.
+
+## Module / availability
+
+```txt
+Package: Rebalance Economy
+Activation: optional companion package
+Behavior when absent:
+  show no active demand-adaptation claim
+  optional general ModeU5 diagnostics may report "Rebalance Economy not loaded"
+```
 
 ## Runtime position
 
@@ -51,6 +61,7 @@ Related US: US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Keep the display read-only.
 - Read US-04 and US-10.3 location-scoped maps directly; do not maintain a UI shadow copy.
 - Label the demand source and any simulated fallback.

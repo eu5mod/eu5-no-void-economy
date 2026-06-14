@@ -1,6 +1,6 @@
 # US-07 — Trade building rebalance
 
-Labels: none
+Labels: `module:trade`
 
 ## User Story
 
@@ -13,6 +13,17 @@ As a player, I want trade buildings rebalanced to fit ModeU5 storage and logisti
 ## Functional objective
 
 Review confirmed vanilla trade-building fields, reduce marketplace trading/estate power as specified, and reassess only explicitly approved costs, capacities, or modifiers.
+
+## Module / availability
+
+```txt
+Package: Rebalance Estate Power
+Activation: optional companion package
+Behavior when absent:
+  install no US-07 static building override
+  preserve vanilla trade-building values
+  keep Core US-02 storage-capacity behavior independent
+```
 
 ## Runtime position
 
@@ -44,13 +55,15 @@ docs/tests/
 
 ```txt
 Depends on: local vanilla files, TECH-01
-Blocks: US-07-UI; confirmed building contributions in US-02
+Blocks: US-07-UI
 Related US: US-02, US-08
 ```
 
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`.
+- Keep US-07 static overrides physically outside the Core package; a runtime toggle cannot restore overwritten vanilla definitions.
 - Verify exact building files and field names before override.
 - Keep changes limited to explicitly reviewed trade buildings.
 - Do not infer unexposed modifiers.

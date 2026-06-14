@@ -1,0 +1,11 @@
+on_game_start = {
+	on_actions = {
+		modeu5_configuration_on_game_start
+	}
+}
+
+modeu5_configuration_on_game_start = {
+	effect = {
+		modeu5_initialize_configuration_state_effect = yes
+	}
+}

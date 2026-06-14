@@ -1,6 +1,6 @@
 # US-05 — Economic Base definition
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -13,6 +13,15 @@ As a player, I want Stability and legitimacy-producing Court/Government Power co
 ## Functional objective
 
 Replace the Economic Base formula used by Stability Investment and legitimacy-producing Court/Government Power with `modeu5_slider_cost_base = Wealth + Trade Income`. Do not implement monthly reconciliation as an alternative path.
+
+## Module / availability
+
+```txt
+Package: Rebalance Economy
+Activation: optional companion package
+Behavior when absent:
+  leave the vanilla Economic Base formula and all affected slider costs untouched
+```
 
 ## Runtime position
 
@@ -56,6 +65,7 @@ Related US: US-00.4
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not replace the formula when the Rebalance Economy package is absent.
 - Affect only Stability Investment and legitimacy-producing Court/Government Power.
 - Replace the confirmed Economic Base formula/call site with `modeu5_slider_cost_base`.
 - Do not read the final vanilla slider cost merely to reverse-engineer or reconcile it.

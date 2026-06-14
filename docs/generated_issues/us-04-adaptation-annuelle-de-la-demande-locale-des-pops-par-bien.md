@@ -1,6 +1,6 @@
 # US-04 — Annual local Pop demand adjustment
 
-Labels: `blocked:engine-exposure`
+Labels: `blocked:engine-exposure`, `module:economy`
 
 ## User Story
 
@@ -51,6 +51,17 @@ After 12 satisfied months, multiply the local Pop-demand multiplier by `1.01`.
 After 12 unsatisfied months, multiply the local Pop-demand multiplier by `0.99`.
 
 Mixed years and zero-demand years leave the multiplier unchanged. The annual adjustment is multiplicative and compounds over time.
+
+## Module / availability
+
+```txt
+Package: Rebalance Economy
+Activation: optional companion package
+Behavior when absent:
+  do not initialize or update Pop-demand multipliers
+  vanilla Pop-demand coefficients remain unchanged
+  Core US-10.3 outcome tracking may continue for diagnostics
+```
 
 ## Runtime position
 
@@ -212,6 +223,7 @@ Related US:
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not run US-04 when the Rebalance Economy package is absent.
 - Apply only to Pop good demand.
 - Never apply to building, production, construction, or army demand.
 - Use the vanilla `pop_demand` demand definition as the primary coefficient surface.

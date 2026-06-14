@@ -1,0 +1,15 @@
+modeu5_debug_configuration = {
+	default = modeu5_debug_off
+
+	modeu5_debug_off = {
+		flag = general_rule
+	}
+
+	modeu5_debug_basic = {
+		flag = general_rule
+	}
+
+	modeu5_debug_verbose = {
+		flag = general_rule
+	}
+}

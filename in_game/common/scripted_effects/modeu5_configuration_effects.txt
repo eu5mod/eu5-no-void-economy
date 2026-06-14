@@ -1,0 +1,37 @@
+# ModeU5 package selection is owned by the launcher playset.
+# The built-in game-rule screen configures diagnostic behavior only.
+# Package presence is captured for a new campaign; existing-save package changes are unsupported.
+
+modeu5_initialize_configuration_state_effect = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core_package_loaded }
+		}
+		set_global_variable = modeu5_core_package_loaded
+	}
+	set_global_variable = {
+		name = modeu5_core_package_version
+		value = 100
+	}
+
+	if = {
+		limit = { has_game_rule = modeu5_debug_verbose }
+		set_global_variable = {
+			name = modeu5_debug_level
+			value = 2
+		}
+	}
+	else_if = {
+		limit = { has_game_rule = modeu5_debug_basic }
+		set_global_variable = {
+			name = modeu5_debug_level
+			value = 1
+		}
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_debug_level
+			value = 0
+		}
+	}
+}

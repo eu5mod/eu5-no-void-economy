@@ -10,6 +10,16 @@ US-XX — Title
 
 Describe what the feature must do in gameplay terms.
 
+## Module / availability
+
+```txt
+Package: ModeU5 Core | Economy Rebalance | Trade Rebalance | War Rebalance
+Activation: required | optional companion package
+Behavior when absent:
+```
+
+Follow `docs/technical/MODULE_OPTION_MODEL.md`. Optional stories must define a true no-effect state when their package is absent.
+
 ## Runtime position
 
 ```txt

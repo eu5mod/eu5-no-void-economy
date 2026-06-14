@@ -1,0 +1,8 @@
+﻿l_english:
+ rule_modeu5_debug_configuration: "ModeU5 Debug Output"
+ setting_modeu5_debug_off: "Off"
+ setting_modeu5_debug_off_desc: "Disable optional ModeU5 diagnostic output. Mandatory consistency errors are still reported."
+ setting_modeu5_debug_basic: "Basic"
+ setting_modeu5_debug_basic_desc: "Report ModeU5 initialization, package state, stock consistency failures, and fallback use."
+ setting_modeu5_debug_verbose: "Verbose"
+ setting_modeu5_debug_verbose_desc: "Report detailed ModeU5 inputs, stock mutations, reconciliation values, and validation results. Intended for testing."

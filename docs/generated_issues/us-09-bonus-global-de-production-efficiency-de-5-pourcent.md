@@ -1,6 +1,6 @@
 # US-09 — Production Efficiency de +5 % bonus
 
-Labels: none
+Labels: `module:economy`
 
 ## User Story
 
@@ -13,6 +13,16 @@ As a player, I want a global +5% Production Efficiency compensation for ModeU5's
 ## Functional objective
 
 Apply a clearly identified global `+5%` production-efficiency modifier to all eligible countries at the normative monthly position, while retaining compatibility with stock-aware transformation chains.
+
+## Module / availability
+
+```txt
+Package: Rebalance Economy
+Activation: optional companion package
+Behavior when absent:
+  apply no ModeU5 Production Efficiency compensation modifier
+  Core stock constraints and void-economy correction remain active
+```
 
 ## Runtime position
 
@@ -54,6 +64,7 @@ Related US: US-00.3, stock-aware production pipeline
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
+- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not apply or retain the modifier when the Rebalance Economy package is absent.
 - Use exactly the confirmed modifier semantics.
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.

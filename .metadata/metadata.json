@@ -1,11 +1,13 @@
 {
-  "name": "NVE (No void economy)",
-  "id": "eu5voideco",
-  "version": "0.1.0",
-  "supported_game_version": "1.*.*",
-  "short_description": "Goods bring money only when they are sold, not when they are produced. Remove the void economy and make the game more balanced. Optional balance changes a lot of balances changes.",
-  "tags": [
-    "Balance",
-    "Gameplay"
-  ]
+	"name": "NVE : No Void Economy (Required - Core)",
+	"id": "modeu5_core",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "NVE removes the void-economy so that only goods sold brings money & overproducting country will adapt their production. The mode include Optional balancing options to remove PDX punitive approach to balance.",
+	"tags": [
+		"Gameplay",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
 }

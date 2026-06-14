@@ -26,6 +26,7 @@ TECH-01 entries updated
 | Multi-market country test | Test country × market split and US-10.2 inter-market transfer. |
 | Debug-only event test | Test scripted effects without relying on the full economy cycle. |
 | Missing-exposure test | Confirm that fallbacks are logged and do not silently apply gameplay effects. |
+| Package-combination test | Confirm that optional packages activate only their documented US set. |
 
 ## Required log checks
 
@@ -43,6 +44,246 @@ Record:
 No new blocking error
 New warnings explained
 Known vanilla warning ignored
+```
+
+## Package and option tests
+
+### Test P-1 - package publication and source provenance
+
+Setup:
+
+```txt
+Run `./tools/validate_module_packages.sh`
+Run `./tools/install_local_packages.sh`
+Run `./tools/install_local_packages.sh --check`
+Refresh the EU5 launcher
+```
+
+Expected:
+
+```txt
+The source package validation passes
+The launcher exposes four distinct ModeU5 entries
+Each installed package has the expected unique descriptor name
+Each `MODEU5_SOURCE.txt` reports the intended source branch and commit
+If two `No Void Economy` entries appear, the older `eu5voideco` single-package entry is disabled
+```
+
+---
+
+### Test P0 - default full suite
+
+Setup:
+
+```txt
+Enable all four ModeU5 launcher entries in one playset
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing are all loaded
+Startup diagnostics report all four matching package versions
+No Core script fabricates a package marker for content absent from the playset
+```
+
+---
+
+### Test P1 - Core only
+
+Setup:
+
+```txt
+Enable No Void Economy only
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+Core stock, void-economy, demand-resolution, decay, and validation systems are available
+US-04/05/07/08/09/13 behavior is absent
+No optional static override or modifier is present
+Startup debug reports Core only
+```
+
+---
+
+### Test P2 - Rebalance Economy
+
+Setup:
+
+```txt
+Enable Core + Rebalance Economy
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-04/05/08/09 and their UI/debug are available
+US-07 and US-13 behavior remains absent
+Economy package version matches Core
+```
+
+---
+
+### Test P3 - Rebalance Estate Power
+
+Setup:
+
+```txt
+Enable Core + Rebalance Estate Power
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-07 static values and UI are active
+US-04/05/08/09 and US-13 behavior remains absent
+Core US-02 capacity behavior remains available
+Trade package version matches Core
+```
+
+---
+
+### Test P4 - Rebalance Early Blobbing
+
+Setup:
+
+```txt
+Enable Core + Rebalance Early Blobbing
+Start a clean campaign
+```
+
+Expected:
+
+```txt
+US-13 variants are active
+Economy and Trade optional behavior remains absent
+War package version matches Core
+```
+
+---
+
+### Test P5 - missing or mismatched Core
+
+Setup:
+
+```txt
+Load one companion without Core, then with an incompatible Core version
+```
+
+Expected:
+
+```txt
+Launcher blocks the invalid playset when TECH-01 103 is confirmed
+Otherwise startup diagnostics identify the unsupported playset
+No optional scripted mutation runs after mismatch detection
+```
+
+Adding or removing an optional package from an existing campaign is unsupported until a migration test is explicitly added.
+
+## ModeU5 configuration tests
+
+### Test CFG1 - built-in Game Rules integration
+
+Setup:
+
+```txt
+Load Core
+Open Game Rules before starting a campaign
+Locate ModeU5 Debug Output in the General tab
+```
+
+Expected:
+
+```txt
+ModeU5 Debug Output offers Off, Basic, and Verbose
+Off is the default
+No vanilla GUI file is replaced
+No custom in-game ModeU5 configuration panel is present
+No game-rule parse error is added to error.log
+```
+
+---
+
+### Test CFG2 - debug setting initialization
+
+Setup:
+
+```txt
+Start three clean campaigns with ModeU5 Debug Output set to Off, Basic, and Verbose
+Inspect `modeu5_debug_level` after startup
+```
+
+Expected:
+
+```txt
+Off initializes `modeu5_debug_level = 0`
+Basic initializes `modeu5_debug_level = 1`
+Verbose initializes `modeu5_debug_level = 2`
+The setting does not mutate stock or package state
+```
+
+---
+
+### Test CFG3 - launcher/package boundary
+
+Setup:
+
+```txt
+Refresh the launcher after installing all four packages
+Add one optional companion to a playset without Core
+Confirm that compatible Core is enabled automatically
+Disable Core while the companion remains selected
+Enable Core alone in a clean playset
+Run clean campaigns with Core only and with each optional companion package
+Inspect startup package markers and optional behavior
+```
+
+Expected:
+
+```txt
+The companion metadata identifies No Void Economy (NVE) as a dependency
+Selecting a companion automatically enables compatible Core 0.1.x
+Disabling Core does not cascade-disable selected companions
+The companion-only state is treated as invalid or causes Core to be restored before load
+Selecting Core alone does not enable optional companions
+An incompatible Core version produces a version-mismatch issue
+All four packages remain sibling entries
+Package presence, not a game rule, controls optional static overrides
+No Game Rules setting claims to unload Economy, Trade, or War packages
+Adding or removing a package still requires launcher/playset selection before campaign load
+No configuration action reseeds or mutates stock
+The installed source branch and commit are visible in `MODEU5_SOURCE.txt`
+```
+
+---
+
+### Test CFG4 - package lifecycle warning
+
+Setup:
+
+```txt
+Open the EU5 mod manager
+Hover each ModeU5 entry in the available-mod list
+Add each package to a playset and hover the selected entry
+```
+
+Expected:
+
+```txt
+No Void Economy is identified as required for ModeU5 saves
+Every package says it must be selected before campaign start
+Together, the descriptions clearly say the package set must remain unchanged for that save
+Rebalance Economy identifies its runtime systems and planned static US-08 boundary
+Rebalance Estate Power identifies its static US-07 boundary
+Rebalance Early Blobbing states that US-13 gameplay is not yet implemented
+The warning appears in both available-mod and selected-playset tooltips
+No tooltip claims that the launcher technically blocks an unsafe mid-campaign change
 ```
 
 ## Start-game initialization tests

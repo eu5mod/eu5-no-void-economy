@@ -1,0 +1,21 @@
+{
+	"name": "NVE : Estate Power balance patch (Optional)",
+	"id": "modeu5_trade_rebalance",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Intended for static US-07 building overrides. Requires No Void Economy.",
+	"tags": [
+		"Balance",
+		"Trade and Economics"
+	],
+	"relationships": [
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core",
+			"display_name": "No Void Economy (NVE)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		}
+	],
+	"game_custom_data": {}
+}
