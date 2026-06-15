@@ -38,7 +38,7 @@ The event must display:
 ```txt
 PASS - Delayed game-start probe executed
 PASS - FRA capital market scope resolved
-PASS - stockpile_in_market:wheat returned a value
+PASS - stockpile_in_market(goods:wheat) returned a value
 ```
 
 The global numeric variable
@@ -55,10 +55,19 @@ Review `error.log`, `game.log`, and `system.log`.
 Failure evidence includes:
 
 ```txt
-Unknown trigger or value for stockpile_in_market:wheat
+Unknown trigger or value for stockpile_in_market(goods:wheat)
 Failed to fetch the target good
 The delayed probe never executed
 The FRA capital market scope did not resolve
+```
+
+The rejected syntax `stockpile_in_market:wheat` must not be restored. In the
+controlled June 15, 2026 run, EU5 interpreted `wheat` as an event-target link
+and then reported `goods stockpile_in_market: field not set`. Vanilla scripts
+use the parameterized value form:
+
+```txt
+"stockpile_in_market(goods:wheat)"
 ```
 
 Only after the event passes and the logs contain no ModeU5 script error may

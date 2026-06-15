@@ -41,7 +41,7 @@ Feeds: all stock-owning and stock-consuming features
 | Persistent initialization/version guard | none | `global_var:modeu5_stock_schema_version`, `modeu5_initialization_state`, global-variable effects/triggers | CONFIRMED | 090 |
 | Iterate countries, markets, and goods | none | `every_country`, `every_market_in_world`, `every_goods` | CONFIRMED | 001-002, 006 |
 | Country capacity by market and good | country x market x good | US-02 authoritative capacity map | CONFIRMED | 007, 017, 033-035 |
-| Opening vanilla market stock | market x good | `stockpile_in_market:<good>` or exact target-good equivalent | TO_TEST | 091 |
+| Opening vanilla market stock | market x good | `"stockpile_in_market(goods:<good>)"` on market scope | TO_TEST | 091 |
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
 | Deterministic residue recipient | temporary list of countries with positive allocation weight | `ordered_in_list` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
 | Stock addition | country x market x good | `modeu5_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
@@ -412,4 +412,4 @@ Explicit migration/recovery is required
 
 ## Known limitations
 
-The wiki documents `on_game_start`, its one-day-delay warning, persistent global variables, all required iterators, and `stockpile_in_market` as a market value. The exact target-good syntax and day-one timing of `stockpile_in_market` require a controlled test under TECH-01 `091`. No synthetic opening-stock fallback is accepted.
+The wiki documents `on_game_start`, its one-day-delay warning, persistent global variables, all required iterators, and `stockpile_in_market` as a market value. Vanilla scripts use `"stockpile_in_market(goods:<good>)"` on market scope. The rejected `stockpile_in_market:<good>` form produced an event-target and missing-goods-field error in the controlled June 15, 2026 probe. The corrected syntax and day-one timing still require a clean retest under TECH-01 `091`. No synthetic opening-stock fallback is accepted.

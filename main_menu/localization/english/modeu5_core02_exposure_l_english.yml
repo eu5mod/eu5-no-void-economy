@@ -5,5 +5,5 @@
  modeu5_core02_probe.delayed.fail: "FAIL - Delayed game-start probe did not execute"
  modeu5_core02_probe.market.pass: "PASS - FRA capital market scope resolved"
  modeu5_core02_probe.market.fail: "FAIL - FRA capital market scope did not resolve"
- modeu5_core02_probe.value.pass: "PASS - stockpile_in_market:wheat returned a value"
- modeu5_core02_probe.value.fail: "FAIL - stockpile_in_market:wheat did not return a value"
+ modeu5_core02_probe.value.pass: "PASS - stockpile_in_market(goods:wheat) returned a value"
+ modeu5_core02_probe.value.fail: "FAIL - stockpile_in_market(goods:wheat) did not return a value"

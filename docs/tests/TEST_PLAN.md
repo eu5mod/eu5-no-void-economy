@@ -308,7 +308,7 @@ Expected:
 ```txt
 The delayed hook executes after the first-day tick
 FRA and its capital market resolve
-stockpile_in_market:wheat returns a numeric value, including valid zero
+stockpile_in_market(goods:wheat) returns a numeric value, including valid zero
 No ModeU5 stock or initialization state is mutated
 TECH-01 091 remains TO_TEST until logs are reviewed
 ```

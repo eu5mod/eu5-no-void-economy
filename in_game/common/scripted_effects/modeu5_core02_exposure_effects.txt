@@ -14,7 +14,7 @@ modeu5_core02_run_opening_stock_exposure_probe = {
 			set_global_variable = modeu5_core02_probe_market_found
 			set_global_variable = {
 				name = modeu5_core02_probe_opening_wheat_stock
-				value = stockpile_in_market:wheat
+				value = "stockpile_in_market(goods:wheat)"
 			}
 		}
 
@@ -27,7 +27,7 @@ modeu5_core02_run_opening_stock_exposure_probe = {
 		}
 		else = {
 			set_global_variable = modeu5_core02_probe_failed
-			error_log = "ModeU5 CORE-02 exposure probe could not read stockpile_in_market:wheat after the delayed game-start hook."
+			error_log = "ModeU5 CORE-02 exposure probe could not read stockpile_in_market(goods:wheat) after the delayed game-start hook."
 		}
 	}
 	else = {
