@@ -51,7 +51,7 @@ Feeds counters to: startup guard and debug
 | Read an active game-rule setting | global script context | `has_game_rule = <setting>` | CONFIRMED | 101 |
 | Conditionally gate static building/RGO numeric overrides | static definition | game-rule-dependent static value | NOT_CONFIRMED | 102 |
 | Package/version diagnostics | global startup/debug | package-owned marker/version contract | CONFIRMED | internal |
-| Display package lifecycle warning | launcher/mod metadata | `short_description` rendered in available-mod and selected-playset tooltips | CONFIRMED | 104 |
+| Display package lifecycle warning | launcher/mod metadata | `short_description` rendered in available-mod and selected-playset tooltips | CONFIRMED | 107 |
 
 ## Persistent storage / variable-map contract
 
@@ -61,8 +61,8 @@ Package metadata is scalar/version configuration, not multidimensional gameplay 
 logical fields:
   modeu5_core_package_version
   modeu5_economy_package_version, when loaded
-  modeu5_trade_package_version, when loaded
-  modeu5_war_package_version, when loaded
+  modeu5_trade_package_version, when Rebalance Estate Power is loaded
+  modeu5_war_package_version, when Rebalance Early Blobbing is loaded
 owner: global startup/debug context
 write owner: each package's startup marker
 readers: CORE-00 validation and debug
@@ -93,7 +93,7 @@ docs/tests/TEST_PLAN.md
 ## Dependencies
 
 ```txt
-Depends on: TECH-01 100-104 and package-layout decision
+Depends on: TECH-01 100-107 and package-layout decision
 Blocks: implementation of US-04, US-05, US-07, US-08, US-09, US-13
 Related US: every optional module story
 ```
@@ -142,7 +142,9 @@ Related US: every optional module story
 ## Acceptance criteria
 
 - [ ] The launcher can select Core alone.
-- [ ] The launcher exposes Core, Economy, Trade, and War as four distinct entries after local package installation.
+- [ ] The launcher exposes No Void Economy, Rebalance Economy, Rebalance
+  Estate Power, and Rebalance Early Blobbing as four distinct entries after
+  local package installation.
 - [ ] A standard ModeU5 installation or documented playset enables all modules by default.
 - [ ] Every locally installed package identifies its source branch and commit.
 - [ ] Each optional companion declares or documents the required matching Core package.

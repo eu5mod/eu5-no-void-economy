@@ -161,6 +161,16 @@ if ! search_quiet 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_mark
 	exit 1
 fi
 
+for required_effect in \
+	modeu5_scan_stock_sources_good_wheat \
+	modeu5_rebuild_market_stock_good_wheat \
+	modeu5_validate_stock_consistency_good_wheat; do
+	if ! search_quiet "^${required_effect} = \\{" "$generated_stock_helpers"; then
+		printf 'Generated stock adapters are missing %s.\n' "$required_effect" >&2
+		exit 1
+	fi
+done
+
 if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_generator"; then
 	printf 'The shell generator must not own EU5 storage behavior; keep it in the adapter template.\n' >&2
@@ -196,6 +206,12 @@ fi
 
 if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_event" "$stock_test_effects"; then
 	printf 'Stock tests must emit debug_log output for file-log visibility.\n' >&2
+	exit 1
+fi
+
+if search_lines 'add_to_global_variable_map|remove_from_global_variable_map' \
+	"$stock_test_effects"; then
+	printf 'Deterministic tests must use the centralized test fault injector instead of mutating market stock directly.\n' >&2
 	exit 1
 fi
 

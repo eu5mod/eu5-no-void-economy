@@ -42,6 +42,18 @@ modeu5_debug.1 = {
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
+		name = modeu5_debug.1.d
+		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_rebuild_and_validation_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
+		name = modeu5_debug.1.e
+		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_reconciliation_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -111,6 +123,46 @@ modeu5_debug.2 = {
 	option = {
 		name = modeu5_debug.test.inter_market.fail
 		trigger = { NOT = { has_global_variable = modeu5_test_inter_market_transfer_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.rebuild.pass
+		trigger = { has_global_variable = modeu5_test_rebuild_passed }
+	}
+	option = {
+		name = modeu5_debug.test.rebuild.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_rebuild_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.validation_repair.pass
+		trigger = { has_global_variable = modeu5_test_validation_repair_passed }
+	}
+	option = {
+		name = modeu5_debug.test.validation_repair.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_validation_repair_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.validation_noop.pass
+		trigger = { has_global_variable = modeu5_test_validation_noop_passed }
+	}
+	option = {
+		name = modeu5_debug.test.validation_noop.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_validation_noop_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_dirty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_dirty_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_dirty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_dirty_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_empty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_empty_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_empty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_empty_passed } }
 	}
 	option = {
 		name = modeu5_debug.close

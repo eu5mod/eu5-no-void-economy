@@ -144,7 +144,7 @@ Expected:
 US-07 static values and UI are active
 US-04/05/08/09 and US-13 behavior remains absent
 Core US-02 capacity behavior remains available
-Trade package version matches Core
+Rebalance Estate Power package version matches Core
 ```
 
 ---
@@ -161,9 +161,11 @@ Start a clean campaign
 Expected:
 
 ```txt
-US-13 variants are active
-Economy and Trade optional behavior remains absent
-War package version matches Core
+Package marker and version are active
+US-13 gameplay remains absent while TECH-01 080 is unconfirmed
+After US-13 implementation, only its documented variants become active
+Rebalance Economy and Rebalance Estate Power behavior remains absent
+Rebalance Early Blobbing package version matches Core
 ```
 
 ---
@@ -173,14 +175,19 @@ War package version matches Core
 Setup:
 
 ```txt
-Load one companion without Core, then with an incompatible Core version
+Select one companion and verify automatic Core activation.
+Then manually deselect Core while the companion remains selected.
+Test an incompatible Core version when a controlled fixture is available.
 ```
 
 Expected:
 
 ```txt
-Launcher blocks the invalid playset when TECH-01 103 is confirmed
-Otherwise startup diagnostics identify the unsupported playset
+Selecting a companion automatically selects compatible Core
+Disabling Core does not cascade-disable the companion
+The remaining companion-only selection is documented as unsupported
+An incompatible dependency is visible in the launcher/playset
+Startup diagnostics identify any unsupported loaded package/version set
 No optional scripted mutation runs after mismatch detection
 ```
 
@@ -554,12 +561,14 @@ Run from a clean 1337 campaign:
 event modeu5_debug.1
 ```
 
-The event exposes three test actions:
+The event exposes five test actions:
 
 ```txt
 Add / remove / decay on the current country's capital market
 Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
+Rebuild and consistency validation
+US-11 dirty-record reconciliation
 ```
 
 Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
@@ -577,14 +586,28 @@ modeu5_test_decay_passed = 1
 modeu5_test_same_market_transfer_passed = 1
 modeu5_test_invalid_same_record_passed = 1
 modeu5_test_inter_market_transfer_passed = 1
+modeu5_test_rebuild_passed = 1
+modeu5_test_validation_repair_passed = 1
+modeu5_test_validation_noop_passed = 1
+modeu5_test_reconciliation_dirty_passed = 1
+modeu5_test_reconciliation_empty_passed = 1
 ```
 
 Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
 require FRA and ENG; the inter-market test also requires their capitals to be
 in different markets.
 
-The test setup may write capacity maps directly, but every stock setup,
-cleanup, add, removal, transfer, and decay uses the centralized CORE effects.
+The test setup may write capacity maps directly. Every stock setup, cleanup,
+add, removal, transfer, decay, rebuild, and validation uses the centralized
+CORE effects. Deliberate market-cache corruption is allowed only through the
+centralized test-only fault injector used by the rebuild/validation scenario.
+
+The deterministic fixtures do not establish EU5's general fractional numeric
+precision. Before treating a small residual as a gameplay defect or adding an
+epsilon, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md`. Test tolerances,
+diagnostic tolerances, and gameplay underflow tolerances are separate design
+decisions.
 
 ---
 
@@ -807,6 +830,13 @@ Country B stock = 50
 Market X stock = 200
 ```
 
+Deterministic console path:
+
+```txt
+event modeu5_debug.1
+Select "Test rebuild and consistency validation"
+```
+
 Expected result after rebuild:
 
 ```txt
@@ -841,6 +871,60 @@ Market X stock after = 150
 Difference after = 0
 Second validation performs no write
 Country stocks unchanged
+```
+
+Expected result-event rows:
+
+```txt
+PASS - Rebuild market aggregate
+PASS - Validation detects and repairs divergence
+PASS - Consistent validation is a no-op
+```
+
+---
+
+### Test 8C — Incremental US-11 reconciliation
+
+Setup:
+
+```txt
+event modeu5_debug.1
+Select "Test US-11 dirty-record reconciliation"
+```
+
+Expected result:
+
+```txt
+One deduplicated wheat/market record is checked
+The corrupted aggregate 200 is rebuilt to 150
+records_checked = 1
+inconsistencies_found = 1
+rebuilds_called = 1
+failures_after_rebuild = 0
+The dirty list is empty after processing
+A second pass with no mutation checks zero records
+```
+
+---
+
+### Test 8D — Pulse guards and yearly safety pass
+
+Setup:
+
+```txt
+Use an initialized controlled fixture
+Trigger multiple country monthly pulses in one calendar month
+Corrupt one market/good cache without adding it to a dirty list
+Trigger multiple country yearly pulses in one calendar year
+```
+
+Expected result:
+
+```txt
+The monthly global reconciliation runs once for the month
+The yearly global reconciliation runs once for the year
+The yearly exhaustive pass detects and rebuilds the unindexed corruption
+Automatic reconciliation does not run before CORE-02 initialization completes
 ```
 
 ## US-00 void economy tests

@@ -64,7 +64,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-016, 026, 075
+Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-016, 026, 075, 104, 108
 Blocks: US-10.1, stock-loss callers
 Related US: US-01, US-03, US-10.1, US-10.3, US-11
 ```
@@ -75,6 +75,8 @@ Related US: US-01, US-03, US-10.1, US-10.3, US-11
 - Require explicit `country`, `market`, `good`, `quantity_to_remove`, and `reason` inputs.
 - Normalize the requested quantity to at least zero and log a negative request.
 - Calculate `actual_removed_quantity = min(requested_quantity, max(0, stock_before))`.
+- Apply TECH-01 108 literally: EU5 `min = 0` imposes the lower bound and
+  `max = <available>` imposes the upper bound.
 - Calculate `unsatisfied_quantity = requested_quantity - actual_removed_quantity`.
 - Calculate outputs before mutating either stock level.
 - Decrease country stock and market aggregate by exactly the same actual quantity.

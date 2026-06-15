@@ -15,7 +15,7 @@ The package matrix is:
 | Package | Availability | User stories |
 |---|---|---|
 | No Void Economy | Required | CORE-00, CORE-01.1 through CORE-01.6, CORE-02, CORE-03, EPIC US-00, US-00.1 through US-00.4, US-00-UI, US-01, US-01-UI, US-02, US-02-UI, US-03, US-03-UI, EPIC US-10, US-10.0 through US-10.3, US-10-UI, US-11 |
-| Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05 family, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
+| Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
 | Rebalance Estate Power | Optional; included in the recommended playset | US-07, US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
 | No Void Economy Tests | Optional; testing-only, excluded from normal campaign playsets | Deterministic CORE-01 debug events and stock-operator test helpers |
@@ -122,7 +122,7 @@ not be expected to cascade-disable its dependencies.
 Each package's `.metadata/metadata.json` starts its short description with a
 campaign-lifecycle warning. Local EU5 GUI files confirm that this description
 is displayed in both the available-mod and selected-playset tooltips. This is
-the supported warning surface under TECH-01 `104`; it informs the player but
+the supported warning surface under TECH-01 `107`; it informs the player but
 does not technically prevent an unsafe package-set change.
 
 ## Why packages are the source of truth
@@ -207,7 +207,8 @@ ModeU5 configuration occurs before campaign start:
 ```txt
 launcher/mod playset
   -> select all four gameplay packages for the recommended campaign profile
-  -> remove Economy, Trade, or War before campaign start when desired
+  -> remove Rebalance Economy, Rebalance Estate Power, or
+     Rebalance Early Blobbing before campaign start when desired
   -> add No Void Economy Tests only for dedicated validation sessions
 
 EU5 Game Rules

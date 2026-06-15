@@ -66,7 +66,7 @@ The three values are one logical ledger record and must be updated through one c
 
 ```txt
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/

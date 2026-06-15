@@ -8,9 +8,14 @@ Updated against the surviving, reviewed ModeU5 user-story set.
 README.md
 AGENTS.md
 CLAUDE.md
+docs/specs/modeu5_mvp_specifications.md
 TEST_PLAN.md
+CORE_01_CONSOLE_TEST_RUNBOOK.md
 DEBUG_CONVENTIONS.md
 TECH-01_engine_exposure_matrix.md
+VARIABLE_MAP_STORAGE_MODEL.md
+MODULE_OPTION_MODEL.md
+tools/README.md
 pull_request_template.md
 github_issue_template.md
 001_bootstrap_mod_structure.md
@@ -29,8 +34,12 @@ github_issue_template.md
 - US-10 now has a clear stock-demand resolver core.
 - Same-market consumption is explicitly not ModeU5 intra-market trade.
 - US-10.2 records requested, transferred, and unsatisfied quantities without owning logistics or trade-income adjustments.
-- Deleted US-01-AI, US-02-AI, US-05.1, US-06, and US-06-UI contracts are no longer referenced by master documentation.
+- Deleted US-01-AI, US-02-AI, US-05.1, US-06, and US-06-UI are listed only
+  as removed/out-of-scope contracts and no longer define active behavior.
 - US-05 now uses direct Economic Base formula replacement only; reconciliation is out of scope.
 - TECH-01 unresolved exposure rows map only to surviving stories that actually depend on them.
 - TEST_PLAN covers the surviving stock, demand, Economic Base, static balance, and US-13 contracts.
 - DEBUG_CONVENTIONS documents direct formula visibility and omits deleted reconciliation systems.
+- PR #43 findings are now canonical: global market aggregates, literal
+  generated adapters, `script_values`, bound-oriented `min`/`max`, marker
+  presence checks, and local-install provenance.
