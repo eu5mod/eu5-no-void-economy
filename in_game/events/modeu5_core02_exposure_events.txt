@@ -1,0 +1,59 @@
+namespace = modeu5_core02_probe
+
+modeu5_core02_probe.1 = {
+	type = country_event
+	title = modeu5_core02_probe.1.title
+	desc = modeu5_core02_probe.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_core02_probe.delayed.pass
+		trigger = {
+			has_global_variable = modeu5_core02_probe_started_after_delay
+		}
+	}
+	option = {
+		name = modeu5_core02_probe.delayed.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core02_probe_started_after_delay
+			}
+		}
+	}
+	option = {
+		name = modeu5_core02_probe.market.pass
+		trigger = {
+			has_global_variable = modeu5_core02_probe_market_found
+		}
+	}
+	option = {
+		name = modeu5_core02_probe.market.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core02_probe_market_found
+			}
+		}
+	}
+	option = {
+		name = modeu5_core02_probe.value.pass
+		trigger = {
+			has_global_variable = modeu5_core02_probe_passed
+		}
+	}
+	option = {
+		name = modeu5_core02_probe.value.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core02_probe_passed
+			}
+		}
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

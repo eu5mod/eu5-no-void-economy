@@ -263,6 +263,7 @@ in_game/events/modeu5_debug_events.txt
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
+docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
 docs/tests/TEST_PLAN.md
 ```
 
@@ -290,6 +291,9 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - Keep zero-default storage sparse.
 - Do not silently repair a newer, incompatible schema.
 - Add one non-destructive manual initialization/diagnostic event for testing or mid-campaign installation.
+- Keep the TECH-01 `091` delayed opening-stock probe separate from the
+  initialization dispatcher. Passing that probe is a prerequisite for fresh
+  seeding, not permission to implement a fallback.
 
 ## CORE-specific boundary checks
 
