@@ -46,6 +46,40 @@ New warnings explained
 Known vanilla warning ignored
 ```
 
+## US-01 country stock tests
+
+### Test ST1 - country, market, and good isolation
+
+Setup:
+
+```txt
+FRA and ENG exist and their capitals use different markets
+Record the current FRA/ENG wheat and iron stocks
+Add distinct quantities to:
+  FRA x Market 1 x wheat
+  FRA x Market 2 x wheat
+  FRA x Market 1 x iron
+  ENG x Market 1 x wheat
+```
+
+Expected:
+
+```txt
+Each country record increases only by its requested quantity
+Market 1 wheat aggregate increases by both country additions
+Market 2 wheat and Market 1 iron aggregates change independently
+Read-only record access reports stock, capacity, available capacity, over-cap,
+and the selected market aggregate without rewriting any map
+Cleanup uses modeu5_remove_stock
+Final validation reports no divergence
+```
+
+Run the exact console procedure in:
+
+```txt
+docs/tests/US_01_CONSOLE_TEST_RUNBOOK.md
+```
+
 ## Package and option tests
 
 ### Test P-1 - package publication and source provenance

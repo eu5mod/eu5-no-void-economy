@@ -303,6 +303,12 @@ modeu5_store_transfer_records_good_cotton = {
 	}
 }
 
+modeu5_read_country_stock_record_good_cotton = {
+	modeu5_load_stock_record_good_cotton = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_cotton = {
 	modeu5_load_stock_record_good_cotton = yes
 	modeu5_add_stock_calculate = yes
@@ -828,6 +834,12 @@ modeu5_store_transfer_records_good_sugar = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_sugar = {
+	modeu5_load_stock_record_good_sugar = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_sugar = {
@@ -1357,6 +1369,12 @@ modeu5_store_transfer_records_good_tobacco = {
 	}
 }
 
+modeu5_read_country_stock_record_good_tobacco = {
+	modeu5_load_stock_record_good_tobacco = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_tobacco = {
 	modeu5_load_stock_record_good_tobacco = yes
 	modeu5_add_stock_calculate = yes
@@ -1882,6 +1900,12 @@ modeu5_store_transfer_records_good_tar = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_tar = {
+	modeu5_load_stock_record_good_tar = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_tar = {
@@ -2411,6 +2435,12 @@ modeu5_store_transfer_records_good_porcelain = {
 	}
 }
 
+modeu5_read_country_stock_record_good_porcelain = {
+	modeu5_load_stock_record_good_porcelain = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_porcelain = {
 	modeu5_load_stock_record_good_porcelain = yes
 	modeu5_add_stock_calculate = yes
@@ -2936,6 +2966,12 @@ modeu5_store_transfer_records_good_naval_supplies = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_naval_supplies = {
+	modeu5_load_stock_record_good_naval_supplies = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_naval_supplies = {
@@ -3465,6 +3501,12 @@ modeu5_store_transfer_records_good_firearms = {
 	}
 }
 
+modeu5_read_country_stock_record_good_firearms = {
+	modeu5_load_stock_record_good_firearms = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_firearms = {
 	modeu5_load_stock_record_good_firearms = yes
 	modeu5_add_stock_calculate = yes
@@ -3990,6 +4032,12 @@ modeu5_store_transfer_records_good_cannons = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_cannons = {
+	modeu5_load_stock_record_good_cannons = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_cannons = {
@@ -4519,6 +4567,12 @@ modeu5_store_transfer_records_good_weaponry = {
 	}
 }
 
+modeu5_read_country_stock_record_good_weaponry = {
+	modeu5_load_stock_record_good_weaponry = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_weaponry = {
 	modeu5_load_stock_record_good_weaponry = yes
 	modeu5_add_stock_calculate = yes
@@ -5044,6 +5098,12 @@ modeu5_store_transfer_records_good_glass = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_glass = {
+	modeu5_load_stock_record_good_glass = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_glass = {
@@ -5573,6 +5633,12 @@ modeu5_store_transfer_records_good_steel = {
 	}
 }
 
+modeu5_read_country_stock_record_good_steel = {
+	modeu5_load_stock_record_good_steel = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_steel = {
 	modeu5_load_stock_record_good_steel = yes
 	modeu5_add_stock_calculate = yes
@@ -6098,6 +6164,12 @@ modeu5_store_transfer_records_good_cloth = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_cloth = {
+	modeu5_load_stock_record_good_cloth = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_cloth = {
@@ -6627,6 +6699,12 @@ modeu5_store_transfer_records_good_fine_cloth = {
 	}
 }
 
+modeu5_read_country_stock_record_good_fine_cloth = {
+	modeu5_load_stock_record_good_fine_cloth = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_fine_cloth = {
 	modeu5_load_stock_record_good_fine_cloth = yes
 	modeu5_add_stock_calculate = yes
@@ -7152,6 +7230,12 @@ modeu5_store_transfer_records_good_liquor = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_liquor = {
+	modeu5_load_stock_record_good_liquor = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_liquor = {
@@ -7681,6 +7765,12 @@ modeu5_store_transfer_records_good_beer = {
 	}
 }
 
+modeu5_read_country_stock_record_good_beer = {
+	modeu5_load_stock_record_good_beer = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_beer = {
 	modeu5_load_stock_record_good_beer = yes
 	modeu5_add_stock_calculate = yes
@@ -8206,6 +8296,12 @@ modeu5_store_transfer_records_good_paper = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_paper = {
+	modeu5_load_stock_record_good_paper = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_paper = {
@@ -8735,6 +8831,12 @@ modeu5_store_transfer_records_good_books = {
 	}
 }
 
+modeu5_read_country_stock_record_good_books = {
+	modeu5_load_stock_record_good_books = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_books = {
 	modeu5_load_stock_record_good_books = yes
 	modeu5_add_stock_calculate = yes
@@ -9260,6 +9362,12 @@ modeu5_store_transfer_records_good_jewelry = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_jewelry = {
+	modeu5_load_stock_record_good_jewelry = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_jewelry = {
@@ -9789,6 +9897,12 @@ modeu5_store_transfer_records_good_leather = {
 	}
 }
 
+modeu5_read_country_stock_record_good_leather = {
+	modeu5_load_stock_record_good_leather = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_leather = {
 	modeu5_load_stock_record_good_leather = yes
 	modeu5_add_stock_calculate = yes
@@ -10314,6 +10428,12 @@ modeu5_store_transfer_records_good_tools = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_tools = {
+	modeu5_load_stock_record_good_tools = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_tools = {
@@ -10843,6 +10963,12 @@ modeu5_store_transfer_records_good_masonry = {
 	}
 }
 
+modeu5_read_country_stock_record_good_masonry = {
+	modeu5_load_stock_record_good_masonry = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_masonry = {
 	modeu5_load_stock_record_good_masonry = yes
 	modeu5_add_stock_calculate = yes
@@ -11368,6 +11494,12 @@ modeu5_store_transfer_records_good_lacquerware = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_lacquerware = {
+	modeu5_load_stock_record_good_lacquerware = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_lacquerware = {
@@ -11897,6 +12029,12 @@ modeu5_store_transfer_records_good_pottery = {
 	}
 }
 
+modeu5_read_country_stock_record_good_pottery = {
+	modeu5_load_stock_record_good_pottery = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_pottery = {
 	modeu5_load_stock_record_good_pottery = yes
 	modeu5_add_stock_calculate = yes
@@ -12422,6 +12560,12 @@ modeu5_store_transfer_records_good_furniture = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_furniture = {
+	modeu5_load_stock_record_good_furniture = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_furniture = {
@@ -12951,6 +13095,12 @@ modeu5_store_transfer_records_good_horses = {
 	}
 }
 
+modeu5_read_country_stock_record_good_horses = {
+	modeu5_load_stock_record_good_horses = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_horses = {
 	modeu5_load_stock_record_good_horses = yes
 	modeu5_add_stock_calculate = yes
@@ -13476,6 +13626,12 @@ modeu5_store_transfer_records_good_clay = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_clay = {
+	modeu5_load_stock_record_good_clay = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_clay = {
@@ -14005,6 +14161,12 @@ modeu5_store_transfer_records_good_sand = {
 	}
 }
 
+modeu5_read_country_stock_record_good_sand = {
+	modeu5_load_stock_record_good_sand = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_sand = {
 	modeu5_load_stock_record_good_sand = yes
 	modeu5_add_stock_calculate = yes
@@ -14530,6 +14692,12 @@ modeu5_store_transfer_records_good_coal = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_coal = {
+	modeu5_load_stock_record_good_coal = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_coal = {
@@ -15059,6 +15227,12 @@ modeu5_store_transfer_records_good_iron = {
 	}
 }
 
+modeu5_read_country_stock_record_good_iron = {
+	modeu5_load_stock_record_good_iron = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_iron = {
 	modeu5_load_stock_record_good_iron = yes
 	modeu5_add_stock_calculate = yes
@@ -15584,6 +15758,12 @@ modeu5_store_transfer_records_good_copper = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_copper = {
+	modeu5_load_stock_record_good_copper = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_copper = {
@@ -16113,6 +16293,12 @@ modeu5_store_transfer_records_good_goods_gold = {
 	}
 }
 
+modeu5_read_country_stock_record_good_goods_gold = {
+	modeu5_load_stock_record_good_goods_gold = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_goods_gold = {
 	modeu5_load_stock_record_good_goods_gold = yes
 	modeu5_add_stock_calculate = yes
@@ -16638,6 +16824,12 @@ modeu5_store_transfer_records_good_silver = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_silver = {
+	modeu5_load_stock_record_good_silver = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_silver = {
@@ -17167,6 +17359,12 @@ modeu5_store_transfer_records_good_stone = {
 	}
 }
 
+modeu5_read_country_stock_record_good_stone = {
+	modeu5_load_stock_record_good_stone = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_stone = {
 	modeu5_load_stock_record_good_stone = yes
 	modeu5_add_stock_calculate = yes
@@ -17692,6 +17890,12 @@ modeu5_store_transfer_records_good_tin = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_tin = {
+	modeu5_load_stock_record_good_tin = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_tin = {
@@ -18221,6 +18425,12 @@ modeu5_store_transfer_records_good_lead = {
 	}
 }
 
+modeu5_read_country_stock_record_good_lead = {
+	modeu5_load_stock_record_good_lead = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_lead = {
 	modeu5_load_stock_record_good_lead = yes
 	modeu5_add_stock_calculate = yes
@@ -18746,6 +18956,12 @@ modeu5_store_transfer_records_good_silk = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_silk = {
+	modeu5_load_stock_record_good_silk = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_silk = {
@@ -19275,6 +19491,12 @@ modeu5_store_transfer_records_good_dyes = {
 	}
 }
 
+modeu5_read_country_stock_record_good_dyes = {
+	modeu5_load_stock_record_good_dyes = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_dyes = {
 	modeu5_load_stock_record_good_dyes = yes
 	modeu5_add_stock_calculate = yes
@@ -19800,6 +20022,12 @@ modeu5_store_transfer_records_good_incense = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_incense = {
+	modeu5_load_stock_record_good_incense = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_incense = {
@@ -20329,6 +20557,12 @@ modeu5_store_transfer_records_good_tea = {
 	}
 }
 
+modeu5_read_country_stock_record_good_tea = {
+	modeu5_load_stock_record_good_tea = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_tea = {
 	modeu5_load_stock_record_good_tea = yes
 	modeu5_add_stock_calculate = yes
@@ -20854,6 +21088,12 @@ modeu5_store_transfer_records_good_cocoa = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_cocoa = {
+	modeu5_load_stock_record_good_cocoa = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_cocoa = {
@@ -21383,6 +21623,12 @@ modeu5_store_transfer_records_good_coffee = {
 	}
 }
 
+modeu5_read_country_stock_record_good_coffee = {
+	modeu5_load_stock_record_good_coffee = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_coffee = {
 	modeu5_load_stock_record_good_coffee = yes
 	modeu5_add_stock_calculate = yes
@@ -21908,6 +22154,12 @@ modeu5_store_transfer_records_good_fiber_crops = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_fiber_crops = {
+	modeu5_load_stock_record_good_fiber_crops = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_fiber_crops = {
@@ -22437,6 +22689,12 @@ modeu5_store_transfer_records_good_ivory = {
 	}
 }
 
+modeu5_read_country_stock_record_good_ivory = {
+	modeu5_load_stock_record_good_ivory = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_ivory = {
 	modeu5_load_stock_record_good_ivory = yes
 	modeu5_add_stock_calculate = yes
@@ -22962,6 +23220,12 @@ modeu5_store_transfer_records_good_lumber = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_lumber = {
+	modeu5_load_stock_record_good_lumber = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_lumber = {
@@ -23491,6 +23755,12 @@ modeu5_store_transfer_records_good_salt = {
 	}
 }
 
+modeu5_read_country_stock_record_good_salt = {
+	modeu5_load_stock_record_good_salt = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_salt = {
 	modeu5_load_stock_record_good_salt = yes
 	modeu5_add_stock_calculate = yes
@@ -24016,6 +24286,12 @@ modeu5_store_transfer_records_good_medicaments = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_medicaments = {
+	modeu5_load_stock_record_good_medicaments = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_medicaments = {
@@ -24545,6 +24821,12 @@ modeu5_store_transfer_records_good_gems = {
 	}
 }
 
+modeu5_read_country_stock_record_good_gems = {
+	modeu5_load_stock_record_good_gems = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_gems = {
 	modeu5_load_stock_record_good_gems = yes
 	modeu5_add_stock_calculate = yes
@@ -25070,6 +25352,12 @@ modeu5_store_transfer_records_good_pearls = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_pearls = {
+	modeu5_load_stock_record_good_pearls = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_pearls = {
@@ -25599,6 +25887,12 @@ modeu5_store_transfer_records_good_amber = {
 	}
 }
 
+modeu5_read_country_stock_record_good_amber = {
+	modeu5_load_stock_record_good_amber = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_amber = {
 	modeu5_load_stock_record_good_amber = yes
 	modeu5_add_stock_calculate = yes
@@ -26124,6 +26418,12 @@ modeu5_store_transfer_records_good_saltpeter = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_saltpeter = {
+	modeu5_load_stock_record_good_saltpeter = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_saltpeter = {
@@ -26653,6 +26953,12 @@ modeu5_store_transfer_records_good_alum = {
 	}
 }
 
+modeu5_read_country_stock_record_good_alum = {
+	modeu5_load_stock_record_good_alum = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_alum = {
 	modeu5_load_stock_record_good_alum = yes
 	modeu5_add_stock_calculate = yes
@@ -27178,6 +27484,12 @@ modeu5_store_transfer_records_good_wine = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_wine = {
+	modeu5_load_stock_record_good_wine = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_wine = {
@@ -27707,6 +28019,12 @@ modeu5_store_transfer_records_good_elephants = {
 	}
 }
 
+modeu5_read_country_stock_record_good_elephants = {
+	modeu5_load_stock_record_good_elephants = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_elephants = {
 	modeu5_load_stock_record_good_elephants = yes
 	modeu5_add_stock_calculate = yes
@@ -28232,6 +28550,12 @@ modeu5_store_transfer_records_good_marble = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_marble = {
+	modeu5_load_stock_record_good_marble = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_marble = {
@@ -28761,6 +29085,12 @@ modeu5_store_transfer_records_good_mercury = {
 	}
 }
 
+modeu5_read_country_stock_record_good_mercury = {
+	modeu5_load_stock_record_good_mercury = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_mercury = {
 	modeu5_load_stock_record_good_mercury = yes
 	modeu5_add_stock_calculate = yes
@@ -29286,6 +29616,12 @@ modeu5_store_transfer_records_good_saffron = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_saffron = {
+	modeu5_load_stock_record_good_saffron = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_saffron = {
@@ -29815,6 +30151,12 @@ modeu5_store_transfer_records_good_pepper = {
 	}
 }
 
+modeu5_read_country_stock_record_good_pepper = {
+	modeu5_load_stock_record_good_pepper = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_pepper = {
 	modeu5_load_stock_record_good_pepper = yes
 	modeu5_add_stock_calculate = yes
@@ -30340,6 +30682,12 @@ modeu5_store_transfer_records_good_cloves = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_cloves = {
+	modeu5_load_stock_record_good_cloves = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_cloves = {
@@ -30869,6 +31217,12 @@ modeu5_store_transfer_records_good_chili = {
 	}
 }
 
+modeu5_read_country_stock_record_good_chili = {
+	modeu5_load_stock_record_good_chili = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_chili = {
 	modeu5_load_stock_record_good_chili = yes
 	modeu5_add_stock_calculate = yes
@@ -31394,6 +31748,12 @@ modeu5_store_transfer_records_good_wool = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_wool = {
+	modeu5_load_stock_record_good_wool = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_wool = {
@@ -31923,6 +32283,12 @@ modeu5_store_transfer_records_good_wild_game = {
 	}
 }
 
+modeu5_read_country_stock_record_good_wild_game = {
+	modeu5_load_stock_record_good_wild_game = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_wild_game = {
 	modeu5_load_stock_record_good_wild_game = yes
 	modeu5_add_stock_calculate = yes
@@ -32448,6 +32814,12 @@ modeu5_store_transfer_records_good_fur = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_fur = {
+	modeu5_load_stock_record_good_fur = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_fur = {
@@ -32977,6 +33349,12 @@ modeu5_store_transfer_records_good_fish = {
 	}
 }
 
+modeu5_read_country_stock_record_good_fish = {
+	modeu5_load_stock_record_good_fish = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_fish = {
 	modeu5_load_stock_record_good_fish = yes
 	modeu5_add_stock_calculate = yes
@@ -33502,6 +33880,12 @@ modeu5_store_transfer_records_good_wheat = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_wheat = {
+	modeu5_load_stock_record_good_wheat = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_wheat = {
@@ -34031,6 +34415,12 @@ modeu5_store_transfer_records_good_maize = {
 	}
 }
 
+modeu5_read_country_stock_record_good_maize = {
+	modeu5_load_stock_record_good_maize = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_maize = {
 	modeu5_load_stock_record_good_maize = yes
 	modeu5_add_stock_calculate = yes
@@ -34556,6 +34946,12 @@ modeu5_store_transfer_records_good_rice = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_rice = {
+	modeu5_load_stock_record_good_rice = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_rice = {
@@ -35085,6 +35481,12 @@ modeu5_store_transfer_records_good_millet = {
 	}
 }
 
+modeu5_read_country_stock_record_good_millet = {
+	modeu5_load_stock_record_good_millet = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_millet = {
 	modeu5_load_stock_record_good_millet = yes
 	modeu5_add_stock_calculate = yes
@@ -35610,6 +36012,12 @@ modeu5_store_transfer_records_good_legumes = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_legumes = {
+	modeu5_load_stock_record_good_legumes = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_legumes = {
@@ -36139,6 +36547,12 @@ modeu5_store_transfer_records_good_potato = {
 	}
 }
 
+modeu5_read_country_stock_record_good_potato = {
+	modeu5_load_stock_record_good_potato = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_potato = {
 	modeu5_load_stock_record_good_potato = yes
 	modeu5_add_stock_calculate = yes
@@ -36664,6 +37078,12 @@ modeu5_store_transfer_records_good_livestock = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_livestock = {
+	modeu5_load_stock_record_good_livestock = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_livestock = {
@@ -37193,6 +37613,12 @@ modeu5_store_transfer_records_good_olives = {
 	}
 }
 
+modeu5_read_country_stock_record_good_olives = {
+	modeu5_load_stock_record_good_olives = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_olives = {
 	modeu5_load_stock_record_good_olives = yes
 	modeu5_add_stock_calculate = yes
@@ -37718,6 +38144,12 @@ modeu5_store_transfer_records_good_fruit = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_fruit = {
+	modeu5_load_stock_record_good_fruit = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_fruit = {
@@ -38247,6 +38679,12 @@ modeu5_store_transfer_records_good_beeswax = {
 	}
 }
 
+modeu5_read_country_stock_record_good_beeswax = {
+	modeu5_load_stock_record_good_beeswax = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good_beeswax = {
 	modeu5_load_stock_record_good_beeswax = yes
 	modeu5_add_stock_calculate = yes
@@ -38772,6 +39210,12 @@ modeu5_store_transfer_records_good_slaves_goods = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good_slaves_goods = {
+	modeu5_load_stock_record_good_slaves_goods = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
 }
 
 modeu5_add_stock_good_slaves_goods = {

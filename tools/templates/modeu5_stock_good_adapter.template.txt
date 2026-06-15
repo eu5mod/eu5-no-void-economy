@@ -299,6 +299,12 @@ modeu5_store_transfer_records_good___GOOD__ = {
 	}
 }
 
+modeu5_read_country_stock_record_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
 modeu5_add_stock_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
 	modeu5_add_stock_calculate = yes

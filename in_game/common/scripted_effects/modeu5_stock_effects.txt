@@ -66,6 +66,56 @@ modeu5_select_remove_reason_debug_test = {
 # Shared effects below only calculate results from temporary inputs; map
 # identifiers are never passed through scripted-effect parameters.
 
+# US-01 read-only country x market x good record access.
+
+modeu5_read_country_stock_record = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_read_country_stock_record_good_$good$ = yes
+}
+
+modeu5_read_country_stock_record_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_read_country_stock
+		value = {
+			value = scope:modeu5_country_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_country_stock_cap
+		value = {
+			value = scope:modeu5_country_stock_cap_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_available_capacity
+		value = {
+			value = scope:modeu5_read_country_stock_cap
+			subtract = scope:modeu5_read_country_stock
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_over_capacity
+		value = {
+			value = scope:modeu5_read_country_stock
+			subtract = scope:modeu5_read_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_market_stock
+		value = {
+			value = scope:modeu5_market_stock_before
+			min = 0
+		}
+	}
+}
+
 # CORE-01.1
 
 modeu5_add_stock = {

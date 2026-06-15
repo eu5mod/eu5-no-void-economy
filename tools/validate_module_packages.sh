@@ -156,6 +156,7 @@ if ! search_quiet 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_mark
 fi
 
 for required_effect in \
+	modeu5_read_country_stock_record_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do

@@ -12,6 +12,7 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_rebuild_passed
 	remove_global_variable = modeu5_test_validation_repair_passed
 	remove_global_variable = modeu5_test_validation_noop_passed
+	remove_global_variable = modeu5_test_country_stock_dimensions_passed
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
@@ -82,6 +83,288 @@ modeu5_read_market_stock_good_wheat = {
 			name = $output$
 			value = 0
 		}
+	}
+}
+
+modeu5_debug_run_country_stock_dimension_test = {
+	save_temporary_scope_as = modeu5_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+			NOT = { c:FRA.capital.market = c:ENG.capital.market }
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_test_market_one }
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_test_market_two }
+
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market_two
+			good = wheat
+		}
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market_one
+			good = iron
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_fra_market_one_wheat
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_market_one_wheat
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_two
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_fra_market_two_wheat
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_market_two_wheat
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = iron
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_fra_market_one_iron
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_market_one_iron
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:ENG
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_before_eng_market_one_wheat
+			value = scope:modeu5_read_country_stock
+		}
+
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = wheat
+			quantity = 11
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_added_fra_market_one_wheat
+			value = scope:modeu5_actual_added_quantity
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_two
+			good = wheat
+			quantity = 13
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_added_fra_market_two_wheat
+			value = scope:modeu5_actual_added_quantity
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = iron
+			quantity = 17
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_added_fra_market_one_iron
+			value = scope:modeu5_actual_added_quantity
+		}
+		modeu5_add_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_market_one
+			good = wheat
+			quantity = 19
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_added_eng_market_one_wheat
+			value = scope:modeu5_actual_added_quantity
+		}
+
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_fra_market_one_wheat
+			value = {
+				value = scope:modeu5_test_before_fra_market_one_wheat
+				add = 11
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_fra_market_two_wheat
+			value = {
+				value = scope:modeu5_test_before_fra_market_two_wheat
+				add = 13
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_fra_market_one_iron
+			value = {
+				value = scope:modeu5_test_before_fra_market_one_iron
+				add = 17
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_eng_market_one_wheat
+			value = {
+				value = scope:modeu5_test_before_eng_market_one_wheat
+				add = 19
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_market_one_wheat
+			value = {
+				value = scope:modeu5_test_before_market_one_wheat
+				add = 30
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_market_two_wheat
+			value = {
+				value = scope:modeu5_test_before_market_two_wheat
+				add = 13
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_expected_market_one_iron
+			value = {
+				value = scope:modeu5_test_before_market_one_iron
+				add = 17
+			}
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_fra_market_one_wheat
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_market_one_wheat
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_two
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_fra_market_two_wheat
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_market_two_wheat
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = iron
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_fra_market_one_iron
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_market_one_iron
+			value = scope:modeu5_read_market_stock
+		}
+		modeu5_read_country_stock_record = {
+			country = c:ENG
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_after_eng_market_one_wheat
+			value = scope:modeu5_read_country_stock
+		}
+
+		if = {
+			limit = {
+				scope:modeu5_test_after_fra_market_one_wheat = scope:modeu5_test_expected_fra_market_one_wheat
+				scope:modeu5_test_after_fra_market_two_wheat = scope:modeu5_test_expected_fra_market_two_wheat
+				scope:modeu5_test_after_fra_market_one_iron = scope:modeu5_test_expected_fra_market_one_iron
+				scope:modeu5_test_after_eng_market_one_wheat = scope:modeu5_test_expected_eng_market_one_wheat
+				scope:modeu5_test_after_market_one_wheat = scope:modeu5_test_expected_market_one_wheat
+				scope:modeu5_test_after_market_two_wheat = scope:modeu5_test_expected_market_two_wheat
+				scope:modeu5_test_after_market_one_iron = scope:modeu5_test_expected_market_one_iron
+			}
+			set_global_variable = modeu5_test_country_stock_dimensions_passed
+		}
+		else = {
+			remove_global_variable = modeu5_test_country_stock_dimensions_passed
+			error_log = "ModeU5 deterministic US-01 country, market, and good isolation test failed."
+		}
+
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = wheat
+			quantity = scope:modeu5_test_added_fra_market_one_wheat
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_two
+			good = wheat
+			quantity = scope:modeu5_test_added_fra_market_two_wheat
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market_one
+			good = iron
+			quantity = scope:modeu5_test_added_fra_market_one_iron
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_market_one
+			good = wheat
+			quantity = scope:modeu5_test_added_eng_market_one_wheat
+			reason = debug_test
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_test_market_one
+			good = wheat
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_test_market_two
+			good = wheat
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_test_market_one
+			good = iron
+		}
+	}
+	else = {
+		remove_global_variable = modeu5_test_country_stock_dimensions_passed
+		error_log = "ModeU5 deterministic US-01 test requires FRA and ENG in different markets."
 	}
 }
 
