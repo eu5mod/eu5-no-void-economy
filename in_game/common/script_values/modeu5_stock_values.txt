@@ -2,3 +2,8 @@
 modeu5_default_monthly_decay_rate = {
 	value = 0.01
 }
+
+# Difference at or above this value receives prominent validation severity.
+modeu5_stock_consistency_prominent_threshold = {
+	value = 1
+}

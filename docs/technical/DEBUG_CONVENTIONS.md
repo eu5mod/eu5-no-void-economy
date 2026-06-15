@@ -248,6 +248,8 @@ operation / mutation effect:
   2 = remove_stock
   3 = transfer_stock
   4 = decay_stock
+  5 = rebuild_market_stock
+  6 = validate_stock_consistency
 
 capacity policy:
   0 = enforce
@@ -273,8 +275,9 @@ sets:
 modeu5_debug_last_consistency_validation_required = 1
 ```
 
-Until CORE-01.5/01.6 are implemented, an aggregate-underflow transaction fails
-closed instead of independently clamping the market cache.
+An aggregate-underflow transaction fails closed instead of independently
+clamping the market cache. The caller or US-11 orchestration must then invoke
+CORE-01.6, which delegates every cache correction to CORE-01.5.
 
 For `modeu5_transfer_stock`, debug must also expose:
 
@@ -331,6 +334,16 @@ negative_country_source_detected
 over_cap_country_source_detected
 over_cap_is_accounting_inconsistency = no
 ```
+
+Validation severity uses
+`modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
+diagnostic severity; every nonzero difference is rebuilt.
+
+Numeric precision is not yet characterized. Preserve raw operands and signed
+differences without rounding them for debug. When a small residual or an
+unexpected deterministic-test failure appears, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md` before adding an
+epsilon or weakening an underflow guard.
 
 ## Mandatory debug for US-00
 
@@ -521,17 +534,18 @@ US-05 direct formula replacement status
 If a negative stock is detected:
 
 ```txt
-1. clamp to zero
-2. log anomaly
-3. validate market stock
-4. do not allow negative value to persist
+1. normalize the country source only inside the centralized operation that owns
+   the transaction
+2. log the anomaly
+3. request CORE-01.6 validation
+4. never infer the country source from the market cache
 ```
 
 If market stock differs from country stock sum:
 
 ```txt
 1. calculate expected market stock
-2. overwrite market stock with expected value
+2. call CORE-01.5 to replace the market cache with the expected value
 3. log market, good, previous value, corrected value, difference
 4. do not modify country stocks
 ```
@@ -543,3 +557,36 @@ If a modifier or effect is unconfirmed:
 2. do not apply gameplay effect
 3. update TECH-01
 ```
+
+## Deterministic test-event policy
+
+The CORE-01 console entry point is:
+
+```txt
+event modeu5_debug.1
+```
+
+`modeu5_test_*_passed` values are result markers, not console commands.
+
+Use persistent global marker presence for PASS state:
+
+```txt
+has_global_variable = modeu5_test_<case>_passed
+```
+
+Use `NOT = { has_global_variable = ... }` for FAIL / NOT RUN. Do not compare an
+unset marker numerically; the engine reports missing-variable and invalid
+comparison errors.
+
+Expected business outcomes, including an intentionally rejected same-record
+transfer, belong in debug snapshots and result rows. Reserve `error_log` for a
+failed assertion, an unexpected invariant violation, or another blocking
+diagnostic. A console-triggered result event that is called by another event
+must not be declared `orphan = yes`.
+
+After a local test, distinguish:
+
+- static `used but is never set` analysis for a correctly formed literal map;
+- malformed identifiers retaining `$`, which are always invalid;
+- runtime script-system errors;
+- expected ModeU5 debug output.

@@ -9,6 +9,9 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_same_market_transfer_passed
 	remove_global_variable = modeu5_test_invalid_same_record_passed
 	remove_global_variable = modeu5_test_inter_market_transfer_passed
+	remove_global_variable = modeu5_test_rebuild_passed
+	remove_global_variable = modeu5_test_validation_repair_passed
+	remove_global_variable = modeu5_test_validation_noop_passed
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
@@ -242,6 +245,8 @@ modeu5_debug_run_single_record_stock_tests = {
 		market = scope:modeu5_test_market
 		output = modeu5_test_market_after_decay
 	}
+	# Developer note: this exact assertion is intentionally strict. If only this
+	# test fails, inspect the raw decay values and TECH-01 113 before changing it.
 	if = {
 		limit = {
 			scope:modeu5_decayed_quantity = 10
@@ -508,5 +513,182 @@ modeu5_debug_run_inter_market_transfer_test = {
 	else = {
 		remove_global_variable = modeu5_test_inter_market_transfer_passed
 		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
+	}
+}
+
+modeu5_debug_run_rebuild_and_validation_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_test_market }
+
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		every_country = {
+			modeu5_remove_stock = {
+				country = this
+				market = scope:modeu5_test_market
+				good = wheat
+				quantity = 1000000
+				reason = debug_test
+			}
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			value = 200
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			value = 200
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 100
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_add_stock = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 50
+			capacity_policy = allow_over_capacity
+		}
+
+		modeu5_debug_corrupt_market_stock_for_test = {
+			market = scope:modeu5_test_market
+			good = wheat
+			value = 200
+		}
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			output = modeu5_test_rebuild_fra_stock
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			output = modeu5_test_rebuild_eng_stock
+		}
+		modeu5_read_market_stock_good_wheat = {
+			market = scope:modeu5_test_market
+			output = modeu5_test_rebuilt_market_stock
+		}
+		if = {
+			limit = {
+				scope:modeu5_rebuild_market_stock_before = 200
+				scope:modeu5_rebuild_expected_market_stock = 150
+				scope:modeu5_rebuild_market_stock_after = 150
+				scope:modeu5_rebuild_correction_applied = -50
+				scope:modeu5_rebuild_country_stocks_modified = 0
+				scope:modeu5_test_rebuild_fra_stock = 100
+				scope:modeu5_test_rebuild_eng_stock = 50
+				scope:modeu5_test_rebuilt_market_stock = 150
+			}
+			scope:modeu5_test_controller = {
+				set_global_variable = modeu5_test_rebuild_passed
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				remove_global_variable = modeu5_test_rebuild_passed
+			}
+			error_log = "ModeU5 deterministic CORE-01.5 rebuild test failed."
+		}
+
+		modeu5_debug_corrupt_market_stock_for_test = {
+			market = scope:modeu5_test_market
+			good = wheat
+			value = 200
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			output = modeu5_test_validation_fra_stock
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			output = modeu5_test_validation_eng_stock
+		}
+		modeu5_read_market_stock_good_wheat = {
+			market = scope:modeu5_test_market
+			output = modeu5_test_validated_market_stock
+		}
+		if = {
+			limit = {
+				scope:modeu5_validation_expected_market_stock = 150
+				scope:modeu5_validation_actual_market_stock_before = 200
+				scope:modeu5_validation_difference_before = 50
+				scope:modeu5_validation_inconsistency_detected = 1
+				scope:modeu5_validation_inconsistency_severity = 2
+				scope:modeu5_validation_rebuild_called = 1
+				scope:modeu5_validation_actual_market_stock_after = 150
+				scope:modeu5_validation_difference_after = 0
+				scope:modeu5_validation_failed_after_rebuild = 0
+				scope:modeu5_test_validation_fra_stock = 100
+				scope:modeu5_test_validation_eng_stock = 50
+				scope:modeu5_test_validated_market_stock = 150
+			}
+			scope:modeu5_test_controller = {
+				set_global_variable = modeu5_test_validation_repair_passed
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				remove_global_variable = modeu5_test_validation_repair_passed
+			}
+			error_log = "ModeU5 deterministic CORE-01.6 repair test failed."
+		}
+
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		if = {
+			limit = {
+				scope:modeu5_validation_expected_market_stock = 150
+				scope:modeu5_validation_actual_market_stock_before = 150
+				scope:modeu5_validation_difference_before = 0
+				scope:modeu5_validation_inconsistency_detected = 0
+				scope:modeu5_validation_inconsistency_severity = 0
+				scope:modeu5_validation_rebuild_called = 0
+				scope:modeu5_validation_actual_market_stock_after = 150
+				scope:modeu5_validation_difference_after = 0
+				scope:modeu5_validation_failed_after_rebuild = 0
+			}
+			scope:modeu5_test_controller = {
+				set_global_variable = modeu5_test_validation_noop_passed
+			}
+		}
+		else = {
+			scope:modeu5_test_controller = {
+				remove_global_variable = modeu5_test_validation_noop_passed
+			}
+			error_log = "ModeU5 deterministic CORE-01.6 no-op test failed."
+		}
+	}
+	else = {
+		remove_global_variable = modeu5_test_rebuild_passed
+		remove_global_variable = modeu5_test_validation_repair_passed
+		remove_global_variable = modeu5_test_validation_noop_passed
+		error_log = "ModeU5 deterministic CORE-01.5/01.6 tests require FRA and ENG."
 	}
 }

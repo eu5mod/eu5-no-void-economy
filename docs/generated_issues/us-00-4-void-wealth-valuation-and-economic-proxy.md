@@ -38,9 +38,9 @@ Feeds counters to: US-00-UI and balancing diagnostics
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/events/
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md

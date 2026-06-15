@@ -71,7 +71,8 @@ country × market × good:
 
 market × good aggregate:
   one market_good_record/cache
-  owner = market
+  logical owner = market
+  confirmed physical owner = global variable system
   tuple = good
 
 location × good:
@@ -90,6 +91,12 @@ centralized helpers enforcing record-level consistency
 ```
 
 Map names are static identifiers. Do not assume runtime map-name construction. Existing keys must be removed before their replacement is re-added. Missing numeric entries require an explicit safe default.
+
+Controlled CORE-01 testing confirmed that Market scope does not support
+variables in the tested build. Store the logical `market × good` cache in a
+global per-good map keyed by market scope. Generated per-good adapters must
+contain complete literal map identifiers; scripted-effect parameters may select
+an adapter but must never carry a map name.
 
 ## Non-negotiable stock rule
 

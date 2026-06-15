@@ -78,7 +78,7 @@ One request's arithmetic remains local. US-10.3 writes only the monthly/yearly a
 
 ```txt
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/

@@ -335,3 +335,192 @@ modeu5_decay_stock_default_good___GOOD__ = {
 		decay_rate = modeu5_default_monthly_decay_rate
 	}
 }
+
+modeu5_load_market_aggregate_good___GOOD__ = {
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_market
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_scanned_market_stock
+			value = "global_variable_map(__MARKET_MAP__|scope:modeu5_market)"
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_scanned_market_stock
+			value = 0
+		}
+	}
+}
+
+modeu5_scan_stock_sources_good___GOOD__ = {
+	scope:modeu5_consistency_controller = {
+		set_local_variable = {
+			name = modeu5_scan_expected_market_stock
+			value = 0
+		}
+		set_local_variable = {
+			name = modeu5_scan_country_source_count
+			value = 0
+		}
+		set_local_variable = {
+			name = modeu5_scan_negative_country_source_detected
+			value = 0
+		}
+		set_local_variable = {
+			name = modeu5_scan_over_cap_country_source_detected
+			value = 0
+		}
+	}
+
+	every_country = {
+		if = {
+			limit = {
+				has_variable_map = __STOCK_MAP__
+				is_key_in_variable_map = {
+					name = __STOCK_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_scanned_country_stock
+				value = "variable_map(__STOCK_MAP__|scope:modeu5_market)"
+			}
+			scope:modeu5_consistency_controller = {
+				change_local_variable = {
+					name = modeu5_scan_expected_market_stock
+					add = scope:modeu5_scanned_country_stock
+				}
+				change_local_variable = {
+					name = modeu5_scan_country_source_count
+					add = 1
+				}
+			}
+			if = {
+				limit = { scope:modeu5_scanned_country_stock < 0 }
+				scope:modeu5_consistency_controller = {
+					set_local_variable = {
+						name = modeu5_scan_negative_country_source_detected
+						value = 1
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_variable_map = __CAPACITY_MAP__
+					is_key_in_variable_map = {
+						name = __CAPACITY_MAP__
+						target = scope:modeu5_market
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_scanned_country_capacity
+					value = "variable_map(__CAPACITY_MAP__|scope:modeu5_market)"
+				}
+				if = {
+					limit = {
+						scope:modeu5_scanned_country_stock > scope:modeu5_scanned_country_capacity
+					}
+					scope:modeu5_consistency_controller = {
+						set_local_variable = {
+							name = modeu5_scan_over_cap_country_source_detected
+							value = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	scope:modeu5_consistency_controller = {
+		save_temporary_scope_value_as = {
+			name = modeu5_expected_market_stock
+			value = local_var:modeu5_scan_expected_market_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_country_source_count
+			value = local_var:modeu5_scan_country_source_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_negative_country_source_detected
+			value = local_var:modeu5_scan_negative_country_source_detected
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_over_cap_country_source_detected
+			value = local_var:modeu5_scan_over_cap_country_source_detected
+		}
+	}
+
+	modeu5_load_market_aggregate_good___GOOD__ = yes
+}
+
+modeu5_store_rebuilt_market_aggregate_good___GOOD__ = {
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_market
+			}
+		}
+		remove_from_global_variable_map = {
+			name = __MARKET_MAP__
+			key = scope:modeu5_market
+		}
+	}
+	add_to_global_variable_map = {
+		name = __MARKET_MAP__
+		key = scope:modeu5_market
+		value = scope:modeu5_expected_market_stock
+	}
+}
+
+modeu5_rebuild_market_stock_good___GOOD__ = {
+	modeu5_scan_stock_sources_good___GOOD__ = yes
+	modeu5_rebuild_market_stock_calculate = yes
+	modeu5_store_rebuilt_market_aggregate_good___GOOD__ = yes
+	modeu5_debug_capture_rebuild_market_stock = yes
+}
+
+modeu5_validate_stock_consistency_good___GOOD__ = {
+	modeu5_scan_stock_sources_good___GOOD__ = yes
+	modeu5_validate_stock_consistency_prepare = yes
+	if = {
+		limit = { scope:modeu5_validation_difference_before != 0 }
+		modeu5_rebuild_market_stock_good___GOOD__ = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_rebuild_called
+			value = 1
+		}
+		modeu5_load_market_aggregate_good___GOOD__ = yes
+	}
+	modeu5_validate_stock_consistency_finalize = yes
+	modeu5_debug_capture_validate_stock_consistency = yes
+}
+
+# Fault injection for the deterministic CORE-01.6 test only.
+modeu5_debug_corrupt_market_stock_good___GOOD__ = {
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_market
+			}
+		}
+		remove_from_global_variable_map = {
+			name = __MARKET_MAP__
+			key = scope:modeu5_market
+		}
+	}
+	add_to_global_variable_map = {
+		name = __MARKET_MAP__
+		key = scope:modeu5_market
+		value = scope:modeu5_debug_corrupted_market_stock
+	}
+}

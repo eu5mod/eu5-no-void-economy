@@ -254,8 +254,8 @@ If a blocking check fails:
 ## Files expected to change
 
 ```txt
-in_game/common/on_actions/modeu5_stock_on_actions.txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/on_action/modeu5_stock_on_actions.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_triggers/modeu5_stock_triggers.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt

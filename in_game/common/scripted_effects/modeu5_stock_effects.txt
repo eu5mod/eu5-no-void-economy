@@ -298,6 +298,8 @@ modeu5_remove_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a tiny aggregate residue could trip this strict underflow
+	# guard. Rebuild and inspect raw values before considering any tolerance.
 	if = {
 		limit = {
 			OR = {
@@ -547,6 +549,8 @@ modeu5_transfer_stock_calculate = {
 		name = modeu5_consistency_validation_required
 		value = 0
 	}
+	# Precision note: keep this strict until TECH-01 113 measures engine and map
+	# rounding. A gameplay epsilon would change transfer conservation behavior.
 	if = {
 		limit = {
 			scope:modeu5_same_market_transfer = 0
@@ -776,6 +780,8 @@ modeu5_decay_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a fractional decay can expose engine rounding here.
+	# Validate/rebuild and inspect the raw operands before weakening this guard.
 	if = {
 		limit = {
 			OR = {
@@ -892,4 +898,179 @@ modeu5_decay_stock_calculate = {
 		}
 	}
 
+}
+
+# CORE-01.5
+
+modeu5_rebuild_market_stock_from_country_stocks = {
+	save_temporary_scope_as = modeu5_consistency_controller
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_rebuild_market_stock_good_$good$ = yes
+}
+
+modeu5_rebuild_market_stock_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_market_stock_before
+		value = scope:modeu5_scanned_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_expected_market_stock
+		value = scope:modeu5_expected_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_market_stock_after
+		value = scope:modeu5_expected_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_correction_applied
+		value = {
+			value = scope:modeu5_rebuild_market_stock_after
+			subtract = scope:modeu5_rebuild_market_stock_before
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_country_source_count
+		value = scope:modeu5_country_source_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_negative_country_source_detected
+		value = scope:modeu5_negative_country_source_detected
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_over_cap_country_source_detected
+		value = scope:modeu5_over_cap_country_source_detected
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_rebuild_country_stocks_modified
+		value = 0
+	}
+}
+
+# CORE-01.6
+
+modeu5_validate_stock_consistency = {
+	save_temporary_scope_as = modeu5_consistency_controller
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_validate_stock_consistency_good_$good$ = yes
+}
+
+modeu5_validate_stock_consistency_prepare = {
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_expected_market_stock
+		value = scope:modeu5_expected_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_actual_market_stock_before
+		value = scope:modeu5_scanned_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_difference_before
+		value = {
+			value = scope:modeu5_validation_actual_market_stock_before
+			subtract = scope:modeu5_validation_expected_market_stock
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_absolute_difference
+		value = scope:modeu5_validation_difference_before
+	}
+	if = {
+		limit = { scope:modeu5_validation_absolute_difference < 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_absolute_difference
+			value = {
+				value = scope:modeu5_validation_absolute_difference
+				multiply = -1
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_inconsistency_detected
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_inconsistency_severity
+		value = 0
+	}
+	# Exact accounting is intentional. If tiny residuals appear, preserve the
+	# signed difference and run the TECH-01 113 precision probe first.
+	if = {
+		limit = { scope:modeu5_validation_difference_before != 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_inconsistency_detected
+			value = 1
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_inconsistency_severity
+			value = 1
+		}
+	}
+	if = {
+		limit = {
+			scope:modeu5_validation_absolute_difference >= modeu5_stock_consistency_prominent_threshold
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_inconsistency_severity
+			value = 2
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_rebuild_called
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_country_source_count
+		value = scope:modeu5_country_source_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_negative_country_source_detected
+		value = scope:modeu5_negative_country_source_detected
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_over_cap_country_source_detected
+		value = scope:modeu5_over_cap_country_source_detected
+	}
+}
+
+modeu5_validate_stock_consistency_finalize = {
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_actual_market_stock_after
+		value = scope:modeu5_scanned_market_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_difference_after
+		value = {
+			value = scope:modeu5_validation_actual_market_stock_after
+			subtract = scope:modeu5_validation_expected_market_stock
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_validation_failed_after_rebuild
+		value = 0
+	}
+	# A tiny post-write residual may indicate map persistence rounding. Do not
+	# hide it with a global epsilon before TECH-01 113 is characterized.
+	if = {
+		limit = { scope:modeu5_validation_difference_after != 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_failed_after_rebuild
+			value = 1
+		}
+	}
+}
+
+# Test-only fault injection used to prove CORE-01.6 repairs the market cache.
+modeu5_debug_corrupt_market_stock_for_test = {
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_debug_corrupted_market_stock
+		value = $value$
+	}
+
+	modeu5_debug_corrupt_market_stock_good_$good$ = yes
 }

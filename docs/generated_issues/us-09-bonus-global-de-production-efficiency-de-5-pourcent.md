@@ -46,7 +46,7 @@ Feeds counters to: vanilla production read at step 4
 ```txt
 in_game/common/modifiers/
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/localization/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
