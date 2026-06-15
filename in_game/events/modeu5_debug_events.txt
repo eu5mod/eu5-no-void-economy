@@ -36,6 +36,12 @@ modeu5_debug.1 = {
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
+		name = modeu5_debug.1.e
+		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_reconciliation_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -129,6 +135,22 @@ modeu5_debug.2 = {
 	option = {
 		name = modeu5_debug.test.validation_noop.fail
 		trigger = { NOT = { has_global_variable = modeu5_test_validation_noop_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_dirty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_dirty_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_dirty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_dirty_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_empty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_empty_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_empty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_empty_passed } }
 	}
 	option = {
 		name = modeu5_debug.close
