@@ -42,6 +42,10 @@ TECH-01 must contain initial entries for:
 ```txt
 Core iteration and scope handling
 Core variables and variable maps
+Market-scope variable support and the global aggregate fallback
+Literal per-good adapter selection
+Loaded `common/script_values` path
+EU5 lower/upper bound semantics for `min` and `max`
 Monthly and yearly on_actions
 Centralized stock effects
 US-00.1 production ledger
@@ -72,6 +76,8 @@ US-13 horde and age checks
 - [ ] US-05 Wealth and direct formula-hook exposure are explicitly listed.
 - [ ] US-10 no-intra-market-trade dependencies are explicitly listed.
 - [ ] No gameplay implementation can depend on a `TO_TEST` or `NOT_CONFIRMED` item unless fallback is approved.
+- [ ] Controlled implementation findings are added to TECH-01, not left only
+      in PR discussion or logs.
 
 ## Manual review checklist
 

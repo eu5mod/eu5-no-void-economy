@@ -13,6 +13,12 @@ The shell only expands
 script in that template; shared validation and arithmetic remain in
 `modeu5_stock_effects.txt`.
 
+Do not edit
+`in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
+After changing the template or goods registry, regenerate and run
+`./tools/validate_module_packages.sh`; generation must be idempotent and no
+physical map identifier may retain `$`.
+
 ## Module packages
 
 Validate the four source package roots:
@@ -39,6 +45,11 @@ After installation, refresh the launcher and enable the four ModeU5 entries in
 the recommended full-suite playset. If two `No Void Economy` entries appear,
 disable the older single-package entry backed by the `eu5voideco` path to avoid
 loading Core twice.
+
+Also remove or disable any stale real installation directory that can shadow
+the installed `modeu5_core`. `--check` and each package's
+`MODEU5_SOURCE.txt` are the source of truth for the branch and commit EU5 will
+load.
 
 ## Local logs
 

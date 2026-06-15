@@ -55,6 +55,27 @@ General rules:
 - Aggregate/cache maps are rebuilt from their source-of-truth maps, never the reverse.
 - Stock maps are writable only through the centralized stock effects required by `AGENTS.md`.
 
+## Confirmed CORE-01 implementation constraints
+
+Controlled implementation and runtime testing for PR #43 established these
+additional rules:
+
+- The logical owner of `market × good` remains the market, but Market scope
+  cannot own variables in the tested build. The physical aggregate is a global
+  per-good map keyed by market scope.
+- A scripted-effect argument may select a generated per-good adapter, but it
+  must not contain or forward a map identifier.
+- Every generated adapter contains complete literal country-stock, capacity,
+  and market-aggregate map identifiers.
+- Shared scripted effects own validation, arithmetic, outputs, and diagnostics.
+  The generator only expands the versioned adapter template.
+- `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` is generated
+  output and must not be edited manually.
+- The goods registry used by the generator must stay synchronized with the
+  supported vanilla goods set and generation must be idempotent.
+- Deliberate cache corruption is allowed only through the centralized
+  test-only fault injector used by CORE-01.5/CORE-01.6 tests.
+
 ## Logical records and physical map families
 
 ModeU5 should model related fields as one logical record:
@@ -224,7 +245,8 @@ temporary arithmetic
 saved country/market/good scopes
 ```
 
-Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, US-10.3, debug, or reconciliation.
+Persist only the monthly/yearly aggregates explicitly required by US-00, US-04,
+US-10.3, debug, or stock-consistency orchestration.
 
 ## All-US review
 

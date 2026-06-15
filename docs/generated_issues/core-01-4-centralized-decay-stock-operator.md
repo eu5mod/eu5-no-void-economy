@@ -65,7 +65,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 011, 015-016, 026
+Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 011, 015-016, 026, 104, 105, 108
 Blocks: US-03
 Related US: US-01, US-03, US-03-UI, US-11
 ```
@@ -77,6 +77,8 @@ Related US: US-01, US-03, US-03-UI, US-11
 - Use the caller rate when provided and the configured ModeU5 monthly rate otherwise.
 - Use `modeu5_decay_stock_default` when the caller does not provide an override; it delegates to `modeu5_decay_stock` with `modeu5_default_monthly_decay_rate`.
 - Bound the effective decay rate to `[0, 1]` and log an out-of-range input.
+- Apply TECH-01 108 literally: use EU5 `min = 0` for the lower bound and
+  `max = 1` for the upper bound.
 - Calculate `decayed_quantity = min(stock_before, stock_before * effective_decay_rate)`.
 - Calculate the loss from country stock only; never calculate a second independent decay from market stock.
 - Decrease country stock and market aggregate by exactly the same decayed quantity.

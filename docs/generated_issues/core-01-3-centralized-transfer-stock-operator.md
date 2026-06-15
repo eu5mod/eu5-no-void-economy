@@ -20,7 +20,7 @@ Implement `modeu5_transfer_stock` as one pre-calculated transaction always bound
 Monthly step: 11 when called by US-10.2
 Yearly step: none
 Depends on counters from: explicit seller, buyer, market, good, and requested quantity inputs
-Feeds counters to: US-10.2, US-10.3, US-06 if restored, debug, CORE-01.6
+Feeds counters to: US-10.2, US-10.3, debug, CORE-01.6
 ```
 
 ## Required scopes / values / effects
@@ -68,7 +68,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-018, 026, 076, 099
+Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 015-018, 026, 076, 099, 104, 108
 Blocks: US-10.2
 Related US: US-01, US-02, US-10.2, US-10.3, US-11
 ```
@@ -81,6 +81,8 @@ Related US: US-01, US-02, US-10.2, US-10.3, US-11
 - Default `target_capacity_policy` to `enforce`.
 - Under `enforce`, calculate `actual_transferred_quantity = min(requested, seller_stock, target_available_capacity)`.
 - Under `allow_over_capacity`, calculate `actual_transferred_quantity = min(requested, seller_stock)`.
+- Apply TECH-01 108 literally: EU5 `min = 0` imposes a lower bound and
+  `max = <available>` imposes an upper bound.
 - Calculate `unsatisfied_quantity = requested - actual_transferred_quantity`.
 - Under `enforce`, do not remove stock that the target cannot accept; unsatisfied goods remain in seller stock.
 - Under `allow_over_capacity`, target capacity creates no unsatisfied quantity; only seller shortage may do so.

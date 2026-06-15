@@ -23,6 +23,9 @@ same-market transfer test
 inter-market transfer test
 decay test
 rebuild safety test
+generated-adapter literal-identifier validation
+unset deterministic result-marker test
+local install provenance and stale-duplicate check
 US-00 void economy tracking tests
 US-00 monthly reset ordering test
 multi-market country test
@@ -67,6 +70,10 @@ unconfirmed modifier/effect policy
 - [ ] Debug conventions include US-05 Wealth source and formula-hook debug.
 - [ ] Debug conventions include fallback reporting.
 - [ ] Debug conventions prohibit hidden economic adjustments.
+- [ ] Expected business-rule rejections are distinguished from failed
+      assertions and engine errors.
+- [ ] Deterministic result UI uses marker presence rather than numeric
+      comparison against an unset variable.
 
 ## Manual review checklist
 

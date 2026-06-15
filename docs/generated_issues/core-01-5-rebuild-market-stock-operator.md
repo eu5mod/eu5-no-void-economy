@@ -68,7 +68,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 001, 007-008, 015-016, 019, 109
+Depends on: CORE-01.1 shared map helpers; TECH-01 001, 007-008, 015-016, 019, 104, 109
 Blocks: CORE-01.6, US-11 recovery
 Related US: US-01, US-11
 ```
@@ -79,6 +79,8 @@ Related US: US-01, US-11
 - Accept one explicit market and good per call.
 - Save the market and good scopes before country iteration.
 - Iterate countries and treat a missing matching country stock entry as zero.
+- Iterate every country, not only countries currently owning a location in the
+  market; durable country stock can survive territorial loss.
 - Sum the country stock source fields; do not derive the value from production, capacity, ledger, or the previous market aggregate.
 - Replace only `modeu5_<good>_market_stock[market]` for the selected market.
 - Never modify, proportionally rescale, or infer any country stock from the aggregate.
@@ -129,4 +131,8 @@ Country B remains 50
 
 ## Known limitations
 
-The rebuild repairs only the aggregate/cache. It reports invalid country source values but cannot invent an economically justified country-stock correction.
+The rebuild repairs only the aggregate/cache. It reports invalid country source
+values but cannot invent an economically justified country-stock correction.
+Each market-good rebuild scans all countries, including countries with missing
+keys, so US-11 must schedule tuple iteration once and avoid duplicating a
+world-wide rebuild from every country pulse.

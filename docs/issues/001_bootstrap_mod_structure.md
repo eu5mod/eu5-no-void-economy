@@ -2,7 +2,9 @@
 
 ## Objective
 
-Create the initial repository and EU5 mod folder structure without implementing gameplay logic.
+Historical bootstrap contract for the repository and EU5 package structure. The
+current repository now contains gameplay code, so this issue documents the
+required foundation rather than the present implementation status.
 
 ## Scope
 
@@ -24,10 +26,14 @@ mandatory debug/test conventions
 ## Files / folders to create
 
 ```txt
-modeu5_country_stocks/
+eu5voideco/
 ├── descriptor.mod
 ├── .metadata/
 │   └── metadata.json
+├── .github/
+│   └── ISSUE_TEMPLATE/
+│       ├── github_issue_template.md
+│       └── pull_request_template.md
 ├── README.md
 ├── CLAUDE.md
 ├── AGENTS.md
@@ -37,9 +43,6 @@ modeu5_country_stocks/
 │   │   ├── 002_add_claude_agents.md
 │   │   ├── 003_engine_exposure_matrix.md
 │   │   └── 004_test_plan_debug_conventions.md
-│   ├── templates/
-│   │   ├── github_issue_template.md
-│   │   └── pull_request_template.md
 │   ├── technical/
 │   │   ├── TECH-01_engine_exposure_matrix.md
 │   │   └── DEBUG_CONVENTIONS.md
@@ -47,13 +50,17 @@ modeu5_country_stocks/
 │       └── TEST_PLAN.md
 ├── in_game/
 │   ├── common/
-│   │   ├── scripted_values/
+│   │   ├── script_values/
 │   │   ├── scripted_triggers/
 │   │   ├── scripted_effects/
 │   │   ├── modifiers/
-│   │   └── on_actions/
+│   │   └── on_action/
 │   ├── events/
 │   └── localization/
+├── packages/
+│   ├── modeu5_economy_rebalance/
+│   ├── modeu5_trade_rebalance/
+│   └── modeu5_war_rebalance/
 └── tools/
 ```
 
@@ -64,7 +71,7 @@ modeu5_country_stocks/
 - [ ] `.metadata/metadata.json` exists.
 - [ ] Documentation folders exist.
 - [ ] Templates exist.
-- [ ] No gameplay logic is implemented.
+- [ ] The bootstrap commit itself introduces no gameplay logic.
 - [ ] The mod can be copied into the local EU5 mod folder.
 - [ ] The mod appears in the launcher or fails only with a documented metadata/path issue.
 - [ ] README states the central stock invariant and centralized mutation rule.
@@ -72,10 +79,13 @@ modeu5_country_stocks/
 
 ## Manual test
 
-1. Copy `modeu5_country_stocks` to the EU5 local mod folder.
-2. Enable the mod in the launcher.
-3. Launch the game.
-4. Check `error.log`, `game.log`, and `system.log`.
+1. Run `./tools/install_local_packages.sh`.
+2. Run `./tools/install_local_packages.sh --check`.
+3. Verify `MODEU5_SOURCE.txt` and that no stale duplicate shadows
+   `modeu5_core`.
+4. Enable the intended packages in the launcher.
+5. Launch the game.
+6. Check `error.log`, `game.log`, and `system.log`.
 
 ## Expected result
 

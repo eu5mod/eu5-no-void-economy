@@ -38,9 +38,9 @@ Feeds counters to: next monthly cycle, US-00-UI
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/common/modifiers/
 in_game/localization/
 in_game/events/

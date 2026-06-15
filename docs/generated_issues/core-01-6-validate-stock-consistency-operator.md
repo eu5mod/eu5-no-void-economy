@@ -71,7 +71,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020, 109
+Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020, 104, 109-110
 Blocks: US-11 completion and safe monthly/yearly stock cycles
 Related US: US-01, US-03, US-10, US-11
 ```
@@ -138,4 +138,8 @@ country stocks unchanged
 
 ## Known limitations
 
-Validation reconciles the market cache only. Negative country records are invalid and require an explicit correction through the operation that owns that change. Over-cap records are diagnostic state, not an accounting inconsistency.
+Validation reconciles the market cache only. Negative country records are
+invalid and require an explicit correction through the operation that owns that
+change. Over-cap records are diagnostic state, not an accounting inconsistency.
+Validation scans all country source records for one market-good tuple; US-11
+must own and de-duplicate global scheduling.

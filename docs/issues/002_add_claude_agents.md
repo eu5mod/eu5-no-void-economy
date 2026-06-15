@@ -20,7 +20,9 @@ project goal
 central invariant
 country stock as source of truth
 market stock as aggregate/cache
+logical market owner versus global physical aggregate map
 centralized stock mutation rule
+literal generated per-good adapter rule
 documentation-first rule
 engine exposure matrix rule
 normative monthly runtime order
@@ -62,6 +64,8 @@ When blocked, propose one fallback only.
 - [ ] Both documents mention the stock invariant.
 - [ ] Both documents mention centralized mutation effects.
 - [ ] Both documents mention TECH-01.
+- [ ] Both documents state that Market scope cannot physically own the tested
+      aggregate and that map identifiers remain literal.
 - [ ] Both documents distinguish runtime order from implementation order.
 - [ ] Both documents mention the canonical US-00 pipeline.
 - [ ] Both documents mention the US-10 no-intra-market-trade rule.

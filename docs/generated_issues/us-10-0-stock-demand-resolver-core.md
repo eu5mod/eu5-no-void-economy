@@ -39,7 +39,7 @@ Feeds counters to: US-10.1 and US-10.2
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_triggers/
 in_game/common/scripted_effects/
 in_game/events/
