@@ -31,6 +31,7 @@ Feeds counters to: CORE-01.6, US-11 diagnostics
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by saved market | CONFIRMED | 007, 015 |
 | Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by saved market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes across country iteration | CONFIRMED | 008 |
+| Transaction-local accumulator | country controller | `set_local_variable`, `change_local_variable`, `local_var:<name>` | CONFIRMED | 109 |
 | Rebuild operation | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 
 ## Persistent storage / variable-map contract
@@ -56,8 +57,10 @@ The country source maps remain country-scoped `modeu5_<good>_stock_by_market[mar
 ```txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/scripted_effects/modeu5_stock_test_effects.txt
 in_game/events/
 in_game/localization/
+tools/templates/modeu5_stock_good_adapter.template.txt
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -65,7 +68,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 001, 007-008, 015-016, 019
+Depends on: CORE-01.1 shared map helpers; TECH-01 001, 007-008, 015-016, 019, 109
 Blocks: CORE-01.6, US-11 recovery
 Related US: US-01, US-11
 ```
@@ -106,7 +109,7 @@ Related US: US-01, US-11
 ### Setup
 
 ```txt
-Market X, Good grain
+Market X, Good wheat
 Country A stock = 100
 Country B stock = 50
 all other country entries missing or zero

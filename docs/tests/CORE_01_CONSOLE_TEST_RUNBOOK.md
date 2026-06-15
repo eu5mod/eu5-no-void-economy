@@ -1,7 +1,6 @@
 # CORE-01 Console Test Runbook
 
-Use this procedure to test `modeu5_add_stock`, `modeu5_remove_stock`,
-`modeu5_transfer_stock`, and `modeu5_decay_stock`.
+Use this procedure to test all six CORE-01 stock operators.
 
 ## Before starting EU5
 
@@ -94,11 +93,8 @@ PASS - Invalid same-record transfer rejected
 Add, remove, decay, and inter-market rows will display `FAIL / NOT RUN`. This
 is expected.
 
-The following diagnostic in `error.log` is expected for this test:
-
-```txt
-ModeU5 modeu5_transfer_stock rejected an exact source-record-to-source-record transfer.
-```
+The invalid transfer is reported through the debug snapshot. It must not add an
+`error.log` entry.
 
 ## Test C: inter-market transfer
 
@@ -127,6 +123,34 @@ If FRA and ENG capitals are in the same market in the selected setup, this test
 cannot run meaningfully; use a clean 1337 campaign where their capital markets
 differ.
 
+## Test D: rebuild and validation
+
+1. Close the result event.
+2. Enter again:
+
+```txt
+event modeu5_debug.1
+```
+
+3. Select:
+
+```txt
+Test rebuild and consistency validation
+```
+
+4. The result event must display:
+
+```txt
+PASS - Rebuild market aggregate
+PASS - Validation detects and repairs divergence
+PASS - Consistent validation is a no-op
+```
+
+The test creates FRA = 100 and ENG = 50 wheat in FRA's market, injects a
+test-only aggregate value of 200, rebuilds it to 150, corrupts it again, and
+verifies that validation delegates repair to rebuild. Country stocks must
+remain unchanged.
+
 ## Log review
 
 After all three tests, close EU5 before reviewing:
@@ -152,7 +176,7 @@ All expected PASS rows appear.
 No "deterministic CORE-01 ... test failed" message appears.
 No modeu5 map identifier contains a remaining "$".
 No result marker reports "Failed to fetch variable".
-The expected invalid same-record rejection is the only CORE-01 error diagnostic.
+No expected business-rule rejection adds a CORE-01 error diagnostic.
 ```
 
 Static `used but is never set` warnings with a correctly formed literal map name

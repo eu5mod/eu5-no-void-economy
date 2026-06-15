@@ -31,6 +31,7 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 | Country source stock | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
 | Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes | CONFIRMED | 008 |
+| Transaction-local accumulator | country controller | `set_local_variable`, `change_local_variable`, `local_var:<name>` | CONFIRMED | 109 |
 | Rebuild effect | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validation effect | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
 | Monthly/yearly orchestration | country | `monthly_country_pulse`, `yearly_country_pulse` owned by US-11/on-actions | CONFIRMED | 011-012 |
@@ -56,12 +57,13 @@ Expected stock, actual stock, difference, severity, rebuild-called flag, and pos
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/common/on_actions/modeu5_stock_on_actions.txt
+in_game/common/scripted_effects/modeu5_stock_test_effects.txt
 in_game/events/
 in_game/localization/
+tools/templates/modeu5_stock_good_adapter.template.txt
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -69,7 +71,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020
+Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020, 109
 Blocks: US-11 completion and safe monthly/yearly stock cycles
 Related US: US-01, US-03, US-10, US-11
 ```
@@ -115,10 +117,10 @@ Related US: US-01, US-03, US-10, US-11
 ### Setup
 
 ```txt
-Country A stock in Market X for grain = 100
-Country B stock in Market X for grain = 50
-Market X grain aggregate deliberately set to 200
-Run modeu5_validate_stock_consistency for Market X and grain
+Country A stock in Market X for wheat = 100
+Country B stock in Market X for wheat = 50
+Market X wheat aggregate deliberately set to 200
+Run modeu5_validate_stock_consistency for Market X and wheat
 ```
 
 ### Expected result
