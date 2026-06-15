@@ -189,9 +189,9 @@ Market-level shortage alone is not sufficient to adjust a location-local multipl
 
 ```txt
 in_game/common/goods_demand/
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/events/
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md

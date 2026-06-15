@@ -39,7 +39,7 @@ Feeds counters to: US-10.3 and debug/UI
 
 ```txt
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/

@@ -71,7 +71,7 @@ docs/technical/TECH-01_engine_exposure_matrix.md
 ## Dependencies
 
 ```txt
-Depends on: TECH-01 007, 008, 015-018, 022-023, 026, 099; VARIABLE_MAP_STORAGE_MODEL
+Depends on: TECH-01 007, 008, 015-018, 022-023, 026, 099, 104, 108; VARIABLE_MAP_STORAGE_MODEL
 Blocks: CORE-01.2, CORE-01.3, CORE-01.4, CORE-01.5, US-01, US-00.1
 Related US: US-01, US-02, US-00.1, US-11
 ```
@@ -82,8 +82,11 @@ Related US: US-01, US-02, US-00.1, US-11
 - Treat missing stock and capacity entries as zero.
 - Normalize the requested quantity to at least zero and log a negative request as invalid input.
 - Calculate `available_capacity = max(0, capacity - stock_before)`.
+- Encode `max(0, value)` with EU5 `min = 0`; `min` is the lower-bound
+  operator, not the mathematical function name.
 - Default `capacity_policy` to `enforce`.
 - Under `enforce`, calculate `actual_added_quantity = min(requested_quantity, available_capacity)`.
+- Encode the upper bound with EU5 `max = available_capacity`.
 - Under `allow_over_capacity`, calculate `actual_added_quantity = requested_quantity`.
 - Calculate `rejected_quantity = requested_quantity - actual_added_quantity`.
 - Calculate all outputs before changing either stock level.

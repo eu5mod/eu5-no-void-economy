@@ -13,7 +13,7 @@ Describe what the feature must do in gameplay terms.
 ## Module / availability
 
 ```txt
-Package: ModeU5 Core | Economy Rebalance | Trade Rebalance | War Rebalance
+Package: No Void Economy | Rebalance Economy | Rebalance Estate Power | Rebalance Early Blobbing
 Activation: required | optional companion package
 Behavior when absent:
 ```
@@ -68,6 +68,9 @@ Rules:
 - Treat related fields as one logical record even when current engine exposure requires several synchronized physical maps.
 - Do not claim one native variable-map value contains inline fields or another map unless TECH-01 `088` is confirmed.
 - Do not assume runtime map-name construction.
+- Distinguish the logical record owner from the confirmed physical map owner.
+- Use a global per-good map keyed by market for the market aggregate.
+- Use generated per-good adapters with complete literal map identifiers.
 - Replace existing map entries by read, remove, and re-add.
 - Keep one-operation arithmetic, candidate state, and saved scopes transaction-local.
 - Do not duplicate source-of-truth state for UI/debug.
@@ -75,10 +78,10 @@ Rules:
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_triggers/
 in_game/common/scripted_effects/
-in_game/common/on_actions/
+in_game/common/on_action/
 in_game/common/modifiers/
 in_game/events/
 in_game/localization/
@@ -103,6 +106,9 @@ Related US:
 - Do not widen MVP.
 - Do not apply silent economic adjustments.
 - Do not implement more than one fallback path without approval.
+- Use `min = <lower bound>` and `max = <upper bound>` with EU5's
+  bound-oriented semantics.
+- Keep expected business-rule rejections in debug/results, not `error.log`.
 
 ## US-specific boundary checks
 

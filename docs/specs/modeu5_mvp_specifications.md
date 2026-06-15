@@ -1,7 +1,5 @@
 # Spécifications MVP — Mod EU5 “Country Stocks Within Markets”
 
-# Spécifications MVP — Mod EU5 “Country Stocks Within Markets”
-
 ## 1. Principe central du MVP
 
 Le mod ajoute une double comptabilité des biens au sein des marchés.
@@ -2337,6 +2335,7 @@ consumer_scope = burghers
 ### Valeurs MVP recommandées pour la consommation
 
 own_country_bonus = 1000
+overlord_bonus = 500
 subject_bonus = 500
 market_owner_bonus = 200
 opinion_coefficient = 1
@@ -2497,6 +2496,7 @@ La quantité demandée peut venir :
 
 own_country_bonus = 1000
 market_owner_bonus = 500
+overlord_bonus = 200
 subject_bonus = 200
 opinion_coefficient = 1
 trade_advantage_coefficient = 1

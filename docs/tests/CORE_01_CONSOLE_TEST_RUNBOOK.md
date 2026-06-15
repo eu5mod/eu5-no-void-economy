@@ -14,6 +14,11 @@ Close EU5, then run these commands from the repository:
 ./tools/clear_eu5_logs.sh
 ```
 
+Confirm that every installed `MODEU5_SOURCE.txt` points to this repository,
+branch, and commit. Remove or disable any older real directory or launcher entry
+that can shadow `modeu5_core`; a stale duplicate can load different scripts
+even when the development checkout is correct.
+
 In the launcher:
 
 ```txt
@@ -153,7 +158,7 @@ remain unchanged.
 
 ## Log review
 
-After all three tests, close EU5 before reviewing:
+After all four tests, close EU5 before reviewing:
 
 ```txt
 Documents/Paradox Interactive/Europa Universalis V/logs/error.log

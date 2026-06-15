@@ -76,7 +76,7 @@ rebuild:     sum country source records' stock fields
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/
+in_game/common/script_values/
 in_game/common/scripted_effects/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
@@ -118,7 +118,8 @@ Related US: US-01-UI, CORE-02, CORE-03
 ## Acceptance criteria
 
 - [ ] Separate country/market/good stocks can coexist without collision.
-- [ ] Market aggregates use a market owner and goods key rather than duplicating country-map orientation.
+- [ ] The logical market-owned aggregate uses the confirmed physical fallback:
+  one global per-good map keyed by market scope.
 - [ ] Stock cannot remain negative.
 - [ ] Ordinary `enforce` operations cannot create over-cap stock.
 - [ ] CORE-02/CORE-03 over-cap stock remains authoritative, visible, and included in market aggregates.

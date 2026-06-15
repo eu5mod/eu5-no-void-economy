@@ -39,6 +39,14 @@ Not a runtime feature:
 - [ ] No dependency on `TO_TEST` or `NOT_CONFIRMED` exposure remains without an accepted fallback.
 - [ ] Any fallback is visible in debug.
 - [ ] Only one fallback path is implemented for each missing exposure.
+- [ ] Loaded data paths use confirmed EU5 names such as `common/script_values/`.
+
+## Generated adapters
+
+- [ ] Generated stock adapters were regenerated when their template or goods list changed.
+- [ ] Generated output is idempotent and was not hand-edited.
+- [ ] Every physical map identifier is literal and contains no remaining `$`.
+- [ ] Stock arithmetic and business rules remain in shared scripted effects, not the shell generator.
 
 ## Stock mutation rule
 
@@ -63,6 +71,8 @@ Not a runtime feature:
 - [ ] Fallback debug added if fallback is used.
 - [ ] Adjustment debug added if any economic correction is applied.
 - [ ] `error.log`, `game.log`, and `system.log` reviewed.
+- [ ] Expected business-rule rejections do not create engine/error diagnostics.
+- [ ] Deterministic result events use marker presence checks for possibly unset variables.
 
 ## Test report
 
@@ -83,6 +93,14 @@ Not a runtime feature:
 ### Known limitations
 
 ### Fallbacks used
+
+### Local install provenance
+
+```txt
+MODEU5_SOURCE.txt checked:
+Duplicate/stale mod entry checked:
+Installed branch/commit:
+```
 
 ## MVP boundary check
 
