@@ -82,7 +82,7 @@ Related US: US-01, US-03, US-10.1, US-10.3, US-11
 - Do not create trade income, transport cost, trade capacity use, or profit.
 - Keep caller-specific satisfaction counters outside this effect.
 - If a pre-existing aggregate inconsistency would cause market underflow, log it and invoke the consistency path rather than independently clamping the market cache.
-- Use generated per-good helpers or dispatch; never build a map name dynamically.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect and never pass a map identifier as an argument.
 
 ## CORE-specific boundary checks
 

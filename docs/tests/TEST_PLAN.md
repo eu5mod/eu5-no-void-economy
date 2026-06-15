@@ -545,6 +545,9 @@ Country and market stock remain unchanged
 
 ### Deterministic CORE-01 event
 
+Follow the exact console procedure in
+`docs/tests/CORE_01_CONSOLE_TEST_RUNBOOK.md`.
+
 Run from a clean 1337 campaign:
 
 ```txt

@@ -82,7 +82,7 @@ Related US: US-01, US-03, US-03-UI, US-11
 - Decrease country stock and market aggregate by exactly the same decayed quantity.
 - Keep decay diagnostics separate from consumer `unsatisfied_quantity`.
 - Do not create wealth, demand, trade, or transport effects.
-- Use generated per-good helpers or dispatch.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect.
 
 ## CORE-specific boundary checks
 

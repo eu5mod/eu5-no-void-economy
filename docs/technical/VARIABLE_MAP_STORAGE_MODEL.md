@@ -119,7 +119,12 @@ default:      field-specific, normally 0
 
 Variable maps provide one keyed dimension on one owner scope and one value per key. Because no persistent record object is confirmed, the good and field remain encoded in static map names while the market is the shared key.
 
-Goods iteration must call generated per-good helpers when a physical map name changes by good or field. Runtime map-name construction is not assumed.
+Goods iteration must call a generated per-good adapter when a physical map name
+changes by good or field. The adapter contains complete literal map identifiers
+for reading and remove/re-add replacement, then calls a shared arithmetic effect
+that receives only temporary values and saved scopes. Map identifiers must not
+be forwarded as scripted-effect arguments. Runtime map-name construction is not
+assumed.
 
 All maps in the family represent one logical record. They must use the same owner, market key, default rules, and lifecycle. Centralized helpers provide record-level consistency.
 
@@ -225,8 +230,8 @@ Persist only the monthly/yearly aggregates explicitly required by US-00, US-04, 
 
 | User story | Map decision | Required improvement |
 |---|---|---|
-| CORE-01.1 | Writes stock and aggregate maps | Establish the generated per-good read/replace helpers, expose add/reject outputs, and support explicit `enforce` versus authorized `allow_over_capacity` policy without owning ledger persistence. |
-| CORE-01.2 | Writes stock and aggregate maps | Reuse the shared helpers and keep requested/removed/unsatisfied values transaction-local. |
+| CORE-01.1 | Writes stock and aggregate maps | Use generated per-good EU5 adapters with literal map reads/writes; keep validation and arithmetic in the shared effect, expose add/reject outputs, and support explicit `enforce` versus authorized `allow_over_capacity` policy without owning ledger persistence. |
+| CORE-01.2 | Writes stock and aggregate maps | Reuse the same literal persistence adapters and shared arithmetic contract while keeping requested/removed/unsatisfied values transaction-local. |
 | CORE-01.3 | Writes two stock records and up to two aggregates | Calculate the complete transfer before replacement; enforce target capacity by default and allow the explicit CORE-03 lifecycle exception. |
 | CORE-01.4 | Writes stock and aggregate maps | Calculate decay from country stock only; keep decay transaction state local. |
 | CORE-01.5 | Rebuilds the market aggregate map | Sum country source maps and replace only the selected market key in the global per-good aggregate map. |

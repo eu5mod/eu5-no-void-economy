@@ -94,7 +94,7 @@ Related US: US-01, US-02, US-00.1, US-11
 - Permit `allow_over_capacity` only for an explicitly documented authoritative caller such as CORE-02 initialization or a future approved migration.
 - Never use `allow_over_capacity` for ordinary production or trade.
 - Expose over-cap before/after quantities in debug; do not correct them inside this operation.
-- Use generated per-good helpers or generated dispatch; do not construct map names at runtime.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect and do not pass map identifiers as scripted-effect arguments.
 - Establish reusable internal read/replace helpers for the remaining CORE operators without exposing a second public stock-mutation path.
 - Log a pre-existing negative or over-cap country stock. Do not silently discard pre-existing stock as part of an add transaction.
 
@@ -168,4 +168,4 @@ stock difference after = 0
 
 ## Known limitations
 
-The public logical API is generic, but the confirmed physical country maps encode the good in a static map name. The implementation therefore requires generated per-good helpers or dispatch until a persistent record scope or nested map is confirmed under TECH-01 `088`.
+The public logical API is generic, but the confirmed physical country maps encode the good in a static map name. The implementation therefore requires a generated per-good persistence adapter until a persistent record scope or nested map is confirmed under TECH-01 `088`. The generator remains mechanical: it expands a versioned EU5 template, while validation and arithmetic stay in shared scripted effects.

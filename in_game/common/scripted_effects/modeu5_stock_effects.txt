@@ -62,127 +62,9 @@ modeu5_select_remove_reason_debug_test = {
 	}
 }
 
-# Internal read/replace helpers. These are not public mutation paths.
-# Pass the complete static map identifier as one argument. Forwarding $good$
-# into another helper leaves malformed names such as modeu5wheat$_stock_by_market.
-
-modeu5_read_country_stock_for_good = {
-	$market$ = { save_temporary_scope_as = modeu5_record_market }
-	$country$ = {
-		if = {
-			limit = {
-				has_variable_map = $map$
-				is_key_in_variable_map = {
-					name = $map$
-					target = scope:modeu5_record_market
-				}
-			}
-			save_temporary_scope_value_as = {
-				name = $output$
-				value = "variable_map($map$|scope:modeu5_record_market)"
-			}
-		}
-		else = {
-			save_temporary_scope_value_as = {
-				name = $output$
-				value = 0
-			}
-		}
-	}
-}
-
-modeu5_read_country_capacity_for_good = {
-	$market$ = { save_temporary_scope_as = modeu5_record_market }
-	$country$ = {
-		if = {
-			limit = {
-				has_variable_map = $map$
-				is_key_in_variable_map = {
-					name = $map$
-					target = scope:modeu5_record_market
-				}
-			}
-			save_temporary_scope_value_as = {
-				name = $output$
-				value = "variable_map($map$|scope:modeu5_record_market)"
-			}
-		}
-		else = {
-			save_temporary_scope_value_as = {
-				name = $output$
-				value = 0
-			}
-		}
-	}
-}
-
-modeu5_read_market_stock = {
-	$market$ = { save_temporary_scope_as = modeu5_record_market }
-	if = {
-		limit = {
-			has_global_variable_map = $map$
-			is_key_in_global_variable_map = {
-				name = $map$
-				target = scope:modeu5_record_market
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = $output$
-			value = "global_variable_map($map$|scope:modeu5_record_market)"
-		}
-	}
-	else = {
-		save_temporary_scope_value_as = {
-			name = $output$
-			value = 0
-		}
-	}
-}
-
-modeu5_replace_country_stock_for_good = {
-	$country$ = {
-		if = {
-			limit = {
-				has_variable_map = $map$
-				is_key_in_variable_map = {
-					name = $map$
-					target = $market$
-				}
-			}
-			remove_from_variable_map = {
-				name = $map$
-				key = $market$
-			}
-		}
-		add_to_variable_map = {
-			name = $map$
-			key = $market$
-			value = $value$
-		}
-	}
-}
-
-modeu5_replace_market_stock = {
-	$market$ = { save_temporary_scope_as = modeu5_record_market }
-	if = {
-		limit = {
-			has_global_variable_map = $map$
-			is_key_in_global_variable_map = {
-				name = $map$
-				target = scope:modeu5_record_market
-			}
-		}
-		remove_from_global_variable_map = {
-			name = $map$
-			key = scope:modeu5_record_market
-		}
-	}
-	add_to_global_variable_map = {
-		name = $map$
-		key = scope:modeu5_record_market
-		value = $value$
-	}
-}
+# Generated per-good adapters read and replace literal physical map names.
+# Shared effects below only calculate results from temporary inputs; map
+# identifiers are never passed through scripted-effect parameters.
 
 # CORE-01.1
 
@@ -211,25 +93,7 @@ modeu5_add_stock = {
 	modeu5_add_stock_good_$good$ = yes
 }
 
-modeu5_add_stock_for_good = {
-	modeu5_read_country_stock_for_good = {
-		map = modeu5_$good$_stock_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_before_raw
-	}
-	modeu5_read_country_capacity_for_good = {
-		map = modeu5_$good$_stock_cap_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_cap_raw
-	}
-	modeu5_read_market_stock = {
-		map = modeu5_$good$_market_stock
-		market = scope:modeu5_market
-		output = modeu5_market_stock_before
-	}
-
+modeu5_add_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_before
 		value = {
@@ -350,7 +214,10 @@ modeu5_add_stock_for_good = {
 		}
 	}
 
-	# Calculate first, then replace both records using the same actual quantity.
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
 	if = {
 		limit = {
 			OR = {
@@ -358,23 +225,23 @@ modeu5_add_stock_for_good = {
 				scope:modeu5_country_stock_before_raw < 0
 			}
 		}
-		modeu5_replace_country_stock_for_good = {
-			map = modeu5_$good$_stock_by_market
-			country = scope:modeu5_country
-			market = scope:modeu5_market
-			value = scope:modeu5_country_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
 		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
 	}
 	if = {
 		limit = { scope:modeu5_actual_added_quantity > 0 }
-		modeu5_replace_market_stock = {
-			map = modeu5_$good$_market_stock
-			market = scope:modeu5_market
-			value = scope:modeu5_market_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
 		}
 	}
 
-	modeu5_debug_capture_add_stock = yes
 }
 
 # CORE-01.2
@@ -404,25 +271,7 @@ modeu5_remove_stock = {
 	modeu5_remove_stock_good_$good$ = yes
 }
 
-modeu5_remove_stock_for_good = {
-	modeu5_read_country_stock_for_good = {
-		map = modeu5_$good$_stock_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_before_raw
-	}
-	modeu5_read_country_capacity_for_good = {
-		map = modeu5_$good$_stock_cap_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_cap_raw
-	}
-	modeu5_read_market_stock = {
-		map = modeu5_$good$_market_stock
-		market = scope:modeu5_market
-		output = modeu5_market_stock_before
-	}
-
+modeu5_remove_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_before
 		value = {
@@ -540,6 +389,10 @@ modeu5_remove_stock_for_good = {
 		error_log = "ModeU5 modeu5_remove_stock found a negative capacity; capacity is treated as zero."
 	}
 
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
 	if = {
 		limit = {
 			OR = {
@@ -547,23 +400,23 @@ modeu5_remove_stock_for_good = {
 				scope:modeu5_country_stock_before_raw < 0
 			}
 		}
-		modeu5_replace_country_stock_for_good = {
-			map = modeu5_$good$_stock_by_market
-			country = scope:modeu5_country
-			market = scope:modeu5_market
-			value = scope:modeu5_country_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
 		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
 	}
 	if = {
 		limit = { scope:modeu5_actual_removed_quantity > 0 }
-		modeu5_replace_market_stock = {
-			map = modeu5_$good$_market_stock
-			market = scope:modeu5_market
-			value = scope:modeu5_market_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
 		}
 	}
 
-	modeu5_debug_capture_remove_stock = yes
 }
 
 # CORE-01.3
@@ -595,36 +448,7 @@ modeu5_transfer_stock = {
 	modeu5_transfer_stock_good_$good$ = yes
 }
 
-modeu5_transfer_stock_for_good = {
-	modeu5_read_country_stock_for_good = {
-		map = modeu5_$good$_stock_by_market
-		country = scope:modeu5_seller_country
-		market = scope:modeu5_source_market
-		output = modeu5_seller_stock_before_raw
-	}
-	modeu5_read_country_stock_for_good = {
-		map = modeu5_$good$_stock_by_market
-		country = scope:modeu5_buyer_country
-		market = scope:modeu5_target_market
-		output = modeu5_buyer_stock_before_raw
-	}
-	modeu5_read_country_capacity_for_good = {
-		map = modeu5_$good$_stock_cap_by_market
-		country = scope:modeu5_buyer_country
-		market = scope:modeu5_target_market
-		output = modeu5_buyer_stock_cap_raw
-	}
-	modeu5_read_market_stock = {
-		map = modeu5_$good$_market_stock
-		market = scope:modeu5_source_market
-		output = modeu5_source_market_stock_before
-	}
-	modeu5_read_market_stock = {
-		map = modeu5_$good$_market_stock
-		market = scope:modeu5_target_market
-		output = modeu5_target_market_stock_before
-	}
-
+modeu5_transfer_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = modeu5_seller_stock_before
 		value = {
@@ -836,6 +660,10 @@ modeu5_transfer_stock_for_good = {
 		error_log = "ModeU5 modeu5_transfer_stock found a negative buyer capacity; capacity is treated as zero."
 	}
 
+	save_temporary_scope_value_as = {
+		name = modeu5_seller_record_write_required
+		value = 0
+	}
 	if = {
 		limit = {
 			scope:modeu5_invalid_same_record_transfer = 0
@@ -844,12 +672,14 @@ modeu5_transfer_stock_for_good = {
 				scope:modeu5_seller_stock_before_raw < 0
 			}
 		}
-		modeu5_replace_country_stock_for_good = {
-			map = modeu5_$good$_stock_by_market
-			country = scope:modeu5_seller_country
-			market = scope:modeu5_source_market
-			value = scope:modeu5_seller_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_seller_record_write_required
+			value = 1
 		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buyer_record_write_required
+		value = 0
 	}
 	if = {
 		limit = {
@@ -859,31 +689,26 @@ modeu5_transfer_stock_for_good = {
 				scope:modeu5_buyer_stock_before_raw < 0
 			}
 		}
-		modeu5_replace_country_stock_for_good = {
-			map = modeu5_$good$_stock_by_market
-			country = scope:modeu5_buyer_country
-			market = scope:modeu5_target_market
-			value = scope:modeu5_buyer_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_buyer_record_write_required
+			value = 1
 		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_transfer_write_required
+		value = 0
 	}
 	if = {
 		limit = {
 			scope:modeu5_same_market_transfer = 0
 			scope:modeu5_actual_transferred_quantity > 0
 		}
-		modeu5_replace_market_stock = {
-			map = modeu5_$good$_market_stock
-			market = scope:modeu5_source_market
-			value = scope:modeu5_source_market_stock_after
-		}
-		modeu5_replace_market_stock = {
-			map = modeu5_$good$_market_stock
-			market = scope:modeu5_target_market
-			value = scope:modeu5_target_market_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_market_transfer_write_required
+			value = 1
 		}
 	}
 
-	modeu5_debug_capture_transfer_stock = yes
 }
 
 # CORE-01.4
@@ -924,25 +749,7 @@ modeu5_decay_stock = {
 	modeu5_decay_stock_good_$good$ = yes
 }
 
-modeu5_decay_stock_for_good = {
-	modeu5_read_country_stock_for_good = {
-		map = modeu5_$good$_stock_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_before_raw
-	}
-	modeu5_read_country_capacity_for_good = {
-		map = modeu5_$good$_stock_cap_by_market
-		country = scope:modeu5_country
-		market = scope:modeu5_market
-		output = modeu5_country_stock_cap_raw
-	}
-	modeu5_read_market_stock = {
-		map = modeu5_$good$_market_stock
-		market = scope:modeu5_market
-		output = modeu5_market_stock_before
-	}
-
+modeu5_decay_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_before
 		value = {
@@ -1058,6 +865,10 @@ modeu5_decay_stock_for_good = {
 		error_log = "ModeU5 modeu5_decay_stock found a negative capacity; capacity is treated as zero."
 	}
 
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
 	if = {
 		limit = {
 			OR = {
@@ -1065,21 +876,21 @@ modeu5_decay_stock_for_good = {
 				scope:modeu5_country_stock_before_raw < 0
 			}
 		}
-		modeu5_replace_country_stock_for_good = {
-			map = modeu5_$good$_stock_by_market
-			country = scope:modeu5_country
-			market = scope:modeu5_market
-			value = scope:modeu5_country_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
 		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
 	}
 	if = {
 		limit = { scope:modeu5_decayed_quantity > 0 }
-		modeu5_replace_market_stock = {
-			map = modeu5_$good$_market_stock
-			market = scope:modeu5_market
-			value = scope:modeu5_market_stock_after
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
 		}
 	}
 
-	modeu5_debug_capture_decay_stock = yes
 }

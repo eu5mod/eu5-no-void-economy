@@ -92,7 +92,7 @@ Related US: US-01, US-02, US-10.2, US-10.3, US-11
 - US-10.2 may call this effect only when `source_market != target_market`; same-market support exists for core ownership accounting and deterministic tests.
 - CORE-03 must call same-market transfers with `target_capacity_policy = allow_over_capacity`.
 - Never use `allow_over_capacity` for ordinary inter-market trade.
-- Use generated per-good helpers or dispatch; do not assume runtime map-name construction.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect and do not assume runtime map-name construction.
 
 ## CORE-specific boundary checks
 

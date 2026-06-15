@@ -47,59 +47,59 @@ modeu5_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.add_allow.pass
-		trigger = { var:modeu5_test_add_allow_over_capacity_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_add_allow_over_capacity_passed }
 	}
 	option = {
 		name = modeu5_debug.test.add_allow.fail
-		trigger = { NOT = { var:modeu5_test_add_allow_over_capacity_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_add_allow_over_capacity_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.add_enforce.pass
-		trigger = { var:modeu5_test_add_enforce_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_add_enforce_passed }
 	}
 	option = {
 		name = modeu5_debug.test.add_enforce.fail
-		trigger = { NOT = { var:modeu5_test_add_enforce_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_add_enforce_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.remove.pass
-		trigger = { var:modeu5_test_remove_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_remove_passed }
 	}
 	option = {
 		name = modeu5_debug.test.remove.fail
-		trigger = { NOT = { var:modeu5_test_remove_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_remove_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.decay.pass
-		trigger = { var:modeu5_test_decay_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_decay_passed }
 	}
 	option = {
 		name = modeu5_debug.test.decay.fail
-		trigger = { NOT = { var:modeu5_test_decay_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_decay_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.same_market.pass
-		trigger = { var:modeu5_test_same_market_transfer_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_same_market_transfer_passed }
 	}
 	option = {
 		name = modeu5_debug.test.same_market.fail
-		trigger = { NOT = { var:modeu5_test_same_market_transfer_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_same_market_transfer_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.invalid_same_record.pass
-		trigger = { var:modeu5_test_invalid_same_record_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_invalid_same_record_passed }
 	}
 	option = {
 		name = modeu5_debug.test.invalid_same_record.fail
-		trigger = { NOT = { var:modeu5_test_invalid_same_record_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_invalid_same_record_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.inter_market.pass
-		trigger = { var:modeu5_test_inter_market_transfer_passed = 1 }
+		trigger = { has_global_variable = modeu5_test_inter_market_transfer_passed }
 	}
 	option = {
 		name = modeu5_debug.test.inter_market.fail
-		trigger = { NOT = { var:modeu5_test_inter_market_transfer_passed = 1 } }
+		trigger = { NOT = { has_global_variable = modeu5_test_inter_market_transfer_passed } }
 	}
 	option = {
 		name = modeu5_debug.close

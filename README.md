@@ -115,8 +115,10 @@ They are stored in `docs/generated_issues/` and define the transaction contracts
 
 CORE-01.1 through CORE-01.4 are implemented in `in_game/common/scripted_effects/`.
 
-Callers pass a literal goods token such as `wheat`; generated wrappers expand that
-token to the static `modeu5_<good>_*_by_market` map family.
+Callers pass a literal goods token such as `wheat`. Generated EU5 adapters
+contain the literal map reads and remove/re-add replacements required for that
+good. Shared scripted effects own validation and arithmetic. The shell generator
+only expands the versioned adapter template and contains no stock behavior.
 
 ```txt
 modeu5_add_stock(country, market, good, quantity, capacity_policy)
