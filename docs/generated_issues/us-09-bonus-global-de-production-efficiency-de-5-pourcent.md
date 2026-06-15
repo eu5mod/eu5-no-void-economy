@@ -41,6 +41,50 @@ Feeds counters to: vanilla production read at step 4
 | Monthly invocation at runtime step 2 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
 
+### Warning — Additive Production Modifier Stacking
+
+This US assumes that `global_production_efficiency = +5%` produces an approximately uniform +5% increase in effective production.
+
+This assumption may not hold if production efficiency is implemented as part of an additive production-modifier stack. In that case, the actual production increase depends on existing production bonuses and may be significantly smaller than the nominal +5%.
+
+Example:
+
+```txt
+Base production = 100
+Existing production modifiers = +50%
+Current multiplier = 1.50
+```
+
+Applying:
+
+```txt
+global_production_efficiency = +5%
+```
+
+changes:
+
+```txt
+1.50 → 1.55
+```
+
+resulting in:
+
+```txt
+150 → 155
+```
+
+which is only a 3.33% increase in final output rather than 5%.
+
+The discrepancy becomes larger as existing production bonuses increase.
+
+Possible mitigation strategies if runtime testing confirms additive stacking:
+
+1. Ignore local production modifiers and accept that the compensation is approximate and varies by country.
+2. Replace the global compensation with location-level compensation modifiers so the bonus can be applied closer to effective production sources.
+3. Apply compensation through production methods or production formulas rather than additive production modifiers, allowing direct control of effective output scaling.
+
+This US intentionally does not choose among these approaches. Runtime validation must first confirm the actual semantics of `global_production_efficiency` and whether the observed output increase remains acceptable for balancing purposes.
+
 ## Files expected to change
 
 ```txt
