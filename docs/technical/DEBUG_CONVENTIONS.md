@@ -248,6 +248,8 @@ operation / mutation effect:
   2 = remove_stock
   3 = transfer_stock
   4 = decay_stock
+  5 = rebuild_market_stock
+  6 = validate_stock_consistency
 
 capacity policy:
   0 = enforce
@@ -331,6 +333,10 @@ negative_country_source_detected
 over_cap_country_source_detected
 over_cap_is_accounting_inconsistency = no
 ```
+
+Validation severity uses
+`modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
+diagnostic severity; every nonzero difference is rebuilt.
 
 ## Mandatory debug for US-00
 

@@ -182,13 +182,23 @@ They are stored in `docs/generated_issues/` and define the transaction contracts
 
 ## Implemented core stock API
 
-CORE-01.1 through CORE-01.4 are implemented in `in_game/common/scripted_effects/`.
+CORE-01.1 through CORE-01.6 are implemented in `in_game/common/scripted_effects/`.
 
 Callers pass a literal goods token such as `wheat`. Generated EU5 adapters
 contain the literal map reads and remove/re-add replacements required for that
 good. Shared scripted effects own validation and arithmetic. The shell generator
 only expands the versioned adapter template and contains no stock behavior.
 
+```txt
+modeu5_add_stock(country, market, good, quantity, capacity_policy)
+modeu5_remove_stock(country, market, good, quantity, reason)
+modeu5_transfer_stock(seller_country, buyer_country, source_market,
+                      target_market, good, quantity, target_capacity_policy)
+modeu5_decay_stock(country, market, good, decay_rate)
+modeu5_decay_stock_default(country, market, good)
+modeu5_rebuild_market_stock_from_country_stocks(market, good)
+modeu5_validate_stock_consistency(market, good)
+```
 
 Supported capacity policies:
 
@@ -212,7 +222,10 @@ modeu5_unsatisfied_quantity
 modeu5_decayed_quantity
 ```
 
-CORE-01.5 rebuild and CORE-01.6 validation remain the next implementation layer.
+CORE-01.5 rebuilds only the selected market-good aggregate from authoritative
+country stocks. CORE-01.6 is read-only when consistent and delegates every
+aggregate correction to CORE-01.5. US-11 remains responsible for global
+iteration and monthly/yearly orchestration.
 
 ## Runtime contract
 

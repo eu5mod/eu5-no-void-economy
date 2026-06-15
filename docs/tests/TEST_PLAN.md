@@ -807,6 +807,13 @@ Country B stock = 50
 Market X stock = 200
 ```
 
+Deterministic console path:
+
+```txt
+event modeu5_debug.1
+Select "Test rebuild and consistency validation"
+```
+
 Expected result after rebuild:
 
 ```txt
@@ -841,6 +848,14 @@ Market X stock after = 150
 Difference after = 0
 Second validation performs no write
 Country stocks unchanged
+```
+
+Expected result-event rows:
+
+```txt
+PASS - Rebuild market aggregate
+PASS - Validation detects and repairs divergence
+PASS - Consistent validation is a no-op
 ```
 
 ## US-00 void economy tests
