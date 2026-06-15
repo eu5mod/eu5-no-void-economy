@@ -339,6 +339,12 @@ Validation severity uses
 `modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
 diagnostic severity; every nonzero difference is rebuilt.
 
+Numeric precision is not yet characterized. Preserve raw operands and signed
+differences without rounding them for debug. When a small residual or an
+unexpected deterministic-test failure appears, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md` before adding an
+epsilon or weakening an underflow guard.
+
 ## Mandatory debug for US-00
 
 For each `country × market × good`, expose:

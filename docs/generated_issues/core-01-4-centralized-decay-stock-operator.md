@@ -30,6 +30,7 @@ Feeds counters to: US-03-UI/debug, CORE-01.6
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
 | Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Decay arithmetic | transaction | multiply plus bounded min/max | CONFIRMED | 026 |
+| Fractional precision and persistence | transaction / variable map | controlled fractional arithmetic and map write/read probe | TO_TEST | 113 |
 | Monthly invocation | country | caller orchestration through `monthly_country_pulse` | CONFIRMED | 011 |
 | Scope passing | scripted effect | saved country, market, and good scopes | CONFIRMED | 008 |
 
@@ -65,7 +66,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 011, 015-016, 026, 104, 105, 108
+Depends on: CORE-01.1 shared map helpers; TECH-01 007, 008, 011, 015-016, 026, 104, 105, 108, 113
 Blocks: US-03
 Related US: US-01, US-03, US-03-UI, US-11
 ```
@@ -127,3 +128,10 @@ stock difference after = 0
 ## Known limitations
 
 The core operator does not discover records or schedule itself. Complete monthly coverage across countries, markets, and goods remains the responsibility of US-03 and its confirmed pulse/iteration implementation.
+
+EU5's fractional precision and map-persistence rounding are not documented.
+The current `100 * 0.1 = 10` deterministic fixture has low rounding risk but
+does not prove arbitrary fractional decay. If it fails, inspect the raw decay
+operands and results according to
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md` before changing the
+formula or adding a tolerance.

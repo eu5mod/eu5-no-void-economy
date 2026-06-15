@@ -245,6 +245,8 @@ modeu5_debug_run_single_record_stock_tests = {
 		market = scope:modeu5_test_market
 		output = modeu5_test_market_after_decay
 	}
+	# Developer note: this exact assertion is intentionally strict. If only this
+	# test fails, inspect the raw decay values and TECH-01 113 before changing it.
 	if = {
 		limit = {
 			scope:modeu5_decayed_quantity = 10

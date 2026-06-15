@@ -599,6 +599,13 @@ add, removal, transfer, decay, rebuild, and validation uses the centralized
 CORE effects. Deliberate market-cache corruption is allowed only through the
 centralized test-only fault injector used by the rebuild/validation scenario.
 
+The deterministic fixtures do not establish EU5's general fractional numeric
+precision. Before treating a small residual as a gameplay defect or adding an
+epsilon, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md`. Test tolerances,
+diagnostic tolerances, and gameplay underflow tolerances are separate design
+decisions.
+
 ---
 
 ### Test 1 — Production simple through `modeu5_add_stock`

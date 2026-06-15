@@ -156,6 +156,25 @@ test-only aggregate value of 200, rebuilds it to 150, corrupts it again, and
 verifies that validation delegates repair to rebuild. Country stocks must
 remain unchanged.
 
+## Numeric precision warning
+
+The current fixtures mostly use integer quantities. The decay fixture uses
+`100 * 0.1 = 10`, which is not sufficient to characterize arbitrary
+fractional arithmetic.
+
+If only decay or consistency assertions fail, do not immediately weaken the
+stock invariant. Inspect the raw values listed in:
+
+```txt
+docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md
+```
+
+In particular, compare the calculated decay and the signed validation
+difference before and after rebuild. A very small nonzero result may indicate
+engine precision, map persistence, or accumulation order; it may also expose a
+real accounting error. The controlled precision probe must distinguish these
+cases before an epsilon is introduced.
+
 ## Log review
 
 After all four tests, close EU5 before reviewing:
