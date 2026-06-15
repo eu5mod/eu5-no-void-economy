@@ -162,8 +162,8 @@ if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|var
 fi
 
 stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
-stock_test_effects="in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
-stock_test_event="in_game/events/modeu5_debug_events.txt"
+stock_test_effects="in_game/common/scripted_effects/tests/modeu5_stock_test_effects.txt"
+stock_test_event="in_game/events/tests/modeu5_debug_events.txt"
 
 if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_effects"; then
