@@ -155,8 +155,15 @@ if ! search_quiet 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_mark
 	exit 1
 fi
 
+if ! search_quiet 'variable_map\(modeu5_wheat_base_capacity_by_market\|scope:modeu5_market\)' \
+	"$generated_stock_helpers"; then
+	printf 'Generated stock adapters must contain literal US-02 capacity breakdown access.\n' >&2
+	exit 1
+fi
+
 for required_effect in \
 	modeu5_read_country_stock_record_good_wheat \
+	modeu5_recalculate_country_market_capacity_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do
@@ -173,12 +180,19 @@ if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|var
 fi
 
 stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
+capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 stock_test_effects="in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
 stock_test_event="in_game/events/modeu5_debug_events.txt"
 
 if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_effects"; then
 	printf 'Shared stock calculations must not construct, forward, read, or write persistent map identifiers.\n' >&2
+	exit 1
+fi
+
+if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
+	"$capacity_effects"; then
+	printf 'Shared US-02 capacity calculations must not read or write persistent map identifiers.\n' >&2
 	exit 1
 fi
 

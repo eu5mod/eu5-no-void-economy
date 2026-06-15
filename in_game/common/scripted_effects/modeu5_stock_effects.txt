@@ -92,6 +92,27 @@ modeu5_read_country_stock_record_calculate = {
 		}
 	}
 	save_temporary_scope_value_as = {
+		name = modeu5_read_country_base_capacity
+		value = {
+			value = scope:modeu5_country_base_capacity_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_country_building_capacity
+		value = {
+			value = scope:modeu5_country_building_capacity_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_read_country_foreign_capacity
+		value = {
+			value = scope:modeu5_country_foreign_capacity_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
 		name = modeu5_read_available_capacity
 		value = {
 			value = scope:modeu5_read_country_stock_cap

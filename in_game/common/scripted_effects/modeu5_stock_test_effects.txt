@@ -13,6 +13,7 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_validation_repair_passed
 	remove_global_variable = modeu5_test_validation_noop_passed
 	remove_global_variable = modeu5_test_country_stock_dimensions_passed
+	remove_global_variable = modeu5_test_storage_capacity_passed
 }
 
 modeu5_debug_replace_country_wheat_capacity = {

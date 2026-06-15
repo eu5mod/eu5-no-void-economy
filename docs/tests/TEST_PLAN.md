@@ -80,6 +80,35 @@ Run the exact console procedure in:
 docs/tests/US_01_CONSOLE_TEST_RUNBOOK.md
 ```
 
+## US-02 storage-capacity tests
+
+### Test ST2 - contribution reconciliation and stock preservation
+
+Setup:
+
+```txt
+FRA exists
+Use FRA's capital market
+Record the current wheat stock
+Recalculate wheat and iron capacity from the same world state
+```
+
+Expected:
+
+```txt
+Total capacity equals base + domestic building + foreign building capacity
+The four synchronized map fields read back the calculated values
+Wheat and iron capacity are equal for the same country and market
+The recalculation does not change wheat stock
+Available capacity and over-cap reconcile with the preserved stock
+```
+
+Run the exact console procedure in:
+
+```txt
+docs/tests/US_02_CONSOLE_TEST_RUNBOOK.md
+```
+
 ## Package and option tests
 
 ### Test P-1 - package publication and source provenance
