@@ -760,10 +760,7 @@ modeu5_debug_run_reconciliation_tests = {
 				scope:modeu5_reconciliation_failures_result = 0
 				scope:modeu5_test_reconciled_market_stock = 150
 				NOT = {
-					global_variable_list_size = {
-						name = modeu5_wheat_dirty_markets
-						value > 0
-					}
+					has_global_variable_list = modeu5_wheat_dirty_markets
 				}
 			}
 			set_global_variable = modeu5_test_reconciliation_dirty_passed
