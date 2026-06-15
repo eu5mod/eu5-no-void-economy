@@ -1,2 +1,895 @@
-# ModeU5 placeholder file.
-# Gameplay logic intentionally not implemented in bootstrap.
+# ModeU5 centralized stock mutation effects.
+#
+# Public calls use a literal goods token so each expanded map name remains static:
+#
+# modeu5_add_stock = {
+#     country = root
+#     market = root.capital.market
+#     good = wheat
+#     quantity = 50
+#     capacity_policy = enforce
+# }
+#
+# Supported capacity policies are enforce and allow_over_capacity. The latter is
+# reserved for CORE-02, CORE-03, and separately approved migrations.
+
+modeu5_select_capacity_policy_enforce = {
+	save_temporary_scope_value_as = {
+		name = modeu5_capacity_policy
+		value = 0
+	}
+}
+
+modeu5_select_capacity_policy_allow_over_capacity = {
+	save_temporary_scope_value_as = {
+		name = modeu5_capacity_policy
+		value = 1
+	}
+}
+
+modeu5_select_remove_reason_consumption = {
+	save_temporary_scope_value_as = {
+		name = modeu5_remove_reason
+		value = 1
+	}
+}
+
+modeu5_select_remove_reason_stock_loss = {
+	save_temporary_scope_value_as = {
+		name = modeu5_remove_reason
+		value = 2
+	}
+}
+
+modeu5_select_remove_reason_reconciliation = {
+	save_temporary_scope_value_as = {
+		name = modeu5_remove_reason
+		value = 3
+	}
+}
+
+modeu5_select_remove_reason_migration = {
+	save_temporary_scope_value_as = {
+		name = modeu5_remove_reason
+		value = 4
+	}
+}
+
+modeu5_select_remove_reason_debug_test = {
+	save_temporary_scope_value_as = {
+		name = modeu5_remove_reason
+		value = 99
+	}
+}
+
+# Generated per-good adapters read and replace literal physical map names.
+# Shared effects below only calculate results from temporary inputs; map
+# identifiers are never passed through scripted-effect parameters.
+
+# CORE-01.1
+
+modeu5_add_stock = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested_raw
+		value = $quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested
+		value = {
+			value = scope:modeu5_quantity_requested_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_quantity_requested_raw < 0 }
+		error_log = "ModeU5 modeu5_add_stock received a negative quantity; request normalized to zero."
+	}
+
+	modeu5_select_capacity_policy_$capacity_policy$ = yes
+	modeu5_add_stock_good_$good$ = yes
+}
+
+modeu5_add_stock_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_before
+		value = {
+			value = scope:modeu5_country_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_cap
+		value = {
+			value = scope:modeu5_country_stock_cap_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_available_capacity
+		value = {
+			value = scope:modeu5_country_stock_cap
+			subtract = scope:modeu5_country_stock_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_before
+		value = {
+			value = scope:modeu5_country_stock_before
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_capacity_policy = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_added_quantity
+			value = scope:modeu5_quantity_requested
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_added_quantity
+			value = {
+				value = scope:modeu5_quantity_requested
+				max = scope:modeu5_available_capacity
+			}
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_rejected_quantity
+		value = {
+			value = scope:modeu5_quantity_requested
+			subtract = scope:modeu5_actual_added_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_after
+		value = {
+			value = scope:modeu5_country_stock_before
+			add = scope:modeu5_actual_added_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_stock_after
+		value = {
+			value = scope:modeu5_market_stock_before
+			add = scope:modeu5_actual_added_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_after
+		value = {
+			value = scope:modeu5_country_stock_after
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_created
+		value = {
+			value = scope:modeu5_over_capacity_after
+			subtract = scope:modeu5_over_capacity_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_stock_difference_after
+		value = {
+			value = scope:modeu5_market_stock_after
+			subtract = scope:modeu5_market_stock_before
+			subtract = scope:modeu5_country_stock_after
+			add = scope:modeu5_country_stock_before
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_consistency_validation_required
+		value = 0
+	}
+
+	if = {
+		limit = { scope:modeu5_country_stock_before_raw < 0 }
+		error_log = "ModeU5 modeu5_add_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+	if = {
+		limit = { scope:modeu5_country_stock_cap_raw < 0 }
+		error_log = "ModeU5 modeu5_add_stock found a negative capacity; capacity is treated as zero."
+	}
+	if = {
+		limit = { scope:modeu5_market_stock_before < 0 }
+		error_log = "ModeU5 modeu5_add_stock found a negative market aggregate; consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_actual_added_quantity > 0
+				scope:modeu5_country_stock_before_raw < 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
+	}
+	if = {
+		limit = { scope:modeu5_actual_added_quantity > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
+		}
+	}
+
+}
+
+# CORE-01.2
+
+modeu5_remove_stock = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested_raw
+		value = $quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested
+		value = {
+			value = scope:modeu5_quantity_requested_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_quantity_requested_raw < 0 }
+		error_log = "ModeU5 modeu5_remove_stock received a negative quantity; request normalized to zero."
+	}
+
+	modeu5_select_remove_reason_$reason$ = yes
+	modeu5_remove_stock_good_$good$ = yes
+}
+
+modeu5_remove_stock_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_before
+		value = {
+			value = scope:modeu5_country_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_cap
+		value = {
+			value = scope:modeu5_country_stock_cap_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_actual_removed_quantity
+		value = {
+			value = scope:modeu5_quantity_requested
+			max = scope:modeu5_country_stock_before
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_consistency_validation_required
+		value = 0
+	}
+
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_market_stock_before < 0
+				scope:modeu5_market_stock_before < scope:modeu5_actual_removed_quantity
+			}
+		}
+		error_log = "ModeU5 modeu5_remove_stock blocked a market aggregate underflow; consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_removed_quantity
+			value = 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_unsatisfied_quantity
+		value = {
+			value = scope:modeu5_quantity_requested
+			subtract = scope:modeu5_actual_removed_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_after
+		value = {
+			value = scope:modeu5_country_stock_before
+			subtract = scope:modeu5_actual_removed_quantity
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_stock_after
+		value = {
+			value = scope:modeu5_market_stock_before
+			subtract = scope:modeu5_actual_removed_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_available_capacity
+		value = {
+			value = scope:modeu5_country_stock_cap
+			subtract = scope:modeu5_country_stock_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_before
+		value = {
+			value = scope:modeu5_country_stock_before
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_after
+		value = {
+			value = scope:modeu5_country_stock_after
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_created
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_stock_difference_after
+		value = {
+			value = scope:modeu5_market_stock_after
+			subtract = scope:modeu5_market_stock_before
+			subtract = scope:modeu5_country_stock_after
+			add = scope:modeu5_country_stock_before
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_country_stock_before_raw < 0 }
+		error_log = "ModeU5 modeu5_remove_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+	if = {
+		limit = { scope:modeu5_country_stock_cap_raw < 0 }
+		error_log = "ModeU5 modeu5_remove_stock found a negative capacity; capacity is treated as zero."
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_actual_removed_quantity > 0
+				scope:modeu5_country_stock_before_raw < 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
+	}
+	if = {
+		limit = { scope:modeu5_actual_removed_quantity > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
+		}
+	}
+
+}
+
+# CORE-01.3
+
+modeu5_transfer_stock = {
+	$seller_country$ = { save_temporary_scope_as = modeu5_seller_country }
+	$buyer_country$ = { save_temporary_scope_as = modeu5_buyer_country }
+	$source_market$ = { save_temporary_scope_as = modeu5_source_market }
+	$target_market$ = { save_temporary_scope_as = modeu5_target_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested_raw
+		value = $quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_quantity_requested
+		value = {
+			value = scope:modeu5_quantity_requested_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_quantity_requested_raw < 0 }
+		error_log = "ModeU5 modeu5_transfer_stock received a negative quantity; request normalized to zero."
+	}
+
+	modeu5_select_capacity_policy_$target_capacity_policy$ = yes
+	modeu5_transfer_stock_good_$good$ = yes
+}
+
+modeu5_transfer_stock_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_seller_stock_before
+		value = {
+			value = scope:modeu5_seller_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buyer_stock_before
+		value = {
+			value = scope:modeu5_buyer_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buyer_stock_cap
+		value = {
+			value = scope:modeu5_buyer_stock_cap_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_available_capacity
+		value = {
+			value = scope:modeu5_buyer_stock_cap
+			subtract = scope:modeu5_buyer_stock_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_before
+		value = {
+			value = scope:modeu5_buyer_stock_before
+			subtract = scope:modeu5_buyer_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_same_market_transfer
+		value = 0
+	}
+	if = {
+		limit = { scope:modeu5_source_market = scope:modeu5_target_market }
+		save_temporary_scope_value_as = {
+			name = modeu5_same_market_transfer
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_invalid_same_record_transfer
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_seller_country = scope:modeu5_buyer_country
+			scope:modeu5_source_market = scope:modeu5_target_market
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_invalid_same_record_transfer
+			value = 1
+		}
+	}
+
+	if = {
+		limit = {
+			scope:modeu5_capacity_policy = 1
+			scope:modeu5_invalid_same_record_transfer = 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_transferred_quantity
+			value = {
+				value = scope:modeu5_quantity_requested
+				max = scope:modeu5_seller_stock_before
+			}
+		}
+	}
+	else_if = {
+		limit = { scope:modeu5_invalid_same_record_transfer = 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_transferred_quantity
+			value = {
+				value = scope:modeu5_quantity_requested
+				max = scope:modeu5_seller_stock_before
+				max = scope:modeu5_available_capacity
+			}
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_transferred_quantity
+			value = 0
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_consistency_validation_required
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_same_market_transfer = 0
+			OR = {
+				scope:modeu5_source_market_stock_before < 0
+				scope:modeu5_source_market_stock_before < scope:modeu5_actual_transferred_quantity
+			}
+		}
+		error_log = "ModeU5 modeu5_transfer_stock blocked a source-market aggregate underflow; consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_actual_transferred_quantity
+			value = 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_unsatisfied_quantity
+		value = {
+			value = scope:modeu5_quantity_requested
+			subtract = scope:modeu5_actual_transferred_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_transferred_quantity
+		value = scope:modeu5_actual_transferred_quantity
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_seller_stock_after
+		value = {
+			value = scope:modeu5_seller_stock_before
+			subtract = scope:modeu5_actual_transferred_quantity
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buyer_stock_after
+		value = {
+			value = scope:modeu5_buyer_stock_before
+			add = scope:modeu5_actual_transferred_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_source_market_stock_after
+		value = scope:modeu5_source_market_stock_before
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_target_market_stock_after
+		value = scope:modeu5_target_market_stock_before
+	}
+	if = {
+		limit = { scope:modeu5_same_market_transfer = 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_source_market_stock_after
+			value = {
+				value = scope:modeu5_source_market_stock_before
+				subtract = scope:modeu5_actual_transferred_quantity
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_target_market_stock_after
+			value = {
+				value = scope:modeu5_target_market_stock_before
+				add = scope:modeu5_actual_transferred_quantity
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_after
+		value = {
+			value = scope:modeu5_buyer_stock_after
+			subtract = scope:modeu5_buyer_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_created
+		value = {
+			value = scope:modeu5_over_capacity_after
+			subtract = scope:modeu5_over_capacity_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_stock_difference_after
+		value = 0
+	}
+
+	if = {
+		limit = { scope:modeu5_seller_stock_before_raw < 0 }
+		error_log = "ModeU5 modeu5_transfer_stock found a negative seller stock; the seller record is normalized and consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+	if = {
+		limit = { scope:modeu5_buyer_stock_before_raw < 0 }
+		error_log = "ModeU5 modeu5_transfer_stock found a negative buyer stock; the buyer record is normalized and consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+	if = {
+		limit = { scope:modeu5_buyer_stock_cap_raw < 0 }
+		error_log = "ModeU5 modeu5_transfer_stock found a negative buyer capacity; capacity is treated as zero."
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_seller_record_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_invalid_same_record_transfer = 0
+			OR = {
+				scope:modeu5_actual_transferred_quantity > 0
+				scope:modeu5_seller_stock_before_raw < 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_seller_record_write_required
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buyer_record_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_invalid_same_record_transfer = 0
+			OR = {
+				scope:modeu5_actual_transferred_quantity > 0
+				scope:modeu5_buyer_stock_before_raw < 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_buyer_record_write_required
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_transfer_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_same_market_transfer = 0
+			scope:modeu5_actual_transferred_quantity > 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_market_transfer_write_required
+			value = 1
+		}
+	}
+
+}
+
+# CORE-01.4
+
+modeu5_decay_stock_default = {
+	$country$ = { save_temporary_scope_as = modeu5_default_decay_country }
+	$market$ = { save_temporary_scope_as = modeu5_default_decay_market }
+	modeu5_decay_stock_default_good_$good$ = yes
+}
+
+modeu5_decay_stock = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_decay_rate_raw
+		value = $decay_rate$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_decay_rate
+		value = {
+			value = scope:modeu5_decay_rate_raw
+			min = 0
+			max = 1
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_decay_rate_raw < 0
+				scope:modeu5_decay_rate_raw > 1
+			}
+		}
+		error_log = "ModeU5 modeu5_decay_stock received an out-of-range decay rate; rate clamped to [0, 1]."
+	}
+
+	modeu5_decay_stock_good_$good$ = yes
+}
+
+modeu5_decay_stock_calculate = {
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_before
+		value = {
+			value = scope:modeu5_country_stock_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_cap
+		value = {
+			value = scope:modeu5_country_stock_cap_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_decayed_quantity
+		value = {
+			value = scope:modeu5_country_stock_before
+			multiply = scope:modeu5_decay_rate
+			max = scope:modeu5_country_stock_before
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_consistency_validation_required
+		value = 0
+	}
+
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_market_stock_before < 0
+				scope:modeu5_market_stock_before < scope:modeu5_decayed_quantity
+			}
+		}
+		error_log = "ModeU5 modeu5_decay_stock blocked a market aggregate underflow; consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_decayed_quantity
+			value = 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_unsatisfied_quantity
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_country_stock_after
+		value = {
+			value = scope:modeu5_country_stock_before
+			subtract = scope:modeu5_decayed_quantity
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_stock_after
+		value = {
+			value = scope:modeu5_market_stock_before
+			subtract = scope:modeu5_decayed_quantity
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_available_capacity
+		value = {
+			value = scope:modeu5_country_stock_cap
+			subtract = scope:modeu5_country_stock_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_before
+		value = {
+			value = scope:modeu5_country_stock_before
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_after
+		value = {
+			value = scope:modeu5_country_stock_after
+			subtract = scope:modeu5_country_stock_cap
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_over_capacity_created
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_stock_difference_after
+		value = {
+			value = scope:modeu5_market_stock_after
+			subtract = scope:modeu5_market_stock_before
+			subtract = scope:modeu5_country_stock_after
+			add = scope:modeu5_country_stock_before
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_country_stock_before_raw < 0 }
+		error_log = "ModeU5 modeu5_decay_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		save_temporary_scope_value_as = {
+			name = modeu5_consistency_validation_required
+			value = 1
+		}
+	}
+	if = {
+		limit = { scope:modeu5_country_stock_cap_raw < 0 }
+		error_log = "ModeU5 modeu5_decay_stock found a negative capacity; capacity is treated as zero."
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_country_record_write_required
+		value = 0
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_decayed_quantity > 0
+				scope:modeu5_country_stock_before_raw < 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_country_record_write_required
+			value = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_market_record_write_required
+		value = 0
+	}
+	if = {
+		limit = { scope:modeu5_decayed_quantity > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_market_record_write_required
+			value = 1
+		}
+	}
+
+}

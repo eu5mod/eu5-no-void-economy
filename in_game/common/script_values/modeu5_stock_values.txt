@@ -1,0 +1,4 @@
+# Default used by US-03 when it does not provide a feature-specific decay rate.
+modeu5_default_monthly_decay_rate = {
+	value = 0.01
+}

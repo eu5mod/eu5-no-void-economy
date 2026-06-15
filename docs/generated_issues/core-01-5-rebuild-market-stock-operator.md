@@ -29,7 +29,7 @@ Feeds counters to: CORE-01.6, US-11 diagnostics
 |---|---|---|---|---|
 | Iterate countries | none/effect | `every_country` | CONFIRMED | 001 |
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by saved market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by saved good | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by saved market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes across country iteration | CONFIRMED | 008 |
 | Rebuild operation | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 
@@ -39,9 +39,9 @@ Feeds counters to: CORE-01.6, US-11 diagnostics
 logical dimensions: market x good
 logical record and fields read: every country record's stock field
 logical record field written: market aggregate stock
-owner scope: market
-tuple/key: good scope
-confirmed physical map family: modeu5_market_good_stock
+owner scope: global variable system
+tuple/key: market scope in one static map per good
+confirmed physical map family: modeu5_<good>_market_stock
 physical value type: numeric
 default value: 0
 write owner: modeu5_rebuild_market_stock_from_country_stocks for rebuild correction
@@ -77,7 +77,7 @@ Related US: US-01, US-11
 - Save the market and good scopes before country iteration.
 - Iterate countries and treat a missing matching country stock entry as zero.
 - Sum the country stock source fields; do not derive the value from production, capacity, ledger, or the previous market aggregate.
-- Replace only `modeu5_market_good_stock[good]` on the selected market.
+- Replace only `modeu5_<good>_market_stock[market]` for the selected market.
 - Never modify, proportionally rescale, or infer any country stock from the aggregate.
 - Use read, remove, and re-add to replace the market aggregate key.
 - Do not create consumption, loss, transfer, wealth, or income.

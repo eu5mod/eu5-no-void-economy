@@ -30,7 +30,7 @@ Feeds counters to: US-00.1, debug, CORE-01.6
 | Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
 | Country capacity field | country x market x good | country-scoped `modeu5_<good>_stock_cap_by_market` keyed by market | CONFIRMED | 007, 017 |
 | Available capacity | transaction | `max(0, stock_cap - stock)` | CONFIRMED | 018, 026 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
 | Add/reject outputs | transaction | `modeu5_actual_added_quantity`, `modeu5_rejected_quantity` | CONFIRMED | 022-023 |
 | Capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
@@ -53,16 +53,16 @@ readers: US-00.1, US-01/UI, US-03, US-10, US-11
 reset/rebuild lifecycle: stock is durable and never reset; market cache is rebuilt by CORE-01.5
 ```
 
-The market aggregate is stored separately on market scope in `modeu5_market_good_stock[good]`. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
+The market aggregate is stored separately in the global `modeu5_<good>_market_stock[market]` map because Market scope does not support variables. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
 
 ## Files expected to change
 
 ```txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
 in_game/events/
-in_game/localization/
+main_menu/localization/english/
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
@@ -94,7 +94,7 @@ Related US: US-01, US-02, US-00.1, US-11
 - Permit `allow_over_capacity` only for an explicitly documented authoritative caller such as CORE-02 initialization or a future approved migration.
 - Never use `allow_over_capacity` for ordinary production or trade.
 - Expose over-cap before/after quantities in debug; do not correct them inside this operation.
-- Use generated per-good helpers or generated dispatch; do not construct map names at runtime.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect and do not pass map identifiers as scripted-effect arguments.
 - Establish reusable internal read/replace helpers for the remaining CORE operators without exposing a second public stock-mutation path.
 - Log a pre-existing negative or over-cap country stock. Do not silently discard pre-existing stock as part of an add transaction.
 
@@ -168,4 +168,4 @@ stock difference after = 0
 
 ## Known limitations
 
-The public logical API is generic, but the confirmed physical country maps encode the good in a static map name. The implementation therefore requires generated per-good helpers or dispatch until a persistent record scope or nested map is confirmed under TECH-01 `088`.
+The public logical API is generic, but the confirmed physical country maps encode the good in a static map name. The implementation therefore requires a generated per-good persistence adapter until a persistent record scope or nested map is confirmed under TECH-01 `088`. The generator remains mechanical: it expands a versioned EU5 template, while validation and arithmetic stay in shared scripted effects.

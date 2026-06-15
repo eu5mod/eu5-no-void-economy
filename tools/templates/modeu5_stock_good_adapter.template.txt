@@ -1,0 +1,337 @@
+# Literal persistence adapter for __GOOD__.
+
+modeu5_load_stock_record_good___GOOD__ = {
+	scope:modeu5_country = {
+		if = {
+			limit = {
+				has_variable_map = __STOCK_MAP__
+				is_key_in_variable_map = {
+					name = __STOCK_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_before_raw
+				value = "variable_map(__STOCK_MAP__|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_before_raw
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = __CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_cap_raw
+				value = "variable_map(__CAPACITY_MAP__|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_cap_raw
+				value = 0
+			}
+		}
+	}
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_market
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_market_stock_before
+			value = "global_variable_map(__MARKET_MAP__|scope:modeu5_market)"
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_market_stock_before
+			value = 0
+		}
+	}
+}
+
+modeu5_store_stock_record_good___GOOD__ = {
+	if = {
+		limit = { scope:modeu5_country_record_write_required = 1 }
+		scope:modeu5_country = {
+			if = {
+				limit = {
+					has_variable_map = __STOCK_MAP__
+					is_key_in_variable_map = {
+						name = __STOCK_MAP__
+						target = scope:modeu5_market
+					}
+				}
+				remove_from_variable_map = {
+					name = __STOCK_MAP__
+					key = scope:modeu5_market
+				}
+			}
+			add_to_variable_map = {
+				name = __STOCK_MAP__
+				key = scope:modeu5_market
+				value = scope:modeu5_country_stock_after
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_market_record_write_required = 1 }
+		if = {
+			limit = {
+				has_global_variable_map = __MARKET_MAP__
+				is_key_in_global_variable_map = {
+					name = __MARKET_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			remove_from_global_variable_map = {
+				name = __MARKET_MAP__
+				key = scope:modeu5_market
+			}
+		}
+		add_to_global_variable_map = {
+			name = __MARKET_MAP__
+			key = scope:modeu5_market
+			value = scope:modeu5_market_stock_after
+		}
+	}
+}
+
+modeu5_load_transfer_records_good___GOOD__ = {
+	scope:modeu5_seller_country = {
+		if = {
+			limit = {
+				has_variable_map = __STOCK_MAP__
+				is_key_in_variable_map = {
+					name = __STOCK_MAP__
+					target = scope:modeu5_source_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_seller_stock_before_raw
+				value = "variable_map(__STOCK_MAP__|scope:modeu5_source_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_seller_stock_before_raw
+				value = 0
+			}
+		}
+	}
+	scope:modeu5_buyer_country = {
+		if = {
+			limit = {
+				has_variable_map = __STOCK_MAP__
+				is_key_in_variable_map = {
+					name = __STOCK_MAP__
+					target = scope:modeu5_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_buyer_stock_before_raw
+				value = "variable_map(__STOCK_MAP__|scope:modeu5_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_buyer_stock_before_raw
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = __CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __CAPACITY_MAP__
+					target = scope:modeu5_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_buyer_stock_cap_raw
+				value = "variable_map(__CAPACITY_MAP__|scope:modeu5_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_buyer_stock_cap_raw
+				value = 0
+			}
+		}
+	}
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_source_market
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_source_market_stock_before
+			value = "global_variable_map(__MARKET_MAP__|scope:modeu5_source_market)"
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_source_market_stock_before
+			value = 0
+		}
+	}
+	if = {
+		limit = {
+			has_global_variable_map = __MARKET_MAP__
+			is_key_in_global_variable_map = {
+				name = __MARKET_MAP__
+				target = scope:modeu5_target_market
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_target_market_stock_before
+			value = "global_variable_map(__MARKET_MAP__|scope:modeu5_target_market)"
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_target_market_stock_before
+			value = 0
+		}
+	}
+}
+
+modeu5_store_transfer_records_good___GOOD__ = {
+	if = {
+		limit = { scope:modeu5_seller_record_write_required = 1 }
+		scope:modeu5_seller_country = {
+			if = {
+				limit = {
+					has_variable_map = __STOCK_MAP__
+					is_key_in_variable_map = {
+						name = __STOCK_MAP__
+						target = scope:modeu5_source_market
+					}
+				}
+				remove_from_variable_map = {
+					name = __STOCK_MAP__
+					key = scope:modeu5_source_market
+				}
+			}
+			add_to_variable_map = {
+				name = __STOCK_MAP__
+				key = scope:modeu5_source_market
+				value = scope:modeu5_seller_stock_after
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_buyer_record_write_required = 1 }
+		scope:modeu5_buyer_country = {
+			if = {
+				limit = {
+					has_variable_map = __STOCK_MAP__
+					is_key_in_variable_map = {
+						name = __STOCK_MAP__
+						target = scope:modeu5_target_market
+					}
+				}
+				remove_from_variable_map = {
+					name = __STOCK_MAP__
+					key = scope:modeu5_target_market
+				}
+			}
+			add_to_variable_map = {
+				name = __STOCK_MAP__
+				key = scope:modeu5_target_market
+				value = scope:modeu5_buyer_stock_after
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_market_transfer_write_required = 1 }
+		if = {
+			limit = {
+				has_global_variable_map = __MARKET_MAP__
+				is_key_in_global_variable_map = {
+					name = __MARKET_MAP__
+					target = scope:modeu5_source_market
+				}
+			}
+			remove_from_global_variable_map = {
+				name = __MARKET_MAP__
+				key = scope:modeu5_source_market
+			}
+		}
+		add_to_global_variable_map = {
+			name = __MARKET_MAP__
+			key = scope:modeu5_source_market
+			value = scope:modeu5_source_market_stock_after
+		}
+		if = {
+			limit = {
+				has_global_variable_map = __MARKET_MAP__
+				is_key_in_global_variable_map = {
+					name = __MARKET_MAP__
+					target = scope:modeu5_target_market
+				}
+			}
+			remove_from_global_variable_map = {
+				name = __MARKET_MAP__
+				key = scope:modeu5_target_market
+			}
+		}
+		add_to_global_variable_map = {
+			name = __MARKET_MAP__
+			key = scope:modeu5_target_market
+			value = scope:modeu5_target_market_stock_after
+		}
+	}
+}
+
+modeu5_add_stock_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_add_stock_calculate = yes
+	modeu5_store_stock_record_good___GOOD__ = yes
+	modeu5_debug_capture_add_stock = yes
+}
+
+modeu5_remove_stock_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_remove_stock_calculate = yes
+	modeu5_store_stock_record_good___GOOD__ = yes
+	modeu5_debug_capture_remove_stock = yes
+}
+
+modeu5_transfer_stock_good___GOOD__ = {
+	modeu5_load_transfer_records_good___GOOD__ = yes
+	modeu5_transfer_stock_calculate = yes
+	modeu5_store_transfer_records_good___GOOD__ = yes
+	modeu5_debug_capture_transfer_stock = yes
+}
+
+modeu5_decay_stock_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_decay_stock_calculate = yes
+	modeu5_store_stock_record_good___GOOD__ = yes
+	modeu5_debug_capture_decay_stock = yes
+}
+
+modeu5_decay_stock_default_good___GOOD__ = {
+	modeu5_decay_stock = {
+		country = scope:modeu5_default_decay_country
+		market = scope:modeu5_default_decay_market
+		good = __GOOD__
+		decay_rate = modeu5_default_monthly_decay_rate
+	}
+}

@@ -239,6 +239,43 @@ stock_difference_after
 mutation_effect_called
 ```
 
+CORE-01 stores the latest transaction on the primary country through
+`modeu5_debug_last_*` variables. Numeric codes are:
+
+```txt
+operation / mutation effect:
+  1 = add_stock
+  2 = remove_stock
+  3 = transfer_stock
+  4 = decay_stock
+
+capacity policy:
+  0 = enforce
+  1 = allow_over_capacity
+
+remove reason:
+  1 = consumption
+  2 = stock_loss
+  3 = reconciliation
+  4 = migration
+  99 = debug_test
+```
+
+`modeu5_debug_last_stock_difference` is the atomic transaction-delta
+difference: market-cache delta minus country-source delta. Full
+`market_good_stock - sum(country stocks)` validation remains owned by
+CORE-01.6.
+
+If an operation detects a negative source or an aggregate underflow risk, it
+sets:
+
+```txt
+modeu5_debug_last_consistency_validation_required = 1
+```
+
+Until CORE-01.5/01.6 are implemented, an aggregate-underflow transaction fails
+closed instead of independently clamping the market cache.
+
 For `modeu5_transfer_stock`, debug must also expose:
 
 ```txt

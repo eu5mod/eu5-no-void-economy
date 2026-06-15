@@ -30,7 +30,7 @@ Feeds counters to: diagnostics and safe downstream reads
 | Iterate countries/markets/goods | none/country/location → country/market/goods | `every_country`, `every_market_in_world`, `every_goods`, owned locations and scope links | CONFIRMED | 001-006 |
 | Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
 | Country source record | country × market × good | logical `stock` field backed by country-scoped `modeu5_<good>_stock_by_market` maps keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate storage | market × good | market-scoped `modeu5_market_good_stock` map keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate storage | market × good | global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
 | Monthly invocation | country | `monthly_country_pulse` at runtime step 18 | CONFIRMED | 011 |
@@ -64,7 +64,7 @@ Related US: US-01, US-03, US-10, US-00
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Country stock is always the source of truth.
 - Rebuild market aggregate from country stocks only.
-- Read the `stock` field of each logical country × market × good record through its confirmed physical map and write only the market-scoped aggregate map keyed by goods.
+- Read the `stock` field of each logical country × market × good record through its confirmed physical map and write only the selected market key in the global per-good aggregate map.
 - Treat missing source entries as zero and replace the aggregate key by remove/re-add.
 - Use generated per-good helpers where the country source map name varies by good.
 - Never repair country stocks from market stock.

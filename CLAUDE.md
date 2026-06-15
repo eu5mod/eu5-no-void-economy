@@ -258,7 +258,7 @@ modeu5_<good>_void_taxable_income_proxy_by_market[market]
 modeu5_<good>_production_penalty_by_market[market]
 ```
 
-These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a market-scoped `modeu5_market_good_stock` map keyed by goods scope. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
+These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a global `modeu5_<good>_market_stock` map keyed by market because controlled runtime testing confirmed that Market scope does not support variables. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
 
 All ledger writes must go through:
 

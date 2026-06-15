@@ -28,7 +28,7 @@ Feeds counters to: US-03-UI/debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | market-scoped `modeu5_market_good_stock` keyed by goods scope | CONFIRMED | 007, 016 |
+| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Decay arithmetic | transaction | multiply plus bounded min/max | CONFIRMED | 026 |
 | Monthly invocation | country | caller orchestration through `monthly_country_pulse` | CONFIRMED | 011 |
 | Scope passing | scripted effect | saved country, market, and good scopes | CONFIRMED | 008 |
@@ -53,11 +53,11 @@ reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_values/modeu5_stock_values.txt
+in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
 in_game/events/
-in_game/localization/
+main_menu/localization/english/
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -75,13 +75,14 @@ Related US: US-01, US-03, US-03-UI, US-11
 - Follow all mandatory project and storage-model rules.
 - Operate on one country, market, and good record per call; US-03 owns iteration and scheduling.
 - Use the caller rate when provided and the configured ModeU5 monthly rate otherwise.
+- Use `modeu5_decay_stock_default` when the caller does not provide an override; it delegates to `modeu5_decay_stock` with `modeu5_default_monthly_decay_rate`.
 - Bound the effective decay rate to `[0, 1]` and log an out-of-range input.
 - Calculate `decayed_quantity = min(stock_before, stock_before * effective_decay_rate)`.
 - Calculate the loss from country stock only; never calculate a second independent decay from market stock.
 - Decrease country stock and market aggregate by exactly the same decayed quantity.
 - Keep decay diagnostics separate from consumer `unsatisfied_quantity`.
 - Do not create wealth, demand, trade, or transport effects.
-- Use generated per-good helpers or dispatch.
+- Use a generated per-good EU5 persistence adapter containing complete literal map reads/writes; keep validation and arithmetic in the shared effect.
 
 ## CORE-specific boundary checks
 

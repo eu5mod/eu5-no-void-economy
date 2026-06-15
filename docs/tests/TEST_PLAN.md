@@ -543,6 +543,51 @@ Country and market stock remain unchanged
 
 ## Core invariant tests
 
+### Deterministic CORE-01 event
+
+Follow the exact console procedure in
+`docs/tests/CORE_01_CONSOLE_TEST_RUNBOOK.md`.
+
+Run from a clean 1337 campaign:
+
+```txt
+event modeu5_debug.1
+```
+
+The event exposes three test actions:
+
+```txt
+Add / remove / decay on the current country's capital market
+Same-market FRA -> ENG ownership transfer
+Inter-market FRA -> ENG transfer
+```
+
+Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
+FAIL / NOT RUN rows there; do not enter `modeu5_test_*` as console commands.
+The variables remain available for scripted assertions, and failed assertions
+are also written to `error.log`.
+
+Expected pass variables on the event country:
+
+```txt
+modeu5_test_add_allow_over_capacity_passed = 1
+modeu5_test_add_enforce_passed = 1
+modeu5_test_remove_passed = 1
+modeu5_test_decay_passed = 1
+modeu5_test_same_market_transfer_passed = 1
+modeu5_test_invalid_same_record_passed = 1
+modeu5_test_inter_market_transfer_passed = 1
+```
+
+Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
+require FRA and ENG; the inter-market test also requires their capitals to be
+in different markets.
+
+The test setup may write capacity maps directly, but every stock setup,
+cleanup, add, removal, transfer, and decay uses the centralized CORE effects.
+
+---
+
 ### Test 1 — Production simple through `modeu5_add_stock`
 
 Setup:
