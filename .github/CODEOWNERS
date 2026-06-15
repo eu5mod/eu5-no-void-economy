@@ -1,0 +1,12 @@
+# .github/CODEOWNERS
+
+# Default owners for the whole repository
+* @ph.ausseil/maintainers
+
+# Strongly protect governance files
+/.github/CODEOWNERS @ph-ausseil/admins
+/.github/ @ph-ausseil/admins
+/rulesets/ @ph-ausseil/admins
+
+# Security-sensitive areas
+/.github/workflows/ @ph.ausseil/maintainers
