@@ -14,7 +14,8 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that `MODEU5_SOURCE.txt` identifies:
+Confirm that `packages/modeu5_core_tests` was installed and that the installed
+test package's `MODEU5_SOURCE.txt` identifies:
 
 ```txt
 branch: spike/core-02-opening-stock-exposure
@@ -22,7 +23,8 @@ branch: spike/core-02-opening-stock-exposure
 
 ## Scenario
 
-1. Enable No Void Economy.
+1. Enable No Void Economy and No Void Economy Tests in a dedicated test
+   playset.
 2. Start a clean 1337 campaign.
 3. Let at least two game days pass.
 4. Open the console and run:

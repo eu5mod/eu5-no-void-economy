@@ -303,6 +303,9 @@ Follow:
 docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
 ```
 
+Required playset: No Void Economy plus the testing-only No Void Economy Tests
+package.
+
 Expected:
 
 ```txt
@@ -592,13 +595,14 @@ Run from a clean 1337 campaign:
 event modeu5_debug.1
 ```
 
-The event exposes four test actions:
+The event exposes five test actions:
 
 ```txt
 Add / remove / decay on the current country's capital market
 Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
 Rebuild and consistency validation
+US-11 dirty-record reconciliation
 ```
 
 Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
@@ -619,6 +623,8 @@ modeu5_test_inter_market_transfer_passed = 1
 modeu5_test_rebuild_passed = 1
 modeu5_test_validation_repair_passed = 1
 modeu5_test_validation_noop_passed = 1
+modeu5_test_reconciliation_dirty_passed = 1
+modeu5_test_reconciliation_empty_passed = 1
 ```
 
 Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
@@ -629,6 +635,13 @@ The test setup may write capacity maps directly. Every stock setup, cleanup,
 add, removal, transfer, decay, rebuild, and validation uses the centralized
 CORE effects. Deliberate market-cache corruption is allowed only through the
 centralized test-only fault injector used by the rebuild/validation scenario.
+
+The deterministic fixtures do not establish EU5's general fractional numeric
+precision. Before treating a small residual as a gameplay defect or adding an
+epsilon, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md`. Test tolerances,
+diagnostic tolerances, and gameplay underflow tolerances are separate design
+decisions.
 
 ---
 
@@ -900,6 +913,52 @@ Expected result-event rows:
 PASS - Rebuild market aggregate
 PASS - Validation detects and repairs divergence
 PASS - Consistent validation is a no-op
+```
+
+---
+
+### Test 8C — Incremental US-11 reconciliation
+
+Setup:
+
+```txt
+event modeu5_debug.1
+Select "Test US-11 dirty-record reconciliation"
+```
+
+Expected result:
+
+```txt
+One deduplicated wheat/market record is checked
+The corrupted aggregate 200 is rebuilt to 150
+records_checked = 1
+inconsistencies_found = 1
+rebuilds_called = 1
+failures_after_rebuild = 0
+The dirty list is empty after processing
+A second pass with no mutation checks zero records
+```
+
+---
+
+### Test 8D — Pulse guards and yearly safety pass
+
+Setup:
+
+```txt
+Use an initialized controlled fixture
+Trigger multiple country monthly pulses in one calendar month
+Corrupt one market/good cache without adding it to a dirty list
+Trigger multiple country yearly pulses in one calendar year
+```
+
+Expected result:
+
+```txt
+The monthly global reconciliation runs once for the month
+The yearly global reconciliation runs once for the year
+The yearly exhaustive pass detects and rebuilds the unindexed corruption
+Automatic reconciliation does not run before CORE-02 initialization completes
 ```
 
 ## US-00 void economy tests

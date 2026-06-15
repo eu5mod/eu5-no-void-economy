@@ -339,6 +339,35 @@ Validation severity uses
 `modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
 diagnostic severity; every nonzero difference is rebuilt.
 
+## Mandatory debug for US-11 reconciliation
+
+Each reconciliation pass exposes one aggregate snapshot on its controller:
+
+```txt
+reconciliation_type = 1 (dirty) | 2 (exhaustive)
+records_checked
+inconsistencies_found
+rebuilds_called
+failures_after_rebuild
+calendar_cycle_stamp
+initialization_gate_passed = 0 | 1
+```
+
+Automatic monthly reconciliation uses `year * 12 + month` as its cycle stamp;
+yearly reconciliation uses the current year. A direct deterministic test uses
+cycle stamp `0` and initialization-gate value `0`.
+
+The latest CORE-01.6 snapshot remains the per-record detail. Any
+`failures_after_rebuild > 0` result is blocking and must be written to
+`error.log`. A monthly pass with no dirty market/good records is a valid no-op
+with every counter equal to zero.
+
+Numeric precision is not yet characterized. Preserve raw operands and signed
+differences without rounding them for debug. When a small residual or an
+unexpected deterministic-test failure appears, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md` before adding an
+epsilon or weakening an underflow guard.
+
 ## Mandatory debug for US-00
 
 For each `country × market × good`, expose:

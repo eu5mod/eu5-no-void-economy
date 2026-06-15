@@ -34,6 +34,7 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 | Transaction-local accumulator | country controller | `set_local_variable`, `change_local_variable`, `local_var:<name>` | CONFIRMED | 109 |
 | Rebuild effect | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validation effect | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
+| Numeric comparison and persistence precision | transaction / variable map | exact comparison pending controlled fractional arithmetic and map write/read probe | TO_TEST | 113 |
 | Monthly/yearly orchestration | country | `monthly_country_pulse`, `yearly_country_pulse` owned by US-11/on-actions | CONFIRMED | 011-012 |
 
 ## Persistent storage / variable-map contract
@@ -71,7 +72,7 @@ docs/technical/DEBUG_CONVENTIONS.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020, 104, 109-110
+Depends on: CORE-01.5; TECH-01 001, 007-008, 011-012, 015-016, 019-020, 104, 109-110, 113
 Blocks: US-11 completion and safe monthly/yearly stock cycles
 Related US: US-01, US-03, US-10, US-11
 ```
@@ -143,3 +144,10 @@ invalid and require an explicit correction through the operation that owns that
 change. Over-cap records are diagnostic state, not an accounting inconsistency.
 Validation scans all country source records for one market-good tuple; US-11
 must own and de-duplicate global scheduling.
+
+The engine's numeric precision, iterator accumulation, and map write/read
+rounding are not documented. Exact nonzero detection remains the accounting
+contract until TECH-01 `113` is tested. If a tiny difference repeatedly
+triggers rebuild or survives a rebuild, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md`; do not silently
+ignore it or apply one global epsilon.

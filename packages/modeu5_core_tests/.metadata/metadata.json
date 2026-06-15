@@ -1,0 +1,21 @@
+{
+	"name": "NVE : Core deterministic tests (Optional)",
+	"id": "modeu5_core_tests",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "TESTING ONLY. Optional deterministic events, engine-exposure probes, and helpers for validating No Void Economy Core. Requires No Void Economy.",
+	"tags": [
+		"Utilities",
+		"Trade and Economics"
+	],
+	"relationships": [
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core",
+			"display_name": "No Void Economy (NVE)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		}
+	],
+	"game_custom_data": {}
+}

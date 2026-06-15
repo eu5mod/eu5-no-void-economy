@@ -298,6 +298,8 @@ modeu5_remove_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a tiny aggregate residue could trip this strict underflow
+	# guard. Rebuild and inspect raw values before considering any tolerance.
 	if = {
 		limit = {
 			OR = {
@@ -547,6 +549,8 @@ modeu5_transfer_stock_calculate = {
 		name = modeu5_consistency_validation_required
 		value = 0
 	}
+	# Precision note: keep this strict until TECH-01 113 measures engine and map
+	# rounding. A gameplay epsilon would change transfer conservation behavior.
 	if = {
 		limit = {
 			scope:modeu5_same_market_transfer = 0
@@ -776,6 +780,8 @@ modeu5_decay_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a fractional decay can expose engine rounding here.
+	# Validate/rebuild and inspect the raw operands before weakening this guard.
 	if = {
 		limit = {
 			OR = {
@@ -990,6 +996,8 @@ modeu5_validate_stock_consistency_prepare = {
 		name = modeu5_validation_inconsistency_severity
 		value = 0
 	}
+	# Exact accounting is intentional. If tiny residuals appear, preserve the
+	# signed difference and run the TECH-01 113 precision probe first.
 	if = {
 		limit = { scope:modeu5_validation_difference_before != 0 }
 		save_temporary_scope_value_as = {
@@ -1044,11 +1052,202 @@ modeu5_validate_stock_consistency_finalize = {
 		name = modeu5_validation_failed_after_rebuild
 		value = 0
 	}
+	# A tiny post-write residual may indicate map persistence rounding. Do not
+	# hide it with a global epsilon before TECH-01 113 is characterized.
 	if = {
 		limit = { scope:modeu5_validation_difference_after != 0 }
 		save_temporary_scope_value_as = {
 			name = modeu5_validation_failed_after_rebuild
 			value = 1
+		}
+	}
+}
+
+# US-11
+
+modeu5_reconciliation_prepare = {
+	set_local_variable = {
+		name = modeu5_reconciliation_records_checked
+		value = 0
+	}
+	set_local_variable = {
+		name = modeu5_reconciliation_inconsistencies_found
+		value = 0
+	}
+	set_local_variable = {
+		name = modeu5_reconciliation_rebuilds_called
+		value = 0
+	}
+	set_local_variable = {
+		name = modeu5_reconciliation_failures
+		value = 0
+	}
+}
+
+modeu5_reconciliation_accumulate_last_validation = {
+	change_local_variable = {
+		name = modeu5_reconciliation_records_checked
+		add = 1
+	}
+	change_local_variable = {
+		name = modeu5_reconciliation_inconsistencies_found
+		add = scope:modeu5_validation_inconsistency_detected
+	}
+	change_local_variable = {
+		name = modeu5_reconciliation_rebuilds_called
+		add = scope:modeu5_validation_rebuild_called
+	}
+	change_local_variable = {
+		name = modeu5_reconciliation_failures
+		add = scope:modeu5_validation_failed_after_rebuild
+	}
+}
+
+modeu5_reconciliation_finalize = {
+	save_temporary_scope_value_as = {
+		name = modeu5_reconciliation_records_checked_result
+		value = local_var:modeu5_reconciliation_records_checked
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_reconciliation_inconsistencies_found_result
+		value = local_var:modeu5_reconciliation_inconsistencies_found
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_reconciliation_rebuilds_called_result
+		value = local_var:modeu5_reconciliation_rebuilds_called
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_reconciliation_failures_result
+		value = local_var:modeu5_reconciliation_failures
+	}
+
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_type
+		value = scope:modeu5_reconciliation_type
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_records_checked
+		value = scope:modeu5_reconciliation_records_checked_result
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_inconsistencies_found
+		value = scope:modeu5_reconciliation_inconsistencies_found_result
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_rebuilds_called
+		value = scope:modeu5_reconciliation_rebuilds_called_result
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_failures
+		value = scope:modeu5_reconciliation_failures_result
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_cycle_stamp
+		value = 0
+	}
+	set_variable = {
+		name = modeu5_debug_last_reconciliation_initialization_gate_passed
+		value = 0
+	}
+
+	if = {
+		limit = { scope:modeu5_reconciliation_failures_result > 0 }
+		error_log = "ModeU5 US-11 reconciliation completed with at least one market cache still inconsistent after rebuild."
+	}
+}
+
+modeu5_run_monthly_stock_reconciliation_once = {
+	if = {
+		limit = { modeu5_initialization_complete_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_reconciliation_month_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			}
+			set_global_variable = {
+				name = modeu5_last_monthly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_month_stamp
+			}
+			modeu5_validate_dirty_stock_consistency = yes
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_cycle_stamp
+				value = scope:modeu5_reconciliation_month_stamp
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_initialization_gate_passed
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				global_var:modeu5_last_monthly_reconciliation_stamp != scope:modeu5_reconciliation_month_stamp
+			}
+			set_global_variable = {
+				name = modeu5_last_monthly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_month_stamp
+			}
+			modeu5_validate_dirty_stock_consistency = yes
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_cycle_stamp
+				value = scope:modeu5_reconciliation_month_stamp
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_initialization_gate_passed
+				value = 1
+			}
+		}
+	}
+}
+
+modeu5_run_yearly_stock_reconciliation_once = {
+	if = {
+		limit = { modeu5_initialization_complete_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_reconciliation_year_stamp
+			value = current_year
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable = modeu5_last_yearly_reconciliation_stamp }
+			}
+			set_global_variable = {
+				name = modeu5_last_yearly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_year_stamp
+			}
+			modeu5_validate_all_stock_consistency = yes
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_cycle_stamp
+				value = scope:modeu5_reconciliation_year_stamp
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_initialization_gate_passed
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				global_var:modeu5_last_yearly_reconciliation_stamp != scope:modeu5_reconciliation_year_stamp
+			}
+			set_global_variable = {
+				name = modeu5_last_yearly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_year_stamp
+			}
+			modeu5_validate_all_stock_consistency = yes
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_cycle_stamp
+				value = scope:modeu5_reconciliation_year_stamp
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_initialization_gate_passed
+				value = 1
+			}
 		}
 	}
 }
