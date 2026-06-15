@@ -35,6 +35,46 @@ Feeds counters to: next monthly cycle, US-00-UI
 | Fallback modifier | location | `local_production_efficiency` | CONFIRMED | 028 |
 | Apply temporary location modifier | location | `add_location_modifier` with duration, mode, and dynamic size | CONFIRMED | 010 |
 
+### Warning — Production Modifier Semantics
+
+This US assumes that applying a penalty through `local_<good>_output_modifier` or `local_production_efficiency` produces a proportional reduction in final output.
+
+If the selected modifier contributes to an additive production-modifier stack rather than acting as a multiplicative final-output modifier, a penalty calculated as:
+
+```txt
+effective_ratio × coefficient
+```
+
+may not reduce final production by the intended amount.
+
+Example:
+
+```txt
+Base production = 100
+Total production multiplier = 1.50
+Effective overproduction ratio = 0.10
+```
+
+Applying a `-0.10` penalty directly to the additive modifier stack changes:
+
+```txt
+1.50 → 1.40
+```
+
+which reduces output from:
+
+```txt
+150 → 140
+```
+
+for an effective reduction of only 6.67% rather than 10%.
+
+Runtime validation must therefore confirm whether the chosen modifier affects:
+- final output directly, or
+- an additive production modifier stack.
+
+If additive stacking is confirmed, penalty calculation may need to scale against the total effective production multiplier to achieve proportional output reduction.
+
 ## Files expected to change
 
 ```txt
@@ -88,6 +128,7 @@ Related US: US-09, US-00-UI
 - [ ] A fallback affecting unrelated goods is documented.
 - [ ] No direct stock or Estate-income mutation occurs.
 - [ ] TECH-01, logs, and manual test evidence are updated.
+- [ ] Runtime testing confirms that the chosen production modifier reduces final output proportionally to the calculated penalty.
 
 ## Manual test scenario
 
