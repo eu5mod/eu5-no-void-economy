@@ -32,6 +32,7 @@ descriptors=(
 	"packages/modeu5_economy_rebalance/descriptor.mod"
 	"packages/modeu5_trade_rebalance/descriptor.mod"
 	"packages/modeu5_war_rebalance/descriptor.mod"
+	"packages/modeu5_core_tests/descriptor.mod"
 )
 
 metadata_files=(
@@ -39,6 +40,7 @@ metadata_files=(
 	"packages/modeu5_economy_rebalance/.metadata/metadata.json"
 	"packages/modeu5_trade_rebalance/.metadata/metadata.json"
 	"packages/modeu5_war_rebalance/.metadata/metadata.json"
+	"packages/modeu5_core_tests/.metadata/metadata.json"
 )
 
 expected_descriptor_names=(
@@ -46,6 +48,7 @@ expected_descriptor_names=(
 	"Rebalance Economy"
 	"Rebalance Estate Power"
 	"Rebalance Early Blobbing"
+	"No Void Economy Tests"
 )
 
 expected_metadata_names=(
@@ -53,6 +56,7 @@ expected_metadata_names=(
 	"NVE : Economy balance patch (Optional)"
 	"NVE : Estate Power balance patch (Optional)"
 	"NVE : Early Blobbing balance patch (Optional)"
+	"NVE : Core deterministic tests (Optional)"
 )
 
 expected_ids=(
@@ -60,6 +64,7 @@ expected_ids=(
 	"modeu5_economy_rebalance"
 	"modeu5_trade_rebalance"
 	"modeu5_war_rebalance"
+	"modeu5_core_tests"
 )
 
 expected_description_prefixes=(
@@ -67,6 +72,7 @@ expected_description_prefixes=(
 	"CAMPAIGN SETUP ONLY."
 	"CAMPAIGN SETUP ONLY."
 	"CAMPAIGN SETUP ONLY."
+	"TESTING ONLY."
 )
 
 for index in "${!descriptors[@]}"; do
@@ -162,8 +168,8 @@ if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|var
 fi
 
 stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
-stock_test_effects="in_game/common/scripted_effects/tests/modeu5_stock_test_effects.txt"
-stock_test_event="in_game/events/tests/modeu5_debug_events.txt"
+stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
+stock_test_event="packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt"
 
 if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_effects"; then

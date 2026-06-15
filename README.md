@@ -50,8 +50,9 @@ ModeU5 uses packages rather than a misleading universal runtime toggle:
 | Rebalance Economy | Optional; included in the recommended playset | US-04, US-05, US-08, US-09 and their UI stories |
 | Rebalance Estate Power | Optional; included in the recommended playset | US-07 and US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
+| No Void Economy Tests | Optional; testing-only, not part of the recommended campaign playset | Deterministic CORE-01 debug events and stock-operator test helpers |
 
-The recommended ModeU5 playset loads all four packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. Keep the selected package set unchanged for the lifetime of that save; no package currently supports mid-campaign addition or removal. See `docs/technical/MODULE_OPTION_MODEL.md`.
+The recommended ModeU5 campaign playset loads the four gameplay packages. The Core package is the identity of the mod and has no supported disabled state. Rebalance companions may be removed in the launcher before campaign load. `No Void Economy Tests` is a separate testing-only package for deterministic validation sessions and should stay out of normal campaign playsets. Keep the selected package set unchanged for the lifetime of that save; no package currently supports mid-campaign addition or removal. See `docs/technical/MODULE_OPTION_MODEL.md`.
 
 ModeU5 configuration occurs before campaign start. The launcher/mod playset selects Core and optional rebalance packages. EU5's built-in Game Rules screen configures script-safe settings such as ModeU5 debug output. There is no custom in-game configuration panel.
 
@@ -62,7 +63,7 @@ conquest-cost hook is confirmed.
 
 ### Local package installation
 
-The repository contains four source package roots, but EU5 discovers local
+The repository contains the Core root, three gameplay companion roots, and one testing-only package root. EU5 discovers local
 packages as sibling directories. Publish them to the local mod directory with:
 
 ```bash
@@ -77,6 +78,8 @@ Rebalance Economy
 Rebalance Estate Power
 Rebalance Early Blobbing
 ```
+
+Enable `No Void Economy Tests` only in a dedicated validation playset when running the deterministic console runbook.
 
 The installer writes `MODEU5_SOURCE.txt` into every installed package with the
 source path, branch, and commit. Check what is installed with:
