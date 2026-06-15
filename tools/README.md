@@ -26,13 +26,13 @@ physical map identifier may retain `$`.
 
 ## Module packages
 
-Validate the four source package roots:
+Validate the source package roots, including the testing-only package:
 
 ```bash
 ./tools/validate_module_packages.sh
 ```
 
-Publish Core and the three optional companions as sibling local mods:
+Publish Core, the three optional gameplay companions, and the testing-only package as sibling local mods:
 
 ```bash
 ./tools/install_local_packages.sh
@@ -46,8 +46,8 @@ branch and commit loaded by EU5 can be checked without guessing:
 ```
 
 Use `--target PATH` when EU5 reads local mods from a different directory.
-After installation, refresh the launcher and enable the four ModeU5 entries in
-the recommended full-suite playset. If two `No Void Economy` entries appear,
+After installation, refresh the launcher and enable the four gameplay ModeU5 entries in
+the recommended full-suite playset. Enable `No Void Economy Tests` only in a dedicated validation playset. If two `No Void Economy` entries appear,
 disable the older single-package entry backed by the `eu5voideco` path to avoid
 loading Core twice.
 

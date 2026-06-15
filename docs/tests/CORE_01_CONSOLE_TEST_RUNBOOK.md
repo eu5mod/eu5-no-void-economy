@@ -23,8 +23,9 @@ In the launcher:
 
 ```txt
 Enable: No Void Economy / modeu5_core
+Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
 Do not simultaneously enable the older eu5voideco alias.
-The three optional ModeU5 packages may remain enabled.
+The three optional gameplay ModeU5 packages may remain enabled.
 ```
 
 Start a clean 1337 campaign. FRA and ENG must exist for the transfer tests.
@@ -61,7 +62,7 @@ event modeu5_debug.1
 Test add, remove, and decay
 ```
 
-3. The result event must display:
+3. The console/test log must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Add with allow_over_capacity
@@ -88,7 +89,7 @@ event modeu5_debug.1
 Test same-market transfers
 ```
 
-4. The result event must display:
+4. The console/test log must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Same-market transfer
@@ -116,7 +117,7 @@ event modeu5_debug.1
 Test inter-market transfer
 ```
 
-4. The result event must display:
+4. The console/test log must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Inter-market transfer
@@ -221,10 +222,10 @@ Documents/Paradox Interactive/Europa Universalis V/logs/game.log
 Documents/Paradox Interactive/Europa Universalis V/logs/system.log
 ```
 
-Search for:
+Search for logged ModeU5 diagnostics and test-log lines:
 
 ```bash
-grep -En 'ModeU5|modeu5|malformed|Script system error' \
+rg -n 'ModeU5|modeu5|malformed|Script system error|modeu5_core_01' \
   "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
   "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/game.log"
 ```
@@ -233,6 +234,7 @@ The test is successful when:
 
 ```txt
 All expected PASS rows appear.
+The console/test log shows each selected suite starting, finishing, and each executed test PASS/FAIL result.
 No "deterministic CORE-01 ... test failed" message appears.
 No modeu5 map identifier contains a remaining "$".
 No result marker reports "Failed to fetch variable".
