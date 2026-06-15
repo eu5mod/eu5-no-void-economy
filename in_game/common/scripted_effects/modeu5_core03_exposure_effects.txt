@@ -1,0 +1,243 @@
+# Controlled TECH-01 098 instrumentation. This file must never mutate stock.
+
+modeu5_core03_probe_increment_sequence = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_sequence }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_sequence
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_sequence
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_location_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_location_change_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_location_change_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_location_change_count
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_country_hook_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_country_hook_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_country_hook_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_country_hook_count
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_delayed_finalizer_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_delayed_finalizer_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_delayed_finalizer_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_delayed_finalizer_count
+			add = 1
+		}
+		set_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+	}
+}
+
+modeu5_core03_probe_record_location_changed_owner = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_location_count = yes
+	set_global_variable = modeu5_core03_probe_location_hook_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_location_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+
+	if = {
+		limit = {
+			exists = scope:loser
+			exists = scope:winner
+			scope:loser != scope:winner
+		}
+		set_global_variable = modeu5_core03_probe_location_scopes_valid
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_location_scopes_invalid
+	}
+
+	save_temporary_scope_as = modeu5_core03_probe_location
+	if = {
+		limit = {
+			NOT = {
+				has_global_variable_list = modeu5_core03_probe_seen_locations
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_core03_probe_seen_locations
+			target = scope:modeu5_core03_probe_location
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_core03_probe_seen_locations
+					target = scope:modeu5_core03_probe_location
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_core03_probe_seen_locations
+			target = scope:modeu5_core03_probe_location
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_duplicate_location_hook
+	}
+}
+
+modeu5_core03_probe_record_country_hook = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_country_hook_count = yes
+	set_global_variable = modeu5_core03_probe_country_hook_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_country_hook_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+}
+
+modeu5_core03_probe_record_new_country_formed = {
+	set_global_variable = modeu5_core03_probe_new_country_formed_observed
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_released_country = {
+	set_global_variable = modeu5_core03_probe_released_country_observed
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_annexed = {
+	set_global_variable = modeu5_core03_probe_annexed_observed
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_diplomatic_annexed = {
+	set_global_variable = modeu5_core03_probe_diplomatic_annexed_observed
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_military_annexed = {
+	set_global_variable = modeu5_core03_probe_military_annexed_observed
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_civil_war_annexed = {
+	set_global_variable = modeu5_core03_probe_civil_war_annexed_observed
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_delayed_country_finalizer = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_delayed_finalizer_count = yes
+	set_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_delayed_finalizer_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_core03_probe_last_location_sequence
+		}
+		set_global_variable = modeu5_core03_probe_delayed_after_location_observed
+	}
+}
+
+modeu5_core03_probe_reset = {
+	remove_global_variable = modeu5_core03_probe_sequence
+	remove_global_variable = modeu5_core03_probe_location_change_count
+	remove_global_variable = modeu5_core03_probe_country_hook_count
+	remove_global_variable = modeu5_core03_probe_delayed_finalizer_count
+	remove_global_variable = modeu5_core03_probe_last_location_sequence
+	remove_global_variable = modeu5_core03_probe_last_country_hook_sequence
+	remove_global_variable = modeu5_core03_probe_last_delayed_finalizer_sequence
+	remove_global_variable = modeu5_core03_probe_location_hook_observed
+	remove_global_variable = modeu5_core03_probe_location_scopes_valid
+	remove_global_variable = modeu5_core03_probe_location_scopes_invalid
+	remove_global_variable = modeu5_core03_probe_duplicate_location_hook
+	remove_global_variable = modeu5_core03_probe_country_hook_observed
+	remove_global_variable = modeu5_core03_probe_new_country_formed_observed
+	remove_global_variable = modeu5_core03_probe_released_country_observed
+	remove_global_variable = modeu5_core03_probe_annexed_observed
+	remove_global_variable = modeu5_core03_probe_diplomatic_annexed_observed
+	remove_global_variable = modeu5_core03_probe_military_annexed_observed
+	remove_global_variable = modeu5_core03_probe_civil_war_annexed_observed
+	remove_global_variable = modeu5_core03_probe_annex_target_valid
+	remove_global_variable = modeu5_core03_probe_annex_target_invalid
+	remove_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+	remove_global_variable = modeu5_core03_probe_delayed_after_location_observed
+	remove_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+	if = {
+		limit = {
+			has_global_variable_list = modeu5_core03_probe_seen_locations
+		}
+		clear_global_variable_list = modeu5_core03_probe_seen_locations
+	}
+	set_global_variable = modeu5_core03_probe_reset_complete
+}

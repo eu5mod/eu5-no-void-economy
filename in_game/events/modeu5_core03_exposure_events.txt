@@ -1,0 +1,146 @@
+namespace = modeu5_core03_probe
+
+modeu5_core03_probe.1 = {
+	type = country_event
+	title = modeu5_core03_probe.1.title
+	desc = modeu5_core03_probe.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_core03_probe.reset
+		modeu5_core03_probe_reset = yes
+	}
+	option = {
+		name = modeu5_core03_probe.report
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_probe.2 = {
+	type = country_event
+	title = modeu5_core03_probe.2.title
+	desc = modeu5_core03_probe.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_core03_probe.location.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_location_hook_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.location.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_location_hook_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.scopes.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_location_scopes_valid
+			NOT = {
+				has_global_variable = modeu5_core03_probe_location_scopes_invalid
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.scopes.fail
+		trigger = {
+			OR = {
+				NOT = {
+					has_global_variable = modeu5_core03_probe_location_scopes_valid
+				}
+				has_global_variable = modeu5_core03_probe_location_scopes_invalid
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.duplicates.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_location_hook_observed
+			NOT = {
+				has_global_variable = modeu5_core03_probe_duplicate_location_hook
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.duplicates.fail
+		trigger = {
+			has_global_variable = modeu5_core03_probe_duplicate_location_hook
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.country.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_country_hook_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.country.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_country_hook_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.delayed.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.delayed.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.order.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_delayed_after_location_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.order.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_delayed_after_location_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.finalizers.one
+		trigger = {
+			has_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+			NOT = {
+				has_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.finalizers.multiple
+		trigger = {
+			has_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+		}
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

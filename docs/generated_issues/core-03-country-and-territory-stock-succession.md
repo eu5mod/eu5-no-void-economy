@@ -209,6 +209,7 @@ in_game/events/modeu5_debug_events.txt
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
+docs/tests/CORE_03_LIFECYCLE_HOOK_RUNBOOK.md
 docs/tests/TEST_PLAN.md
 ```
 
@@ -234,6 +235,9 @@ Related US: US-01, US-02, US-10.2, US-11
 - Ensure new-country and annexation finalizers cannot duplicate location-level transfers.
 - Use delayed validation where event sequencing may not yet have settled.
 - Never truncate a succession transfer because the winner lacks available capacity.
+- Keep the TECH-01 `098` lifecycle probe free of capacity and stock mutation.
+  Its observed hook overlap and ordering must define the final dispatcher
+  before CORE-03 gameplay is implemented.
 
 ## CORE-specific boundary checks
 
