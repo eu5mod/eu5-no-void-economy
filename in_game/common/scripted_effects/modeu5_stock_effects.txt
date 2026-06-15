@@ -63,20 +63,23 @@ modeu5_select_remove_reason_debug_test = {
 }
 
 # Internal read/replace helpers. These are not public mutation paths.
+# Pass the complete static map identifier as one argument. Forwarding $good$
+# into another helper leaves malformed names such as modeu5wheat$_stock_by_market.
 
 modeu5_read_country_stock_for_good = {
 	$market$ = { save_temporary_scope_as = modeu5_record_market }
 	$country$ = {
 		if = {
 			limit = {
+				has_variable_map = $map$
 				is_key_in_variable_map = {
-					name = modeu5_$good$_stock_by_market
+					name = $map$
 					target = scope:modeu5_record_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = $output$
-				value = "variable_map(modeu5_$good$_stock_by_market|scope:modeu5_record_market)"
+				value = "variable_map($map$|scope:modeu5_record_market)"
 			}
 		}
 		else = {
@@ -93,14 +96,15 @@ modeu5_read_country_capacity_for_good = {
 	$country$ = {
 		if = {
 			limit = {
+				has_variable_map = $map$
 				is_key_in_variable_map = {
-					name = modeu5_$good$_stock_cap_by_market
+					name = $map$
 					target = scope:modeu5_record_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = $output$
-				value = "variable_map(modeu5_$good$_stock_cap_by_market|scope:modeu5_record_market)"
+				value = "variable_map($map$|scope:modeu5_record_market)"
 			}
 		}
 		else = {
@@ -116,15 +120,15 @@ modeu5_read_market_stock = {
 	$market$ = { save_temporary_scope_as = modeu5_record_market }
 	if = {
 		limit = {
-			has_global_variable_map = modeu5_$good$_market_stock
+			has_global_variable_map = $map$
 			is_key_in_global_variable_map = {
-				name = modeu5_$good$_market_stock
+				name = $map$
 				target = scope:modeu5_record_market
 			}
 		}
 		save_temporary_scope_value_as = {
 			name = $output$
-			value = "global_variable_map(modeu5_$good$_market_stock|scope:modeu5_record_market)"
+			value = "global_variable_map($map$|scope:modeu5_record_market)"
 		}
 	}
 	else = {
@@ -139,18 +143,19 @@ modeu5_replace_country_stock_for_good = {
 	$country$ = {
 		if = {
 			limit = {
+				has_variable_map = $map$
 				is_key_in_variable_map = {
-					name = modeu5_$good$_stock_by_market
+					name = $map$
 					target = $market$
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_$good$_stock_by_market
+				name = $map$
 				key = $market$
 			}
 		}
 		add_to_variable_map = {
-			name = modeu5_$good$_stock_by_market
+			name = $map$
 			key = $market$
 			value = $value$
 		}
@@ -161,19 +166,19 @@ modeu5_replace_market_stock = {
 	$market$ = { save_temporary_scope_as = modeu5_record_market }
 	if = {
 		limit = {
-			has_global_variable_map = modeu5_$good$_market_stock
+			has_global_variable_map = $map$
 			is_key_in_global_variable_map = {
-				name = modeu5_$good$_market_stock
+				name = $map$
 				target = scope:modeu5_record_market
 			}
 		}
 		remove_from_global_variable_map = {
-			name = modeu5_$good$_market_stock
+			name = $map$
 			key = scope:modeu5_record_market
 		}
 	}
 	add_to_global_variable_map = {
-		name = modeu5_$good$_market_stock
+		name = $map$
 		key = scope:modeu5_record_market
 		value = $value$
 	}
@@ -208,19 +213,19 @@ modeu5_add_stock = {
 
 modeu5_add_stock_for_good = {
 	modeu5_read_country_stock_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_before_raw
 	}
 	modeu5_read_country_capacity_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_cap_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_cap_raw
 	}
 	modeu5_read_market_stock = {
-		good = $good$
+		map = modeu5_$good$_market_stock
 		market = scope:modeu5_market
 		output = modeu5_market_stock_before
 	}
@@ -354,7 +359,7 @@ modeu5_add_stock_for_good = {
 			}
 		}
 		modeu5_replace_country_stock_for_good = {
-			good = $good$
+			map = modeu5_$good$_stock_by_market
 			country = scope:modeu5_country
 			market = scope:modeu5_market
 			value = scope:modeu5_country_stock_after
@@ -363,7 +368,7 @@ modeu5_add_stock_for_good = {
 	if = {
 		limit = { scope:modeu5_actual_added_quantity > 0 }
 		modeu5_replace_market_stock = {
-			good = $good$
+			map = modeu5_$good$_market_stock
 			market = scope:modeu5_market
 			value = scope:modeu5_market_stock_after
 		}
@@ -401,19 +406,19 @@ modeu5_remove_stock = {
 
 modeu5_remove_stock_for_good = {
 	modeu5_read_country_stock_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_before_raw
 	}
 	modeu5_read_country_capacity_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_cap_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_cap_raw
 	}
 	modeu5_read_market_stock = {
-		good = $good$
+		map = modeu5_$good$_market_stock
 		market = scope:modeu5_market
 		output = modeu5_market_stock_before
 	}
@@ -543,7 +548,7 @@ modeu5_remove_stock_for_good = {
 			}
 		}
 		modeu5_replace_country_stock_for_good = {
-			good = $good$
+			map = modeu5_$good$_stock_by_market
 			country = scope:modeu5_country
 			market = scope:modeu5_market
 			value = scope:modeu5_country_stock_after
@@ -552,7 +557,7 @@ modeu5_remove_stock_for_good = {
 	if = {
 		limit = { scope:modeu5_actual_removed_quantity > 0 }
 		modeu5_replace_market_stock = {
-			good = $good$
+			map = modeu5_$good$_market_stock
 			market = scope:modeu5_market
 			value = scope:modeu5_market_stock_after
 		}
@@ -592,30 +597,30 @@ modeu5_transfer_stock = {
 
 modeu5_transfer_stock_for_good = {
 	modeu5_read_country_stock_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_by_market
 		country = scope:modeu5_seller_country
 		market = scope:modeu5_source_market
 		output = modeu5_seller_stock_before_raw
 	}
 	modeu5_read_country_stock_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_by_market
 		country = scope:modeu5_buyer_country
 		market = scope:modeu5_target_market
 		output = modeu5_buyer_stock_before_raw
 	}
 	modeu5_read_country_capacity_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_cap_by_market
 		country = scope:modeu5_buyer_country
 		market = scope:modeu5_target_market
 		output = modeu5_buyer_stock_cap_raw
 	}
 	modeu5_read_market_stock = {
-		good = $good$
+		map = modeu5_$good$_market_stock
 		market = scope:modeu5_source_market
 		output = modeu5_source_market_stock_before
 	}
 	modeu5_read_market_stock = {
-		good = $good$
+		map = modeu5_$good$_market_stock
 		market = scope:modeu5_target_market
 		output = modeu5_target_market_stock_before
 	}
@@ -840,7 +845,7 @@ modeu5_transfer_stock_for_good = {
 			}
 		}
 		modeu5_replace_country_stock_for_good = {
-			good = $good$
+			map = modeu5_$good$_stock_by_market
 			country = scope:modeu5_seller_country
 			market = scope:modeu5_source_market
 			value = scope:modeu5_seller_stock_after
@@ -855,7 +860,7 @@ modeu5_transfer_stock_for_good = {
 			}
 		}
 		modeu5_replace_country_stock_for_good = {
-			good = $good$
+			map = modeu5_$good$_stock_by_market
 			country = scope:modeu5_buyer_country
 			market = scope:modeu5_target_market
 			value = scope:modeu5_buyer_stock_after
@@ -867,12 +872,12 @@ modeu5_transfer_stock_for_good = {
 			scope:modeu5_actual_transferred_quantity > 0
 		}
 		modeu5_replace_market_stock = {
-			good = $good$
+			map = modeu5_$good$_market_stock
 			market = scope:modeu5_source_market
 			value = scope:modeu5_source_market_stock_after
 		}
 		modeu5_replace_market_stock = {
-			good = $good$
+			map = modeu5_$good$_market_stock
 			market = scope:modeu5_target_market
 			value = scope:modeu5_target_market_stock_after
 		}
@@ -884,12 +889,9 @@ modeu5_transfer_stock_for_good = {
 # CORE-01.4
 
 modeu5_decay_stock_default = {
-	modeu5_decay_stock = {
-		country = $country$
-		market = $market$
-		good = $good$
-		decay_rate = modeu5_default_monthly_decay_rate
-	}
+	$country$ = { save_temporary_scope_as = modeu5_default_decay_country }
+	$market$ = { save_temporary_scope_as = modeu5_default_decay_market }
+	modeu5_decay_stock_default_good_$good$ = yes
 }
 
 modeu5_decay_stock = {
@@ -924,19 +926,19 @@ modeu5_decay_stock = {
 
 modeu5_decay_stock_for_good = {
 	modeu5_read_country_stock_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_before_raw
 	}
 	modeu5_read_country_capacity_for_good = {
-		good = $good$
+		map = modeu5_$good$_stock_cap_by_market
 		country = scope:modeu5_country
 		market = scope:modeu5_market
 		output = modeu5_country_stock_cap_raw
 	}
 	modeu5_read_market_stock = {
-		good = $good$
+		map = modeu5_$good$_market_stock
 		market = scope:modeu5_market
 		output = modeu5_market_stock_before
 	}
@@ -1064,7 +1066,7 @@ modeu5_decay_stock_for_good = {
 			}
 		}
 		modeu5_replace_country_stock_for_good = {
-			good = $good$
+			map = modeu5_$good$_stock_by_market
 			country = scope:modeu5_country
 			market = scope:modeu5_market
 			value = scope:modeu5_country_stock_after
@@ -1073,7 +1075,7 @@ modeu5_decay_stock_for_good = {
 	if = {
 		limit = { scope:modeu5_decayed_quantity > 0 }
 		modeu5_replace_market_stock = {
-			good = $good$
+			map = modeu5_$good$_market_stock
 			market = scope:modeu5_market
 			value = scope:modeu5_market_stock_after
 		}

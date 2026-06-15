@@ -5,368 +5,442 @@ modeu5_add_stock_good_cotton = { modeu5_add_stock_for_good = { good = cotton } }
 modeu5_remove_stock_good_cotton = { modeu5_remove_stock_for_good = { good = cotton } }
 modeu5_transfer_stock_good_cotton = { modeu5_transfer_stock_for_good = { good = cotton } }
 modeu5_decay_stock_good_cotton = { modeu5_decay_stock_for_good = { good = cotton } }
+modeu5_decay_stock_default_good_cotton = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = cotton decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_sugar = { modeu5_add_stock_for_good = { good = sugar } }
 modeu5_remove_stock_good_sugar = { modeu5_remove_stock_for_good = { good = sugar } }
 modeu5_transfer_stock_good_sugar = { modeu5_transfer_stock_for_good = { good = sugar } }
 modeu5_decay_stock_good_sugar = { modeu5_decay_stock_for_good = { good = sugar } }
+modeu5_decay_stock_default_good_sugar = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = sugar decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_tobacco = { modeu5_add_stock_for_good = { good = tobacco } }
 modeu5_remove_stock_good_tobacco = { modeu5_remove_stock_for_good = { good = tobacco } }
 modeu5_transfer_stock_good_tobacco = { modeu5_transfer_stock_for_good = { good = tobacco } }
 modeu5_decay_stock_good_tobacco = { modeu5_decay_stock_for_good = { good = tobacco } }
+modeu5_decay_stock_default_good_tobacco = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = tobacco decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_tar = { modeu5_add_stock_for_good = { good = tar } }
 modeu5_remove_stock_good_tar = { modeu5_remove_stock_for_good = { good = tar } }
 modeu5_transfer_stock_good_tar = { modeu5_transfer_stock_for_good = { good = tar } }
 modeu5_decay_stock_good_tar = { modeu5_decay_stock_for_good = { good = tar } }
+modeu5_decay_stock_default_good_tar = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = tar decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_porcelain = { modeu5_add_stock_for_good = { good = porcelain } }
 modeu5_remove_stock_good_porcelain = { modeu5_remove_stock_for_good = { good = porcelain } }
 modeu5_transfer_stock_good_porcelain = { modeu5_transfer_stock_for_good = { good = porcelain } }
 modeu5_decay_stock_good_porcelain = { modeu5_decay_stock_for_good = { good = porcelain } }
+modeu5_decay_stock_default_good_porcelain = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = porcelain decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_naval_supplies = { modeu5_add_stock_for_good = { good = naval_supplies } }
 modeu5_remove_stock_good_naval_supplies = { modeu5_remove_stock_for_good = { good = naval_supplies } }
 modeu5_transfer_stock_good_naval_supplies = { modeu5_transfer_stock_for_good = { good = naval_supplies } }
 modeu5_decay_stock_good_naval_supplies = { modeu5_decay_stock_for_good = { good = naval_supplies } }
+modeu5_decay_stock_default_good_naval_supplies = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = naval_supplies decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_firearms = { modeu5_add_stock_for_good = { good = firearms } }
 modeu5_remove_stock_good_firearms = { modeu5_remove_stock_for_good = { good = firearms } }
 modeu5_transfer_stock_good_firearms = { modeu5_transfer_stock_for_good = { good = firearms } }
 modeu5_decay_stock_good_firearms = { modeu5_decay_stock_for_good = { good = firearms } }
+modeu5_decay_stock_default_good_firearms = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = firearms decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_cannons = { modeu5_add_stock_for_good = { good = cannons } }
 modeu5_remove_stock_good_cannons = { modeu5_remove_stock_for_good = { good = cannons } }
 modeu5_transfer_stock_good_cannons = { modeu5_transfer_stock_for_good = { good = cannons } }
 modeu5_decay_stock_good_cannons = { modeu5_decay_stock_for_good = { good = cannons } }
+modeu5_decay_stock_default_good_cannons = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = cannons decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_weaponry = { modeu5_add_stock_for_good = { good = weaponry } }
 modeu5_remove_stock_good_weaponry = { modeu5_remove_stock_for_good = { good = weaponry } }
 modeu5_transfer_stock_good_weaponry = { modeu5_transfer_stock_for_good = { good = weaponry } }
 modeu5_decay_stock_good_weaponry = { modeu5_decay_stock_for_good = { good = weaponry } }
+modeu5_decay_stock_default_good_weaponry = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = weaponry decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_glass = { modeu5_add_stock_for_good = { good = glass } }
 modeu5_remove_stock_good_glass = { modeu5_remove_stock_for_good = { good = glass } }
 modeu5_transfer_stock_good_glass = { modeu5_transfer_stock_for_good = { good = glass } }
 modeu5_decay_stock_good_glass = { modeu5_decay_stock_for_good = { good = glass } }
+modeu5_decay_stock_default_good_glass = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = glass decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_steel = { modeu5_add_stock_for_good = { good = steel } }
 modeu5_remove_stock_good_steel = { modeu5_remove_stock_for_good = { good = steel } }
 modeu5_transfer_stock_good_steel = { modeu5_transfer_stock_for_good = { good = steel } }
 modeu5_decay_stock_good_steel = { modeu5_decay_stock_for_good = { good = steel } }
+modeu5_decay_stock_default_good_steel = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = steel decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_cloth = { modeu5_add_stock_for_good = { good = cloth } }
 modeu5_remove_stock_good_cloth = { modeu5_remove_stock_for_good = { good = cloth } }
 modeu5_transfer_stock_good_cloth = { modeu5_transfer_stock_for_good = { good = cloth } }
 modeu5_decay_stock_good_cloth = { modeu5_decay_stock_for_good = { good = cloth } }
+modeu5_decay_stock_default_good_cloth = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = cloth decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_fine_cloth = { modeu5_add_stock_for_good = { good = fine_cloth } }
 modeu5_remove_stock_good_fine_cloth = { modeu5_remove_stock_for_good = { good = fine_cloth } }
 modeu5_transfer_stock_good_fine_cloth = { modeu5_transfer_stock_for_good = { good = fine_cloth } }
 modeu5_decay_stock_good_fine_cloth = { modeu5_decay_stock_for_good = { good = fine_cloth } }
+modeu5_decay_stock_default_good_fine_cloth = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = fine_cloth decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_liquor = { modeu5_add_stock_for_good = { good = liquor } }
 modeu5_remove_stock_good_liquor = { modeu5_remove_stock_for_good = { good = liquor } }
 modeu5_transfer_stock_good_liquor = { modeu5_transfer_stock_for_good = { good = liquor } }
 modeu5_decay_stock_good_liquor = { modeu5_decay_stock_for_good = { good = liquor } }
+modeu5_decay_stock_default_good_liquor = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = liquor decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_beer = { modeu5_add_stock_for_good = { good = beer } }
 modeu5_remove_stock_good_beer = { modeu5_remove_stock_for_good = { good = beer } }
 modeu5_transfer_stock_good_beer = { modeu5_transfer_stock_for_good = { good = beer } }
 modeu5_decay_stock_good_beer = { modeu5_decay_stock_for_good = { good = beer } }
+modeu5_decay_stock_default_good_beer = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = beer decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_paper = { modeu5_add_stock_for_good = { good = paper } }
 modeu5_remove_stock_good_paper = { modeu5_remove_stock_for_good = { good = paper } }
 modeu5_transfer_stock_good_paper = { modeu5_transfer_stock_for_good = { good = paper } }
 modeu5_decay_stock_good_paper = { modeu5_decay_stock_for_good = { good = paper } }
+modeu5_decay_stock_default_good_paper = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = paper decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_books = { modeu5_add_stock_for_good = { good = books } }
 modeu5_remove_stock_good_books = { modeu5_remove_stock_for_good = { good = books } }
 modeu5_transfer_stock_good_books = { modeu5_transfer_stock_for_good = { good = books } }
 modeu5_decay_stock_good_books = { modeu5_decay_stock_for_good = { good = books } }
+modeu5_decay_stock_default_good_books = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = books decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_jewelry = { modeu5_add_stock_for_good = { good = jewelry } }
 modeu5_remove_stock_good_jewelry = { modeu5_remove_stock_for_good = { good = jewelry } }
 modeu5_transfer_stock_good_jewelry = { modeu5_transfer_stock_for_good = { good = jewelry } }
 modeu5_decay_stock_good_jewelry = { modeu5_decay_stock_for_good = { good = jewelry } }
+modeu5_decay_stock_default_good_jewelry = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = jewelry decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_leather = { modeu5_add_stock_for_good = { good = leather } }
 modeu5_remove_stock_good_leather = { modeu5_remove_stock_for_good = { good = leather } }
 modeu5_transfer_stock_good_leather = { modeu5_transfer_stock_for_good = { good = leather } }
 modeu5_decay_stock_good_leather = { modeu5_decay_stock_for_good = { good = leather } }
+modeu5_decay_stock_default_good_leather = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = leather decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_tools = { modeu5_add_stock_for_good = { good = tools } }
 modeu5_remove_stock_good_tools = { modeu5_remove_stock_for_good = { good = tools } }
 modeu5_transfer_stock_good_tools = { modeu5_transfer_stock_for_good = { good = tools } }
 modeu5_decay_stock_good_tools = { modeu5_decay_stock_for_good = { good = tools } }
+modeu5_decay_stock_default_good_tools = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = tools decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_masonry = { modeu5_add_stock_for_good = { good = masonry } }
 modeu5_remove_stock_good_masonry = { modeu5_remove_stock_for_good = { good = masonry } }
 modeu5_transfer_stock_good_masonry = { modeu5_transfer_stock_for_good = { good = masonry } }
 modeu5_decay_stock_good_masonry = { modeu5_decay_stock_for_good = { good = masonry } }
+modeu5_decay_stock_default_good_masonry = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = masonry decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_lacquerware = { modeu5_add_stock_for_good = { good = lacquerware } }
 modeu5_remove_stock_good_lacquerware = { modeu5_remove_stock_for_good = { good = lacquerware } }
 modeu5_transfer_stock_good_lacquerware = { modeu5_transfer_stock_for_good = { good = lacquerware } }
 modeu5_decay_stock_good_lacquerware = { modeu5_decay_stock_for_good = { good = lacquerware } }
+modeu5_decay_stock_default_good_lacquerware = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = lacquerware decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_pottery = { modeu5_add_stock_for_good = { good = pottery } }
 modeu5_remove_stock_good_pottery = { modeu5_remove_stock_for_good = { good = pottery } }
 modeu5_transfer_stock_good_pottery = { modeu5_transfer_stock_for_good = { good = pottery } }
 modeu5_decay_stock_good_pottery = { modeu5_decay_stock_for_good = { good = pottery } }
+modeu5_decay_stock_default_good_pottery = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = pottery decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_furniture = { modeu5_add_stock_for_good = { good = furniture } }
 modeu5_remove_stock_good_furniture = { modeu5_remove_stock_for_good = { good = furniture } }
 modeu5_transfer_stock_good_furniture = { modeu5_transfer_stock_for_good = { good = furniture } }
 modeu5_decay_stock_good_furniture = { modeu5_decay_stock_for_good = { good = furniture } }
+modeu5_decay_stock_default_good_furniture = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = furniture decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_horses = { modeu5_add_stock_for_good = { good = horses } }
 modeu5_remove_stock_good_horses = { modeu5_remove_stock_for_good = { good = horses } }
 modeu5_transfer_stock_good_horses = { modeu5_transfer_stock_for_good = { good = horses } }
 modeu5_decay_stock_good_horses = { modeu5_decay_stock_for_good = { good = horses } }
+modeu5_decay_stock_default_good_horses = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = horses decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_clay = { modeu5_add_stock_for_good = { good = clay } }
 modeu5_remove_stock_good_clay = { modeu5_remove_stock_for_good = { good = clay } }
 modeu5_transfer_stock_good_clay = { modeu5_transfer_stock_for_good = { good = clay } }
 modeu5_decay_stock_good_clay = { modeu5_decay_stock_for_good = { good = clay } }
+modeu5_decay_stock_default_good_clay = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = clay decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_sand = { modeu5_add_stock_for_good = { good = sand } }
 modeu5_remove_stock_good_sand = { modeu5_remove_stock_for_good = { good = sand } }
 modeu5_transfer_stock_good_sand = { modeu5_transfer_stock_for_good = { good = sand } }
 modeu5_decay_stock_good_sand = { modeu5_decay_stock_for_good = { good = sand } }
+modeu5_decay_stock_default_good_sand = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = sand decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_coal = { modeu5_add_stock_for_good = { good = coal } }
 modeu5_remove_stock_good_coal = { modeu5_remove_stock_for_good = { good = coal } }
 modeu5_transfer_stock_good_coal = { modeu5_transfer_stock_for_good = { good = coal } }
 modeu5_decay_stock_good_coal = { modeu5_decay_stock_for_good = { good = coal } }
+modeu5_decay_stock_default_good_coal = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = coal decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_iron = { modeu5_add_stock_for_good = { good = iron } }
 modeu5_remove_stock_good_iron = { modeu5_remove_stock_for_good = { good = iron } }
 modeu5_transfer_stock_good_iron = { modeu5_transfer_stock_for_good = { good = iron } }
 modeu5_decay_stock_good_iron = { modeu5_decay_stock_for_good = { good = iron } }
+modeu5_decay_stock_default_good_iron = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = iron decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_copper = { modeu5_add_stock_for_good = { good = copper } }
 modeu5_remove_stock_good_copper = { modeu5_remove_stock_for_good = { good = copper } }
 modeu5_transfer_stock_good_copper = { modeu5_transfer_stock_for_good = { good = copper } }
 modeu5_decay_stock_good_copper = { modeu5_decay_stock_for_good = { good = copper } }
+modeu5_decay_stock_default_good_copper = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = copper decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_goods_gold = { modeu5_add_stock_for_good = { good = goods_gold } }
 modeu5_remove_stock_good_goods_gold = { modeu5_remove_stock_for_good = { good = goods_gold } }
 modeu5_transfer_stock_good_goods_gold = { modeu5_transfer_stock_for_good = { good = goods_gold } }
 modeu5_decay_stock_good_goods_gold = { modeu5_decay_stock_for_good = { good = goods_gold } }
+modeu5_decay_stock_default_good_goods_gold = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = goods_gold decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_silver = { modeu5_add_stock_for_good = { good = silver } }
 modeu5_remove_stock_good_silver = { modeu5_remove_stock_for_good = { good = silver } }
 modeu5_transfer_stock_good_silver = { modeu5_transfer_stock_for_good = { good = silver } }
 modeu5_decay_stock_good_silver = { modeu5_decay_stock_for_good = { good = silver } }
+modeu5_decay_stock_default_good_silver = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = silver decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_stone = { modeu5_add_stock_for_good = { good = stone } }
 modeu5_remove_stock_good_stone = { modeu5_remove_stock_for_good = { good = stone } }
 modeu5_transfer_stock_good_stone = { modeu5_transfer_stock_for_good = { good = stone } }
 modeu5_decay_stock_good_stone = { modeu5_decay_stock_for_good = { good = stone } }
+modeu5_decay_stock_default_good_stone = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = stone decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_tin = { modeu5_add_stock_for_good = { good = tin } }
 modeu5_remove_stock_good_tin = { modeu5_remove_stock_for_good = { good = tin } }
 modeu5_transfer_stock_good_tin = { modeu5_transfer_stock_for_good = { good = tin } }
 modeu5_decay_stock_good_tin = { modeu5_decay_stock_for_good = { good = tin } }
+modeu5_decay_stock_default_good_tin = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = tin decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_lead = { modeu5_add_stock_for_good = { good = lead } }
 modeu5_remove_stock_good_lead = { modeu5_remove_stock_for_good = { good = lead } }
 modeu5_transfer_stock_good_lead = { modeu5_transfer_stock_for_good = { good = lead } }
 modeu5_decay_stock_good_lead = { modeu5_decay_stock_for_good = { good = lead } }
+modeu5_decay_stock_default_good_lead = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = lead decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_silk = { modeu5_add_stock_for_good = { good = silk } }
 modeu5_remove_stock_good_silk = { modeu5_remove_stock_for_good = { good = silk } }
 modeu5_transfer_stock_good_silk = { modeu5_transfer_stock_for_good = { good = silk } }
 modeu5_decay_stock_good_silk = { modeu5_decay_stock_for_good = { good = silk } }
+modeu5_decay_stock_default_good_silk = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = silk decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_dyes = { modeu5_add_stock_for_good = { good = dyes } }
 modeu5_remove_stock_good_dyes = { modeu5_remove_stock_for_good = { good = dyes } }
 modeu5_transfer_stock_good_dyes = { modeu5_transfer_stock_for_good = { good = dyes } }
 modeu5_decay_stock_good_dyes = { modeu5_decay_stock_for_good = { good = dyes } }
+modeu5_decay_stock_default_good_dyes = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = dyes decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_incense = { modeu5_add_stock_for_good = { good = incense } }
 modeu5_remove_stock_good_incense = { modeu5_remove_stock_for_good = { good = incense } }
 modeu5_transfer_stock_good_incense = { modeu5_transfer_stock_for_good = { good = incense } }
 modeu5_decay_stock_good_incense = { modeu5_decay_stock_for_good = { good = incense } }
+modeu5_decay_stock_default_good_incense = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = incense decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_tea = { modeu5_add_stock_for_good = { good = tea } }
 modeu5_remove_stock_good_tea = { modeu5_remove_stock_for_good = { good = tea } }
 modeu5_transfer_stock_good_tea = { modeu5_transfer_stock_for_good = { good = tea } }
 modeu5_decay_stock_good_tea = { modeu5_decay_stock_for_good = { good = tea } }
+modeu5_decay_stock_default_good_tea = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = tea decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_cocoa = { modeu5_add_stock_for_good = { good = cocoa } }
 modeu5_remove_stock_good_cocoa = { modeu5_remove_stock_for_good = { good = cocoa } }
 modeu5_transfer_stock_good_cocoa = { modeu5_transfer_stock_for_good = { good = cocoa } }
 modeu5_decay_stock_good_cocoa = { modeu5_decay_stock_for_good = { good = cocoa } }
+modeu5_decay_stock_default_good_cocoa = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = cocoa decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_coffee = { modeu5_add_stock_for_good = { good = coffee } }
 modeu5_remove_stock_good_coffee = { modeu5_remove_stock_for_good = { good = coffee } }
 modeu5_transfer_stock_good_coffee = { modeu5_transfer_stock_for_good = { good = coffee } }
 modeu5_decay_stock_good_coffee = { modeu5_decay_stock_for_good = { good = coffee } }
+modeu5_decay_stock_default_good_coffee = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = coffee decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_fiber_crops = { modeu5_add_stock_for_good = { good = fiber_crops } }
 modeu5_remove_stock_good_fiber_crops = { modeu5_remove_stock_for_good = { good = fiber_crops } }
 modeu5_transfer_stock_good_fiber_crops = { modeu5_transfer_stock_for_good = { good = fiber_crops } }
 modeu5_decay_stock_good_fiber_crops = { modeu5_decay_stock_for_good = { good = fiber_crops } }
+modeu5_decay_stock_default_good_fiber_crops = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = fiber_crops decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_ivory = { modeu5_add_stock_for_good = { good = ivory } }
 modeu5_remove_stock_good_ivory = { modeu5_remove_stock_for_good = { good = ivory } }
 modeu5_transfer_stock_good_ivory = { modeu5_transfer_stock_for_good = { good = ivory } }
 modeu5_decay_stock_good_ivory = { modeu5_decay_stock_for_good = { good = ivory } }
+modeu5_decay_stock_default_good_ivory = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = ivory decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_lumber = { modeu5_add_stock_for_good = { good = lumber } }
 modeu5_remove_stock_good_lumber = { modeu5_remove_stock_for_good = { good = lumber } }
 modeu5_transfer_stock_good_lumber = { modeu5_transfer_stock_for_good = { good = lumber } }
 modeu5_decay_stock_good_lumber = { modeu5_decay_stock_for_good = { good = lumber } }
+modeu5_decay_stock_default_good_lumber = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = lumber decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_salt = { modeu5_add_stock_for_good = { good = salt } }
 modeu5_remove_stock_good_salt = { modeu5_remove_stock_for_good = { good = salt } }
 modeu5_transfer_stock_good_salt = { modeu5_transfer_stock_for_good = { good = salt } }
 modeu5_decay_stock_good_salt = { modeu5_decay_stock_for_good = { good = salt } }
+modeu5_decay_stock_default_good_salt = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = salt decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_medicaments = { modeu5_add_stock_for_good = { good = medicaments } }
 modeu5_remove_stock_good_medicaments = { modeu5_remove_stock_for_good = { good = medicaments } }
 modeu5_transfer_stock_good_medicaments = { modeu5_transfer_stock_for_good = { good = medicaments } }
 modeu5_decay_stock_good_medicaments = { modeu5_decay_stock_for_good = { good = medicaments } }
+modeu5_decay_stock_default_good_medicaments = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = medicaments decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_gems = { modeu5_add_stock_for_good = { good = gems } }
 modeu5_remove_stock_good_gems = { modeu5_remove_stock_for_good = { good = gems } }
 modeu5_transfer_stock_good_gems = { modeu5_transfer_stock_for_good = { good = gems } }
 modeu5_decay_stock_good_gems = { modeu5_decay_stock_for_good = { good = gems } }
+modeu5_decay_stock_default_good_gems = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = gems decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_pearls = { modeu5_add_stock_for_good = { good = pearls } }
 modeu5_remove_stock_good_pearls = { modeu5_remove_stock_for_good = { good = pearls } }
 modeu5_transfer_stock_good_pearls = { modeu5_transfer_stock_for_good = { good = pearls } }
 modeu5_decay_stock_good_pearls = { modeu5_decay_stock_for_good = { good = pearls } }
+modeu5_decay_stock_default_good_pearls = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = pearls decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_amber = { modeu5_add_stock_for_good = { good = amber } }
 modeu5_remove_stock_good_amber = { modeu5_remove_stock_for_good = { good = amber } }
 modeu5_transfer_stock_good_amber = { modeu5_transfer_stock_for_good = { good = amber } }
 modeu5_decay_stock_good_amber = { modeu5_decay_stock_for_good = { good = amber } }
+modeu5_decay_stock_default_good_amber = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = amber decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_saltpeter = { modeu5_add_stock_for_good = { good = saltpeter } }
 modeu5_remove_stock_good_saltpeter = { modeu5_remove_stock_for_good = { good = saltpeter } }
 modeu5_transfer_stock_good_saltpeter = { modeu5_transfer_stock_for_good = { good = saltpeter } }
 modeu5_decay_stock_good_saltpeter = { modeu5_decay_stock_for_good = { good = saltpeter } }
+modeu5_decay_stock_default_good_saltpeter = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = saltpeter decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_alum = { modeu5_add_stock_for_good = { good = alum } }
 modeu5_remove_stock_good_alum = { modeu5_remove_stock_for_good = { good = alum } }
 modeu5_transfer_stock_good_alum = { modeu5_transfer_stock_for_good = { good = alum } }
 modeu5_decay_stock_good_alum = { modeu5_decay_stock_for_good = { good = alum } }
+modeu5_decay_stock_default_good_alum = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = alum decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_wine = { modeu5_add_stock_for_good = { good = wine } }
 modeu5_remove_stock_good_wine = { modeu5_remove_stock_for_good = { good = wine } }
 modeu5_transfer_stock_good_wine = { modeu5_transfer_stock_for_good = { good = wine } }
 modeu5_decay_stock_good_wine = { modeu5_decay_stock_for_good = { good = wine } }
+modeu5_decay_stock_default_good_wine = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = wine decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_elephants = { modeu5_add_stock_for_good = { good = elephants } }
 modeu5_remove_stock_good_elephants = { modeu5_remove_stock_for_good = { good = elephants } }
 modeu5_transfer_stock_good_elephants = { modeu5_transfer_stock_for_good = { good = elephants } }
 modeu5_decay_stock_good_elephants = { modeu5_decay_stock_for_good = { good = elephants } }
+modeu5_decay_stock_default_good_elephants = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = elephants decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_marble = { modeu5_add_stock_for_good = { good = marble } }
 modeu5_remove_stock_good_marble = { modeu5_remove_stock_for_good = { good = marble } }
 modeu5_transfer_stock_good_marble = { modeu5_transfer_stock_for_good = { good = marble } }
 modeu5_decay_stock_good_marble = { modeu5_decay_stock_for_good = { good = marble } }
+modeu5_decay_stock_default_good_marble = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = marble decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_mercury = { modeu5_add_stock_for_good = { good = mercury } }
 modeu5_remove_stock_good_mercury = { modeu5_remove_stock_for_good = { good = mercury } }
 modeu5_transfer_stock_good_mercury = { modeu5_transfer_stock_for_good = { good = mercury } }
 modeu5_decay_stock_good_mercury = { modeu5_decay_stock_for_good = { good = mercury } }
+modeu5_decay_stock_default_good_mercury = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = mercury decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_saffron = { modeu5_add_stock_for_good = { good = saffron } }
 modeu5_remove_stock_good_saffron = { modeu5_remove_stock_for_good = { good = saffron } }
 modeu5_transfer_stock_good_saffron = { modeu5_transfer_stock_for_good = { good = saffron } }
 modeu5_decay_stock_good_saffron = { modeu5_decay_stock_for_good = { good = saffron } }
+modeu5_decay_stock_default_good_saffron = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = saffron decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_pepper = { modeu5_add_stock_for_good = { good = pepper } }
 modeu5_remove_stock_good_pepper = { modeu5_remove_stock_for_good = { good = pepper } }
 modeu5_transfer_stock_good_pepper = { modeu5_transfer_stock_for_good = { good = pepper } }
 modeu5_decay_stock_good_pepper = { modeu5_decay_stock_for_good = { good = pepper } }
+modeu5_decay_stock_default_good_pepper = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = pepper decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_cloves = { modeu5_add_stock_for_good = { good = cloves } }
 modeu5_remove_stock_good_cloves = { modeu5_remove_stock_for_good = { good = cloves } }
 modeu5_transfer_stock_good_cloves = { modeu5_transfer_stock_for_good = { good = cloves } }
 modeu5_decay_stock_good_cloves = { modeu5_decay_stock_for_good = { good = cloves } }
+modeu5_decay_stock_default_good_cloves = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = cloves decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_chili = { modeu5_add_stock_for_good = { good = chili } }
 modeu5_remove_stock_good_chili = { modeu5_remove_stock_for_good = { good = chili } }
 modeu5_transfer_stock_good_chili = { modeu5_transfer_stock_for_good = { good = chili } }
 modeu5_decay_stock_good_chili = { modeu5_decay_stock_for_good = { good = chili } }
+modeu5_decay_stock_default_good_chili = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = chili decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_wool = { modeu5_add_stock_for_good = { good = wool } }
 modeu5_remove_stock_good_wool = { modeu5_remove_stock_for_good = { good = wool } }
 modeu5_transfer_stock_good_wool = { modeu5_transfer_stock_for_good = { good = wool } }
 modeu5_decay_stock_good_wool = { modeu5_decay_stock_for_good = { good = wool } }
+modeu5_decay_stock_default_good_wool = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = wool decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_wild_game = { modeu5_add_stock_for_good = { good = wild_game } }
 modeu5_remove_stock_good_wild_game = { modeu5_remove_stock_for_good = { good = wild_game } }
 modeu5_transfer_stock_good_wild_game = { modeu5_transfer_stock_for_good = { good = wild_game } }
 modeu5_decay_stock_good_wild_game = { modeu5_decay_stock_for_good = { good = wild_game } }
+modeu5_decay_stock_default_good_wild_game = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = wild_game decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_fur = { modeu5_add_stock_for_good = { good = fur } }
 modeu5_remove_stock_good_fur = { modeu5_remove_stock_for_good = { good = fur } }
 modeu5_transfer_stock_good_fur = { modeu5_transfer_stock_for_good = { good = fur } }
 modeu5_decay_stock_good_fur = { modeu5_decay_stock_for_good = { good = fur } }
+modeu5_decay_stock_default_good_fur = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = fur decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_fish = { modeu5_add_stock_for_good = { good = fish } }
 modeu5_remove_stock_good_fish = { modeu5_remove_stock_for_good = { good = fish } }
 modeu5_transfer_stock_good_fish = { modeu5_transfer_stock_for_good = { good = fish } }
 modeu5_decay_stock_good_fish = { modeu5_decay_stock_for_good = { good = fish } }
+modeu5_decay_stock_default_good_fish = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = fish decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_wheat = { modeu5_add_stock_for_good = { good = wheat } }
 modeu5_remove_stock_good_wheat = { modeu5_remove_stock_for_good = { good = wheat } }
 modeu5_transfer_stock_good_wheat = { modeu5_transfer_stock_for_good = { good = wheat } }
 modeu5_decay_stock_good_wheat = { modeu5_decay_stock_for_good = { good = wheat } }
+modeu5_decay_stock_default_good_wheat = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = wheat decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_maize = { modeu5_add_stock_for_good = { good = maize } }
 modeu5_remove_stock_good_maize = { modeu5_remove_stock_for_good = { good = maize } }
 modeu5_transfer_stock_good_maize = { modeu5_transfer_stock_for_good = { good = maize } }
 modeu5_decay_stock_good_maize = { modeu5_decay_stock_for_good = { good = maize } }
+modeu5_decay_stock_default_good_maize = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = maize decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_rice = { modeu5_add_stock_for_good = { good = rice } }
 modeu5_remove_stock_good_rice = { modeu5_remove_stock_for_good = { good = rice } }
 modeu5_transfer_stock_good_rice = { modeu5_transfer_stock_for_good = { good = rice } }
 modeu5_decay_stock_good_rice = { modeu5_decay_stock_for_good = { good = rice } }
+modeu5_decay_stock_default_good_rice = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = rice decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_millet = { modeu5_add_stock_for_good = { good = millet } }
 modeu5_remove_stock_good_millet = { modeu5_remove_stock_for_good = { good = millet } }
 modeu5_transfer_stock_good_millet = { modeu5_transfer_stock_for_good = { good = millet } }
 modeu5_decay_stock_good_millet = { modeu5_decay_stock_for_good = { good = millet } }
+modeu5_decay_stock_default_good_millet = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = millet decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_legumes = { modeu5_add_stock_for_good = { good = legumes } }
 modeu5_remove_stock_good_legumes = { modeu5_remove_stock_for_good = { good = legumes } }
 modeu5_transfer_stock_good_legumes = { modeu5_transfer_stock_for_good = { good = legumes } }
 modeu5_decay_stock_good_legumes = { modeu5_decay_stock_for_good = { good = legumes } }
+modeu5_decay_stock_default_good_legumes = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = legumes decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_potato = { modeu5_add_stock_for_good = { good = potato } }
 modeu5_remove_stock_good_potato = { modeu5_remove_stock_for_good = { good = potato } }
 modeu5_transfer_stock_good_potato = { modeu5_transfer_stock_for_good = { good = potato } }
 modeu5_decay_stock_good_potato = { modeu5_decay_stock_for_good = { good = potato } }
+modeu5_decay_stock_default_good_potato = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = potato decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_livestock = { modeu5_add_stock_for_good = { good = livestock } }
 modeu5_remove_stock_good_livestock = { modeu5_remove_stock_for_good = { good = livestock } }
 modeu5_transfer_stock_good_livestock = { modeu5_transfer_stock_for_good = { good = livestock } }
 modeu5_decay_stock_good_livestock = { modeu5_decay_stock_for_good = { good = livestock } }
+modeu5_decay_stock_default_good_livestock = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = livestock decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_olives = { modeu5_add_stock_for_good = { good = olives } }
 modeu5_remove_stock_good_olives = { modeu5_remove_stock_for_good = { good = olives } }
 modeu5_transfer_stock_good_olives = { modeu5_transfer_stock_for_good = { good = olives } }
 modeu5_decay_stock_good_olives = { modeu5_decay_stock_for_good = { good = olives } }
+modeu5_decay_stock_default_good_olives = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = olives decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_fruit = { modeu5_add_stock_for_good = { good = fruit } }
 modeu5_remove_stock_good_fruit = { modeu5_remove_stock_for_good = { good = fruit } }
 modeu5_transfer_stock_good_fruit = { modeu5_transfer_stock_for_good = { good = fruit } }
 modeu5_decay_stock_good_fruit = { modeu5_decay_stock_for_good = { good = fruit } }
+modeu5_decay_stock_default_good_fruit = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = fruit decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_beeswax = { modeu5_add_stock_for_good = { good = beeswax } }
 modeu5_remove_stock_good_beeswax = { modeu5_remove_stock_for_good = { good = beeswax } }
 modeu5_transfer_stock_good_beeswax = { modeu5_transfer_stock_for_good = { good = beeswax } }
 modeu5_decay_stock_good_beeswax = { modeu5_decay_stock_for_good = { good = beeswax } }
+modeu5_decay_stock_default_good_beeswax = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = beeswax decay_rate = modeu5_default_monthly_decay_rate } }
 
 modeu5_add_stock_good_slaves_goods = { modeu5_add_stock_for_good = { good = slaves_goods } }
 modeu5_remove_stock_good_slaves_goods = { modeu5_remove_stock_for_good = { good = slaves_goods } }
 modeu5_transfer_stock_good_slaves_goods = { modeu5_transfer_stock_for_good = { good = slaves_goods } }
 modeu5_decay_stock_good_slaves_goods = { modeu5_decay_stock_for_good = { good = slaves_goods } }
+modeu5_decay_stock_default_good_slaves_goods = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = slaves_goods decay_rate = modeu5_default_monthly_decay_rate } }

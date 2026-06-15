@@ -31,5 +31,6 @@ goods=(
 		printf 'modeu5_remove_stock_good_%s = { modeu5_remove_stock_for_good = { good = %s } }\n' "$good" "$good"
 		printf 'modeu5_transfer_stock_good_%s = { modeu5_transfer_stock_for_good = { good = %s } }\n' "$good" "$good"
 		printf 'modeu5_decay_stock_good_%s = { modeu5_decay_stock_for_good = { good = %s } }\n' "$good" "$good"
+		printf 'modeu5_decay_stock_default_good_%s = { modeu5_decay_stock = { country = scope:modeu5_default_decay_country market = scope:modeu5_default_decay_market good = %s decay_rate = modeu5_default_monthly_decay_rate } }\n' "$good" "$good"
 	done
 } > "$output"
