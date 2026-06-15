@@ -39,7 +39,6 @@ modeu5_debug.2 = {
 	title = modeu5_debug.2.title
 	desc = modeu5_debug.2.desc
 	outcome = neutral
-	orphan = yes
 
 	trigger = {
 		always = no

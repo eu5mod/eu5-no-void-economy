@@ -510,7 +510,6 @@ modeu5_transfer_stock_calculate = {
 			name = modeu5_invalid_same_record_transfer
 			value = 1
 		}
-		error_log = "ModeU5 modeu5_transfer_stock rejected an exact source-record-to-source-record transfer."
 	}
 
 	if = {
