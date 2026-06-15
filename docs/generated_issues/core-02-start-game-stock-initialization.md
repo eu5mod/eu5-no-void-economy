@@ -259,8 +259,10 @@ in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_triggers/modeu5_stock_triggers.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/events/modeu5_debug_events.txt
-in_game/localization/
+packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt
+packages/modeu5_core_tests/main_menu/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
