@@ -561,13 +561,14 @@ Run from a clean 1337 campaign:
 event modeu5_debug.1
 ```
 
-The event exposes four test actions:
+The event exposes five test actions:
 
 ```txt
 Add / remove / decay on the current country's capital market
 Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
 Rebuild and consistency validation
+US-11 dirty-record reconciliation
 ```
 
 Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
@@ -588,6 +589,8 @@ modeu5_test_inter_market_transfer_passed = 1
 modeu5_test_rebuild_passed = 1
 modeu5_test_validation_repair_passed = 1
 modeu5_test_validation_noop_passed = 1
+modeu5_test_reconciliation_dirty_passed = 1
+modeu5_test_reconciliation_empty_passed = 1
 ```
 
 Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
@@ -876,6 +879,52 @@ Expected result-event rows:
 PASS - Rebuild market aggregate
 PASS - Validation detects and repairs divergence
 PASS - Consistent validation is a no-op
+```
+
+---
+
+### Test 8C — Incremental US-11 reconciliation
+
+Setup:
+
+```txt
+event modeu5_debug.1
+Select "Test US-11 dirty-record reconciliation"
+```
+
+Expected result:
+
+```txt
+One deduplicated wheat/market record is checked
+The corrupted aggregate 200 is rebuilt to 150
+records_checked = 1
+inconsistencies_found = 1
+rebuilds_called = 1
+failures_after_rebuild = 0
+The dirty list is empty after processing
+A second pass with no mutation checks zero records
+```
+
+---
+
+### Test 8D — Pulse guards and yearly safety pass
+
+Setup:
+
+```txt
+Use an initialized controlled fixture
+Trigger multiple country monthly pulses in one calendar month
+Corrupt one market/good cache without adding it to a dirty list
+Trigger multiple country yearly pulses in one calendar year
+```
+
+Expected result:
+
+```txt
+The monthly global reconciliation runs once for the month
+The yearly global reconciliation runs once for the year
+The yearly exhaustive pass detects and rebuilds the unindexed corruption
+Automatic reconciliation does not run before CORE-02 initialization completes
 ```
 
 ## US-00 void economy tests

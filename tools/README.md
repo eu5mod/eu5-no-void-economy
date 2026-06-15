@@ -13,6 +13,11 @@ The shell only expands
 script in that template; shared validation and arithmetic remain in
 `modeu5_stock_effects.txt`.
 
+The generated adapters also contain the literal per-good US-11 dirty-list
+names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
+counters, and repair behavior remain in shared EU5 scripted effects. The shell
+contains enumeration only, not stock or reconciliation business rules.
+
 Do not edit
 `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
 After changing the template or goods registry, regenerate and run

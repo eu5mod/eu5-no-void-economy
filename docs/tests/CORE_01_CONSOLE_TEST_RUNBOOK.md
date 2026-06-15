@@ -156,6 +156,42 @@ test-only aggregate value of 200, rebuilds it to 150, corrupts it again, and
 verifies that validation delegates repair to rebuild. Country stocks must
 remain unchanged.
 
+## Test E: US-11 dirty reconciliation
+
+1. Close the result event.
+2. Enter again:
+
+```txt
+event modeu5_debug.1
+```
+
+3. Select:
+
+```txt
+Test US-11 dirty-record reconciliation
+```
+
+4. The result event must display:
+
+```txt
+PASS - Dirty market-good reconciliation
+PASS - Empty reconciliation is a no-op
+```
+
+The first pass creates FRA = 100 and ENG = 50 wheat in FRA's market, corrupts
+the market aggregate to 200, and must report:
+
+```txt
+records checked = 1
+inconsistencies = 1
+rebuilds = 1
+failures = 0
+market aggregate = 150
+```
+
+The second pass runs without another mutation and must report zero for every
+counter.
+
 ## Numeric precision warning
 
 The current fixtures mostly use integer quantities. The decay fixture uses
@@ -177,7 +213,7 @@ cases before an epsilon is introduced.
 
 ## Log review
 
-After all four tests, close EU5 before reviewing:
+After all five tests, close EU5 before reviewing:
 
 ```txt
 Documents/Paradox Interactive/Europa Universalis V/logs/error.log
