@@ -189,4 +189,14 @@ if search_lines '(var|global_var):modeu5_test_[a-z_]+_passed[[:space:]]*=' \
 	exit 1
 fi
 
+if ! search_quiet 'test_log[[:space:]]*=' "$stock_test_event" "$stock_test_effects"; then
+	printf 'Stock tests must emit test_log output for console/test-run visibility.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_event" "$stock_test_effects"; then
+	printf 'Stock tests must emit debug_log output for file-log visibility.\n' >&2
+	exit 1
+fi
+
 printf 'ModeU5 package descriptors, Core dependencies, package-owned markers, and literal stock adapters are valid.\n'
