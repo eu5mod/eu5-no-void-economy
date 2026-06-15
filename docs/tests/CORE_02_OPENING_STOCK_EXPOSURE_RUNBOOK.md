@@ -70,5 +70,25 @@ use the parameterized value form:
 "stockpile_in_market(goods:wheat)"
 ```
 
-Only after the event passes and the logs contain no ModeU5 script error may
-TECH-01 `091` become `CONFIRMED` and full CORE-02 implementation begin.
+## Controlled result - June 15, 2026
+
+The test installed from commit `7b6474eec355258176c8025ce276f4a7898cf208`
+passed on campaign date `1337.4.7`.
+
+The post-test save contained:
+
+```txt
+modeu5_core02_probe_started_after_delay = yes
+modeu5_core02_probe_market_found = yes
+modeu5_core02_probe_opening_wheat_stock = <numeric value>
+modeu5_core02_probe_value_read = yes
+modeu5_core02_probe_passed = yes
+```
+
+`modeu5_core02_probe_failed` was absent. The save contained no ModeU5 stock
+map entry, market-stock cache, schema version, initialization state, or
+CORE-01 test marker. The current logs contained no ModeU5 script error from
+the probe.
+
+TECH-01 `091` is therefore `CONFIRMED`. Keep this runbook as the regression
+test for the opening-stock read before changing the CORE-02 implementation.

@@ -310,7 +310,18 @@ The delayed hook executes after the first-day tick
 FRA and its capital market resolve
 stockpile_in_market(goods:wheat) returns a numeric value, including valid zero
 No ModeU5 stock or initialization state is mutated
-TECH-01 091 remains TO_TEST until logs are reviewed
+TECH-01 091 is CONFIRMED only after logs and the post-test save are reviewed
+```
+
+Controlled result on June 15, 2026:
+
+```txt
+PASS - delayed hook marker persisted
+PASS - FRA capital market marker persisted
+PASS - opening wheat stock value persisted
+PASS - overall probe marker persisted; failure marker absent
+PASS - no ModeU5 stock, schema version, or initialization state was created
+PASS - no ModeU5 script error was emitted by the probe
 ```
 
 ---
