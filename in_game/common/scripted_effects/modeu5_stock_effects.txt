@@ -298,6 +298,8 @@ modeu5_remove_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a tiny aggregate residue could trip this strict underflow
+	# guard. Rebuild and inspect raw values before considering any tolerance.
 	if = {
 		limit = {
 			OR = {
@@ -547,6 +549,8 @@ modeu5_transfer_stock_calculate = {
 		name = modeu5_consistency_validation_required
 		value = 0
 	}
+	# Precision note: keep this strict until TECH-01 113 measures engine and map
+	# rounding. A gameplay epsilon would change transfer conservation behavior.
 	if = {
 		limit = {
 			scope:modeu5_same_market_transfer = 0
@@ -776,6 +780,8 @@ modeu5_decay_stock_calculate = {
 		value = 0
 	}
 
+	# Precision note: a fractional decay can expose engine rounding here.
+	# Validate/rebuild and inspect the raw operands before weakening this guard.
 	if = {
 		limit = {
 			OR = {
@@ -990,6 +996,8 @@ modeu5_validate_stock_consistency_prepare = {
 		name = modeu5_validation_inconsistency_severity
 		value = 0
 	}
+	# Exact accounting is intentional. If tiny residuals appear, preserve the
+	# signed difference and run the TECH-01 113 precision probe first.
 	if = {
 		limit = { scope:modeu5_validation_difference_before != 0 }
 		save_temporary_scope_value_as = {
@@ -1044,6 +1052,8 @@ modeu5_validate_stock_consistency_finalize = {
 		name = modeu5_validation_failed_after_rebuild
 		value = 0
 	}
+	# A tiny post-write residual may indicate map persistence rounding. Do not
+	# hide it with a global epsilon before TECH-01 113 is characterized.
 	if = {
 		limit = { scope:modeu5_validation_difference_after != 0 }
 		save_temporary_scope_value_as = {

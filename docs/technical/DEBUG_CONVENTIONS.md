@@ -362,6 +362,12 @@ The latest CORE-01.6 snapshot remains the per-record detail. Any
 `error.log`. A monthly pass with no dirty market/good records is a valid no-op
 with every counter equal to zero.
 
+Numeric precision is not yet characterized. Preserve raw operands and signed
+differences without rounding them for debug. When a small residual or an
+unexpected deterministic-test failure appears, follow
+`docs/technical/NUMERIC_PRECISION_AND_TEST_DIAGNOSTICS.md` before adding an
+epsilon or weakening an underflow guard.
+
 ## Mandatory debug for US-00
 
 For each `country × market × good`, expose:
