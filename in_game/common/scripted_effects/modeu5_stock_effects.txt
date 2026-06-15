@@ -81,7 +81,7 @@ modeu5_add_stock = {
 		name = modeu5_quantity_requested
 		value = {
 			value = scope:modeu5_quantity_requested_raw
-			max = 0
+			min = 0
 		}
 	}
 	if = {
@@ -98,14 +98,14 @@ modeu5_add_stock_calculate = {
 		name = modeu5_country_stock_before
 		value = {
 			value = scope:modeu5_country_stock_before_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_cap
 		value = {
 			value = scope:modeu5_country_stock_cap_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -113,7 +113,7 @@ modeu5_add_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_cap
 			subtract = scope:modeu5_country_stock_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -121,7 +121,7 @@ modeu5_add_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 
@@ -137,7 +137,7 @@ modeu5_add_stock_calculate = {
 			name = modeu5_actual_added_quantity
 			value = {
 				value = scope:modeu5_quantity_requested
-				min = scope:modeu5_available_capacity
+				max = scope:modeu5_available_capacity
 			}
 		}
 	}
@@ -168,7 +168,7 @@ modeu5_add_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_after
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -176,7 +176,7 @@ modeu5_add_stock_calculate = {
 		value = {
 			value = scope:modeu5_over_capacity_after
 			subtract = scope:modeu5_over_capacity_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -259,7 +259,7 @@ modeu5_remove_stock = {
 		name = modeu5_quantity_requested
 		value = {
 			value = scope:modeu5_quantity_requested_raw
-			max = 0
+			min = 0
 		}
 	}
 	if = {
@@ -276,21 +276,21 @@ modeu5_remove_stock_calculate = {
 		name = modeu5_country_stock_before
 		value = {
 			value = scope:modeu5_country_stock_before_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_cap
 		value = {
 			value = scope:modeu5_country_stock_cap_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_actual_removed_quantity
 		value = {
 			value = scope:modeu5_quantity_requested
-			min = scope:modeu5_country_stock_before
+			max = scope:modeu5_country_stock_before
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -328,7 +328,7 @@ modeu5_remove_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			subtract = scope:modeu5_actual_removed_quantity
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -343,7 +343,7 @@ modeu5_remove_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_cap
 			subtract = scope:modeu5_country_stock_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -351,7 +351,7 @@ modeu5_remove_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -359,7 +359,7 @@ modeu5_remove_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_after
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -436,7 +436,7 @@ modeu5_transfer_stock = {
 		name = modeu5_quantity_requested
 		value = {
 			value = scope:modeu5_quantity_requested_raw
-			max = 0
+			min = 0
 		}
 	}
 	if = {
@@ -453,21 +453,21 @@ modeu5_transfer_stock_calculate = {
 		name = modeu5_seller_stock_before
 		value = {
 			value = scope:modeu5_seller_stock_before_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_buyer_stock_before
 		value = {
 			value = scope:modeu5_buyer_stock_before_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_buyer_stock_cap
 		value = {
 			value = scope:modeu5_buyer_stock_cap_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -475,7 +475,7 @@ modeu5_transfer_stock_calculate = {
 		value = {
 			value = scope:modeu5_buyer_stock_cap
 			subtract = scope:modeu5_buyer_stock_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -483,7 +483,7 @@ modeu5_transfer_stock_calculate = {
 		value = {
 			value = scope:modeu5_buyer_stock_before
 			subtract = scope:modeu5_buyer_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -522,7 +522,7 @@ modeu5_transfer_stock_calculate = {
 			name = modeu5_actual_transferred_quantity
 			value = {
 				value = scope:modeu5_quantity_requested
-				min = scope:modeu5_seller_stock_before
+				max = scope:modeu5_seller_stock_before
 			}
 		}
 	}
@@ -532,8 +532,8 @@ modeu5_transfer_stock_calculate = {
 			name = modeu5_actual_transferred_quantity
 			value = {
 				value = scope:modeu5_quantity_requested
-				min = scope:modeu5_seller_stock_before
-				min = scope:modeu5_available_capacity
+				max = scope:modeu5_seller_stock_before
+				max = scope:modeu5_available_capacity
 			}
 		}
 	}
@@ -583,7 +583,7 @@ modeu5_transfer_stock_calculate = {
 		value = {
 			value = scope:modeu5_seller_stock_before
 			subtract = scope:modeu5_actual_transferred_quantity
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -623,7 +623,7 @@ modeu5_transfer_stock_calculate = {
 		value = {
 			value = scope:modeu5_buyer_stock_after
 			subtract = scope:modeu5_buyer_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -631,7 +631,7 @@ modeu5_transfer_stock_calculate = {
 		value = {
 			value = scope:modeu5_over_capacity_after
 			subtract = scope:modeu5_over_capacity_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -732,8 +732,8 @@ modeu5_decay_stock = {
 		name = modeu5_decay_rate
 		value = {
 			value = scope:modeu5_decay_rate_raw
-			max = 0
-			min = 1
+			min = 0
+			max = 1
 		}
 	}
 	if = {
@@ -754,14 +754,14 @@ modeu5_decay_stock_calculate = {
 		name = modeu5_country_stock_before
 		value = {
 			value = scope:modeu5_country_stock_before_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_country_stock_cap
 		value = {
 			value = scope:modeu5_country_stock_cap_raw
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -769,7 +769,7 @@ modeu5_decay_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			multiply = scope:modeu5_decay_rate
-			min = scope:modeu5_country_stock_before
+			max = scope:modeu5_country_stock_before
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -804,7 +804,7 @@ modeu5_decay_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			subtract = scope:modeu5_decayed_quantity
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -819,7 +819,7 @@ modeu5_decay_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_cap
 			subtract = scope:modeu5_country_stock_before
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -827,7 +827,7 @@ modeu5_decay_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_before
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -835,7 +835,7 @@ modeu5_decay_stock_calculate = {
 		value = {
 			value = scope:modeu5_country_stock_after
 			subtract = scope:modeu5_country_stock_cap
-			max = 0
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {

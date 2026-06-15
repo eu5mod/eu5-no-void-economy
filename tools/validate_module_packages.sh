@@ -171,6 +171,12 @@ if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_
 	exit 1
 fi
 
+if search_lines '^[[:space:]]*max = 0[[:space:]]*$|^[[:space:]]*min = scope:modeu5_(available_capacity|country_stock_before|seller_stock_before)[[:space:]]*$' \
+	"$stock_effects"; then
+	printf 'EU5 script values use min as the lower bound and max as the upper bound; stock clamps are reversed.\n' >&2
+	exit 1
+fi
+
 if search_lines '(var|global_var):modeu5_test_[a-z_]+_passed[[:space:]]*=' \
 	"$stock_test_event"; then
 	printf 'Stock test result events must use presence triggers so unset markers remain valid failures.\n' >&2
