@@ -288,6 +288,7 @@ Related US: US-01, US-02, US-03, US-04, US-11
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and `VARIABLE_MAP_STORAGE_MODEL.md`.
 - Use `on_game_start` with a one-day delay because its immediate state may not contain initialized nations.
+- Treat startup testing as delayed by one in-game day minimum; do not judge initialization state or startup logs on campaign day 0.
 - Keep the dispatcher global; do not trigger one full-world initialization from every country.
 - Make the pipeline idempotent and schema-versioned.
 - Never seed stocks when any existing nonzero or negative country source stock is detected.

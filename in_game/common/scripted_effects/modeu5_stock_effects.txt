@@ -1149,6 +1149,11 @@ modeu5_initialization_clear_last_result = {
 	remove_global_variable = modeu5_initialization_existing_stock_failures
 	remove_global_variable = modeu5_initialization_negative_capacity_failures
 	remove_global_variable = modeu5_initialization_validation_failures
+	remove_global_variable = modeu5_initialization_market_total_capacity
+	remove_global_variable = modeu5_initialization_market_eligible_country_count
+	remove_global_variable = modeu5_initialization_market_allocated_quantity
+	remove_global_variable = modeu5_initialization_market_existing_stock_failure
+	remove_global_variable = modeu5_initialization_market_negative_capacity_failure
 	remove_global_variable = modeu5_initialization_last_mode
 }
 
@@ -1163,67 +1168,26 @@ modeu5_initialization_mark_failure = {
 modeu5_initialization_prepare_counters = {
 	modeu5_initialization_clear_last_result = yes
 
-	set_local_variable = { name = modeu5_initialization_market_goods_checked value = 0 }
-	set_local_variable = { name = modeu5_initialization_market_goods_seeded value = 0 }
-	set_local_variable = { name = modeu5_initialization_opening_source_total value = 0 }
-	set_local_variable = { name = modeu5_initialization_allocated_total value = 0 }
-	set_local_variable = { name = modeu5_initialization_residue_allocated_total value = 0 }
-	set_local_variable = { name = modeu5_initialization_zero_source_count value = 0 }
-	set_local_variable = { name = modeu5_initialization_zero_capacity_failures value = 0 }
-	set_local_variable = { name = modeu5_initialization_existing_stock_failures value = 0 }
-	set_local_variable = { name = modeu5_initialization_negative_capacity_failures value = 0 }
-	set_local_variable = { name = modeu5_initialization_validation_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_goods_checked value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_goods_seeded value = 0 }
+	set_global_variable = { name = modeu5_initialization_opening_source_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_allocated_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_residue_allocated_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_zero_source_count value = 0 }
+	set_global_variable = { name = modeu5_initialization_zero_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_existing_stock_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_negative_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_validation_failures value = 0 }
 }
 
 modeu5_initialization_finalize_counters = {
-	set_global_variable = {
-		name = modeu5_initialization_market_goods_checked
-		value = local_var:modeu5_initialization_market_goods_checked
-	}
-	set_global_variable = {
-		name = modeu5_initialization_market_goods_seeded
-		value = local_var:modeu5_initialization_market_goods_seeded
-	}
-	set_global_variable = {
-		name = modeu5_initialization_opening_source_total
-		value = local_var:modeu5_initialization_opening_source_total
-	}
-	set_global_variable = {
-		name = modeu5_initialization_allocated_total
-		value = local_var:modeu5_initialization_allocated_total
-	}
-	set_global_variable = {
-		name = modeu5_initialization_residue_allocated_total
-		value = local_var:modeu5_initialization_residue_allocated_total
-	}
-	set_global_variable = {
-		name = modeu5_initialization_zero_source_count
-		value = local_var:modeu5_initialization_zero_source_count
-	}
-	set_global_variable = {
-		name = modeu5_initialization_zero_capacity_failures
-		value = local_var:modeu5_initialization_zero_capacity_failures
-	}
-	set_global_variable = {
-		name = modeu5_initialization_existing_stock_failures
-		value = local_var:modeu5_initialization_existing_stock_failures
-	}
-	set_global_variable = {
-		name = modeu5_initialization_negative_capacity_failures
-		value = local_var:modeu5_initialization_negative_capacity_failures
-	}
-	set_global_variable = {
-		name = modeu5_initialization_validation_failures
-		value = local_var:modeu5_initialization_validation_failures
-	}
-
 	if = {
 		limit = {
 			OR = {
-				local_var:modeu5_initialization_zero_capacity_failures > 0
-				local_var:modeu5_initialization_existing_stock_failures > 0
-				local_var:modeu5_initialization_negative_capacity_failures > 0
-				local_var:modeu5_initialization_validation_failures > 0
+				global_var:modeu5_initialization_zero_capacity_failures > 0
+				global_var:modeu5_initialization_existing_stock_failures > 0
+				global_var:modeu5_initialization_negative_capacity_failures > 0
+				global_var:modeu5_initialization_validation_failures > 0
 			}
 		}
 		modeu5_initialization_mark_failure = { code = 10 }
@@ -1231,7 +1195,6 @@ modeu5_initialization_finalize_counters = {
 }
 
 modeu5_seed_opening_market_good = {
-	save_temporary_scope_as = modeu5_initialization_controller
 	$market$ = { save_temporary_scope_as = modeu5_initialization_market }
 	goods:$good$ = { save_temporary_scope_as = modeu5_initialization_good }
 	save_temporary_scope_value_as = {
@@ -1253,7 +1216,6 @@ modeu5_seed_opening_market_good = {
 }
 
 modeu5_run_fresh_opening_stock_initialization = {
-	save_temporary_scope_as = modeu5_initialization_controller
 	modeu5_initialization_prepare_counters = yes
 	modeu5_initialize_opening_stocks = yes
 	modeu5_initialization_finalize_counters = yes

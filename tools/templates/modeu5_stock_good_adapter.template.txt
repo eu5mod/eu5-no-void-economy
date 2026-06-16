@@ -812,21 +812,25 @@ modeu5_initialize_opening_stocks_good___GOOD__ = {
 modeu5_seed_opening_market_good___GOOD__ = {
 	goods:__GOOD__ = { save_temporary_scope_as = modeu5_initialization_good }
 
-	scope:modeu5_initialization_controller = {
-		change_local_variable = {
-			name = modeu5_initialization_market_goods_checked
+	set_global_variable = {
+		name = modeu5_initialization_market_goods_checked
+		value = {
+			value = global_var:modeu5_initialization_market_goods_checked
 			add = 1
 		}
-		change_local_variable = {
-			name = modeu5_initialization_opening_source_total
+	}
+	set_global_variable = {
+		name = modeu5_initialization_opening_source_total
+		value = {
+			value = global_var:modeu5_initialization_opening_source_total
 			add = scope:modeu5_opening_source_quantity
 		}
-		set_local_variable = { name = modeu5_initialization_market_total_capacity value = 0 }
-		set_local_variable = { name = modeu5_initialization_market_eligible_country_count value = 0 }
-		set_local_variable = { name = modeu5_initialization_market_allocated_quantity value = 0 }
-		set_local_variable = { name = modeu5_initialization_market_existing_stock_failure value = 0 }
-		set_local_variable = { name = modeu5_initialization_market_negative_capacity_failure value = 0 }
 	}
+	set_global_variable = { name = modeu5_initialization_market_total_capacity value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_eligible_country_count value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_allocated_quantity value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_existing_stock_failure value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_negative_capacity_failure value = 0 }
 
 	every_country = {
 		if = {
@@ -850,11 +854,9 @@ modeu5_seed_opening_market_good___GOOD__ = {
 		}
 		if = {
 			limit = { scope:modeu5_initialization_existing_country_stock != 0 }
-			scope:modeu5_initialization_controller = {
-				set_local_variable = {
-					name = modeu5_initialization_market_existing_stock_failure
-					value = 1
-				}
+			set_global_variable = {
+				name = modeu5_initialization_market_existing_stock_failure
+				value = 1
 			}
 		}
 
@@ -886,52 +888,53 @@ modeu5_seed_opening_market_good___GOOD__ = {
 		}
 		if = {
 			limit = { scope:modeu5_initialization_country_capacity_raw < 0 }
-			scope:modeu5_initialization_controller = {
-				set_local_variable = {
-					name = modeu5_initialization_market_negative_capacity_failure
-					value = 1
-				}
+			set_global_variable = {
+				name = modeu5_initialization_market_negative_capacity_failure
+				value = 1
 			}
 		}
 		if = {
 			limit = { scope:modeu5_initialization_country_capacity > 0 }
-			scope:modeu5_initialization_controller = {
-				change_local_variable = {
-					name = modeu5_initialization_market_total_capacity
+			set_global_variable = {
+				name = modeu5_initialization_market_total_capacity
+				value = {
+					value = global_var:modeu5_initialization_market_total_capacity
 					add = scope:modeu5_initialization_country_capacity
 				}
-				change_local_variable = {
-					name = modeu5_initialization_market_eligible_country_count
+			}
+			set_global_variable = {
+				name = modeu5_initialization_market_eligible_country_count
+				value = {
+					value = global_var:modeu5_initialization_market_eligible_country_count
 					add = 1
 				}
 			}
 		}
 	}
 
-	scope:modeu5_initialization_controller = {
-		save_temporary_scope_value_as = {
-			name = modeu5_initialization_total_capacity
-			value = local_var:modeu5_initialization_market_total_capacity
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_initialization_eligible_country_count
-			value = local_var:modeu5_initialization_market_eligible_country_count
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_initialization_existing_stock_failure
-			value = local_var:modeu5_initialization_market_existing_stock_failure
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_initialization_negative_capacity_failure
-			value = local_var:modeu5_initialization_market_negative_capacity_failure
-		}
+	save_temporary_scope_value_as = {
+		name = modeu5_initialization_total_capacity
+		value = global_var:modeu5_initialization_market_total_capacity
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_initialization_eligible_country_count
+		value = global_var:modeu5_initialization_market_eligible_country_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_initialization_existing_stock_failure
+		value = global_var:modeu5_initialization_market_existing_stock_failure
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_initialization_negative_capacity_failure
+		value = global_var:modeu5_initialization_market_negative_capacity_failure
 	}
 
 	if = {
 		limit = { scope:modeu5_initialization_existing_stock_failure > 0 }
-		scope:modeu5_initialization_controller = {
-			change_local_variable = {
-				name = modeu5_initialization_existing_stock_failures
+		set_global_variable = {
+			name = modeu5_initialization_existing_stock_failures
+			value = {
+				value = global_var:modeu5_initialization_existing_stock_failures
 				add = 1
 			}
 		}
@@ -939,9 +942,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 	}
 	if = {
 		limit = { scope:modeu5_initialization_negative_capacity_failure > 0 }
-		scope:modeu5_initialization_controller = {
-			change_local_variable = {
-				name = modeu5_initialization_negative_capacity_failures
+		set_global_variable = {
+			name = modeu5_initialization_negative_capacity_failures
+			value = {
+				value = global_var:modeu5_initialization_negative_capacity_failures
 				add = 1
 			}
 		}
@@ -953,9 +957,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			NOT = { has_global_variable = modeu5_initialization_failure_detected }
 			scope:modeu5_opening_source_quantity <= 0
 		}
-		scope:modeu5_initialization_controller = {
-			change_local_variable = {
-				name = modeu5_initialization_zero_source_count
+		set_global_variable = {
+			name = modeu5_initialization_zero_source_count
+			value = {
+				value = global_var:modeu5_initialization_zero_source_count
 				add = 1
 			}
 		}
@@ -967,9 +972,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			scope:modeu5_initialization_negative_capacity_failure = 0
 			scope:modeu5_initialization_total_capacity <= 0
 		}
-		scope:modeu5_initialization_controller = {
-			change_local_variable = {
-				name = modeu5_initialization_zero_capacity_failures
+		set_global_variable = {
+			name = modeu5_initialization_zero_capacity_failures
+			value = {
+				value = global_var:modeu5_initialization_zero_capacity_failures
 				add = 1
 			}
 		}
@@ -1012,9 +1018,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 						quantity = scope:modeu5_initialization_requested_country_quantity
 						capacity_policy = allow_over_capacity
 					}
-					scope:modeu5_initialization_controller = {
-						change_local_variable = {
-							name = modeu5_initialization_market_allocated_quantity
+					set_global_variable = {
+						name = modeu5_initialization_market_allocated_quantity
+						value = {
+							value = global_var:modeu5_initialization_market_allocated_quantity
 							add = scope:modeu5_actual_added_quantity
 						}
 					}
@@ -1028,11 +1035,9 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			}
 		}
 
-		scope:modeu5_initialization_controller = {
-			save_temporary_scope_value_as = {
-				name = modeu5_initialization_allocated_quantity
-				value = local_var:modeu5_initialization_market_allocated_quantity
-			}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_allocated_quantity
+			value = global_var:modeu5_initialization_market_allocated_quantity
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_initialization_remaining_quantity
@@ -1053,9 +1058,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			limit = {
 				scope:modeu5_initialization_negative_residue > modeu5_initialization_rounding_epsilon
 			}
-			scope:modeu5_initialization_controller = {
-				change_local_variable = {
-					name = modeu5_initialization_validation_failures
+			set_global_variable = {
+				name = modeu5_initialization_validation_failures
+				value = {
+					value = global_var:modeu5_initialization_validation_failures
 					add = 1
 				}
 			}
@@ -1083,13 +1089,17 @@ modeu5_seed_opening_market_good___GOOD__ = {
 					quantity = scope:modeu5_initialization_remaining_quantity
 					capacity_policy = allow_over_capacity
 				}
-				scope:modeu5_initialization_controller = {
-					change_local_variable = {
-						name = modeu5_initialization_market_allocated_quantity
+				set_global_variable = {
+					name = modeu5_initialization_market_allocated_quantity
+					value = {
+						value = global_var:modeu5_initialization_market_allocated_quantity
 						add = scope:modeu5_actual_added_quantity
 					}
-					change_local_variable = {
-						name = modeu5_initialization_residue_allocated_total
+				}
+				set_global_variable = {
+					name = modeu5_initialization_residue_allocated_total
+					value = {
+						value = global_var:modeu5_initialization_residue_allocated_total
 						add = scope:modeu5_actual_added_quantity
 					}
 				}
@@ -1102,17 +1112,21 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			}
 		}
 
-		scope:modeu5_initialization_controller = {
-			save_temporary_scope_value_as = {
-				name = modeu5_initialization_allocated_quantity
-				value = local_var:modeu5_initialization_market_allocated_quantity
-			}
-			change_local_variable = {
-				name = modeu5_initialization_allocated_total
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_allocated_quantity
+			value = global_var:modeu5_initialization_market_allocated_quantity
+		}
+		set_global_variable = {
+			name = modeu5_initialization_allocated_total
+			value = {
+				value = global_var:modeu5_initialization_allocated_total
 				add = scope:modeu5_initialization_allocated_quantity
 			}
-			change_local_variable = {
-				name = modeu5_initialization_market_goods_seeded
+		}
+		set_global_variable = {
+			name = modeu5_initialization_market_goods_seeded
+			value = {
+				value = global_var:modeu5_initialization_market_goods_seeded
 				add = 1
 			}
 		}
@@ -1123,9 +1137,10 @@ modeu5_seed_opening_market_good___GOOD__ = {
 		}
 		if = {
 			limit = { scope:modeu5_validation_failed_after_rebuild > 0 }
-			scope:modeu5_initialization_controller = {
-				change_local_variable = {
-					name = modeu5_initialization_validation_failures
+			set_global_variable = {
+				name = modeu5_initialization_validation_failures
+				value = {
+					value = global_var:modeu5_initialization_validation_failures
 					add = 1
 				}
 			}

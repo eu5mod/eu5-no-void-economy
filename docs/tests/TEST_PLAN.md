@@ -406,13 +406,19 @@ package.
 Expected:
 
 ```txt
-The CORE-02 debug option starts and finishes in game.log
+The CORE-02 debug option sets started/finished markers after the delayed startup day
 The proportional allocation scenario passes
 The over-capacity allocation scenario passes
 modeu5_seed_opening_market_good writes only through modeu5_add_stock
 Market stock equals country-stock sums after each scenario
 No ModeU5 script error is added to error.log
 ```
+
+CORE-02 startup and integration checks are delayed by at least one in-game day
+because the implementation intentionally runs from `on_game_start` after
+`delay = { days = 1 }`. Do not judge startup logs or state on campaign day 0.
+Console-driven tests intentionally avoid `test_log` and `debug_log`; rely on
+the visible result event, result markers, and `error.log`.
 
 Until US-02 exists, the full fresh-start dispatcher may fail closed when vanilla
 opening stock is positive and total ModeU5 capacity is zero. That is expected

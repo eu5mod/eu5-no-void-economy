@@ -19,17 +19,32 @@ Close EU5, then run:
 Confirm that `MODEU5_SOURCE.txt` for No Void Economy and No Void Economy Tests
 points to the CORE-02 implementation branch and commit being tested.
 
+## Timing rule
+
+CORE-02 startup/integration tests are delayed by at least one in-game day.
+The implementation is wired as:
+
+```txt
+on_game_start -> delay = { days = 1 } -> modeu5_start_game_stock_initialization_dispatcher
+```
+
+Do not inspect startup state, run the startup probe, or judge the startup logs
+on campaign day 0. Unpause and let at least one full daily tick complete first.
+For quieter logs, wait until the next day is visible in the UI before running
+console tests or reviewing `error.log` and `game.log`.
+
 ## Deterministic allocation test
 
 1. Enable No Void Economy and No Void Economy Tests in a dedicated playset.
 2. Start a clean 1337 campaign.
-3. Open the console and run:
+3. Let at least one full in-game day pass so delayed startup work has settled.
+4. Open the console and run:
 
 ```txt
 event modeu5_debug.1
 ```
 
-4. Select:
+5. Select:
 
 ```txt
 Run CORE-02 initialization allocation tests
@@ -93,12 +108,16 @@ Review:
 
 ```txt
 error.log
-game.log
 system.log
 ```
 
-Passing deterministic tests should emit the CORE-02 start/finish and PASS
-messages in `game.log` and should not add ModeU5 script errors to `error.log`.
+Passing deterministic tests should show the CORE-02 PASS lines in the result
+event and set `modeu5_test_core02_initialization_started`,
+`modeu5_test_core02_initialization_finished`,
+`modeu5_test_core02_proportional_passed`, and
+`modeu5_test_core02_over_capacity_passed`. Console-driven tests intentionally
+avoid `test_log` and `debug_log`, so `game.log` is not the source of truth for
+PASS/FAIL. `error.log` should not gain ModeU5 script errors.
 
 Failure evidence includes:
 

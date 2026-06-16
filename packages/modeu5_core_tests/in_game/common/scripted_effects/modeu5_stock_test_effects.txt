@@ -18,6 +18,8 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_reconciliation_empty_passed
 	remove_global_variable = modeu5_test_core02_proportional_passed
 	remove_global_variable = modeu5_test_core02_over_capacity_passed
+	remove_global_variable = modeu5_test_core02_initialization_started
+	remove_global_variable = modeu5_test_core02_initialization_finished
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
@@ -1153,14 +1155,10 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 200
 			}
 			set_global_variable = modeu5_test_core02_proportional_passed
-			debug_log = "PASS ModeU5 CORE-02 proportional initialization allocation test."
-			test_log = { name = modeu5_core_02_proportional text = "PASS ModeU5 CORE-02 proportional initialization allocation test." }
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_proportional_passed
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
-			debug_log = "FAIL ModeU5 CORE-02 proportional initialization allocation test."
-			test_log = { name = modeu5_core_02_proportional text = "FAIL ModeU5 CORE-02 proportional initialization allocation test." }
 		}
 
 		every_country = {
@@ -1226,21 +1224,15 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 150
 			}
 			set_global_variable = modeu5_test_core02_over_capacity_passed
-			debug_log = "PASS ModeU5 CORE-02 over-capacity initialization allocation test."
-			test_log = { name = modeu5_core_02_over_capacity text = "PASS ModeU5 CORE-02 over-capacity initialization allocation test." }
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_over_capacity_passed
 			error_log = "ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed."
-			debug_log = "FAIL ModeU5 CORE-02 over-capacity initialization allocation test."
-			test_log = { name = modeu5_core_02_over_capacity text = "FAIL ModeU5 CORE-02 over-capacity initialization allocation test." }
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_core02_proportional_passed
 		remove_global_variable = modeu5_test_core02_over_capacity_passed
 		error_log = "ModeU5 deterministic CORE-02 initialization tests require FRA and ENG."
-		debug_log = "FAIL ModeU5 CORE-02 initialization tests require FRA and ENG."
-		test_log = { name = modeu5_core_02_prerequisites text = "FAIL ModeU5 CORE-02 initialization tests require FRA and ENG." }
 	}
 }
