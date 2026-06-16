@@ -1,0 +1,487 @@
+﻿# Controlled TECH-01 098 instrumentation. This file must never mutate stock.
+
+modeu5_core03_probe_increment_sequence = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_sequence }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_sequence
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_sequence
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_location_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_location_change_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_location_change_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_location_change_count
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_country_hook_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_country_hook_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_country_hook_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_country_hook_count
+			add = 1
+		}
+	}
+}
+
+modeu5_core03_probe_increment_delayed_finalizer_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_core03_probe_delayed_finalizer_count }
+		}
+		set_global_variable = {
+			name = modeu5_core03_probe_delayed_finalizer_count
+			value = 1
+		}
+	}
+	else = {
+		change_global_variable = {
+			name = modeu5_core03_probe_delayed_finalizer_count
+			add = 1
+		}
+		set_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+	}
+}
+
+modeu5_core03_probe_record_location_changed_owner = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_location_count = yes
+	set_global_variable = modeu5_core03_probe_location_hook_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_location_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+	error_log = "ModeU5 CORE-03 OBSERVED on_location_changed_owner."
+
+	if = {
+		limit = {
+			exists = scope:loser
+			exists = scope:winner
+			scope:loser != scope:winner
+		}
+		set_global_variable = modeu5_core03_probe_location_scopes_valid
+		error_log = "ModeU5 CORE-03 PASS location hook resolved distinct loser and winner scopes."
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_location_scopes_invalid
+		error_log = "ModeU5 CORE-03 FAIL location hook did not resolve distinct loser and winner scopes."
+	}
+
+	save_temporary_scope_as = modeu5_core03_probe_location
+	if = {
+		limit = {
+			NOT = {
+				has_global_variable_list = modeu5_core03_probe_seen_locations
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_core03_probe_seen_locations
+			target = scope:modeu5_core03_probe_location
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_core03_probe_seen_locations
+					target = scope:modeu5_core03_probe_location
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_core03_probe_seen_locations
+			target = scope:modeu5_core03_probe_location
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_duplicate_location_hook
+		error_log = "ModeU5 CORE-03 FAIL duplicate on_location_changed_owner observed for the same location."
+	}
+}
+
+modeu5_core03_probe_record_country_hook = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_country_hook_count = yes
+	set_global_variable = modeu5_core03_probe_country_hook_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_country_hook_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+}
+
+modeu5_core03_probe_record_new_country_formed = {
+	set_global_variable = modeu5_core03_probe_new_country_formed_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_new_country_formed."
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_released_country = {
+	set_global_variable = modeu5_core03_probe_released_country_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_released_country."
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_annexed = {
+	set_global_variable = modeu5_core03_probe_annexed_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_annexed."
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+		error_log = "ModeU5 CORE-03 PASS annexation target scope resolved."
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_diplomatic_annexed = {
+	set_global_variable = modeu5_core03_probe_diplomatic_annexed_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_diplomatic_annexed."
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+		error_log = "ModeU5 CORE-03 PASS annexation target scope resolved."
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_military_annexed = {
+	set_global_variable = modeu5_core03_probe_military_annexed_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_military_annexed."
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+		error_log = "ModeU5 CORE-03 PASS annexation target scope resolved."
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_civil_war_annexed = {
+	set_global_variable = modeu5_core03_probe_civil_war_annexed_observed
+	error_log = "ModeU5 CORE-03 OBSERVED on_civil_war_annexed."
+	if = {
+		limit = { exists = scope:target }
+		set_global_variable = modeu5_core03_probe_annex_target_valid
+		error_log = "ModeU5 CORE-03 PASS annexation target scope resolved."
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_annex_target_invalid
+		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
+	}
+	modeu5_core03_probe_record_country_hook = yes
+}
+
+modeu5_core03_probe_record_delayed_country_finalizer = {
+	modeu5_core03_probe_increment_sequence = yes
+	modeu5_core03_probe_increment_delayed_finalizer_count = yes
+	set_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+	set_global_variable = {
+		name = modeu5_core03_probe_last_delayed_finalizer_sequence
+		value = global_var:modeu5_core03_probe_sequence
+	}
+	error_log = "ModeU5 CORE-03 OBSERVED delayed country finalizer."
+	if = {
+		limit = {
+			has_global_variable = modeu5_core03_probe_last_location_sequence
+		}
+		set_global_variable = modeu5_core03_probe_delayed_after_location_observed
+		error_log = "ModeU5 CORE-03 PASS delayed country finalizer observed after a location hook."
+	}
+	else = {
+		error_log = "ModeU5 CORE-03 WARN delayed country finalizer observed without a prior location hook marker."
+	}
+}
+
+modeu5_core03_probe_clear_scenario_selection = {
+	remove_global_variable = modeu5_core03_probe_scenario_location_transfer
+	remove_global_variable = modeu5_core03_probe_scenario_release_or_creation
+	remove_global_variable = modeu5_core03_probe_scenario_annexation
+}
+
+modeu5_core03_probe_reset = {
+	remove_global_variable = modeu5_core03_probe_sequence
+	remove_global_variable = modeu5_core03_probe_location_change_count
+	remove_global_variable = modeu5_core03_probe_country_hook_count
+	remove_global_variable = modeu5_core03_probe_delayed_finalizer_count
+	remove_global_variable = modeu5_core03_probe_last_location_sequence
+	remove_global_variable = modeu5_core03_probe_last_country_hook_sequence
+	remove_global_variable = modeu5_core03_probe_last_delayed_finalizer_sequence
+	remove_global_variable = modeu5_core03_probe_location_hook_observed
+	remove_global_variable = modeu5_core03_probe_location_scopes_valid
+	remove_global_variable = modeu5_core03_probe_location_scopes_invalid
+	remove_global_variable = modeu5_core03_probe_duplicate_location_hook
+	remove_global_variable = modeu5_core03_probe_country_hook_observed
+	remove_global_variable = modeu5_core03_probe_new_country_formed_observed
+	remove_global_variable = modeu5_core03_probe_released_country_observed
+	remove_global_variable = modeu5_core03_probe_annexed_observed
+	remove_global_variable = modeu5_core03_probe_diplomatic_annexed_observed
+	remove_global_variable = modeu5_core03_probe_military_annexed_observed
+	remove_global_variable = modeu5_core03_probe_civil_war_annexed_observed
+	remove_global_variable = modeu5_core03_probe_annex_target_valid
+	remove_global_variable = modeu5_core03_probe_annex_target_invalid
+	remove_global_variable = modeu5_core03_probe_delayed_finalizer_observed
+	remove_global_variable = modeu5_core03_probe_delayed_after_location_observed
+	remove_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+	remove_global_variable = modeu5_core03_probe_synthetic_run
+	remove_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+	remove_global_variable = modeu5_core03_probe_synthetic_runner_started
+	remove_global_variable = modeu5_core03_probe_synthetic_runner_staged
+	remove_global_variable = modeu5_core03_probe_synthetic_runner_completed
+	remove_global_variable = modeu5_core03_probe_synthetic_runner_aborted
+	remove_global_variable = modeu5_core03_probe_manual_prepare_complete
+	remove_global_variable = modeu5_core03_probe_annexation_stage_ready
+	if = {
+		limit = {
+			has_global_variable_list = modeu5_core03_probe_seen_locations
+		}
+		clear_global_variable_list = modeu5_core03_probe_seen_locations
+	}
+	set_global_variable = modeu5_core03_probe_reset_complete
+}
+
+modeu5_core03_probe_select_scenario_location_transfer = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_location_transfer
+}
+
+modeu5_core03_probe_select_scenario_release_or_creation = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_release_or_creation
+}
+
+modeu5_core03_probe_select_scenario_annexation = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_annexation
+}
+
+modeu5_core03_probe_prepare_scenario_location_transfer = {
+	modeu5_core03_probe_select_scenario_location_transfer = yes
+	set_global_variable = modeu5_core03_probe_manual_prepare_complete
+	error_log = "ModeU5 CORE-03 manual Scenario A prepared."
+}
+
+modeu5_core03_probe_prepare_scenario_release_or_creation = {
+	modeu5_core03_probe_select_scenario_release_or_creation = yes
+	set_global_variable = modeu5_core03_probe_manual_prepare_complete
+	error_log = "ModeU5 CORE-03 manual Scenario B prepared."
+}
+
+modeu5_core03_probe_prepare_scenario_annexation = {
+	modeu5_core03_probe_select_scenario_annexation = yes
+	set_global_variable = modeu5_core03_probe_manual_prepare_complete
+	error_log = "ModeU5 CORE-03 manual Scenario C prepared."
+}
+
+modeu5_core03_probe_run_synthetic_location_transfer = {
+	modeu5_core03_probe_select_scenario_location_transfer = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	set_global_variable = modeu5_core03_probe_synthetic_runner_started
+	error_log = "ModeU5 CORE-03 scripted Scenario A started: transfer Huelva from Castile to Portugal."
+	if = {
+		limit = {
+			country_exists = c:CAS
+			country_exists = c:POR
+			location:huelva = {
+				owner ?= c:CAS
+			}
+		}
+		location:huelva = {
+			change_location_owner = c:POR
+		}
+		set_global_variable = modeu5_core03_probe_synthetic_runner_completed
+		error_log = "ModeU5 CORE-03 scripted Scenario A completed: Huelva should now belong to Portugal."
+		c:CAS = {
+			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 1 }
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+		set_global_variable = modeu5_core03_probe_synthetic_runner_aborted
+		error_log = "ModeU5 CORE-03 scripted Scenario A aborted because Castile, Portugal, or Castilian-owned Huelva is unavailable."
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+}
+
+modeu5_core03_probe_run_synthetic_release_or_creation = {
+	modeu5_core03_probe_select_scenario_release_or_creation = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	set_global_variable = modeu5_core03_probe_synthetic_runner_started
+	error_log = "ModeU5 CORE-03 scripted Scenario B started: create a Castile subject centered on Leon."
+	if = {
+		limit = {
+			country_exists = c:CAS
+			location:leon = {
+				owner ?= c:CAS
+			}
+			c:CAS = {
+				NOT = {
+					any_subject = {
+						capital ?= location:leon
+					}
+				}
+			}
+		}
+		location:leon = {
+			create_country_from_location = {
+				set_capital = prev
+				make_subject_of = { target = c:CAS type = subject_type:vassal }
+				change_government_type = government_type:monarchy
+			}
+		}
+		set_global_variable = modeu5_core03_probe_synthetic_runner_completed
+		error_log = "ModeU5 CORE-03 scripted Scenario B completed: a Leon-centered Castile subject should now be visible on the map."
+		c:CAS = {
+			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 2 }
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+		set_global_variable = modeu5_core03_probe_synthetic_runner_aborted
+		error_log = "ModeU5 CORE-03 scripted Scenario B aborted because Castilian-owned Leon is unavailable or a Leon subject already exists."
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+}
+
+modeu5_core03_probe_run_synthetic_annexation = {
+	modeu5_core03_probe_select_scenario_annexation = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	set_global_variable = modeu5_core03_probe_synthetic_runner_started
+	error_log = "ModeU5 CORE-03 scripted Scenario C started: stage a Leon subject for Castile, then annex it."
+	if = {
+		limit = {
+			country_exists = c:CAS
+			c:CAS = {
+				any_subject = {
+					capital ?= location:leon
+				}
+			}
+		}
+		set_global_variable = modeu5_core03_probe_annexation_stage_ready
+		set_global_variable = modeu5_core03_probe_synthetic_runner_staged
+		error_log = "ModeU5 CORE-03 scripted Scenario C staging complete: an eligible Leon subject already exists and will be annexed next."
+		c:CAS = {
+			trigger_event_non_silently = { id = modeu5_core03_probe.21 days = 1 }
+		}
+	}
+	else_if = {
+		limit = {
+			country_exists = c:CAS
+			location:leon = {
+				owner ?= c:CAS
+			}
+			c:CAS = {
+				NOT = {
+					any_subject = {
+						capital ?= location:leon
+					}
+				}
+			}
+		}
+		location:leon = {
+			create_country_from_location = {
+				set_capital = prev
+				make_subject_of = { target = c:CAS type = subject_type:vassal }
+				change_government_type = government_type:monarchy
+			}
+		}
+		set_global_variable = modeu5_core03_probe_annexation_stage_ready
+		set_global_variable = modeu5_core03_probe_synthetic_runner_staged
+		error_log = "ModeU5 CORE-03 scripted Scenario C staging complete: Leon subject created and should now be visible on the map."
+		c:CAS = {
+			trigger_event_non_silently = { id = modeu5_core03_probe.21 days = 1 }
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+		set_global_variable = modeu5_core03_probe_synthetic_runner_aborted
+		error_log = "ModeU5 CORE-03 scripted Scenario C aborted because Castile, Leon, or the staged Leon subject fixture is unavailable."
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+}
+
+modeu5_core03_probe_execute_staged_annexation = {
+	if = {
+		limit = {
+			has_global_variable = modeu5_core03_probe_annexation_stage_ready
+			country_exists = c:CAS
+			c:CAS = {
+				any_subject = {
+					capital ?= location:leon
+				}
+			}
+		}
+		modeu5_core03_probe_select_scenario_annexation = yes
+		set_global_variable = modeu5_core03_probe_synthetic_run
+		set_global_variable = modeu5_core03_probe_synthetic_runner_started
+		error_log = "ModeU5 CORE-03 scripted Scenario C annexation step started: Castile will annex the staged Leon subject."
+		c:CAS = {
+			every_subject = {
+				limit = {
+					capital ?= location:leon
+				}
+				save_temporary_scope_as = modeu5_core03_probe_target_country
+			}
+		}
+		c:CAS = {
+			annex_country = {
+				country = scope:modeu5_core03_probe_target_country
+				reason = Diplomatic
+				transfer = yes
+			}
+		}
+		set_global_variable = modeu5_core03_probe_synthetic_runner_completed
+		error_log = "ModeU5 CORE-03 scripted Scenario C completed: the staged Leon subject should now be annexed by Castile."
+		c:CAS = {
+			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 2 }
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+		set_global_variable = modeu5_core03_probe_synthetic_runner_aborted
+		error_log = "ModeU5 CORE-03 scripted Scenario C annexation step aborted because the staged Leon subject could not be found."
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+}
