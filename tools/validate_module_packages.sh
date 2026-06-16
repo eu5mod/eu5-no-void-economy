@@ -251,13 +251,13 @@ if ! search_quiet '^modeu5_us02_debug\.1 = \{' "$us02_test_event"; then
 	exit 1
 fi
 
-if ! search_quiet 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
-	printf 'Stock tests must emit test_log output for console/test-run visibility.\n' >&2
+if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
+	printf 'Console-driven stock tests must not use test_log; it localizes text while console command localization is disabled.\n' >&2
 	exit 1
 fi
 
 if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
-	printf 'Stock tests must emit debug_log output for file-log visibility.\n' >&2
+	printf 'Stock tests must emit debug_log output for debug.log visibility.\n' >&2
 	exit 1
 fi
 

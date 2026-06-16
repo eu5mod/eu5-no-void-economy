@@ -62,7 +62,7 @@ event modeu5_debug.1
 Test add, remove, and decay
 ```
 
-3. The console/test log must show the suite starting and finishing, and the result event must display:
+3. The debug.log file must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Add with allow_over_capacity
@@ -89,7 +89,7 @@ event modeu5_debug.1
 Test same-market transfers
 ```
 
-4. The console/test log must show the suite starting and finishing, and the result event must display:
+4. The debug.log file must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Same-market transfer
@@ -117,7 +117,7 @@ event modeu5_debug.1
 Test inter-market transfer
 ```
 
-4. The console/test log must show the suite starting and finishing, and the result event must display:
+4. The debug.log file must show the suite starting and finishing, and the result event must display:
 
 ```txt
 PASS - Inter-market transfer
@@ -234,7 +234,7 @@ The test is successful when:
 
 ```txt
 All expected PASS rows appear.
-The console/test log shows each selected suite starting, finishing, and each executed test PASS/FAIL result.
+The debug.log file shows each selected suite starting, finishing, and each executed test PASS/FAIL result.
 No "deterministic CORE-01 ... test failed" message appears.
 No modeu5 map identifier contains a remaining "$".
 No result marker reports "Failed to fetch variable".

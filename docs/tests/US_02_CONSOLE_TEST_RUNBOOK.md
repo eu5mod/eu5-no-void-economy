@@ -93,6 +93,7 @@ does not add, remove, transfer, decay, or rebuild stock.
 After closing the game, inspect:
 
 ```txt
+debug.log
 error.log
 game.log
 system.log
@@ -101,8 +102,10 @@ system.log
 Expected:
 
 ```txt
+debug.log contains PASS ModeU5 US-02 storage-capacity test
 No new ModeU5 script-system error
 No "ModeU5 deterministic US-02 storage-capacity test failed" entry
+No "Tried to localize with localization disabled" assertion
 No stock mutation attributed to the capacity test
 ```
 

@@ -103,6 +103,7 @@ modeu5_debug_last_record_market_stock
 After closing EU5, inspect:
 
 ```txt
+Documents/Paradox Interactive/Europa Universalis V/logs/debug.log
 Documents/Paradox Interactive/Europa Universalis V/logs/error.log
 Documents/Paradox Interactive/Europa Universalis V/logs/game.log
 Documents/Paradox Interactive/Europa Universalis V/logs/system.log
@@ -110,7 +111,9 @@ Documents/Paradox Interactive/Europa Universalis V/logs/system.log
 
 The US-01 test succeeds when no
 `ModeU5 deterministic US-01 country, market, and good isolation test failed`
-message or new ModeU5 script-system error appears.
+message, no `Tried to localize with localization disabled` assertion, and no
+new ModeU5 script-system error appears. `debug.log` should contain the
+corresponding US-01 PASS line.
 
 ## Known limitation
 

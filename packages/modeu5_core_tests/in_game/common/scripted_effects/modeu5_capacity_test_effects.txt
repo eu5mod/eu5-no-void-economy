@@ -123,19 +123,16 @@ modeu5_debug_run_storage_capacity_test = {
 			}
 			set_global_variable = modeu5_test_storage_capacity_passed
 			debug_log = "PASS ModeU5 US-02 storage-capacity test."
-			test_log = { name = modeu5_us_02_storage_capacity text = "PASS ModeU5 US-02 storage-capacity test." }
 		}
 		else = {
 			remove_global_variable = modeu5_test_storage_capacity_passed
 			error_log = "ModeU5 deterministic US-02 storage-capacity test failed."
 			debug_log = "FAIL ModeU5 US-02 storage-capacity test."
-			test_log = { name = modeu5_us_02_storage_capacity text = "FAIL ModeU5 US-02 storage-capacity test." }
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_storage_capacity_passed
 		error_log = "ModeU5 deterministic US-02 storage-capacity test requires FRA."
 		debug_log = "FAIL ModeU5 US-02 storage-capacity test requires FRA."
-		test_log = { name = modeu5_us_02_storage_capacity_prerequisites text = "FAIL ModeU5 US-02 storage-capacity test requires FRA." }
 	}
 }
