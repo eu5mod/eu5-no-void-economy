@@ -142,6 +142,148 @@ modeu5_store_stock_record_good___GOOD__ = {
 	}
 }
 
+modeu5_load_capacity_breakdown_good___GOOD__ = {
+	scope:modeu5_country = {
+		if = {
+			limit = {
+				has_variable_map = __BASE_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __BASE_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_base_capacity_raw
+				value = "variable_map(__BASE_CAPACITY_MAP__|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_base_capacity_raw
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = __BUILDING_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __BUILDING_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_building_capacity_raw
+				value = "variable_map(__BUILDING_CAPACITY_MAP__|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_building_capacity_raw
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = __FOREIGN_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __FOREIGN_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_foreign_capacity_raw
+				value = "variable_map(__FOREIGN_CAPACITY_MAP__|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_foreign_capacity_raw
+				value = 0
+			}
+		}
+	}
+}
+
+modeu5_store_capacity_record_good___GOOD__ = {
+	scope:modeu5_country = {
+		if = {
+			limit = {
+				has_variable_map = __CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			remove_from_variable_map = {
+				name = __CAPACITY_MAP__
+				key = scope:modeu5_market
+			}
+		}
+		add_to_variable_map = {
+			name = __CAPACITY_MAP__
+			key = scope:modeu5_market
+			value = scope:modeu5_capacity_total
+		}
+
+		if = {
+			limit = {
+				has_variable_map = __BASE_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __BASE_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			remove_from_variable_map = {
+				name = __BASE_CAPACITY_MAP__
+				key = scope:modeu5_market
+			}
+		}
+		add_to_variable_map = {
+			name = __BASE_CAPACITY_MAP__
+			key = scope:modeu5_market
+			value = scope:modeu5_capacity_base
+		}
+
+		if = {
+			limit = {
+				has_variable_map = __BUILDING_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __BUILDING_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			remove_from_variable_map = {
+				name = __BUILDING_CAPACITY_MAP__
+				key = scope:modeu5_market
+			}
+		}
+		add_to_variable_map = {
+			name = __BUILDING_CAPACITY_MAP__
+			key = scope:modeu5_market
+			value = scope:modeu5_capacity_building
+		}
+
+		if = {
+			limit = {
+				has_variable_map = __FOREIGN_CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __FOREIGN_CAPACITY_MAP__
+					target = scope:modeu5_market
+				}
+			}
+			remove_from_variable_map = {
+				name = __FOREIGN_CAPACITY_MAP__
+				key = scope:modeu5_market
+			}
+		}
+		add_to_variable_map = {
+			name = __FOREIGN_CAPACITY_MAP__
+			key = scope:modeu5_market
+			value = scope:modeu5_capacity_foreign
+		}
+	}
+}
+
 modeu5_load_transfer_records_good___GOOD__ = {
 	scope:modeu5_seller_country = {
 		if = {
@@ -330,6 +472,21 @@ modeu5_store_transfer_records_good___GOOD__ = {
 			value = scope:modeu5_target_market_stock_after
 		}
 	}
+}
+
+modeu5_read_country_stock_record_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_load_capacity_breakdown_good___GOOD__ = yes
+	modeu5_read_country_stock_record_calculate = yes
+	modeu5_debug_capture_country_stock_record = yes
+}
+
+modeu5_recalculate_country_market_capacity_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_calculate_country_market_capacity = yes
+	modeu5_store_capacity_record_good___GOOD__ = yes
+	modeu5_finalize_country_market_capacity = yes
+	modeu5_debug_capture_country_market_capacity = yes
 }
 
 modeu5_add_stock_good___GOOD__ = {

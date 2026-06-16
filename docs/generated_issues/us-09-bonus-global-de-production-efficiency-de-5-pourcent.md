@@ -40,8 +40,8 @@ Feeds counters to: vanilla production read at step 4
 | Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
 | Monthly invocation at runtime step 2 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
-| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions | CONFIRMED | 114 |
-| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry` | CONFIRMED | 115 |
+| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions | CONFIRMED | 115 |
+| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry` | CONFIRMED | 116 |
 
 ## Selected implementation path
 

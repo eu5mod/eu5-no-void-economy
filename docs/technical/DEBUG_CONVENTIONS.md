@@ -589,6 +589,14 @@ The CORE-01 console entry point is:
 event modeu5_debug.1
 ```
 
+Focused user-story tests should use their dedicated entry points instead of
+being added to the CORE event:
+
+```txt
+event modeu5_us01_debug.1
+event modeu5_us02_debug.1
+```
+
 `modeu5_test_*_passed` values are result markers, not console commands.
 
 Use persistent global marker presence for PASS state:
@@ -606,6 +614,17 @@ transfer, belong in debug snapshots and result rows. Reserve `error_log` for a
 failed assertion, an unexpected invariant violation, or another blocking
 diagnostic. A console-triggered result event that is called by another event
 must not be declared `orphan = yes`.
+
+Do not use `debug_log` or `test_log` in console-triggered deterministic tests.
+Controlled US-01/US-02 testing on June 16, 2026 showed that wrapper-event
+`debug_log`, scripted-effect `debug_log`, and `test_log` can all trip
+`Tried to localize with localization disabled` during a console launch.
+For these tests, rely on:
+
+- result-marker presence;
+- result-event rows;
+- debug snapshot variables saved on the relevant scope;
+- `error_log` only for actual failure or blocked prerequisites.
 
 After a local test, distinguish:
 
