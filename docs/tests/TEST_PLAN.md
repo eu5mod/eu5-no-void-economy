@@ -53,6 +53,8 @@ Known vanilla warning ignored
 Setup:
 
 ```txt
+Run `./tools/generate_stock_good_helpers.sh`
+Run `./tools/generate_us09_economy_overrides.sh 5`
 Run `./tools/validate_module_packages.sh`
 Run `./tools/install_local_packages.sh`
 Run `./tools/install_local_packages.sh --check`
@@ -1275,7 +1277,7 @@ Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 Expected:
 
 ```txt
-`./tools/generate_us09_economy_overrides.sh` regenerates the Economy package overrides deterministically
+`./tools/generate_us09_economy_overrides.sh 5` regenerates the Economy package overrides deterministically
 Generated `building_types` overrides multiply each targeted `output =` value by `1.05`
 Generated `prices` overrides scale the five `expand_rgo_*` gold values by `1 / 1.05`
 No additive country-level production-efficiency modifier path is loaded for this implementation

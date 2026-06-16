@@ -8,6 +8,8 @@ stocks and must not be used as a partial CORE-02 implementation.
 Close EU5, then run:
 
 ```bash
+./tools/generate_stock_good_helpers.sh
+./tools/generate_us09_economy_overrides.sh 5
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check

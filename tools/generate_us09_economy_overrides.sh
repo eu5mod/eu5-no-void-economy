@@ -6,23 +6,29 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 usage() {
 	cat <<'EOF'
 Usage:
-  ./tools/generate_us09_economy_overrides.sh [options]
+  ./tools/generate_us09_economy_overrides.sh <percent> [options]
+  ./tools/generate_us09_economy_overrides.sh --percent <percent> [options]
 
 Options:
-  --percent N               Percent increase for building output. Default: 5
+  --percent N               Percent increase for building output
   --common-dir PATH         EU5 `game/in_game/common` source directory
   --package-common-dir PATH Output `in_game/common` directory for generated files
   --help                    Show this help text
 
-Environment:
-  MODEU5_US09_PERCENT       Default value for --percent
-  EU5_GAME_COMMON_DIR       Default value for --common-dir
+If no percent is passed and stdin is interactive, the script prompts for one.
+Examples:
+  ./tools/generate_us09_economy_overrides.sh 5
+  ./tools/generate_us09_economy_overrides.sh 10
+  ./tools/generate_us09_economy_overrides.sh --percent 7.5
 EOF
 }
 
 format_decimal() {
-	awk -v value="$1" 'BEGIN {
-		printf "%.10f", value
+	local value="$1"
+	local scale="${2:-10}"
+
+	awk -v value="$value" -v scale="$scale" 'BEGIN {
+		printf "%.*f", scale, value
 	}' | sed -e 's/0\+$//' -e 's/\.$/.0/'
 }
 
@@ -44,7 +50,7 @@ find_default_common_dir() {
 	return 1
 }
 
-percent="${MODEU5_US09_PERCENT:-5}"
+percent=""
 common_dir=""
 package_common_dir="$repo_root/packages/modeu5_economy_rebalance/in_game/common"
 
@@ -66,13 +72,37 @@ while (($# > 0)); do
 			usage
 			exit 0
 			;;
-		*)
+		-*)
 			printf 'Unknown argument: %s\n\n' "$1" >&2
 			usage >&2
 			exit 1
 			;;
+		*)
+			if [[ -z "$percent" ]]; then
+				percent="$1"
+				shift
+			else
+				printf 'Unexpected extra argument: %s\n\n' "$1" >&2
+				usage >&2
+				exit 1
+			fi
+			;;
 	esac
 done
+
+if [[ -z "$percent" ]]; then
+	if [[ -t 0 ]]; then
+		read -r -p "US-09 percent increase (5 = 5%, 10 = 10%): " percent
+	else
+		printf 'Missing percent. Pass one explicitly, for example `./tools/generate_us09_economy_overrides.sh 5`.\n' >&2
+		exit 1
+	fi
+fi
+
+if [[ ! "$percent" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
+	printf 'US-09 percent must be numeric; got %s.\n' "$percent" >&2
+	exit 1
+fi
 
 if ! awk -v value="$percent" 'BEGIN { exit !(value > -100) }'; then
 	printf 'US-09 percent must be greater than -100; got %s.\n' "$percent" >&2
@@ -177,7 +207,7 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 		adjusted_gold="$(awk -v gold="$source_gold" -v multiplier="$rgo_price_multiplier" 'BEGIN { printf "%.12f", gold * multiplier }')"
 
 		printf '%s = {\n' "$price_key"
-		printf '\tgold = %s\n' "$(format_decimal "$adjusted_gold")"
+		printf '\tgold = %s\n' "$(format_decimal "$adjusted_gold" 2)"
 		printf '}\n\n'
 	done
 } > "$prices_output_file"

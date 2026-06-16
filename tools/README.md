@@ -29,7 +29,7 @@ physical map identifier may retain `$`.
 Regenerate the Rebalance Economy static overrides for US-09:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh
+./tools/generate_us09_economy_overrides.sh 5
 ```
 
 The generator reads vanilla `game/in_game/common/building_types` and
@@ -41,15 +41,30 @@ packages/modeu5_economy_rebalance/in_game/common/building_types/
 packages/modeu5_economy_rebalance/in_game/common/prices/
 ```
 
-By default it applies a `+5%` output multiplier and the paired inverse RGO
-expansion-price multiplier `1 / 1.05`. Override the percentage with:
+Pass the desired compensation percentage explicitly. Example:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh --percent 7.5
+./tools/generate_us09_economy_overrides.sh 7.5
 ```
 
 Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
 installed vanilla files in place.
+
+If no percentage is passed and the shell is interactive, the generator prompts
+for one.
+
+## Recommended local deployment pipeline
+
+When you want to refresh the local mod install before testing:
+
+```bash
+./tools/generate_stock_good_helpers.sh
+./tools/generate_us09_economy_overrides.sh 5
+./tools/validate_module_packages.sh
+./tools/install_local_packages.sh
+./tools/install_local_packages.sh --check
+./tools/clear_eu5_logs.sh
+```
 
 ## Module packages
 

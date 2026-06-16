@@ -4,22 +4,22 @@
 # RGO expansion gold multiplier: 0.9523809524 (inverse of 1 + 5%)
 
 expand_rgo_mining = {
-	gold = 47.6190476191
+	gold = 47.62
 }
 
 expand_rgo_farming = {
-	gold = 47.6190476191
+	gold = 47.62
 }
 
 expand_rgo_hunting = {
-	gold = 47.6190476191
+	gold = 47.62
 }
 
 expand_rgo_gathering = {
-	gold = 47.6190476191
+	gold = 47.62
 }
 
 expand_rgo_forestry = {
-	gold = 47.6190476191
+	gold = 47.62
 }
 

@@ -179,9 +179,10 @@ if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|var
 fi
 
 us09_generator="tools/generate_us09_economy_overrides.sh"
+us09_percent="5"
 if [[ -x "$us09_generator" ]]; then
 	us09_generated_tmp_dir="$(mktemp -d)"
-	if "$us09_generator" --package-common-dir "$us09_generated_tmp_dir/common" >/dev/null 2>&1; then
+	if "$us09_generator" "$us09_percent" --package-common-dir "$us09_generated_tmp_dir/common" >/dev/null 2>&1; then
 		for generated_subdir in building_types prices; do
 			repo_generated_dir="packages/modeu5_economy_rebalance/in_game/common/$generated_subdir"
 			tmp_generated_dir="$us09_generated_tmp_dir/common/$generated_subdir"
@@ -198,8 +199,8 @@ if [[ -x "$us09_generator" ]]; then
 			)"
 
 			if [[ "$repo_generated_list" != "$tmp_generated_list" ]]; then
-				printf 'US-09 generated %s overrides are stale. Run tools/generate_us09_economy_overrides.sh.\n' \
-					"$generated_subdir" >&2
+				printf 'US-09 generated %s overrides are stale. Run tools/generate_us09_economy_overrides.sh %s.\n' \
+					"$generated_subdir" "$us09_percent" >&2
 				exit 1
 			fi
 
@@ -208,8 +209,8 @@ if [[ -x "$us09_generator" ]]; then
 				if ! cmp -s \
 					"$repo_generated_dir/$generated_file" \
 					"$tmp_generated_dir/$generated_file"; then
-					printf 'US-09 generated override is stale: %s/%s. Run tools/generate_us09_economy_overrides.sh.\n' \
-						"$generated_subdir" "$generated_file" >&2
+					printf 'US-09 generated override is stale: %s/%s. Run tools/generate_us09_economy_overrides.sh %s.\n' \
+						"$generated_subdir" "$generated_file" "$us09_percent" >&2
 					exit 1
 				fi
 			done <<< "$tmp_generated_list"

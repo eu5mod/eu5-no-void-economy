@@ -8,6 +8,7 @@ Close EU5, then run these commands from the repository:
 
 ```bash
 ./tools/generate_stock_good_helpers.sh
+./tools/generate_us09_economy_overrides.sh 5
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check

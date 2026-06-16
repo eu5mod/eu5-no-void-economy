@@ -66,9 +66,9 @@ Just answer to these topic, so that our demand for modding endpoint get visibili
 
 ```shell
 ./tools/generate_stock_good_helpers.sh
+./tools/generate_us09_economy_overrides.sh 5
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check
 ./tools/clear_eu5_logs.sh
 ```
-
