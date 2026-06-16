@@ -14,37 +14,51 @@ modeu5_debug.1 = {
 	option = {
 		name = modeu5_debug.1.a
 		modeu5_debug_clear_stock_test_results = yes
+		debug_log = "ModeU5 CORE-01 single-record stock tests starting."
+		test_log = { name = modeu5_core_01_single_record_start text = "ModeU5 CORE-01 single-record stock tests starting." }
 		modeu5_debug_run_single_record_stock_tests = yes
+		debug_log = "ModeU5 CORE-01 single-record stock tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		test_log = { name = modeu5_core_01_single_record_finish text = "ModeU5 CORE-01 single-record stock tests finished; inspect PASS/FAIL result event and modeu5_test_* markers." }
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.b
 		modeu5_debug_clear_stock_test_results = yes
+		debug_log = "ModeU5 CORE-01 same-market transfer tests starting."
+		test_log = { name = modeu5_core_01_same_market_start text = "ModeU5 CORE-01 same-market transfer tests starting." }
 		modeu5_debug_run_same_market_transfer_tests = yes
+		debug_log = "ModeU5 CORE-01 same-market transfer tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		test_log = { name = modeu5_core_01_same_market_finish text = "ModeU5 CORE-01 same-market transfer tests finished; inspect PASS/FAIL result event and modeu5_test_* markers." }
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.c
 		modeu5_debug_clear_stock_test_results = yes
+		debug_log = "ModeU5 CORE-01 inter-market transfer test starting."
+		test_log = { name = modeu5_core_01_inter_market_start text = "ModeU5 CORE-01 inter-market transfer test starting." }
 		modeu5_debug_run_inter_market_transfer_test = yes
+		debug_log = "ModeU5 CORE-01 inter-market transfer test finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		test_log = { name = modeu5_core_01_inter_market_finish text = "ModeU5 CORE-01 inter-market transfer test finished; inspect PASS/FAIL result event and modeu5_test_* markers." }
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.d
 		modeu5_debug_clear_stock_test_results = yes
+		debug_log = "ModeU5 CORE-01 rebuild and validation tests starting."
+		test_log = { name = modeu5_core_01_rebuild_validation_start text = "ModeU5 CORE-01 rebuild and validation tests starting." }
 		modeu5_debug_run_rebuild_and_validation_tests = yes
+		debug_log = "ModeU5 CORE-01 rebuild and validation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		test_log = { name = modeu5_core_01_rebuild_validation_finish text = "ModeU5 CORE-01 rebuild and validation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers." }
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.e
 		modeu5_debug_clear_stock_test_results = yes
-		modeu5_debug_run_country_stock_dimension_test = yes
-		trigger_event_non_silently = modeu5_debug.2
-	}
-	option = {
-		name = modeu5_debug.1.f
-		modeu5_debug_clear_stock_test_results = yes
-		modeu5_debug_run_storage_capacity_test = yes
+		debug_log = "ModeU5 US-11 reconciliation tests starting."
+		test_log = { name = modeu5_us_11_reconciliation_start text = "ModeU5 US-11 reconciliation tests starting." }
+		modeu5_debug_run_reconciliation_tests = yes
+		debug_log = "ModeU5 US-11 reconciliation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		test_log = { name = modeu5_us_11_reconciliation_finish text = "ModeU5 US-11 reconciliation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers." }
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
@@ -143,20 +157,20 @@ modeu5_debug.2 = {
 		trigger = { NOT = { has_global_variable = modeu5_test_validation_noop_passed } }
 	}
 	option = {
-		name = modeu5_debug.test.country_stock_dimensions.pass
-		trigger = { has_global_variable = modeu5_test_country_stock_dimensions_passed }
+		name = modeu5_debug.test.reconciliation_dirty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_dirty_passed }
 	}
 	option = {
-		name = modeu5_debug.test.country_stock_dimensions.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_country_stock_dimensions_passed } }
+		name = modeu5_debug.test.reconciliation_dirty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_dirty_passed } }
 	}
 	option = {
-		name = modeu5_debug.test.storage_capacity.pass
-		trigger = { has_global_variable = modeu5_test_storage_capacity_passed }
+		name = modeu5_debug.test.reconciliation_empty.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_empty_passed }
 	}
 	option = {
-		name = modeu5_debug.test.storage_capacity.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_storage_capacity_passed } }
+		name = modeu5_debug.test.reconciliation_empty.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_empty_passed } }
 	}
 	option = {
 		name = modeu5_debug.close

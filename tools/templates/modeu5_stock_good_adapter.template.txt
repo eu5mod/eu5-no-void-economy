@@ -1,5 +1,38 @@
 # Literal persistence adapter for __GOOD__.
 
+modeu5_mark_dirty_market_good___GOOD__ = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = __DIRTY_LIST__ }
+		}
+		add_to_global_variable_list = {
+			name = __DIRTY_LIST__
+			target = scope:modeu5_dirty_market
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = __DIRTY_LIST__
+					target = scope:modeu5_dirty_market
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = __DIRTY_LIST__
+			target = scope:modeu5_dirty_market
+		}
+	}
+}
+
+modeu5_clear_dirty_markets_good___GOOD__ = {
+	if = {
+		limit = { has_global_variable_list = __DIRTY_LIST__ }
+		clear_global_variable_list = __DIRTY_LIST__
+	}
+}
+
 modeu5_load_stock_record_good___GOOD__ = {
 	scope:modeu5_country = {
 		if = {
@@ -460,6 +493,19 @@ modeu5_add_stock_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
 	modeu5_add_stock_calculate = yes
 	modeu5_store_stock_record_good___GOOD__ = yes
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_country_record_write_required = 1
+				scope:modeu5_market_record_write_required = 1
+				scope:modeu5_consistency_validation_required = 1
+			}
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_dirty_market
+		}
+		modeu5_mark_dirty_market_good___GOOD__ = yes
+	}
 	modeu5_debug_capture_add_stock = yes
 }
 
@@ -467,6 +513,19 @@ modeu5_remove_stock_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
 	modeu5_remove_stock_calculate = yes
 	modeu5_store_stock_record_good___GOOD__ = yes
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_country_record_write_required = 1
+				scope:modeu5_market_record_write_required = 1
+				scope:modeu5_consistency_validation_required = 1
+			}
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_dirty_market
+		}
+		modeu5_mark_dirty_market_good___GOOD__ = yes
+	}
 	modeu5_debug_capture_remove_stock = yes
 }
 
@@ -474,6 +533,29 @@ modeu5_transfer_stock_good___GOOD__ = {
 	modeu5_load_transfer_records_good___GOOD__ = yes
 	modeu5_transfer_stock_calculate = yes
 	modeu5_store_transfer_records_good___GOOD__ = yes
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_seller_record_write_required = 1
+				scope:modeu5_buyer_record_write_required = 1
+				scope:modeu5_market_transfer_write_required = 1
+				scope:modeu5_consistency_validation_required = 1
+			}
+		}
+		scope:modeu5_source_market = {
+			save_temporary_scope_as = modeu5_dirty_market
+		}
+		modeu5_mark_dirty_market_good___GOOD__ = yes
+		if = {
+			limit = {
+				scope:modeu5_source_market != scope:modeu5_target_market
+			}
+			scope:modeu5_target_market = {
+				save_temporary_scope_as = modeu5_dirty_market
+			}
+			modeu5_mark_dirty_market_good___GOOD__ = yes
+		}
+	}
 	modeu5_debug_capture_transfer_stock = yes
 }
 
@@ -481,6 +563,19 @@ modeu5_decay_stock_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
 	modeu5_decay_stock_calculate = yes
 	modeu5_store_stock_record_good___GOOD__ = yes
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_country_record_write_required = 1
+				scope:modeu5_market_record_write_required = 1
+				scope:modeu5_consistency_validation_required = 1
+			}
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_dirty_market
+		}
+		modeu5_mark_dirty_market_good___GOOD__ = yes
+	}
 	modeu5_debug_capture_decay_stock = yes
 }
 
@@ -660,6 +755,38 @@ modeu5_validate_stock_consistency_good___GOOD__ = {
 	modeu5_debug_capture_validate_stock_consistency = yes
 }
 
+modeu5_validate_dirty_markets_good___GOOD__ = {
+	if = {
+		limit = { has_global_variable_list = __DIRTY_LIST__ }
+		every_in_global_list = {
+			variable = __DIRTY_LIST__
+			save_temporary_scope_as = modeu5_reconciliation_market
+			scope:modeu5_reconciliation_controller = {
+				modeu5_validate_stock_consistency = {
+					market = scope:modeu5_reconciliation_market
+					good = __GOOD__
+				}
+				modeu5_reconciliation_accumulate_last_validation = yes
+			}
+		}
+		clear_global_variable_list = __DIRTY_LIST__
+	}
+}
+
+modeu5_validate_all_markets_good___GOOD__ = {
+	every_market_in_world = {
+		save_temporary_scope_as = modeu5_reconciliation_market
+		scope:modeu5_reconciliation_controller = {
+			modeu5_validate_stock_consistency = {
+				market = scope:modeu5_reconciliation_market
+				good = __GOOD__
+			}
+			modeu5_reconciliation_accumulate_last_validation = yes
+		}
+	}
+	modeu5_clear_dirty_markets_good___GOOD__ = yes
+}
+
 # Fault injection for the deterministic CORE-01.6 test only.
 modeu5_debug_corrupt_market_stock_good___GOOD__ = {
 	if = {
@@ -680,4 +807,8 @@ modeu5_debug_corrupt_market_stock_good___GOOD__ = {
 		key = scope:modeu5_market
 		value = scope:modeu5_debug_corrupted_market_stock
 	}
+	scope:modeu5_market = {
+		save_temporary_scope_as = modeu5_dirty_market
+	}
+	modeu5_mark_dirty_market_good___GOOD__ = yes
 }

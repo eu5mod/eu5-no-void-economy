@@ -29,13 +29,13 @@ are different.
 Enter:
 
 ```txt
-event modeu5_debug.1
+event modeu5_us01_debug.1
 ```
 
 Select:
 
 ```txt
-Test country, market, and good stock isolation
+Run US-01 stock-dimension test
 ```
 
 The result event must display:

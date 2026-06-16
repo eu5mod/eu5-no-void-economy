@@ -10,7 +10,7 @@ action="install"
 usage() {
 	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
 	printf '\n'
-	printf 'Publishes the four ModeU5 package roots as sibling local mods.\n'
+	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
 
@@ -49,6 +49,7 @@ package_ids=(
 	"modeu5_economy_rebalance"
 	"modeu5_trade_rebalance"
 	"modeu5_war_rebalance"
+	"modeu5_core_tests"
 )
 
 package_sources=(
@@ -56,6 +57,7 @@ package_sources=(
 	"$repo_root/packages/modeu5_economy_rebalance"
 	"$repo_root/packages/modeu5_trade_rebalance"
 	"$repo_root/packages/modeu5_war_rebalance"
+	"$repo_root/packages/modeu5_core_tests"
 )
 
 source_branch="$(git -C "$repo_root" branch --show-current 2>/dev/null || true)"
@@ -139,13 +141,13 @@ fi
 mkdir -p "$target_root"
 install_core
 
-for index in 1 2 3; do
+for index in 1 2 3 4; do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"
 done
 
-printf 'Installed the four ModeU5 packages in:\n  %s\n\n' "$target_root"
+printf 'Installed the ModeU5 packages in:\n  %s\n\n' "$target_root"
 check_packages
 
 if [[ -e "$target_root/eu5voideco" ]]; then
@@ -153,4 +155,4 @@ if [[ -e "$target_root/eu5voideco" ]]; then
 	printf 'If the launcher shows two "No Void Economy" entries, disable the one backed by eu5voideco.\n'
 fi
 
-printf '\nRefresh the launcher, add all four ModeU5 entries to one playset, and enable them.\n'
+printf '\nRefresh the launcher, add the four campaign ModeU5 entries to one playset, and enable the test package only for deterministic validation sessions.\n'

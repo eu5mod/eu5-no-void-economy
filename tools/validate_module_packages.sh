@@ -32,6 +32,7 @@ descriptors=(
 	"packages/modeu5_economy_rebalance/descriptor.mod"
 	"packages/modeu5_trade_rebalance/descriptor.mod"
 	"packages/modeu5_war_rebalance/descriptor.mod"
+	"packages/modeu5_core_tests/descriptor.mod"
 )
 
 metadata_files=(
@@ -39,6 +40,7 @@ metadata_files=(
 	"packages/modeu5_economy_rebalance/.metadata/metadata.json"
 	"packages/modeu5_trade_rebalance/.metadata/metadata.json"
 	"packages/modeu5_war_rebalance/.metadata/metadata.json"
+	"packages/modeu5_core_tests/.metadata/metadata.json"
 )
 
 expected_descriptor_names=(
@@ -46,6 +48,7 @@ expected_descriptor_names=(
 	"Rebalance Economy"
 	"Rebalance Estate Power"
 	"Rebalance Early Blobbing"
+	"No Void Economy Tests"
 )
 
 expected_metadata_names=(
@@ -53,6 +56,7 @@ expected_metadata_names=(
 	"NVE : Economy balance patch (Optional)"
 	"NVE : Estate Power balance patch (Optional)"
 	"NVE : Early Blobbing balance patch (Optional)"
+	"NVE : Core deterministic tests (Optional)"
 )
 
 expected_ids=(
@@ -60,6 +64,7 @@ expected_ids=(
 	"modeu5_economy_rebalance"
 	"modeu5_trade_rebalance"
 	"modeu5_war_rebalance"
+	"modeu5_core_tests"
 )
 
 expected_description_prefixes=(
@@ -67,6 +72,7 @@ expected_description_prefixes=(
 	"CAMPAIGN SETUP ONLY."
 	"CAMPAIGN SETUP ONLY."
 	"CAMPAIGN SETUP ONLY."
+	"TESTING ONLY."
 )
 
 for index in "${!descriptors[@]}"; do
@@ -181,8 +187,19 @@ fi
 
 stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
 capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
-stock_test_effects="in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
-stock_test_event="in_game/events/modeu5_debug_events.txt"
+stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
+capacity_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_capacity_test_effects.txt"
+stock_test_event="packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt"
+us01_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us01_debug_events.txt"
+us02_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us02_debug_events.txt"
+
+test -f "$stock_effects"
+test -f "$capacity_effects"
+test -f "$stock_test_effects"
+test -f "$capacity_test_effects"
+test -f "$stock_test_event"
+test -f "$us01_test_event"
+test -f "$us02_test_event"
 
 if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_effects"; then
@@ -203,8 +220,44 @@ if search_lines '^[[:space:]]*max = 0[[:space:]]*$|^[[:space:]]*min = scope:mode
 fi
 
 if search_lines '(var|global_var):modeu5_test_[a-z_]+_passed[[:space:]]*=' \
-	"$stock_test_event"; then
+	"$stock_test_event" "$us01_test_event" "$us02_test_event"; then
 	printf 'Stock test result events must use presence triggers so unset markers remain valid failures.\n' >&2
+	exit 1
+fi
+
+if search_lines 'modeu5_debug_run_(country_stock_dimension|storage_capacity)_test' \
+	"$stock_test_event"; then
+	printf 'US-01 and US-02 tests must use dedicated events instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'modeu5_debug_run_country_stock_dimension_test' "$stock_test_effects"; then
+	printf 'US-01 stock-dimension test helper is missing from the test package.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'modeu5_debug_run_storage_capacity_test' "$capacity_test_effects"; then
+	printf 'US-02 storage-capacity test helper is missing from the test package.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet '^modeu5_us01_debug\.1 = \{' "$us01_test_event"; then
+	printf 'US-01 tests must use a dedicated event instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet '^modeu5_us02_debug\.1 = \{' "$us02_test_event"; then
+	printf 'US-02 tests must use a dedicated event instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
+	printf 'Stock tests must emit test_log output for console/test-run visibility.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
+	printf 'Stock tests must emit debug_log output for file-log visibility.\n' >&2
 	exit 1
 fi
 

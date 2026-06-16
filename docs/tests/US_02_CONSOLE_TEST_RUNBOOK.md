@@ -22,10 +22,10 @@ Start a clean campaign with No Void Economy enabled. FRA must exist.
 2. Run:
 
 ```txt
-event modeu5_debug.1
+event modeu5_us02_debug.1
 ```
 
-3. Select `Test storage-capacity calculation`.
+3. Select `Run US-02 storage-capacity test`.
 4. In the result event, confirm:
 
 ```txt

@@ -1,0 +1,23 @@
+monthly_country_pulse = {
+	on_actions = {
+		modeu5_monthly_stock_reconciliation_pulse
+	}
+}
+
+modeu5_monthly_stock_reconciliation_pulse = {
+	effect = {
+		modeu5_run_monthly_stock_reconciliation_once = yes
+	}
+}
+
+yearly_country_pulse = {
+	on_actions = {
+		modeu5_yearly_stock_reconciliation_pulse
+	}
+}
+
+modeu5_yearly_stock_reconciliation_pulse = {
+	effect = {
+		modeu5_run_yearly_stock_reconciliation_once = yes
+	}
+}
