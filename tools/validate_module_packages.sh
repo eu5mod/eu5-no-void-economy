@@ -140,7 +140,8 @@ generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_gene
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 generated_stock_helpers_tmp="$(mktemp)"
-trap 'rm -f "$generated_stock_helpers_tmp"' EXIT
+us09_generated_tmp_dir=""
+trap 'rm -f "$generated_stock_helpers_tmp"; if [[ -n "${us09_generated_tmp_dir:-}" ]]; then rm -rf "$us09_generated_tmp_dir"; fi' EXIT
 
 test -f "$stock_adapter_template"
 ./tools/generate_stock_good_helpers.sh "$generated_stock_helpers_tmp"
@@ -175,6 +176,47 @@ if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|var
 	"$stock_generator"; then
 	printf 'The shell generator must not own EU5 storage behavior; keep it in the adapter template.\n' >&2
 	exit 1
+fi
+
+us09_generator="tools/generate_us09_economy_overrides.sh"
+if [[ -x "$us09_generator" ]]; then
+	us09_generated_tmp_dir="$(mktemp -d)"
+	if "$us09_generator" --package-common-dir "$us09_generated_tmp_dir/common" >/dev/null 2>&1; then
+		for generated_subdir in building_types prices; do
+			repo_generated_dir="packages/modeu5_economy_rebalance/in_game/common/$generated_subdir"
+			tmp_generated_dir="$us09_generated_tmp_dir/common/$generated_subdir"
+
+			repo_generated_list="$(
+				if [[ -d "$repo_generated_dir" ]]; then
+					find "$repo_generated_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' -exec basename {} \; | sort
+				fi
+			)"
+			tmp_generated_list="$(
+				if [[ -d "$tmp_generated_dir" ]]; then
+					find "$tmp_generated_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' -exec basename {} \; | sort
+				fi
+			)"
+
+			if [[ "$repo_generated_list" != "$tmp_generated_list" ]]; then
+				printf 'US-09 generated %s overrides are stale. Run tools/generate_us09_economy_overrides.sh.\n' \
+					"$generated_subdir" >&2
+				exit 1
+			fi
+
+			while IFS= read -r generated_file; do
+				[[ -n "$generated_file" ]] || continue
+				if ! cmp -s \
+					"$repo_generated_dir/$generated_file" \
+					"$tmp_generated_dir/$generated_file"; then
+					printf 'US-09 generated override is stale: %s/%s. Run tools/generate_us09_economy_overrides.sh.\n' \
+						"$generated_subdir" "$generated_file" >&2
+					exit 1
+				fi
+			done <<< "$tmp_generated_list"
+		done
+	else
+		printf 'WARNING: US-09 generator could not run; generated economy override staleness was not checked.\n' >&2
+	fi
 fi
 
 stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"

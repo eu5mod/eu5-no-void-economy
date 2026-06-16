@@ -24,6 +24,33 @@ After changing the template or goods registry, regenerate and run
 `./tools/validate_module_packages.sh`; generation must be idempotent and no
 physical map identifier may retain `$`.
 
+## US-09 economy overrides
+
+Regenerate the Rebalance Economy static overrides for US-09:
+
+```bash
+./tools/generate_us09_economy_overrides.sh
+```
+
+The generator reads vanilla `game/in_game/common/building_types` and
+`game/in_game/common/prices/00_hardcoded.txt`, then writes package-local
+overrides under:
+
+```txt
+packages/modeu5_economy_rebalance/in_game/common/building_types/
+packages/modeu5_economy_rebalance/in_game/common/prices/
+```
+
+By default it applies a `+5%` output multiplier and the paired inverse RGO
+expansion-price multiplier `1 / 1.05`. Override the percentage with:
+
+```bash
+./tools/generate_us09_economy_overrides.sh --percent 7.5
+```
+
+Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
+installed vanilla files in place.
+
 ## Module packages
 
 Validate the source package roots, including the testing-only package:
