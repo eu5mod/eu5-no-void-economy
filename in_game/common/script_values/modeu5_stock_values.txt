@@ -17,3 +17,31 @@ modeu5_initialization_rounding_epsilon = {
 modeu5_stock_consistency_prominent_threshold = {
 	value = 1
 }
+
+# US-02 provisional balance values. Keep every coefficient centralized here.
+# Warehouse and funduq values mirror their vanilla maximum_stockpile_capacity
+# contribution. The remaining values require gameplay balance approval before
+# US-02 leaves draft status.
+modeu5_storage_capacity_per_owned_location = {
+	value = 10
+}
+
+modeu5_storage_capacity_per_marketplace_level = {
+	value = 25
+}
+
+modeu5_storage_capacity_per_market_warehouse_level = {
+	value = 200
+}
+
+modeu5_storage_capacity_per_funduq_level = {
+	value = 200
+}
+
+modeu5_storage_capacity_per_caravanserai_level = {
+	value = 100
+}
+
+modeu5_storage_capacity_per_fondaco_level = {
+	value = 100
+}

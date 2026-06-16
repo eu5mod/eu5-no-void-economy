@@ -552,6 +552,13 @@ La seule commande console CORE-01 est :
 event modeu5_debug.1
 ```
 
+Les tests ciblés hors CORE-01 utilisent leurs propres événements :
+
+```txt
+event modeu5_us01_debug.1
+event modeu5_us02_debug.1
+```
+
 Les noms `modeu5_test_*_passed` sont des marqueurs de résultat, pas des
 commandes console.
 

@@ -1,0 +1,135 @@
+# Deterministic US-02 manual-test helper.
+# Recalculation may replace capacity maps but must never mutate stock.
+
+modeu5_debug_run_storage_capacity_test = {
+	save_temporary_scope_as = modeu5_capacity_test_controller
+
+	if = {
+		limit = { country_exists = c:FRA }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_capacity_test_market }
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_capacity_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+
+		modeu5_recalculate_country_market_capacity = {
+			country = c:FRA
+			market = scope:modeu5_capacity_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_total
+			value = scope:modeu5_capacity_total
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_base
+			value = scope:modeu5_capacity_base
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_building
+			value = scope:modeu5_capacity_building
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_foreign
+			value = scope:modeu5_capacity_foreign
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_expected_available
+			value = {
+				value = scope:modeu5_capacity_total
+				subtract = scope:modeu5_capacity_test_wheat_stock_before
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_expected_over_cap
+			value = {
+				value = scope:modeu5_capacity_test_wheat_stock_before
+				subtract = scope:modeu5_capacity_total
+				min = 0
+			}
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_capacity_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_stock_after
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_total
+			value = scope:modeu5_read_country_stock_cap
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_base
+			value = scope:modeu5_read_country_base_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_building
+			value = scope:modeu5_read_country_building_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_foreign
+			value = scope:modeu5_read_country_foreign_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_available
+			value = scope:modeu5_read_available_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_read_over_cap
+			value = scope:modeu5_read_over_capacity
+		}
+
+		modeu5_recalculate_country_market_capacity = {
+			country = c:FRA
+			market = scope:modeu5_capacity_test_market
+			good = iron
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_iron_total
+			value = scope:modeu5_capacity_total
+		}
+
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_reconciled_total
+			value = {
+				value = scope:modeu5_capacity_test_wheat_base
+				add = scope:modeu5_capacity_test_wheat_building
+				add = scope:modeu5_capacity_test_wheat_foreign
+			}
+		}
+
+		if = {
+			limit = {
+				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
+				scope:modeu5_capacity_test_wheat_read_total = scope:modeu5_capacity_test_wheat_total
+				scope:modeu5_capacity_test_wheat_read_base = scope:modeu5_capacity_test_wheat_base
+				scope:modeu5_capacity_test_wheat_read_building = scope:modeu5_capacity_test_wheat_building
+				scope:modeu5_capacity_test_wheat_read_foreign = scope:modeu5_capacity_test_wheat_foreign
+				scope:modeu5_capacity_test_wheat_stock_after = scope:modeu5_capacity_test_wheat_stock_before
+				scope:modeu5_capacity_test_wheat_read_available = scope:modeu5_capacity_test_expected_available
+				scope:modeu5_capacity_test_wheat_read_over_cap = scope:modeu5_capacity_test_expected_over_cap
+				scope:modeu5_capacity_test_iron_total = scope:modeu5_capacity_test_wheat_total
+			}
+			set_global_variable = modeu5_test_storage_capacity_passed
+		}
+		else = {
+			remove_global_variable = modeu5_test_storage_capacity_passed
+			error_log = "ModeU5 deterministic US-02 storage-capacity test failed."
+		}
+	}
+	else = {
+		remove_global_variable = modeu5_test_storage_capacity_passed
+		error_log = "ModeU5 deterministic US-02 storage-capacity test requires FRA."
+	}
+}
