@@ -1,6 +1,6 @@
 # US-01 — Country stocks
 
-Labels: none
+Labels: `module:core`
 
 ## User Story
 
@@ -29,6 +29,7 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 | Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
 | Market aggregate | market × good | logical `market_good_stock`; physical global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Capacity and available capacity | country × market × good record | logical `capacity` field; physical `modeu5_<good>_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
+| Read-only record access | explicit country, market, and good | `modeu5_read_country_stock_record` plus generated literal per-good adapter | CONFIRMED | internal |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 
 ## Variable-map storage pattern
@@ -76,11 +77,16 @@ rebuild:     sum country source records' stock fields
 ## Files expected to change
 
 ```txt
-in_game/common/script_values/
-in_game/common/scripted_effects/
-in_game/events/
-docs/technical/TECH-01_engine_exposure_matrix.md
-docs/tests/
+in_game/common/scripted_effects/modeu5_stock_effects.txt
+in_game/common/scripted_effects/modeu5_stock_goods_generated.txt
+in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/events/modeu5_debug_events.txt
+main_menu/localization/english/modeu5_stock_l_english.yml
+tools/templates/modeu5_stock_good_adapter.template.txt
+tools/validate_module_packages.sh
+docs/tests/US_01_CONSOLE_TEST_RUNBOOK.md
+docs/tests/TEST_PLAN.md
 ```
 
 ## Dependencies
@@ -106,6 +112,8 @@ Related US: US-01-UI, CORE-02, CORE-03
 - Replace existing entries by remove/re-add inside their owning centralized effect.
 - Do not construct per-good map names dynamically; use generated per-good helpers.
 - Treat the physical map family as an implementation of one logical record, not as unrelated variables.
+- Use `modeu5_read_country_stock_record` for read-only stock, capacity,
+  available-capacity, over-cap, and market-aggregate diagnostics.
 - Log requested, actual, rejected/unsatisfied, before/after, and invariant difference.
 
 ## US-specific boundary checks
@@ -114,6 +122,8 @@ Related US: US-01-UI, CORE-02, CORE-03
 - [ ] Production attribution is consistent between the stock destination and US-00.1 ledger.
 - [ ] Rejected production does not create effective ModeU5 wealth.
 - [ ] The data model distinguishes the same good in different markets.
+- [ ] The data model distinguishes different goods in the same country and market.
+- [ ] The data model distinguishes different countries holding the same good in one market.
 
 ## Acceptance criteria
 
@@ -126,6 +136,7 @@ Related US: US-01-UI, CORE-02, CORE-03
 - [ ] Every mutation updates the country source and market aggregate consistently.
 - [ ] Rejected quantities are exposed to US-00.1.
 - [ ] Validation restores `market_good_stock = sum(country_market_good_stock)`.
+- [ ] Read-only record access does not rewrite stock, capacity, or market maps.
 - [ ] Debug and test evidence satisfy project conventions.
 
 ## Manual test scenario
@@ -148,4 +159,8 @@ Each market aggregate changes by the matching actual addition
 
 ## Known limitations
 
-Variable maps, market/goods iteration, scope passing, stock capacity, and centralized stock-operation outputs are documented. Production reading remains isolated in US-00.1 and does not block the US-01 stock model.
+Variable maps, market/goods iteration, scope passing, stock capacity, and
+centralized stock-operation outputs are documented. US-01 does not calculate
+capacity; until US-02 is implemented, capacity values used by deterministic
+tests remain explicit setup data. Production reading remains isolated in
+US-00.1 and does not block the US-01 stock model.

@@ -57,6 +57,9 @@ goods=(
 			-e "s/__GOOD__/$good/g" \
 			-e "s/__STOCK_MAP__/modeu5_${good}_stock_by_market/g" \
 			-e "s/__CAPACITY_MAP__/modeu5_${good}_stock_cap_by_market/g" \
+			-e "s/__BASE_CAPACITY_MAP__/modeu5_${good}_base_capacity_by_market/g" \
+			-e "s/__BUILDING_CAPACITY_MAP__/modeu5_${good}_building_capacity_by_market/g" \
+			-e "s/__FOREIGN_CAPACITY_MAP__/modeu5_${good}_foreign_capacity_by_market/g" \
 			-e "s/__MARKET_MAP__/modeu5_${good}_market_stock/g" \
 			-e "s/__DIRTY_LIST__/modeu5_${good}_dirty_markets/g" \
 			"$template"
