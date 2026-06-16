@@ -16,17 +16,32 @@ modeu5_core03_probe.1 = {
 		modeu5_core03_probe_reset = yes
 	}
 	option = {
-		name = modeu5_core03_probe.prepare.location
+		name = modeu5_core03_probe.run_synth.location
+		modeu5_core03_probe_run_synthetic_location_transfer = yes
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+	option = {
+		name = modeu5_core03_probe.run_synth.release
+		modeu5_core03_probe_run_synthetic_release_or_creation = yes
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+	option = {
+		name = modeu5_core03_probe.run_synth.annexation
+		modeu5_core03_probe_run_synthetic_annexation = yes
+		trigger_event_non_silently = modeu5_core03_probe.2
+	}
+	option = {
+		name = modeu5_core03_probe.prepare_manual.location
 		modeu5_core03_probe_prepare_scenario_location_transfer = yes
 		trigger_event_non_silently = modeu5_core03_probe.10
 	}
 	option = {
-		name = modeu5_core03_probe.prepare.release
+		name = modeu5_core03_probe.prepare_manual.release
 		modeu5_core03_probe_prepare_scenario_release_or_creation = yes
 		trigger_event_non_silently = modeu5_core03_probe.11
 	}
 	option = {
-		name = modeu5_core03_probe.prepare.annexation
+		name = modeu5_core03_probe.prepare_manual.annexation
 		modeu5_core03_probe_prepare_scenario_annexation = yes
 		trigger_event_non_silently = modeu5_core03_probe.12
 	}
@@ -49,6 +64,35 @@ modeu5_core03_probe.2 = {
 		always = no
 	}
 
+	option = {
+		name = modeu5_core03_probe.mode.synthetic
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_run
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.mode.manual
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_synthetic_run
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.fixture.valid
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_run
+			NOT = {
+				has_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.fixture.invalid
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+		}
+	}
 	option = {
 		name = modeu5_core03_probe.scenario.location
 		trigger = {
@@ -143,6 +187,34 @@ modeu5_core03_probe.2 = {
 		}
 	}
 	option = {
+		name = modeu5_core03_probe.new_country.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_new_country_formed_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.new_country.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_new_country_formed_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.released_country.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_released_country_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.released_country.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_released_country_observed
+			}
+		}
+	}
+	option = {
 		name = modeu5_core03_probe.delayed.pass
 		trigger = {
 			has_global_variable = modeu5_core03_probe_delayed_finalizer_observed
@@ -167,6 +239,40 @@ modeu5_core03_probe.2 = {
 		trigger = {
 			NOT = {
 				has_global_variable = modeu5_core03_probe_delayed_after_location_observed
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.annex_target.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_annex_target_valid
+			NOT = {
+				has_global_variable = modeu5_core03_probe_annex_target_invalid
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.annex_target.fail
+		trigger = {
+			OR = {
+				NOT = {
+					has_global_variable = modeu5_core03_probe_annex_target_valid
+				}
+				has_global_variable = modeu5_core03_probe_annex_target_invalid
+			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.annexed.pass
+		trigger = {
+			has_global_variable = modeu5_core03_probe_annexed_observed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.annexed.fail
+		trigger = {
+			NOT = {
+				has_global_variable = modeu5_core03_probe_annexed_observed
 			}
 		}
 	}

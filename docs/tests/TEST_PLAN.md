@@ -434,8 +434,9 @@ Follow:
 docs/tests/CORE_03_LIFECYCLE_HOOK_RUNBOOK.md
 ```
 
-Use one baseline Spain save and reload it before each lifecycle scenario so the
-probe results remain comparable across runs.
+Use the synthetic run path for fast probe regression and one baseline Spain
+save reloaded before each manual lifecycle scenario so the vanilla-observation
+results remain comparable across runs.
 
 Expected:
 
@@ -446,6 +447,7 @@ Temporary occupation does not fire the ownership hook
 Country creation/release and annexation hook overlap is recorded
 Delayed finalizers execute after location hooks
 No stock or capacity is mutated by the probe
+Synthetic SPA/POR runs validate probe wiring only
 TECH-01 098 remains TO_TEST until all required lifecycle paths are reviewed
 ```
 

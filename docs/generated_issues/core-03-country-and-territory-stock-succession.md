@@ -283,7 +283,10 @@ Related US: US-01, US-02, US-10.2, US-11
 
 Use one clean baseline Spain save and reload it before each scenario. The
 probe hub `event modeu5_core03_probe.1` now exposes scenario-preparation
-options that reset markers automatically before each controlled run.
+options that reset markers automatically before each controlled run. It also
+exposes synthetic SPA/POR regression options for fast probe wiring checks; they
+do not confirm vanilla lifecycle sequencing and are not sufficient to graduate
+TECH-01 `098` on their own.
 
 ### Scenario A - one conquered location
 

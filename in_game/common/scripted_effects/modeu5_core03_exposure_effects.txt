@@ -239,6 +239,8 @@ modeu5_core03_probe_reset = {
 	remove_global_variable = modeu5_core03_probe_delayed_finalizer_observed
 	remove_global_variable = modeu5_core03_probe_delayed_after_location_observed
 	remove_global_variable = modeu5_core03_probe_multiple_finalizers_observed
+	remove_global_variable = modeu5_core03_probe_synthetic_run
+	remove_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
 	if = {
 		limit = {
 			has_global_variable_list = modeu5_core03_probe_seen_locations
@@ -264,4 +266,71 @@ modeu5_core03_probe_prepare_scenario_annexation = {
 	modeu5_core03_probe_clear_scenario_selection = yes
 	modeu5_core03_probe_reset = yes
 	set_global_variable = modeu5_core03_probe_scenario_annexation
+}
+
+modeu5_core03_probe_run_synthetic_location_transfer = {
+	modeu5_core03_probe_prepare_scenario_location_transfer = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	if = {
+		limit = {
+			country_exists = c:SPA
+			country_exists = c:POR
+		}
+		c:SPA = { save_temporary_scope_as = loser }
+		c:POR = { save_temporary_scope_as = winner }
+		c:SPA.capital = {
+			modeu5_core03_probe_record_location_changed_owner = yes
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+	}
+}
+
+modeu5_core03_probe_run_synthetic_release_or_creation = {
+	modeu5_core03_probe_prepare_scenario_release_or_creation = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	if = {
+		limit = {
+			country_exists = c:SPA
+			country_exists = c:POR
+		}
+		c:SPA = { save_temporary_scope_as = loser }
+		c:POR = { save_temporary_scope_as = winner }
+		c:SPA.capital = {
+			modeu5_core03_probe_record_location_changed_owner = yes
+		}
+		c:POR = {
+			modeu5_core03_probe_record_new_country_formed = yes
+			modeu5_core03_probe_record_released_country = yes
+		}
+		modeu5_core03_probe_record_delayed_country_finalizer = yes
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+	}
+}
+
+modeu5_core03_probe_run_synthetic_annexation = {
+	modeu5_core03_probe_prepare_scenario_annexation = yes
+	set_global_variable = modeu5_core03_probe_synthetic_run
+	if = {
+		limit = {
+			country_exists = c:SPA
+			country_exists = c:POR
+		}
+		c:POR = { save_temporary_scope_as = loser }
+		c:SPA = { save_temporary_scope_as = winner }
+		c:POR = { save_temporary_scope_as = target }
+		c:POR.capital = {
+			modeu5_core03_probe_record_location_changed_owner = yes
+		}
+		c:SPA = {
+			modeu5_core03_probe_record_annexed = yes
+		}
+		modeu5_core03_probe_record_delayed_country_finalizer = yes
+	}
+	else = {
+		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
+	}
 }
