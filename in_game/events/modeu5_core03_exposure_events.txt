@@ -16,6 +16,21 @@ modeu5_core03_probe.1 = {
 		modeu5_core03_probe_reset = yes
 	}
 	option = {
+		name = modeu5_core03_probe.prepare.location
+		modeu5_core03_probe_prepare_scenario_location_transfer = yes
+		trigger_event_non_silently = modeu5_core03_probe.10
+	}
+	option = {
+		name = modeu5_core03_probe.prepare.release
+		modeu5_core03_probe_prepare_scenario_release_or_creation = yes
+		trigger_event_non_silently = modeu5_core03_probe.11
+	}
+	option = {
+		name = modeu5_core03_probe.prepare.annexation
+		modeu5_core03_probe_prepare_scenario_annexation = yes
+		trigger_event_non_silently = modeu5_core03_probe.12
+	}
+	option = {
 		name = modeu5_core03_probe.report
 		trigger_event_non_silently = modeu5_core03_probe.2
 	}
@@ -34,6 +49,36 @@ modeu5_core03_probe.2 = {
 		always = no
 	}
 
+	option = {
+		name = modeu5_core03_probe.scenario.location
+		trigger = {
+			has_global_variable = modeu5_core03_probe_scenario_location_transfer
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.scenario.release
+		trigger = {
+			has_global_variable = modeu5_core03_probe_scenario_release_or_creation
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.scenario.annexation
+		trigger = {
+			has_global_variable = modeu5_core03_probe_scenario_annexation
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.scenario.none
+		trigger = {
+			NOT = {
+				OR = {
+					has_global_variable = modeu5_core03_probe_scenario_location_transfer
+					has_global_variable = modeu5_core03_probe_scenario_release_or_creation
+					has_global_variable = modeu5_core03_probe_scenario_annexation
+				}
+			}
+		}
+	}
 	option = {
 		name = modeu5_core03_probe.location.pass
 		trigger = {
@@ -140,6 +185,51 @@ modeu5_core03_probe.2 = {
 			has_global_variable = modeu5_core03_probe_multiple_finalizers_observed
 		}
 	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_probe.10 = {
+	type = country_event
+	title = modeu5_core03_probe.10.title
+	desc = modeu5_core03_probe.10.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_probe.11 = {
+	type = country_event
+	title = modeu5_core03_probe.11.title
+	desc = modeu5_core03_probe.11.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_probe.12 = {
+	type = country_event
+	title = modeu5_core03_probe.12.title
+	desc = modeu5_core03_probe.12.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
 	option = {
 		name = modeu5_debug.close
 	}

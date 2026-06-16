@@ -209,6 +209,12 @@ modeu5_core03_probe_record_delayed_country_finalizer = {
 	}
 }
 
+modeu5_core03_probe_clear_scenario_selection = {
+	remove_global_variable = modeu5_core03_probe_scenario_location_transfer
+	remove_global_variable = modeu5_core03_probe_scenario_release_or_creation
+	remove_global_variable = modeu5_core03_probe_scenario_annexation
+}
+
 modeu5_core03_probe_reset = {
 	remove_global_variable = modeu5_core03_probe_sequence
 	remove_global_variable = modeu5_core03_probe_location_change_count
@@ -240,4 +246,22 @@ modeu5_core03_probe_reset = {
 		clear_global_variable_list = modeu5_core03_probe_seen_locations
 	}
 	set_global_variable = modeu5_core03_probe_reset_complete
+}
+
+modeu5_core03_probe_prepare_scenario_location_transfer = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_location_transfer
+}
+
+modeu5_core03_probe_prepare_scenario_release_or_creation = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_release_or_creation
+}
+
+modeu5_core03_probe_prepare_scenario_annexation = {
+	modeu5_core03_probe_clear_scenario_selection = yes
+	modeu5_core03_probe_reset = yes
+	set_global_variable = modeu5_core03_probe_scenario_annexation
 }

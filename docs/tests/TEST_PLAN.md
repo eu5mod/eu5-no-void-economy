@@ -434,6 +434,9 @@ Follow:
 docs/tests/CORE_03_LIFECYCLE_HOOK_RUNBOOK.md
 ```
 
+Use one baseline Spain save and reload it before each lifecycle scenario so the
+probe results remain comparable across runs.
+
 Expected:
 
 ```txt

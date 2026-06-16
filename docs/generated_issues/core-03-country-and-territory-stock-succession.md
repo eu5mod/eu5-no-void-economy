@@ -45,8 +45,8 @@ Feeds: corrected country ownership records and US-11 diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Universal permanent location ownership change | location with loser/winner | `on_location_changed_owner` | CONFIRMED | XXX |
-| Peace-treaty location transfer | winner/loser/location | `on_took_location_in_peace_treaty` | CONFIRMED| XXX |
+| Universal permanent location ownership change | location with loser/winner | `on_location_changed_owner` | CONFIRMED | 094 |
+| Peace-treaty location transfer coverage | winner/loser/location lifecycle | controlled comparison against `on_location_changed_owner`; no separate gameplay hook assumed | TO_TEST; NO SEPARATE GAMEPLAY HOOK ASSUMED | 098 |
 | New-country lifecycle | new/released country | `on_new_country_formed`, `on_released_country` | CONFIRMED | 095 |
 | Annexation/merge completion | successor and disappearing country | `on_annexed`, `on_diplomatic_annexed`, `on_military_annexed`, `on_civil_war_annexed` | CONFIRMED | 096 |
 | Sale, subject-transfer, and subject-seizure coverage | location/country lifecycle | `on_location_changed_owner` observation in controlled tests | TO_TEST; NO SEPARATE GAMEPLAY HOOK ASSUMED | 098 |
@@ -280,6 +280,10 @@ Related US: US-01, US-02, US-10.2, US-11
 - [ ] `error.log` has no new blocking error.
 
 ## Manual test scenario
+
+Use one clean baseline Spain save and reload it before each scenario. The
+probe hub `event modeu5_core03_probe.1` now exposes scenario-preparation
+options that reset markers automatically before each controlled run.
 
 ### Scenario A - one conquered location
 
