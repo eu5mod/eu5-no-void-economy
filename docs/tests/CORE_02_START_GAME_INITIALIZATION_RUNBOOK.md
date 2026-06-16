@@ -87,8 +87,8 @@ must use `modeu5_add_stock` with `capacity_policy = allow_over_capacity`.
 ## Full startup check
 
 The full `on_game_start -> delay 1 day -> modeu5_start_game_stock_initialization_dispatcher`
-path depends on US-02 capacity maps being populated. Until US-02 is implemented,
-a clean campaign with positive vanilla opening stock and zero ModeU5 capacity is
+path depends on US-02 capacity maps being populated with positive capacity. A
+clean campaign with positive vanilla opening stock and zero ModeU5 capacity is
 expected to fail closed rather than invent a fallback allocation.
 
 Expected fail-closed markers in that case:
@@ -100,7 +100,8 @@ modeu5_initialization_zero_capacity_failures > 0
 ```
 
 This is not a CORE-02 allocation failure. It means the lifecycle guard is doing
-the conservative thing while US-02 remains absent.
+the conservative thing while capacity exposure or capacity calculation produced
+no eligible recipient.
 
 ## Log review
 

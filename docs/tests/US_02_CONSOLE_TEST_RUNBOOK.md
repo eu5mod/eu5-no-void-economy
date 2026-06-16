@@ -2,9 +2,8 @@
 
 ## Purpose
 
-Validate that country storage capacity is rebuilt from owned locations,
-compatible domestic buildings, and compatible foreign buildings without
-mutating stock.
+Validate that country storage capacity is rebuilt from market merchant capacity
+and owned-location rank/capital contributions without mutating stock.
 
 ## Before launching EU5
 
@@ -66,6 +65,8 @@ total
 base
 building
 foreign
+trade
+location_rank
 stock
 available
 over_cap
@@ -81,6 +82,7 @@ Expected arithmetic:
 
 ```txt
 total = base + building + foreign
+base = trade + location_rank
 available = max(0, total - stock)
 over_cap = max(0, stock - total)
 ```
@@ -114,6 +116,8 @@ console test intentionally emits no PASS `debug.log` line.
 ## Known limitations
 
 The test validates the current world-state scan and persistence contract. It
-does not construct or destroy a building. The provisional capacity
-coefficients and automatic recalculation scheduling require separate gameplay
-approval and runtime coverage.
+does not change location rank, move a capital, or create/destroy a merchant
+capacity source. Building and foreign-building capacity fields are intentionally
+zero-valued compatibility fields in the current rule. Automatic recalculation
+scheduling after every ownership/rank/trade-capacity change requires separate
+runtime coverage.

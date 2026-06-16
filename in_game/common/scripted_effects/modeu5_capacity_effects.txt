@@ -11,8 +11,45 @@ modeu5_recalculate_country_market_capacity = {
 	modeu5_recalculate_country_market_capacity_good_$good$ = yes
 }
 
-# Reusable CORE-03 numerator. Foreign buildings are excluded because their
-# capacity belongs to the building owner, not to the location owner.
+modeu5_calculate_location_rank_storage_capacity = {
+	save_temporary_scope_value_as = {
+		name = modeu5_capacity_current_location_rank_contribution
+		value = modeu5_storage_capacity_rural_settlement
+	}
+
+	if = {
+		limit = { is_capital = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_location_rank_contribution
+			value = modeu5_storage_capacity_capital
+		}
+	}
+	else_if = {
+		limit = { location_rank = location_rank:megalopolis }
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_location_rank_contribution
+			value = modeu5_storage_capacity_megalopolis
+		}
+	}
+	else_if = {
+		limit = { location_rank = location_rank:city }
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_location_rank_contribution
+			value = modeu5_storage_capacity_city
+		}
+	}
+	else_if = {
+		limit = { location_rank = location_rank:town }
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_location_rank_contribution
+			value = modeu5_storage_capacity_town
+		}
+	}
+}
+
+# Reusable CORE-03 numerator. It captures only the local contribution carried by
+# a transferred location. Country-market merchant capacity is recalculated at
+# the country-market level and is not duplicated into one location numerator.
 modeu5_calculate_location_storage_capacity = {
 	$country$ = { save_temporary_scope_as = modeu5_capacity_country }
 	$location$ = { save_temporary_scope_as = modeu5_capacity_location }
@@ -23,19 +60,11 @@ modeu5_calculate_location_storage_capacity = {
 	}
 
 	scope:modeu5_capacity_location = {
+		modeu5_calculate_location_rank_storage_capacity = yes
 		scope:modeu5_capacity_country = {
 			change_local_variable = {
 				name = modeu5_location_capacity_base_accumulator
-				add = modeu5_storage_capacity_per_owned_location
-			}
-		}
-		every_buildings_in_location = {
-			modeu5_calculate_domestic_storage_building_contribution = yes
-			scope:modeu5_capacity_country = {
-				change_local_variable = {
-					name = modeu5_location_capacity_building_accumulator
-					add = scope:modeu5_capacity_current_building_contribution
-				}
+				add = scope:modeu5_capacity_current_location_rank_contribution
 			}
 		}
 	}
@@ -64,6 +93,8 @@ modeu5_calculate_country_market_capacity = {
 		set_local_variable = { name = modeu5_capacity_base_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_building_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_foreign_accumulator value = 0 }
+		set_local_variable = { name = modeu5_capacity_trade_accumulator value = 0 }
+		set_local_variable = { name = modeu5_capacity_location_rank_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_owned_location_count value = 0 }
 		set_local_variable = { name = modeu5_capacity_marketplace_levels value = 0 }
 		set_local_variable = { name = modeu5_capacity_market_warehouse_levels value = 0 }
@@ -71,61 +102,39 @@ modeu5_calculate_country_market_capacity = {
 		set_local_variable = { name = modeu5_capacity_caravanserai_levels value = 0 }
 		set_local_variable = { name = modeu5_capacity_fondaco_levels value = 0 }
 
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_trade_contribution
+			value = {
+				value = "scope:modeu5_market.merchant_capacity(scope:modeu5_country)"
+				multiply = modeu5_storage_capacity_per_trade_capacity
+				min = 0
+			}
+		}
+		change_local_variable = {
+			name = modeu5_capacity_base_accumulator
+			add = scope:modeu5_capacity_current_trade_contribution
+		}
+		change_local_variable = {
+			name = modeu5_capacity_trade_accumulator
+			add = scope:modeu5_capacity_current_trade_contribution
+		}
+
 		every_owned_location = {
 			limit = { market = scope:modeu5_market }
 
+			modeu5_calculate_location_rank_storage_capacity = yes
 			scope:modeu5_country = {
 				change_local_variable = {
 					name = modeu5_capacity_base_accumulator
-					add = modeu5_storage_capacity_per_owned_location
+					add = scope:modeu5_capacity_current_location_rank_contribution
+				}
+				change_local_variable = {
+					name = modeu5_capacity_location_rank_accumulator
+					add = scope:modeu5_capacity_current_location_rank_contribution
 				}
 				change_local_variable = {
 					name = modeu5_capacity_owned_location_count
 					add = 1
-				}
-			}
-
-			every_buildings_in_location = {
-				modeu5_calculate_domestic_storage_building_contribution = yes
-				scope:modeu5_country = {
-					change_local_variable = {
-						name = modeu5_capacity_building_accumulator
-						add = scope:modeu5_capacity_current_building_contribution
-					}
-					change_local_variable = {
-						name = modeu5_capacity_marketplace_levels
-						add = scope:modeu5_capacity_current_marketplace_levels
-					}
-					change_local_variable = {
-						name = modeu5_capacity_market_warehouse_levels
-						add = scope:modeu5_capacity_current_market_warehouse_levels
-					}
-					change_local_variable = {
-						name = modeu5_capacity_funduq_levels
-						add = scope:modeu5_capacity_current_funduq_levels
-					}
-					change_local_variable = {
-						name = modeu5_capacity_caravanserai_levels
-						add = scope:modeu5_capacity_current_caravanserai_levels
-					}
-				}
-			}
-		}
-
-		every_owned_foreign_building = {
-			limit = {
-				building_type = building_type:fondaco
-				location = { market = scope:modeu5_market }
-			}
-			modeu5_calculate_foreign_storage_building_contribution = yes
-			scope:modeu5_country = {
-				change_local_variable = {
-					name = modeu5_capacity_foreign_accumulator
-					add = scope:modeu5_capacity_current_building_contribution
-				}
-				change_local_variable = {
-					name = modeu5_capacity_fondaco_levels
-					add = scope:modeu5_capacity_current_fondaco_levels
 				}
 			}
 		}
@@ -141,6 +150,14 @@ modeu5_calculate_country_market_capacity = {
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_foreign
 			value = local_var:modeu5_capacity_foreign_accumulator
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_trade_capacity
+			value = local_var:modeu5_capacity_trade_accumulator
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_location_rank_capacity
+			value = local_var:modeu5_capacity_location_rank_accumulator
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_total

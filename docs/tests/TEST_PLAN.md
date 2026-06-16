@@ -97,6 +97,7 @@ Expected:
 
 ```txt
 Total capacity equals base + domestic building + foreign building capacity
+Base capacity equals market merchant capacity + owned-location rank/capital contribution
 The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market
 The recalculation does not change wheat stock

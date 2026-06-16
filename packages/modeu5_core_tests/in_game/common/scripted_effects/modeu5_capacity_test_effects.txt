@@ -23,18 +23,26 @@ modeu5_debug_run_storage_capacity_test = {
 			market = scope:modeu5_capacity_test_market
 			good = wheat
 		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_total
-			value = scope:modeu5_capacity_total
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_base
-			value = scope:modeu5_capacity_base
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_building
-			value = scope:modeu5_capacity_building
-		}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_wheat_total
+				value = scope:modeu5_capacity_total
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_wheat_base
+				value = scope:modeu5_capacity_base
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_wheat_trade
+				value = scope:modeu5_capacity_trade_capacity
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_wheat_location_rank
+				value = scope:modeu5_capacity_location_rank_capacity
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_wheat_building
+				value = scope:modeu5_capacity_building
+			}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_test_wheat_foreign
 			value = scope:modeu5_capacity_foreign
@@ -100,23 +108,31 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:modeu5_capacity_total
 		}
 
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_reconciled_total
-			value = {
-				value = scope:modeu5_capacity_test_wheat_base
-				add = scope:modeu5_capacity_test_wheat_building
-				add = scope:modeu5_capacity_test_wheat_foreign
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_reconciled_total
+				value = {
+					value = scope:modeu5_capacity_test_wheat_base
+					add = scope:modeu5_capacity_test_wheat_building
+					add = scope:modeu5_capacity_test_wheat_foreign
+				}
 			}
-		}
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_reconciled_base
+				value = {
+					value = scope:modeu5_capacity_test_wheat_trade
+					add = scope:modeu5_capacity_test_wheat_location_rank
+				}
+			}
 
-		if = {
-			limit = {
-				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
-				scope:modeu5_capacity_test_wheat_read_total = scope:modeu5_capacity_test_wheat_total
-				scope:modeu5_capacity_test_wheat_read_base = scope:modeu5_capacity_test_wheat_base
-				scope:modeu5_capacity_test_wheat_read_building = scope:modeu5_capacity_test_wheat_building
-				scope:modeu5_capacity_test_wheat_read_foreign = scope:modeu5_capacity_test_wheat_foreign
-				scope:modeu5_capacity_test_wheat_stock_after = scope:modeu5_capacity_test_wheat_stock_before
+			if = {
+				limit = {
+					scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
+					scope:modeu5_capacity_test_wheat_base = scope:modeu5_capacity_test_reconciled_base
+					scope:modeu5_capacity_test_wheat_read_total = scope:modeu5_capacity_test_wheat_total
+					scope:modeu5_capacity_test_wheat_read_base = scope:modeu5_capacity_test_wheat_base
+					scope:modeu5_capacity_test_wheat_read_building = scope:modeu5_capacity_test_wheat_building
+					scope:modeu5_capacity_test_wheat_read_foreign = scope:modeu5_capacity_test_wheat_foreign
+					scope:modeu5_capacity_test_wheat_stock_after = scope:modeu5_capacity_test_wheat_stock_before
 				scope:modeu5_capacity_test_wheat_read_available = scope:modeu5_capacity_test_expected_available
 				scope:modeu5_capacity_test_wheat_read_over_cap = scope:modeu5_capacity_test_expected_over_cap
 				scope:modeu5_capacity_test_iron_total = scope:modeu5_capacity_test_wheat_total
