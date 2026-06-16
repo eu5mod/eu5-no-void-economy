@@ -1,4 +1,4 @@
-on_location_changed_owner = {
+﻿on_location_changed_owner = {
 	on_actions = {
 		modeu5_core03_probe_location_changed_owner
 	}

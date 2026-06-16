@@ -1,4 +1,4 @@
-namespace = modeu5_core03_probe
+﻿namespace = modeu5_core03_probe
 
 modeu5_core03_probe.1 = {
 	type = country_event
