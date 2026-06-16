@@ -281,12 +281,15 @@ Related US: US-01, US-02, US-10.2, US-11
 
 ## Manual test scenario
 
-Use one clean baseline Spain save and reload it before each scenario. The
+Use one clean baseline Castile save and reload it before each scenario. The
 probe hub `event modeu5_core03_probe.1` now exposes scenario-preparation
 options that reset markers automatically before each controlled run. It also
-exposes synthetic SPA/POR regression options for fast probe wiring checks; they
-do not confirm vanilla lifecycle sequencing and are not sufficient to graduate
-TECH-01 `098` on their own.
+exposes deterministic scripted fixtures for `Huelva -> Portugal`, `Leon`
+subject creation, and `Leon` annexation so the tester can see the expected map
+changes in the UI while reading the lifecycle markers. Those scripted fixtures
+improve reproducibility, but they still do not replace the separate manual
+coverage needed for release-specific, rebel, and tag-formation paths before
+TECH-01 `098` can graduate.
 
 ### Scenario A - one conquered location
 

@@ -18,17 +18,14 @@ modeu5_core03_probe.1 = {
 	option = {
 		name = modeu5_core03_probe.run_synth.location
 		modeu5_core03_probe_run_synthetic_location_transfer = yes
-		trigger_event_non_silently = modeu5_core03_probe.2
 	}
 	option = {
 		name = modeu5_core03_probe.run_synth.release
 		modeu5_core03_probe_run_synthetic_release_or_creation = yes
-		trigger_event_non_silently = modeu5_core03_probe.2
 	}
 	option = {
 		name = modeu5_core03_probe.run_synth.annexation
 		modeu5_core03_probe_run_synthetic_annexation = yes
-		trigger_event_non_silently = modeu5_core03_probe.2
 	}
 	option = {
 		name = modeu5_core03_probe.prepare_manual.location
@@ -121,6 +118,42 @@ modeu5_core03_probe.2 = {
 					has_global_variable = modeu5_core03_probe_scenario_annexation
 				}
 			}
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.reset
+		trigger = {
+			has_global_variable = modeu5_core03_probe_reset_complete
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.manual_prepared
+		trigger = {
+			has_global_variable = modeu5_core03_probe_manual_prepare_complete
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.synthetic_started
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_runner_started
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.synthetic_staged
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_runner_staged
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.synthetic_completed
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_runner_completed
+		}
+	}
+	option = {
+		name = modeu5_core03_probe.state.synthetic_aborted
+		trigger = {
+			has_global_variable = modeu5_core03_probe_synthetic_runner_aborted
 		}
 	}
 	option = {
@@ -338,5 +371,21 @@ modeu5_core03_probe.12 = {
 
 	option = {
 		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_probe.21 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = no
+	}
+
+	immediate = {
+		modeu5_core03_probe_execute_staged_annexation = yes
 	}
 }

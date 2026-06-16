@@ -7,20 +7,19 @@ calculates capacity or mutates stock.
 The probe now supports two workflows:
 
 ```txt
-1. synthetic regression for fast probe wiring checks
+1. scripted deterministic fixtures for visible, reproducible runs
 2. manual vanilla observation for actual TECH-01 coverage evidence
 ```
 
 ## Reproducible baseline
 
-Use one clean baseline save as Spain and reload it before each manual scenario.
-The synthetic runner does not need a special save beyond having both SPA and
-POR alive.
+Use one clean baseline save as Castile and reload it before each scripted or
+manual scenario.
 
-Suggested manual baseline:
+Suggested baseline:
 
 ```txt
-Start a clean campaign as Spain
+Start a clean campaign as Castile
 Pause immediately
 Create one baseline save
 Reload that same baseline before manual Scenario A, B, and C
@@ -51,32 +50,40 @@ The probe hub is:
 event modeu5_core03_probe.1
 ```
 
-## Fast synthetic regression
+## Scripted deterministic fixtures
 
-Use the `Run synthetic ...` options when you want a fast automated harness.
-Each synthetic run:
+Use the `Run scripted ...` options when you want a reproducible harness that
+also changes the visible map state. Each scripted run:
 
 ```txt
 1. resets markers
 2. arms one scenario
-3. emulates the expected scopes with a fixed SPA/POR fixture
-4. opens the report immediately
+3. uses one fixed fixture
+4. schedules the report after the relevant delayed-hook window
 ```
 
-Synthetic coverage:
+Scripted fixture coverage:
 
 ```txt
-Scenario A: Spain capital owner-change to Portugal
-Scenario B: one location transfer plus on_new_country_formed and on_released_country
-Scenario C: Portugal capital owner-change plus on_annexed and a valid target scope
+Scenario A: transfer Huelva from Castile to Portugal
+Scenario B: create one Castile subject centered on Leon
+Scenario C: create or reuse one Leon-centered Castile subject, then auto-annex it
 ```
 
 Important boundary:
 
 ```txt
-Synthetic runs do not change the map
-Synthetic runs do not prove vanilla sequencing
-Synthetic runs validate probe wiring only
+Scripted runs are intended to be visible in the UI
+Scenario B confirms new-country creation, not release-specific hooks
+Release-specific coverage, rebel paths, and tag-formation paths still need manual confirmation
+```
+
+New observability aid:
+
+```txt
+Scripted runs now emit explicit ModeU5 CORE-03 started/staged/completed/aborted lines in error.log
+Observed hooks also emit PASS / FAIL-style lines in error.log
+The report shows probe-state rows for reset, manual preparation, and scripted execution
 ```
 
 ## Manual vanilla observation
@@ -98,7 +105,7 @@ testing.
 For each manual scenario:
 
 ```txt
-Reload the baseline Spain save
+Reload the baseline Castile save
 event modeu5_core03_probe.1
 ```
 
@@ -115,9 +122,81 @@ Then:
 The report starts with run mode and scenario rows so the result is easier to
 interpret after several runs.
 
+Ignore unrelated localization noise when reviewing this probe. The validation
+target here is whether the deterministic fixture ran, changed the map as
+expected, and produced the expected lifecycle markers.
+
+## Scripted Scenario A - Huelva to Portugal
+
+```txt
+Reload the baseline Castile save
+event modeu5_core03_probe.1
+Choose: Run scripted Scenario A - transfer Huelva to Portugal
+Unpause until the report opens
+```
+
+Expected:
+
+```txt
+Huelva visibly changes owner to Portugal
+PASS - Location owner-change hook observed
+PASS - Distinct loser and winner scopes resolved
+PASS - No duplicate location hook observed
+NOT OBSERVED - Country lifecycle hook
+NOT OBSERVED - Delayed country finalizer
+```
+
+## Scripted Scenario B - create Leon vassal
+
+```txt
+Reload the baseline Castile save
+event modeu5_core03_probe.1
+Choose: Run scripted Scenario B - create the Leon vassal
+Unpause until the report opens
+```
+
+Expected:
+
+```txt
+A Castile subject centered on Leon becomes visible on the map
+PASS - Location owner-change hook observed
+OBSERVED - on_new_country_formed
+OBSERVED - Country lifecycle hook
+OBSERVED - Delayed country finalizer
+PASS - Delayed finalizer observed after a location hook
+NOT OBSERVED is acceptable for on_released_country in this scripted creation fixture
+```
+
+## Scripted Scenario C - auto-annex Leon
+
+```txt
+Reload the baseline Castile save
+event modeu5_core03_probe.1
+Choose: Run scripted Scenario C - auto-annex Leon
+Unpause until the report opens
+```
+
+Expected:
+
+```txt
+Leon may appear briefly as a visible Castile subject during staging
+Leon is then auto-annexed and returns to Castile without any extra click
+OBSERVED - One annexation-family hook
+PASS - Annexation target scope resolved
+OBSERVED - Delayed country finalizer
+PASS - Delayed finalizer observed after a location hook
+```
+
+Important implementation note:
+
+```txt
+This scripted annexation does not rely on vanilla subject-age, opinion, or diplomatic-annexation UI requirements.
+It uses a direct scripted annexation path so the fixture stays deterministic.
+```
+
 ## Manual Scenario A - one permanent location transfer
 
-Using Spain, transfer one permanently owned location to another existing
+Using Castile, transfer one permanently owned location to another existing
 country through one controlled path such as a peace treaty or another permanent
 ownership change. Do not chain multiple transfers in the same run.
 
@@ -136,7 +215,7 @@ absent.
 
 ## Manual Scenario B - release or create a country
 
-Using Spain, release one country or create one new country through a path that
+Using Castile, release one country or create one new country through a path that
 permanently moves locations. Wait two days before opening the report.
 
 Expected:
@@ -154,8 +233,15 @@ the CORE-03 design before gameplay implementation.
 
 ## Manual Scenario C - annexation
 
-Using Spain, fully annex one controlled country, wait two days, and open the
+Using Castile, fully annex one controlled country, wait two days, and open the
 report.
+
+Recommended visible/manual path when you want a fast UI confirmation:
+
+```txt
+Use Castile and annex Leon through a quick military path when your test save provides a valid casus belli.
+This is a comfort/manual-observation path, not the deterministic automated fixture.
+```
 
 Expected:
 
@@ -182,7 +268,9 @@ Capture each run with one row:
 
 | Run type | Scenario | Baseline save reloaded | Action path used | Locations transferred | Waited two days | Report result | Log result |
 |---|---|---|---|---|---|---|---|
-| synthetic | A/B/C | no | built-in SPA/POR emulation | scripted | no | fill manually | optional |
+| scripted | A | yes | Huelva to Portugal fixture | Huelva | no | fill manually | fill manually |
+| scripted | B | yes | Leon subject-creation fixture | Leon | yes | fill manually | fill manually |
+| scripted | C | yes | Leon stage then annex fixture | Leon | yes | fill manually | fill manually |
 | manual | A | yes/no | peace / sale / other | fill manually | no | fill manually | fill manually |
 | manual | B | yes/no | release / subject / formation | fill manually | yes | fill manually | fill manually |
 | manual | C | yes/no | annexation path | fill manually | yes | fill manually | fill manually |
@@ -191,6 +279,20 @@ Capture each run with one row:
 
 Review `error.log`, `game.log`, and `system.log` for unknown on-actions, unset
 scopes, invalid delayed targets, or ModeU5 script errors.
+
+For scripted deterministic fixtures, grep for:
+
+```txt
+ModeU5 CORE-03 scripted Scenario A started/completed
+ModeU5 CORE-03 scripted Scenario B started/completed
+ModeU5 CORE-03 scripted Scenario C started/staging complete/completed
+ModeU5 CORE-03 OBSERVED on_location_changed_owner
+ModeU5 CORE-03 OBSERVED on_new_country_formed
+ModeU5 CORE-03 OBSERVED on_annexed
+ModeU5 CORE-03 OBSERVED on_diplomatic_annexed
+ModeU5 CORE-03 OBSERVED delayed country finalizer
+ModeU5 CORE-03 manual Scenario A/B/C prepared
+```
 
 Only the required manual vanilla scenarios can establish the non-duplicating
 location path and ordered finalizer contract needed for TECH-01 `098` to
