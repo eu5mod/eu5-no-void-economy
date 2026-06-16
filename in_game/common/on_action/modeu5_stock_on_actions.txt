@@ -1,3 +1,16 @@
+on_game_start = {
+	on_actions = {
+		delay = { days = 1 }
+		modeu5_start_game_stock_initialization_pulse
+	}
+}
+
+modeu5_start_game_stock_initialization_pulse = {
+	effect = {
+		modeu5_start_game_stock_initialization_dispatcher = yes
+	}
+}
+
 monthly_country_pulse = {
 	on_actions = {
 		modeu5_monthly_stock_reconciliation_pulse

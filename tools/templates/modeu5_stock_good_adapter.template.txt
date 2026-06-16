@@ -630,6 +630,353 @@ modeu5_validate_all_markets_good___GOOD__ = {
 	modeu5_clear_dirty_markets_good___GOOD__ = yes
 }
 
+modeu5_initialize_opening_stocks_good___GOOD__ = {
+	every_market_in_world = {
+		save_temporary_scope_as = modeu5_initialization_market
+		save_temporary_scope_value_as = {
+			name = modeu5_opening_source_quantity_raw
+			value = "stockpile_in_market(goods:__GOOD__)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_opening_source_quantity
+			value = {
+				value = scope:modeu5_opening_source_quantity_raw
+				min = 0
+			}
+		}
+		if = {
+			limit = { scope:modeu5_opening_source_quantity_raw < 0 }
+			modeu5_initialization_mark_failure = { code = 11 }
+		}
+		modeu5_seed_opening_market_good___GOOD__ = yes
+	}
+}
+
+modeu5_seed_opening_market_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_initialization_good }
+
+	scope:modeu5_initialization_controller = {
+		change_local_variable = {
+			name = modeu5_initialization_market_goods_checked
+			add = 1
+		}
+		change_local_variable = {
+			name = modeu5_initialization_opening_source_total
+			add = scope:modeu5_opening_source_quantity
+		}
+		set_local_variable = { name = modeu5_initialization_market_total_capacity value = 0 }
+		set_local_variable = { name = modeu5_initialization_market_eligible_country_count value = 0 }
+		set_local_variable = { name = modeu5_initialization_market_allocated_quantity value = 0 }
+		set_local_variable = { name = modeu5_initialization_market_existing_stock_failure value = 0 }
+		set_local_variable = { name = modeu5_initialization_market_negative_capacity_failure value = 0 }
+	}
+
+	every_country = {
+		if = {
+			limit = {
+				has_variable_map = __STOCK_MAP__
+				is_key_in_variable_map = {
+					name = __STOCK_MAP__
+					target = scope:modeu5_initialization_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_existing_country_stock
+				value = "variable_map(__STOCK_MAP__|scope:modeu5_initialization_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_existing_country_stock
+				value = 0
+			}
+		}
+		if = {
+			limit = { scope:modeu5_initialization_existing_country_stock != 0 }
+			scope:modeu5_initialization_controller = {
+				set_local_variable = {
+					name = modeu5_initialization_market_existing_stock_failure
+					value = 1
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				has_variable_map = __CAPACITY_MAP__
+				is_key_in_variable_map = {
+					name = __CAPACITY_MAP__
+					target = scope:modeu5_initialization_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_country_capacity_raw
+				value = "variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_country_capacity_raw
+				value = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_country_capacity
+			value = {
+				value = scope:modeu5_initialization_country_capacity_raw
+				min = 0
+			}
+		}
+		if = {
+			limit = { scope:modeu5_initialization_country_capacity_raw < 0 }
+			scope:modeu5_initialization_controller = {
+				set_local_variable = {
+					name = modeu5_initialization_market_negative_capacity_failure
+					value = 1
+				}
+			}
+		}
+		if = {
+			limit = { scope:modeu5_initialization_country_capacity > 0 }
+			scope:modeu5_initialization_controller = {
+				change_local_variable = {
+					name = modeu5_initialization_market_total_capacity
+					add = scope:modeu5_initialization_country_capacity
+				}
+				change_local_variable = {
+					name = modeu5_initialization_market_eligible_country_count
+					add = 1
+				}
+			}
+		}
+	}
+
+	scope:modeu5_initialization_controller = {
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_total_capacity
+			value = local_var:modeu5_initialization_market_total_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_eligible_country_count
+			value = local_var:modeu5_initialization_market_eligible_country_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_existing_stock_failure
+			value = local_var:modeu5_initialization_market_existing_stock_failure
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_negative_capacity_failure
+			value = local_var:modeu5_initialization_market_negative_capacity_failure
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_initialization_existing_stock_failure > 0 }
+		scope:modeu5_initialization_controller = {
+			change_local_variable = {
+				name = modeu5_initialization_existing_stock_failures
+				add = 1
+			}
+		}
+		modeu5_initialization_mark_failure = { code = 12 }
+	}
+	if = {
+		limit = { scope:modeu5_initialization_negative_capacity_failure > 0 }
+		scope:modeu5_initialization_controller = {
+			change_local_variable = {
+				name = modeu5_initialization_negative_capacity_failures
+				add = 1
+			}
+		}
+		modeu5_initialization_mark_failure = { code = 13 }
+	}
+
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_initialization_failure_detected }
+			scope:modeu5_opening_source_quantity <= 0
+		}
+		scope:modeu5_initialization_controller = {
+			change_local_variable = {
+				name = modeu5_initialization_zero_source_count
+				add = 1
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_initialization_failure_detected }
+			scope:modeu5_initialization_existing_stock_failure = 0
+			scope:modeu5_initialization_negative_capacity_failure = 0
+			scope:modeu5_initialization_total_capacity <= 0
+		}
+		scope:modeu5_initialization_controller = {
+			change_local_variable = {
+				name = modeu5_initialization_zero_capacity_failures
+				add = 1
+			}
+		}
+		modeu5_initialization_mark_failure = { code = 14 }
+	}
+	else_if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_initialization_failure_detected }
+			scope:modeu5_initialization_existing_stock_failure = 0
+			scope:modeu5_initialization_negative_capacity_failure = 0
+		}
+		every_country = {
+			if = {
+				limit = {
+					has_variable_map = __CAPACITY_MAP__
+					is_key_in_variable_map = {
+						name = __CAPACITY_MAP__
+						target = scope:modeu5_initialization_market
+					}
+					"variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)" > 0
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_initialization_country_capacity
+					value = "variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)"
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_initialization_requested_country_quantity
+					value = {
+						value = scope:modeu5_opening_source_quantity
+						multiply = scope:modeu5_initialization_country_capacity
+						divide = scope:modeu5_initialization_total_capacity
+					}
+				}
+				if = {
+					limit = { scope:modeu5_initialization_requested_country_quantity > 0 }
+					modeu5_add_stock = {
+						country = this
+						market = scope:modeu5_initialization_market
+						good = __GOOD__
+						quantity = scope:modeu5_initialization_requested_country_quantity
+						capacity_policy = allow_over_capacity
+					}
+					scope:modeu5_initialization_controller = {
+						change_local_variable = {
+							name = modeu5_initialization_market_allocated_quantity
+							add = scope:modeu5_actual_added_quantity
+						}
+					}
+					if = {
+						limit = {
+							scope:modeu5_actual_added_quantity != scope:modeu5_initialization_requested_country_quantity
+						}
+						modeu5_initialization_mark_failure = { code = 15 }
+					}
+				}
+			}
+		}
+
+		scope:modeu5_initialization_controller = {
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_allocated_quantity
+				value = local_var:modeu5_initialization_market_allocated_quantity
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_remaining_quantity
+			value = {
+				value = scope:modeu5_opening_source_quantity
+				subtract = scope:modeu5_initialization_allocated_quantity
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_initialization_negative_residue
+			value = {
+				value = scope:modeu5_initialization_allocated_quantity
+				subtract = scope:modeu5_opening_source_quantity
+				min = 0
+			}
+		}
+		if = {
+			limit = {
+				scope:modeu5_initialization_negative_residue > modeu5_initialization_rounding_epsilon
+			}
+			scope:modeu5_initialization_controller = {
+				change_local_variable = {
+					name = modeu5_initialization_validation_failures
+					add = 1
+				}
+			}
+			modeu5_initialization_mark_failure = { code = 16 }
+		}
+		if = {
+			limit = {
+				scope:modeu5_initialization_remaining_quantity > modeu5_initialization_rounding_epsilon
+			}
+			ordered_country = {
+				limit = {
+					has_variable_map = __CAPACITY_MAP__
+					is_key_in_variable_map = {
+						name = __CAPACITY_MAP__
+						target = scope:modeu5_initialization_market
+					}
+					"variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)" > 0
+				}
+				order_by = "variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)"
+				max = 1
+				modeu5_add_stock = {
+					country = this
+					market = scope:modeu5_initialization_market
+					good = __GOOD__
+					quantity = scope:modeu5_initialization_remaining_quantity
+					capacity_policy = allow_over_capacity
+				}
+				scope:modeu5_initialization_controller = {
+					change_local_variable = {
+						name = modeu5_initialization_market_allocated_quantity
+						add = scope:modeu5_actual_added_quantity
+					}
+					change_local_variable = {
+						name = modeu5_initialization_residue_allocated_total
+						add = scope:modeu5_actual_added_quantity
+					}
+				}
+				if = {
+					limit = {
+						scope:modeu5_actual_added_quantity != scope:modeu5_initialization_remaining_quantity
+					}
+					modeu5_initialization_mark_failure = { code = 17 }
+				}
+			}
+		}
+
+		scope:modeu5_initialization_controller = {
+			save_temporary_scope_value_as = {
+				name = modeu5_initialization_allocated_quantity
+				value = local_var:modeu5_initialization_market_allocated_quantity
+			}
+			change_local_variable = {
+				name = modeu5_initialization_allocated_total
+				add = scope:modeu5_initialization_allocated_quantity
+			}
+			change_local_variable = {
+				name = modeu5_initialization_market_goods_seeded
+				add = 1
+			}
+		}
+
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_initialization_market
+			good = __GOOD__
+		}
+		if = {
+			limit = { scope:modeu5_validation_failed_after_rebuild > 0 }
+			scope:modeu5_initialization_controller = {
+				change_local_variable = {
+					name = modeu5_initialization_validation_failures
+					add = 1
+				}
+			}
+			modeu5_initialization_mark_failure = { code = 18 }
+		}
+	}
+}
+
 # Fault injection for the deterministic CORE-01.6 test only.
 modeu5_debug_corrupt_market_stock_good___GOOD__ = {
 	if = {

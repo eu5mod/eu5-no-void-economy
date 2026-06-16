@@ -1063,6 +1063,211 @@ modeu5_validate_stock_consistency_finalize = {
 	}
 }
 
+# CORE-02
+
+modeu5_initialization_clear_last_result = {
+	remove_global_variable = modeu5_initialization_failure_detected
+	remove_global_variable = modeu5_initialization_failure_code
+	remove_global_variable = modeu5_initialization_market_goods_checked
+	remove_global_variable = modeu5_initialization_market_goods_seeded
+	remove_global_variable = modeu5_initialization_opening_source_total
+	remove_global_variable = modeu5_initialization_allocated_total
+	remove_global_variable = modeu5_initialization_residue_allocated_total
+	remove_global_variable = modeu5_initialization_zero_source_count
+	remove_global_variable = modeu5_initialization_zero_capacity_failures
+	remove_global_variable = modeu5_initialization_existing_stock_failures
+	remove_global_variable = modeu5_initialization_negative_capacity_failures
+	remove_global_variable = modeu5_initialization_validation_failures
+	remove_global_variable = modeu5_initialization_last_mode
+}
+
+modeu5_initialization_mark_failure = {
+	set_global_variable = modeu5_initialization_failure_detected
+	set_global_variable = {
+		name = modeu5_initialization_failure_code
+		value = $code$
+	}
+}
+
+modeu5_initialization_prepare_counters = {
+	modeu5_initialization_clear_last_result = yes
+
+	set_local_variable = { name = modeu5_initialization_market_goods_checked value = 0 }
+	set_local_variable = { name = modeu5_initialization_market_goods_seeded value = 0 }
+	set_local_variable = { name = modeu5_initialization_opening_source_total value = 0 }
+	set_local_variable = { name = modeu5_initialization_allocated_total value = 0 }
+	set_local_variable = { name = modeu5_initialization_residue_allocated_total value = 0 }
+	set_local_variable = { name = modeu5_initialization_zero_source_count value = 0 }
+	set_local_variable = { name = modeu5_initialization_zero_capacity_failures value = 0 }
+	set_local_variable = { name = modeu5_initialization_existing_stock_failures value = 0 }
+	set_local_variable = { name = modeu5_initialization_negative_capacity_failures value = 0 }
+	set_local_variable = { name = modeu5_initialization_validation_failures value = 0 }
+}
+
+modeu5_initialization_finalize_counters = {
+	set_global_variable = {
+		name = modeu5_initialization_market_goods_checked
+		value = local_var:modeu5_initialization_market_goods_checked
+	}
+	set_global_variable = {
+		name = modeu5_initialization_market_goods_seeded
+		value = local_var:modeu5_initialization_market_goods_seeded
+	}
+	set_global_variable = {
+		name = modeu5_initialization_opening_source_total
+		value = local_var:modeu5_initialization_opening_source_total
+	}
+	set_global_variable = {
+		name = modeu5_initialization_allocated_total
+		value = local_var:modeu5_initialization_allocated_total
+	}
+	set_global_variable = {
+		name = modeu5_initialization_residue_allocated_total
+		value = local_var:modeu5_initialization_residue_allocated_total
+	}
+	set_global_variable = {
+		name = modeu5_initialization_zero_source_count
+		value = local_var:modeu5_initialization_zero_source_count
+	}
+	set_global_variable = {
+		name = modeu5_initialization_zero_capacity_failures
+		value = local_var:modeu5_initialization_zero_capacity_failures
+	}
+	set_global_variable = {
+		name = modeu5_initialization_existing_stock_failures
+		value = local_var:modeu5_initialization_existing_stock_failures
+	}
+	set_global_variable = {
+		name = modeu5_initialization_negative_capacity_failures
+		value = local_var:modeu5_initialization_negative_capacity_failures
+	}
+	set_global_variable = {
+		name = modeu5_initialization_validation_failures
+		value = local_var:modeu5_initialization_validation_failures
+	}
+
+	if = {
+		limit = {
+			OR = {
+				local_var:modeu5_initialization_zero_capacity_failures > 0
+				local_var:modeu5_initialization_existing_stock_failures > 0
+				local_var:modeu5_initialization_negative_capacity_failures > 0
+				local_var:modeu5_initialization_validation_failures > 0
+			}
+		}
+		modeu5_initialization_mark_failure = { code = 10 }
+	}
+}
+
+modeu5_seed_opening_market_good = {
+	save_temporary_scope_as = modeu5_initialization_controller
+	$market$ = { save_temporary_scope_as = modeu5_initialization_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_initialization_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_opening_source_quantity_raw
+		value = $quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_opening_source_quantity
+		value = {
+			value = scope:modeu5_opening_source_quantity_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_opening_source_quantity_raw < 0 }
+		modeu5_initialization_mark_failure = { code = 11 }
+	}
+	modeu5_seed_opening_market_good_$good$ = yes
+}
+
+modeu5_run_fresh_opening_stock_initialization = {
+	save_temporary_scope_as = modeu5_initialization_controller
+	modeu5_initialization_prepare_counters = yes
+	modeu5_initialize_opening_stocks = yes
+	modeu5_initialization_finalize_counters = yes
+}
+
+modeu5_commit_successful_initialization = {
+	set_global_variable = {
+		name = modeu5_stock_schema_version
+		value = modeu5_current_stock_schema_version
+	}
+	set_global_variable = {
+		name = modeu5_initialization_state
+		value = 2
+	}
+	set_global_variable = {
+		name = modeu5_initialization_last_mode
+		value = 1
+	}
+	debug_log = "ModeU5 CORE-02 opening stock initialization completed."
+}
+
+modeu5_fail_initialization = {
+	set_global_variable = {
+		name = modeu5_initialization_state
+		value = -1
+	}
+	set_global_variable = {
+		name = modeu5_initialization_last_mode
+		value = -1
+	}
+	error_log = "ModeU5 CORE-02 opening stock initialization failed; inspect modeu5_initialization_* globals."
+}
+
+modeu5_start_game_stock_initialization_dispatcher = {
+	if = {
+		limit = { modeu5_initialization_complete_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_last_mode
+			value = 2
+		}
+		modeu5_validate_all_stock_consistency = yes
+	}
+	else_if = {
+		limit = { modeu5_initialization_not_started_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_state
+			value = 1
+		}
+		modeu5_run_fresh_opening_stock_initialization = yes
+		if = {
+			limit = { has_global_variable = modeu5_initialization_failure_detected }
+			modeu5_fail_initialization = yes
+		}
+		else = {
+			modeu5_commit_successful_initialization = yes
+			modeu5_validate_all_stock_consistency = yes
+		}
+	}
+	else_if = {
+		limit = { modeu5_initialization_in_progress_trigger = yes }
+		modeu5_initialization_mark_failure = { code = 20 }
+		modeu5_fail_initialization = yes
+	}
+	else_if = {
+		limit = { modeu5_initialization_failed_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_last_mode
+			value = -1
+		}
+		debug_log = "ModeU5 CORE-02 initialization is already failed; startup remains diagnostic-only."
+	}
+	else_if = {
+		limit = {
+			has_global_variable = modeu5_stock_schema_version
+			global_var:modeu5_stock_schema_version = modeu5_current_stock_schema_version
+		}
+		modeu5_initialization_mark_failure = { code = 21 }
+		modeu5_fail_initialization = yes
+	}
+	else = {
+		modeu5_initialization_mark_failure = { code = 22 }
+		modeu5_fail_initialization = yes
+	}
+}
+
 # US-11
 
 modeu5_reconciliation_prepare = {

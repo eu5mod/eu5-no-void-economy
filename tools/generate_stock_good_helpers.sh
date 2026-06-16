@@ -46,6 +46,11 @@ goods=(
 		printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
 	done
 	printf '%s\n' '}'
+	printf '%s\n\n' 'modeu5_initialize_opening_stocks = {'
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
+	done
+	printf '%s\n' '}'
 
 	first=1
 	for good in "${goods[@]}"; do

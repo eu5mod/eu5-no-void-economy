@@ -1,6 +1,6 @@
 # CORE-02 - Start-game stock initialization
 
-Labels: blocked:engine-exposure
+Labels: module:core, technical-foundation
 
 ## User Story
 
@@ -43,7 +43,7 @@ Feeds: all stock-owning and stock-consuming features
 | Country capacity by market and good | country x market x good | US-02 authoritative capacity map | CONFIRMED | 007, 017, 033-035 |
 | Opening vanilla market stock | market x good | `"stockpile_in_market(goods:<good>)"` on market scope after the delayed start hook | CONFIRMED | 091 |
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
-| Deterministic residue recipient | temporary list of countries with positive allocation weight | `ordered_in_list` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
+| Deterministic residue recipient | temporary list or typed country iterator with positive allocation weight | `ordered_in_list` or typed `ordered_country` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
 | Stock addition | country x market x good | `modeu5_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
 | Aggregate rebuild and validation | market x good | `modeu5_rebuild_market_stock_from_country_stocks`, `modeu5_validate_stock_consistency` | CONFIRMED | 019-020 |
 
@@ -226,7 +226,7 @@ remaining_initial_quantity =
 ```
 
 - If the absolute residue is at or below the configured fixed-point epsilon, log it and stop.
-- If positive and above epsilon, build a temporary list of positive-capacity countries and use `ordered_in_list` to select the country with the greatest original capacity, repeating only if required.
+- If positive and above epsilon, select the country with the greatest original capacity through the confirmed ordered-iterator contract (`ordered_in_list` or typed `ordered_country`), repeating only if required.
 - Never write the residue directly to a stock or market aggregate.
 - Never exceed `opening_target_quantity`.
 - A negative residue is a blocking initialization error; do not compensate by removing arbitrary country stock.
@@ -256,9 +256,15 @@ If a blocking check fails:
 ```txt
 in_game/common/on_action/modeu5_stock_on_actions.txt
 in_game/common/script_values/modeu5_stock_values.txt
+in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
 in_game/common/scripted_triggers/modeu5_stock_triggers.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/scripted_effects/modeu5_stock_goods_generated.txt
+main_menu/localization/english/modeu5_stock_l_english.yml
+tools/generate_stock_good_helpers.sh
+tools/templates/modeu5_stock_good_adapter.template.txt
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt
 packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt
 packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt
 packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt
@@ -266,6 +272,7 @@ packages/modeu5_core_tests/main_menu/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
+docs/tests/CORE_02_START_GAME_INITIALIZATION_RUNBOOK.md
 docs/tests/TEST_PLAN.md
 ```
 

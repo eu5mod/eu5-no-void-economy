@@ -329,6 +329,35 @@ PASS - no ModeU5 script error was emitted by the probe
 
 ---
 
+### Test S0.5 - deterministic CORE-02 initialization allocation
+
+Follow:
+
+```txt
+docs/tests/CORE_02_START_GAME_INITIALIZATION_RUNBOOK.md
+```
+
+Required playset: No Void Economy plus the testing-only No Void Economy Tests
+package.
+
+Expected:
+
+```txt
+The CORE-02 debug option starts and finishes in game.log
+The proportional allocation scenario passes
+The over-capacity allocation scenario passes
+modeu5_seed_opening_market_good writes only through modeu5_add_stock
+Market stock equals country-stock sums after each scenario
+No ModeU5 script error is added to error.log
+```
+
+Until US-02 exists, the full fresh-start dispatcher may fail closed when vanilla
+opening stock is positive and total ModeU5 capacity is zero. That is expected
+for the integration path and must be reported separately from deterministic
+allocation failures.
+
+---
+
 ### Test S1 - delayed fresh initialization
 
 Setup:

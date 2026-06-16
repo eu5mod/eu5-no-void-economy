@@ -3,6 +3,16 @@ modeu5_default_monthly_decay_rate = {
 	value = 0.01
 }
 
+modeu5_current_stock_schema_version = {
+	value = 1
+}
+
+# Kept exact until TECH-01 113 confirms rounding behavior. Positive residue is
+# allocated through modeu5_add_stock; negative residue remains a failure.
+modeu5_initialization_rounding_epsilon = {
+	value = 0
+}
+
 # Difference at or above this value receives prominent validation severity.
 modeu5_stock_consistency_prominent_threshold = {
 	value = 1
