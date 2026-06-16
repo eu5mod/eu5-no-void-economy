@@ -41,7 +41,7 @@ Feeds: all stock-owning and stock-consuming features
 | Persistent initialization/version guard | none | `global_var:modeu5_stock_schema_version`, `modeu5_initialization_state`, global-variable effects/triggers | CONFIRMED | 090 |
 | Iterate countries, markets, and goods | none | `every_country`, `every_market_in_world`, `every_goods` | CONFIRMED | 001-002, 006 |
 | Country capacity by market and good | country x market x good | US-02 authoritative capacity map | CONFIRMED | 007, 017, 033-035 |
-| Opening vanilla market stock | market x good | `stockpile_in_market:<good>` or exact target-good equivalent | TO_TEST | 091 |
+| Opening vanilla market stock | market x good | `"stockpile_in_market(goods:<good>)"` on market scope after the delayed start hook | CONFIRMED | 091 |
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
 | Deterministic residue recipient | temporary list of countries with positive allocation weight | `ordered_in_list` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
 | Stock addition | country x market x good | `modeu5_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
@@ -259,10 +259,13 @@ in_game/common/script_values/modeu5_stock_values.txt
 in_game/common/scripted_triggers/modeu5_stock_triggers.txt
 in_game/common/scripted_effects/modeu5_stock_effects.txt
 in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/events/modeu5_debug_events.txt
-in_game/localization/
+packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt
+packages/modeu5_core_tests/main_menu/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
+docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
 docs/tests/TEST_PLAN.md
 ```
 
@@ -290,6 +293,9 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - Keep zero-default storage sparse.
 - Do not silently repair a newer, incompatible schema.
 - Add one non-destructive manual initialization/diagnostic event for testing or mid-campaign installation.
+- Keep the TECH-01 `091` delayed opening-stock probe separate from the
+  initialization dispatcher. Passing that probe is a prerequisite for fresh
+  seeding, not permission to implement a fallback.
 
 ## CORE-specific boundary checks
 
@@ -318,7 +324,7 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - [ ] Existing source stock with no marker is never duplicated.
 - [ ] Opening over-cap quantities and any unavailable vanilla source are visible in debug.
 - [ ] `error.log` has no new blocking error.
-- [ ] TECH-01 `091` is confirmed before fresh stock allocation is enabled.
+- [x] TECH-01 `091` is confirmed before fresh stock allocation is enabled.
 
 ## Manual test scenario
 
@@ -408,4 +414,4 @@ Explicit migration/recovery is required
 
 ## Known limitations
 
-The wiki documents `on_game_start`, its one-day-delay warning, persistent global variables, all required iterators, and `stockpile_in_market` as a market value. The exact target-good syntax and day-one timing of `stockpile_in_market` require a controlled test under TECH-01 `091`. No synthetic opening-stock fallback is accepted.
+The wiki documents `on_game_start`, its one-day-delay warning, persistent global variables, all required iterators, and `stockpile_in_market` as a market value. Vanilla scripts use `"stockpile_in_market(goods:<good>)"` on market scope. A controlled June 15, 2026 test confirmed that this form returns a persistent numeric value after the delayed start hook without mutating ModeU5 stock or initialization state. The rejected `stockpile_in_market:<good>` form produced an event-target and missing-goods-field error and must not be restored. No synthetic opening-stock fallback is accepted.

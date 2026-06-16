@@ -1,0 +1,12 @@
+on_game_start = {
+	on_actions = {
+		delay = { days = 1 }
+		modeu5_core02_opening_stock_exposure_probe
+	}
+}
+
+modeu5_core02_opening_stock_exposure_probe = {
+	effect = {
+		modeu5_core02_run_opening_stock_exposure_probe = yes
+	}
+}

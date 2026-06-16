@@ -18,7 +18,7 @@ The package matrix is:
 | Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
 | Rebalance Estate Power | Optional; included in the recommended playset | US-07, US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
-| No Void Economy Tests | Optional; testing-only, excluded from normal campaign playsets | Deterministic CORE-01 debug events and stock-operator test helpers |
+| No Void Economy Tests | Optional; testing-only, excluded from normal campaign playsets | Deterministic CORE-01 debug events, stock-operator helpers, and controlled Core engine-exposure probes such as TECH-01 `091` |
 
 ## Recommended playset
 
