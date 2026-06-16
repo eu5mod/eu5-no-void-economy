@@ -14,9 +14,7 @@ modeu5_us02_debug.1 = {
 	option = {
 		name = modeu5_us02_debug.1.a
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 US-02 storage-capacity test starting."
 		modeu5_debug_run_storage_capacity_test = yes
-		debug_log = "ModeU5 US-02 storage-capacity test finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_us02_debug.2
 	}
 	option = {

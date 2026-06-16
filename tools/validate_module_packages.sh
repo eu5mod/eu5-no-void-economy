@@ -284,7 +284,12 @@ if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "
 	exit 1
 fi
 
-if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
+if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event"; then
+	printf 'Console-driven test wrapper events must stay silent; emit debug_log from the executed scripted effects instead.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'debug_log[[:space:]]*=' "$stock_test_effects" "$capacity_test_effects"; then
 	printf 'Stock tests must emit debug_log output for debug.log visibility.\n' >&2
 	exit 1
 fi

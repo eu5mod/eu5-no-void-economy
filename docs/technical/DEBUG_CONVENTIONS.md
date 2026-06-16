@@ -615,11 +615,15 @@ failed assertion, an unexpected invariant violation, or another blocking
 diagnostic. A console-triggered result event that is called by another event
 must not be declared `orphan = yes`.
 
-Use `debug_log` for deterministic console-event trace lines and inspect
-`debug.log` after the run. Do not use `test_log` in console-triggered test
-events: controlled US-02 testing on June 16, 2026 showed that its `text` field
-is localized while command localization is disabled, producing a
-`Tried to localize with localization disabled` assertion in `error.log`.
+Use `debug_log` for deterministic console-test trace lines and inspect
+`debug.log` after the run, but emit those lines from the scripted effects that
+the console event executes rather than from the wrapper event option itself.
+Controlled US-01 testing on June 16, 2026 showed that wrapper-event `debug_log`
+can also trip `Tried to localize with localization disabled` during a console
+launch. Do not use `test_log` in console-triggered test events either:
+controlled US-02 testing on June 16, 2026 showed that its `text` field is
+localized while command localization is disabled, producing the same
+assertion in `error.log`.
 
 After a local test, distinguish:
 

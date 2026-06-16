@@ -14,41 +14,31 @@ modeu5_debug.1 = {
 	option = {
 		name = modeu5_debug.1.a
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 CORE-01 single-record stock tests starting."
 		modeu5_debug_run_single_record_stock_tests = yes
-		debug_log = "ModeU5 CORE-01 single-record stock tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.b
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 CORE-01 same-market transfer tests starting."
 		modeu5_debug_run_same_market_transfer_tests = yes
-		debug_log = "ModeU5 CORE-01 same-market transfer tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.c
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 CORE-01 inter-market transfer test starting."
 		modeu5_debug_run_inter_market_transfer_test = yes
-		debug_log = "ModeU5 CORE-01 inter-market transfer test finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.d
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 CORE-01 rebuild and validation tests starting."
 		modeu5_debug_run_rebuild_and_validation_tests = yes
-		debug_log = "ModeU5 CORE-01 rebuild and validation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
 		name = modeu5_debug.1.e
 		modeu5_debug_clear_stock_test_results = yes
-		debug_log = "ModeU5 US-11 reconciliation tests starting."
 		modeu5_debug_run_reconciliation_tests = yes
-		debug_log = "ModeU5 US-11 reconciliation tests finished; inspect PASS/FAIL result event and modeu5_test_* markers."
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
