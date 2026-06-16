@@ -18,11 +18,24 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that the installed `MODEU5_SOURCE.txt` names the
-`feature/country-stock-model` branch and the intended commit.
+Confirm that every installed `MODEU5_SOURCE.txt` points to this repository,
+branch, and commit.
+
+In the launcher:
+
+```txt
+Enable: No Void Economy / modeu5_core
+Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
+Do not simultaneously enable the older eu5voideco alias.
+The three optional gameplay ModeU5 packages may remain enabled.
+```
 
 Start a clean 1337 campaign where FRA and ENG exist and their capital markets
 are different.
+
+If `event modeu5_us01_debug.1` reports `not a valid ID`, the test package is
+not loaded in the active playset or the game was not restarted after changing
+the playset.
 
 ## Console test
 
