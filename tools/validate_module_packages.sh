@@ -200,6 +200,34 @@ test -f "$capacity_test_effects"
 test -f "$stock_test_event"
 test -f "$us01_test_event"
 test -f "$us02_test_event"
+core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
+core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
+core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
+core02_probe_localization="packages/modeu5_core_tests/main_menu/localization/english/modeu5_core02_exposure_l_english.yml"
+
+for required_probe_file in \
+	"$core02_probe_on_action" \
+	"$core02_probe_effect" \
+	"$core02_probe_event" \
+	"$core02_probe_localization"; do
+	if [[ ! -f "$required_probe_file" ]]; then
+		printf 'The CORE-02 exposure probe is missing from the testing package: %s\n' \
+			"$required_probe_file" >&2
+		exit 1
+	fi
+done
+
+for forbidden_core_probe_file in \
+	in_game/common/on_action/modeu5_core02_exposure_on_actions.txt \
+	in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt \
+	in_game/events/modeu5_core02_exposure_events.txt \
+	main_menu/localization/english/modeu5_core02_exposure_l_english.yml; do
+	if [[ -e "$forbidden_core_probe_file" ]]; then
+		printf 'Test-only CORE-02 probe file must not be loaded by Core: %s\n' \
+			"$forbidden_core_probe_file" >&2
+		exit 1
+	fi
+done
 
 if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_effects"; then

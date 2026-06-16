@@ -1,0 +1,37 @@
+# Controlled TECH-01 091 probe. This must not initialize or mutate ModeU5 stock.
+modeu5_core02_run_opening_stock_exposure_probe = {
+	remove_global_variable = modeu5_core02_probe_market_found
+	remove_global_variable = modeu5_core02_probe_value_read
+	remove_global_variable = modeu5_core02_probe_passed
+	remove_global_variable = modeu5_core02_probe_failed
+	remove_global_variable = modeu5_core02_probe_opening_wheat_stock
+
+	set_global_variable = modeu5_core02_probe_started_after_delay
+
+	if = {
+		limit = { country_exists = c:FRA }
+		c:FRA.capital.market = {
+			set_global_variable = modeu5_core02_probe_market_found
+			set_global_variable = {
+				name = modeu5_core02_probe_opening_wheat_stock
+				value = "stockpile_in_market(goods:wheat)"
+			}
+		}
+
+		if = {
+			limit = {
+				has_global_variable = modeu5_core02_probe_opening_wheat_stock
+			}
+			set_global_variable = modeu5_core02_probe_value_read
+			set_global_variable = modeu5_core02_probe_passed
+		}
+		else = {
+			set_global_variable = modeu5_core02_probe_failed
+			error_log = "ModeU5 CORE-02 exposure probe could not read stockpile_in_market(goods:wheat) after the delayed game-start hook."
+		}
+	}
+	else = {
+		set_global_variable = modeu5_core02_probe_failed
+		error_log = "ModeU5 CORE-02 exposure probe requires FRA to exist after the delayed game-start hook."
+	}
+}
