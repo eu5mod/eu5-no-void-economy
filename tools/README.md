@@ -13,6 +13,11 @@ The shell only expands
 script in that template; shared validation and arithmetic remain in
 `modeu5_stock_effects.txt`.
 
+The generated adapters also contain the literal per-good US-11 dirty-list
+names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
+counters, and repair behavior remain in shared EU5 scripted effects. The shell
+contains enumeration only, not stock or reconciliation business rules.
+
 Do not edit
 `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
 After changing the template or goods registry, regenerate and run
@@ -21,13 +26,13 @@ physical map identifier may retain `$`.
 
 ## Module packages
 
-Validate the four source package roots:
+Validate the source package roots, including the testing-only package:
 
 ```bash
 ./tools/validate_module_packages.sh
 ```
 
-Publish Core and the three optional companions as sibling local mods:
+Publish Core, the three optional gameplay companions, and the testing-only package as sibling local mods:
 
 ```bash
 ./tools/install_local_packages.sh
@@ -41,8 +46,8 @@ branch and commit loaded by EU5 can be checked without guessing:
 ```
 
 Use `--target PATH` when EU5 reads local mods from a different directory.
-After installation, refresh the launcher and enable the four ModeU5 entries in
-the recommended full-suite playset. If two `No Void Economy` entries appear,
+After installation, refresh the launcher and enable the four gameplay ModeU5 entries in
+the recommended full-suite playset. Enable `No Void Economy Tests` only in a dedicated validation playset. If two `No Void Economy` entries appear,
 disable the older single-package entry backed by the `eu5voideco` path to avoid
 loading Core twice.
 

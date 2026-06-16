@@ -2913,6 +2913,9 @@ market_good_stock = sum(country_market_good_stock)
 | • | CORE-02 et CORE-03 peuvent utiliser `allow_over_capacity`; l’excédent est conservé et visible. |
 | • | Tout écart entre stock marché et somme des stocks pays doit être détectable en debug. |
 | • | Tout écart doit pouvoir être corrigé par rebuild du stock marché. |
+| • | La validation mensuelle ne parcourt que les couples marché/bien modifiés depuis la passe précédente. |
+| • | Une validation annuelle exhaustive contrôle tous les couples marché/bien. |
+| • | Les pulses pays ne peuvent déclencher chaque passe globale qu’une fois par mois ou par an. |
 | • | Les biens non stockés ne doivent pas générer de revenu économique. |
 | • | Les revenus vanilla incompatibles avec la quantité effectivement stockée doivent être neutralisés par réconciliation. |
 
@@ -2926,10 +2929,16 @@ Consumption -> modeu5_remove_stock
 Trade inter-market -> modeu5_transfer_stock
 Decay -> modeu5_decay_stock
 Debug / correction -> modeu5_validate_stock_consistency
-Annual safety -> modeu5_rebuild_market_stock_from_country_stocks
+Monthly dirty safety -> modeu5_validate_stock_consistency
+Annual exhaustive safety -> modeu5_validate_stock_consistency
 Le stock pays est la source de vérité.
 Le stock marché est un agrégat de contrôle.
 En cas de divergence, le stock marché doit être recalculé depuis les stocks pays, jamais l’inverse.
+Chaque mutation centralisée marque son marché comme modifié dans une liste
+globale dédupliquée propre au bien. US-11 traite mensuellement ces listes puis
+les vide. Une passe annuelle exhaustive valide tous les marchés et biens, y
+compris ceux absents des listes. Les appels depuis les pulses pays sont gardés
+par un marqueur global de cycle et restent désactivés avant la fin de CORE-02.
 Exemple de production
 produced_quantity = 100
 available_capacity = 70

@@ -1,2 +1,0 @@
-# ModeU5 placeholder file.
-# Gameplay logic intentionally not implemented in bootstrap.

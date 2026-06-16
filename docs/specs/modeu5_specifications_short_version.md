@@ -303,6 +303,16 @@ CORE-01.6 compare le cache à la somme des sources pays.
 - CORE-01.5 et CORE-01.6 traitent un seul couple marché/bien par appel. US-11
   possède l'itération globale et ne doit pas relancer une validation mondiale
   depuis chaque `monthly_country_pulse`.
+- Chaque opération CORE-01 qui modifie ou peut invalider un couple marché/bien
+  ajoute le marché à une liste globale dédupliquée propre au bien.
+- US-11 valide mensuellement uniquement ces couples modifiés, puis vide leurs
+  listes.
+- US-11 exécute une validation exhaustive annuelle de tous les marchés et biens
+  comme filet de sécurité.
+- Les pulses pays utilisent un marqueur global de mois ou d'année afin que
+  chaque passe globale ne s'exécute qu'une fois par cycle.
+- Les passes automatiques restent fermées tant que CORE-02 n'a pas marqué
+  l'initialisation comme complète.
 
 ## 7. Sémantique numérique EU5
 
@@ -540,6 +550,13 @@ La seule commande console CORE-01 est :
 
 ```txt
 event modeu5_debug.1
+```
+
+Les tests ciblés hors CORE-01 utilisent leurs propres événements :
+
+```txt
+event modeu5_us01_debug.1
+event modeu5_us02_debug.1
 ```
 
 Les noms `modeu5_test_*_passed` sont des marqueurs de résultat, pas des

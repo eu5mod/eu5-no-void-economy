@@ -18,24 +18,37 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that the installed `MODEU5_SOURCE.txt` names the
-`feature/country-stock-model` branch and the intended commit.
+Confirm that every installed `MODEU5_SOURCE.txt` points to this repository,
+branch, and commit.
+
+In the launcher:
+
+```txt
+Enable: No Void Economy / modeu5_core
+Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
+Do not simultaneously enable the older eu5voideco alias.
+The three optional gameplay ModeU5 packages may remain enabled.
+```
 
 Start a clean 1337 campaign where FRA and ENG exist and their capital markets
 are different.
+
+If `event modeu5_us01_debug.1` reports `not a valid ID`, the test package is
+not loaded in the active playset or the game was not restarted after changing
+the playset.
 
 ## Console test
 
 Enter:
 
 ```txt
-event modeu5_debug.1
+event modeu5_us01_debug.1
 ```
 
 Select:
 
 ```txt
-Test country, market, and good stock isolation
+Run US-01 stock-dimension test
 ```
 
 The result event must display:
@@ -90,6 +103,7 @@ modeu5_debug_last_record_market_stock
 After closing EU5, inspect:
 
 ```txt
+Documents/Paradox Interactive/Europa Universalis V/logs/debug.log
 Documents/Paradox Interactive/Europa Universalis V/logs/error.log
 Documents/Paradox Interactive/Europa Universalis V/logs/game.log
 Documents/Paradox Interactive/Europa Universalis V/logs/system.log
@@ -97,7 +111,9 @@ Documents/Paradox Interactive/Europa Universalis V/logs/system.log
 
 The US-01 test succeeds when no
 `ModeU5 deterministic US-01 country, market, and good isolation test failed`
-message or new ModeU5 script-system error appears.
+message, no `Tried to localize with localization disabled` assertion, and no
+new ModeU5 script-system error appears. `debug.log` should contain the
+corresponding US-01 PASS line.
 
 ## Known limitation
 

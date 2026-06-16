@@ -2,7 +2,7 @@
 
 ## Decision
 
-ModeU5 is distributed as one required core package and three optional companion packages.
+ModeU5 is distributed as one required core package, three optional gameplay companion packages, and one testing-only companion package.
 
 The required package is not a toggle. Calling it an option such as "Deactivate Void Economy" creates a misleading double negative because the player cannot disable it while using ModeU5. Use the positive package name:
 
@@ -18,10 +18,11 @@ The package matrix is:
 | Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
 | Rebalance Estate Power | Optional; included in the recommended playset | US-07, US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
+| No Void Economy Tests | Optional; testing-only, excluded from normal campaign playsets | Deterministic CORE-01 debug events and stock-operator test helpers |
 
 ## Recommended playset
 
-The supported default profile is the full suite:
+The supported default campaign profile is the full gameplay suite:
 
 ```txt
 No Void Economy
@@ -30,9 +31,9 @@ No Void Economy
 + Rebalance Early Blobbing
 ```
 
-Here, optional means that a companion may be removed in the launcher before campaign start. It does not mean that the recommended profile omits it.
+Here, optional means that a gameplay companion may be removed in the launcher before campaign start. It does not mean that the recommended campaign profile omits it. The separate `No Void Economy Tests` package is not a gameplay companion; enable it only in dedicated validation sessions.
 
-Core cannot load a missing companion's files and must never manufacture its package marker. Selecting all four launcher entries activates the recommended profile.
+Core cannot load a missing companion's files and must never manufacture its package marker. Selecting the four gameplay launcher entries activates the recommended campaign profile.
 
 ## Campaign lifecycle contract
 
@@ -46,6 +47,7 @@ that save is not.
 | Rebalance Economy | Runtime US-04/05/09 systems plus planned static US-08 definitions | Unsupported | Unsupported |
 | Rebalance Estate Power | Planned static US-07 building definitions | Unsupported | Unsupported |
 | Rebalance Early Blobbing | Planned static US-13 CB/wargoal definitions; currently marker-only while the cost hook remains blocked | Unsupported | Unsupported |
+| No Void Economy Tests | Deterministic debug events and test-only helpers; no campaign content | Unsupported for normal campaigns | Remove by using a non-test playset before starting a normal campaign |
 
 This restriction is package-level, even where one individual story could
 technically be evaluated at runtime:
@@ -59,8 +61,8 @@ technically be evaluated at runtime:
 - no package currently defines the migration and cleanup needed to change that
   set safely.
 
-The four package roots currently contain package descriptors and start-game
-markers. The lifecycle rule is established now so later story implementations
+The four gameplay package roots currently contain package descriptors and start-game
+markers. The testing-only package contains deterministic debug events and helpers instead of gameplay state markers. The lifecycle rule is established now so later story implementations
 cannot accidentally promise unsupported mid-campaign activation.
 
 The source repository stores the companions under:
@@ -69,15 +71,16 @@ The source repository stores the companions under:
 packages/modeu5_economy_rebalance/
 packages/modeu5_trade_rebalance/
 packages/modeu5_war_rebalance/
+packages/modeu5_core_tests/
 ```
 
 EU5 discovers local packages as sibling mod directories, not as selectable
 children of one loaded package. `tools/install_local_packages.sh` publishes the
-root Core payload and those three companion roots as four siblings and records
+root Core payload, the three gameplay companion roots, and the testing-only package root as sibling local mods and records
 their source branch and commit in `MODEU5_SOURCE.txt`.
 
 The installer does not edit launcher playset state. The player must refresh the
-launcher and enable the four entries in the recommended playset once.
+launcher and enable the four gameplay entries in the recommended campaign playset once. Enable `No Void Economy Tests` only in a dedicated validation playset.
 
 Each optional companion declares this metadata relationship:
 
@@ -104,8 +107,8 @@ enable Core alone
 -> optional companions remain unselected
 ```
 
-The launcher still presents four sibling mods. Dependency metadata does not
-turn them into visually nested entries.
+The launcher still presents package roots as sibling mods. Dependency metadata does not
+turn them into visually nested entries. The testing-only package is a fifth sibling entry when installed, but it is excluded from normal campaign playsets.
 
 Do not make Core depend on the three companions. That would make the optional
 packages mandatory and create dependency cycles because each companion already
@@ -203,9 +206,10 @@ ModeU5 configuration occurs before campaign start:
 
 ```txt
 launcher/mod playset
-  -> select all four packages for the recommended profile
+  -> select all four gameplay packages for the recommended campaign profile
   -> remove Rebalance Economy, Rebalance Estate Power, or
      Rebalance Early Blobbing before campaign start when desired
+  -> add No Void Economy Tests only for dedicated validation sessions
 
 EU5 Game Rules
   -> configure script-safe settings owned by loaded packages
@@ -231,7 +235,7 @@ Do not create a custom in-game configuration panel. In particular, no configurat
 ## Save and multiplayer rules
 
 - Package selection occurs in the launcher before starting or loading a campaign.
-- A source checkout is not itself four launcher choices; publish the package roots with `tools/install_local_packages.sh`.
+- A source checkout is not itself the launcher choices; publish the package roots with `tools/install_local_packages.sh`.
 - Use `tools/install_local_packages.sh --check` to verify the branch and commit currently installed.
 - Adding or removing an optional package during an existing campaign is unsupported unless a dedicated migration is implemented and tested.
 - All multiplayer participants must use the same package set and versions.

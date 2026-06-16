@@ -1,0 +1,48 @@
+namespace = modeu5_us01_debug
+
+modeu5_us01_debug.1 = {
+	type = country_event
+	title = modeu5_us01_debug.1.title
+	desc = modeu5_us01_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us01_debug.1.a
+		modeu5_debug_clear_stock_test_results = yes
+		debug_log = "ModeU5 US-01 country-stock dimension test starting."
+		modeu5_debug_run_country_stock_dimension_test = yes
+		debug_log = "ModeU5 US-01 country-stock dimension test finished; inspect PASS/FAIL result event and modeu5_test_* markers."
+		trigger_event_non_silently = modeu5_us01_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us01_debug.2 = {
+	type = country_event
+	title = modeu5_us01_debug.2.title
+	desc = modeu5_us01_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.country_stock_dimensions.pass
+		trigger = { has_global_variable = modeu5_test_country_stock_dimensions_passed }
+	}
+	option = {
+		name = modeu5_debug.test.country_stock_dimensions.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_country_stock_dimensions_passed } }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

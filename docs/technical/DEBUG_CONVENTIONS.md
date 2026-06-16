@@ -339,6 +339,29 @@ Validation severity uses
 `modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
 diagnostic severity; every nonzero difference is rebuilt.
 
+## Mandatory debug for US-11 reconciliation
+
+Each reconciliation pass exposes one aggregate snapshot on its controller:
+
+```txt
+reconciliation_type = 1 (dirty) | 2 (exhaustive)
+records_checked
+inconsistencies_found
+rebuilds_called
+failures_after_rebuild
+calendar_cycle_stamp
+initialization_gate_passed = 0 | 1
+```
+
+Automatic monthly reconciliation uses `year * 12 + month` as its cycle stamp;
+yearly reconciliation uses the current year. A direct deterministic test uses
+cycle stamp `0` and initialization-gate value `0`.
+
+The latest CORE-01.6 snapshot remains the per-record detail. Any
+`failures_after_rebuild > 0` result is blocking and must be written to
+`error.log`. A monthly pass with no dirty market/good records is a valid no-op
+with every counter equal to zero.
+
 Numeric precision is not yet characterized. Preserve raw operands and signed
 differences without rounding them for debug. When a small residual or an
 unexpected deterministic-test failure appears, follow
@@ -566,6 +589,14 @@ The CORE-01 console entry point is:
 event modeu5_debug.1
 ```
 
+Focused user-story tests should use their dedicated entry points instead of
+being added to the CORE event:
+
+```txt
+event modeu5_us01_debug.1
+event modeu5_us02_debug.1
+```
+
 `modeu5_test_*_passed` values are result markers, not console commands.
 
 Use persistent global marker presence for PASS state:
@@ -583,6 +614,12 @@ transfer, belong in debug snapshots and result rows. Reserve `error_log` for a
 failed assertion, an unexpected invariant violation, or another blocking
 diagnostic. A console-triggered result event that is called by another event
 must not be declared `orphan = yes`.
+
+Use `debug_log` for deterministic console-event trace lines and inspect
+`debug.log` after the run. Do not use `test_log` in console-triggered test
+events: controlled US-02 testing on June 16, 2026 showed that its `text` field
+is localized while command localization is disabled, producing a
+`Tried to localize with localization disabled` assertion in `error.log`.
 
 After a local test, distinguish:
 
