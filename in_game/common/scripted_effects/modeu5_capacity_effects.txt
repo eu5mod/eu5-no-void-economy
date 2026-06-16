@@ -11,6 +11,11 @@ modeu5_recalculate_country_market_capacity = {
 	modeu5_recalculate_country_market_capacity_good_$good$ = yes
 }
 
+modeu5_recalculate_country_storage_capacities = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	modeu5_recalculate_saved_country_storage_capacities = yes
+}
+
 modeu5_calculate_location_rank_storage_capacity = {
 	save_temporary_scope_value_as = {
 		name = modeu5_capacity_current_location_rank_contribution

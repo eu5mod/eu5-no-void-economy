@@ -41,14 +41,32 @@ goods=(
 	done
 	printf '%s\n' '	modeu5_reconciliation_finalize = yes'
 	printf '%s\n' '}'
-	printf '%s\n\n' 'modeu5_clear_all_dirty_stock_markets = {'
-	for good in "${goods[@]}"; do
-		printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
-	done
-	printf '%s\n' '}'
-	printf '%s\n\n' 'modeu5_initialize_opening_stocks = {'
-	for good in "${goods[@]}"; do
-		printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
+		printf '%s\n\n' 'modeu5_clear_all_dirty_stock_markets = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
+		done
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_recalculate_saved_country_storage_capacities_good_%s = yes\n' "$good"
+		done
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_initialize_storage_capacities = {'
+		printf '%s\n' '	every_country = {'
+		printf '%s\n' '		save_temporary_scope_as = modeu5_country'
+		printf '%s\n' '		modeu5_recalculate_saved_country_storage_capacities = yes'
+		printf '%s\n' '		set_global_variable = {'
+		printf '%s\n' '			name = modeu5_initialization_capacity_country_scans'
+		printf '%s\n' '			value = {'
+		printf '%s\n' '				value = global_var:modeu5_initialization_capacity_country_scans'
+		printf '%s\n' '				add = 1'
+		printf '%s\n' '			}'
+		printf '%s\n' '		}'
+		printf '%s\n' '	}'
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_initialize_opening_stocks = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
 	done
 	printf '%s\n' '}'
 

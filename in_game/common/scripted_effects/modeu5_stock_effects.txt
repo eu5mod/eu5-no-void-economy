@@ -1145,6 +1145,7 @@ modeu5_initialization_clear_last_result = {
 	remove_global_variable = modeu5_initialization_allocated_total
 	remove_global_variable = modeu5_initialization_residue_allocated_total
 	remove_global_variable = modeu5_initialization_zero_source_count
+	remove_global_variable = modeu5_initialization_capacity_country_scans
 	remove_global_variable = modeu5_initialization_zero_capacity_failures
 	remove_global_variable = modeu5_initialization_existing_stock_failures
 	remove_global_variable = modeu5_initialization_negative_capacity_failures
@@ -1174,6 +1175,7 @@ modeu5_initialization_prepare_counters = {
 	set_global_variable = { name = modeu5_initialization_allocated_total value = 0 }
 	set_global_variable = { name = modeu5_initialization_residue_allocated_total value = 0 }
 	set_global_variable = { name = modeu5_initialization_zero_source_count value = 0 }
+	set_global_variable = { name = modeu5_initialization_capacity_country_scans value = 0 }
 	set_global_variable = { name = modeu5_initialization_zero_capacity_failures value = 0 }
 	set_global_variable = { name = modeu5_initialization_existing_stock_failures value = 0 }
 	set_global_variable = { name = modeu5_initialization_negative_capacity_failures value = 0 }
@@ -1217,6 +1219,7 @@ modeu5_seed_opening_market_good = {
 
 modeu5_run_fresh_opening_stock_initialization = {
 	modeu5_initialization_prepare_counters = yes
+	modeu5_initialize_storage_capacities = yes
 	modeu5_initialize_opening_stocks = yes
 	modeu5_initialization_finalize_counters = yes
 }

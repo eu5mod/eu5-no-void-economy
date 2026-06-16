@@ -30,6 +30,7 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Location rank | location | `location_rank = location_rank:<rank>` | CONFIRMED | 115 |
 | Capital location check | location | `is_capital = yes/no` | CONFIRMED | 115 |
 | Country merchant capacity in a market | market(country) | `scope:<market>.merchant_capacity(<country>)` | CONFIRMED | 116 |
+| Initial country-market scan | country → market | `every_market_present_in_country` | CONFIRMED | 117 |
 | Capacity record fields | country × market × good | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields | CONFIRMED | 017, internal |
 | Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_stock_cap_by_market` and optional contribution-field maps | CONFIRMED | 007, 017 |
 
@@ -110,6 +111,8 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Use `modeu5_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
 - Add market merchant capacity once at the country-market level, not once per location.
 - Apply the location contribution in this priority order: capital, megalopolis, city, town, rural settlement.
+- Provide a country-level recalculation wrapper that writes all per-good capacity maps for every market present in that country.
+- Run the country-level wrapper for every country before CORE-02 reads capacity maps for opening stock allocation.
 - Rebuild each affected capacity key from contributions, then replace the old total by remove/re-add.
 - Treat a missing capacity entry as zero and do not attempt runtime map-name construction.
 - Log each capacity contribution and fallback.
@@ -119,10 +122,12 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - [ ] Capacity loss does not silently delete or create stock.
 - [ ] A capital megalopolis contributes 20, not 24.
 - [ ] Merchant capacity is counted once for the country-market pair.
+- [ ] Fresh initialization calculates country storage capacities before opening-stock allocation.
 
 ## Acceptance criteria
 
 - [ ] Base capacity equals market merchant-capacity contribution plus owned-location rank/capital contributions.
+- [ ] Country-level recalculation writes capacity for every generated good in markets present in the country.
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location reduces the rank/capital contribution.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
@@ -139,7 +144,9 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 FRA exists
 Use FRA's capital market
 Record FRA wheat stock
-Recalculate wheat capacity, then iron capacity for the same country and market
+Run the country-level capacity wrapper for FRA
+Read wheat and iron capacity for the same country and market
+Recalculate wheat directly for formula diagnostics
 ```
 
 ### Expected result
@@ -148,6 +155,7 @@ Recalculate wheat capacity, then iron capacity for the same country and market
 Total capacity equals base + domestic building + foreign building contributions
 Base capacity equals trade-capacity contribution + location rank/capital contribution
 Wheat and iron receive the same capacity from the same world state
+Country-level wrapper output matches direct wheat recalculation
 The existing wheat stock is unchanged
 Available capacity and over-cap are bounded at zero and reconcile with stock
 ```
@@ -155,9 +163,11 @@ Available capacity and over-cap are bounded at zero and reconcile with stock
 ## Known limitations
 
 Owned-location, market, location-rank, capital, and merchant-capacity exposure
-are documented and reviewed against local vanilla files. Automatic dirty-key
-scheduling after every possible vanilla ownership/rank/trade-capacity change is
-not part of this PR: callers such as CORE-02 and CORE-03 invoke recalculation
-directly, while monthly/yearly orchestration remains a follow-up. Building and
-foreign-building capacity fields are retained as zero-valued diagnostic fields
-until a separate business rule approves building-derived storage.
+are documented and reviewed against local vanilla files. Fresh CORE-02
+initialization runs the country-level capacity wrapper before stock allocation.
+Automatic dirty-key scheduling after every possible vanilla ownership/rank/trade-
+capacity change is not part of this PR: lifecycle callers such as CORE-03 invoke
+recalculation directly, while monthly/yearly orchestration remains a follow-up.
+Building and foreign-building capacity fields are retained as zero-valued
+diagnostic fields until a separate business rule approves building-derived
+storage.

@@ -3,7 +3,9 @@
 ## Purpose
 
 Validate that country storage capacity is rebuilt from market merchant capacity
-and owned-location rank/capital contributions without mutating stock.
+and owned-location rank/capital contributions without mutating stock. The test
+also verifies the country-level wrapper used by CORE-02 startup before it reads
+capacity maps for opening-stock allocation.
 
 ## Before launching EU5
 
@@ -87,8 +89,10 @@ available = max(0, total - stock)
 over_cap = max(0, stock - total)
 ```
 
-The event recalculates wheat and iron capacity for FRA's capital market. It
-does not add, remove, transfer, decay, or rebuild stock.
+The event first runs the country-level capacity wrapper for FRA, then reads
+wheat and iron capacity in FRA's capital market, then recalculates wheat
+directly for formula diagnostics. It does not add, remove, transfer, decay, or
+rebuild stock.
 
 ## Log review
 
