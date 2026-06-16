@@ -112,8 +112,9 @@ Documents/Paradox Interactive/Europa Universalis V/logs/system.log
 The US-01 test succeeds when no
 `ModeU5 deterministic US-01 country, market, and good isolation test failed`
 message, no `Tried to localize with localization disabled` assertion, and no
-new ModeU5 script-system error appears. `debug.log` should contain the
-corresponding US-01 PASS line.
+new ModeU5 script-system error appears. The result event and the persisted
+result marker are authoritative; this console test intentionally emits no
+PASS `debug.log` line.
 
 ## Known limitation
 

@@ -102,12 +102,14 @@ system.log
 Expected:
 
 ```txt
-debug.log contains PASS ModeU5 US-02 storage-capacity test
 No new ModeU5 script-system error
 No "ModeU5 deterministic US-02 storage-capacity test failed" entry
 No "Tried to localize with localization disabled" assertion
 No stock mutation attributed to the capacity test
 ```
+
+The result event and the persisted result marker are authoritative; this
+console test intentionally emits no PASS `debug.log` line.
 
 ## Known limitations
 

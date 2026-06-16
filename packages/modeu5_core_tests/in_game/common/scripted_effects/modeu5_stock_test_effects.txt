@@ -318,12 +318,10 @@ modeu5_debug_run_country_stock_dimension_test = {
 				scope:modeu5_test_after_market_one_iron = scope:modeu5_test_expected_market_one_iron
 			}
 			set_global_variable = modeu5_test_country_stock_dimensions_passed
-			debug_log = "PASS ModeU5 US-01 country, market, and good isolation test."
 		}
 		else = {
 			remove_global_variable = modeu5_test_country_stock_dimensions_passed
 			error_log = "ModeU5 deterministic US-01 country, market, and good isolation test failed."
-			debug_log = "FAIL ModeU5 US-01 country, market, and good isolation test."
 		}
 
 		modeu5_remove_stock = {
@@ -370,7 +368,6 @@ modeu5_debug_run_country_stock_dimension_test = {
 	else = {
 		remove_global_variable = modeu5_test_country_stock_dimensions_passed
 		error_log = "ModeU5 deterministic US-01 test requires FRA and ENG in different markets."
-		debug_log = "FAIL ModeU5 US-01 country, market, and good isolation test requires FRA and ENG in different markets."
 	}
 }
 
@@ -410,12 +407,10 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_country_stock_after_allow_add = 60
 		}
 		set_global_variable = modeu5_test_add_allow_over_capacity_passed
-		debug_log = "PASS ModeU5 CORE-01 add allow_over_capacity test."
 	}
 	else = {
 		remove_global_variable = modeu5_test_add_allow_over_capacity_passed
 		error_log = "ModeU5 deterministic CORE-01 add allow_over_capacity test failed."
-		debug_log = "FAIL ModeU5 CORE-01 add allow_over_capacity test."
 	}
 
 	modeu5_remove_stock = {
@@ -472,12 +467,10 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_market_after_enforced_add = scope:modeu5_test_expected_market_after_enforced_add
 		}
 		set_global_variable = modeu5_test_add_enforce_passed
-		debug_log = "PASS ModeU5 CORE-01 add enforce test."
 	}
 	else = {
 		remove_global_variable = modeu5_test_add_enforce_passed
 		error_log = "ModeU5 deterministic CORE-01 add enforce test failed."
-		debug_log = "FAIL ModeU5 CORE-01 add enforce test."
 	}
 
 	modeu5_remove_stock = {
@@ -499,12 +492,10 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_country_stock_after_remove = 0
 		}
 		set_global_variable = modeu5_test_remove_passed
-		debug_log = "PASS ModeU5 CORE-01 remove test."
 	}
 	else = {
 		remove_global_variable = modeu5_test_remove_passed
 		error_log = "ModeU5 deterministic CORE-01 remove test failed."
-		debug_log = "FAIL ModeU5 CORE-01 remove test."
 	}
 
 	modeu5_add_stock = {
@@ -549,12 +540,10 @@ modeu5_debug_run_single_record_stock_tests = {
 			scope:modeu5_test_market_after_decay = scope:modeu5_test_expected_market_after_decay
 		}
 		set_global_variable = modeu5_test_decay_passed
-		debug_log = "PASS ModeU5 CORE-01 decay test."
 	}
 	else = {
 		remove_global_variable = modeu5_test_decay_passed
 		error_log = "ModeU5 deterministic CORE-01 decay test failed."
-		debug_log = "FAIL ModeU5 CORE-01 decay test."
 	}
 }
 
@@ -645,7 +634,6 @@ modeu5_debug_run_same_market_transfer_tests = {
 			}
 			scope:modeu5_test_controller = {
 				set_global_variable = modeu5_test_same_market_transfer_passed
-				debug_log = "PASS ModeU5 CORE-01 same-market transfer test."
 			}
 		}
 		else = {
@@ -653,7 +641,6 @@ modeu5_debug_run_same_market_transfer_tests = {
 				remove_global_variable = modeu5_test_same_market_transfer_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 same-market transfer test failed."
-			debug_log = "FAIL ModeU5 CORE-01 same-market transfer test."
 		}
 
 		modeu5_transfer_stock = {
@@ -673,7 +660,6 @@ modeu5_debug_run_same_market_transfer_tests = {
 			}
 			scope:modeu5_test_controller = {
 				set_global_variable = modeu5_test_invalid_same_record_passed
-				debug_log = "PASS ModeU5 CORE-01 invalid same-record transfer rejection test."
 			}
 		}
 		else = {
@@ -681,14 +667,12 @@ modeu5_debug_run_same_market_transfer_tests = {
 				remove_global_variable = modeu5_test_invalid_same_record_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 invalid same-record transfer test failed."
-			debug_log = "FAIL ModeU5 CORE-01 invalid same-record transfer rejection test."
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_same_market_transfer_passed
 		remove_global_variable = modeu5_test_invalid_same_record_passed
 		error_log = "ModeU5 deterministic CORE-01 transfer test requires FRA and ENG."
-		debug_log = "FAIL ModeU5 CORE-01 transfer tests require FRA and ENG."
 	}
 }
 
@@ -803,7 +787,6 @@ modeu5_debug_run_inter_market_transfer_test = {
 			}
 			scope:modeu5_test_controller = {
 				set_global_variable = modeu5_test_inter_market_transfer_passed
-				debug_log = "PASS ModeU5 CORE-01 inter-market transfer test."
 			}
 		}
 		else = {
@@ -811,13 +794,11 @@ modeu5_debug_run_inter_market_transfer_test = {
 				remove_global_variable = modeu5_test_inter_market_transfer_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 inter-market transfer test failed."
-			debug_log = "FAIL ModeU5 CORE-01 inter-market transfer test."
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_inter_market_transfer_passed
 		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
-		debug_log = "FAIL ModeU5 CORE-01 inter-market transfer test requires FRA and ENG in different markets."
 	}
 }
 

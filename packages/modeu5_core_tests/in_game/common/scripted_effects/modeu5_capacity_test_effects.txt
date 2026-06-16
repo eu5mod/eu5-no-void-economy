@@ -122,17 +122,14 @@ modeu5_debug_run_storage_capacity_test = {
 				scope:modeu5_capacity_test_iron_total = scope:modeu5_capacity_test_wheat_total
 			}
 			set_global_variable = modeu5_test_storage_capacity_passed
-			debug_log = "PASS ModeU5 US-02 storage-capacity test."
 		}
 		else = {
 			remove_global_variable = modeu5_test_storage_capacity_passed
 			error_log = "ModeU5 deterministic US-02 storage-capacity test failed."
-			debug_log = "FAIL ModeU5 US-02 storage-capacity test."
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_storage_capacity_passed
 		error_log = "ModeU5 deterministic US-02 storage-capacity test requires FRA."
-		debug_log = "FAIL ModeU5 US-02 storage-capacity test requires FRA."
 	}
 }
