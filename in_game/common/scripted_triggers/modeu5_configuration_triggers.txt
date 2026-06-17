@@ -14,11 +14,6 @@ modeu5_war_rebalance_loaded_trigger = {
 	has_global_variable = modeu5_war_rebalance_loaded
 }
 
-modeu5_initialization_complete_trigger = {
-	has_global_variable = modeu5_initialization_state
-	global_var:modeu5_initialization_state = 2
-}
-
 modeu5_debug_enabled_trigger = {
 	OR = {
 		has_game_rule = modeu5_debug_basic

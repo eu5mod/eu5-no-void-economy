@@ -290,8 +290,17 @@ if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "
 	exit 1
 fi
 
-if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
-	printf 'Console-driven deterministic stock tests must not use debug_log; rely on result markers, result events, debug snapshot variables, and error_log on actual failure.\n' >&2
+if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects"; then
+	printf 'Console-driven deterministic stock tests must not use debug_log outside explicitly approved log-dump probes.\n' >&2
+	exit 1
+fi
+
+disallowed_capacity_debug_log="$(
+	search_lines 'debug_log[[:space:]]*=' "$capacity_test_effects" 2>/dev/null | grep -v 'ModeU5 US-02 ' || true
+)"
+if [ -n "$disallowed_capacity_debug_log" ]; then
+	printf 'US-02 capacity tests may use debug_log only for explicitly prefixed ModeU5 US-02 dumps/results.\n' >&2
+	printf '%s\n' "$disallowed_capacity_debug_log" >&2
 	exit 1
 fi
 

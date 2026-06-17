@@ -394,9 +394,10 @@ reliquat du pays disparu à son successeur.
 ### Mensuel
 
 ```txt
-1. Appliquer les pénalités de production du mois précédent.
-2. Appliquer les modificateurs Rebalance Economy, dont US-09, si chargé.
-3. Recalculer les capacités lorsque nécessaire.
+1. Recalculer les capacités lorsque nécessaire, avant toute admission en stock,
+   consommation, transfert, decay ou calcul de void economy.
+2. Appliquer les pénalités de production du mois précédent.
+3. Appliquer les modificateurs Rebalance Economy, dont US-09, si chargé.
 4. Lire ou estimer la production vanilla.
 5. Calculer la production reconnue par ModeU5.
 6. Ajouter la production via modeu5_add_stock.
