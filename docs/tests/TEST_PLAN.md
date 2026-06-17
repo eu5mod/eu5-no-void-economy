@@ -679,7 +679,7 @@ Country and market stock remain unchanged
 Expected:
 
 ```txt
-ModeU5 initialization state is complete and schema is current
+ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly/yearly stock reconciliation
 A permanent location owner change transfers loser stock by the transferred location capacity share
 The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
 The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
@@ -1071,7 +1071,7 @@ Expected result:
 The monthly global reconciliation runs once for the month
 The yearly global reconciliation runs once for the year
 The yearly exhaustive pass detects and rebuilds the unindexed corruption
-Automatic reconciliation does not run before CORE-02 initialization completes
+Automatic reconciliation does not run before CORE-02 initialization completes and the persisted stock schema version matches the current schema
 ```
 
 ## US-00 void economy tests
