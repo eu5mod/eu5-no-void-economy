@@ -247,6 +247,12 @@ if search_lines '^[[:space:]]*max = 0[[:space:]]*$|^[[:space:]]*min = scope:mode
 	exit 1
 fi
 
+if search_lines 'limit = \{ modeu5_initialization_complete_trigger = yes \}' \
+	"$stock_effects" "in_game/common/scripted_effects/modeu5_core03_succession_effects.txt"; then
+	printf 'Runtime stock automation must use modeu5_stock_runtime_ready_trigger so CORE-02 schema state and initialization state stay aligned.\n' >&2
+	exit 1
+fi
+
 if search_lines '(var|global_var):modeu5_test_[a-z_]+_passed[[:space:]]*=' \
 	"$stock_test_event" "$us01_test_event" "$us02_test_event"; then
 	printf 'Stock test result events must use presence triggers so unset markers remain valid failures.\n' >&2
