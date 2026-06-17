@@ -14,6 +14,12 @@ modeu5_debug_write_us02_capacity_dump_variables = {
 	}
 }
 
+modeu5_debug_log_us02_capacity_dump = {
+	scope:modeu5_capacity_test_controller = {
+		debug_log = "ModeU5 US-02 DUMP capacity country=FRA good=wheat stock=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_stock').GetValue|2] capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_capacity').GetValue|2] available=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_available').GetValue|2] over_cap=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_over_cap').GetValue|2] trade_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_trade_capacity').GetValue|2] location_rank_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_rank_capacity').GetValue|2] location_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_count').GetValue|0] iron_wrapper_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_iron_capacity').GetValue|2]"
+	}
+}
+
 modeu5_debug_write_us02_timing_probe_variables = {
 	scope:modeu5_capacity_test_controller = {
 		set_variable = { name = modeu5_debug_us02_ui_probe_before_capacity value = scope:modeu5_capacity_probe_before_capacity }
@@ -26,6 +32,12 @@ modeu5_debug_write_us02_timing_probe_variables = {
 		set_variable = { name = modeu5_debug_us02_ui_probe_after_month_trade value = scope:modeu5_capacity_probe_after_month_trade }
 		set_variable = { name = modeu5_debug_us02_ui_probe_delta_immediate_trade value = scope:modeu5_capacity_probe_delta_immediate_trade }
 		set_variable = { name = modeu5_debug_us02_ui_probe_delta_month_trade value = scope:modeu5_capacity_probe_delta_month_trade }
+	}
+}
+
+modeu5_debug_log_us02_timing_probe_dump = {
+	scope:modeu5_capacity_test_controller = {
+		debug_log = "ModeU5 US-02 DUMP timing country=FRA good=wheat before_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_before_capacity').GetValue|2] after_build_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_build_capacity').GetValue|2] after_month_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_month_capacity').GetValue|2] delta_immediate_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_immediate_capacity').GetValue|2] delta_month_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_month_capacity').GetValue|2] before_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_before_trade').GetValue|2] after_build_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_build_trade').GetValue|2] after_month_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_month_trade').GetValue|2] delta_immediate_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_immediate_trade').GetValue|2] delta_month_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_month_trade').GetValue|2]"
 	}
 }
 
@@ -202,6 +214,7 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:modeu5_capacity_test_wrapped_iron_total
 		}
 		modeu5_debug_write_us02_capacity_dump_variables = yes
+		modeu5_debug_log_us02_capacity_dump = yes
 
 		if = {
 			limit = {
@@ -221,14 +234,17 @@ modeu5_debug_run_storage_capacity_test = {
 				scope:modeu5_capacity_test_wheat_read_over_cap = scope:modeu5_capacity_test_expected_over_cap
 			}
 			set_global_variable = modeu5_test_storage_capacity_passed
+			debug_log = "ModeU5 US-02 RESULT capacity PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_storage_capacity_passed
+			debug_log = "ModeU5 US-02 RESULT capacity FAIL"
 			error_log = "ModeU5 deterministic US-02 storage-capacity test failed."
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_storage_capacity_passed
+		debug_log = "ModeU5 US-02 RESULT capacity BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-02 storage-capacity test requires FRA."
 	}
 }
@@ -310,6 +326,7 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_capacity value = 0 }
 		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
+		modeu5_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
@@ -317,9 +334,11 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 				scope:modeu5_capacity_probe_delta_immediate_trade > 0
 			}
 			set_global_variable = modeu5_test_storage_capacity_timing_immediate_passed
+			debug_log = "ModeU5 US-02 RESULT timing IMMEDIATE_PASS"
 		}
 		else = {
 			set_global_variable = modeu5_test_storage_capacity_timing_pending
+			debug_log = "ModeU5 US-02 RESULT timing PENDING"
 		}
 	}
 	else = {
@@ -335,7 +354,9 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_trade value = 0 }
 		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
+		modeu5_debug_log_us02_timing_probe_dump = yes
 		set_global_variable = modeu5_test_storage_capacity_timing_failed
+		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe requires FRA."
 	}
 }
@@ -395,6 +416,7 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_capacity value = scope:modeu5_capacity_probe_delta_month_capacity }
 		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_trade value = scope:modeu5_capacity_probe_delta_month_trade }
 		modeu5_debug_write_us02_timing_probe_variables = yes
+		modeu5_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
@@ -403,10 +425,12 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 			}
 			remove_global_variable = modeu5_test_storage_capacity_timing_pending
 			set_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
+			debug_log = "ModeU5 US-02 RESULT timing MONTHLY_PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_storage_capacity_timing_pending
 			set_global_variable = modeu5_test_storage_capacity_timing_failed
+			debug_log = "ModeU5 US-02 RESULT timing FAIL"
 			error_log = "ModeU5 deterministic US-02 storage-capacity timing probe failed after monthly tick."
 		}
 	}
@@ -422,7 +446,9 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_trade value = 0 }
 		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
+		modeu5_debug_log_us02_timing_probe_dump = yes
 		set_global_variable = modeu5_test_storage_capacity_timing_failed
+		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_started_probe"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe was finished without a started probe."
 	}
 }

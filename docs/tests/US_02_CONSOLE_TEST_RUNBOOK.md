@@ -69,10 +69,7 @@ FRA iron wrapper capacity
 ```
 
 These visible values are useful for immediate tester feedback, but they are not
-the authoritative artifact. Logs are the source of truth. Until a safe dynamic
-numeric log channel is confirmed for console-triggered events, treat this UI
-dump as a fallback and record the missing log dump as a known limitation during
-PR review.
+the authoritative artifact. Logs are the source of truth.
 
 ## Marketplace timing probe
 
@@ -225,17 +222,34 @@ system.log
 Expected:
 
 ```txt
+ModeU5 US-02 DUMP capacity ...
+ModeU5 US-02 RESULT capacity PASS
 No new ModeU5 script-system error
 No "ModeU5 deterministic US-02 storage-capacity test failed" entry
-No "Tried to localize with localization disabled" assertion
 No stock mutation attributed to the capacity test
 ```
 
 Logs are the source of truth for validating the run. The result event and
-persisted result markers are supporting evidence only. This console test
-currently avoids `test_log` and `debug_log` because prior US-01/US-02 probes
-showed localization assertions from those channels; therefore the numeric dump
-is not yet fully log-auditable.
+persisted result markers are supporting evidence only. The dynamic `debug_log`
+dump may emit the known `Tried to localize with localization disabled`
+assertion. That assertion is tolerated only when the expected `ModeU5 US-02
+DUMP ...` and `ModeU5 US-02 RESULT ...` lines are present and there is no
+script-system error or ModeU5 failure line.
+
+For the marketplace timing probe, expected log lines are:
+
+```txt
+ModeU5 US-02 DUMP timing ...
+ModeU5 US-02 RESULT timing IMMEDIATE_PASS
+```
+
+or, for a delayed refresh:
+
+```txt
+ModeU5 US-02 RESULT timing PENDING
+ModeU5 US-02 DUMP timing ...
+ModeU5 US-02 RESULT timing MONTHLY_PASS
+```
 
 ## Known limitations
 

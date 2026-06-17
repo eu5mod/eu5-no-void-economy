@@ -137,7 +137,7 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - [ ] CORE-02/CORE-03 may use the documented `allow_over_capacity` policy.
 - [ ] Over-cap handling is visible and centralized.
 - [ ] The focused US-02 test event displays the capacity dump directly in the UI.
-- [ ] US-02 test review treats logs as the source of truth; any numeric dump that exists only in the result event is recorded as a temporary test limitation.
+- [ ] US-02 test review treats logs as the source of truth and emits stable `ModeU5 US-02 DUMP ...` / `ModeU5 US-02 RESULT ...` lines for deterministic validation.
 - [ ] A destructive test-only probe can show whether marketplace-driven merchant capacity refreshes immediately, after a monthly tick, or not at all.
 - [ ] The delayed probe reads persisted capacity after the monthly tick and does not recalculate capacity inside the verification step.
 - [ ] TECH-01 and manual test evidence are updated.

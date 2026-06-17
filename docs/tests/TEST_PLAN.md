@@ -78,6 +78,11 @@ pattern until a safe dynamic log dump channel is confirmed: persist
 machine-readable global markers, mirror display values onto the country/event
 scope, and localize the result event with the visible values.
 
+US-02 additionally uses an explicitly approved `debug_log` probe with stable
+`ModeU5 US-02 DUMP ...` and `ModeU5 US-02 RESULT ...` prefixes. A known
+`Tried to localize with localization disabled` assertion is tolerated only for
+that probe and only when the expected dump/result lines are present.
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation
@@ -455,11 +460,11 @@ No ModeU5 script error is added to error.log
 CORE-02 startup and integration checks are delayed by at least one in-game day
 because the implementation intentionally runs from `on_game_start` after
 `delay = { days = 1 }`. Do not judge startup logs or state on campaign day 0.
-Console-driven tests intentionally avoid `test_log` and `debug_log` until a
-safe dynamic log dump channel is confirmed. Logs remain the review authority:
-use `error.log`/`system.log`/`game.log` to confirm that the test ran cleanly, and
-record any numeric dump that exists only in the result event as a temporary
-limitation rather than final log-auditable evidence.
+Console-driven tests avoid `test_log` and use `debug_log` only for explicitly
+approved log-dump probes. Logs remain the review authority: use
+`error.log`/`system.log`/`game.log` to confirm that the test ran cleanly, and
+require the expected `ModeU5 ... DUMP` / `ModeU5 ... RESULT` lines before
+validating a PR from deterministic test evidence.
 
 Until US-02 exists, the full fresh-start dispatcher may fail closed when vanilla
 opening stock is positive and total ModeU5 capacity is zero. That is expected

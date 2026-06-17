@@ -694,6 +694,18 @@ debug artifact; if a PR needs numeric dump review and the values are only
 available in the result event, record that as a known limitation or add a
 dedicated logging probe before treating the PR as fully log-auditable.
 
+Known localization assertions may be tolerated only for deterministic logging
+probes that deliberately write dynamic dumps to logs. The tolerance is narrow:
+
+```txt
+accepted assertion: Tried to localize with localization disabled
+required proof: expected ModeU5 DUMP / RESULT lines are present in logs
+not tolerated: Script system error, missing dump lines, unexpected ModeU5 FAIL
+```
+
+Document each tolerated assertion in the affected runbook. Do not treat
+localization assertions as harmless outside an explicitly approved test dump.
+
 After a local test, distinguish:
 
 - static `used but is never set` analysis for a correctly formed literal map;
