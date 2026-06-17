@@ -3,35 +3,65 @@ modeu5_default_monthly_decay_rate = {
 	value = 0.01
 }
 
+modeu5_current_stock_schema_version = {
+	value = 1
+}
+
+# Kept exact until TECH-01 113 confirms rounding behavior. Positive residue is
+# allocated through modeu5_add_stock; negative residue remains a failure.
+modeu5_initialization_rounding_epsilon = {
+	value = 0
+}
+
 # Difference at or above this value receives prominent validation severity.
 modeu5_stock_consistency_prominent_threshold = {
 	value = 1
 }
 
-# US-02 provisional balance values. Keep every coefficient centralized here.
-# Warehouse and funduq values mirror their vanilla maximum_stockpile_capacity
-# contribution. The remaining values require gameplay balance approval before
-# US-02 leaves draft status.
-modeu5_storage_capacity_per_owned_location = {
-	value = 10
+# US-02 storage-capacity coefficients. Keep every business-rule value here.
+modeu5_storage_capacity_per_trade_capacity = {
+	value = 1
 }
 
+modeu5_storage_capacity_rural_settlement = {
+	value = 0.5
+}
+
+modeu5_storage_capacity_town = {
+	value = 1
+}
+
+modeu5_storage_capacity_city = {
+	value = 2
+}
+
+modeu5_storage_capacity_megalopolis = {
+	value = 4
+}
+
+modeu5_storage_capacity_capital = {
+	value = 20
+}
+
+# Building-based storage remains explicit zero until a later approved balance
+# rule re-enables it. The fields stay persisted for diagnostics/backward
+# compatibility with the generated capacity adapters.
 modeu5_storage_capacity_per_marketplace_level = {
-	value = 25
+	value = 0
 }
 
 modeu5_storage_capacity_per_market_warehouse_level = {
-	value = 200
+	value = 0
 }
 
 modeu5_storage_capacity_per_funduq_level = {
-	value = 200
+	value = 0
 }
 
 modeu5_storage_capacity_per_caravanserai_level = {
-	value = 100
+	value = 0
 }
 
 modeu5_storage_capacity_per_fondaco_level = {
-	value = 100
+	value = 0
 }

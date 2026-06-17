@@ -24,26 +24,65 @@ goods=(
 	printf '%s\n' '# Do not edit manually.'
 	printf '%s\n\n' '# Literal map access is generated from tools/templates/modeu5_stock_good_adapter.template.txt.'
 	printf '%s\n\n' 'modeu5_validate_dirty_stock_consistency = {'
-	printf '%s\n' '	save_temporary_scope_as = modeu5_reconciliation_controller'
-	printf '%s\n' '	save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 1 }'
-	printf '%s\n' '	modeu5_reconciliation_prepare = yes'
+	printf '%s\n' '	modeu5_prepare_reconciliation_controller = yes'
+	printf '%s\n' '	if = {'
+	printf '%s\n' '		limit = { exists = scope:modeu5_reconciliation_controller }'
+	printf '%s\n' '		scope:modeu5_reconciliation_controller = {'
+	printf '%s\n' '			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 1 }'
+	printf '%s\n' '			modeu5_reconciliation_prepare = yes'
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_validate_dirty_markets_good_%s = yes\n' "$good"
+		printf '\t\t\tmodeu5_validate_dirty_markets_good_%s = yes\n' "$good"
 	done
-	printf '%s\n' '	modeu5_reconciliation_finalize = yes'
+	printf '%s\n' '			modeu5_reconciliation_finalize = yes'
+	printf '%s\n' '		}'
+	printf '%s\n' '	}'
+	printf '%s\n' '	else = {'
+	printf '%s\n' '		error_log = "ModeU5 reconciliation skipped because no country controller scope exists."'
+	printf '%s\n' '	}'
 	printf '%s\n' '}'
 	printf '%s\n\n' 'modeu5_validate_all_stock_consistency = {'
-	printf '%s\n' '	save_temporary_scope_as = modeu5_reconciliation_controller'
-	printf '%s\n' '	save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 2 }'
-	printf '%s\n' '	modeu5_reconciliation_prepare = yes'
+	printf '%s\n' '	modeu5_prepare_reconciliation_controller = yes'
+	printf '%s\n' '	if = {'
+	printf '%s\n' '		limit = { exists = scope:modeu5_reconciliation_controller }'
+	printf '%s\n' '		scope:modeu5_reconciliation_controller = {'
+	printf '%s\n' '			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 2 }'
+	printf '%s\n' '			modeu5_reconciliation_prepare = yes'
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_validate_all_markets_good_%s = yes\n' "$good"
+		printf '\t\t\tmodeu5_validate_all_markets_good_%s = yes\n' "$good"
 	done
-	printf '%s\n' '	modeu5_reconciliation_finalize = yes'
+	printf '%s\n' '			modeu5_reconciliation_finalize = yes'
+	printf '%s\n' '		}'
+	printf '%s\n' '	}'
+	printf '%s\n' '	else = {'
+	printf '%s\n' '		error_log = "ModeU5 reconciliation skipped because no country controller scope exists."'
+	printf '%s\n' '	}'
 	printf '%s\n' '}'
-	printf '%s\n\n' 'modeu5_clear_all_dirty_stock_markets = {'
-	for good in "${goods[@]}"; do
-		printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
+		printf '%s\n\n' 'modeu5_clear_all_dirty_stock_markets = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
+		done
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_recalculate_saved_country_storage_capacities_good_%s = yes\n' "$good"
+		done
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_initialize_storage_capacities = {'
+		printf '%s\n' '	every_country = {'
+		printf '%s\n' '		save_temporary_scope_as = modeu5_country'
+		printf '%s\n' '		modeu5_recalculate_saved_country_storage_capacities = yes'
+		printf '%s\n' '		set_global_variable = {'
+		printf '%s\n' '			name = modeu5_initialization_capacity_country_scans'
+		printf '%s\n' '			value = {'
+		printf '%s\n' '				value = global_var:modeu5_initialization_capacity_country_scans'
+		printf '%s\n' '				add = 1'
+		printf '%s\n' '			}'
+		printf '%s\n' '		}'
+		printf '%s\n' '	}'
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_initialize_opening_stocks = {'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
 	done
 	printf '%s\n' '}'
 

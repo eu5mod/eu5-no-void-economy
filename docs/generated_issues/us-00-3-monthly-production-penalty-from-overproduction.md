@@ -17,7 +17,7 @@ Convert effective overproduction into a capped temporary penalty applied during 
 ## Runtime position
 
 ```txt
-Monthly step: apply previous penalty at step 1; calculate replacement at step 15
+Monthly step: apply previous penalty at step 2; calculate replacement at step 15
 Depends on counters from: US-00.2
 Feeds counters to: next monthly cycle, US-00-UI
 ```

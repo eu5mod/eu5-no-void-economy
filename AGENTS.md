@@ -122,9 +122,9 @@ The implementation roadmap is only a safe delivery order. The runtime order is t
 A monthly economic cycle must follow this logical sequence:
 
 ```txt
-1. Apply previous-month production penalties.
-2. If the Rebalance Economy package is loaded, apply its global ModeU5 modifiers, including the +5% Production Efficiency compensation.
-3. Recalculate stock capacities when needed.
+1. Recalculate stock capacities for every affected country/market before any stock admission, demand resolution, transfer, decay, or void-economy calculation.
+2. Apply previous-month production penalties.
+3. If the Rebalance Economy package is loaded, apply its global ModeU5 modifiers, including the +5% Production Efficiency compensation.
 4. Read or estimate vanilla production.
 5. Calculate ModeU5-recognized production.
 6. Add stockable production through modeu5_add_stock.
@@ -142,6 +142,12 @@ A monthly economic cycle must follow this logical sequence:
 18. Validate stock consistency through modeu5_validate_stock_consistency.
 19. Reset monthly counters only after every consumer has read them.
 ```
+
+Capacity recalculation is the first monthly data refresh because production,
+capacity enforcement, demand resolution, lifecycle follow-ups, and diagnostics
+all depend on the latest storage-capacity snapshot. It is a capacity-map update,
+not a stock mutation, and must not itself add, remove, reject, decay, transfer,
+or rebuild stock.
 
 A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation only when the Rebalance Economy package is loaded, reset annual counters, and run diagnostics if enabled.
 
@@ -356,6 +362,7 @@ Every PR must include:
 manual test scenario
 expected result
 actual result
+visible debug/result dump when a deterministic event is used
 debug output inspected
 error.log result
 known limitation
