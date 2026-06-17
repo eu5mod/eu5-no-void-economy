@@ -1,0 +1,5 @@
+﻿l_english:
+ autonomous_territory: "Autonomous Territory"
+ autonomous_territory_desc: "A self-governing territory whose local privileges are recognized by the overlord. It has no external diplomacy and cannot be diplomatically annexed, but its autonomy weakens the overlord's legitimacy."
+ integrated_autonomous_vassal: "Autonomous Province"
+ integrated_autonomous_vassal_desc: "An autonomous dependency brought under a modern administrative framework after 1637. It retains limited internal privileges, has no external diplomacy, and can be diplomatically annexed."

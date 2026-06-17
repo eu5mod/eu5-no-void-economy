@@ -41,9 +41,8 @@ We remove punitive incentive (4 & 5) and rebalance economy toward highet product
  1. Antagonism is redefined (More Religious & Culturaly based), spike faster & decay faster representing short-term bombs.(Status : ❌ : Need modding endpoint)
  2. Trust is redefined (More Power Based), it represent real-life competing powers, power checking behaviour. (Status : ❌ : Need modding endpoint)
  3. Low Trust country can form/join coalitions (Status : ❌ : Need modding endpoint)
-  can
  5. Independantist don't start the war Initial Owner get a CB for 50 year (Status : ❌ : Not on roadmap)
- 4. Rebel can demand to be an Autonomous Province type of subject (Status : ❌ : Not on roadmap)
+ 4. Rebel can demand to be an Autonomous Territory type of subject (Status : ⏳)
  5. Rebel threshold adjusted (Status : ❌ : Not on roadmap)
 
 ## Help 
