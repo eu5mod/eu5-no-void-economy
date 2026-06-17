@@ -67,7 +67,7 @@ Just answer to these topic, so that our demand for modding endpoint get visibili
  
 ### Contributor
 
-Deploy the mod to the game folder : 
+Deploy the mod to the game folder :
 
 ```shell
 ./tools/generate_all.sh
