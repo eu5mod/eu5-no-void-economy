@@ -127,6 +127,15 @@ event and set `modeu5_test_core02_initialization_started`,
 avoid `test_log` and `debug_log`, so `game.log` is not the source of truth for
 PASS/FAIL. `error.log` should not gain ModeU5 script errors.
 
+The delayed startup path may run from an on-action/root scope that does not
+support ordinary variables. Reconciliation therefore selects a real country as
+`modeu5_reconciliation_controller` before writing debug counters. If `error.log`
+contains `This scope doesn't support variables. Scope: empty` or
+`This scope doesn't support variables. Scope: Market ...` from
+`modeu5_debug_effects.txt` or reconciliation finalization, the controller
+selection failed or validation captured a non-variable market scope. The test is
+not clean until the debug counters are written through the country controller.
+
 Failure evidence includes:
 
 ```txt

@@ -64,6 +64,10 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:modeu5_capacity_location_rank_capacity
 		}
 		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_location_count
+			value = scope:modeu5_capacity_location_count
+		}
+		save_temporary_scope_value_as = {
 			name = modeu5_capacity_test_wheat_building
 			value = scope:modeu5_capacity_building
 		}
@@ -137,9 +141,44 @@ modeu5_debug_run_storage_capacity_test = {
 				add = scope:modeu5_capacity_test_wheat_location_rank
 			}
 		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_stock
+			value = scope:modeu5_capacity_test_wheat_stock_after
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_capacity
+			value = scope:modeu5_capacity_test_wheat_total
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_available
+			value = scope:modeu5_capacity_test_wheat_read_available
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_over_cap
+			value = scope:modeu5_capacity_test_wheat_read_over_cap
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_trade_capacity
+			value = scope:modeu5_capacity_test_wheat_trade
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
+			value = scope:modeu5_capacity_test_wheat_location_rank
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_location_count
+			value = scope:modeu5_capacity_test_wheat_location_count
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_iron_capacity
+			value = scope:modeu5_capacity_test_wrapped_iron_total
+		}
 
 		if = {
 			limit = {
+				scope:modeu5_capacity_test_wheat_total > 0
+				scope:modeu5_capacity_test_wheat_location_rank > 0
+				scope:modeu5_capacity_test_wheat_location_count > 0
 				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
 				scope:modeu5_capacity_test_wheat_base = scope:modeu5_capacity_test_reconciled_base
 				scope:modeu5_capacity_test_wrapped_wheat_total = scope:modeu5_capacity_test_wheat_total

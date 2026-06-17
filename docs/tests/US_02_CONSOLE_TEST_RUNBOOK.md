@@ -85,14 +85,35 @@ Expected arithmetic:
 ```txt
 total = base + building + foreign
 base = trade + location_rank
+total > 0
+location_rank > 0
+location_count > 0
 available = max(0, total - stock)
 over_cap = max(0, stock - total)
 ```
 
 The event first runs the country-level capacity wrapper for FRA, then reads
 wheat and iron capacity in FRA's capital market, then recalculates wheat
-directly for formula diagnostics. It does not add, remove, transfer, decay, or
-rebuild stock.
+directly for formula diagnostics. It explicitly fails if the recalculated
+capacity is zero, because a zero-capacity pass would only prove internal
+consistency and would not prove that the US-02 world-state scan is usable by
+CORE-02 startup. It does not add, remove, transfer, decay, or rebuild stock.
+
+The test also writes a compact numeric dump to global variables:
+
+```txt
+modeu5_debug_us02_dump_fra_wheat_stock
+modeu5_debug_us02_dump_fra_wheat_capacity
+modeu5_debug_us02_dump_fra_wheat_available
+modeu5_debug_us02_dump_fra_wheat_over_cap
+modeu5_debug_us02_dump_fra_wheat_trade_capacity
+modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
+modeu5_debug_us02_dump_fra_wheat_location_count
+modeu5_debug_us02_dump_fra_iron_capacity
+```
+
+These variables are meant to prove that the pass result is backed by non-zero
+world-state capacity data rather than only a boolean marker.
 
 ## Log review
 
