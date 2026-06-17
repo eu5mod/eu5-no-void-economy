@@ -65,3 +65,7 @@ modeu5_storage_capacity_per_caravanserai_level = {
 modeu5_storage_capacity_per_fondaco_level = {
 	value = 0
 }
+
+# CORE-02/CORE-03 runtime gate. Gameplay stock lifecycle effects run only
+# after CORE-02 persists this exact schema version and marks initialization complete.
+modeu5_current_stock_schema_version = 1

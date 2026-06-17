@@ -189,17 +189,21 @@ stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
 capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
 capacity_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_capacity_test_effects.txt"
+core03_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core03_test_effects.txt"
 stock_test_event="packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt"
 us01_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us01_debug_events.txt"
 us02_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us02_debug_events.txt"
+core03_test_event="packages/modeu5_core_tests/in_game/events/modeu5_core03_debug_events.txt"
 
 test -f "$stock_effects"
 test -f "$capacity_effects"
 test -f "$stock_test_effects"
 test -f "$capacity_test_effects"
+test -f "$core03_test_effects"
 test -f "$stock_test_event"
 test -f "$us01_test_event"
 test -f "$us02_test_event"
+test -f "$core03_test_event"
 core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
 core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
 core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
@@ -247,8 +251,14 @@ if search_lines '^[[:space:]]*max = 0[[:space:]]*$|^[[:space:]]*min = scope:mode
 	exit 1
 fi
 
+if search_lines 'limit = \{ modeu5_initialization_complete_trigger = yes \}' \
+	"$stock_effects" "in_game/common/scripted_effects/modeu5_core03_succession_effects.txt"; then
+	printf 'Runtime stock automation must use modeu5_stock_runtime_ready_trigger so CORE-02 schema state and initialization state stay aligned.\n' >&2
+	exit 1
+fi
+
 if search_lines '(var|global_var):modeu5_test_[a-z_]+_passed[[:space:]]*=' \
-	"$stock_test_event" "$us01_test_event" "$us02_test_event"; then
+	"$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event"; then
 	printf 'Stock test result events must use presence triggers so unset markers remain valid failures.\n' >&2
 	exit 1
 fi
@@ -269,6 +279,11 @@ if ! search_quiet 'modeu5_debug_run_storage_capacity_test' "$capacity_test_effec
 	exit 1
 fi
 
+if ! search_quiet 'modeu5_debug_run_core03_location_succession_test' "$core03_test_effects"; then
+	printf 'CORE-03 location stock-succession test helper is missing from the test package.\n' >&2
+	exit 1
+fi
+
 if ! search_quiet '^modeu5_us01_debug\.1 = \{' "$us01_test_event"; then
 	printf 'US-01 tests must use a dedicated event instead of modeu5_debug.1.\n' >&2
 	exit 1
@@ -279,12 +294,17 @@ if ! search_quiet '^modeu5_us02_debug\.1 = \{' "$us02_test_event"; then
 	exit 1
 fi
 
-if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects" "$capacity_test_effects"; then
+if ! search_quiet '^modeu5_core03_debug\.1 = \{' "$core03_test_event"; then
+	printf 'CORE-03 tests must use a dedicated event instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" "$capacity_test_effects" "$core03_test_effects"; then
 	printf 'Console-driven stock tests must not use test_log; it localizes text while console command localization is disabled.\n' >&2
 	exit 1
 fi
 
-if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$stock_test_effects"; then
+if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects"; then
 	printf 'Console-driven deterministic stock tests must not use debug_log outside explicitly approved log-dump probes.\n' >&2
 	exit 1
 fi
@@ -298,8 +318,17 @@ if [ -n "$disallowed_capacity_debug_log" ]; then
 	exit 1
 fi
 
+disallowed_core03_debug_log="$(
+	search_lines 'debug_log[[:space:]]*=' "$core03_test_effects" 2>/dev/null | grep -v 'ModeU5 CORE-03 ' || true
+)"
+if [ -n "$disallowed_core03_debug_log" ]; then
+	printf 'CORE-03 stock-succession tests may use debug_log only for explicitly prefixed ModeU5 CORE-03 dumps/results.\n' >&2
+	printf '%s\n' "$disallowed_core03_debug_log" >&2
+	exit 1
+fi
+
 if search_lines 'add_to_global_variable_map|remove_from_global_variable_map' \
-	"$stock_test_effects"; then
+	"$stock_test_effects" "$core03_test_effects"; then
 	printf 'Deterministic tests must use the centralized test fault injector instead of mutating market stock directly.\n' >&2
 	exit 1
 fi

@@ -1,8 +1,13 @@
 # CORE-03 Lifecycle Hook Runbook
 
 This controlled test verifies TECH-01 `098`. The probe records lifecycle hooks,
-scope validity, duplicate location calls, and delayed finalizers. It never
-calculates capacity or mutates stock.
+scope validity, duplicate location calls, and delayed finalizers.
+
+The probe instrumentation itself does not calculate capacity or mutate stock.
+Once CORE-03 gameplay is enabled, the shared `on_location_changed_owner` hook
+also runs the stock-succession handler. Use
+`docs/tests/CORE_03_STOCK_SUCCESSION_RUNBOOK.md` when validating stock
+survivability; use this runbook when checking hook coverage and ordering.
 
 The probe now supports two workflows:
 
@@ -36,10 +41,10 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that `MODEU5_SOURCE.txt` identifies:
+Confirm that `MODEU5_SOURCE.txt` identifies the branch under test, for example:
 
 ```txt
-branch: spike/core-03-lifecycle-hooks
+branch: <current CORE-03 branch>
 ```
 
 ## Probe hub
@@ -65,7 +70,7 @@ also changes the visible map state. Each scripted run:
 Scripted fixture coverage:
 
 ```txt
-Scenario A: transfer Huelva from Castile to Portugal
+Scenario A: transfer Cadiz from Castile to Portugal
 Scenario B: create one Castile subject centered on Leon
 Scenario C: create or reuse one Leon-centered Castile subject, then auto-annex it
 ```
@@ -75,7 +80,7 @@ Important boundary:
 ```txt
 Scripted runs are intended to be visible in the UI
 Scenario B confirms new-country creation, not release-specific hooks
-Release-specific coverage, rebel paths, and tag-formation paths still need manual confirmation
+PR #48 is treated as confirming release-specific coverage, rebel paths, and tag-formation paths for CORE-03 gameplay enablement
 ```
 
 New observability aid:
@@ -85,6 +90,10 @@ Scripted runs now emit explicit ModeU5 CORE-03 started/staged/completed/aborted 
 Observed hooks also emit PASS / FAIL-style lines in error.log
 The report shows probe-state rows for reset, manual preparation, and scripted execution
 ```
+
+## PR #48 validation status
+
+For the CORE-03 implementation PR, PR #48 is treated as the authoritative validation pass for TECH-01 `098`. Re-run the scenarios below when changing lifecycle hook wiring or when EU5 updates on-action behavior.
 
 ## Manual vanilla observation
 
@@ -126,19 +135,19 @@ Ignore unrelated localization noise when reviewing this probe. The validation
 target here is whether the deterministic fixture ran, changed the map as
 expected, and produced the expected lifecycle markers.
 
-## Scripted Scenario A - Huelva to Portugal
+## Scripted Scenario A - Cadiz to Portugal
 
 ```txt
 Reload the baseline Castile save
 event modeu5_core03_probe.1
-Choose: Run scripted Scenario A - transfer Huelva to Portugal
+Choose: Run scripted Scenario A - transfer Cadiz to Portugal
 Unpause until the report opens
 ```
 
 Expected:
 
 ```txt
-Huelva visibly changes owner to Portugal
+Cadiz visibly changes owner to Portugal
 PASS - Location owner-change hook observed
 PASS - Distinct loser and winner scopes resolved
 PASS - No duplicate location hook observed
@@ -268,7 +277,7 @@ Capture each run with one row:
 
 | Run type | Scenario | Baseline save reloaded | Action path used | Locations transferred | Waited two days | Report result | Log result |
 |---|---|---|---|---|---|---|---|
-| scripted | A | yes | Huelva to Portugal fixture | Huelva | no | fill manually | fill manually |
+| scripted | A | yes | Cadiz to Portugal fixture | Cadiz | no | fill manually | fill manually |
 | scripted | B | yes | Leon subject-creation fixture | Leon | yes | fill manually | fill manually |
 | scripted | C | yes | Leon stage then annex fixture | Leon | yes | fill manually | fill manually |
 | manual | A | yes/no | peace / sale / other | fill manually | no | fill manually | fill manually |
