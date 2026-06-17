@@ -2,7 +2,21 @@
 
 ## Generated stock adapters
 
-Regenerate the literal per-good EU5 persistence adapters:
+Regenerate every local generated artifact:
+
+```bash
+./tools/generate_all.sh
+```
+
+The aggregate generator currently regenerates the literal per-good EU5
+persistence adapters and will also run optional generated-balance scaffolds when
+their script exists on the current branch.
+
+Any new generated text artifact should follow the `modeu5_*_generated.txt`
+naming convention so it is ignored by Git and caught by the generated-file
+validation guard.
+
+Regenerate only the stock adapters:
 
 ```bash
 ./tools/generate_stock_good_helpers.sh
@@ -20,7 +34,8 @@ contains enumeration only, not stock or reconciliation business rules.
 
 Do not edit
 `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
-After changing the template or goods registry, regenerate and run
+The generated output is ignored by Git and must not be committed. After changing
+the template or goods registry, run `./tools/generate_all.sh` and then
 `./tools/validate_module_packages.sh`; generation must be idempotent and no
 physical map identifier may retain `$`.
 
@@ -37,6 +52,9 @@ Publish Core, the three optional gameplay companions, and the testing-only packa
 ```bash
 ./tools/install_local_packages.sh
 ```
+
+The installer runs `./tools/generate_all.sh` before publishing so ignored
+generated artifacts are present in the installed local mod.
 
 The installer writes `MODEU5_SOURCE.txt` into every installed package so the
 branch and commit loaded by EU5 can be checked without guessing:

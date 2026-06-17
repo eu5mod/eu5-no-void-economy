@@ -43,8 +43,10 @@ Not a runtime feature:
 
 ## Generated adapters
 
-- [ ] Generated stock adapters were regenerated when their template or goods list changed.
-- [ ] Generated output is idempotent and was not hand-edited.
+- [ ] `./tools/generate_all.sh` was run when a generator input changed.
+- [ ] Generated output is ignored by Git, idempotent, and was not hand-edited.
+- [ ] Generated output was not committed; CI regenerates it before validation.
+- [ ] New generated text artifacts use the `modeu5_*_generated.txt` naming convention.
 - [ ] Every physical map identifier is literal and contains no remaining `$`.
 - [ ] Stock arithmetic and business rules remain in shared scripted effects, not the shell generator.
 
