@@ -74,19 +74,22 @@ Not a runtime feature:
 - [ ] Expected business-rule rejections do not create engine/error diagnostics.
 - [ ] Deterministic result events use marker presence checks for possibly unset variables.
 
-## Test report
+## Test plan
 
 ### Scenario
 
 ### Expected result
 
-### Actual result
+### Debug output to inspect
 
-### Debug output inspected
+### Logs to inspect
 
-### error.log result
-
-### game.log / system.log result
+```txt
+error.log
+game.log
+system.log
+debug.log when the feature emits deterministic dumps
+```
 
 ### TECH-01 entries updated
 
@@ -94,13 +97,21 @@ Not a runtime feature:
 
 ### Fallbacks used
 
-### Local install provenance
+### Local install provenance to verify
 
 ```txt
 MODEU5_SOURCE.txt checked:
 Duplicate/stale mod entry checked:
 Installed branch/commit:
 ```
+
+## Validation comments
+
+- [ ] Actual test results are posted as PR comments, not edited into this PR body.
+- [ ] Each test-result comment names the tested commit SHA and installed package provenance.
+- [ ] Each test-result comment includes the exact console command/event or scenario run.
+- [ ] Each deterministic test-result comment includes the relevant dump lines from the logs.
+- [ ] Each retest after a new commit is added as a new PR comment, preserving the previous result history.
 
 ## MVP boundary check
 
