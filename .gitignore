@@ -1,4 +1,5 @@
 .DS_Store
+.modeu5.local.env
 
 # Generated ModeU5 script adapters and generated override scaffolds.
 # Regenerate locally with ./tools/generate_all.sh; do not commit the output.

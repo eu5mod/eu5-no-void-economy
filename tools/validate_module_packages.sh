@@ -34,6 +34,24 @@ if [[ -n "$tracked_generated_files" ]]; then
 	exit 1
 fi
 
+local_user_path_pattern="/""Users/"'pierre'
+crossover_steam_pattern="CrossOver/Bottles/"'Steam'
+steam_common_pattern='Program Files [(]x86[)]/Steam/'"steamapps/common"
+absolute_source_pattern="# Source: "'/'
+local_path_pattern="${local_user_path_pattern}|${crossover_steam_pattern}|${steam_common_pattern}|${absolute_source_pattern}"
+
+if search_lines "$local_path_pattern" \
+	.github AGENTS.md CLAUDE.md README.md docs in_game main_menu packages \
+	tools/README.md \
+	tools/generate_all.sh \
+	tools/generate_stock_good_helpers.sh \
+	tools/generate_us09_economy_overrides.sh \
+	tools/install_local_packages.sh \
+	tools/templates; then
+	printf 'Personal/local EU5 install paths must not be committed. Use <EU5_INSTALL_DIR> or <EU5_GAME_COMMON_DIR> placeholders.\n' >&2
+	exit 1
+fi
+
 descriptors=(
 	"descriptor.mod"
 	"packages/modeu5_economy_rebalance/descriptor.mod"

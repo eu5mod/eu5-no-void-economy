@@ -1,5 +1,23 @@
 # Tools
 
+## Local configuration
+
+Copy the local configuration template once:
+
+```bash
+cp .modeu5.local.env.template .modeu5.local.env
+```
+
+Then edit `.modeu5.local.env` with your local EU5 install path:
+
+```bash
+EU5_GAME_COMMON_DIR="<EU5_INSTALL_DIR>/game/in_game/common"
+MODEU5_US09_BONUS_PERCENT=5
+```
+
+The real `.modeu5.local.env` file is ignored by Git. Do not commit personal
+install paths.
+
 ## Generated stock adapters
 
 Regenerate every local generated artifact:
@@ -10,7 +28,8 @@ Regenerate every local generated artifact:
 
 The aggregate generator currently regenerates the literal per-good EU5
 persistence adapters and will also run optional generated-balance scaffolds when
-their script exists on the current branch.
+their script exists on the current branch and the required vanilla source path
+is configured.
 
 Any new generated text artifact should follow the `modeu5_*_generated.txt`
 naming convention so it is ignored by Git and caught by the generated-file
@@ -59,8 +78,11 @@ packages/modeu5_economy_rebalance/in_game/common/prices/
 Pass the desired compensation percentage explicitly. Example:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh 7.5
+./tools/generate_us09_economy_overrides.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
 ```
+
+If `.modeu5.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
+needed.
 
 Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
 installed vanilla files in place.
@@ -68,13 +90,16 @@ installed vanilla files in place.
 If no percentage is passed and the shell is interactive, the generator prompts
 for one.
 
+Generated US-09 files record only placeholder source labels such as
+`<EU5_GAME_COMMON_DIR>/building_types/production_tools.txt`; never commit a
+personal install path from the local machine.
+
 ## Recommended local deployment pipeline
 
 When you want to refresh the local mod install before testing:
 
 ```bash
-./tools/generate_stock_good_helpers.sh
-./tools/generate_us09_economy_overrides.sh 5
+./tools/generate_all.sh
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check

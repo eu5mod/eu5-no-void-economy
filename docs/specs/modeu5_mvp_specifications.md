@@ -1978,7 +1978,7 @@ Le joueur peut voir si le coût est appliqué directement ou via réconciliation
 
 | - | Diminuer la tradingpower des marketplace (actuellement : local_burghers_estate_power = 0.1) |
 | --- | --- |
-| - | Réévaluer les frais ou la capacité des batiments lisés dans : Program Files (x86)/Steam/steamapps/common/Europa Universalis V/game/in_game/common/building_ |
+| - | Réévaluer les frais ou la capacité des bâtiments lus dans `<EU5_INSTALL_DIR>/game/in_game/common/building_types` |
 
 ## US-07-UI — Visibilité du rééquilibrage des bâtiments de trade
 
