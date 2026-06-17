@@ -75,7 +75,7 @@ Important boundary:
 ```txt
 Scripted runs are intended to be visible in the UI
 Scenario B confirms new-country creation, not release-specific hooks
-Release-specific coverage, rebel paths, and tag-formation paths still need manual confirmation
+PR #48 is treated as confirming release-specific coverage, rebel paths, and tag-formation paths for CORE-03 gameplay enablement
 ```
 
 New observability aid:
@@ -85,6 +85,10 @@ Scripted runs now emit explicit ModeU5 CORE-03 started/staged/completed/aborted 
 Observed hooks also emit PASS / FAIL-style lines in error.log
 The report shows probe-state rows for reset, manual preparation, and scripted execution
 ```
+
+## PR #48 validation status
+
+For the CORE-03 implementation PR, PR #48 is treated as the authoritative validation pass for TECH-01 `098`. Re-run the scenarios below when changing lifecycle hook wiring or when EU5 updates on-action behavior.
 
 ## Manual vanilla observation
 

@@ -6,6 +6,7 @@
 
 modeu5_core03_probe_location_changed_owner = {
 	effect = {
+		modeu5_core03_handle_location_changed_owner = yes
 		modeu5_core03_probe_record_location_changed_owner = yes
 	}
 }
@@ -19,6 +20,7 @@ on_new_country_formed = {
 modeu5_core03_probe_new_country_formed = {
 	effect = {
 		modeu5_core03_probe_record_new_country_formed = yes
+		modeu5_core03_handle_new_country_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -35,6 +37,7 @@ on_released_country = {
 modeu5_core03_probe_released_country = {
 	effect = {
 		modeu5_core03_probe_record_released_country = yes
+		modeu5_core03_handle_new_country_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -51,6 +54,7 @@ on_annexed = {
 modeu5_core03_probe_annexed = {
 	effect = {
 		modeu5_core03_probe_record_annexed = yes
+		modeu5_core03_handle_annexation_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -67,6 +71,7 @@ on_diplomatic_annexed = {
 modeu5_core03_probe_diplomatic_annexed = {
 	effect = {
 		modeu5_core03_probe_record_diplomatic_annexed = yes
+		modeu5_core03_handle_annexation_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -83,6 +88,7 @@ on_military_annexed = {
 modeu5_core03_probe_military_annexed = {
 	effect = {
 		modeu5_core03_probe_record_military_annexed = yes
+		modeu5_core03_handle_annexation_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -99,6 +105,7 @@ on_civil_war_annexed = {
 modeu5_core03_probe_civil_war_annexed = {
 	effect = {
 		modeu5_core03_probe_record_civil_war_annexed = yes
+		modeu5_core03_handle_annexation_finalizer = yes
 	}
 	on_actions = {
 		delay = { days = 1 }
@@ -109,5 +116,6 @@ modeu5_core03_probe_civil_war_annexed = {
 modeu5_core03_probe_delayed_country_finalizer = {
 	effect = {
 		modeu5_core03_probe_record_delayed_country_finalizer = yes
+		modeu5_core03_handle_new_country_finalizer = yes
 	}
 }

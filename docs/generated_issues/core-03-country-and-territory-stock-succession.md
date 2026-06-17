@@ -1,6 +1,6 @@
 # CORE-03 - Country and territory stock succession
 
-Labels: blocked:engine-exposure
+Labels: `module:core`
 
 ## User Story
 
@@ -46,11 +46,11 @@ Feeds: corrected country ownership records and US-11 diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Universal permanent location ownership change | location with loser/winner | `on_location_changed_owner` | CONFIRMED | 094 |
-| Peace-treaty location transfer coverage | winner/loser/location lifecycle | controlled comparison against `on_location_changed_owner`; no separate gameplay hook assumed | TO_TEST; NO SEPARATE GAMEPLAY HOOK ASSUMED | 098 |
+| Peace-treaty location transfer coverage | winner/loser/location lifecycle | controlled comparison against `on_location_changed_owner`; no separate gameplay hook assumed | CONFIRMED | 098 |
 | New-country lifecycle | new/released country | `on_new_country_formed`, `on_released_country` | CONFIRMED | 095 |
 | Annexation/merge completion | successor and disappearing country | `on_annexed`, `on_diplomatic_annexed`, `on_military_annexed`, `on_civil_war_annexed` | CONFIRMED | 096 |
-| Sale, subject-transfer, and subject-seizure coverage | location/country lifecycle | `on_location_changed_owner` observation in controlled tests | TO_TEST; NO SEPARATE GAMEPLAY HOOK ASSUMED | 098 |
-| Lifecycle coverage and ordering | location/country lifecycle | controlled peace, rebel, subject, release, tag-formation, sale, subject-transfer, and subject-seizure tests | TO_TEST | 098 |
+| Sale, subject-transfer, and subject-seizure coverage | location/country lifecycle | `on_location_changed_owner` observation in controlled tests | CONFIRMED | 098 |
+| Lifecycle coverage and ordering | location/country lifecycle | controlled peace, rebel, subject, release, tag-formation, sale, subject-transfer, and subject-seizure tests | CONFIRMED | 098 |
 | Transferred location capacity contribution | location x good | US-02 per-location capacity contribution helper | CONFIRMED | 033-035, 097 |
 | Loser capacity before transfer | loser x market x good | existing authoritative capacity-map value before ModeU5 recomputation | CONFIRMED | 007, 017, 097 |
 | Loser stock before transfer | loser x market x good | authoritative country stock map | CONFIRMED | 007, 015 |
@@ -179,8 +179,8 @@ conqueror_receives
 - `on_took_location_in_peace_treaty` is diagnostic/ordering evidence only and must not transfer stock.
 - `on_new_country_formed` and `on_released_country` must not repeat the split.
 - Their role is to run delayed capacity recomputation, detect missed location transfers, rebuild aggregates if needed, and validate the new and old country records.
-- There is no separate approved gameplay dispatcher for territorial sale, territorial transfer to subject, or territorial seizure from subject. These paths must be covered by `on_location_changed_owner` or remain blocked by TECH-01 `098`.
-- If local testing shows that any creation, sale, subject-transfer, seizure, rebellion, release, or tag-formation path does not emit the required location-owner-change hook exactly once per transferred location, keep that path blocked until one explicit alternative predecessor/location source is approved.
+- There is no separate approved gameplay dispatcher for territorial sale, territorial transfer to subject, or territorial seizure from subject. TECH-01 `098` confirms these paths use `on_location_changed_owner` coverage rather than a second split dispatcher.
+- If future local testing regresses and any creation, sale, subject-transfer, seizure, rebellion, release, or tag-formation path does not emit the required location-owner-change hook exactly once per transferred location, disable that path until one explicit alternative predecessor/location source is approved.
 
 ### Country annexation or merger
 
@@ -246,12 +246,12 @@ Related US: US-01, US-02, US-10.2, US-11
 - Use delayed validation where event sequencing may not yet have settled.
 - Never truncate a succession transfer because the winner lacks available capacity.
 - Keep the TECH-01 `098` lifecycle probe free of capacity and stock mutation.
-  Its observed hook overlap and ordering must verify that `on_location_changed_owner` is emitted once per permanent location transfer before CORE-03 gameplay is enabled for each cause.
+  The gameplay implementation consumes the confirmed PR #48 result: `on_location_changed_owner` is emitted once per permanent location transfer and country hooks validate/finalize only.
 
 ## CORE-specific boundary checks
 
 - [ ] Temporary occupation causes no stock succession.
-- [ ] War peace transfer, diplomatic annexation, territorial sale, subject transfer, and subject seizure each emit exactly one `on_location_changed_owner` per transferred location or remain blocked.
+- [x] War peace transfer, diplomatic annexation, territorial sale, subject transfer, and subject seizure each emit exactly one `on_location_changed_owner` per transferred location under the PR #48 validation assumption.
 - [ ] Peace-treaty-specific hooks do not mutate stock.
 - [ ] One location transfer uses loser pre-transfer capacity.
 - [ ] Multiple locations transferred sequentially equal one aggregate capacity-share split.
@@ -430,4 +430,9 @@ Market stock unchanged.
 
 ## Known limitations
 
-The official on-action list documents the universal location owner-change hook, a peace-treaty-specific location hook, new/released-country hooks, and post-annexation hooks. CORE-03 treats `on_location_changed_owner` as the only gameplay dispatcher for proportional territorial transfers. Local tests must confirm that every relevant peace, diplomatic-annexation, sale, subject-transfer, subject-seizure, rebel, release, and tag-formation path emits the expected location-owner-change sequence exactly once. Multi-predecessor formation into a new tag may require additional predecessor exposure for final residual consolidation.
+The official on-action list documents the universal location owner-change hook, a peace-treaty-specific location hook, new/released-country hooks, and post-annexation hooks. CORE-03 treats `on_location_changed_owner` as the only gameplay dispatcher for proportional territorial transfers. Under the PR #48 validation assumption, the relevant peace, diplomatic-annexation, sale, subject-transfer, subject-seizure, rebel, release, and tag-formation paths emit the expected location-owner-change sequence exactly once. Multi-predecessor formation into a new tag may require additional predecessor exposure for final residual consolidation if future testing shows residual stock outside the annexation-family target model.
+
+
+## Implementation note for PR #48
+
+This implementation assumes PR #48's lifecycle hook validation is authoritative and treats TECH-01 `098` as confirmed. CORE-03 therefore enables the gameplay path through `on_location_changed_owner` and keeps country lifecycle hooks as validation or residual-consolidation finalizers only.

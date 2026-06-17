@@ -1,0 +1,176 @@
+# CORE-03 country and territory stock succession.
+#
+# Stock is conserved through centralized CORE-01 operators. Location ownership
+# changes split the loser's stock by the transferred location's US-02 storage
+# capacity share. Country lifecycle hooks only validate or consolidate residual
+# stock after location-level transfers have already run.
+
+modeu5_core03_handle_location_changed_owner = {
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			exists = scope:loser
+			exists = scope:winner
+			scope:loser != scope:winner
+		}
+		save_temporary_scope_as = modeu5_core03_location
+		market = { save_temporary_scope_as = modeu5_core03_market }
+		scope:loser = { save_temporary_scope_as = modeu5_core03_loser }
+		scope:winner = { save_temporary_scope_as = modeu5_core03_winner }
+
+		set_global_variable = modeu5_core03_last_location_transfer_attempted
+		modeu5_core03_transfer_location_all_goods = yes
+		modeu5_validate_dirty_stock_consistency = yes
+	}
+	else = {
+		set_global_variable = modeu5_core03_last_location_transfer_skipped
+	}
+}
+
+modeu5_core03_handle_new_country_finalizer = {
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		set_global_variable = modeu5_core03_last_country_finalizer_attempted
+		modeu5_validate_dirty_stock_consistency = yes
+	}
+	else = {
+		set_global_variable = modeu5_core03_last_country_finalizer_skipped
+	}
+}
+
+modeu5_core03_handle_annexation_finalizer = {
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			exists = scope:target
+			scope:target != root
+		}
+		save_temporary_scope_as = modeu5_core03_annex_successor
+		scope:target = { save_temporary_scope_as = modeu5_core03_annex_target }
+
+		set_global_variable = modeu5_core03_last_annexation_finalizer_attempted
+		modeu5_core03_transfer_residual_all_goods = yes
+		modeu5_validate_dirty_stock_consistency = yes
+	}
+	else = {
+		set_global_variable = modeu5_core03_last_annexation_finalizer_skipped
+	}
+}
+
+modeu5_core03_prepare_location_good_transfer = {
+	# Caller has set modeu5_core03_loser, modeu5_core03_winner,
+	# modeu5_core03_location, modeu5_core03_market, and modeu5_good.
+	scope:modeu5_core03_loser = {
+		modeu5_read_country_stock_record = {
+			country = scope:modeu5_core03_loser
+			market = scope:modeu5_core03_market
+			good = scope:modeu5_good
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
+
+	modeu5_calculate_location_storage_capacity = {
+		country = scope:modeu5_core03_winner
+		location = scope:modeu5_core03_location
+	}
+
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_transferred_location_capacity
+			value = scope:modeu5_location_capacity_total
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_requested_transfer_quantity
+			value = 0
+		}
+		if = {
+			limit = {
+				scope:modeu5_core03_loser_stock_before > 0
+				scope:modeu5_core03_loser_capacity_before > 0
+				scope:modeu5_core03_transferred_location_capacity > 0
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_core03_requested_transfer_quantity
+				value = {
+					value = scope:modeu5_core03_loser_stock_before
+					multiply = scope:modeu5_core03_transferred_location_capacity
+					divide = scope:modeu5_core03_loser_capacity_before
+					min = 0
+				}
+			}
+		}
+
+		set_global_variable = {
+			name = modeu5_debug_last_core03_loser_stock_before
+			value = scope:modeu5_core03_loser_stock_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_loser_capacity_before
+			value = scope:modeu5_core03_loser_capacity_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_transferred_location_capacity
+			value = scope:modeu5_core03_transferred_location_capacity
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_requested_transfer_quantity
+			value = scope:modeu5_core03_requested_transfer_quantity
+		}
+	}
+}
+
+modeu5_core03_finalize_location_good_transfer = {
+	# Recompute capacity only after the stock transfer so the denominator remains
+	# the loser's pre-transfer capacity for this location-good operation.
+	scope:modeu5_core03_loser = {
+		modeu5_recalculate_country_market_capacity = {
+			country = scope:modeu5_core03_loser
+			market = scope:modeu5_core03_market
+			good = scope:modeu5_good
+		}
+	}
+	scope:modeu5_core03_winner = {
+		modeu5_recalculate_country_market_capacity = {
+			country = scope:modeu5_core03_winner
+			market = scope:modeu5_core03_market
+			good = scope:modeu5_good
+		}
+	}
+}
+
+modeu5_core03_prepare_residual_good_transfer = {
+	# Caller has set modeu5_core03_annex_target, modeu5_core03_annex_successor,
+	# modeu5_core03_market, and modeu5_good.
+	scope:modeu5_core03_annex_target = {
+		modeu5_read_country_stock_record = {
+			country = scope:modeu5_core03_annex_target
+			market = scope:modeu5_core03_market
+			good = scope:modeu5_good
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
+}
+
+modeu5_core03_finalize_residual_good_transfer = {
+	scope:modeu5_core03_annex_successor = {
+		modeu5_recalculate_country_market_capacity = {
+			country = scope:modeu5_core03_annex_successor
+			market = scope:modeu5_core03_market
+			good = scope:modeu5_good
+		}
+	}
+}

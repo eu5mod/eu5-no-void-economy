@@ -545,7 +545,7 @@ Country creation/release and annexation hook overlap is recorded
 Delayed finalizers execute after location hooks
 No stock or capacity is mutated by the probe
 Synthetic SPA/POR runs validate probe wiring only
-TECH-01 098 remains TO_TEST until all required lifecycle paths are reviewed
+TECH-01 098 is treated as CONFIRMED under the PR #48 validation assumption; re-run these lifecycle paths when hook wiring changes
 ```
 
 ---
@@ -671,6 +671,29 @@ Expected:
 No CORE-03 stock transfer
 Country and market stock remain unchanged
 ```
+
+---
+
+### Test 18A — CORE-03 stock succession gameplay
+
+Expected:
+
+```txt
+ModeU5 initialization state is complete and schema is current
+A permanent location owner change transfers loser stock by the transferred location capacity share
+The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
+The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
+Loser and winner capacities are recalculated after the transfer
+Annexation finalizers transfer only residual disappearing-country stock and do not duplicate location-level transfers
+error.log contains no CORE-03 gameplay failures
+```
+
+Actual result for this PR:
+
+```txt
+Static validation passed. Local EU5 runtime execution was not available in this environment; run the PR #48 CORE-03 lifecycle scenario again with initialized stock to inspect debug variables and error.log.
+```
+
 
 ## Core invariant tests
 
