@@ -27,6 +27,13 @@ search_lines() {
 	fi
 }
 
+tracked_generated_files="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+if [[ -n "$tracked_generated_files" ]]; then
+	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
+	printf 'Keep them ignored and generated on demand with tools/generate_all.sh.\n' >&2
+	exit 1
+fi
+
 descriptors=(
 	"descriptor.mod"
 	"packages/modeu5_economy_rebalance/descriptor.mod"
@@ -143,10 +150,15 @@ generated_stock_helpers_tmp="$(mktemp)"
 trap 'rm -f "$generated_stock_helpers_tmp"' EXIT
 
 test -f "$stock_adapter_template"
-./tools/generate_stock_good_helpers.sh "$generated_stock_helpers_tmp"
+if [[ ! -f "$generated_stock_helpers" ]]; then
+	printf 'Generated stock helpers are missing. Run tools/generate_all.sh.\n' >&2
+	exit 1
+fi
+
+"$stock_generator" "$generated_stock_helpers_tmp"
 
 if ! cmp -s "$generated_stock_helpers" "$generated_stock_helpers_tmp"; then
-	printf 'Generated stock helpers are stale. Run tools/generate_stock_good_helpers.sh.\n' >&2
+	printf 'Generated stock helpers are stale. Run tools/generate_all.sh.\n' >&2
 	exit 1
 fi
 

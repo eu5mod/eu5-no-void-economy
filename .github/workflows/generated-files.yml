@@ -1,0 +1,36 @@
+name: Generated Files
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-generated-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Generate local artifacts
+        run: ./tools/generate_all.sh
+
+      - name: Validate package structure and generated adapters
+        run: ./tools/validate_module_packages.sh
+
+      - name: Ensure generated outputs stay untracked
+        run: |
+          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+          if [ -n "$tracked_generated" ]; then
+            echo "Generated ModeU5 outputs must not be tracked:"
+            echo "$tracked_generated"
+            exit 1
+          fi
+
+      - name: Ensure generation does not dirty tracked files
+        run: |
+          changed="$(git status --short --untracked-files=no)"
+          if [ -n "$changed" ]; then
+            echo "Tracked files changed after generation:"
+            echo "$changed"
+            exit 1
+          fi
