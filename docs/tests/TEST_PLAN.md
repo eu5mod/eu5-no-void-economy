@@ -10,6 +10,7 @@ A PR is not complete unless it includes:
 manual test scenario
 expected result
 actual result
+visible debug/result dump for deterministic event tests
 debug output to inspect
 error.log result
 known limitations
@@ -45,6 +46,37 @@ No new blocking error
 New warnings explained
 Known vanilla warning ignored
 ```
+
+## Log-first deterministic result dumps
+
+Logs are the source of truth for test review. When a test is driven by a
+deterministic console event, the test must provide log-reviewable evidence in
+addition to setting `modeu5_test_*` markers. A result event may mirror the dump
+for human readability, but it is not the authoritative artifact.
+
+The dump must show enough numeric state to distinguish a real pass from a
+silent zero, missing scope, stale variable, or skipped branch. If the current
+EU5 logging channel cannot safely emit dynamic numeric values for a console
+event, the runbook must mark the numeric dump as not yet log-auditable and
+record the gap as a test limitation.
+
+Required dump shape:
+
+```txt
+scope under test
+inputs read
+expected values
+actual values
+delta / mismatch if any
+mutation effect called, or explicit no-mutation statement
+PASS / PENDING / FAIL marker
+next action when pending
+```
+
+CORE-02 and all future focused test events should follow the US-02 fallback
+pattern until a safe dynamic log dump channel is confirmed: persist
+machine-readable global markers, mirror display values onto the country/event
+scope, and localize the result event with the visible values.
 
 ## US-01 country stock tests
 
@@ -105,6 +137,8 @@ The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market
 The recalculation does not change wheat stock
 Available capacity and over-cap reconcile with the preserved stock
+The result event displays the tested stock, capacity, available/over-cap values,
+and contribution breakdown directly to the tester
 ```
 
 Run the exact console procedure in:
@@ -421,8 +455,11 @@ No ModeU5 script error is added to error.log
 CORE-02 startup and integration checks are delayed by at least one in-game day
 because the implementation intentionally runs from `on_game_start` after
 `delay = { days = 1 }`. Do not judge startup logs or state on campaign day 0.
-Console-driven tests intentionally avoid `test_log` and `debug_log`; rely on
-the visible result event, result markers, and `error.log`.
+Console-driven tests intentionally avoid `test_log` and `debug_log` until a
+safe dynamic log dump channel is confirmed. Logs remain the review authority:
+use `error.log`/`system.log`/`game.log` to confirm that the test ran cleanly, and
+record any numeric dump that exists only in the result event as a temporary
+limitation rather than final log-auditable evidence.
 
 Until US-02 exists, the full fresh-start dispatcher may fail closed when vanilla
 opening stock is positive and total ModeU5 capacity is zero. That is expected

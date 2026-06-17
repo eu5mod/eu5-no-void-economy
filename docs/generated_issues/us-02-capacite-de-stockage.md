@@ -17,7 +17,7 @@ Calculate configurable country storage capacity per market and good, recalculate
 ## Runtime position
 
 ```txt
-Monthly step: 3 when recalculation is needed
+Monthly step: 1 when recalculation is needed
 Depends on: country/location/market/trade-capacity exposure
 Feeds counters to: modeu5_add_stock, US-01, US-10.2
 ```
@@ -107,6 +107,7 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Do not delete, decay, or transfer stock merely because capacity was recalculated below the current stock.
 - Expose over-cap quantity for diagnostics and future explicitly approved handling.
 - Treat capacity as an admission bound for ordinary production/trade and as a proportional weight for CORE-02/CORE-03.
+- Recalculate at the beginning of the shared monthly cycle before any stock admission, demand resolution, transfer, decay, or void-economy calculation.
 - Recalculate predictably after location ownership, location rank, capital, or merchant-capacity changes.
 - Use `modeu5_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
 - Add market merchant capacity once at the country-market level, not once per location.
@@ -128,12 +129,17 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 
 - [ ] Base capacity equals market merchant-capacity contribution plus owned-location rank/capital contributions.
 - [ ] Country-level recalculation writes capacity for every generated good in markets present in the country.
+- [ ] The monthly stock cycle recalculates country storage capacities before stock reconciliation or any stock-dependent monthly logic.
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location reduces the rank/capital contribution.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
 - [ ] Add-stock operations under `enforce` reject quantities beyond capacity.
 - [ ] CORE-02/CORE-03 may use the documented `allow_over_capacity` policy.
 - [ ] Over-cap handling is visible and centralized.
+- [ ] The focused US-02 test event displays the capacity dump directly in the UI.
+- [ ] US-02 test review treats logs as the source of truth; any numeric dump that exists only in the result event is recorded as a temporary test limitation.
+- [ ] A destructive test-only probe can show whether marketplace-driven merchant capacity refreshes immediately, after a monthly tick, or not at all.
+- [ ] The delayed probe reads persisted capacity after the monthly tick and does not recalculate capacity inside the verification step.
 - [ ] TECH-01 and manual test evidence are updated.
 
 ## Manual test scenario
@@ -158,6 +164,20 @@ Wheat and iron receive the same capacity from the same world state
 Country-level wrapper output matches direct wheat recalculation
 The existing wheat stock is unchanged
 Available capacity and over-cap are bounded at zero and reconcile with stock
+The result event displays the tested stock, capacity, trade contribution, location contribution, location count, available capacity, and over-cap values
+```
+
+### Marketplace timing probe
+
+```txt
+Run event modeu5_us02_debug.1
+Select "Probe +10 marketplaces - step 1"
+The probe adds 10 marketplace levels to FRA's capital
+Confirm whether storage capacity increases immediately
+If the result is pending, wait at least one monthly tick
+Run event modeu5_us02_debug.1 again
+Select "Probe +10 marketplaces - step 2 after monthly tick"
+Confirm whether persisted storage capacity was refreshed by the monthly tick or fails
 ```
 
 ## Known limitations
@@ -167,7 +187,11 @@ are documented and reviewed against local vanilla files. Fresh CORE-02
 initialization runs the country-level capacity wrapper before stock allocation.
 Automatic dirty-key scheduling after every possible vanilla ownership/rank/trade-
 capacity change is not part of this PR: lifecycle callers such as CORE-03 invoke
-recalculation directly, while monthly/yearly orchestration remains a follow-up.
+recalculation directly, and the monthly stock cycle refreshes full country
+capacity before stock reconciliation. Targeted dirty-key scheduling and yearly
+capacity orchestration remain follow-ups.
 Building and foreign-building capacity fields are retained as zero-valued
 diagnostic fields until a separate business rule approves building-derived
-storage.
+storage. The marketplace timing probe is test-only and intentionally mutates a
+disposable test save; it validates merchant-capacity refresh timing, not a
+direct building-derived storage rule.

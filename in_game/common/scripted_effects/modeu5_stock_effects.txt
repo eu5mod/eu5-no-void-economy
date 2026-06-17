@@ -1430,6 +1430,20 @@ modeu5_reconciliation_finalize = {
 	}
 }
 
+modeu5_run_monthly_stock_cycle = {
+	if = {
+		limit = { modeu5_initialization_complete_trigger = yes }
+		modeu5_run_monthly_capacity_refresh_for_current_country = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+	}
+	else = {
+		set_variable = {
+			name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+			value = 0
+		}
+	}
+}
+
 modeu5_run_monthly_stock_reconciliation_once = {
 	if = {
 		limit = { modeu5_initialization_complete_trigger = yes }

@@ -16,6 +16,28 @@ modeu5_recalculate_country_storage_capacities = {
 	modeu5_recalculate_saved_country_storage_capacities = yes
 }
 
+modeu5_run_monthly_capacity_refresh_for_current_country = {
+	save_temporary_scope_as = modeu5_country
+	modeu5_recalculate_saved_country_storage_capacities = yes
+
+	save_temporary_scope_value_as = {
+		name = modeu5_monthly_capacity_refresh_stamp
+		value = {
+			value = current_year
+			multiply = 12
+			add = current_month
+		}
+	}
+	set_variable = {
+		name = modeu5_debug_last_monthly_capacity_refresh_stamp
+		value = scope:modeu5_monthly_capacity_refresh_stamp
+	}
+	set_variable = {
+		name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+		value = 1
+	}
+}
+
 modeu5_calculate_location_rank_storage_capacity = {
 	save_temporary_scope_value_as = {
 		name = modeu5_capacity_current_location_rank_contribution

@@ -94,6 +94,69 @@ The startup configuration effect copies the selected rule to the global debug-le
 
 There is no custom in-game configuration panel. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
 
+## Log-first deterministic test dumps
+
+Logs are the source of truth for debugging and PR validation. Deterministic
+console events must not expose only PASS/FAIL markers, and a UI/result event is
+not sufficient evidence by itself.
+
+Every focused test must leave log-reviewable evidence for:
+
+```txt
+test entry point reached
+scenario branch reached
+PASS / PENDING / FAIL marker selected
+failure or blocked prerequisite, when present
+script-system errors or localization assertions, when present
+```
+
+Every focused test should also provide a numeric result dump. The preferred
+target is the logs. If EU5 cannot safely write a dynamic numeric dump to logs
+for a console-triggered event, the result event may mirror the same values as a
+temporary inspection aid, but the runbook must explicitly mark the numeric dump
+as not yet log-auditable and the missing log channel must remain a test/design
+limitation.
+
+At minimum, a visible test dump should show:
+
+```txt
+scope under test
+input values read from vanilla or ModeU5 state
+expected values calculated by the fixture
+actual values read after the operation
+delta or consistency difference
+mutation effect called, or explicit no-mutation statement
+PASS / PENDING / FAIL marker
+next tester action when the result is pending
+```
+
+Implementation pattern:
+
+```txt
+1. Persist authoritative machine-readable test markers as global variables.
+2. Mirror the human-readable dump values onto the country/event scope that will
+   display the result event.
+3. Localize the result event with `[THIS.GetVariable(...).GetValue]` values.
+4. Clear both the global markers and the event-scope UI mirrors before a new run.
+```
+
+Use this pattern for CORE-02 and every new focused test while dynamic log dumps
+remain unsafe. A boolean pass marker is acceptable only as a machine-readable
+summary; it is not sufficient evidence for PR validation.
+
+## Mandatory debug for monthly capacity refresh
+
+US-02 capacity recalculation is the first implemented monthly stock-cycle step.
+It must expose:
+
+```txt
+modeu5_debug_last_monthly_capacity_refresh_stamp
+modeu5_debug_last_monthly_capacity_refresh_gate_passed
+```
+
+Focused timing tests must read persisted capacity after the monthly tick. They
+must not perform their own recalculation in the delayed verification step.
+
 ## Mandatory debug for CORE-02 startup
 
 Global startup debug:
@@ -625,6 +688,11 @@ For these tests, rely on:
 - result-event rows;
 - debug snapshot variables saved on the relevant scope;
 - `error_log` only for actual failure or blocked prerequisites.
+
+This is a fallback, not the target end-state. Logs remain the authoritative
+debug artifact; if a PR needs numeric dump review and the values are only
+available in the result event, record that as a known limitation or add a
+dedicated logging probe before treating the PR as fully log-auditable.
 
 After a local test, distinguish:
 

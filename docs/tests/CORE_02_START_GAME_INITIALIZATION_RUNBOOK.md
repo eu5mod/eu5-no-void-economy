@@ -59,6 +59,24 @@ PASS - CORE-02 proportional opening allocation
 PASS - CORE-02 over-capacity opening allocation
 ```
 
+The result event should also expose a visible dump for each deterministic
+scenario, following `DEBUG_CONVENTIONS.md`:
+
+```txt
+opening source quantity
+total ModeU5 capacity
+country capacity split
+expected allocation
+actual allocation
+market stock after allocation
+allocation difference
+capacity policy = allow_over_capacity
+over-cap quantities when present
+```
+
+Do not treat the boolean PASS markers alone as sufficient evidence if the dump
+is missing or unreadable.
+
 The test fixture injects wheat capacity for FRA and ENG in FRA's capital
 market, seeds a controlled opening quantity through `modeu5_seed_opening_market_good`,
 and verifies:
@@ -124,8 +142,11 @@ event and set `modeu5_test_core02_initialization_started`,
 `modeu5_test_core02_initialization_finished`,
 `modeu5_test_core02_proportional_passed`, and
 `modeu5_test_core02_over_capacity_passed`. Console-driven tests intentionally
-avoid `test_log` and `debug_log`, so `game.log` is not the source of truth for
-PASS/FAIL. `error.log` should not gain ModeU5 script errors.
+avoid `test_log` and `debug_log` until a safe dynamic log dump channel is
+confirmed. Logs remain the source of truth for validation: `error.log` should
+not gain ModeU5 script errors, and any numeric evidence available only in the
+result event must be treated as a temporary test limitation rather than fully
+log-auditable proof.
 
 The delayed startup path may run from an on-action/root scope that does not
 support ordinary variables. Reconciliation therefore selects a real country as

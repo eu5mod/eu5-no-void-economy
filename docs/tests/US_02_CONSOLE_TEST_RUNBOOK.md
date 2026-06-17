@@ -54,6 +54,84 @@ PASS - Storage capacity reconciles without mutating stock
 The `modeu5_test_storage_capacity_passed` text is a result marker, not a
 console command.
 
+The result event currently displays a compact fallback dump for FRA's capital
+market:
+
+```txt
+FRA wheat stock
+FRA wheat capacity
+FRA wheat available capacity
+FRA wheat over-capacity
+FRA wheat trade-capacity contribution
+FRA wheat location-rank contribution
+FRA owned locations in the capital market
+FRA iron wrapper capacity
+```
+
+These visible values are useful for immediate tester feedback, but they are not
+the authoritative artifact. Logs are the source of truth. Until a safe dynamic
+numeric log channel is confirmed for console-triggered events, treat this UI
+dump as a fallback and record the missing log dump as a known limitation during
+PR review.
+
+## Marketplace timing probe
+
+The timing probe is destructive and should be run only in a disposable test
+save. It adds 10 `marketplace` levels to FRA's capital to test whether vanilla
+market merchant capacity, and therefore US-02 storage capacity, refreshes
+immediately or only after a monthly tick.
+
+Run step 1:
+
+```txt
+event modeu5_us02_debug.1
+```
+
+Select:
+
+```txt
+Probe +10 marketplaces - step 1
+```
+
+Expected immediate result is one of:
+
+```txt
+PASS - Capacity increased immediately after +10 marketplaces
+PENDING - No immediate increase; wait at least one monthly tick and run step 2
+```
+
+If the result is `PENDING`, advance at least one monthly tick, then run:
+
+```txt
+event modeu5_us02_debug.1
+```
+
+Select:
+
+```txt
+Probe +10 marketplaces - step 2 after monthly tick
+```
+
+Expected delayed result:
+
+```txt
+PASS - Capacity increased after monthly tick
+```
+
+Step 2 reads the persisted wheat capacity record after the monthly tick. It
+must not recalculate capacity inside the test step; otherwise it would mask a
+missing monthly dispatcher. Failure means either the monthly capacity refresh
+did not run, or the +10 marketplace levels did not increase the observed
+trade-capacity component. In that case, inspect the visible timing dump before
+changing code:
+
+```txt
+Storage capacity before / after building / after monthly tick
+Storage capacity immediate and monthly deltas
+Trade-capacity component before / after building / after monthly tick
+Trade-capacity immediate and monthly deltas
+```
+
 ## Debug values to inspect
 
 On FRA, inspect the latest `modeu5_debug_last_capacity_*` variables:
@@ -78,6 +156,13 @@ market_warehouse_levels
 funduq_levels
 caravanserai_levels
 fondaco_levels
+```
+
+For timing probes, also inspect:
+
+```txt
+modeu5_debug_last_monthly_capacity_refresh_stamp
+modeu5_debug_last_monthly_capacity_refresh_gate_passed
 ```
 
 Expected arithmetic:
@@ -110,10 +195,21 @@ modeu5_debug_us02_dump_fra_wheat_trade_capacity
 modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
 modeu5_debug_us02_dump_fra_wheat_location_count
 modeu5_debug_us02_dump_fra_iron_capacity
+modeu5_debug_us02_probe_before_capacity
+modeu5_debug_us02_probe_after_build_capacity
+modeu5_debug_us02_probe_after_month_capacity
+modeu5_debug_us02_probe_delta_immediate_capacity
+modeu5_debug_us02_probe_delta_month_capacity
+modeu5_debug_us02_probe_before_trade
+modeu5_debug_us02_probe_after_build_trade
+modeu5_debug_us02_probe_after_month_trade
+modeu5_debug_us02_probe_delta_immediate_trade
+modeu5_debug_us02_probe_delta_month_trade
 ```
 
 These variables are meant to prove that the pass result is backed by non-zero
-world-state capacity data rather than only a boolean marker.
+world-state capacity data rather than only a boolean marker. The probe variables
+also show whether the capacity refresh is immediate or delayed.
 
 ## Log review
 
@@ -135,14 +231,18 @@ No "Tried to localize with localization disabled" assertion
 No stock mutation attributed to the capacity test
 ```
 
-The result event and the persisted result marker are authoritative; this
-console test intentionally emits no PASS `debug.log` line.
+Logs are the source of truth for validating the run. The result event and
+persisted result markers are supporting evidence only. This console test
+currently avoids `test_log` and `debug_log` because prior US-01/US-02 probes
+showed localization assertions from those channels; therefore the numeric dump
+is not yet fully log-auditable.
 
 ## Known limitations
 
 The test validates the current world-state scan and persistence contract. It
-does not change location rank, move a capital, or create/destroy a merchant
-capacity source. Building and foreign-building capacity fields are intentionally
-zero-valued compatibility fields in the current rule. Automatic recalculation
-scheduling after every ownership/rank/trade-capacity change requires separate
-runtime coverage.
+does not change location rank or move a capital. The optional timing probe does
+create a merchant-capacity source by adding 10 marketplace levels to FRA's
+capital, and it should not be used in a normal campaign save. Building and
+foreign-building capacity fields are intentionally zero-valued compatibility
+fields in the current rule. Automatic recalculation scheduling after every
+ownership/rank/trade-capacity change requires separate runtime coverage.

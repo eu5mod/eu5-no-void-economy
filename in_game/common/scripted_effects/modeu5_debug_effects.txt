@@ -116,6 +116,8 @@ modeu5_debug_clear_last_country_market_capacity = {
 	remove_variable = modeu5_debug_last_capacity_funduq_levels
 	remove_variable = modeu5_debug_last_capacity_caravanserai_levels
 	remove_variable = modeu5_debug_last_capacity_fondaco_levels
+	remove_variable = modeu5_debug_last_monthly_capacity_refresh_stamp
+	remove_variable = modeu5_debug_last_monthly_capacity_refresh_gate_passed
 }
 
 modeu5_debug_capture_country_market_capacity = {

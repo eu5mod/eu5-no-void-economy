@@ -13,7 +13,13 @@ modeu5_start_game_stock_initialization_pulse = {
 
 monthly_country_pulse = {
 	on_actions = {
-		modeu5_monthly_stock_reconciliation_pulse
+		modeu5_monthly_stock_cycle_pulse
+	}
+}
+
+modeu5_monthly_stock_cycle_pulse = {
+	effect = {
+		modeu5_run_monthly_stock_cycle = yes
 	}
 }
 
