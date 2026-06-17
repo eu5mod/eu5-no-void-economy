@@ -1,0 +1,5 @@
+﻿l_french:
+ autonomous_territory: "Province autonome"
+ autonomous_territory_desc: "Territoire doté d'un gouvernement local dont les privilèges sont reconnus par le suzerain. Il ne dispose d'aucune diplomatie extérieure et ne peut pas être annexé diplomatiquement, mais son autonomie affaiblit la légitimité du suzerain."
+ integrated_autonomous_vassal: "Vassal autonome intégré"
+ integrated_autonomous_vassal_desc: "Dépendance autonome intégrée dans un cadre administratif moderne après 1637. Elle conserve des privilèges internes limités, ne dispose d'aucune diplomatie extérieure et peut être annexée diplomatiquement."

@@ -1,0 +1,211 @@
+﻿# Autonomous Territory Subject Type
+# EU5 starter mod.
+# Path: in_game/common/subject_types/zz_autonomous_territory.txt
+#
+# Design goal:
+# - Province autonome: strong internal autonomy, no external diplomacy, no diplomatic annexation.
+# - Vassal autonome intégré: same relationship after 1637, but annexable and no legitimacy cost.
+#
+# NOTE:
+# Some modifier names may need to be adjusted against your local script_docs / modifier docs.
+# The subject type structure follows EU5 1.0 wiki documentation.
+
+autonomous_territory = {
+    subject_pays = subject_pays_autonomous_territory
+    color = subject_vassal
+    level = 2
+
+    # Rebel-only subject type:
+    # Hidden from normal diplomacy, treaty UI, and overlord subject creation.
+    visible_through_diplomacy = {
+        always = no
+    }
+
+    visible_through_treaty = {
+        always = no
+    }
+
+    creation_visible = {
+        always = no
+    }
+
+    # Wars:
+    # Defensive participation is mandatory.
+    # Offensive participation is not automatic, but the overlord may call them.
+    join_offensive_wars_always = {
+        always = no
+    }
+
+    join_offensive_wars_can_call = {
+        always = yes
+    }
+
+    join_defensive_wars_always = {
+        always = yes
+    }
+
+    # Autonomy / diplomacy
+    diplomatic_capacity_cost_scale = 0.50
+    strength_vs_overlord = -0.35
+    has_limited_diplomacy = yes
+    has_overlords_ruler = no
+    can_change_rank = no
+    can_change_heir_selection = yes
+    food_access = yes
+
+    # No diplomatic annexation.
+    # EU5 subject types expose annexation parameters rather than a simple can_annex toggle,
+    # so this is intentionally made practically impossible.
+    annexation_speed = 0
+    annexation_min_years_before = 9999
+    annexation_min_opinion = 9999
+    annexation_stall_opinion = 9999
+
+    overlord_can_cancel = yes
+
+    # Limited overlord control; avoids treating the subject as a directly administered province.
+    can_overlord_build_roads = yes
+    can_overlord_build_buildings = no
+    can_overlord_build_rgos = no
+
+    minimum_opinion_for_offer = 125
+    great_power_score_transfer = 0.10
+    institution_spread_to_overlord = monthly_institution_spread_mild
+    institution_spread_to_subject = monthly_institution_spread_mild
+
+    overlord_modifier = {
+        # Political cost of recognized autonomy.
+        # Verify the exact EU5 modifier name in generated script_docs.
+        monthly_legitimacy = -0.10
+    }
+
+    subject_modifier = {
+        # Represents local privileges and reduced central interference.
+        estate_satisfaction_equilibrium = 0.05
+        pop_assimilation_speed = -0.25
+        pop_conversion_speed = -0.25
+
+        # Placeholder for your "cabinet member = 0 or 1" idea.
+        # If EU5 exposes a direct cabinet-slot modifier, replace this with it.
+        country_cabinet_efficiency = 0.00
+    }
+
+    allow_declaring_wars = {
+        always = no
+    }
+
+    diplo_chance_accept_subject = {
+        base = -50
+        positive_opinion = 0.25
+        border_distance = -0.20
+        different_religion = -10
+        same_common_language = 10
+        competing_power = -200
+    }
+
+    diplo_chance_accept_overlord = {
+        base = 20
+        positive_opinion = 0.20
+        current_strength = 0.10
+    }
+
+    ai_wants_to_be_overlord = {
+        base = 20
+        border_distance = -0.10
+        current_strength = 0.10
+    }
+}
+
+integrated_autonomous_vassal = {
+    subject_pays = subject_pays_integrated_autonomous_vassal
+    color = subject_vassal
+    level = 2
+
+    # Rebel-only subject type:
+    # The 1637 date should be checked by the rebel/event effect, not by the normal UI.
+    visible_through_diplomacy = {
+        always = no
+    }
+
+    visible_through_treaty = {
+        always = no
+    }
+
+    creation_visible = {
+        always = no
+    }
+
+    # Still not a fully normal vassal:
+    # no external diplomacy, but now administratively absorbable.
+    join_offensive_wars_always = {
+        always = no
+    }
+
+    join_offensive_wars_can_call = {
+        always = yes
+    }
+
+    join_defensive_wars_always = {
+        always = yes
+    }
+
+    diplomatic_capacity_cost_scale = 0.50
+    strength_vs_overlord = -0.40
+    has_limited_diplomacy = yes
+    has_overlords_ruler = no
+    can_change_rank = no
+    can_change_heir_selection = yes
+    food_access = yes
+
+    # Annexation unlocked after 1637.
+    annexation_speed = 0.50
+    annexation_min_years_before = 10
+    annexation_min_opinion = 150
+    annexation_stall_opinion = 125
+
+    overlord_can_cancel = yes
+
+    can_overlord_build_roads = yes
+    can_overlord_build_buildings = yes
+    can_overlord_build_rgos = no
+
+    minimum_opinion_for_offer = 125
+    great_power_score_transfer = 0.15
+    institution_spread_to_overlord = monthly_institution_spread_mild
+    institution_spread_to_subject = monthly_institution_spread_mild
+
+    overlord_modifier = {
+        # No legitimacy cost after administrative integration.
+    }
+
+    subject_modifier = {
+        estate_satisfaction_equilibrium = 0.03
+        pop_assimilation_speed = -0.10
+        pop_conversion_speed = -0.10
+        country_cabinet_efficiency = 0.00
+    }
+
+    allow_declaring_wars = {
+        always = no
+    }
+
+    diplo_chance_accept_subject = {
+        base = -35
+        positive_opinion = 0.30
+        border_distance = -0.20
+        same_common_language = 10
+        competing_power = -200
+    }
+
+    diplo_chance_accept_overlord = {
+        base = 25
+        positive_opinion = 0.25
+        current_strength = 0.10
+    }
+
+    ai_wants_to_be_overlord = {
+        base = 25
+        border_distance = -0.10
+        current_strength = 0.10
+    }
+}

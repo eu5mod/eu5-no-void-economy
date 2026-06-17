@@ -38,7 +38,7 @@ Rebalance Estate Power
   optional; US-07 and US-07-UI
 
 Rebalance Early Blobbing
-  optional; US-13
+  optional; US-13 and US-14
 ```
 
 All other CORE and US stories belong to the required Core package.
@@ -225,7 +225,7 @@ Follow this delivery order, even though it is not the runtime order:
 14. Rebalance Economy: US-04 local Pop demand adaptation.
 15. Rebalance Economy: US-05 direct Economic Base formula.
 16. Rebalance Economy and Rebalance Estate Power: US-07 / US-08 / US-09 static balance changes.
-17. Rebalance Early Blobbing: US-13 only after exposure is confirmed.
+17. Rebalance Early Blobbing: US-13 and US-14 only after exposure is confirmed.
 18. UI/debug polish.
 ```
 

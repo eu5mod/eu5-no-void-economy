@@ -1,0 +1,14 @@
+﻿# Payment script values for Autonomous Territory mod.
+# Path: in_game/common/script_values/zz_autonomous_territory_payments.txt
+#
+# The EU5 wiki describes `subject_pays` as a payment script value.
+# If your local vanilla files use a different script value shape, copy that shape here
+# and keep the same names below.
+
+subject_pays_autonomous_territory = {
+    value = 0.20
+}
+
+subject_pays_integrated_autonomous_vassal = {
+    value = 0.30
+}

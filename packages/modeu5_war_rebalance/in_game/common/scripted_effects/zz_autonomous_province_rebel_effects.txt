@@ -1,0 +1,36 @@
+﻿# Rebel autonomy scripted effects — starter skeleton.
+# Path: in_game/common/scripted_effects/zz_autonomous_territory_rebel_effects.txt
+#
+# IMPORTANT:
+# This file intentionally uses commented pseudo-effects for the final country release,
+# because rebel outcome scopes and the exact subject creation effect must be verified
+# against your local EU5 script_docs.
+#
+# Intended use:
+# - Call this from the rebel demand success outcome.
+# - ROOT should be the overlord country.
+# - scope:rebel_region / scope:rebel_country should be replaced with whatever the
+#   rebel mechanic exposes when demands are enforced.
+
+grant_rebel_autonomy_as_subject = {
+    # Example structure:
+    #
+    # if = {
+    #     limit = { current_date >= 1637.1.1 }
+    #
+    #     # 1. Release/create a country from the rebel-controlled area.
+    #     # 2. Make it a subject:
+    #     # create_subject = {
+    #     #     subject = scope:released_rebel_country
+    #     #     subject_type = integrated_autonomous_vassal
+    #     # }
+    # }
+    # else = {
+    #     # 1. Release/create a country from the rebel-controlled area.
+    #     # 2. Make it a subject:
+    #     # create_subject = {
+    #     #     subject = scope:released_rebel_country
+    #     #     subject_type = autonomous_territory
+    #     # }
+    # }
+}
