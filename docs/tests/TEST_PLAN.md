@@ -4,17 +4,33 @@
 
 This file defines how every ModeU5 PR must be tested.
 
-A PR is not complete unless it includes:
+A PR is not complete unless its body includes:
 
 ```txt
 manual test scenario
 expected result
-actual result
-visible debug/result dump for deterministic event tests
 debug output to inspect
-error.log result
 known limitations
 TECH-01 entries updated
+```
+
+A PR is not ready to merge unless it also has at least one validation comment
+for the tested commit. Actual test results are not stored in the PR body.
+
+The validation comment must include:
+
+```txt
+tested commit SHA
+installed package provenance / MODEU5_SOURCE.txt result
+test command or manual scenario
+expected result
+actual result
+visible dump lines for deterministic event tests
+error.log result
+game.log / system.log result
+debug.log result when dumps are emitted there
+known limitations or tolerated assertions
+merge recommendation
 ```
 
 ## Test environments
@@ -37,6 +53,7 @@ After every test session, check:
 error.log
 game.log
 system.log
+debug.log when deterministic dumps are emitted there
 ```
 
 Record:
@@ -46,6 +63,35 @@ No new blocking error
 New warnings explained
 Known vanilla warning ignored
 ```
+
+## PR validation comments
+
+The PR body describes the current implementation contract and the test plan.
+It must not be used as the historical record of every test run. Test results
+belong in PR comments so each result remains tied to the exact commit that was
+installed and executed.
+
+When a commit is retested, add a new comment instead of replacing the old one.
+This preserves the review trail:
+
+```txt
+Commit tested: <sha>
+Branch/package provenance: <MODEU5_SOURCE.txt summary>
+Commands/scenario:
+Expected:
+Actual:
+Result dumps:
+Log review:
+  error.log:
+  game.log:
+  system.log:
+  debug.log:
+Known limitations / tolerated assertions:
+Decision: PASS / PENDING / FAIL
+```
+
+For deterministic console events, the comment must include the exact dump lines
+or a concise excerpt preserving all numeric fields needed to audit the result.
 
 ## Log-first deterministic result dumps
 

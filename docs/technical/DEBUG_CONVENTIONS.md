@@ -100,6 +100,12 @@ Logs are the source of truth for debugging and PR validation. Deterministic
 console events must not expose only PASS/FAIL markers, and a UI/result event is
 not sufficient evidence by itself.
 
+PR bodies must describe which debug evidence will be inspected; they must not
+store the actual test result history. Actual validation results belong in PR
+comments, one comment per tested commit. The comment must include the relevant
+log dump lines so reviewers can audit the same evidence without reconstructing
+the session from memory.
+
 Every focused test must leave log-reviewable evidence for:
 
 ```txt

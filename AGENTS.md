@@ -356,20 +356,25 @@ When the Rebalance Economy package is loaded, US-05 debug must show the Wealth i
 
 ## Testing rule
 
-Every PR must include:
+Every PR body must include:
 
 ```txt
 manual test scenario
 expected result
-actual result
-visible debug/result dump when a deterministic event is used
-debug output inspected
-error.log result
+debug output to inspect
 known limitation
 TECH-01 entries updated
 ```
 
-A PR is not complete if it only adds scripts without a test scenario.
+Actual test results must be added as PR comments, not edited into the PR body.
+Each validation comment must name the tested commit, installed package
+provenance, commands/scenario run, actual result, relevant log dump lines,
+`error.log` / `game.log` / `system.log` review, known tolerated assertions, and
+the PASS / PENDING / FAIL decision. Add a new validation comment for each retest
+after a new commit.
+
+A PR is not complete if it only adds scripts without a test scenario and a
+commit-specific validation comment.
 
 ## Git rule
 
