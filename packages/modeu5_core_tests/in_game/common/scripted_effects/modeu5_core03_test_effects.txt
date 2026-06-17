@@ -1,7 +1,7 @@
 # Deterministic CORE-03 stock-succession test.
 #
 # This is an end-to-end destructive fixture for disposable saves:
-# seed Castile wheat stock in Huelva's market, transfer Huelva to Portugal,
+# seed Castile wheat stock in Cadiz's market, transfer Cadiz to Portugal,
 # then verify that stock survives through the CORE-03 on_action path.
 
 modeu5_debug_write_core03_before_dump_variables = {
@@ -17,7 +17,7 @@ modeu5_debug_write_core03_before_dump_variables = {
 
 modeu5_debug_log_core03_before_dump = {
 	scope:modeu5_core03_test_controller = {
-		debug_log = "ModeU5 CORE-03 DUMP before scenario=Huelva_to_Portugal good=wheat loser=CAS winner=POR cas_stock=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] por_stock=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] market_stock=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] loser_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_loser_capacity').GetValue|2] location_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_location_capacity').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2]"
+		debug_log = "ModeU5 CORE-03 DUMP before scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_stock=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] por_stock=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] market_stock=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] loser_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_loser_capacity').GetValue|2] location_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_location_capacity').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2]"
 	}
 }
 
@@ -39,7 +39,7 @@ modeu5_debug_write_core03_after_dump_variables = {
 
 modeu5_debug_log_core03_after_dump = {
 	scope:modeu5_core03_test_controller = {
-		debug_log = "ModeU5 CORE-03 DUMP after scenario=Huelva_to_Portugal good=wheat loser=CAS winner=POR cas_before=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] cas_after=[THIS.GetVariable('modeu5_debug_core03_ui_cas_after').GetValue|2] por_before=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] por_after=[THIS.GetVariable('modeu5_debug_core03_ui_por_after').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2] actual_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_actual_transfer').GetValue|2] market_before=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] market_after=[THIS.GetVariable('modeu5_debug_core03_ui_market_after').GetValue|2] market_delta=[THIS.GetVariable('modeu5_debug_core03_ui_market_delta').GetValue|2]"
+		debug_log = "ModeU5 CORE-03 DUMP after scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_before=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] cas_after=[THIS.GetVariable('modeu5_debug_core03_ui_cas_after').GetValue|2] por_before=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] por_after=[THIS.GetVariable('modeu5_debug_core03_ui_por_after').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2] actual_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_actual_transfer').GetValue|2] market_before=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] market_after=[THIS.GetVariable('modeu5_debug_core03_ui_market_after').GetValue|2] market_delta=[THIS.GetVariable('modeu5_debug_core03_ui_market_delta').GetValue|2]"
 	}
 }
 
@@ -52,11 +52,11 @@ modeu5_debug_run_core03_location_succession_test = {
 			modeu5_stock_runtime_ready_trigger = yes
 			country_exists = c:CAS
 			country_exists = c:POR
-			location:huelva = {
+			location:cadiz = {
 				owner ?= c:CAS
 			}
 		}
-		location:huelva.market = { save_temporary_scope_as = modeu5_core03_test_market }
+		location:cadiz.market = { save_temporary_scope_as = modeu5_core03_test_market }
 
 		modeu5_recalculate_country_market_capacity = {
 			country = c:CAS
@@ -121,7 +121,7 @@ modeu5_debug_run_core03_location_succession_test = {
 
 		modeu5_calculate_location_storage_capacity = {
 			country = c:CAS
-			location = location:huelva
+			location = location:cadiz
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_core03_test_location_capacity
@@ -177,7 +177,7 @@ modeu5_debug_run_core03_location_succession_test = {
 		modeu5_debug_write_core03_before_dump_variables = yes
 		modeu5_debug_log_core03_before_dump = yes
 
-		location:huelva = {
+		location:cadiz = {
 			change_location_owner = c:POR
 		}
 		debug_log = "ModeU5 CORE-03 RESULT location_succession STAGED wait_one_day"
@@ -185,7 +185,7 @@ modeu5_debug_run_core03_location_succession_test = {
 	else = {
 		set_global_variable = modeu5_test_core03_location_succession_blocked
 		debug_log = "ModeU5 CORE-03 RESULT location_succession BLOCKED prerequisites"
-		error_log = "ModeU5 deterministic CORE-03 location-succession test requires initialized stock, CAS, POR, and Castilian-owned Huelva."
+		error_log = "ModeU5 deterministic CORE-03 location-succession test requires initialized stock, CAS, POR, and Castilian-owned Cadiz."
 	}
 }
 
@@ -198,7 +198,7 @@ modeu5_debug_finish_core03_location_succession_test = {
 			country_exists = c:CAS
 			country_exists = c:POR
 		}
-		location:huelva.market = { save_temporary_scope_as = modeu5_core03_test_market }
+		location:cadiz.market = { save_temporary_scope_as = modeu5_core03_test_market }
 
 		modeu5_read_country_stock_record = {
 			country = c:CAS
@@ -280,7 +280,7 @@ modeu5_debug_finish_core03_location_succession_test = {
 
 		if = {
 			limit = {
-				location:huelva = { owner ?= c:POR }
+				location:cadiz = { owner ?= c:POR }
 				has_global_variable = modeu5_core03_last_location_transfer_attempted
 				has_global_variable = modeu5_core03_probe_location_hook_observed
 				scope:modeu5_core03_test_cas_after = scope:modeu5_core03_test_expected_cas_after

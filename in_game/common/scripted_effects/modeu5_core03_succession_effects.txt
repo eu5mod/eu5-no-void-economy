@@ -59,22 +59,11 @@ modeu5_core03_handle_annexation_finalizer = {
 
 modeu5_core03_prepare_location_good_transfer = {
 	# Caller has set modeu5_core03_loser, modeu5_core03_winner,
-	# modeu5_core03_location, modeu5_core03_market, and modeu5_good.
-	scope:modeu5_core03_loser = {
-		modeu5_read_country_stock_record = {
-			country = scope:modeu5_core03_loser
-			market = scope:modeu5_core03_market
-			good = scope:modeu5_good
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_core03_loser_stock_before
-			value = scope:modeu5_read_country_stock
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_core03_loser_capacity_before
-			value = scope:modeu5_read_country_stock_cap
-		}
-	}
+	# modeu5_core03_location, modeu5_core03_market, modeu5_good, and the
+	# per-good adapter has already read the loser's stock/capacity record with a
+	# literal good key. Do not call generic good-parameter helpers from here:
+	# CORE-03 iterates runtime good scopes, while stock map adapters require
+	# generated literal good identifiers.
 
 	modeu5_calculate_location_storage_capacity = {
 		country = scope:modeu5_core03_loser
@@ -127,50 +116,15 @@ modeu5_core03_prepare_location_good_transfer = {
 }
 
 modeu5_core03_finalize_location_good_transfer = {
-	# Recompute capacity only after the stock transfer so the denominator remains
-	# the loser's pre-transfer capacity for this location-good operation.
-	scope:modeu5_core03_loser = {
-		modeu5_recalculate_country_market_capacity = {
-			country = scope:modeu5_core03_loser
-			market = scope:modeu5_core03_market
-			good = scope:modeu5_good
-		}
-	}
-	scope:modeu5_core03_winner = {
-		modeu5_recalculate_country_market_capacity = {
-			country = scope:modeu5_core03_winner
-			market = scope:modeu5_core03_market
-			good = scope:modeu5_good
-		}
-	}
+	# Literal per-good adapters own post-transfer capacity recalculation.
 }
 
 modeu5_core03_prepare_residual_good_transfer = {
 	# Caller has set modeu5_core03_annex_target, modeu5_core03_annex_successor,
-	# modeu5_core03_market, and modeu5_good.
-	scope:modeu5_core03_annex_target = {
-		modeu5_read_country_stock_record = {
-			country = scope:modeu5_core03_annex_target
-			market = scope:modeu5_core03_market
-			good = scope:modeu5_good
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_core03_residual_transfer_quantity
-			value = scope:modeu5_read_country_stock
-		}
-		set_global_variable = {
-			name = modeu5_debug_last_core03_residual_transfer_quantity
-			value = scope:modeu5_core03_residual_transfer_quantity
-		}
-	}
+	# modeu5_core03_market, modeu5_good, and the literal per-good adapter has
+	# already read the disappearing country's residual stock.
 }
 
 modeu5_core03_finalize_residual_good_transfer = {
-	scope:modeu5_core03_annex_successor = {
-		modeu5_recalculate_country_market_capacity = {
-			country = scope:modeu5_core03_annex_successor
-			market = scope:modeu5_core03_market
-			good = scope:modeu5_good
-		}
-	}
+	# Literal per-good adapters own post-transfer capacity recalculation.
 }

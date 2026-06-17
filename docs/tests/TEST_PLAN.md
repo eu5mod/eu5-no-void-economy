@@ -534,10 +534,10 @@ Expected:
 
 ```txt
 CORE-02 initialization is complete before the test starts
-Huelva visibly transfers from Castile to Portugal
+Cadiz visibly transfers from Castile to Portugal
 CAS seeded wheat stock decreases by the expected capacity-share transfer
 POR wheat stock increases by the same quantity
-The Huelva market wheat aggregate is unchanged
+The Cadiz market wheat aggregate is unchanged
 The lifecycle hook and stock-survival dumps are present in debug.log
 No new blocking ModeU5 script error is added to error.log
 ```

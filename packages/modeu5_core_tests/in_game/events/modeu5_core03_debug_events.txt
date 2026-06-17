@@ -29,7 +29,7 @@ modeu5_core03_debug.2 = {
 	outcome = neutral
 
 	trigger = {
-		always = no
+		always = yes
 	}
 
 	immediate = {

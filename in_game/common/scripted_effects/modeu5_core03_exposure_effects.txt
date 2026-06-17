@@ -319,20 +319,20 @@ modeu5_core03_probe_run_synthetic_location_transfer = {
 	modeu5_core03_probe_select_scenario_location_transfer = yes
 	set_global_variable = modeu5_core03_probe_synthetic_run
 	set_global_variable = modeu5_core03_probe_synthetic_runner_started
-	error_log = "ModeU5 CORE-03 scripted Scenario A started: transfer Huelva from Castile to Portugal."
+	error_log = "ModeU5 CORE-03 scripted Scenario A started: transfer Cadiz from Castile to Portugal."
 	if = {
 		limit = {
 			country_exists = c:CAS
 			country_exists = c:POR
-			location:huelva = {
+			location:cadiz = {
 				owner ?= c:CAS
 			}
 		}
-		location:huelva = {
+		location:cadiz = {
 			change_location_owner = c:POR
 		}
 		set_global_variable = modeu5_core03_probe_synthetic_runner_completed
-		error_log = "ModeU5 CORE-03 scripted Scenario A completed: Huelva should now belong to Portugal."
+		error_log = "ModeU5 CORE-03 scripted Scenario A completed: Cadiz should now belong to Portugal."
 		c:CAS = {
 			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 1 }
 		}
@@ -340,7 +340,7 @@ modeu5_core03_probe_run_synthetic_location_transfer = {
 	else = {
 		set_global_variable = modeu5_core03_probe_synthetic_fixture_invalid
 		set_global_variable = modeu5_core03_probe_synthetic_runner_aborted
-		error_log = "ModeU5 CORE-03 scripted Scenario A aborted because Castile, Portugal, or Castilian-owned Huelva is unavailable."
+		error_log = "ModeU5 CORE-03 scripted Scenario A aborted because Castile, Portugal, or Castilian-owned Cadiz is unavailable."
 		trigger_event_non_silently = modeu5_core03_probe.2
 	}
 }

@@ -1990,6 +1990,19 @@ modeu5_debug_corrupt_market_stock_good_cotton = {
 
 modeu5_core03_transfer_location_good_cotton = {
 	goods:cotton = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cotton = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -2003,11 +2016,33 @@ modeu5_core03_transfer_location_good_cotton = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cotton = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cotton = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_cotton = {
 	goods:cotton = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cotton = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -2021,7 +2056,11 @@ modeu5_core03_transfer_residual_good_cotton = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cotton = yes
+	}
 }
 
 # Literal persistence adapter for sugar.
@@ -3213,6 +3252,19 @@ modeu5_debug_corrupt_market_stock_good_sugar = {
 
 modeu5_core03_transfer_location_good_sugar = {
 	goods:sugar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_sugar = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -3226,11 +3278,33 @@ modeu5_core03_transfer_location_good_sugar = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sugar = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sugar = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_sugar = {
 	goods:sugar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_sugar = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -3244,7 +3318,11 @@ modeu5_core03_transfer_residual_good_sugar = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sugar = yes
+	}
 }
 
 # Literal persistence adapter for tobacco.
@@ -4436,6 +4514,19 @@ modeu5_debug_corrupt_market_stock_good_tobacco = {
 
 modeu5_core03_transfer_location_good_tobacco = {
 	goods:tobacco = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tobacco = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -4449,11 +4540,33 @@ modeu5_core03_transfer_location_good_tobacco = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tobacco = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tobacco = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_tobacco = {
 	goods:tobacco = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tobacco = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -4467,7 +4580,11 @@ modeu5_core03_transfer_residual_good_tobacco = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tobacco = yes
+	}
 }
 
 # Literal persistence adapter for tar.
@@ -5659,6 +5776,19 @@ modeu5_debug_corrupt_market_stock_good_tar = {
 
 modeu5_core03_transfer_location_good_tar = {
 	goods:tar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tar = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -5672,11 +5802,33 @@ modeu5_core03_transfer_location_good_tar = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tar = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tar = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_tar = {
 	goods:tar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tar = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -5690,7 +5842,11 @@ modeu5_core03_transfer_residual_good_tar = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tar = yes
+	}
 }
 
 # Literal persistence adapter for porcelain.
@@ -6882,6 +7038,19 @@ modeu5_debug_corrupt_market_stock_good_porcelain = {
 
 modeu5_core03_transfer_location_good_porcelain = {
 	goods:porcelain = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_porcelain = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -6895,11 +7064,33 @@ modeu5_core03_transfer_location_good_porcelain = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_porcelain = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_porcelain = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_porcelain = {
 	goods:porcelain = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_porcelain = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -6913,7 +7104,11 @@ modeu5_core03_transfer_residual_good_porcelain = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_porcelain = yes
+	}
 }
 
 # Literal persistence adapter for naval_supplies.
@@ -8105,6 +8300,19 @@ modeu5_debug_corrupt_market_stock_good_naval_supplies = {
 
 modeu5_core03_transfer_location_good_naval_supplies = {
 	goods:naval_supplies = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_naval_supplies = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -8118,11 +8326,33 @@ modeu5_core03_transfer_location_good_naval_supplies = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_naval_supplies = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_naval_supplies = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_naval_supplies = {
 	goods:naval_supplies = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_naval_supplies = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -8136,7 +8366,11 @@ modeu5_core03_transfer_residual_good_naval_supplies = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_naval_supplies = yes
+	}
 }
 
 # Literal persistence adapter for firearms.
@@ -9328,6 +9562,19 @@ modeu5_debug_corrupt_market_stock_good_firearms = {
 
 modeu5_core03_transfer_location_good_firearms = {
 	goods:firearms = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_firearms = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -9341,11 +9588,33 @@ modeu5_core03_transfer_location_good_firearms = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_firearms = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_firearms = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_firearms = {
 	goods:firearms = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_firearms = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -9359,7 +9628,11 @@ modeu5_core03_transfer_residual_good_firearms = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_firearms = yes
+	}
 }
 
 # Literal persistence adapter for cannons.
@@ -10551,6 +10824,19 @@ modeu5_debug_corrupt_market_stock_good_cannons = {
 
 modeu5_core03_transfer_location_good_cannons = {
 	goods:cannons = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cannons = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -10564,11 +10850,33 @@ modeu5_core03_transfer_location_good_cannons = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cannons = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cannons = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_cannons = {
 	goods:cannons = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cannons = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -10582,7 +10890,11 @@ modeu5_core03_transfer_residual_good_cannons = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cannons = yes
+	}
 }
 
 # Literal persistence adapter for weaponry.
@@ -11774,6 +12086,19 @@ modeu5_debug_corrupt_market_stock_good_weaponry = {
 
 modeu5_core03_transfer_location_good_weaponry = {
 	goods:weaponry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_weaponry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -11787,11 +12112,33 @@ modeu5_core03_transfer_location_good_weaponry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_weaponry = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_weaponry = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_weaponry = {
 	goods:weaponry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_weaponry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -11805,7 +12152,11 @@ modeu5_core03_transfer_residual_good_weaponry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_weaponry = yes
+	}
 }
 
 # Literal persistence adapter for glass.
@@ -12997,6 +13348,19 @@ modeu5_debug_corrupt_market_stock_good_glass = {
 
 modeu5_core03_transfer_location_good_glass = {
 	goods:glass = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_glass = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -13010,11 +13374,33 @@ modeu5_core03_transfer_location_good_glass = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_glass = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_glass = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_glass = {
 	goods:glass = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_glass = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -13028,7 +13414,11 @@ modeu5_core03_transfer_residual_good_glass = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_glass = yes
+	}
 }
 
 # Literal persistence adapter for steel.
@@ -14220,6 +14610,19 @@ modeu5_debug_corrupt_market_stock_good_steel = {
 
 modeu5_core03_transfer_location_good_steel = {
 	goods:steel = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_steel = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -14233,11 +14636,33 @@ modeu5_core03_transfer_location_good_steel = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_steel = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_steel = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_steel = {
 	goods:steel = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_steel = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -14251,7 +14676,11 @@ modeu5_core03_transfer_residual_good_steel = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_steel = yes
+	}
 }
 
 # Literal persistence adapter for cloth.
@@ -15443,6 +15872,19 @@ modeu5_debug_corrupt_market_stock_good_cloth = {
 
 modeu5_core03_transfer_location_good_cloth = {
 	goods:cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cloth = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -15456,11 +15898,33 @@ modeu5_core03_transfer_location_good_cloth = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloth = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloth = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_cloth = {
 	goods:cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cloth = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -15474,7 +15938,11 @@ modeu5_core03_transfer_residual_good_cloth = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloth = yes
+	}
 }
 
 # Literal persistence adapter for fine_cloth.
@@ -16666,6 +17134,19 @@ modeu5_debug_corrupt_market_stock_good_fine_cloth = {
 
 modeu5_core03_transfer_location_good_fine_cloth = {
 	goods:fine_cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fine_cloth = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -16679,11 +17160,33 @@ modeu5_core03_transfer_location_good_fine_cloth = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fine_cloth = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fine_cloth = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_fine_cloth = {
 	goods:fine_cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fine_cloth = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -16697,7 +17200,11 @@ modeu5_core03_transfer_residual_good_fine_cloth = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fine_cloth = yes
+	}
 }
 
 # Literal persistence adapter for liquor.
@@ -17889,6 +18396,19 @@ modeu5_debug_corrupt_market_stock_good_liquor = {
 
 modeu5_core03_transfer_location_good_liquor = {
 	goods:liquor = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_liquor = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -17902,11 +18422,33 @@ modeu5_core03_transfer_location_good_liquor = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_liquor = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_liquor = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_liquor = {
 	goods:liquor = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_liquor = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -17920,7 +18462,11 @@ modeu5_core03_transfer_residual_good_liquor = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_liquor = yes
+	}
 }
 
 # Literal persistence adapter for beer.
@@ -19112,6 +19658,19 @@ modeu5_debug_corrupt_market_stock_good_beer = {
 
 modeu5_core03_transfer_location_good_beer = {
 	goods:beer = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_beer = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -19125,11 +19684,33 @@ modeu5_core03_transfer_location_good_beer = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beer = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beer = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_beer = {
 	goods:beer = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_beer = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -19143,7 +19724,11 @@ modeu5_core03_transfer_residual_good_beer = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beer = yes
+	}
 }
 
 # Literal persistence adapter for paper.
@@ -20335,6 +20920,19 @@ modeu5_debug_corrupt_market_stock_good_paper = {
 
 modeu5_core03_transfer_location_good_paper = {
 	goods:paper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_paper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -20348,11 +20946,33 @@ modeu5_core03_transfer_location_good_paper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_paper = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_paper = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_paper = {
 	goods:paper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_paper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -20366,7 +20986,11 @@ modeu5_core03_transfer_residual_good_paper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_paper = yes
+	}
 }
 
 # Literal persistence adapter for books.
@@ -21558,6 +22182,19 @@ modeu5_debug_corrupt_market_stock_good_books = {
 
 modeu5_core03_transfer_location_good_books = {
 	goods:books = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_books = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -21571,11 +22208,33 @@ modeu5_core03_transfer_location_good_books = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_books = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_books = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_books = {
 	goods:books = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_books = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -21589,7 +22248,11 @@ modeu5_core03_transfer_residual_good_books = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_books = yes
+	}
 }
 
 # Literal persistence adapter for jewelry.
@@ -22781,6 +23444,19 @@ modeu5_debug_corrupt_market_stock_good_jewelry = {
 
 modeu5_core03_transfer_location_good_jewelry = {
 	goods:jewelry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_jewelry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -22794,11 +23470,33 @@ modeu5_core03_transfer_location_good_jewelry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_jewelry = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_jewelry = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_jewelry = {
 	goods:jewelry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_jewelry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -22812,7 +23510,11 @@ modeu5_core03_transfer_residual_good_jewelry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_jewelry = yes
+	}
 }
 
 # Literal persistence adapter for leather.
@@ -24004,6 +24706,19 @@ modeu5_debug_corrupt_market_stock_good_leather = {
 
 modeu5_core03_transfer_location_good_leather = {
 	goods:leather = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_leather = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -24017,11 +24732,33 @@ modeu5_core03_transfer_location_good_leather = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_leather = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_leather = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_leather = {
 	goods:leather = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_leather = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -24035,7 +24772,11 @@ modeu5_core03_transfer_residual_good_leather = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_leather = yes
+	}
 }
 
 # Literal persistence adapter for tools.
@@ -25227,6 +25968,19 @@ modeu5_debug_corrupt_market_stock_good_tools = {
 
 modeu5_core03_transfer_location_good_tools = {
 	goods:tools = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tools = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -25240,11 +25994,33 @@ modeu5_core03_transfer_location_good_tools = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tools = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tools = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_tools = {
 	goods:tools = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tools = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -25258,7 +26034,11 @@ modeu5_core03_transfer_residual_good_tools = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tools = yes
+	}
 }
 
 # Literal persistence adapter for masonry.
@@ -26450,6 +27230,19 @@ modeu5_debug_corrupt_market_stock_good_masonry = {
 
 modeu5_core03_transfer_location_good_masonry = {
 	goods:masonry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_masonry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -26463,11 +27256,33 @@ modeu5_core03_transfer_location_good_masonry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_masonry = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_masonry = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_masonry = {
 	goods:masonry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_masonry = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -26481,7 +27296,11 @@ modeu5_core03_transfer_residual_good_masonry = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_masonry = yes
+	}
 }
 
 # Literal persistence adapter for lacquerware.
@@ -27673,6 +28492,19 @@ modeu5_debug_corrupt_market_stock_good_lacquerware = {
 
 modeu5_core03_transfer_location_good_lacquerware = {
 	goods:lacquerware = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lacquerware = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -27686,11 +28518,33 @@ modeu5_core03_transfer_location_good_lacquerware = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lacquerware = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lacquerware = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_lacquerware = {
 	goods:lacquerware = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lacquerware = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -27704,7 +28558,11 @@ modeu5_core03_transfer_residual_good_lacquerware = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lacquerware = yes
+	}
 }
 
 # Literal persistence adapter for pottery.
@@ -28896,6 +29754,19 @@ modeu5_debug_corrupt_market_stock_good_pottery = {
 
 modeu5_core03_transfer_location_good_pottery = {
 	goods:pottery = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pottery = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -28909,11 +29780,33 @@ modeu5_core03_transfer_location_good_pottery = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pottery = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pottery = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_pottery = {
 	goods:pottery = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pottery = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -28927,7 +29820,11 @@ modeu5_core03_transfer_residual_good_pottery = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pottery = yes
+	}
 }
 
 # Literal persistence adapter for furniture.
@@ -30119,6 +31016,19 @@ modeu5_debug_corrupt_market_stock_good_furniture = {
 
 modeu5_core03_transfer_location_good_furniture = {
 	goods:furniture = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_furniture = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -30132,11 +31042,33 @@ modeu5_core03_transfer_location_good_furniture = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_furniture = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_furniture = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_furniture = {
 	goods:furniture = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_furniture = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -30150,7 +31082,11 @@ modeu5_core03_transfer_residual_good_furniture = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_furniture = yes
+	}
 }
 
 # Literal persistence adapter for horses.
@@ -31342,6 +32278,19 @@ modeu5_debug_corrupt_market_stock_good_horses = {
 
 modeu5_core03_transfer_location_good_horses = {
 	goods:horses = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_horses = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -31355,11 +32304,33 @@ modeu5_core03_transfer_location_good_horses = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_horses = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_horses = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_horses = {
 	goods:horses = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_horses = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -31373,7 +32344,11 @@ modeu5_core03_transfer_residual_good_horses = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_horses = yes
+	}
 }
 
 # Literal persistence adapter for clay.
@@ -32565,6 +33540,19 @@ modeu5_debug_corrupt_market_stock_good_clay = {
 
 modeu5_core03_transfer_location_good_clay = {
 	goods:clay = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_clay = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -32578,11 +33566,33 @@ modeu5_core03_transfer_location_good_clay = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_clay = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_clay = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_clay = {
 	goods:clay = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_clay = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -32596,7 +33606,11 @@ modeu5_core03_transfer_residual_good_clay = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_clay = yes
+	}
 }
 
 # Literal persistence adapter for sand.
@@ -33788,6 +34802,19 @@ modeu5_debug_corrupt_market_stock_good_sand = {
 
 modeu5_core03_transfer_location_good_sand = {
 	goods:sand = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_sand = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -33801,11 +34828,33 @@ modeu5_core03_transfer_location_good_sand = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sand = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sand = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_sand = {
 	goods:sand = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_sand = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -33819,7 +34868,11 @@ modeu5_core03_transfer_residual_good_sand = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_sand = yes
+	}
 }
 
 # Literal persistence adapter for coal.
@@ -35011,6 +36064,19 @@ modeu5_debug_corrupt_market_stock_good_coal = {
 
 modeu5_core03_transfer_location_good_coal = {
 	goods:coal = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_coal = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -35024,11 +36090,33 @@ modeu5_core03_transfer_location_good_coal = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coal = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coal = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_coal = {
 	goods:coal = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_coal = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -35042,7 +36130,11 @@ modeu5_core03_transfer_residual_good_coal = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coal = yes
+	}
 }
 
 # Literal persistence adapter for iron.
@@ -36234,6 +37326,19 @@ modeu5_debug_corrupt_market_stock_good_iron = {
 
 modeu5_core03_transfer_location_good_iron = {
 	goods:iron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_iron = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -36247,11 +37352,33 @@ modeu5_core03_transfer_location_good_iron = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_iron = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_iron = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_iron = {
 	goods:iron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_iron = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -36265,7 +37392,11 @@ modeu5_core03_transfer_residual_good_iron = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_iron = yes
+	}
 }
 
 # Literal persistence adapter for copper.
@@ -37457,6 +38588,19 @@ modeu5_debug_corrupt_market_stock_good_copper = {
 
 modeu5_core03_transfer_location_good_copper = {
 	goods:copper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_copper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -37470,11 +38614,33 @@ modeu5_core03_transfer_location_good_copper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_copper = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_copper = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_copper = {
 	goods:copper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_copper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -37488,7 +38654,11 @@ modeu5_core03_transfer_residual_good_copper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_copper = yes
+	}
 }
 
 # Literal persistence adapter for goods_gold.
@@ -38680,6 +39850,19 @@ modeu5_debug_corrupt_market_stock_good_goods_gold = {
 
 modeu5_core03_transfer_location_good_goods_gold = {
 	goods:goods_gold = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_goods_gold = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -38693,11 +39876,33 @@ modeu5_core03_transfer_location_good_goods_gold = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_goods_gold = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_goods_gold = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_goods_gold = {
 	goods:goods_gold = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_goods_gold = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -38711,7 +39916,11 @@ modeu5_core03_transfer_residual_good_goods_gold = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_goods_gold = yes
+	}
 }
 
 # Literal persistence adapter for silver.
@@ -39903,6 +41112,19 @@ modeu5_debug_corrupt_market_stock_good_silver = {
 
 modeu5_core03_transfer_location_good_silver = {
 	goods:silver = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_silver = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -39916,11 +41138,33 @@ modeu5_core03_transfer_location_good_silver = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silver = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silver = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_silver = {
 	goods:silver = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_silver = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -39934,7 +41178,11 @@ modeu5_core03_transfer_residual_good_silver = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silver = yes
+	}
 }
 
 # Literal persistence adapter for stone.
@@ -41126,6 +42374,19 @@ modeu5_debug_corrupt_market_stock_good_stone = {
 
 modeu5_core03_transfer_location_good_stone = {
 	goods:stone = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_stone = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -41139,11 +42400,33 @@ modeu5_core03_transfer_location_good_stone = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_stone = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_stone = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_stone = {
 	goods:stone = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_stone = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -41157,7 +42440,11 @@ modeu5_core03_transfer_residual_good_stone = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_stone = yes
+	}
 }
 
 # Literal persistence adapter for tin.
@@ -42349,6 +43636,19 @@ modeu5_debug_corrupt_market_stock_good_tin = {
 
 modeu5_core03_transfer_location_good_tin = {
 	goods:tin = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tin = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -42362,11 +43662,33 @@ modeu5_core03_transfer_location_good_tin = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tin = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tin = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_tin = {
 	goods:tin = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tin = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -42380,7 +43702,11 @@ modeu5_core03_transfer_residual_good_tin = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tin = yes
+	}
 }
 
 # Literal persistence adapter for lead.
@@ -43572,6 +44898,19 @@ modeu5_debug_corrupt_market_stock_good_lead = {
 
 modeu5_core03_transfer_location_good_lead = {
 	goods:lead = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lead = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -43585,11 +44924,33 @@ modeu5_core03_transfer_location_good_lead = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lead = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lead = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_lead = {
 	goods:lead = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lead = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -43603,7 +44964,11 @@ modeu5_core03_transfer_residual_good_lead = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lead = yes
+	}
 }
 
 # Literal persistence adapter for silk.
@@ -44795,6 +46160,19 @@ modeu5_debug_corrupt_market_stock_good_silk = {
 
 modeu5_core03_transfer_location_good_silk = {
 	goods:silk = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_silk = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -44808,11 +46186,33 @@ modeu5_core03_transfer_location_good_silk = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silk = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silk = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_silk = {
 	goods:silk = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_silk = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -44826,7 +46226,11 @@ modeu5_core03_transfer_residual_good_silk = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_silk = yes
+	}
 }
 
 # Literal persistence adapter for dyes.
@@ -46018,6 +47422,19 @@ modeu5_debug_corrupt_market_stock_good_dyes = {
 
 modeu5_core03_transfer_location_good_dyes = {
 	goods:dyes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_dyes = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -46031,11 +47448,33 @@ modeu5_core03_transfer_location_good_dyes = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_dyes = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_dyes = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_dyes = {
 	goods:dyes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_dyes = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -46049,7 +47488,11 @@ modeu5_core03_transfer_residual_good_dyes = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_dyes = yes
+	}
 }
 
 # Literal persistence adapter for incense.
@@ -47241,6 +48684,19 @@ modeu5_debug_corrupt_market_stock_good_incense = {
 
 modeu5_core03_transfer_location_good_incense = {
 	goods:incense = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_incense = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -47254,11 +48710,33 @@ modeu5_core03_transfer_location_good_incense = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_incense = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_incense = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_incense = {
 	goods:incense = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_incense = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -47272,7 +48750,11 @@ modeu5_core03_transfer_residual_good_incense = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_incense = yes
+	}
 }
 
 # Literal persistence adapter for tea.
@@ -48464,6 +49946,19 @@ modeu5_debug_corrupt_market_stock_good_tea = {
 
 modeu5_core03_transfer_location_good_tea = {
 	goods:tea = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tea = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -48477,11 +49972,33 @@ modeu5_core03_transfer_location_good_tea = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tea = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tea = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_tea = {
 	goods:tea = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_tea = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -48495,7 +50012,11 @@ modeu5_core03_transfer_residual_good_tea = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_tea = yes
+	}
 }
 
 # Literal persistence adapter for cocoa.
@@ -49687,6 +51208,19 @@ modeu5_debug_corrupt_market_stock_good_cocoa = {
 
 modeu5_core03_transfer_location_good_cocoa = {
 	goods:cocoa = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cocoa = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -49700,11 +51234,33 @@ modeu5_core03_transfer_location_good_cocoa = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cocoa = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cocoa = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_cocoa = {
 	goods:cocoa = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cocoa = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -49718,7 +51274,11 @@ modeu5_core03_transfer_residual_good_cocoa = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cocoa = yes
+	}
 }
 
 # Literal persistence adapter for coffee.
@@ -50910,6 +52470,19 @@ modeu5_debug_corrupt_market_stock_good_coffee = {
 
 modeu5_core03_transfer_location_good_coffee = {
 	goods:coffee = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_coffee = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -50923,11 +52496,33 @@ modeu5_core03_transfer_location_good_coffee = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coffee = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coffee = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_coffee = {
 	goods:coffee = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_coffee = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -50941,7 +52536,11 @@ modeu5_core03_transfer_residual_good_coffee = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_coffee = yes
+	}
 }
 
 # Literal persistence adapter for fiber_crops.
@@ -52133,6 +53732,19 @@ modeu5_debug_corrupt_market_stock_good_fiber_crops = {
 
 modeu5_core03_transfer_location_good_fiber_crops = {
 	goods:fiber_crops = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fiber_crops = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -52146,11 +53758,33 @@ modeu5_core03_transfer_location_good_fiber_crops = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fiber_crops = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fiber_crops = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_fiber_crops = {
 	goods:fiber_crops = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fiber_crops = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -52164,7 +53798,11 @@ modeu5_core03_transfer_residual_good_fiber_crops = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fiber_crops = yes
+	}
 }
 
 # Literal persistence adapter for ivory.
@@ -53356,6 +54994,19 @@ modeu5_debug_corrupt_market_stock_good_ivory = {
 
 modeu5_core03_transfer_location_good_ivory = {
 	goods:ivory = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_ivory = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -53369,11 +55020,33 @@ modeu5_core03_transfer_location_good_ivory = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_ivory = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_ivory = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_ivory = {
 	goods:ivory = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_ivory = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -53387,7 +55060,11 @@ modeu5_core03_transfer_residual_good_ivory = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_ivory = yes
+	}
 }
 
 # Literal persistence adapter for lumber.
@@ -54579,6 +56256,19 @@ modeu5_debug_corrupt_market_stock_good_lumber = {
 
 modeu5_core03_transfer_location_good_lumber = {
 	goods:lumber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lumber = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -54592,11 +56282,33 @@ modeu5_core03_transfer_location_good_lumber = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lumber = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lumber = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_lumber = {
 	goods:lumber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_lumber = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -54610,7 +56322,11 @@ modeu5_core03_transfer_residual_good_lumber = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_lumber = yes
+	}
 }
 
 # Literal persistence adapter for salt.
@@ -55802,6 +57518,19 @@ modeu5_debug_corrupt_market_stock_good_salt = {
 
 modeu5_core03_transfer_location_good_salt = {
 	goods:salt = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_salt = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -55815,11 +57544,33 @@ modeu5_core03_transfer_location_good_salt = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_salt = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_salt = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_salt = {
 	goods:salt = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_salt = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -55833,7 +57584,11 @@ modeu5_core03_transfer_residual_good_salt = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_salt = yes
+	}
 }
 
 # Literal persistence adapter for medicaments.
@@ -57025,6 +58780,19 @@ modeu5_debug_corrupt_market_stock_good_medicaments = {
 
 modeu5_core03_transfer_location_good_medicaments = {
 	goods:medicaments = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_medicaments = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -57038,11 +58806,33 @@ modeu5_core03_transfer_location_good_medicaments = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_medicaments = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_medicaments = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_medicaments = {
 	goods:medicaments = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_medicaments = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -57056,7 +58846,11 @@ modeu5_core03_transfer_residual_good_medicaments = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_medicaments = yes
+	}
 }
 
 # Literal persistence adapter for gems.
@@ -58248,6 +60042,19 @@ modeu5_debug_corrupt_market_stock_good_gems = {
 
 modeu5_core03_transfer_location_good_gems = {
 	goods:gems = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_gems = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -58261,11 +60068,33 @@ modeu5_core03_transfer_location_good_gems = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_gems = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_gems = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_gems = {
 	goods:gems = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_gems = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -58279,7 +60108,11 @@ modeu5_core03_transfer_residual_good_gems = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_gems = yes
+	}
 }
 
 # Literal persistence adapter for pearls.
@@ -59471,6 +61304,19 @@ modeu5_debug_corrupt_market_stock_good_pearls = {
 
 modeu5_core03_transfer_location_good_pearls = {
 	goods:pearls = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pearls = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -59484,11 +61330,33 @@ modeu5_core03_transfer_location_good_pearls = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pearls = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pearls = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_pearls = {
 	goods:pearls = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pearls = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -59502,7 +61370,11 @@ modeu5_core03_transfer_residual_good_pearls = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pearls = yes
+	}
 }
 
 # Literal persistence adapter for amber.
@@ -60694,6 +62566,19 @@ modeu5_debug_corrupt_market_stock_good_amber = {
 
 modeu5_core03_transfer_location_good_amber = {
 	goods:amber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_amber = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -60707,11 +62592,33 @@ modeu5_core03_transfer_location_good_amber = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_amber = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_amber = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_amber = {
 	goods:amber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_amber = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -60725,7 +62632,11 @@ modeu5_core03_transfer_residual_good_amber = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_amber = yes
+	}
 }
 
 # Literal persistence adapter for saltpeter.
@@ -61917,6 +63828,19 @@ modeu5_debug_corrupt_market_stock_good_saltpeter = {
 
 modeu5_core03_transfer_location_good_saltpeter = {
 	goods:saltpeter = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_saltpeter = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -61930,11 +63854,33 @@ modeu5_core03_transfer_location_good_saltpeter = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saltpeter = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saltpeter = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_saltpeter = {
 	goods:saltpeter = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_saltpeter = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -61948,7 +63894,11 @@ modeu5_core03_transfer_residual_good_saltpeter = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saltpeter = yes
+	}
 }
 
 # Literal persistence adapter for alum.
@@ -63140,6 +65090,19 @@ modeu5_debug_corrupt_market_stock_good_alum = {
 
 modeu5_core03_transfer_location_good_alum = {
 	goods:alum = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_alum = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -63153,11 +65116,33 @@ modeu5_core03_transfer_location_good_alum = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_alum = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_alum = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_alum = {
 	goods:alum = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_alum = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -63171,7 +65156,11 @@ modeu5_core03_transfer_residual_good_alum = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_alum = yes
+	}
 }
 
 # Literal persistence adapter for wine.
@@ -64363,6 +66352,19 @@ modeu5_debug_corrupt_market_stock_good_wine = {
 
 modeu5_core03_transfer_location_good_wine = {
 	goods:wine = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wine = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -64376,11 +66378,33 @@ modeu5_core03_transfer_location_good_wine = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wine = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wine = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_wine = {
 	goods:wine = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wine = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -64394,7 +66418,11 @@ modeu5_core03_transfer_residual_good_wine = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wine = yes
+	}
 }
 
 # Literal persistence adapter for elephants.
@@ -65586,6 +67614,19 @@ modeu5_debug_corrupt_market_stock_good_elephants = {
 
 modeu5_core03_transfer_location_good_elephants = {
 	goods:elephants = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_elephants = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -65599,11 +67640,33 @@ modeu5_core03_transfer_location_good_elephants = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_elephants = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_elephants = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_elephants = {
 	goods:elephants = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_elephants = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -65617,7 +67680,11 @@ modeu5_core03_transfer_residual_good_elephants = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_elephants = yes
+	}
 }
 
 # Literal persistence adapter for marble.
@@ -66809,6 +68876,19 @@ modeu5_debug_corrupt_market_stock_good_marble = {
 
 modeu5_core03_transfer_location_good_marble = {
 	goods:marble = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_marble = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -66822,11 +68902,33 @@ modeu5_core03_transfer_location_good_marble = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_marble = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_marble = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_marble = {
 	goods:marble = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_marble = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -66840,7 +68942,11 @@ modeu5_core03_transfer_residual_good_marble = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_marble = yes
+	}
 }
 
 # Literal persistence adapter for mercury.
@@ -68032,6 +70138,19 @@ modeu5_debug_corrupt_market_stock_good_mercury = {
 
 modeu5_core03_transfer_location_good_mercury = {
 	goods:mercury = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_mercury = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -68045,11 +70164,33 @@ modeu5_core03_transfer_location_good_mercury = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_mercury = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_mercury = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_mercury = {
 	goods:mercury = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_mercury = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -68063,7 +70204,11 @@ modeu5_core03_transfer_residual_good_mercury = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_mercury = yes
+	}
 }
 
 # Literal persistence adapter for saffron.
@@ -69255,6 +71400,19 @@ modeu5_debug_corrupt_market_stock_good_saffron = {
 
 modeu5_core03_transfer_location_good_saffron = {
 	goods:saffron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_saffron = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -69268,11 +71426,33 @@ modeu5_core03_transfer_location_good_saffron = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saffron = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saffron = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_saffron = {
 	goods:saffron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_saffron = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -69286,7 +71466,11 @@ modeu5_core03_transfer_residual_good_saffron = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_saffron = yes
+	}
 }
 
 # Literal persistence adapter for pepper.
@@ -70478,6 +72662,19 @@ modeu5_debug_corrupt_market_stock_good_pepper = {
 
 modeu5_core03_transfer_location_good_pepper = {
 	goods:pepper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pepper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -70491,11 +72688,33 @@ modeu5_core03_transfer_location_good_pepper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pepper = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pepper = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_pepper = {
 	goods:pepper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_pepper = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -70509,7 +72728,11 @@ modeu5_core03_transfer_residual_good_pepper = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_pepper = yes
+	}
 }
 
 # Literal persistence adapter for cloves.
@@ -71701,6 +73924,19 @@ modeu5_debug_corrupt_market_stock_good_cloves = {
 
 modeu5_core03_transfer_location_good_cloves = {
 	goods:cloves = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cloves = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -71714,11 +73950,33 @@ modeu5_core03_transfer_location_good_cloves = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloves = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloves = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_cloves = {
 	goods:cloves = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_cloves = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -71732,7 +73990,11 @@ modeu5_core03_transfer_residual_good_cloves = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_cloves = yes
+	}
 }
 
 # Literal persistence adapter for chili.
@@ -72924,6 +75186,19 @@ modeu5_debug_corrupt_market_stock_good_chili = {
 
 modeu5_core03_transfer_location_good_chili = {
 	goods:chili = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_chili = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -72937,11 +75212,33 @@ modeu5_core03_transfer_location_good_chili = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_chili = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_chili = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_chili = {
 	goods:chili = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_chili = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -72955,7 +75252,11 @@ modeu5_core03_transfer_residual_good_chili = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_chili = yes
+	}
 }
 
 # Literal persistence adapter for wool.
@@ -74147,6 +76448,19 @@ modeu5_debug_corrupt_market_stock_good_wool = {
 
 modeu5_core03_transfer_location_good_wool = {
 	goods:wool = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wool = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -74160,11 +76474,33 @@ modeu5_core03_transfer_location_good_wool = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wool = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wool = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_wool = {
 	goods:wool = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wool = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -74178,7 +76514,11 @@ modeu5_core03_transfer_residual_good_wool = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wool = yes
+	}
 }
 
 # Literal persistence adapter for wild_game.
@@ -75370,6 +77710,19 @@ modeu5_debug_corrupt_market_stock_good_wild_game = {
 
 modeu5_core03_transfer_location_good_wild_game = {
 	goods:wild_game = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wild_game = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -75383,11 +77736,33 @@ modeu5_core03_transfer_location_good_wild_game = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wild_game = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wild_game = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_wild_game = {
 	goods:wild_game = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wild_game = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -75401,7 +77776,11 @@ modeu5_core03_transfer_residual_good_wild_game = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wild_game = yes
+	}
 }
 
 # Literal persistence adapter for fur.
@@ -76593,6 +78972,19 @@ modeu5_debug_corrupt_market_stock_good_fur = {
 
 modeu5_core03_transfer_location_good_fur = {
 	goods:fur = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fur = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -76606,11 +78998,33 @@ modeu5_core03_transfer_location_good_fur = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fur = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fur = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_fur = {
 	goods:fur = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fur = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -76624,7 +79038,11 @@ modeu5_core03_transfer_residual_good_fur = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fur = yes
+	}
 }
 
 # Literal persistence adapter for fish.
@@ -77816,6 +80234,19 @@ modeu5_debug_corrupt_market_stock_good_fish = {
 
 modeu5_core03_transfer_location_good_fish = {
 	goods:fish = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fish = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -77829,11 +80260,33 @@ modeu5_core03_transfer_location_good_fish = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fish = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fish = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_fish = {
 	goods:fish = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fish = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -77847,7 +80300,11 @@ modeu5_core03_transfer_residual_good_fish = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fish = yes
+	}
 }
 
 # Literal persistence adapter for wheat.
@@ -79039,6 +81496,19 @@ modeu5_debug_corrupt_market_stock_good_wheat = {
 
 modeu5_core03_transfer_location_good_wheat = {
 	goods:wheat = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wheat = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -79052,11 +81522,33 @@ modeu5_core03_transfer_location_good_wheat = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wheat = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wheat = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_wheat = {
 	goods:wheat = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_wheat = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -79070,7 +81562,11 @@ modeu5_core03_transfer_residual_good_wheat = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_wheat = yes
+	}
 }
 
 # Literal persistence adapter for maize.
@@ -80262,6 +82758,19 @@ modeu5_debug_corrupt_market_stock_good_maize = {
 
 modeu5_core03_transfer_location_good_maize = {
 	goods:maize = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_maize = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -80275,11 +82784,33 @@ modeu5_core03_transfer_location_good_maize = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_maize = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_maize = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_maize = {
 	goods:maize = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_maize = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -80293,7 +82824,11 @@ modeu5_core03_transfer_residual_good_maize = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_maize = yes
+	}
 }
 
 # Literal persistence adapter for rice.
@@ -81485,6 +84020,19 @@ modeu5_debug_corrupt_market_stock_good_rice = {
 
 modeu5_core03_transfer_location_good_rice = {
 	goods:rice = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_rice = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -81498,11 +84046,33 @@ modeu5_core03_transfer_location_good_rice = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_rice = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_rice = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_rice = {
 	goods:rice = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_rice = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -81516,7 +84086,11 @@ modeu5_core03_transfer_residual_good_rice = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_rice = yes
+	}
 }
 
 # Literal persistence adapter for millet.
@@ -82708,6 +85282,19 @@ modeu5_debug_corrupt_market_stock_good_millet = {
 
 modeu5_core03_transfer_location_good_millet = {
 	goods:millet = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_millet = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -82721,11 +85308,33 @@ modeu5_core03_transfer_location_good_millet = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_millet = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_millet = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_millet = {
 	goods:millet = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_millet = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -82739,7 +85348,11 @@ modeu5_core03_transfer_residual_good_millet = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_millet = yes
+	}
 }
 
 # Literal persistence adapter for legumes.
@@ -83931,6 +86544,19 @@ modeu5_debug_corrupt_market_stock_good_legumes = {
 
 modeu5_core03_transfer_location_good_legumes = {
 	goods:legumes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_legumes = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -83944,11 +86570,33 @@ modeu5_core03_transfer_location_good_legumes = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_legumes = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_legumes = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_legumes = {
 	goods:legumes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_legumes = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -83962,7 +86610,11 @@ modeu5_core03_transfer_residual_good_legumes = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_legumes = yes
+	}
 }
 
 # Literal persistence adapter for potato.
@@ -85154,6 +87806,19 @@ modeu5_debug_corrupt_market_stock_good_potato = {
 
 modeu5_core03_transfer_location_good_potato = {
 	goods:potato = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_potato = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -85167,11 +87832,33 @@ modeu5_core03_transfer_location_good_potato = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_potato = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_potato = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_potato = {
 	goods:potato = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_potato = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -85185,7 +87872,11 @@ modeu5_core03_transfer_residual_good_potato = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_potato = yes
+	}
 }
 
 # Literal persistence adapter for livestock.
@@ -86377,6 +89068,19 @@ modeu5_debug_corrupt_market_stock_good_livestock = {
 
 modeu5_core03_transfer_location_good_livestock = {
 	goods:livestock = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_livestock = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -86390,11 +89094,33 @@ modeu5_core03_transfer_location_good_livestock = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_livestock = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_livestock = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_livestock = {
 	goods:livestock = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_livestock = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -86408,7 +89134,11 @@ modeu5_core03_transfer_residual_good_livestock = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_livestock = yes
+	}
 }
 
 # Literal persistence adapter for olives.
@@ -87600,6 +90330,19 @@ modeu5_debug_corrupt_market_stock_good_olives = {
 
 modeu5_core03_transfer_location_good_olives = {
 	goods:olives = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_olives = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -87613,11 +90356,33 @@ modeu5_core03_transfer_location_good_olives = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_olives = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_olives = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_olives = {
 	goods:olives = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_olives = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -87631,7 +90396,11 @@ modeu5_core03_transfer_residual_good_olives = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_olives = yes
+	}
 }
 
 # Literal persistence adapter for fruit.
@@ -88823,6 +91592,19 @@ modeu5_debug_corrupt_market_stock_good_fruit = {
 
 modeu5_core03_transfer_location_good_fruit = {
 	goods:fruit = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fruit = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -88836,11 +91618,33 @@ modeu5_core03_transfer_location_good_fruit = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fruit = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fruit = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_fruit = {
 	goods:fruit = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_fruit = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -88854,7 +91658,11 @@ modeu5_core03_transfer_residual_good_fruit = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_fruit = yes
+	}
 }
 
 # Literal persistence adapter for beeswax.
@@ -90046,6 +92854,19 @@ modeu5_debug_corrupt_market_stock_good_beeswax = {
 
 modeu5_core03_transfer_location_good_beeswax = {
 	goods:beeswax = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_beeswax = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -90059,11 +92880,33 @@ modeu5_core03_transfer_location_good_beeswax = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beeswax = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beeswax = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_beeswax = {
 	goods:beeswax = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_beeswax = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -90077,7 +92920,11 @@ modeu5_core03_transfer_residual_good_beeswax = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_beeswax = yes
+	}
 }
 
 # Literal persistence adapter for slaves_goods.
@@ -91269,6 +94116,19 @@ modeu5_debug_corrupt_market_stock_good_slaves_goods = {
 
 modeu5_core03_transfer_location_good_slaves_goods = {
 	goods:slaves_goods = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_slaves_goods = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
 	modeu5_core03_prepare_location_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
@@ -91282,11 +94142,33 @@ modeu5_core03_transfer_location_good_slaves_goods = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_location_good_transfer = yes
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_slaves_goods = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_slaves_goods = yes
+	}
 }
 
 modeu5_core03_transfer_residual_good_slaves_goods = {
 	goods:slaves_goods = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good_slaves_goods = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
 	modeu5_core03_prepare_residual_good_transfer = yes
 	if = {
 		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
@@ -91300,5 +94182,9 @@ modeu5_core03_transfer_residual_good_slaves_goods = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	modeu5_core03_finalize_residual_good_transfer = yes
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good_slaves_goods = yes
+	}
 }

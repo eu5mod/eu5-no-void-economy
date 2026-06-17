@@ -263,7 +263,7 @@ Related US: US-01, US-02, US-10.2, US-11
 - [ ] Over-cap stock created by succession is preserved and reported.
 - [ ] Zero capacity and missing stock are safe no-ops with diagnostics.
 - [ ] Every affected market-good is rebuilt/validated after lifecycle completion.
-- [ ] The deterministic Huelva-to-Portugal stock-survival test emits before/after dumps and passes.
+- [ ] The deterministic Cadiz-to-Portugal stock-survival test emits before/after dumps and passes.
 
 ## Acceptance criteria
 
@@ -297,11 +297,11 @@ event modeu5_core03_debug.1
 Then choose:
 
 ```txt
-Run CORE-03 Huelva stock-survival test
+Run CORE-03 Cadiz stock-survival test
 ```
 
-This destructive fixture seeds Castile with 100 wheat in Huelva's market,
-transfers Huelva to Portugal, waits one day, and emits before/after dumps. It
+This destructive fixture seeds Castile with 100 wheat in Cadiz's market,
+transfers Cadiz to Portugal, waits one day, and emits before/after dumps. It
 must show:
 
 ```txt
@@ -317,7 +317,7 @@ Keep the older lifecycle probe available for hook-regression checks:
 event modeu5_core03_probe.1
 ```
 
-The probe exposes deterministic scripted fixtures for `Huelva -> Portugal`,
+The probe exposes deterministic scripted fixtures for `Cadiz -> Portugal`,
 `Leon` subject creation, and `Leon` annexation so the tester can see expected
 map changes in the UI while reading lifecycle markers.
 

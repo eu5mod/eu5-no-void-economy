@@ -70,7 +70,7 @@ also changes the visible map state. Each scripted run:
 Scripted fixture coverage:
 
 ```txt
-Scenario A: transfer Huelva from Castile to Portugal
+Scenario A: transfer Cadiz from Castile to Portugal
 Scenario B: create one Castile subject centered on Leon
 Scenario C: create or reuse one Leon-centered Castile subject, then auto-annex it
 ```
@@ -135,19 +135,19 @@ Ignore unrelated localization noise when reviewing this probe. The validation
 target here is whether the deterministic fixture ran, changed the map as
 expected, and produced the expected lifecycle markers.
 
-## Scripted Scenario A - Huelva to Portugal
+## Scripted Scenario A - Cadiz to Portugal
 
 ```txt
 Reload the baseline Castile save
 event modeu5_core03_probe.1
-Choose: Run scripted Scenario A - transfer Huelva to Portugal
+Choose: Run scripted Scenario A - transfer Cadiz to Portugal
 Unpause until the report opens
 ```
 
 Expected:
 
 ```txt
-Huelva visibly changes owner to Portugal
+Cadiz visibly changes owner to Portugal
 PASS - Location owner-change hook observed
 PASS - Distinct loser and winner scopes resolved
 PASS - No duplicate location hook observed
@@ -277,7 +277,7 @@ Capture each run with one row:
 
 | Run type | Scenario | Baseline save reloaded | Action path used | Locations transferred | Waited two days | Report result | Log result |
 |---|---|---|---|---|---|---|---|
-| scripted | A | yes | Huelva to Portugal fixture | Huelva | no | fill manually | fill manually |
+| scripted | A | yes | Cadiz to Portugal fixture | Cadiz | no | fill manually | fill manually |
 | scripted | B | yes | Leon subject-creation fixture | Leon | yes | fill manually | fill manually |
 | scripted | C | yes | Leon stage then annex fixture | Leon | yes | fill manually | fill manually |
 | manual | A | yes/no | peace / sale / other | fill manually | no | fill manually | fill manually |

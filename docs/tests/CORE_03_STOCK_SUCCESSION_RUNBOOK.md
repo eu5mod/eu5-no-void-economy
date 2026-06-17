@@ -45,7 +45,7 @@ The deterministic fixture requires:
 ```txt
 CAS exists
 POR exists
-Huelva is owned by CAS
+Cadiz is owned by CAS
 ModeU5 stock schema is current
 ModeU5 initialization_state = 2
 ```
@@ -75,25 +75,25 @@ event modeu5_core03_debug.1
 Choose:
 
 ```txt
-Run CORE-03 Huelva stock-survival test
+Run CORE-03 Cadiz stock-survival test
 ```
 
 The test:
 
 ```txt
 1. clears prior deterministic test markers
-2. recalculates CAS/POR wheat capacity in Huelva's market
+2. recalculates CAS/POR wheat capacity in Cadiz's market
 3. clears CAS/POR wheat stock in that market through CORE-01 operators
 4. adds 100 wheat to CAS through modeu5_add_stock
 5. records the expected capacity-share transfer
-6. transfers Huelva to POR with change_location_owner
+6. transfers Cadiz to POR with change_location_owner
 7. waits one day
 8. reads CAS/POR/market wheat stock and emits the result dump
 ```
 
 ## Expected UI Result
 
-Huelva visibly changes owner from Castile to Portugal.
+Cadiz visibly changes owner from Castile to Portugal.
 
 The result event should show one of:
 
@@ -110,9 +110,9 @@ Review `debug.log`, `error.log`, `game.log`, and `system.log`.
 The validation comment for the PR must include the relevant dump lines:
 
 ```txt
-ModeU5 CORE-03 DUMP before scenario=Huelva_to_Portugal ...
+ModeU5 CORE-03 DUMP before scenario=Cadiz_to_Portugal ...
 ModeU5 CORE-03 RESULT location_succession STAGED wait_one_day
-ModeU5 CORE-03 DUMP after scenario=Huelva_to_Portugal ...
+ModeU5 CORE-03 DUMP after scenario=Cadiz_to_Portugal ...
 ModeU5 CORE-03 RESULT location_succession PASS
 ```
 
@@ -138,7 +138,7 @@ ModeU5 CORE-03 PASS location hook resolved distinct loser and winner scopes
 
 ```txt
 CORE-02 initialization was not complete yet
-Huelva was already transferred in the current save
+Cadiz was already transferred in the current save
 the campaign was not started from Castile's 1337 state
 No Void Economy Tests was not loaded
 ```
