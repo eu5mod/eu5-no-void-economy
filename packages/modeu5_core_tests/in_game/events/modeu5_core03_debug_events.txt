@@ -1,0 +1,54 @@
+namespace = modeu5_core03_debug
+
+modeu5_core03_debug.1 = {
+	type = country_event
+	title = modeu5_core03_debug.1.title
+	desc = modeu5_core03_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_core03_debug.1.a
+		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_core03_location_succession_test = yes
+		trigger_event_non_silently = { id = modeu5_core03_debug.2 days = 1 }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_core03_debug.2 = {
+	type = country_event
+	title = modeu5_core03_debug.2.title
+	desc = modeu5_core03_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_debug_finish_core03_location_succession_test = yes
+	}
+
+	option = {
+		name = modeu5_debug.test.core03_location_succession.pass
+		trigger = { has_global_variable = modeu5_test_core03_location_succession_passed }
+	}
+	option = {
+		name = modeu5_debug.test.core03_location_succession.fail
+		trigger = { has_global_variable = modeu5_test_core03_location_succession_failed }
+	}
+	option = {
+		name = modeu5_debug.test.core03_location_succession.blocked
+		trigger = { has_global_variable = modeu5_test_core03_location_succession_blocked }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

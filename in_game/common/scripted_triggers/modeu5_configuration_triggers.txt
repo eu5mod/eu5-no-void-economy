@@ -24,3 +24,10 @@ modeu5_debug_enabled_trigger = {
 modeu5_verbose_debug_enabled_trigger = {
 	has_game_rule = modeu5_debug_verbose
 }
+
+
+modeu5_stock_runtime_ready_trigger = {
+	modeu5_initialization_complete_trigger = yes
+	has_global_variable = modeu5_stock_schema_version
+	global_var:modeu5_stock_schema_version = modeu5_current_stock_schema_version
+}

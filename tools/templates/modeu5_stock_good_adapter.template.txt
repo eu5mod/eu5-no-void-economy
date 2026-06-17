@@ -1184,3 +1184,78 @@ modeu5_debug_corrupt_market_stock_good___GOOD__ = {
 	}
 	modeu5_mark_dirty_market_good___GOOD__ = yes
 }
+
+modeu5_core03_transfer_location_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good___GOOD__ = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+	}
+	modeu5_core03_prepare_location_good_transfer = yes
+	if = {
+		limit = { scope:modeu5_core03_requested_transfer_quantity > 0 }
+		modeu5_transfer_stock = {
+			seller_country = scope:modeu5_core03_loser
+			buyer_country = scope:modeu5_core03_winner
+			source_market = scope:modeu5_core03_market
+			target_market = scope:modeu5_core03_market
+			good = __GOOD__
+			quantity = scope:modeu5_core03_requested_transfer_quantity
+			target_capacity_policy = allow_over_capacity
+		}
+	}
+	scope:modeu5_core03_loser = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+	}
+	scope:modeu5_core03_winner = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+	}
+}
+
+modeu5_core03_transfer_residual_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_core03_annex_target = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good___GOOD__ = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_residual_transfer_quantity
+			value = scope:modeu5_read_country_stock
+		}
+		set_global_variable = {
+			name = modeu5_debug_last_core03_residual_transfer_quantity
+			value = scope:modeu5_core03_residual_transfer_quantity
+		}
+	}
+	modeu5_core03_prepare_residual_good_transfer = yes
+	if = {
+		limit = { scope:modeu5_core03_residual_transfer_quantity > 0 }
+		modeu5_transfer_stock = {
+			seller_country = scope:modeu5_core03_annex_target
+			buyer_country = scope:modeu5_core03_annex_successor
+			source_market = scope:modeu5_core03_market
+			target_market = scope:modeu5_core03_market
+			good = __GOOD__
+			quantity = scope:modeu5_core03_residual_transfer_quantity
+			target_capacity_policy = allow_over_capacity
+		}
+	}
+	scope:modeu5_core03_annex_successor = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+	}
+}

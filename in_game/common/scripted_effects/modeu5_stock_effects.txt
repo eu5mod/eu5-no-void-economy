@@ -1270,7 +1270,7 @@ modeu5_fail_initialization = {
 
 modeu5_start_game_stock_initialization_dispatcher = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		set_global_variable = {
 			name = modeu5_initialization_last_mode
 			value = 2
@@ -1432,7 +1432,7 @@ modeu5_reconciliation_finalize = {
 
 modeu5_run_monthly_stock_cycle = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		modeu5_run_monthly_capacity_refresh_for_current_country = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
 	}
@@ -1446,7 +1446,7 @@ modeu5_run_monthly_stock_cycle = {
 
 modeu5_run_monthly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_month_stamp
 			value = {
@@ -1496,7 +1496,7 @@ modeu5_run_monthly_stock_reconciliation_once = {
 
 modeu5_run_yearly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_year_stamp
 			value = current_year

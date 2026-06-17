@@ -519,6 +519,38 @@ allocation failures.
 
 ---
 
+### Test S0.6 - deterministic CORE-03 stock succession
+
+Follow:
+
+```txt
+docs/tests/CORE_03_STOCK_SUCCESSION_RUNBOOK.md
+```
+
+Required playset: No Void Economy plus the testing-only No Void Economy Tests
+package.
+
+Expected:
+
+```txt
+CORE-02 initialization is complete before the test starts
+Cadiz visibly transfers from Castile to Portugal
+CAS seeded wheat stock decreases by the expected capacity-share transfer
+POR wheat stock increases by the same quantity
+The Cadiz market wheat aggregate is unchanged
+The lifecycle hook and stock-survival dumps are present in debug.log
+No new blocking ModeU5 script error is added to error.log
+```
+
+This is the first deterministic end-to-end stock test using the implemented
+runtime chain:
+
+```txt
+US-02 capacity -> CORE-01 stock movement -> CORE-02 initialization -> CORE-03 succession
+```
+
+---
+
 ### Test S1 - delayed fresh initialization
 
 Setup:
@@ -672,7 +704,7 @@ Country creation/release and annexation hook overlap is recorded
 Delayed finalizers execute after location hooks
 No stock or capacity is mutated by the probe
 Synthetic SPA/POR runs validate probe wiring only
-TECH-01 098 remains TO_TEST until all required lifecycle paths are reviewed
+TECH-01 098 is treated as CONFIRMED under the PR #48 validation assumption; re-run these lifecycle paths when hook wiring changes
 ```
 
 ---
@@ -798,6 +830,29 @@ Expected:
 No CORE-03 stock transfer
 Country and market stock remain unchanged
 ```
+
+---
+
+### Test 18A — CORE-03 stock succession gameplay
+
+Expected:
+
+```txt
+ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly/yearly stock reconciliation
+A permanent location owner change transfers loser stock by the transferred location capacity share
+The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
+The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
+Loser and winner capacities are recalculated after the transfer
+Annexation finalizers transfer only residual disappearing-country stock and do not duplicate location-level transfers
+error.log contains no CORE-03 gameplay failures
+```
+
+Actual result for this PR:
+
+```txt
+Static validation passed. Local EU5 runtime execution was not available in this environment; run the PR #48 CORE-03 lifecycle scenario again with initialized stock to inspect debug variables and error.log.
+```
+
 
 ## Core invariant tests
 
@@ -1175,7 +1230,7 @@ Expected result:
 The monthly global reconciliation runs once for the month
 The yearly global reconciliation runs once for the year
 The yearly exhaustive pass detects and rebuilds the unindexed corruption
-Automatic reconciliation does not run before CORE-02 initialization completes
+Automatic reconciliation does not run before CORE-02 initialization completes and the persisted stock schema version matches the current schema
 ```
 
 ## US-00 void economy tests

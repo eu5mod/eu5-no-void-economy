@@ -84,6 +84,19 @@ goods=(
 		for good in "${goods[@]}"; do
 			printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
 	done
+	printf '%s\n\n' '}'
+	printf '%s\n' 'modeu5_core03_transfer_location_all_goods = {'
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_core03_transfer_location_good_%s = yes\n' "$good"
+	done
+	printf '%s\n' '}'
+	printf '%s\n\n' 'modeu5_core03_transfer_residual_all_goods = {'
+	for good in "${goods[@]}"; do
+		printf '\tevery_market_in_world = {\n'
+		printf '\t\tsave_temporary_scope_as = modeu5_core03_market\n'
+		printf '\t\tmodeu5_core03_transfer_residual_good_%s = yes\n' "$good"
+		printf '\t}\n'
+	done
 	printf '%s\n' '}'
 
 	first=1
