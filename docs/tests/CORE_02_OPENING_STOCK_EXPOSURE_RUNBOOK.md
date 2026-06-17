@@ -35,6 +35,10 @@ branch: spike/core-02-opening-stock-exposure
 event modeu5_core02_probe.1
 ```
 
+The technical minimum is one complete in-game day because the probe is attached
+after `on_game_start` through `delay = { days = 1 }`. The extra day is kept in
+the runbook to avoid judging logs while delayed startup work is still settling.
+
 ## Expected result
 
 The event must display:

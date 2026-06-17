@@ -1022,7 +1022,15 @@ modeu5_rebuild_market_stock_calculate = {
 # CORE-01.6
 
 modeu5_validate_stock_consistency = {
-	save_temporary_scope_as = modeu5_consistency_controller
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		scope:modeu5_reconciliation_controller = {
+			save_temporary_scope_as = modeu5_consistency_controller
+		}
+	}
+	else = {
+		save_temporary_scope_as = modeu5_consistency_controller
+	}
 	$market$ = { save_temporary_scope_as = modeu5_market }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 
@@ -1134,7 +1142,197 @@ modeu5_validate_stock_consistency_finalize = {
 	}
 }
 
+# CORE-02
+
+modeu5_initialization_clear_last_result = {
+	remove_global_variable = modeu5_initialization_failure_detected
+	remove_global_variable = modeu5_initialization_failure_code
+	remove_global_variable = modeu5_initialization_market_goods_checked
+	remove_global_variable = modeu5_initialization_market_goods_seeded
+	remove_global_variable = modeu5_initialization_opening_source_total
+	remove_global_variable = modeu5_initialization_allocated_total
+	remove_global_variable = modeu5_initialization_residue_allocated_total
+	remove_global_variable = modeu5_initialization_zero_source_count
+	remove_global_variable = modeu5_initialization_capacity_country_scans
+	remove_global_variable = modeu5_initialization_zero_capacity_failures
+	remove_global_variable = modeu5_initialization_existing_stock_failures
+	remove_global_variable = modeu5_initialization_negative_capacity_failures
+	remove_global_variable = modeu5_initialization_validation_failures
+	remove_global_variable = modeu5_initialization_market_total_capacity
+	remove_global_variable = modeu5_initialization_market_eligible_country_count
+	remove_global_variable = modeu5_initialization_market_allocated_quantity
+	remove_global_variable = modeu5_initialization_market_existing_stock_failure
+	remove_global_variable = modeu5_initialization_market_negative_capacity_failure
+	remove_global_variable = modeu5_initialization_last_mode
+}
+
+modeu5_initialization_mark_failure = {
+	set_global_variable = modeu5_initialization_failure_detected
+	set_global_variable = {
+		name = modeu5_initialization_failure_code
+		value = $code$
+	}
+}
+
+modeu5_initialization_prepare_counters = {
+	modeu5_initialization_clear_last_result = yes
+
+	set_global_variable = { name = modeu5_initialization_market_goods_checked value = 0 }
+	set_global_variable = { name = modeu5_initialization_market_goods_seeded value = 0 }
+	set_global_variable = { name = modeu5_initialization_opening_source_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_allocated_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_residue_allocated_total value = 0 }
+	set_global_variable = { name = modeu5_initialization_zero_source_count value = 0 }
+	set_global_variable = { name = modeu5_initialization_capacity_country_scans value = 0 }
+	set_global_variable = { name = modeu5_initialization_zero_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_existing_stock_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_negative_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_initialization_validation_failures value = 0 }
+}
+
+modeu5_initialization_finalize_counters = {
+	if = {
+		limit = {
+			OR = {
+				global_var:modeu5_initialization_zero_capacity_failures > 0
+				global_var:modeu5_initialization_existing_stock_failures > 0
+				global_var:modeu5_initialization_negative_capacity_failures > 0
+				global_var:modeu5_initialization_validation_failures > 0
+			}
+		}
+		modeu5_initialization_mark_failure = { code = 10 }
+	}
+}
+
+modeu5_seed_opening_market_good = {
+	$market$ = { save_temporary_scope_as = modeu5_initialization_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_initialization_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_opening_source_quantity_raw
+		value = $quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_opening_source_quantity
+		value = {
+			value = scope:modeu5_opening_source_quantity_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_opening_source_quantity_raw < 0 }
+		modeu5_initialization_mark_failure = { code = 11 }
+	}
+	modeu5_seed_opening_market_good_$good$ = yes
+}
+
+modeu5_run_fresh_opening_stock_initialization = {
+	modeu5_initialization_prepare_counters = yes
+	modeu5_initialize_storage_capacities = yes
+	modeu5_prepare_reconciliation_controller = yes
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		modeu5_initialize_opening_stocks = yes
+	}
+	else = {
+		modeu5_initialization_mark_failure = { code = 19 }
+		error_log = "ModeU5 CORE-02 opening stock initialization could not find a country scope for consistency debug."
+	}
+	modeu5_initialization_finalize_counters = yes
+}
+
+modeu5_commit_successful_initialization = {
+	set_global_variable = {
+		name = modeu5_stock_schema_version
+		value = modeu5_current_stock_schema_version
+	}
+	set_global_variable = {
+		name = modeu5_initialization_state
+		value = 2
+	}
+	set_global_variable = {
+		name = modeu5_initialization_last_mode
+		value = 1
+	}
+	debug_log = "ModeU5 CORE-02 opening stock initialization completed."
+}
+
+modeu5_fail_initialization = {
+	set_global_variable = {
+		name = modeu5_initialization_state
+		value = -1
+	}
+	set_global_variable = {
+		name = modeu5_initialization_last_mode
+		value = -1
+	}
+	error_log = "ModeU5 CORE-02 opening stock initialization failed; inspect modeu5_initialization_* globals."
+}
+
+modeu5_start_game_stock_initialization_dispatcher = {
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_last_mode
+			value = 2
+		}
+		modeu5_validate_all_stock_consistency = yes
+	}
+	else_if = {
+		limit = { modeu5_initialization_not_started_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_state
+			value = 1
+		}
+		modeu5_run_fresh_opening_stock_initialization = yes
+		if = {
+			limit = { has_global_variable = modeu5_initialization_failure_detected }
+			modeu5_fail_initialization = yes
+		}
+		else = {
+			modeu5_commit_successful_initialization = yes
+			modeu5_validate_all_stock_consistency = yes
+		}
+	}
+	else_if = {
+		limit = { modeu5_initialization_in_progress_trigger = yes }
+		modeu5_initialization_mark_failure = { code = 20 }
+		modeu5_fail_initialization = yes
+	}
+	else_if = {
+		limit = { modeu5_initialization_failed_trigger = yes }
+		set_global_variable = {
+			name = modeu5_initialization_last_mode
+			value = -1
+		}
+		debug_log = "ModeU5 CORE-02 initialization is already failed; startup remains diagnostic-only."
+	}
+	else_if = {
+		limit = {
+			has_global_variable = modeu5_stock_schema_version
+			global_var:modeu5_stock_schema_version = modeu5_current_stock_schema_version
+		}
+		modeu5_initialization_mark_failure = { code = 21 }
+		modeu5_fail_initialization = yes
+	}
+	else = {
+		modeu5_initialization_mark_failure = { code = 22 }
+		modeu5_fail_initialization = yes
+	}
+}
+
 # US-11
+
+modeu5_prepare_reconciliation_controller = {
+	remove_global_variable = modeu5_reconciliation_controller_selected
+	every_country = {
+		limit = {
+			NOT = { has_global_variable = modeu5_reconciliation_controller_selected }
+		}
+		save_temporary_scope_as = modeu5_reconciliation_controller
+		set_global_variable = modeu5_reconciliation_controller_selected
+	}
+	remove_global_variable = modeu5_reconciliation_controller_selected
+}
 
 modeu5_reconciliation_prepare = {
 	set_local_variable = {
@@ -1192,33 +1390,38 @@ modeu5_reconciliation_finalize = {
 		value = local_var:modeu5_reconciliation_failures
 	}
 
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_type
-		value = scope:modeu5_reconciliation_type
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_records_checked
-		value = scope:modeu5_reconciliation_records_checked_result
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_inconsistencies_found
-		value = scope:modeu5_reconciliation_inconsistencies_found_result
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_rebuilds_called
-		value = scope:modeu5_reconciliation_rebuilds_called_result
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_failures
-		value = scope:modeu5_reconciliation_failures_result
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_cycle_stamp
-		value = 0
-	}
-	set_variable = {
-		name = modeu5_debug_last_reconciliation_initialization_gate_passed
-		value = 0
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		scope:modeu5_reconciliation_controller = {
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_type
+				value = scope:modeu5_reconciliation_type
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_records_checked
+				value = scope:modeu5_reconciliation_records_checked_result
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_inconsistencies_found
+				value = scope:modeu5_reconciliation_inconsistencies_found_result
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_rebuilds_called
+				value = scope:modeu5_reconciliation_rebuilds_called_result
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_failures
+				value = scope:modeu5_reconciliation_failures_result
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_cycle_stamp
+				value = 0
+			}
+			set_variable = {
+				name = modeu5_debug_last_reconciliation_initialization_gate_passed
+				value = 0
+			}
+		}
 	}
 
 	if = {
@@ -1227,9 +1430,23 @@ modeu5_reconciliation_finalize = {
 	}
 }
 
+modeu5_run_monthly_stock_cycle = {
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		modeu5_run_monthly_capacity_refresh_for_current_country = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+	}
+	else = {
+		set_variable = {
+			name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+			value = 0
+		}
+	}
+}
+
 modeu5_run_monthly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_month_stamp
 			value = {
@@ -1279,7 +1496,7 @@ modeu5_run_monthly_stock_reconciliation_once = {
 
 modeu5_run_yearly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_initialization_complete_trigger = yes }
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_year_stamp
 			value = current_year

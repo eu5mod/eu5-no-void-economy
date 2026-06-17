@@ -6,6 +6,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 default_target="${MODEU5_MOD_DIR:-${HOME}/Documents/Paradox Interactive/Europa Universalis V/mod}"
 target_root="$default_target"
 action="install"
+generator="$repo_root/tools/generate_all.sh"
 
 usage() {
 	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
@@ -59,6 +60,10 @@ package_sources=(
 	"$repo_root/packages/modeu5_war_rebalance"
 	"$repo_root/packages/modeu5_core_tests"
 )
+
+if [[ "$action" == "install" ]]; then
+	"$generator"
+fi
 
 source_branch="$(git -C "$repo_root" branch --show-current 2>/dev/null || true)"
 source_commit="$(git -C "$repo_root" rev-parse HEAD 2>/dev/null || printf 'unknown')"

@@ -27,7 +27,7 @@ Behavior when absent:
 ## Runtime position
 
 ```txt
-Monthly step: 2
+Monthly step: static package load before runtime; runtime additive fallback would run at monthly step 3
 Depends on: selected static override path and confirmed supporting exposure
 Feeds counters to: vanilla production read at step 4
 ```
@@ -38,10 +38,10 @@ Feeds counters to: vanilla production read at step 4
 |---|---|---|---|---|
 | Production efficiency modifier | country | `global_production_efficiency` | CONFIRMED | 066 |
 | Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
-| Monthly invocation at runtime step 2 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
+| Monthly invocation at runtime step 3 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
-| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions | CONFIRMED | 115 |
-| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry` | CONFIRMED | 116 |
+| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions | CONFIRMED | 118 |
+| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry` | CONFIRMED | 119 |
 
 ## Selected implementation path
 
@@ -175,4 +175,4 @@ The additive-modifier alternatives remain visible but unselected
 
 The current implementation uses the paired static scaffold path described above.
 The generated building override surface may include event-only or uncommon production files whenever they use the same `output =` production field.
-The additive-modifier alternatives remain blocked until read exposure and runtime semantics are confirmed.
+The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.

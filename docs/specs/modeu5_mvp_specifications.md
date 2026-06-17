@@ -85,10 +85,10 @@ Il sert à réduire le risque technique et à livrer le mod par lots testables.
 Chaque cycle économique mensuel doit suivre un ordre stable.
 ### Tick mensuel recommandé
 
-| 1. | Appliquer les malus de production calculés au mois précédent. |
+| 1. | Recalculer les capacités de stockage si nécessaire, avant toute admission en stock, consommation, transfert, decay ou calcul de void economy. |
 | --- | --- |
-| 2. | Si Rebalance Economy est chargé, appliquer le bonus global de Production Efficiency de US-09. |
-| 3. | Recalculer les capacités de stockage si nécessaire. |
+| 2. | Appliquer les malus de production calculés au mois précédent. |
+| 3. | Si Rebalance Economy est chargé, appliquer le bonus global de Production Efficiency de US-09. |
 | 4. | Exécuter ou lire la production vanilla. |
 | 5. | Calculer la production reconnue par le mod. |
 | 6. | Ajouter la production stockable aux stocks pays via modeu5_add_stock. |

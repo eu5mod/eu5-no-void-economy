@@ -18,6 +18,17 @@ modeu5_us02_debug.1 = {
 		trigger_event_non_silently = modeu5_us02_debug.2
 	}
 	option = {
+		name = modeu5_us02_debug.1.b
+		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_storage_capacity_timing_probe = yes
+		trigger_event_non_silently = modeu5_us02_debug.3
+	}
+	option = {
+		name = modeu5_us02_debug.1.c
+		modeu5_debug_finish_storage_capacity_timing_probe = yes
+		trigger_event_non_silently = modeu5_us02_debug.3
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -39,6 +50,37 @@ modeu5_us02_debug.2 = {
 	option = {
 		name = modeu5_debug.test.storage_capacity.fail
 		trigger = { NOT = { has_global_variable = modeu5_test_storage_capacity_passed } }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us02_debug.3 = {
+	type = country_event
+	title = modeu5_us02_debug.3.title
+	desc = modeu5_us02_debug.3.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.storage_capacity_timing.immediate.pass
+		trigger = { has_global_variable = modeu5_test_storage_capacity_timing_immediate_passed }
+	}
+	option = {
+		name = modeu5_debug.test.storage_capacity_timing.monthly.pass
+		trigger = { has_global_variable = modeu5_test_storage_capacity_timing_monthly_passed }
+	}
+	option = {
+		name = modeu5_debug.test.storage_capacity_timing.pending
+		trigger = { has_global_variable = modeu5_test_storage_capacity_timing_pending }
+	}
+	option = {
+		name = modeu5_debug.test.storage_capacity_timing.fail
+		trigger = { has_global_variable = modeu5_test_storage_capacity_timing_failed }
 	}
 	option = {
 		name = modeu5_debug.close

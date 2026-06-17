@@ -14,8 +14,82 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_validation_noop_passed
 	remove_global_variable = modeu5_test_country_stock_dimensions_passed
 	remove_global_variable = modeu5_test_storage_capacity_passed
+	remove_global_variable = modeu5_test_storage_capacity_timing_immediate_passed
+	remove_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
+	remove_global_variable = modeu5_test_storage_capacity_timing_pending
+	remove_global_variable = modeu5_test_storage_capacity_timing_failed
 	remove_global_variable = modeu5_test_reconciliation_dirty_passed
 	remove_global_variable = modeu5_test_reconciliation_empty_passed
+	remove_global_variable = modeu5_test_core02_proportional_passed
+	remove_global_variable = modeu5_test_core02_over_capacity_passed
+	remove_global_variable = modeu5_test_core02_initialization_started
+	remove_global_variable = modeu5_test_core02_initialization_finished
+	remove_global_variable = modeu5_test_core03_location_succession_started
+	remove_global_variable = modeu5_test_core03_location_succession_passed
+	remove_global_variable = modeu5_test_core03_location_succession_failed
+	remove_global_variable = modeu5_test_core03_location_succession_blocked
+	remove_global_variable = modeu5_core03_last_location_transfer_attempted
+	remove_global_variable = modeu5_core03_last_location_transfer_skipped
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_stock
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_available
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_over_cap
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_trade_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_count
+	remove_global_variable = modeu5_debug_us02_dump_fra_iron_capacity
+	remove_global_variable = modeu5_debug_us02_probe_started
+	remove_global_variable = modeu5_debug_us02_probe_before_capacity
+	remove_global_variable = modeu5_debug_us02_probe_after_build_capacity
+	remove_global_variable = modeu5_debug_us02_probe_after_month_capacity
+	remove_global_variable = modeu5_debug_us02_probe_delta_immediate_capacity
+	remove_global_variable = modeu5_debug_us02_probe_delta_month_capacity
+	remove_global_variable = modeu5_debug_us02_probe_before_trade
+	remove_global_variable = modeu5_debug_us02_probe_after_build_trade
+	remove_global_variable = modeu5_debug_us02_probe_after_month_trade
+	remove_global_variable = modeu5_debug_us02_probe_delta_immediate_trade
+	remove_global_variable = modeu5_debug_us02_probe_delta_month_trade
+	remove_global_variable = modeu5_debug_core03_cas_before
+	remove_global_variable = modeu5_debug_core03_por_before
+	remove_global_variable = modeu5_debug_core03_market_before
+	remove_global_variable = modeu5_debug_core03_loser_capacity_before
+	remove_global_variable = modeu5_debug_core03_location_capacity
+	remove_global_variable = modeu5_debug_core03_expected_transfer
+	remove_global_variable = modeu5_debug_core03_cas_after
+	remove_global_variable = modeu5_debug_core03_por_after
+	remove_global_variable = modeu5_debug_core03_market_after
+	remove_global_variable = modeu5_debug_core03_actual_transfer
+	remove_global_variable = modeu5_debug_core03_market_delta
+
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_stock
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_capacity
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_available
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_over_cap
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_trade_capacity
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_rank_capacity
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_count
+	remove_variable = modeu5_debug_us02_ui_fra_iron_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_before_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_after_build_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_after_month_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_delta_immediate_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_delta_month_capacity
+	remove_variable = modeu5_debug_us02_ui_probe_before_trade
+	remove_variable = modeu5_debug_us02_ui_probe_after_build_trade
+	remove_variable = modeu5_debug_us02_ui_probe_after_month_trade
+	remove_variable = modeu5_debug_us02_ui_probe_delta_immediate_trade
+	remove_variable = modeu5_debug_us02_ui_probe_delta_month_trade
+	remove_variable = modeu5_debug_core03_ui_cas_before
+	remove_variable = modeu5_debug_core03_ui_por_before
+	remove_variable = modeu5_debug_core03_ui_market_before
+	remove_variable = modeu5_debug_core03_ui_loser_capacity
+	remove_variable = modeu5_debug_core03_ui_location_capacity
+	remove_variable = modeu5_debug_core03_ui_expected_transfer
+	remove_variable = modeu5_debug_core03_ui_cas_after
+	remove_variable = modeu5_debug_core03_ui_por_after
+	remove_variable = modeu5_debug_core03_ui_market_after
+	remove_variable = modeu5_debug_core03_ui_actual_transfer
+	remove_variable = modeu5_debug_core03_ui_market_delta
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
@@ -1075,5 +1149,160 @@ modeu5_debug_run_reconciliation_tests = {
 		remove_global_variable = modeu5_test_reconciliation_dirty_passed
 		remove_global_variable = modeu5_test_reconciliation_empty_passed
 		error_log = "ModeU5 deterministic US-11 tests require FRA and ENG."
+	}
+}
+
+modeu5_debug_run_core02_initialization_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_test_market }
+
+		every_country = {
+			modeu5_remove_stock = {
+				country = this
+				market = scope:modeu5_test_market
+				good = wheat
+				quantity = 1000000
+				reason = debug_test
+			}
+		}
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		every_country = {
+			modeu5_debug_replace_country_wheat_capacity = {
+				country = this
+				market = scope:modeu5_test_market
+				value = 0
+			}
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			value = 100
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			value = 300
+		}
+
+		modeu5_initialization_prepare_counters = yes
+		modeu5_seed_opening_market_good = {
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 200
+		}
+		modeu5_initialization_finalize_counters = yes
+
+		modeu5_read_country_stock_good_wheat = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_fra_proportional_stock
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_eng_proportional_stock
+		}
+		modeu5_read_market_stock_good_wheat = {
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_proportional_market_stock
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable = modeu5_initialization_failure_detected }
+				scope:modeu5_test_core02_fra_proportional_stock = 50
+				scope:modeu5_test_core02_eng_proportional_stock = 150
+				scope:modeu5_test_core02_proportional_market_stock = 200
+				global_var:modeu5_initialization_market_goods_seeded = 1
+				global_var:modeu5_initialization_allocated_total = 200
+			}
+			set_global_variable = modeu5_test_core02_proportional_passed
+		}
+		else = {
+			remove_global_variable = modeu5_test_core02_proportional_passed
+			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
+		}
+
+		every_country = {
+			modeu5_remove_stock = {
+				country = this
+				market = scope:modeu5_test_market
+				good = wheat
+				quantity = 1000000
+				reason = debug_test
+			}
+		}
+		modeu5_rebuild_market_stock_from_country_stocks = {
+			market = scope:modeu5_test_market
+			good = wheat
+		}
+		every_country = {
+			modeu5_debug_replace_country_wheat_capacity = {
+				country = this
+				market = scope:modeu5_test_market
+				value = 0
+			}
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			value = 40
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			value = 60
+		}
+
+		modeu5_initialization_prepare_counters = yes
+		modeu5_seed_opening_market_good = {
+			market = scope:modeu5_test_market
+			good = wheat
+			quantity = 150
+		}
+		modeu5_initialization_finalize_counters = yes
+
+		modeu5_read_country_stock_good_wheat = {
+			country = c:FRA
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_fra_over_capacity_stock
+		}
+		modeu5_read_country_stock_good_wheat = {
+			country = c:ENG
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_eng_over_capacity_stock
+		}
+		modeu5_read_market_stock_good_wheat = {
+			market = scope:modeu5_test_market
+			output = modeu5_test_core02_over_capacity_market_stock
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable = modeu5_initialization_failure_detected }
+				scope:modeu5_test_core02_fra_over_capacity_stock = 60
+				scope:modeu5_test_core02_eng_over_capacity_stock = 90
+				scope:modeu5_test_core02_over_capacity_market_stock = 150
+				global_var:modeu5_initialization_market_goods_seeded = 1
+				global_var:modeu5_initialization_allocated_total = 150
+			}
+			set_global_variable = modeu5_test_core02_over_capacity_passed
+		}
+		else = {
+			remove_global_variable = modeu5_test_core02_over_capacity_passed
+			error_log = "ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed."
+		}
+	}
+	else = {
+		remove_global_variable = modeu5_test_core02_proportional_passed
+		remove_global_variable = modeu5_test_core02_over_capacity_passed
+		error_log = "ModeU5 deterministic CORE-02 initialization tests require FRA and ENG."
 	}
 }

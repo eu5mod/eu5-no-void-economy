@@ -103,6 +103,8 @@ modeu5_debug_clear_last_country_market_capacity = {
 	remove_variable = modeu5_debug_last_capacity_previous_total
 	remove_variable = modeu5_debug_last_capacity_total
 	remove_variable = modeu5_debug_last_capacity_base
+	remove_variable = modeu5_debug_last_capacity_trade
+	remove_variable = modeu5_debug_last_capacity_location_rank
 	remove_variable = modeu5_debug_last_capacity_building
 	remove_variable = modeu5_debug_last_capacity_foreign
 	remove_variable = modeu5_debug_last_capacity_stock
@@ -114,19 +116,23 @@ modeu5_debug_clear_last_country_market_capacity = {
 	remove_variable = modeu5_debug_last_capacity_funduq_levels
 	remove_variable = modeu5_debug_last_capacity_caravanserai_levels
 	remove_variable = modeu5_debug_last_capacity_fondaco_levels
+	remove_variable = modeu5_debug_last_monthly_capacity_refresh_stamp
+	remove_variable = modeu5_debug_last_monthly_capacity_refresh_gate_passed
 }
 
 modeu5_debug_capture_country_market_capacity = {
 	scope:modeu5_country = {
 		modeu5_debug_clear_last_country_market_capacity = yes
-		set_variable = { name = modeu5_debug_last_capacity_country value = scope:modeu5_country }
-		set_variable = { name = modeu5_debug_last_capacity_market value = scope:modeu5_market }
-		set_variable = { name = modeu5_debug_last_capacity_good value = scope:modeu5_good }
-		set_variable = { name = modeu5_debug_last_capacity_previous_total value = scope:modeu5_country_stock_cap_raw }
-		set_variable = { name = modeu5_debug_last_capacity_total value = scope:modeu5_capacity_total }
-		set_variable = { name = modeu5_debug_last_capacity_base value = scope:modeu5_capacity_base }
-		set_variable = { name = modeu5_debug_last_capacity_building value = scope:modeu5_capacity_building }
-		set_variable = { name = modeu5_debug_last_capacity_foreign value = scope:modeu5_capacity_foreign }
+			set_variable = { name = modeu5_debug_last_capacity_country value = scope:modeu5_country }
+			set_variable = { name = modeu5_debug_last_capacity_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_capacity_good value = scope:modeu5_good }
+			set_variable = { name = modeu5_debug_last_capacity_previous_total value = scope:modeu5_country_stock_cap_raw }
+			set_variable = { name = modeu5_debug_last_capacity_total value = scope:modeu5_capacity_total }
+			set_variable = { name = modeu5_debug_last_capacity_base value = scope:modeu5_capacity_base }
+			set_variable = { name = modeu5_debug_last_capacity_trade value = scope:modeu5_capacity_trade_capacity }
+			set_variable = { name = modeu5_debug_last_capacity_location_rank value = scope:modeu5_capacity_location_rank_capacity }
+			set_variable = { name = modeu5_debug_last_capacity_building value = scope:modeu5_capacity_building }
+			set_variable = { name = modeu5_debug_last_capacity_foreign value = scope:modeu5_capacity_foreign }
 		set_variable = { name = modeu5_debug_last_capacity_stock value = scope:modeu5_capacity_stock }
 		set_variable = { name = modeu5_debug_last_capacity_available value = scope:modeu5_capacity_available }
 		set_variable = { name = modeu5_debug_last_capacity_over_cap value = scope:modeu5_capacity_over_cap }
@@ -274,42 +280,48 @@ modeu5_debug_capture_decay_stock = {
 }
 
 modeu5_debug_capture_rebuild_market_stock = {
-	scope:modeu5_consistency_controller = {
-		modeu5_debug_clear_last_stock_mutation = yes
-		set_variable = { name = modeu5_debug_last_operation value = 5 }
-		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 5 }
-		set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
-		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
-		set_variable = { name = modeu5_debug_last_market_stock_before value = scope:modeu5_rebuild_market_stock_before }
-		set_variable = { name = modeu5_debug_last_market_stock_after value = scope:modeu5_rebuild_market_stock_after }
-		set_variable = { name = modeu5_debug_last_expected_market_stock value = scope:modeu5_rebuild_expected_market_stock }
-		set_variable = { name = modeu5_debug_last_correction_applied value = scope:modeu5_rebuild_correction_applied }
-		set_variable = { name = modeu5_debug_last_country_source_count value = scope:modeu5_rebuild_country_source_count }
-		set_variable = { name = modeu5_debug_last_negative_country_source_detected value = scope:modeu5_rebuild_negative_country_source_detected }
-		set_variable = { name = modeu5_debug_last_over_cap_country_source_detected value = scope:modeu5_rebuild_over_cap_country_source_detected }
-		set_variable = { name = modeu5_debug_last_country_stocks_modified value = scope:modeu5_rebuild_country_stocks_modified }
+	if = {
+		limit = { exists = scope:modeu5_consistency_controller }
+		scope:modeu5_consistency_controller = {
+			modeu5_debug_clear_last_stock_mutation = yes
+			set_variable = { name = modeu5_debug_last_operation value = 5 }
+			set_variable = { name = modeu5_debug_last_mutation_effect_called value = 5 }
+			set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+			set_variable = { name = modeu5_debug_last_market_stock_before value = scope:modeu5_rebuild_market_stock_before }
+			set_variable = { name = modeu5_debug_last_market_stock_after value = scope:modeu5_rebuild_market_stock_after }
+			set_variable = { name = modeu5_debug_last_expected_market_stock value = scope:modeu5_rebuild_expected_market_stock }
+			set_variable = { name = modeu5_debug_last_correction_applied value = scope:modeu5_rebuild_correction_applied }
+			set_variable = { name = modeu5_debug_last_country_source_count value = scope:modeu5_rebuild_country_source_count }
+			set_variable = { name = modeu5_debug_last_negative_country_source_detected value = scope:modeu5_rebuild_negative_country_source_detected }
+			set_variable = { name = modeu5_debug_last_over_cap_country_source_detected value = scope:modeu5_rebuild_over_cap_country_source_detected }
+			set_variable = { name = modeu5_debug_last_country_stocks_modified value = scope:modeu5_rebuild_country_stocks_modified }
+		}
 	}
 }
 
 modeu5_debug_capture_validate_stock_consistency = {
-	scope:modeu5_consistency_controller = {
-		modeu5_debug_clear_last_stock_mutation = yes
-		set_variable = { name = modeu5_debug_last_operation value = 6 }
-		set_variable = { name = modeu5_debug_last_mutation_effect_called value = 6 }
-		set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
-		set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
-		set_variable = { name = modeu5_debug_last_expected_market_stock value = scope:modeu5_validation_expected_market_stock }
-		set_variable = { name = modeu5_debug_last_actual_market_stock_before value = scope:modeu5_validation_actual_market_stock_before }
-		set_variable = { name = modeu5_debug_last_actual_market_stock_after value = scope:modeu5_validation_actual_market_stock_after }
-		set_variable = { name = modeu5_debug_last_validation_difference_before value = scope:modeu5_validation_difference_before }
-		set_variable = { name = modeu5_debug_last_validation_difference_after value = scope:modeu5_validation_difference_after }
-		set_variable = { name = modeu5_debug_last_inconsistency_detected value = scope:modeu5_validation_inconsistency_detected }
-		set_variable = { name = modeu5_debug_last_inconsistency_severity value = scope:modeu5_validation_inconsistency_severity }
-		set_variable = { name = modeu5_debug_last_rebuild_called value = scope:modeu5_validation_rebuild_called }
-		set_variable = { name = modeu5_debug_last_country_source_count value = scope:modeu5_validation_country_source_count }
-		set_variable = { name = modeu5_debug_last_negative_country_source_detected value = scope:modeu5_validation_negative_country_source_detected }
-		set_variable = { name = modeu5_debug_last_over_cap_country_source_detected value = scope:modeu5_validation_over_cap_country_source_detected }
-		set_variable = { name = modeu5_debug_last_country_stocks_modified value = 0 }
-		set_variable = { name = modeu5_debug_last_validation_failed_after_rebuild value = scope:modeu5_validation_failed_after_rebuild }
+	if = {
+		limit = { exists = scope:modeu5_consistency_controller }
+		scope:modeu5_consistency_controller = {
+			modeu5_debug_clear_last_stock_mutation = yes
+			set_variable = { name = modeu5_debug_last_operation value = 6 }
+			set_variable = { name = modeu5_debug_last_mutation_effect_called value = 6 }
+			set_variable = { name = modeu5_debug_last_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_good value = scope:modeu5_good }
+			set_variable = { name = modeu5_debug_last_expected_market_stock value = scope:modeu5_validation_expected_market_stock }
+			set_variable = { name = modeu5_debug_last_actual_market_stock_before value = scope:modeu5_validation_actual_market_stock_before }
+			set_variable = { name = modeu5_debug_last_actual_market_stock_after value = scope:modeu5_validation_actual_market_stock_after }
+			set_variable = { name = modeu5_debug_last_validation_difference_before value = scope:modeu5_validation_difference_before }
+			set_variable = { name = modeu5_debug_last_validation_difference_after value = scope:modeu5_validation_difference_after }
+			set_variable = { name = modeu5_debug_last_inconsistency_detected value = scope:modeu5_validation_inconsistency_detected }
+			set_variable = { name = modeu5_debug_last_inconsistency_severity value = scope:modeu5_validation_inconsistency_severity }
+			set_variable = { name = modeu5_debug_last_rebuild_called value = scope:modeu5_validation_rebuild_called }
+			set_variable = { name = modeu5_debug_last_country_source_count value = scope:modeu5_validation_country_source_count }
+			set_variable = { name = modeu5_debug_last_negative_country_source_detected value = scope:modeu5_validation_negative_country_source_detected }
+			set_variable = { name = modeu5_debug_last_over_cap_country_source_detected value = scope:modeu5_validation_over_cap_country_source_detected }
+			set_variable = { name = modeu5_debug_last_country_stocks_modified value = 0 }
+			set_variable = { name = modeu5_debug_last_validation_failed_after_rebuild value = scope:modeu5_validation_failed_after_rebuild }
+		}
 	}
 }
