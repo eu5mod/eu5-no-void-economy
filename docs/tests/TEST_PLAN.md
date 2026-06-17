@@ -90,13 +90,17 @@ Setup:
 FRA exists
 Use FRA's capital market
 Record the current wheat stock
-Recalculate wheat and iron capacity from the same world state
+Run the country-level capacity wrapper for FRA
+Read wheat and iron capacity from the same world state
+Recalculate wheat directly for formula diagnostics
 ```
 
 Expected:
 
 ```txt
 Total capacity equals base + domestic building + foreign building capacity
+Base capacity equals market merchant capacity + owned-location rank/capital contribution
+Country-level wrapper output matches direct wheat recalculation
 The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market
 The recalculation does not change wheat stock

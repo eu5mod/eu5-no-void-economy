@@ -20,6 +20,14 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_core02_over_capacity_passed
 	remove_global_variable = modeu5_test_core02_initialization_started
 	remove_global_variable = modeu5_test_core02_initialization_finished
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_stock
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_available
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_over_cap
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_trade_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_count
+	remove_global_variable = modeu5_debug_us02_dump_fra_iron_capacity
 }
 
 modeu5_debug_replace_country_wheat_capacity = {

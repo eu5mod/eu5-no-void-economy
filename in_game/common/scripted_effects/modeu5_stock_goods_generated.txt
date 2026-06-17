@@ -4,165 +4,181 @@
 
 modeu5_validate_dirty_stock_consistency = {
 
-	save_temporary_scope_as = modeu5_reconciliation_controller
-	save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 1 }
-	modeu5_reconciliation_prepare = yes
-	modeu5_validate_dirty_markets_good_cotton = yes
-	modeu5_validate_dirty_markets_good_sugar = yes
-	modeu5_validate_dirty_markets_good_tobacco = yes
-	modeu5_validate_dirty_markets_good_tar = yes
-	modeu5_validate_dirty_markets_good_porcelain = yes
-	modeu5_validate_dirty_markets_good_naval_supplies = yes
-	modeu5_validate_dirty_markets_good_firearms = yes
-	modeu5_validate_dirty_markets_good_cannons = yes
-	modeu5_validate_dirty_markets_good_weaponry = yes
-	modeu5_validate_dirty_markets_good_glass = yes
-	modeu5_validate_dirty_markets_good_steel = yes
-	modeu5_validate_dirty_markets_good_cloth = yes
-	modeu5_validate_dirty_markets_good_fine_cloth = yes
-	modeu5_validate_dirty_markets_good_liquor = yes
-	modeu5_validate_dirty_markets_good_beer = yes
-	modeu5_validate_dirty_markets_good_paper = yes
-	modeu5_validate_dirty_markets_good_books = yes
-	modeu5_validate_dirty_markets_good_jewelry = yes
-	modeu5_validate_dirty_markets_good_leather = yes
-	modeu5_validate_dirty_markets_good_tools = yes
-	modeu5_validate_dirty_markets_good_masonry = yes
-	modeu5_validate_dirty_markets_good_lacquerware = yes
-	modeu5_validate_dirty_markets_good_pottery = yes
-	modeu5_validate_dirty_markets_good_furniture = yes
-	modeu5_validate_dirty_markets_good_horses = yes
-	modeu5_validate_dirty_markets_good_clay = yes
-	modeu5_validate_dirty_markets_good_sand = yes
-	modeu5_validate_dirty_markets_good_coal = yes
-	modeu5_validate_dirty_markets_good_iron = yes
-	modeu5_validate_dirty_markets_good_copper = yes
-	modeu5_validate_dirty_markets_good_goods_gold = yes
-	modeu5_validate_dirty_markets_good_silver = yes
-	modeu5_validate_dirty_markets_good_stone = yes
-	modeu5_validate_dirty_markets_good_tin = yes
-	modeu5_validate_dirty_markets_good_lead = yes
-	modeu5_validate_dirty_markets_good_silk = yes
-	modeu5_validate_dirty_markets_good_dyes = yes
-	modeu5_validate_dirty_markets_good_incense = yes
-	modeu5_validate_dirty_markets_good_tea = yes
-	modeu5_validate_dirty_markets_good_cocoa = yes
-	modeu5_validate_dirty_markets_good_coffee = yes
-	modeu5_validate_dirty_markets_good_fiber_crops = yes
-	modeu5_validate_dirty_markets_good_ivory = yes
-	modeu5_validate_dirty_markets_good_lumber = yes
-	modeu5_validate_dirty_markets_good_salt = yes
-	modeu5_validate_dirty_markets_good_medicaments = yes
-	modeu5_validate_dirty_markets_good_gems = yes
-	modeu5_validate_dirty_markets_good_pearls = yes
-	modeu5_validate_dirty_markets_good_amber = yes
-	modeu5_validate_dirty_markets_good_saltpeter = yes
-	modeu5_validate_dirty_markets_good_alum = yes
-	modeu5_validate_dirty_markets_good_wine = yes
-	modeu5_validate_dirty_markets_good_elephants = yes
-	modeu5_validate_dirty_markets_good_marble = yes
-	modeu5_validate_dirty_markets_good_mercury = yes
-	modeu5_validate_dirty_markets_good_saffron = yes
-	modeu5_validate_dirty_markets_good_pepper = yes
-	modeu5_validate_dirty_markets_good_cloves = yes
-	modeu5_validate_dirty_markets_good_chili = yes
-	modeu5_validate_dirty_markets_good_wool = yes
-	modeu5_validate_dirty_markets_good_wild_game = yes
-	modeu5_validate_dirty_markets_good_fur = yes
-	modeu5_validate_dirty_markets_good_fish = yes
-	modeu5_validate_dirty_markets_good_wheat = yes
-	modeu5_validate_dirty_markets_good_maize = yes
-	modeu5_validate_dirty_markets_good_rice = yes
-	modeu5_validate_dirty_markets_good_millet = yes
-	modeu5_validate_dirty_markets_good_legumes = yes
-	modeu5_validate_dirty_markets_good_potato = yes
-	modeu5_validate_dirty_markets_good_livestock = yes
-	modeu5_validate_dirty_markets_good_olives = yes
-	modeu5_validate_dirty_markets_good_fruit = yes
-	modeu5_validate_dirty_markets_good_beeswax = yes
-	modeu5_validate_dirty_markets_good_slaves_goods = yes
-	modeu5_reconciliation_finalize = yes
+	modeu5_prepare_reconciliation_controller = yes
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		scope:modeu5_reconciliation_controller = {
+			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 1 }
+			modeu5_reconciliation_prepare = yes
+			modeu5_validate_dirty_markets_good_cotton = yes
+			modeu5_validate_dirty_markets_good_sugar = yes
+			modeu5_validate_dirty_markets_good_tobacco = yes
+			modeu5_validate_dirty_markets_good_tar = yes
+			modeu5_validate_dirty_markets_good_porcelain = yes
+			modeu5_validate_dirty_markets_good_naval_supplies = yes
+			modeu5_validate_dirty_markets_good_firearms = yes
+			modeu5_validate_dirty_markets_good_cannons = yes
+			modeu5_validate_dirty_markets_good_weaponry = yes
+			modeu5_validate_dirty_markets_good_glass = yes
+			modeu5_validate_dirty_markets_good_steel = yes
+			modeu5_validate_dirty_markets_good_cloth = yes
+			modeu5_validate_dirty_markets_good_fine_cloth = yes
+			modeu5_validate_dirty_markets_good_liquor = yes
+			modeu5_validate_dirty_markets_good_beer = yes
+			modeu5_validate_dirty_markets_good_paper = yes
+			modeu5_validate_dirty_markets_good_books = yes
+			modeu5_validate_dirty_markets_good_jewelry = yes
+			modeu5_validate_dirty_markets_good_leather = yes
+			modeu5_validate_dirty_markets_good_tools = yes
+			modeu5_validate_dirty_markets_good_masonry = yes
+			modeu5_validate_dirty_markets_good_lacquerware = yes
+			modeu5_validate_dirty_markets_good_pottery = yes
+			modeu5_validate_dirty_markets_good_furniture = yes
+			modeu5_validate_dirty_markets_good_horses = yes
+			modeu5_validate_dirty_markets_good_clay = yes
+			modeu5_validate_dirty_markets_good_sand = yes
+			modeu5_validate_dirty_markets_good_coal = yes
+			modeu5_validate_dirty_markets_good_iron = yes
+			modeu5_validate_dirty_markets_good_copper = yes
+			modeu5_validate_dirty_markets_good_goods_gold = yes
+			modeu5_validate_dirty_markets_good_silver = yes
+			modeu5_validate_dirty_markets_good_stone = yes
+			modeu5_validate_dirty_markets_good_tin = yes
+			modeu5_validate_dirty_markets_good_lead = yes
+			modeu5_validate_dirty_markets_good_silk = yes
+			modeu5_validate_dirty_markets_good_dyes = yes
+			modeu5_validate_dirty_markets_good_incense = yes
+			modeu5_validate_dirty_markets_good_tea = yes
+			modeu5_validate_dirty_markets_good_cocoa = yes
+			modeu5_validate_dirty_markets_good_coffee = yes
+			modeu5_validate_dirty_markets_good_fiber_crops = yes
+			modeu5_validate_dirty_markets_good_ivory = yes
+			modeu5_validate_dirty_markets_good_lumber = yes
+			modeu5_validate_dirty_markets_good_salt = yes
+			modeu5_validate_dirty_markets_good_medicaments = yes
+			modeu5_validate_dirty_markets_good_gems = yes
+			modeu5_validate_dirty_markets_good_pearls = yes
+			modeu5_validate_dirty_markets_good_amber = yes
+			modeu5_validate_dirty_markets_good_saltpeter = yes
+			modeu5_validate_dirty_markets_good_alum = yes
+			modeu5_validate_dirty_markets_good_wine = yes
+			modeu5_validate_dirty_markets_good_elephants = yes
+			modeu5_validate_dirty_markets_good_marble = yes
+			modeu5_validate_dirty_markets_good_mercury = yes
+			modeu5_validate_dirty_markets_good_saffron = yes
+			modeu5_validate_dirty_markets_good_pepper = yes
+			modeu5_validate_dirty_markets_good_cloves = yes
+			modeu5_validate_dirty_markets_good_chili = yes
+			modeu5_validate_dirty_markets_good_wool = yes
+			modeu5_validate_dirty_markets_good_wild_game = yes
+			modeu5_validate_dirty_markets_good_fur = yes
+			modeu5_validate_dirty_markets_good_fish = yes
+			modeu5_validate_dirty_markets_good_wheat = yes
+			modeu5_validate_dirty_markets_good_maize = yes
+			modeu5_validate_dirty_markets_good_rice = yes
+			modeu5_validate_dirty_markets_good_millet = yes
+			modeu5_validate_dirty_markets_good_legumes = yes
+			modeu5_validate_dirty_markets_good_potato = yes
+			modeu5_validate_dirty_markets_good_livestock = yes
+			modeu5_validate_dirty_markets_good_olives = yes
+			modeu5_validate_dirty_markets_good_fruit = yes
+			modeu5_validate_dirty_markets_good_beeswax = yes
+			modeu5_validate_dirty_markets_good_slaves_goods = yes
+			modeu5_reconciliation_finalize = yes
+		}
+	}
+	else = {
+		error_log = "ModeU5 reconciliation skipped because no country controller scope exists."
+	}
 }
 modeu5_validate_all_stock_consistency = {
 
-	save_temporary_scope_as = modeu5_reconciliation_controller
-	save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 2 }
-	modeu5_reconciliation_prepare = yes
-	modeu5_validate_all_markets_good_cotton = yes
-	modeu5_validate_all_markets_good_sugar = yes
-	modeu5_validate_all_markets_good_tobacco = yes
-	modeu5_validate_all_markets_good_tar = yes
-	modeu5_validate_all_markets_good_porcelain = yes
-	modeu5_validate_all_markets_good_naval_supplies = yes
-	modeu5_validate_all_markets_good_firearms = yes
-	modeu5_validate_all_markets_good_cannons = yes
-	modeu5_validate_all_markets_good_weaponry = yes
-	modeu5_validate_all_markets_good_glass = yes
-	modeu5_validate_all_markets_good_steel = yes
-	modeu5_validate_all_markets_good_cloth = yes
-	modeu5_validate_all_markets_good_fine_cloth = yes
-	modeu5_validate_all_markets_good_liquor = yes
-	modeu5_validate_all_markets_good_beer = yes
-	modeu5_validate_all_markets_good_paper = yes
-	modeu5_validate_all_markets_good_books = yes
-	modeu5_validate_all_markets_good_jewelry = yes
-	modeu5_validate_all_markets_good_leather = yes
-	modeu5_validate_all_markets_good_tools = yes
-	modeu5_validate_all_markets_good_masonry = yes
-	modeu5_validate_all_markets_good_lacquerware = yes
-	modeu5_validate_all_markets_good_pottery = yes
-	modeu5_validate_all_markets_good_furniture = yes
-	modeu5_validate_all_markets_good_horses = yes
-	modeu5_validate_all_markets_good_clay = yes
-	modeu5_validate_all_markets_good_sand = yes
-	modeu5_validate_all_markets_good_coal = yes
-	modeu5_validate_all_markets_good_iron = yes
-	modeu5_validate_all_markets_good_copper = yes
-	modeu5_validate_all_markets_good_goods_gold = yes
-	modeu5_validate_all_markets_good_silver = yes
-	modeu5_validate_all_markets_good_stone = yes
-	modeu5_validate_all_markets_good_tin = yes
-	modeu5_validate_all_markets_good_lead = yes
-	modeu5_validate_all_markets_good_silk = yes
-	modeu5_validate_all_markets_good_dyes = yes
-	modeu5_validate_all_markets_good_incense = yes
-	modeu5_validate_all_markets_good_tea = yes
-	modeu5_validate_all_markets_good_cocoa = yes
-	modeu5_validate_all_markets_good_coffee = yes
-	modeu5_validate_all_markets_good_fiber_crops = yes
-	modeu5_validate_all_markets_good_ivory = yes
-	modeu5_validate_all_markets_good_lumber = yes
-	modeu5_validate_all_markets_good_salt = yes
-	modeu5_validate_all_markets_good_medicaments = yes
-	modeu5_validate_all_markets_good_gems = yes
-	modeu5_validate_all_markets_good_pearls = yes
-	modeu5_validate_all_markets_good_amber = yes
-	modeu5_validate_all_markets_good_saltpeter = yes
-	modeu5_validate_all_markets_good_alum = yes
-	modeu5_validate_all_markets_good_wine = yes
-	modeu5_validate_all_markets_good_elephants = yes
-	modeu5_validate_all_markets_good_marble = yes
-	modeu5_validate_all_markets_good_mercury = yes
-	modeu5_validate_all_markets_good_saffron = yes
-	modeu5_validate_all_markets_good_pepper = yes
-	modeu5_validate_all_markets_good_cloves = yes
-	modeu5_validate_all_markets_good_chili = yes
-	modeu5_validate_all_markets_good_wool = yes
-	modeu5_validate_all_markets_good_wild_game = yes
-	modeu5_validate_all_markets_good_fur = yes
-	modeu5_validate_all_markets_good_fish = yes
-	modeu5_validate_all_markets_good_wheat = yes
-	modeu5_validate_all_markets_good_maize = yes
-	modeu5_validate_all_markets_good_rice = yes
-	modeu5_validate_all_markets_good_millet = yes
-	modeu5_validate_all_markets_good_legumes = yes
-	modeu5_validate_all_markets_good_potato = yes
-	modeu5_validate_all_markets_good_livestock = yes
-	modeu5_validate_all_markets_good_olives = yes
-	modeu5_validate_all_markets_good_fruit = yes
-	modeu5_validate_all_markets_good_beeswax = yes
-	modeu5_validate_all_markets_good_slaves_goods = yes
-	modeu5_reconciliation_finalize = yes
+	modeu5_prepare_reconciliation_controller = yes
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		scope:modeu5_reconciliation_controller = {
+			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 2 }
+			modeu5_reconciliation_prepare = yes
+			modeu5_validate_all_markets_good_cotton = yes
+			modeu5_validate_all_markets_good_sugar = yes
+			modeu5_validate_all_markets_good_tobacco = yes
+			modeu5_validate_all_markets_good_tar = yes
+			modeu5_validate_all_markets_good_porcelain = yes
+			modeu5_validate_all_markets_good_naval_supplies = yes
+			modeu5_validate_all_markets_good_firearms = yes
+			modeu5_validate_all_markets_good_cannons = yes
+			modeu5_validate_all_markets_good_weaponry = yes
+			modeu5_validate_all_markets_good_glass = yes
+			modeu5_validate_all_markets_good_steel = yes
+			modeu5_validate_all_markets_good_cloth = yes
+			modeu5_validate_all_markets_good_fine_cloth = yes
+			modeu5_validate_all_markets_good_liquor = yes
+			modeu5_validate_all_markets_good_beer = yes
+			modeu5_validate_all_markets_good_paper = yes
+			modeu5_validate_all_markets_good_books = yes
+			modeu5_validate_all_markets_good_jewelry = yes
+			modeu5_validate_all_markets_good_leather = yes
+			modeu5_validate_all_markets_good_tools = yes
+			modeu5_validate_all_markets_good_masonry = yes
+			modeu5_validate_all_markets_good_lacquerware = yes
+			modeu5_validate_all_markets_good_pottery = yes
+			modeu5_validate_all_markets_good_furniture = yes
+			modeu5_validate_all_markets_good_horses = yes
+			modeu5_validate_all_markets_good_clay = yes
+			modeu5_validate_all_markets_good_sand = yes
+			modeu5_validate_all_markets_good_coal = yes
+			modeu5_validate_all_markets_good_iron = yes
+			modeu5_validate_all_markets_good_copper = yes
+			modeu5_validate_all_markets_good_goods_gold = yes
+			modeu5_validate_all_markets_good_silver = yes
+			modeu5_validate_all_markets_good_stone = yes
+			modeu5_validate_all_markets_good_tin = yes
+			modeu5_validate_all_markets_good_lead = yes
+			modeu5_validate_all_markets_good_silk = yes
+			modeu5_validate_all_markets_good_dyes = yes
+			modeu5_validate_all_markets_good_incense = yes
+			modeu5_validate_all_markets_good_tea = yes
+			modeu5_validate_all_markets_good_cocoa = yes
+			modeu5_validate_all_markets_good_coffee = yes
+			modeu5_validate_all_markets_good_fiber_crops = yes
+			modeu5_validate_all_markets_good_ivory = yes
+			modeu5_validate_all_markets_good_lumber = yes
+			modeu5_validate_all_markets_good_salt = yes
+			modeu5_validate_all_markets_good_medicaments = yes
+			modeu5_validate_all_markets_good_gems = yes
+			modeu5_validate_all_markets_good_pearls = yes
+			modeu5_validate_all_markets_good_amber = yes
+			modeu5_validate_all_markets_good_saltpeter = yes
+			modeu5_validate_all_markets_good_alum = yes
+			modeu5_validate_all_markets_good_wine = yes
+			modeu5_validate_all_markets_good_elephants = yes
+			modeu5_validate_all_markets_good_marble = yes
+			modeu5_validate_all_markets_good_mercury = yes
+			modeu5_validate_all_markets_good_saffron = yes
+			modeu5_validate_all_markets_good_pepper = yes
+			modeu5_validate_all_markets_good_cloves = yes
+			modeu5_validate_all_markets_good_chili = yes
+			modeu5_validate_all_markets_good_wool = yes
+			modeu5_validate_all_markets_good_wild_game = yes
+			modeu5_validate_all_markets_good_fur = yes
+			modeu5_validate_all_markets_good_fish = yes
+			modeu5_validate_all_markets_good_wheat = yes
+			modeu5_validate_all_markets_good_maize = yes
+			modeu5_validate_all_markets_good_rice = yes
+			modeu5_validate_all_markets_good_millet = yes
+			modeu5_validate_all_markets_good_legumes = yes
+			modeu5_validate_all_markets_good_potato = yes
+			modeu5_validate_all_markets_good_livestock = yes
+			modeu5_validate_all_markets_good_olives = yes
+			modeu5_validate_all_markets_good_fruit = yes
+			modeu5_validate_all_markets_good_beeswax = yes
+			modeu5_validate_all_markets_good_slaves_goods = yes
+			modeu5_reconciliation_finalize = yes
+		}
+	}
+	else = {
+		error_log = "ModeU5 reconciliation skipped because no country controller scope exists."
+	}
 }
 modeu5_clear_all_dirty_stock_markets = {
 
@@ -240,6 +256,97 @@ modeu5_clear_all_dirty_stock_markets = {
 	modeu5_clear_dirty_markets_good_fruit = yes
 	modeu5_clear_dirty_markets_good_beeswax = yes
 	modeu5_clear_dirty_markets_good_slaves_goods = yes
+}
+modeu5_recalculate_saved_country_storage_capacities = {
+
+	modeu5_recalculate_saved_country_storage_capacities_good_cotton = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_sugar = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_tobacco = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_tar = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_porcelain = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_naval_supplies = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_firearms = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_cannons = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_weaponry = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_glass = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_steel = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_cloth = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_fine_cloth = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_liquor = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_beer = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_paper = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_books = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_jewelry = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_leather = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_tools = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_masonry = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_lacquerware = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_pottery = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_furniture = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_horses = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_clay = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_sand = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_coal = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_iron = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_copper = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_goods_gold = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_silver = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_stone = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_tin = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_lead = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_silk = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_dyes = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_incense = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_tea = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_cocoa = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_coffee = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_fiber_crops = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_ivory = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_lumber = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_salt = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_medicaments = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_gems = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_pearls = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_amber = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_saltpeter = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_alum = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_wine = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_elephants = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_marble = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_mercury = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_saffron = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_pepper = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_cloves = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_chili = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_wool = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_wild_game = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_fur = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_fish = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_wheat = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_maize = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_rice = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_millet = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_legumes = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_potato = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_livestock = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_olives = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_fruit = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_beeswax = yes
+	modeu5_recalculate_saved_country_storage_capacities_good_slaves_goods = yes
+}
+modeu5_initialize_storage_capacities = {
+
+	every_country = {
+		save_temporary_scope_as = modeu5_country
+		modeu5_recalculate_saved_country_storage_capacities = yes
+		set_global_variable = {
+			name = modeu5_initialization_capacity_country_scans
+			value = {
+				value = global_var:modeu5_initialization_capacity_country_scans
+				add = 1
+			}
+		}
+	}
 }
 modeu5_initialize_opening_stocks = {
 
@@ -807,6 +914,16 @@ modeu5_recalculate_country_market_capacity_good_cotton = {
 	modeu5_store_capacity_record_good_cotton = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_cotton = {
+	goods:cotton = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_cotton = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_cotton = {
@@ -1986,6 +2103,16 @@ modeu5_recalculate_country_market_capacity_good_sugar = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_sugar = {
+	goods:sugar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_sugar = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_sugar = {
 	modeu5_load_stock_record_good_sugar = yes
 	modeu5_add_stock_calculate = yes
@@ -3161,6 +3288,16 @@ modeu5_recalculate_country_market_capacity_good_tobacco = {
 	modeu5_store_capacity_record_good_tobacco = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_tobacco = {
+	goods:tobacco = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_tobacco = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_tobacco = {
@@ -4340,6 +4477,16 @@ modeu5_recalculate_country_market_capacity_good_tar = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_tar = {
+	goods:tar = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_tar = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_tar = {
 	modeu5_load_stock_record_good_tar = yes
 	modeu5_add_stock_calculate = yes
@@ -5515,6 +5662,16 @@ modeu5_recalculate_country_market_capacity_good_porcelain = {
 	modeu5_store_capacity_record_good_porcelain = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_porcelain = {
+	goods:porcelain = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_porcelain = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_porcelain = {
@@ -6694,6 +6851,16 @@ modeu5_recalculate_country_market_capacity_good_naval_supplies = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_naval_supplies = {
+	goods:naval_supplies = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_naval_supplies = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_naval_supplies = {
 	modeu5_load_stock_record_good_naval_supplies = yes
 	modeu5_add_stock_calculate = yes
@@ -7869,6 +8036,16 @@ modeu5_recalculate_country_market_capacity_good_firearms = {
 	modeu5_store_capacity_record_good_firearms = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_firearms = {
+	goods:firearms = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_firearms = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_firearms = {
@@ -9048,6 +9225,16 @@ modeu5_recalculate_country_market_capacity_good_cannons = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_cannons = {
+	goods:cannons = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_cannons = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_cannons = {
 	modeu5_load_stock_record_good_cannons = yes
 	modeu5_add_stock_calculate = yes
@@ -10223,6 +10410,16 @@ modeu5_recalculate_country_market_capacity_good_weaponry = {
 	modeu5_store_capacity_record_good_weaponry = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_weaponry = {
+	goods:weaponry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_weaponry = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_weaponry = {
@@ -11402,6 +11599,16 @@ modeu5_recalculate_country_market_capacity_good_glass = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_glass = {
+	goods:glass = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_glass = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_glass = {
 	modeu5_load_stock_record_good_glass = yes
 	modeu5_add_stock_calculate = yes
@@ -12577,6 +12784,16 @@ modeu5_recalculate_country_market_capacity_good_steel = {
 	modeu5_store_capacity_record_good_steel = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_steel = {
+	goods:steel = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_steel = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_steel = {
@@ -13756,6 +13973,16 @@ modeu5_recalculate_country_market_capacity_good_cloth = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_cloth = {
+	goods:cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_cloth = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_cloth = {
 	modeu5_load_stock_record_good_cloth = yes
 	modeu5_add_stock_calculate = yes
@@ -14931,6 +15158,16 @@ modeu5_recalculate_country_market_capacity_good_fine_cloth = {
 	modeu5_store_capacity_record_good_fine_cloth = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_fine_cloth = {
+	goods:fine_cloth = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_fine_cloth = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_fine_cloth = {
@@ -16110,6 +16347,16 @@ modeu5_recalculate_country_market_capacity_good_liquor = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_liquor = {
+	goods:liquor = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_liquor = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_liquor = {
 	modeu5_load_stock_record_good_liquor = yes
 	modeu5_add_stock_calculate = yes
@@ -17285,6 +17532,16 @@ modeu5_recalculate_country_market_capacity_good_beer = {
 	modeu5_store_capacity_record_good_beer = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_beer = {
+	goods:beer = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_beer = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_beer = {
@@ -18464,6 +18721,16 @@ modeu5_recalculate_country_market_capacity_good_paper = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_paper = {
+	goods:paper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_paper = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_paper = {
 	modeu5_load_stock_record_good_paper = yes
 	modeu5_add_stock_calculate = yes
@@ -19639,6 +19906,16 @@ modeu5_recalculate_country_market_capacity_good_books = {
 	modeu5_store_capacity_record_good_books = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_books = {
+	goods:books = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_books = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_books = {
@@ -20818,6 +21095,16 @@ modeu5_recalculate_country_market_capacity_good_jewelry = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_jewelry = {
+	goods:jewelry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_jewelry = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_jewelry = {
 	modeu5_load_stock_record_good_jewelry = yes
 	modeu5_add_stock_calculate = yes
@@ -21993,6 +22280,16 @@ modeu5_recalculate_country_market_capacity_good_leather = {
 	modeu5_store_capacity_record_good_leather = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_leather = {
+	goods:leather = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_leather = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_leather = {
@@ -23172,6 +23469,16 @@ modeu5_recalculate_country_market_capacity_good_tools = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_tools = {
+	goods:tools = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_tools = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_tools = {
 	modeu5_load_stock_record_good_tools = yes
 	modeu5_add_stock_calculate = yes
@@ -24347,6 +24654,16 @@ modeu5_recalculate_country_market_capacity_good_masonry = {
 	modeu5_store_capacity_record_good_masonry = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_masonry = {
+	goods:masonry = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_masonry = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_masonry = {
@@ -25526,6 +25843,16 @@ modeu5_recalculate_country_market_capacity_good_lacquerware = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_lacquerware = {
+	goods:lacquerware = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_lacquerware = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_lacquerware = {
 	modeu5_load_stock_record_good_lacquerware = yes
 	modeu5_add_stock_calculate = yes
@@ -26701,6 +27028,16 @@ modeu5_recalculate_country_market_capacity_good_pottery = {
 	modeu5_store_capacity_record_good_pottery = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_pottery = {
+	goods:pottery = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_pottery = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_pottery = {
@@ -27880,6 +28217,16 @@ modeu5_recalculate_country_market_capacity_good_furniture = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_furniture = {
+	goods:furniture = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_furniture = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_furniture = {
 	modeu5_load_stock_record_good_furniture = yes
 	modeu5_add_stock_calculate = yes
@@ -29055,6 +29402,16 @@ modeu5_recalculate_country_market_capacity_good_horses = {
 	modeu5_store_capacity_record_good_horses = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_horses = {
+	goods:horses = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_horses = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_horses = {
@@ -30234,6 +30591,16 @@ modeu5_recalculate_country_market_capacity_good_clay = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_clay = {
+	goods:clay = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_clay = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_clay = {
 	modeu5_load_stock_record_good_clay = yes
 	modeu5_add_stock_calculate = yes
@@ -31409,6 +31776,16 @@ modeu5_recalculate_country_market_capacity_good_sand = {
 	modeu5_store_capacity_record_good_sand = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_sand = {
+	goods:sand = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_sand = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_sand = {
@@ -32588,6 +32965,16 @@ modeu5_recalculate_country_market_capacity_good_coal = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_coal = {
+	goods:coal = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_coal = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_coal = {
 	modeu5_load_stock_record_good_coal = yes
 	modeu5_add_stock_calculate = yes
@@ -33763,6 +34150,16 @@ modeu5_recalculate_country_market_capacity_good_iron = {
 	modeu5_store_capacity_record_good_iron = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_iron = {
+	goods:iron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_iron = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_iron = {
@@ -34942,6 +35339,16 @@ modeu5_recalculate_country_market_capacity_good_copper = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_copper = {
+	goods:copper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_copper = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_copper = {
 	modeu5_load_stock_record_good_copper = yes
 	modeu5_add_stock_calculate = yes
@@ -36117,6 +36524,16 @@ modeu5_recalculate_country_market_capacity_good_goods_gold = {
 	modeu5_store_capacity_record_good_goods_gold = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_goods_gold = {
+	goods:goods_gold = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_goods_gold = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_goods_gold = {
@@ -37296,6 +37713,16 @@ modeu5_recalculate_country_market_capacity_good_silver = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_silver = {
+	goods:silver = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_silver = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_silver = {
 	modeu5_load_stock_record_good_silver = yes
 	modeu5_add_stock_calculate = yes
@@ -38471,6 +38898,16 @@ modeu5_recalculate_country_market_capacity_good_stone = {
 	modeu5_store_capacity_record_good_stone = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_stone = {
+	goods:stone = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_stone = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_stone = {
@@ -39650,6 +40087,16 @@ modeu5_recalculate_country_market_capacity_good_tin = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_tin = {
+	goods:tin = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_tin = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_tin = {
 	modeu5_load_stock_record_good_tin = yes
 	modeu5_add_stock_calculate = yes
@@ -40825,6 +41272,16 @@ modeu5_recalculate_country_market_capacity_good_lead = {
 	modeu5_store_capacity_record_good_lead = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_lead = {
+	goods:lead = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_lead = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_lead = {
@@ -42004,6 +42461,16 @@ modeu5_recalculate_country_market_capacity_good_silk = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_silk = {
+	goods:silk = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_silk = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_silk = {
 	modeu5_load_stock_record_good_silk = yes
 	modeu5_add_stock_calculate = yes
@@ -43179,6 +43646,16 @@ modeu5_recalculate_country_market_capacity_good_dyes = {
 	modeu5_store_capacity_record_good_dyes = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_dyes = {
+	goods:dyes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_dyes = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_dyes = {
@@ -44358,6 +44835,16 @@ modeu5_recalculate_country_market_capacity_good_incense = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_incense = {
+	goods:incense = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_incense = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_incense = {
 	modeu5_load_stock_record_good_incense = yes
 	modeu5_add_stock_calculate = yes
@@ -45533,6 +46020,16 @@ modeu5_recalculate_country_market_capacity_good_tea = {
 	modeu5_store_capacity_record_good_tea = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_tea = {
+	goods:tea = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_tea = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_tea = {
@@ -46712,6 +47209,16 @@ modeu5_recalculate_country_market_capacity_good_cocoa = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_cocoa = {
+	goods:cocoa = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_cocoa = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_cocoa = {
 	modeu5_load_stock_record_good_cocoa = yes
 	modeu5_add_stock_calculate = yes
@@ -47887,6 +48394,16 @@ modeu5_recalculate_country_market_capacity_good_coffee = {
 	modeu5_store_capacity_record_good_coffee = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_coffee = {
+	goods:coffee = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_coffee = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_coffee = {
@@ -49066,6 +49583,16 @@ modeu5_recalculate_country_market_capacity_good_fiber_crops = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_fiber_crops = {
+	goods:fiber_crops = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_fiber_crops = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_fiber_crops = {
 	modeu5_load_stock_record_good_fiber_crops = yes
 	modeu5_add_stock_calculate = yes
@@ -50241,6 +50768,16 @@ modeu5_recalculate_country_market_capacity_good_ivory = {
 	modeu5_store_capacity_record_good_ivory = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_ivory = {
+	goods:ivory = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_ivory = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_ivory = {
@@ -51420,6 +51957,16 @@ modeu5_recalculate_country_market_capacity_good_lumber = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_lumber = {
+	goods:lumber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_lumber = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_lumber = {
 	modeu5_load_stock_record_good_lumber = yes
 	modeu5_add_stock_calculate = yes
@@ -52595,6 +53142,16 @@ modeu5_recalculate_country_market_capacity_good_salt = {
 	modeu5_store_capacity_record_good_salt = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_salt = {
+	goods:salt = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_salt = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_salt = {
@@ -53774,6 +54331,16 @@ modeu5_recalculate_country_market_capacity_good_medicaments = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_medicaments = {
+	goods:medicaments = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_medicaments = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_medicaments = {
 	modeu5_load_stock_record_good_medicaments = yes
 	modeu5_add_stock_calculate = yes
@@ -54949,6 +55516,16 @@ modeu5_recalculate_country_market_capacity_good_gems = {
 	modeu5_store_capacity_record_good_gems = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_gems = {
+	goods:gems = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_gems = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_gems = {
@@ -56128,6 +56705,16 @@ modeu5_recalculate_country_market_capacity_good_pearls = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_pearls = {
+	goods:pearls = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_pearls = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_pearls = {
 	modeu5_load_stock_record_good_pearls = yes
 	modeu5_add_stock_calculate = yes
@@ -57303,6 +57890,16 @@ modeu5_recalculate_country_market_capacity_good_amber = {
 	modeu5_store_capacity_record_good_amber = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_amber = {
+	goods:amber = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_amber = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_amber = {
@@ -58482,6 +59079,16 @@ modeu5_recalculate_country_market_capacity_good_saltpeter = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_saltpeter = {
+	goods:saltpeter = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_saltpeter = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_saltpeter = {
 	modeu5_load_stock_record_good_saltpeter = yes
 	modeu5_add_stock_calculate = yes
@@ -59657,6 +60264,16 @@ modeu5_recalculate_country_market_capacity_good_alum = {
 	modeu5_store_capacity_record_good_alum = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_alum = {
+	goods:alum = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_alum = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_alum = {
@@ -60836,6 +61453,16 @@ modeu5_recalculate_country_market_capacity_good_wine = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_wine = {
+	goods:wine = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_wine = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_wine = {
 	modeu5_load_stock_record_good_wine = yes
 	modeu5_add_stock_calculate = yes
@@ -62011,6 +62638,16 @@ modeu5_recalculate_country_market_capacity_good_elephants = {
 	modeu5_store_capacity_record_good_elephants = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_elephants = {
+	goods:elephants = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_elephants = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_elephants = {
@@ -63190,6 +63827,16 @@ modeu5_recalculate_country_market_capacity_good_marble = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_marble = {
+	goods:marble = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_marble = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_marble = {
 	modeu5_load_stock_record_good_marble = yes
 	modeu5_add_stock_calculate = yes
@@ -64365,6 +65012,16 @@ modeu5_recalculate_country_market_capacity_good_mercury = {
 	modeu5_store_capacity_record_good_mercury = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_mercury = {
+	goods:mercury = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_mercury = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_mercury = {
@@ -65544,6 +66201,16 @@ modeu5_recalculate_country_market_capacity_good_saffron = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_saffron = {
+	goods:saffron = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_saffron = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_saffron = {
 	modeu5_load_stock_record_good_saffron = yes
 	modeu5_add_stock_calculate = yes
@@ -66719,6 +67386,16 @@ modeu5_recalculate_country_market_capacity_good_pepper = {
 	modeu5_store_capacity_record_good_pepper = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_pepper = {
+	goods:pepper = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_pepper = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_pepper = {
@@ -67898,6 +68575,16 @@ modeu5_recalculate_country_market_capacity_good_cloves = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_cloves = {
+	goods:cloves = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_cloves = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_cloves = {
 	modeu5_load_stock_record_good_cloves = yes
 	modeu5_add_stock_calculate = yes
@@ -69073,6 +69760,16 @@ modeu5_recalculate_country_market_capacity_good_chili = {
 	modeu5_store_capacity_record_good_chili = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_chili = {
+	goods:chili = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_chili = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_chili = {
@@ -70252,6 +70949,16 @@ modeu5_recalculate_country_market_capacity_good_wool = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_wool = {
+	goods:wool = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_wool = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_wool = {
 	modeu5_load_stock_record_good_wool = yes
 	modeu5_add_stock_calculate = yes
@@ -71427,6 +72134,16 @@ modeu5_recalculate_country_market_capacity_good_wild_game = {
 	modeu5_store_capacity_record_good_wild_game = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_wild_game = {
+	goods:wild_game = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_wild_game = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_wild_game = {
@@ -72606,6 +73323,16 @@ modeu5_recalculate_country_market_capacity_good_fur = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_fur = {
+	goods:fur = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_fur = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_fur = {
 	modeu5_load_stock_record_good_fur = yes
 	modeu5_add_stock_calculate = yes
@@ -73781,6 +74508,16 @@ modeu5_recalculate_country_market_capacity_good_fish = {
 	modeu5_store_capacity_record_good_fish = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_fish = {
+	goods:fish = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_fish = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_fish = {
@@ -74960,6 +75697,16 @@ modeu5_recalculate_country_market_capacity_good_wheat = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_wheat = {
+	goods:wheat = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_wheat = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_wheat = {
 	modeu5_load_stock_record_good_wheat = yes
 	modeu5_add_stock_calculate = yes
@@ -76135,6 +76882,16 @@ modeu5_recalculate_country_market_capacity_good_maize = {
 	modeu5_store_capacity_record_good_maize = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_maize = {
+	goods:maize = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_maize = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_maize = {
@@ -77314,6 +78071,16 @@ modeu5_recalculate_country_market_capacity_good_rice = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_rice = {
+	goods:rice = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_rice = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_rice = {
 	modeu5_load_stock_record_good_rice = yes
 	modeu5_add_stock_calculate = yes
@@ -78489,6 +79256,16 @@ modeu5_recalculate_country_market_capacity_good_millet = {
 	modeu5_store_capacity_record_good_millet = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_millet = {
+	goods:millet = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_millet = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_millet = {
@@ -79668,6 +80445,16 @@ modeu5_recalculate_country_market_capacity_good_legumes = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_legumes = {
+	goods:legumes = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_legumes = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_legumes = {
 	modeu5_load_stock_record_good_legumes = yes
 	modeu5_add_stock_calculate = yes
@@ -80843,6 +81630,16 @@ modeu5_recalculate_country_market_capacity_good_potato = {
 	modeu5_store_capacity_record_good_potato = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_potato = {
+	goods:potato = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_potato = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_potato = {
@@ -82022,6 +82819,16 @@ modeu5_recalculate_country_market_capacity_good_livestock = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_livestock = {
+	goods:livestock = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_livestock = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_livestock = {
 	modeu5_load_stock_record_good_livestock = yes
 	modeu5_add_stock_calculate = yes
@@ -83197,6 +84004,16 @@ modeu5_recalculate_country_market_capacity_good_olives = {
 	modeu5_store_capacity_record_good_olives = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_olives = {
+	goods:olives = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_olives = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_olives = {
@@ -84376,6 +85193,16 @@ modeu5_recalculate_country_market_capacity_good_fruit = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_fruit = {
+	goods:fruit = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_fruit = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_fruit = {
 	modeu5_load_stock_record_good_fruit = yes
 	modeu5_add_stock_calculate = yes
@@ -85553,6 +86380,16 @@ modeu5_recalculate_country_market_capacity_good_beeswax = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good_beeswax = {
+	goods:beeswax = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_beeswax = yes
+		}
+	}
+}
+
 modeu5_add_stock_good_beeswax = {
 	modeu5_load_stock_record_good_beeswax = yes
 	modeu5_add_stock_calculate = yes
@@ -86728,6 +87565,16 @@ modeu5_recalculate_country_market_capacity_good_slaves_goods = {
 	modeu5_store_capacity_record_good_slaves_goods = yes
 	modeu5_finalize_country_market_capacity = yes
 	modeu5_debug_capture_country_market_capacity = yes
+}
+
+modeu5_recalculate_saved_country_storage_capacities_good_slaves_goods = {
+	goods:slaves_goods = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good_slaves_goods = yes
+		}
+	}
 }
 
 modeu5_add_stock_good_slaves_goods = {

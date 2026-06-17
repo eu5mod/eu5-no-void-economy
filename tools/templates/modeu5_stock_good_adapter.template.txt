@@ -489,6 +489,16 @@ modeu5_recalculate_country_market_capacity_good___GOOD__ = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_saved_country_storage_capacities_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+		}
+	}
+}
+
 modeu5_add_stock_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
 	modeu5_add_stock_calculate = yes

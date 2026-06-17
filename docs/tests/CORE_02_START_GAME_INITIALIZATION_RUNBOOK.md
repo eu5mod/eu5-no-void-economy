@@ -87,9 +87,10 @@ must use `modeu5_add_stock` with `capacity_policy = allow_over_capacity`.
 ## Full startup check
 
 The full `on_game_start -> delay 1 day -> modeu5_start_game_stock_initialization_dispatcher`
-path depends on US-02 capacity maps being populated. Until US-02 is implemented,
-a clean campaign with positive vanilla opening stock and zero ModeU5 capacity is
-expected to fail closed rather than invent a fallback allocation.
+path now runs the US-02 country-level capacity pass before opening-stock
+allocation. A clean campaign with positive vanilla opening stock and zero ModeU5
+capacity after that pass is expected to fail closed rather than invent a
+fallback allocation.
 
 Expected fail-closed markers in that case:
 
@@ -100,7 +101,14 @@ modeu5_initialization_zero_capacity_failures > 0
 ```
 
 This is not a CORE-02 allocation failure. It means the lifecycle guard is doing
-the conservative thing while US-02 remains absent.
+the conservative thing while capacity exposure or capacity calculation produced
+no eligible recipient.
+
+Useful startup marker:
+
+```txt
+modeu5_initialization_capacity_country_scans > 0
+```
 
 ## Log review
 
@@ -118,6 +126,15 @@ event and set `modeu5_test_core02_initialization_started`,
 `modeu5_test_core02_over_capacity_passed`. Console-driven tests intentionally
 avoid `test_log` and `debug_log`, so `game.log` is not the source of truth for
 PASS/FAIL. `error.log` should not gain ModeU5 script errors.
+
+The delayed startup path may run from an on-action/root scope that does not
+support ordinary variables. Reconciliation therefore selects a real country as
+`modeu5_reconciliation_controller` before writing debug counters. If `error.log`
+contains `This scope doesn't support variables. Scope: empty` or
+`This scope doesn't support variables. Scope: Market ...` from
+`modeu5_debug_effects.txt` or reconciliation finalization, the controller
+selection failed or validation captured a non-variable market scope. The test is
+not clean until the debug counters are written through the country controller.
 
 Failure evidence includes:
 

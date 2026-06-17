@@ -157,8 +157,8 @@ Before fresh allocation, every country x market x good source stock must be abse
 
 ### Phase 2 - Calculate capacities
 
-- Run the US-02 authoritative capacity calculation for every active country and relevant market.
-- Build country x market capacity from owned locations and approved building contributions.
+- Run the US-02 authoritative country-level capacity calculation for every active country before opening-stock allocation.
+- Build country x market capacity from market merchant capacity and owned-location rank/capital contributions.
 - Write each capacity key through the US-02 centralized capacity helper.
 - Treat negative capacity as invalid, replace it with zero, and log the source contributions.
 - A country with zero capacity receives no opening stock.
@@ -412,7 +412,7 @@ Explicit migration/recovery is required
 ## Confirmed business rules
 
 1. Read the current vanilla stock for each market and good.
-2. Calculate every country storage capacity in that market before allocating stock.
+2. Calculate every country storage capacity before allocating stock.
 3. Require all ModeU5 country x market x good stocks to be empty before fresh allocation.
 4. Allocate the full vanilla market stock proportionally to country storage capacities.
 5. Permit initialization to create stocks above capacity; do not erase or reject the excess.

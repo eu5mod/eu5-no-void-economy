@@ -2,9 +2,10 @@
 
 ## Purpose
 
-Validate that country storage capacity is rebuilt from owned locations,
-compatible domestic buildings, and compatible foreign buildings without
-mutating stock.
+Validate that country storage capacity is rebuilt from market merchant capacity
+and owned-location rank/capital contributions without mutating stock. The test
+also verifies the country-level wrapper used by CORE-02 startup before it reads
+capacity maps for opening-stock allocation.
 
 ## Before launching EU5
 
@@ -66,6 +67,8 @@ total
 base
 building
 foreign
+trade
+location_rank
 stock
 available
 over_cap
@@ -81,12 +84,36 @@ Expected arithmetic:
 
 ```txt
 total = base + building + foreign
+base = trade + location_rank
+total > 0
+location_rank > 0
+location_count > 0
 available = max(0, total - stock)
 over_cap = max(0, stock - total)
 ```
 
-The event recalculates wheat and iron capacity for FRA's capital market. It
-does not add, remove, transfer, decay, or rebuild stock.
+The event first runs the country-level capacity wrapper for FRA, then reads
+wheat and iron capacity in FRA's capital market, then recalculates wheat
+directly for formula diagnostics. It explicitly fails if the recalculated
+capacity is zero, because a zero-capacity pass would only prove internal
+consistency and would not prove that the US-02 world-state scan is usable by
+CORE-02 startup. It does not add, remove, transfer, decay, or rebuild stock.
+
+The test also writes a compact numeric dump to global variables:
+
+```txt
+modeu5_debug_us02_dump_fra_wheat_stock
+modeu5_debug_us02_dump_fra_wheat_capacity
+modeu5_debug_us02_dump_fra_wheat_available
+modeu5_debug_us02_dump_fra_wheat_over_cap
+modeu5_debug_us02_dump_fra_wheat_trade_capacity
+modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
+modeu5_debug_us02_dump_fra_wheat_location_count
+modeu5_debug_us02_dump_fra_iron_capacity
+```
+
+These variables are meant to prove that the pass result is backed by non-zero
+world-state capacity data rather than only a boolean marker.
 
 ## Log review
 
@@ -114,6 +141,8 @@ console test intentionally emits no PASS `debug.log` line.
 ## Known limitations
 
 The test validates the current world-state scan and persistence contract. It
-does not construct or destroy a building. The provisional capacity
-coefficients and automatic recalculation scheduling require separate gameplay
-approval and runtime coverage.
+does not change location rank, move a capital, or create/destroy a merchant
+capacity source. Building and foreign-building capacity fields are intentionally
+zero-valued compatibility fields in the current rule. Automatic recalculation
+scheduling after every ownership/rank/trade-capacity change requires separate
+runtime coverage.
