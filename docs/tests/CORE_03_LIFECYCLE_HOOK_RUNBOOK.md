@@ -1,8 +1,13 @@
 # CORE-03 Lifecycle Hook Runbook
 
 This controlled test verifies TECH-01 `098`. The probe records lifecycle hooks,
-scope validity, duplicate location calls, and delayed finalizers. It never
-calculates capacity or mutates stock.
+scope validity, duplicate location calls, and delayed finalizers.
+
+The probe instrumentation itself does not calculate capacity or mutate stock.
+Once CORE-03 gameplay is enabled, the shared `on_location_changed_owner` hook
+also runs the stock-succession handler. Use
+`docs/tests/CORE_03_STOCK_SUCCESSION_RUNBOOK.md` when validating stock
+survivability; use this runbook when checking hook coverage and ordering.
 
 The probe now supports two workflows:
 
@@ -36,10 +41,10 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that `MODEU5_SOURCE.txt` identifies:
+Confirm that `MODEU5_SOURCE.txt` identifies the branch under test, for example:
 
 ```txt
-branch: spike/core-03-lifecycle-hooks
+branch: <current CORE-03 branch>
 ```
 
 ## Probe hub

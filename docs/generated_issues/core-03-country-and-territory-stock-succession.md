@@ -263,6 +263,7 @@ Related US: US-01, US-02, US-10.2, US-11
 - [ ] Over-cap stock created by succession is preserved and reported.
 - [ ] Zero capacity and missing stock are safe no-ops with diagnostics.
 - [ ] Every affected market-good is rebuilt/validated after lifecycle completion.
+- [ ] The deterministic Huelva-to-Portugal stock-survival test emits before/after dumps and passes.
 
 ## Acceptance criteria
 
@@ -281,15 +282,44 @@ Related US: US-01, US-02, US-10.2, US-11
 
 ## Manual test scenario
 
-Use one clean baseline Castile save and reload it before each scenario. The
-probe hub `event modeu5_core03_probe.1` now exposes scenario-preparation
-options that reset markers automatically before each controlled run. It also
-exposes deterministic scripted fixtures for `Huelva -> Portugal`, `Leon`
-subject creation, and `Leon` annexation so the tester can see the expected map
-changes in the UI while reading the lifecycle markers. Those scripted fixtures
-improve reproducibility, but they still do not replace the separate manual
-coverage needed for release-specific, rebel, and tag-formation paths before
-TECH-01 `098` can graduate.
+Use one clean baseline Castile save and reload it before each scenario.
+
+TECH-01 `098` is confirmed by the lifecycle probe and PR #48. The gameplay
+implementation therefore uses `on_location_changed_owner` as the only
+proportional split dispatcher.
+
+For stock-survival validation, run:
+
+```txt
+event modeu5_core03_debug.1
+```
+
+Then choose:
+
+```txt
+Run CORE-03 Huelva stock-survival test
+```
+
+This destructive fixture seeds Castile with 100 wheat in Huelva's market,
+transfers Huelva to Portugal, waits one day, and emits before/after dumps. It
+must show:
+
+```txt
+expected_transfer = actual_transfer
+CAS after = CAS before - expected_transfer
+POR after = POR before + expected_transfer
+market_delta = 0
+```
+
+Keep the older lifecycle probe available for hook-regression checks:
+
+```txt
+event modeu5_core03_probe.1
+```
+
+The probe exposes deterministic scripted fixtures for `Huelva -> Portugal`,
+`Leon` subject creation, and `Leon` annexation so the tester can see expected
+map changes in the UI while reading lifecycle markers.
 
 ### Scenario A - one conquered location
 
@@ -433,6 +463,10 @@ Market stock unchanged.
 The official on-action list documents the universal location owner-change hook, a peace-treaty-specific location hook, new/released-country hooks, and post-annexation hooks. CORE-03 treats `on_location_changed_owner` as the only gameplay dispatcher for proportional territorial transfers. Under the PR #48 validation assumption, the relevant peace, diplomatic-annexation, sale, subject-transfer, subject-seizure, rebel, release, and tag-formation paths emit the expected location-owner-change sequence exactly once. Multi-predecessor formation into a new tag may require additional predecessor exposure for final residual consolidation if future testing shows residual stock outside the annexation-family target model.
 
 
-## Implementation note for PR #48
+## Implementation note for PR #48 and CORE-03 tests
 
 This implementation assumes PR #48's lifecycle hook validation is authoritative and treats TECH-01 `098` as confirmed. CORE-03 therefore enables the gameplay path through `on_location_changed_owner` and keeps country lifecycle hooks as validation or residual-consolidation finalizers only.
+
+`docs/tests/CORE_03_LIFECYCLE_HOOK_RUNBOOK.md` remains the hook-regression
+runbook. `docs/tests/CORE_03_STOCK_SUCCESSION_RUNBOOK.md` is the runtime
+stock-survival runbook and must be used for implementation validation.

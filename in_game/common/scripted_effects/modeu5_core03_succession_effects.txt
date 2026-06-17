@@ -77,7 +77,7 @@ modeu5_core03_prepare_location_good_transfer = {
 	}
 
 	modeu5_calculate_location_storage_capacity = {
-		country = scope:modeu5_core03_winner
+		country = scope:modeu5_core03_loser
 		location = scope:modeu5_core03_location
 	}
 

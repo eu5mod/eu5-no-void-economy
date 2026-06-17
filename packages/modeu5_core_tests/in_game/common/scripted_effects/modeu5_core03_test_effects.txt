@@ -1,0 +1,304 @@
+# Deterministic CORE-03 stock-succession test.
+#
+# This is an end-to-end destructive fixture for disposable saves:
+# seed Castile wheat stock in Huelva's market, transfer Huelva to Portugal,
+# then verify that stock survives through the CORE-03 on_action path.
+
+modeu5_debug_write_core03_before_dump_variables = {
+	scope:modeu5_core03_test_controller = {
+		set_variable = { name = modeu5_debug_core03_ui_cas_before value = scope:modeu5_core03_test_cas_before }
+		set_variable = { name = modeu5_debug_core03_ui_por_before value = scope:modeu5_core03_test_por_before }
+		set_variable = { name = modeu5_debug_core03_ui_market_before value = scope:modeu5_core03_test_market_before }
+		set_variable = { name = modeu5_debug_core03_ui_loser_capacity value = scope:modeu5_core03_test_loser_capacity_before }
+		set_variable = { name = modeu5_debug_core03_ui_location_capacity value = scope:modeu5_core03_test_location_capacity }
+		set_variable = { name = modeu5_debug_core03_ui_expected_transfer value = scope:modeu5_core03_test_expected_transfer }
+	}
+}
+
+modeu5_debug_log_core03_before_dump = {
+	scope:modeu5_core03_test_controller = {
+		debug_log = "ModeU5 CORE-03 DUMP before scenario=Huelva_to_Portugal good=wheat loser=CAS winner=POR cas_stock=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] por_stock=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] market_stock=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] loser_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_loser_capacity').GetValue|2] location_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_location_capacity').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2]"
+	}
+}
+
+modeu5_debug_write_core03_after_dump_variables = {
+	scope:modeu5_core03_test_controller = {
+		set_variable = { name = modeu5_debug_core03_ui_cas_before value = global_var:modeu5_debug_core03_cas_before }
+		set_variable = { name = modeu5_debug_core03_ui_por_before value = global_var:modeu5_debug_core03_por_before }
+		set_variable = { name = modeu5_debug_core03_ui_market_before value = global_var:modeu5_debug_core03_market_before }
+		set_variable = { name = modeu5_debug_core03_ui_loser_capacity value = global_var:modeu5_debug_core03_loser_capacity_before }
+		set_variable = { name = modeu5_debug_core03_ui_location_capacity value = global_var:modeu5_debug_core03_location_capacity }
+		set_variable = { name = modeu5_debug_core03_ui_expected_transfer value = global_var:modeu5_debug_core03_expected_transfer }
+		set_variable = { name = modeu5_debug_core03_ui_cas_after value = scope:modeu5_core03_test_cas_after }
+		set_variable = { name = modeu5_debug_core03_ui_por_after value = scope:modeu5_core03_test_por_after }
+		set_variable = { name = modeu5_debug_core03_ui_market_after value = scope:modeu5_core03_test_market_after }
+		set_variable = { name = modeu5_debug_core03_ui_actual_transfer value = scope:modeu5_core03_test_actual_transfer }
+		set_variable = { name = modeu5_debug_core03_ui_market_delta value = scope:modeu5_core03_test_market_delta }
+	}
+}
+
+modeu5_debug_log_core03_after_dump = {
+	scope:modeu5_core03_test_controller = {
+		debug_log = "ModeU5 CORE-03 DUMP after scenario=Huelva_to_Portugal good=wheat loser=CAS winner=POR cas_before=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] cas_after=[THIS.GetVariable('modeu5_debug_core03_ui_cas_after').GetValue|2] por_before=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] por_after=[THIS.GetVariable('modeu5_debug_core03_ui_por_after').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2] actual_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_actual_transfer').GetValue|2] market_before=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] market_after=[THIS.GetVariable('modeu5_debug_core03_ui_market_after').GetValue|2] market_delta=[THIS.GetVariable('modeu5_debug_core03_ui_market_delta').GetValue|2]"
+	}
+}
+
+modeu5_debug_run_core03_location_succession_test = {
+	save_temporary_scope_as = modeu5_core03_test_controller
+	modeu5_core03_probe_reset = yes
+
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			country_exists = c:CAS
+			country_exists = c:POR
+			location:huelva = {
+				owner ?= c:CAS
+			}
+		}
+		location:huelva.market = { save_temporary_scope_as = modeu5_core03_test_market }
+
+		modeu5_recalculate_country_market_capacity = {
+			country = c:CAS
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+		modeu5_recalculate_country_market_capacity = {
+			country = c:POR
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+
+		modeu5_remove_stock = {
+			country = c:CAS
+			market = scope:modeu5_core03_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:POR
+			market = scope:modeu5_core03_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_add_stock = {
+			country = c:CAS
+			market = scope:modeu5_core03_test_market
+			good = wheat
+			quantity = 100
+			capacity_policy = allow_over_capacity
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:CAS
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_cas_before
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_loser_capacity_before
+			value = scope:modeu5_read_country_stock_cap
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_market_before
+			value = scope:modeu5_read_market_stock
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:POR
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_por_before
+			value = scope:modeu5_read_country_stock
+		}
+
+		modeu5_calculate_location_storage_capacity = {
+			country = c:CAS
+			location = location:huelva
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_location_capacity
+			value = scope:modeu5_location_capacity_total
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_expected_transfer
+			value = 0
+		}
+		if = {
+			limit = {
+				scope:modeu5_core03_test_cas_before > 0
+				scope:modeu5_core03_test_loser_capacity_before > 0
+				scope:modeu5_core03_test_location_capacity > 0
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_core03_test_expected_transfer
+				value = {
+					value = scope:modeu5_core03_test_cas_before
+					multiply = scope:modeu5_core03_test_location_capacity
+					divide = scope:modeu5_core03_test_loser_capacity_before
+					min = 0
+				}
+			}
+		}
+
+		set_global_variable = modeu5_test_core03_location_succession_started
+		set_global_variable = {
+			name = modeu5_debug_core03_cas_before
+			value = scope:modeu5_core03_test_cas_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_por_before
+			value = scope:modeu5_core03_test_por_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_market_before
+			value = scope:modeu5_core03_test_market_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_loser_capacity_before
+			value = scope:modeu5_core03_test_loser_capacity_before
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_location_capacity
+			value = scope:modeu5_core03_test_location_capacity
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_expected_transfer
+			value = scope:modeu5_core03_test_expected_transfer
+		}
+
+		modeu5_debug_write_core03_before_dump_variables = yes
+		modeu5_debug_log_core03_before_dump = yes
+
+		location:huelva = {
+			change_location_owner = c:POR
+		}
+		debug_log = "ModeU5 CORE-03 RESULT location_succession STAGED wait_one_day"
+	}
+	else = {
+		set_global_variable = modeu5_test_core03_location_succession_blocked
+		debug_log = "ModeU5 CORE-03 RESULT location_succession BLOCKED prerequisites"
+		error_log = "ModeU5 deterministic CORE-03 location-succession test requires initialized stock, CAS, POR, and Castilian-owned Huelva."
+	}
+}
+
+modeu5_debug_finish_core03_location_succession_test = {
+	save_temporary_scope_as = modeu5_core03_test_controller
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_core03_location_succession_started
+			country_exists = c:CAS
+			country_exists = c:POR
+		}
+		location:huelva.market = { save_temporary_scope_as = modeu5_core03_test_market }
+
+		modeu5_read_country_stock_record = {
+			country = c:CAS
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_cas_after
+			value = scope:modeu5_read_country_stock
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_market_after
+			value = scope:modeu5_read_market_stock
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:POR
+			market = scope:modeu5_core03_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_por_after
+			value = scope:modeu5_read_country_stock
+		}
+
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_expected_cas_after
+			value = {
+				value = global_var:modeu5_debug_core03_cas_before
+				subtract = global_var:modeu5_debug_core03_expected_transfer
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_expected_por_after
+			value = {
+				value = global_var:modeu5_debug_core03_por_before
+				add = global_var:modeu5_debug_core03_expected_transfer
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_actual_transfer
+			value = {
+				value = scope:modeu5_core03_test_por_after
+				subtract = global_var:modeu5_debug_core03_por_before
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core03_test_market_delta
+			value = {
+				value = scope:modeu5_core03_test_market_after
+				subtract = global_var:modeu5_debug_core03_market_before
+			}
+		}
+
+		set_global_variable = {
+			name = modeu5_debug_core03_cas_after
+			value = scope:modeu5_core03_test_cas_after
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_por_after
+			value = scope:modeu5_core03_test_por_after
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_market_after
+			value = scope:modeu5_core03_test_market_after
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_actual_transfer
+			value = scope:modeu5_core03_test_actual_transfer
+		}
+		set_global_variable = {
+			name = modeu5_debug_core03_market_delta
+			value = scope:modeu5_core03_test_market_delta
+		}
+
+		modeu5_debug_write_core03_after_dump_variables = yes
+		modeu5_debug_log_core03_after_dump = yes
+
+		if = {
+			limit = {
+				location:huelva = { owner ?= c:POR }
+				has_global_variable = modeu5_core03_last_location_transfer_attempted
+				has_global_variable = modeu5_core03_probe_location_hook_observed
+				scope:modeu5_core03_test_cas_after = scope:modeu5_core03_test_expected_cas_after
+				scope:modeu5_core03_test_por_after = scope:modeu5_core03_test_expected_por_after
+				scope:modeu5_core03_test_market_after = global_var:modeu5_debug_core03_market_before
+			}
+			set_global_variable = modeu5_test_core03_location_succession_passed
+			debug_log = "ModeU5 CORE-03 RESULT location_succession PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_core03_location_succession_failed
+			debug_log = "ModeU5 CORE-03 RESULT location_succession FAIL"
+			error_log = "ModeU5 deterministic CORE-03 location-succession stock survivability test failed."
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_core03_location_succession_blocked
+		debug_log = "ModeU5 CORE-03 RESULT location_succession BLOCKED missing_started_probe"
+		error_log = "ModeU5 deterministic CORE-03 location-succession test was not staged before finish."
+	}
+}

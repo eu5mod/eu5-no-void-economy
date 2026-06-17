@@ -519,6 +519,38 @@ allocation failures.
 
 ---
 
+### Test S0.6 - deterministic CORE-03 stock succession
+
+Follow:
+
+```txt
+docs/tests/CORE_03_STOCK_SUCCESSION_RUNBOOK.md
+```
+
+Required playset: No Void Economy plus the testing-only No Void Economy Tests
+package.
+
+Expected:
+
+```txt
+CORE-02 initialization is complete before the test starts
+Huelva visibly transfers from Castile to Portugal
+CAS seeded wheat stock decreases by the expected capacity-share transfer
+POR wheat stock increases by the same quantity
+The Huelva market wheat aggregate is unchanged
+The lifecycle hook and stock-survival dumps are present in debug.log
+No new blocking ModeU5 script error is added to error.log
+```
+
+This is the first deterministic end-to-end stock test using the implemented
+runtime chain:
+
+```txt
+US-02 capacity -> CORE-01 stock movement -> CORE-02 initialization -> CORE-03 succession
+```
+
+---
+
 ### Test S1 - delayed fresh initialization
 
 Setup:

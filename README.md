@@ -11,9 +11,22 @@ This mode intend to reflect the real economy; only good that are sold generate a
 ### Core (Required) - Community No Void Economics Package
 
  - Create individual storage capacity for each country (Status : ✅ )
+ - Move stored goods safely when territory changes owner (Status : ⏳)
  - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
  - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
  - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
+
+Current core implementation chain:
+
+```txt
+US-02: create country x market storage capacity
+CORE-01: enable centralized stock movement
+CORE-02: initialize game stocks from vanilla market stockpiles
+CORE-03: implement stock movement when a location changes owner
+```
+
+CORE-03 reuses the previously introduced stock and capacity maps. It does not
+create a parallel stock store.
 
  ### Economic Balance Extension (Optional)
  
