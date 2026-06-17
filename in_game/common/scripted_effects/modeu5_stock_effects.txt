@@ -1204,6 +1204,23 @@ modeu5_initialization_finalize_counters = {
 	}
 }
 
+modeu5_initialization_count_zero_source_market_good = {
+	set_global_variable = {
+		name = modeu5_initialization_market_goods_checked
+		value = {
+			value = global_var:modeu5_initialization_market_goods_checked
+			add = 1
+		}
+	}
+	set_global_variable = {
+		name = modeu5_initialization_zero_source_count
+		value = {
+			value = global_var:modeu5_initialization_zero_source_count
+			add = 1
+		}
+	}
+}
+
 modeu5_seed_opening_market_good = {
 	$market$ = { save_temporary_scope_as = modeu5_initialization_market }
 	goods:$good$ = { save_temporary_scope_as = modeu5_initialization_good }
@@ -1223,6 +1240,16 @@ modeu5_seed_opening_market_good = {
 		modeu5_initialization_mark_failure = { code = 11 }
 	}
 	modeu5_seed_opening_market_good_$good$ = yes
+}
+
+modeu5_run_allowed_stock_consistency_validation = {
+	if = {
+		limit = { modeu5_full_validation_allowed_trigger = yes }
+		modeu5_validate_all_stock_consistency = yes
+	}
+	else = {
+		modeu5_validate_dirty_stock_consistency = yes
+	}
 }
 
 modeu5_run_fresh_opening_stock_initialization = {
@@ -1275,7 +1302,7 @@ modeu5_start_game_stock_initialization_dispatcher = {
 			name = modeu5_initialization_last_mode
 			value = 2
 		}
-		modeu5_validate_all_stock_consistency = yes
+		modeu5_run_allowed_stock_consistency_validation = yes
 	}
 	else_if = {
 		limit = { modeu5_initialization_not_started_trigger = yes }
@@ -1290,7 +1317,7 @@ modeu5_start_game_stock_initialization_dispatcher = {
 		}
 		else = {
 			modeu5_commit_successful_initialization = yes
-			modeu5_validate_all_stock_consistency = yes
+			modeu5_run_allowed_stock_consistency_validation = yes
 		}
 	}
 	else_if = {
@@ -1391,7 +1418,10 @@ modeu5_reconciliation_finalize = {
 	}
 
 	if = {
-		limit = { exists = scope:modeu5_reconciliation_controller }
+		limit = {
+			modeu5_debug_capture_enabled_trigger = yes
+			exists = scope:modeu5_reconciliation_controller
+		}
 		scope:modeu5_reconciliation_controller = {
 			set_variable = {
 				name = modeu5_debug_last_reconciliation_type
@@ -1437,9 +1467,12 @@ modeu5_run_monthly_stock_cycle = {
 		modeu5_run_monthly_stock_reconciliation_once = yes
 	}
 	else = {
-		set_variable = {
-			name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
-			value = 0
+		if = {
+			limit = { modeu5_debug_capture_enabled_trigger = yes }
+			set_variable = {
+				name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+				value = 0
+			}
 		}
 	}
 }
@@ -1464,13 +1497,16 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				value = scope:modeu5_reconciliation_month_stamp
 			}
 			modeu5_validate_dirty_stock_consistency = yes
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_cycle_stamp
-				value = scope:modeu5_reconciliation_month_stamp
-			}
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_initialization_gate_passed
-				value = 1
+			if = {
+				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_cycle_stamp
+					value = scope:modeu5_reconciliation_month_stamp
+				}
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_initialization_gate_passed
+					value = 1
+				}
 			}
 		}
 		else_if = {
@@ -1482,13 +1518,16 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				value = scope:modeu5_reconciliation_month_stamp
 			}
 			modeu5_validate_dirty_stock_consistency = yes
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_cycle_stamp
-				value = scope:modeu5_reconciliation_month_stamp
-			}
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_initialization_gate_passed
-				value = 1
+			if = {
+				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_cycle_stamp
+					value = scope:modeu5_reconciliation_month_stamp
+				}
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_initialization_gate_passed
+					value = 1
+				}
 			}
 		}
 	}
@@ -1509,14 +1548,17 @@ modeu5_run_yearly_stock_reconciliation_once = {
 				name = modeu5_last_yearly_reconciliation_stamp
 				value = scope:modeu5_reconciliation_year_stamp
 			}
-			modeu5_validate_all_stock_consistency = yes
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_cycle_stamp
-				value = scope:modeu5_reconciliation_year_stamp
-			}
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_initialization_gate_passed
-				value = 1
+			modeu5_run_allowed_stock_consistency_validation = yes
+			if = {
+				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_cycle_stamp
+					value = scope:modeu5_reconciliation_year_stamp
+				}
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_initialization_gate_passed
+					value = 1
+				}
 			}
 		}
 		else_if = {
@@ -1527,14 +1569,17 @@ modeu5_run_yearly_stock_reconciliation_once = {
 				name = modeu5_last_yearly_reconciliation_stamp
 				value = scope:modeu5_reconciliation_year_stamp
 			}
-			modeu5_validate_all_stock_consistency = yes
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_cycle_stamp
-				value = scope:modeu5_reconciliation_year_stamp
-			}
-			set_variable = {
-				name = modeu5_debug_last_reconciliation_initialization_gate_passed
-				value = 1
+			modeu5_run_allowed_stock_consistency_validation = yes
+			if = {
+				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_cycle_stamp
+					value = scope:modeu5_reconciliation_year_stamp
+				}
+				set_variable = {
+					name = modeu5_debug_last_reconciliation_initialization_gate_passed
+					value = 1
+				}
 			}
 		}
 	}

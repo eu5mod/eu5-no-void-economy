@@ -2,6 +2,8 @@
 # Capacity is test setup data; stock setup and cleanup always use CORE operators.
 
 modeu5_debug_clear_stock_test_results = {
+	modeu5_enter_audit_runtime_mode = yes
+
 	remove_global_variable = modeu5_test_add_allow_over_capacity_passed
 	remove_global_variable = modeu5_test_add_enforce_passed
 	remove_global_variable = modeu5_test_remove_passed
