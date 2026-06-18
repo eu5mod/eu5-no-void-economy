@@ -1881,7 +1881,7 @@ modeu5_process_us00_monthly_market_good___GOOD__ = {
 		save_temporary_scope_value_as = {
 			name = modeu5_us00_market_produced_gate
 			value = {
-				value = "produced_in_market(goods:__GOOD__)"
+				value = produced_in_market:__GOOD__
 				min = 0
 			}
 		}
