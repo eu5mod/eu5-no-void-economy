@@ -139,6 +139,14 @@ need. For the first pass, use:
 docs/tests/PERF_01_LOW_RISK_QUICK_WINS_RUNBOOK.md
 ```
 
+Native relationship traversal PRs must prove that country-driven flows use the
+native country-to-market iterator before broader sparse caches are introduced.
+For the first native traversal pass, use:
+
+```txt
+docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
+```
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation

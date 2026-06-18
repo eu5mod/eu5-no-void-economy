@@ -62,10 +62,18 @@ goods=(
 			printf '\tmodeu5_clear_dirty_markets_good_%s = yes\n' "$good"
 		done
 		printf '%s\n' '}'
-		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
+		printf '%s\n\n' 'modeu5_recalculate_saved_country_market_storage_capacities = {'
 		for good in "${goods[@]}"; do
-			printf '\tmodeu5_recalculate_saved_country_storage_capacities_good_%s = yes\n' "$good"
+			printf '\tmodeu5_recalculate_saved_country_market_storage_capacities_good_%s = yes\n' "$good"
 		done
+		printf '%s\n' '}'
+		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
+		printf '%s\n' '	scope:modeu5_country = {'
+		printf '%s\n' '		every_market_present_in_country = {'
+		printf '%s\n' '			save_temporary_scope_as = modeu5_market'
+		printf '%s\n' '			modeu5_recalculate_saved_country_market_storage_capacities = yes'
+		printf '%s\n' '		}'
+		printf '%s\n' '	}'
 		printf '%s\n' '}'
 		printf '%s\n\n' 'modeu5_initialize_storage_capacities = {'
 		printf '%s\n' '	every_country = {'
