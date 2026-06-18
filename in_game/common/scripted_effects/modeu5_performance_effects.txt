@@ -1,0 +1,104 @@
+# ModeU5 sparse traversal helpers.
+#
+# PERF-02 intentionally builds only the country -> native market side. The
+# inverse market -> countries cache belongs to the follow-up performance PR.
+
+modeu5_clear_performance_relevant_markets = {
+	remove_global_variable = modeu5_performance_human_country_count
+	remove_global_variable = modeu5_performance_relevant_market_native_iterations
+	remove_global_variable = modeu5_performance_relevant_market_added_count
+
+	set_global_variable = { name = modeu5_performance_human_country_count value = 0 }
+	set_global_variable = { name = modeu5_performance_relevant_market_native_iterations value = 0 }
+	set_global_variable = { name = modeu5_performance_relevant_market_added_count value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = modeu5_performance_relevant_markets }
+		clear_global_variable_list = modeu5_performance_relevant_markets
+	}
+}
+
+modeu5_mark_performance_relevant_market = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = modeu5_performance_relevant_markets }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_performance_relevant_markets
+			target = scope:modeu5_performance_relevant_market
+		}
+		set_global_variable = {
+			name = modeu5_performance_relevant_market_added_count
+			value = {
+				value = global_var:modeu5_performance_relevant_market_added_count
+				add = 1
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_performance_relevant_markets
+					target = scope:modeu5_performance_relevant_market
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_performance_relevant_markets
+			target = scope:modeu5_performance_relevant_market
+		}
+		set_global_variable = {
+			name = modeu5_performance_relevant_market_added_count
+			value = {
+				value = global_var:modeu5_performance_relevant_market_added_count
+				add = 1
+			}
+		}
+	}
+}
+
+modeu5_add_country_present_markets_to_performance_relevant_list = {
+	scope:modeu5_performance_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_performance_relevant_market
+			set_global_variable = {
+				name = modeu5_performance_relevant_market_native_iterations
+				value = {
+					value = global_var:modeu5_performance_relevant_market_native_iterations
+					add = 1
+				}
+			}
+			modeu5_mark_performance_relevant_market = yes
+		}
+	}
+}
+
+modeu5_rebuild_current_country_relevant_markets = {
+	save_temporary_scope_as = modeu5_performance_country
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_add_country_present_markets_to_performance_relevant_list = yes
+}
+
+modeu5_rebuild_performance_relevant_markets_for_country = {
+	$country$ = { save_temporary_scope_as = modeu5_performance_country }
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_add_country_present_markets_to_performance_relevant_list = yes
+}
+
+modeu5_rebuild_human_relevant_markets = {
+	modeu5_clear_performance_relevant_markets = yes
+
+	every_country = {
+		limit = { is_ai = no }
+		save_temporary_scope_as = modeu5_performance_country
+		set_global_variable = {
+			name = modeu5_performance_human_country_count
+			value = {
+				value = global_var:modeu5_performance_human_country_count
+				add = 1
+			}
+		}
+		modeu5_add_country_present_markets_to_performance_relevant_list = yes
+	}
+}
