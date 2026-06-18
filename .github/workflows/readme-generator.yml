@@ -1,0 +1,110 @@
+name: Generate README
+
+"on":
+  pull_request:
+    types:
+      - closed
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
+      - .github/workflows/generate-readme.yml
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-readme:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: python3 -m pip install python-dotenv
+
+      - name: Generate README.md from template
+        run: |
+          python3 <<'PY'
+          from decimal import Decimal
+          from pathlib import Path
+          import sys
+
+          from dotenv import dotenv_values
+
+          template_path = Path("README.template.md")
+          env_path = Path(".modeu5.local.env.template")
+          output_path = Path("README.md")
+
+          def format_decimal(value: Decimal) -> str:
+              text = format(value, "f")
+              if "." in text:
+                  text = text.rstrip("0").rstrip(".")
+              return text
+
+          def as_direct_percent(value: str) -> str:
+              return f"{format_decimal(Decimal(value))}%"
+
+          def as_ratio_percent(value: str) -> str:
+              return f"{format_decimal(Decimal(value) * Decimal(100))}%"
+
+          def as_plain_value(value: str) -> str:
+              return value
+
+          formatters = {
+              "MODEU5_US09_BONUS_PERCENT": as_direct_percent,
+              "MODEU5_US15_BONUS_PERCENT": as_ratio_percent,
+              "MODEU5_US16_CASSUS_BELLI_VALIDITY": as_plain_value,
+          }
+
+          env_values = dotenv_values(env_path)
+
+          missing = [
+              variable
+              for variable in formatters
+              if variable not in env_values or env_values[variable] is None
+          ]
+
+          if missing:
+              print(f"Missing variables in {env_path}:")
+              for variable in missing:
+                  print(f" - {variable}")
+              sys.exit(1)
+
+          readme = template_path.read_text(encoding="utf-8")
+
+          for variable, formatter in formatters.items():
+              readme = readme.replace(
+                  f"<{variable}>",
+                  formatter(env_values[variable]),
+              )
+
+          output_path.write_text(readme, encoding="utf-8")
+          PY
+
+      - name: Check generated README on pull requests
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --exit-code README.md; then
+            echo "::error::README.md is not up to date."
+            exit 1
+          fi
+
+      - name: Commit generated README on current branch
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          if git diff --quiet README.md; then
+            echo "README.md is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add README.md
+          git commit -m "Generate README from template"
+
+          git push origin HEAD:${GITHUB_REF_NAME}

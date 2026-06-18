@@ -35,7 +35,6 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 8:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳) 
  - **Option 9:** Rebel threshold adjusted (Status : ⏳)
  - **Option 10:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
- - **Option 11:** Shorter war & War exhaustion rework. (Status : ⏳)
 
 ⚠️: Want to see option 3, 4 & 5 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
