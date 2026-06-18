@@ -149,7 +149,9 @@ docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
 
 Inverse market-to-country cache PRs must prove that market-driven flows can
 derive a deduplicated country list from market locations without scanning every
-country. For the first inverse-cache pass, use:
+country. They must also run the non-territorial market-presence probe to check
+whether `every_market_present_in_country` exposes stock-capable markets that a
+location-owner cache would miss. For the inverse-cache pass, use:
 
 ```txt
 docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md

@@ -91,6 +91,10 @@ docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
   clear the dirty list.
 - A focused PERF-03 debug event emits dump lines and an explicit
   PASS/BLOCKED/FAIL result.
+- A non-territorial market-presence probe compares
+  `every_market_present_in_country` against owned-location market coverage and
+  reports whether any country-market presence with positive ModeU5 capacity or
+  stock would be missed by the location-owner cache.
 
 ## Manual test scenario
 
@@ -110,11 +114,25 @@ Then in a disposable campaign as a country with a capital market, run:
 event modeu5_perf03_debug.1
 ```
 
+Choose:
+
+```txt
+Run market-country cache probe
+```
+
+Then run the same event again and choose:
+
+```txt
+Run non-territorial market presence probe
+```
+
 Review the logs for:
 
 ```txt
 ModeU5 PERF-03 DUMP market_country_cache ...
 ModeU5 PERF-03 RESULT market_country_cache PASS
+ModeU5 PERF-03 DUMP nonterritorial_presence ...
+ModeU5 PERF-03 RESULT nonterritorial_presence PASS|RISK|BLOCKED ...
 ```
 
 ## Known limitations
@@ -126,3 +144,11 @@ It is not a persistent one-variable-list-per-market structure because no
 confirmed per-market variable owner or dynamic list-name mechanism exists.
 Market-change-specific on_actions are not confirmed; explicit rebuild/repair
 remains the supported response until that exposure is confirmed.
+
+The non-territorial market-presence probe is diagnostic. `PASS` means the
+tested country did not expose stock-capable non-territorial market presence.
+`BLOCKED` means no non-territorial candidate was found. `RISK` means the probe
+found a current-country market presence with positive ModeU5 storage capacity
+or existing stock that the location-owner cache does not include; in that case
+PERF-03 should be extended to merge another confirmed presence source before the
+cache is treated as complete for all stock-capable countries.
