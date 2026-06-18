@@ -640,3 +640,8 @@ location.var:modeu5_pop_demand_multiplier_<good>
 ```
 
 Fallback per-good variables are not required for acceptance if location-scoped variable maps work from the `pop_demand` script-value context.
+
+
+Edit :
+
+IF the demande multiplier is stored at a location level, then define a base coefficient in a configuration file. This would allow to increase the base consumption. If it is possible, then we would set the default value as 1.20 in order to have a mod where pops consume 20% more.
