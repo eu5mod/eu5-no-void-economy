@@ -1,6 +1,6 @@
 # US-00-UI — Void Economy Debug and Visibility
 
-Labels: `blocked:engine-exposure`
+Labels: `module:core`
 
 ## User Story
 
@@ -28,7 +28,7 @@ Feeds counters to: player/modder diagnostics
 |---|---|---|---|---|
 | Debug/test event and logs | effect scope | `trigger_event_silently`, `trigger_event_non_silently`, `debug_log` | CONFIRMED | 013 |
 | Localized modifier/tooltip hooks | UI/localization | `custom_tooltip`, modifier `desc`, object localization keys | CONFIRMED | 014 |
-| Location production diagnostics | country × location × market × good | US-00.1 `goods_output` / `raw_material_output` aggregation debug | TO_TEST | 021 |
+| Location production diagnostics | country × location × market × good | US-00.1 `goods_output(goods:<good>)` / `raw_material_output` aggregation debug | CONFIRMED | 021 |
 | Ledger-country attribution diagnostics | country-rooted cycle → owned location | current country plus owned-location and market context | CONFIRMED | 003-005, 011, 081 |
 | US-00 logical record | country × market × good | direct reads of ledger, ratio, void-wealth, and penalty fields through the confirmed map family | CONFIRMED | 007, 025 |
 | Optional custom panel | UI | custom ModeU5 window | OUT_OF_SCOPE | N/A |

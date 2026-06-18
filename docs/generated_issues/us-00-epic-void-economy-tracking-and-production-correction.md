@@ -1,6 +1,6 @@
 # EPIC US-00 — Void Economy Tracking and Production Correction
 
-Labels: `blocked:engine-exposure`
+Labels: `module:core`
 
 ## User Story
 
@@ -16,7 +16,7 @@ Deliver the US-00 pipeline: read production at `location × good`, aggregate it 
 
 ## Current implementation boundary
 
-The first implementation PR provides the internal US-00 record helpers and deterministic tests for ledger update, ratio calculation, void-wealth valuation, and stored theoretical production penalty. Live monthly production ingestion and applied location modifiers remain blocked until TECH-01 021 / PROBE-021 confirms the exact `goods_output` syntax and ownership semantics.
+The first implementation PR provides the internal US-00 record helpers and deterministic tests for ledger update, ratio calculation, void-wealth valuation, and stored theoretical production penalty. TECH-01 021 / PROBE-021 confirmed the exact target-good `goods_output(goods:wheat)` syntax and raw-material output diagnostics; live monthly production ingestion and applied location modifiers remain later implementation steps.
 
 ## Runtime position
 
@@ -31,7 +31,7 @@ Feeds counters to: debug/UI and balancing diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Production source discovery | building/location/good | production iterators, output checks, saved scopes | CONFIRMED | 003-006, 008, 029 |
-| Production quantity by location and good | country → owned location × good | target-good `goods_output`; `raw_material_output` for the location RGO | TO_TEST | 021 |
+| Production quantity by location and good | country → owned location × good | target-good `goods_output(goods:<good>)`; `raw_material_output` diagnostics | CONFIRMED | 021 |
 | Ledger-country attribution | country-rooted cycle → owned location | current country plus `every_owned_location` and location `owner` validation | CONFIRMED | 003, 005, 011, 081 |
 | Market attribution | location → market | `market` scope link and saved scopes | CONFIRMED | 004, 008 |
 | Monthly ledger lifecycle | ModeU5 | accumulate transactions, read at month end, reset at step 19 | CONFIRMED | 024, internal |
@@ -120,4 +120,4 @@ No direct Estate-income mutation
 
 ## Known limitations
 
-Location production exposure exists, but exact target-good syntax and foreign-building ownership semantics remain `TO_TEST`. Building/RGO source-level reconstruction is not required. Temporary location-modifier application is documented but still requires a controlled local test.
+Location production exposure and exact target-good syntax are confirmed by PROBE-021. Building/RGO source-level reconstruction is not required. Temporary location-modifier application is documented but still requires a controlled local test.
