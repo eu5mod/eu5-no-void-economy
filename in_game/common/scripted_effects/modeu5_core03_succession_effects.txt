@@ -17,6 +17,10 @@ modeu5_core03_handle_location_changed_owner = {
 		market = { save_temporary_scope_as = modeu5_core03_market }
 		scope:loser = { save_temporary_scope_as = modeu5_core03_loser }
 		scope:winner = { save_temporary_scope_as = modeu5_core03_winner }
+		scope:modeu5_core03_market = {
+			save_temporary_scope_as = modeu5_market_country_cache_dirty_market
+		}
+		modeu5_mark_market_country_cache_dirty = yes
 
 		set_global_variable = modeu5_core03_last_location_transfer_attempted
 		modeu5_core03_transfer_location_all_goods = yes

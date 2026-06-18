@@ -1,0 +1,152 @@
+# ModeU5 PERF-03 market -> countries-present work cache.
+#
+# EU5 exposes country -> every_market_present_in_country and market ->
+# every_location_in_market, but no confirmed persistent per-market variable-list
+# owner. Build a deduplicated work cache for the current market from its
+# locations, then consume that list inside market-driven effects instead of
+# scanning every_country.
+
+modeu5_clear_countries_present_in_market_work_cache = {
+	remove_global_variable = modeu5_market_country_cache_locations_scanned
+	remove_global_variable = modeu5_market_country_cache_countries_added
+	remove_global_variable = modeu5_market_country_cache_last_rebuild_started
+	remove_global_variable = modeu5_market_country_cache_last_rebuild_failed
+	remove_global_variable = modeu5_market_country_cache_last_rebuild_empty
+
+	set_global_variable = { name = modeu5_market_country_cache_locations_scanned value = 0 }
+	set_global_variable = { name = modeu5_market_country_cache_countries_added value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		clear_global_variable_list = modeu5_countries_present_in_market
+	}
+}
+
+modeu5_increment_market_country_cache_location_scan = {
+	set_global_variable = {
+		name = modeu5_market_country_cache_locations_scanned
+		value = {
+			value = global_var:modeu5_market_country_cache_locations_scanned
+			add = 1
+		}
+	}
+}
+
+modeu5_increment_market_country_cache_country_added = {
+	set_global_variable = {
+		name = modeu5_market_country_cache_countries_added
+		value = {
+			value = global_var:modeu5_market_country_cache_countries_added
+			add = 1
+		}
+	}
+}
+
+modeu5_add_country_to_current_market_country_cache = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = modeu5_countries_present_in_market }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_countries_present_in_market
+			target = scope:modeu5_market_country_cache_country
+		}
+		modeu5_increment_market_country_cache_country_added = yes
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_countries_present_in_market
+					target = scope:modeu5_market_country_cache_country
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_countries_present_in_market
+			target = scope:modeu5_market_country_cache_country
+		}
+		modeu5_increment_market_country_cache_country_added = yes
+	}
+}
+
+modeu5_rebuild_countries_present_in_market = {
+	modeu5_clear_countries_present_in_market_work_cache = yes
+	set_global_variable = modeu5_market_country_cache_last_rebuild_started
+
+	if = {
+		limit = { exists = scope:modeu5_market_country_cache_market }
+		scope:modeu5_market_country_cache_market = {
+			every_location_in_market = {
+				modeu5_increment_market_country_cache_location_scan = yes
+				owner = { save_temporary_scope_as = modeu5_market_country_cache_country }
+				modeu5_add_country_to_current_market_country_cache = yes
+			}
+		}
+		if = {
+			limit = {
+				NOT = { has_global_variable_list = modeu5_countries_present_in_market }
+			}
+			set_global_variable = modeu5_market_country_cache_last_rebuild_empty
+		}
+	}
+	else = {
+		set_global_variable = modeu5_market_country_cache_last_rebuild_failed
+		error_log = "ModeU5 PERF-03 market-country cache rebuild skipped because no market scope was provided."
+	}
+}
+
+modeu5_mark_market_country_cache_dirty = {
+	if = {
+		limit = {
+			exists = scope:modeu5_market_country_cache_dirty_market
+			NOT = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_market_country_cache_dirty_markets
+			target = scope:modeu5_market_country_cache_dirty_market
+		}
+	}
+	else_if = {
+		limit = {
+			exists = scope:modeu5_market_country_cache_dirty_market
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_market_country_cache_dirty_markets
+					target = scope:modeu5_market_country_cache_dirty_market
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_market_country_cache_dirty_markets
+			target = scope:modeu5_market_country_cache_dirty_market
+		}
+	}
+}
+
+modeu5_mark_current_market_country_cache_dirty = {
+	save_temporary_scope_as = modeu5_market_country_cache_dirty_market
+	modeu5_mark_market_country_cache_dirty = yes
+}
+
+modeu5_repair_dirty_market_country_caches = {
+	remove_global_variable = modeu5_market_country_cache_dirty_repair_count
+	set_global_variable = { name = modeu5_market_country_cache_dirty_repair_count value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+		every_in_global_list = {
+			variable = modeu5_market_country_cache_dirty_markets
+			save_temporary_scope_as = modeu5_market_country_cache_market
+			modeu5_rebuild_countries_present_in_market = yes
+			set_global_variable = {
+				name = modeu5_market_country_cache_dirty_repair_count
+				value = {
+					value = global_var:modeu5_market_country_cache_dirty_repair_count
+					add = 1
+				}
+			}
+		}
+		clear_global_variable_list = modeu5_market_country_cache_dirty_markets
+	}
+}

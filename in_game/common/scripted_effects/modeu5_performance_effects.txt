@@ -1,7 +1,7 @@
 # ModeU5 sparse traversal helpers.
 #
-# PERF-02 intentionally builds only the country -> native market side. The
-# inverse market -> countries cache belongs to the follow-up performance PR.
+# PERF-02 builds the country -> native market side. PERF-03 adds a
+# market -> countries-present work cache in modeu5_market_country_cache_effects.
 
 modeu5_clear_performance_relevant_markets = {
 	remove_global_variable = modeu5_performance_human_country_count

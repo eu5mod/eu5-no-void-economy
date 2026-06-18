@@ -147,6 +147,14 @@ For the first native traversal pass, use:
 docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
 ```
 
+Inverse market-to-country cache PRs must prove that market-driven flows can
+derive a deduplicated country list from market locations without scanning every
+country. For the first inverse-cache pass, use:
+
+```txt
+docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
+```
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation

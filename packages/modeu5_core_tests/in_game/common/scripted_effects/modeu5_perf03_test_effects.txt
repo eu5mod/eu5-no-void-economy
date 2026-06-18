@@ -1,0 +1,140 @@
+# PERF-03 probes the market -> countries-present work cache.
+
+modeu5_perf03_clear_probe_results = {
+	modeu5_enter_audit_runtime_mode = yes
+
+	remove_global_variable = modeu5_test_perf03_market_country_cache_started
+	remove_global_variable = modeu5_test_perf03_market_country_cache_passed
+	remove_global_variable = modeu5_test_perf03_market_country_cache_failed
+	remove_global_variable = modeu5_test_perf03_market_country_cache_blocked
+	remove_global_variable = modeu5_test_perf03_market_country_cache_missing_current_country
+
+	remove_variable = modeu5_perf03_ui_locations_scanned
+	remove_variable = modeu5_perf03_ui_countries_present
+	remove_variable = modeu5_perf03_ui_dirty_repairs
+	remove_variable = modeu5_perf03_ui_current_country_present
+	remove_variable = modeu5_perf03_ui_rebuild_failed
+	remove_variable = modeu5_perf03_ui_rebuild_empty
+}
+
+modeu5_perf03_mirror_probe_to_ui = {
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_locations_scanned }
+		set_variable = {
+			name = modeu5_perf03_ui_locations_scanned
+			value = global_var:modeu5_market_country_cache_locations_scanned
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_locations_scanned value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_countries_added }
+		set_variable = {
+			name = modeu5_perf03_ui_countries_present
+			value = global_var:modeu5_market_country_cache_countries_added
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_countries_present value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_dirty_repair_count }
+		set_variable = {
+			name = modeu5_perf03_ui_dirty_repairs
+			value = global_var:modeu5_market_country_cache_dirty_repair_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_dirty_repairs value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_test_perf03_market_country_cache_missing_current_country }
+		set_variable = { name = modeu5_perf03_ui_current_country_present value = 0 }
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_current_country_present value = 1 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_last_rebuild_failed }
+		set_variable = { name = modeu5_perf03_ui_rebuild_failed value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_rebuild_failed value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_last_rebuild_empty }
+		set_variable = { name = modeu5_perf03_ui_rebuild_empty value = 1 }
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_rebuild_empty value = 0 }
+	}
+}
+
+modeu5_perf03_log_probe_result = {
+	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('modeu5_perf03_ui_locations_scanned').GetValue|0] countries_present=[THIS.GetVariable('modeu5_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('modeu5_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('modeu5_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('modeu5_perf03_ui_rebuild_empty').GetValue|0]"
+	if = {
+		limit = { has_global_variable = modeu5_test_perf03_market_country_cache_passed }
+		debug_log = "ModeU5 PERF-03 RESULT market_country_cache PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_market_country_cache_blocked }
+		debug_log = "ModeU5 PERF-03 RESULT market_country_cache BLOCKED no_market"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_market_country_cache_failed }
+		debug_log = "ModeU5 PERF-03 RESULT market_country_cache FAIL missing_current_country"
+	}
+	else = {
+		debug_log = "ModeU5 PERF-03 RESULT market_country_cache PENDING no_result_marker"
+	}
+}
+
+modeu5_perf03_probe_current_market_country_cache = {
+	modeu5_perf03_clear_probe_results = yes
+	set_global_variable = modeu5_test_perf03_market_country_cache_started
+	save_temporary_scope_as = modeu5_perf03_probe_country
+
+	if = {
+		limit = { has_markets = no }
+		set_global_variable = modeu5_test_perf03_market_country_cache_blocked
+		error_log = "ModeU5 PERF-03 market-country cache probe blocked because the current country has no markets."
+	}
+	else = {
+		capital.market = { save_temporary_scope_as = modeu5_perf03_probe_market }
+
+		scope:modeu5_perf03_probe_market = {
+			save_temporary_scope_as = modeu5_market_country_cache_dirty_market
+		}
+		modeu5_mark_market_country_cache_dirty = yes
+		modeu5_repair_dirty_market_country_caches = yes
+
+		scope:modeu5_perf03_probe_market = {
+			save_temporary_scope_as = modeu5_market_country_cache_market
+		}
+		modeu5_rebuild_countries_present_in_market = yes
+
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable_list = modeu5_countries_present_in_market }
+					NOT = {
+						is_target_in_global_variable_list = {
+							name = modeu5_countries_present_in_market
+							target = scope:modeu5_perf03_probe_country
+						}
+					}
+				}
+			}
+			set_global_variable = modeu5_test_perf03_market_country_cache_missing_current_country
+			set_global_variable = modeu5_test_perf03_market_country_cache_failed
+			error_log = "ModeU5 PERF-03 market-country cache probe did not find the current country in its capital market cache."
+		}
+		else = {
+			set_global_variable = modeu5_test_perf03_market_country_cache_passed
+		}
+	}
+
+	modeu5_perf03_mirror_probe_to_ui = yes
+	modeu5_perf03_log_probe_result = yes
+}
