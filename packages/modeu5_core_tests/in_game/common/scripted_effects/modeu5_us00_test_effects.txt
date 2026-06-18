@@ -63,10 +63,34 @@ modeu5_us00_log_e2e_dump = {
 
 modeu5_us00_write_probe021_dump_variables = {
 	scope:modeu5_us00_test_controller = {
-		set_variable = { name = modeu5_us00_ui_probe_location_count value = global_var:modeu5_us00_probe021_location_count }
-		set_variable = { name = modeu5_us00_ui_probe_positive_goods_output_count value = global_var:modeu5_us00_probe021_positive_goods_output_count }
-		set_variable = { name = modeu5_us00_ui_probe_wheat_goods_output_total value = global_var:modeu5_us00_probe021_wheat_goods_output_total }
-		set_variable = { name = modeu5_us00_ui_probe_raw_material_output_total value = global_var:modeu5_us00_probe021_raw_material_output_total }
+		if = {
+			limit = { has_global_variable = modeu5_us00_probe021_location_count }
+			set_variable = { name = modeu5_us00_ui_probe_location_count value = global_var:modeu5_us00_probe021_location_count }
+		}
+		else = {
+			set_variable = { name = modeu5_us00_ui_probe_location_count value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_us00_probe021_positive_goods_output_count }
+			set_variable = { name = modeu5_us00_ui_probe_positive_goods_output_count value = global_var:modeu5_us00_probe021_positive_goods_output_count }
+		}
+		else = {
+			set_variable = { name = modeu5_us00_ui_probe_positive_goods_output_count value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_us00_probe021_wheat_goods_output_total }
+			set_variable = { name = modeu5_us00_ui_probe_wheat_goods_output_total value = global_var:modeu5_us00_probe021_wheat_goods_output_total }
+		}
+		else = {
+			set_variable = { name = modeu5_us00_ui_probe_wheat_goods_output_total value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_us00_probe021_raw_material_output_total }
+			set_variable = { name = modeu5_us00_ui_probe_raw_material_output_total value = global_var:modeu5_us00_probe021_raw_material_output_total }
+		}
+		else = {
+			set_variable = { name = modeu5_us00_ui_probe_raw_material_output_total value = 0 }
+		}
 	}
 }
 
@@ -262,21 +286,79 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 }
 
 modeu5_probe021_increment_location_count = {
-	set_global_variable = {
-		name = modeu5_us00_probe021_location_count
-		value = {
-			value = global_var:modeu5_us00_probe021_location_count
-			add = 1
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_us00_probe021_location_count }
+		}
+		set_global_variable = { name = modeu5_us00_probe021_location_count value = 1 }
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_us00_probe021_location_count
+			value = {
+				value = global_var:modeu5_us00_probe021_location_count
+				add = 1
+			}
 		}
 	}
 }
 
 modeu5_probe021_increment_positive_goods_output_count = {
-	set_global_variable = {
-		name = modeu5_us00_probe021_positive_goods_output_count
-		value = {
-			value = global_var:modeu5_us00_probe021_positive_goods_output_count
-			add = 1
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_us00_probe021_positive_goods_output_count }
+		}
+		set_global_variable = { name = modeu5_us00_probe021_positive_goods_output_count value = 1 }
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_us00_probe021_positive_goods_output_count
+			value = {
+				value = global_var:modeu5_us00_probe021_positive_goods_output_count
+				add = 1
+			}
+		}
+	}
+}
+
+modeu5_probe021_add_wheat_goods_output_total = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_us00_probe021_wheat_goods_output_total }
+		}
+		set_global_variable = {
+			name = modeu5_us00_probe021_wheat_goods_output_total
+			value = scope:modeu5_probe021_location_wheat_goods_output
+		}
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_us00_probe021_wheat_goods_output_total
+			value = {
+				value = global_var:modeu5_us00_probe021_wheat_goods_output_total
+				add = scope:modeu5_probe021_location_wheat_goods_output
+			}
+		}
+	}
+}
+
+modeu5_probe021_add_raw_material_output_total = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_us00_probe021_raw_material_output_total }
+		}
+		set_global_variable = {
+			name = modeu5_us00_probe021_raw_material_output_total
+			value = scope:modeu5_probe021_location_raw_material_output
+		}
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_us00_probe021_raw_material_output_total
+			value = {
+				value = global_var:modeu5_us00_probe021_raw_material_output_total
+				add = scope:modeu5_probe021_location_raw_material_output
+			}
 		}
 	}
 }
@@ -285,10 +367,6 @@ modeu5_us00_debug_run_probe021 = {
 	modeu5_us00_clear_test_results = yes
 	set_global_variable = modeu5_test_probe021_started
 	save_temporary_scope_as = modeu5_us00_test_controller
-	set_global_variable = { name = modeu5_us00_probe021_location_count value = 0 }
-	set_global_variable = { name = modeu5_us00_probe021_positive_goods_output_count value = 0 }
-	set_global_variable = { name = modeu5_us00_probe021_wheat_goods_output_total value = 0 }
-	set_global_variable = { name = modeu5_us00_probe021_raw_material_output_total value = 0 }
 
 	if = {
 		limit = { country_exists = c:FRA }
@@ -313,20 +391,8 @@ modeu5_us00_debug_run_probe021 = {
 					limit = { scope:modeu5_probe021_location_wheat_goods_output > 0 }
 					modeu5_probe021_increment_positive_goods_output_count = yes
 				}
-				set_global_variable = {
-					name = modeu5_us00_probe021_wheat_goods_output_total
-					value = {
-						value = global_var:modeu5_us00_probe021_wheat_goods_output_total
-						add = scope:modeu5_probe021_location_wheat_goods_output
-					}
-				}
-				set_global_variable = {
-					name = modeu5_us00_probe021_raw_material_output_total
-					value = {
-						value = global_var:modeu5_us00_probe021_raw_material_output_total
-						add = scope:modeu5_probe021_location_raw_material_output
-					}
-				}
+				modeu5_probe021_add_wheat_goods_output_total = yes
+				modeu5_probe021_add_raw_material_output_total = yes
 			}
 		}
 
@@ -334,6 +400,23 @@ modeu5_us00_debug_run_probe021 = {
 		modeu5_us00_log_probe021_dump = yes
 		if = {
 			limit = {
+				NOT = { has_global_variable = modeu5_us00_probe021_location_count }
+			}
+			set_global_variable = modeu5_test_probe021_failed
+			debug_log = "ModeU5 PROBE-021 RESULT location_output FAIL missing_location_counter"
+			error_log = "ModeU5 PROBE-021 did not produce a location counter after iterating FRA owned locations."
+		}
+		else_if = {
+			limit = {
+				NOT = { global_var:modeu5_us00_probe021_location_count > 0 }
+			}
+			set_global_variable = modeu5_test_probe021_failed
+			debug_log = "ModeU5 PROBE-021 RESULT location_output FAIL no_owned_locations_counted"
+			error_log = "ModeU5 PROBE-021 counted zero FRA owned locations."
+		}
+		else_if = {
+			limit = {
+				has_global_variable = modeu5_us00_probe021_positive_goods_output_count
 				global_var:modeu5_us00_probe021_location_count > 0
 				global_var:modeu5_us00_probe021_positive_goods_output_count > 0
 			}
