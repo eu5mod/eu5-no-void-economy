@@ -141,6 +141,25 @@ modeu5_perf02_mirror_probe_to_ui = {
 	}
 }
 
+modeu5_perf02_log_probe_result = {
+	debug_log = "ModeU5 PERF-02 DUMP native_iterator country_scopes=[THIS.GetVariable('modeu5_perf02_ui_human_country_count').GetValue|0] native_iterations=[THIS.GetVariable('modeu5_perf02_ui_native_iterations').GetValue|0] relevant_markets=[THIS.GetVariable('modeu5_perf02_ui_relevant_markets').GetValue|0] owned_location_markets=[THIS.GetVariable('modeu5_perf02_ui_owned_location_markets').GetValue|0] missing_owned_location_markets=[THIS.GetVariable('modeu5_perf02_ui_missing_owned_location_markets').GetValue|0]"
+	if = {
+		limit = { has_global_variable = modeu5_test_perf02_native_market_iterator_passed }
+		debug_log = "ModeU5 PERF-02 RESULT native_iterator PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf02_native_market_iterator_blocked }
+		debug_log = "ModeU5 PERF-02 RESULT native_iterator BLOCKED no_markets"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf02_native_market_iterator_failed }
+		debug_log = "ModeU5 PERF-02 RESULT native_iterator FAIL missing_owned_location_market"
+	}
+	else = {
+		debug_log = "ModeU5 PERF-02 RESULT native_iterator PENDING no_result_marker"
+	}
+}
+
 modeu5_perf02_probe_current_country_native_markets = {
 	modeu5_perf02_clear_probe_results = yes
 	set_global_variable = modeu5_test_perf02_native_market_iterator_started
@@ -153,6 +172,7 @@ modeu5_perf02_probe_current_country_native_markets = {
 	if = {
 		limit = { has_markets = no }
 		set_global_variable = modeu5_test_perf02_native_market_iterator_blocked
+		error_log = "ModeU5 PERF-02 native market iterator probe blocked because the current country has no markets."
 	}
 	else = {
 		every_owned_location = {
@@ -185,4 +205,5 @@ modeu5_perf02_probe_current_country_native_markets = {
 	}
 
 	modeu5_perf02_mirror_probe_to_ui = yes
+	modeu5_perf02_log_probe_result = yes
 }

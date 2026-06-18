@@ -55,6 +55,8 @@ Native market iterations is greater than zero.
 Relevant markets added is greater than zero.
 Owned-location markets missing from native list is zero.
 No ModeU5 PERF-02 error appears in error.log.
+debug.log contains ModeU5 PERF-02 DUMP native_iterator.
+debug.log contains ModeU5 PERF-02 RESULT native_iterator PASS.
 ```
 
 Visible dump fields:
@@ -90,13 +92,25 @@ The list is not used as a stock source.
 error.log
 game.log
 system.log
-debug.log when deterministic dumps are emitted there
+debug.log
+```
+
+Expected PERF-02 log lines:
+
+```txt
+ModeU5 PERF-02 DUMP native_iterator country_scopes=<n> native_iterations=<n> relevant_markets=<n> owned_location_markets=<n> missing_owned_location_markets=0
+ModeU5 PERF-02 RESULT native_iterator PASS
 ```
 
 ## Known Limitations
 
 This probe validates the important lower-bound edge case: markets of owned
 locations must not be omitted by `every_market_present_in_country`.
+
+The PERF-02 probe deliberately emits a dynamic `debug_log` dump so the result
+is reviewable from logs. If EU5 also emits `Tried to localize with localization
+disabled`, tolerate it only when the expected PERF-02 DUMP and RESULT lines are
+present and no PERF-02 script-system error is present.
 
 It does not yet validate all possible “country present in market” meanings,
 such as market access without owned locations, market reassignment, foreign
