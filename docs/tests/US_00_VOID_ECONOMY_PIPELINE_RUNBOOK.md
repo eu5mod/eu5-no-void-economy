@@ -129,11 +129,16 @@ effective ratio = 0.59
 void wealth = 120
 taxable proxy = 120
 production penalty = -0.59
-market void wealth = 120
-total void wealth = 120
+market void wealth delta = 120
+total void wealth delta = 120
 stock after = 40
 capacity = 40
 ```
+
+The absolute `market_void_wealth` and `total_void_wealth` dump fields may be
+higher than 120 when the test is run after one or more live monthly ticks. The
+controlled assertion intentionally validates the delta introduced by the test
+fixture so the scenario remains isolated from prior runtime activity.
 
 Expected log lines:
 

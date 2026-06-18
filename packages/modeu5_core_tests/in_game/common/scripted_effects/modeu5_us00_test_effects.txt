@@ -31,7 +31,9 @@ modeu5_us00_clear_test_results = {
 	remove_variable = modeu5_us00_ui_taxable_proxy
 	remove_variable = modeu5_us00_ui_penalty
 	remove_variable = modeu5_us00_ui_market_void_wealth
+	remove_variable = modeu5_us00_ui_market_void_wealth_delta
 	remove_variable = modeu5_us00_ui_total_void_wealth
+	remove_variable = modeu5_us00_ui_total_void_wealth_delta
 	remove_variable = modeu5_us00_ui_stock_after
 	remove_variable = modeu5_us00_ui_capacity
 	remove_variable = modeu5_us00_ui_market_stock_after
@@ -61,7 +63,9 @@ modeu5_us00_write_e2e_dump_variables = {
 		set_variable = { name = modeu5_us00_ui_taxable_proxy value = scope:modeu5_us00_test_taxable_proxy }
 		set_variable = { name = modeu5_us00_ui_penalty value = scope:modeu5_us00_test_penalty }
 		set_variable = { name = modeu5_us00_ui_market_void_wealth value = scope:modeu5_us00_test_market_void_wealth }
+		set_variable = { name = modeu5_us00_ui_market_void_wealth_delta value = scope:modeu5_us00_test_market_void_wealth_delta }
 		set_variable = { name = modeu5_us00_ui_total_void_wealth value = scope:modeu5_us00_test_total_void_wealth }
+		set_variable = { name = modeu5_us00_ui_total_void_wealth_delta value = scope:modeu5_us00_test_total_void_wealth_delta }
 		set_variable = { name = modeu5_us00_ui_stock_after value = scope:modeu5_us00_test_stock_after }
 		set_variable = { name = modeu5_us00_ui_capacity value = scope:modeu5_us00_test_capacity }
 		set_variable = { name = modeu5_us00_ui_market_stock_after value = scope:modeu5_us00_test_market_stock_after }
@@ -70,7 +74,7 @@ modeu5_us00_write_e2e_dump_variables = {
 
 modeu5_us00_log_e2e_dump = {
 	scope:modeu5_us00_test_controller = {
-		debug_log = "ModeU5 US-00 DUMP controlled_e2e country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_produced').GetValue|2] added=[THIS.GetVariable('modeu5_us00_ui_added').GetValue|2] rejected=[THIS.GetVariable('modeu5_us00_ui_rejected').GetValue|2] ratio=[THIS.GetVariable('modeu5_us00_ui_ratio').GetValue|4] effective_ratio=[THIS.GetVariable('modeu5_us00_ui_effective_ratio').GetValue|4] void_wealth=[THIS.GetVariable('modeu5_us00_ui_void_wealth').GetValue|2] taxable_proxy=[THIS.GetVariable('modeu5_us00_ui_taxable_proxy').GetValue|2] penalty=[THIS.GetVariable('modeu5_us00_ui_penalty').GetValue|4] market_void_wealth=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth').GetValue|2] total_void_wealth=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us00_ui_stock_after').GetValue|2] capacity=[THIS.GetVariable('modeu5_us00_ui_capacity').GetValue|2] market_stock_after=[THIS.GetVariable('modeu5_us00_ui_market_stock_after').GetValue|2]"
+		debug_log = "ModeU5 US-00 DUMP controlled_e2e country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_produced').GetValue|2] added=[THIS.GetVariable('modeu5_us00_ui_added').GetValue|2] rejected=[THIS.GetVariable('modeu5_us00_ui_rejected').GetValue|2] ratio=[THIS.GetVariable('modeu5_us00_ui_ratio').GetValue|4] effective_ratio=[THIS.GetVariable('modeu5_us00_ui_effective_ratio').GetValue|4] void_wealth=[THIS.GetVariable('modeu5_us00_ui_void_wealth').GetValue|2] taxable_proxy=[THIS.GetVariable('modeu5_us00_ui_taxable_proxy').GetValue|2] penalty=[THIS.GetVariable('modeu5_us00_ui_penalty').GetValue|4] market_void_wealth=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth').GetValue|2] market_void_wealth_delta=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth_delta').GetValue|2] total_void_wealth=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth').GetValue|2] total_void_wealth_delta=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth_delta').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us00_ui_stock_after').GetValue|2] capacity=[THIS.GetVariable('modeu5_us00_ui_capacity').GetValue|2] market_stock_after=[THIS.GetVariable('modeu5_us00_ui_market_stock_after').GetValue|2]"
 	}
 }
 
@@ -146,6 +150,31 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			country = c:FRA
 			market = scope:modeu5_us00_test_market
 			good = wheat
+		}
+		c:FRA = {
+			if = {
+				limit = {
+					has_variable_map = modeu5_void_wealth_by_market
+					is_key_in_variable_map = {
+						name = modeu5_void_wealth_by_market
+						target = scope:modeu5_us00_test_market
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_test_market_void_wealth_baseline
+					value = "variable_map(modeu5_void_wealth_by_market|scope:modeu5_us00_test_market)"
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = { name = modeu5_us00_test_market_void_wealth_baseline value = 0 }
+			}
+			if = {
+				limit = { has_variable = modeu5_total_void_wealth }
+				save_temporary_scope_value_as = { name = modeu5_us00_test_total_void_wealth_baseline value = var:modeu5_total_void_wealth }
+			}
+			else = {
+				save_temporary_scope_value_as = { name = modeu5_us00_test_total_void_wealth_baseline value = 0 }
+			}
 		}
 		modeu5_debug_replace_country_wheat_capacity = {
 			country = c:FRA
@@ -239,6 +268,20 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			}
 		}
 		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_market_void_wealth_delta
+			value = {
+				value = scope:modeu5_us00_test_market_void_wealth
+				subtract = scope:modeu5_us00_test_market_void_wealth_baseline
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_total_void_wealth_delta
+			value = {
+				value = scope:modeu5_us00_test_total_void_wealth
+				subtract = scope:modeu5_us00_test_total_void_wealth_baseline
+			}
+		}
+		save_temporary_scope_value_as = {
 			name = modeu5_us00_test_expected_ratio
 			value = {
 				value = 60
@@ -286,8 +329,8 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 				scope:modeu5_us00_test_void_wealth = 120
 				scope:modeu5_us00_test_taxable_proxy = 120
 				scope:modeu5_us00_test_penalty_delta = 0
-				scope:modeu5_us00_test_market_void_wealth = 120
-				scope:modeu5_us00_test_total_void_wealth = 120
+				scope:modeu5_us00_test_market_void_wealth_delta = 120
+				scope:modeu5_us00_test_total_void_wealth_delta = 120
 			}
 			set_global_variable = modeu5_test_us00_controlled_e2e_passed
 			debug_log = "ModeU5 US-00 RESULT controlled_e2e PASS"
