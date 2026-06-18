@@ -14,6 +14,10 @@ As a player, I want unstockable production to reduce future overproduction so th
 
 Convert effective overproduction into a capped temporary penalty applied during month N+1 to owned locations in the affected market that produce the affected good.
 
+## Current implementation boundary
+
+The first implementation PR stores the prepared next-cycle penalty on the shared `country × market × good` record and exposes it in deterministic debug output. Applying temporary location modifiers remains deferred until TECH-01 021 confirms the producing-location source set for the good.
+
 ## Runtime position
 
 ```txt

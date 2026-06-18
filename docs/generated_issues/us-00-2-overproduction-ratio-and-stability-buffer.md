@@ -14,6 +14,10 @@ As a player, I want rejected production converted into a stable ratio so negligi
 
 Calculate clamped monthly overproduction and effective overproduction ratios per `country × market × good`, with a configurable default buffer of `0.01`.
 
+## Current implementation boundary
+
+The first implementation PR calculates and persists the ratio fields from the US-00.1 ledger through generated per-good adapters. It is validated through a controlled stock-add rejection fixture until live production ingestion is unlocked by TECH-01 021.
+
 ## Runtime position
 
 ```txt

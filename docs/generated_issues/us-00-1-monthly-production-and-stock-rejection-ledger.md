@@ -1,6 +1,6 @@
 # US-00.1 — Monthly Production and Stock Rejection Ledger
 
-Labels: `blocked:engine-exposure`
+Labels: `module:core`
 
 ## User Story
 
@@ -13,6 +13,10 @@ As a player, I want produced, stocked, and rejected quantities recorded per coun
 ## Functional objective
 
 Read or calculate production at `location × good`, resolve the ledger country and the location's market, then accumulate monthly `produced_quantity`, `actual_added_quantity`, and `rejected_quantity` under the derived `country × market × good` ledger key. Read stock-add outputs rather than recomputing them.
+
+## Current implementation boundary
+
+The first implementation PR provides `modeu5_update_production_rejection_ledger` and a controlled test that feeds the ledger from `modeu5_add_stock` outputs. TECH-01 021 / PROBE-021 confirmed the exact target-good `goods_output(goods:wheat)` syntax and raw-material output diagnostics; live monthly production ingestion remains a later implementation step.
 
 ## Runtime position
 
@@ -27,7 +31,7 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Production source iteration/context | country/building/location/good | `every_owned_location`, `every_buildings_in_location`, `every_goods`, saved scopes | CONFIRMED | 003, 006, 008, 029 |
-| Produced quantity by location and good | country → owned location × good | target-good `goods_output`; `raw_material_output` for the location RGO; aggregate by `location.market` | TO_TEST | 021 |
+| Produced quantity by location and good | country → owned location × good | target-good `goods_output(goods:<good>)`; `raw_material_output` diagnostics; aggregate by `location.market` | CONFIRMED | 021 |
 | Ledger-country attribution | country-rooted cycle → owned location | current country plus `every_owned_location` and location `owner` validation | CONFIRMED | 003, 005, 011, 081 |
 | Market attribution | location → market | `market` scope link | CONFIRMED | 004 |
 | Added quantity | ModeU5 stock operation | `actual_added_quantity` | CONFIRMED | 022 |
@@ -146,4 +150,4 @@ Counters reset only after dependent calculations
 
 ## Known limitations
 
-Location `goods_output`, `raw_material_output`, country/market production totals, and the aggregation path are documented. Exact target-good syntax and foreign-building ownership semantics remain `TO_TEST`; source-level building/RGO output is not required.
+Location `goods_output(goods:<good>)`, `raw_material_output`, country/market production totals, and the aggregation path are documented. PROBE-021 confirmed the target-good syntax in location scope; source-level building/RGO output is not required.

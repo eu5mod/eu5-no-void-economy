@@ -1255,6 +1255,17 @@ Automatic reconciliation does not run before CORE-02 initialization completes an
 
 ## US-00 void economy tests
 
+Run the focused console procedure in:
+
+```txt
+docs/tests/US_00_VOID_ECONOMY_PIPELINE_RUNBOOK.md
+```
+
+The first implementation validates the internal ledger, ratio, valuation, and
+stored-penalty pipeline through a controlled `modeu5_add_stock` fixture. Live
+monthly production ingestion remains blocked until TECH-01 021 confirms the
+exact location-output syntax and ownership semantics.
+
 ### Test 9 — Location production aggregation
 
 Setup:
