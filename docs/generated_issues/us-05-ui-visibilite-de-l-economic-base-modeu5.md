@@ -45,7 +45,7 @@ Feeds counters to: player/modder diagnostics
 ## Files expected to change
 
 ```txt
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/events/
 in_game/localization/
 docs/technical/DEBUG_CONVENTIONS.md
@@ -58,7 +58,7 @@ docs/tests/
 ```txt
 Depends on: US-05, TECH-01
 Blocks: transparent Economic Base replacement
-Related US: US-00-UI
+Related US: US-10-UI
 ```
 
 ## Implementation rules

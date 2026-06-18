@@ -162,27 +162,41 @@ search_quiet 'name = modeu5_war_package_version' \
 	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt
 
 generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
+generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 generated_stock_helpers_tmp="$(mktemp)"
+generated_us00_modifiers_tmp="$(mktemp)"
 us09_generated_tmp_dir=""
-trap 'rm -f "$generated_stock_helpers_tmp"; if [[ -n "${us09_generated_tmp_dir:-}" ]]; then rm -rf "$us09_generated_tmp_dir"; fi' EXIT
+trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp"; if [[ -n "${us09_generated_tmp_dir:-}" ]]; then rm -rf "$us09_generated_tmp_dir"; fi' EXIT
 
 test -f "$stock_adapter_template"
 if [[ ! -f "$generated_stock_helpers" ]]; then
 	printf 'Generated stock helpers are missing. Run tools/generate_all.sh.\n' >&2
 	exit 1
 fi
+if [[ ! -f "$generated_us00_modifiers" ]]; then
+	printf 'Generated US-00 production modifiers are missing. Run tools/generate_all.sh.\n' >&2
+	exit 1
+fi
 
-"$stock_generator" "$generated_stock_helpers_tmp"
+"$stock_generator" "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp"
 
 if ! cmp -s "$generated_stock_helpers" "$generated_stock_helpers_tmp"; then
 	printf 'Generated stock helpers are stale. Run tools/generate_all.sh.\n' >&2
 	exit 1
 fi
+if ! cmp -s "$generated_us00_modifiers" "$generated_us00_modifiers_tmp"; then
+	printf 'Generated US-00 production modifiers are stale. Run tools/generate_all.sh.\n' >&2
+	exit 1
+fi
 
 if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_stock_helpers"; then
 	printf 'Generated stock adapters must contain only literal identifiers.\n' >&2
+	exit 1
+fi
+if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifiers"; then
+	printf 'Generated US-00 production modifiers must contain only literal identifiers.\n' >&2
 	exit 1
 fi
 
@@ -195,6 +209,14 @@ fi
 if ! search_quiet 'variable_map\(modeu5_wheat_base_capacity_by_market\|scope:modeu5_market\)' \
 	"$generated_stock_helpers"; then
 	printf 'Generated stock adapters must contain literal US-02 capacity breakdown access.\n' >&2
+	exit 1
+fi
+if ! search_quiet '^modeu5_wheat_production_penalty_modifier = \{' "$generated_us00_modifiers"; then
+	printf 'Generated US-00 production modifiers must contain the wheat modifier fixture.\n' >&2
+	exit 1
+fi
+if ! search_quiet 'category = location' "$generated_us00_modifiers"; then
+	printf 'Generated US-00 production modifiers must be location static modifiers.\n' >&2
 	exit 1
 fi
 

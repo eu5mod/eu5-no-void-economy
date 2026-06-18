@@ -265,7 +265,7 @@ US-10.3, debug, or stock-consistency orchestration.
 | US-00.2 | Owns ratio fields | Add raw/effective ratios to the same logical record and physical map family. |
 | US-00.3 | Owns next-month field | Add the prepared penalty field to the same logical record until N+1 application. |
 | US-00.4 | Owns valuation fields and aggregates | Add detailed valuation fields to the logical record; keep market totals and country totals as explicit aggregates. |
-| US-00-UI | Reads maps | Iterate the same map families without maintaining a UI copy. |
+| US-10-UI, including folded US-00 visibility | Reads maps and transaction diagnostics | Iterate the same map families without maintaining a UI copy or second authoritative outcome store. |
 | US-01 | Owns stock field and aggregate cache | Treat stock as a field of the country x market x good record and retain the separate market x good aggregate map. |
 | US-01-UI | Reads maps | Read US-01/US-02 maps directly and remain non-mutating. |
 | US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as fields of the country x market x good record. |

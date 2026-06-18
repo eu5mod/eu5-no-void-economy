@@ -58,6 +58,18 @@ the template or goods registry, run `./tools/generate_all.sh` and then
 `./tools/validate_module_packages.sh`; generation must be idempotent and no
 physical map identifier may retain `$`.
 
+The same generator also writes the US-00 per-good production-penalty static
+modifiers to:
+
+```txt
+main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
+```
+
+Those static modifiers are unit-sized location modifiers. Runtime code applies
+the calculated penalty through `add_location_modifier size = <penalty>`, so the
+static file must define `game_data.category = location` and must not hard-code a
+fixed penalty value.
+
 ## US-09 economy overrides
 
 Regenerate the Rebalance Economy static overrides for US-09:

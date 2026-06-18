@@ -491,8 +491,10 @@ effective_overproduction_ratio
 production_efficiency_penalty_coefficient
 max_production_efficiency_penalty
 production_efficiency_penalty
+previous_production_efficiency_penalty_if_applicable
 modifier_application_mode
 affected_locations_count
+positive_locations_count
 fallback_used
 theoretical_only_if_applicable
 good_price
@@ -516,6 +518,17 @@ good_specific_local_output_modifier
 local_production_efficiency_modifier
 theoretical_only
 ```
+
+Runtime US-00 validation must also write a deterministic dump line when a
+feature PR asks the tester to validate monthly production ingestion:
+
+```txt
+ModeU5 US-00 DUMP monthly_runtime country=<tag> good=<good> produced=... added=... rejected=... previous_penalty=... new_penalty=... affected_locations=... positive_locations=... good_price=... modifier_mode=...
+```
+
+The dump is the source of truth for reviewing tests. UI localization assertions
+are tolerated only when the matching dump/result lines are present and no
+ModeU5 script-system error appears.
 
 ## Mandatory debug for US-04
 
@@ -651,7 +664,7 @@ vanilla tooltip if safely overridable
 This applies to:
 
 ```txt
-US-00 theoretical-only production penalties
+US-00 production penalties and any theoretical-only fallback status
 US-04 simulated-demand fallback
 US-05 direct formula replacement status
 ```
