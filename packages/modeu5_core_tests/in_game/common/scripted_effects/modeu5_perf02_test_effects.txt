@@ -7,11 +7,9 @@ modeu5_perf02_clear_probe_results = {
 	remove_global_variable = modeu5_test_perf02_native_market_iterator_passed
 	remove_global_variable = modeu5_test_perf02_native_market_iterator_failed
 	remove_global_variable = modeu5_test_perf02_native_market_iterator_blocked
+	remove_global_variable = modeu5_test_perf02_native_market_iterator_missing_detected
 	remove_global_variable = modeu5_perf02_owned_location_market_count
 	remove_global_variable = modeu5_perf02_owned_location_market_missing_count
-
-	set_global_variable = { name = modeu5_perf02_owned_location_market_count value = 0 }
-	set_global_variable = { name = modeu5_perf02_owned_location_market_missing_count value = 0 }
 
 	if = {
 		limit = { has_global_variable_list = modeu5_perf02_owned_location_markets }
@@ -25,6 +23,43 @@ modeu5_perf02_clear_probe_results = {
 	remove_variable = modeu5_perf02_ui_missing_owned_location_markets
 }
 
+modeu5_perf02_increment_owned_location_market_count = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_perf02_owned_location_market_count }
+		}
+		set_global_variable = { name = modeu5_perf02_owned_location_market_count value = 1 }
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_perf02_owned_location_market_count
+			value = {
+				value = global_var:modeu5_perf02_owned_location_market_count
+				add = 1
+			}
+		}
+	}
+}
+
+modeu5_perf02_increment_missing_owned_location_market_count = {
+	set_global_variable = modeu5_test_perf02_native_market_iterator_missing_detected
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_perf02_owned_location_market_missing_count }
+		}
+		set_global_variable = { name = modeu5_perf02_owned_location_market_missing_count value = 1 }
+	}
+	else = {
+		set_global_variable = {
+			name = modeu5_perf02_owned_location_market_missing_count
+			value = {
+				value = global_var:modeu5_perf02_owned_location_market_missing_count
+				add = 1
+			}
+		}
+	}
+}
+
 modeu5_perf02_mark_owned_location_market = {
 	if = {
 		limit = {
@@ -34,13 +69,7 @@ modeu5_perf02_mark_owned_location_market = {
 			name = modeu5_perf02_owned_location_markets
 			target = scope:modeu5_perf02_owned_location_market
 		}
-		set_global_variable = {
-			name = modeu5_perf02_owned_location_market_count
-			value = {
-				value = global_var:modeu5_perf02_owned_location_market_count
-				add = 1
-			}
-		}
+		modeu5_perf02_increment_owned_location_market_count = yes
 	}
 	else_if = {
 		limit = {
@@ -55,36 +84,60 @@ modeu5_perf02_mark_owned_location_market = {
 			name = modeu5_perf02_owned_location_markets
 			target = scope:modeu5_perf02_owned_location_market
 		}
-		set_global_variable = {
-			name = modeu5_perf02_owned_location_market_count
-			value = {
-				value = global_var:modeu5_perf02_owned_location_market_count
-				add = 1
-			}
-		}
+		modeu5_perf02_increment_owned_location_market_count = yes
 	}
 }
 
 modeu5_perf02_mirror_probe_to_ui = {
-	set_variable = {
-		name = modeu5_perf02_ui_human_country_count
-		value = global_var:modeu5_performance_human_country_count
+	if = {
+		limit = { has_global_variable = modeu5_performance_human_country_count }
+		set_variable = {
+			name = modeu5_perf02_ui_human_country_count
+			value = global_var:modeu5_performance_human_country_count
+		}
 	}
-	set_variable = {
-		name = modeu5_perf02_ui_native_iterations
-		value = global_var:modeu5_performance_relevant_market_native_iterations
+	else = {
+		set_variable = { name = modeu5_perf02_ui_human_country_count value = 0 }
 	}
-	set_variable = {
-		name = modeu5_perf02_ui_relevant_markets
-		value = global_var:modeu5_performance_relevant_market_added_count
+	if = {
+		limit = { has_global_variable = modeu5_performance_relevant_market_native_iterations }
+		set_variable = {
+			name = modeu5_perf02_ui_native_iterations
+			value = global_var:modeu5_performance_relevant_market_native_iterations
+		}
 	}
-	set_variable = {
-		name = modeu5_perf02_ui_owned_location_markets
-		value = global_var:modeu5_perf02_owned_location_market_count
+	else = {
+		set_variable = { name = modeu5_perf02_ui_native_iterations value = 0 }
 	}
-	set_variable = {
-		name = modeu5_perf02_ui_missing_owned_location_markets
-		value = global_var:modeu5_perf02_owned_location_market_missing_count
+	if = {
+		limit = { has_global_variable = modeu5_performance_relevant_market_added_count }
+		set_variable = {
+			name = modeu5_perf02_ui_relevant_markets
+			value = global_var:modeu5_performance_relevant_market_added_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf02_ui_relevant_markets value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_perf02_owned_location_market_count }
+		set_variable = {
+			name = modeu5_perf02_ui_owned_location_markets
+			value = global_var:modeu5_perf02_owned_location_market_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf02_ui_owned_location_markets value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_perf02_owned_location_market_missing_count }
+		set_variable = {
+			name = modeu5_perf02_ui_missing_owned_location_markets
+			value = global_var:modeu5_perf02_owned_location_market_missing_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf02_ui_missing_owned_location_markets value = 0 }
 	}
 }
 
@@ -107,13 +160,7 @@ modeu5_perf02_probe_current_country_native_markets = {
 			modeu5_perf02_mark_owned_location_market = yes
 			if = {
 				limit = { NOT = { has_global_variable_list = modeu5_performance_relevant_markets } }
-				set_global_variable = {
-					name = modeu5_perf02_owned_location_market_missing_count
-					value = {
-						value = global_var:modeu5_perf02_owned_location_market_missing_count
-						add = 1
-					}
-				}
+				modeu5_perf02_increment_missing_owned_location_market_count = yes
 			}
 			else_if = {
 				limit = {
@@ -124,17 +171,11 @@ modeu5_perf02_probe_current_country_native_markets = {
 						}
 					}
 				}
-				set_global_variable = {
-					name = modeu5_perf02_owned_location_market_missing_count
-					value = {
-						value = global_var:modeu5_perf02_owned_location_market_missing_count
-						add = 1
-					}
-				}
+				modeu5_perf02_increment_missing_owned_location_market_count = yes
 			}
 		}
 		if = {
-			limit = { global_var:modeu5_perf02_owned_location_market_missing_count > 0 }
+			limit = { has_global_variable = modeu5_test_perf02_native_market_iterator_missing_detected }
 			set_global_variable = modeu5_test_perf02_native_market_iterator_failed
 			error_log = "ModeU5 PERF-02 native market iterator probe found an owned-location market missing from every_market_present_in_country."
 		}
