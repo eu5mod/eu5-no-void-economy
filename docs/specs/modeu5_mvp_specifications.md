@@ -1053,12 +1053,12 @@ modeu5_total_void_wealth
 | • | La valeur modeu5_total_void_wealth est transmise à US-05.1. |
 | • | Le debug permet de lire la quantité rejetée, le prix utilisé, la source du prix et la void wealth suivie. |
 
-## US-00-UI — Void Economy Debug and Visibility
+## US-00-UI — Folded into US-10-UI Super Visibility
 
 ### Description
 
 En tant que joueur ou moddeur, je veux pouvoir voir où la void economy apparaît, quelle quantité de production est rejetée, quelle valeur économique elle représente, et quel malus de production elle déclenche, afin de comprendre et d’équilibrer les effets du mod.
-Cette US couvre l’UI et le debug liés à US-00.1, US-00.2, US-00.3 et US-00.4.
+Cette visibilité est obligatoire, mais elle est portée par US-10-UI afin que la couche UI/debug couvre toute la chaîne production → stock → demande → transfert. US-00-UI reste une trace de spécification, pas une story d’implémentation séparée.
 ### Objectif
 
 La void economy est un phénomène abstrait.
@@ -2126,7 +2126,7 @@ US-10 est divisée en cinq sous-US :
 
 ## US-10.3 — Unsatisfied Demand Tracking
 
-## US-10-UI — Visibility of Stock Resolution
+## US-10-UI — Visibility of Stock, Demand, and Void-Economy Resolution
 
 ## US-10.0 — Stock Demand Resolver Core
 
@@ -2752,12 +2752,12 @@ debug_only
 | • | Le debug permet de lire le niveau de suivi utilisé. |
 | • | Les compteurs mensuels sont remis à zéro après usage. |
 
-## US-10-UI — Visibility of Stock Resolution
+## US-10-UI — Visibility of Stock, Demand, and Void-Economy Resolution
 
 ### Description
 
-En tant que joueur ou moddeur, je veux comprendre comment une demande a été satisfaite ou non, quels stocks ont été utilisés, quels candidats ont été exclus, et pourquoi certaines quantités sont restées insatisfaites.
-Cette US couvre l’UI et le debug de US-10.0, US-10.1, US-10.2 et US-10.3.
+En tant que joueur ou moddeur, je veux comprendre comment la production entre en stock ou est rejetée, comment une demande a été satisfaite ou non, quels stocks ont été utilisés, quels candidats ont été exclus, et pourquoi certaines quantités sont restées insatisfaites.
+Cette US couvre l’UI et le debug de US-00.1 à US-00.4, US-10.0, US-10.1, US-10.2 et US-10.3.
 ### Objectif
 
 La résolution de stock peut être difficile à comprendre si elle reste invisible.
@@ -2773,9 +2773,22 @@ Le joueur ou le moddeur doit pouvoir répondre aux questions suivantes :
 - Quelle quantité a été satisfaite ?
 - Quelle quantité est restée insatisfaite ?
 - S’agit-il d’une consommation ou d’un trade inter-marchés ?
+- Quelle production a été reconnue par ModeU5 ?
+- Quelle production a été rejetée comme void economy ?
+- Quel malus précédent a été appliqué et quel malus suivant est préparé ?
 ### Affichage minimal MVP
 
 Le MVP doit au minimum fournir une visibilité debug.
+Pour la couche US-00, le debug doit afficher si applicable :
+produced_quantity
+actual_added_quantity
+rejected_quantity
+void_wealth
+previous_production_penalty
+next_production_penalty
+modifier_application_mode
+affected_locations_count
+
 Pour chaque résolution de demande, le debug doit afficher :
 demand_type
 demanding_country

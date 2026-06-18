@@ -16,14 +16,14 @@ Convert effective overproduction into a capped temporary penalty applied during 
 
 ## Current implementation boundary
 
-The first implementation PR stores the prepared next-cycle penalty on the shared `country × market × good` record and exposes it in deterministic debug output. Applying temporary location modifiers remains deferred until TECH-01 021 confirms the producing-location source set for the good.
+The US-00 closure PR stores the prepared next-cycle penalty on the shared `country × market × good` record, applies the previous-cycle penalty to current producing locations, and exposes the affected-location count and modifier mode in deterministic debug output. Generated per-good modifiers use the confirmed `local_<good>_output_modifier` surface.
 
 ## Runtime position
 
 ```txt
 Monthly step: apply previous penalty at step 2; calculate replacement at step 15
 Depends on counters from: US-00.2
-Feeds counters to: next monthly cycle, US-00-UI
+Feeds counters to: next monthly cycle, US-10-UI
 ```
 
 ## Required scopes / values / effects
@@ -57,7 +57,7 @@ docs/tests/
 ```txt
 Depends on: US-00.2, location/production exposure, TECH-01
 Blocks: applied void-economy correction
-Related US: US-09, US-00-UI
+Related US: US-09, US-10-UI
 ```
 
 ## Implementation rules
@@ -72,7 +72,7 @@ Related US: US-09, US-00-UI
 - Use the same producing-country/source attribution established by US-00.1 when selecting penalty targets.
 - Do not silently switch to location ownership if it would penalize a different country from the one credited in the ledger.
 - Prefer good-specific output; use local production efficiency only as the single accepted fallback.
-- If no reliable modifier exists, calculate and display a theoretical-only penalty.
+- If no reliable modifier exists, calculate and display a theoretical-only penalty; the current preferred implementation is good-specific local output modifiers.
 - Never mutate stock or Estate tax/income values.
 
 ## US-specific boundary checks
@@ -114,4 +114,4 @@ Debug records affected count, application mode, and fallback status
 
 ## Known limitations
 
-The required modifier names, producer-location discovery, country-rooted attribution, and temporary location-modifier effect are documented. A controlled local test must still verify month-to-month replacement and immediate recalculation behavior.
+The required modifier names, producer-location discovery, country-rooted attribution, and temporary location-modifier effect are documented. The monthly runtime smoke test verifies previous-penalty application for one representative country/market/good; broader monthly replacement behavior remains part of extended balance testing.

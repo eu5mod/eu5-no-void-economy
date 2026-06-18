@@ -1837,3 +1837,248 @@ modeu5_clear_void_economy_record_good___GOOD__ = {
 	modeu5_update_void_wealth_aggregates = yes
 	modeu5_store_void_economy_record_good___GOOD__ = yes
 }
+
+modeu5_run_us00_monthly_pipeline_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_country = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_market
+			modeu5_process_us00_monthly_market_good___GOOD__ = yes
+		}
+	}
+}
+
+modeu5_process_us00_monthly_market_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	modeu5_load_void_economy_record_good___GOOD__ = yes
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_previous_production_penalty
+		value = scope:modeu5_us00_production_penalty_before_raw
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_previous_record_active
+		value = 0
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_us00_produced_before_raw > 0
+				scope:modeu5_us00_added_before_raw > 0
+				scope:modeu5_us00_rejected_before_raw > 0
+				scope:modeu5_us00_void_wealth_before_raw > 0
+				scope:modeu5_us00_void_taxable_income_proxy_before_raw > 0
+				scope:modeu5_us00_overproduction_ratio_before_raw > 0
+				scope:modeu5_us00_effective_overproduction_ratio_before_raw > 0
+				scope:modeu5_us00_production_penalty_before_raw != 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_previous_record_active
+			value = 1
+		}
+	}
+
+	scope:modeu5_market = {
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_market_produced_gate
+			value = {
+				value = "produced_in_market(goods:__GOOD__)"
+				min = 0
+			}
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_monthly_processing_required
+		value = 0
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_us00_previous_record_active > 0
+				scope:modeu5_us00_market_produced_gate > 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_processing_required
+			value = 1
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us00_monthly_processing_required > 0 }
+		modeu5_apply_us00_previous_penalty_good___GOOD__ = yes
+		modeu5_clear_void_economy_record_good___GOOD__ = yes
+		if = {
+			limit = { scope:modeu5_us00_market_produced_gate > 0 }
+			modeu5_ingest_us00_monthly_production_good___GOOD__ = yes
+		}
+	}
+}
+
+modeu5_apply_us00_previous_penalty_good___GOOD__ = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_monthly_affected_locations_count
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_monthly_modifier_application_mode
+		value = 0
+	}
+
+	if = {
+		limit = { scope:modeu5_us00_previous_production_penalty < 0 }
+		scope:modeu5_country = {
+			set_local_variable = { name = modeu5_us00_affected_locations_accumulator value = 0 }
+			every_owned_location = {
+				limit = { market = scope:modeu5_market }
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_location_output_for_penalty
+					value = {
+						value = "goods_output(goods:__GOOD__)"
+						min = 0
+					}
+				}
+				if = {
+					limit = { scope:modeu5_us00_location_output_for_penalty > 0 }
+					remove_location_modifier = modeu5___GOOD___production_penalty_modifier
+					add_location_modifier = {
+						modifier = modeu5___GOOD___production_penalty_modifier
+						months = 1
+						mode = replace
+						size = scope:modeu5_us00_previous_production_penalty
+						desc = modeu5_us00_production_penalty_modifier_desc
+						recalculate_immediately = yes
+					}
+					scope:modeu5_country = {
+						change_local_variable = {
+							name = modeu5_us00_affected_locations_accumulator
+							add = 1
+						}
+					}
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_us00_monthly_affected_locations_count
+				value = local_var:modeu5_us00_affected_locations_accumulator
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_modifier_application_mode
+			value = 1
+		}
+	}
+}
+
+modeu5_ingest_us00_monthly_production_good___GOOD__ = {
+	scope:modeu5_country = {
+		set_local_variable = { name = modeu5_us00_monthly_produced_accumulator value = 0 }
+		set_local_variable = { name = modeu5_us00_monthly_positive_location_count value = 0 }
+		every_owned_location = {
+			limit = { market = scope:modeu5_market }
+			save_temporary_scope_value_as = {
+				name = modeu5_us00_location_goods_output
+				value = {
+					value = "goods_output(goods:__GOOD__)"
+					min = 0
+				}
+			}
+			if = {
+				limit = { scope:modeu5_us00_location_goods_output > 0 }
+				change_local_variable = {
+					name = modeu5_us00_monthly_produced_accumulator
+					add = scope:modeu5_us00_location_goods_output
+				}
+				change_local_variable = {
+					name = modeu5_us00_monthly_positive_location_count
+					add = 1
+				}
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_produced_quantity
+			value = {
+				value = local_var:modeu5_us00_monthly_produced_accumulator
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_positive_locations_count
+			value = local_var:modeu5_us00_monthly_positive_location_count
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us00_monthly_produced_quantity > 0 }
+		modeu5_add_stock = {
+			country = scope:modeu5_country
+			market = scope:modeu5_market
+			good = __GOOD__
+			quantity = scope:modeu5_us00_monthly_produced_quantity
+			capacity_policy = enforce
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_actual_added_quantity
+			value = scope:modeu5_actual_added_quantity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_rejected_quantity
+			value = scope:modeu5_rejected_quantity
+		}
+		modeu5_update_production_rejection_ledger = {
+			country = scope:modeu5_country
+			market = scope:modeu5_market
+			good = __GOOD__
+			produced_quantity = scope:modeu5_us00_monthly_produced_quantity
+			actual_added_quantity = scope:modeu5_us00_monthly_actual_added_quantity
+			rejected_quantity = scope:modeu5_us00_monthly_rejected_quantity
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_value_as = {
+				name = modeu5_us00_monthly_good_price
+				value = {
+					value = "market_price(goods:__GOOD__)"
+					min = 0
+				}
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_monthly_good_price_source
+			value = 1
+		}
+		modeu5_run_us00_record_calculations = {
+			country = scope:modeu5_country
+			market = scope:modeu5_market
+			good = __GOOD__
+			good_price = scope:modeu5_us00_monthly_good_price
+			good_price_source = scope:modeu5_us00_monthly_good_price_source
+		}
+		modeu5_capture_us00_monthly_runtime_debug_good___GOOD__ = yes
+	}
+}
+
+modeu5_capture_us00_monthly_runtime_debug_good___GOOD__ = {
+	if = {
+		limit = { modeu5_debug_capture_enabled_trigger = yes }
+		scope:modeu5_country = {
+			set_variable = { name = modeu5_debug_last_us00_country value = scope:modeu5_country }
+			set_variable = { name = modeu5_debug_last_us00_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_us00_good value = scope:modeu5_good }
+			set_variable = { name = modeu5_debug_last_us00_produced_quantity value = scope:modeu5_us00_monthly_produced_quantity }
+			set_variable = { name = modeu5_debug_last_us00_actual_added_quantity value = scope:modeu5_us00_monthly_actual_added_quantity }
+			set_variable = { name = modeu5_debug_last_us00_rejected_quantity value = scope:modeu5_us00_monthly_rejected_quantity }
+			set_variable = { name = modeu5_debug_last_us00_previous_penalty value = scope:modeu5_us00_previous_production_penalty }
+			set_variable = { name = modeu5_debug_last_us00_new_penalty value = scope:modeu5_us00_production_penalty }
+			set_variable = { name = modeu5_debug_last_us00_overproduction_ratio value = scope:modeu5_us00_overproduction_ratio }
+			set_variable = { name = modeu5_debug_last_us00_effective_overproduction_ratio value = scope:modeu5_us00_effective_overproduction_ratio }
+			set_variable = { name = modeu5_debug_last_us00_void_wealth value = scope:modeu5_us00_void_wealth }
+			set_variable = { name = modeu5_debug_last_us00_taxable_proxy value = scope:modeu5_us00_void_taxable_income_proxy }
+			set_variable = { name = modeu5_debug_last_us00_good_price value = scope:modeu5_us00_monthly_good_price }
+			set_variable = { name = modeu5_debug_last_us00_good_price_source value = scope:modeu5_us00_monthly_good_price_source }
+			set_variable = { name = modeu5_debug_last_us00_modifier_application_mode value = scope:modeu5_us00_monthly_modifier_application_mode }
+			set_variable = { name = modeu5_debug_last_us00_affected_locations_count value = scope:modeu5_us00_monthly_affected_locations_count }
+			set_variable = { name = modeu5_debug_last_us00_positive_locations_count value = scope:modeu5_us00_monthly_positive_locations_count }
+		}
+	}
+}

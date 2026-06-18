@@ -16,7 +16,7 @@ Read or calculate production at `location × good`, resolve the ledger country a
 
 ## Current implementation boundary
 
-The first implementation PR provides `modeu5_update_production_rejection_ledger` and a controlled test that feeds the ledger from `modeu5_add_stock` outputs. TECH-01 021 / PROBE-021 confirmed the exact target-good `goods_output(goods:wheat)` syntax and raw-material output diagnostics; live monthly production ingestion remains a later implementation step.
+The US-00 closure PR keeps `modeu5_update_production_rejection_ledger` as the sole ledger writer and wires monthly runtime ingestion from confirmed location `goods_output(goods:<good>)`. Production is summed from the current country's owned locations in the market, added through `modeu5_add_stock`, and the returned actual-added/rejected quantities are persisted in the shared US-00 record.
 
 ## Runtime position
 
@@ -74,6 +74,8 @@ in_game/common/on_action/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
+tools/templates/modeu5_stock_good_adapter.template.txt
+tools/generate_stock_good_helpers.sh
 ```
 
 ## Dependencies
@@ -81,7 +83,7 @@ docs/tests/
 ```txt
 Depends on: location production/country/location/market exposure, modeu5_add_stock, US-01, TECH-01
 Blocks: US-00.2, US-00.3, US-00.4
-Related US: EPIC US-00, US-00-UI
+Related US: EPIC US-00, US-10-UI
 ```
 
 ## Implementation rules
@@ -150,4 +152,4 @@ Counters reset only after dependent calculations
 
 ## Known limitations
 
-Location `goods_output(goods:<good>)`, `raw_material_output`, country/market production totals, and the aggregation path are documented. PROBE-021 confirmed the target-good syntax in location scope; source-level building/RGO output is not required.
+Location `goods_output(goods:<good>)`, `raw_material_output`, country/market production totals, and the aggregation path are documented. PROBE-021 confirmed the target-good syntax in location scope; source-level building/RGO output is not required. The monthly runtime smoke test validates one representative live ingestion path; broader monthly-tick validation remains a follow-up test activity.

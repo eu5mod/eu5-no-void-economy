@@ -58,7 +58,7 @@ docs/tests/
 ```txt
 Depends on: US-05, TECH-01
 Blocks: transparent Economic Base replacement
-Related US: US-00-UI
+Related US: US-10-UI
 ```
 
 ## Implementation rules

@@ -16,14 +16,14 @@ Value rejected production per `country × market × good`, record the price sour
 
 ## Current implementation boundary
 
-The first implementation PR values rejected production from the controlled US-00.1 ledger, persists per-good void wealth and taxable proxy fields, and updates the shared market/country aggregate. Runtime `market_price` wiring is kept explicit at the caller boundary and remains visible in debug.
+The US-00 closure PR values rejected production from both the controlled US-00.1 ledger and the monthly runtime ledger. Runtime `market_price(goods:<good>)` wiring is explicit at the caller boundary and remains visible in debug through `good_price` and `good_price_source`.
 
 ## Runtime position
 
 ```txt
 Monthly step: 14
 Depends on counters from: US-00.1
-Feeds counters to: US-00-UI and balancing diagnostics
+Feeds counters to: US-10-UI and balancing diagnostics
 ```
 
 ## Required scopes / values / effects
@@ -56,7 +56,7 @@ docs/tests/
 ```txt
 Depends on: US-00.1, good-price exposure, TECH-01
 Blocks: complete void-economy visibility
-Related US: US-00.3, US-00-UI
+Related US: US-00.3, US-10-UI
 ```
 
 ## Implementation rules
@@ -112,4 +112,4 @@ Price source is logged; no Estate income or stock is changed
 
 ## Known limitations
 
-Market price, default goods price, Estate tax base, and Estate tax percentage are documented. Their runtime semantics and the chosen price fallback still require controlled testing and explicit debug identification.
+Market price, default goods price, Estate tax base, and Estate tax percentage are documented. The current runtime path uses `market_price(goods:<good>)` where available and logs the source; any future fallback must remain explicit in debug and TECH-01.

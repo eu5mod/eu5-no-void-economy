@@ -484,7 +484,6 @@ CORE-03
 
 EPIC US-00
 US-00.1 à US-00.4
-US-00-UI
 US-01 / US-01-UI
 US-02 / US-02-UI
 US-03 / US-03-UI
@@ -495,7 +494,7 @@ US-08 / US-08-UI
 US-09 / US-09-UI
 EPIC US-10
 US-10.0 à US-10.3
-US-10-UI
+US-10-UI, incluant la visibilité US-00
 US-11
 US-13
 ```

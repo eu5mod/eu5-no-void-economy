@@ -1261,10 +1261,11 @@ Run the focused console procedure in:
 docs/tests/US_00_VOID_ECONOMY_PIPELINE_RUNBOOK.md
 ```
 
-The first implementation validates the internal ledger, ratio, valuation, and
-stored-penalty pipeline through a controlled `modeu5_add_stock` fixture. Live
-monthly production ingestion remains blocked until TECH-01 021 confirms the
-exact location-output syntax and ownership semantics.
+The US-00 closure validates both the deterministic arithmetic fixture and the
+monthly runtime path. The runtime smoke test reads live `goods_output`, calls
+`modeu5_add_stock`, writes the US-00 record, values rejected production, stores
+the replacement penalty, and applies the previous penalty to producing
+locations through generated per-good modifiers.
 
 ### Test 9 — Location production aggregation
 
@@ -1402,6 +1403,31 @@ Expected:
 No reset occurs before all downstream calculations have read the values
 Counters reset only at the end of the monthly cycle
 Debug shows reset timing
+```
+
+---
+
+### Test 14B — Monthly runtime ingestion and previous penalty application
+
+Setup:
+
+```txt
+CORE-02 initialization is complete
+FRA exists and has wheat output in its capital market
+Run event modeu5_us00_debug.1
+Choose "Run US-00 monthly runtime smoke test"
+```
+
+Expected:
+
+```txt
+ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat ...
+ModeU5 US-00 RESULT monthly_runtime PASS
+Produced, added, and rejected quantities are all positive
+Previous penalty and new penalty are both negative
+Affected and positive producing-location counts are positive
+Good price is positive
+Modifier application mode = good-specific local output modifier
 ```
 
 ## US-10 demand resolution tests

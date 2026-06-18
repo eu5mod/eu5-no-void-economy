@@ -1,6 +1,6 @@
 # Deterministic US-00 test helpers.
-# These tests exercise the ModeU5 ledger pipeline without depending on
-# unconfirmed vanilla production exposure from TECH-01 021.
+# These tests exercise both the controlled ledger pipeline and the confirmed
+# vanilla location-output path used by monthly runtime ingestion.
 
 modeu5_us00_clear_test_results = {
 	modeu5_enter_audit_runtime_mode = yes
@@ -13,6 +13,10 @@ modeu5_us00_clear_test_results = {
 	remove_global_variable = modeu5_test_probe021_passed
 	remove_global_variable = modeu5_test_probe021_pending
 	remove_global_variable = modeu5_test_probe021_failed
+	remove_global_variable = modeu5_test_us00_monthly_runtime_started
+	remove_global_variable = modeu5_test_us00_monthly_runtime_passed
+	remove_global_variable = modeu5_test_us00_monthly_runtime_failed
+	remove_global_variable = modeu5_test_us00_monthly_runtime_blocked
 	remove_global_variable = modeu5_us00_probe021_location_count
 	remove_global_variable = modeu5_us00_probe021_positive_goods_output_count
 	remove_global_variable = modeu5_us00_probe021_wheat_goods_output_total
@@ -35,6 +39,15 @@ modeu5_us00_clear_test_results = {
 	remove_variable = modeu5_us00_ui_probe_positive_goods_output_count
 	remove_variable = modeu5_us00_ui_probe_wheat_goods_output_total
 	remove_variable = modeu5_us00_ui_probe_raw_material_output_total
+	remove_variable = modeu5_us00_ui_runtime_produced
+	remove_variable = modeu5_us00_ui_runtime_added
+	remove_variable = modeu5_us00_ui_runtime_rejected
+	remove_variable = modeu5_us00_ui_runtime_previous_penalty
+	remove_variable = modeu5_us00_ui_runtime_new_penalty
+	remove_variable = modeu5_us00_ui_runtime_affected_locations
+	remove_variable = modeu5_us00_ui_runtime_positive_locations
+	remove_variable = modeu5_us00_ui_runtime_good_price
+	remove_variable = modeu5_us00_ui_runtime_modifier_mode
 }
 
 modeu5_us00_write_e2e_dump_variables = {
@@ -97,6 +110,26 @@ modeu5_us00_write_probe021_dump_variables = {
 modeu5_us00_log_probe021_dump = {
 	scope:modeu5_us00_test_controller = {
 		debug_log = "ModeU5 PROBE-021 DUMP location_output country=FRA good=wheat locations=[THIS.GetVariable('modeu5_us00_ui_probe_location_count').GetValue|0] positive_goods_output_locations=[THIS.GetVariable('modeu5_us00_ui_probe_positive_goods_output_count').GetValue|0] goods_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_wheat_goods_output_total').GetValue|4] raw_material_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_raw_material_output_total').GetValue|4]"
+	}
+}
+
+modeu5_us00_write_monthly_runtime_dump_variables = {
+	scope:modeu5_us00_test_controller = {
+		set_variable = { name = modeu5_us00_ui_runtime_produced value = scope:modeu5_us00_runtime_produced }
+		set_variable = { name = modeu5_us00_ui_runtime_added value = scope:modeu5_us00_runtime_added }
+		set_variable = { name = modeu5_us00_ui_runtime_rejected value = scope:modeu5_us00_runtime_rejected }
+		set_variable = { name = modeu5_us00_ui_runtime_previous_penalty value = scope:modeu5_us00_runtime_previous_penalty }
+		set_variable = { name = modeu5_us00_ui_runtime_new_penalty value = scope:modeu5_us00_runtime_new_penalty }
+		set_variable = { name = modeu5_us00_ui_runtime_affected_locations value = scope:modeu5_us00_runtime_affected_locations }
+		set_variable = { name = modeu5_us00_ui_runtime_positive_locations value = scope:modeu5_us00_runtime_positive_locations }
+		set_variable = { name = modeu5_us00_ui_runtime_good_price value = scope:modeu5_us00_runtime_good_price }
+		set_variable = { name = modeu5_us00_ui_runtime_modifier_mode value = scope:modeu5_us00_runtime_modifier_mode }
+	}
+}
+
+modeu5_us00_log_monthly_runtime_dump = {
+	scope:modeu5_us00_test_controller = {
+		debug_log = "ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_runtime_produced').GetValue|4] added=[THIS.GetVariable('modeu5_us00_ui_runtime_added').GetValue|4] rejected=[THIS.GetVariable('modeu5_us00_ui_runtime_rejected').GetValue|4] previous_penalty=[THIS.GetVariable('modeu5_us00_ui_runtime_previous_penalty').GetValue|4] new_penalty=[THIS.GetVariable('modeu5_us00_ui_runtime_new_penalty').GetValue|4] affected_locations=[THIS.GetVariable('modeu5_us00_ui_runtime_affected_locations').GetValue|0] positive_locations=[THIS.GetVariable('modeu5_us00_ui_runtime_positive_locations').GetValue|0] good_price=[THIS.GetVariable('modeu5_us00_ui_runtime_good_price').GetValue|4] modifier_mode=[THIS.GetVariable('modeu5_us00_ui_runtime_modifier_mode').GetValue|0]"
 	}
 }
 
@@ -282,6 +315,124 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 		set_global_variable = modeu5_test_us00_controlled_e2e_blocked
 		debug_log = "ModeU5 US-00 RESULT controlled_e2e BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-00 controlled pipeline test requires FRA."
+	}
+}
+
+modeu5_us00_debug_run_monthly_runtime_test = {
+	modeu5_us00_clear_test_results = yes
+	set_global_variable = modeu5_test_us00_monthly_runtime_started
+	save_temporary_scope_as = modeu5_us00_test_controller
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			modeu5_stock_runtime_ready_trigger = yes
+		}
+		c:FRA = { save_temporary_scope_as = modeu5_country }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_market }
+
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_market
+			value = 10
+		}
+		modeu5_clear_us00_record = {
+			country = c:FRA
+			market = scope:modeu5_market
+			good = wheat
+		}
+
+		modeu5_update_production_rejection_ledger = {
+			country = c:FRA
+			market = scope:modeu5_market
+			good = wheat
+			produced_quantity = 100
+			actual_added_quantity = 94
+			rejected_quantity = 6
+		}
+		modeu5_run_us00_record_calculations = {
+			country = c:FRA
+			market = scope:modeu5_market
+			good = wheat
+			good_price = 2
+			good_price_source = 99
+		}
+
+		modeu5_process_us00_monthly_market_good_wheat = yes
+
+		modeu5_read_void_economy_record = {
+			country = c:FRA
+			market = scope:modeu5_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_us00_runtime_produced value = scope:modeu5_us00_produced }
+		save_temporary_scope_value_as = { name = modeu5_us00_runtime_added value = scope:modeu5_us00_added }
+		save_temporary_scope_value_as = { name = modeu5_us00_runtime_rejected value = scope:modeu5_us00_rejected }
+		save_temporary_scope_value_as = { name = modeu5_us00_runtime_new_penalty value = scope:modeu5_us00_read_production_penalty }
+
+		c:FRA = {
+			if = {
+				limit = { has_variable = modeu5_debug_last_us00_previous_penalty }
+				save_temporary_scope_value_as = { name = modeu5_us00_runtime_previous_penalty value = var:modeu5_debug_last_us00_previous_penalty }
+			}
+			else = { save_temporary_scope_value_as = { name = modeu5_us00_runtime_previous_penalty value = 0 } }
+			if = {
+				limit = { has_variable = modeu5_debug_last_us00_affected_locations_count }
+				save_temporary_scope_value_as = { name = modeu5_us00_runtime_affected_locations value = var:modeu5_debug_last_us00_affected_locations_count }
+			}
+			else = { save_temporary_scope_value_as = { name = modeu5_us00_runtime_affected_locations value = 0 } }
+			if = {
+				limit = { has_variable = modeu5_debug_last_us00_positive_locations_count }
+				save_temporary_scope_value_as = { name = modeu5_us00_runtime_positive_locations value = var:modeu5_debug_last_us00_positive_locations_count }
+			}
+			else = { save_temporary_scope_value_as = { name = modeu5_us00_runtime_positive_locations value = 0 } }
+			if = {
+				limit = { has_variable = modeu5_debug_last_us00_good_price }
+				save_temporary_scope_value_as = { name = modeu5_us00_runtime_good_price value = var:modeu5_debug_last_us00_good_price }
+			}
+			else = { save_temporary_scope_value_as = { name = modeu5_us00_runtime_good_price value = 0 } }
+			if = {
+				limit = { has_variable = modeu5_debug_last_us00_modifier_application_mode }
+				save_temporary_scope_value_as = { name = modeu5_us00_runtime_modifier_mode value = var:modeu5_debug_last_us00_modifier_application_mode }
+			}
+			else = { save_temporary_scope_value_as = { name = modeu5_us00_runtime_modifier_mode value = 0 } }
+		}
+
+		modeu5_us00_write_monthly_runtime_dump_variables = yes
+		modeu5_us00_log_monthly_runtime_dump = yes
+
+		if = {
+			limit = {
+				scope:modeu5_us00_runtime_produced > 0
+				scope:modeu5_us00_runtime_added > 0
+				scope:modeu5_us00_runtime_rejected > 0
+				scope:modeu5_us00_runtime_previous_penalty < 0
+				scope:modeu5_us00_runtime_new_penalty < 0
+				scope:modeu5_us00_runtime_affected_locations > 0
+				scope:modeu5_us00_runtime_positive_locations > 0
+				scope:modeu5_us00_runtime_good_price > 0
+				scope:modeu5_us00_runtime_modifier_mode = 1
+			}
+			set_global_variable = modeu5_test_us00_monthly_runtime_passed
+			debug_log = "ModeU5 US-00 RESULT monthly_runtime PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_us00_monthly_runtime_failed
+			debug_log = "ModeU5 US-00 RESULT monthly_runtime FAIL"
+			error_log = "ModeU5 deterministic US-00 monthly runtime smoke test failed."
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_us00_monthly_runtime_blocked
+		debug_log = "ModeU5 US-00 RESULT monthly_runtime BLOCKED missing_FRA_or_runtime_not_ready"
+		error_log = "ModeU5 deterministic US-00 monthly runtime smoke test requires FRA and completed CORE-02 initialization."
 	}
 }
 

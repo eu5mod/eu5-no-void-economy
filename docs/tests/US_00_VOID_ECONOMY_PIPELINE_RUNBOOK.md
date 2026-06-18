@@ -2,7 +2,7 @@
 
 ## Scope
 
-This runbook validates the first implementable US-00 layer:
+This runbook validates the complete US-00 runtime closure:
 
 ```txt
 US-00.1 ledger helper
@@ -10,11 +10,15 @@ US-00.2 overproduction ratio and buffer
 US-00.3 stored next-cycle production penalty
 US-00.4 void wealth and taxable-income proxy
 PROBE-021 location output exposure
+monthly runtime ingestion from location output
+previous-month production penalty application to producing locations
 ```
 
-The controlled pipeline test does not yet wire live monthly production into
-gameplay. TECH-01 021 must pass before monthly production ingestion can depend
-on vanilla `goods_output`.
+The controlled pipeline test remains the deterministic arithmetic fixture. The
+monthly runtime smoke test proves that the live path reads location
+`goods_output`, calls `modeu5_add_stock`, writes the US-00 record, calculates the
+replacement penalty, and applies the previous penalty with generated
+per-good location modifiers.
 
 ## Build And Install
 
@@ -130,6 +134,51 @@ ModeU5 US-00 RESULT controlled_e2e PASS
 The test cleans up the controlled stock and US-00 record after writing the dump.
 Use the dump lines, not the post-cleanup maps, as the validation artifact.
 
+## Scenario D - Monthly Runtime Ingestion And Penalty Smoke
+
+Setup:
+
+```txt
+Start or load a disposable campaign after CORE-02 initialization has completed.
+FRA must exist in the campaign.
+
+Run:
+
+event modeu5_us00_debug.1
+
+Choose "Run US-00 monthly runtime smoke test".
+```
+
+The smoke test uses FRA's capital market and wheat. It seeds a previous-month
+US-00 wheat record with a small overproduction penalty, lowers the current
+wheat capacity to force rejection, then calls the same generated per-good
+monthly path used by the normal runtime.
+
+Expected:
+
+```txt
+produced > 0
+added > 0
+rejected > 0
+previous penalty < 0
+new penalty < 0
+affected locations > 0
+positive locations > 0
+good price > 0
+modifier mode = 1
+```
+
+Expected log lines:
+
+```txt
+ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat ...
+ModeU5 US-00 RESULT monthly_runtime PASS
+```
+
+`BLOCKED missing_FRA_or_runtime_not_ready` means the campaign is not a valid
+test fixture or CORE-02 has not completed. Wait at least until the delayed
+startup initialization has run, then retry in a campaign where FRA exists.
+
 ## Logs To Inspect
 
 ```txt
@@ -151,8 +200,7 @@ error.
 
 ## Known Limitations
 
-Live monthly production ingestion remains blocked by TECH-01 021 until the
-location-output probe confirms the exact syntax and ownership semantics. The
-stored US-00.3 penalty is a theoretical next-cycle value in this PR; applying it
-to producing locations is deferred until the producing-location exposure is
-confirmed and tested.
+The deterministic smoke test proves one concrete country/market/good path.
+Full balance validation still requires normal monthly ticks across multiple
+countries and goods after the feature is installed. UI visibility remains
+debug-first and is consolidated under the US-10-UI super visibility story.

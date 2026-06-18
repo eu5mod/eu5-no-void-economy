@@ -16,7 +16,7 @@ Deliver the US-00 pipeline: read production at `location × good`, aggregate it 
 
 ## Current implementation boundary
 
-The first implementation PR provides the internal US-00 record helpers and deterministic tests for ledger update, ratio calculation, void-wealth valuation, and stored theoretical production penalty. TECH-01 021 / PROBE-021 confirmed the exact target-good `goods_output(goods:wheat)` syntax and raw-material output diagnostics; live monthly production ingestion and applied location modifiers remain later implementation steps.
+The US-00 closure PR wires the complete monthly runtime path: apply the previous-month penalty, read live location `goods_output(goods:<good>)`, add stock through the centralized operator, record produced/added/rejected quantities, calculate ratios and void wealth, store the replacement penalty, and expose deterministic dumps. TECH-01 021 / PROBE-021 confirmed the target-good output syntax; generated per-good modifiers provide the applied N+1 production correction.
 
 ## Runtime position
 
@@ -59,8 +59,8 @@ docs/tests/
 
 ```txt
 Depends on: core stock effects, US-01, US-02, US-11, TECH-01
-Blocks: complete void-economy visibility
-Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
+Blocks: US-10-UI super visibility
+Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-10-UI
 ```
 
 ## Implementation rules
@@ -79,6 +79,7 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 - Use remove/re-add replacement and explicit zero defaults for all numeric map entries.
 - Treat void wealth as tracking/proxy data, not a direct monthly Estate-income punishment.
 - Keep one approved fallback per missing exposure and make it visible.
+- Fold player-facing US-00 visibility into US-10-UI; this epic owns the debug data, not a separate UI layer.
 
 ## US-specific boundary checks
 
@@ -96,7 +97,7 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-00-UI
 - [ ] Debug identifies inputs, price source, buffer, modifier mode, fallback, and aggregation.
 - [ ] Missing exposure is updated in TECH-01 before gameplay work proceeds.
 - [ ] The stock invariant still holds after validation.
-- [ ] The PR records actual results, inspected debug output, `error.log`, and limitations.
+- [ ] The PR body documents the runtime closure and each actual test run is recorded as a PR validation comment with dumps and log review.
 
 ## Manual test scenario
 
@@ -120,4 +121,4 @@ No direct Estate-income mutation
 
 ## Known limitations
 
-Location production exposure and exact target-good syntax are confirmed by PROBE-021. Building/RGO source-level reconstruction is not required. Temporary location-modifier application is documented but still requires a controlled local test.
+Location production exposure and exact target-good syntax are confirmed by PROBE-021. Building/RGO source-level reconstruction is not required. The deterministic monthly runtime smoke test covers one representative country/market/good; broader balance validation still requires normal monthly ticks across additional countries and goods.

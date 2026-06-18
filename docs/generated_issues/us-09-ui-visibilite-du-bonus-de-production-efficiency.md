@@ -54,7 +54,7 @@ docs/tests/
 ```txt
 Depends on: US-09, TECH-01
 Blocks: visible compensation
-Related US: US-00-UI
+Related US: US-10-UI
 ```
 
 ## Implementation rules

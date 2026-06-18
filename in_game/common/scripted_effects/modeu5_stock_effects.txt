@@ -1464,6 +1464,8 @@ modeu5_run_monthly_stock_cycle = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		modeu5_run_monthly_capacity_refresh_for_current_country = yes
+		save_temporary_scope_as = modeu5_country
+		modeu5_run_us00_monthly_pipeline_all_goods = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
 	}
 	else = {

@@ -22,6 +22,11 @@ modeu5_us00_debug.1 = {
 		trigger_event_non_silently = modeu5_us00_debug.2
 	}
 	option = {
+		name = modeu5_us00_debug.1.c
+		modeu5_us00_debug_run_monthly_runtime_test = yes
+		trigger_event_non_silently = modeu5_us00_debug.2
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -59,6 +64,18 @@ modeu5_us00_debug.2 = {
 	option = {
 		name = modeu5_debug.test.probe021.fail
 		trigger = { has_global_variable = modeu5_test_probe021_failed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.pass
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_passed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.fail
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_failed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.blocked
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_blocked }
 	}
 	option = {
 		name = modeu5_debug.close
