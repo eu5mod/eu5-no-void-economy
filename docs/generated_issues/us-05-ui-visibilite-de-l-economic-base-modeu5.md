@@ -45,7 +45,7 @@ Feeds counters to: player/modder diagnostics
 ## Files expected to change
 
 ```txt
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/events/
 in_game/localization/
 docs/technical/DEBUG_CONVENTIONS.md

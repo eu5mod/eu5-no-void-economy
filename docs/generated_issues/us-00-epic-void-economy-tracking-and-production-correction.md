@@ -48,7 +48,7 @@ Feeds counters to: debug/UI and balancing diagnostics
 in_game/common/script_values/
 in_game/common/scripted_effects/
 in_game/common/on_action/
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/events/
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md

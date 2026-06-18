@@ -42,7 +42,7 @@ Feeds counters to: player/modder diagnostics
 ## Files expected to change
 
 ```txt
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/localization/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md

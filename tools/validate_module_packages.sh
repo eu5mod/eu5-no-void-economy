@@ -162,7 +162,7 @@ search_quiet 'name = modeu5_war_package_version' \
 	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt
 
 generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
-generated_us00_modifiers="in_game/common/modifiers/modeu5_us00_modifiers_generated.txt"
+generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 generated_stock_helpers_tmp="$(mktemp)"
@@ -213,6 +213,10 @@ if ! search_quiet 'variable_map\(modeu5_wheat_base_capacity_by_market\|scope:mod
 fi
 if ! search_quiet '^modeu5_wheat_production_penalty_modifier = \{' "$generated_us00_modifiers"; then
 	printf 'Generated US-00 production modifiers must contain the wheat modifier fixture.\n' >&2
+	exit 1
+fi
+if ! search_quiet 'category = location' "$generated_us00_modifiers"; then
+	printf 'Generated US-00 production modifiers must be location static modifiers.\n' >&2
 	exit 1
 fi
 

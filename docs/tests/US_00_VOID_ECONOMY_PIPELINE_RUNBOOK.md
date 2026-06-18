@@ -20,6 +20,17 @@ monthly runtime smoke test proves that the live path reads location
 replacement penalty, and applies the previous penalty with generated
 per-good location modifiers.
 
+The generated US-00 production-penalty objects are EU5 static modifiers. They
+must be generated under:
+
+```txt
+main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
+```
+
+Each generated object uses `game_data.category = location` and a unit
+`local_<good>_output_modifier = 1`; the monthly runtime supplies the actual
+penalty through `add_location_modifier size = <penalty>`.
+
 ## Build And Install
 
 Run from the repository root:
@@ -174,6 +185,11 @@ Expected log lines:
 ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat ...
 ModeU5 US-00 RESULT monthly_runtime PASS
 ```
+
+If `error.log` or `game.log` contains `Invalid database object
+'modeu5_<good>_production_penalty_modifier'`, the generated static modifier was
+not loaded and the runtime smoke result is invalid even if the event printed
+`PASS`.
 
 `BLOCKED missing_FRA_or_runtime_not_ready` means the campaign is not a valid
 test fixture or CORE-02 has not completed. Wait at least until the delayed

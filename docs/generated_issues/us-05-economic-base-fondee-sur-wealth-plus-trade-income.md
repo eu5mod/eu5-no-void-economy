@@ -47,7 +47,7 @@ Feeds counters to: US-05-UI
 in_game/common/script_values/
 in_game/common/scripted_effects/
 in_game/common/on_action/
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/localization/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md

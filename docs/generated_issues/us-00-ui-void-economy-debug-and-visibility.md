@@ -46,7 +46,7 @@ Feeds counters to: US-10-UI player/modder diagnostics
 ```txt
 in_game/events/
 in_game/localization/
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/

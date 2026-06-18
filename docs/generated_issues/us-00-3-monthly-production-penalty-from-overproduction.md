@@ -45,7 +45,7 @@ Feeds counters to: next monthly cycle, US-10-UI
 in_game/common/script_values/
 in_game/common/scripted_effects/
 in_game/common/on_action/
-in_game/common/modifiers/
+main_menu/common/static_modifiers/
 in_game/localization/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
@@ -71,7 +71,8 @@ Related US: US-09, US-10-UI
 - Physically store it on the country in a per-good map keyed by market, with a default of zero and remove/re-add replacement.
 - Use the same producing-country/source attribution established by US-00.1 when selecting penalty targets.
 - Do not silently switch to location ownership if it would penalize a different country from the one credited in the ledger.
-- Prefer good-specific output; use local production efficiency only as the single accepted fallback.
+- Prefer good-specific output through generated location static modifiers in `main_menu/common/static_modifiers/`; use local production efficiency only as the single accepted fallback.
+- Keep generated static modifiers unit-sized (`local_<good>_output_modifier = 1`) and apply the calculated monthly penalty through `add_location_modifier size = <penalty>`.
 - If no reliable modifier exists, calculate and display a theoretical-only penalty; the current preferred implementation is good-specific local output modifiers.
 - Never mutate stock or Estate tax/income values.
 
