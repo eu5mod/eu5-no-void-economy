@@ -17,6 +17,10 @@ __The core is :__ No Void Economics . It commes with **Community Balance Options
  - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
  - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
  - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
+ - Economy <MODEU5_US09_BONUS_PERCENT> faster (Status : ✅ ) - Required to compensate revenue loss
+ - Estate consumption increasead <MODEU5_US15_BONUS_PERCENT> (Status : ⏳) - Required to compensate economic speed
+ - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
+ - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
 
 #### Community Balance Options : 
 __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition, Cassus Belli) 
@@ -27,33 +31,22 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 4:** RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
  - **Option 5:** Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
  - **Option 6:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
- - **Option 7:** Independantist don't start the war Initial Owner get a CB for 50 year (Status : ⏳) 
+ - **Option 7:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳) 
  - **Option 8:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳) 
  - **Option 9:** Rebel threshold adjusted (Status : ⏳)
+ - **Option 10:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
 
 ⚠️: Want to see option 3, 4 & 5 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
 <!--
-###  Balance under concideration ( ❌ Under )
- 1. Antagonism is redefined (More Religious & Culturaly based), spike faster & decay faster representing short-term bombs.(Status : ❌ : Need modding endpoint)
- 2. Trust is redefined (More Power Based), it represent real-life competing powers, power checking behaviour. (Status : ❌ : Need modding endpoint)
- 3. Low Trust country can form/join coalitions (Status :  : Need modding endpoint)
-  can
- -->
-
  ### Economic Balance Extension (Optional)
  We remove punitive incentive (4 & 5) and rebalance economy toward highet production but costs (sliders) (2&3). You should feel building creation more rewarding while penalising overextension.
- 
-  1. Faster economy : You will produce goods faster (Status : ✅ )
-  2. Sliders based on Wealth not Tax base (Less money) (Status : ⏳)
-  3. MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
+  -->
 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)
-
  1. Increased conquer cost before 1537 for non Horde in Europe (Status : ❌ Feasability unconfirmed)
     This intend to fix snowballing & represent difficulties to conquer vast land at the time.
-
  1. Antagonism is redefined (More Religious & Culturaly based), spike faster & decay faster representing short-term bombs.(Status : ❌ : Need modding endpoint)
  2. Trust is redefined (More Power Based), it represent real-life competing powers, power checking behaviour. (Status : ❌ : Need modding endpoint)
  3. Low Trust country can form/join coalitions (Status :  : Need modding endpoint)
