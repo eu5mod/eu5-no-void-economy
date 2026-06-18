@@ -56,6 +56,41 @@ Recommended variable:
 modeu5_debug_level
 ```
 
+## Runtime diagnostic modes
+
+The startup configuration effect derives explicit runtime-mode flags from the
+pre-campaign debug rule:
+
+```txt
+modeu5_runtime_mode_normal
+modeu5_runtime_mode_debug
+modeu5_runtime_mode_audit
+```
+
+Contract:
+
+```txt
+normal = no persistent debug captures during ordinary gameplay
+debug = targeted debug captures are allowed
+audit = debug captures plus expensive validation/probe paths are allowed
+```
+
+`modeu5_runtime_mode_audit` implies `modeu5_runtime_mode_debug`. Deterministic
+test events must enter audit mode explicitly before running their fixtures so
+test dumps remain available even when the campaign's normal gameplay setting is
+debug-off.
+
+Full stock validation across all markets and goods is audit-only when invoked
+by automatic startup/yearly reconciliation. Normal runtime must use dirty-list
+validation or explicit user/test-triggered validation instead. This keeps
+frequent ticks from performing world scans while preserving manual diagnostic
+coverage.
+
+Persistent variable-map records must not store zero as data. Writers should
+remove an existing key, then re-add it only when the replacement value is
+strictly positive. Missing numeric map entries are interpreted as zero by their
+read helpers.
+
 ## Mandatory package diagnostics
 
 At startup and in the general diagnostic event, expose:

@@ -14,17 +14,41 @@ modeu5_war_rebalance_loaded_trigger = {
 	has_global_variable = modeu5_war_rebalance_loaded
 }
 
+modeu5_normal_runtime_mode_trigger = {
+	has_global_variable = modeu5_runtime_mode_normal
+}
+
+modeu5_debug_runtime_mode_trigger = {
+	has_global_variable = modeu5_runtime_mode_debug
+}
+
+modeu5_audit_runtime_mode_trigger = {
+	has_global_variable = modeu5_runtime_mode_audit
+}
+
 modeu5_debug_enabled_trigger = {
 	OR = {
+		modeu5_debug_runtime_mode_trigger = yes
+		modeu5_audit_runtime_mode_trigger = yes
 		has_game_rule = modeu5_debug_basic
 		has_game_rule = modeu5_debug_verbose
 	}
 }
 
 modeu5_verbose_debug_enabled_trigger = {
-	has_game_rule = modeu5_debug_verbose
+	OR = {
+		modeu5_audit_runtime_mode_trigger = yes
+		has_game_rule = modeu5_debug_verbose
+	}
 }
 
+modeu5_debug_capture_enabled_trigger = {
+	modeu5_debug_enabled_trigger = yes
+}
+
+modeu5_full_validation_allowed_trigger = {
+	modeu5_audit_runtime_mode_trigger = yes
+}
 
 modeu5_stock_runtime_ready_trigger = {
 	modeu5_initialization_complete_trigger = yes

@@ -2,6 +2,28 @@
 # The built-in game-rule screen configures diagnostic behavior only.
 # Package presence is captured for a new campaign; existing-save package changes are unsupported.
 
+modeu5_clear_runtime_mode_flags = {
+	remove_global_variable = modeu5_runtime_mode_normal
+	remove_global_variable = modeu5_runtime_mode_debug
+	remove_global_variable = modeu5_runtime_mode_audit
+}
+
+modeu5_enter_normal_runtime_mode = {
+	modeu5_clear_runtime_mode_flags = yes
+	set_global_variable = modeu5_runtime_mode_normal
+}
+
+modeu5_enter_debug_runtime_mode = {
+	modeu5_clear_runtime_mode_flags = yes
+	set_global_variable = modeu5_runtime_mode_debug
+}
+
+modeu5_enter_audit_runtime_mode = {
+	modeu5_clear_runtime_mode_flags = yes
+	set_global_variable = modeu5_runtime_mode_debug
+	set_global_variable = modeu5_runtime_mode_audit
+}
+
 modeu5_initialize_configuration_state_effect = {
 	if = {
 		limit = {
@@ -16,6 +38,7 @@ modeu5_initialize_configuration_state_effect = {
 
 	if = {
 		limit = { has_game_rule = modeu5_debug_verbose }
+		modeu5_enter_audit_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
 			value = 2
@@ -23,12 +46,14 @@ modeu5_initialize_configuration_state_effect = {
 	}
 	else_if = {
 		limit = { has_game_rule = modeu5_debug_basic }
+		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
 			value = 1
 		}
 	}
 	else = {
+		modeu5_enter_normal_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
 			value = 0

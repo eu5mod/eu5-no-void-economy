@@ -129,6 +129,16 @@ US-02 additionally uses an explicitly approved `debug_log` probe with stable
 `Tried to localize with localization disabled` assertion is tolerated only for
 that probe and only when the expected dump/result lines are present.
 
+## Runtime performance guard tests
+
+Low-risk runtime optimization PRs must prove that normal gameplay no longer
+does audit-grade work by default while focused tests still get the dumps they
+need. For the first pass, use:
+
+```txt
+docs/tests/PERF_01_LOW_RISK_QUICK_WINS_RUNBOOK.md
+```
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation
