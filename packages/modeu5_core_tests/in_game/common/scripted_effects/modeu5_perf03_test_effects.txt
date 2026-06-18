@@ -10,6 +10,7 @@ modeu5_perf03_clear_probe_results = {
 	remove_global_variable = modeu5_test_perf03_market_country_cache_missing_current_country
 
 	remove_variable = modeu5_perf03_ui_locations_scanned
+	remove_variable = modeu5_perf03_ui_locations_with_owner
 	remove_variable = modeu5_perf03_ui_countries_present
 	remove_variable = modeu5_perf03_ui_dirty_repairs
 	remove_variable = modeu5_perf03_ui_current_country_present
@@ -27,6 +28,16 @@ modeu5_perf03_mirror_probe_to_ui = {
 	}
 	else = {
 		set_variable = { name = modeu5_perf03_ui_locations_scanned value = 0 }
+	}
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_locations_with_owner }
+		set_variable = {
+			name = modeu5_perf03_ui_locations_with_owner
+			value = global_var:modeu5_market_country_cache_locations_with_owner
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_perf03_ui_locations_with_owner value = 0 }
 	}
 	if = {
 		limit = { has_global_variable = modeu5_market_country_cache_countries_added }
@@ -72,7 +83,7 @@ modeu5_perf03_mirror_probe_to_ui = {
 }
 
 modeu5_perf03_log_probe_result = {
-	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('modeu5_perf03_ui_locations_scanned').GetValue|0] countries_present=[THIS.GetVariable('modeu5_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('modeu5_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('modeu5_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('modeu5_perf03_ui_rebuild_empty').GetValue|0]"
+	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('modeu5_perf03_ui_locations_scanned').GetValue|0] locations_with_owner=[THIS.GetVariable('modeu5_perf03_ui_locations_with_owner').GetValue|0] countries_present=[THIS.GetVariable('modeu5_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('modeu5_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('modeu5_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('modeu5_perf03_ui_rebuild_empty').GetValue|0]"
 	if = {
 		limit = { has_global_variable = modeu5_test_perf03_market_country_cache_passed }
 		debug_log = "ModeU5 PERF-03 RESULT market_country_cache PASS"

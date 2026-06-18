@@ -8,12 +8,14 @@
 
 modeu5_clear_countries_present_in_market_work_cache = {
 	remove_global_variable = modeu5_market_country_cache_locations_scanned
+	remove_global_variable = modeu5_market_country_cache_locations_with_owner
 	remove_global_variable = modeu5_market_country_cache_countries_added
 	remove_global_variable = modeu5_market_country_cache_last_rebuild_started
 	remove_global_variable = modeu5_market_country_cache_last_rebuild_failed
 	remove_global_variable = modeu5_market_country_cache_last_rebuild_empty
 
 	set_global_variable = { name = modeu5_market_country_cache_locations_scanned value = 0 }
+	set_global_variable = { name = modeu5_market_country_cache_locations_with_owner value = 0 }
 	set_global_variable = { name = modeu5_market_country_cache_countries_added value = 0 }
 
 	if = {
@@ -27,6 +29,16 @@ modeu5_increment_market_country_cache_location_scan = {
 		name = modeu5_market_country_cache_locations_scanned
 		value = {
 			value = global_var:modeu5_market_country_cache_locations_scanned
+			add = 1
+		}
+	}
+}
+
+modeu5_increment_market_country_cache_location_with_owner = {
+	set_global_variable = {
+		name = modeu5_market_country_cache_locations_with_owner
+		value = {
+			value = global_var:modeu5_market_country_cache_locations_with_owner
 			add = 1
 		}
 	}
@@ -79,8 +91,11 @@ modeu5_rebuild_countries_present_in_market = {
 		scope:modeu5_market_country_cache_market = {
 			every_location_in_market = {
 				modeu5_increment_market_country_cache_location_scan = yes
-				owner = { save_temporary_scope_as = modeu5_market_country_cache_country }
-				modeu5_add_country_to_current_market_country_cache = yes
+				owner ?= {
+					modeu5_increment_market_country_cache_location_with_owner = yes
+					save_temporary_scope_as = modeu5_market_country_cache_country
+					modeu5_add_country_to_current_market_country_cache = yes
+				}
 			}
 		}
 		if = {

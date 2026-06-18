@@ -11,6 +11,8 @@ market -> every_location_in_market -> owner -> deduplicated country list
 
 This runbook validates the work-cache implementation used by generated
 validation/rebuild and CORE-02 opening allocation paths.
+Market locations without a valid country owner are skipped through guarded
+owner traversal.
 
 ## Local install
 
@@ -52,11 +54,15 @@ The logs should contain:
 
 ```txt
 ModeU5 PERF-03 DUMP market_country_cache locations_scanned=...
+ModeU5 PERF-03 DUMP market_country_cache ... locations_with_owner=...
 ModeU5 PERF-03 RESULT market_country_cache PASS
 ```
 
-`locations_scanned` and `countries_present` must both be greater than zero.
-`current_country_present` must be `1`.
+`locations_scanned`, `locations_with_owner`, and `countries_present` must all be
+greater than zero. `current_country_present` must be `1`.
+
+`locations_scanned` may be greater than `locations_with_owner`; this is valid
+when the market contains locations whose owner resolves to no valid country.
 
 ## Log review
 

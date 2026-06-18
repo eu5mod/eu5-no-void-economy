@@ -27,12 +27,17 @@ market -> every_location_in_market -> owner
 This replaces `market -> every_country` scans in the generated stock source
 scanner and CORE-02 opening allocation path.
 
+Runtime testing showed that a market-location scan may include locations whose
+`owner` resolves to an invalid country scope. The cache therefore uses guarded
+`owner ?= { ... }` traversal and skips locations without a valid owner before
+deduplicating country scopes.
+
 ## Required scopes / values / effects
 
 | Need | Scope | Method | Status | TECH-01 |
 |---|---|---|---|---|
 | Market-to-location traversal | market -> location | `every_location_in_market` | CONFIRMED | 123 |
-| Location owner country | location -> country | `owner` scope link | CONFIRMED | 124 |
+| Location owner country | location -> country | guarded `owner ?= { ... }` scope link | CONFIRMED | 124 |
 | Deduplicated current-market country list | global -> country list | `add_to_global_variable_list`, `is_target_in_global_variable_list`, `every_in_global_list`, `clear_global_variable_list` | CONFIRMED | 111, 125 |
 | Persistent per-market variable-list owner | market/global keyed list | one persistent country-list per market | NOT_CONFIRMED | 126 |
 
@@ -64,6 +69,8 @@ docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
 - Do not treat the work cache as a stock source.
 - Rebuild the current-market country list from location ownership before using
   it in market-driven stock scans.
+- Guard owner traversal and skip market locations whose owner is not a valid
+  country scope.
 - Maintain dirty market markers when location ownership changes.
 - Keep full rebuild/repair support by rebuilding the work cache from market
   locations.
@@ -113,8 +120,9 @@ ModeU5 PERF-03 RESULT market_country_cache PASS
 ## Known limitations
 
 The implemented cache is a global work cache for the current market, rebuilt
-from `market -> location -> owner` before use. It is not a persistent
-one-variable-list-per-market structure because no confirmed per-market variable
-owner or dynamic list-name mechanism exists. Market-change-specific on_actions
-are not confirmed; explicit rebuild/repair remains the supported response until
-that exposure is confirmed.
+from `market -> location -> guarded owner` before use. Locations with invalid
+owners are ignored because they cannot contribute a valid country stock owner.
+It is not a persistent one-variable-list-per-market structure because no
+confirmed per-market variable owner or dynamic list-name mechanism exists.
+Market-change-specific on_actions are not confirmed; explicit rebuild/repair
+remains the supported response until that exposure is confirmed.
