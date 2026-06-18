@@ -1,13 +1,9 @@
 name: Generate README
 
 "on":
-  push:
-    paths:
-      - README.template.md
-      - .modeu5.local.env.template
-      - .github/workflows/generate-readme.yml
-
   pull_request:
+    types:
+      - closed
     paths:
       - README.template.md
       - .modeu5.local.env.template
@@ -20,6 +16,7 @@ permissions:
 
 jobs:
   generate-readme:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
