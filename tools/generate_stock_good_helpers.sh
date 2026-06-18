@@ -122,6 +122,14 @@ goods=(
 			-e "s/__FOREIGN_CAPACITY_MAP__/modeu5_${good}_foreign_capacity_by_market/g" \
 			-e "s/__MARKET_MAP__/modeu5_${good}_market_stock/g" \
 			-e "s/__DIRTY_LIST__/modeu5_${good}_dirty_markets/g" \
+			-e "s/__PRODUCED_MAP__/modeu5_${good}_produced_by_market/g" \
+			-e "s/__ADDED_MAP__/modeu5_${good}_added_by_market/g" \
+			-e "s/__REJECTED_MAP__/modeu5_${good}_rejected_by_market/g" \
+			-e "s/__OVERPRODUCTION_RATIO_MAP__/modeu5_${good}_overproduction_ratio_by_market/g" \
+			-e "s/__EFFECTIVE_OVERPRODUCTION_RATIO_MAP__/modeu5_${good}_effective_overproduction_ratio_by_market/g" \
+			-e "s/__VOID_WEALTH_MAP__/modeu5_${good}_void_wealth_by_market/g" \
+			-e "s/__VOID_TAXABLE_PROXY_MAP__/modeu5_${good}_void_taxable_income_proxy_by_market/g" \
+			-e "s/__PRODUCTION_PENALTY_MAP__/modeu5_${good}_production_penalty_by_market/g" \
 			"$template"
 	done
 } > "$output"

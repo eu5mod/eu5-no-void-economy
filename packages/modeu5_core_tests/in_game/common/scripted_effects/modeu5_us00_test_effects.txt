@@ -1,0 +1,353 @@
+# Deterministic US-00 test helpers.
+# These tests exercise the ModeU5 ledger pipeline without depending on
+# unconfirmed vanilla production exposure from TECH-01 021.
+
+modeu5_us00_clear_test_results = {
+	modeu5_enter_audit_runtime_mode = yes
+
+	remove_global_variable = modeu5_test_us00_controlled_e2e_started
+	remove_global_variable = modeu5_test_us00_controlled_e2e_passed
+	remove_global_variable = modeu5_test_us00_controlled_e2e_failed
+	remove_global_variable = modeu5_test_us00_controlled_e2e_blocked
+	remove_global_variable = modeu5_test_probe021_started
+	remove_global_variable = modeu5_test_probe021_passed
+	remove_global_variable = modeu5_test_probe021_pending
+	remove_global_variable = modeu5_test_probe021_failed
+	remove_global_variable = modeu5_us00_probe021_location_count
+	remove_global_variable = modeu5_us00_probe021_positive_goods_output_count
+	remove_global_variable = modeu5_us00_probe021_wheat_goods_output_total
+	remove_global_variable = modeu5_us00_probe021_raw_material_output_total
+
+	remove_variable = modeu5_us00_ui_produced
+	remove_variable = modeu5_us00_ui_added
+	remove_variable = modeu5_us00_ui_rejected
+	remove_variable = modeu5_us00_ui_ratio
+	remove_variable = modeu5_us00_ui_effective_ratio
+	remove_variable = modeu5_us00_ui_void_wealth
+	remove_variable = modeu5_us00_ui_taxable_proxy
+	remove_variable = modeu5_us00_ui_penalty
+	remove_variable = modeu5_us00_ui_market_void_wealth
+	remove_variable = modeu5_us00_ui_total_void_wealth
+	remove_variable = modeu5_us00_ui_stock_after
+	remove_variable = modeu5_us00_ui_capacity
+	remove_variable = modeu5_us00_ui_market_stock_after
+	remove_variable = modeu5_us00_ui_probe_location_count
+	remove_variable = modeu5_us00_ui_probe_positive_goods_output_count
+	remove_variable = modeu5_us00_ui_probe_wheat_goods_output_total
+	remove_variable = modeu5_us00_ui_probe_raw_material_output_total
+}
+
+modeu5_us00_write_e2e_dump_variables = {
+	scope:modeu5_us00_test_controller = {
+		set_variable = { name = modeu5_us00_ui_produced value = scope:modeu5_us00_test_produced }
+		set_variable = { name = modeu5_us00_ui_added value = scope:modeu5_us00_test_added }
+		set_variable = { name = modeu5_us00_ui_rejected value = scope:modeu5_us00_test_rejected }
+		set_variable = { name = modeu5_us00_ui_ratio value = scope:modeu5_us00_test_ratio }
+		set_variable = { name = modeu5_us00_ui_effective_ratio value = scope:modeu5_us00_test_effective_ratio }
+		set_variable = { name = modeu5_us00_ui_void_wealth value = scope:modeu5_us00_test_void_wealth }
+		set_variable = { name = modeu5_us00_ui_taxable_proxy value = scope:modeu5_us00_test_taxable_proxy }
+		set_variable = { name = modeu5_us00_ui_penalty value = scope:modeu5_us00_test_penalty }
+		set_variable = { name = modeu5_us00_ui_market_void_wealth value = scope:modeu5_us00_test_market_void_wealth }
+		set_variable = { name = modeu5_us00_ui_total_void_wealth value = scope:modeu5_us00_test_total_void_wealth }
+		set_variable = { name = modeu5_us00_ui_stock_after value = scope:modeu5_us00_test_stock_after }
+		set_variable = { name = modeu5_us00_ui_capacity value = scope:modeu5_us00_test_capacity }
+		set_variable = { name = modeu5_us00_ui_market_stock_after value = scope:modeu5_us00_test_market_stock_after }
+	}
+}
+
+modeu5_us00_log_e2e_dump = {
+	scope:modeu5_us00_test_controller = {
+		debug_log = "ModeU5 US-00 DUMP controlled_e2e country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_produced').GetValue|2] added=[THIS.GetVariable('modeu5_us00_ui_added').GetValue|2] rejected=[THIS.GetVariable('modeu5_us00_ui_rejected').GetValue|2] ratio=[THIS.GetVariable('modeu5_us00_ui_ratio').GetValue|4] effective_ratio=[THIS.GetVariable('modeu5_us00_ui_effective_ratio').GetValue|4] void_wealth=[THIS.GetVariable('modeu5_us00_ui_void_wealth').GetValue|2] taxable_proxy=[THIS.GetVariable('modeu5_us00_ui_taxable_proxy').GetValue|2] penalty=[THIS.GetVariable('modeu5_us00_ui_penalty').GetValue|4] market_void_wealth=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth').GetValue|2] total_void_wealth=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us00_ui_stock_after').GetValue|2] capacity=[THIS.GetVariable('modeu5_us00_ui_capacity').GetValue|2] market_stock_after=[THIS.GetVariable('modeu5_us00_ui_market_stock_after').GetValue|2]"
+	}
+}
+
+modeu5_us00_write_probe021_dump_variables = {
+	scope:modeu5_us00_test_controller = {
+		set_variable = { name = modeu5_us00_ui_probe_location_count value = global_var:modeu5_us00_probe021_location_count }
+		set_variable = { name = modeu5_us00_ui_probe_positive_goods_output_count value = global_var:modeu5_us00_probe021_positive_goods_output_count }
+		set_variable = { name = modeu5_us00_ui_probe_wheat_goods_output_total value = global_var:modeu5_us00_probe021_wheat_goods_output_total }
+		set_variable = { name = modeu5_us00_ui_probe_raw_material_output_total value = global_var:modeu5_us00_probe021_raw_material_output_total }
+	}
+}
+
+modeu5_us00_log_probe021_dump = {
+	scope:modeu5_us00_test_controller = {
+		debug_log = "ModeU5 PROBE-021 DUMP location_output country=FRA good=wheat locations=[THIS.GetVariable('modeu5_us00_ui_probe_location_count').GetValue|0] positive_goods_output_locations=[THIS.GetVariable('modeu5_us00_ui_probe_positive_goods_output_count').GetValue|0] goods_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_wheat_goods_output_total').GetValue|4] raw_material_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_raw_material_output_total').GetValue|4]"
+	}
+}
+
+modeu5_us00_debug_run_controlled_e2e_test = {
+	modeu5_us00_clear_test_results = yes
+	set_global_variable = modeu5_test_us00_controlled_e2e_started
+	save_temporary_scope_as = modeu5_us00_test_controller
+
+	if = {
+		limit = { country_exists = c:FRA }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us00_test_market }
+
+		modeu5_clear_us00_record = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+		}
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			value = 40
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+			quantity = 100
+			capacity_policy = enforce
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_actual_added
+			value = scope:modeu5_actual_added_quantity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_actual_rejected
+			value = scope:modeu5_rejected_quantity
+		}
+
+		modeu5_update_production_rejection_ledger = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+			produced_quantity = 100
+			actual_added_quantity = scope:modeu5_us00_test_actual_added
+			rejected_quantity = scope:modeu5_us00_test_actual_rejected
+		}
+		modeu5_run_us00_record_calculations = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+			good_price = 2
+			good_price_source = 99
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_us00_test_stock_after value = scope:modeu5_read_country_stock }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_capacity value = scope:modeu5_read_country_stock_cap }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_market_stock_after value = scope:modeu5_read_market_stock }
+
+		modeu5_read_void_economy_record = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_us00_test_produced value = scope:modeu5_us00_produced }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_added value = scope:modeu5_us00_added }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_rejected value = scope:modeu5_us00_rejected }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_ratio value = scope:modeu5_us00_read_overproduction_ratio }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_effective_ratio value = scope:modeu5_us00_read_effective_overproduction_ratio }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_void_wealth value = scope:modeu5_us00_read_void_wealth }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_taxable_proxy value = scope:modeu5_us00_read_void_taxable_income_proxy }
+		save_temporary_scope_value_as = { name = modeu5_us00_test_penalty value = scope:modeu5_us00_read_production_penalty }
+		c:FRA = {
+			if = {
+				limit = {
+					has_variable_map = modeu5_void_wealth_by_market
+					is_key_in_variable_map = {
+						name = modeu5_void_wealth_by_market
+						target = scope:modeu5_us00_test_market
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_test_market_void_wealth
+					value = "variable_map(modeu5_void_wealth_by_market|scope:modeu5_us00_test_market)"
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = { name = modeu5_us00_test_market_void_wealth value = 0 }
+			}
+			if = {
+				limit = { has_variable = modeu5_total_void_wealth }
+				save_temporary_scope_value_as = { name = modeu5_us00_test_total_void_wealth value = var:modeu5_total_void_wealth }
+			}
+			else = {
+				save_temporary_scope_value_as = { name = modeu5_us00_test_total_void_wealth value = 0 }
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_expected_ratio
+			value = {
+				value = 60
+				divide = 100
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_expected_effective_ratio
+			value = {
+				value = scope:modeu5_us00_test_expected_ratio
+				subtract = modeu5_overproduction_stability_buffer
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_expected_penalty_magnitude
+			value = {
+				value = scope:modeu5_us00_test_expected_effective_ratio
+				multiply = modeu5_production_penalty_per_effective_overproduction
+				max = modeu5_max_production_penalty
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us00_test_penalty_delta
+			value = {
+				value = scope:modeu5_us00_test_penalty
+				add = scope:modeu5_us00_test_expected_penalty_magnitude
+			}
+		}
+
+		modeu5_us00_write_e2e_dump_variables = yes
+		modeu5_us00_log_e2e_dump = yes
+
+		if = {
+			limit = {
+				scope:modeu5_us00_test_actual_added = 40
+				scope:modeu5_us00_test_actual_rejected = 60
+				scope:modeu5_us00_test_stock_after = 40
+				scope:modeu5_us00_test_capacity = 40
+				scope:modeu5_us00_test_produced = 100
+				scope:modeu5_us00_test_added = 40
+				scope:modeu5_us00_test_rejected = 60
+				scope:modeu5_us00_test_ratio = scope:modeu5_us00_test_expected_ratio
+				scope:modeu5_us00_test_effective_ratio = scope:modeu5_us00_test_expected_effective_ratio
+				scope:modeu5_us00_test_void_wealth = 120
+				scope:modeu5_us00_test_taxable_proxy = 120
+				scope:modeu5_us00_test_penalty_delta = 0
+				scope:modeu5_us00_test_market_void_wealth = 120
+				scope:modeu5_us00_test_total_void_wealth = 120
+			}
+			set_global_variable = modeu5_test_us00_controlled_e2e_passed
+			debug_log = "ModeU5 US-00 RESULT controlled_e2e PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_us00_controlled_e2e_failed
+			debug_log = "ModeU5 US-00 RESULT controlled_e2e FAIL"
+			error_log = "ModeU5 deterministic US-00 controlled pipeline test failed."
+		}
+
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_clear_us00_record = {
+			country = c:FRA
+			market = scope:modeu5_us00_test_market
+			good = wheat
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_us00_controlled_e2e_blocked
+		debug_log = "ModeU5 US-00 RESULT controlled_e2e BLOCKED missing_FRA"
+		error_log = "ModeU5 deterministic US-00 controlled pipeline test requires FRA."
+	}
+}
+
+modeu5_probe021_increment_location_count = {
+	set_global_variable = {
+		name = modeu5_us00_probe021_location_count
+		value = {
+			value = global_var:modeu5_us00_probe021_location_count
+			add = 1
+		}
+	}
+}
+
+modeu5_probe021_increment_positive_goods_output_count = {
+	set_global_variable = {
+		name = modeu5_us00_probe021_positive_goods_output_count
+		value = {
+			value = global_var:modeu5_us00_probe021_positive_goods_output_count
+			add = 1
+		}
+	}
+}
+
+modeu5_us00_debug_run_probe021 = {
+	modeu5_us00_clear_test_results = yes
+	set_global_variable = modeu5_test_probe021_started
+	save_temporary_scope_as = modeu5_us00_test_controller
+	set_global_variable = { name = modeu5_us00_probe021_location_count value = 0 }
+	set_global_variable = { name = modeu5_us00_probe021_positive_goods_output_count value = 0 }
+	set_global_variable = { name = modeu5_us00_probe021_wheat_goods_output_total value = 0 }
+	set_global_variable = { name = modeu5_us00_probe021_raw_material_output_total value = 0 }
+
+	if = {
+		limit = { country_exists = c:FRA }
+		c:FRA = {
+			every_owned_location = {
+				modeu5_probe021_increment_location_count = yes
+				save_temporary_scope_value_as = {
+					name = modeu5_probe021_location_wheat_goods_output
+					value = {
+						value = "goods_output(goods:wheat)"
+						min = 0
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_probe021_location_raw_material_output
+					value = {
+						value = raw_material_output
+						min = 0
+					}
+				}
+				if = {
+					limit = { scope:modeu5_probe021_location_wheat_goods_output > 0 }
+					modeu5_probe021_increment_positive_goods_output_count = yes
+				}
+				set_global_variable = {
+					name = modeu5_us00_probe021_wheat_goods_output_total
+					value = {
+						value = global_var:modeu5_us00_probe021_wheat_goods_output_total
+						add = scope:modeu5_probe021_location_wheat_goods_output
+					}
+				}
+				set_global_variable = {
+					name = modeu5_us00_probe021_raw_material_output_total
+					value = {
+						value = global_var:modeu5_us00_probe021_raw_material_output_total
+						add = scope:modeu5_probe021_location_raw_material_output
+					}
+				}
+			}
+		}
+
+		modeu5_us00_write_probe021_dump_variables = yes
+		modeu5_us00_log_probe021_dump = yes
+		if = {
+			limit = {
+				global_var:modeu5_us00_probe021_location_count > 0
+				global_var:modeu5_us00_probe021_positive_goods_output_count > 0
+			}
+			set_global_variable = modeu5_test_probe021_passed
+			debug_log = "ModeU5 PROBE-021 RESULT location_output PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_probe021_pending
+			debug_log = "ModeU5 PROBE-021 RESULT location_output PENDING no_positive_wheat_output"
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_probe021_failed
+		debug_log = "ModeU5 PROBE-021 RESULT location_output FAIL missing_FRA"
+		error_log = "ModeU5 PROBE-021 requires FRA."
+	}
+}

@@ -14,6 +14,10 @@ As a player, I want economic production to create effective ModeU5 value only wh
 
 Deliver the US-00 pipeline: read production at `location × good`, aggregate it through the current country and location market, read centralized stock-add results, record produced/added/rejected quantities at `country × market × good`, calculate buffered overproduction and void wealth, prepare the next-month production penalty, and expose visible diagnostics. US-00 does not own or directly mutate stock.
 
+## Current implementation boundary
+
+The first implementation PR provides the internal US-00 record helpers and deterministic tests for ledger update, ratio calculation, void-wealth valuation, and stored theoretical production penalty. Live monthly production ingestion and applied location modifiers remain blocked until TECH-01 021 / PROBE-021 confirms the exact `goods_output` syntax and ownership semantics.
+
 ## Runtime position
 
 ```txt

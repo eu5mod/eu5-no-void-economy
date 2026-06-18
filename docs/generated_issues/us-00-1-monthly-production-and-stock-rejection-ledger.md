@@ -14,6 +14,10 @@ As a player, I want produced, stocked, and rejected quantities recorded per coun
 
 Read or calculate production at `location × good`, resolve the ledger country and the location's market, then accumulate monthly `produced_quantity`, `actual_added_quantity`, and `rejected_quantity` under the derived `country × market × good` ledger key. Read stock-add outputs rather than recomputing them.
 
+## Current implementation boundary
+
+The first implementation PR provides `modeu5_update_production_rejection_ledger` and a controlled test that feeds the ledger from `modeu5_add_stock` outputs. Live location-production ingestion remains blocked until TECH-01 021 / PROBE-021 confirms the exact target-good `goods_output` syntax and ownership semantics.
+
 ## Runtime position
 
 ```txt

@@ -18,6 +18,27 @@ modeu5_stock_consistency_prominent_threshold = {
 	value = 1
 }
 
+# US-00 void-economy pipeline coefficients.
+modeu5_overproduction_stability_buffer = {
+	value = 0.01
+}
+
+modeu5_production_penalty_per_effective_overproduction = {
+	value = 1
+}
+
+modeu5_max_production_penalty = {
+	value = 0.95
+}
+
+modeu5_void_wealth_price_weight = {
+	value = 1
+}
+
+modeu5_void_taxable_income_proxy_ratio = {
+	value = 1
+}
+
 # US-02 storage-capacity coefficients. Keep every business-rule value here.
 modeu5_storage_capacity_per_trade_capacity = {
 	value = 1

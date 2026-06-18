@@ -14,6 +14,10 @@ As a player, I want rejected production valued economically so the void economy 
 
 Value rejected production per `country × market × good`, record the price source, and aggregate the result by market and country for diagnostics and balancing.
 
+## Current implementation boundary
+
+The first implementation PR values rejected production from the controlled US-00.1 ledger, persists per-good void wealth and taxable proxy fields, and updates the shared market/country aggregate. Runtime `market_price` wiring is kept explicit at the caller boundary and remains visible in debug.
+
 ## Runtime position
 
 ```txt
