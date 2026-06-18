@@ -18,6 +18,30 @@ modeu5_perf03_clear_probe_results = {
 	remove_variable = modeu5_perf03_ui_rebuild_empty
 }
 
+modeu5_perf03_clear_nonterritorial_presence_probe_results = {
+	modeu5_enter_audit_runtime_mode = yes
+
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_started
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_passed
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_risk
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_no_markets
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_no_candidate
+	remove_global_variable = modeu5_test_perf03_nonterritorial_presence_stock_capable_missed
+
+	remove_variable = modeu5_perf03_ui_presence_native_markets
+	remove_variable = modeu5_perf03_ui_presence_territorial_markets
+	remove_variable = modeu5_perf03_ui_presence_nonterritorial_markets
+	remove_variable = modeu5_perf03_ui_presence_nonterritorial_with_capacity
+	remove_variable = modeu5_perf03_ui_presence_nonterritorial_with_stock
+	remove_variable = modeu5_perf03_ui_presence_total_capacity
+	remove_variable = modeu5_perf03_ui_presence_total_stock
+	remove_variable = modeu5_perf03_ui_presence_total_trade_capacity
+	remove_variable = modeu5_perf03_ui_presence_total_foreign_capacity
+	remove_variable = modeu5_perf03_ui_presence_cache_hits
+	remove_variable = modeu5_perf03_ui_presence_cache_misses
+}
+
 modeu5_perf03_mirror_probe_to_ui = {
 	if = {
 		limit = { has_global_variable = modeu5_market_country_cache_locations_scanned }
@@ -82,6 +106,53 @@ modeu5_perf03_mirror_probe_to_ui = {
 	}
 }
 
+modeu5_perf03_mirror_nonterritorial_presence_probe_to_ui = {
+	set_variable = {
+		name = modeu5_perf03_ui_presence_native_markets
+		value = scope:modeu5_perf03_presence_native_markets
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_territorial_markets
+		value = scope:modeu5_perf03_presence_territorial_markets
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_nonterritorial_markets
+		value = scope:modeu5_perf03_presence_nonterritorial_markets
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_nonterritorial_with_capacity
+		value = scope:modeu5_perf03_presence_nonterritorial_with_capacity
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_nonterritorial_with_stock
+		value = scope:modeu5_perf03_presence_nonterritorial_with_stock
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_total_capacity
+		value = scope:modeu5_perf03_presence_total_capacity
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_total_stock
+		value = scope:modeu5_perf03_presence_total_stock
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_total_trade_capacity
+		value = scope:modeu5_perf03_presence_total_trade_capacity
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_total_foreign_capacity
+		value = scope:modeu5_perf03_presence_total_foreign_capacity
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_cache_hits
+		value = scope:modeu5_perf03_presence_cache_hits
+	}
+	set_variable = {
+		name = modeu5_perf03_ui_presence_cache_misses
+		value = scope:modeu5_perf03_presence_cache_misses
+	}
+}
+
 modeu5_perf03_log_probe_result = {
 	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('modeu5_perf03_ui_locations_scanned').GetValue|0] locations_with_owner=[THIS.GetVariable('modeu5_perf03_ui_locations_with_owner').GetValue|0] countries_present=[THIS.GetVariable('modeu5_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('modeu5_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('modeu5_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('modeu5_perf03_ui_rebuild_empty').GetValue|0]"
 	if = {
@@ -98,6 +169,33 @@ modeu5_perf03_log_probe_result = {
 	}
 	else = {
 		debug_log = "ModeU5 PERF-03 RESULT market_country_cache PENDING no_result_marker"
+	}
+}
+
+modeu5_perf03_log_nonterritorial_presence_probe_result = {
+	debug_log = "ModeU5 PERF-03 DUMP nonterritorial_presence native_markets=[THIS.GetVariable('modeu5_perf03_ui_presence_native_markets').GetValue|0] territorial_markets=[THIS.GetVariable('modeu5_perf03_ui_presence_territorial_markets').GetValue|0] nonterritorial_markets=[THIS.GetVariable('modeu5_perf03_ui_presence_nonterritorial_markets').GetValue|0] nonterritorial_with_capacity=[THIS.GetVariable('modeu5_perf03_ui_presence_nonterritorial_with_capacity').GetValue|0] nonterritorial_with_stock=[THIS.GetVariable('modeu5_perf03_ui_presence_nonterritorial_with_stock').GetValue|0] total_capacity=[THIS.GetVariable('modeu5_perf03_ui_presence_total_capacity').GetValue|2] total_stock=[THIS.GetVariable('modeu5_perf03_ui_presence_total_stock').GetValue|2] total_trade_capacity=[THIS.GetVariable('modeu5_perf03_ui_presence_total_trade_capacity').GetValue|2] total_foreign_capacity=[THIS.GetVariable('modeu5_perf03_ui_presence_total_foreign_capacity').GetValue|2] cache_hits=[THIS.GetVariable('modeu5_perf03_ui_presence_cache_hits').GetValue|0] cache_misses=[THIS.GetVariable('modeu5_perf03_ui_presence_cache_misses').GetValue|0]"
+	if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_risk }
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence RISK stock_capable_market_missed_by_location_owner_cache"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_passed }
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence PASS no_stock_capable_nonterritorial_market_found"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_no_markets }
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence BLOCKED no_markets"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_no_candidate }
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence BLOCKED no_nonterritorial_market"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked }
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence BLOCKED"
+	}
+	else = {
+		debug_log = "ModeU5 PERF-03 RESULT nonterritorial_presence PENDING no_result_marker"
 	}
 }
 
@@ -148,4 +246,225 @@ modeu5_perf03_probe_current_market_country_cache = {
 
 	modeu5_perf03_mirror_probe_to_ui = yes
 	modeu5_perf03_log_probe_result = yes
+}
+
+modeu5_perf03_probe_nonterritorial_market_presence = {
+	modeu5_perf03_clear_nonterritorial_presence_probe_results = yes
+	set_global_variable = modeu5_test_perf03_nonterritorial_presence_started
+	save_temporary_scope_as = modeu5_perf03_presence_country
+
+	set_local_variable = { name = modeu5_perf03_presence_native_markets_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_territorial_markets_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_nonterritorial_markets_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_nonterritorial_with_capacity_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_nonterritorial_with_stock_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_total_capacity_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_total_stock_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_total_trade_capacity_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_total_foreign_capacity_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_cache_hits_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_cache_misses_accumulator value = 0 }
+	set_local_variable = { name = modeu5_perf03_presence_current_market_owned_locations value = 0 }
+
+	if = {
+		limit = { has_markets = no }
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_no_markets
+		error_log = "ModeU5 PERF-03 non-territorial market presence probe blocked because the current country has no markets."
+	}
+	else = {
+		every_market_present_in_country = {
+			save_temporary_scope_as = modeu5_perf03_presence_market
+			scope:modeu5_perf03_presence_country = {
+				change_local_variable = { name = modeu5_perf03_presence_native_markets_accumulator add = 1 }
+				set_local_variable = { name = modeu5_perf03_presence_current_market_owned_locations value = 0 }
+			}
+
+			scope:modeu5_perf03_presence_country = {
+				every_owned_location = {
+					limit = { market = scope:modeu5_perf03_presence_market }
+					scope:modeu5_perf03_presence_country = {
+						change_local_variable = {
+							name = modeu5_perf03_presence_current_market_owned_locations
+							add = 1
+						}
+					}
+				}
+
+				save_temporary_scope_value_as = {
+					name = modeu5_perf03_presence_current_market_owned_locations_value
+					value = local_var:modeu5_perf03_presence_current_market_owned_locations
+				}
+			}
+
+			if = {
+				limit = { scope:modeu5_perf03_presence_current_market_owned_locations_value > 0 }
+				scope:modeu5_perf03_presence_country = {
+					change_local_variable = { name = modeu5_perf03_presence_territorial_markets_accumulator add = 1 }
+				}
+			}
+			else = {
+				scope:modeu5_perf03_presence_country = {
+					change_local_variable = {
+						name = modeu5_perf03_presence_nonterritorial_markets_accumulator
+						add = 1
+					}
+				}
+
+				modeu5_recalculate_country_market_capacity = {
+					country = scope:modeu5_perf03_presence_country
+					market = scope:modeu5_perf03_presence_market
+					good = wheat
+				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_perf03_presence_country
+					market = scope:modeu5_perf03_presence_market
+					good = wheat
+				}
+
+				scope:modeu5_perf03_presence_country = {
+					change_local_variable = {
+						name = modeu5_perf03_presence_total_capacity_accumulator
+						add = scope:modeu5_capacity_total
+					}
+					change_local_variable = {
+						name = modeu5_perf03_presence_total_trade_capacity_accumulator
+						add = scope:modeu5_capacity_trade_capacity
+					}
+					change_local_variable = {
+						name = modeu5_perf03_presence_total_stock_accumulator
+						add = scope:modeu5_read_country_stock
+					}
+					change_local_variable = {
+						name = modeu5_perf03_presence_total_foreign_capacity_accumulator
+						add = scope:modeu5_capacity_foreign
+					}
+				}
+
+				if = {
+					limit = { scope:modeu5_capacity_total > 0 }
+					scope:modeu5_perf03_presence_country = {
+						change_local_variable = {
+							name = modeu5_perf03_presence_nonterritorial_with_capacity_accumulator
+							add = 1
+						}
+					}
+				}
+				if = {
+					limit = { scope:modeu5_read_country_stock > 0 }
+					scope:modeu5_perf03_presence_country = {
+						change_local_variable = {
+							name = modeu5_perf03_presence_nonterritorial_with_stock_accumulator
+							add = 1
+						}
+					}
+				}
+
+				scope:modeu5_perf03_presence_market = {
+					save_temporary_scope_as = modeu5_market_country_cache_market
+				}
+				modeu5_rebuild_countries_present_in_market = yes
+
+				if = {
+					limit = {
+						has_global_variable_list = modeu5_countries_present_in_market
+						is_target_in_global_variable_list = {
+							name = modeu5_countries_present_in_market
+							target = scope:modeu5_perf03_presence_country
+						}
+					}
+					scope:modeu5_perf03_presence_country = {
+						change_local_variable = {
+							name = modeu5_perf03_presence_cache_hits_accumulator
+							add = 1
+						}
+					}
+				}
+				else = {
+					scope:modeu5_perf03_presence_country = {
+						change_local_variable = {
+							name = modeu5_perf03_presence_cache_misses_accumulator
+							add = 1
+						}
+					}
+
+					if = {
+						limit = {
+							OR = {
+								scope:modeu5_capacity_total > 0
+								scope:modeu5_read_country_stock > 0
+							}
+						}
+						set_global_variable = modeu5_test_perf03_nonterritorial_presence_stock_capable_missed
+					}
+				}
+			}
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_native_markets
+		value = local_var:modeu5_perf03_presence_native_markets_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_territorial_markets
+		value = local_var:modeu5_perf03_presence_territorial_markets_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_nonterritorial_markets
+		value = local_var:modeu5_perf03_presence_nonterritorial_markets_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_nonterritorial_with_capacity
+		value = local_var:modeu5_perf03_presence_nonterritorial_with_capacity_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_nonterritorial_with_stock
+		value = local_var:modeu5_perf03_presence_nonterritorial_with_stock_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_total_capacity
+		value = local_var:modeu5_perf03_presence_total_capacity_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_total_stock
+		value = local_var:modeu5_perf03_presence_total_stock_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_total_trade_capacity
+		value = local_var:modeu5_perf03_presence_total_trade_capacity_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_total_foreign_capacity
+		value = local_var:modeu5_perf03_presence_total_foreign_capacity_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_cache_hits
+		value = local_var:modeu5_perf03_presence_cache_hits_accumulator
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_perf03_presence_cache_misses
+		value = local_var:modeu5_perf03_presence_cache_misses_accumulator
+	}
+
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked }
+			scope:modeu5_perf03_presence_nonterritorial_markets = 0
+		}
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_no_candidate
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_stock_capable_missed }
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_risk
+		error_log = "ModeU5 PERF-03 non-territorial market presence probe found stock-capable country-market presence missed by the location-owner cache."
+	}
+	else_if = {
+		limit = { NOT = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked } }
+		set_global_variable = modeu5_test_perf03_nonterritorial_presence_passed
+	}
+
+	modeu5_perf03_mirror_nonterritorial_presence_probe_to_ui = yes
+	modeu5_perf03_log_nonterritorial_presence_probe_result = yes
 }

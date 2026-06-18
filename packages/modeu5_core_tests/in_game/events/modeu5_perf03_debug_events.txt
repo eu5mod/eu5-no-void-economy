@@ -17,6 +17,11 @@ modeu5_perf03_debug.1 = {
 		trigger_event_non_silently = modeu5_perf03_debug.2
 	}
 	option = {
+		name = modeu5_perf03_debug.1.b
+		modeu5_perf03_probe_nonterritorial_market_presence = yes
+		trigger_event_non_silently = modeu5_perf03_debug.3
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -42,6 +47,33 @@ modeu5_perf03_debug.2 = {
 	option = {
 		name = modeu5_debug.test.perf03_market_country_cache.fail
 		trigger = { has_global_variable = modeu5_test_perf03_market_country_cache_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_perf03_debug.3 = {
+	type = country_event
+	title = modeu5_perf03_debug.3.title
+	desc = modeu5_perf03_debug.3.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.perf03_nonterritorial_presence.pass
+		trigger = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_passed }
+	}
+	option = {
+		name = modeu5_debug.test.perf03_nonterritorial_presence.risk
+		trigger = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_risk }
+	}
+	option = {
+		name = modeu5_debug.test.perf03_nonterritorial_presence.blocked
+		trigger = { has_global_variable = modeu5_test_perf03_nonterritorial_presence_blocked }
 	}
 	option = {
 		name = modeu5_debug.close
