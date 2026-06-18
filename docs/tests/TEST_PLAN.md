@@ -1632,9 +1632,32 @@ US-00 controlled and monthly runtime tests still emit PASS dumps
 Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
 ```
 
+### Test 26 — PERF-05 reduce global market scans
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+PASS - Dirty market-good reconciliation
+PASS - Active market-good reconciliation
+PASS - Empty reconciliation is a no-op
+modeu5_active_markets_any_good contains the fixture market
+modeu5_wheat_active_markets contains the fixture market
+Active validation repairs the test market without requiring every_market_in_world
+Strict exhaustive validation remains available for manual audit
+```
+
 ## US-13 tests
 
-### Test 26 — Non-horde conquest surcharge by age
+### Test 27 — Non-horde conquest surcharge by age
 
 Expected:
 
