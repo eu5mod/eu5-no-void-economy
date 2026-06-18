@@ -1618,9 +1618,23 @@ Generated `prices` overrides scale the five `expand_rgo_*` gold values by `1 / 1
 No additive country-level production-efficiency modifier path is loaded for this implementation
 ```
 
+## Performance tests
+
+### Test 25 — PERF-04 monthly US-00 loop fusion
+
+Expected:
+
+```txt
+Generated modeu5_run_us00_monthly_pipeline_all_goods loops each country market once
+Generated modeu5_process_us00_monthly_market_all_goods runs per-good US-00 helpers inside that market scope
+Single-good US-00 monthly wrappers remain available
+US-00 controlled and monthly runtime tests still emit PASS dumps
+Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
+```
+
 ## US-13 tests
 
-### Test 25 — Non-horde conquest surcharge by age
+### Test 26 — Non-horde conquest surcharge by age
 
 Expected:
 

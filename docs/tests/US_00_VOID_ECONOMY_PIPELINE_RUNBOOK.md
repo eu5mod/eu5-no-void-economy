@@ -20,6 +20,16 @@ monthly runtime smoke test proves that the live path reads location
 replacement penalty, and applies the previous penalty with generated
 per-good location modifiers.
 
+The monthly all-goods dispatcher is intentionally fused by market:
+
+```txt
+country -> every_market_present_in_country -> all generated US-00 goods
+```
+
+The per-good wrappers remain available for focused tests and future
+good-specific events, but the normal monthly all-goods path should not loop the
+same country markets once per good.
+
 The generated US-00 production-penalty objects are EU5 static modifiers. They
 must be generated under:
 

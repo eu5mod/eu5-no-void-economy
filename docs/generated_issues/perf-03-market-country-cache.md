@@ -32,6 +32,15 @@ Runtime testing showed that a market-location scan may include locations whose
 `owner ?= { ... }` traversal and skips locations without a valid owner before
 deduplicating country scopes.
 
+Follow-up analysis in PR #71 raised a separate edge case: a country might be
+economically present in a market without owning a location there. For MVP
+performance work, non-owned/non-territorial market presence is accepted as
+negligible economic weight and the probe is parked until a concrete test shows
+meaningful stock or capacity in that relationship. The location-owner-derived
+work cache remains valid for ordinary owned-location market processing, but it
+must not be described as a complete model of every possible country-market
+economic relationship.
+
 ## Required scopes / values / effects
 
 | Need | Scope | Method | Status | TECH-01 |
@@ -126,3 +135,5 @@ It is not a persistent one-variable-list-per-market structure because no
 confirmed per-market variable owner or dynamic list-name mechanism exists.
 Market-change-specific on_actions are not confirmed; explicit rebuild/repair
 remains the supported response until that exposure is confirmed.
+Non-owned/non-territorial country-market presence is treated as negligible for
+the current MVP and remains a documented deferred risk rather than a blocker.
