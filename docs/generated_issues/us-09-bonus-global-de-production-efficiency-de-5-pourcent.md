@@ -176,3 +176,204 @@ The additive-modifier alternatives remain visible but unselected
 The current implementation uses the paired static scaffold path described above.
 The generated building override surface may include event-only or uncommon production files whenever they use the same `output =` production field.
 The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.
+
+# Edit : Additional RGO size fixe
+Scaffold a 10% increase of the Max RGO Size base formula component without using additive percentage modifiers.
+
+## User Story
+
+As a mod maintainer,I want to increase the effective Max RGO Size contribution from base, population, and development by 10%,so that the balance change behaves as a true pre-modifier increase and is not diluted by EU5 additive percentage modifier stacking.
+
+## Context
+
+The current Max RGO Size formula includes a pre-modifier component equivalent to:
+
+base + population_contribution + development_contribution
+
+where:
+
+base = 2
+population_contribution = population * 0.000025
+development_contribution = development * 0.1
+
+A simple modifier such as:
+
+global_max_rgo_size_modifier = 0.10
+
+is not acceptable because EU5 percentage modifiers are additive with existing modifiers. This means the effective increase may be lower than 10% when other Max RGO Size modifiers already apply.
+
+The desired implementation should therefore avoid the additive percentage modifier bucket.
+
+## Target Formula
+
+The desired bonus is:
+
+10% * (base + population_contribution + development_contribution)
+
+which expands to:
+
+0.2 + population * 0.0000025 + development * 0.01
+
+Technical Strategy
+
+The implementation should use scaffolding wherever possible.
+
+The scaffold should generate flat local_max_rgo_size modifiers for the variable parts of the formula:
+
+population * 0.0000025
+development * 0.01
+
+The generated values should be based on the source map/setup data used by the mod scaffolding pipeline.
+
+The base component is a special case:
+
+base = 2
+10% * base = 0.2
+
+If the base Max RGO Size value cannot be changed directly through scaffolding or defines, then a fallback script must apply a flat local_max_rgo_size = 0.2 modifier to every eligible location at game start.
+
+## Implementation Requirements
+
+### 1. Scaffold generated location modifiers
+
+For each eligible location, generate a static flat modifier representing:
+
+population_bonus + development_bonus
+
+where:
+
+population_bonus = starting_population * 0.0000025
+development_bonus = starting_development * 0.01
+
+Example:
+
+nve_location_123_rgo_size_scaffold_bonus = {
+    game_data = {
+        category = location
+    }
+
+    local_max_rgo_size = 0.1375
+}
+
+### 2. Apply scaffolded modifiers to locations
+
+Each generated modifier must be applied to its matching location through generated setup script.
+
+Example:
+
+123 = {
+    add_location_modifier = {
+        modifier = nve_location_123_rgo_size_scaffold_bonus
+        days = -1
+        mode = replace
+        recalculate_immediately = yes
+    }
+}
+
+### 3. Add fallback base modifier
+
+Create a generic static modifier for the fixed base component:
+
+nve_rgo_base_size_10_percent_bonus = {
+    game_data = {
+        category = location
+    }
+
+    local_max_rgo_size = 0.2
+}
+
+4. Apply base modifier at game start
+
+If the base RGO size cannot be changed directly through defines or generated location setup, apply the base modifier to all eligible locations at game start:
+
+every_location = {
+    add_location_modifier = {
+        modifier = nve_rgo_base_size_10_percent_bonus
+        days = -1
+        mode = replace
+        recalculate_immediately = yes
+    }
+}
+
+If the final implementation supports fully scaffolded per-location application, the generated per-location modifier may instead include the 0.2 base component directly:
+
+local_max_rgo_size = 0.2 + population_bonus + development_bonus
+
+In that case, the game-start fallback modifier is not needed.
+
+## Acceptance Criteria
+
+The implementation does not use global_max_rgo_size_modifier = 0.10 as the main balance mechanism.
+
+The implementation does not rely on additive percentage Max RGO Size modifiers.
+
+The scaffold generates flat local_max_rgo_size values for population and development contributions.
+
+The fixed base contribution adds exactly 0.2 Max RGO Size per eligible location.
+
+If the base value cannot be changed through scaffolding or defines, the 0.2 base contribution is applied once at game start.
+
+Generated modifiers are deterministic and reproducible.
+
+Generated files do not require manual editing.
+
+The generated output is compatible with the existing mod generation pipeline.
+
+The implementation can be validated on at least one rural and one non-rural location.
+
+## Validation Scenario
+
+Given a location with:
+
+base = 2
+population = 40,000
+development = 10
+
+The original pre-modifier component is:
+
+2 + 40,000 * 0.000025 + 10 * 0.1
+= 2 + 1 + 1
+= 4
+
+The expected 10% bonus is:
+
+4 * 0.10 = 0.4
+
+The scaffolded/generated flat bonus should therefore be:
+
+base_bonus + population_bonus + development_bonus
+= 0.2 + 40,000 * 0.0000025 + 10 * 0.01
+= 0.2 + 0.1 + 0.1
+= 0.4
+
+## Non-Goals
+
+Do not change RGO output.
+
+Do not change RGO construction time.
+
+Do not change AI RGO expansion priority.
+
+Do not use percentage Max RGO Size modifiers for this feature.
+
+Do not require dynamic recalculation every month.
+
+Do not attempt to perfectly track population changes after game start unless a later feature explicitly requires it.
+
+## Technical Notes
+
+This approach intentionally favors scaffolded static values over runtime script calculations.
+
+The expected advantages are:
+
+better game performance;
+
+deterministic generated data;
+
+easier validation;
+
+no dilution from additive percentage modifier stacking;
+
+compatibility with existing generated package workflows.
+
+Population-based values are based on starting population. This means the population component is accurate at game start but will not dynamically follow population growth or decline unless a future recalculation system is added.
