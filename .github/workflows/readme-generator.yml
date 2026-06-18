@@ -2,8 +2,6 @@ name: Generate README
 
 "on":
   push:
-    branches:
-      - main
     paths:
       - README.template.md
       - .modeu5.local.env.template
@@ -51,15 +49,12 @@ jobs:
               return text
 
           def as_direct_percent(value: str) -> str:
-              # 10 -> 10%
               return f"{format_decimal(Decimal(value))}%"
 
           def as_ratio_percent(value: str) -> str:
-              # 0.015 -> 1.5%
               return f"{format_decimal(Decimal(value) * Decimal(100))}%"
 
           def as_plain_value(value: str) -> str:
-              # 12 -> 12
               return value
 
           formatters = {
@@ -101,8 +96,8 @@ jobs:
             exit 1
           fi
 
-      - name: Commit generated README on main
-        if: github.event_name == 'push'
+      - name: Commit generated README on current branch
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           if git diff --quiet README.md; then
             echo "README.md is already up to date."
@@ -114,4 +109,5 @@ jobs:
 
           git add README.md
           git commit -m "Generate README from template"
-          git push
+
+          git push origin HEAD:${GITHUB_REF_NAME}
