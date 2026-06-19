@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  modeu5_debug.1.title: "ModeU5 Stock Tests"
  modeu5_debug.1.desc: "Run deterministic stock tests. Results are stored as modeu5_test_* variables; the latest transaction and record read are stored in ModeU5 debug variables."
  modeu5_debug.1.a: "Test add, remove, and decay"

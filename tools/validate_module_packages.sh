@@ -305,8 +305,13 @@ for required_localization_file in \
 			"$required_localization_file" >&2
 		exit 1
 	fi
-	if ! head -n 1 "$required_localization_file" | grep -q '^l_english:'; then
-		printf 'ModeU5 localization file must start with l_english:: %s\n' \
+	if [[ "$(LC_ALL=C head -c 3 "$required_localization_file" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
+		printf 'ModeU5 localization file must use UTF-8 BOM encoding: %s\n' \
+			"$required_localization_file" >&2
+		exit 1
+	fi
+	if ! LC_ALL=C perl -0pe 's/^\xEF\xBB\xBF//' "$required_localization_file" | head -n 1 | grep -q '^l_english:'; then
+		printf 'ModeU5 localization file must start with l_english: after the BOM: %s\n' \
 			"$required_localization_file" >&2
 		exit 1
 	fi

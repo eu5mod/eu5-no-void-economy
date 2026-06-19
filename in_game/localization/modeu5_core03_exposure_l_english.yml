@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  modeu5_core03_probe.1.title: "ModeU5 CORE-03 Lifecycle Probe"
  modeu5_core03_probe.1.desc: "Use the scripted-run options for reproducible visible probes, or the manual-prepare options when you want to observe your own vanilla path. The scripted runs use fixed Castile, Portugal, Cadiz, and Leon fixtures. When CORE-03 gameplay is active, location-owner changes also run stock succession. Scripted Scenario C auto-annexes the staged Leon subject and does not depend on vanilla subject-age or opinion rules."
  modeu5_core03_probe.2.title: "ModeU5 CORE-03 Lifecycle Probe Results"

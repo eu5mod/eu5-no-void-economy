@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  modeu5_core02_probe.1.title: "ModeU5 CORE-02 Opening Stock Probe"
  modeu5_core02_probe.1.desc: "Reports whether the delayed game-start hook could read the vanilla wheat stockpile from FRA's capital market. This probe never initializes or mutates ModeU5 stock."
  modeu5_core02_probe.delayed.pass: "PASS - Delayed game-start probe executed"
