@@ -117,7 +117,11 @@ country_market_capacity
 ```
 
 The monthly capacity refresh must not scan owned locations once per market or
-once per good.
+once per good. The country location pool is rebuilt at campaign
+initialization, after permanent location owner changes, after location-rank
+changes, and after capital moves. Ordinary monthly refreshes read the cached
+country location pool and rewrite market shares with current market trade
+capacity.
 
 ## Non-negotiable stock rule
 

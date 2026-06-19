@@ -31,9 +31,9 @@ The remaining location-rank scan is country-level only:
 current country -> every_owned_location
 ```
 
-The old saved refresh path must not scan owned locations once per market and
-must not scan them once per good. Dirty location-rank counters remain a future
-optimization.
+The ordinary monthly saved refresh path must not scan owned locations. The
+country location pool is rebuilt by campaign start, location-owner change,
+location-rank change, capital move, or explicit debug/manual full recalculation.
 
 ### Country-Level Pooling
 
@@ -132,7 +132,8 @@ over_cap = max(0, wheat stock - capacity)
 ```
 
 This proves every generated good can read the same shared country-market
-capacity record and that the record was produced from the country-level pool.
+capacity record and that the record was produced from the cached country
+location pool plus current target-market trade capacity.
 
 ## Scenario B - CORE-01 Capacity Enforcement
 

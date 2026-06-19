@@ -1662,14 +1662,6 @@ modeu5_core03_transfer_location_good___GOOD__ = {
 			target_capacity_policy = allow_over_capacity
 		}
 	}
-	scope:modeu5_core03_loser = {
-		save_temporary_scope_as = modeu5_country
-		modeu5_recalculate_saved_country_storage_capacities = yes
-	}
-	scope:modeu5_core03_winner = {
-		save_temporary_scope_as = modeu5_country
-		modeu5_recalculate_saved_country_storage_capacities = yes
-	}
 }
 
 modeu5_core03_transfer_residual_good___GOOD__ = {
@@ -1699,10 +1691,6 @@ modeu5_core03_transfer_residual_good___GOOD__ = {
 			quantity = scope:modeu5_core03_residual_transfer_quantity
 			target_capacity_policy = allow_over_capacity
 		}
-	}
-	scope:modeu5_core03_annex_successor = {
-		save_temporary_scope_as = modeu5_country
-		modeu5_recalculate_saved_country_storage_capacities = yes
 	}
 }
 

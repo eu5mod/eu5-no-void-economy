@@ -169,6 +169,7 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 		printf '%s\n\n' 'modeu5_initialize_storage_capacities = {'
 		printf '%s\n' '	every_country = {'
 		printf '%s\n' '		save_temporary_scope_as = modeu5_country'
+		printf '%s\n' '		modeu5_rebuild_country_location_capacity_pool = yes'
 		printf '%s\n' '		modeu5_recalculate_saved_country_storage_capacities = yes'
 		printf '%s\n' '		set_global_variable = {'
 		printf '%s\n' '			name = modeu5_initialization_capacity_country_scans'

@@ -131,6 +131,8 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Compute owned-location rank/capital contribution once in the country pool without a per-market location scan.
 - Divide the location pool by the count of markets present in the country.
 - Add the target market's own merchant-capacity contribution when writing each country-market capacity key.
+- Rebuild the country location pool at campaign start, after permanent location-owner changes, after location-rank changes, and after capital moves.
+- Ordinary monthly capacity refreshes must read the cached country location pool and must not scan owned locations.
 - Apply the location contribution in this priority order: capital, megalopolis, city, town, rural settlement.
 - Provide a country-level recalculation wrapper that writes one shared capacity map family for every market present in that country.
 - Run the country-level wrapper for every country before CORE-02 reads capacity maps for opening stock allocation.
@@ -149,8 +151,9 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 
 - [ ] Base capacity equals target market merchant capacity plus the per-market share of pooled owned-location rank/capital contributions.
 - [ ] Country-level recalculation writes one shared capacity record for every market present in the country.
-- [ ] Country-level recalculation scans owned locations once per country pool rebuild, not once per market and not once per good.
-- [ ] The monthly stock cycle recalculates country storage capacities before stock reconciliation or any stock-dependent monthly logic.
+- [ ] Campaign start and capacity-affecting lifecycle hooks rebuild the cached country location pool.
+- [ ] Monthly capacity refreshes rewrite country-market capacity shares from the cached pool and do not scan owned locations.
+- [ ] The monthly stock cycle refreshes country storage capacity maps before stock reconciliation or any stock-dependent monthly logic.
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location reduces the rank/capital contribution.
 - [ ] Available capacity equals cap minus current stock, bounded at zero.
@@ -207,13 +210,14 @@ Confirm whether persisted storage capacity was refreshed by the monthly tick or 
 Owned-location, market, location-rank, capital, and merchant-capacity exposure
 are documented and reviewed against local vanilla files. Fresh CORE-02
 initialization runs the country-level capacity wrapper before stock allocation.
-The current implementation still scans owned locations during a country-pool
-rebuild, but only once per country refresh. Automatic dirty-key scheduling after
-every possible vanilla ownership/rank/trade-capacity change is not part of this
-PR: lifecycle callers such as CORE-03 invoke recalculation directly, and the
-monthly stock cycle refreshes full country capacity before stock reconciliation.
-Targeted dirty-key scheduling and yearly capacity orchestration remain
-follow-ups.
+The current implementation still scans owned locations during explicit
+country-pool rebuilds, but those rebuilds are driven by campaign start,
+location-owner change, location-rank change, capital move, and manual/debug full
+recalculation. Ordinary monthly refreshes read the cached location pool and add
+current market merchant capacity during country-market writeback.
+Dedicated merchant-capacity change hooks are not confirmed; monthly writeback
+therefore still reads current market merchant capacity so marketplace/trade
+changes can refresh without a location scan.
 Building and foreign-building capacity fields are retained as zero-valued
 diagnostic fields until a separate business rule approves building-derived
 storage. The marketplace timing probe is test-only and intentionally mutates a

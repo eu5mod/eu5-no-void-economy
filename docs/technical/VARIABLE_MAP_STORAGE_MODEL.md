@@ -211,7 +211,10 @@ country_market_capacity
 
 This keeps the stock-facing data shape as `country x market`, while avoiding
 the old monthly hot path that scanned owned locations once per market and once
-per good. Location-rank scanning still exists once per country pool rebuild.
+per good. The country location pool is cached on the country and rebuilt at
+campaign start, after owner/rank/capital changes, or during explicit
+debug/manual full recalculation. Ordinary monthly refreshes read the cached
+pool and write market shares with current market trade capacity.
 
 ### Market x good aggregate
 

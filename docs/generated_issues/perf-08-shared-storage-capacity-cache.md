@@ -68,6 +68,8 @@ Related issue: #60 performance optimization track
 - Build one country-level location/rank capacity pool, then divide it across markets present in the country.
 - Add the target market's own merchant/trade-capacity contribution when writing the country-market capacity key.
 - Do not scan owned locations once per market during the saved country refresh.
+- Do not scan owned locations during the ordinary monthly saved country refresh.
+- Rebuild the cached country location pool at campaign start and through owner/rank/capital hooks.
 - Keep building-derived storage out of the active formula until a future approved business rule reintroduces it.
 
 ## Acceptance criteria
@@ -75,7 +77,8 @@ Related issue: #60 performance optimization track
 - [ ] Generated helpers read `modeu5_stock_cap_by_market` for every good.
 - [ ] Generated helpers do not contain `modeu5_<good>_stock_cap_by_market`.
 - [ ] The country-level capacity refresh no longer dispatches one recalculation per good.
-- [ ] The country-level capacity refresh scans owned locations once per country pool rebuild, not once per market.
+- [ ] The monthly country-level capacity refresh reads the cached country location pool and does not scan owned locations.
+- [ ] Campaign start, location-owner change, location-rank change, and capital move rebuild the affected country location pool.
 - [ ] US-02 deterministic test dumps and validates `market_trade_capacity + country_location_pool_total / market_count = tested capacity`.
 - [ ] US-02 deterministic test still proves wheat and iron read the same capacity.
 - [ ] CORE-01 stock tests still enforce capacity through the centralized operators.
@@ -116,17 +119,18 @@ country -> owned locations
 ```
 
 The PR removes the old market-filtered location scan from the saved monthly
-country refresh. It still scans owned locations once when rebuilding the country
-pool. Replacing that remaining country-level scan with dirty counters would
-require separate lifecycle coverage for rank, ownership, capital, and market
-changes and remains a future optimization.
+country refresh. The monthly refresh reads cached country location-pool
+variables and rewrites market capacity shares with current market trade
+capacity. Owned-location scanning remains only in explicit pool rebuilds:
+campaign start, location-owner changes, location-rank changes, capital moves,
+and manual/debug full recalculation.
 
 Functional consequence:
 
 ```txt
-Capacity remains accurate from the current world state at country-pool level.
-Monthly cost becomes country-location plus country-market writeback, not
-country-market-good-location and not country-market-location.
+Capacity remains accurate through lifecycle-maintained country-pool rebuilds.
+Monthly cost becomes country-market writeback, not country-location,
+country-market-location, or country-market-good-location.
 ```
 
 ### Country-level pooled capacity boundary
