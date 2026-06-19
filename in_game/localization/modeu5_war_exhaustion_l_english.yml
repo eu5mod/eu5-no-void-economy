@@ -1,10 +1,8 @@
-﻿l_english:
- MYMOD_WAR_EXHAUSTION_TOOLTIP_TITLE: "War Exhaustion"
- MYMOD_WAR_EXHAUSTION_TOOLTIP_DESC: "War Exhaustion now directly affects the internal stability of the country. The penalties below are calculated from current War Exhaustion."
- MYMOD_WAR_EXHAUSTION_CURRENT: "Current War Exhaustion:"
- MYMOD_WAR_EXHAUSTION_MONTHLY_CHANGE: "Monthly Change:"
- MYMOD_WAR_EXHAUSTION_PENALTIES_HEADER: "#bold Current Penalties#!"
- MYMOD_WAR_EXHAUSTION_STABILITY: "Stability:"
- MYMOD_WAR_EXHAUSTION_LEGITIMACY: "Legitimacy:"
- MYMOD_WAR_EXHAUSTION_REBEL_THRESHOLD: "Rebel Threshold:"
- MYMOD_WAR_EXHAUSTION_TOOLTIP_FOOTER: "#color_gray These penalties are part of the War Exhaustion redesign and scale with current War Exhaustion.#!"
+l_english:
+  modeu5_we_pressure_stability: "Stability pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_stability_pressure]"
+  modeu5_we_pressure_legitimacy: "Legitimacy pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_legitimacy_pressure]"
+  modeu5_we_pressure_rebel_threshold: "Rebel threshold pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_rebel_threshold_pressure]"
+
+  modeu5_we_tooltip_header: "War Exhaustion Pressure"
+  modeu5_we_tooltip_desc: "When the ModeU5 War Exhaustion rework is enabled, War Exhaustion applies internal political pressure instead of direct morale, production, import or population-growth penalties. The monthly pressure is capped by ModeU5 defines and can be validated through debug output."
+  modeu5_we_tooltip_disabled: "ModeU5 War Exhaustion rework is disabled by the CMF/Core activation toggle. Vanilla War Exhaustion behaviour applies except for files intentionally overridden by the active playset."
