@@ -1144,6 +1144,15 @@ modeu5_validate_stock_consistency_good___GOOD__ = {
 }
 
 modeu5_validate_stock_consistency_from_prepared_market_country_cache_good___GOOD__ = {
+	if = {
+		limit = { exists = scope:modeu5_reconciliation_controller }
+		scope:modeu5_reconciliation_controller = {
+			save_temporary_scope_as = modeu5_consistency_controller
+		}
+	}
+	else = {
+		save_temporary_scope_as = modeu5_consistency_controller
+	}
 	modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = yes
 	modeu5_validate_stock_consistency_prepare = yes
 	if = {
