@@ -35,6 +35,25 @@ active market -> per-good active-list membership -> validate good
 This complements PERF-04's monthly US-00 loop fusion and keeps the strict
 exhaustive audit path available.
 
+Important scope correction:
+
+```txt
+monthly_country_pulse already iterates all countries.
+The monthly runtime shape is therefore:
+  current country from pulse -> country markets -> goods
+not:
+  market -> country -> goods
+```
+
+Any one-per-cycle global reconciliation that runs during a country pulse must
+reuse the current pulse country as its controller and must not select a
+controller through a redundant `every_country` scan.
+
+Country-owned monthly work still runs for every country-market tuple. A
+cycle-scoped seen-market registry may deduplicate future market-owned tasks, but
+it must not suppress country-owned production, capacity, stock admission, or
+US-00 ledger updates.
+
 ## Required scopes / values / effects
 
 | Need | Scope | Method | Status | TECH-01 |
@@ -42,6 +61,7 @@ exhaustive audit path available.
 | Deduplicated global market list | global -> market | `add_to_global_variable_list`, `is_target_in_global_variable_list`, `every_in_global_list`, `clear_global_variable_list` | CONFIRMED | 111, 129 |
 | Per-good active market list | global -> market | one literal generated list per good | CONFIRMED | 129 |
 | Active validation traversal | global active market -> per-good active membership | generated `modeu5_validate_active_market_all_goods` | TO_TEST | 129 |
+| Monthly seen-market registry | country -> market; global -> market | `modeu5_monthly_markets_seen_this_cycle` | CONFIRMED | 130 |
 | Strict exhaustive audit | none -> market | `every_market_in_world` | CONFIRMED | 002 |
 
 ## Files expected to change
@@ -78,6 +98,10 @@ docs/tests/TEST_PLAN.md
 - Active validation is for audit/maintenance contexts that should avoid
   `good -> every_market_in_world` scans.
 - Reuse the validation scan result when rebuilding after a detected mismatch.
+- Do not treat a monthly country pulse as if it were a global/root event.
+  `monthly_country_pulse` is already the outer country iteration.
+- Use the monthly seen-market registry only for deduplicated market-owned work
+  or diagnostics. It is not a stock source and must not skip country-owned work.
 
 ## Acceptance criteria
 
@@ -93,6 +117,11 @@ docs/tests/TEST_PLAN.md
   active validation in audit mode.
 - Validation-triggered rebuild reuses the current scan result and no longer
   rescans country sources before writing the corrected market aggregate.
+- Monthly reconciliation preselects the current pulse country as the
+  reconciliation controller before invoking dirty validation.
+- The monthly all-goods dispatcher marks markets in
+  `modeu5_monthly_markets_seen_this_cycle` while preserving all country-owned
+  market/good processing.
 - Deterministic reconciliation tests expose a PASS/FAIL marker for active
   validation.
 

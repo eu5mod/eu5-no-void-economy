@@ -1252,6 +1252,107 @@ modeu5_run_allowed_stock_consistency_validation = {
 	}
 }
 
+modeu5_prepare_monthly_market_seen_registry = {
+	save_temporary_scope_value_as = {
+		name = modeu5_monthly_market_seen_stamp
+		value = {
+			value = current_year
+			multiply = 12
+			add = current_month
+		}
+	}
+
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_global_variable = modeu5_monthly_market_seen_stamp }
+				global_var:modeu5_monthly_market_seen_stamp != scope:modeu5_monthly_market_seen_stamp
+			}
+		}
+		set_global_variable = {
+			name = modeu5_monthly_market_seen_stamp
+			value = scope:modeu5_monthly_market_seen_stamp
+		}
+		if = {
+			limit = { has_global_variable_list = modeu5_monthly_markets_seen_this_cycle }
+			clear_global_variable_list = modeu5_monthly_markets_seen_this_cycle
+		}
+		set_global_variable = {
+			name = modeu5_monthly_markets_seen_new_count
+			value = 0
+		}
+		set_global_variable = {
+			name = modeu5_monthly_markets_seen_duplicate_count
+			value = 0
+		}
+	}
+}
+
+modeu5_mark_monthly_market_seen = {
+	modeu5_prepare_monthly_market_seen_registry = yes
+	save_temporary_scope_value_as = {
+		name = modeu5_monthly_market_already_seen
+		value = 0
+	}
+
+	if = {
+		limit = { exists = scope:modeu5_market }
+		if = {
+			limit = {
+				NOT = { has_global_variable_list = modeu5_monthly_markets_seen_this_cycle }
+			}
+			add_to_global_variable_list = {
+				name = modeu5_monthly_markets_seen_this_cycle
+				target = scope:modeu5_market
+			}
+			set_global_variable = {
+				name = modeu5_monthly_markets_seen_new_count
+				value = {
+					value = global_var:modeu5_monthly_markets_seen_new_count
+					add = 1
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					is_target_in_global_variable_list = {
+						name = modeu5_monthly_markets_seen_this_cycle
+						target = scope:modeu5_market
+					}
+				}
+			}
+			add_to_global_variable_list = {
+				name = modeu5_monthly_markets_seen_this_cycle
+				target = scope:modeu5_market
+			}
+			set_global_variable = {
+				name = modeu5_monthly_markets_seen_new_count
+				value = {
+					value = global_var:modeu5_monthly_markets_seen_new_count
+					add = 1
+				}
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_monthly_market_already_seen
+				value = 1
+			}
+			set_global_variable = {
+				name = modeu5_monthly_markets_seen_duplicate_count
+				value = {
+					value = global_var:modeu5_monthly_markets_seen_duplicate_count
+					add = 1
+				}
+			}
+		}
+	}
+	else = {
+		error_log = "ModeU5 monthly market registry skipped because no market scope was provided."
+	}
+}
+
 modeu5_run_fresh_opening_stock_initialization = {
 	modeu5_initialization_prepare_counters = yes
 	modeu5_initialize_storage_capacities = yes
@@ -1350,15 +1451,18 @@ modeu5_start_game_stock_initialization_dispatcher = {
 # US-11
 
 modeu5_prepare_reconciliation_controller = {
-	remove_global_variable = modeu5_reconciliation_controller_selected
-	every_country = {
-		limit = {
-			NOT = { has_global_variable = modeu5_reconciliation_controller_selected }
+	if = {
+		limit = { NOT = { exists = scope:modeu5_reconciliation_controller } }
+		remove_global_variable = modeu5_reconciliation_controller_selected
+		every_country = {
+			limit = {
+				NOT = { has_global_variable = modeu5_reconciliation_controller_selected }
+			}
+			save_temporary_scope_as = modeu5_reconciliation_controller
+			set_global_variable = modeu5_reconciliation_controller_selected
 		}
-		save_temporary_scope_as = modeu5_reconciliation_controller
-		set_global_variable = modeu5_reconciliation_controller_selected
+		remove_global_variable = modeu5_reconciliation_controller_selected
 	}
-	remove_global_variable = modeu5_reconciliation_controller_selected
 }
 
 modeu5_reconciliation_prepare = {
@@ -1464,6 +1568,7 @@ modeu5_run_monthly_stock_cycle = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		modeu5_run_monthly_capacity_refresh_for_current_country = yes
+		modeu5_prepare_monthly_market_seen_registry = yes
 		save_temporary_scope_as = modeu5_country
 		modeu5_run_us00_monthly_pipeline_all_goods = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
@@ -1482,6 +1587,7 @@ modeu5_run_monthly_stock_cycle = {
 modeu5_run_monthly_stock_reconciliation_once = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = modeu5_reconciliation_controller
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_month_stamp
 			value = {

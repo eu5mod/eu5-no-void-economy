@@ -175,6 +175,7 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")"
 	printf '%s\n' '}'
 
 	printf '%s\n\n' 'modeu5_process_us00_monthly_market_all_goods = {'
+	printf '\tmodeu5_mark_monthly_market_seen = yes\n'
 	for good in "${goods[@]}"; do
 		printf '\tmodeu5_process_us00_monthly_market_good_%s = yes\n' "$good"
 	done
