@@ -36,7 +36,7 @@ Feeds counters to: US-10.3 and debug/UI
 | Transaction state | current effect/event chain | local requested/remaining/transferred/unsatisfied values and saved trade scopes | CONFIRMED | 008, internal |
 
 
-Note : Testing can be done via buy_goods_from_market if version EU 5  > 1.3 
+Note : Testing can be done via buy_goods_from_market if version EU 5  > 1.3
 
 ## Files expected to change
 

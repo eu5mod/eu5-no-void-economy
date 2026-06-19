@@ -244,36 +244,11 @@ if [[ -x "$us09_generator" ]]; then
 	us09_generated_tmp_dir="$(mktemp -d)"
 	if "$us09_generator" "$us09_percent" --package-common-dir "$us09_generated_tmp_dir/common" >/dev/null 2>&1; then
 		for generated_subdir in building_types prices; do
-			repo_generated_dir="packages/modeu5_economy_rebalance/in_game/common/$generated_subdir"
 			tmp_generated_dir="$us09_generated_tmp_dir/common/$generated_subdir"
-
-			repo_generated_list="$(
-				if [[ -d "$repo_generated_dir" ]]; then
-					find "$repo_generated_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' -exec basename {} \; | sort
-				fi
-			)"
-			tmp_generated_list="$(
-				if [[ -d "$tmp_generated_dir" ]]; then
-					find "$tmp_generated_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' -exec basename {} \; | sort
-				fi
-			)"
-
-			if [[ "$repo_generated_list" != "$tmp_generated_list" ]]; then
-				printf 'US-09 generated %s overrides are stale. Run tools/generate_us09_economy_overrides.sh %s.\n' \
-					"$generated_subdir" "$us09_percent" >&2
+			if ! find "$tmp_generated_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' | grep -q .; then
+				printf 'US-09 offline generator produced no %s probe files.\n' "$generated_subdir" >&2
 				exit 1
 			fi
-
-			while IFS= read -r generated_file; do
-				[[ -n "$generated_file" ]] || continue
-				if ! cmp -s \
-					"$repo_generated_dir/$generated_file" \
-					"$tmp_generated_dir/$generated_file"; then
-					printf 'US-09 generated override is stale: %s/%s. Run tools/generate_us09_economy_overrides.sh %s.\n' \
-						"$generated_subdir" "$generated_file" "$us09_percent" >&2
-					exit 1
-				fi
-			done <<< "$tmp_generated_list"
 		done
 	else
 		printf 'WARNING: US-09 generator could not run; generated economy override staleness was not checked.\n' >&2

@@ -28,6 +28,10 @@ Examples:
   ./tools/generate_us09_economy_overrides.sh 5
   ./tools/generate_us09_economy_overrides.sh 10
   ./tools/generate_us09_economy_overrides.sh --percent 7.5
+
+By default, this writes offline probe output under tools/generated/us09_economy_overrides.
+Pass --package-common-dir packages/modeu5_economy_rebalance/in_game/common only
+for local engine probes; duplicate-key package override loading is not confirmed.
 EOF
 }
 
@@ -58,7 +62,7 @@ find_default_common_dir() {
 
 percent=""
 common_dir=""
-package_common_dir="$repo_root/packages/modeu5_economy_rebalance/in_game/common"
+package_common_dir="$repo_root/tools/generated/us09_economy_overrides/common"
 
 while (($# > 0)); do
 	case "$1" in
@@ -220,3 +224,4 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 
 printf 'Generated %d building override files and 1 RGO expansion price override file for US-09 (%s%%).\n' \
 	"$generated_building_files" "$percent"
+printf 'Output directory: %s\n' "$package_common_dir"

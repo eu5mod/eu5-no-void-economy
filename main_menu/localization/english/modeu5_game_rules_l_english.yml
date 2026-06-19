@@ -1,4 +1,4 @@
-﻿l_english:
+l_english:
  rule_modeu5_debug_configuration: "NVE : Debug Output"
  setting_modeu5_debug_off: "Off"
  setting_modeu5_debug_off_desc: "Disable optional ModeU5 diagnostic output. Mandatory consistency errors are still reported."
