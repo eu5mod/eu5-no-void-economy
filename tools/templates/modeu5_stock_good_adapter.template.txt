@@ -88,26 +88,8 @@ modeu5_load_stock_record_good___GOOD__ = {
 				value = 0
 			}
 		}
-		if = {
-			limit = {
-				has_variable_map = __CAPACITY_MAP__
-				is_key_in_variable_map = {
-					name = __CAPACITY_MAP__
-					target = scope:modeu5_market
-				}
-			}
-			save_temporary_scope_value_as = {
-				name = modeu5_country_stock_cap_raw
-				value = "variable_map(__CAPACITY_MAP__|scope:modeu5_market)"
-			}
-		}
-		else = {
-			save_temporary_scope_value_as = {
-				name = modeu5_country_stock_cap_raw
-				value = 0
-			}
-		}
 	}
+	modeu5_load_capacity_breakdown_good___GOOD__ = yes
 	if = {
 		limit = {
 			has_global_variable_map = __MARKET_MAP__
@@ -431,15 +413,34 @@ modeu5_load_capacity_breakdown_good___GOOD__ = {
 	scope:modeu5_country = {
 		if = {
 			limit = {
-				has_variable_map = __BASE_CAPACITY_MAP__
+				has_variable_map = modeu5_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = __BASE_CAPACITY_MAP__
+					name = modeu5_stock_cap_by_market
+					target = scope:modeu5_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_cap_raw
+				value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = modeu5_country_stock_cap_raw
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_base_capacity_by_market
+				is_key_in_variable_map = {
+					name = modeu5_base_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_country_base_capacity_raw
-				value = "variable_map(__BASE_CAPACITY_MAP__|scope:modeu5_market)"
+				value = "variable_map(modeu5_base_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
@@ -450,15 +451,15 @@ modeu5_load_capacity_breakdown_good___GOOD__ = {
 		}
 		if = {
 			limit = {
-				has_variable_map = __BUILDING_CAPACITY_MAP__
+				has_variable_map = modeu5_building_capacity_by_market
 				is_key_in_variable_map = {
-					name = __BUILDING_CAPACITY_MAP__
+					name = modeu5_building_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_country_building_capacity_raw
-				value = "variable_map(__BUILDING_CAPACITY_MAP__|scope:modeu5_market)"
+				value = "variable_map(modeu5_building_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
@@ -469,15 +470,15 @@ modeu5_load_capacity_breakdown_good___GOOD__ = {
 		}
 		if = {
 			limit = {
-				has_variable_map = __FOREIGN_CAPACITY_MAP__
+				has_variable_map = modeu5_foreign_capacity_by_market
 				is_key_in_variable_map = {
-					name = __FOREIGN_CAPACITY_MAP__
+					name = modeu5_foreign_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_country_foreign_capacity_raw
-				value = "variable_map(__FOREIGN_CAPACITY_MAP__|scope:modeu5_market)"
+				value = "variable_map(modeu5_foreign_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
@@ -493,21 +494,21 @@ modeu5_store_capacity_record_good___GOOD__ = {
 	scope:modeu5_country = {
 		if = {
 			limit = {
-				has_variable_map = __CAPACITY_MAP__
+				has_variable_map = modeu5_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = __CAPACITY_MAP__
+					name = modeu5_stock_cap_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = __CAPACITY_MAP__
+				name = modeu5_stock_cap_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
 			limit = { scope:modeu5_capacity_total > 0 }
 			add_to_variable_map = {
-				name = __CAPACITY_MAP__
+				name = modeu5_stock_cap_by_market
 				key = scope:modeu5_market
 				value = scope:modeu5_capacity_total
 			}
@@ -515,21 +516,21 @@ modeu5_store_capacity_record_good___GOOD__ = {
 
 		if = {
 			limit = {
-				has_variable_map = __BASE_CAPACITY_MAP__
+				has_variable_map = modeu5_base_capacity_by_market
 				is_key_in_variable_map = {
-					name = __BASE_CAPACITY_MAP__
+					name = modeu5_base_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = __BASE_CAPACITY_MAP__
+				name = modeu5_base_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
 			limit = { scope:modeu5_capacity_base > 0 }
 			add_to_variable_map = {
-				name = __BASE_CAPACITY_MAP__
+				name = modeu5_base_capacity_by_market
 				key = scope:modeu5_market
 				value = scope:modeu5_capacity_base
 			}
@@ -537,21 +538,21 @@ modeu5_store_capacity_record_good___GOOD__ = {
 
 		if = {
 			limit = {
-				has_variable_map = __BUILDING_CAPACITY_MAP__
+				has_variable_map = modeu5_building_capacity_by_market
 				is_key_in_variable_map = {
-					name = __BUILDING_CAPACITY_MAP__
+					name = modeu5_building_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = __BUILDING_CAPACITY_MAP__
+				name = modeu5_building_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
 			limit = { scope:modeu5_capacity_building > 0 }
 			add_to_variable_map = {
-				name = __BUILDING_CAPACITY_MAP__
+				name = modeu5_building_capacity_by_market
 				key = scope:modeu5_market
 				value = scope:modeu5_capacity_building
 			}
@@ -559,21 +560,21 @@ modeu5_store_capacity_record_good___GOOD__ = {
 
 		if = {
 			limit = {
-				has_variable_map = __FOREIGN_CAPACITY_MAP__
+				has_variable_map = modeu5_foreign_capacity_by_market
 				is_key_in_variable_map = {
-					name = __FOREIGN_CAPACITY_MAP__
+					name = modeu5_foreign_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = __FOREIGN_CAPACITY_MAP__
+				name = modeu5_foreign_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
 			limit = { scope:modeu5_capacity_foreign > 0 }
 			add_to_variable_map = {
-				name = __FOREIGN_CAPACITY_MAP__
+				name = modeu5_foreign_capacity_by_market
 				key = scope:modeu5_market
 				value = scope:modeu5_capacity_foreign
 			}
@@ -639,15 +640,15 @@ modeu5_load_transfer_records_good___GOOD__ = {
 		}
 		if = {
 			limit = {
-				has_variable_map = __CAPACITY_MAP__
+				has_variable_map = modeu5_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = __CAPACITY_MAP__
+					name = modeu5_stock_cap_by_market
 					target = scope:modeu5_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_buyer_stock_cap_raw
-				value = "variable_map(__CAPACITY_MAP__|scope:modeu5_target_market)"
+				value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_target_market)"
 			}
 		}
 		else = {
@@ -823,7 +824,6 @@ modeu5_store_transfer_records_good___GOOD__ = {
 
 modeu5_read_country_stock_record_good___GOOD__ = {
 	modeu5_load_stock_record_good___GOOD__ = yes
-	modeu5_load_capacity_breakdown_good___GOOD__ = yes
 	modeu5_read_country_stock_record_calculate = yes
 	modeu5_debug_capture_country_stock_record = yes
 }
@@ -1018,18 +1018,18 @@ modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = {
 						}
 					}
 				}
-				if = {
-					limit = {
-						has_variable_map = __CAPACITY_MAP__
-						is_key_in_variable_map = {
-							name = __CAPACITY_MAP__
-							target = scope:modeu5_market
+					if = {
+						limit = {
+							has_variable_map = modeu5_stock_cap_by_market
+							is_key_in_variable_map = {
+								name = modeu5_stock_cap_by_market
+								target = scope:modeu5_market
+							}
 						}
-					}
-					save_temporary_scope_value_as = {
-						name = modeu5_scanned_country_capacity
-						value = "variable_map(__CAPACITY_MAP__|scope:modeu5_market)"
-					}
+						save_temporary_scope_value_as = {
+							name = modeu5_scanned_country_capacity
+							value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_market)"
+						}
 					if = {
 						limit = {
 							scope:modeu5_scanned_country_stock > scope:modeu5_scanned_country_capacity
@@ -1307,18 +1307,18 @@ modeu5_seed_opening_market_good___GOOD__ = {
 				}
 			}
 
-			if = {
-				limit = {
-					has_variable_map = __CAPACITY_MAP__
-					is_key_in_variable_map = {
-						name = __CAPACITY_MAP__
-						target = scope:modeu5_initialization_market
+				if = {
+					limit = {
+						has_variable_map = modeu5_stock_cap_by_market
+						is_key_in_variable_map = {
+							name = modeu5_stock_cap_by_market
+							target = scope:modeu5_initialization_market
+						}
 					}
-				}
-				save_temporary_scope_value_as = {
-					name = modeu5_initialization_country_capacity_raw
-					value = "variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)"
-				}
+					save_temporary_scope_value_as = {
+						name = modeu5_initialization_country_capacity_raw
+						value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_initialization_market)"
+					}
 			}
 			else = {
 				save_temporary_scope_value_as = {
@@ -1439,19 +1439,19 @@ modeu5_seed_opening_market_good___GOOD__ = {
 			limit = { has_global_variable_list = modeu5_countries_present_in_market }
 			every_in_global_list = {
 				variable = modeu5_countries_present_in_market
-				if = {
-					limit = {
-						has_variable_map = __CAPACITY_MAP__
-						is_key_in_variable_map = {
-							name = __CAPACITY_MAP__
-							target = scope:modeu5_initialization_market
+					if = {
+						limit = {
+							has_variable_map = modeu5_stock_cap_by_market
+							is_key_in_variable_map = {
+								name = modeu5_stock_cap_by_market
+								target = scope:modeu5_initialization_market
+							}
+							"variable_map(modeu5_stock_cap_by_market|scope:modeu5_initialization_market)" > 0
 						}
-						"variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)" > 0
-					}
-					save_temporary_scope_value_as = {
-						name = modeu5_initialization_country_capacity
-						value = "variable_map(__CAPACITY_MAP__|scope:modeu5_initialization_market)"
-					}
+						save_temporary_scope_value_as = {
+							name = modeu5_initialization_country_capacity
+							value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_initialization_market)"
+						}
 					if = {
 						limit = {
 							NOT = { has_global_variable = modeu5_initialization_residue_recipient_selected }

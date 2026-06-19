@@ -1,7 +1,8 @@
 # US-02 storage-capacity calculation.
 #
-# Capacity is rebuilt from current world state and persisted as one synchronized
-# country-scoped map family per good. These effects never mutate stock.
+# Capacity is rebuilt from current world state and persisted once per
+# country-market. Generated per-good stock adapters read the shared capacity
+# maps. These effects never mutate stock.
 
 modeu5_recalculate_country_market_capacity = {
 	$country$ = { save_temporary_scope_as = modeu5_country }
@@ -83,7 +84,6 @@ modeu5_calculate_location_storage_capacity = {
 
 	scope:modeu5_capacity_country = {
 		set_local_variable = { name = modeu5_location_capacity_base_accumulator value = 0 }
-		set_local_variable = { name = modeu5_location_capacity_building_accumulator value = 0 }
 	}
 
 	scope:modeu5_capacity_location = {
@@ -102,15 +102,8 @@ modeu5_calculate_location_storage_capacity = {
 			value = local_var:modeu5_location_capacity_base_accumulator
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_location_capacity_building
-			value = local_var:modeu5_location_capacity_building_accumulator
-		}
-		save_temporary_scope_value_as = {
 			name = modeu5_location_capacity_total
-			value = {
-				value = local_var:modeu5_location_capacity_base_accumulator
-				add = local_var:modeu5_location_capacity_building_accumulator
-			}
+			value = local_var:modeu5_location_capacity_base_accumulator
 		}
 	}
 }
@@ -123,11 +116,6 @@ modeu5_calculate_country_market_capacity = {
 		set_local_variable = { name = modeu5_capacity_trade_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_location_rank_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_owned_location_count value = 0 }
-		set_local_variable = { name = modeu5_capacity_marketplace_levels value = 0 }
-		set_local_variable = { name = modeu5_capacity_market_warehouse_levels value = 0 }
-		set_local_variable = { name = modeu5_capacity_funduq_levels value = 0 }
-		set_local_variable = { name = modeu5_capacity_caravanserai_levels value = 0 }
-		set_local_variable = { name = modeu5_capacity_fondaco_levels value = 0 }
 
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_current_trade_contribution
@@ -197,111 +185,6 @@ modeu5_calculate_country_market_capacity = {
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_location_count
 			value = local_var:modeu5_capacity_owned_location_count
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_marketplace_level_count
-			value = local_var:modeu5_capacity_marketplace_levels
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_market_warehouse_level_count
-			value = local_var:modeu5_capacity_market_warehouse_levels
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_funduq_level_count
-			value = local_var:modeu5_capacity_funduq_levels
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_caravanserai_level_count
-			value = local_var:modeu5_capacity_caravanserai_levels
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_fondaco_level_count
-			value = local_var:modeu5_capacity_fondaco_levels
-		}
-	}
-}
-
-modeu5_calculate_domestic_storage_building_contribution = {
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_building_contribution value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_marketplace_levels value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_market_warehouse_levels value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_funduq_levels value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_caravanserai_levels value = 0 }
-
-	if = {
-		limit = { building_type = building_type:marketplace }
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_building_contribution
-			value = {
-				value = building_level
-				multiply = modeu5_storage_capacity_per_marketplace_level
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_marketplace_levels
-			value = building_level
-		}
-	}
-	else_if = {
-		limit = { building_type = building_type:market_warehouse }
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_building_contribution
-			value = {
-				value = building_level
-				multiply = modeu5_storage_capacity_per_market_warehouse_level
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_market_warehouse_levels
-			value = building_level
-		}
-	}
-	else_if = {
-		limit = { building_type = building_type:funduq }
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_building_contribution
-			value = {
-				value = building_level
-				multiply = modeu5_storage_capacity_per_funduq_level
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_funduq_levels
-			value = building_level
-		}
-	}
-	else_if = {
-		limit = { building_type = building_type:caravanserai }
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_building_contribution
-			value = {
-				value = building_level
-				multiply = modeu5_storage_capacity_per_caravanserai_level
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_caravanserai_levels
-			value = building_level
-		}
-	}
-}
-
-modeu5_calculate_foreign_storage_building_contribution = {
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_building_contribution value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_capacity_current_fondaco_levels value = 0 }
-
-	if = {
-		limit = { building_type = building_type:fondaco }
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_building_contribution
-			value = {
-				value = building_level
-				multiply = modeu5_storage_capacity_per_fondaco_level
-			}
-		}
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_fondaco_levels
-			value = building_level
 		}
 	}
 }

@@ -27,7 +27,7 @@ Feeds counters to: player/modder diagnostics
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Capacity breakdown inputs | country × market × good | direct reads of US-02 total and optional contribution maps | CONFIRMED | 007, 017, 033-035 |
-| Used/available storage | country × market × good | direct reads of US-01 stock map and US-02 capacity map | CONFIRMED | 007, 015-018 |
+| Used/available storage | country × market × good stock plus country × market capacity | direct reads of US-01 stock map and shared US-02 capacity map | CONFIRMED | 007, 015-018 |
 | Debug/localized display | event/UI | event triggers, logs, tooltips, and localization keys | CONFIRMED | 013-014 |
 
 ## Files expected to change

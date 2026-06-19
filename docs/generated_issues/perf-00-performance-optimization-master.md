@@ -47,7 +47,7 @@ country -> every_market_present_in_country -> good
 
 Examples:
 
-- country storage-capacity refresh;
+- country storage-capacity refresh once per country-market;
 - country production recognition;
 - stock admission into country-market-good stock;
 - US-00 country x market x good ledger updates;
@@ -131,6 +131,7 @@ failure by itself.
 | PERF-05 - Reduce global market scans | Active market lists, active validation, dirty reconciliation, and validation-triggered rebuild reduce unnecessary exhaustive scans. | Implemented; validate with the US-11 dirty/active reconciliation dump. |
 | PERF-06 - Country-pulse scope contract and seen-market registry | Monthly reconciliation reuses the current pulse country as controller and records markets seen during the monthly country cycle. | Implemented in PR #74; US-11 runtime validation passed on commit `2cb1ca4d65b326f0fb5aad0e55e23fbd5fc947c9`. |
 | PERF-07 - Market-owned runtime pass boundary | Active validation rebuilds the current-market country work cache once per active market, then validates active goods from that prepared cache. | Implemented; validate with the PERF-07 market-owned runtime dump in the US-11 deterministic reconciliation test. |
+| PERF-08 - Shared storage capacity cache | US-02 capacity is persisted once per country-market and read by all generated per-good adapters instead of being recomputed and stored once per good. | Implemented by the shared-capacity PR; validate with US-02 and CORE-01 capacity-enforcement tests. |
 
 ### To Be Implemented
 
@@ -150,6 +151,7 @@ failure by itself.
 | Using seen-market lists to skip country-owned work | Invalid anti-pattern. | Countries sharing one market still own distinct stock, capacity, and ledger records. Seen-market lists are scheduling/diagnostic indexes only. |
 | PR #71 / non-territorial market presence as an MVP blocker | Not relevant for current MVP performance work. | Non-owned/non-territorial market presence is accepted as negligible economic weight unless future dumps show meaningful stock/capacity there. |
 | Dynamic variable-list names or Market-owned variable records | Not confirmed. | Market scope variable storage and runtime list-name construction are not confirmed; use generated static names or rebuilt global work lists only. |
+| Single country-level capacity pool divided across markets | Deferred design change. | It may reduce recomputation, but it changes gameplay by letting capacity from one market support another market. Keep current country-market formula unless a separate design PR approves the rule. |
 
 ## Review Label Policy For This Track
 

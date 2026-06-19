@@ -12,7 +12,7 @@ As a player, I want each country-market stock capacity to reflect the country's 
 
 ## Functional objective
 
-Calculate configurable country storage capacity per market and good, recalculate it when ownership or trade capacity changes, and expose any over-cap stock without mutating it.
+Calculate configurable country storage capacity per market, share that same capacity across all goods, recalculate it when ownership or trade capacity changes, and expose any over-cap stock without mutating it.
 
 ## Runtime position
 
@@ -31,13 +31,13 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Capital location check | location | `is_capital = yes/no` | CONFIRMED | 115 |
 | Country merchant capacity in a market | market(country) | `scope:<market>.merchant_capacity(<country>)` | CONFIRMED | 116 |
 | Initial country-market scan | country → market | `every_market_present_in_country` | CONFIRMED | 117 |
-| Capacity record fields | country × market × good | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields | CONFIRMED | 017, internal |
-| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_stock_cap_by_market` and optional contribution-field maps | CONFIRMED | 007, 017 |
+| Capacity record fields | country × market | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields shared by every good | CONFIRMED | 017, internal |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_stock_cap_by_market`, `modeu5_base_capacity_by_market`, `modeu5_building_capacity_by_market`, `modeu5_foreign_capacity_by_market` | CONFIRMED | 007, 017 |
 
 ## Variable-map storage pattern
 
 ```txt
-logical dimensions: country × market × good
+logical dimensions: country × market
 logical fields:
   capacity
   base_capacity
@@ -45,16 +45,16 @@ logical fields:
   foreign_capacity
 
 record owner: country
-tuple:        market × good
+tuple:        market
 default:      0
 
 confirmed physical total field:
-  modeu5_<good>_stock_cap_by_market
+  modeu5_stock_cap_by_market
 
 physical breakdown fields:
-  modeu5_<good>_base_capacity_by_market
-  modeu5_<good>_building_capacity_by_market
-  modeu5_<good>_foreign_capacity_by_market
+  modeu5_base_capacity_by_market
+  modeu5_building_capacity_by_market
+  modeu5_foreign_capacity_by_market
 ```
 
 The total field is authoritative for stock operations. Breakdown fields are
@@ -75,8 +75,15 @@ owned capital:            20
 
 Location contribution is non-cumulative. A capital megalopolis contributes 20,
 not 24. Existing `building_capacity` and `foreign_capacity` fields remain
-persisted for compatibility and diagnostics, but their coefficients are zero
-until a later approved business rule re-enables building-derived storage.
+persisted for compatibility and diagnostics, but active building-derived storage
+is removed from the formula until a later approved business rule re-enables it.
+They therefore remain zero-valued compatibility fields.
+
+The rejected alternative is a single country-level capacity pool divided across
+all markets. That could reduce recomputation further, but it changes the
+business rule by allowing settlement rank in one market to support stock in
+another market. Keep it as a separate design decision, not a silent
+optimization.
 
 ## Files expected to change
 
@@ -112,7 +119,7 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Use `modeu5_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
 - Add market merchant capacity once at the country-market level, not once per location.
 - Apply the location contribution in this priority order: capital, megalopolis, city, town, rural settlement.
-- Provide a country-level recalculation wrapper that writes all per-good capacity maps for every market present in that country.
+- Provide a country-level recalculation wrapper that writes one shared capacity map family for every market present in that country.
 - Run the country-level wrapper for every country before CORE-02 reads capacity maps for opening stock allocation.
 - Rebuild each affected capacity key from contributions, then replace the old total by remove/re-add.
 - Treat a missing capacity entry as zero and do not attempt runtime map-name construction.
@@ -128,7 +135,7 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 ## Acceptance criteria
 
 - [ ] Base capacity equals market merchant-capacity contribution plus owned-location rank/capital contributions.
-- [ ] Country-level recalculation writes capacity for every generated good in markets present in the country.
+- [ ] Country-level recalculation writes one shared capacity record for every market present in the country.
 - [ ] The monthly stock cycle recalculates country storage capacities before stock reconciliation or any stock-dependent monthly logic.
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location reduces the rank/capital contribution.
@@ -158,10 +165,10 @@ Recalculate wheat directly for formula diagnostics
 ### Expected result
 
 ```txt
-Total capacity equals base + domestic building + foreign building contributions
+Total capacity equals base + building + foreign compatibility fields
 Base capacity equals trade-capacity contribution + location rank/capital contribution
 Wheat and iron receive the same capacity from the same world state
-Country-level wrapper output matches direct wheat recalculation
+Country-level wrapper output matches direct wheat recalculation, and iron reads the same shared capacity without recomputing a second per-good record
 The existing wheat stock is unchanged
 Available capacity and over-cap are bounded at zero and reconcile with stock
 The result event displays the tested stock, capacity, trade contribution, location contribution, location count, available capacity, and over-cap values

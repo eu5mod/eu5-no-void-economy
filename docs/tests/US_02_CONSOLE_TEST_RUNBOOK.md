@@ -59,13 +59,13 @@ market:
 
 ```txt
 FRA wheat stock
-FRA wheat capacity
+FRA wheat capacity from the shared country-market record
 FRA wheat available capacity
 FRA wheat over-capacity
 FRA wheat trade-capacity contribution
 FRA wheat location-rank contribution
 FRA owned locations in the capital market
-FRA iron wrapper capacity
+FRA iron wrapper capacity read from the same shared country-market record
 ```
 
 These visible values are useful for immediate tester feedback, but they are not
@@ -148,11 +148,6 @@ stock
 available
 over_cap
 location_count
-marketplace_levels
-market_warehouse_levels
-funduq_levels
-caravanserai_levels
-fondaco_levels
 ```
 
 For timing probes, also inspect:
@@ -175,8 +170,8 @@ over_cap = max(0, stock - total)
 ```
 
 The event first runs the country-level capacity wrapper for FRA, then reads
-wheat and iron capacity in FRA's capital market, then recalculates wheat
-directly for formula diagnostics. It explicitly fails if the recalculated
+wheat and iron capacity in FRA's capital market from the shared capacity maps,
+then recalculates wheat directly for formula diagnostics. It explicitly fails if the recalculated
 capacity is zero, because a zero-capacity pass would only prove internal
 consistency and would not prove that the US-02 world-state scan is usable by
 CORE-02 startup. It does not add, remove, transfer, decay, or rebuild stock.

@@ -121,19 +121,19 @@ modeu5_debug_replace_country_wheat_capacity = {
 	$country$ = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_stock_cap_by_market
+				has_variable_map = modeu5_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_stock_cap_by_market
+					name = modeu5_stock_cap_by_market
 					target = $market$
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_wheat_stock_cap_by_market
+				name = modeu5_stock_cap_by_market
 				key = $market$
 			}
 		}
 		add_to_variable_map = {
-			name = modeu5_wheat_stock_cap_by_market
+			name = modeu5_stock_cap_by_market
 			key = $market$
 			value = $value$
 		}

@@ -154,9 +154,7 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 		done
 		printf '%s\n' '}'
 		printf '%s\n\n' 'modeu5_recalculate_saved_country_market_storage_capacities = {'
-		for good in "${goods[@]}"; do
-			printf '\tmodeu5_recalculate_saved_country_market_storage_capacities_good_%s = yes\n' "$good"
-		done
+		printf '%s\n' '	modeu5_recalculate_saved_country_market_storage_capacities_good_wheat = yes'
 		printf '%s\n' '}'
 		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
 		printf '%s\n' '	scope:modeu5_country = {'
@@ -223,10 +221,6 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 		sed \
 			-e "s/__GOOD__/$good/g" \
 			-e "s/__STOCK_MAP__/modeu5_${good}_stock_by_market/g" \
-			-e "s/__CAPACITY_MAP__/modeu5_${good}_stock_cap_by_market/g" \
-			-e "s/__BASE_CAPACITY_MAP__/modeu5_${good}_base_capacity_by_market/g" \
-			-e "s/__BUILDING_CAPACITY_MAP__/modeu5_${good}_building_capacity_by_market/g" \
-			-e "s/__FOREIGN_CAPACITY_MAP__/modeu5_${good}_foreign_capacity_by_market/g" \
 			-e "s/__MARKET_MAP__/modeu5_${good}_market_stock/g" \
 			-e "s/__DIRTY_LIST__/modeu5_${good}_dirty_markets/g" \
 			-e "s/__ACTIVE_LIST__/modeu5_${good}_active_markets/g" \

@@ -223,9 +223,19 @@ if ! search_quiet 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_mark
 	exit 1
 fi
 
-if ! search_quiet 'variable_map\(modeu5_wheat_base_capacity_by_market\|scope:modeu5_market\)' \
+if ! search_quiet 'variable_map\(modeu5_stock_cap_by_market\|scope:modeu5_market\)' \
 	"$generated_stock_helpers"; then
-	printf 'Generated stock adapters must contain literal US-02 capacity breakdown access.\n' >&2
+	printf 'Generated stock adapters must contain shared US-02 country-market capacity access.\n' >&2
+	exit 1
+fi
+if ! search_quiet 'variable_map\(modeu5_base_capacity_by_market\|scope:modeu5_market\)' \
+	"$generated_stock_helpers"; then
+	printf 'Generated stock adapters must contain shared US-02 capacity breakdown access.\n' >&2
+	exit 1
+fi
+if search_lines 'modeu5_[a-z0-9_]+_(stock_cap|base_capacity|building_capacity|foreign_capacity)_by_market' \
+	"$generated_stock_helpers" "$stock_adapter_template" "$stock_generator"; then
+	printf 'US-02 capacity must be stored once per country-market, not once per good.\n' >&2
 	exit 1
 fi
 if ! search_quiet '^modeu5_wheat_production_penalty_modifier = \{' "$generated_us00_modifiers"; then

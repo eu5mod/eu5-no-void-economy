@@ -116,7 +116,6 @@ Logical model:
 ```txt
 country.country_market_good_record[market][good] = {
     stock
-    capacity
     produced
     added
     rejected
@@ -153,11 +152,49 @@ This logical record owns:
 
 ```txt
 country stock
-country stock capacity
 US-00 produced/added/rejected ledger
 US-00 ratios, void wealth, and next-month penalty
 country/market demand outcomes that cannot live on a more specific consumer scope
 ```
+
+Capacity is deliberately not stored in this per-good record. US-02 capacity is
+the same for every good in one country-market relation, so persisting it here
+would multiply identical values by the number of goods and repeat the same
+monthly work.
+
+### Country x market capacity
+
+Logical model:
+
+```txt
+country.country_market_capacity_record[market] = {
+    stock_cap
+    base_capacity
+    building_capacity
+    foreign_capacity
+}
+```
+
+Confirmed physical model:
+
+```txt
+record owner: country
+tuple:        market
+shared key:   market scope
+map family:
+  modeu5_stock_cap_by_market
+  modeu5_base_capacity_by_market
+  modeu5_building_capacity_by_market
+  modeu5_foreign_capacity_by_market
+map value:    one numeric field
+default:      0
+```
+
+Generated per-good adapters read the shared capacity maps when stock
+operations need available capacity. The generated country-market capacity
+dispatcher recalculates capacity once through the sentinel `wheat` adapter, not
+once per good. Compatibility wrappers for other goods remain callable, but they
+write the same shared maps and must not recreate per-good capacity maps.
 
 ### Market x good aggregate
 
@@ -258,8 +295,8 @@ US-10.3, debug, or stock-consistency orchestration.
 | CORE-01.4 | Writes stock and aggregate maps | Calculate decay from country stock only; keep decay transaction state local. |
 | CORE-01.5 | Rebuilds the market aggregate map | Sum country source maps and replace only the selected market key in the global per-good aggregate map. |
 | CORE-01.6 | Reads source and aggregate maps | Keep validation state local and delegate every aggregate correction to CORE-01.5. |
-| CORE-02 | Initializes capacity and stock maps once | Keep global schema/state as scalars, use capacity as the allocation weight, conserve the full opening source, and route writes through CORE-01.1 with `allow_over_capacity`. |
-| CORE-03 | Reassigns existing stock ownership after lifecycle events | Read the same stock/capacity map family, keep ratios temporary, conserve the full formula-derived transfer, and route movements through CORE-01.3 with `allow_over_capacity`. |
+| CORE-02 | Initializes capacity and stock maps once | Keep global schema/state as scalars, use shared country x market capacity as the allocation weight, conserve the full opening source, and route writes through CORE-01.1 with `allow_over_capacity`. |
+| CORE-03 | Reassigns existing stock ownership after lifecycle events | Read per-good stock plus shared country x market capacity, keep ratios temporary, conserve the full formula-derived transfer, and route movements through CORE-01.3 with `allow_over_capacity`. |
 | EPIC US-00 | Owns one logical record | Use the canonical country x market x good record backed by a synchronized map family. |
 | US-00.1 | Owns ledger fields | Treat produced/added/rejected as fields of one logical record; update their physical maps through one helper. |
 | US-00.2 | Owns ratio fields | Add raw/effective ratios to the same logical record and physical map family. |
@@ -268,7 +305,7 @@ US-10.3, debug, or stock-consistency orchestration.
 | US-10-UI, including folded US-00 visibility | Reads maps and transaction diagnostics | Iterate the same map families without maintaining a UI copy or second authoritative outcome store. |
 | US-01 | Owns stock field and aggregate cache | Treat stock as a field of the country x market x good record and retain the separate market x good aggregate map. |
 | US-01-UI | Reads maps | Read US-01/US-02 maps directly and remain non-mutating. |
-| US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as fields of the country x market x good record. |
+| US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as one shared country x market record, not as duplicated per-good fields. |
 | US-02-UI | Reads maps | Read the capacity maps directly; do not recalculate a second UI capacity. |
 | US-03 | Inherits US-01 maps | Iterate and mutate stock only through `modeu5_decay_stock`; no separate persistent decay-state map. |
 | US-03-UI | Reads transaction output | Keep operation diagnostics temporary unless a monthly aggregate is explicitly required. |

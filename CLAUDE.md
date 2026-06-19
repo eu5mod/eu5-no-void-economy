@@ -98,6 +98,12 @@ global per-good map keyed by market scope. Generated per-good adapters must
 contain complete literal map identifiers; scripted-effect parameters may select
 an adapter but must never carry a map name.
 
+US-02 storage capacity is the explicit exception to per-good record storage:
+capacity is identical for every good in one country-market relation, so persist
+it once in country-scoped `modeu5_stock_cap_by_market` and related breakdown
+maps keyed by market. Generated per-good adapters read that shared capacity and
+must not recreate `modeu5_<good>_stock_cap_by_market`.
+
 ## Non-negotiable stock rule
 
 No user story may directly mutate stock variables.

@@ -52,7 +52,7 @@ Feeds: corrected country ownership records and US-11 diagnostics
 | Sale, subject-transfer, and subject-seizure coverage | location/country lifecycle | `on_location_changed_owner` observation in controlled tests | CONFIRMED | 098 |
 | Lifecycle coverage and ordering | location/country lifecycle | controlled peace, rebel, subject, release, tag-formation, sale, subject-transfer, and subject-seizure tests | CONFIRMED | 098 |
 | Transferred location capacity contribution | location x good | US-02 per-location capacity contribution helper | CONFIRMED | 033-035, 097 |
-| Loser capacity before transfer | loser x market x good | existing authoritative capacity-map value before ModeU5 recomputation | CONFIRMED | 007, 017, 097 |
+| Loser capacity before transfer | loser x market | existing authoritative shared capacity-map value before ModeU5 recomputation | CONFIRMED | 007, 017, 097 |
 | Loser stock before transfer | loser x market x good | authoritative country stock map | CONFIRMED | 007, 015 |
 | Same-market stock ownership transfer | loser/winner x market x good | `modeu5_transfer_stock` with `target_capacity_policy = allow_over_capacity` | CONFIRMED | 076, 099 |
 | Aggregate rebuild/validation | market x good | CORE-01.5 and CORE-01.6 | CONFIRMED | 019-020 |
@@ -83,7 +83,7 @@ tuple/key:
 
 confirmed physical map family:
   modeu5_<good>_stock_by_market
-  modeu5_<good>_stock_cap_by_market
+  modeu5_stock_cap_by_market
 
 default value: 0
 write owners:
