@@ -47,7 +47,7 @@ physical value type: numeric
 default value: 0
 write owner: modeu5_rebuild_market_stock_from_country_stocks for rebuild correction
 readers: stock operations, US-01/UI, US-10, US-11
-reset/rebuild lifecycle: replace on initialization, exceptional recovery, validation failure, or yearly safety pass
+reset/rebuild lifecycle: replace on initialization, exceptional recovery, validation failure, or four-year safety pass
 ```
 
 The country source maps remain country-scoped `modeu5_<good>_stock_by_market[market]`. Sum, previous aggregate, correction, and anomaly details remain transaction-local except for debug snapshots.

@@ -20,6 +20,11 @@ modeu5_enter_debug_runtime_mode = {
 
 modeu5_enter_audit_runtime_mode = {
 	modeu5_clear_runtime_mode_flags = yes
+	set_global_variable = modeu5_runtime_mode_audit
+}
+
+modeu5_enter_test_audit_runtime_mode = {
+	modeu5_clear_runtime_mode_flags = yes
 	set_global_variable = modeu5_runtime_mode_debug
 	set_global_variable = modeu5_runtime_mode_audit
 }
@@ -38,7 +43,7 @@ modeu5_initialize_configuration_state_effect = {
 
 	if = {
 		limit = { has_game_rule = modeu5_debug_verbose }
-		modeu5_enter_audit_runtime_mode = yes
+		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
 			value = 2
@@ -58,5 +63,10 @@ modeu5_initialize_configuration_state_effect = {
 			name = modeu5_debug_level
 			value = 0
 		}
+	}
+
+	if = {
+		limit = { has_game_rule = modeu5_audit_on }
+		modeu5_enter_audit_runtime_mode = yes
 	}
 }

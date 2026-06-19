@@ -176,6 +176,7 @@ Test US-11 dirty-record reconciliation
 
 ```txt
 PASS - Dirty market-good reconciliation
+PASS - Active market-good reconciliation
 PASS - Empty reconciliation is a no-op
 ```
 
@@ -188,6 +189,34 @@ inconsistencies = 1
 rebuilds = 1
 failures = 0
 market aggregate = 150
+```
+
+## Test F: US-11 cadence gates
+
+1. Close the result event.
+2. Enter again:
+
+```txt
+event modeu5_debug.1
+```
+
+3. Select:
+
+```txt
+Test US-11 reconciliation cadence gates
+```
+
+4. The result event must display:
+
+```txt
+PASS - US-11 reconciliation cadence gates
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
 ```
 
 The second pass runs without another mutation and must report zero for every

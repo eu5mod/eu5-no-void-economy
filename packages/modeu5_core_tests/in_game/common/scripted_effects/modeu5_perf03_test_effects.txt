@@ -1,7 +1,7 @@
 # PERF-03 probes the market -> countries-present work cache.
 
 modeu5_perf03_clear_probe_results = {
-	modeu5_enter_audit_runtime_mode = yes
+	modeu5_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = modeu5_test_perf03_market_country_cache_started
 	remove_global_variable = modeu5_test_perf03_market_country_cache_passed

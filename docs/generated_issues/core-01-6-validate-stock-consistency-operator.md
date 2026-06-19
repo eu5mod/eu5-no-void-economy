@@ -35,7 +35,7 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 | Rebuild effect | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Validation effect | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
 | Numeric comparison and persistence precision | transaction / variable map | exact comparison pending controlled fractional arithmetic and map write/read probe | TO_TEST | 113 |
-| Monthly/yearly orchestration | country | `monthly_country_pulse`, `yearly_country_pulse` owned by US-11/on-actions | CONFIRMED | 011-012 |
+| Monthly/four-year orchestration | country | `monthly_country_pulse`, `four_yearly_country_pulse` owned by US-11/on-actions | CONFIRMED | 011, 131 |
 
 ## Persistent storage / variable-map contract
 

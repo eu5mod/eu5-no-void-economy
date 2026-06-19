@@ -58,18 +58,18 @@ and the current debug/test package conventions.
 - Do not add active-market caches or relationship caches in this PR.
 - Generated adapters must continue to use literal map names only.
 - Writers must remove an old map entry first, then re-add only positive values.
-- Debug/test events must explicitly enter audit mode before relying on debug captures.
-- Automatic startup/yearly reconciliation must use dirty validation unless audit mode is active.
+- Debug/test events that intentionally validate reconciliation may explicitly enter test-audit mode; ordinary debug visibility must not imply audit.
+- Automatic reconciliation is limited to monthly audit mode and the guarded four-year cadence; startup and normal/debug monthly runtime do not auto-reconcile.
 
 ## Acceptance criteria
 
 - Normal runtime sets `modeu5_runtime_mode_normal` when debug is off.
 - Basic debug sets `modeu5_runtime_mode_debug`.
-- Verbose debug/test fixtures can use `modeu5_runtime_mode_audit`.
+- Verbose debug remains a visibility setting only. Deterministic reconciliation fixtures can use test-audit mode.
 - Debug capture effects are no-op in normal runtime.
 - Zero stock/capacity/aggregate values are not persisted to variable maps by generated adapters.
 - Opening-stock initialization avoids country scans for zero-source market x good pairs unless audit mode is active.
-- Full all-market validation is not called by automatic startup/yearly reconciliation outside audit mode.
+- Full all-market validation is not called by startup, normal monthly runtime, verbose debug runtime, or four-year reconciliation.
 - Generated adapters are regenerated and validation passes.
 
 ## Manual test scenario
