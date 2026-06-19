@@ -8,11 +8,23 @@ Labels: performance, core, us-02, storage-capacity
 PERF-08 — Shared storage capacity cache
 ```
 
-As a maintainer, I want US-02 storage capacity to be computed once per country-market instead of once per country-market-good, so that monthly capacity refreshes do not repeat identical work for every good.
+As a maintainer, I want US-02 storage capacity to be computed once per country as a pooled value, then written once per country-market instead of once per country-market-good, so that monthly capacity refreshes do not repeat identical work for every good or scan owned locations once per market.
 
 ## Functional objective
 
 Persist one US-02 capacity record per country-market and have every generated per-good stock adapter read that shared capacity record when enforcing stock admission, transfers, initialization allocation, validation, and debug dumps.
+
+The stored country-market value is the current market's own trade-capacity
+contribution plus the per-market share of one country-level location pool:
+
+```txt
+country_location_pool
+= sum(country owned-location rank/capital contribution)
+
+country_market_capacity
+= target_market_trade_capacity
+  + country_location_pool / count(markets present in country)
+```
 
 ## Required scopes / values / effects
 
@@ -21,7 +33,8 @@ Persist one US-02 capacity record per country-market and have every generated pe
 | Country-scoped capacity maps keyed by market | country x market | `modeu5_stock_cap_by_market` and breakdown maps | CONFIRMED | 007, 017 |
 | Per-good stock adapters read shared capacity | generated adapter | literal shared map names inside generated helpers | CONFIRMED | 104 |
 | Country-market scan | country -> market | `every_market_present_in_country` | CONFIRMED | 117 |
-| Location-rank formula | country -> owned location | US-02 helper | CONFIRMED | 033-035, 115 |
+| Country market count | country -> market | `every_market_present_in_country` counter | CONFIRMED | 117 |
+| Location-rank formula | country -> owned location | US-02 helper scanned once per country pool rebuild | CONFIRMED | 033-035, 115 |
 
 ## Files expected to change
 
@@ -51,15 +64,19 @@ Related issue: #60 performance optimization track
 - Do not recreate `modeu5_<good>_stock_cap_by_market` or other per-good capacity maps.
 - Keep per-good stock and market-stock maps unchanged.
 - Keep generated per-good adapters as the only place that reads/writes persistent map identifiers.
-- Recalculate country-market capacity once through the generated sentinel dispatcher; do not loop all goods for identical capacity.
+- Recalculate country storage capacity once through the generated sentinel dispatcher; do not loop all goods for identical capacity.
+- Build one country-level location/rank capacity pool, then divide it across markets present in the country.
+- Add the target market's own merchant/trade-capacity contribution when writing the country-market capacity key.
+- Do not scan owned locations once per market during the saved country refresh.
 - Keep building-derived storage out of the active formula until a future approved business rule reintroduces it.
-- Do not silently switch to a single country-level capacity pool divided across markets; that is a business-rule change because it lets locations in one market support stock in another.
 
 ## Acceptance criteria
 
 - [ ] Generated helpers read `modeu5_stock_cap_by_market` for every good.
 - [ ] Generated helpers do not contain `modeu5_<good>_stock_cap_by_market`.
 - [ ] The country-level capacity refresh no longer dispatches one recalculation per good.
+- [ ] The country-level capacity refresh scans owned locations once per country pool rebuild, not once per market.
+- [ ] US-02 deterministic test dumps and validates `market_trade_capacity + country_location_pool_total / market_count = tested capacity`.
 - [ ] US-02 deterministic test still proves wheat and iron read the same capacity.
 - [ ] CORE-01 stock tests still enforce capacity through the centralized operators.
 - [ ] CORE-02 initialization still allocates opening stock using shared country-market capacity.
@@ -76,6 +93,7 @@ Expected result:
 
 ```txt
 US-02 proves wheat and iron read the same shared country-market capacity.
+US-02 proves the tested capacity equals target market trade capacity plus the country location pool divided by market count.
 CORE-01 proves add/transfer capacity enforcement still works.
 CORE-02 proves initialization allocation still uses capacity as weight.
 US-00 proves live stock-admission paths can read shared capacity.
@@ -93,31 +111,33 @@ dump lines, and PASS/PENDING/FAIL decision.
 
 ### Location-rank scanning boundary
 
-This PR intentionally keeps the existing location-rank scan:
-
 ```txt
-country -> market -> owned locations in that market
+country -> owned locations
 ```
 
-The optimization removes the redundant good dimension from that scan. It does
-not introduce dirty location-rank counters because those counters would require
-separate lifecycle coverage for rank, ownership, capital, and market changes.
-That is a valid future optimization track, but it is outside this PR.
+The PR removes the old market-filtered location scan from the saved monthly
+country refresh. It still scans owned locations once when rebuilding the country
+pool. Replacing that remaining country-level scan with dirty counters would
+require separate lifecycle coverage for rank, ownership, capital, and market
+changes and remains a future optimization.
 
 Functional consequence:
 
 ```txt
-Capacity remains accurate from the current world state.
-Monthly cost becomes country-market-location, not country-market-good-location.
+Capacity remains accurate from the current world state at country-pool level.
+Monthly cost becomes country-location plus country-market writeback, not
+country-market-good-location and not country-market-location.
 ```
 
 ### Country-level pooled capacity boundary
 
-The rejected country-level pooled-capacity alternative remains deferred. It is
-not a mechanical optimization, because it would allow capacity contributed by
-one market to support stock in another market. That changes the economic
-semantics of local market storage and must be handled as a separate gameplay
-design PR if selected later.
+This PR implements the country-level pooled-location-capacity business rule.
+Capacity still persists as a `country x market` record for stock operations, but
+the record value combines target market trade capacity with a share of the
+country location pool. This means settlement rank in one market can increase the
+country's per-market storage share across all markets, while merchant/trade
+capacity remains market-specific. That semantic change is intentional for this
+PR.
 
 ### Zero building-capacity boundary
 

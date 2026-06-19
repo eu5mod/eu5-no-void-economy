@@ -10,13 +10,15 @@ modeu5_debug_write_us02_capacity_dump_variables = {
 		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_trade_capacity value = scope:modeu5_capacity_test_wheat_trade }
 		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_location_rank_capacity value = scope:modeu5_capacity_test_wheat_location_rank }
 		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_location_count value = scope:modeu5_capacity_test_wheat_location_count }
+		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_market_count value = scope:modeu5_capacity_test_wheat_market_count }
+		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_country_pool_total value = scope:modeu5_capacity_test_wheat_country_pool_total }
 		set_variable = { name = modeu5_debug_us02_ui_fra_iron_capacity value = scope:modeu5_capacity_test_wrapped_iron_total }
 	}
 }
 
 modeu5_debug_log_us02_capacity_dump = {
 	scope:modeu5_capacity_test_controller = {
-		debug_log = "ModeU5 US-02 DUMP capacity country=FRA good=wheat stock=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_stock').GetValue|2] capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_capacity').GetValue|2] available=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_available').GetValue|2] over_cap=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_over_cap').GetValue|2] trade_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_trade_capacity').GetValue|2] location_rank_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_rank_capacity').GetValue|2] location_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_count').GetValue|0] iron_wrapper_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_iron_capacity').GetValue|2]"
+		debug_log = "ModeU5 US-02 DUMP capacity country=FRA good=wheat stock=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_stock').GetValue|2] capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_capacity').GetValue|2] available=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_available').GetValue|2] over_cap=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_over_cap').GetValue|2] market_trade_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_trade_capacity').GetValue|2] location_pool_share=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_rank_capacity').GetValue|2] country_location_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_count').GetValue|0] market_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_market_count').GetValue|0] country_location_pool_total=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_country_pool_total').GetValue|2] iron_wrapper_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_iron_capacity').GetValue|2]"
 	}
 }
 
@@ -108,6 +110,14 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:modeu5_capacity_location_count
 		}
 		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_market_count
+			value = scope:modeu5_capacity_market_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_test_wheat_country_pool_total
+			value = scope:modeu5_capacity_country_pool_total
+		}
+		save_temporary_scope_value_as = {
 			name = modeu5_capacity_test_wheat_building
 			value = scope:modeu5_capacity_building
 		}
@@ -181,6 +191,18 @@ modeu5_debug_run_storage_capacity_test = {
 				add = scope:modeu5_capacity_test_wheat_location_rank
 			}
 		}
+		save_temporary_scope_value_as = { name = modeu5_capacity_test_expected_pooled_market_total value = 0 }
+		if = {
+			limit = { scope:modeu5_capacity_test_wheat_market_count > 0 }
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_test_expected_pooled_market_total
+				value = {
+					value = scope:modeu5_capacity_test_wheat_country_pool_total
+					divide = scope:modeu5_capacity_test_wheat_market_count
+					add = scope:modeu5_capacity_test_wheat_trade
+				}
+			}
+		}
 		set_global_variable = {
 			name = modeu5_debug_us02_dump_fra_wheat_stock
 			value = scope:modeu5_capacity_test_wheat_stock_after
@@ -210,6 +232,14 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:modeu5_capacity_test_wheat_location_count
 		}
 		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_market_count
+			value = scope:modeu5_capacity_test_wheat_market_count
+		}
+		set_global_variable = {
+			name = modeu5_debug_us02_dump_fra_wheat_country_pool_total
+			value = scope:modeu5_capacity_test_wheat_country_pool_total
+		}
+		set_global_variable = {
 			name = modeu5_debug_us02_dump_fra_iron_capacity
 			value = scope:modeu5_capacity_test_wrapped_iron_total
 		}
@@ -221,6 +251,9 @@ modeu5_debug_run_storage_capacity_test = {
 				scope:modeu5_capacity_test_wheat_total > 0
 				scope:modeu5_capacity_test_wheat_location_rank > 0
 				scope:modeu5_capacity_test_wheat_location_count > 0
+				scope:modeu5_capacity_test_wheat_market_count > 0
+				scope:modeu5_capacity_test_wheat_country_pool_total > 0
+				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_expected_pooled_market_total
 				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
 				scope:modeu5_capacity_test_wheat_base = scope:modeu5_capacity_test_reconciled_base
 				scope:modeu5_capacity_test_wrapped_wheat_total = scope:modeu5_capacity_test_wheat_total
@@ -421,7 +454,6 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		if = {
 			limit = {
 				scope:modeu5_capacity_probe_delta_month_capacity > 0
-				scope:modeu5_capacity_probe_delta_month_trade > 0
 			}
 			remove_global_variable = modeu5_test_storage_capacity_timing_pending
 			set_global_variable = modeu5_test_storage_capacity_timing_monthly_passed

@@ -5,7 +5,8 @@
 Validate the shared US-02 storage-capacity model end to end:
 
 ```txt
-US-02 creates one country-market capacity record
+US-02 creates one country-level location/rank capacity pool
+-> US-02 writes market trade capacity plus the per-market location share to each country-market capacity record
 -> generated per-good adapters read that shared capacity
 -> CORE-01 stock operators enforce it
 -> CORE-02 initialization uses it as the allocation weight
@@ -24,25 +25,26 @@ commit-specific validation comment with dump lines from logs.
 
 ### Location-Rank Scan
 
-The current location-rank scan remains intentionally active:
+The remaining location-rank scan is country-level only:
 
 ```txt
-current country -> every_market_present_in_country -> every_owned_location in that market
+current country -> every_owned_location
 ```
 
-The optimization removes the redundant good dimension. It does not replace the
-location scan with dirty counters in this PR.
+The old saved refresh path must not scan owned locations once per market and
+must not scan them once per good. Dirty location-rank counters remain a future
+optimization.
 
 ### Country-Level Pooling
 
-Do not validate this PR as if it pooled capacity at country level. The accepted
-business rule remains:
+Validate this PR as a pooled-capacity business-rule change:
 
 ```txt
-capacity belongs to country x market
-all goods in that country-market share it
-capacity from one market does not support stock in another market
+market_trade_capacity + country_location_pool / count(markets present in country) = country_market_capacity
 ```
+
+The stock-facing record still belongs to `country x market`, but the non-trade
+portion is a location-pool share.
 
 ## Build And Install
 
@@ -121,14 +123,16 @@ Review the dump and confirm:
 
 ```txt
 capacity > 0
-location_count > 0
+country_location_count > 0
+market_count > 0
+market_trade_capacity + country_location_pool_total / market_count == capacity
 wheat capacity == iron_wrapper_capacity
 available = max(0, capacity - wheat stock)
 over_cap = max(0, wheat stock - capacity)
 ```
 
 This proves every generated good can read the same shared country-market
-capacity record.
+capacity record and that the record was produced from the country-level pool.
 
 ## Scenario B - CORE-01 Capacity Enforcement
 

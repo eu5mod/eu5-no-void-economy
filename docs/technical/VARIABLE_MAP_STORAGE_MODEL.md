@@ -196,6 +196,23 @@ dispatcher recalculates capacity once through the sentinel `wheat` adapter, not
 once per good. Compatibility wrappers for other goods remain callable, but they
 write the same shared maps and must not recreate per-good capacity maps.
 
+The value stored in each country-market capacity record combines the current
+market's own trade-capacity contribution with the per-market share of one
+country-level location pool:
+
+```txt
+country_location_pool
+= sum(country owned-location rank/capital capacity)
+
+country_market_capacity
+= target_market_trade_capacity
+  + country_location_pool / count(markets present in country)
+```
+
+This keeps the stock-facing data shape as `country x market`, while avoiding
+the old monthly hot path that scanned owned locations once per market and once
+per good. Location-rank scanning still exists once per country pool rebuild.
+
 ### Market x good aggregate
 
 Logical model:

@@ -220,7 +220,8 @@ Expected:
 
 ```txt
 Total capacity equals base + domestic building + foreign building capacity
-Base capacity equals market merchant capacity + owned-location rank/capital contribution
+Base capacity equals target market trade-capacity contribution + per-market owned-location rank/capital share
+Country location pool divided by market count plus target market trade capacity equals the tested market capacity
 Country-level wrapper output matches direct wheat recalculation
 The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market

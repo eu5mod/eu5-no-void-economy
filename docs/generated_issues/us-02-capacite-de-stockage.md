@@ -59,8 +59,8 @@ physical breakdown fields:
 
 The total field is authoritative for stock operations. Breakdown fields are
 diagnostic inputs that must sum to the total; they are not alternate capacity
-sources. `modeu5_recalculate_country_market_capacity` is the only writer of
-this logical capacity record.
+sources. The persisted country-market record combines the target market's trade
+capacity with the per-market share of the country-level location pool.
 
 ## Initial contribution configuration
 
@@ -79,11 +79,22 @@ persisted for compatibility and diagnostics, but active building-derived storage
 is removed from the formula until a later approved business rule re-enables it.
 They therefore remain zero-valued compatibility fields.
 
-The rejected alternative is a single country-level capacity pool divided across
-all markets. That could reduce recomputation further, but it changes the
-business rule by allowing settlement rank in one market to support stock in
-another market. Keep it as a separate design decision, not a silent
-optimization.
+Implemented pooling rule:
+
+```txt
+country_location_pool
+= sum(owned-location rank/capital contribution across the country)
+
+country_market_capacity
+= target_market_trade_capacity
+  + country_location_pool / count(markets present in country)
+```
+
+The stock-facing capacity record remains `country x market`, but its value is a
+market-specific trade contribution plus a pooled country location share. This
+deliberately removes the old monthly hot path that scanned owned locations once
+per market. The CORE-03 single-location helper still exists for transfer
+numerators.
 
 ## Files expected to change
 
@@ -117,7 +128,9 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Recalculate at the beginning of the shared monthly cycle before any stock admission, demand resolution, transfer, decay, or void-economy calculation.
 - Recalculate predictably after location ownership, location rank, capital, or merchant-capacity changes.
 - Use `modeu5_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
-- Add market merchant capacity once at the country-market level, not once per location.
+- Compute owned-location rank/capital contribution once in the country pool without a per-market location scan.
+- Divide the location pool by the count of markets present in the country.
+- Add the target market's own merchant-capacity contribution when writing each country-market capacity key.
 - Apply the location contribution in this priority order: capital, megalopolis, city, town, rural settlement.
 - Provide a country-level recalculation wrapper that writes one shared capacity map family for every market present in that country.
 - Run the country-level wrapper for every country before CORE-02 reads capacity maps for opening stock allocation.
@@ -134,8 +147,9 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 
 ## Acceptance criteria
 
-- [ ] Base capacity equals market merchant-capacity contribution plus owned-location rank/capital contributions.
+- [ ] Base capacity equals target market merchant capacity plus the per-market share of pooled owned-location rank/capital contributions.
 - [ ] Country-level recalculation writes one shared capacity record for every market present in the country.
+- [ ] Country-level recalculation scans owned locations once per country pool rebuild, not once per market and not once per good.
 - [ ] The monthly stock cycle recalculates country storage capacities before stock reconciliation or any stock-dependent monthly logic.
 - [ ] Breakdown maps, when enabled, reconcile exactly with the authoritative total map.
 - [ ] Losing a location reduces the rank/capital contribution.
@@ -166,12 +180,13 @@ Recalculate wheat directly for formula diagnostics
 
 ```txt
 Total capacity equals base + building + foreign compatibility fields
-Base capacity equals trade-capacity contribution + location rank/capital contribution
+Base capacity equals target market trade-capacity contribution + per-market location rank/capital share
+Country location pool divided by market count plus target market trade capacity equals the tested country-market capacity
 Wheat and iron receive the same capacity from the same world state
 Country-level wrapper output matches direct wheat recalculation, and iron reads the same shared capacity without recomputing a second per-good record
 The existing wheat stock is unchanged
 Available capacity and over-cap are bounded at zero and reconcile with stock
-The result event displays the tested stock, capacity, trade contribution, location contribution, location count, available capacity, and over-cap values
+The result event displays the tested stock, capacity, target market trade contribution, per-market location share, country location count, market count, country location pool total, available capacity, and over-cap values
 ```
 
 ### Marketplace timing probe
@@ -192,11 +207,13 @@ Confirm whether persisted storage capacity was refreshed by the monthly tick or 
 Owned-location, market, location-rank, capital, and merchant-capacity exposure
 are documented and reviewed against local vanilla files. Fresh CORE-02
 initialization runs the country-level capacity wrapper before stock allocation.
-Automatic dirty-key scheduling after every possible vanilla ownership/rank/trade-
-capacity change is not part of this PR: lifecycle callers such as CORE-03 invoke
-recalculation directly, and the monthly stock cycle refreshes full country
-capacity before stock reconciliation. Targeted dirty-key scheduling and yearly
-capacity orchestration remain follow-ups.
+The current implementation still scans owned locations during a country-pool
+rebuild, but only once per country refresh. Automatic dirty-key scheduling after
+every possible vanilla ownership/rank/trade-capacity change is not part of this
+PR: lifecycle callers such as CORE-03 invoke recalculation directly, and the
+monthly stock cycle refreshes full country capacity before stock reconciliation.
+Targeted dirty-key scheduling and yearly capacity orchestration remain
+follow-ups.
 Building and foreign-building capacity fields are retained as zero-valued
 diagnostic fields until a separate business rule approves building-derived
 storage. The marketplace timing probe is test-only and intentionally mutates a

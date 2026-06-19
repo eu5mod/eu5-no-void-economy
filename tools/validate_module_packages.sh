@@ -265,6 +265,7 @@ fi
 for required_effect in \
 	modeu5_read_country_stock_record_good_wheat \
 	modeu5_recalculate_country_market_capacity_good_wheat \
+	modeu5_recalculate_country_market_capacity_from_prepared_pool_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do

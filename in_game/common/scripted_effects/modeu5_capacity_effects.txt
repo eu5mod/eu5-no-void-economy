@@ -1,8 +1,11 @@
 # US-02 storage-capacity calculation.
 #
 # Capacity is rebuilt from current world state and persisted once per
-# country-market. Generated per-good stock adapters read the shared capacity
-# maps. These effects never mutate stock.
+# country-market. The expensive country-owned location scan is performed once
+# per country as a pooled location/rank capacity calculation, then divided
+# across markets present in that country. Each market keeps its own
+# merchant/trade-capacity contribution. Generated per-good stock adapters read
+# the shared capacity maps. These effects never mutate stock.
 
 modeu5_recalculate_country_market_capacity = {
 	$country$ = { save_temporary_scope_as = modeu5_country }
@@ -108,85 +111,126 @@ modeu5_calculate_location_storage_capacity = {
 	}
 }
 
-modeu5_calculate_country_market_capacity = {
+modeu5_calculate_country_storage_capacity_pool = {
 	scope:modeu5_country = {
-		set_local_variable = { name = modeu5_capacity_base_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_building_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_foreign_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_trade_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_location_rank_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_owned_location_count value = 0 }
+		set_local_variable = { name = modeu5_capacity_pool_location_rank_accumulator value = 0 }
+		set_local_variable = { name = modeu5_capacity_pool_market_count value = 0 }
+		set_local_variable = { name = modeu5_capacity_pool_owned_location_count value = 0 }
 
-		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_trade_contribution
-			value = {
-				value = "scope:modeu5_market.merchant_capacity(scope:modeu5_country)"
-				multiply = modeu5_storage_capacity_per_trade_capacity
-				min = 0
+		every_market_present_in_country = {
+			scope:modeu5_country = {
+				change_local_variable = { name = modeu5_capacity_pool_market_count add = 1 }
 			}
-		}
-		change_local_variable = {
-			name = modeu5_capacity_base_accumulator
-			add = scope:modeu5_capacity_current_trade_contribution
-		}
-		change_local_variable = {
-			name = modeu5_capacity_trade_accumulator
-			add = scope:modeu5_capacity_current_trade_contribution
 		}
 
 		every_owned_location = {
-			limit = { market = scope:modeu5_market }
-
 			modeu5_calculate_location_rank_storage_capacity = yes
 			scope:modeu5_country = {
 				change_local_variable = {
-					name = modeu5_capacity_base_accumulator
+					name = modeu5_capacity_pool_location_rank_accumulator
 					add = scope:modeu5_capacity_current_location_rank_contribution
 				}
 				change_local_variable = {
-					name = modeu5_capacity_location_rank_accumulator
-					add = scope:modeu5_capacity_current_location_rank_contribution
-				}
-				change_local_variable = {
-					name = modeu5_capacity_owned_location_count
+					name = modeu5_capacity_pool_owned_location_count
 					add = 1
 				}
 			}
 		}
 
 		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_location_rank_capacity
+			value = local_var:modeu5_capacity_pool_location_rank_accumulator
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_market_count
+			value = local_var:modeu5_capacity_pool_market_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_location_count
+			value = local_var:modeu5_capacity_pool_owned_location_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_base
+			value = local_var:modeu5_capacity_pool_location_rank_accumulator
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_total
+			value = local_var:modeu5_capacity_pool_location_rank_accumulator
+		}
+
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_per_market value = 0 }
+
+		if = {
+			limit = { scope:modeu5_capacity_pool_market_count > 0 }
+			save_temporary_scope_value_as = {
+				name = modeu5_capacity_pool_location_rank_per_market
+				value = {
+					value = scope:modeu5_capacity_pool_location_rank_capacity
+					divide = scope:modeu5_capacity_pool_market_count
+				}
+			}
+		}
+	}
+}
+
+modeu5_apply_country_storage_capacity_pool_to_current_market = {
+	scope:modeu5_country = {
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_current_market_trade_contribution
+			value = {
+				value = "scope:modeu5_market.merchant_capacity(scope:modeu5_country)"
+				multiply = modeu5_storage_capacity_per_trade_capacity
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
 			name = modeu5_capacity_base
-			value = local_var:modeu5_capacity_base_accumulator
+			value = {
+				value = scope:modeu5_capacity_current_market_trade_contribution
+				add = scope:modeu5_capacity_pool_location_rank_per_market
+			}
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_building
-			value = local_var:modeu5_capacity_building_accumulator
+			value = 0
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_foreign
-			value = local_var:modeu5_capacity_foreign_accumulator
+			value = 0
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_trade_capacity
-			value = local_var:modeu5_capacity_trade_accumulator
+			value = scope:modeu5_capacity_current_market_trade_contribution
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_location_rank_capacity
-			value = local_var:modeu5_capacity_location_rank_accumulator
+			value = scope:modeu5_capacity_pool_location_rank_per_market
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_total
 			value = {
-				value = local_var:modeu5_capacity_base_accumulator
-				add = local_var:modeu5_capacity_building_accumulator
-				add = local_var:modeu5_capacity_foreign_accumulator
+				value = scope:modeu5_capacity_current_market_trade_contribution
+				add = scope:modeu5_capacity_pool_location_rank_per_market
 			}
 		}
 		save_temporary_scope_value_as = {
 			name = modeu5_capacity_location_count
-			value = local_var:modeu5_capacity_owned_location_count
+			value = scope:modeu5_capacity_pool_location_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_market_count
+			value = scope:modeu5_capacity_pool_market_count
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_country_pool_total
+			value = scope:modeu5_capacity_pool_total
 		}
 	}
+}
+
+modeu5_calculate_country_market_capacity = {
+	modeu5_calculate_country_storage_capacity_pool = yes
+	modeu5_apply_country_storage_capacity_pool_to_current_market = yes
 }
 
 modeu5_finalize_country_market_capacity = {

@@ -104,6 +104,21 @@ it once in country-scoped `modeu5_stock_cap_by_market` and related breakdown
 maps keyed by market. Generated per-good adapters read that shared capacity and
 must not recreate `modeu5_<good>_stock_cap_by_market`.
 
+US-02 capacity is derived from one country-level location pool plus the current
+market's own trade capacity. Sum the country's owned-location rank contribution
+once, divide that location pool by the number of markets where the country is
+present, then add the target market's merchant-capacity contribution. The
+persisted country-market capacity record is:
+
+```txt
+country_market_capacity
+= target_market_trade_capacity
+  + country_location_pool / count(markets present in country)
+```
+
+The monthly capacity refresh must not scan owned locations once per market or
+once per good.
+
 ## Non-negotiable stock rule
 
 No user story may directly mutate stock variables.

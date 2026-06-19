@@ -836,6 +836,14 @@ modeu5_recalculate_country_market_capacity_good___GOOD__ = {
 	modeu5_debug_capture_country_market_capacity = yes
 }
 
+modeu5_recalculate_country_market_capacity_from_prepared_pool_good___GOOD__ = {
+	modeu5_load_stock_record_good___GOOD__ = yes
+	modeu5_apply_country_storage_capacity_pool_to_current_market = yes
+	modeu5_store_capacity_record_good___GOOD__ = yes
+	modeu5_finalize_country_market_capacity = yes
+	modeu5_debug_capture_country_market_capacity = yes
+}
+
 modeu5_recalculate_saved_country_market_storage_capacities_good___GOOD__ = {
 	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
 	modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
@@ -844,9 +852,10 @@ modeu5_recalculate_saved_country_market_storage_capacities_good___GOOD__ = {
 modeu5_recalculate_saved_country_storage_capacities_good___GOOD__ = {
 	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
 	scope:modeu5_country = {
+		modeu5_calculate_country_storage_capacity_pool = yes
 		every_market_present_in_country = {
 			save_temporary_scope_as = modeu5_market
-			modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+			modeu5_recalculate_country_market_capacity_from_prepared_pool_good___GOOD__ = yes
 		}
 	}
 }
@@ -1655,13 +1664,11 @@ modeu5_core03_transfer_location_good___GOOD__ = {
 	}
 	scope:modeu5_core03_loser = {
 		save_temporary_scope_as = modeu5_country
-		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
-		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+		modeu5_recalculate_saved_country_storage_capacities = yes
 	}
 	scope:modeu5_core03_winner = {
 		save_temporary_scope_as = modeu5_country
-		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
-		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+		modeu5_recalculate_saved_country_storage_capacities = yes
 	}
 }
 
@@ -1695,8 +1702,7 @@ modeu5_core03_transfer_residual_good___GOOD__ = {
 	}
 	scope:modeu5_core03_annex_successor = {
 		save_temporary_scope_as = modeu5_country
-		scope:modeu5_core03_market = { save_temporary_scope_as = modeu5_market }
-		modeu5_recalculate_country_market_capacity_good___GOOD__ = yes
+		modeu5_recalculate_saved_country_storage_capacities = yes
 	}
 }
 

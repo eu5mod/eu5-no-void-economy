@@ -151,7 +151,7 @@ failure by itself.
 | Using seen-market lists to skip country-owned work | Invalid anti-pattern. | Countries sharing one market still own distinct stock, capacity, and ledger records. Seen-market lists are scheduling/diagnostic indexes only. |
 | PR #71 / non-territorial market presence as an MVP blocker | Not relevant for current MVP performance work. | Non-owned/non-territorial market presence is accepted as negligible economic weight unless future dumps show meaningful stock/capacity there. |
 | Dynamic variable-list names or Market-owned variable records | Not confirmed. | Market scope variable storage and runtime list-name construction are not confirmed; use generated static names or rebuilt global work lists only. |
-| Single country-level capacity pool divided across markets | Deferred design change. | It may reduce recomputation, but it changes gameplay by letting capacity from one market support another market. Keep current country-market formula unless a separate design PR approves the rule. |
+| Single country-level location pool divided across markets | Implemented by PERF-08. | The gameplay design was accepted for the storage-capacity performance PR: capacity still persists as country x market, but each record is the current market trade-capacity contribution plus the country location-pool share. |
 
 ## Review Label Policy For This Track
 
