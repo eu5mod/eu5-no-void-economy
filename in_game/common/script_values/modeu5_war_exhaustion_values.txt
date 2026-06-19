@@ -1,0 +1,26 @@
+# War Exhaustion redesign tooltip values
+# These display the current scaled penalties in the custom top-bar tooltip.
+#
+# The define names below intentionally use the spelling provided by the mod:
+#   WAR_EXHAUTION_STABILITY_MODIFIER
+#   WAR_EXHAUTION_LEGITIMACY_MODIFIER
+#   WAR_EXHAUTION_REBEL_THRESHOLD_MODIFIER
+#
+# If your actual defines are spelled WAR_EXHAUSTION_* instead, rename them here too.
+# If your defines are not under NCountry, replace NCountry with your define category.
+
+mymod_war_exhaustion_stability_penalty = {
+	value = war_exhaustion
+	multiply = define:NCountry|WAR_EXHAUTION_STABILITY_MODIFIER
+}
+
+mymod_war_exhaustion_legitimacy_penalty = {
+	value = war_exhaustion
+	multiply = define:NCountry|WAR_EXHAUTION_LEGITIMACY_MODIFIER
+}
+
+mymod_war_exhaustion_rebel_threshold_penalty = {
+	value = war_exhaustion
+	multiply = define:NCountry|WAR_EXHAUTION_REBEL_THRESHOLD_MODIFIER
+}
+

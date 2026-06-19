@@ -1,0 +1,10 @@
+﻿l_english:
+ MYMOD_WAR_EXHAUSTION_TOOLTIP_TITLE: "War Exhaustion"
+ MYMOD_WAR_EXHAUSTION_TOOLTIP_DESC: "War Exhaustion now directly affects the internal stability of the country. The penalties below are calculated from current War Exhaustion."
+ MYMOD_WAR_EXHAUSTION_CURRENT: "Current War Exhaustion:"
+ MYMOD_WAR_EXHAUSTION_MONTHLY_CHANGE: "Monthly Change:"
+ MYMOD_WAR_EXHAUSTION_PENALTIES_HEADER: "#bold Current Penalties#!"
+ MYMOD_WAR_EXHAUSTION_STABILITY: "Stability:"
+ MYMOD_WAR_EXHAUSTION_LEGITIMACY: "Legitimacy:"
+ MYMOD_WAR_EXHAUSTION_REBEL_THRESHOLD: "Rebel Threshold:"
+ MYMOD_WAR_EXHAUSTION_TOOLTIP_FOOTER: "#color_gray These penalties are part of the War Exhaustion redesign and scale with current War Exhaustion.#!"
