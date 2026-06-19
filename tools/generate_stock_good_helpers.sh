@@ -110,10 +110,19 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")"
 	done
 	printf '%s\n' '}'
 
-	printf '%s\n\n' 'modeu5_run_us00_monthly_pipeline_all_goods = {'
+	printf '%s\n\n' 'modeu5_process_us00_monthly_market_all_goods = {'
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_run_us00_monthly_pipeline_good_%s = yes\n' "$good"
+		printf '\tmodeu5_process_us00_monthly_market_good_%s = yes\n' "$good"
 	done
+	printf '%s\n' '}'
+
+	printf '%s\n\n' 'modeu5_run_us00_monthly_pipeline_all_goods = {'
+	printf '%s\n' '	scope:modeu5_country = {'
+	printf '%s\n' '		every_market_present_in_country = {'
+	printf '%s\n' '			save_temporary_scope_as = modeu5_market'
+	printf '%s\n' '			modeu5_process_us00_monthly_market_all_goods = yes'
+	printf '%s\n' '		}'
+	printf '%s\n' '	}'
 	printf '%s\n' '}'
 
 	first=1
