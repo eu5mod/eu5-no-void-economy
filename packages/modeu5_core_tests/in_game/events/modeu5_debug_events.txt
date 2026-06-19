@@ -44,6 +44,12 @@ modeu5_debug.1 = {
 	option = {
 		name = modeu5_debug.1.f
 		modeu5_debug_clear_stock_test_results = yes
+		modeu5_debug_run_reconciliation_cadence_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
+		name = modeu5_debug.1.g
+		modeu5_debug_clear_stock_test_results = yes
 		set_global_variable = modeu5_test_core02_initialization_started
 		modeu5_debug_run_core02_initialization_tests = yes
 		set_global_variable = modeu5_test_core02_initialization_finished
@@ -167,6 +173,18 @@ modeu5_debug.2 = {
 	option = {
 		name = modeu5_debug.test.reconciliation_empty.fail
 		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_empty_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_cadence_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.fail
+		trigger = { has_global_variable = modeu5_test_reconciliation_cadence_failed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.blocked
+		trigger = { has_global_variable = modeu5_test_reconciliation_cadence_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.core02_proportional.pass

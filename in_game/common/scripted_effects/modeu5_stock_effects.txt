@@ -1403,7 +1403,6 @@ modeu5_start_game_stock_initialization_dispatcher = {
 			name = modeu5_initialization_last_mode
 			value = 2
 		}
-		modeu5_run_allowed_stock_consistency_validation = yes
 	}
 	else_if = {
 		limit = { modeu5_initialization_not_started_trigger = yes }
@@ -1418,7 +1417,6 @@ modeu5_start_game_stock_initialization_dispatcher = {
 		}
 		else = {
 			modeu5_commit_successful_initialization = yes
-			modeu5_run_allowed_stock_consistency_validation = yes
 		}
 	}
 	else_if = {
@@ -1571,7 +1569,10 @@ modeu5_run_monthly_stock_cycle = {
 		modeu5_prepare_monthly_market_seen_registry = yes
 		save_temporary_scope_as = modeu5_country
 		modeu5_run_us00_monthly_pipeline_all_goods = yes
-		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { modeu5_audit_enabled_trigger = yes }
+			modeu5_run_monthly_stock_reconciliation_once = yes
+		}
 	}
 	else = {
 		if = {
@@ -1586,7 +1587,10 @@ modeu5_run_monthly_stock_cycle = {
 
 modeu5_run_monthly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			modeu5_audit_enabled_trigger = yes
+		}
 		save_temporary_scope_as = modeu5_reconciliation_controller
 		save_temporary_scope_value_as = {
 			name = modeu5_reconciliation_month_stamp
@@ -1604,7 +1608,7 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				name = modeu5_last_monthly_reconciliation_stamp
 				value = scope:modeu5_reconciliation_month_stamp
 			}
-			modeu5_validate_dirty_stock_consistency = yes
+			modeu5_run_allowed_stock_consistency_validation = yes
 			if = {
 				limit = { modeu5_debug_capture_enabled_trigger = yes }
 				set_variable = {
@@ -1625,7 +1629,7 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				name = modeu5_last_monthly_reconciliation_stamp
 				value = scope:modeu5_reconciliation_month_stamp
 			}
-			modeu5_validate_dirty_stock_consistency = yes
+			modeu5_run_allowed_stock_consistency_validation = yes
 			if = {
 				limit = { modeu5_debug_capture_enabled_trigger = yes }
 				set_variable = {
@@ -1641,27 +1645,28 @@ modeu5_run_monthly_stock_reconciliation_once = {
 	}
 }
 
-modeu5_run_yearly_stock_reconciliation_once = {
+modeu5_run_four_yearly_stock_reconciliation_once = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = modeu5_reconciliation_controller
 		save_temporary_scope_value_as = {
-			name = modeu5_reconciliation_year_stamp
+			name = modeu5_reconciliation_four_year_stamp
 			value = current_year
 		}
 		if = {
 			limit = {
-				NOT = { has_global_variable = modeu5_last_yearly_reconciliation_stamp }
+				NOT = { has_global_variable = modeu5_last_four_yearly_reconciliation_stamp }
 			}
 			set_global_variable = {
-				name = modeu5_last_yearly_reconciliation_stamp
-				value = scope:modeu5_reconciliation_year_stamp
+				name = modeu5_last_four_yearly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_four_year_stamp
 			}
-			modeu5_run_allowed_stock_consistency_validation = yes
+			modeu5_validate_active_stock_consistency = yes
 			if = {
 				limit = { modeu5_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = modeu5_debug_last_reconciliation_cycle_stamp
-					value = scope:modeu5_reconciliation_year_stamp
+					value = scope:modeu5_reconciliation_four_year_stamp
 				}
 				set_variable = {
 					name = modeu5_debug_last_reconciliation_initialization_gate_passed
@@ -1671,18 +1676,18 @@ modeu5_run_yearly_stock_reconciliation_once = {
 		}
 		else_if = {
 			limit = {
-				global_var:modeu5_last_yearly_reconciliation_stamp != scope:modeu5_reconciliation_year_stamp
+				global_var:modeu5_last_four_yearly_reconciliation_stamp != scope:modeu5_reconciliation_four_year_stamp
 			}
 			set_global_variable = {
-				name = modeu5_last_yearly_reconciliation_stamp
-				value = scope:modeu5_reconciliation_year_stamp
+				name = modeu5_last_four_yearly_reconciliation_stamp
+				value = scope:modeu5_reconciliation_four_year_stamp
 			}
-			modeu5_run_allowed_stock_consistency_validation = yes
+			modeu5_validate_active_stock_consistency = yes
 			if = {
 				limit = { modeu5_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = modeu5_debug_last_reconciliation_cycle_stamp
-					value = scope:modeu5_reconciliation_year_stamp
+					value = scope:modeu5_reconciliation_four_year_stamp
 				}
 				set_variable = {
 					name = modeu5_debug_last_reconciliation_initialization_gate_passed

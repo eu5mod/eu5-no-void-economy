@@ -2,7 +2,7 @@
 # Capacity is test setup data; stock setup and cleanup always use CORE operators.
 
 modeu5_debug_clear_stock_test_results = {
-	modeu5_enter_audit_runtime_mode = yes
+	modeu5_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = modeu5_test_add_allow_over_capacity_passed
 	remove_global_variable = modeu5_test_add_enforce_passed
@@ -23,6 +23,9 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_reconciliation_dirty_passed
 	remove_global_variable = modeu5_test_reconciliation_active_passed
 	remove_global_variable = modeu5_test_reconciliation_empty_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_failed
+	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
 	remove_global_variable = modeu5_test_core02_proportional_passed
 	remove_global_variable = modeu5_test_core02_over_capacity_passed
 	remove_global_variable = modeu5_test_core02_initialization_started
@@ -1279,6 +1282,96 @@ modeu5_debug_run_reconciliation_tests = {
 		remove_global_variable = modeu5_test_reconciliation_active_passed
 		remove_global_variable = modeu5_test_reconciliation_empty_passed
 		error_log = "ModeU5 deterministic US-11 tests require FRA and ENG."
+	}
+}
+
+modeu5_debug_run_reconciliation_cadence_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_reconciliation_cadence_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_failed
+	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
+
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 0 }
+
+		modeu5_enter_normal_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		modeu5_enter_debug_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		modeu5_enter_audit_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+		modeu5_enter_normal_runtime_mode = yes
+		modeu5_run_four_yearly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_four_yearly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 1 }
+		}
+
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_normal_monthly_stamp
+			value = scope:modeu5_test_cadence_normal_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_debug_monthly_stamp
+			value = scope:modeu5_test_cadence_debug_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_audit_monthly_stamp
+			value = scope:modeu5_test_cadence_audit_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_four_yearly_stamp
+			value = scope:modeu5_test_cadence_four_yearly_stamp
+		}
+		debug_log = "ModeU5 US-11 DUMP cadence normal_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_normal_monthly_stamp').GetValue|0] debug_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_debug_monthly_stamp').GetValue|0] audit_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_audit_monthly_stamp').GetValue|0] four_yearly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_four_yearly_stamp').GetValue|0]"
+
+		if = {
+			limit = {
+				scope:modeu5_test_cadence_normal_monthly_stamp = 0
+				scope:modeu5_test_cadence_debug_monthly_stamp = 0
+				scope:modeu5_test_cadence_audit_monthly_stamp = 1
+				scope:modeu5_test_cadence_four_yearly_stamp = 1
+			}
+			set_global_variable = modeu5_test_reconciliation_cadence_passed
+			debug_log = "ModeU5 US-11 RESULT cadence PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_reconciliation_cadence_failed
+			error_log = "ModeU5 deterministic US-11 cadence test failed."
+			debug_log = "ModeU5 US-11 RESULT cadence FAIL"
+		}
+
+		modeu5_enter_test_audit_runtime_mode = yes
+	}
+	else = {
+		set_global_variable = modeu5_test_reconciliation_cadence_blocked
+		error_log = "ModeU5 deterministic US-11 cadence test requires completed CORE-02 initialization."
+		debug_log = "ModeU5 US-11 RESULT cadence BLOCKED runtime_not_ready"
 	}
 }
 

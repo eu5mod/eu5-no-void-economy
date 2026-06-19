@@ -1211,11 +1211,11 @@ modeu5_initialize_opening_stocks_good___GOOD__ = {
 		}
 		if = {
 			limit = {
-				OR = {
-					scope:modeu5_opening_source_quantity > 0
-					modeu5_audit_runtime_mode_trigger = yes
+					OR = {
+						scope:modeu5_opening_source_quantity > 0
+						modeu5_audit_enabled_trigger = yes
+					}
 				}
-			}
 			modeu5_seed_opening_market_good___GOOD__ = yes
 		}
 		else = {

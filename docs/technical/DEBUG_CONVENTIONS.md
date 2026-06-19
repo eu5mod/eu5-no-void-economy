@@ -72,19 +72,22 @@ Contract:
 ```txt
 normal = no persistent debug captures during ordinary gameplay
 debug = targeted debug captures are allowed
-audit = debug captures plus expensive validation/probe paths are allowed
+audit = automatic reconciliation/validation cadence is allowed
+test audit = deterministic test fixtures may enable both debug and audit
 ```
 
-`modeu5_runtime_mode_audit` implies `modeu5_runtime_mode_debug`. Deterministic
-test events must enter audit mode explicitly before running their fixtures so
-test dumps remain available even when the campaign's normal gameplay setting is
-debug-off.
+`modeu5_runtime_mode_audit` no longer implies `modeu5_runtime_mode_debug`.
+Debug, verbose debug, and audit are separate pre-campaign choices. Deterministic
+test events must enter `modeu5_enter_test_audit_runtime_mode` before running
+their fixtures so test dumps remain available even when the campaign's normal
+gameplay setting is debug-off.
 
-Full stock validation across all markets and goods is audit-only when invoked
-by automatic startup/yearly reconciliation. Normal runtime must use dirty-list
-validation or explicit user/test-triggered validation instead. This keeps
-frequent ticks from performing world scans while preserving manual diagnostic
-coverage.
+Automatic stock reconciliation runs only through dedicated audit mode on the
+monthly cadence, through explicit debug/test events, or through the four-year
+country pulse. Startup, normal monthly runtime, debug, verbose debug, yearly
+pulse, and CORE-03 lifecycle hooks must not run automatic reconciliation.
+Full stock validation across all markets and goods remains manual/debug/audit
+tooling, not a frequent automatic runtime path.
 
 Persistent variable-map records must not store zero as data. Writers should
 remove an existing key, then re-add it only when the replacement value is
@@ -457,9 +460,9 @@ calendar_cycle_stamp
 initialization_gate_passed = 0 | 1
 ```
 
-Automatic monthly reconciliation uses `year * 12 + month` as its cycle stamp;
-yearly reconciliation uses the current year. A direct deterministic test uses
-cycle stamp `0` and initialization-gate value `0`.
+Automatic monthly audit reconciliation uses `year * 12 + month` as its cycle
+stamp; four-year reconciliation uses the current year. A direct deterministic
+test uses cycle stamp `0` and initialization-gate value `0`.
 
 The latest CORE-01.6 snapshot remains the per-record detail. Any
 `failures_after_rebuild > 0` result is blocking and must be written to

@@ -3,7 +3,7 @@
 # vanilla location-output path used by monthly runtime ingestion.
 
 modeu5_us00_clear_test_results = {
-	modeu5_enter_audit_runtime_mode = yes
+	modeu5_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = modeu5_test_us00_controlled_e2e_started
 	remove_global_variable = modeu5_test_us00_controlled_e2e_passed

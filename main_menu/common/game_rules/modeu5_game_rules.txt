@@ -13,3 +13,15 @@ modeu5_debug_configuration = {
 		flag = general_rule
 	}
 }
+
+modeu5_audit_configuration = {
+	default = modeu5_audit_off
+
+	modeu5_audit_off = {
+		flag = general_rule
+	}
+
+	modeu5_audit_on = {
+		flag = general_rule
+	}
+}

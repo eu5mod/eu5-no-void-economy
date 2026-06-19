@@ -29,16 +29,19 @@ modeu5_audit_runtime_mode_trigger = {
 modeu5_debug_enabled_trigger = {
 	OR = {
 		modeu5_debug_runtime_mode_trigger = yes
-		modeu5_audit_runtime_mode_trigger = yes
 		has_game_rule = modeu5_debug_basic
 		has_game_rule = modeu5_debug_verbose
 	}
 }
 
 modeu5_verbose_debug_enabled_trigger = {
+	has_game_rule = modeu5_debug_verbose
+}
+
+modeu5_audit_enabled_trigger = {
 	OR = {
 		modeu5_audit_runtime_mode_trigger = yes
-		has_game_rule = modeu5_debug_verbose
+		has_game_rule = modeu5_audit_on
 	}
 }
 
@@ -47,7 +50,7 @@ modeu5_debug_capture_enabled_trigger = {
 }
 
 modeu5_full_validation_allowed_trigger = {
-	modeu5_audit_runtime_mode_trigger = yes
+	modeu5_audit_enabled_trigger = yes
 }
 
 modeu5_stock_runtime_ready_trigger = {

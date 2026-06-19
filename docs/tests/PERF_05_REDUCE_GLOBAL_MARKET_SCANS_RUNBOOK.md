@@ -82,6 +82,30 @@ ModeU5 US-11 DUMP active_reconciliation type=3 records_checked=1 inconsistencies
 ModeU5 US-11 RESULT reconciliation PASS
 ```
 
+## Scenario B - Reconciliation Cadence Gates
+
+Setup:
+
+```txt
+Start a disposable initialized campaign.
+Run:
+
+event modeu5_debug.1
+
+Choose "Test US-11 reconciliation cadence gates".
+```
+
+Expected dump lines:
+
+```txt
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
+```
+
+This proves that normal/debug/verbose debug do not trigger automatic monthly
+reconciliation, while dedicated audit mode and the four-year pulse remain valid
+automatic reconciliation cadences.
+
 When reviewing a monthly runtime smoke test, also inspect:
 
 ```txt
