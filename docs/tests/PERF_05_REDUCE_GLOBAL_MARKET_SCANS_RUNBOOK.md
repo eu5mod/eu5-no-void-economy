@@ -15,6 +15,17 @@ The goal is not to remove strict audits. It is to prove that active validation
 can repair a known market-good inconsistency without scanning every market in
 the world.
 
+Scope contract:
+
+```txt
+monthly_country_pulse already runs once per country.
+Monthly runtime tests should be interpreted as current country -> market -> good.
+Any one-per-cycle reconciliation invoked from that pulse must reuse the current
+pulse country as its controller rather than performing a second country scan.
+The seen-market registry records duplicate market encounters, but country-owned
+good processing still runs for every country-market tuple.
+```
+
 ## Build And Install
 
 Run from the repository root:
@@ -58,7 +69,28 @@ The stock write marks modeu5_active_markets_any_good.
 Dirty validation repairs the first corruption.
 Active validation repairs the second corruption through the active market list.
 Empty dirty validation remains a no-op.
+The monthly seen-market registry can report duplicate market encounters without
+skipping country-owned processing.
 ```
+
+Expected dump lines:
+
+```txt
+ModeU5 US-11 DUMP dirty_reconciliation records_checked=1 inconsistencies=1 rebuilds=1 failures=0 market_stock=150.00
+ModeU5 US-11 DUMP empty_reconciliation records_checked=0 inconsistencies=0 rebuilds=0 failures=0
+ModeU5 US-11 DUMP active_reconciliation type=3 records_checked=1 inconsistencies=1 rebuilds=1 failures=0 market_stock=150.00
+ModeU5 US-11 RESULT reconciliation PASS
+```
+
+When reviewing a monthly runtime smoke test, also inspect:
+
+```txt
+modeu5_monthly_markets_seen_new_count
+modeu5_monthly_markets_seen_duplicate_count
+```
+
+`duplicate_count > 0` is not an error by itself. It means multiple countries
+were present in the same market during the country-pulse cycle.
 
 ## Logs To Inspect
 

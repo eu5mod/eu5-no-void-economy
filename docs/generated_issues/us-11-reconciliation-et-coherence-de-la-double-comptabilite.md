@@ -75,6 +75,8 @@ Related US: US-01, US-03, US-10, US-00
 - Run monthly reconciliation only for listed market/good tuples, then clear each processed list.
 - Run one exhaustive yearly market/good pass as a safety net, then clear all dirty lists.
 - Guard monthly and yearly entry points with persistent calendar stamps because country pulses execute once per country.
+- Treat `monthly_country_pulse` / `yearly_country_pulse` as the outer country iteration. When reconciliation is called from a country pulse, preselect the current country as `modeu5_reconciliation_controller`; use the global `every_country` controller fallback only for non-country initialization, audit, or debug entry points.
+- Keep the monthly seen-market registry separate from reconciliation state. It records markets reached by country pulses and can support future market-owned scheduling, but US-11 still validates explicit dirty/active market-good indexes and never uses the registry as a stock source.
 - Fail closed while CORE-02 initialization is incomplete. Manual deterministic tests may invoke the underlying reconciliation effect directly.
 - Never repair country stocks from market stock.
 - Route production, consumption, transfer, decay, validation, and rebuild through CORE-01.1 through CORE-01.6.
@@ -133,4 +135,4 @@ The second pass reports zero records checked
 
 ## Known limitations
 
-Automatic monthly/yearly reconciliation remains disabled until CORE-02 marks initialization complete. The exhaustive yearly pass is intentionally more expensive than the incremental monthly path. Country-pulse calendar guards, runtime ordering, and exceptional lifecycle finalizers still require controlled local tests.
+Automatic monthly/yearly reconciliation remains disabled until CORE-02 marks initialization complete. The exhaustive yearly pass is intentionally more expensive than the incremental monthly path. Country-pulse calendar guards make the global pass run once per cycle, while the current pulse country provides the reconciliation controller so the frequent runtime path does not perform a redundant `every_country` controller scan. Runtime ordering and exceptional lifecycle finalizers still require controlled local tests.
