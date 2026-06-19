@@ -64,28 +64,63 @@ Related issue: #60 performance optimization track
 - [ ] CORE-01 stock tests still enforce capacity through the centralized operators.
 - [ ] CORE-02 initialization still allocates opening stock using shared country-market capacity.
 - [ ] CORE-03 succession still reads loser/winner shared capacity for transfer ratios.
+- [ ] The PR has a commit-specific runtime validation comment before `ai-review:ok` is considered.
 
 ## Manual test scenario
 
 ```txt
-Start a clean test campaign.
-Run event modeu5_us02_debug.1.
-Select "Run US-02 storage-capacity test".
-Inspect debug.log for the US-02 dump/result lines.
-Run event modeu5_debug.1.
-Select CORE-01 stock tests that exercise add/transfer capacity enforcement.
+Run docs/tests/PERF_08_SHARED_STORAGE_CAPACITY_RUNBOOK.md.
 ```
 
 Expected result:
 
 ```txt
-ModeU5 US-02 RESULT storage-capacity PASS
-Wheat capacity equals iron wrapper capacity for the same country-market.
+US-02 proves wheat and iron read the same shared country-market capacity.
+CORE-01 proves add/transfer capacity enforcement still works.
+CORE-02 proves initialization allocation still uses capacity as weight.
+US-00 proves live stock-admission paths can read shared capacity.
 No script-system errors mention missing per-good capacity maps.
 ```
 
-## Known limitations
+## Decision boundaries and validation gates
 
-- The location-rank scan still iterates owned locations in the selected market. This PR removes per-good redundancy; it does not yet replace location scans with incremental dirty counters.
-- The rejected country-level pooled-capacity alternative remains available for a later design PR if the gameplay rule is explicitly changed.
-- `building_capacity` and `foreign_capacity` remain zero-valued compatibility fields.
+### Runtime validation gate
+
+No review label may be added until a tester runs the end-to-end protocol in
+`docs/tests/PERF_08_SHARED_STORAGE_CAPACITY_RUNBOOK.md` and posts a PR comment
+with the tested commit, installed package provenance, exact console options, log
+dump lines, and PASS/PENDING/FAIL decision.
+
+### Location-rank scanning boundary
+
+This PR intentionally keeps the existing location-rank scan:
+
+```txt
+country -> market -> owned locations in that market
+```
+
+The optimization removes the redundant good dimension from that scan. It does
+not introduce dirty location-rank counters because those counters would require
+separate lifecycle coverage for rank, ownership, capital, and market changes.
+That is a valid future optimization track, but it is outside this PR.
+
+Functional consequence:
+
+```txt
+Capacity remains accurate from the current world state.
+Monthly cost becomes country-market-location, not country-market-good-location.
+```
+
+### Country-level pooled capacity boundary
+
+The rejected country-level pooled-capacity alternative remains deferred. It is
+not a mechanical optimization, because it would allow capacity contributed by
+one market to support stock in another market. That changes the economic
+semantics of local market storage and must be handled as a separate gameplay
+design PR if selected later.
+
+### Zero building-capacity boundary
+
+`building_capacity` and `foreign_capacity` remain zero-valued compatibility
+fields. Building-derived capacity is removed from the active formula until a
+future approved business rule reintroduces it.
