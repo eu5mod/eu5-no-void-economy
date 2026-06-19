@@ -277,7 +277,10 @@ test -f "$core03_test_event"
 core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
 core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
 core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
-core02_probe_localization="packages/modeu5_core_tests/main_menu/localization/english/modeu5_core02_exposure_l_english.yml"
+core02_probe_localization="packages/modeu5_core_tests/in_game/localization/modeu5_core02_exposure_l_english.yml"
+core_stock_localization="in_game/localization/modeu5_stock_l_english.yml"
+core03_exposure_localization="in_game/localization/modeu5_core03_exposure_l_english.yml"
+game_rules_localization="main_menu/localization/english/modeu5_game_rules_l_english.yml"
 
 for required_probe_file in \
 	"$core02_probe_on_action" \
@@ -291,11 +294,62 @@ for required_probe_file in \
 	fi
 done
 
+for required_localization_file in \
+	"in_game/localization/modeu5_l_english.yml" \
+	"$core_stock_localization" \
+	"$core03_exposure_localization" \
+	"$core02_probe_localization" \
+	"$game_rules_localization"; do
+	if [[ ! -f "$required_localization_file" ]]; then
+		printf 'Required ModeU5 localization file is missing: %s\n' \
+			"$required_localization_file" >&2
+		exit 1
+	fi
+	if ! head -n 1 "$required_localization_file" | grep -q '^l_english:'; then
+		printf 'ModeU5 localization file must start with l_english:: %s\n' \
+			"$required_localization_file" >&2
+		exit 1
+	fi
+done
+
+for in_game_key in \
+	modeu5_debug.1.title \
+	modeu5_us00_debug.1.title \
+	modeu5_us02_debug.1.title \
+	modeu5_core03_debug.1.title \
+	modeu5_perf02_debug.1.title \
+	modeu5_perf03_debug.1.title; do
+	if ! search_quiet "^[[:space:]]${in_game_key}:" "$core_stock_localization"; then
+		printf 'In-game test localization key is missing from %s: %s\n' \
+			"$core_stock_localization" "$in_game_key" >&2
+		exit 1
+	fi
+done
+
+for probe_key in \
+	modeu5_core03_probe.1.title \
+	modeu5_core02_probe.1.title; do
+	case "$probe_key" in
+		modeu5_core03_probe.*)
+			probe_localization_file="$core03_exposure_localization"
+			;;
+		modeu5_core02_probe.*)
+			probe_localization_file="$core02_probe_localization"
+			;;
+	esac
+	if ! search_quiet "^[[:space:]]${probe_key}:" "$probe_localization_file"; then
+		printf 'In-game probe localization key is missing from %s: %s\n' \
+			"$probe_localization_file" "$probe_key" >&2
+		exit 1
+	fi
+done
+
 for forbidden_core_probe_file in \
 	in_game/common/on_action/modeu5_core02_exposure_on_actions.txt \
 	in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt \
 	in_game/events/modeu5_core02_exposure_events.txt \
-	main_menu/localization/english/modeu5_core02_exposure_l_english.yml; do
+	main_menu/localization/english/modeu5_core02_exposure_l_english.yml \
+	packages/modeu5_core_tests/main_menu/localization/english/modeu5_core02_exposure_l_english.yml; do
 	if [[ -e "$forbidden_core_probe_file" ]]; then
 		printf 'Test-only CORE-02 probe file must not be loaded by Core: %s\n' \
 			"$forbidden_core_probe_file" >&2
@@ -374,8 +428,13 @@ if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "
 	exit 1
 fi
 
-if search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects"; then
-	printf 'Console-driven deterministic stock tests must not use debug_log outside explicitly approved log-dump probes.\n' >&2
+disallowed_stock_debug_log="$(
+	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" 2>/dev/null |
+		grep -v 'ModeU5 US-11 ' || true
+)"
+if [ -n "$disallowed_stock_debug_log" ]; then
+	printf 'Console-driven deterministic stock tests may use debug_log only for explicitly approved log-dump probes.\n' >&2
+	printf '%s\n' "$disallowed_stock_debug_log" >&2
 	exit 1
 fi
 

@@ -1116,6 +1116,7 @@ modeu5_debug_run_reconciliation_tests = {
 			market = scope:modeu5_test_market
 			output = modeu5_test_reconciled_market_stock
 		}
+		debug_log = "ModeU5 US-11 DUMP dirty_reconciliation records_checked=[THIS.GetVariable('modeu5_reconciliation_records_checked_result').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_reconciliation_inconsistencies_found_result').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_reconciliation_rebuilds_called_result').GetValue|0] failures=[THIS.GetVariable('modeu5_reconciliation_failures_result').GetValue|0] market_stock=[THIS.GetVariable('modeu5_test_reconciled_market_stock').GetValue|2]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_records_checked_result = 1
@@ -1135,6 +1136,7 @@ modeu5_debug_run_reconciliation_tests = {
 		}
 
 		modeu5_validate_dirty_stock_consistency = yes
+		debug_log = "ModeU5 US-11 DUMP empty_reconciliation records_checked=[THIS.GetVariable('modeu5_reconciliation_records_checked_result').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_reconciliation_inconsistencies_found_result').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_reconciliation_rebuilds_called_result').GetValue|0] failures=[THIS.GetVariable('modeu5_reconciliation_failures_result').GetValue|0]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_records_checked_result = 0
@@ -1159,6 +1161,7 @@ modeu5_debug_run_reconciliation_tests = {
 			market = scope:modeu5_test_market
 			output = modeu5_test_active_reconciled_market_stock
 		}
+		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('modeu5_reconciliation_type').GetValue|0] records_checked=[THIS.GetVariable('modeu5_reconciliation_records_checked_result').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_reconciliation_inconsistencies_found_result').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_reconciliation_rebuilds_called_result').GetValue|0] failures=[THIS.GetVariable('modeu5_reconciliation_failures_result').GetValue|0] market_stock=[THIS.GetVariable('modeu5_test_active_reconciled_market_stock').GetValue|2]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_type = 3
@@ -1183,6 +1186,17 @@ modeu5_debug_run_reconciliation_tests = {
 		else = {
 			remove_global_variable = modeu5_test_reconciliation_active_passed
 			error_log = "ModeU5 deterministic US-11 active reconciliation test failed."
+		}
+		if = {
+			limit = {
+				has_global_variable = modeu5_test_reconciliation_dirty_passed
+				has_global_variable = modeu5_test_reconciliation_empty_passed
+				has_global_variable = modeu5_test_reconciliation_active_passed
+			}
+			debug_log = "ModeU5 US-11 RESULT reconciliation PASS"
+		}
+		else = {
+			debug_log = "ModeU5 US-11 RESULT reconciliation FAIL"
 		}
 	}
 	else = {
