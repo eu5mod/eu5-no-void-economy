@@ -118,19 +118,51 @@ It must not skip country-owned processing.
 were present in the same market. That is expected in shared markets and is not a
 failure by itself.
 
-## Current Optimization Tracks
+## Optimization Track Status
 
-| Track | Status | Notes |
+### Implemented
+
+| Track | Implemented result | Validation status |
 |---|---|---|
-| PR 1 - Low-risk quick wins | Completed | Zero-work guards, no zero persistence, debug/audit/runtime mode flags, no full validation in frequent ticks. |
-| PR 2 - Native relationship traversal | Completed | Country-driven flows prefer `every_market_present_in_country`; PERF-02 validates native iterator behavior. |
-| PR 3 - Market-to-country work cache | Completed with MVP boundary | Current-market work cache rebuilt from `every_location_in_market`; durable per-market country lists remain not confirmed. |
-| PR #71 - Non-territorial market-presence probe | Deferred | Non-owned/non-territorial market presence is accepted as negligible MVP risk; documented in TECH-01 128. |
-| PERF-04 - Monthly US-00 loop fusion | Implemented / requires runtime validation | Refactors US-00 monthly all-goods dispatcher to `country -> market -> goods`. |
-| PERF-05 - Reduce global market scans | Implemented / requires runtime validation | Adds active market lists, active validation, and validation-triggered rebuild without a second source scan. |
-| PERF-06 - Country-pulse scope contract and seen-market registry | In progress | Confirms monthly country pulse as the outer country loop, avoids redundant controller scans, and records markets seen this cycle. |
-| Future market-owned runtime pass | Not started | Only after semantics are safe: `seen/active market -> cached countries -> active goods`. |
-| Performance mode | Not started | Human-relevant market mode remains future work. |
+| PERF-01 - Low-risk quick wins | Zero-work guards, zero-value map hygiene, explicit normal/debug/audit flags, and no frequent full validation. | Implemented; validate through the PERF-01 runbook when touching runtime gates. |
+| PERF-02 - Native relationship traversal | Country-driven flows prefer `every_market_present_in_country`; human-relevant market discovery uses native country-to-market traversal. | Implemented; PERF-02 probe validates owned-location market coverage. |
+| PERF-03 - Current-market country work cache | Market-driven scans rebuild a current-market work list from `market -> every_location_in_market -> guarded owner`. | Implemented with MVP boundary; it is a rebuilt work cache, not a durable per-market record. |
+| PERF-04 - Monthly US-00 loop fusion | Monthly US-00 all-goods dispatcher follows `current country -> every_market_present_in_country -> generated goods`. | Implemented; validate with US-00 controlled and monthly runtime tests. |
+| PERF-05 - Reduce global market scans | Active market lists, active validation, dirty reconciliation, and validation-triggered rebuild reduce unnecessary exhaustive scans. | Implemented; validate with the US-11 dirty/active reconciliation dump. |
+| PERF-06 - Country-pulse scope contract and seen-market registry | Monthly reconciliation reuses the current pulse country as controller and records markets seen during the monthly country cycle. | Implemented in PR #74; US-11 runtime validation passed on commit `2cb1ca4d65b326f0fb5aad0e55e23fbd5fc947c9`. |
+
+### To Be Implemented
+
+| Track | Why it remains open | Required condition |
+|---|---|---|
+| Market-owned runtime pass | Market-level maintenance can still be separated from country-owned work and run once per seen/active market. | Only implement for genuinely market-owned work using `seen/active market -> cached countries -> active goods`. |
+| Durable per-market country-list cache | The current PERF-03 list is rebuilt for one target market, not persisted per market. | Requires TECH-01 126 or another confirmed static/generated storage design. |
+| Market-change repair hook | Ownership changes are handled, but a dedicated market reassignment hook is not confirmed. | Requires TECH-01 127 confirmation or an accepted explicit rebuild/repair cadence. |
+| Human/performance mode policy | Human-relevant market lists exist as rare discovery helpers, but no player-facing performance mode is selected. | Needs a concrete runtime use case and testable player/debug contract. |
+| Log-noise cleanup | UTF-8 BOM warnings, metadata warnings, and static modifier localization placeholders make review harder. | Hygiene PRs should classify or remove each warning without weakening tests. |
+
+### Not Actual / Not Relevant Anymore
+
+| Former idea | Decision | Reason |
+|---|---|---|
+| Main monthly runtime as `market -> country -> good` | Not actual. | `monthly_country_pulse` already iterates countries; ModeU5 starts from the current country scope. |
+| Monthly country pulse followed by `market -> every_country -> good` | Invalid anti-pattern. | It creates `country -> market -> country -> good`, which duplicates work and can mix controllers. |
+| Using seen-market lists to skip country-owned work | Invalid anti-pattern. | Countries sharing one market still own distinct stock, capacity, and ledger records. Seen-market lists are scheduling/diagnostic indexes only. |
+| PR #71 / non-territorial market presence as an MVP blocker | Not relevant for current MVP performance work. | Non-owned/non-territorial market presence is accepted as negligible economic weight unless future dumps show meaningful stock/capacity there. |
+| Dynamic variable-list names or Market-owned variable records | Not confirmed. | Market scope variable storage and runtime list-name construction are not confirmed; use generated static names or rebuilt global work lists only. |
+
+## Review Label Policy For This Track
+
+A validation comment with `PASS` proves the tested scenario for one commit. It
+does not automatically mean the PR should receive `ai-review:ok`.
+
+Add `ai-review:ok` only when:
+
+- required dumps and PASS markers are present;
+- `error.log`, `game.log`, `debug.log`, and `system.log` have been reviewed;
+- any remaining errors are explicitly classified as tolerated, vanilla noise,
+  or non-blocking technical debt;
+- the PR body and issue status reflect the real scope.
 
 ## Updated Loop-Order Matrix
 
