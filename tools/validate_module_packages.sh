@@ -27,7 +27,7 @@ search_lines() {
 	fi
 }
 
-tracked_generated_files="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+tracked_generated_files="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
 if [[ -n "$tracked_generated_files" ]]; then
 	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
 	printf 'Keep them ignored and generated on demand with tools/generate_all.sh.\n' >&2
@@ -163,12 +163,14 @@ search_quiet 'name = modeu5_war_package_version' \
 
 generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
 generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
+generated_us00_modifier_localization="main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml"
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 generated_stock_helpers_tmp="$(mktemp)"
 generated_us00_modifiers_tmp="$(mktemp)"
+generated_us00_modifier_localization_tmp="$(mktemp)"
 us09_generated_tmp_dir=""
-trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp"; if [[ -n "${us09_generated_tmp_dir:-}" ]]; then rm -rf "$us09_generated_tmp_dir"; fi' EXIT
+trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp" "$generated_us00_modifier_localization_tmp"; if [[ -n "${us09_generated_tmp_dir:-}" ]]; then rm -rf "$us09_generated_tmp_dir"; fi' EXIT
 
 test -f "$stock_adapter_template"
 if [[ ! -f "$generated_stock_helpers" ]]; then
@@ -179,8 +181,15 @@ if [[ ! -f "$generated_us00_modifiers" ]]; then
 	printf 'Generated US-00 production modifiers are missing. Run tools/generate_all.sh.\n' >&2
 	exit 1
 fi
+if [[ ! -f "$generated_us00_modifier_localization" ]]; then
+	printf 'Generated US-00 production modifier localization is missing. Run tools/generate_all.sh.\n' >&2
+	exit 1
+fi
 
-"$stock_generator" "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp"
+"$stock_generator" \
+	"$generated_stock_helpers_tmp" \
+	"$generated_us00_modifiers_tmp" \
+	"$generated_us00_modifier_localization_tmp"
 
 if ! cmp -s "$generated_stock_helpers" "$generated_stock_helpers_tmp"; then
 	printf 'Generated stock helpers are stale. Run tools/generate_all.sh.\n' >&2
@@ -190,6 +199,10 @@ if ! cmp -s "$generated_us00_modifiers" "$generated_us00_modifiers_tmp"; then
 	printf 'Generated US-00 production modifiers are stale. Run tools/generate_all.sh.\n' >&2
 	exit 1
 fi
+if ! cmp -s "$generated_us00_modifier_localization" "$generated_us00_modifier_localization_tmp"; then
+	printf 'Generated US-00 production modifier localization is stale. Run tools/generate_all.sh.\n' >&2
+	exit 1
+fi
 
 if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_stock_helpers"; then
 	printf 'Generated stock adapters must contain only literal identifiers.\n' >&2
@@ -197,6 +210,10 @@ if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_stock_helpers"; then
 fi
 if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifiers"; then
 	printf 'Generated US-00 production modifiers must contain only literal identifiers.\n' >&2
+	exit 1
+fi
+if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifier_localization"; then
+	printf 'Generated US-00 production modifier localization must contain only literal identifiers.\n' >&2
 	exit 1
 fi
 
@@ -217,6 +234,21 @@ if ! search_quiet '^modeu5_wheat_production_penalty_modifier = \{' "$generated_u
 fi
 if ! search_quiet 'category = location' "$generated_us00_modifiers"; then
 	printf 'Generated US-00 production modifiers must be location static modifiers.\n' >&2
+	exit 1
+fi
+if [[ "$(LC_ALL=C head -c 3 "$generated_us00_modifier_localization" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
+	printf 'Generated US-00 production modifier localization must use UTF-8 BOM encoding: %s\n' \
+		"$generated_us00_modifier_localization" >&2
+	exit 1
+fi
+if ! LC_ALL=C perl -0pe 's/^\xEF\xBB\xBF//' "$generated_us00_modifier_localization" | head -n 1 | grep -q '^l_english:'; then
+	printf 'Generated US-00 production modifier localization must start with l_english: after the BOM: %s\n' \
+		"$generated_us00_modifier_localization" >&2
+	exit 1
+fi
+if ! search_quiet '^[[:space:]]STATIC_MODIFIER_NAME_modeu5_wheat_production_penalty_modifier:' \
+	"$generated_us00_modifier_localization"; then
+	printf 'Generated US-00 production modifier localization must contain the wheat modifier fixture.\n' >&2
 	exit 1
 fi
 
@@ -298,6 +330,7 @@ for required_localization_file in \
 	"in_game/localization/modeu5_l_english.yml" \
 	"$core_stock_localization" \
 	"$core03_exposure_localization" \
+	"$generated_us00_modifier_localization" \
 	"$core02_probe_localization" \
 	"$game_rules_localization"; do
 	if [[ ! -f "$required_localization_file" ]]; then

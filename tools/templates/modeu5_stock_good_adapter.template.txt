@@ -941,15 +941,6 @@ modeu5_decay_stock_good___GOOD__ = {
 	modeu5_debug_capture_decay_stock = yes
 }
 
-modeu5_decay_stock_default_good___GOOD__ = {
-	modeu5_decay_stock = {
-		country = scope:modeu5_default_decay_country
-		market = scope:modeu5_default_decay_market
-		good = __GOOD__
-		decay_rate = modeu5_default_monthly_decay_rate
-	}
-}
-
 modeu5_load_market_aggregate_good___GOOD__ = {
 	if = {
 		limit = {
