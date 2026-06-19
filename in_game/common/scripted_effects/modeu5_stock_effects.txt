@@ -1245,7 +1245,7 @@ modeu5_seed_opening_market_good = {
 modeu5_run_allowed_stock_consistency_validation = {
 	if = {
 		limit = { modeu5_full_validation_allowed_trigger = yes }
-		modeu5_validate_all_stock_consistency = yes
+		modeu5_validate_active_stock_consistency = yes
 	}
 	else = {
 		modeu5_validate_dirty_stock_consistency = yes

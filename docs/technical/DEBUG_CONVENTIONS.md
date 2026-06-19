@@ -448,7 +448,7 @@ diagnostic severity; every nonzero difference is rebuilt.
 Each reconciliation pass exposes one aggregate snapshot on its controller:
 
 ```txt
-reconciliation_type = 1 (dirty) | 2 (exhaustive)
+reconciliation_type = 1 (dirty) | 2 (exhaustive) | 3 (active)
 records_checked
 inconsistencies_found
 rebuilds_called
@@ -463,8 +463,11 @@ cycle stamp `0` and initialization-gate value `0`.
 
 The latest CORE-01.6 snapshot remains the per-record detail. Any
 `failures_after_rebuild > 0` result is blocking and must be written to
-`error.log`. A monthly pass with no dirty market/good records is a valid no-op
-with every counter equal to zero.
+`error.log`. `reconciliation_type = 3` iterates
+`modeu5_active_markets_any_good` and checks per-good active-market membership
+inside that market scope. Active validation is a maintenance/audit optimization,
+not the strict exhaustive audit. A monthly pass with no dirty market/good
+records is a valid no-op with every counter equal to zero.
 
 Numeric precision is not yet characterized. Preserve raw operands and signed
 differences without rounding them for debug. When a small residual or an

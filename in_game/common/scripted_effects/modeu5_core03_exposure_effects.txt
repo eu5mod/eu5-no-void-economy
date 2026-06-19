@@ -1,4 +1,4 @@
-﻿# Controlled TECH-01 098 instrumentation. This file must never mutate stock.
+# Controlled TECH-01 098 instrumentation. This file must never mutate stock.
 
 modeu5_core03_probe_increment_sequence = {
 	if = {

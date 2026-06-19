@@ -153,6 +153,14 @@ modeu5_debug.2 = {
 		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_dirty_passed } }
 	}
 	option = {
+		name = modeu5_debug.test.reconciliation_active.pass
+		trigger = { has_global_variable = modeu5_test_reconciliation_active_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_active.fail
+		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_active_passed } }
+	}
+	option = {
 		name = modeu5_debug.test.reconciliation_empty.pass
 		trigger = { has_global_variable = modeu5_test_reconciliation_empty_passed }
 	}

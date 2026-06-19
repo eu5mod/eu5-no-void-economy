@@ -14,8 +14,10 @@ fi
 
 "$repo_root/tools/generate_stock_good_helpers.sh"
 
-if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+if [[ "${MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES:-0}" == "1" && -x "$repo_root/tools/generate_us09_economy_overrides.sh" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	"$repo_root/tools/generate_us09_economy_overrides.sh" "${MODEU5_US09_BONUS_PERCENT:-5}"
+elif [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	printf 'Skipping loaded US-09 static override regeneration; duplicate-key override loading is not confirmed. Set MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES=1 only for local probes.\n'
 elif [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
 	printf 'Skipping US-09 static override regeneration; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common to regenerate it.\n'
 fi

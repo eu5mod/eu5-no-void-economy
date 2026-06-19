@@ -1,9 +1,9 @@
 # NVE : No Void Economy
 
-No void economy is born from a conclusion : 
+No void economy is born from a conclusion :
  - In EU5, goods that are produced creates income regardless of a sale
  - In real life good that are sold creates income
- 
+
 This mode intend to reflect the real economy; only good that are sold generate an income. This a mod in which only goods that are sold generate income to Estates & Country, thus reflecting the real economy. It is composed of a required module that remove the Void Economy as well as "Optional" extension.
 
 ## Module description
@@ -22,8 +22,8 @@ __The core is :__ No Void Economics . It commes with **Community Balance Options
  - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
  - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
 
-#### Community Balance Options : 
-__**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition, Cassus Belli) 
+#### Community Balance Options :
+__**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition, Cassus Belli)
 
  - **Option 1:** Goods decay : Country looses 1% of their stored goods monthly (Status : ⏳) - Antiblobbing mesure
  - **Option 2:** Production bonus per building level is 1.5% instead of 1% (Status : ⏳)  - Further local spécialisqtion
@@ -31,8 +31,8 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 4:** RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
  - **Option 5:** Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
  - **Option 6:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
- - **Option 7:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳) 
- - **Option 8:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳) 
+ - **Option 7:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳)
+ - **Option 8:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
  - **Option 9:** Rebel threshold adjusted (Status : ⏳)
  - **Option 10:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
  - **Option 11:** Shorter war & War exhaustion rework. (Status : ⏳)
@@ -54,12 +54,12 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
   can
  -->
 
-## Help 
+## Help
 
 ### Anyone:
 
 Support our request to the developpers here : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
- 
+
 ### Contributor
 
 Deploy the mod to the game folder :

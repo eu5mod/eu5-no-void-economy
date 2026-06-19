@@ -231,8 +231,7 @@ docs/tests/US_02_CONSOLE_TEST_RUNBOOK.md
 Setup:
 
 ```txt
-Run `./tools/generate_stock_good_helpers.sh`
-Run `./tools/generate_us09_economy_overrides.sh 5`
+Run `./tools/generate_all.sh`
 Run `./tools/validate_module_packages.sh`
 Run `./tools/install_local_packages.sh`
 Run `./tools/install_local_packages.sh --check`
@@ -1612,9 +1611,10 @@ Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 Expected:
 
 ```txt
-`./tools/generate_us09_economy_overrides.sh 5` regenerates the Economy package overrides deterministically
-Generated `building_types` overrides multiply each targeted `output =` value by `1.05`
-Generated `prices` overrides scale the five `expand_rgo_*` gold values by `1 / 1.05`
+`./tools/generate_us09_economy_overrides.sh 5` generates offline probe candidates deterministically
+Generated probe `building_types` candidates multiply each targeted `output =` value by `1.05`
+Generated probe `prices` candidates scale the five `expand_rgo_*` gold values by `1 / 1.05`
+No generated US-09 static candidate is loaded by the Economy package until duplicate-key-free replacement is confirmed
 No additive country-level production-efficiency modifier path is loaded for this implementation
 ```
 
@@ -1632,9 +1632,32 @@ US-00 controlled and monthly runtime tests still emit PASS dumps
 Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
 ```
 
+### Test 26 — PERF-05 reduce global market scans
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+PASS - Dirty market-good reconciliation
+PASS - Active market-good reconciliation
+PASS - Empty reconciliation is a no-op
+modeu5_active_markets_any_good contains the fixture market
+modeu5_wheat_active_markets contains the fixture market
+Active validation repairs the test market without requiring every_market_in_world
+Strict exhaustive validation remains available for manual audit
+```
+
 ## US-13 tests
 
-### Test 26 — Non-horde conquest surcharge by age
+### Test 27 — Non-horde conquest surcharge by age
 
 Expected:
 

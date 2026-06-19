@@ -7,8 +7,7 @@ Use this procedure to test all six CORE-01 stock operators.
 Close EU5, then run these commands from the repository:
 
 ```bash
-./tools/generate_stock_good_helpers.sh
-./tools/generate_us09_economy_overrides.sh 5
+./tools/generate_all.sh
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check

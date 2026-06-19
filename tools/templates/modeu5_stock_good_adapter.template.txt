@@ -33,6 +33,40 @@ modeu5_clear_dirty_markets_good___GOOD__ = {
 	}
 }
 
+modeu5_mark_active_market_good___GOOD__ = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = __ACTIVE_LIST__ }
+		}
+		add_to_global_variable_list = {
+			name = __ACTIVE_LIST__
+			target = scope:modeu5_active_market
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = __ACTIVE_LIST__
+					target = scope:modeu5_active_market
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = __ACTIVE_LIST__
+			target = scope:modeu5_active_market
+		}
+	}
+	modeu5_mark_active_market_any_good = yes
+}
+
+modeu5_clear_active_markets_good___GOOD__ = {
+	if = {
+		limit = { has_global_variable_list = __ACTIVE_LIST__ }
+		clear_global_variable_list = __ACTIVE_LIST__
+	}
+}
+
 modeu5_load_stock_record_good___GOOD__ = {
 	scope:modeu5_country = {
 		if = {
@@ -145,6 +179,18 @@ modeu5_store_stock_record_good___GOOD__ = {
 				value = scope:modeu5_market_stock_after
 			}
 		}
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_country_stock_after > 0
+				scope:modeu5_market_stock_after > 0
+			}
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_active_market
+		}
+		modeu5_mark_active_market_good___GOOD__ = yes
 	}
 }
 
@@ -533,6 +579,20 @@ modeu5_store_capacity_record_good___GOOD__ = {
 			}
 		}
 	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_capacity_total > 0
+				scope:modeu5_capacity_base > 0
+				scope:modeu5_capacity_building > 0
+				scope:modeu5_capacity_foreign > 0
+			}
+		}
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_active_market
+		}
+		modeu5_mark_active_market_good___GOOD__ = yes
+	}
 }
 
 modeu5_load_transfer_records_good___GOOD__ = {
@@ -734,6 +794,30 @@ modeu5_store_transfer_records_good___GOOD__ = {
 				value = scope:modeu5_target_market_stock_after
 			}
 		}
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_seller_stock_after > 0
+				scope:modeu5_source_market_stock_after > 0
+			}
+		}
+		scope:modeu5_source_market = {
+			save_temporary_scope_as = modeu5_active_market
+		}
+		modeu5_mark_active_market_good___GOOD__ = yes
+	}
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_buyer_stock_after > 0
+				scope:modeu5_target_market_stock_after > 0
+			}
+		}
+		scope:modeu5_target_market = {
+			save_temporary_scope_as = modeu5_active_market
+		}
+		modeu5_mark_active_market_good___GOOD__ = yes
 	}
 }
 
@@ -1018,10 +1102,23 @@ modeu5_store_rebuilt_market_aggregate_good___GOOD__ = {
 			value = scope:modeu5_expected_market_stock
 		}
 	}
+	if = {
+		limit = { scope:modeu5_expected_market_stock > 0 }
+		scope:modeu5_market = {
+			save_temporary_scope_as = modeu5_active_market
+		}
+		modeu5_mark_active_market_good___GOOD__ = yes
+	}
 }
 
 modeu5_rebuild_market_stock_good___GOOD__ = {
 	modeu5_scan_stock_sources_good___GOOD__ = yes
+	modeu5_rebuild_market_stock_calculate = yes
+	modeu5_store_rebuilt_market_aggregate_good___GOOD__ = yes
+	modeu5_debug_capture_rebuild_market_stock = yes
+}
+
+modeu5_rebuild_market_stock_from_current_scan_good___GOOD__ = {
 	modeu5_rebuild_market_stock_calculate = yes
 	modeu5_store_rebuilt_market_aggregate_good___GOOD__ = yes
 	modeu5_debug_capture_rebuild_market_stock = yes
@@ -1032,7 +1129,7 @@ modeu5_validate_stock_consistency_good___GOOD__ = {
 	modeu5_validate_stock_consistency_prepare = yes
 	if = {
 		limit = { scope:modeu5_validation_difference_before != 0 }
-		modeu5_rebuild_market_stock_good___GOOD__ = yes
+		modeu5_rebuild_market_stock_from_current_scan_good___GOOD__ = yes
 		save_temporary_scope_value_as = {
 			name = modeu5_validation_rebuild_called
 			value = 1
@@ -1058,6 +1155,25 @@ modeu5_validate_dirty_markets_good___GOOD__ = {
 			}
 		}
 		clear_global_variable_list = __DIRTY_LIST__
+	}
+}
+
+modeu5_validate_active_market_good___GOOD__ = {
+	if = {
+		limit = {
+			has_global_variable_list = __ACTIVE_LIST__
+			is_target_in_global_variable_list = {
+				name = __ACTIVE_LIST__
+				target = scope:modeu5_reconciliation_market
+			}
+		}
+		scope:modeu5_reconciliation_controller = {
+			modeu5_validate_stock_consistency = {
+				market = scope:modeu5_reconciliation_market
+				good = __GOOD__
+			}
+			modeu5_reconciliation_accumulate_last_validation = yes
+		}
 	}
 }
 

@@ -12,7 +12,7 @@ As a player, I want a global +5% Production Efficiency compensation for ModeU5's
 
 ## Functional objective
 
-Restore a target `+X%` effective production compensation for the Rebalance Economy package while preserving the stock-aware production chain. The selected implementation path is a generator-backed static override package for production outputs and paired RGO expansion prices.
+Restore a target `+X%` effective production compensation for the Rebalance Economy package while preserving the stock-aware production chain. The generator-backed static override path is currently probe-only until EU5 static replacement semantics are confirmed.
 
 ## Module / availability
 
@@ -40,26 +40,26 @@ Feeds counters to: vanilla production read at step 4
 | Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
 | Monthly invocation at runtime step 3 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
-| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions | CONFIRMED | 118 |
-| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry` | CONFIRMED | 119 |
+| Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions; loaded duplicate-key override path | NOT_CONFIRMED | 118 |
+| Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry`; loaded duplicate-key override path | NOT_CONFIRMED | 119 |
 
-## Selected implementation path
+## Probe implementation path
 
-Preferred solution:
+Probe solution:
 
 ```txt
-Scaffold override files from vanilla `.../game/in_game/common/building_types`
+Scaffold candidate override files from vanilla `.../game/in_game/common/building_types`
 Increase each eligible `output =` value by a configurable `X%`
-Scaffold `common/prices/00_hardcoded.txt` overrides for the five `expand_rgo_*` entries
+Scaffold candidate `common/prices/00_hardcoded.txt` overrides for the five `expand_rgo_*` entries
 Override each targeted RGO expansion gold value by `gold x (1 / (1 + X))`
 ```
 
 Rationale:
 
 ```txt
-This path changes source output directly.
-It therefore scales correctly with downstream national or technological production modifiers.
-It matches the intended compensation logic better than a flat additive `global_production_efficiency = +5%`.
+This path would change source output directly if a valid package replacement surface is confirmed.
+It would therefore scale correctly with downstream national or technological production modifiers.
+It matches the intended compensation logic better than a flat additive `global_production_efficiency = +5%`, but it is not currently runtime-safe.
 ```
 
 Constraints:
@@ -67,7 +67,7 @@ Constraints:
 ```txt
 Do not edit installed vanilla files in place.
 Use vanilla files only as scaffolding input.
-Emit static override files inside the ModeU5 Economy package.
+Keep scaffolded files outside the loaded ModeU5 Economy package until clean duplicate-key-free loading is confirmed.
 Keep the compensation rate configurable in the generator, not hand-edited across overrides.
 ```
 
@@ -75,7 +75,7 @@ Keep the compensation rate configurable in the generator, not hand-edited across
 
 1. Preferred: scaffold `common/building_types` output overrides with configurable `X%` plus scaffold `common/prices/00_hardcoded.txt` overrides for `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` with the matching `gold x (1 / (1 + X))` formula.
 
-   Status: selected and scaffolded in this branch
+   Status: probe-only. Runtime loading of generated duplicate-key package files produced errors, so the files are no longer shipped in the loaded Economy package.
 
 2. Country-level additive-modifier path: read current `global_production_efficiency` and `global_<good>_production_modifier`, then increase them by `5%`.
 
@@ -106,13 +106,13 @@ Final output = 150 -> 155
 Effective gain = +3.33%, not +5%
 ```
 
-This is acceptable only if design explicitly accepts approximate compensation. The selected implementation path in this branch is the scaffolded-source solution instead.
+This is acceptable only if design explicitly accepts approximate compensation. The currently preferred balance model remains the scaffolded-source solution, but the runtime replacement endpoint is not confirmed.
 
 ## Files expected to change
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/building_types/
-packages/modeu5_economy_rebalance/in_game/common/prices/
+tools/generated/us09_economy_overrides/common/building_types/
+tools/generated/us09_economy_overrides/common/prices/
 tools/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
@@ -130,14 +130,14 @@ Related US: US-00.3, stock-aware production pipeline
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not load or retain these overrides when the Rebalance Economy package is absent.
-- Treat the scaffolded static-override path as the selected implementation until a future branch explicitly replaces it.
+- Treat the scaffolded static-override path as a probe until a future branch confirms a clean replacement mechanism.
 - Do not edit files under the installed vanilla game directory; read them only as scaffolding input.
-- If a generator is introduced, generated overrides must live in `packages/modeu5_economy_rebalance/`.
+- Generated candidate overrides must stay outside the loaded package unless a branch is explicitly probing static replacement behavior.
 - Keep the compensation percentage configurable in one generation path; do not hand-edit hundreds of output values.
 - Do not switch to the additive-modifier options unless their read semantics are confirmed and documented in TECH-01.
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.
-- Do not use this issue to redesign transformation formulas beyond compatibility; the preferred implementation path is limited to paired static overrides for `building_types` `output =` values and the five `expand_rgo_*` entries in `common/prices/00_hardcoded.txt`.
+- Do not use this issue to redesign transformation formulas beyond compatibility; the probe path is limited to paired static candidates for `building_types` `output =` values and the five `expand_rgo_*` entries in `common/prices/00_hardcoded.txt`.
 - Use the confirmed shared `monthly_country_pulse` dispatcher; do not register a second monthly mechanism.
 
 ## US-specific boundary checks
@@ -148,9 +148,10 @@ Related US: US-00.3, stock-aware production pipeline
 
 ## Acceptance criteria
 
-- [ ] Generated package overrides increase every targeted `output =` value by the configured `X%`.
-- [ ] Generated package overrides scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
-- [ ] The generator is idempotent and keeps all overrides inside the Economy package.
+- [ ] Generated probe files increase every targeted `output =` value by the configured `X%`.
+- [ ] Generated probe files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
+- [ ] The generator is idempotent and keeps candidate overrides outside the loaded Economy package by default.
+- [ ] A clean runtime replacement mechanism is confirmed before generated static candidates are shipped.
 - [ ] No installed vanilla file is edited in place.
 
 ## Manual test scenario
@@ -166,13 +167,14 @@ Check whether the paired `expand_rgo_*` overrides cleanly support the `gold x (1
 ### Expected result
 
 ```txt
-The generated building override files apply the configured source-output increase
-The generated RGO expansion price override file applies the inverse gold scaling to the five `expand_rgo_*` entries
+The generated probe building files apply the configured source-output increase
+The generated probe RGO expansion price file applies the inverse gold scaling to the five `expand_rgo_*` entries
 The additive-modifier alternatives remain visible but unselected
 ```
 
 ## Known limitations
 
-The current implementation uses the paired static scaffold path described above.
-The generated building override surface may include event-only or uncommon production files whenever they use the same `output =` production field.
+The current implementation keeps the paired static scaffold path as an offline probe only.
+The generated building candidate surface may include event-only or uncommon production files whenever they use the same `output =` production field.
+Runtime load tests showed duplicate-key package-local scaffolds are rejected or noisy, so US-09 gameplay compensation remains unimplemented until the correct replacement endpoint is confirmed.
 The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.
