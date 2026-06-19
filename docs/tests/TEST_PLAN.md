@@ -1669,9 +1669,29 @@ Active validation repairs the test market without requiring every_market_in_worl
 Strict exhaustive validation remains available for explicit manual audit only
 ```
 
+### Test 27 - PERF-07 market-owned runtime pass
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+ModeU5 PERF-07 DUMP market_owned_runtime active_markets>=1 cache_rebuilds>=1 active_goods>=1 dirty_repairs>=0
+Active validation uses the rebuilt current-market country work cache for active goods
+TECH-01 126 remains NOT_CONFIRMED for durable per-market country lists
+TECH-01 127 remains NOT_CONFIRMED for a dedicated market-change hook
+```
+
 ## US-13 tests
 
-### Test 27 — Non-horde conquest surcharge by age
+### Test 28 — Non-horde conquest surcharge by age
 
 Expected:
 

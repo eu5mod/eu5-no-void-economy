@@ -60,7 +60,7 @@ US-00 ledger updates.
 |---|---|---|---|---|
 | Deduplicated global market list | global -> market | `add_to_global_variable_list`, `is_target_in_global_variable_list`, `every_in_global_list`, `clear_global_variable_list` | CONFIRMED | 111, 129 |
 | Per-good active market list | global -> market | one literal generated list per good | CONFIRMED | 129 |
-| Active validation traversal | global active market -> per-good active membership | generated `modeu5_validate_active_market_all_goods` | TO_TEST | 129 |
+| Active validation traversal | global active market -> rebuilt current-market country work cache -> per-good active membership | generated `modeu5_validate_active_market_all_goods` with prepared-cache validators | CONFIRMED | 129, 132 |
 | Monthly seen-market registry | country -> market; global -> market | `modeu5_monthly_markets_seen_this_cycle` | CONFIRMED | 130 |
 | Strict exhaustive audit | none -> market | `every_market_in_world` | CONFIRMED | 002 |
 
@@ -109,8 +109,9 @@ docs/tests/TEST_PLAN.md
 - Generated adapters maintain one global `modeu5_active_markets_any_good` list.
 - Stock, transfer, capacity, and rebuild paths mark markets active when they
   leave positive stock/capacity/aggregate state.
-- Active validation iterates `modeu5_active_markets_any_good` once, then checks
-  each per-good active list inside the market scope.
+- Active validation iterates `modeu5_active_markets_any_good` once, rebuilds the
+  current-market country work cache once for that market, then checks each
+  per-good active list inside the market scope.
 - `modeu5_validate_all_stock_consistency` remains strict/exhaustive and still
   uses `every_market_in_world`.
 - Automatic allowed validation uses dirty validation in normal runtime and
@@ -150,6 +151,12 @@ Expected visible results:
 PASS - Dirty market-good reconciliation
 PASS - Active market-good reconciliation
 PASS - Empty reconciliation is a no-op
+```
+
+Expected debug dump:
+
+```txt
+ModeU5 PERF-07 DUMP market_owned_runtime active_markets>=1 cache_rebuilds>=1 active_goods>=1 dirty_repairs>=0
 ```
 
 Review logs for absence of ModeU5 script-system errors.

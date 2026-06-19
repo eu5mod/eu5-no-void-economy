@@ -467,10 +467,11 @@ test uses cycle stamp `0` and initialization-gate value `0`.
 The latest CORE-01.6 snapshot remains the per-record detail. Any
 `failures_after_rebuild > 0` result is blocking and must be written to
 `error.log`. `reconciliation_type = 3` iterates
-`modeu5_active_markets_any_good` and checks per-good active-market membership
-inside that market scope. Active validation is a maintenance/audit optimization,
-not the strict exhaustive audit. A monthly pass with no dirty market/good
-records is a valid no-op with every counter equal to zero.
+`modeu5_active_markets_any_good`, rebuilds the current-market country work cache
+once for that market, then checks per-good active-market membership inside that
+market scope. Active validation is a maintenance/audit optimization, not the
+strict exhaustive audit. A monthly pass with no dirty market/good records is a
+valid no-op with every counter equal to zero.
 
 Numeric precision is not yet characterized. Preserve raw operands and signed
 differences without rounding them for debug. When a small residual or an

@@ -435,7 +435,8 @@ fi
 
 disallowed_stock_debug_log="$(
 	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" 2>/dev/null |
-		grep -v 'ModeU5 US-11 ' || true
+		grep -v 'ModeU5 US-11 ' |
+		grep -v 'ModeU5 PERF-07 ' || true
 )"
 if [ -n "$disallowed_stock_debug_log" ]; then
 	printf 'Console-driven deterministic stock tests may use debug_log only for explicitly approved log-dump probes.\n' >&2

@@ -111,6 +111,10 @@ modeu5_debug_clear_stock_test_results = {
 	remove_variable = modeu5_debug_us11_ui_active_rebuilds
 	remove_variable = modeu5_debug_us11_ui_active_failures
 	remove_variable = modeu5_debug_us11_ui_active_market_stock
+	remove_variable = modeu5_debug_us11_ui_market_owned_active_markets
+	remove_variable = modeu5_debug_us11_ui_market_owned_cache_rebuilds
+	remove_variable = modeu5_debug_us11_ui_market_owned_active_goods
+	remove_variable = modeu5_debug_us11_ui_market_owned_dirty_repairs
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
@@ -1239,7 +1243,48 @@ modeu5_debug_run_reconciliation_tests = {
 			name = modeu5_debug_us11_ui_active_market_stock
 			value = scope:modeu5_test_active_reconciled_market_stock
 		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_active_markets_processed_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_active_markets
+				value = global_var:modeu5_market_owned_active_markets_processed_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_markets value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_country_cache_rebuild_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_cache_rebuilds
+				value = global_var:modeu5_market_owned_country_cache_rebuild_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_cache_rebuilds value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_active_goods_processed_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_active_goods
+				value = global_var:modeu5_market_owned_active_goods_processed_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_goods value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_country_cache_dirty_repair_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_dirty_repairs
+				value = global_var:modeu5_market_country_cache_dirty_repair_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_dirty_repairs value = 0 }
+		}
 		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('modeu5_debug_us11_ui_active_type').GetValue|0] records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_active_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_active_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_active_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_active_failures').GetValue|0] market_stock=[THIS.GetVariable('modeu5_debug_us11_ui_active_market_stock').GetValue|2]"
+		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_type = 3
@@ -1248,6 +1293,9 @@ modeu5_debug_run_reconciliation_tests = {
 				scope:modeu5_reconciliation_rebuilds_called_result = 1
 				scope:modeu5_reconciliation_failures_result = 0
 				scope:modeu5_test_active_reconciled_market_stock = 150
+				global_var:modeu5_market_owned_active_markets_processed_count >= 1
+				global_var:modeu5_market_owned_country_cache_rebuild_count >= 1
+				global_var:modeu5_market_owned_active_goods_processed_count >= 1
 				has_global_variable_list = modeu5_active_markets_any_good
 				has_global_variable_list = modeu5_wheat_active_markets
 				is_target_in_global_variable_list = {
