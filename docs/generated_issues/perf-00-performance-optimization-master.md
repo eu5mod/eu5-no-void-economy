@@ -130,12 +130,12 @@ failure by itself.
 | PERF-04 - Monthly US-00 loop fusion | Monthly US-00 all-goods dispatcher follows `current country -> every_market_present_in_country -> generated goods`. | Implemented; validate with US-00 controlled and monthly runtime tests. |
 | PERF-05 - Reduce global market scans | Active market lists, active validation, dirty reconciliation, and validation-triggered rebuild reduce unnecessary exhaustive scans. | Implemented; validate with the US-11 dirty/active reconciliation dump. |
 | PERF-06 - Country-pulse scope contract and seen-market registry | Monthly reconciliation reuses the current pulse country as controller and records markets seen during the monthly country cycle. | Implemented in PR #74; US-11 runtime validation passed on commit `2cb1ca4d65b326f0fb5aad0e55e23fbd5fc947c9`. |
+| PERF-07 - Market-owned runtime pass boundary | Active validation rebuilds the current-market country work cache once per active market, then validates active goods from that prepared cache. | Implemented; validate with the PERF-07 market-owned runtime dump in the US-11 deterministic reconciliation test. |
 
 ### To Be Implemented
 
 | Track | Why it remains open | Required condition |
 |---|---|---|
-| Market-owned runtime pass | Market-level maintenance can still be separated from country-owned work and run once per seen/active market. | Only implement for genuinely market-owned work using `seen/active market -> cached countries -> active goods`. |
 | Durable per-market country-list cache | The current PERF-03 list is rebuilt for one target market, not persisted per market. | Requires TECH-01 126 or another confirmed static/generated storage design. |
 | Market-change repair hook | Ownership changes are handled, but a dedicated market reassignment hook is not confirmed. | Requires TECH-01 127 confirmation or an accepted explicit rebuild/repair cadence. |
 | Human/performance mode policy | Human-relevant market lists exist as rare discovery helpers, but no player-facing performance mode is selected. | Needs a concrete runtime use case and testable player/debug contract. |
@@ -169,7 +169,7 @@ Add `ai-review:ok` only when:
 | Context | Recommended Loop Order | Notes |
 |---|---|---|
 | Monthly country-owned stock cycle | `current pulse country -> every_market_present_in_country -> generated goods` | Main implemented monthly country-owned path. Do not skip country work because a market was seen before. |
-| Monthly market-owned maintenance | `seen/active market -> cached countries_present_in_market -> active goods` | Future structural target; only for genuinely market-owned tasks. |
+| Monthly market-owned maintenance | `seen/active market -> cached countries_present_in_market -> active goods` | Implemented for active validation through the rebuilt current-market work cache. Not used to skip country-owned monthly work. |
 | Dirty validation | `dirty market-good indexes -> validation source scan` | Frequent repair path; avoid full validation. |
 | Active validation | `active market -> per-good active membership -> validation` | Audit/maintenance path. |
 | Full audit | `all markets -> all goods` | Manual/debug/migration only. |
@@ -253,8 +253,8 @@ modeu5_monthly_markets_seen_duplicate_count
 
 ## Known Limitations
 
-- The seen-market registry does not yet implement the full future market-owned
-  runtime pass.
+- The implemented market-owned pass uses the current-market rebuilt work cache;
+  it is not a durable per-market country-list cache.
 - Durable per-market country-list storage is still not confirmed.
 - Active lists are scheduling indexes and may be overinclusive.
 - Full market-first runtime processing remains future work because the engine

@@ -972,7 +972,7 @@ modeu5_load_market_aggregate_good___GOOD__ = {
 	}
 }
 
-modeu5_scan_stock_sources_good___GOOD__ = {
+modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = {
 	scope:modeu5_consistency_controller = {
 		set_local_variable = {
 			name = modeu5_scan_expected_market_stock
@@ -991,9 +991,6 @@ modeu5_scan_stock_sources_good___GOOD__ = {
 			value = 0
 		}
 	}
-
-	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
-	modeu5_rebuild_countries_present_in_market = yes
 
 	if = {
 		limit = { has_global_variable_list = modeu5_countries_present_in_market }
@@ -1080,6 +1077,12 @@ modeu5_scan_stock_sources_good___GOOD__ = {
 	modeu5_load_market_aggregate_good___GOOD__ = yes
 }
 
+modeu5_scan_stock_sources_good___GOOD__ = {
+	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+	modeu5_rebuild_countries_present_in_market = yes
+	modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = yes
+}
+
 modeu5_store_rebuilt_market_aggregate_good___GOOD__ = {
 	if = {
 		limit = {
@@ -1140,6 +1143,22 @@ modeu5_validate_stock_consistency_good___GOOD__ = {
 	modeu5_debug_capture_validate_stock_consistency = yes
 }
 
+modeu5_validate_stock_consistency_from_prepared_market_country_cache_good___GOOD__ = {
+	modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = yes
+	modeu5_validate_stock_consistency_prepare = yes
+	if = {
+		limit = { scope:modeu5_validation_difference_before != 0 }
+		modeu5_rebuild_market_stock_from_current_scan_good___GOOD__ = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_validation_rebuild_called
+			value = 1
+		}
+		modeu5_load_market_aggregate_good___GOOD__ = yes
+	}
+	modeu5_validate_stock_consistency_finalize = yes
+	modeu5_debug_capture_validate_stock_consistency = yes
+}
+
 modeu5_validate_dirty_markets_good___GOOD__ = {
 	if = {
 		limit = { has_global_variable_list = __DIRTY_LIST__ }
@@ -1168,10 +1187,16 @@ modeu5_validate_active_market_good___GOOD__ = {
 			}
 		}
 		scope:modeu5_reconciliation_controller = {
-			modeu5_validate_stock_consistency = {
-				market = scope:modeu5_reconciliation_market
-				good = __GOOD__
+			set_global_variable = {
+				name = modeu5_market_owned_active_goods_processed_count
+				value = {
+					value = global_var:modeu5_market_owned_active_goods_processed_count
+					add = 1
+				}
 			}
+			scope:modeu5_reconciliation_market = { save_temporary_scope_as = modeu5_market }
+			goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+			modeu5_validate_stock_consistency_from_prepared_market_country_cache_good___GOOD__ = yes
 			modeu5_reconciliation_accumulate_last_validation = yes
 		}
 	}
