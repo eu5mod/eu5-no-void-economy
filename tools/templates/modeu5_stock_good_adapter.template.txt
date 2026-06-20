@@ -2082,6 +2082,68 @@ modeu5_store_us10_ui_monthly_counters_good___GOOD__ = {
 	}
 }
 
+modeu5_clear_retired_us00_diagnostic_fields_good___GOOD__ = {
+	scope:modeu5_country = {
+		if = {
+			limit = {
+				has_variable_map = __PRODUCED_MAP__
+				is_key_in_variable_map = { name = __PRODUCED_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __PRODUCED_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __ADDED_MAP__
+				is_key_in_variable_map = { name = __ADDED_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __ADDED_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __REJECTED_MAP__
+				is_key_in_variable_map = { name = __REJECTED_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __REJECTED_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __OVERPRODUCTION_RATIO_MAP__
+				is_key_in_variable_map = { name = __OVERPRODUCTION_RATIO_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __OVERPRODUCTION_RATIO_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __EFFECTIVE_OVERPRODUCTION_RATIO_MAP__
+				is_key_in_variable_map = { name = __EFFECTIVE_OVERPRODUCTION_RATIO_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __EFFECTIVE_OVERPRODUCTION_RATIO_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __VOID_WEALTH_MAP__
+				is_key_in_variable_map = { name = __VOID_WEALTH_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __VOID_WEALTH_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = __VOID_TAXABLE_PROXY_MAP__
+				is_key_in_variable_map = { name = __VOID_TAXABLE_PROXY_MAP__ target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = __VOID_TAXABLE_PROXY_MAP__ key = scope:modeu5_market }
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_void_wealth_by_market
+				is_key_in_variable_map = { name = modeu5_void_wealth_by_market target = scope:modeu5_market }
+			}
+			remove_from_variable_map = { name = modeu5_void_wealth_by_market key = scope:modeu5_market }
+		}
+	}
+	modeu5_clear_us00_ui_monthly_counters_good___GOOD__ = yes
+}
+
 modeu5_run_us00_monthly_pipeline_good___GOOD__ = {
 	scope:modeu5_country = {
 		every_market_present_in_country = {

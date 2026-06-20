@@ -201,6 +201,22 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 	done
 	printf '%s\n' '}'
 
+	printf '%s\n\n' 'modeu5_clear_retired_us00_diagnostic_fields_all_goods = {'
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_clear_retired_us00_diagnostic_fields_good_%s = yes\n' "$good"
+	done
+	printf '%s\n' '}'
+
+	printf '%s\n\n' 'modeu5_migrate_current_country_us00_minimal_persistence = {'
+	printf '%s\n' '	save_temporary_scope_as = modeu5_country'
+	printf '%s\n' '	scope:modeu5_country = {'
+	printf '%s\n' '		every_market_present_in_country = {'
+	printf '%s\n' '			save_temporary_scope_as = modeu5_market'
+	printf '%s\n' '			modeu5_clear_retired_us00_diagnostic_fields_all_goods = yes'
+	printf '%s\n' '		}'
+	printf '%s\n' '	}'
+	printf '%s\n' '}'
+
 	printf '%s\n\n' 'modeu5_run_us00_monthly_pipeline_all_goods = {'
 	printf '%s\n' '	scope:modeu5_country = {'
 	printf '%s\n' '		every_market_present_in_country = {'

@@ -142,6 +142,7 @@ failure by itself.
 | PERF-17 - Minimal US-00 carryover record | Normal runtime keeps US-00 production penalty and active marker while writing full diagnostic ledger maps only in strict/debug/audit mode. | Implemented as opt-in strict fallback plus minimal default; needs runtime strict/minimal comparison before release validation. |
 | PERF-18 - UI-bound monthly summary counters | Generated per-good UI counters persist current-month surplus and consumption only for human country UI scope, without creating stock/capacity shadow maps. | Implemented as UI counter surface; consumption remains unavailable until US-10 writes a real counter. |
 | PERF-19 - Human-relevant full-ledger policy | Accounting persistence now supports Minimal, Human-Relevant Full Ledger, and Strict Full Ledger; human-relevant mode gates full US-00 diagnostic ledger writes to markets in the human-relevant list. | Implemented as opt-in policy; validate with human-relevant game rule and main revalidation. |
+| PERF-20 - Migration, audit, and validation guardrails | Generated migration helpers clear retired US-00 diagnostic ledger fields while preserving stock, capacity, production penalty, and active markers. | Implemented as explicit migration primitive; runtime migration smoke remains pending. |
 
 ### To Be Implemented
 
@@ -151,7 +152,7 @@ failure by itself.
 | Market-change repair hook | Ownership changes are handled, but a dedicated market reassignment hook is not confirmed. | Requires TECH-01 127 confirmation or an accepted explicit rebuild/repair cadence. |
 | Human/performance mode policy | Human-relevant market lists exist as rare discovery helpers, but no player-facing performance mode is selected. | Needs a concrete runtime use case and testable player/debug contract. |
 | Log-noise cleanup | UTF-8 BOM warnings, metadata warnings, and static modifier localization placeholders make review harder. | Hygiene PRs should classify or remove each warning without weakening tests. |
-| PERF-14 / PERF-20 | Fourth-phase candidates from issue #94 remain analysis or future scoped work. | Build on PERF-16/19 so any new persistent state is classified before use. |
+| PERF-14 | Fourth-phase candidate from issue #94 remains analysis or future scoped work. | Reassess after PERF-16 through PERF-20 runtime validation. |
 
 ### Not Actual / Not Relevant Anymore
 
