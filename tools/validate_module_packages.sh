@@ -372,6 +372,7 @@ revalidation_test_event="packages/modeu5_core_tests/in_game/events/modeu5_revali
 perf12_test_event="packages/modeu5_core_tests/in_game/events/modeu5_perf12_debug_events.txt"
 revalidation_summary_tool="tools/summarize_modeu5_test_logs.sh"
 per_good_loop_audit="tools/audit_modeu5_per_good_loops.sh"
+persistent_state_audit="tools/audit_modeu5_persistent_state.sh"
 
 test -f "$stock_effects"
 test -f "$capacity_effects"
@@ -389,7 +390,9 @@ test -f "$revalidation_test_event"
 test -f "$perf12_test_event"
 test -x "$revalidation_summary_tool"
 test -x "$per_good_loop_audit"
+test -x "$persistent_state_audit"
 "$per_good_loop_audit" >/dev/null
+"$persistent_state_audit" >/dev/null
 core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
 core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
 core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
