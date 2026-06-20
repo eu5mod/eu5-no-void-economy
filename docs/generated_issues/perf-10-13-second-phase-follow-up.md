@@ -41,7 +41,8 @@ US-11 dirty and active market-good validation
 
 Shared storage capacity must stay good-neutral. The audit script fails if
 generated per-good adapters regain old capacity refresh helpers or if gameplay
-code starts using `traded_in_market:<good>` before TECH-01 confirms it.
+code starts using `traded_in_market:<good>` from shared runtime paths without an
+explicit feature PR.
 
 ### PERF-11 - Active-List Repair
 
@@ -65,17 +66,20 @@ US-00 produced / added / rejected / ratios / void wealth / penalty
 
 It deliberately ignores shared US-02 capacity maps.
 
-### PERF-12 - Market-Value Probe Only
+### PERF-12 - Market-Value Probe
 
 The confirmed runtime gates remain:
 
 ```txt
 produced_in_market:<good>
 stockpile_in_market(goods:<good>)
+traded_in_market:<good>
 ```
 
-`traded_in_market:<good>` is still probe-only. Runtime gameplay must not use it
-until a focused test confirms the syntax, scope, and error behavior.
+TECH-01 135 confirms `traded_in_market:<good>` in market scope from the
+controlled PERF-12 probe. This PR still keeps the value out of gameplay runtime:
+using it as a new trade-aware prefilter belongs to a separate feature PR with
+its own acceptance criteria.
 
 ### PERF-13 - Metrics Without Normal Runtime Cost
 
@@ -100,7 +104,7 @@ Normal runtime does not capture these metrics.
 - [ ] Main revalidation includes the PERF-10/11/13 active-list repair metrics probe.
 - [ ] The compact log summary expects `perf10_13_active_repair_metrics`.
 - [ ] PERF-12 is available through `event modeu5_perf12_debug.1` but is not part of normal runtime or main revalidation.
-- [ ] TECH-01 records `traded_in_market:<good>` as `TO_TEST`.
+- [ ] TECH-01 records `traded_in_market:<good>` as `CONFIRMED`.
 
 ## Manual Test Scenario
 
@@ -152,15 +156,16 @@ ModeU5 PERF-12 DUMP market_values good=wheat ...
 ModeU5 PERF-12 RESULT market_values PASS
 ```
 
-If the probe emits script errors for `traded_in_market:wheat`, do not use that
-value in runtime. Update TECH-01 with the observed failure and keep the probe
-as evidence.
+The June 20, 2026 probe confirmed the value in market scope. If a future
+engine version regresses it, keep the probe as the evidence path and do not use
+that value in runtime until TECH-01 is corrected.
 
 ## Known Limitations
 
-- No EU5 runtime validation has been run yet on this commit.
-- PERF-12 deliberately probes an unconfirmed value link and may fail until the
-  exact syntax/scope is confirmed.
+- Runtime validation passed for the current branch on June 20, 2026; future
+  commits still need commit-specific validation comments.
+- PERF-12 confirms the value exposure only. It does not implement any gameplay
+  use of `traded_in_market:<good>`.
 - Durable per-market country-list caches and dedicated market-change hooks
   remain blocked by TECH-01 126 and 127.
 - Active-list repair is a debug/maintenance tool. It does not make active lists

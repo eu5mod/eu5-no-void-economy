@@ -105,9 +105,10 @@ ModeU5 PERF-12 DUMP market_values good=wheat produced_in_market=... stockpile_in
 ModeU5 PERF-12 RESULT market_values PASS
 ```
 
-If the test fails or `error.log` reports `traded_in_market:wheat` syntax/scope
-errors, keep `traded_in_market:<good>` out of runtime code and update TECH-01
-with the observed failure.
+The June 20, 2026 validation confirmed `traded_in_market:wheat` in market
+scope. If a future retest fails or `error.log` reports syntax/scope errors,
+keep `traded_in_market:<good>` out of runtime code and update TECH-01 with the
+observed failure.
 
 ## Source Of Truth
 
