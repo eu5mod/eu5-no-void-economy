@@ -1,23 +1,31 @@
 name: Generate README
 
 on:
+  # Regenerate README for any PR that touches the templates or workflow
   pull_request:
     paths:
       - README.template.md
       - .modeu5.local.env.template
       - .github/workflows/readme-generator.yml
-  workflow_dispatch:
+  # Regenerate README whenever `main` is updated (e.g. after merge)
+  push:
+    branches:
+      - main
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   generate-readme:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Generate README.md from template
         run: |
@@ -65,7 +73,6 @@ jobs:
               env_values[key.strip()] = parts[0] if parts else ""
 
           missing = [variable for variable in formatters if variable not in env_values or env_values[variable] is None]
-
           if missing:
               print(f"Missing variables in {env_path}:")
               for variable in missing:
@@ -79,9 +86,21 @@ jobs:
           output_path.write_text(readme, encoding="utf-8")
           PY
 
-      - name: Check generated README is committed
+      - name: Commit README updates if changed
         run: |
-          if ! git diff --exit-code README.md; then
-            echo "::error::README.md is not up to date. Run the README generator and commit the result in the same PR."
-            exit 1
+          if ! git diff --quiet README.md; then
+            echo "README changed; committing update"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: regenerate README from template"
+            # For PRs, push back to the source branch
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              # For pushes to main, push directly back to main
+              git push origin HEAD
+            fi
+          else
+            echo "README is up to date; no commit needed"
           fi
