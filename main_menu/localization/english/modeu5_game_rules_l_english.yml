@@ -11,3 +11,8 @@
  setting_modeu5_audit_off_desc: "Do not run monthly audit reconciliation. Explicit debug events and four-year reconciliation remain available."
  setting_modeu5_audit_on: "On"
  setting_modeu5_audit_on_desc: "Run ModeU5 stock reconciliation during the monthly country pulse. This is heavier than normal runtime and intended for audit campaigns."
+ rule_modeu5_accounting_persistence: "NVE : Accounting Persistence"
+ setting_modeu5_accounting_minimal: "Minimal"
+ setting_modeu5_accounting_minimal_desc: "Persist authoritative stock, capacity, production penalty, and scheduling markers. Full US-00 diagnostic ledger fields are kept only during debug or audit."
+ setting_modeu5_accounting_strict: "Strict Full Ledger"
+ setting_modeu5_accounting_strict_desc: "Persist the full US-00 diagnostic ledger globally. This is heavier and intended for validation or exact modder diagnostics."

@@ -310,6 +310,26 @@ if ! search_quiet 'modeu5_wheat_us00_active_record_by_market' "$generated_stock_
 	exit 1
 fi
 
+if ! search_quiet 'modeu5_us00_full_ledger_persistence_allowed_trigger = yes' "$generated_stock_helpers"; then
+	printf 'Generated stock adapters must gate full US-00 diagnostic ledger writes behind the PERF-17 persistence trigger.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet '^modeu5_accounting_persistence = \{' main_menu/common/game_rules/modeu5_game_rules.txt; then
+	printf 'ModeU5 accounting persistence game rule is missing.\n' >&2
+	exit 1
+fi
+
+for required_accounting_key in \
+	rule_modeu5_accounting_persistence \
+	setting_modeu5_accounting_minimal \
+	setting_modeu5_accounting_strict; do
+	if ! search_quiet "^[[:space:]]${required_accounting_key}:" main_menu/localization/english/modeu5_game_rules_l_english.yml; then
+		printf 'ModeU5 accounting persistence localization key is missing: %s\n' "$required_accounting_key" >&2
+		exit 1
+	fi
+done
+
 for required_effect in \
 	modeu5_load_capacity_breakdown \
 	modeu5_store_capacity_record \

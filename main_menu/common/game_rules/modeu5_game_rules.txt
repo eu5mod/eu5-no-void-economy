@@ -25,3 +25,15 @@ modeu5_audit_configuration = {
 		flag = general_rule
 	}
 }
+
+modeu5_accounting_persistence = {
+	default = modeu5_accounting_minimal
+
+	modeu5_accounting_minimal = {
+		flag = general_rule
+	}
+
+	modeu5_accounting_strict = {
+		flag = general_rule
+	}
+}
