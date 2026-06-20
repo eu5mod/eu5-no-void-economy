@@ -64,6 +64,13 @@ New warnings explained
 Known vanilla warning ignored
 ```
 
+ModeU5-owned non-blocking noise should be removed where possible instead of
+being normalized as background noise. Use
+`docs/technical/LOG_NOISE_HYGIENE.md` to classify known cases, especially
+install-time UTF-8 BOM warnings, stale metadata warnings, generated static
+modifier localization placeholders, and tolerated test-only dynamic dump
+assertions.
+
 ## PR validation comments
 
 The PR body describes the current implementation contract and the test plan.

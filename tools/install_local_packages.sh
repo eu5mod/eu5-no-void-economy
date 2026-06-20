@@ -84,6 +84,40 @@ write_provenance() {
 	} > "$destination/MODEU5_SOURCE.txt"
 }
 
+ensure_utf8_bom_file() {
+	local file="$1"
+	local prefix
+	local tmp
+
+	prefix="$(LC_ALL=C head -c 3 "$file" | od -An -tx1 | tr -d ' \n')"
+	if [[ "$prefix" == "efbbbf" ]]; then
+		return 0
+	fi
+
+	tmp="$(mktemp)"
+	printf '\357\273\277' > "$tmp"
+	cat "$file" >> "$tmp"
+	mv "$tmp" "$file"
+}
+
+normalize_eu5_text_encoding() {
+	local destination="$1"
+	local file
+
+	while IFS= read -r -d '' file; do
+		case "$file" in
+			*/.metadata/*|*/MODEU5_SOURCE.txt|*/descriptor.mod)
+				continue
+				;;
+		esac
+		ensure_utf8_bom_file "$file"
+	done < <(
+		find "$destination" -type f \
+			\( -name '*.txt' -o -name '*.yml' -o -name '*.gui' \) \
+			-print0
+	)
+}
+
 install_core() {
 	local destination="$target_root/modeu5_core"
 
@@ -93,6 +127,7 @@ install_core() {
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/main_menu/" "$destination/main_menu/"
 	cp "$repo_root/descriptor.mod" "$destination/descriptor.mod"
 	write_provenance "$destination"
+	normalize_eu5_text_encoding "$destination"
 }
 
 install_companion() {
@@ -102,6 +137,7 @@ install_companion() {
 	mkdir -p "$destination"
 	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
 	write_provenance "$destination"
+	normalize_eu5_text_encoding "$destination"
 }
 
 check_packages() {
@@ -122,13 +158,44 @@ check_packages() {
 		package_name="$(sed -n 's/^name="\(.*\)"$/\1/p' "$destination/descriptor.mod")"
 		printf 'OK       %-32s %s\n' "$package_id" "$package_name"
 
+		local metadata_file="$destination/.metadata/metadata.json"
+		if [[ ! -f "$metadata_file" ]]; then
+			printf '         metadata missing: %s\n' "$metadata_file"
+			failed=1
+		elif ! grep -Eq '"id"[[:space:]]*:' "$metadata_file"; then
+			printf '         metadata missing id: %s\n' "$metadata_file"
+			failed=1
+		fi
+
 		if [[ -f "$destination/MODEU5_SOURCE.txt" ]]; then
 			sed 's/^/         /' "$destination/MODEU5_SOURCE.txt"
 		else
 			printf '         source provenance missing\n'
 			failed=1
 		fi
+
+		while IFS= read -r -d '' file; do
+			if [[ "$(LC_ALL=C head -c 3 "$file" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
+				printf '         missing UTF-8 BOM in installed EU5 text file: %s\n' "$file"
+				failed=1
+			fi
+		done < <(
+			find "$destination" -type f \
+				\( -name '*.txt' -o -name '*.yml' -o -name '*.gui' \) \
+				! -path '*/.metadata/*' \
+				! -name 'MODEU5_SOURCE.txt' \
+				-print0
+		)
 	done
+
+	while IFS= read -r -d '' metadata_file; do
+		if grep -q 'ModeU5 Country Stocks Within Markets' "$metadata_file" && \
+			! grep -Eq '"id"[[:space:]]*:' "$metadata_file"; then
+			printf 'STALE    ModeU5 metadata without id may still be visible to the launcher: %s\n' \
+				"$metadata_file"
+			failed=1
+		fi
+	done < <(find "$target_root" -maxdepth 4 -path '*/.metadata/metadata.json' -type f -print0 2>/dev/null)
 
 	return "$failed"
 }

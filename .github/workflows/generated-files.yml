@@ -19,7 +19,7 @@ jobs:
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"

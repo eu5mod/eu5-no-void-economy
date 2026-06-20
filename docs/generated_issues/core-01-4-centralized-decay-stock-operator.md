@@ -75,8 +75,12 @@ Related US: US-01, US-03, US-03-UI, US-11
 
 - Follow all mandatory project and storage-model rules.
 - Operate on one country, market, and good record per call; US-03 owns iteration and scheduling.
-- Use the caller rate when provided and the configured ModeU5 monthly rate otherwise.
-- Use `modeu5_decay_stock_default` when the caller does not provide an override; it delegates to `modeu5_decay_stock` with `modeu5_default_monthly_decay_rate`.
+- Use the caller rate when provided; callers that want the configured default
+  must pass `decay_rate = modeu5_default_monthly_decay_rate` explicitly to
+  `modeu5_decay_stock`.
+- Do not reintroduce a per-good `modeu5_decay_stock_default` dispatch layer:
+  EU5's static analyzer reports its saved default scopes as unset even when the
+  runtime wrapper would set them, creating avoidable non-blocking log noise.
 - Bound the effective decay rate to `[0, 1]` and log an out-of-range input.
 - Apply TECH-01 108 literally: use EU5 `min = 0` for the lower bound and
   `max = 1` for the upper bound.

@@ -787,12 +787,6 @@ modeu5_transfer_stock_calculate = {
 
 # CORE-01.4
 
-modeu5_decay_stock_default = {
-	$country$ = { save_temporary_scope_as = modeu5_default_decay_country }
-	$market$ = { save_temporary_scope_as = modeu5_default_decay_market }
-	modeu5_decay_stock_default_good_$good$ = yes
-}
-
 modeu5_decay_stock = {
 	$country$ = { save_temporary_scope_as = modeu5_country }
 	$market$ = { save_temporary_scope_as = modeu5_market }
