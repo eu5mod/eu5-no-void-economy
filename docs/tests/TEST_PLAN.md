@@ -1718,9 +1718,27 @@ ModeU5 US-00 RESULT monthly_runtime PASS
 No ModeU5 script-system error mentions missing per-good capacity maps
 ```
 
+### Test 29 - PERF-10/13 second-phase performance guardrails
+
+Run the full protocol in:
+
+```txt
+docs/tests/PERF_10_13_SECOND_PHASE_RUNBOOK.md
+```
+
+Expected:
+
+```txt
+tools/audit_modeu5_per_good_loops.sh reports Shared capacity per-good helpers: 0
+Main revalidation emits ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
+PERF-11 active-list repair rebuilds active market-good lists from stock/ledger state, not capacity-only state
+PERF-13 metrics appear only in explicit debug/test dumps
+PERF-12 remains an explicit probe through event modeu5_perf12_debug.1
+```
+
 ## US-13 tests
 
-### Test 29 — Non-horde conquest surcharge by age
+### Test 30 — Non-horde conquest surcharge by age
 
 Expected:
 

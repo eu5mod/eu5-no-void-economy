@@ -58,6 +58,17 @@ the template or goods registry, run `./tools/generate_all.sh` and then
 `./tools/validate_module_packages.sh`; generation must be idempotent and no
 physical map identifier may retain `$`.
 
+Audit the intentional generated per-good loops:
+
+```bash
+./tools/audit_modeu5_per_good_loops.sh
+```
+
+This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
+and US-11 helpers while failing if shared US-02 capacity refresh helpers return
+to generated per-good adapters. It also blocks runtime use of
+`traded_in_market:<good>` until the dedicated PERF-12 probe confirms the value.
+
 The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 
@@ -153,6 +164,14 @@ ModeU5 TEST ENTERED scenario=<name>
 ModeU5 TEST PASS scenario=<name>
 ModeU5 TEST FAIL scenario=<name>
 ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
+```
+
+The broad chain includes the PERF-10/11/13 active-list repair metrics probe.
+The PERF-12 market-value probe is intentionally separate because it tests an
+unconfirmed `traded_in_market:<good>` value:
+
+```txt
+event modeu5_perf12_debug.1
 ```
 
 Close EU5 and summarize only those lines:

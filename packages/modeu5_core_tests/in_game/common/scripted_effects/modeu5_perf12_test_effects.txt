@@ -1,0 +1,58 @@
+# Test-only market-scope value probe for PERF-12.
+#
+# This deliberately does not feed gameplay. It exists to confirm whether
+# candidate cheap market-scope gates are safe before runtime code uses them.
+
+modeu5_perf12_clear_test_results = {
+	remove_global_variable = modeu5_test_perf12_market_value_probe_passed
+	remove_global_variable = modeu5_test_perf12_market_value_probe_failed
+}
+
+modeu5_perf12_write_market_value_dump_variables = {
+	set_variable = { name = modeu5_perf12_ui_produced_wheat value = scope:modeu5_perf12_produced_wheat }
+	set_variable = { name = modeu5_perf12_ui_stockpile_wheat value = scope:modeu5_perf12_stockpile_wheat }
+	set_variable = { name = modeu5_perf12_ui_traded_wheat value = scope:modeu5_perf12_traded_wheat }
+}
+
+modeu5_perf12_log_market_value_dump = {
+	debug_log = "ModeU5 PERF-12 DUMP market_values good=wheat produced_in_market=[THIS.GetVariable('modeu5_perf12_ui_produced_wheat').GetValue|4] stockpile_in_market=[THIS.GetVariable('modeu5_perf12_ui_stockpile_wheat').GetValue|4] traded_in_market=[THIS.GetVariable('modeu5_perf12_ui_traded_wheat').GetValue|4]"
+}
+
+modeu5_debug_run_perf12_market_value_probe = {
+	modeu5_perf12_clear_test_results = yes
+	save_temporary_scope_as = modeu5_perf12_controller
+
+	capital.market = {
+		save_temporary_scope_as = modeu5_perf12_market
+		save_temporary_scope_value_as = {
+			name = modeu5_perf12_produced_wheat
+			value = produced_in_market:wheat
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_perf12_stockpile_wheat
+			value = "stockpile_in_market(goods:wheat)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_perf12_traded_wheat
+			value = traded_in_market:wheat
+		}
+	}
+
+	modeu5_perf12_write_market_value_dump_variables = yes
+	modeu5_perf12_log_market_value_dump = yes
+
+	if = {
+		limit = {
+			scope:modeu5_perf12_produced_wheat >= 0
+			scope:modeu5_perf12_stockpile_wheat >= 0
+			scope:modeu5_perf12_traded_wheat >= 0
+		}
+		set_global_variable = modeu5_test_perf12_market_value_probe_passed
+		debug_log = "ModeU5 PERF-12 RESULT market_values PASS"
+	}
+	else = {
+		set_global_variable = modeu5_test_perf12_market_value_probe_failed
+		debug_log = "ModeU5 PERF-12 RESULT market_values FAIL"
+		error_log = "ModeU5 PERF-12 market-scope value probe failed."
+	}
+}

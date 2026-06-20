@@ -79,6 +79,7 @@ expected_scenarios=(
 	core02_initialization
 	us00_controlled_pipeline
 	us00_monthly_runtime
+	perf10_13_active_repair_metrics
 	main_revalidation_summary
 )
 

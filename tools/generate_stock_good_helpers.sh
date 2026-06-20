@@ -153,18 +153,13 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 			printf '\tmodeu5_clear_active_markets_good_%s = yes\n' "$good"
 		done
 		printf '%s\n' '}'
-		printf '%s\n\n' 'modeu5_recalculate_saved_country_market_storage_capacities = {'
-		printf '%s\n' '	modeu5_recalculate_saved_country_market_storage_capacities_good_wheat = yes'
-		printf '%s\n' '}'
-		printf '%s\n\n' 'modeu5_recalculate_saved_country_storage_capacities = {'
-		printf '%s\n' '	goods:wheat = { save_temporary_scope_as = modeu5_good }'
-		printf '%s\n' '	scope:modeu5_country = {'
-		printf '%s\n' '		modeu5_calculate_country_storage_capacity_pool = yes'
-		printf '%s\n' '		every_market_present_in_country = {'
-		printf '%s\n' '			save_temporary_scope_as = modeu5_market'
-		printf '%s\n' '			modeu5_recalculate_country_market_capacity_from_prepared_pool_good_wheat = yes'
-		printf '%s\n' '		}'
-		printf '%s\n' '	}'
+		printf '%s\n\n' 'modeu5_repair_all_active_stock_markets = {'
+		printf '%s\n' '	save_temporary_scope_as = modeu5_active_repair_controller'
+		printf '%s\n' '	modeu5_clear_all_active_stock_markets = yes'
+		printf '%s\n' '	modeu5_perf13_reset_active_repair_metrics = yes'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_repair_active_markets_good_%s = yes\n' "$good"
+		done
 		printf '%s\n' '}'
 		printf '%s\n\n' 'modeu5_initialize_storage_capacities = {'
 		printf '%s\n' '	every_country = {'

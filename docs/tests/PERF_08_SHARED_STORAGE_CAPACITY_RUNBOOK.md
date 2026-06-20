@@ -123,10 +123,13 @@ CORE-01 inter-market transfer
 CORE-02 initialization allocation
 US-00 controlled pipeline
 US-00 monthly runtime smoke
+PERF-10/11/13 active-list repair metrics
 ```
 
 Each step is separated by two in-game days, except the final summary event. The
-chain writes compact lines to `debug.log`:
+PERF-12 market-value probe is intentionally not part of this chain because it
+tests an unconfirmed `traded_in_market:<good>` value link. The chain writes
+compact lines to `debug.log`:
 
 ```txt
 ModeU5 TEST ENTERED scenario=<name>
@@ -144,6 +147,12 @@ After closing EU5, run:
 The script prints entered/pass/fail/blocked counts and the exact scenario lines.
 Use the full logs only when the compact summary reports a failure, a blocked
 scenario, or a missing scenario marker.
+
+Expected additional second-phase marker:
+
+```txt
+ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
+```
 
 ## Scenario A - US-02 Shared Capacity
 

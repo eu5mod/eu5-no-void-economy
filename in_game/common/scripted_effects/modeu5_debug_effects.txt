@@ -127,7 +127,10 @@ modeu5_debug_capture_country_market_capacity = {
 			modeu5_debug_clear_last_country_market_capacity = yes
 			set_variable = { name = modeu5_debug_last_capacity_country value = scope:modeu5_country }
 			set_variable = { name = modeu5_debug_last_capacity_market value = scope:modeu5_market }
-			set_variable = { name = modeu5_debug_last_capacity_good value = scope:modeu5_good }
+			if = {
+				limit = { exists = scope:modeu5_good }
+				set_variable = { name = modeu5_debug_last_capacity_good value = scope:modeu5_good }
+			}
 			set_variable = { name = modeu5_debug_last_capacity_previous_total value = scope:modeu5_country_stock_cap_raw }
 			set_variable = { name = modeu5_debug_last_capacity_total value = scope:modeu5_capacity_total }
 			set_variable = { name = modeu5_debug_last_capacity_base value = scope:modeu5_capacity_base }
