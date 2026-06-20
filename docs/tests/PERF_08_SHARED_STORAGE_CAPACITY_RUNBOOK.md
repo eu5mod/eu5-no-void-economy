@@ -99,6 +99,52 @@ preferably one full month before monthly-runtime smoke tests
 If a result says runtime is not ready, wait another day/monthly tick as the
 specific runbook says, then rerun that scenario.
 
+## Fast Revalidation Path
+
+Instead of running scenarios A-D manually, run:
+
+```txt
+event modeu5_revalidate_debug.1
+```
+
+Select:
+
+```txt
+Revalidate main operations
+```
+
+The event chain runs:
+
+```txt
+US-02 capacity
+CORE-01 add/remove/decay
+CORE-01 same-market transfer
+CORE-01 inter-market transfer
+CORE-02 initialization allocation
+US-00 controlled pipeline
+US-00 monthly runtime smoke
+```
+
+Each step is separated by two in-game days, except the final summary event. The
+chain writes compact lines to `debug.log`:
+
+```txt
+ModeU5 TEST ENTERED scenario=<name>
+ModeU5 TEST PASS scenario=<name>
+ModeU5 TEST FAIL scenario=<name>
+ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
+```
+
+After closing EU5, run:
+
+```bash
+./tools/summarize_modeu5_test_logs.sh
+```
+
+The script prints entered/pass/fail/blocked counts and the exact scenario lines.
+Use the full logs only when the compact summary reports a failure, a blocked
+scenario, or a missing scenario marker.
+
 ## Scenario A - US-02 Shared Capacity
 
 Run:

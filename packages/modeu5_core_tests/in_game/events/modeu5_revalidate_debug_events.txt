@@ -1,0 +1,157 @@
+namespace = modeu5_revalidate_debug
+
+modeu5_revalidate_debug.1 = {
+	type = country_event
+	title = modeu5_revalidate_debug.1.title
+	desc = modeu5_revalidate_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_revalidate_debug.1.a
+		modeu5_revalidate_clear_results = yes
+		set_global_variable = modeu5_revalidation_started
+		modeu5_revalidate_run_us02_capacity = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.10 days = 2 }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_revalidate_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_core01_single_record = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.20 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.20 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_core01_same_market_transfer = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.30 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.30 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_core01_inter_market_transfer = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.40 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.40 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_core02_initialization = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.50 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.50 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_us00_controlled_pipeline = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.60 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.60 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_us00_monthly_runtime = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 1 }
+	}
+}
+
+modeu5_revalidate_debug.99 = {
+	type = country_event
+	title = modeu5_revalidate_debug.99.title
+	desc = modeu5_revalidate_debug.99.desc
+	outcome = neutral
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_finalize = yes
+	}
+
+	option = {
+		name = modeu5_revalidate_debug.result.pass
+		trigger = { has_global_variable = modeu5_revalidation_passed }
+	}
+	option = {
+		name = modeu5_revalidate_debug.result.blocked
+		trigger = { has_global_variable = modeu5_revalidation_blocked }
+	}
+	option = {
+		name = modeu5_revalidate_debug.result.fail
+		trigger = { has_global_variable = modeu5_revalidation_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

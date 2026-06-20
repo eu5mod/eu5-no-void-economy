@@ -331,20 +331,26 @@ capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
 capacity_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_capacity_test_effects.txt"
 core03_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core03_test_effects.txt"
+revalidation_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_revalidation_test_effects.txt"
 stock_test_event="packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt"
 us01_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us01_debug_events.txt"
 us02_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us02_debug_events.txt"
 core03_test_event="packages/modeu5_core_tests/in_game/events/modeu5_core03_debug_events.txt"
+revalidation_test_event="packages/modeu5_core_tests/in_game/events/modeu5_revalidate_debug_events.txt"
+revalidation_summary_tool="tools/summarize_modeu5_test_logs.sh"
 
 test -f "$stock_effects"
 test -f "$capacity_effects"
 test -f "$stock_test_effects"
 test -f "$capacity_test_effects"
 test -f "$core03_test_effects"
+test -f "$revalidation_test_effects"
 test -f "$stock_test_event"
 test -f "$us01_test_event"
 test -f "$us02_test_event"
 test -f "$core03_test_event"
+test -f "$revalidation_test_event"
+test -x "$revalidation_summary_tool"
 core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
 core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
 core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
@@ -500,17 +506,23 @@ if ! search_quiet '^modeu5_core03_debug\.1 = \{' "$core03_test_event"; then
 	exit 1
 fi
 
-if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" "$capacity_test_effects" "$core03_test_effects"; then
+if ! search_quiet '^modeu5_revalidate_debug\.1 = \{' "$revalidation_test_event"; then
+	printf 'Main revalidation must use a dedicated event instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$stock_test_effects" "$capacity_test_effects" "$core03_test_effects" "$revalidation_test_effects"; then
 	printf 'Console-driven stock tests must not use test_log; it localizes text while console command localization is disabled.\n' >&2
 	exit 1
 fi
 
 disallowed_stock_debug_log="$(
-	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" 2>/dev/null |
+	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$stock_test_effects" "$revalidation_test_effects" 2>/dev/null |
 		grep -v 'ModeU5 CORE-01 ' |
 		grep -v 'ModeU5 CORE-02 ' |
 		grep -v 'ModeU5 US-11 ' |
-		grep -v 'ModeU5 PERF-07 ' || true
+		grep -v 'ModeU5 PERF-07 ' |
+		grep -v 'ModeU5 TEST ' || true
 )"
 if [ -n "$disallowed_stock_debug_log" ]; then
 	printf 'Console-driven deterministic stock tests may use debug_log only for approved static RESULT markers or explicitly approved log-dump probes.\n' >&2

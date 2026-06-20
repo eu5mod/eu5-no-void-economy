@@ -1,0 +1,240 @@
+# Broad deterministic regression harness for the testing-only package.
+# Run through event modeu5_revalidate_debug.1.
+
+modeu5_revalidate_clear_results = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_debug_clear_stock_test_results = yes
+	modeu5_us00_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation"
+
+	remove_global_variable = modeu5_revalidation_started
+	remove_global_variable = modeu5_revalidation_finished
+	remove_global_variable = modeu5_revalidation_passed
+	remove_global_variable = modeu5_revalidation_failed
+	remove_global_variable = modeu5_revalidation_blocked
+	remove_global_variable = modeu5_revalidation_us02_capacity_passed
+	remove_global_variable = modeu5_revalidation_us02_capacity_failed
+	remove_global_variable = modeu5_revalidation_us02_capacity_blocked
+	remove_global_variable = modeu5_revalidation_core01_single_record_passed
+	remove_global_variable = modeu5_revalidation_core01_single_record_failed
+	remove_global_variable = modeu5_revalidation_core01_same_market_transfer_passed
+	remove_global_variable = modeu5_revalidation_core01_same_market_transfer_failed
+	remove_global_variable = modeu5_revalidation_core01_same_market_transfer_blocked
+	remove_global_variable = modeu5_revalidation_core01_inter_market_transfer_passed
+	remove_global_variable = modeu5_revalidation_core01_inter_market_transfer_failed
+	remove_global_variable = modeu5_revalidation_core01_inter_market_transfer_blocked
+	remove_global_variable = modeu5_revalidation_core02_initialization_passed
+	remove_global_variable = modeu5_revalidation_core02_initialization_failed
+	remove_global_variable = modeu5_revalidation_core02_initialization_blocked
+	remove_global_variable = modeu5_revalidation_us00_controlled_pipeline_passed
+	remove_global_variable = modeu5_revalidation_us00_controlled_pipeline_failed
+	remove_global_variable = modeu5_revalidation_us00_controlled_pipeline_blocked
+	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_passed
+	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_failed
+	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_blocked
+}
+
+modeu5_revalidate_run_us02_capacity = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us02_capacity"
+	modeu5_debug_run_storage_capacity_test = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_storage_capacity_passed }
+		set_global_variable = modeu5_revalidation_us02_capacity_passed
+		debug_log = "ModeU5 TEST PASS scenario=us02_capacity"
+	}
+	else_if = {
+		limit = { NOT = { country_exists = c:FRA } }
+		set_global_variable = modeu5_revalidation_us02_capacity_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us02_capacity reason=missing_FRA"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_us02_capacity_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us02_capacity"
+	}
+}
+
+modeu5_revalidate_run_core01_single_record = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_single_record"
+	modeu5_debug_run_single_record_stock_tests = yes
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_add_allow_over_capacity_passed
+			has_global_variable = modeu5_test_add_enforce_passed
+			has_global_variable = modeu5_test_remove_passed
+			has_global_variable = modeu5_test_decay_passed
+		}
+		set_global_variable = modeu5_revalidation_core01_single_record_passed
+		debug_log = "ModeU5 TEST PASS scenario=core01_single_record"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_core01_single_record_failed
+		debug_log = "ModeU5 TEST FAIL scenario=core01_single_record"
+	}
+}
+
+modeu5_revalidate_run_core01_same_market_transfer = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_same_market_transfer"
+	modeu5_debug_run_same_market_transfer_tests = yes
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_same_market_transfer_passed
+			has_global_variable = modeu5_test_invalid_same_record_passed
+		}
+		set_global_variable = modeu5_revalidation_core01_same_market_transfer_passed
+		debug_log = "ModeU5 TEST PASS scenario=core01_same_market_transfer"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_same_market_transfer_blocked }
+		set_global_variable = modeu5_revalidation_core01_same_market_transfer_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=core01_same_market_transfer reason=missing_FRA_ENG"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_core01_same_market_transfer_failed
+		debug_log = "ModeU5 TEST FAIL scenario=core01_same_market_transfer"
+	}
+}
+
+modeu5_revalidate_run_core01_inter_market_transfer = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_inter_market_transfer"
+	modeu5_debug_run_inter_market_transfer_test = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_inter_market_transfer_passed }
+		set_global_variable = modeu5_revalidation_core01_inter_market_transfer_passed
+		debug_log = "ModeU5 TEST PASS scenario=core01_inter_market_transfer"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_inter_market_transfer_blocked }
+		set_global_variable = modeu5_revalidation_core01_inter_market_transfer_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=core01_inter_market_transfer reason=missing_FRA_ENG_or_distinct_markets"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_core01_inter_market_transfer_failed
+		debug_log = "ModeU5 TEST FAIL scenario=core01_inter_market_transfer"
+	}
+}
+
+modeu5_revalidate_run_core02_initialization = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core02_initialization"
+	set_global_variable = modeu5_test_core02_initialization_started
+	modeu5_debug_run_core02_initialization_tests = yes
+	set_global_variable = modeu5_test_core02_initialization_finished
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_core02_proportional_passed
+			has_global_variable = modeu5_test_core02_over_capacity_passed
+		}
+		set_global_variable = modeu5_revalidation_core02_initialization_passed
+		debug_log = "ModeU5 TEST PASS scenario=core02_initialization"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				NOT = { country_exists = c:FRA }
+				NOT = { country_exists = c:ENG }
+			}
+		}
+		set_global_variable = modeu5_revalidation_core02_initialization_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=core02_initialization reason=missing_FRA_ENG"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_core02_initialization_failed
+		debug_log = "ModeU5 TEST FAIL scenario=core02_initialization"
+	}
+}
+
+modeu5_revalidate_run_us00_controlled_pipeline = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us00_controlled_pipeline"
+	modeu5_us00_debug_run_controlled_e2e_test = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_us00_controlled_e2e_passed }
+		set_global_variable = modeu5_revalidation_us00_controlled_pipeline_passed
+		debug_log = "ModeU5 TEST PASS scenario=us00_controlled_pipeline"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_us00_controlled_e2e_blocked }
+		set_global_variable = modeu5_revalidation_us00_controlled_pipeline_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us00_controlled_pipeline reason=missing_FRA"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_us00_controlled_pipeline_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us00_controlled_pipeline"
+	}
+}
+
+modeu5_revalidate_run_us00_monthly_runtime = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us00_monthly_runtime"
+	modeu5_us00_debug_run_monthly_runtime_test = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_us00_monthly_runtime_passed }
+		set_global_variable = modeu5_revalidation_us00_monthly_runtime_passed
+		debug_log = "ModeU5 TEST PASS scenario=us00_monthly_runtime"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_us00_monthly_runtime_blocked }
+		set_global_variable = modeu5_revalidation_us00_monthly_runtime_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us00_monthly_runtime reason=missing_FRA_or_runtime_not_ready"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_us00_monthly_runtime_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us00_monthly_runtime"
+	}
+}
+
+modeu5_revalidate_finalize = {
+	set_global_variable = modeu5_revalidation_finished
+	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation_summary"
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_revalidation_us02_capacity_passed
+			has_global_variable = modeu5_revalidation_core01_single_record_passed
+			has_global_variable = modeu5_revalidation_core01_same_market_transfer_passed
+			has_global_variable = modeu5_revalidation_core01_inter_market_transfer_passed
+			has_global_variable = modeu5_revalidation_core02_initialization_passed
+			has_global_variable = modeu5_revalidation_us00_controlled_pipeline_passed
+			has_global_variable = modeu5_revalidation_us00_monthly_runtime_passed
+		}
+		set_global_variable = modeu5_revalidation_passed
+		debug_log = "ModeU5 TEST PASS scenario=main_revalidation_summary"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = modeu5_revalidation_us02_capacity_failed
+				has_global_variable = modeu5_revalidation_core01_single_record_failed
+				has_global_variable = modeu5_revalidation_core01_same_market_transfer_failed
+				has_global_variable = modeu5_revalidation_core01_inter_market_transfer_failed
+				has_global_variable = modeu5_revalidation_core02_initialization_failed
+				has_global_variable = modeu5_revalidation_us00_controlled_pipeline_failed
+				has_global_variable = modeu5_revalidation_us00_monthly_runtime_failed
+			}
+		}
+		set_global_variable = modeu5_revalidation_failed
+		debug_log = "ModeU5 TEST FAIL scenario=main_revalidation_summary"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = modeu5_revalidation_us02_capacity_blocked
+				has_global_variable = modeu5_revalidation_core01_same_market_transfer_blocked
+				has_global_variable = modeu5_revalidation_core01_inter_market_transfer_blocked
+				has_global_variable = modeu5_revalidation_core02_initialization_blocked
+				has_global_variable = modeu5_revalidation_us00_controlled_pipeline_blocked
+				has_global_variable = modeu5_revalidation_us00_monthly_runtime_blocked
+			}
+		}
+		set_global_variable = modeu5_revalidation_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=main_revalidation_summary reason=one_or_more_scenarios_blocked"
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_failed
+		debug_log = "ModeU5 TEST FAIL scenario=main_revalidation_summary"
+	}
+}

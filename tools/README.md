@@ -131,6 +131,40 @@ When you want to refresh the local mod install before testing:
 ./tools/clear_eu5_logs.sh
 ```
 
+## Compact test-log summary
+
+After running the broad in-game revalidation event:
+
+```txt
+event modeu5_revalidate_debug.1
+```
+
+choose:
+
+```txt
+Revalidate main operations
+```
+
+The event chain runs the main deterministic scenarios with two in-game days
+between each step and writes compact markers to `debug.log`:
+
+```txt
+ModeU5 TEST ENTERED scenario=<name>
+ModeU5 TEST PASS scenario=<name>
+ModeU5 TEST FAIL scenario=<name>
+ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
+```
+
+Close EU5 and summarize only those lines:
+
+```bash
+./tools/summarize_modeu5_test_logs.sh
+```
+
+Use `--logs-dir PATH` or `MODEU5_LOG_DIR` when EU5 stores logs elsewhere. This
+summary is the first-pass review artifact; inspect full logs only when the
+summary reports `FAIL`, `BLOCKED`, or missing scenarios.
+
 ## Module packages
 
 Validate the source package roots, including the testing-only package:
