@@ -192,6 +192,8 @@ search_quiet 'name = modeu5_war_package_version' \
 generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
 generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
 generated_us00_modifier_localization="main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml"
+stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
+capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 generated_stock_helpers_tmp="$(mktemp)"
@@ -251,14 +253,14 @@ if ! search_quiet 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_mark
 	exit 1
 fi
 
-if ! search_quiet 'variable_map\(modeu5_stock_cap_by_market\|scope:modeu5_market\)' \
+if ! search_quiet 'modeu5_load_capacity_breakdown = yes' \
 	"$generated_stock_helpers"; then
-	printf 'Generated stock adapters must contain shared US-02 country-market capacity access.\n' >&2
+	printf 'Generated stock adapters must read shared US-02 capacity through the shared helper.\n' >&2
 	exit 1
 fi
 if ! search_quiet 'variable_map\(modeu5_base_capacity_by_market\|scope:modeu5_market\)' \
-	"$generated_stock_helpers"; then
-	printf 'Generated stock adapters must contain shared US-02 capacity breakdown access.\n' >&2
+	"$capacity_effects"; then
+	printf 'Shared capacity effects must contain shared US-02 capacity breakdown access.\n' >&2
 	exit 1
 fi
 if search_lines 'modeu5_[a-z0-9_]+_(stock_cap|base_capacity|building_capacity|foreign_capacity)_by_market' \
@@ -292,8 +294,6 @@ fi
 
 for required_effect in \
 	modeu5_read_country_stock_record_good_wheat \
-	modeu5_recalculate_country_market_capacity_good_wheat \
-	modeu5_recalculate_country_market_capacity_from_prepared_pool_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do
@@ -302,6 +302,31 @@ for required_effect in \
 		exit 1
 	fi
 done
+
+for required_effect in \
+	modeu5_load_capacity_breakdown \
+	modeu5_store_capacity_record \
+	modeu5_recalculate_country_market_capacity_shared \
+	modeu5_recalculate_country_market_capacity_from_prepared_pool_shared \
+	modeu5_recalculate_saved_country_market_storage_capacities \
+	modeu5_recalculate_saved_country_storage_capacities; do
+	if ! search_quiet "^${required_effect} = \\{" "$capacity_effects"; then
+		printf 'Shared capacity effects are missing %s.\n' "$required_effect" >&2
+		exit 1
+	fi
+done
+
+if search_quiet 'modeu5_recalculate_saved_country_storage_capacities_good_wheat|modeu5_recalculate_country_market_capacity_from_prepared_pool_good_wheat|modeu5_store_capacity_record_good_wheat|modeu5_load_capacity_breakdown_good_wheat' \
+	"$generated_stock_helpers"; then
+	printf 'Generated stock adapters must not contain wheat-sentinel capacity refresh helpers.\n' >&2
+	exit 1
+fi
+
+if search_quiet 'goods:wheat = \{ save_temporary_scope_as = modeu5_good \}' \
+	"$capacity_effects"; then
+	printf 'Shared capacity refresh must not select wheat as a sentinel good.\n' >&2
+	exit 1
+fi
 
 if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
 	"$stock_generator"; then
@@ -326,8 +351,6 @@ if [[ -x "$us09_generator" ]]; then
 	fi
 fi
 
-stock_effects="in_game/common/scripted_effects/modeu5_stock_effects.txt"
-capacity_effects="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt"
 capacity_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_capacity_test_effects.txt"
 core03_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core03_test_effects.txt"
@@ -446,9 +469,9 @@ if search_lines '\$(stock_map|capacity_map|market_map)\$|has_(global_)?variable_
 	exit 1
 fi
 
-if search_lines 'has_(global_)?variable_map|is_key_in_(global_)?variable_map|variable_map\(|add_to_(global_)?variable_map|remove_from_(global_)?variable_map' \
+if search_lines '\$(stock_map|capacity_map|market_map)\$|modeu5_[a-z0-9_]+_(stock_cap|base_capacity|building_capacity|foreign_capacity)_by_market' \
 	"$capacity_effects"; then
-	printf 'Shared US-02 capacity calculations must not read or write persistent map identifiers.\n' >&2
+	printf 'Shared US-02 capacity calculations must use only literal shared capacity map identifiers.\n' >&2
 	exit 1
 fi
 
