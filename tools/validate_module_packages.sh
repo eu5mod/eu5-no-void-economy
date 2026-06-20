@@ -281,7 +281,7 @@ if [[ "$(LC_ALL=C head -c 3 "$generated_us00_modifier_localization" | od -An -tx
 		"$generated_us00_modifier_localization" >&2
 	exit 1
 fi
-if ! LC_ALL=C perl -0pe 's/^\xEF\xBB\xBF//' "$generated_us00_modifier_localization" | head -n 1 | grep -q '^l_english:'; then
+if ! localization_starts_with_l_english_after_bom "$generated_us00_modifier_localization"; then
 	printf 'Generated US-00 production modifier localization must start with l_english: after the BOM: %s\n' \
 		"$generated_us00_modifier_localization" >&2
 	exit 1
