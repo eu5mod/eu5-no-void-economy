@@ -34,8 +34,8 @@ The **Extensions** that provide Balance change but requires to be activated at t
  - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
  - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
  - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
- - Economy <MODEU5_US09_BONUS_PERCENT> faster (Status : ✅ ) - Required to compensate revenue loss
- - Estate consumption increasead <MODEU5_US15_BONUS_PERCENT> (Status : ⏳) - Required to compensate economic speed
+ - Economy 10% faster (Status : ✅ ) - Required to compensate revenue loss
+ - Estate consumption increasead 1.5% (Status : ⏳) - Required to compensate economic speed
  - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
  - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
 
@@ -50,7 +50,7 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 400:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
  - **Option 401:** Rebel threshold adjusted (Status : ⏳)
  - **Option 402:** Shorter war & War exhaustion rework. (Status : ⏳)
- - **Option 500:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳)
+ - **Option 500:** Independantist don't start the war Initial Owner get a CB for 12  year (Status : ⏳)
  - **Option 501:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
  - **Option 502:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
 
