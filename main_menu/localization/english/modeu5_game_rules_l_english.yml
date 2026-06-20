@@ -14,5 +14,7 @@
  rule_modeu5_accounting_persistence: "NVE : Accounting Persistence"
  setting_modeu5_accounting_minimal: "Minimal"
  setting_modeu5_accounting_minimal_desc: "Persist authoritative stock, capacity, production penalty, and scheduling markers. Full US-00 diagnostic ledger fields are kept only during debug or audit."
+ setting_modeu5_accounting_human_relevant: "Human-Relevant Full Ledger"
+ setting_modeu5_accounting_human_relevant_desc: "Persist the full US-00 diagnostic ledger only for markets relevant to a human country. Other markets use minimal persistence."
  setting_modeu5_accounting_strict: "Strict Full Ledger"
  setting_modeu5_accounting_strict_desc: "Persist the full US-00 diagnostic ledger globally. This is heavier and intended for validation or exact modder diagnostics."

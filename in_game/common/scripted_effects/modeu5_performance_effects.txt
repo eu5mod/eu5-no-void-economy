@@ -105,6 +105,33 @@ modeu5_rebuild_human_relevant_markets = {
 	}
 }
 
+modeu5_prepare_human_relevant_full_ledger_markets = {
+	if = {
+		limit = { modeu5_accounting_human_relevant_persistence_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_human_relevant_full_ledger_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable = modeu5_human_relevant_full_ledger_stamp }
+					global_var:modeu5_human_relevant_full_ledger_stamp != scope:modeu5_human_relevant_full_ledger_stamp
+				}
+			}
+			set_global_variable = {
+				name = modeu5_human_relevant_full_ledger_stamp
+				value = scope:modeu5_human_relevant_full_ledger_stamp
+			}
+			modeu5_rebuild_human_relevant_markets = yes
+		}
+	}
+}
+
 modeu5_perf13_reset_active_repair_metrics = {
 	remove_global_variable = modeu5_perf13_active_repair_goods_scanned
 	remove_global_variable = modeu5_perf13_active_repair_market_good_scans

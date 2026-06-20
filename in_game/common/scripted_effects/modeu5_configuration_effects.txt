@@ -31,6 +31,7 @@ modeu5_enter_test_audit_runtime_mode = {
 
 modeu5_clear_accounting_persistence_flags = {
 	remove_global_variable = modeu5_accounting_persistence_minimal
+	remove_global_variable = modeu5_accounting_persistence_human_relevant
 	remove_global_variable = modeu5_accounting_persistence_strict
 }
 
@@ -42,6 +43,11 @@ modeu5_enter_minimal_accounting_persistence = {
 modeu5_enter_strict_accounting_persistence = {
 	modeu5_clear_accounting_persistence_flags = yes
 	set_global_variable = modeu5_accounting_persistence_strict
+}
+
+modeu5_enter_human_relevant_accounting_persistence = {
+	modeu5_clear_accounting_persistence_flags = yes
+	set_global_variable = modeu5_accounting_persistence_human_relevant
 }
 
 modeu5_initialize_configuration_state_effect = {
@@ -88,6 +94,10 @@ modeu5_initialize_configuration_state_effect = {
 	if = {
 		limit = { has_game_rule = modeu5_accounting_strict }
 		modeu5_enter_strict_accounting_persistence = yes
+	}
+	else_if = {
+		limit = { has_game_rule = modeu5_accounting_human_relevant }
+		modeu5_enter_human_relevant_accounting_persistence = yes
 	}
 	else = {
 		modeu5_enter_minimal_accounting_persistence = yes
