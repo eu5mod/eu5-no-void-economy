@@ -8,6 +8,16 @@ This mode intend to reflect the real economy; only good that are sold generate a
 
 ## Module description
 
+# NVE : No Void Economy
+
+No void economy is born from a conclusion :
+ - In EU5, goods that are produced creates income regardless of a sale
+ - In real life good that are sold creates income
+
+This mode intend to reflect the real economy; only good that are sold generate an income. This a mod in which only goods that are sold generate income to Estates & Country, thus reflecting the real economy. It is composed of a required module that remove the Void Economy as well as "Optional" extension.
+
+## Module description
+
 The **Core** ensure that only sold goods creates a revenue & estates adapt their productions to the revenues. We had to include minor balances to keep revenues consistant. 
 The **Community Balance Options**, are a options you can activate/deactivate to balance the game. 
  - 100 to 199 - Are economic flavour options designed to increase realism & strategic depth
@@ -45,6 +55,7 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 502:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
 
 ⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
+
 
 <!--
  ### Economic Balance Extension (Optional)
