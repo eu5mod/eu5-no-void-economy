@@ -33,6 +33,10 @@ modeu5_accounting_persistence = {
 		flag = general_rule
 	}
 
+	modeu5_accounting_human_relevant = {
+		flag = general_rule
+	}
+
 	modeu5_accounting_strict = {
 		flag = general_rule
 	}

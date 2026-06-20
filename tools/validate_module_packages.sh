@@ -348,12 +348,28 @@ fi
 for required_accounting_key in \
 	rule_modeu5_accounting_persistence \
 	setting_modeu5_accounting_minimal \
+	setting_modeu5_accounting_human_relevant \
 	setting_modeu5_accounting_strict; do
 	if ! search_quiet "^[[:space:]]${required_accounting_key}:" main_menu/localization/english/modeu5_game_rules_l_english.yml; then
 		printf 'ModeU5 accounting persistence localization key is missing: %s\n' "$required_accounting_key" >&2
 		exit 1
 	fi
 done
+
+if ! search_quiet 'modeu5_human_relevant_full_ledger_market_trigger = yes' in_game/common/scripted_triggers/modeu5_configuration_triggers.txt; then
+	printf 'Human-relevant full-ledger trigger must be part of the PERF-19 persistence policy.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet '^modeu5_prepare_human_relevant_full_ledger_markets = \{' in_game/common/scripted_effects/modeu5_performance_effects.txt; then
+	printf 'Human-relevant full-ledger market preparation helper is missing.\n' >&2
+	exit 1
+fi
+
+if ! search_quiet 'modeu5_prepare_human_relevant_full_ledger_markets = yes' in_game/common/scripted_effects/modeu5_stock_effects.txt; then
+	printf 'Monthly stock cycle must prepare human-relevant full-ledger markets before US-00 persistence decisions.\n' >&2
+	exit 1
+fi
 
 for required_effect in \
 	modeu5_load_capacity_breakdown \
