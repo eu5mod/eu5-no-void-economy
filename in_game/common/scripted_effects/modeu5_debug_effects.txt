@@ -114,11 +114,8 @@ modeu5_debug_clear_last_country_market_capacity = {
 	remove_variable = modeu5_debug_last_capacity_available
 	remove_variable = modeu5_debug_last_capacity_over_cap
 	remove_variable = modeu5_debug_last_capacity_location_count
-	remove_variable = modeu5_debug_last_capacity_marketplace_levels
-	remove_variable = modeu5_debug_last_capacity_market_warehouse_levels
-	remove_variable = modeu5_debug_last_capacity_funduq_levels
-	remove_variable = modeu5_debug_last_capacity_caravanserai_levels
-	remove_variable = modeu5_debug_last_capacity_fondaco_levels
+	remove_variable = modeu5_debug_last_capacity_market_count
+	remove_variable = modeu5_debug_last_capacity_country_pool_total
 	remove_variable = modeu5_debug_last_monthly_capacity_refresh_stamp
 	remove_variable = modeu5_debug_last_monthly_capacity_refresh_gate_passed
 }
@@ -142,11 +139,8 @@ modeu5_debug_capture_country_market_capacity = {
 			set_variable = { name = modeu5_debug_last_capacity_available value = scope:modeu5_capacity_available }
 			set_variable = { name = modeu5_debug_last_capacity_over_cap value = scope:modeu5_capacity_over_cap }
 			set_variable = { name = modeu5_debug_last_capacity_location_count value = scope:modeu5_capacity_location_count }
-			set_variable = { name = modeu5_debug_last_capacity_marketplace_levels value = scope:modeu5_capacity_marketplace_level_count }
-			set_variable = { name = modeu5_debug_last_capacity_market_warehouse_levels value = scope:modeu5_capacity_market_warehouse_level_count }
-			set_variable = { name = modeu5_debug_last_capacity_funduq_levels value = scope:modeu5_capacity_funduq_level_count }
-			set_variable = { name = modeu5_debug_last_capacity_caravanserai_levels value = scope:modeu5_capacity_caravanserai_level_count }
-			set_variable = { name = modeu5_debug_last_capacity_fondaco_levels value = scope:modeu5_capacity_fondaco_level_count }
+			set_variable = { name = modeu5_debug_last_capacity_market_count value = scope:modeu5_capacity_market_count }
+			set_variable = { name = modeu5_debug_last_capacity_country_pool_total value = scope:modeu5_capacity_country_pool_total }
 		}
 	}
 }

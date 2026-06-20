@@ -17,6 +17,30 @@ monthly_country_pulse = {
 	}
 }
 
+on_location_changed_rank = {
+	on_actions = {
+		modeu5_capacity_location_rank_changed_pulse
+	}
+}
+
+modeu5_capacity_location_rank_changed_pulse = {
+	effect = {
+		modeu5_handle_location_capacity_changed = yes
+	}
+}
+
+on_capital_moved = {
+	on_actions = {
+		modeu5_capacity_capital_moved_pulse
+	}
+}
+
+modeu5_capacity_capital_moved_pulse = {
+	effect = {
+		modeu5_handle_capital_moved_capacity = yes
+	}
+}
+
 modeu5_monthly_stock_cycle_pulse = {
 	effect = {
 		modeu5_run_monthly_stock_cycle = yes

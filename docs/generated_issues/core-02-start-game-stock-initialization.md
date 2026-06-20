@@ -40,7 +40,7 @@ Feeds: all stock-owning and stock-consuming features
 | Delayed start-game hook | none | extend `on_game_start` with a unique ModeU5 on-action after `delay = { days = 1 }` | CONFIRMED | 089 |
 | Persistent initialization/version guard | none | `global_var:modeu5_stock_schema_version`, `modeu5_initialization_state`, global-variable effects/triggers | CONFIRMED | 090 |
 | Iterate countries, markets, and goods | none | `every_country`, `every_market_in_world`, `every_goods` | CONFIRMED | 001-002, 006 |
-| Country capacity by market and good | country x market x good | US-02 authoritative capacity map | CONFIRMED | 007, 017, 033-035 |
+| Country capacity by market | country x market | US-02 authoritative shared capacity map | CONFIRMED | 007, 017, 033-035 |
 | Opening vanilla market stock | market x good | `"stockpile_in_market(goods:<good>)"` on market scope after the delayed start hook | CONFIRMED | 091 |
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
 | Deterministic residue recipient | temporary list or typed country iterator with positive allocation weight | `ordered_in_list` or typed `ordered_country` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
@@ -77,13 +77,15 @@ Physical numeric initialization states:
 Stock and capacity storage:
 
 ```txt
-logical dimensions: country x market x good
-logical record fields: stock, capacity and optional capacity breakdown
+logical stock dimensions: country x market x good
+logical capacity dimensions: country x market
+logical stock fields: stock
+logical capacity fields: capacity and optional capacity breakdown
 owner scope: country
-tuple/key: market x good logical tuple; market physical key
+tuple/key: market x good logical tuple for stock; market physical key for stock and capacity
 confirmed physical map family:
   modeu5_<good>_stock_by_market
-  modeu5_<good>_stock_cap_by_market
+  modeu5_stock_cap_by_market
   optional US-02 capacity-breakdown maps
 physical value type: numeric
 default value: 0
@@ -190,7 +192,7 @@ For each country with positive capacity in the selected market:
 ```txt
 country_initial_share =
   opening_target_quantity
-  * country_market_good_capacity
+  * country_market_capacity shared across goods
   / total_modeu5_capacity
 ```
 

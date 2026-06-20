@@ -220,7 +220,8 @@ Expected:
 
 ```txt
 Total capacity equals base + domestic building + foreign building capacity
-Base capacity equals market merchant capacity + owned-location rank/capital contribution
+Base capacity equals target market trade-capacity contribution + per-market owned-location rank/capital share
+Country location pool divided by market count plus target market trade capacity equals the tested market capacity
 Country-level wrapper output matches direct wheat recalculation
 The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market
@@ -1696,9 +1697,30 @@ TECH-01 126 remains NOT_CONFIRMED for durable per-market country lists
 TECH-01 127 remains NOT_CONFIRMED for a dedicated market-change hook
 ```
 
+### Test 28 - PERF-08 shared storage capacity cache
+
+Run the full protocol in:
+
+```txt
+docs/tests/PERF_08_SHARED_STORAGE_CAPACITY_RUNBOOK.md
+```
+
+Expected:
+
+```txt
+Generated helpers read modeu5_stock_cap_by_market, not modeu5_<good>_stock_cap_by_market
+ModeU5 US-02 DUMP capacity ... iron_wrapper_capacity=<same country-market capacity>
+ModeU5 US-02 RESULT capacity PASS
+CORE-01 add/transfer capacity enforcement tests pass
+CORE-02 initialization allocation tests pass
+ModeU5 US-00 RESULT controlled_e2e PASS
+ModeU5 US-00 RESULT monthly_runtime PASS
+No ModeU5 script-system error mentions missing per-good capacity maps
+```
+
 ## US-13 tests
 
-### Test 28 — Non-horde conquest surcharge by age
+### Test 29 — Non-horde conquest surcharge by age
 
 Expected:
 

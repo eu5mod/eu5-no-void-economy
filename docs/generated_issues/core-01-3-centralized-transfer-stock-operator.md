@@ -28,7 +28,7 @@ Feeds counters to: US-10.2, US-10.3, debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Seller and buyer stock fields | country x market x good | country-scoped per-good stock maps keyed by market | CONFIRMED | 007, 015 |
-| Buyer capacity field | buyer x target market x good | country-scoped per-good capacity map keyed by target market | CONFIRMED | 007, 017-018 |
+| Buyer capacity field | buyer x target market | country-scoped `modeu5_stock_cap_by_market` keyed by target market and shared by all goods | CONFIRMED | 007, 017-018 |
 | Source and target aggregates | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved seller, buyer, source market, target market, and good scopes | CONFIRMED | 008 |
 | Bounded transfer arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
@@ -44,7 +44,7 @@ owner scope: seller country and buyer country
 tuple/key: market x good logical tuple; market scope physical key
 confirmed physical map family:
   modeu5_<good>_stock_by_market
-  modeu5_<good>_stock_cap_by_market
+  modeu5_stock_cap_by_market
 physical value type: numeric
 default value: 0
 write owner: modeu5_transfer_stock for transfer mutations

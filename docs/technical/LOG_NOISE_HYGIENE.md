@@ -59,8 +59,10 @@ and its generated localization are present, synchronized, and untracked.
 
 ## Metadata
 
-All loaded ModeU5 packages must have `.metadata/metadata.json` with an `id`.
-Current packages use these IDs:
+All loaded ModeU5 packages must have `.metadata/metadata.json` with `id` as
+the first member. EU5's metadata reader reports `Expected member (id)` when the
+file starts with another key even though the JSON is otherwise valid. Current
+packages use these IDs:
 
 ```txt
 modeu5_core
@@ -72,7 +74,8 @@ modeu5_core_tests
 
 If `error.log` contains a metadata read error mentioning the old bootstrap name
 `ModeU5 Country Stocks Within Markets`, the likely cause is a stale launcher
-entry or an old local install path still visible to EU5. Run:
+entry or an old local install path still visible to EU5. If it mentions a
+current package, check that `id` is the first JSON member. Run:
 
 ```bash
 ./tools/install_local_packages.sh --check
