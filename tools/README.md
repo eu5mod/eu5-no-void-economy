@@ -31,9 +31,9 @@ persistence adapters and will also run optional generated-balance scaffolds when
 their script exists on the current branch and the required vanilla source path
 is configured.
 
-Any new generated text artifact should follow the `modeu5_*_generated.txt`
-naming convention so it is ignored by Git and caught by the generated-file
-validation guard.
+Any new generated text artifact should follow the `modeu5_*_generated.txt` or
+`modeu5_*_generated_l_english.yml` naming convention so it is ignored by Git and
+caught by the generated-file validation guard.
 
 Regenerate only the stock adapters:
 
@@ -63,12 +63,14 @@ modifiers to:
 
 ```txt
 main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
+main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml
 ```
 
 Those static modifiers are unit-sized location modifiers. Runtime code applies
 the calculated penalty through `add_location_modifier size = <penalty>`, so the
 static file must define `game_data.category = location` and must not hard-code a
-fixed penalty value.
+fixed penalty value. The matching generated localization prevents EU5 from
+printing placeholder `STATIC MODIFIER NAME ...` lines in `error.log`.
 
 ## US-09 economy override probe
 
@@ -146,6 +148,10 @@ Publish Core, the three optional gameplay companions, and the testing-only packa
 The installer runs `./tools/generate_all.sh` before publishing so ignored
 generated artifacts are present in the installed local mod.
 
+The installer also normalizes installed EU5-loaded `.txt`, `.yml`, and `.gui`
+files to UTF-8 BOM. Keep source files readable in Git; use the installer and
+`--check` to validate the package EU5 actually loads.
+
 The installer writes `MODEU5_SOURCE.txt` into every installed package so the
 branch and commit loaded by EU5 can be checked without guessing:
 
@@ -163,6 +169,9 @@ Also remove or disable any stale real installation directory that can shadow
 the installed `modeu5_core`. `--check` and each package's
 `MODEU5_SOURCE.txt` are the source of truth for the branch and commit EU5 will
 load.
+
+See `docs/technical/LOG_NOISE_HYGIENE.md` for the distinction between blocking
+errors, removable ModeU5 load noise, and tolerated test-only dump assertions.
 
 ## Local logs
 
