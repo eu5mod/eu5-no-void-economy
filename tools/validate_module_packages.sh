@@ -27,6 +27,29 @@ search_lines() {
 	fi
 }
 
+has_utf8_bom() {
+	local file="$1"
+
+	LC_ALL=C perl -e '
+		binmode STDIN;
+		my $bytes = "";
+		my $read = read STDIN, $bytes, 3;
+		exit(($read == 3 && $bytes eq "\xEF\xBB\xBF") ? 0 : 1);
+	' < "$file"
+}
+
+localization_starts_with_l_english_after_bom() {
+	local file="$1"
+
+	LC_ALL=C perl -e '
+		binmode STDIN;
+		my $line = <STDIN>;
+		exit 1 unless defined $line;
+		$line =~ s/^\xEF\xBB\xBF//;
+		exit($line =~ /^l_english:/ ? 0 : 1);
+	' < "$file"
+}
+
 tracked_generated_files="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
 if [[ -n "$tracked_generated_files" ]]; then
 	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
@@ -338,12 +361,12 @@ for required_localization_file in \
 			"$required_localization_file" >&2
 		exit 1
 	fi
-	if [[ "$(LC_ALL=C head -c 3 "$required_localization_file" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
+	if ! has_utf8_bom "$required_localization_file"; then
 		printf 'ModeU5 localization file must use UTF-8 BOM encoding: %s\n' \
 			"$required_localization_file" >&2
 		exit 1
 	fi
-	if ! LC_ALL=C perl -0pe 's/^\xEF\xBB\xBF//' "$required_localization_file" | head -n 1 | grep -q '^l_english:'; then
+	if ! localization_starts_with_l_english_after_bom "$required_localization_file"; then
 		printf 'ModeU5 localization file must start with l_english: after the BOM: %s\n' \
 			"$required_localization_file" >&2
 		exit 1

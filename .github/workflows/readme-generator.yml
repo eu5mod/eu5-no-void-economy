@@ -1,39 +1,39 @@
 name: Generate README
 
-"on":
+on:
+  # Regenerate README for any PR that touches the templates or workflow
   pull_request:
-    types:
-      - closed
     paths:
       - README.template.md
       - .modeu5.local.env.template
-      - .github/workflows/generate-readme.yml
-
-  workflow_dispatch:
+      - .github/workflows/readme-generator.yml
+  # Regenerate README whenever `main` is updated (e.g. after merge)
+  push:
+    branches:
+      - main
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
 
 permissions:
   contents: write
 
 jobs:
   generate-readme:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Install Python dependencies
-        run: python3 -m pip install python-dotenv
+        with:
+          fetch-depth: 0
 
       - name: Generate README.md from template
         run: |
           python3 <<'PY'
           from decimal import Decimal
           from pathlib import Path
+          import shlex
           import sys
-
-          from dotenv import dotenv_values
 
           template_path = Path("README.template.md")
           env_path = Path(".modeu5.local.env.template")
@@ -60,14 +60,19 @@ jobs:
               "MODEU5_US16_CASSUS_BELLI_VALIDITY": as_plain_value,
           }
 
-          env_values = dotenv_values(env_path)
+          env_values = {}
+          for line in env_path.read_text(encoding="utf-8").splitlines():
+              line = line.strip()
+              if not line or line.startswith("#") or "=" not in line:
+                  continue
+              key, raw_value = line.split("=", 1)
+              lexer = shlex.shlex(raw_value, posix=True)
+              lexer.whitespace_split = True
+              lexer.commenters = "#"
+              parts = list(lexer)
+              env_values[key.strip()] = parts[0] if parts else ""
 
-          missing = [
-              variable
-              for variable in formatters
-              if variable not in env_values or env_values[variable] is None
-          ]
-
+          missing = [variable for variable in formatters if variable not in env_values or env_values[variable] is None]
           if missing:
               print(f"Missing variables in {env_path}:")
               for variable in missing:
@@ -75,36 +80,27 @@ jobs:
               sys.exit(1)
 
           readme = template_path.read_text(encoding="utf-8")
-
           for variable, formatter in formatters.items():
-              readme = readme.replace(
-                  f"<{variable}>",
-                  formatter(env_values[variable]),
-              )
+              readme = readme.replace(f"<{variable}>", formatter(env_values[variable]))
 
           output_path.write_text(readme, encoding="utf-8")
           PY
 
-      - name: Check generated README on pull requests
-        if: github.event_name == 'pull_request'
+      - name: Commit README updates if changed
         run: |
-          if ! git diff --exit-code README.md; then
-            echo "::error::README.md is not up to date."
-            exit 1
+          if ! git diff --quiet README.md; then
+            echo "README changed; committing update"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: regenerate README from template"
+            # For PRs, push back to the source branch
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              # For pushes to main, push directly back to main
+              git push origin HEAD
+            fi
+          else
+            echo "README is up to date; no commit needed"
           fi
-
-      - name: Commit generated README on current branch
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: |
-          if git diff --quiet README.md; then
-            echo "README.md is already up to date."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add README.md
-          git commit -m "Generate README from template"
-
-          git push origin HEAD:${GITHUB_REF_NAME}
