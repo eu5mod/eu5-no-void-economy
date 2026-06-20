@@ -68,6 +68,8 @@ The stock write marks modeu5_wheat_active_markets.
 The stock write marks modeu5_active_markets_any_good.
 Dirty validation repairs the first corruption.
 Active validation repairs the second corruption through the active market list.
+Active validation rebuilds the current-market country work cache once for the
+active market, then reuses that prepared cache for active goods.
 Empty dirty validation remains a no-op.
 The monthly seen-market registry can report duplicate market encounters without
 skipping country-owned processing.
@@ -79,8 +81,33 @@ Expected dump lines:
 ModeU5 US-11 DUMP dirty_reconciliation records_checked=1 inconsistencies=1 rebuilds=1 failures=0 market_stock=150.00
 ModeU5 US-11 DUMP empty_reconciliation records_checked=0 inconsistencies=0 rebuilds=0 failures=0
 ModeU5 US-11 DUMP active_reconciliation type=3 records_checked=1 inconsistencies=1 rebuilds=1 failures=0 market_stock=150.00
+ModeU5 PERF-07 DUMP market_owned_runtime active_markets=1 cache_rebuilds=1 active_goods=1 dirty_repairs=0
 ModeU5 US-11 RESULT reconciliation PASS
 ```
+
+## Scenario B - Reconciliation Cadence Gates
+
+Setup:
+
+```txt
+Start a disposable initialized campaign.
+Run:
+
+event modeu5_debug.1
+
+Choose "Test US-11 reconciliation cadence gates".
+```
+
+Expected dump lines:
+
+```txt
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
+```
+
+This proves that normal/debug/verbose debug do not trigger automatic monthly
+reconciliation, while dedicated audit mode and the four-year pulse remain valid
+automatic reconciliation cadences.
 
 When reviewing a monthly runtime smoke test, also inspect:
 

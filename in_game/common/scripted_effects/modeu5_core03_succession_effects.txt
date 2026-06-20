@@ -2,8 +2,9 @@
 #
 # Stock is conserved through centralized CORE-01 operators. Location ownership
 # changes split the loser's stock by the transferred location's US-02 storage
-# capacity share. Country lifecycle hooks only validate or consolidate residual
-# stock after location-level transfers have already run.
+# capacity share. Country lifecycle hooks mark the affected records dirty
+# through centralized stock operators; reconciliation is handled by debug,
+# monthly audit, or four-yearly cadence.
 
 modeu5_core03_handle_location_changed_owner = {
 	if = {
@@ -24,7 +25,6 @@ modeu5_core03_handle_location_changed_owner = {
 
 		set_global_variable = modeu5_core03_last_location_transfer_attempted
 		modeu5_core03_transfer_location_all_goods = yes
-		modeu5_validate_dirty_stock_consistency = yes
 	}
 	else = {
 		set_global_variable = modeu5_core03_last_location_transfer_skipped
@@ -35,7 +35,6 @@ modeu5_core03_handle_new_country_finalizer = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		set_global_variable = modeu5_core03_last_country_finalizer_attempted
-		modeu5_validate_dirty_stock_consistency = yes
 	}
 	else = {
 		set_global_variable = modeu5_core03_last_country_finalizer_skipped
@@ -54,7 +53,6 @@ modeu5_core03_handle_annexation_finalizer = {
 
 		set_global_variable = modeu5_core03_last_annexation_finalizer_attempted
 		modeu5_core03_transfer_residual_all_goods = yes
-		modeu5_validate_dirty_stock_consistency = yes
 	}
 	else = {
 		set_global_variable = modeu5_core03_last_annexation_finalizer_skipped

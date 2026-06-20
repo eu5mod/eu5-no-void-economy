@@ -139,6 +139,11 @@ need. For the first pass, use:
 docs/tests/PERF_01_LOW_RISK_QUICK_WINS_RUNBOOK.md
 ```
 
+US-11 cadence changes must also prove that debug and verbose debug do not
+enable automatic reconciliation. Only dedicated audit mode may run monthly
+automatic reconciliation; explicit debug events and the four-year pulse remain
+valid reconciliation entry points.
+
 Native relationship traversal PRs must prove that country-driven flows use the
 native country-to-market iterator before broader sparse caches are introduced.
 For the first native traversal pass, use:
@@ -865,7 +870,7 @@ Country and market stock remain unchanged
 Expected:
 
 ```txt
-ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly/yearly stock reconciliation
+ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly audit and four-year stock reconciliation
 A permanent location owner change transfers loser stock by the transferred location capacity share
 The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
 The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
@@ -902,6 +907,7 @@ Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
 Rebuild and consistency validation
 US-11 dirty-record reconciliation
+US-11 reconciliation cadence gates
 ```
 
 Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
@@ -923,7 +929,9 @@ modeu5_test_rebuild_passed = 1
 modeu5_test_validation_repair_passed = 1
 modeu5_test_validation_noop_passed = 1
 modeu5_test_reconciliation_dirty_passed = 1
+modeu5_test_reconciliation_active_passed = 1
 modeu5_test_reconciliation_empty_passed = 1
+modeu5_test_reconciliation_cadence_passed = 1
 ```
 
 Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
@@ -1240,24 +1248,29 @@ A second pass with no mutation checks zero records
 
 ---
 
-### Test 8D — Pulse guards and yearly safety pass
+### Test 8D — Reconciliation cadence gates
 
 Setup:
 
 ```txt
-Use an initialized controlled fixture
-Trigger multiple country monthly pulses in one calendar month
-Corrupt one market/good cache without adding it to a dirty list
-Trigger multiple country yearly pulses in one calendar year
+Use an initialized controlled fixture.
+Run:
+event modeu5_debug.1
+
+Select "Test US-11 reconciliation cadence gates".
 ```
 
 Expected result:
 
 ```txt
-The monthly global reconciliation runs once for the month
-The yearly global reconciliation runs once for the year
-The yearly exhaustive pass detects and rebuilds the unindexed corruption
+Normal runtime does not stamp or run monthly reconciliation
+Debug runtime does not stamp or run monthly reconciliation
+Audit runtime stamps and runs monthly reconciliation
+Four-year reconciliation stamps and runs once for the current year
 Automatic reconciliation does not run before CORE-02 initialization completes and the persisted stock schema version matches the current schema
+debug.log contains:
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
 ```
 
 ## US-00 void economy tests
@@ -1649,15 +1662,36 @@ Expected:
 PASS - Dirty market-good reconciliation
 PASS - Active market-good reconciliation
 PASS - Empty reconciliation is a no-op
+PASS - US-11 reconciliation cadence gates
 modeu5_active_markets_any_good contains the fixture market
 modeu5_wheat_active_markets contains the fixture market
 Active validation repairs the test market without requiring every_market_in_world
-Strict exhaustive validation remains available for manual audit
+Strict exhaustive validation remains available for explicit manual audit only
+```
+
+### Test 27 - PERF-07 market-owned runtime pass
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+ModeU5 PERF-07 DUMP market_owned_runtime active_markets>=1 cache_rebuilds>=1 active_goods>=1 dirty_repairs>=0
+Active validation uses the rebuilt current-market country work cache for active goods
+TECH-01 126 remains NOT_CONFIRMED for durable per-market country lists
+TECH-01 127 remains NOT_CONFIRMED for a dedicated market-change hook
 ```
 
 ## US-13 tests
 
-### Test 27 — Non-horde conquest surcharge by age
+### Test 28 — Non-horde conquest surcharge by age
 
 Expected:
 

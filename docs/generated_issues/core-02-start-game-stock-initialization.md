@@ -20,7 +20,7 @@ Add one delayed, versioned, idempotent `on_game_start` pipeline that:
 4. allocates the full opening quantity to countries proportionally to their capacity through `modeu5_add_stock`;
 5. permits the resulting country stocks to exceed capacity;
 6. resolves fixed-point residue without truncating the opening quantity;
-7. rebuilds and validates every market aggregate;
+7. rebuilds every market aggregate from country stocks;
 8. enables monthly ModeU5 gameplay only after successful completion.
 
 ## Runtime position
@@ -29,7 +29,7 @@ Add one delayed, versioned, idempotent `on_game_start` pipeline that:
 Start-game step: on_game_start -> delay 1 day -> modeu5_start_game_dispatcher
 Monthly step: the monthly dispatcher must skip stock gameplay until initialization_state = complete
 Yearly step: none
-Depends on: CORE-00, CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02
+Depends on: CORE-00, CORE-01.1, CORE-01.5, US-01, US-02
 Feeds: all stock-owning and stock-consuming features
 ```
 
@@ -45,7 +45,8 @@ Feeds: all stock-owning and stock-consuming features
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
 | Deterministic residue recipient | temporary list or typed country iterator with positive allocation weight | `ordered_in_list` or typed `ordered_country` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
 | Stock addition | country x market x good | `modeu5_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
-| Aggregate rebuild and validation | market x good | `modeu5_rebuild_market_stock_from_country_stocks`, `modeu5_validate_stock_consistency` | CONFIRMED | 019-020 |
+| Aggregate rebuild | market x good | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
+| Post-start reconciliation cadence | stock runtime | debug events, monthly audit mode, and `four_yearly_country_pulse` | CONFIRMED | 020, 131 |
 
 ## Persistent storage / variable-map contract
 
@@ -135,7 +136,7 @@ no schema marker and no country stock:
   fresh initialization
 
 current schema marker:
-  no reseed; validate existing data only
+  no reseed; do not automatically validate at startup
 
 current schema marker with failed state:
   diagnostics only; never seed or enable monthly stock gameplay automatically
@@ -231,17 +232,19 @@ remaining_initial_quantity =
 - Never exceed `opening_target_quantity`.
 - A negative residue is a blocking initialization error; do not compensate by removing arbitrary country stock.
 
-### Phase 6 - Rebuild, validate, and commit
+### Phase 6 - Rebuild and commit
 
 For every initialized market x good:
 
 1. call `modeu5_rebuild_market_stock_from_country_stocks`;
-2. call `modeu5_validate_stock_consistency`;
-3. confirm country stocks are non-negative and report any over-cap amount without correcting it;
-4. confirm aggregate difference is zero;
-5. confirm allocated quantity matches the full opening source within epsilon.
+2. confirm country stocks are non-negative and report any over-cap amount without correcting it;
+3. confirm allocated quantity matches the full opening source within epsilon.
 
 Set `modeu5_stock_schema_version` and `modeu5_initialization_state = complete` only after the global pass succeeds.
+
+CORE-02 does not run US-11 reconciliation automatically after initialization.
+Later consistency checks are owned by explicit debug events, monthly audit mode,
+or the four-year reconciliation cadence.
 
 If a blocking check fails:
 
@@ -279,7 +282,7 @@ docs/tests/TEST_PLAN.md
 ## Dependencies
 
 ```txt
-Depends on: CORE-00, CORE-01.1, CORE-01.5, CORE-01.6, US-01, US-02, TECH-01 089-093, 099
+Depends on: CORE-00, CORE-01.1, CORE-01.5, US-01, US-02, TECH-01 089-093, 099
 Blocks: enabling the monthly ModeU5 economic cycle
 Related US: US-01, US-02, US-03, US-04, US-11
 ```
@@ -296,7 +299,8 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - Recalculate all startup capacities before calculating any opening allocation.
 - Use the current vanilla market stock as the only opening-stock source.
 - Use `modeu5_add_stock` with `capacity_policy = allow_over_capacity` for every positive country allocation.
-- Use CORE-01.5 and CORE-01.6 for aggregate repair and validation.
+- Use CORE-01.5 for aggregate repair during initialization. Do not invoke
+  CORE-01.6/US-11 validation automatically at startup.
 - Treat opening over-cap stock as a valid initialized state, not rejected production, void wealth, or a production penalty.
 - Keep zero-default storage sparse.
 - Do not silently repair a newer, incompatible schema.
@@ -328,7 +332,7 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - [ ] A country may exceed capacity when the opening source exceeds total capacity.
 - [ ] Total initialized stock equals the full opening source within epsilon.
 - [ ] Market aggregates equal the sum of country stocks.
-- [ ] A second invocation with the current complete schema performs validation only and adds no stock.
+- [ ] A second invocation with the current complete schema performs no reseed, no automatic validation, and adds no stock.
 - [ ] Existing source stock with no marker is never duplicated.
 - [ ] Opening over-cap quantities and any unavailable vanilla source are visible in debug.
 - [ ] `error.log` has no new blocking error.

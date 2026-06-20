@@ -1,7 +1,7 @@
 # PERF-02 probes native country -> market traversal semantics.
 
 modeu5_perf02_clear_probe_results = {
-	modeu5_enter_audit_runtime_mode = yes
+	modeu5_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = modeu5_test_perf02_native_market_iterator_started
 	remove_global_variable = modeu5_test_perf02_native_market_iterator_passed
