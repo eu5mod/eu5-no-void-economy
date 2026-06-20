@@ -117,6 +117,11 @@ if command -v jq >/dev/null 2>&1; then
 		expected_name="${expected_metadata_names[$index]}"
 		expected_description_prefix="${expected_description_prefixes[$index]}"
 
+		first_metadata_key="$(sed -n '/^[[:space:]]*"/{s/^[[:space:]]*"\([^"]*\)".*/\1/p;q;}' "$metadata_file")"
+		if [ "$first_metadata_key" != "id" ]; then
+			printf 'ModeU5 metadata must start with id as the first member: %s\n' "$metadata_file" >&2
+			exit 1
+		fi
 		test "$(jq -r '.id' "$metadata_file")" = "$expected_id"
 		test "$(jq -r '.name' "$metadata_file")" = "$expected_name"
 		test "$(jq -r '.version' "$metadata_file")" = "0.1.0"
@@ -479,11 +484,13 @@ fi
 
 disallowed_stock_debug_log="$(
 	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$stock_test_effects" 2>/dev/null |
+		grep -v 'ModeU5 CORE-01 ' |
+		grep -v 'ModeU5 CORE-02 ' |
 		grep -v 'ModeU5 US-11 ' |
 		grep -v 'ModeU5 PERF-07 ' || true
 )"
 if [ -n "$disallowed_stock_debug_log" ]; then
-	printf 'Console-driven deterministic stock tests may use debug_log only for explicitly approved log-dump probes.\n' >&2
+	printf 'Console-driven deterministic stock tests may use debug_log only for approved static RESULT markers or explicitly approved log-dump probes.\n' >&2
 	printf '%s\n' "$disallowed_stock_debug_log" >&2
 	exit 1
 fi

@@ -739,16 +739,20 @@ failed assertion, an unexpected invariant violation, or another blocking
 diagnostic. A console-triggered result event that is called by another event
 must not be declared `orphan = yes`.
 
-Do not use `debug_log` or `test_log` in console-triggered deterministic tests.
+Do not use `test_log` in console-triggered deterministic tests. Static
+`debug_log` result markers are allowed when they use a literal `ModeU5 ... RESULT ...`
+string and are whitelisted by `tools/validate_module_packages.sh`.
 Controlled US-01/US-02 testing on June 16, 2026 showed that wrapper-event
-`debug_log`, scripted-effect `debug_log`, and `test_log` can all trip
-`Tried to localize with localization disabled` during a console launch.
-For these tests, rely on:
+dynamic `debug_log`, scripted-effect dynamic `debug_log`, and `test_log` can all
+trip `Tried to localize with localization disabled` during a console launch. For
+these tests, rely on:
 
 - result-marker presence;
 - result-event rows;
 - debug snapshot variables saved on the relevant scope;
 - `error_log` only for actual failure or blocked prerequisites.
+- static `ModeU5 ... RESULT ... PASS/FAIL/BLOCKED` lines where the runbook
+  names them.
 
 This is a fallback, not the target end-state. Logs remain the authoritative
 debug artifact; if a PR needs numeric dump review and the values are only

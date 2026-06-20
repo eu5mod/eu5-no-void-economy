@@ -648,10 +648,23 @@ modeu5_debug_run_single_record_stock_tests = {
 		remove_global_variable = modeu5_test_decay_passed
 		error_log = "ModeU5 deterministic CORE-01 decay test failed."
 	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_add_allow_over_capacity_passed
+			has_global_variable = modeu5_test_add_enforce_passed
+			has_global_variable = modeu5_test_remove_passed
+			has_global_variable = modeu5_test_decay_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT single_record PASS"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT single_record FAIL"
+	}
 }
 
 modeu5_debug_run_same_market_transfer_tests = {
 	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_same_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -775,12 +788,28 @@ modeu5_debug_run_same_market_transfer_tests = {
 	else = {
 		remove_global_variable = modeu5_test_same_market_transfer_passed
 		remove_global_variable = modeu5_test_invalid_same_record_passed
+		set_global_variable = modeu5_test_same_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 transfer test requires FRA and ENG."
+	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_same_market_transfer_passed
+			has_global_variable = modeu5_test_invalid_same_record_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_same_market_transfer_blocked }
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer BLOCKED missing_FRA_ENG"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer FAIL"
 	}
 }
 
 modeu5_debug_run_inter_market_transfer_test = {
 	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_inter_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -901,7 +930,21 @@ modeu5_debug_run_inter_market_transfer_test = {
 	}
 	else = {
 		remove_global_variable = modeu5_test_inter_market_transfer_passed
+		set_global_variable = modeu5_test_inter_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
+	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_inter_market_transfer_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_inter_market_transfer_blocked }
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer BLOCKED missing_FRA_ENG_or_distinct_markets"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer FAIL"
 	}
 }
 
@@ -1500,9 +1543,11 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 200
 			}
 			set_global_variable = modeu5_test_core02_proportional_passed
+			debug_log = "ModeU5 CORE-02 RESULT proportional PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_proportional_passed
+			debug_log = "ModeU5 CORE-02 RESULT proportional FAIL"
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
 		}
 
@@ -1569,15 +1614,28 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 150
 			}
 			set_global_variable = modeu5_test_core02_over_capacity_passed
+			debug_log = "ModeU5 CORE-02 RESULT over_capacity PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_over_capacity_passed
+			debug_log = "ModeU5 CORE-02 RESULT over_capacity FAIL"
 			error_log = "ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed."
+		}
+		if = {
+			limit = {
+				has_global_variable = modeu5_test_core02_proportional_passed
+				has_global_variable = modeu5_test_core02_over_capacity_passed
+			}
+			debug_log = "ModeU5 CORE-02 RESULT initialization PASS"
+		}
+		else = {
+			debug_log = "ModeU5 CORE-02 RESULT initialization FAIL"
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_core02_proportional_passed
 		remove_global_variable = modeu5_test_core02_over_capacity_passed
+		debug_log = "ModeU5 CORE-02 RESULT initialization BLOCKED missing_FRA_ENG"
 		error_log = "ModeU5 deterministic CORE-02 initialization tests require FRA and ENG."
 	}
 }

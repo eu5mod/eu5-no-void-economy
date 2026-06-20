@@ -165,6 +165,12 @@ PASS - Remove stock
 PASS - Decay stock
 ```
 
+Expected `debug.log` line:
+
+```txt
+ModeU5 CORE-01 RESULT single_record PASS
+```
+
 Then run:
 
 ```txt
@@ -184,6 +190,12 @@ PASS - Same-market transfer
 PASS - Invalid same-record transfer rejected
 ```
 
+Expected `debug.log` line:
+
+```txt
+ModeU5 CORE-01 RESULT same_market_transfer PASS
+```
+
 Then run:
 
 ```txt
@@ -200,6 +212,12 @@ Expected visible result:
 
 ```txt
 PASS - Inter-market transfer
+```
+
+Expected `debug.log` line:
+
+```txt
+ModeU5 CORE-01 RESULT inter_market_transfer PASS
 ```
 
 These scenarios prove `modeu5_add_stock` and `modeu5_transfer_stock` still read
@@ -224,6 +242,14 @@ Expected visible result:
 ```txt
 PASS - CORE-02 proportional opening allocation
 PASS - CORE-02 over-capacity opening allocation
+```
+
+Expected `debug.log` lines:
+
+```txt
+ModeU5 CORE-02 RESULT proportional PASS
+ModeU5 CORE-02 RESULT over_capacity PASS
+ModeU5 CORE-02 RESULT initialization PASS
 ```
 
 Expected failure absence:
@@ -378,6 +404,12 @@ Relevant dump lines:
 ```txt
 ModeU5 US-02 DUMP capacity ...
 ModeU5 US-02 RESULT capacity PASS
+ModeU5 CORE-01 RESULT single_record PASS
+ModeU5 CORE-01 RESULT same_market_transfer PASS
+ModeU5 CORE-01 RESULT inter_market_transfer PASS
+ModeU5 CORE-02 RESULT proportional PASS
+ModeU5 CORE-02 RESULT over_capacity PASS
+ModeU5 CORE-02 RESULT initialization PASS
 ModeU5 US-00 DUMP controlled_e2e ...
 ModeU5 US-00 RESULT controlled_e2e PASS
 ModeU5 US-00 DUMP monthly_runtime ...

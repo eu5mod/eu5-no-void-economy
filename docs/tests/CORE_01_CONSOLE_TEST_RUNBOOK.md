@@ -71,6 +71,12 @@ PASS - Remove stock
 PASS - Decay stock
 ```
 
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT single_record PASS
+```
+
 Transfer rows will display `FAIL / NOT RUN`. This is expected because this
 action clears previous markers and does not execute transfer tests.
 
@@ -94,6 +100,12 @@ Test same-market transfers
 ```txt
 PASS - Same-market transfer
 PASS - Invalid same-record transfer rejected
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT same_market_transfer PASS
 ```
 
 Add, remove, decay, and inter-market rows will display `FAIL / NOT RUN`. This
@@ -121,6 +133,12 @@ Test inter-market transfer
 
 ```txt
 PASS - Inter-market transfer
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT inter_market_transfer PASS
 ```
 
 All other rows will display `FAIL / NOT RUN`. This is expected.
