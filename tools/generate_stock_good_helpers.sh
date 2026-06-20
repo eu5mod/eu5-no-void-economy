@@ -231,6 +231,8 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 			-e "s/__VOID_TAXABLE_PROXY_MAP__/modeu5_${good}_void_taxable_income_proxy_by_market/g" \
 			-e "s/__PRODUCTION_PENALTY_MAP__/modeu5_${good}_production_penalty_by_market/g" \
 			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
+			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
+			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
 			"$template"
 		done
 	} > "$output"

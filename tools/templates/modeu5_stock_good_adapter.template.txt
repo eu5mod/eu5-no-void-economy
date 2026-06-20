@@ -2033,6 +2033,55 @@ modeu5_clear_loaded_void_economy_record_good___GOOD__ = {
 	modeu5_store_void_economy_record_good___GOOD__ = yes
 }
 
+modeu5_clear_us00_ui_monthly_counters_good___GOOD__ = {
+	if = {
+		limit = { scope:modeu5_country = { is_ai = no } }
+		scope:modeu5_country = {
+			if = {
+				limit = {
+					has_variable_map = __UI_MONTHLY_SURPLUS_MAP__
+					is_key_in_variable_map = { name = __UI_MONTHLY_SURPLUS_MAP__ target = scope:modeu5_market }
+				}
+				remove_from_variable_map = { name = __UI_MONTHLY_SURPLUS_MAP__ key = scope:modeu5_market }
+			}
+			if = {
+				limit = {
+					has_variable_map = __UI_MONTHLY_CONSUMPTION_MAP__
+					is_key_in_variable_map = { name = __UI_MONTHLY_CONSUMPTION_MAP__ target = scope:modeu5_market }
+				}
+				remove_from_variable_map = { name = __UI_MONTHLY_CONSUMPTION_MAP__ key = scope:modeu5_market }
+			}
+		}
+	}
+}
+
+modeu5_store_us10_ui_monthly_counters_good___GOOD__ = {
+	if = {
+		limit = {
+			scope:modeu5_country = { is_ai = no }
+		}
+		modeu5_clear_us00_ui_monthly_counters_good___GOOD__ = yes
+		scope:modeu5_country = {
+			if = {
+				limit = { scope:modeu5_ui_monthly_surplus > 0 }
+				add_to_variable_map = {
+					name = __UI_MONTHLY_SURPLUS_MAP__
+					key = scope:modeu5_market
+					value = scope:modeu5_ui_monthly_surplus
+				}
+			}
+			if = {
+				limit = { scope:modeu5_ui_monthly_consumption > 0 }
+				add_to_variable_map = {
+					name = __UI_MONTHLY_CONSUMPTION_MAP__
+					key = scope:modeu5_market
+					value = scope:modeu5_ui_monthly_consumption
+				}
+			}
+		}
+	}
+}
+
 modeu5_run_us00_monthly_pipeline_good___GOOD__ = {
 	scope:modeu5_country = {
 		every_market_present_in_country = {
@@ -2106,6 +2155,7 @@ modeu5_process_us00_monthly_market_good___GOOD__ = {
 		}
 		modeu5_apply_us00_previous_penalty_good___GOOD__ = yes
 		modeu5_clear_loaded_void_economy_record_good___GOOD__ = yes
+		modeu5_clear_us00_ui_monthly_counters_good___GOOD__ = yes
 		if = {
 			limit = { scope:modeu5_us00_market_produced_gate > 0 }
 			modeu5_ingest_us00_monthly_production_good___GOOD__ = yes
