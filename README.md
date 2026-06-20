@@ -8,7 +8,14 @@ This mode intend to reflect the real economy; only good that are sold generate a
 
 ## Module description
 
-__The core is :__ No Void Economics . It commes with **Community Balance Options**, a dozen of Option you can activate or deactivate to balance the game. Finaly we have **Extensions** that provide Balance change but requires to be activated at the begining of the game.
+The **Core** ensure that only sold goods creates a revenue & estates adapt their productions to the revenues. We had to include minor balances to keep revenues consistant. 
+The **Community Balance Options**, are a options you can activate/deactivate to balance the game. 
+ - 100 to 199 - Are economic flavour options designed to increase realism & strategic depth
+ - 200 to 299 - Remove punitive gameplay
+ - 300 to 399 - Create balancing "anchor", Only fixed price can allow to balance the game.
+ - 400 to 499 - Balance
+ - 500 to 599 - Flavour
+The **Extensions** that provide Balance change but requires to be activated at the begining of the game.
 
 ### Core (Required) - Community No Void Economics Package
 
@@ -25,19 +32,19 @@ __The core is :__ No Void Economics . It commes with **Community Balance Options
 #### Community Balance Options :
 __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition, Cassus Belli)
 
- - **Option 1:** Goods decay : Country looses 1% of their stored goods monthly (Status : ⏳) - Antiblobbing mesure
- - **Option 2:** Production bonus per building level is 1.5% instead of 1% (Status : ⏳)  - Further local spécialisqtion
- - **Option 3:** Remove Average Control Penalty on research seed (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
- - **Option 4:** RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
- - **Option 5:** Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
- - **Option 6:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
- - **Option 7:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳)
- - **Option 8:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
- - **Option 9:** Rebel threshold adjusted (Status : ⏳)
- - **Option 10:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
- - **Option 11:** Shorter war & War exhaustion rework. (Status : ⏳)
+ - **Option 100:** Goods decay : Country looses 1% of their stored goods monthly (Status : ⏳)
+ - **Option 101:** Production bonus per building level is 1.5% instead of 1% (Status : ⏳)  - Further local spécialisqtion
+ - **Option 200:** Remove Average Control Penalty on research seed (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
+ - **Option 300:** RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
+ - **Option 301:** Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
+ - **Option 400:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
+ - **Option 401:** Rebel threshold adjusted (Status : ⏳)
+ - **Option 402:** Shorter war & War exhaustion rework. (Status : ⏳)
+ - **Option 500:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳)
+ - **Option 501:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
+ - **Option 502:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
 
-⚠️: Want to see option 3, 4 & 5 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
+⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
 <!--
  ### Economic Balance Extension (Optional)
