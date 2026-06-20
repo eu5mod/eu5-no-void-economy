@@ -8,6 +8,16 @@ This mode intend to reflect the real economy; only good that are sold generate a
 
 ## Module description
 
+# NVE : No Void Economy
+
+No void economy is born from a conclusion :
+ - In EU5, goods that are produced creates income regardless of a sale
+ - In real life good that are sold creates income
+
+This mode intend to reflect the real economy; only good that are sold generate an income. This a mod in which only goods that are sold generate income to Estates & Country, thus reflecting the real economy. It is composed of a required module that remove the Void Economy as well as "Optional" extension.
+
+## Module description
+
 The **Core** ensure that only sold goods creates a revenue & estates adapt their productions to the revenues. We had to include minor balances to keep revenues consistant. 
 The **Community Balance Options**, are a options you can activate/deactivate to balance the game. 
  - 100 to 199 - Are economic flavour options designed to increase realism & strategic depth
@@ -24,8 +34,8 @@ The **Extensions** that provide Balance change but requires to be activated at t
  - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
  - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
  - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
- - Economy <MODEU5_US09_BONUS_PERCENT> faster (Status : ✅ ) - Required to compensate revenue loss
- - Estate consumption increasead <MODEU5_US15_BONUS_PERCENT> (Status : ⏳) - Required to compensate economic speed
+ - Economy 10% faster (Status : ✅ ) - Required to compensate revenue loss
+ - Estate consumption increasead 1.5% (Status : ⏳) - Required to compensate economic speed
  - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
  - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
 
@@ -40,11 +50,12 @@ __**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition
  - **Option 400:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
  - **Option 401:** Rebel threshold adjusted (Status : ⏳)
  - **Option 402:** Shorter war & War exhaustion rework. (Status : ⏳)
- - **Option 500:** Independantist don't start the war Initial Owner get a CB for <MODEU5_US16_CASSUS_BELLI_VALIDITY>  year (Status : ⏳)
+ - **Option 500:** Independantist don't start the war Initial Owner get a CB for 12  year (Status : ⏳)
  - **Option 501:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
  - **Option 502:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
 
 ⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
+
 
 <!--
  ### Economic Balance Extension (Optional)

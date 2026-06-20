@@ -1,40 +1,39 @@
 name: Generate README
 
 on:
+  # Regenerate README for any PR that touches the templates or workflow
   pull_request:
-    types:
-      - closed
     paths:
       - README.template.md
       - .modeu5.local.env.template
       - .github/workflows/readme-generator.yml
-  workflow_dispatch:
+  # Regenerate README whenever `main` is updated (e.g. after merge)
+  push:
+    branches:
+      - main
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   generate-readme:
-    if: (github.event.pull_request != null && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install Python dependencies
-        run: python3 -m pip install python-dotenv
-
       - name: Generate README.md from template
         run: |
           python3 <<'PY'
           from decimal import Decimal
           from pathlib import Path
+          import shlex
           import sys
-          from dotenv import dotenv_values
 
           template_path = Path("README.template.md")
           env_path = Path(".modeu5.local.env.template")
@@ -61,9 +60,19 @@ jobs:
               "MODEU5_US16_CASSUS_BELLI_VALIDITY": as_plain_value,
           }
 
-          env_values = dotenv_values(env_path)
-          missing = [variable for variable in formatters if variable not in env_values or env_values[variable] is None]
+          env_values = {}
+          for line in env_path.read_text(encoding="utf-8").splitlines():
+              line = line.strip()
+              if not line or line.startswith("#") or "=" not in line:
+                  continue
+              key, raw_value = line.split("=", 1)
+              lexer = shlex.shlex(raw_value, posix=True)
+              lexer.whitespace_split = True
+              lexer.commenters = "#"
+              parts = list(lexer)
+              env_values[key.strip()] = parts[0] if parts else ""
 
+          missing = [variable for variable in formatters if variable not in env_values or env_values[variable] is None]
           if missing:
               print(f"Missing variables in {env_path}:")
               for variable in missing:
@@ -77,18 +86,21 @@ jobs:
           output_path.write_text(readme, encoding="utf-8")
           PY
 
-      - name: Create pull request for generated README
-        uses: peter-evans/create-pull-request@v8
-        with:
-          add-paths: README.md
-          base: ${{ github.event.repository.default_branch }}
-          branch: readme-update-${{ github.run_id }}
-          commit-message: Generate README from template
-          delete-branch: true
-          title: Generate README from template
-          body: |
-            Automated README regeneration from `README.template.md` and
-            `.modeu5.local.env.template`.
-
-            This workflow opens a pull request instead of pushing directly to
-            the protected default branch.
+      - name: Commit README updates if changed
+        run: |
+          if ! git diff --quiet README.md; then
+            echo "README changed; committing update"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: regenerate README from template"
+            # For PRs, push back to the source branch
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              # For pushes to main, push directly back to main
+              git push origin HEAD
+            fi
+          else
+            echo "README is up to date; no commit needed"
+          fi
