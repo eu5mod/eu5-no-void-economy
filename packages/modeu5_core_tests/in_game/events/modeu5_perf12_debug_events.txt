@@ -14,7 +14,7 @@ modeu5_perf12_debug.1 = {
 	option = {
 		name = modeu5_perf12_debug.1.a
 		modeu5_debug_run_perf12_market_value_probe = yes
-		trigger_event = { id = modeu5_perf12_debug.2 }
+		trigger_event_non_silently = modeu5_perf12_debug.2
 	}
 	option = {
 		name = modeu5_debug.close
@@ -28,7 +28,7 @@ modeu5_perf12_debug.2 = {
 	outcome = neutral
 
 	trigger = {
-		always = yes
+		always = no
 	}
 
 	option = {
