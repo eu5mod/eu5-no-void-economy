@@ -77,6 +77,13 @@ No Void Economy Tests
 The optional rebalance packages may remain enabled, but no older duplicate
 ModeU5 package should be enabled.
 
+If `debug.log` shows `Running console command: modeu5_us02_debug.1` followed by
+`Unknown command`, the event ID was entered without the required console
+`event` command. Rerun it as `event modeu5_us02_debug.1`. If the exact command
+`event modeu5_us02_debug.1` reports `not a valid ID`, the `No Void Economy
+Tests` package is not loaded or EU5 was not restarted after changing the
+playset.
+
 ## Scenario Setup
 
 Start a disposable 1337 campaign. Playing Castille is fine; the deterministic

@@ -35,6 +35,14 @@ If `event modeu5_us02_debug.1` reports `not a valid ID`, the test package is
 not loaded in the active playset or the game was not restarted after changing
 the playset.
 
+If `debug.log` shows `Running console command: modeu5_us02_debug.1` followed by
+`Unknown command`, the event ID was entered without the console `event` command.
+Rerun the command exactly as:
+
+```txt
+event modeu5_us02_debug.1
+```
+
 ## Console procedure
 
 1. Open the console.
