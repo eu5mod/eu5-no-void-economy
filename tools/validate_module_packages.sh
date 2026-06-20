@@ -296,6 +296,7 @@ for required_effect in \
 	modeu5_read_country_stock_record_good_wheat \
 	modeu5_probe_us00_previous_record_activity_good_wheat \
 	modeu5_clear_loaded_void_economy_record_good_wheat \
+	modeu5_clear_retired_us00_diagnostic_fields_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do
@@ -304,6 +305,30 @@ for required_effect in \
 		exit 1
 	fi
 done
+
+if ! search_quiet '^modeu5_migrate_current_country_us00_minimal_persistence = \{' "$generated_stock_helpers"; then
+	printf 'Generated stock adapters are missing PERF-20 minimal-persistence migration helper.\n' >&2
+	exit 1
+fi
+
+if LC_ALL=C perl -0ne '
+	if (/modeu5_clear_retired_us00_diagnostic_fields_good_wheat = \{(?<body>.*?)\nmodeu5_run_us00_monthly_pipeline_good_wheat = \{/s) {
+		my $body = $+{body};
+		exit 1 if $body =~ /remove_from_(?:global_)?variable_map = \{\s+name = (?:modeu5_wheat_stock_by_market|modeu5_wheat_market_stock|modeu5_stock_cap_by_market|modeu5_base_capacity_by_market|modeu5_trade_capacity_by_market|modeu5_location_rank_capacity_by_market|modeu5_building_capacity_by_market|modeu5_foreign_capacity_by_market|modeu5_wheat_production_penalty_by_market|modeu5_wheat_us00_active_record_by_market)/s;
+		exit 0;
+	}
+	exit 2;
+' "$generated_stock_helpers"; then
+	:
+else
+	status=$?
+	if [ "$status" -eq 1 ]; then
+		printf 'PERF-20 retired-ledger migration must not clear stock, capacity, production penalty, or active marker maps.\n' >&2
+	else
+		printf 'Generated stock adapters are missing the PERF-20 wheat migration body.\n' >&2
+	fi
+	exit 1
+fi
 
 if ! search_quiet 'modeu5_wheat_us00_active_record_by_market' "$generated_stock_helpers"; then
 	printf 'Generated stock adapters must contain the PERF-15 US-00 active-record marker fixture.\n' >&2
