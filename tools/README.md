@@ -69,6 +69,17 @@ and US-11 helpers while failing if shared US-02 capacity refresh helpers return
 to generated per-good adapters. It also blocks runtime use of
 `traded_in_market:<good>` until the dedicated PERF-12 probe confirms the value.
 
+Audit the structured persistent state surface:
+
+```bash
+./tools/audit_modeu5_persistent_state.sh
+```
+
+This audit classifies ModeU5 persistent variable maps and variable lists. It
+fails when a new map/list family appears without an entry in
+`docs/technical/PERSISTENT_STATE_AUDIT.md`, and it blocks accidental UI shadow
+maps until a UI story explicitly approves them.
+
 The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 
