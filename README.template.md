@@ -25,16 +25,17 @@ The **Community Balance Options**, are a options you can activate/deactivate to 
  - 300 to 399 - Create balancing "anchor", Only fixed price can allow to balance the game.
  - 400 to 499 - Balance
  - 500 to 599 - Flavour
-The **Extensions** that provide Balance change but requires to be activated at the begining of the game.
+
+The **Extensions** that provide Balance change but requires to be activated at the begining of the campain.
 
 ### Core (Required) - Community No Void Economics Package
 
- - Create individual storage capacity for each country (Status : ✅ )
+ - Create individual storage capacity for each country (Status : ⏳ - Await [Issue 32 - Stock Resolution](https://github.com/eu5mod/eu5-no-void-economy/issues/32))
  - Move stored goods safely when territory changes owner (Status : ✅)
- - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
- - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
- - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
- - Economy <MODEU5_US09_BONUS_PERCENT> faster (Status : ✅ ) - Required to compensate revenue loss
+ - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ✅)
+ - Estate will adapt their productions of a given good to avoid overproduction (Status : ✅)
+ - AI will be sensitive to these change in building&RGO rentabilities (Status : ✅)
+ - Economy <MODEU5_US09_BONUS_PERCENT> faster (Status : ⏳ ) - Required to compensate revenue loss
  - Estate consumption increasead <MODEU5_US15_BONUS_PERCENT> (Status : ⏳) - Required to compensate economic speed
  - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
  - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
