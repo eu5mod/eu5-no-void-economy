@@ -137,6 +137,7 @@ failure by itself.
 | PERF-11 - Active-list semantics and repair | Generated active-list repair rebuilds active market-good scheduling lists from stock, aggregate, ledger, and dirty state while ignoring capacity-only maps. | Implemented as debug/maintenance repair; validate through main revalidation's `perf10_13_active_repair_metrics` scenario. |
 | PERF-12 - Market-scope value/link probes | `produced_in_market:<good>`, `stockpile_in_market(goods:<good>)`, and `traded_in_market:<good>` have controlled runtime probes. | Implemented; TECH-01 135 confirms the traded-in-market value syntax and scope, but runtime use belongs to a separate feature PR. |
 | PERF-13 - Batch and metrics layer | Active-list repair emits focused debug metrics only when explicitly invoked by test/debug code. | Implemented for the current bottleneck; metrics remain disabled in normal runtime. |
+| PERF-15 - Narrow US-00 monthly good dispatch | US-00 monthly helpers read the production gate before full record load, use a country-scoped active-record marker for previous-state detection, and avoid loading the same record twice during monthly clear. | Implemented in the PERF-15 PR; validate with main revalidation and US-00 monthly runtime dumps. |
 
 ### To Be Implemented
 
@@ -146,6 +147,7 @@ failure by itself.
 | Market-change repair hook | Ownership changes are handled, but a dedicated market reassignment hook is not confirmed. | Requires TECH-01 127 confirmation or an accepted explicit rebuild/repair cadence. |
 | Human/performance mode policy | Human-relevant market lists exist as rare discovery helpers, but no player-facing performance mode is selected. | Needs a concrete runtime use case and testable player/debug contract. |
 | Log-noise cleanup | UTF-8 BOM warnings, metadata warnings, and static modifier localization placeholders make review harder. | Hygiene PRs should classify or remove each warning without weakening tests. |
+| PERF-14 / PERF-16 / PERF-17 / PERF-18 / PERF-19 / PERF-20 | Third-phase candidates from issue #93 remain analysis or future scoped work. | Start only after PERF-15 is validated or after logs show a stronger bottleneck. |
 
 ### Not Actual / Not Relevant Anymore
 

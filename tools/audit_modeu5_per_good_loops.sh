@@ -74,6 +74,8 @@ printf 'CORE-01 transfer helpers: %s\n' "$(count_lines '^modeu5_transfer_stock_g
 printf 'CORE-01 decay helpers: %s\n' "$(count_lines '^modeu5_decay_stock_good_' "$generated_stock")"
 printf 'CORE-02 opening-stock helpers: %s\n' "$(count_lines '^modeu5_initialize_opening_stocks_good_' "$generated_stock")"
 printf 'US-00 monthly helpers: %s\n' "$(count_lines '^modeu5_run_us00_monthly_pipeline_good_' "$generated_stock")"
+printf 'PERF-15 US-00 activity probes: %s\n' "$(count_lines '^modeu5_probe_us00_previous_record_activity_good_' "$generated_stock")"
+printf 'PERF-15 US-00 loaded-clear helpers: %s\n' "$(count_lines '^modeu5_clear_loaded_void_economy_record_good_' "$generated_stock")"
 printf 'US-11 active validators: %s\n' "$(count_lines '^modeu5_validate_active_market_good_' "$generated_stock")"
 printf 'PERF-11 active repair helpers: %s\n' "$(count_lines '^modeu5_repair_active_markets_good_' "$generated_stock")"
 printf 'Shared capacity per-good helpers: 0\n'

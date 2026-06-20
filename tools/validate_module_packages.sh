@@ -281,7 +281,7 @@ if [[ "$(LC_ALL=C head -c 3 "$generated_us00_modifier_localization" | od -An -tx
 		"$generated_us00_modifier_localization" >&2
 	exit 1
 fi
-if ! LC_ALL=C perl -0pe 's/^\xEF\xBB\xBF//' "$generated_us00_modifier_localization" | head -n 1 | grep -q '^l_english:'; then
+if ! localization_starts_with_l_english_after_bom "$generated_us00_modifier_localization"; then
 	printf 'Generated US-00 production modifier localization must start with l_english: after the BOM: %s\n' \
 		"$generated_us00_modifier_localization" >&2
 	exit 1
@@ -294,6 +294,8 @@ fi
 
 for required_effect in \
 	modeu5_read_country_stock_record_good_wheat \
+	modeu5_probe_us00_previous_record_activity_good_wheat \
+	modeu5_clear_loaded_void_economy_record_good_wheat \
 	modeu5_scan_stock_sources_good_wheat \
 	modeu5_rebuild_market_stock_good_wheat \
 	modeu5_validate_stock_consistency_good_wheat; do
@@ -302,6 +304,11 @@ for required_effect in \
 		exit 1
 	fi
 done
+
+if ! search_quiet 'modeu5_wheat_us00_active_record_by_market' "$generated_stock_helpers"; then
+	printf 'Generated stock adapters must contain the PERF-15 US-00 active-record marker fixture.\n' >&2
+	exit 1
+fi
 
 for required_effect in \
 	modeu5_load_capacity_breakdown \
