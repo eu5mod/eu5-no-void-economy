@@ -1,7 +1,9 @@
-# ModeU5 sparse traversal helpers.
+# ModeU5 sparse traversal helpers and debug-only performance counters.
 #
 # PERF-02 builds the country -> native market side. PERF-03 adds a
 # market -> countries-present work cache in modeu5_market_country_cache_effects.
+# PERF-13 counters are intentionally inert in normal runtime unless a
+# debug/test path calls them. They do not mutate stock.
 
 modeu5_clear_performance_relevant_markets = {
 	remove_global_variable = modeu5_performance_human_country_count
@@ -100,5 +102,81 @@ modeu5_rebuild_human_relevant_markets = {
 			}
 		}
 		modeu5_add_country_present_markets_to_performance_relevant_list = yes
+	}
+}
+
+modeu5_perf13_reset_active_repair_metrics = {
+	remove_global_variable = modeu5_perf13_active_repair_goods_scanned
+	remove_global_variable = modeu5_perf13_active_repair_market_good_scans
+	remove_global_variable = modeu5_perf13_active_repair_country_source_checks
+	remove_global_variable = modeu5_perf13_active_repair_market_aggregate_hits
+	remove_global_variable = modeu5_perf13_active_repair_country_state_hits
+	remove_global_variable = modeu5_perf13_active_repair_market_goods_marked
+
+	set_global_variable = { name = modeu5_perf13_active_repair_goods_scanned value = 0 }
+	set_global_variable = { name = modeu5_perf13_active_repair_market_good_scans value = 0 }
+	set_global_variable = { name = modeu5_perf13_active_repair_country_source_checks value = 0 }
+	set_global_variable = { name = modeu5_perf13_active_repair_market_aggregate_hits value = 0 }
+	set_global_variable = { name = modeu5_perf13_active_repair_country_state_hits value = 0 }
+	set_global_variable = { name = modeu5_perf13_active_repair_market_goods_marked value = 0 }
+}
+
+modeu5_perf13_increment_active_repair_goods_scanned = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_goods_scanned
+		value = {
+			value = global_var:modeu5_perf13_active_repair_goods_scanned
+			add = 1
+		}
+	}
+}
+
+modeu5_perf13_increment_active_repair_market_good_scans = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_market_good_scans
+		value = {
+			value = global_var:modeu5_perf13_active_repair_market_good_scans
+			add = 1
+		}
+	}
+}
+
+modeu5_perf13_increment_active_repair_country_source_checks = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_country_source_checks
+		value = {
+			value = global_var:modeu5_perf13_active_repair_country_source_checks
+			add = 1
+		}
+	}
+}
+
+modeu5_perf13_increment_active_repair_market_aggregate_hits = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_market_aggregate_hits
+		value = {
+			value = global_var:modeu5_perf13_active_repair_market_aggregate_hits
+			add = 1
+		}
+	}
+}
+
+modeu5_perf13_increment_active_repair_country_state_hits = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_country_state_hits
+		value = {
+			value = global_var:modeu5_perf13_active_repair_country_state_hits
+			add = 1
+		}
+	}
+}
+
+modeu5_perf13_increment_active_repair_market_goods_marked = {
+	set_global_variable = {
+		name = modeu5_perf13_active_repair_market_goods_marked
+		value = {
+			value = global_var:modeu5_perf13_active_repair_market_goods_marked
+			add = 1
+		}
 	}
 }

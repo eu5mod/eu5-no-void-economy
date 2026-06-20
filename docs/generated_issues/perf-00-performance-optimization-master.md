@@ -133,15 +133,15 @@ failure by itself.
 | PERF-07 - Market-owned runtime pass boundary | Active validation rebuilds the current-market country work cache once per active market, then validates active goods from that prepared cache. | Implemented; validate with the PERF-07 market-owned runtime dump in the US-11 deterministic reconciliation test. |
 | PERF-08 - Shared storage capacity cache | US-02 capacity is persisted once per country-market and read by all generated per-good adapters instead of being recomputed and stored once per good. | Implemented by the shared-capacity PR; validate with US-02 and CORE-01 capacity-enforcement tests. |
 | PERF-09 - Good-neutral US-02 capacity refresh | Shared capacity refresh is hand-authored as a good-neutral effect and no longer routes through `good_wheat` generated helpers. | Implemented by issue #89 follow-up; validate with US-02, CORE-01, CORE-02, and main revalidation tests. |
+| PERF-10 - Per-good loop audit and preservation | `tools/audit_modeu5_per_good_loops.sh` documents and guards the remaining legitimate generated per-good loops while blocking shared-capacity regression. | Implemented; validate with `./tools/validate_module_packages.sh`. |
+| PERF-11 - Active-list semantics and repair | Generated active-list repair rebuilds active market-good scheduling lists from stock, aggregate, ledger, and dirty state while ignoring capacity-only maps. | Implemented as debug/maintenance repair; validate through main revalidation's `perf10_13_active_repair_metrics` scenario. |
+| PERF-13 - Batch and metrics layer | Active-list repair emits focused debug metrics only when explicitly invoked by test/debug code. | Implemented for the current bottleneck; metrics remain disabled in normal runtime. |
 
 ### To Be Implemented
 
 | Track | Why it remains open | Required condition |
 |---|---|---|
-| PERF-10 - Per-good loop audit and preservation | Per-good stock, ledger, production, transfer, and initialization loops are still required, but must stay documented so shared-state work does not drift back into generated good dispatchers. | Keep the audit in `docs/generated_issues/perf-09-good-neutral-us02-capacity-refresh.md` current when adding generated loops. |
-| PERF-11 - Active-list semantics and repair | Active lists are scheduling indexes and may be overinclusive, but capacity-only writes must not add entries. | Add stronger repair probes if active-list bloat appears in runtime dumps. |
 | PERF-12 - Market-scope value/link probes | `produced_in_market:<good>` and `stockpile_in_market(goods:<good>)` are confirmed; `traded_in_market:<good>` is not a runtime dependency. | Confirm exact syntax/scope in TECH-01 before use. |
-| PERF-13 - Batch and metrics layer | The compact revalidation harness exists, but broad performance counters are still intentionally minimal. | Add counters only for a specific next bottleneck, with metrics disabled in normal runtime. |
 | Durable per-market country-list cache | The current PERF-03 list is rebuilt for one target market, not persisted per market. | Requires TECH-01 126 or another confirmed static/generated storage design. |
 | Market-change repair hook | Ownership changes are handled, but a dedicated market reassignment hook is not confirmed. | Requires TECH-01 127 confirmation or an accepted explicit rebuild/repair cadence. |
 | Human/performance mode policy | Human-relevant market lists exist as rare discovery helpers, but no player-facing performance mode is selected. | Needs a concrete runtime use case and testable player/debug contract. |

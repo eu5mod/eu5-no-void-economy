@@ -355,12 +355,16 @@ stock_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/m
 capacity_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_capacity_test_effects.txt"
 core03_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core03_test_effects.txt"
 revalidation_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_revalidation_test_effects.txt"
+perf10_13_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf10_13_test_effects.txt"
+perf12_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf12_test_effects.txt"
 stock_test_event="packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt"
 us01_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us01_debug_events.txt"
 us02_test_event="packages/modeu5_core_tests/in_game/events/modeu5_us02_debug_events.txt"
 core03_test_event="packages/modeu5_core_tests/in_game/events/modeu5_core03_debug_events.txt"
 revalidation_test_event="packages/modeu5_core_tests/in_game/events/modeu5_revalidate_debug_events.txt"
+perf12_test_event="packages/modeu5_core_tests/in_game/events/modeu5_perf12_debug_events.txt"
 revalidation_summary_tool="tools/summarize_modeu5_test_logs.sh"
+per_good_loop_audit="tools/audit_modeu5_per_good_loops.sh"
 
 test -f "$stock_effects"
 test -f "$capacity_effects"
@@ -368,12 +372,17 @@ test -f "$stock_test_effects"
 test -f "$capacity_test_effects"
 test -f "$core03_test_effects"
 test -f "$revalidation_test_effects"
+test -f "$perf10_13_test_effects"
+test -f "$perf12_test_effects"
 test -f "$stock_test_event"
 test -f "$us01_test_event"
 test -f "$us02_test_event"
 test -f "$core03_test_event"
 test -f "$revalidation_test_event"
+test -f "$perf12_test_event"
 test -x "$revalidation_summary_tool"
+test -x "$per_good_loop_audit"
+"$per_good_loop_audit" >/dev/null
 core02_probe_on_action="packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt"
 core02_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt"
 core02_probe_event="packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt"
@@ -424,7 +433,8 @@ for in_game_key in \
 	modeu5_us02_debug.1.title \
 	modeu5_core03_debug.1.title \
 	modeu5_perf02_debug.1.title \
-	modeu5_perf03_debug.1.title; do
+	modeu5_perf03_debug.1.title \
+	modeu5_perf12_debug.1.title; do
 	if ! search_quiet "^[[:space:]]${in_game_key}:" "$core_stock_localization"; then
 		printf 'In-game test localization key is missing from %s: %s\n' \
 			"$core_stock_localization" "$in_game_key" >&2
@@ -534,17 +544,24 @@ if ! search_quiet '^modeu5_revalidate_debug\.1 = \{' "$revalidation_test_event";
 	exit 1
 fi
 
-if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$stock_test_effects" "$capacity_test_effects" "$core03_test_effects" "$revalidation_test_effects"; then
+if ! search_quiet '^modeu5_perf12_debug\.1 = \{' "$perf12_test_event"; then
+	printf 'PERF-12 market-value probes must use a dedicated event instead of modeu5_debug.1.\n' >&2
+	exit 1
+fi
+
+if search_lines 'test_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$perf12_test_event" "$stock_test_effects" "$capacity_test_effects" "$core03_test_effects" "$revalidation_test_effects" "$perf10_13_test_effects" "$perf12_test_effects"; then
 	printf 'Console-driven stock tests must not use test_log; it localizes text while console command localization is disabled.\n' >&2
 	exit 1
 fi
 
 disallowed_stock_debug_log="$(
-	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$stock_test_effects" "$revalidation_test_effects" 2>/dev/null |
+	search_lines 'debug_log[[:space:]]*=' "$stock_test_event" "$us01_test_event" "$us02_test_event" "$core03_test_event" "$revalidation_test_event" "$stock_test_effects" "$revalidation_test_effects" "$perf10_13_test_effects" 2>/dev/null |
 		grep -v 'ModeU5 CORE-01 ' |
 		grep -v 'ModeU5 CORE-02 ' |
 		grep -v 'ModeU5 US-11 ' |
 		grep -v 'ModeU5 PERF-07 ' |
+		grep -v 'ModeU5 PERF-11 ' |
+		grep -v 'ModeU5 PERF-13 ' |
 		grep -v 'ModeU5 TEST ' || true
 )"
 if [ -n "$disallowed_stock_debug_log" ]; then
@@ -568,6 +585,15 @@ disallowed_core03_debug_log="$(
 if [ -n "$disallowed_core03_debug_log" ]; then
 	printf 'CORE-03 stock-succession tests may use debug_log only for explicitly prefixed ModeU5 CORE-03 dumps/results.\n' >&2
 	printf '%s\n' "$disallowed_core03_debug_log" >&2
+	exit 1
+fi
+
+disallowed_perf12_debug_log="$(
+	search_lines 'debug_log[[:space:]]*=' "$perf12_test_effects" "$perf12_test_event" 2>/dev/null | grep -v 'ModeU5 PERF-12 ' || true
+)"
+if [ -n "$disallowed_perf12_debug_log" ]; then
+	printf 'PERF-12 market-value probes may use debug_log only for explicitly prefixed ModeU5 PERF-12 dumps/results.\n' >&2
+	printf '%s\n' "$disallowed_perf12_debug_log" >&2
 	exit 1
 fi
 
