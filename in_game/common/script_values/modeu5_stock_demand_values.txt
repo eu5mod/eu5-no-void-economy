@@ -1,0 +1,39 @@
+# US-10.0 stock-demand resolver coefficients. Callers may override through
+# temporary scope values saved before modeu5_resolve_stock_demand runs.
+
+modeu5_demand_own_country_bonus = {
+	value = 1000
+}
+
+modeu5_demand_subject_bonus = {
+	value = 500
+}
+
+modeu5_demand_market_owner_bonus = {
+	value = 300
+}
+
+modeu5_demand_opinion_coefficient = {
+	value = 1
+}
+
+modeu5_demand_trade_advantage_coefficient = {
+	value = 1
+}
+
+modeu5_demand_minimum_stock_to_consider = {
+	value = 0.001
+}
+
+# Stable tie-breaker keeps equal-score candidates ordered by available stock.
+modeu5_demand_stock_tiebreaker_scale = {
+	value = 0.000001
+}
+
+# Read during ordered_in_local_list on each seller candidate.
+modeu5_demand_candidate_score_value = {
+	value = {
+		value = "local_variable_map(modeu5_demand_candidate_scores|this)"
+		min = 0
+	}
+}

@@ -1,0 +1,8 @@
+l_english:
+ modeu5_us10_debug.1.title: "ModeU5 US-10.0 Stock Demand Resolver Test"
+ modeu5_us10_debug.1.desc: "Run the deterministic US-10.0 resolver probe. The fixture seeds FRA and ENG wheat stocks in the FRA capital market, calls modeu5_resolve_stock_demand without mutating stock, and verifies own-stock-first ordering plus total available stock."
+ modeu5_us10_debug.1.a: "Run US-10.0 resolver ordering test"
+ modeu5_us10_debug.2.title: "ModeU5 US-10.0 Resolver Result"
+ modeu5_us10_debug.2.desc: "Inspect game.log for ModeU5 US-10.0 DUMP and RESULT lines. PASS requires non-mutating execution, two eligible candidates, total available stock of 90, and FRA ordered ahead of ENG."
+ modeu5_us10_debug.2.pass: "PASS - Resolver ordering and non-mutation checks succeeded"
+ modeu5_us10_debug.2.fail: "FAIL - Resolver ordering or non-mutation checks failed"

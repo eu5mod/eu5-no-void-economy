@@ -2251,3 +2251,38 @@ modeu5_capture_us00_monthly_runtime_debug_good___GOOD__ = {
 		}
 	}
 }
+
+modeu5_demand_scan_market_candidates_good___GOOD__ = {
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_demand_seller
+			save_temporary_scope_value_as = {
+				name = modeu5_demand_seller_stock_raw
+				value = 0
+			}
+			if = {
+				limit = {
+					has_variable_map = __STOCK_MAP__
+					is_key_in_variable_map = {
+						name = __STOCK_MAP__
+						target = scope:modeu5_demand_relevant_market
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_demand_seller_stock_raw
+					value = "variable_map(__STOCK_MAP__|scope:modeu5_demand_relevant_market)"
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_demand_seller_stock
+				value = {
+					value = scope:modeu5_demand_seller_stock_raw
+					min = 0
+				}
+			}
+			modeu5_demand_process_seller_candidate = yes
+		}
+	}
+}

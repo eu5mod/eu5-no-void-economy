@@ -1,0 +1,163 @@
+# US-10.0 stock-demand resolver eligibility triggers.
+# War and embargo settings are hard filters, not score penalties.
+
+modeu5_demand_type_consumption_trigger = {
+	exists = scope:modeu5_demand_type
+	scope:modeu5_demand_type = 1
+}
+
+modeu5_demand_type_inter_market_trade_trigger = {
+	exists = scope:modeu5_demand_type
+	scope:modeu5_demand_type = 2
+}
+
+modeu5_demand_allow_subject_stocks_trigger = {
+	OR = {
+		NOT = { exists = scope:modeu5_demand_allow_subject_stocks }
+		scope:modeu5_demand_allow_subject_stocks = 1
+	}
+}
+
+modeu5_demand_allow_market_owner_stock_trigger = {
+	OR = {
+		NOT = { exists = scope:modeu5_demand_allow_market_owner_stock }
+		scope:modeu5_demand_allow_market_owner_stock = 1
+	}
+}
+
+modeu5_demand_allow_foreign_stocks_trigger = {
+	OR = {
+		NOT = { exists = scope:modeu5_demand_allow_foreign_stocks }
+		scope:modeu5_demand_allow_foreign_stocks = 1
+	}
+}
+
+modeu5_demand_allow_at_war_stocks_trigger = {
+	exists = scope:modeu5_demand_allow_at_war_stocks
+	scope:modeu5_demand_allow_at_war_stocks = 1
+}
+
+modeu5_demand_allow_embargoed_stocks_trigger = {
+	exists = scope:modeu5_demand_allow_embargoed_stocks
+	scope:modeu5_demand_allow_embargoed_stocks = 1
+}
+
+modeu5_demand_seller_is_buyer_trigger = {
+	exists = scope:modeu5_demand_buyer_country
+	exists = scope:modeu5_demand_seller
+	scope:modeu5_demand_seller = scope:modeu5_demand_buyer_country
+}
+
+modeu5_demand_seller_is_subject_of_buyer_trigger = {
+	exists = scope:modeu5_demand_buyer_country
+	exists = scope:modeu5_demand_seller
+	scope:modeu5_demand_seller = {
+		is_subject_of = scope:modeu5_demand_buyer_country
+	}
+}
+
+modeu5_demand_seller_is_market_owner_trigger = {
+	exists = scope:modeu5_demand_relevant_market
+	exists = scope:modeu5_demand_seller
+	scope:modeu5_demand_relevant_market = {
+		exists = owner
+		owner = scope:modeu5_demand_seller
+	}
+}
+
+modeu5_demand_seller_at_war_with_buyer_trigger = {
+	exists = scope:modeu5_demand_buyer_country
+	exists = scope:modeu5_demand_seller
+	scope:modeu5_demand_buyer_country = {
+		is_at_war_with = scope:modeu5_demand_seller
+	}
+}
+
+modeu5_demand_seller_embargo_blocked_trigger = {
+	exists = scope:modeu5_demand_buyer_country
+	exists = scope:modeu5_demand_seller
+	OR = {
+		scope:modeu5_demand_buyer_country = {
+			is_embargoed_by = scope:modeu5_demand_seller
+		}
+		scope:modeu5_demand_buyer_country = {
+			is_embargoing = scope:modeu5_demand_seller
+		}
+		scope:modeu5_demand_seller = {
+			is_embargoed_by = scope:modeu5_demand_buyer_country
+		}
+		scope:modeu5_demand_seller = {
+			is_embargoing = scope:modeu5_demand_buyer_country
+		}
+	}
+}
+
+modeu5_demand_seller_has_market_center_access_trigger = {
+	exists = scope:modeu5_demand_seller
+	exists = scope:modeu5_demand_relevant_market
+	scope:modeu5_demand_seller = {
+		any_market_center_in_country = {
+			this = scope:modeu5_demand_relevant_market
+		}
+	}
+}
+
+modeu5_demand_seller_has_location_market_access_trigger = {
+	exists = scope:modeu5_demand_seller
+	exists = scope:modeu5_demand_relevant_market
+	scope:modeu5_demand_seller = {
+		any_owned_location = {
+			market = scope:modeu5_demand_relevant_market
+			market_access > 0
+		}
+	}
+}
+
+modeu5_demand_seller_has_valid_market_access_trigger = {
+	OR = {
+		modeu5_demand_seller_is_buyer_trigger = yes
+		modeu5_demand_seller_is_market_owner_trigger = yes
+		modeu5_demand_seller_has_market_center_access_trigger = yes
+		modeu5_demand_seller_has_location_market_access_trigger = yes
+	}
+}
+
+modeu5_demand_seller_stock_above_minimum_trigger = {
+	exists = scope:modeu5_demand_seller_stock
+	exists = scope:modeu5_demand_minimum_stock
+	scope:modeu5_demand_seller_stock > scope:modeu5_demand_minimum_stock
+}
+
+modeu5_demand_seller_allowed_by_relation_flags_trigger = {
+	OR = {
+		modeu5_demand_seller_is_buyer_trigger = yes
+		AND = {
+			modeu5_demand_seller_is_subject_of_buyer_trigger = yes
+			modeu5_demand_allow_subject_stocks_trigger = yes
+		}
+		AND = {
+			modeu5_demand_seller_is_market_owner_trigger = yes
+			modeu5_demand_allow_market_owner_stock_trigger = yes
+		}
+		AND = {
+			modeu5_demand_seller_is_buyer_trigger = no
+			modeu5_demand_seller_is_subject_of_buyer_trigger = no
+			modeu5_demand_seller_is_market_owner_trigger = no
+			modeu5_demand_allow_foreign_stocks_trigger = yes
+		}
+	}
+}
+
+modeu5_demand_seller_eligible_trigger = {
+	modeu5_demand_seller_stock_above_minimum_trigger = yes
+	modeu5_demand_seller_has_valid_market_access_trigger = yes
+	modeu5_demand_seller_allowed_by_relation_flags_trigger = yes
+	OR = {
+		modeu5_demand_allow_at_war_stocks_trigger = yes
+		modeu5_demand_seller_at_war_with_buyer_trigger = no
+	}
+	OR = {
+		modeu5_demand_allow_embargoed_stocks_trigger = yes
+		modeu5_demand_seller_embargo_blocked_trigger = no
+	}
+}

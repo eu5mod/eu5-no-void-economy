@@ -1,0 +1,616 @@
+# US-10.0 shared stock-demand resolver core.
+#
+# Public entry point:
+#
+# modeu5_demand_select_consumption = yes
+# modeu5_demand_allow_all_stock_sources = yes
+# modeu5_resolve_stock_demand = {
+#     demanding_country = root
+#     market = scope:some_market
+#     good = wheat
+#     requested_quantity = 100
+# }
+#
+# Optional trade context:
+# modeu5_demand_select_inter_market_trade = yes
+# save buyer_country, source_market, target_market before calling.
+#
+# Outputs are transaction-local on the demanding country:
+# local list modeu5_demand_ordered_candidates
+# local map modeu5_demand_candidate_scores
+# scope values modeu5_demand_total_available_stock and modeu5_demand_eligible_candidate_count
+#
+# This resolver never mutates stock.
+
+# demand_type codes: consumption = 1, inter_market_trade = 2
+# exclusion_reason codes:
+# 1 at_war_not_allowed
+# 2 embargoed_stock_not_allowed
+# 3 no_valid_market_access
+# 4 foreign_stocks_not_allowed
+# 5 subject_stocks_not_allowed
+# 6 market_owner_stock_not_allowed
+# 7 stock_below_minimum_threshold
+
+modeu5_demand_select_consumption = {
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_type
+		value = 1
+	}
+}
+
+modeu5_demand_select_inter_market_trade = {
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_type
+		value = 2
+	}
+}
+
+modeu5_demand_allow_all_stock_sources = {
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_subject_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_market_owner_stock value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_foreign_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_at_war_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_embargoed_stocks value = 1 }
+}
+
+modeu5_demand_restrict_foreign_and_conflict_sources = {
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_subject_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_market_owner_stock value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_foreign_stocks value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_at_war_stocks value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_demand_allow_embargoed_stocks value = 0 }
+}
+
+modeu5_demand_clear_transaction = {
+	if = {
+		limit = { has_local_variable_list = modeu5_demand_candidate_countries }
+		clear_local_variable_list = modeu5_demand_candidate_countries
+	}
+	if = {
+		limit = { has_local_variable_list = modeu5_demand_ordered_candidates }
+		clear_local_variable_list = modeu5_demand_ordered_candidates
+	}
+	if = {
+		limit = { has_local_variable_list = modeu5_demand_excluded_sellers }
+		clear_local_variable_list = modeu5_demand_excluded_sellers
+	}
+	if = {
+		limit = { has_local_variable_map = modeu5_demand_candidate_scores }
+		clear_local_variable_map = modeu5_demand_candidate_scores
+	}
+	if = {
+		limit = { has_local_variable_map = modeu5_demand_exclusion_reasons }
+		clear_local_variable_map = modeu5_demand_exclusion_reasons
+	}
+
+	set_local_variable = { name = modeu5_demand_total_available_stock value = 0 }
+	set_local_variable = { name = modeu5_demand_eligible_candidate_count value = 0 }
+	set_local_variable = { name = modeu5_demand_excluded_candidate_count value = 0 }
+	set_local_variable = { name = modeu5_demand_buyer_owns_market_center value = 0 }
+}
+
+modeu5_demand_apply_default_configuration = {
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_type } }
+		modeu5_demand_select_consumption = yes
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_allow_subject_stocks } }
+		save_temporary_scope_value_as = { name = modeu5_demand_allow_subject_stocks value = 1 }
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_allow_market_owner_stock } }
+		save_temporary_scope_value_as = { name = modeu5_demand_allow_market_owner_stock value = 1 }
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_allow_foreign_stocks } }
+		save_temporary_scope_value_as = { name = modeu5_demand_allow_foreign_stocks value = 1 }
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_allow_at_war_stocks } }
+		save_temporary_scope_value_as = { name = modeu5_demand_allow_at_war_stocks value = 1 }
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_allow_embargoed_stocks } }
+		save_temporary_scope_value_as = { name = modeu5_demand_allow_embargoed_stocks value = 1 }
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_own_country_bonus } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_own_country_bonus
+			value = modeu5_demand_own_country_bonus
+		}
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_subject_bonus } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_subject_bonus
+			value = modeu5_demand_subject_bonus
+		}
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_market_owner_bonus } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_market_owner_bonus
+			value = modeu5_demand_market_owner_bonus
+		}
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_opinion_coefficient } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_opinion_coefficient
+			value = modeu5_demand_opinion_coefficient
+		}
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_trade_advantage_coefficient } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_trade_advantage_coefficient
+			value = modeu5_demand_trade_advantage_coefficient
+		}
+	}
+	if = {
+		limit = { NOT = { exists = scope:modeu5_demand_minimum_stock } }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_minimum_stock
+			value = modeu5_demand_minimum_stock_to_consider
+		}
+	}
+}
+
+modeu5_demand_resolve_context = {
+	modeu5_demand_apply_default_configuration = yes
+
+	if = {
+		limit = { modeu5_demand_type_inter_market_trade_trigger = yes }
+		if = {
+			limit = { exists = scope:modeu5_demand_source_market }
+			scope:modeu5_demand_source_market = {
+				save_temporary_scope_as = modeu5_demand_relevant_market
+			}
+		}
+		else = {
+			scope:modeu5_demand_market = {
+				save_temporary_scope_as = modeu5_demand_relevant_market
+			}
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_buyer_country }
+			scope:modeu5_demand_buyer_country = {
+				save_temporary_scope_as = modeu5_demand_buyer_country
+			}
+		}
+		else = {
+			scope:modeu5_demand_demanding_country = {
+				save_temporary_scope_as = modeu5_demand_buyer_country
+			}
+		}
+	}
+	else = {
+		scope:modeu5_demand_market = {
+			save_temporary_scope_as = modeu5_demand_relevant_market
+		}
+		scope:modeu5_demand_demanding_country = {
+			save_temporary_scope_as = modeu5_demand_buyer_country
+		}
+	}
+}
+
+modeu5_demand_probe_buyer_market_centers = {
+	if = {
+		limit = {
+			exists = scope:modeu5_demand_buyer_country
+			exists = scope:modeu5_demand_relevant_market
+		}
+		scope:modeu5_demand_buyer_country = {
+			every_market_center_in_country = {
+				limit = { this = scope:modeu5_demand_relevant_market }
+				scope:modeu5_demand_demanding_country = {
+					set_local_variable = {
+						name = modeu5_demand_buyer_owns_market_center
+						value = 1
+					}
+				}
+			}
+		}
+	}
+}
+
+modeu5_demand_rebuild_market_country_cache = {
+	if = {
+		limit = { exists = scope:modeu5_demand_relevant_market }
+		scope:modeu5_demand_relevant_market = {
+			save_temporary_scope_as = modeu5_market_country_cache_market
+		}
+		modeu5_rebuild_countries_present_in_market = yes
+	}
+}
+
+modeu5_demand_record_excluded_seller = {
+	change_local_variable = {
+		name = modeu5_demand_excluded_candidate_count
+		add = 1
+	}
+	if = {
+		limit = {
+			NOT = { has_local_variable_list = modeu5_demand_excluded_sellers }
+		}
+		add_to_local_variable_list = {
+			name = modeu5_demand_excluded_sellers
+			target = scope:modeu5_demand_seller
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_local_variable_list = {
+					name = modeu5_demand_excluded_sellers
+					target = scope:modeu5_demand_seller
+				}
+			}
+		}
+		add_to_local_variable_list = {
+			name = modeu5_demand_excluded_sellers
+			target = scope:modeu5_demand_seller
+		}
+	}
+	if = {
+		limit = { exists = scope:modeu5_demand_exclusion_reason_code }
+		add_to_local_variable_map = {
+			name = modeu5_demand_exclusion_reasons
+			key = scope:modeu5_demand_seller
+			value = scope:modeu5_demand_exclusion_reason_code
+		}
+	}
+	if = {
+		limit = { modeu5_verbose_debug_enabled_trigger = yes }
+		debug_log = "ModeU5 US-10.0 EXCLUDE seller stock market reason_code"
+	}
+}
+
+modeu5_demand_record_eligible_seller = {
+	change_local_variable = {
+		name = modeu5_demand_eligible_candidate_count
+		add = 1
+	}
+	change_local_variable = {
+		name = modeu5_demand_total_available_stock
+		add = scope:modeu5_demand_seller_stock
+	}
+	if = {
+		limit = {
+			NOT = { has_local_variable_list = modeu5_demand_candidate_countries }
+		}
+		add_to_local_variable_list = {
+			name = modeu5_demand_candidate_countries
+			target = scope:modeu5_demand_seller
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_local_variable_list = {
+					name = modeu5_demand_candidate_countries
+					target = scope:modeu5_demand_seller
+				}
+			}
+		}
+		add_to_local_variable_list = {
+			name = modeu5_demand_candidate_countries
+			target = scope:modeu5_demand_seller
+		}
+	}
+	add_to_local_variable_map = {
+		name = modeu5_demand_candidate_scores
+		key = scope:modeu5_demand_seller
+		value = scope:modeu5_demand_candidate_score
+	}
+	if = {
+		limit = { modeu5_verbose_debug_enabled_trigger = yes }
+		debug_log = "ModeU5 US-10.0 CANDIDATE seller score stock"
+	}
+}
+
+modeu5_demand_resolve_exclusion_reason = {
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_exclusion_reason_code
+		value = 0
+	}
+	if = {
+		limit = { modeu5_demand_seller_stock_above_minimum_trigger = no }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 7
+		}
+	}
+	else_if = {
+		limit = {
+			modeu5_demand_seller_at_war_with_buyer_trigger = yes
+			modeu5_demand_allow_at_war_stocks_trigger = no
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 1
+		}
+	}
+	else_if = {
+		limit = {
+			modeu5_demand_seller_embargo_blocked_trigger = yes
+			modeu5_demand_allow_embargoed_stocks_trigger = no
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 2
+		}
+	}
+	else_if = {
+		limit = { modeu5_demand_seller_has_valid_market_access_trigger = no }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 3
+		}
+	}
+	else_if = {
+		limit = {
+			modeu5_demand_seller_is_subject_of_buyer_trigger = yes
+			modeu5_demand_allow_subject_stocks_trigger = no
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 5
+		}
+	}
+	else_if = {
+		limit = {
+			modeu5_demand_seller_is_market_owner_trigger = yes
+			modeu5_demand_allow_market_owner_stock_trigger = no
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 6
+		}
+	}
+	else_if = {
+		limit = {
+			modeu5_demand_seller_is_buyer_trigger = no
+			modeu5_demand_seller_is_subject_of_buyer_trigger = no
+			modeu5_demand_seller_is_market_owner_trigger = no
+			modeu5_demand_allow_foreign_stocks_trigger = no
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_exclusion_reason_code
+			value = 4
+		}
+	}
+}
+
+modeu5_demand_calculate_seller_score = {
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_opinion_weight
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_trade_advantage_weight
+		value = 0
+	}
+	if = {
+		limit = {
+			exists = scope:modeu5_demand_buyer_country
+			exists = scope:modeu5_demand_seller
+		}
+		scope:modeu5_demand_buyer_country = {
+			save_temporary_scope_value_as = {
+				name = modeu5_demand_opinion_raw
+				value = {
+					value = opinion:scope:modeu5_demand_seller
+					min = -200
+					max = 200
+				}
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_opinion_weight
+			value = {
+				value = scope:modeu5_demand_opinion_raw
+				multiply = scope:modeu5_demand_opinion_coefficient
+			}
+		}
+	}
+	if = {
+		limit = {
+			exists = scope:modeu5_demand_relevant_market
+			exists = scope:modeu5_demand_seller
+		}
+		scope:modeu5_demand_relevant_market = {
+			save_temporary_scope_value_as = {
+				name = modeu5_demand_trade_advantage_raw
+				value = {
+					value = merchant_power_in_market:scope:modeu5_demand_seller
+					min = 0
+				}
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_trade_advantage_weight
+			value = {
+				value = scope:modeu5_demand_trade_advantage_raw
+				multiply = scope:modeu5_demand_trade_advantage_coefficient
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_candidate_score
+		value = {
+			value = scope:modeu5_demand_opinion_weight
+			add = scope:modeu5_demand_trade_advantage_weight
+		}
+	}
+	if = {
+		limit = { modeu5_demand_seller_is_buyer_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_candidate_score
+			value = {
+				value = scope:modeu5_demand_candidate_score
+				add = scope:modeu5_demand_own_country_bonus
+			}
+		}
+	}
+	if = {
+		limit = { modeu5_demand_seller_is_subject_of_buyer_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_candidate_score
+			value = {
+				value = scope:modeu5_demand_candidate_score
+				add = scope:modeu5_demand_subject_bonus
+			}
+		}
+	}
+	if = {
+		limit = { modeu5_demand_seller_is_market_owner_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_demand_candidate_score
+			value = {
+				value = scope:modeu5_demand_candidate_score
+				add = scope:modeu5_demand_market_owner_bonus
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_candidate_score
+		value = {
+			value = scope:modeu5_demand_candidate_score
+			add = {
+				value = scope:modeu5_demand_seller_stock
+				multiply = modeu5_demand_stock_tiebreaker_scale
+			}
+		}
+	}
+}
+
+modeu5_demand_process_seller_candidate = {
+	if = {
+		limit = { modeu5_demand_seller_eligible_trigger = yes }
+		modeu5_demand_calculate_seller_score = yes
+		scope:modeu5_demand_demanding_country = {
+			modeu5_demand_record_eligible_seller = yes
+		}
+	}
+	else = {
+		modeu5_demand_resolve_exclusion_reason = yes
+		scope:modeu5_demand_demanding_country = {
+			modeu5_demand_record_excluded_seller = yes
+		}
+	}
+}
+
+modeu5_demand_order_candidates = {
+	if = {
+		limit = { has_local_variable_list = modeu5_demand_candidate_countries }
+		ordered_in_local_list = {
+			variable = modeu5_demand_candidate_countries
+			order_by = modeu5_demand_candidate_score_value
+			check_range_bounds = no
+			add_to_local_variable_list = {
+				name = modeu5_demand_ordered_candidates
+				target = this
+			}
+		}
+	}
+}
+
+modeu5_demand_capture_output = {
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_total_available_stock
+		value = local_var:modeu5_demand_total_available_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_eligible_candidate_count
+		value = local_var:modeu5_demand_eligible_candidate_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_excluded_candidate_count
+		value = local_var:modeu5_demand_excluded_candidate_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_buyer_owns_market_center_flag
+		value = local_var:modeu5_demand_buyer_owns_market_center
+	}
+	if = {
+		limit = { modeu5_debug_capture_enabled_trigger = yes }
+		set_variable = { name = modeu5_debug_last_demand_type value = scope:modeu5_demand_type }
+		set_variable = { name = modeu5_debug_last_demand_requested_quantity value = scope:modeu5_demand_requested_quantity }
+		set_variable = { name = modeu5_debug_last_demand_total_available_stock value = scope:modeu5_demand_total_available_stock }
+		set_variable = { name = modeu5_debug_last_demand_eligible_candidate_count value = scope:modeu5_demand_eligible_candidate_count }
+		set_variable = { name = modeu5_debug_last_demand_excluded_candidate_count value = scope:modeu5_demand_excluded_candidate_count }
+		set_variable = { name = modeu5_debug_last_demand_buyer_owns_market_center value = scope:modeu5_demand_buyer_owns_market_center_flag }
+		if = {
+			limit = { exists = scope:modeu5_demand_demanding_country }
+			set_variable = { name = modeu5_debug_last_demand_demanding_country value = scope:modeu5_demand_demanding_country }
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_buyer_country }
+			set_variable = { name = modeu5_debug_last_demand_buyer_country value = scope:modeu5_demand_buyer_country }
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_relevant_market }
+			set_variable = { name = modeu5_debug_last_demand_market value = scope:modeu5_demand_relevant_market }
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_good }
+			set_variable = { name = modeu5_debug_last_demand_good value = scope:modeu5_demand_good }
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_source_market }
+			set_variable = { name = modeu5_debug_last_demand_source_market value = scope:modeu5_demand_source_market }
+		}
+		if = {
+			limit = { exists = scope:modeu5_demand_target_market }
+			set_variable = { name = modeu5_debug_last_demand_target_market value = scope:modeu5_demand_target_market }
+		}
+	}
+}
+
+modeu5_demand_log_summary = {
+	if = {
+		limit = { modeu5_debug_enabled_trigger = yes }
+		debug_log = "ModeU5 US-10.0 DUMP demand_type requested eligible excluded total_available buyer_owns_market_center"
+	}
+	if = {
+		limit = {
+			modeu5_verbose_debug_enabled_trigger = yes
+			has_local_variable_list = modeu5_demand_ordered_candidates
+		}
+		every_in_local_list = {
+			variable = modeu5_demand_ordered_candidates
+			save_temporary_scope_as = modeu5_demand_ordered_seller
+			debug_log = "ModeU5 US-10.0 ORDERED seller score"
+		}
+	}
+}
+
+modeu5_demand_resolve_core = {
+	modeu5_demand_clear_transaction = yes
+	modeu5_demand_resolve_context = yes
+	modeu5_demand_probe_buyer_market_centers = yes
+	modeu5_demand_rebuild_market_country_cache = yes
+}
+
+modeu5_resolve_stock_demand = {
+	$demanding_country$ = { save_temporary_scope_as = modeu5_demand_demanding_country }
+	$market$ = { save_temporary_scope_as = modeu5_demand_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_demand_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_demand_requested_quantity
+		value = $requested_quantity$
+	}
+
+	scope:modeu5_demand_demanding_country = {
+		modeu5_demand_resolve_core = yes
+		modeu5_demand_scan_market_candidates_good_$good$ = yes
+		modeu5_demand_order_candidates = yes
+		modeu5_demand_capture_output = yes
+		modeu5_demand_log_summary = yes
+	}
+}

@@ -1,0 +1,257 @@
+# Deterministic US-10.0 stock-demand resolver probes.
+
+modeu5_us10_clear_test_results = {
+	modeu5_enter_test_audit_runtime_mode = yes
+
+	remove_global_variable = modeu5_test_us10_resolver_started
+	remove_global_variable = modeu5_test_us10_resolver_passed
+	remove_global_variable = modeu5_test_us10_resolver_failed
+	remove_global_variable = modeu5_test_us10_resolver_blocked
+	remove_global_variable = modeu5_test_us10_no_stock_mutation_passed
+	remove_global_variable = modeu5_test_us10_own_stock_first_passed
+	remove_global_variable = modeu5_test_us10_first_candidate_is_fra
+
+	remove_variable = modeu5_us10_ui_eligible_candidates
+	remove_variable = modeu5_us10_ui_excluded_candidates
+	remove_variable = modeu5_us10_ui_total_available_stock
+	remove_variable = modeu5_us10_ui_first_candidate_score
+	remove_variable = modeu5_us10_ui_fra_stock_before
+	remove_variable = modeu5_us10_ui_fra_stock_after
+	remove_variable = modeu5_us10_ui_eng_stock_before
+	remove_variable = modeu5_us10_ui_eng_stock_after
+}
+
+modeu5_us10_read_country_wheat_stock = {
+	$country$ = {
+		$market$ = { save_temporary_scope_as = modeu5_us10_record_market }
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_stock_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_stock_by_market
+					target = scope:modeu5_us10_record_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = $output$
+				value = "variable_map(modeu5_wheat_stock_by_market|scope:modeu5_us10_record_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = {
+				name = $output$
+				value = 0
+			}
+		}
+	}
+}
+
+modeu5_us10_mirror_probe_to_ui = {
+	if = {
+		limit = { has_variable = modeu5_debug_last_demand_eligible_candidate_count }
+		set_variable = {
+			name = modeu5_us10_ui_eligible_candidates
+			value = var:modeu5_debug_last_demand_eligible_candidate_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_us10_ui_eligible_candidates value = 0 }
+	}
+	if = {
+		limit = { has_variable = modeu5_debug_last_demand_excluded_candidate_count }
+		set_variable = {
+			name = modeu5_us10_ui_excluded_candidates
+			value = var:modeu5_debug_last_demand_excluded_candidate_count
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_us10_ui_excluded_candidates value = 0 }
+	}
+	if = {
+		limit = { has_variable = modeu5_debug_last_demand_total_available_stock }
+		set_variable = {
+			name = modeu5_us10_ui_total_available_stock
+			value = var:modeu5_debug_last_demand_total_available_stock
+		}
+	}
+	else = {
+		set_variable = { name = modeu5_us10_ui_total_available_stock value = 0 }
+	}
+	if = {
+		limit = {
+			has_local_variable_list = modeu5_demand_ordered_candidates
+			has_local_variable_map = modeu5_demand_candidate_scores
+		}
+		every_in_local_list = {
+			variable = modeu5_demand_ordered_candidates
+			limit = {
+				NOT = { has_variable = modeu5_us10_ui_first_candidate_score }
+			}
+			set_variable = {
+				name = modeu5_us10_ui_first_candidate_score
+				value = "local_variable_map(modeu5_demand_candidate_scores|this)"
+			}
+			if = {
+				limit = { this = c:FRA }
+				set_global_variable = modeu5_test_us10_first_candidate_is_fra
+			}
+		}
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_us10_ui_first_candidate_score } }
+		set_variable = { name = modeu5_us10_ui_first_candidate_score value = 0 }
+	}
+}
+
+modeu5_us10_log_probe_result = {
+	debug_log = "ModeU5 US-10.0 DUMP eligible=[THIS.GetVariable('modeu5_us10_ui_eligible_candidates').GetValue|0] excluded=[THIS.GetVariable('modeu5_us10_ui_excluded_candidates').GetValue|0] total_available=[THIS.GetVariable('modeu5_us10_ui_total_available_stock').GetValue|0] first_score=[THIS.GetVariable('modeu5_us10_ui_first_candidate_score').GetValue|0] fra_before=[THIS.GetVariable('modeu5_us10_ui_fra_stock_before').GetValue|0] fra_after=[THIS.GetVariable('modeu5_us10_ui_fra_stock_after').GetValue|0] eng_before=[THIS.GetVariable('modeu5_us10_ui_eng_stock_before').GetValue|0] eng_after=[THIS.GetVariable('modeu5_us10_ui_eng_stock_after').GetValue|0]"
+	if = {
+		limit = { has_global_variable = modeu5_test_us10_resolver_passed }
+		debug_log = "ModeU5 US-10.0 RESULT resolver PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_us10_resolver_blocked }
+		debug_log = "ModeU5 US-10.0 RESULT resolver BLOCKED"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_us10_resolver_failed }
+		debug_log = "ModeU5 US-10.0 RESULT resolver FAIL"
+	}
+	else = {
+		debug_log = "ModeU5 US-10.0 RESULT resolver PENDING"
+	}
+}
+
+modeu5_us10_run_resolver_ordering_test = {
+	modeu5_us10_clear_test_results = yes
+	set_global_variable = modeu5_test_us10_resolver_started
+
+	if = {
+		limit = {
+			OR = {
+				NOT = { country_exists = c:FRA }
+				NOT = { country_exists = c:ENG }
+			}
+		}
+		set_global_variable = modeu5_test_us10_resolver_blocked
+		error_log = "ModeU5 US-10.0 probe blocked because FRA or ENG is missing."
+	}
+	else = {
+		c:FRA = {
+			save_temporary_scope_as = modeu5_us10_fra
+			capital.market = { save_temporary_scope_as = modeu5_us10_market }
+
+			modeu5_us10_read_country_wheat_stock = {
+				country = c:FRA
+				market = scope:modeu5_us10_market
+				output = modeu5_us10_fra_stock_before
+			}
+			c:ENG = {
+				modeu5_us10_read_country_wheat_stock = {
+					country = c:ENG
+					market = scope:modeu5_us10_market
+					output = modeu5_us10_eng_stock_before
+				}
+			}
+
+			modeu5_add_stock = {
+				country = c:FRA
+				market = scope:modeu5_us10_market
+				good = wheat
+				quantity = 40
+				capacity_policy = enforce
+			}
+			modeu5_add_stock = {
+				country = c:ENG
+				market = scope:modeu5_us10_market
+				good = wheat
+				quantity = 50
+				capacity_policy = enforce
+			}
+
+			save_temporary_scope_value_as = {
+				name = modeu5_us10_fra_stock_expected_after
+				value = {
+					value = scope:modeu5_us10_fra_stock_before
+					add = 40
+				}
+			}
+			c:ENG = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_eng_stock_expected_after
+					value = {
+						value = scope:modeu5_us10_eng_stock_before
+						add = 50
+					}
+				}
+			}
+
+			modeu5_demand_select_consumption = yes
+			modeu5_demand_allow_all_stock_sources = yes
+			modeu5_resolve_stock_demand = {
+				demanding_country = c:FRA
+				market = scope:modeu5_us10_market
+				good = wheat
+				requested_quantity = 100
+			}
+
+			modeu5_us10_read_country_wheat_stock = {
+				country = c:FRA
+				market = scope:modeu5_us10_market
+				output = modeu5_us10_fra_stock_after
+			}
+			c:ENG = {
+				modeu5_us10_read_country_wheat_stock = {
+					country = c:ENG
+					market = scope:modeu5_us10_market
+					output = modeu5_us10_eng_stock_after
+				}
+			}
+
+			set_variable = {
+				name = modeu5_us10_ui_fra_stock_before
+				value = scope:modeu5_us10_fra_stock_before
+			}
+			set_variable = {
+				name = modeu5_us10_ui_fra_stock_after
+				value = scope:modeu5_us10_fra_stock_after
+			}
+			set_variable = {
+				name = modeu5_us10_ui_eng_stock_before
+				value = scope:modeu5_us10_eng_stock_before
+			}
+			set_variable = {
+				name = modeu5_us10_ui_eng_stock_after
+				value = scope:modeu5_us10_eng_stock_after
+			}
+			modeu5_us10_mirror_probe_to_ui = yes
+
+			if = {
+				limit = {
+					scope:modeu5_us10_fra_stock_after = scope:modeu5_us10_fra_stock_expected_after
+					scope:modeu5_us10_eng_stock_after = scope:modeu5_us10_eng_stock_expected_after
+				}
+				set_global_variable = modeu5_test_us10_no_stock_mutation_passed
+			}
+			if = {
+				limit = { has_global_variable = modeu5_test_us10_first_candidate_is_fra }
+				set_global_variable = modeu5_test_us10_own_stock_first_passed
+			}
+			if = {
+				limit = {
+					has_global_variable = modeu5_test_us10_no_stock_mutation_passed
+					has_global_variable = modeu5_test_us10_own_stock_first_passed
+					scope:modeu5_demand_eligible_candidate_count >= 2
+					scope:modeu5_demand_total_available_stock >= 90
+				}
+				set_global_variable = modeu5_test_us10_resolver_passed
+			}
+			else = {
+				set_global_variable = modeu5_test_us10_resolver_failed
+				error_log = "ModeU5 US-10.0 probe failed ordering, totals, or non-mutation checks."
+			}
+		}
+	}
+
+	modeu5_us10_log_probe_result = yes
+}
