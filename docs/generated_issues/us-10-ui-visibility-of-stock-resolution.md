@@ -12,7 +12,22 @@ As a player or modder, I want to understand where production entered stock, wher
 
 ## Functional objective
 
-Provide mandatory debug for the full visible stock lifecycle: US-00 production admission and void-economy outcomes, US-10 resolver inputs, ordered candidates, scores, exclusions, quantities per candidate, final demand outcomes, and the consumption/inter-market distinction. A custom ModeU5 panel is optional; deterministic debug events and logs are sufficient for MVP.
+Implement a read-only ModeU5 goods summary panel for the selected market/country context.
+
+The panel must show one row per visible good with these columns:
+
+- Good
+- Country Stocks
+- Market Stocks
+- Overproduction
+- Production Efficiency
+
+The panel must distinguish:
+- country-owned stock vs market aggregate stock
+- stock over capacity vs monthly overproduction/surplus
+- production efficiency modifiers vs stock/demand outcomes
+
+Debug logs may support validation, but the player-facing panel is the primary deliverable.
 
 ## Runtime position
 
@@ -45,7 +60,7 @@ docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
 ```
 
-Optional custom panel files, only if the ModeU5 panel is implemented:
+Mandatory player-facing goods summary panel
 
 ```txt
 in_game/gui/
@@ -235,25 +250,53 @@ The UI label must use `Overproduction` for player readability, while tooltip tex
 
 ### Production Efficiency
 
-For each good, show a read-only `Production Efficiency` display value:
+Production Efficiency / Output Modifier Visibility
 
-```txt
-production_efficiency_display =
-  global_production_efficiency
-+ global_<good>_output_modifier
-```
+For each visible good, the panel may show a read-only Production Efficiency or Output Modifier display value only when the required engine-exposed components are confirmed.
 
-Tooltip must show the components separately:
+This value is an MVP visibility aid, not a full recomputation of market production efficiency.
 
-```txt
-Production efficiency: +15%
-Good output modifier: +20%
-Displayed production efficiency: +35%
-```
+Market production efficiency may be affected by multiple components, including but not limited to:
 
-The exact good-specific modifier key must be resolved per good from engine modifier exposure, because not every goods key is guaranteed to match the display name.
+- global production efficiency (global_production_efficiency) 
+- global good-specific output modifiers (global_<good>_output_modifier)
+- research effects
+- societal values
+- market/input conditions
+- presence or absence of precursor goods
+  examples: cotton for linen, wood for paper, paper for books
+- other engine-side production modifiers not yet exposed to ModeU5 script
 
-This display value is informational only. It does not recompute production and does not replace the engine's own production calculation.
+For MVP, the UI must not guess missing components or present a partial value as complete. If only some components are exposed, the column must clearly label the value as partial, for example:
+
+- global production efficiency (global_production_efficiency) 
+- global good-specific output modifiers (global_<good>_output_modifier)
+
+** Warning ** : Others elements might improve your efficiency : (Researches, societal values, presence or absence of precursor goods,...)
+
+If no reliable modifier exposure exists, the column should be hidden or display:
+
+Production Efficiency: unavailable
+Reason: required modifier components are not exposed
+
+Tooltip text must distinguish confirmed components from unavailable components:
+
+Confirmed components:
+- Global production efficiency: +15%
+- Good output modifier: +20%
+
+Unavailable / not yet exposed:
+- Research contribution
+- Societal value contribution
+- Precursor/input availability contribution
+- Other engine-side production modifiers
+
+Displayed value: partial +35%
+Full production efficiency: unavailable
+
+This display is informational only. It does not recompute production, does not replace the engine's own production calculation, and must not be used as an authoritative economic input.
+
+A future dedicated US-10-UI-1 should define full production-efficiency decomposition once the required modifier and precursor/input exposure is confirmed.
 
 ### Scope and selector
 
