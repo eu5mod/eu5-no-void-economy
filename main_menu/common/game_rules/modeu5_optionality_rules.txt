@@ -1,0 +1,87 @@
+modeu5_option_100 = {
+	default = modeu5_option_100_off
+	
+	modeu5_option_100_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_101 = {
+	default = modeu5_option_101_off
+	
+	modeu5_option_101_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_200 = {
+	default = modeu5_option_200_off
+	
+	modeu5_option_200_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_300 = {
+	default = modeu5_option_300_off
+	
+	modeu5_option_300_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_301 = {
+	default = modeu5_option_301_off
+	
+	modeu5_option_301_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_400 = {
+	default = modeu5_option_400_off
+	
+	modeu5_option_400_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_401 = {
+	default = modeu5_option_401_off
+	
+	modeu5_option_401_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_402 = {
+	default = modeu5_option_402_off
+	
+	modeu5_option_402_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_500 = {
+	default = modeu5_option_500_off
+	
+	modeu5_option_500_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_501 = {
+	default = modeu5_option_501_off
+	
+	modeu5_option_501_off = {
+		flag = general_rule
+	}
+}
+
+modeu5_option_502 = {
+	default = modeu5_option_502_off
+	
+	modeu5_option_502_off = {
+		flag = general_rule
+	}
+}
