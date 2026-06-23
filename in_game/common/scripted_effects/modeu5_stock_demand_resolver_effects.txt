@@ -1,0 +1,144 @@
+# ModeU5 US-10.0 stock-demand resolver core.
+#
+# This file provides the common read-only resolver entry point and the shared
+# candidate scoring calculation. It intentionally does not call
+# modeu5_remove_stock or modeu5_transfer_stock; business mutation remains in
+# US-10.1 / US-10.2 callers.
+
+modeu5_select_stock_demand_type_consumption = {
+	save_temporary_scope_value_as = { name = modeu5_us10_demand_type value = 1 }
+	modeu5_load_consumption_scoring_profile = yes
+}
+
+modeu5_select_stock_demand_type_inter_market_trade = {
+	save_temporary_scope_value_as = { name = modeu5_us10_demand_type value = 2 }
+	modeu5_load_trade_scoring_profile = yes
+}
+
+modeu5_resolve_stock_demand = {
+	$demanding_country$ = { save_temporary_scope_as = modeu5_us10_demanding_country }
+	$market$ = { save_temporary_scope_as = modeu5_us10_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_us10_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_requested_quantity_raw
+		value = $requested_quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_requested_quantity
+		value = {
+			value = scope:modeu5_us10_requested_quantity_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us10_requested_quantity_raw < 0 }
+		error_log = "ModeU5 US-10 resolver received a negative requested quantity; request normalized to zero."
+	}
+
+	modeu5_select_stock_demand_type_$demand_type$ = yes
+	modeu5_initialize_stock_demand_resolution_outputs = yes
+
+	if = {
+		limit = { scope:modeu5_us10_requested_quantity > 0 }
+		modeu5_resolve_stock_demand_good_$good$ = yes
+	}
+	else = {
+		error_log = "ModeU5 US-10 resolver skipped candidate scan because requested quantity is zero."
+	}
+
+	modeu5_store_stock_demand_resolution_outputs = yes
+}
+
+modeu5_prepare_stock_candidate_scoring_defaults = {
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_own_country value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_overlord value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_subject value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_market_owner value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_buyer_opinion value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 0 }
+}
+
+modeu5_mark_stock_candidate_excluded = {
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 0 }
+	set_global_variable = {
+		name = modeu5_us10_resolution_excluded_candidate_count
+		value = {
+			value = global_var:modeu5_us10_resolution_excluded_candidate_count
+			add = 1
+		}
+	}
+}
+
+modeu5_calculate_current_stock_candidate_score = {
+	# Relation and exposure defaults are prepared by the per-good candidate scan.
+	# Future confirmed engine exposure can set the subject / overlord / market-owner
+	# flags before this helper runs without changing the scoring formula.
+	save_temporary_scope_value_as = { name = modeu5_us10_stock_candidate_score value = 0 }
+
+	if = {
+		limit = { scope:modeu5_us10_candidate_is_own_country > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_stock_candidate_score
+			value = {
+				value = scope:modeu5_us10_stock_candidate_score
+				add = scope:modeu5_us10_own_country_bonus
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us10_candidate_is_overlord > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_stock_candidate_score
+			value = {
+				value = scope:modeu5_us10_stock_candidate_score
+				add = scope:modeu5_us10_overlord_bonus
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us10_candidate_is_subject > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_stock_candidate_score
+			value = {
+				value = scope:modeu5_us10_stock_candidate_score
+				add = scope:modeu5_us10_subject_bonus
+			}
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us10_candidate_is_market_owner > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_stock_candidate_score
+			value = {
+				value = scope:modeu5_us10_stock_candidate_score
+				add = scope:modeu5_us10_market_owner_bonus
+			}
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_candidate_opinion_weight
+		value = {
+			value = scope:modeu5_us10_candidate_buyer_opinion
+			multiply = scope:modeu5_us10_opinion_coefficient
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_candidate_trade_advantage_weight
+		value = {
+			value = scope:modeu5_us10_candidate_trade_advantage
+			multiply = scope:modeu5_us10_trade_advantage_coefficient
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_stock_candidate_score
+		value = {
+			value = scope:modeu5_us10_stock_candidate_score
+			add = scope:modeu5_us10_candidate_opinion_weight
+			add = scope:modeu5_us10_candidate_trade_advantage_weight
+		}
+	}
+}

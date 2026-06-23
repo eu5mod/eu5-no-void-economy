@@ -1,0 +1,102 @@
+# ModeU5 US-10 stock-demand resolver scoring profiles.
+#
+# These effects only load parser-safe temporary values. They do not read,
+# remove, transfer, create, or mutate stock.
+#
+# Human-readable default profile:
+#
+# modeu5_load_default_scoring_profile = {
+#   own_country_bonus = 1000
+#   overlord_bonus = 500
+#   subject_bonus = 500
+#   market_owner_bonus = 200
+#   opinion_coefficient = 1
+#   trade_advantage_coefficient = 1
+# }
+
+modeu5_load_default_scoring_profile = {
+	save_temporary_scope_value_as = { name = modeu5_us10_own_country_bonus value = 1000 }
+	save_temporary_scope_value_as = { name = modeu5_us10_overlord_bonus value = 500 }
+	save_temporary_scope_value_as = { name = modeu5_us10_subject_bonus value = 500 }
+	save_temporary_scope_value_as = { name = modeu5_us10_market_owner_bonus value = 200 }
+	save_temporary_scope_value_as = { name = modeu5_us10_opinion_coefficient value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_trade_advantage_coefficient value = 1 }
+}
+
+modeu5_load_default_stock_resolution_controls = {
+	save_temporary_scope_value_as = { name = modeu5_us10_minimum_stock_to_consider value = 0.01 }
+
+	# Boolean switches use 1 = yes, 0 = no.
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_subject_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_market_owner_stock value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_foreign_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_at_war_stocks value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_embargoed_stocks value = 0 }
+}
+
+modeu5_load_consumption_scoring_profile = {
+	modeu5_load_default_scoring_profile = yes
+	modeu5_load_default_stock_resolution_controls = yes
+
+	# 1 = consumption.
+	save_temporary_scope_value_as = { name = modeu5_us10_scoring_profile_type value = 1 }
+}
+
+modeu5_load_trade_scoring_profile = {
+	modeu5_load_default_scoring_profile = yes
+	modeu5_load_default_stock_resolution_controls = yes
+
+	# 2 = trade / inter-market transfer candidate selection.
+	save_temporary_scope_value_as = { name = modeu5_us10_scoring_profile_type value = 2 }
+}
+
+modeu5_load_inter_market_trade_scoring_profile = {
+	modeu5_load_trade_scoring_profile = yes
+}
+
+modeu5_clear_stock_demand_resolution_globals = {
+	remove_global_variable = modeu5_us10_resolution_candidate_count
+	remove_global_variable = modeu5_us10_resolution_excluded_candidate_count
+	remove_global_variable = modeu5_us10_resolution_total_available_candidate_stock
+	remove_global_variable = modeu5_us10_resolution_best_score
+	remove_global_variable = modeu5_us10_resolution_best_stock
+}
+
+modeu5_initialize_stock_demand_resolution_outputs = {
+	modeu5_clear_stock_demand_resolution_globals = yes
+
+	set_global_variable = { name = modeu5_us10_resolution_candidate_count value = 0 }
+	set_global_variable = { name = modeu5_us10_resolution_excluded_candidate_count value = 0 }
+	set_global_variable = { name = modeu5_us10_resolution_total_available_candidate_stock value = 0 }
+	set_global_variable = { name = modeu5_us10_resolution_best_score value = -100000000 }
+	set_global_variable = { name = modeu5_us10_resolution_best_stock value = 0 }
+
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = -100000000 }
+	save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = 0 }
+}
+
+modeu5_store_stock_demand_resolution_outputs = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_candidate_count
+		value = global_var:modeu5_us10_resolution_candidate_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_excluded_candidate_count
+		value = global_var:modeu5_us10_resolution_excluded_candidate_count
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_total_available_candidate_stock
+		value = global_var:modeu5_us10_resolution_total_available_candidate_stock
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_best_stock_priority_score
+		value = global_var:modeu5_us10_resolution_best_score
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_best_candidate_stock
+		value = global_var:modeu5_us10_resolution_best_stock
+	}
+}
