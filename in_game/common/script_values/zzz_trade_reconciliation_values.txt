@@ -21,6 +21,26 @@
 # generated script_docs.
 # ============================================================
 
+# main_menu/common/static_modifiers/zzz_modeu5_trade_config_static_modifiers.txt
+
+modeu5_trade_maintenance_global_config = {
+    game_data = {
+        category = country
+    }
+
+    # CONFIG:
+    # Vanilla base maintenance is 0.5 per trade capacity used.
+    #
+    # merchant_maintenance_cost = 0.0  -> effective base 0.5
+    # merchant_maintenance_cost = 0.5  -> effective base 0.75
+    # merchant_maintenance_cost = 1.0  -> effective base 1.0
+    # merchant_maintenance_cost = 2.0  -> effective base 1.5
+    #
+    # Formula:
+    # effective_base = 0.5 * (1 + merchant_maintenance_cost)
+    merchant_maintenance_cost = 1.0
+}
+
 
 # ------------------------------------------------------------
 # Average of the trade_owner country's buying and selling efficiency.
