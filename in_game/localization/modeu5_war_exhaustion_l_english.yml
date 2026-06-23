@@ -1,0 +1,8 @@
+l_english:
+  modeu5_we_pressure_stability: "Stability pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_stability_pressure]"
+  modeu5_we_pressure_legitimacy: "Legitimacy pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_legitimacy_pressure]"
+  modeu5_we_pressure_rebel_threshold: "Rebel threshold pressure from War Exhaustion: [script_value:modeu5_war_exhaustion_rebel_threshold_pressure]"
+
+  modeu5_we_tooltip_header: "War Exhaustion Pressure"
+  modeu5_we_tooltip_desc: "When the ModeU5 War Exhaustion rework is enabled, War Exhaustion applies internal political pressure instead of direct morale, production, import or population-growth penalties. The monthly pressure is capped by ModeU5 defines and can be validated through debug output."
+  modeu5_we_tooltip_disabled: "ModeU5 War Exhaustion rework is disabled by the CMF/Core activation toggle. Vanilla War Exhaustion behaviour applies except for files intentionally overridden by the active playset."

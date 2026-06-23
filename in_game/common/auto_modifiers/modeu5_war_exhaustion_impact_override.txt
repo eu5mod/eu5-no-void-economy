@@ -1,0 +1,12 @@
+# US-06 override of vanilla war_exhaustion_impact.
+#
+# The file is loaded in Core. The rework itself is gated by the CMF/Core toggle
+# in the monthly reconciliation path. This auto_modifier is deliberately empty
+# so the vanilla morale, production, import/trade and population-growth penalties
+# are no longer applied by `war_exhaustion_impact`; political pressure is handled
+# centrally by `modeu5_apply_war_exhaustion_pressure`.
+
+war_exhaustion_impact = {
+    scales_with = war_exhaustion
+    # Deliberately no modifiers.
+}
