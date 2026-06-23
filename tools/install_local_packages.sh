@@ -4,6 +4,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 default_target="${MODEU5_MOD_DIR:-${HOME}/Documents/Paradox Interactive/Europa Universalis V/mod}"
+#default_target="/Users/pierre/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/workshop/content/3450310/novoid_economy"
 target_root="$default_target"
 action="install"
 generator="$repo_root/tools/generate_all.sh"
