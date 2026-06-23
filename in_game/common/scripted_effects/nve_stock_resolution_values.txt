@@ -1,0 +1,55 @@
+# ModeU5 US-10.1 consumption scoring profile.
+#
+# Human-readable profile:
+#
+# modeu5_load_consumption_scoring_profile = {
+#   own_country_bonus = 1000
+#   overlord_bonus = 500
+#   subject_bonus = 500
+#   market_owner_bonus = 200
+#   opinion_coefficient = 1
+#   trade_advantage_coefficient = 1
+# }
+#
+# Parser-safe implementation:
+# Loads the current MVP consumption scoring profile into temporary values used
+# by modeu5_resolve_stock_demand.
+#
+# Boolean switches, when later added, should use 1 = yes, 0 = no.
+
+modeu5_load_consumption_scoring_profile = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_own_country_bonus
+		value = 1000
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_overlord_bonus
+		value = 500
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_subject_bonus
+		value = 500
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_market_owner_bonus
+		value = 200
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_opinion_coefficient
+		value = 1
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_trade_advantage_coefficient
+		value = 1
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us10_scoring_profile_type
+		value = 1
+	}
+}
