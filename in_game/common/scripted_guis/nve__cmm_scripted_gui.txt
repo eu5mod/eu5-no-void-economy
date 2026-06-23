@@ -1,0 +1,17 @@
+﻿# Economic Rework (nve_general) Tab
+## No Void Economy (nve_no_void_economy) Group
+no_void_economy__nve_decay_activate_on_changed = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+
+# Balance (nve_balance) Tab
+## General (nve_balance_general) Group
+no_void_economy__nve_balance_difficulty_on_changed = {
+	scope = country
+	effect = { }
+}
