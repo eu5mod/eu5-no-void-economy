@@ -1,0 +1,166 @@
+# ============================================================
+# zzz_trade_reconciliation_values.txt
+# ============================================================
+# Purpose:
+#   Reconcile old price-side buying/selling efficiency with a new
+#   maintenance-side formula.
+#
+# Assumption:
+#   The engine already pays old_formula_profit.
+#   Therefore this mod computes only:
+#
+#       correction = new_formula_profit - old_formula_profit
+#
+#   Then the correction is added to trade_owner income/treasury elsewhere.
+#
+# Scope assumptions:
+#   These script_values are intended to be evaluated in trade scope.
+#   Efficiency values are read from country scope: trade_owner.
+#
+# Replace all TODO_* names with the real EU5 script values from your
+# generated script_docs.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Average of the trade_owner country's buying and selling efficiency.
+# Clamped to [0, 1].
+#
+# This corresponds to:
+#   min(1, (buying_efficiency + selling_efficiency) / 2)
+# ------------------------------------------------------------
+zzz_trade_owner_avg_buy_sell_efficiency_clamped = {
+    value = trade_owner.modifier:buying_efficiency
+    add = trade_owner.modifier:selling_efficiency
+    divide = 2
+
+    min = 0
+    max = 1
+}
+
+
+# ------------------------------------------------------------
+# Old price-side bonus that the engine has already paid and that
+# must be nullified.
+#
+# Old bonus from selling efficiency:
+#   Q * P_sell * SE
+#
+# Old bonus from buying efficiency:
+#   Q * P_buy * BE * (1 + ECM)
+#
+# Total old price-side bonus:
+#   Q * P_sell * SE
+# + Q * P_buy  * BE * (1 + ECM)
+# ------------------------------------------------------------
+zzz_old_price_side_buy_sell_efficiency_bonus = {
+    value = TODO_trade_goods_quantity
+    multiply = TODO_trade_sell_price
+    multiply = trade_owner.modifier:selling_efficiency
+
+    add = {
+        value = TODO_trade_goods_quantity
+        multiply = TODO_trade_buy_price
+        multiply = trade_owner.modifier:buying_efficiency
+        multiply = {
+            value = 1
+            add = TODO_trade_export_cost_modifier
+        }
+    }
+}
+
+
+# ------------------------------------------------------------
+# Current maintenance before applying the new buy/sell efficiency
+# maintenance factor.
+#
+# Current maintenance:
+#   base_trade_maintenance * (1 + trade_maintenance_modifier)
+#
+# If TODO_trade_base_maintenance already includes existing maintenance
+# modifiers in your script_docs, then remove the multiply block below.
+# ------------------------------------------------------------
+zzz_current_trade_maintenance_before_efficiency_factor = {
+    value = TODO_trade_base_maintenance
+    multiply = {
+        value = 1
+        add = TODO_trade_maintenance_modifier
+    }
+}
+
+
+# ------------------------------------------------------------
+# New maintenance-side effect under your proposed formula:
+#
+#   trade_maintenance =
+#       base_trade_maintenance
+#     * (1 + trade_maintenance_modifier)
+#     * (1 + min(1, (buying_efficiency + selling_efficiency) / 2))
+#
+# Extra maintenance cost created by this formula:
+#
+#   current_maintenance * avg_efficiency
+#
+# Because this is an extra cost, it will be subtracted in the final
+# reconciliation delta.
+# ------------------------------------------------------------
+zzz_new_formula_extra_maintenance_cost = {
+    value = zzz_current_trade_maintenance_before_efficiency_factor
+    multiply = zzz_trade_owner_avg_buy_sell_efficiency_clamped
+}
+
+
+# ------------------------------------------------------------
+# Final reconciliation delta to apply to trade_owner.
+#
+# Engine already paid:
+#   old_formula_profit
+#
+# Desired final result:
+#   new_formula_profit
+#
+# Therefore apply:
+#   delta = new_formula_profit - old_formula_profit
+#
+# With your literal maintenance formula using (1 + avg_efficiency):
+#
+#   delta = -old_price_side_bonus - extra_maintenance_cost
+#
+# This both:
+#   1. removes/nullifies the old price-side bonus
+#   2. applies the new extra maintenance cost
+# ------------------------------------------------------------
+zzz_trade_reconciliation_delta = {
+    value = zzz_old_price_side_buy_sell_efficiency_bonus
+    multiply = -1
+
+    add = {
+        value = zzz_new_formula_extra_maintenance_cost
+        multiply = -1
+    }
+}
+
+
+# ------------------------------------------------------------
+# Alternative final delta if you later decide that positive efficiency
+# should REDUCE maintenance instead of increasing it.
+#
+# In that alternative formula:
+#
+#   trade_maintenance =
+#       base_trade_maintenance
+#     * (1 + trade_maintenance_modifier)
+#     * (1 - avg_efficiency)
+#
+# Then:
+#
+#   delta = -old_price_side_bonus + maintenance_saving
+#
+# Leave this unused unless you intentionally change the design.
+# ------------------------------------------------------------
+zzz_trade_reconciliation_delta_if_efficiency_reduces_maintenance = {
+    value = zzz_old_price_side_buy_sell_efficiency_bonus
+    multiply = -1
+
+    add = zzz_new_formula_extra_maintenance_cost
+}
