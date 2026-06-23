@@ -4,6 +4,22 @@
 # candidate scoring calculation. It intentionally does not call
 # modeu5_remove_stock or modeu5_transfer_stock; business mutation remains in
 # US-10.1 / US-10.2 callers.
+#
+# Public API note:
+# - `good` remains a caller-supplied resolver parameter.
+# - `modeu5_resolve_stock_demand_good_$good$` is not meant to be a separate
+#   public API. It is the generated physical storage adapter for the requested
+#   good.
+# - The generated adapter is still useful because current ModeU5 stock maps are
+#   physically split per good, for example `modeu5_<good>_stock_by_market`.
+#   A generic resolver can accept `good`, but the map identifiers that read the
+#   stock records still need literal per-good generated code.
+#
+# Implementation status:
+# - Candidate construction, hard filters, bucket ordering, and ordered candidate
+#   debug output are intentionally left for the generated per-good adapter.
+# - This shared file owns only demand normalization, profile loading, common
+#   counters, and score calculation.
 
 modeu5_select_stock_demand_type_consumption = {
 	save_temporary_scope_value_as = { name = modeu5_us10_demand_type value = 1 }
@@ -41,6 +57,16 @@ modeu5_resolve_stock_demand = {
 
 	if = {
 		limit = { scope:modeu5_us10_requested_quantity > 0 }
+		# Generated implementation hook.
+		#
+		# The public resolver is good-parametric, but each good adapter must bind
+		# literal ModeU5 stock-map identifiers. The generated implementation should:
+		# 1. use the market aggregate as a cheap empty-market prefilter;
+		# 2. enumerate the already prepared current-market country work cache;
+		# 3. apply hard filters before any opinion/trade-advantage read;
+		# 4. bucket candidates before attempting any expensive ordering;
+		# 5. expose candidate counts, excluded counts/reasons, total available stock,
+		#    best score, and enough debug state for US-10-UI/debug.
 		modeu5_resolve_stock_demand_good_$good$ = yes
 	}
 	else = {
@@ -59,6 +85,38 @@ modeu5_prepare_stock_candidate_scoring_defaults = {
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 0 }
+
+	# Bucket ids are intentionally coarse. They provide a cheap deterministic
+	# ordering layer before a future full sort is considered.
+	# 1 = own stock, 2 = subject/overlord, 3 = market owner, 4 = other foreign.
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 4 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_opinion_weight value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage_weight value = 0 }
+}
+
+modeu5_prepare_current_stock_candidate_priority_bucket = {
+	# Cheap pre-ordering. Full score remains available for debug and tie-breaking,
+	# but generated candidate scans should avoid an O(n²) generic sort when these
+	# buckets are sufficient for the MVP.
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 4 }
+
+	if = {
+		limit = { scope:modeu5_us10_candidate_is_own_country > 0 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 1 }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				scope:modeu5_us10_candidate_is_overlord > 0
+				scope:modeu5_us10_candidate_is_subject > 0
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 2 }
+	}
+	else_if = {
+		limit = { scope:modeu5_us10_candidate_is_market_owner > 0 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 3 }
+	}
 }
 
 modeu5_mark_stock_candidate_excluded = {
@@ -76,7 +134,13 @@ modeu5_calculate_current_stock_candidate_score = {
 	# Relation and exposure defaults are prepared by the per-good candidate scan.
 	# Future confirmed engine exposure can set the subject / overlord / market-owner
 	# flags before this helper runs without changing the scoring formula.
+	#
+	# Performance rule:
+	# Call this only after cheap hard filters have accepted the candidate. Opinion
+	# and trade-advantage reads should be prepared by the generated candidate scan
+	# only when the matching enable flag and coefficient are non-zero.
 	save_temporary_scope_value_as = { name = modeu5_us10_stock_candidate_score value = 0 }
+	modeu5_prepare_current_stock_candidate_priority_bucket = yes
 
 	if = {
 		limit = { scope:modeu5_us10_candidate_is_own_country > 0 }
@@ -119,20 +183,40 @@ modeu5_calculate_current_stock_candidate_score = {
 		}
 	}
 
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_candidate_opinion_weight
-		value = {
-			value = scope:modeu5_us10_candidate_buyer_opinion
-			multiply = scope:modeu5_us10_opinion_coefficient
+	if = {
+		limit = {
+			scope:modeu5_us10_enable_opinion_scoring > 0
+			scope:modeu5_us10_opinion_coefficient != 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_candidate_opinion_weight
+			value = {
+				value = scope:modeu5_us10_candidate_buyer_opinion
+				multiply = scope:modeu5_us10_opinion_coefficient
+			}
 		}
 	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_candidate_trade_advantage_weight
-		value = {
-			value = scope:modeu5_us10_candidate_trade_advantage
-			multiply = scope:modeu5_us10_trade_advantage_coefficient
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_opinion_weight value = 0 }
+	}
+
+	if = {
+		limit = {
+			scope:modeu5_us10_enable_trade_advantage_scoring > 0
+			scope:modeu5_us10_trade_advantage_coefficient != 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_candidate_trade_advantage_weight
+			value = {
+				value = scope:modeu5_us10_candidate_trade_advantage
+				multiply = scope:modeu5_us10_trade_advantage_coefficient
+			}
 		}
 	}
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage_weight value = 0 }
+	}
+
 	save_temporary_scope_value_as = {
 		name = modeu5_us10_stock_candidate_score
 		value = {
