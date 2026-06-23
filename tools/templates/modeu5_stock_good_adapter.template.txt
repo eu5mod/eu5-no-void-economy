@@ -2008,10 +2008,22 @@ modeu5_clear_loaded_void_economy_record_good___GOOD__ = {
 }
 
 modeu5_run_us00_monthly_pipeline_good___GOOD__ = {
-	scope:modeu5_country = {
-		every_market_present_in_country = {
-			save_temporary_scope_as = modeu5_market
-			modeu5_process_us00_monthly_market_good___GOOD__ = yes
+	# Debug/focused wrapper mirrors the market-owned monthly dispatcher. The
+	# country running the pulse is only a scheduler when it owns a market center;
+	# per-country stock/ledger records are processed for each country present in
+	# that market.
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_mark_monthly_market_seen = yes
+		modeu5_rebuild_countries_present_in_market = yes
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				save_temporary_scope_as = modeu5_country
+				modeu5_process_us00_monthly_market_good___GOOD__ = yes
+			}
 		}
 	}
 }
