@@ -1,0 +1,157 @@
+# ============================================================
+# zzz_trade_reconciliation_effects.txt
+# ============================================================
+# Purpose:
+#   Aggregate the route-level reconciliation delta and apply it to
+#   the country that owns the trade: trade_owner.
+#
+# Important:
+#   This does NOT set income equal to new - old.
+#   It adds the delta to the income that the engine already produced.
+#
+# Expected caller scope:
+#   country
+#
+# Expected loop shape:
+#   every_market_center_in_country -> every_trade
+# ============================================================
+
+
+# ------------------------------------------------------------
+# Reset the per-country accumulator.
+# Scope: country
+# ------------------------------------------------------------
+zzz_reset_trade_reconciliation_accumulator = {
+    set_variable = {
+        name = zzz_trade_reconciliation_delta_total
+        value = 0
+    }
+}
+
+
+# ------------------------------------------------------------
+# Aggregate all trade deltas reached from the country's market centers.
+#
+# Scope: country
+#
+# Notes:
+#   - The delta is added to trade_owner, not necessarily to the
+#     market-center country.
+#   - This avoids assuming the market center owner and trade owner
+#     are the same country.
+#   - If your every_trade loop can visit the same trade multiple times
+#     through multiple market centers, add a processed flag/list guard.
+# ------------------------------------------------------------
+zzz_collect_trade_reconciliation_from_market_centers = {
+    every_market_center_in_country = {
+        every_trade = {
+            limit = {
+                trade_owner = {
+                    exists = this
+                }
+            }
+
+            set_variable = {
+                name = zzz_this_trade_reconciliation_delta
+                value = zzz_trade_reconciliation_delta
+            }
+
+            trade_owner = {
+                change_variable = {
+                    name = zzz_trade_reconciliation_delta_total
+                    add = prev.var:zzz_this_trade_reconciliation_delta
+                }
+            }
+        }
+    }
+}
+
+
+# ------------------------------------------------------------
+# Apply the aggregated delta.
+#
+# Scope: country / trade_owner
+#
+# Replace the TODO block with whichever mechanism your mod uses:
+#   - direct treasury change
+#   - country income bucket
+#   - monthly balance variable
+#   - hidden income modifier
+#
+# The value to apply is:
+#   var:zzz_trade_reconciliation_delta_total
+#
+# Remember:
+#   final_income = engine_income + var:zzz_trade_reconciliation_delta_total
+# ------------------------------------------------------------
+zzz_apply_trade_reconciliation_delta_to_country = {
+    if = {
+        limit = {
+            var:zzz_trade_reconciliation_delta_total != 0
+        }
+
+        # TODO_apply_delta_to_trade_owner_income_or_treasury
+        # Example pseudocode only; replace with valid EU5 effect syntax:
+        # change_treasury = var:zzz_trade_reconciliation_delta_total
+        # change_monthly_income = var:zzz_trade_reconciliation_delta_total
+        # add_income = {
+        #     type = trade
+        #     value = var:zzz_trade_reconciliation_delta_total
+        # }
+    }
+}
+
+
+# ------------------------------------------------------------
+# One-call wrapper.
+#
+# Scope: country
+#
+# Run this from the same place your current market-center/trade loop runs.
+# If you run it for every country, it will collect deltas from that
+# country's market centers and assign each delta to the relevant
+# trade_owner country.
+# ------------------------------------------------------------
+zzz_reconcile_trade_income_from_market_centers = {
+    # Optional: reset this country before collecting from its own centers.
+    # If your global monthly hook runs for every country, you may want a
+    # separate first pass that resets all countries, then a second pass
+    # that collects from all market centers, then a third pass that applies.
+    zzz_reset_trade_reconciliation_accumulator = yes
+
+    zzz_collect_trade_reconciliation_from_market_centers = yes
+
+    # This applies only this country's accumulator.
+    # If collecting can add deltas to OTHER trade_owner countries, run
+    # zzz_apply_trade_reconciliation_delta_to_country in a separate pass
+    # over all countries after all collection is complete.
+    zzz_apply_trade_reconciliation_delta_to_country = yes
+}
+
+
+# ------------------------------------------------------------
+# Safer global/pass-based structure, if your hook supports it.
+#
+# This is the preferred pattern when trade_owner may differ from the
+# market-center country.
+#
+# Pseudocode because the exact global country iterator name may differ.
+# Replace every_country with the valid iterator in your mod context.
+# ------------------------------------------------------------
+zzz_reconcile_trade_income_global_three_pass = {
+    # PASS 1: reset all countries
+    every_country = {
+        zzz_reset_trade_reconciliation_accumulator = yes
+    }
+
+    # PASS 2: collect from all market-center countries, adding each
+    # route delta to its trade_owner.
+    every_country = {
+        zzz_collect_trade_reconciliation_from_market_centers = yes
+    }
+
+    # PASS 3: apply accumulated deltas to the actual trade_owner countries.
+    every_country = {
+        zzz_apply_trade_reconciliation_delta_to_country = yes
+    }
+}
