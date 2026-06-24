@@ -226,3 +226,159 @@ modeu5_calculate_current_stock_candidate_score = {
 		}
 	}
 }
+
+
+# US-10.1 / US-10.2 explicit-request runtime wrappers.
+#
+# These wrappers intentionally delegate requested-quantity normalization and
+# demand-type profile loading to the canonical #103 resolver API before running
+# the generated mutating adapter.  The generated adapters still own physical
+# per-good map access and stock mutation.
+
+modeu5_resolve_stock_consumption = {
+	$consumer_country$ = { save_temporary_scope_as = modeu5_consumer_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_resolve_stock_demand = {
+		demanding_country = scope:modeu5_consumer_country
+		market = scope:modeu5_market
+		good = $good$
+		demand_type = consumption
+		requested_quantity = $requested_quantity$
+	}
+
+	# Bridge the canonical #103 `modeu5_us10_*` resolver outputs into the
+	# temporary names consumed by the #104 generated mutating adapters and outcome
+	# recorders.  This keeps one public requested-quantity argument while avoiding
+	# a second normalizer/profile loader.
+	save_temporary_scope_value_as = { name = modeu5_requested_quantity_raw value = scope:modeu5_us10_requested_quantity_raw }
+	save_temporary_scope_value_as = { name = modeu5_requested_quantity value = scope:modeu5_us10_requested_quantity }
+
+	modeu5_resolve_stock_consumption_good_$good$ = yes
+	modeu5_record_country_market_consumption_outcome = {
+		country = scope:modeu5_consumer_country
+		market = scope:modeu5_market
+		good = $good$
+		requested_quantity = scope:modeu5_requested_quantity
+		satisfied_quantity = scope:modeu5_satisfied_quantity
+		unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+	}
+}
+
+modeu5_resolve_pop_stock_consumption = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	$consumer_country$ = { save_temporary_scope_as = modeu5_consumer_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_resolve_stock_consumption = {
+		consumer_country = scope:modeu5_consumer_country
+		market = scope:modeu5_market
+		good = $good$
+		requested_quantity = $requested_quantity$
+	}
+	modeu5_record_pop_demand_outcome = {
+		location = scope:modeu5_demand_location
+		good = $good$
+		requested_quantity = scope:modeu5_requested_quantity
+		satisfied_quantity = scope:modeu5_satisfied_quantity
+		unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+	}
+}
+
+modeu5_resolve_inter_market_stock_transfer = {
+	$buyer_country$ = { save_temporary_scope_as = modeu5_buyer_country }
+	$source_market$ = { save_temporary_scope_as = modeu5_source_market }
+	$target_market$ = { save_temporary_scope_as = modeu5_target_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_resolve_stock_demand = {
+		demanding_country = scope:modeu5_buyer_country
+		market = scope:modeu5_source_market
+		good = $good$
+		demand_type = inter_market_trade
+		requested_quantity = $requested_quantity$
+	}
+
+	# Bridge canonical #103 demand-resolution values into the #104 transfer
+	# adapter names.  The source market is the supplier/candidate market for
+	# inter-market transfer scoring.
+	save_temporary_scope_value_as = { name = modeu5_requested_quantity_raw value = scope:modeu5_us10_requested_quantity_raw }
+	save_temporary_scope_value_as = { name = modeu5_requested_quantity value = scope:modeu5_us10_requested_quantity }
+
+	if = {
+		limit = { scope:modeu5_source_market = scope:modeu5_target_market }
+		save_temporary_scope_value_as = { name = modeu5_transferred_quantity value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_satisfied_quantity value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_unsatisfied_quantity value = scope:modeu5_requested_quantity }
+		save_temporary_scope_value_as = { name = modeu5_us10_same_market_transfer_skipped value = 1 }
+	}
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_us10_same_market_transfer_skipped value = 0 }
+		modeu5_resolve_inter_market_stock_transfer_good_$good$ = yes
+	}
+	modeu5_record_country_market_trade_outcome = {
+		country = scope:modeu5_buyer_country
+		market = scope:modeu5_target_market
+		good = $good$
+		requested_quantity = scope:modeu5_requested_quantity
+		satisfied_quantity = scope:modeu5_transferred_quantity
+		unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+	}
+}
+
+modeu5_record_pop_demand_outcome = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
+	if = { limit = { scope:modeu5_outcome_requested_quantity > 0 } modeu5_record_pop_demand_outcome_good_$good$ = yes }
+}
+
+modeu5_reset_pop_demand_outcome = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	modeu5_reset_pop_demand_outcome_good_$good$ = yes
+}
+
+modeu5_reset_pop_demand_annual_counters = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	modeu5_reset_pop_demand_annual_counters_good_$good$ = yes
+}
+
+modeu5_record_country_market_consumption_outcome = {
+	$country$ = { save_temporary_scope_as = modeu5_us10_outcome_country }
+	$market$ = { save_temporary_scope_as = modeu5_us10_outcome_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
+	if = { limit = { scope:modeu5_outcome_requested_quantity > 0 } modeu5_record_consumption_outcome_good_$good$ = yes }
+}
+
+modeu5_record_country_market_trade_outcome = {
+	$country$ = { save_temporary_scope_as = modeu5_us10_outcome_country }
+	$market$ = { save_temporary_scope_as = modeu5_us10_outcome_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
+	if = { limit = { scope:modeu5_outcome_requested_quantity > 0 } modeu5_record_trade_outcome_good_$good$ = yes }
+}
+
+modeu5_reset_country_market_consumption_outcome = {
+	$country$ = { save_temporary_scope_as = modeu5_us10_outcome_country }
+	$market$ = { save_temporary_scope_as = modeu5_us10_outcome_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	modeu5_reset_consumption_outcome_good_$good$ = yes
+}
+
+modeu5_reset_country_market_trade_outcome = {
+	$country$ = { save_temporary_scope_as = modeu5_us10_outcome_country }
+	$market$ = { save_temporary_scope_as = modeu5_us10_outcome_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	modeu5_reset_trade_outcome_good_$good$ = yes
+}
