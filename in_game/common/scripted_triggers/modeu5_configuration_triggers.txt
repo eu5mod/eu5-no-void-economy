@@ -45,6 +45,28 @@ modeu5_audit_enabled_trigger = {
 	}
 }
 
+modeu5_accounting_minimal_persistence_trigger = {
+	OR = {
+		has_global_variable = modeu5_accounting_persistence_minimal
+		has_game_rule = modeu5_accounting_minimal
+	}
+}
+
+modeu5_accounting_strict_persistence_trigger = {
+	OR = {
+		has_global_variable = modeu5_accounting_persistence_strict
+		has_game_rule = modeu5_accounting_strict
+	}
+}
+
+modeu5_us00_full_ledger_persistence_allowed_trigger = {
+	OR = {
+		modeu5_accounting_strict_persistence_trigger = yes
+		modeu5_debug_enabled_trigger = yes
+		modeu5_audit_enabled_trigger = yes
+	}
+}
+
 modeu5_debug_capture_enabled_trigger = {
 	modeu5_debug_enabled_trigger = yes
 }
