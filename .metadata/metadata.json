@@ -1,21 +1,22 @@
 {
-	"id": "modeu5_core",
-	"name": "NVE : No Void Economy (Required - Core)",
-	"version": "0.1.0",
-	"supported_game_version": "1.*.*",
-	"short_description": "NVE removes the void-economy so that only goods sold brings money & overproducting country will adapt their production. The mode include Optional balancing options to remove PDX punitive approach to balance.",
-	"tags": [
-		"Gameplay",
-		"Trade and Economics"
-	],
-  "relationships": [
-    {
-      "rel_type": "dependency",
-      "id": "community_mod_framework",
-      "display_name": "Community Mod Framework",
-      "resource_type": "mod",
-      "version": "2.*"
-    }
-  ],
-	"game_custom_data": {}
+    "name": "NVE : No Void Economy (Required - Core)",
+    "id": "modeu5_core",
+    "version": "0.1.0",
+    "game_id": "eu5",
+    "supported_game_version": "1.*.*",
+    "short_description": "NVE removes the void-economy so that only goods sold brings money & overproducting country will adapt their production. The mode include Optional balancing options to remove PDX punitive approach to balance.",
+    "tags": [
+        "Gameplay",
+        "Trade and Economics"
+    ],
+    "relationships": [
+        {
+            "rel_type": "dependency",
+            "id": "community_mod_framework",
+            "display_name": "Community Mod Framework",
+            "resource_type": "mod",
+            "version": "2.*"
+        }
+    ],
+    "game_custom_data": {}
 }

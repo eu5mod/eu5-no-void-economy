@@ -1,6 +1,6 @@
 ﻿# Root scope: country.
 nve__register_cmf_mod = {
-	# Economic Rework (nve_general) Tab
+	# Trade Rework (nve_general) Tab
 	## No Void Economy (nve_no_void_economy) Group
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
@@ -28,13 +28,59 @@ nve__register_cmf_mod = {
 		setting_id = nve_decay_activate
 	}
 
-	## Other (nve_generalother) Group
+	## nve_general_performance (nve_general_performance) Group
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_debug_messages
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 3
+	}
+
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_monthly_stock_check
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 2
+	}
+
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_save_mode
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 3
+	}
+
+# in nve__cmm_effects.txt, after registering the dropdown
+
+cmm_add_scripted_gui = {
+	mod_id = no_void_economy
+	setting_id = nve_monthly_stock_check
+}
+
+cmm_add_scripted_gui = {
+	mod_id = no_void_economy
+	setting_id = nve_save_mode
+}
+
+# Root scope: country.
+# Additional CMM registration for NVE performance-impacting runtime options.
+	## Trade Rework (nve_general_trade_rework) Group
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = activate_trade_cost
 		tab_id = nve_general
-		group_id = nve_generalother
+		group_id = nve_general_trade_rework
 		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = activate_trade_cost
 	}
 
 	# Balance (nve_balance) Tab
@@ -60,6 +106,10 @@ nve__register_cmf_mod = {
 		group_id = nve_balance_war
 		default_value = 0
 	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_balance_war_shorter
+	}
 
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
@@ -67,6 +117,10 @@ nve__register_cmf_mod = {
 		tab_id = nve_balance
 		group_id = nve_balance_war
 		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_balance_war_exhaustion
 	}
 
 	## Economy (nve_balance_economy) Group
@@ -77,6 +131,10 @@ nve__register_cmf_mod = {
 		group_id = nve_balance_economy
 		default_value = 0
 	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_balance_economy_location_specialisation
+	}
 
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
@@ -84,6 +142,10 @@ nve__register_cmf_mod = {
 		tab_id = nve_balance
 		group_id = nve_balance_economy
 		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_balance_economy_main_balance
 	}
 
 	## Other (nve_balance_other) Group
@@ -95,7 +157,7 @@ nve__register_cmf_mod = {
 		default_value = 0
 	}
 
-	# Rebel & subjetcs (nve_rebels_n_subjects) Tab
+	# Rebels & Subjects (nve_rebels_n_subjects) Tab
 	## Rebels (nve_rebels) Group
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
@@ -103,6 +165,10 @@ nve__register_cmf_mod = {
 		tab_id = nve_rebels_n_subjects
 		group_id = nve_rebels
 		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_rebel_threshold
 	}
 
 	cmm_register_bool_setting = {
@@ -112,13 +178,9 @@ nve__register_cmf_mod = {
 		group_id = nve_rebels
 		default_value = 0
 	}
-
-	cmm_register_bool_setting = {
+	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = 
-		tab_id = nve_rebels_n_subjects
-		group_id = nve_rebels
-		default_value = 0
+		setting_id = nve_rebel_war_start
 	}
 
 	## Subjects (Subjects) Group
@@ -129,6 +191,10 @@ nve__register_cmf_mod = {
 		group_id = Subjects
 		default_value = 0
 	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_subjects_persistance
+	}
 }
 
 # Callback handler for cmf_on_callback.
@@ -137,7 +203,7 @@ nve__register_cmf_mod = {
 nve__handle_cmf_callback = {
 	switch = {
 		trigger = var:cmf_callback
-		# Economic Rework (nve_general) Tab
+		# Trade Rework (nve_general) Tab
 		## No Void Economy (nve_no_void_economy) Group
 		flag:no_void_economy__nve_no_void_economy_main = {
 			cmm_sync_dropdown_option_alias = {
@@ -149,6 +215,14 @@ nve__handle_cmf_callback = {
 		}
 		flag:no_void_economy__nve_decay_activate = {
 			nve_cmf_activate_good_decay = yes
+		}
+		## Debug & Audit options (nve_general_debug) Group
+		flag:no_void_economy__nve_monthly_stock_check = {
+			no_void_economy__nve_monthly_stock_check_on_changed = yes
+		}
+
+		flag:no_void_economy__nve_save_mode = {
+			no_void_economy__nve_save_mode_on_changed = yes
 		}
 	}
 }

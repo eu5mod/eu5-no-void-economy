@@ -1,4 +1,92 @@
-﻿# Economic Rework (nve_general) Tab
+﻿namespace = nve_cmm_warning
+
+no_void_economy__nve_debug_messages = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+no_void_economy__nve_monthly_stock_check = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+
+nve_cmm_warning.1 = {
+	type = country_event
+	title = nve_cmm_warning_planned_feature_title
+	desc = nve_cmm_warning_planned_feature_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}
+
+no_void_economy__nve_save_mode = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+no_void_economy__nve_monthly_stock_check_on_changed = {
+	scope = country
+
+	effect = {
+		if = {
+			limit = {
+				variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2
+			}
+			trigger_event = { id = nve_cmm_warning.2 }
+		}
+	}
+}
+nve_cmm_warning.2 = {
+	type = country_event
+	title = no_void_economy__nve_monthly_stock_check_option_2_name
+	desc = no_void_economy__nve_monthly_stock_check_option_2_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}
+
+no_void_economy__nve_save_mode_on_changed = {
+	scope = country
+
+	effect = {
+		if = {
+			limit = {
+				variable_map(cmm|flag:no_void_economy__nve_save_mode) = 3
+			}
+			trigger_event = { id = nve_cmm_warning.3 }
+		}
+	}
+}
+nve_cmm_warning.3 = {
+	type = country_event
+	title = no_void_economy__nve_save_mode_option_3_name
+	desc = no_void_economy__nve_save_mode_option_3_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}
+
+
+# Trade Rework (nve_general) Tab
 ## No Void Economy (nve_no_void_economy) Group
 no_void_economy__nve_decay_activate_on_changed = {
 	scope = country
@@ -9,9 +97,119 @@ no_void_economy__nve_decay_activate_on_changed = {
 	effect = { }
 }
 
+## Trade Rework (nve_general_trade_rework) Group
+no_void_economy__activate_trade_cost_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
 # Balance (nve_balance) Tab
 ## General (nve_balance_general) Group
 no_void_economy__nve_balance_difficulty_on_changed = {
 	scope = country
+	effect = { }
+}
+
+## War (nve_balance_war) Group
+no_void_economy__nve_balance_war_shorter_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_balance_war_exhaustion_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## Economy (nve_balance_economy) Group
+no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_balance_economy_main_balance_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# Rebels & Subjects (nve_rebels_n_subjects) Tab
+## Rebels (nve_rebels) Group
+no_void_economy__nve_rebel_threshold_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_rebel_war_start_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## Subjects (Subjects) Group
+no_void_economy__nve_subjects_persistance_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
 	effect = { }
 }
