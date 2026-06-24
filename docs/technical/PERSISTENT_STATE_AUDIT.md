@@ -31,6 +31,8 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_foreign_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future foreign-storage hook | keep |
 | `modeu5_<good>_production_penalty_by_market` | country | market | gameplay carryover | US-00, generated modifiers | next-month production penalty | keep normal-runtime persistent |
 | `modeu5_<good>_us00_active_record_by_market` | country | market | scheduling index | PERF-15 monthly dispatch | cheap previous-state probe | keep while PERF-15 dispatch uses it |
+| `modeu5_<good>_ui_monthly_surplus_by_market` | human country | market | current month | US-10-UI / debug | current monthly overproduction display counter | keep only for human UI scope |
+| `modeu5_<good>_ui_monthly_consumption_by_market` | human country | market | current month | US-10-UI / debug | current monthly denominator/display counter | keep only for human UI scope |
 | `modeu5_<good>_produced_by_market` | country | market | diagnostic ledger | US-00 tests, strict/debug/audit | full production ledger | strict/debug/audit or human-relevant full ledger only |
 | `modeu5_<good>_added_by_market` | country | market | diagnostic ledger | US-00 tests, strict/debug/audit | full stock-admission ledger | strict/debug/audit or human-relevant full ledger only |
 | `modeu5_<good>_rejected_by_market` | country | market | diagnostic ledger | US-00 tests, strict/debug/audit | full stock-rejection ledger | strict/debug/audit or human-relevant full ledger only |
@@ -67,7 +69,7 @@ Capacity maps: kept/shared
 Capacity breakdown maps: kept
 US-00 gameplay carryover maps: kept
 US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only
+UI monthly counter maps: human country current-month only
 UI shadow maps: 0
 Unclassified persistent maps: 0
 ```
-

@@ -315,6 +315,31 @@ if ! search_quiet 'modeu5_us00_full_ledger_persistence_allowed_trigger = yes' "$
 	exit 1
 fi
 
+for required_ui_map in \
+	modeu5_wheat_ui_monthly_surplus_by_market \
+	modeu5_wheat_ui_monthly_consumption_by_market; do
+	if ! search_quiet "$required_ui_map" "$generated_stock_helpers"; then
+		printf 'Generated stock adapters are missing PERF-18 UI counter map fixture: %s\n' "$required_ui_map" >&2
+		exit 1
+	fi
+done
+
+if ! search_quiet '^modeu5_store_us10_ui_monthly_counters_good_wheat = \{' "$generated_stock_helpers"; then
+	printf 'Generated stock adapters are missing the PERF-18 UI counter storage helper.\n' >&2
+	exit 1
+fi
+
+if search_quiet 'modeu5_store_us00_ui_monthly_counters_good_wheat' "$generated_stock_helpers"; then
+	printf 'PERF-18 UI counters must not treat US-00 rejected production as player-facing overproduction.\n' >&2
+	exit 1
+fi
+if LC_ALL=C perl -0ne 'exit 1 if /name = modeu5_wheat_ui_monthly_surplus_by_market\s+key = scope:modeu5_market\s+value = scope:modeu5_us00_monthly_rejected_quantity/s' "$generated_stock_helpers"; then
+	:
+else
+	printf 'PERF-18 UI surplus must not be written from US-00 rejected production.\n' >&2
+	exit 1
+fi
+
 if ! search_quiet '^modeu5_accounting_persistence = \{' main_menu/common/game_rules/modeu5_game_rules.txt; then
 	printf 'ModeU5 accounting persistence game rule is missing.\n' >&2
 	exit 1
