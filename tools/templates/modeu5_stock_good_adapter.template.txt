@@ -2008,10 +2008,22 @@ modeu5_clear_loaded_void_economy_record_good___GOOD__ = {
 }
 
 modeu5_run_us00_monthly_pipeline_good___GOOD__ = {
-	scope:modeu5_country = {
-		every_market_present_in_country = {
-			save_temporary_scope_as = modeu5_market
-			modeu5_process_us00_monthly_market_good___GOOD__ = yes
+	# Debug/focused wrapper mirrors the market-owned monthly dispatcher. The
+	# country running the pulse is only a scheduler when it owns a market center;
+	# per-country stock/ledger records are processed for each country present in
+	# that market.
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_mark_monthly_market_seen = yes
+		modeu5_rebuild_countries_present_in_market = yes
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				save_temporary_scope_as = modeu5_country
+				modeu5_process_us00_monthly_market_good___GOOD__ = yes
+			}
 		}
 	}
 }
@@ -2248,6 +2260,442 @@ modeu5_capture_us00_monthly_runtime_debug_good___GOOD__ = {
 			set_variable = { name = modeu5_debug_last_us00_modifier_application_mode value = scope:modeu5_us00_monthly_modifier_application_mode }
 			set_variable = { name = modeu5_debug_last_us00_affected_locations_count value = scope:modeu5_us00_monthly_affected_locations_count }
 			set_variable = { name = modeu5_debug_last_us00_positive_locations_count value = scope:modeu5_us00_monthly_positive_locations_count }
+		}
+	}
+}
+
+modeu5_resolve_stock_demand_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+
+	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_candidate_country
+			save_temporary_scope_value_as = {
+				name = modeu5_us10_candidate_count
+				value = { value = scope:modeu5_us10_candidate_count add = 1 }
+			}
+			scope:modeu5_candidate_country = {
+				save_temporary_scope_as = modeu5_country
+				scope:modeu5_market = { save_temporary_scope_as = modeu5_market }
+				modeu5_read_country_stock_record_good___GOOD__ = yes
+			}
+			if = {
+				limit = { scope:modeu5_read_country_stock > 0 }
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_total_available_candidate_stock
+					value = {
+						value = scope:modeu5_us10_total_available_candidate_stock
+						add = scope:modeu5_read_country_stock
+					}
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_excluded_candidate_count
+					value = { value = scope:modeu5_us10_excluded_candidate_count add = 1 }
+				}
+			}
+		}
+	}
+	modeu5_capture_us10_resolver_debug_good___GOOD__ = yes
+}
+
+modeu5_resolve_stock_consumption_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_remaining_quantity value = scope:modeu5_requested_quantity }
+	save_temporary_scope_value_as = { name = modeu5_satisfied_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_mutation_effect_called value = 2 }
+
+	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			limit = { scope:modeu5_remaining_quantity > 0 }
+			save_temporary_scope_as = modeu5_candidate_country
+			save_temporary_scope_value_as = {
+				name = modeu5_us10_candidate_count
+				value = { value = scope:modeu5_us10_candidate_count add = 1 }
+			}
+			scope:modeu5_candidate_country = {
+				save_temporary_scope_as = modeu5_country
+				scope:modeu5_market = { save_temporary_scope_as = modeu5_market }
+				modeu5_read_country_stock_record_good___GOOD__ = yes
+			}
+			if = {
+				limit = { scope:modeu5_read_country_stock > 0 }
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_total_available_candidate_stock
+					value = {
+						value = scope:modeu5_us10_total_available_candidate_stock
+						add = scope:modeu5_read_country_stock
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_candidate_take_quantity
+					value = {
+						value = scope:modeu5_remaining_quantity
+						max = scope:modeu5_read_country_stock
+					}
+				}
+				if = {
+					limit = { scope:modeu5_us10_candidate_take_quantity > 0 }
+					modeu5_remove_stock = {
+						country = scope:modeu5_candidate_country
+						market = scope:modeu5_market
+						good = __GOOD__
+						quantity = scope:modeu5_us10_candidate_take_quantity
+						reason = consumption
+					}
+					save_temporary_scope_value_as = {
+						name = modeu5_satisfied_quantity
+						value = {
+							value = scope:modeu5_satisfied_quantity
+							add = scope:modeu5_actual_removed_quantity
+						}
+					}
+					save_temporary_scope_value_as = {
+						name = modeu5_remaining_quantity
+						value = {
+							value = scope:modeu5_remaining_quantity
+							subtract = scope:modeu5_actual_removed_quantity
+							min = 0
+						}
+					}
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_excluded_candidate_count
+					value = { value = scope:modeu5_us10_excluded_candidate_count add = 1 }
+				}
+			}
+		}
+	}
+	save_temporary_scope_value_as = { name = modeu5_unsatisfied_quantity value = scope:modeu5_remaining_quantity }
+	modeu5_capture_us10_consumption_debug_good___GOOD__ = yes
+}
+
+modeu5_resolve_inter_market_stock_transfer_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_remaining_quantity value = scope:modeu5_requested_quantity }
+	save_temporary_scope_value_as = { name = modeu5_transferred_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_satisfied_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_mutation_effect_called value = 3 }
+
+	scope:modeu5_source_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			limit = { scope:modeu5_remaining_quantity > 0 }
+			save_temporary_scope_as = modeu5_seller_country
+			save_temporary_scope_value_as = {
+				name = modeu5_us10_candidate_count
+				value = { value = scope:modeu5_us10_candidate_count add = 1 }
+			}
+			scope:modeu5_seller_country = {
+				save_temporary_scope_as = modeu5_country
+				scope:modeu5_source_market = { save_temporary_scope_as = modeu5_market }
+				modeu5_read_country_stock_record_good___GOOD__ = yes
+			}
+			if = {
+				limit = { scope:modeu5_read_country_stock > 0 }
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_total_available_candidate_stock
+					value = {
+						value = scope:modeu5_us10_total_available_candidate_stock
+						add = scope:modeu5_read_country_stock
+					}
+				}
+				modeu5_transfer_stock = {
+					seller_country = scope:modeu5_seller_country
+					buyer_country = scope:modeu5_buyer_country
+					source_market = scope:modeu5_source_market
+					target_market = scope:modeu5_target_market
+					good = __GOOD__
+					quantity = scope:modeu5_remaining_quantity
+					target_capacity_policy = enforce
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_transferred_quantity
+					value = {
+						value = scope:modeu5_transferred_quantity
+						add = scope:modeu5_actual_transferred_quantity
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_remaining_quantity
+					value = {
+						value = scope:modeu5_remaining_quantity
+						subtract = scope:modeu5_actual_transferred_quantity
+						min = 0
+					}
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_excluded_candidate_count
+					value = { value = scope:modeu5_us10_excluded_candidate_count add = 1 }
+				}
+			}
+		}
+	}
+	save_temporary_scope_value_as = { name = modeu5_satisfied_quantity value = scope:modeu5_transferred_quantity }
+	save_temporary_scope_value_as = { name = modeu5_unsatisfied_quantity value = scope:modeu5_remaining_quantity }
+	modeu5_capture_us10_transfer_debug_good___GOOD__ = yes
+}
+
+modeu5_record_pop_demand_outcome_good___GOOD__ = {
+	scope:modeu5_demand_location = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_requested_quantity
+				is_key_in_variable_map = { name = modeu5_pop_demand_requested_quantity target = scope:modeu5_good }
+			}
+			save_temporary_scope_value_as = { name = modeu5_pop_requested_before value = "variable_map(modeu5_pop_demand_requested_quantity|scope:modeu5_good)" }
+			remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity key = scope:modeu5_good }
+		}
+		else = { save_temporary_scope_value_as = { name = modeu5_pop_requested_before value = 0 } }
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_satisfied_quantity
+				is_key_in_variable_map = { name = modeu5_pop_demand_satisfied_quantity target = scope:modeu5_good }
+			}
+			save_temporary_scope_value_as = { name = modeu5_pop_satisfied_before value = "variable_map(modeu5_pop_demand_satisfied_quantity|scope:modeu5_good)" }
+			remove_from_variable_map = { name = modeu5_pop_demand_satisfied_quantity key = scope:modeu5_good }
+		}
+		else = { save_temporary_scope_value_as = { name = modeu5_pop_satisfied_before value = 0 } }
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_unsatisfied_quantity
+				is_key_in_variable_map = { name = modeu5_pop_demand_unsatisfied_quantity target = scope:modeu5_good }
+			}
+			save_temporary_scope_value_as = { name = modeu5_pop_unsatisfied_before value = "variable_map(modeu5_pop_demand_unsatisfied_quantity|scope:modeu5_good)" }
+			remove_from_variable_map = { name = modeu5_pop_demand_unsatisfied_quantity key = scope:modeu5_good }
+		}
+		else = { save_temporary_scope_value_as = { name = modeu5_pop_unsatisfied_before value = 0 } }
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_satisfied_months
+				is_key_in_variable_map = { name = modeu5_pop_demand_satisfied_months target = scope:modeu5_good }
+			}
+			save_temporary_scope_value_as = { name = modeu5_pop_satisfied_months_before value = "variable_map(modeu5_pop_demand_satisfied_months|scope:modeu5_good)" }
+			remove_from_variable_map = { name = modeu5_pop_demand_satisfied_months key = scope:modeu5_good }
+		}
+		else = { save_temporary_scope_value_as = { name = modeu5_pop_satisfied_months_before value = 0 } }
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_unsatisfied_months
+				is_key_in_variable_map = { name = modeu5_pop_demand_unsatisfied_months target = scope:modeu5_good }
+			}
+			save_temporary_scope_value_as = { name = modeu5_pop_unsatisfied_months_before value = "variable_map(modeu5_pop_demand_unsatisfied_months|scope:modeu5_good)" }
+			remove_from_variable_map = { name = modeu5_pop_demand_unsatisfied_months key = scope:modeu5_good }
+		}
+		else = { save_temporary_scope_value_as = { name = modeu5_pop_unsatisfied_months_before value = 0 } }
+		add_to_variable_map = {
+			name = modeu5_pop_demand_requested_quantity
+			key = scope:modeu5_good
+			value = { value = scope:modeu5_pop_requested_before add = scope:modeu5_outcome_requested_quantity }
+		}
+		add_to_variable_map = {
+			name = modeu5_pop_demand_satisfied_quantity
+			key = scope:modeu5_good
+			value = { value = scope:modeu5_pop_satisfied_before add = scope:modeu5_outcome_satisfied_quantity }
+		}
+		add_to_variable_map = {
+			name = modeu5_pop_demand_unsatisfied_quantity
+			key = scope:modeu5_good
+			value = { value = scope:modeu5_pop_unsatisfied_before add = scope:modeu5_outcome_unsatisfied_quantity }
+		}
+		if = {
+			limit = { scope:modeu5_outcome_unsatisfied_quantity > 0 }
+			add_to_variable_map = { name = modeu5_pop_demand_unsatisfied_months key = scope:modeu5_good value = { value = scope:modeu5_pop_unsatisfied_months_before add = 1 } }
+			add_to_variable_map = { name = modeu5_pop_demand_satisfied_months key = scope:modeu5_good value = scope:modeu5_pop_satisfied_months_before }
+		}
+		else = {
+			add_to_variable_map = { name = modeu5_pop_demand_satisfied_months key = scope:modeu5_good value = { value = scope:modeu5_pop_satisfied_months_before add = 1 } }
+			add_to_variable_map = { name = modeu5_pop_demand_unsatisfied_months key = scope:modeu5_good value = scope:modeu5_pop_unsatisfied_months_before }
+		}
+	}
+}
+
+modeu5_reset_pop_demand_outcome_good___GOOD__ = {
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_pop_demand_requested_quantity is_key_in_variable_map = { name = modeu5_pop_demand_requested_quantity target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_satisfied_quantity is_key_in_variable_map = { name = modeu5_pop_demand_satisfied_quantity target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_satisfied_quantity key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_pop_demand_unsatisfied_quantity target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_unsatisfied_quantity key = scope:modeu5_good } }
+	}
+}
+
+modeu5_reset_pop_demand_annual_counters_good___GOOD__ = {
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_pop_demand_satisfied_months is_key_in_variable_map = { name = modeu5_pop_demand_satisfied_months target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_satisfied_months key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_unsatisfied_months is_key_in_variable_map = { name = modeu5_pop_demand_unsatisfied_months target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_unsatisfied_months key = scope:modeu5_good } }
+	}
+}
+
+modeu5_record_consumption_outcome_good___GOOD__ = {
+	scope:modeu5_us10_outcome_country = {
+		modeu5_load_consumption_outcome_maps_good___GOOD__ = yes
+		modeu5_store_consumption_outcome_maps_good___GOOD__ = yes
+	}
+}
+
+modeu5_record_trade_outcome_good___GOOD__ = {
+	scope:modeu5_us10_outcome_country = {
+		modeu5_load_trade_outcome_maps_good___GOOD__ = yes
+		modeu5_store_trade_outcome_maps_good___GOOD__ = yes
+	}
+}
+
+modeu5_load_consumption_outcome_maps_good___GOOD__ = {
+	if = {
+		limit = { has_variable_map = modeu5_consumption___GOOD___requested_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___requested_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_requested_before value = "variable_map(modeu5_consumption___GOOD___requested_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_consumption___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_requested_before value = 0 } }
+	if = {
+		limit = { has_variable_map = modeu5_consumption___GOOD___satisfied_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___satisfied_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_satisfied_before value = "variable_map(modeu5_consumption___GOOD___satisfied_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_consumption___GOOD___satisfied_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_satisfied_before value = 0 } }
+	if = {
+		limit = { has_variable_map = modeu5_consumption___GOOD___unsatisfied_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___unsatisfied_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_unsatisfied_before value = "variable_map(modeu5_consumption___GOOD___unsatisfied_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_consumption___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_unsatisfied_before value = 0 } }
+}
+
+modeu5_load_trade_outcome_maps_good___GOOD__ = {
+	if = {
+		limit = { has_variable_map = modeu5_trade___GOOD___requested_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___requested_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_requested_before value = "variable_map(modeu5_trade___GOOD___requested_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_trade___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_requested_before value = 0 } }
+	if = {
+		limit = { has_variable_map = modeu5_trade___GOOD___transferred_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___transferred_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_satisfied_before value = "variable_map(modeu5_trade___GOOD___transferred_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_trade___GOOD___transferred_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_satisfied_before value = 0 } }
+	if = {
+		limit = { has_variable_map = modeu5_trade___GOOD___unsatisfied_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___unsatisfied_by_market target = scope:modeu5_us10_outcome_market } }
+		save_temporary_scope_value_as = { name = modeu5_us10_unsatisfied_before value = "variable_map(modeu5_trade___GOOD___unsatisfied_by_market|scope:modeu5_us10_outcome_market)" }
+		remove_from_variable_map = { name = modeu5_trade___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market }
+	}
+	else = { save_temporary_scope_value_as = { name = modeu5_us10_unsatisfied_before value = 0 } }
+}
+
+modeu5_store_consumption_outcome_maps_good___GOOD__ = {
+	add_to_variable_map = { name = modeu5_consumption___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_requested_before add = scope:modeu5_outcome_requested_quantity } }
+	add_to_variable_map = { name = modeu5_consumption___GOOD___satisfied_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_satisfied_before add = scope:modeu5_outcome_satisfied_quantity } }
+	add_to_variable_map = { name = modeu5_consumption___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_unsatisfied_before add = scope:modeu5_outcome_unsatisfied_quantity } }
+}
+
+modeu5_store_trade_outcome_maps_good___GOOD__ = {
+	add_to_variable_map = { name = modeu5_trade___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_requested_before add = scope:modeu5_outcome_requested_quantity } }
+	add_to_variable_map = { name = modeu5_trade___GOOD___transferred_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_satisfied_before add = scope:modeu5_outcome_satisfied_quantity } }
+	add_to_variable_map = { name = modeu5_trade___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market value = { value = scope:modeu5_us10_unsatisfied_before add = scope:modeu5_outcome_unsatisfied_quantity } }
+}
+
+modeu5_reset_consumption_outcome_good___GOOD__ = {
+	scope:modeu5_us10_outcome_country = {
+		if = {
+			limit = { has_variable_map = modeu5_consumption___GOOD___requested_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___requested_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_consumption___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market }
+		}
+		if = {
+			limit = { has_variable_map = modeu5_consumption___GOOD___satisfied_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___satisfied_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_consumption___GOOD___satisfied_by_market key = scope:modeu5_us10_outcome_market }
+		}
+		if = {
+			limit = { has_variable_map = modeu5_consumption___GOOD___unsatisfied_by_market is_key_in_variable_map = { name = modeu5_consumption___GOOD___unsatisfied_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_consumption___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market }
+		}
+	}
+}
+
+modeu5_reset_trade_outcome_good___GOOD__ = {
+	scope:modeu5_us10_outcome_country = {
+		if = {
+			limit = { has_variable_map = modeu5_trade___GOOD___requested_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___requested_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_trade___GOOD___requested_by_market key = scope:modeu5_us10_outcome_market }
+		}
+		if = {
+			limit = { has_variable_map = modeu5_trade___GOOD___transferred_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___transferred_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_trade___GOOD___transferred_by_market key = scope:modeu5_us10_outcome_market }
+		}
+		if = {
+			limit = { has_variable_map = modeu5_trade___GOOD___unsatisfied_by_market is_key_in_variable_map = { name = modeu5_trade___GOOD___unsatisfied_by_market target = scope:modeu5_us10_outcome_market } }
+			remove_from_variable_map = { name = modeu5_trade___GOOD___unsatisfied_by_market key = scope:modeu5_us10_outcome_market }
+		}
+	}
+}
+
+modeu5_capture_us10_resolver_debug_good___GOOD__ = {
+	if = {
+		limit = { modeu5_debug_capture_enabled_trigger = yes }
+		scope:modeu5_demanding_country = {
+			set_variable = { name = modeu5_debug_last_us10_demand_type value = scope:modeu5_demand_type }
+			set_variable = { name = modeu5_debug_last_us10_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_us10_requested_quantity value = scope:modeu5_requested_quantity }
+			set_variable = { name = modeu5_debug_last_us10_candidate_count value = scope:modeu5_us10_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_excluded_candidate_count value = scope:modeu5_us10_excluded_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_total_available_candidate_stock value = scope:modeu5_us10_total_available_candidate_stock }
+		}
+	}
+}
+
+modeu5_capture_us10_consumption_debug_good___GOOD__ = {
+	if = {
+		limit = { modeu5_debug_capture_enabled_trigger = yes }
+		scope:modeu5_consumer_country = {
+			set_variable = { name = modeu5_debug_last_us10_consumption_market value = scope:modeu5_market }
+			set_variable = { name = modeu5_debug_last_us10_requested_quantity value = scope:modeu5_requested_quantity }
+			set_variable = { name = modeu5_debug_last_us10_satisfied_quantity value = scope:modeu5_satisfied_quantity }
+			set_variable = { name = modeu5_debug_last_us10_unsatisfied_quantity value = scope:modeu5_unsatisfied_quantity }
+			set_variable = { name = modeu5_debug_last_us10_candidate_count value = scope:modeu5_us10_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_excluded_candidate_count value = scope:modeu5_us10_excluded_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_total_available_candidate_stock value = scope:modeu5_us10_total_available_candidate_stock }
+			set_variable = { name = modeu5_debug_last_us10_is_intra_market_trade value = 0 }
+			set_variable = { name = modeu5_debug_last_us10_trade_income_generated value = 0 }
+			set_variable = { name = modeu5_debug_last_us10_transport_cost_generated value = 0 }
+			set_variable = { name = modeu5_debug_last_us10_trade_capacity_used value = 0 }
+			set_variable = { name = modeu5_debug_last_us10_mutation_effect_called value = scope:modeu5_us10_mutation_effect_called }
+		}
+	}
+}
+
+modeu5_capture_us10_transfer_debug_good___GOOD__ = {
+	if = {
+		limit = { modeu5_debug_capture_enabled_trigger = yes }
+		scope:modeu5_buyer_country = {
+			set_variable = { name = modeu5_debug_last_us10_source_market value = scope:modeu5_source_market }
+			set_variable = { name = modeu5_debug_last_us10_target_market value = scope:modeu5_target_market }
+			set_variable = { name = modeu5_debug_last_us10_requested_quantity value = scope:modeu5_requested_quantity }
+			set_variable = { name = modeu5_debug_last_us10_transferred_quantity value = scope:modeu5_transferred_quantity }
+			set_variable = { name = modeu5_debug_last_us10_unsatisfied_trade_quantity value = scope:modeu5_unsatisfied_quantity }
+			set_variable = { name = modeu5_debug_last_us10_candidate_count value = scope:modeu5_us10_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_excluded_candidate_count value = scope:modeu5_us10_excluded_candidate_count }
+			set_variable = { name = modeu5_debug_last_us10_total_available_candidate_stock value = scope:modeu5_us10_total_available_candidate_stock }
+			set_variable = { name = modeu5_debug_last_us10_mutation_effect_called value = scope:modeu5_us10_mutation_effect_called }
 		}
 	}
 }
