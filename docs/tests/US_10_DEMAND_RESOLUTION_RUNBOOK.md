@@ -28,7 +28,7 @@ modeu5_resolve_stock_consumption = {
   consumer_country = scope:country_a
   market = scope:market_m
   good = wheat
-  quantity = 100
+  requested_quantity = 100
 }
 ```
 
@@ -78,7 +78,7 @@ modeu5_resolve_pop_stock_consumption = {
   consumer_country = scope:country_a
   market = scope:market_m
   good = wheat
-  quantity = 100
+  requested_quantity = 100
 }
 ```
 
@@ -113,7 +113,7 @@ modeu5_resolve_inter_market_stock_transfer = {
   source_market = scope:market_m1
   target_market = scope:market_m2
   good = wheat
-  quantity = 100
+  requested_quantity = 100
 }
 ```
 
