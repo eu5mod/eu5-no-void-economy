@@ -62,6 +62,10 @@ modeu5_select_remove_reason_debug_test = {
 	}
 }
 
+# Generated per-good adapters read and replace literal physical map names.
+# Shared effects below only calculate results from temporary inputs; map
+# identifiers are never passed through scripted-effect parameters.
+
 # US-01 read-only country x market x good record access.
 
 modeu5_read_country_stock_record = {
