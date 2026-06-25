@@ -6,7 +6,7 @@ of the manual CMM test plan into CI checks:
 
 * CMF is a required dependency, while NVE optionality remains service-level.
 * CMM settings map to safe runtime/debug/audit/save defaults.
-* Planned services remain disabled/no-op until their implementation stories land.
+* Planned services remain restricted/silent no-op until implementation stories land.
 * CMM callbacks do not mutate gameplay stock/capacity/demand state directly.
 """
 
@@ -104,11 +104,14 @@ def localization_value(text: str, key: str) -> str:
 required_files = [
     ".metadata/metadata.json",
     "in_game/common/on_action/nve__cmm_on_actions.txt",
+    "in_game/common/on_action/nve_cmm_runtime_on_action.txt",
     "in_game/common/scripted_effects/nve__cmm_effects.txt",
+    "in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt",
     "in_game/common/scripted_effects/modeu5_configuration_effects.txt",
     "in_game/common/scripted_effects/modeu5_performance_effects.txt",
     "in_game/common/scripted_guis/nve__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/modeu5_configuration_triggers.txt",
+    "in_game/events/modeu5_cmm_warning_events.txt",
     "main_menu/localization/english/nve__cmm_l_english.yml",
 ]
 for relative_path in required_files:
@@ -136,11 +139,14 @@ expect(
 )
 
 on_actions = read("in_game/common/on_action/nve__cmm_on_actions.txt")
+runtime_on_actions = read("in_game/common/on_action/nve_cmm_runtime_on_action.txt")
 cmm_effects = read("in_game/common/scripted_effects/nve__cmm_effects.txt")
+runtime_effects = read("in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt")
 scripted_gui = read("in_game/common/scripted_guis/nve__cmm_scripted_gui.txt")
 config_effects = read("in_game/common/scripted_effects/modeu5_configuration_effects.txt")
 config_triggers = read("in_game/common/scripted_triggers/modeu5_configuration_triggers.txt")
 performance_effects = read("in_game/common/scripted_effects/modeu5_performance_effects.txt")
+warning_events = read("in_game/events/modeu5_cmm_warning_events.txt")
 loc = read("main_menu/localization/english/nve__cmm_l_english.yml")
 
 expect(re.search(r"cmf_on_mod_registration\s*=\s*\{.*nve__on_register_cmf_mod", on_actions, re.S) is not None,
@@ -151,6 +157,14 @@ expect(re.search(r"nve__on_register_cmf_mod\s*=\s*\{.*nve__register_cmf_mod\s*=\
        "nve__on_register_cmf_mod must call nve__register_cmf_mod")
 expect(re.search(r"nve__on_cmf_callback\s*=\s*\{.*nve__handle_cmf_callback\s*=\s*yes", on_actions, re.S) is not None,
        "nve__on_cmf_callback must call nve__handle_cmf_callback")
+expect(re.search(r"cmf_on_mod_registration\s*=\s*\{.*modeu5_cmm_runtime_registration_pulse", runtime_on_actions, re.S) is not None,
+       "Runtime CMM overlay must hook cmf_on_mod_registration")
+expect(re.search(r"modeu5_cmm_runtime_registration_pulse\s*=\s*\{.*modeu5_cmm_mark_planned_services_restricted\s*=\s*yes", runtime_on_actions, re.S) is not None,
+       "Runtime CMM registration pulse must mark planned services restricted")
+expect(re.search(r"cmf_on_callback\s*=\s*\{.*modeu5_cmm_runtime_callback_pulse", runtime_on_actions, re.S) is not None,
+       "Runtime CMM overlay must hook cmf_on_callback")
+expect(re.search(r"modeu5_cmm_runtime_callback_pulse\s*=\s*\{.*modeu5_handle_cmm_runtime_callback\s*=\s*yes", runtime_on_actions, re.S) is not None,
+       "Runtime CMM callback pulse must call modeu5_handle_cmm_runtime_callback")
 
 expected_dropdowns = {
     "nve_no_void_economy_main": ("nve_general", "nve_no_void_economy", "1", "3"),
@@ -233,10 +247,8 @@ expect(
     "NVE main dropdown must sync the deactivation alias",
 )
 
-for handler_name in ("nve_cmf_activate_no_void_economy", "nve_cmf_activate_good_decay"):
-    expect(top_level_block(cmm_effects, handler_name) != "", f"{handler_name} must be defined, even when no-op")
-
-planned_invalid_settings = {
+planned_restricted_settings = {
+    "nve_decay_activate",
     "activate_trade_cost",
     "nve_balance_war_shorter",
     "nve_balance_war_exhaustion",
@@ -247,12 +259,46 @@ planned_invalid_settings = {
     "nve_rebel_war_start",
     "nve_subjects_persistance",
 }
-for setting in planned_invalid_settings:
+restricted_blocks = parse_setting_blocks(runtime_effects, "cmm_set_requires_unrestricted_tools_enabled")
+for setting in planned_restricted_settings:
+    expect(setting in restricted_blocks, f"Planned service {setting} must be marked as restricted in the runtime overlay")
+    if setting in restricted_blocks:
+        expect(restricted_blocks[setting]["mod_id"] == "no_void_economy", f"Restricted planned service {setting} must use mod_id=no_void_economy")
+
+# The generated scripted GUI is still useful as a visual no-op safety net, but
+# CMM's actual bool/dropdown controls are disabled through CMMCanEditSetting via
+# cmm_set_requires_unrestricted_tools_enabled.
+for setting in planned_restricted_settings:
     block = top_level_block(scripted_gui, f"no_void_economy__{setting}_on_changed")
-    expect(re.search(r"is_valid\s*=\s*\{\s*always\s*=\s*no\s*\}", block, re.S) is not None,
-           f"Planned service {setting} must remain invalid/disabled")
     expect(re.search(r"effect\s*=\s*\{\s*\}", block, re.S) is not None,
-           f"Planned service {setting} must remain no-op")
+           f"Planned service {setting} generated scripted GUI must remain no-op")
+
+for reset_name in (
+    "modeu5_cmm_reset_nve_decay_activate",
+    "modeu5_cmm_reset_activate_trade_cost",
+    "modeu5_cmm_reset_nve_balance_war_shorter",
+    "modeu5_cmm_reset_nve_balance_war_exhaustion",
+    "modeu5_cmm_reset_nve_balance_economy_location_specialisation",
+    "modeu5_cmm_reset_nve_balance_economy_main_balance",
+    "modeu5_cmm_reset_nve_balance_ai_strategy",
+    "modeu5_cmm_reset_nve_rebel_threshold",
+    "modeu5_cmm_reset_nve_rebel_war_start",
+    "modeu5_cmm_reset_nve_subjects_persistance",
+):
+    block = top_level_block(runtime_effects, reset_name)
+    expect("remove_from_variable_map" in block and "name = cmm" in block,
+           f"{reset_name} must silently reset its CMM map value")
+
+runtime_callback_block = top_level_block(runtime_effects, "modeu5_handle_cmm_runtime_callback")
+for forbidden in ("modeu5_cmm_warning.1", "modeu5_cmm_warn_planned_feature", "nve_cmm_warning.1"):
+    expect(forbidden not in runtime_callback_block,
+           f"Planned service callbacks must not show planned-feature warning popups: found {forbidden}")
+expect("trigger_event_non_silently = modeu5_cmm_warning.2" in runtime_effects,
+       "Monthly stock check slow option must trigger a non-silent warning event")
+expect("trigger_event_non_silently = modeu5_cmm_warning.3" in runtime_effects,
+       "Complete save slow option must trigger a non-silent warning event")
+expect("modeu5_cmm_warning.2" in warning_events and "modeu5_cmm_warning.3" in warning_events,
+       "Slow monthly check and complete save warning events must exist under in_game/events")
 
 cmm_mutation_bans = [
     r"\bmodeu5_(?:add|remove|transfer|decay)_stock\b",
@@ -265,11 +311,18 @@ cmm_mutation_bans = [
 ]
 for path, text in {
     "in_game/common/on_action/nve__cmm_on_actions.txt": on_actions,
+    "in_game/common/on_action/nve_cmm_runtime_on_action.txt": runtime_on_actions,
     "in_game/common/scripted_effects/nve__cmm_effects.txt": cmm_effects,
     "in_game/common/scripted_guis/nve__cmm_scripted_gui.txt": scripted_gui,
 }.items():
     for pattern in cmm_mutation_bans:
         expect(re.search(pattern, text, re.S) is None, f"CMM callback/UI file must not mutate gameplay state directly: {path}")
+
+# Runtime overlay may mutate the CMM settings map for silent fallback resets, but
+# it must not call gameplay stock/capacity/demand effects directly.
+for pattern in cmm_mutation_bans[:3] + cmm_mutation_bans[5:]:
+    expect(re.search(pattern, runtime_effects, re.S) is None,
+           "CMM runtime overlay must not mutate gameplay state directly")
 
 init_block = top_level_block(config_effects, "modeu5_initialize_configuration_state_effect")
 expect(re.search(r"no_void_economy__nve_debug_messages\)\s*=\s*3.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*2", init_block, re.S) is not None,
@@ -324,8 +377,6 @@ expect(
     or "Warning" in localization_value(loc, "no_void_economy__nve_save_mode_option_3_desc"),
     "Complete save option must be visibly marked as slow/warning",
 )
-expect("nve_cmm_warning.2" in scripted_gui and "nve_cmm_warning.3" in scripted_gui,
-       "Slow monthly check and complete save warnings must have events")
 
 expect(not (ROOT / "main_menu/common/game_rules/modeu5_game_rules.txt").exists(),
        "Legacy ModeU5 main-menu game-rule configuration must stay removed; CMM is the configuration surface")
