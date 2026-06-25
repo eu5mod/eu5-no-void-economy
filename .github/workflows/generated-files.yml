@@ -15,7 +15,25 @@ jobs:
         run: ./tools/generate_all.sh
 
       - name: Validate package structure and generated adapters
-        run: ./tools/validate_module_packages.sh
+        run: |
+          set +e
+          /bin/bash ./tools/validate_module_packages.sh > validate_module_packages.log 2>&1
+          status=$?
+          cat validate_module_packages.log
+          exit $status
+
+      - name: Upload package validator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validate-module-packages-log
+          path: validate_module_packages.log
+
+      - name: Audit persistent state surface
+        run: /bin/bash ./tools/audit_modeu5_persistent_state.sh
+
+      - name: Validate CMM configuration surface
+        run: python3 ./tools/validate_cmm_configuration.py
 
       - name: Ensure generated outputs stay untracked
         run: |
