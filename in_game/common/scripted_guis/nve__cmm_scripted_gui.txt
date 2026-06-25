@@ -8,7 +8,17 @@ no_void_economy__nve_debug_messages = {
 	}
 	effect = { }
 }
+
 no_void_economy__nve_monthly_stock_check = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+
+no_void_economy__nve_save_mode = {
 	scope = country
 
 	is_shown = {
@@ -29,14 +39,6 @@ nve_cmm_warning.1 = {
 	}
 }
 
-no_void_economy__nve_save_mode = {
-	scope = country
-
-	is_shown = {
-		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
-	}
-	effect = { }
-}
 no_void_economy__nve_monthly_stock_check_on_changed = {
 	scope = country
 
@@ -49,6 +51,7 @@ no_void_economy__nve_monthly_stock_check_on_changed = {
 		}
 	}
 }
+
 nve_cmm_warning.2 = {
 	type = country_event
 	title = no_void_economy__nve_monthly_stock_check_option_2_name
@@ -73,6 +76,7 @@ no_void_economy__nve_save_mode_on_changed = {
 		}
 	}
 }
+
 nve_cmm_warning.3 = {
 	type = country_event
 	title = no_void_economy__nve_save_mode_option_3_name
