@@ -28,48 +28,6 @@ nve__register_cmf_mod = {
 		setting_id = nve_decay_activate
 	}
 
-	## nve_general_performance (nve_general_performance) Group
-	cmm_register_dropdown_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_debug_messages
-		tab_id = nve_general
-		group_id = nve_general_performance
-		default_index = 1
-		option_count = 3
-	}
-
-	cmm_register_dropdown_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_monthly_stock_check
-		tab_id = nve_general
-		group_id = nve_general_performance
-		default_index = 1
-		option_count = 2
-	}
-
-	cmm_register_dropdown_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_save_mode
-		tab_id = nve_general
-		group_id = nve_general_performance
-		default_index = 1
-		option_count = 3
-	}
-
-# in nve__cmm_effects.txt, after registering the dropdown
-
-cmm_add_scripted_gui = {
-	mod_id = no_void_economy
-	setting_id = nve_monthly_stock_check
-}
-
-cmm_add_scripted_gui = {
-	mod_id = no_void_economy
-	setting_id = nve_save_mode
-}
-
-# Root scope: country.
-# Additional CMM registration for NVE performance-impacting runtime options.
 	## Trade Rework (nve_general_trade_rework) Group
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
@@ -81,6 +39,50 @@ cmm_add_scripted_gui = {
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
 		setting_id = activate_trade_cost
+	}
+
+	## Debug & Audit (nve_general_performance) Group
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_debug_messages
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 3
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_debug_messages
+	}
+
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_monthly_stock_check
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 2
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_monthly_stock_check
+	}
+cmm_add_scripted_gui = {
+	mod_id = no_void_economy
+	setting_id = nve_save_mode
+}
+
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_save_mode
+		tab_id = nve_general
+		group_id = nve_general_performance
+		default_index = 1
+		option_count = 3
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_save_mode
 	}
 
 	# Balance (nve_balance) Tab
@@ -216,11 +218,10 @@ nve__handle_cmf_callback = {
 		flag:no_void_economy__nve_decay_activate = {
 			nve_cmf_activate_good_decay = yes
 		}
-		## Debug & Audit options (nve_general_debug) Group
+		## Debug & Audit (nve_general_performance) Group
 		flag:no_void_economy__nve_monthly_stock_check = {
 			no_void_economy__nve_monthly_stock_check_on_changed = yes
 		}
-
 		flag:no_void_economy__nve_save_mode = {
 			no_void_economy__nve_save_mode_on_changed = yes
 		}
