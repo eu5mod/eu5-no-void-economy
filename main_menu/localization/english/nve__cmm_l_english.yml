@@ -85,11 +85,6 @@
  no_void_economy__nve_subjects_persistance_name: "(In development) Persistence of resources"
  no_void_economy__nve_subjects_persistance_desc: ""
 
- # CMM warning events
- nve_cmm_warning_planned_feature_title: "Feature in development"
- nve_cmm_warning_planned_feature_desc: "This service is visible for planning but does not apply economic changes yet."
- nve_cmm_warning_ok: "OK"
-
  # Optional: self-referencing flag keys to suppress IDE warnings (safe to remove if you want)
  no_void_economy: "no_void_economy"
  no_void_economy__nve_general: "no_void_economy__nve_general"

@@ -1,6 +1,4 @@
-namespace = nve_cmm_warning
-
-no_void_economy__nve_debug_messages = {
+﻿no_void_economy__nve_debug_messages = {
 	scope = country
 
 	is_shown = {
@@ -27,18 +25,6 @@ no_void_economy__nve_save_mode = {
 	effect = { }
 }
 
-nve_cmm_warning.1 = {
-	type = country_event
-	title = nve_cmm_warning_planned_feature_title
-	desc = nve_cmm_warning_planned_feature_desc
-	outcome = neutral
-	orphan = yes
-
-	option = {
-		name = nve_cmm_warning_ok
-	}
-}
-
 no_void_economy__nve_monthly_stock_check_on_changed = {
 	scope = country
 
@@ -52,17 +38,6 @@ no_void_economy__nve_monthly_stock_check_on_changed = {
 	}
 }
 
-nve_cmm_warning.2 = {
-	type = country_event
-	title = no_void_economy__nve_monthly_stock_check_option_2_name
-	desc = no_void_economy__nve_monthly_stock_check_option_2_desc
-	outcome = neutral
-	orphan = yes
-
-	option = {
-		name = nve_cmm_warning_ok
-	}
-}
 
 no_void_economy__nve_save_mode_on_changed = {
 	scope = country
@@ -77,17 +52,6 @@ no_void_economy__nve_save_mode_on_changed = {
 	}
 }
 
-nve_cmm_warning.3 = {
-	type = country_event
-	title = no_void_economy__nve_save_mode_option_3_name
-	desc = no_void_economy__nve_save_mode_option_3_desc
-	outcome = neutral
-	orphan = yes
-
-	option = {
-		name = nve_cmm_warning_ok
-	}
-}
 
 
 # Trade Rework (nve_general) Tab
@@ -97,6 +61,10 @@ no_void_economy__nve_decay_activate_on_changed = {
 
 	is_shown = {
 		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+
+	is_valid = {
+		1 = 2
 	}
 	effect = { }
 }
@@ -111,6 +79,30 @@ no_void_economy__activate_trade_cost_on_changed = {
 
 	is_valid = {
 		always = no
+	}
+	effect = { }
+}
+
+## Debug & Audit (nve_general_performance) Group
+no_void_economy__nve_debug_messages_on_changed = {
+	scope = country
+	effect = { }
+}
+
+no_void_economy__nve_monthly_stock_check_on_changed = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+	}
+	effect = { }
+}
+
+no_void_economy__nve_save_mode_on_changed = {
+	scope = country
+
+	is_shown = {
+		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
 	}
 	effect = { }
 }

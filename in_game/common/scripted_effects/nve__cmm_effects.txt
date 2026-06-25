@@ -1,4 +1,4 @@
-# Root scope: country.
+﻿# Root scope: country.
 nve__register_cmf_mod = {
 	# Trade Rework (nve_general) Tab
 	## No Void Economy (nve_no_void_economy) Group
@@ -197,15 +197,6 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_subjects_persistance
 	}
-}
-
-# CMM callbacks are intentionally configuration-only. Runtime initialization reads
-# the CMM flags and derives ModeU5 state; these handlers must not mutate gameplay
-# stock, capacity, demand, or production-penalty state directly.
-nve_cmf_activate_no_void_economy = {
-}
-
-nve_cmf_activate_good_decay = {
 }
 
 # Callback handler for cmf_on_callback.
