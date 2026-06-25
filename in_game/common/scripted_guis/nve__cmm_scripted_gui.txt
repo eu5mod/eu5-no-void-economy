@@ -1,4 +1,4 @@
-﻿namespace = nve_cmm_warning
+namespace = nve_cmm_warning
 
 no_void_economy__nve_debug_messages = {
 	scope = country
@@ -160,6 +160,20 @@ no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
 }
 
 no_void_economy__nve_balance_economy_main_balance_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## Other (nve_balance_other) Group
+no_void_economy__nve_balance_ai_strategy_on_changed = {
 	scope = country
 
 	is_shown = {

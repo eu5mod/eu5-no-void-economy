@@ -69,7 +69,7 @@
  no_void_economy__nve_balance_economy_main_balance_desc: ""
  ## Other (nve_balance_other) Group
  no_void_economy__nve_balance__nve_balance_other_name: "Other"
- no_void_economy__nve_balance_ai_strategy_name: "Extra revenue to AI to compensate for lack of strategy"
+ no_void_economy__nve_balance_ai_strategy_name: "(In development) Extra revenue to AI to compensate for lack of strategy"
  no_void_economy__nve_balance_ai_strategy_desc: ""
 
  # Rebels & Subjects (nve_rebels_n_subjects) Tab
@@ -84,6 +84,11 @@
  no_void_economy__nve_rebels_n_subjects__Subjects_name: "Subjects"
  no_void_economy__nve_subjects_persistance_name: "(In development) Persistence of resources"
  no_void_economy__nve_subjects_persistance_desc: ""
+
+ # CMM warning events
+ nve_cmm_warning_planned_feature_title: "Feature in development"
+ nve_cmm_warning_planned_feature_desc: "This service is visible for planning but does not apply economic changes yet."
+ nve_cmm_warning_ok: "OK"
 
  # Optional: self-referencing flag keys to suppress IDE warnings (safe to remove if you want)
  no_void_economy: "no_void_economy"

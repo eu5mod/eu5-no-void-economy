@@ -88,7 +88,13 @@ modeu5_initialize_configuration_state_effect = {
 
 	if = {
 		limit = { variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2 }
-		modeu5_enter_audit_runtime_mode = yes
+		if = {
+			limit = { modeu5_debug_enabled_trigger = yes }
+			modeu5_enter_test_audit_runtime_mode = yes
+		}
+		else = {
+			modeu5_enter_audit_runtime_mode = yes
+		}
 	}
 
 	if = {
