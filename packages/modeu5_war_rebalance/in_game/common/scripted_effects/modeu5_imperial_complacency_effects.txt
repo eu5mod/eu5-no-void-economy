@@ -1,0 +1,217 @@
+modeu5_imperial_complacency_initialize_country_state = {
+	if = {
+		limit = { NOT = { has_variable = modeu5_imperial_complacency } }
+		set_variable = { name = modeu5_imperial_complacency value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_imperial_last_army_tradition } }
+		set_variable = { name = modeu5_imperial_last_army_tradition value = army_tradition }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_months_since_gp_loss } }
+		set_variable = { name = modeu5_months_since_gp_loss value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_imperial_complacency_floor } }
+		set_variable = { name = modeu5_imperial_complacency_floor value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_has_great_power_war } }
+		set_variable = { name = modeu5_has_great_power_war value = 0 }
+	}
+}
+
+modeu5_imperial_complacency_refresh_great_power_war_tracker = {
+	modeu5_imperial_complacency_initialize_country_state = yes
+	set_variable = { name = modeu5_has_great_power_war value = 0 }
+
+	if = {
+		limit = {
+			great_power_ranking <= 8
+			at_war = yes
+		}
+		save_temporary_scope_as = modeu5_imperial_complacency_country
+		every_country_at_war_with = {
+			limit = { great_power_ranking <= 8 }
+			scope:modeu5_imperial_complacency_country = {
+				set_variable = { name = modeu5_has_great_power_war value = 1 }
+			}
+		}
+	}
+}
+
+modeu5_imperial_complacency_refresh_all_great_power_war_trackers = {
+	every_country = {
+		limit = {
+			great_power_ranking <= 8
+			at_war = yes
+		}
+		modeu5_imperial_complacency_refresh_great_power_war_tracker = yes
+	}
+}
+
+modeu5_imperial_complacency_register_great_power_war_loss = {
+	modeu5_imperial_complacency_initialize_country_state = yes
+	set_variable = { name = modeu5_months_since_gp_loss value = 0 }
+	change_variable = { name = modeu5_imperial_complacency subtract = 50 }
+	modeu5_imperial_complacency_finalize_monthly_state = yes
+}
+
+modeu5_imperial_complacency_apply_great_power_war_recovery = {
+	if = {
+		limit = { var:modeu5_months_since_gp_loss >= 1200 }
+		change_variable = { name = modeu5_imperial_complacency subtract = 5 }
+		if = {
+			limit = { army_tradition > var:modeu5_imperial_last_army_tradition }
+			change_variable = { name = modeu5_imperial_complacency subtract = 0.5 }
+		}
+		if = {
+			limit = { manpower_percentage < 0.50 }
+			change_variable = { name = modeu5_imperial_complacency subtract = 0.5 }
+		}
+		if = {
+			limit = { war_exhaustion > 0.50 }
+			change_variable = { name = modeu5_imperial_complacency subtract = 0.5 }
+		}
+	}
+	else = {
+		change_variable = { name = modeu5_imperial_complacency subtract = 8.333 }
+		if = {
+			limit = { army_tradition > var:modeu5_imperial_last_army_tradition }
+			change_variable = { name = modeu5_imperial_complacency subtract = 1 }
+		}
+		if = {
+			limit = { manpower_percentage < 0.50 }
+			change_variable = { name = modeu5_imperial_complacency subtract = 1 }
+		}
+		if = {
+			limit = { war_exhaustion > 0.50 }
+			change_variable = { name = modeu5_imperial_complacency subtract = 1 }
+		}
+	}
+}
+
+modeu5_imperial_complacency_finalize_monthly_state = {
+	clamp_variable = {
+		name = modeu5_imperial_complacency
+		min = 0
+		max = 200
+	}
+
+	if = {
+		limit = { var:modeu5_imperial_complacency < var:modeu5_imperial_complacency_floor }
+		set_variable = {
+			name = modeu5_imperial_complacency
+			value = var:modeu5_imperial_complacency_floor
+		}
+	}
+
+	if = {
+		limit = { var:modeu5_imperial_complacency > 0 }
+		add_country_modifier = {
+			modifier = modeu5_imperial_complacency
+			months = 2
+			mode = replace
+			size = var:modeu5_imperial_complacency
+			recalculate_immediately = yes
+		}
+	}
+	else = {
+		remove_country_modifier = modeu5_imperial_complacency
+	}
+}
+
+modeu5_imperial_complacency_monthly_country_update = {
+	if = {
+		limit = { great_power_ranking <= 8 }
+		modeu5_imperial_complacency_initialize_country_state = yes
+
+		change_variable = { name = modeu5_months_since_gp_loss add = 1 }
+
+		if = {
+			limit = { var:modeu5_months_since_gp_loss >= 1200 }
+			set_variable = { name = modeu5_imperial_complacency_floor value = 100 }
+		}
+		else = {
+			set_variable = { name = modeu5_imperial_complacency_floor value = 0 }
+		}
+
+		if = {
+			limit = {
+				at_war = no
+				months_since_war > 120
+			}
+			change_variable = { name = modeu5_imperial_complacency add = 1 }
+			if = {
+				limit = { monthly_balance > 0 }
+				change_variable = { name = modeu5_imperial_complacency add = 1 }
+			}
+			if = {
+				limit = { manpower_percentage > 0.85 }
+				change_variable = { name = modeu5_imperial_complacency add = 1 }
+			}
+			if = {
+				limit = { stability_percentage > 0.75 }
+				change_variable = { name = modeu5_imperial_complacency add = 1 }
+			}
+		}
+
+		if = {
+			limit = {
+				at_war = yes
+				var:modeu5_has_great_power_war > 0
+			}
+			modeu5_imperial_complacency_apply_great_power_war_recovery = yes
+		}
+		else_if = {
+			limit = { at_war = yes }
+			change_variable = { name = modeu5_imperial_complacency subtract = 1 }
+		}
+
+		modeu5_imperial_complacency_finalize_monthly_state = yes
+		set_variable = { name = modeu5_imperial_last_army_tradition value = army_tradition }
+	}
+	else = {
+		set_variable = { name = modeu5_has_great_power_war value = 0 }
+		remove_country_modifier = modeu5_imperial_complacency
+	}
+}
+
+modeu5_debug_run_us19_imperial_complacency_probe = {
+	remove_global_variable = modeu5_test_us19_imperial_complacency_passed
+	remove_global_variable = modeu5_test_us19_imperial_complacency_failed
+	debug_log = "ModeU5 TEST ENTERED scenario=us19_imperial_complacency"
+	modeu5_imperial_complacency_initialize_country_state = yes
+	set_variable = { name = modeu5_imperial_complacency value = 150 }
+	set_variable = { name = modeu5_imperial_complacency_floor value = 0 }
+	set_variable = { name = modeu5_months_since_gp_loss value = 12 }
+	set_variable = { name = modeu5_has_great_power_war value = 1 }
+	set_variable = { name = modeu5_imperial_last_army_tradition value = army_tradition }
+
+	modeu5_imperial_complacency_apply_great_power_war_recovery = yes
+	modeu5_imperial_complacency_finalize_monthly_state = yes
+
+	set_variable = {
+		name = modeu5_us19_probe_complacency_after
+		value = var:modeu5_imperial_complacency
+	}
+	set_variable = {
+		name = modeu5_us19_probe_gp_war_state
+		value = var:modeu5_has_great_power_war
+	}
+	debug_log = "ModeU5 US-19 DUMP state_machine complacency_after=[THIS.GetVariable('modeu5_us19_probe_complacency_after').GetValue|3] gp_war_state=[THIS.GetVariable('modeu5_us19_probe_gp_war_state').GetValue|0]"
+
+	if = {
+		limit = {
+			var:modeu5_imperial_complacency < 150
+			var:modeu5_has_great_power_war > 0
+		}
+		set_global_variable = modeu5_test_us19_imperial_complacency_passed
+		debug_log = "ModeU5 TEST PASS scenario=us19_imperial_complacency"
+	}
+	else = {
+		set_global_variable = modeu5_test_us19_imperial_complacency_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us19_imperial_complacency"
+		error_log = "ModeU5 US-19 imperial complacency state-machine probe failed."
+	}
+}

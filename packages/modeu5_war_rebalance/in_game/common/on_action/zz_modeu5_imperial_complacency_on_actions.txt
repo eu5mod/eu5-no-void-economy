@@ -1,0 +1,79 @@
+on_game_start = {
+	on_actions = {
+		modeu5_imperial_complacency_startup_refresh
+	}
+}
+
+monthly_country_pulse = {
+	on_actions = {
+		modeu5_imperial_complacency_monthly
+	}
+}
+
+on_war_declared = {
+	on_actions = {
+		modeu5_imperial_complacency_on_war_declared
+	}
+}
+
+on_join_war = {
+	on_actions = {
+		modeu5_imperial_complacency_on_join_war
+	}
+}
+
+on_losing_war = {
+	on_actions = {
+		modeu5_imperial_complacency_on_losing_war
+	}
+}
+
+on_ending_war = {
+	on_actions = {
+		modeu5_imperial_complacency_on_ending_war
+	}
+}
+
+modeu5_imperial_complacency_startup_refresh = {
+	effect = {
+		modeu5_imperial_complacency_refresh_all_great_power_war_trackers = yes
+	}
+}
+
+modeu5_imperial_complacency_monthly = {
+	effect = {
+		modeu5_imperial_complacency_monthly_country_update = yes
+	}
+}
+
+modeu5_imperial_complacency_on_war_declared = {
+	effect = {
+		scope:actor = { modeu5_imperial_complacency_refresh_great_power_war_tracker = yes }
+		scope:recipient = { modeu5_imperial_complacency_refresh_great_power_war_tracker = yes }
+	}
+}
+
+modeu5_imperial_complacency_on_join_war = {
+	effect = {
+		modeu5_imperial_complacency_refresh_great_power_war_tracker = yes
+	}
+}
+
+modeu5_imperial_complacency_on_losing_war = {
+	effect = {
+		if = {
+			limit = {
+				scope:winner = { great_power_ranking <= 8 }
+				scope:loser = { great_power_ranking <= 8 }
+			}
+			scope:loser = { modeu5_imperial_complacency_register_great_power_war_loss = yes }
+		}
+	}
+}
+
+modeu5_imperial_complacency_on_ending_war = {
+	effect = {
+		scope:winner = { modeu5_imperial_complacency_refresh_great_power_war_tracker = yes }
+		scope:loser = { modeu5_imperial_complacency_refresh_great_power_war_tracker = yes }
+	}
+}
