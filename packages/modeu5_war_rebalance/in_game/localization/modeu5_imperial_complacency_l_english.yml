@@ -1,0 +1,10 @@
+l_english:
+ modeu5_us19_debug.1.title: "ModeU5 US-19 Debug"
+ modeu5_us19_debug.1.desc: "Run the Imperial Hubris / Imperial Complacency state-machine probe."
+ modeu5_us19_debug.1.a: "Run US-19 imperial complacency probe"
+ modeu5_us19_debug.2.title: "ModeU5 US-19 Result"
+ modeu5_us19_debug.2.desc: "Review debug.log for the ModeU5 US-19 DUMP line."
+ modeu5_debug.test.us19_imperial_complacency.pass: "US-19 imperial complacency: PASS"
+ modeu5_debug.test.us19_imperial_complacency.fail: "US-19 imperial complacency: FAIL"
+ modeu5_imperial_complacency: "Imperial Complacency"
+ modeu5_imperial_complacency_desc: "Long unchallenged peace has softened this great power's military institutions. Major wars against rival great powers burn the complacency down; minor wars only slow it."

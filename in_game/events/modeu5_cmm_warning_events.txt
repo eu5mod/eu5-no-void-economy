@@ -1,0 +1,37 @@
+namespace = modeu5_cmm_warning
+
+modeu5_cmm_warning.1 = {
+	type = country_event
+	title = nve_cmm_warning_planned_feature_title
+	desc = nve_cmm_warning_planned_feature_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}
+
+modeu5_cmm_warning.2 = {
+	type = country_event
+	title = no_void_economy__nve_monthly_stock_check_option_2_name
+	desc = no_void_economy__nve_monthly_stock_check_option_2_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}
+
+modeu5_cmm_warning.3 = {
+	type = country_event
+	title = no_void_economy__nve_save_mode_option_3_name
+	desc = no_void_economy__nve_save_mode_option_3_desc
+	outcome = neutral
+	orphan = yes
+
+	option = {
+		name = nve_cmm_warning_ok
+	}
+}

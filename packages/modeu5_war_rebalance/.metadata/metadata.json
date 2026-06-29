@@ -3,7 +3,7 @@
 	"name": "NVE : Early Blobbing balance patch (Optional)",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
-	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Reserved for US-13, whose gameplay override is not yet implemented. Requires No Void Economy.",
+	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Enables Early Blobbing balance stories such as US-19 Imperial Complacency; US-13 remains pending. Requires No Void Economy.",
 	"tags": [
 		"Balance",
 		"Gameplay",

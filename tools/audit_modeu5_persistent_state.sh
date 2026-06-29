@@ -58,6 +58,8 @@ __PRODUCTION_PENALTY_MAP__
 __REJECTED_MAP__
 __STOCK_MAP__
 __US00_ACTIVE_MAP__
+__UI_MONTHLY_CONSUMPTION_MAP__
+__UI_MONTHLY_SURPLUS_MAP__
 __VOID_TAXABLE_PROXY_MAP__
 __VOID_WEALTH_MAP__
 modeu5_<good>_active_markets
@@ -70,6 +72,8 @@ modeu5_<good>_produced_by_market
 modeu5_<good>_production_penalty_by_market
 modeu5_<good>_rejected_by_market
 modeu5_<good>_stock_by_market
+modeu5_<good>_ui_monthly_consumption_by_market
+modeu5_<good>_ui_monthly_surplus_by_market
 modeu5_<good>_us00_active_record_by_market
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market
@@ -89,7 +93,10 @@ EOF
 comm -23 "$tmp_discovered" <(sort -u "$tmp_expected") > "$tmp_unclassified"
 
 ui_shadow_count="$(
-	(grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" || true) | wc -l | tr -d ' '
+	(
+		(grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" || true) |
+			grep -Ev 'modeu5_<good>_ui_monthly_(surplus|consumption)_by_market|__UI_MONTHLY_(SURPLUS|CONSUMPTION)_MAP__' || true
+	) | wc -l | tr -d ' '
 )"
 
 unclassified_count="$(wc -l < "$tmp_unclassified" | tr -d ' ')"
@@ -100,6 +107,7 @@ printf '%s\n' 'Capacity maps: kept/shared'
 printf '%s\n' 'Capacity breakdown maps: kept'
 printf '%s\n' 'US-00 gameplay carryover maps: kept'
 printf '%s\n' 'US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only'
+printf '%s\n' 'UI monthly counter maps: human country current-month only'
 printf 'UI shadow maps: %s\n' "$ui_shadow_count"
 printf 'Unclassified persistent maps: %s\n' "$unclassified_count"
 

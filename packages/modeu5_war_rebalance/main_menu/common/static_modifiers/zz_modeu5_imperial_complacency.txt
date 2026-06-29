@@ -1,0 +1,17 @@
+modeu5_imperial_complacency = {
+	game_data = {
+		category = country
+	}
+
+	# Applied with size = var:modeu5_imperial_complacency.
+	# Intended range: 0-200 stacks.
+	discipline = -0.0005
+	army_maintenance_efficiency = -0.0005
+	mercenary_maintenance_efficiency = -0.00075
+	army_tradition_decay = 0.00015
+	experience_decay = 0.00015
+	global_manpower_modifier = -0.0005
+	global_army_levy_size_modifier = -0.001
+	global_levy_recruitment_speed_modifier = -0.001
+	mercenary_units_preference_modifier = 0.00125
+}

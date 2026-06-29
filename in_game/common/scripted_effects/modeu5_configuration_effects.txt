@@ -1,5 +1,5 @@
 # ModeU5 package selection is owned by the launcher playset.
-# The built-in game-rule screen configures diagnostic behavior only.
+# Community Mod Framework configures diagnostic/performance behavior.
 # Package presence is captured for a new campaign; existing-save package changes are unsupported.
 
 modeu5_clear_runtime_mode_flags = {
@@ -29,6 +29,27 @@ modeu5_enter_test_audit_runtime_mode = {
 	set_global_variable = modeu5_runtime_mode_audit
 }
 
+modeu5_clear_accounting_persistence_flags = {
+	remove_global_variable = modeu5_accounting_persistence_minimal
+	remove_global_variable = modeu5_accounting_persistence_human_relevant
+	remove_global_variable = modeu5_accounting_persistence_strict
+}
+
+modeu5_enter_minimal_accounting_persistence = {
+	modeu5_clear_accounting_persistence_flags = yes
+	set_global_variable = modeu5_accounting_persistence_minimal
+}
+
+modeu5_enter_strict_accounting_persistence = {
+	modeu5_clear_accounting_persistence_flags = yes
+	set_global_variable = modeu5_accounting_persistence_strict
+}
+
+modeu5_enter_human_relevant_accounting_persistence = {
+	modeu5_clear_accounting_persistence_flags = yes
+	set_global_variable = modeu5_accounting_persistence_human_relevant
+}
+
 modeu5_initialize_configuration_state_effect = {
 	if = {
 		limit = {
@@ -42,7 +63,7 @@ modeu5_initialize_configuration_state_effect = {
 	}
 
 	if = {
-		limit = { has_game_rule = modeu5_debug_verbose }
+		limit = { variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 3 }
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
@@ -50,7 +71,7 @@ modeu5_initialize_configuration_state_effect = {
 		}
 	}
 	else_if = {
-		limit = { has_game_rule = modeu5_debug_basic }
+		limit = { variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 2 }
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
@@ -66,7 +87,25 @@ modeu5_initialize_configuration_state_effect = {
 	}
 
 	if = {
-		limit = { has_game_rule = modeu5_audit_on }
-		modeu5_enter_audit_runtime_mode = yes
+		limit = { variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2 }
+		if = {
+			limit = { modeu5_debug_enabled_trigger = yes }
+			modeu5_enter_test_audit_runtime_mode = yes
+		}
+		else = {
+			modeu5_enter_audit_runtime_mode = yes
+		}
+	}
+
+	if = {
+		limit = { variable_map(cmm|flag:no_void_economy__nve_save_mode) = 3 }
+		modeu5_enter_strict_accounting_persistence = yes
+	}
+	else_if = {
+		limit = { variable_map(cmm|flag:no_void_economy__nve_save_mode) = 2 }
+		modeu5_enter_human_relevant_accounting_persistence = yes
+	}
+	else = {
+		modeu5_enter_minimal_accounting_persistence = yes
 	}
 }

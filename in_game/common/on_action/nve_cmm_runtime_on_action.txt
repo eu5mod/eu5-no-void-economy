@@ -1,0 +1,26 @@
+# Non-generated CMM runtime overlay.
+# Keep warning/reset behavior out of nve__cmm_* files because the CMM Visual Editor rewrites them.
+
+cmf_on_mod_registration = {
+	on_actions = {
+		modeu5_cmm_runtime_registration_pulse
+	}
+}
+
+modeu5_cmm_runtime_registration_pulse = {
+	effect = {
+		modeu5_cmm_mark_planned_services_restricted = yes
+	}
+}
+
+cmf_on_callback = {
+	on_actions = {
+		modeu5_cmm_runtime_callback_pulse
+	}
+}
+
+modeu5_cmm_runtime_callback_pulse = {
+	effect = {
+		modeu5_handle_cmm_runtime_callback = yes
+	}
+}
