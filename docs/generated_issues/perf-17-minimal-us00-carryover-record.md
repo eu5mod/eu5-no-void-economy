@@ -28,7 +28,7 @@ diagnostic/full-ledger state.
 
 ## Selected Design
 
-- Add `NVE : Accounting Persistence` as a pre-campaign game rule.
+- Add `NVE : Save mode` as a pre-campaign CMM setting.
 - Default to `Minimal`.
 - Keep `Strict Full Ledger` available for validation and exact diagnostics.
 - Allow full ledger persistence when strict, debug, or audit mode is active.
@@ -91,4 +91,3 @@ Missing expected scenarios: 0
   PERF-19.
 - Migration and stale-field reporting are not complete here; they belong to
   PERF-20.
-

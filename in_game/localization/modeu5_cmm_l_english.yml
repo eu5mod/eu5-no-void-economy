@@ -1,0 +1,8 @@
+﻿l_english:
+ nve_cmm_warning_planned_feature_title: "NVE option not available yet"
+ nve_cmm_warning_planned_feature_desc: "This option is reserved for a future ModeU5 feature and currently has no gameplay effect."
+ nve_cmm_warning_ok: "Understood"
+ no_void_economy__nve_monthly_stock_check_option_2_name: "NVE monthly audit enabled"
+ no_void_economy__nve_monthly_stock_check_option_2_desc: "Monthly audit mode can add a noticeable performance cost. Prefer leaving it disabled outside dedicated validation runs."
+ no_void_economy__nve_save_mode_option_3_name: "NVE complete save mode enabled"
+ no_void_economy__nve_save_mode_option_3_desc: "Complete save mode preserves extra diagnostic state and can increase save size and monthly processing cost."

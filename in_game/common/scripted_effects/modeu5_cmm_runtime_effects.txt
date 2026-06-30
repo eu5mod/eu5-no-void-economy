@@ -7,7 +7,12 @@
 no_void_economy__nve_monthly_stock_check_on_changed = {
 	if = {
 		limit = {
-			variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_monthly_stock_check
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
 		}
 		trigger_event_non_silently = modeu5_cmm_warning.2
 	}
@@ -16,10 +21,23 @@ no_void_economy__nve_monthly_stock_check_on_changed = {
 no_void_economy__nve_save_mode_on_changed = {
 	if = {
 		limit = {
-			variable_map(cmm|flag:no_void_economy__nve_save_mode) = 3
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_save_mode
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
 		}
 		trigger_event_non_silently = modeu5_cmm_warning.3
 	}
+}
+
+# Compatibility stubs for generated CMM callbacks. Runtime package selection is
+# owned by the launcher/playset, so these callbacks must not mutate gameplay.
+nve_cmf_activate_no_void_economy = {
+}
+
+nve_cmf_activate_good_decay = {
 }
 
 # CMM's normal bool/dropdown widgets are disabled through CMMCanEditSetting.

@@ -18,7 +18,7 @@ through confirmed `human country -> every_market_present_in_country` traversal.
 
 ## Selected Design
 
-- Add `Human-Relevant Full Ledger` to `NVE : Accounting Persistence`.
+- Add `Human-Relevant Full Ledger` to the CMM `NVE : Save mode` policy.
 - Keep `Minimal` as default.
 - Keep `Strict Full Ledger` as global diagnostic fallback.
 - Rebuild human-relevant markets once per calendar month when the
@@ -29,7 +29,7 @@ through confirmed `human country -> every_market_present_in_country` traversal.
 
 ## Acceptance Criteria
 
-- [ ] Human-relevant full-ledger mode is selectable as a game rule.
+- [ ] Human-relevant full-ledger mode is selectable through CMM.
 - [ ] Strict global full-ledger mode remains selectable.
 - [ ] Human-relevant markets use confirmed native country-to-market traversal.
 - [ ] Human-relevant list rebuild is guarded by a monthly stamp.
@@ -73,4 +73,3 @@ AI-only markets remain minimal unless debug/audit/strict mode is active.
 - Non-sticky clear-on-exit cleanup is completed by PERF-20 migration/guardrails.
 - This mode is a diagnostic persistence policy only; it must not alter stock,
   capacity, production penalty, or demand resolution.
-

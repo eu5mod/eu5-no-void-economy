@@ -29,40 +29,79 @@ modeu5_audit_runtime_mode_trigger = {
 modeu5_debug_enabled_trigger = {
 	OR = {
 		modeu5_debug_runtime_mode_trigger = yes
-		variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 2
-		variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 3
+		AND = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_debug_messages
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 2
+		}
+		AND = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_debug_messages
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
+		}
 	}
 }
 
 modeu5_verbose_debug_enabled_trigger = {
-	variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 3
+	AND = {
+		has_variable_map = cmm
+		is_key_in_variable_map = {
+			name = cmm
+			target = flag:no_void_economy__nve_debug_messages
+		}
+		"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
+	}
 }
 
 modeu5_audit_enabled_trigger = {
 	OR = {
 		modeu5_audit_runtime_mode_trigger = yes
-		variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2
+		AND = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_monthly_stock_check
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
+		}
 	}
 }
 
 modeu5_accounting_minimal_persistence_trigger = {
-	OR = {
-		has_global_variable = modeu5_accounting_persistence_minimal
-		variable_map(cmm|flag:no_void_economy__nve_save_mode) = 1
-	}
+	has_global_variable = modeu5_accounting_persistence_minimal
 }
 
 modeu5_accounting_strict_persistence_trigger = {
 	OR = {
 		has_global_variable = modeu5_accounting_persistence_strict
-		variable_map(cmm|flag:no_void_economy__nve_save_mode) = 3
+		AND = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_save_mode
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
+		}
 	}
 }
 
 modeu5_accounting_human_relevant_persistence_trigger = {
 	OR = {
 		has_global_variable = modeu5_accounting_persistence_human_relevant
-		variable_map(cmm|flag:no_void_economy__nve_save_mode) = 2
+		AND = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_save_mode
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 2
+		}
 	}
 }
 

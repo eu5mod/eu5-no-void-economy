@@ -63,7 +63,14 @@ modeu5_initialize_configuration_state_effect = {
 	}
 
 	if = {
-		limit = { variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 3 }
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_debug_messages
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
+		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
@@ -71,7 +78,14 @@ modeu5_initialize_configuration_state_effect = {
 		}
 	}
 	else_if = {
-		limit = { variable_map(cmm|flag:no_void_economy__nve_debug_messages) = 2 }
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_debug_messages
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 2
+		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
@@ -87,7 +101,14 @@ modeu5_initialize_configuration_state_effect = {
 	}
 
 	if = {
-		limit = { variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check) = 2 }
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_monthly_stock_check
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
+		}
 		if = {
 			limit = { modeu5_debug_enabled_trigger = yes }
 			modeu5_enter_test_audit_runtime_mode = yes
@@ -98,11 +119,25 @@ modeu5_initialize_configuration_state_effect = {
 	}
 
 	if = {
-		limit = { variable_map(cmm|flag:no_void_economy__nve_save_mode) = 3 }
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_save_mode
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
+		}
 		modeu5_enter_strict_accounting_persistence = yes
 	}
 	else_if = {
-		limit = { variable_map(cmm|flag:no_void_economy__nve_save_mode) = 2 }
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_save_mode
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 2
+		}
 		modeu5_enter_human_relevant_accounting_persistence = yes
 	}
 	else = {

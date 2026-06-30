@@ -294,11 +294,20 @@ for forbidden in ("modeu5_cmm_warning.1", "modeu5_cmm_warn_planned_feature", "nv
     expect(forbidden not in runtime_callback_block,
            f"Planned service callbacks must not show planned-feature warning popups: found {forbidden}")
 expect("trigger_event_non_silently = modeu5_cmm_warning.2" in runtime_effects,
-       "Monthly stock check slow option must trigger a non-silent warning event")
+       "Monthly stock check callback must trigger a non-silent warning event")
 expect("trigger_event_non_silently = modeu5_cmm_warning.3" in runtime_effects,
-       "Complete save slow option must trigger a non-silent warning event")
+       "Complete save callback must trigger a non-silent warning event")
 expect("modeu5_cmm_warning.2" in warning_events and "modeu5_cmm_warning.3" in warning_events,
        "Slow monthly check and complete save warning events must exist under in_game/events")
+
+for path, text in {
+    "in_game/common/scripted_effects/modeu5_configuration_effects.txt": config_effects,
+    "in_game/common/scripted_triggers/modeu5_configuration_triggers.txt": config_triggers,
+    "in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt": runtime_effects,
+    "in_game/common/scripted_guis/nve__cmm_scripted_gui.txt": scripted_gui,
+}.items():
+    unquoted_cmm_links = re.findall(r'(?<!")\b(?:global_)?variable_map\(cmm\|flag:', text)
+    expect(not unquoted_cmm_links, f"{path} must not use unquoted CMM variable-map value links")
 
 cmm_mutation_bans = [
     r"\bmodeu5_(?:add|remove|transfer|decay)_stock\b",
@@ -325,18 +334,18 @@ for pattern in cmm_mutation_bans[:3] + cmm_mutation_bans[5:]:
            "CMM runtime overlay must not mutate gameplay state directly")
 
 init_block = top_level_block(config_effects, "modeu5_initialize_configuration_state_effect")
-expect(re.search(r"no_void_economy__nve_debug_messages\)\s*=\s*3.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*2", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*3.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*2", init_block, re.S) is not None,
        "Detailed debug CMM value must derive debug level 2")
-expect(re.search(r"no_void_economy__nve_debug_messages\)\s*=\s*2.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*1", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*2.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*1", init_block, re.S) is not None,
        "Basic debug CMM value must derive debug level 1")
 expect(re.search(r"modeu5_enter_normal_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*0", init_block, re.S) is not None,
        "Unset/default debug CMM value must derive normal runtime and debug level 0")
-expect(re.search(r"no_void_economy__nve_monthly_stock_check\)\s*=\s*2.*modeu5_enter_test_audit_runtime_mode\s*=\s*yes.*modeu5_enter_audit_runtime_mode\s*=\s*yes", init_block, re.S) is not None,
-       "Monthly stock check must enable audit mode and preserve debug+audit when debug is active")
-expect(re.search(r"no_void_economy__nve_save_mode\)\s*=\s*3.*modeu5_enter_strict_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
-       "Complete save mode must derive strict persistence")
-expect(re.search(r"no_void_economy__nve_save_mode\)\s*=\s*2.*modeu5_enter_human_relevant_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
-       "Balanced save mode must derive human-relevant persistence")
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_monthly_stock_check\)\"\s*=\s*2.*modeu5_enter_test_audit_runtime_mode\s*=\s*yes.*modeu5_enter_audit_runtime_mode\s*=\s*yes", init_block, re.S) is not None,
+       "Monthly stock check CMM value must enable audit mode and preserve debug+audit when debug is active")
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*3.*modeu5_enter_strict_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
+       "Complete save CMM value must derive strict persistence")
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*2.*modeu5_enter_human_relevant_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
+       "Balanced save CMM value must derive human-relevant persistence")
 expect("modeu5_enter_minimal_accounting_persistence = yes" in init_block,
        "Default save mode must derive minimal persistence")
 
@@ -379,15 +388,22 @@ expect(
 )
 
 expect(not (ROOT / "main_menu/common/game_rules/modeu5_game_rules.txt").exists(),
-       "Legacy ModeU5 main-menu game-rule configuration must stay removed; CMM is the configuration surface")
-for path in ["in_game", "main_menu"]:
+       "Legacy ModeU5 main-menu game-rule configuration must stay removed; CMM is the only configuration surface")
+for path, text in {
+    "in_game/common/scripted_effects/modeu5_configuration_effects.txt": config_effects,
+    "in_game/common/scripted_triggers/modeu5_configuration_triggers.txt": config_triggers,
+}.items():
+    expect("has_game_rule = modeu5_" not in text,
+           f"{path} must not read ModeU5 game rules; use CMM-derived settings instead")
+
+for path in ("in_game", "main_menu"):
     if (ROOT / path).exists():
-        text = "\n".join(
+        combined = "\n".join(
             p.read_text(encoding="utf-8-sig", errors="ignore")
             for p in (ROOT / path).rglob("*")
             if p.is_file() and p.suffix in {".txt", ".yml"}
         )
-        expect("modeu5_debug_configuration" not in text and "modeu5_audit_configuration" not in text,
+        expect("modeu5_debug_configuration" not in combined and "modeu5_audit_configuration" not in combined,
                f"Legacy debug/audit game-rule identifiers must not remain under {path}")
 
 if failures:

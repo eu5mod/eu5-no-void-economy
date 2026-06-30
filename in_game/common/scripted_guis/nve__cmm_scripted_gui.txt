@@ -4,7 +4,7 @@ no_void_economy__nve_decay_activate_on_changed = {
 	scope = country
 
 	is_shown = {
-		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+		"variable_map(cmm|flag:no_void_economy__activate_no_void_economy)" > 0
 	}
 
 	is_valid = {
@@ -37,7 +37,7 @@ no_void_economy__nve_monthly_stock_check_on_changed = {
 	scope = country
 
 	is_shown = {
-		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+		"variable_map(cmm|flag:no_void_economy__activate_no_void_economy)" > 0
 	}
 	effect = { }
 }
@@ -46,7 +46,7 @@ no_void_economy__nve_save_mode_on_changed = {
 	scope = country
 
 	is_shown = {
-		variable_map(cmm|flag:no_void_economy__activate_no_void_economy) > 0
+		"variable_map(cmm|flag:no_void_economy__activate_no_void_economy)" > 0
 	}
 	effect = { }
 }

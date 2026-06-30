@@ -98,7 +98,7 @@ Feeds counters / gates to:
 | Register dropdown settings      | country                               | `cmm_register_dropdown_setting` for NVE main profile, debug messages, monthly stock check, save mode, balance difficulty                          | TO_TEST   | CMF        |
 | Register bool settings          | country                               | `cmm_register_bool_setting` for decay, trade cost, planned balance/rebel/subject services                                                         | TO_TEST   | CMF        |
 | Expose scripted GUI callbacks   | country                               | `cmm_add_scripted_gui` plus `*_on_changed` handlers                                                                                               | TO_TEST   | CMF        |
-| Read CMM setting values         | global / country-owned CMM map access | `variable_map(cmm|flag:<setting>)`                                                                                                               | TO_TEST   | CMF        |
+| Read CMM setting values         | country-owned CMM map access          | quoted value links such as `"variable_map(cmm|flag:<setting>)"`                                                                                   | TO_TEST   | CMF        |
 | Main NVE service flag           | CMM setting map                       | `no_void_economy__nve_no_void_economy_main` plus alias sync for `activate_no_void_economy`                                                        | TO_TEST   | CMF        |
 | Debug mode                      | global runtime flags                  | `modeu5_enter_normal_runtime_mode`, `modeu5_enter_debug_runtime_mode`, `modeu5_debug_level`                                                       | CONFIRMED | internal   |
 | Audit mode                      | global runtime flags                  | `modeu5_enter_audit_runtime_mode`, `modeu5_audit_enabled_trigger`, `modeu5_full_validation_allowed_trigger`                                       | CONFIRMED | internal   |
@@ -110,7 +110,10 @@ Feeds counters / gates to:
 
 US-18 does not own stock, capacity, production, consumption, or void-economy source-of-truth maps.
 
-It owns only configuration-derived scalar runtime mode flags and reads CMF/CMM setting flags.
+It owns only configuration-derived scalar runtime mode flags. Runtime logic reads
+the CMM configuration map through parser-safe quoted value links. Unquoted
+`variable_map(cmm|flag:<setting>)` forms are forbidden because they are parsed as
+unknown triggers.
 
 ```txt
 logical dimensions:
@@ -142,9 +145,14 @@ tuple/key:
   CMM setting flag key
   no additional country × market × good key owned by this US
 
-confirmed physical map family:
-  external CMF/CMM setting maps read through variable_map(cmm|flag:<setting>)
+confirmed physical source:
+  CMF/CMM setting maps read through quoted value links:
+    "variable_map(cmm|flag:<setting>)"
   no new ModeU5 stock/capacity map family
+
+forbidden:
+  custom ModeU5 main-menu game rules for debug/audit/save configuration
+  unquoted variable_map(cmm|flag:<setting>) reads in triggers/effects
 
 physical value type:
   numeric selected index / boolean flag
@@ -157,8 +165,9 @@ default value:
   planned services disabled or no-op
 
 write owner:
-  CMF/CMM writes setting flags
+  CMF/CMM stores pre-campaign setting choices
   ModeU5 configuration initialization writes derived Core runtime flags
+  CMF/CMM callbacks may warn or reset planned no-op settings only
 
 readers:
   configuration triggers
