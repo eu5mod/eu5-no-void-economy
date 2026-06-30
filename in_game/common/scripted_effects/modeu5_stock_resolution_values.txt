@@ -93,6 +93,9 @@ modeu5_load_inter_market_trade_scoring_profile = {
 	modeu5_load_trade_scoring_profile = yes
 }
 
+# Legacy cleanup only. Current US-10 candidate diagnostics are resolver-local
+# temporaries accumulated through a persistent country/controller scope, because
+# zero-valued globals can read as unset and market scopes cannot persist locals.
 modeu5_clear_stock_demand_resolution_globals = {
 	remove_global_variable = modeu5_us10_resolution_candidate_count
 	remove_global_variable = modeu5_us10_resolution_excluded_candidate_count
@@ -114,8 +117,7 @@ modeu5_initialize_stock_demand_resolution_outputs = {
 }
 
 modeu5_store_stock_demand_resolution_outputs = {
-	# Candidate diagnostics are temporary outputs of a single resolver execution.
-	# Do not round-trip them through global variables: EU5 treats zero-valued
-	# globals as unset, which creates noisy `global_var` fetch errors.
+	# Candidate diagnostics are temporary outputs of a single resolver execution,
+	# copied from controller-scope local variables by the generated adapter.
 	save_temporary_scope_value_as = { name = modeu5_us10_outputs_stored value = 1 }
 }

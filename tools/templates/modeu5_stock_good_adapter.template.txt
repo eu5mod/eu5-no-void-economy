@@ -2485,39 +2485,59 @@ modeu5_prepare_us10_candidate_good___GOOD__ = {
 }
 
 modeu5_scan_us10_candidates_good___GOOD__ = {
+	# Candidate scan counters must live on a persistent country/controller scope.
+	# Do not use global variables: zero-valued globals can read back as unset.
+	# Do not use market scope: markets cannot persist variables/local variables.
+	scope:modeu5_us10_resolution_controller = {
+		set_local_variable = { name = modeu5_us10_candidate_count value = 0 }
+		set_local_variable = { name = modeu5_us10_excluded_candidate_count value = 0 }
+		set_local_variable = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+		set_local_variable = { name = modeu5_us10_best_stock_priority_score value = -100000000 }
+		set_local_variable = { name = modeu5_us10_best_candidate_stock value = 0 }
+		set_local_variable = { name = modeu5_us10_best_candidate_bucket value = 999 }
+	}
+
 	if = {
 		limit = { has_global_variable_list = modeu5_countries_present_in_market }
 		every_in_global_list = {
 			variable = modeu5_countries_present_in_market
 			save_temporary_scope_as = modeu5_candidate_country
-			save_temporary_scope_value_as = {
-				name = modeu5_us10_candidate_count
-				value = { value = scope:modeu5_us10_candidate_count add = 1 }
+			scope:modeu5_us10_resolution_controller = {
+				change_local_variable = { name = modeu5_us10_candidate_count add = 1 }
 			}
 			modeu5_prepare_us10_candidate_good___GOOD__ = yes
 			if = {
 				limit = { scope:modeu5_us10_candidate_allowed > 0 }
-				save_temporary_scope_value_as = {
-					name = modeu5_us10_total_available_candidate_stock
-					value = {
-						value = scope:modeu5_us10_total_available_candidate_stock
+				scope:modeu5_us10_resolution_controller = {
+					change_local_variable = {
+						name = modeu5_us10_total_available_candidate_stock
 						add = scope:modeu5_us10_candidate_stock
 					}
 				}
-				if = {
-					limit = { scope:modeu5_us10_stock_candidate_score > scope:modeu5_us10_best_stock_priority_score }
-					save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }
-					save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }
-					save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+				scope:modeu5_us10_resolution_controller = {
+					if = {
+						limit = { scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }
+						set_local_variable = { name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }
+						set_local_variable = { name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }
+						set_local_variable = { name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+					}
 				}
 			}
 			else = {
-				save_temporary_scope_value_as = {
-					name = modeu5_us10_excluded_candidate_count
-					value = { value = scope:modeu5_us10_excluded_candidate_count add = 1 }
+				scope:modeu5_us10_resolution_controller = {
+					change_local_variable = { name = modeu5_us10_excluded_candidate_count add = 1 }
 				}
 			}
 		}
+	}
+
+	scope:modeu5_us10_resolution_controller = {
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = local_var:modeu5_us10_candidate_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = local_var:modeu5_us10_excluded_candidate_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = local_var:modeu5_us10_total_available_candidate_stock }
+		save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = local_var:modeu5_us10_best_stock_priority_score }
+		save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = local_var:modeu5_us10_best_candidate_stock }
+		save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_bucket value = local_var:modeu5_us10_best_candidate_bucket }
 	}
 }
 
@@ -2528,6 +2548,9 @@ modeu5_resolve_stock_demand_good___GOOD__ = {
 
 	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
 	modeu5_rebuild_countries_present_in_market = yes
+	scope:modeu5_demanding_country = {
+		save_temporary_scope_as = modeu5_us10_resolution_controller
+	}
 	modeu5_scan_us10_candidates_good___GOOD__ = yes
 	modeu5_store_stock_demand_resolution_outputs = yes
 	modeu5_capture_us10_resolver_debug_good___GOOD__ = yes
@@ -2597,6 +2620,9 @@ modeu5_resolve_stock_consumption_good___GOOD__ = {
 
 	scope:modeu5_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
 	modeu5_rebuild_countries_present_in_market = yes
+	scope:modeu5_consumer_country = {
+		save_temporary_scope_as = modeu5_us10_resolution_controller
+	}
 	modeu5_scan_us10_candidates_good___GOOD__ = yes
 	modeu5_store_stock_demand_resolution_outputs = yes
 	save_temporary_scope_value_as = { name = modeu5_us10_current_bucket value = 1 }
@@ -2670,6 +2696,9 @@ modeu5_resolve_inter_market_stock_transfer_good___GOOD__ = {
 	scope:modeu5_source_market = { save_temporary_scope_as = modeu5_market }
 	scope:modeu5_source_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
 	modeu5_rebuild_countries_present_in_market = yes
+	scope:modeu5_buyer_country = {
+		save_temporary_scope_as = modeu5_us10_resolution_controller
+	}
 	modeu5_scan_us10_candidates_good___GOOD__ = yes
 	modeu5_store_stock_demand_resolution_outputs = yes
 	save_temporary_scope_value_as = { name = modeu5_us10_current_bucket value = 1 }
