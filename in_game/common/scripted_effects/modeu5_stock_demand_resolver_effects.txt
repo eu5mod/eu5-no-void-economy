@@ -22,33 +22,46 @@
 #   counters, and score calculation.
 
 modeu5_select_stock_demand_type_consumption = {
+	save_temporary_scope_value_as = { name = modeu5_demand_type value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us10_demand_type value = 1 }
 	modeu5_load_consumption_scoring_profile = yes
 }
 
 modeu5_select_stock_demand_type_inter_market_trade = {
+	save_temporary_scope_value_as = { name = modeu5_demand_type value = 2 }
 	save_temporary_scope_value_as = { name = modeu5_us10_demand_type value = 2 }
 	modeu5_load_trade_scoring_profile = yes
 }
 
 modeu5_resolve_stock_demand = {
-	$demanding_country$ = { save_temporary_scope_as = modeu5_us10_demanding_country }
-	$market$ = { save_temporary_scope_as = modeu5_us10_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_us10_good }
+	$demanding_country$ = {
+		save_temporary_scope_as = modeu5_demanding_country
+		save_temporary_scope_as = modeu5_us10_demanding_country
+	}
+	$market$ = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_us10_market
+	}
+	goods:$good$ = {
+		save_temporary_scope_as = modeu5_good
+		save_temporary_scope_as = modeu5_us10_good
+	}
 
 	save_temporary_scope_value_as = {
-		name = modeu5_us10_requested_quantity_raw
+		name = modeu5_requested_quantity_raw
 		value = $requested_quantity$
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_us10_requested_quantity
+		name = modeu5_requested_quantity
 		value = {
-			value = scope:modeu5_us10_requested_quantity_raw
+			value = scope:modeu5_requested_quantity_raw
 			min = 0
 		}
 	}
+	save_temporary_scope_value_as = { name = modeu5_us10_requested_quantity_raw value = scope:modeu5_requested_quantity_raw }
+	save_temporary_scope_value_as = { name = modeu5_us10_requested_quantity value = scope:modeu5_requested_quantity }
 	if = {
-		limit = { scope:modeu5_us10_requested_quantity_raw < 0 }
+		limit = { scope:modeu5_requested_quantity_raw < 0 }
 		error_log = "ModeU5 US-10 resolver received a negative requested quantity; request normalized to zero."
 	}
 
@@ -56,7 +69,7 @@ modeu5_resolve_stock_demand = {
 	modeu5_initialize_stock_demand_resolution_outputs = yes
 
 	if = {
-		limit = { scope:modeu5_us10_requested_quantity > 0 }
+		limit = { scope:modeu5_requested_quantity > 0 }
 		# Generated implementation hook.
 		#
 		# The public resolver is good-parametric, but each good adapter must bind
@@ -248,13 +261,6 @@ modeu5_resolve_stock_consumption = {
 		requested_quantity = $requested_quantity$
 	}
 
-	# Bridge the canonical #103 `modeu5_us10_*` resolver outputs into the
-	# temporary names consumed by the #104 generated mutating adapters and outcome
-	# recorders.  This keeps one public requested-quantity argument while avoiding
-	# a second normalizer/profile loader.
-	save_temporary_scope_value_as = { name = modeu5_requested_quantity_raw value = scope:modeu5_us10_requested_quantity_raw }
-	save_temporary_scope_value_as = { name = modeu5_requested_quantity value = scope:modeu5_us10_requested_quantity }
-
 	modeu5_resolve_stock_consumption_good_$good$ = yes
 	modeu5_record_country_market_consumption_outcome = {
 		country = scope:modeu5_consumer_country
@@ -300,12 +306,6 @@ modeu5_resolve_inter_market_stock_transfer = {
 		demand_type = inter_market_trade
 		requested_quantity = $requested_quantity$
 	}
-
-	# Bridge canonical #103 demand-resolution values into the #104 transfer
-	# adapter names.  The source market is the supplier/candidate market for
-	# inter-market transfer scoring.
-	save_temporary_scope_value_as = { name = modeu5_requested_quantity_raw value = scope:modeu5_us10_requested_quantity_raw }
-	save_temporary_scope_value_as = { name = modeu5_requested_quantity value = scope:modeu5_us10_requested_quantity }
 
 	if = {
 		limit = { scope:modeu5_source_market = scope:modeu5_target_market }

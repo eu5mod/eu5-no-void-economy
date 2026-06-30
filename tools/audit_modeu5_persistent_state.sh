@@ -17,7 +17,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_void_economy_effects.txt"
 	"in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
 	"in_game/common/scripted_effects/modeu5_performance_effects.txt"
-	"in_game/common/scripted_effects/modeu5_demand_resolver_effects.txt"
+	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_effects.txt"
 	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
 )
@@ -34,12 +34,17 @@ done
 				$name =~ s/\$\{good\}/<good>/;
 				print "$name\n";
 			}
-			while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
-				print "$&\n";
-			}
-			while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
-				print "$&\n";
-			}
+				while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
+					print "$&\n";
+				}
+				while (/\bmodeu5_(?:consumption|trade)___GOOD___[a-z0-9_]+_by_market\b/g) {
+					my $name = $&;
+					$name =~ s/___GOOD___/_<good>_/;
+					print "$name\n";
+				}
+				while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
+					print "$&\n";
+				}
 			while (/\bmodeu5_(?:active_markets_any_good|countries_present_in_market|market_country_cache_dirty_markets|monthly_markets_seen_this_cycle|performance_relevant_markets|core03_probe_seen_locations)\b/g) {
 				print "$&\n";
 			}
@@ -50,9 +55,6 @@ done
 cat > "$tmp_expected" <<'EOF'
 __ACTIVE_LIST__
 __ADDED_MAP__
-__CONSUMPTION_REQUESTED_MAP__
-__CONSUMPTION_SATISFIED_MAP__
-__CONSUMPTION_UNSATISFIED_MAP__
 __DIRTY_LIST__
 __EFFECTIVE_OVERPRODUCTION_RATIO_MAP__
 __MARKET_MAP__
@@ -61,9 +63,6 @@ __PRODUCED_MAP__
 __PRODUCTION_PENALTY_MAP__
 __REJECTED_MAP__
 __STOCK_MAP__
-__TRADE_REQUESTED_MAP__
-__TRADE_TRANSFERRED_MAP__
-__TRADE_UNSATISFIED_MAP__
 __US00_ACTIVE_MAP__
 __UI_MONTHLY_CONSUMPTION_MAP__
 __UI_MONTHLY_SURPLUS_MAP__
@@ -71,9 +70,6 @@ __VOID_TAXABLE_PROXY_MAP__
 __VOID_WEALTH_MAP__
 modeu5_<good>_active_markets
 modeu5_<good>_added_by_market
-modeu5_<good>_consumption_requested_by_market
-modeu5_<good>_consumption_satisfied_by_market
-modeu5_<good>_consumption_unsatisfied_by_market
 modeu5_<good>_dirty_markets
 modeu5_<good>_effective_overproduction_ratio_by_market
 modeu5_<good>_market_stock
@@ -82,14 +78,17 @@ modeu5_<good>_produced_by_market
 modeu5_<good>_production_penalty_by_market
 modeu5_<good>_rejected_by_market
 modeu5_<good>_stock_by_market
-modeu5_<good>_trade_requested_by_market
-modeu5_<good>_trade_transferred_by_market
-modeu5_<good>_trade_unsatisfied_by_market
 modeu5_<good>_ui_monthly_consumption_by_market
 modeu5_<good>_ui_monthly_surplus_by_market
 modeu5_<good>_us00_active_record_by_market
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market
+modeu5_consumption_<good>_requested_by_market
+modeu5_consumption_<good>_satisfied_by_market
+modeu5_consumption_<good>_unsatisfied_by_market
+modeu5_trade_<good>_requested_by_market
+modeu5_trade_<good>_transferred_by_market
+modeu5_trade_<good>_unsatisfied_by_market
 modeu5_active_markets_any_good
 modeu5_base_capacity_by_market
 modeu5_building_capacity_by_market

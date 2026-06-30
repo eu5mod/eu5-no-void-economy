@@ -16,10 +16,14 @@ When `source_market != target_market`, select source-market sellers through US-1
 
 ## Current implementation slice
 
-This PR implements the explicit-request MVP for US-10.2:
+This PR implements the explicit-request MVP for US-10.2 on top of the US-10.0
+resolver core:
 
-- callers pass `buyer_country`, `seller_country`, `source_market`,
-  `target_market`, `good`, and `requested_quantity`;
+- callers use `modeu5_resolve_inter_market_stock_transfer` with
+  `buyer_country`, `source_market`, `target_market`, `good`, and
+  `requested_quantity`;
+- the generated per-good adapter iterates countries present in the source market
+  while remaining demand is positive;
 - the implementation fails closed for same-market requests;
 - successful inter-market movement calls `modeu5_transfer_stock` only;
 - buyer target capacity is enforced through the central transfer operator;
@@ -27,7 +31,8 @@ This PR implements the explicit-request MVP for US-10.2:
 
 Full vanilla trade iteration remains gated by TECH-01 056. Until the exact
 gameplay-script quantity is confirmed, deterministic tests use an explicit
-ModeU5 request.
+ModeU5 request. Full scored/bucketed seller ordering and per-candidate exclusion
+diagnostics remain partially wired follow-up work.
 
 ## Runtime position
 

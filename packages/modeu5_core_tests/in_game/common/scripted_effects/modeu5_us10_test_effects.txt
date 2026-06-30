@@ -6,19 +6,41 @@ modeu5_us10_clear_test_results = {
 	remove_global_variable = modeu5_test_us10_demand_resolution_blocked
 }
 
+modeu5_us10_clear_wheat_stock_in_market = {
+	$market$ = {
+		save_temporary_scope_as = modeu5_us10_clear_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_us10_clear_country
+			modeu5_remove_stock = {
+				country = scope:modeu5_us10_clear_country
+				market = scope:modeu5_us10_clear_market
+				good = wheat
+				quantity = 1000000
+				reason = debug_test
+			}
+		}
+	}
+}
+
 modeu5_us10_read_fra_wheat_consumption_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_consumption_requested_by_market
+				has_variable_map = modeu5_consumption_wheat_requested_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_consumption_requested_by_market
+					name = modeu5_consumption_wheat_requested_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_consumption_requested_record
-				value = "variable_map(modeu5_wheat_consumption_requested_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_consumption_wheat_requested_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -26,15 +48,15 @@ modeu5_us10_read_fra_wheat_consumption_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_consumption_satisfied_by_market
+				has_variable_map = modeu5_consumption_wheat_satisfied_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_consumption_satisfied_by_market
+					name = modeu5_consumption_wheat_satisfied_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_consumption_satisfied_record
-				value = "variable_map(modeu5_wheat_consumption_satisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_consumption_wheat_satisfied_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -42,15 +64,15 @@ modeu5_us10_read_fra_wheat_consumption_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_consumption_unsatisfied_by_market
+				has_variable_map = modeu5_consumption_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_consumption_unsatisfied_by_market
+					name = modeu5_consumption_wheat_unsatisfied_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_consumption_unsatisfied_record
-				value = "variable_map(modeu5_wheat_consumption_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_consumption_wheat_unsatisfied_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -63,15 +85,15 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_trade_requested_by_market
+				has_variable_map = modeu5_trade_wheat_requested_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_trade_requested_by_market
+					name = modeu5_trade_wheat_requested_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_trade_requested_record
-				value = "variable_map(modeu5_wheat_trade_requested_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_trade_wheat_requested_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -79,15 +101,15 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_trade_transferred_by_market
+				has_variable_map = modeu5_trade_wheat_transferred_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_trade_transferred_by_market
+					name = modeu5_trade_wheat_transferred_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_trade_transferred_record
-				value = "variable_map(modeu5_wheat_trade_transferred_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_trade_wheat_transferred_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -95,15 +117,15 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_trade_unsatisfied_by_market
+				has_variable_map = modeu5_trade_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_trade_unsatisfied_by_market
+					name = modeu5_trade_wheat_unsatisfied_by_market
 					target = scope:modeu5_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = modeu5_test_us10_trade_unsatisfied_record
-				value = "variable_map(modeu5_wheat_trade_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(modeu5_trade_wheat_unsatisfied_by_market|scope:modeu5_us10_target_market)"
 			}
 		}
 		else = {
@@ -118,11 +140,11 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_demand_resolution"
 
 	if = {
-			limit = {
-				country_exists = c:FRA
-				country_exists = c:ENG
-				NOT = { c:FRA.capital.market = c:ENG.capital.market }
-			}
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+			NOT = { c:FRA.capital.market = c:ENG.capital.market }
+		}
 		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
 		c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_source_market }
 
@@ -131,24 +153,21 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			market = scope:modeu5_us10_target_market
 			value = 100
 		}
-		modeu5_clear_country_market_demand_outcome = {
+		modeu5_reset_country_market_consumption_outcome = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market
 			good = wheat
 		}
-		modeu5_remove_stock = {
+		modeu5_reset_country_market_trade_outcome = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market
 			good = wheat
-			quantity = 1000000
-			reason = debug_test
 		}
-		modeu5_remove_stock = {
-			country = c:ENG
+		modeu5_us10_clear_wheat_stock_in_market = {
+			market = scope:modeu5_us10_target_market
+		}
+		modeu5_us10_clear_wheat_stock_in_market = {
 			market = scope:modeu5_us10_source_market
-			good = wheat
-			quantity = 1000000
-			reason = debug_test
 		}
 
 		modeu5_add_stock = {
@@ -158,15 +177,14 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			quantity = 80
 			capacity_policy = allow_over_capacity
 		}
-		modeu5_resolve_consumption_stock_demand = {
-			demanding_country = c:FRA
-			provider_country = c:FRA
+		modeu5_resolve_stock_consumption = {
+			consumer_country = c:FRA
 			market = scope:modeu5_us10_target_market
 			good = wheat
 			requested_quantity = 100
 		}
-		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_satisfied value = scope:modeu5_us10_satisfied_quantity }
-		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_unsatisfied value = scope:modeu5_us10_unsatisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_satisfied value = scope:modeu5_satisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_unsatisfied value = scope:modeu5_unsatisfied_quantity }
 		modeu5_read_country_stock_record = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market
@@ -180,19 +198,16 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			market = scope:modeu5_us10_target_market
 			value = 70
 		}
-		modeu5_remove_stock = {
+		modeu5_reset_country_market_trade_outcome = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market
 			good = wheat
-			quantity = 1000000
-			reason = debug_test
 		}
-		modeu5_remove_stock = {
-			country = c:ENG
+		modeu5_us10_clear_wheat_stock_in_market = {
+			market = scope:modeu5_us10_target_market
+		}
+		modeu5_us10_clear_wheat_stock_in_market = {
 			market = scope:modeu5_us10_source_market
-			good = wheat
-			quantity = 1000000
-			reason = debug_test
 		}
 		modeu5_add_stock = {
 			country = c:ENG
@@ -201,17 +216,21 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			quantity = 90
 			capacity_policy = allow_over_capacity
 		}
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_capacity value = scope:modeu5_read_available_capacity }
 		modeu5_resolve_inter_market_stock_transfer = {
 			buyer_country = c:FRA
-			seller_country = c:ENG
 			source_market = scope:modeu5_us10_source_market
 			target_market = scope:modeu5_us10_target_market
 			good = wheat
 			requested_quantity = 100
 		}
-		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_transferred value = scope:modeu5_us10_transferred_quantity }
-		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_unsatisfied value = scope:modeu5_us10_unsatisfied_quantity }
-		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_capacity value = scope:modeu5_us10_buyer_available_capacity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_transferred value = scope:modeu5_transferred_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_unsatisfied value = scope:modeu5_unsatisfied_quantity }
 		modeu5_read_country_stock_record = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market

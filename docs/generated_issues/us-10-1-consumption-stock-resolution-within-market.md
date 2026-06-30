@@ -16,17 +16,20 @@ Use ordered US-10.0 candidates to remove stock successively until demand is sati
 
 ## Current implementation slice
 
-This PR implements the explicit-request MVP for US-10.1:
+This PR implements the explicit-request MVP for US-10.1 on top of the US-10.0
+resolver core:
 
-- callers pass `demanding_country`, `provider_country`, `market`, `good`, and
-  `requested_quantity`;
+- callers use `modeu5_resolve_stock_consumption` with `consumer_country`,
+  `market`, `good`, and `requested_quantity`;
+- the generated per-good adapter iterates countries present in the market while
+  remaining demand is positive;
 - the implementation removes stock through `modeu5_remove_stock` only;
 - satisfied and unsatisfied quantities are exposed and handed to US-10.3;
 - no intra-market trade income, logistics cost, or trade-capacity use is created.
 
-Full automatic candidate ordering remains a US-10.0 follow-up. Runtime vanilla
-Pop demand quantity remains `NOT_CONFIRMED`, so the deterministic test uses an
-explicit ModeU5 request.
+Full scored/bucketed ordering and per-candidate exclusion diagnostics remain
+partially wired follow-up work. Runtime vanilla Pop demand quantity remains
+`NOT_CONFIRMED`, so the deterministic test uses an explicit ModeU5 request.
 
 ## Runtime position
 

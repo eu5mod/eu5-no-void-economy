@@ -259,12 +259,6 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
 			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
 			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
-			-e "s/__CONSUMPTION_REQUESTED_MAP__/modeu5_${good}_consumption_requested_by_market/g" \
-			-e "s/__CONSUMPTION_SATISFIED_MAP__/modeu5_${good}_consumption_satisfied_by_market/g" \
-			-e "s/__CONSUMPTION_UNSATISFIED_MAP__/modeu5_${good}_consumption_unsatisfied_by_market/g" \
-			-e "s/__TRADE_REQUESTED_MAP__/modeu5_${good}_trade_requested_by_market/g" \
-			-e "s/__TRADE_TRANSFERRED_MAP__/modeu5_${good}_trade_transferred_by_market/g" \
-			-e "s/__TRADE_UNSATISFIED_MAP__/modeu5_${good}_trade_unsatisfied_by_market/g" \
 			"$template"
 		done
 	} > "$output"

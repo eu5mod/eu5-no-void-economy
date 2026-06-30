@@ -49,6 +49,7 @@ is_scannable_file() {
 }
 
 while IFS= read -r -d '' file; do
+  [ -f "$file" ] || continue
   is_scannable_file "$file" || continue
   scanned=$((scanned + 1))
 
