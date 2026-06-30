@@ -80,6 +80,24 @@ fails when a new map/list family appears without an entry in
 `docs/technical/PERSISTENT_STATE_AUDIT.md`, and it blocks accidental UI shadow
 maps until a UI story explicitly approves them.
 
+Normalize and validate CMM value-link quoting:
+
+```bash
+./tools/normalize_cmm_value_links.sh --write
+./tools/normalize_cmm_value_links.sh --check
+```
+
+CMM setting reads such as `variable_map(cmm|flag:<setting>)` must be quoted
+when used as value links:
+
+```txt
+"variable_map(cmm|flag:<setting>)"
+```
+
+The unquoted form is easy to reintroduce in generated or generated-adjacent
+CMM files and can be parsed by EU5 as a bad trigger instead of a value
+expression. The generated-file workflow runs the check mode in CI.
+
 The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 

@@ -127,14 +127,9 @@ does not technically prevent an unsafe package-set change.
 
 ## Why packages are the source of truth
 
-Local EU5 files confirm:
-
-```txt
-main_menu/common/game_rules/
-has_game_rule
-```
-
-Custom game rules can therefore select scripted runtime behavior.
+Script-safe ModeU5 configuration is owned by the Community Mod Manager. Custom
+ModeU5 game rules are deliberately not used for debug, audit, or save-mode
+configuration.
 
 However, US-07 and US-08 change static building/RGO definitions and numeric price or modifier fields loaded before gameplay. No reviewed engine documentation or vanilla example confirms that an active game-rule setting can conditionally replace those static numeric fields.
 
@@ -143,7 +138,7 @@ Therefore:
 - do not promise one runtime checkbox that can disable US-07 or US-08 safely;
 - do not load a static override and merely hide its UI when its option is off;
 - use companion packages as the authoritative activation boundary;
-- game rules may configure behavior wholly controlled by scripted triggers, such as debug output, but they must not contradict package activation.
+- CMM may configure behavior wholly controlled by scripted triggers, such as debug output, but it must not contradict package activation.
 
 ## Package dependencies
 
@@ -211,22 +206,24 @@ launcher/mod playset
      Rebalance Early Blobbing before campaign start when desired
   -> add No Void Economy Tests only for dedicated validation sessions
 
-EU5 Game Rules
+Community Mod Manager
   -> configure script-safe settings owned by loaded packages
 ```
 
-Core currently defines one native game rule:
+Core currently exposes CMM settings for script-safe configuration:
 
 ```txt
-ModeU5 Debug Output = Off / Basic / Verbose
+Debug Messages = Off / Basic / Detailed
+Monthly Stock Check = Off / On
+Save mode = Light / Balanced / Complete
 ```
 
-The selected setting initializes `modeu5_debug_level` when the campaign starts. It is not an in-game toggle.
+The selected settings initialize `modeu5_debug_level`, audit mode, and accounting persistence when the campaign starts. They are not in-game toggles.
 
 Do not create a custom in-game configuration panel. In particular, no configuration surface may:
 
 - disable Core stock gameplay;
-- pretend that a game rule unloads a companion package;
+- pretend that a CMM setting unloads a companion package;
 - imply that an unloaded static override can be enabled after startup;
 - imply that removing a loaded companion restores vanilla static definitions in the current process;
 - rerun fresh stock seeding;

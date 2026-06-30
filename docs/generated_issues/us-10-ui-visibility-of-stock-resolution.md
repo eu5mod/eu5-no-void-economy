@@ -1,14 +1,14 @@
-# US-10-UI — Visibility of Stock, Demand, and Void-Economy Resolution
+# US-10-UI — Visibility of Stock Resolution
 
 Labels: none
 
 ## User Story
 
 ```txt
-US-10-UI — Visibility of Stock, Demand, and Void-Economy Resolution
+US-10-UI — Visibility of Stock Resolution
 ```
 
-As a player or modder, I want to understand where production entered stock, where it was rejected, which stocks fulfilled demand, which candidates were excluded, and why any quantity remained unsatisfied.
+As a player or modder, I want to understand which stocks fulfilled a demand, which were excluded, and why any quantity remained unsatisfied.
 
 ## Functional objective
 
@@ -28,12 +28,13 @@ The panel must distinguish:
 - production efficiency modifiers vs stock/demand outcomes
 
 Debug logs may support validation, but the player-facing panel is the primary deliverable.
+Provide mandatory debug for resolver inputs, ordered candidates, scores, exclusions, quantities per candidate, final outcomes, and the consumption/inter-market distinction; optionally expose a compact ModeU5 goods summary showing good, country stock/capacity, market stock/capacity, current overproduction, and production efficiency components.
 
 ## Runtime position
 
 ```txt
-Monthly step: read after US-00.1/US-00.2/US-00.3/US-00.4 and US-10.1/US-10.2/US-10.3
-Depends on counters from: EPIC US-00 and US-10.0 through US-10.3
+Monthly step: read after US-10.1/US-10.2/US-10.3
+Depends on counters from: US-10.0 through US-10.3
 Feeds counters to: player/modder diagnostics
 ```
 
@@ -41,9 +42,6 @@ Feeds counters to: player/modder diagnostics
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| US-00 production admission record | country × market × good | direct reads of produced/added/rejected maps and runtime debug dump fields | CONFIRMED | 021-025 |
-| US-00 void-economy record | country × market × good | ratio, effective ratio, void wealth, price source, and penalty fields | CONFIRMED | 025-030 |
-| US-00 production modifier diagnostics | country × location × market × good | affected location count and modifier application mode | CONFIRMED | 010, 027-029 |
 | Resolver/outcome records | demand/country/market/location/good | current transaction diagnostics plus direct reads of US-10.3 outcome maps | CONFIRMED | 007, 040, 067-077 |
 | Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
@@ -54,13 +52,12 @@ Feeds counters to: player/modder diagnostics
 ```txt
 in_game/events/
 in_game/localization/
-main_menu/common/static_modifiers/
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
 ```
 
-Mandatory player-facing goods summary panel
+Player-facing goods summary panel, only if the ModeU5 panel is implemented:
 
 ```txt
 in_game/gui/
@@ -72,16 +69,15 @@ in_game/common/scripted_effects/
 ## Dependencies
 
 ```txt
-Depends on: EPIC US-00, US-10.0, US-10.1, US-10.2, US-10.3, TECH-01
-Blocks: transparent stock lifecycle visibility
-Related US: US-00-UI, US-04-UI, US-05-UI
+Depends on: US-10.0, US-10.1, US-10.2, US-10.3, TECH-01
+Blocks: transparent stock resolution
+Related US: US-04-UI
 ```
 
 ## Implementation rules
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
 - Debug is mandatory; custom GUI is optional.
-- Include the folded US-00-UI requirements: produced, added, rejected, ratio, buffer, void wealth, good price/source, previous/new penalty, affected locations, and modifier mode.
 - Show demand type, scope, requested/satisfied/unsatisfied, candidates, scores, quantities, and exclusions.
 - Explain that same-market consumption is not trade.
 - Explain that logistics costs and trade-income adjustments are outside the surviving MVP story set.
@@ -249,52 +245,42 @@ Rate: n/a because monthly consumption is zero
 The UI label must use `Overproduction` for player readability, while tooltip text must define it as a current monthly surplus, not as over-cap stock and not as rejected production.
 
 ### Production Efficiency
+For each visible good, the panel may show a read-only Production Efficiency MVP display value when the required exposed modifier components are available.
 
-Production Efficiency / Output Modifier Visibility
+This MVP value is a simplified, degraded visibility metric. It is not a full recomputation of market production efficiency and may not account for research effects, societal values, market/input conditions, precursor goods, or other engine-side production modifiers.
 
-For each visible good, the panel may show a read-only Production Efficiency or Output Modifier display value only when the required engine-exposed components are confirmed.
+When both required components are available, the display value is:
 
-This value is an MVP visibility aid, not a full recomputation of market production efficiency.
+production_efficiency_display =
+  global_production_efficiency
++ global_<good>_output_modifier
 
-Market production efficiency may be affected by multiple components, including but not limited to:
+The exact good-specific modifier key must be resolved per good from engine modifier exposure, because not every goods key is guaranteed to match the display name.
 
-- global production efficiency (global_production_efficiency) 
-- global good-specific output modifiers (global_<good>_output_modifier)
-- research effects
-- societal values
-- market/input conditions
-- presence or absence of precursor goods
-  examples: cotton for linen, wood for paper, paper for books
-- other engine-side production modifiers not yet exposed to ModeU5 script
-
-For MVP, the UI must not guess missing components or present a partial value as complete. If only some components are exposed, the column must clearly label the value as partial, for example:
-
-- global production efficiency (global_production_efficiency) 
-- global good-specific output modifiers (global_<good>_output_modifier)
-
-** Warning ** : Others elements might improve your efficiency : (Researches, societal values, presence or absence of precursor goods,...)
-
-If no reliable modifier exposure exists, the column should be hidden or display:
-
-Production Efficiency: unavailable
-Reason: required modifier components are not exposed
-
-Tooltip text must distinguish confirmed components from unavailable components:
+Tooltip must show the confirmed components separately:
 
 Confirmed components:
 - Global production efficiency: +15%
 - Good output modifier: +20%
+Displayed production efficiency: simplified / partial +35%
 
-Unavailable / not yet exposed:
+Tooltip must also warn that unavailable components may affect the real engine-side production efficiency:
+
+Warning:
+This is a simplified MVP metric. Real production efficiency may also be affected by unavailable or not-yet-exposed factors, including:
 - Research contribution
 - Societal value contribution
 - Precursor/input availability contribution
+- Market/input conditions
 - Other engine-side production modifiers
+Full engine production efficiency: unavailable
 
-Displayed value: partial +35%
-Full production efficiency: unavailable
+If either required exposed component is unavailable, the display should be hidden or show:
 
-This display is informational only. It does not recompute production, does not replace the engine's own production calculation, and must not be used as an authoritative economic input.
+Production Efficiency: unavailable
+Reason: required exposed modifier components are not available
+
+This display is informational only. It does not recompute production, does not replace the engine’s own production calculation, and must not be used as an authoritative economic input.
 
 A future dedicated US-10-UI-1 should define full production-efficiency decomposition once the required modifier and precursor/input exposure is confirmed.
 
@@ -318,8 +304,6 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 ## US-specific boundary checks
 
 - [ ] Consumption display shows no transport/trade economics.
-- [ ] Production admission display shows no direct Estate-income punishment.
-- [ ] Void-economy display distinguishes tracked value, previous penalty application, and next-month prepared penalty.
 - [ ] Inter-market display shows source, target, capacity, and actual transfer.
 - [ ] Exclusion reasons are human-readable and stable.
 - [ ] Country Stocks are shown as `country_current_stock/country_stock_capacity` without hiding usage, free capacity, or over-cap details in tooltip.
@@ -335,7 +319,6 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 ## Acceptance criteria
 
 - [ ] Demand type and all quantity outcomes are visible.
-- [ ] Produced, added, rejected, ratio, void wealth, and production-penalty diagnostics are visible.
 - [ ] Stocks used, order, score, and quantity per candidate are visible.
 - [ ] Excluded candidates and reasons are visible.
 - [ ] Same-market versus inter-market behavior is explicit.
@@ -366,7 +349,8 @@ Include one good with both `global_production_efficiency` and a good-specific ou
 
 ```txt
 US-00 shows produced/added/rejected, void wealth, price source, previous/new penalty, and modifier mode
-Each demand shows ordered usage and exclusions
+Each demand shows ordered usage and exclusions.
+Consumption is labeled non-trade.
 Transfer shows actual quantity and states that logistics/trade-income adjustments are out of scope.
 The player-facing goods summary shows Good, Country Stocks, Market Stocks, Overproduction, and Production Efficiency.
 Country and market stocks are each shown as current/capacity values.

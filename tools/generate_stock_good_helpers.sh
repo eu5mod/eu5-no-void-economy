@@ -200,6 +200,22 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 	done
 	printf '%s\n' '}'
 
+	printf '%s\n\n' 'modeu5_clear_retired_us00_diagnostic_fields_all_goods = {'
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_clear_retired_us00_diagnostic_fields_good_%s = yes\n' "$good"
+	done
+	printf '%s\n' '}'
+
+	printf '%s\n\n' 'modeu5_migrate_current_country_us00_minimal_persistence = {'
+	printf '%s\n' '	save_temporary_scope_as = modeu5_country'
+	printf '%s\n' '	scope:modeu5_country = {'
+	printf '%s\n' '		every_market_present_in_country = {'
+	printf '%s\n' '			save_temporary_scope_as = modeu5_market'
+	printf '%s\n' '			modeu5_clear_retired_us00_diagnostic_fields_all_goods = yes'
+	printf '%s\n' '		}'
+	printf '%s\n' '	}'
+	printf '%s\n' '}'
+
 	printf '%s\n\n' 'modeu5_run_us00_monthly_pipeline_all_goods = {'
 	printf '%s\n' '	# Market-owned monthly dispatch: monthly_country_pulse still fires for every country,'
 	printf '%s\n' '	# but only countries owning market centers enter this loop, so each market-scale'
@@ -241,6 +257,8 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 			-e "s/__VOID_TAXABLE_PROXY_MAP__/modeu5_${good}_void_taxable_income_proxy_by_market/g" \
 			-e "s/__PRODUCTION_PENALTY_MAP__/modeu5_${good}_production_penalty_by_market/g" \
 			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
+			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
+			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
 			"$template"
 		done
 	} > "$output"

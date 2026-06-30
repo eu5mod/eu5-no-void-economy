@@ -387,24 +387,26 @@ Adding or removing an optional package from an existing campaign is unsupported 
 
 ## ModeU5 configuration tests
 
-### Test CFG1 - built-in Game Rules integration
+### Test CFG1 - CMM integration
 
 Setup:
 
 ```txt
 Load Core
-Open Game Rules before starting a campaign
-Locate ModeU5 Debug Output in the General tab
+Open the Community Mod Manager before starting a campaign
+Locate NVE Debug & Audit settings
 ```
 
 Expected:
 
 ```txt
-ModeU5 Debug Output offers Off, Basic, and Verbose
+Debug Messages offers Off, Basic, and Detailed
+Monthly Stock Check offers Off and On
+Save mode offers Light, Balanced, and Complete
 Off is the default
 No vanilla GUI file is replaced
 No custom in-game ModeU5 configuration panel is present
-No game-rule parse error is added to error.log
+No CMM value-link parse error is added to error.log
 ```
 
 ---
@@ -414,7 +416,7 @@ No game-rule parse error is added to error.log
 Setup:
 
 ```txt
-Start three clean campaigns with ModeU5 Debug Output set to Off, Basic, and Verbose
+Start three clean campaigns with NVE Debug Messages set to Off, Basic, and Detailed
 Inspect `modeu5_debug_level` after startup
 ```
 
@@ -453,8 +455,8 @@ The companion-only state is treated as invalid or causes Core to be restored bef
 Selecting Core alone does not enable optional companions
 An incompatible Core version produces a version-mismatch issue
 All four packages remain sibling entries
-Package presence, not a game rule, controls optional static overrides
-No Game Rules setting claims to unload Economy, Trade, or War packages
+Package presence, not a CMM setting, controls optional static overrides
+No CMM setting claims to unload Economy, Trade, or War packages
 Adding or removing a package still requires launcher/playset selection before campaign load
 No configuration action reseeds or mutates stock
 The installed source branch and commit are visible in `MODEU5_SOURCE.txt`

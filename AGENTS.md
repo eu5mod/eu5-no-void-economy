@@ -49,7 +49,7 @@ Package selection occurs before campaign load. Adding or removing a package mid-
 
 The default supported playset enables Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing together. Optional means removable before campaign start, not disabled by default. Core must never synthesize a companion package marker when that package is absent.
 
-ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level` use EU5's built-in Game Rules screen and are fixed when the campaign starts. Do not create an in-game configuration panel.
+ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level`, audit mode, and save mode use the Community Mod Manager and are fixed when the campaign starts. Do not create an in-game configuration panel or custom ModeU5 game rules.
 
 ## Variable-map storage rule
 
