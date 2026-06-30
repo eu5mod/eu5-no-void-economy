@@ -1,0 +1,50 @@
+namespace = modeu5_us10_debug
+
+modeu5_us10_debug.1 = {
+	type = country_event
+	title = modeu5_us10_debug.1.title
+	desc = modeu5_us10_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us10_debug.1.a
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_run_us10_demand_resolution_tests = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us10_debug.2 = {
+	type = country_event
+	title = modeu5_us10_debug.2.title
+	desc = modeu5_us10_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us10_debug.result.pass
+		trigger = { has_global_variable = modeu5_test_us10_demand_resolution_passed }
+	}
+	option = {
+		name = modeu5_us10_debug.result.blocked
+		trigger = { has_global_variable = modeu5_test_us10_demand_resolution_blocked }
+	}
+	option = {
+		name = modeu5_us10_debug.result.fail
+		trigger = { has_global_variable = modeu5_test_us10_demand_resolution_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

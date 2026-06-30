@@ -14,6 +14,21 @@ As a player, I want inter-market trade to move actual goods from source stocks i
 
 When `source_market != target_market`, select source-market sellers through US-10.0 and transfer only the minimum of seller stock, buyer target capacity, and remaining demand through `modeu5_transfer_stock`.
 
+## Current implementation slice
+
+This PR implements the explicit-request MVP for US-10.2:
+
+- callers pass `buyer_country`, `seller_country`, `source_market`,
+  `target_market`, `good`, and `requested_quantity`;
+- the implementation fails closed for same-market requests;
+- successful inter-market movement calls `modeu5_transfer_stock` only;
+- buyer target capacity is enforced through the central transfer operator;
+- requested, transferred, and unsatisfied quantities are exposed to US-10.3.
+
+Full vanilla trade iteration remains gated by TECH-01 056. Until the exact
+gameplay-script quantity is confirmed, deterministic tests use an explicit
+ModeU5 request.
+
 ## Runtime position
 
 ```txt

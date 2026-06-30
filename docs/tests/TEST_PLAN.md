@@ -1462,7 +1462,50 @@ Modifier application mode = good-specific local output modifier
 
 ## US-10 demand resolution tests
 
-### Test 15 — Consumption from multiple stock candidates
+Focused deterministic runbook:
+
+```txt
+docs/tests/US_10_DEMAND_RESOLUTION_RUNBOOK.md
+```
+
+### Test 15 — Explicit-request US-10.1 / US-10.2 / US-10.3 smoke test
+
+Command:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 demand-resolution test
+```
+
+Expected:
+
+```txt
+Consumption requested = 100
+Consumption satisfied = 80
+Consumption unsatisfied = 20
+Inter-market requested = 100
+Inter-market transferred = 70
+Inter-market unsatisfied = 30
+All stock mutations call modeu5_remove_stock or modeu5_transfer_stock
+US-10.3 country-market-good counters record requested, satisfied/transferred, and unsatisfied quantities
+ModeU5 TEST PASS scenario=us10_demand_resolution
+```
+
+Known limitation:
+
+```txt
+This is an explicit ModeU5 request test. It does not yet read live vanilla Pop
+demand quantity or exact vanilla trade requested/actual quantity.
+```
+
+---
+
+### Test 16 — Consumption from multiple stock candidates
 
 Setup:
 
@@ -1487,7 +1530,7 @@ No trade income or transport cost is generated
 
 ---
 
-### Test 16 — Consumption with exclusions
+### Test 17 — Consumption with exclusions
 
 Setup:
 
@@ -1509,7 +1552,7 @@ Debug lists exclusion reason
 
 ---
 
-### Test 17 — Inter-market transfer limited by buyer capacity
+### Test 18 — Inter-market transfer limited by buyer capacity
 
 Setup:
 
@@ -1531,7 +1574,7 @@ transferred_quantity recorded for diagnostics = 35
 
 ## US-04 demand adaptation tests
 
-### Test 18 — Local demand grows after full-year satisfaction
+### Test 19 — Local demand grows after full-year satisfaction
 
 Setup:
 
@@ -1551,7 +1594,7 @@ annual counters reset
 
 ---
 
-### Test 19 — Local demand decays after full-year shortage
+### Test 20 — Local demand decays after full-year shortage
 
 Setup:
 
@@ -1571,7 +1614,7 @@ annual counters reset
 
 ---
 
-### Test 20 — Mixed year does not change demand
+### Test 21 — Mixed year does not change demand
 
 Setup:
 
@@ -1589,7 +1632,7 @@ annual counters reset
 
 ## US-05 Economic Base tests
 
-### Test 21 — Economic Base uses Wealth + Trade Income
+### Test 22 — Economic Base uses Wealth + Trade Income
 
 Setup:
 
@@ -1611,7 +1654,7 @@ Debug identifies the Wealth source and formula call site
 
 ## Static balance tests
 
-### Test 22 — US-07 trade building overrides
+### Test 23 — US-07 trade building overrides
 
 Expected:
 
@@ -1620,7 +1663,7 @@ Only confirmed static building fields are changed
 Tooltips do not contradict final values
 ```
 
-### Test 23 — US-08 fixed 50 ducat base price
+### Test 24 — US-08 fixed 50 ducat base price
 
 Expected:
 
@@ -1629,7 +1672,7 @@ Relevant RGO/building base price = 50
 Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 ```
 
-### Test 24 — US-09 global Production Efficiency bonus
+### Test 25 — US-09 global Production Efficiency bonus
 
 Expected:
 
@@ -1643,7 +1686,7 @@ No additive country-level production-efficiency modifier path is loaded for this
 
 ## Performance tests
 
-### Test 25 — PERF-04 monthly US-00 loop fusion
+### Test 26 — PERF-04 monthly US-00 loop fusion
 
 Expected:
 
@@ -1655,7 +1698,7 @@ US-00 controlled and monthly runtime tests still emit PASS dumps
 Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
 ```
 
-### Test 26 — PERF-05 reduce global market scans
+### Test 27 — PERF-05 reduce global market scans
 
 Setup:
 
@@ -1679,7 +1722,7 @@ Active validation repairs the test market without requiring every_market_in_worl
 Strict exhaustive validation remains available for explicit manual audit only
 ```
 
-### Test 27 - PERF-07 market-owned runtime pass
+### Test 28 - PERF-07 market-owned runtime pass
 
 Setup:
 
@@ -1699,7 +1742,7 @@ TECH-01 126 remains NOT_CONFIRMED for durable per-market country lists
 TECH-01 127 remains NOT_CONFIRMED for a dedicated market-change hook
 ```
 
-### Test 28 - PERF-08 shared storage capacity cache
+### Test 29 - PERF-08 shared storage capacity cache
 
 Run the full protocol in:
 
@@ -1720,7 +1763,7 @@ ModeU5 US-00 RESULT monthly_runtime PASS
 No ModeU5 script-system error mentions missing per-good capacity maps
 ```
 
-### Test 29 - PERF-10/13 second-phase performance guardrails
+### Test 30 - PERF-10/13 second-phase performance guardrails
 
 Run the full protocol in:
 
