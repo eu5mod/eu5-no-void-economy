@@ -32,6 +32,9 @@ jobs:
       - name: Audit persistent state surface
         run: /bin/bash ./tools/audit_modeu5_persistent_state.sh
 
+      - name: Validate CMM value-link quoting
+        run: /bin/bash ./tools/normalize_cmm_value_links.sh --check
+
       - name: Validate CMM configuration surface
         run: python3 ./tools/validate_cmm_configuration.py
 
