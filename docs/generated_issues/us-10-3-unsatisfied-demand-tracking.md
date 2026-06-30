@@ -14,6 +14,24 @@ As a player, I want satisfied and unsatisfied demand recorded so shortages can d
 
 Centralize request outcome tracking for consumption and inter-market transfer, calculate satisfaction ratios safely, route local Pop results to US-04, and reset counters only after consumers read them.
 
+## Current implementation slice
+
+This PR implements country-market-good monthly outcome tracking for explicit
+US-10 requests:
+
+- consumption maps:
+  - `modeu5_<good>_consumption_requested_by_market`
+  - `modeu5_<good>_consumption_satisfied_by_market`
+  - `modeu5_<good>_consumption_unsatisfied_by_market`
+- inter-market trade maps:
+  - `modeu5_<good>_trade_requested_by_market`
+  - `modeu5_<good>_trade_transferred_by_market`
+  - `modeu5_<good>_trade_unsatisfied_by_market`
+
+The maps are additive within the current month and do not persist zero values.
+Location-good Pop outcome storage remains a follow-up because the live Pop
+demand caller is not confirmed yet.
+
 ## Runtime position
 
 ```txt

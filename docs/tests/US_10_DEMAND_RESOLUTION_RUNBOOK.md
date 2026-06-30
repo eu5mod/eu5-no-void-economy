@@ -1,13 +1,68 @@
 # US-10 Demand Resolution Runbook
 
-This runbook validates the combined US-10.1, US-10.2, and US-10.3 layer.
+This runbook validates the combined US-10.1, US-10.2, and US-10.3 explicit-request demand-resolution layer.
 
 ## Scope
 
-This PR adds explicit-request demand resolution. It does not infer Pop, Estate,
-or vanilla trade requested quantities from unconfirmed engine values. Callers pass
-one requested quantity to the resolver, and the resolver records whether the
-request was satisfied or unsatisfied.
+This runbook validates the explicit-request implementation of:
+
+- US-10.1 consumption stock resolution within one market;
+- US-10.2 inter-market stock transfer;
+- US-10.3 requested / satisfied / unsatisfied outcome tracking.
+
+This PR does not infer Pop, Estate, or vanilla trade requested quantities from
+unconfirmed engine values. Callers pass one requested quantity to the resolver,
+and the resolver records whether the request was satisfied or unsatisfied.
+
+The deterministic in-game scenario and the manual scenarios below use different
+fixture stocks, so their expected quantities differ intentionally.
+
+## Install
+
+```bash
+./tools/generate_all.sh
+./tools/validate_module_packages.sh
+./tools/install_local_packages.sh
+./tools/install_local_packages.sh --check
+./tools/clear_eu5_logs.sh
+```
+
+## Focused In-Game Test
+
+Start a disposable campaign where France and England exist and have distinct
+capital markets. Then run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 demand-resolution test
+```
+
+Expected result:
+
+```txt
+PASS - US-10 demand resolution
+```
+
+Expected dump:
+
+```txt
+Consumption requested = 100
+Consumption satisfied = 80
+Consumption unsatisfied = 20
+FRA stock after consumption = 0
+
+Trade requested = 100
+Trade transferred = 70
+Trade unsatisfied = 30
+Buyer stock after = 70
+Seller stock after = 20
+Buyer capacity before transfer = 70
+```
 
 ## Manual scenario 1 — same-market consumption
 
@@ -142,17 +197,48 @@ modeu5_debug_last_us10_total_available_candidate_stock
 modeu5_debug_last_us10_mutation_effect_called
 ```
 
-## Logs to inspect
+## Broad Revalidation
+
+The broad chain now includes the US-10 scenario:
 
 ```txt
-error.log
-game.log
-system.log
-debug.log when deterministic debug events emit dumps
+event modeu5_revalidate_debug.1
 ```
 
-## Known limitation
+Choose:
 
-US-10.1 and US-10.2 use explicit requested quantities because TECH-01 rows 056,
-086, and 087 are accepted fallbacks rather than confirmed runtime vanilla demand
-or trade quantity reads.
+```txt
+Revalidate main operations
+```
+
+After closing EU5:
+
+```bash
+./tools/summarize_modeu5_test_logs.sh
+```
+
+Expected summary includes:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_demand_resolution
+ModeU5 TEST PASS scenario=us10_demand_resolution
+Missing expected scenarios: 0
+Failed:  0
+Blocked: 0
+```
+
+## Logs Are Source Of Truth
+
+Review `debug.log`, `error.log`, `game.log`, and `system.log`. The compact
+summary is only the first-pass index. A PR validation comment must include the
+exact scenario lines and classify any remaining non-blocking noise.
+
+## Known limitations
+
+- US-10.1 and US-10.2 use explicit requested quantities because TECH-01 rows
+  056, 086, and 087 are accepted fallbacks rather than confirmed runtime vanilla
+  demand or trade quantity reads.
+- Runtime vanilla Pop demand quantity is not read yet.
+- Exact vanilla trade requested/actual quantity is not read yet.
+- Pop/location outcome tracking is validated through the explicit fallback caller
+  until live Pop demand exposure is confirmed.

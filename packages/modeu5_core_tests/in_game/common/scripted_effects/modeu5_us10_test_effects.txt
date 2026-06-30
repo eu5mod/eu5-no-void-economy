@@ -1,0 +1,269 @@
+# Deterministic US-10.1 / US-10.2 / US-10.3 test helpers.
+
+modeu5_us10_clear_test_results = {
+	remove_global_variable = modeu5_test_us10_demand_resolution_passed
+	remove_global_variable = modeu5_test_us10_demand_resolution_failed
+	remove_global_variable = modeu5_test_us10_demand_resolution_blocked
+}
+
+modeu5_us10_read_fra_wheat_consumption_outcome = {
+	c:FRA = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_consumption_requested_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_consumption_requested_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_consumption_requested_record
+				value = "variable_map(modeu5_wheat_consumption_requested_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_requested_record value = 0 }
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_consumption_satisfied_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_consumption_satisfied_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_consumption_satisfied_record
+				value = "variable_map(modeu5_wheat_consumption_satisfied_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_satisfied_record value = 0 }
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_consumption_unsatisfied_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_consumption_unsatisfied_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_consumption_unsatisfied_record
+				value = "variable_map(modeu5_wheat_consumption_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_unsatisfied_record value = 0 }
+		}
+	}
+}
+
+modeu5_us10_read_fra_wheat_trade_outcome = {
+	c:FRA = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_trade_requested_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_trade_requested_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_trade_requested_record
+				value = "variable_map(modeu5_wheat_trade_requested_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_trade_requested_record value = 0 }
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_trade_transferred_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_trade_transferred_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_trade_transferred_record
+				value = "variable_map(modeu5_wheat_trade_transferred_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_trade_transferred_record value = 0 }
+		}
+		if = {
+			limit = {
+				has_variable_map = modeu5_wheat_trade_unsatisfied_by_market
+				is_key_in_variable_map = {
+					name = modeu5_wheat_trade_unsatisfied_by_market
+					target = scope:modeu5_us10_target_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_test_us10_trade_unsatisfied_record
+				value = "variable_map(modeu5_wheat_trade_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_test_us10_trade_unsatisfied_record value = 0 }
+		}
+	}
+}
+
+modeu5_debug_run_us10_demand_resolution_tests = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_us10_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=us10_demand_resolution"
+
+	if = {
+			limit = {
+				country_exists = c:FRA
+				country_exists = c:ENG
+				NOT = { c:FRA.capital.market = c:ENG.capital.market }
+			}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_source_market }
+
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			value = 100
+		}
+		modeu5_clear_country_market_demand_outcome = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = scope:modeu5_us10_source_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			quantity = 80
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_resolve_consumption_stock_demand = {
+			demanding_country = c:FRA
+			provider_country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			requested_quantity = 100
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_satisfied value = scope:modeu5_us10_satisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_unsatisfied value = scope:modeu5_us10_unsatisfied_quantity }
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_consumption_stock_after value = scope:modeu5_read_country_stock }
+		modeu5_us10_read_fra_wheat_consumption_outcome = yes
+
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			value = 70
+		}
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = scope:modeu5_us10_source_market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+		modeu5_add_stock = {
+			country = c:ENG
+			market = scope:modeu5_us10_source_market
+			good = wheat
+			quantity = 90
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_resolve_inter_market_stock_transfer = {
+			buyer_country = c:FRA
+			seller_country = c:ENG
+			source_market = scope:modeu5_us10_source_market
+			target_market = scope:modeu5_us10_target_market
+			good = wheat
+			requested_quantity = 100
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_transferred value = scope:modeu5_us10_transferred_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_unsatisfied value = scope:modeu5_us10_unsatisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_trade_capacity value = scope:modeu5_us10_buyer_available_capacity }
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_buyer_stock_after value = scope:modeu5_read_country_stock }
+		modeu5_read_country_stock_record = {
+			country = c:ENG
+			market = scope:modeu5_us10_source_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_seller_stock_after value = scope:modeu5_read_country_stock }
+		modeu5_us10_read_fra_wheat_trade_outcome = yes
+
+		set_variable = { name = modeu5_us10_ui_consumption_requested value = scope:modeu5_test_us10_consumption_requested_record }
+		set_variable = { name = modeu5_us10_ui_consumption_satisfied value = scope:modeu5_test_us10_consumption_satisfied_record }
+		set_variable = { name = modeu5_us10_ui_consumption_unsatisfied value = scope:modeu5_test_us10_consumption_unsatisfied_record }
+		set_variable = { name = modeu5_us10_ui_consumption_stock_after value = scope:modeu5_test_us10_consumption_stock_after }
+		set_variable = { name = modeu5_us10_ui_trade_requested value = scope:modeu5_test_us10_trade_requested_record }
+		set_variable = { name = modeu5_us10_ui_trade_transferred value = scope:modeu5_test_us10_trade_transferred_record }
+		set_variable = { name = modeu5_us10_ui_trade_unsatisfied value = scope:modeu5_test_us10_trade_unsatisfied_record }
+		set_variable = { name = modeu5_us10_ui_buyer_stock_after value = scope:modeu5_test_us10_buyer_stock_after }
+		set_variable = { name = modeu5_us10_ui_seller_stock_after value = scope:modeu5_test_us10_seller_stock_after }
+		set_variable = { name = modeu5_us10_ui_buyer_capacity value = scope:modeu5_test_us10_trade_capacity }
+
+		if = {
+			limit = {
+				scope:modeu5_test_us10_consumption_satisfied = 80
+				scope:modeu5_test_us10_consumption_unsatisfied = 20
+				scope:modeu5_test_us10_consumption_stock_after = 0
+				scope:modeu5_test_us10_consumption_requested_record = 100
+				scope:modeu5_test_us10_consumption_satisfied_record = 80
+				scope:modeu5_test_us10_consumption_unsatisfied_record = 20
+				scope:modeu5_test_us10_trade_transferred = 70
+				scope:modeu5_test_us10_trade_unsatisfied = 30
+				scope:modeu5_test_us10_buyer_stock_after = 70
+				scope:modeu5_test_us10_seller_stock_after = 20
+				scope:modeu5_test_us10_trade_requested_record = 100
+				scope:modeu5_test_us10_trade_transferred_record = 70
+				scope:modeu5_test_us10_trade_unsatisfied_record = 30
+			}
+			set_global_variable = modeu5_test_us10_demand_resolution_passed
+			debug_log = "ModeU5 TEST PASS scenario=us10_demand_resolution"
+		}
+		else = {
+			set_global_variable = modeu5_test_us10_demand_resolution_failed
+			debug_log = "ModeU5 TEST FAIL scenario=us10_demand_resolution"
+			error_log = "ModeU5 deterministic US-10 demand resolution test failed."
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_us10_demand_resolution_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us10_demand_resolution reason=missing_FRA_ENG_or_distinct_markets"
+	}
+}
