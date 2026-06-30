@@ -2490,31 +2490,31 @@ modeu5_scan_us10_candidates_good___GOOD__ = {
 		every_in_global_list = {
 			variable = modeu5_countries_present_in_market
 			save_temporary_scope_as = modeu5_candidate_country
-			set_global_variable = {
-				name = modeu5_us10_resolution_candidate_count
-				value = { value = global_var:modeu5_us10_resolution_candidate_count add = 1 }
+			save_temporary_scope_value_as = {
+				name = modeu5_us10_candidate_count
+				value = { value = scope:modeu5_us10_candidate_count add = 1 }
 			}
 			modeu5_prepare_us10_candidate_good___GOOD__ = yes
 			if = {
 				limit = { scope:modeu5_us10_candidate_allowed > 0 }
-				set_global_variable = {
-					name = modeu5_us10_resolution_total_available_candidate_stock
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_total_available_candidate_stock
 					value = {
-						value = global_var:modeu5_us10_resolution_total_available_candidate_stock
+						value = scope:modeu5_us10_total_available_candidate_stock
 						add = scope:modeu5_us10_candidate_stock
 					}
 				}
 				if = {
-					limit = { scope:modeu5_us10_stock_candidate_score > global_var:modeu5_us10_resolution_best_score }
-					set_global_variable = { name = modeu5_us10_resolution_best_score value = scope:modeu5_us10_stock_candidate_score }
-					set_global_variable = { name = modeu5_us10_resolution_best_stock value = scope:modeu5_us10_candidate_stock }
-					set_global_variable = { name = modeu5_us10_resolution_best_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+					limit = { scope:modeu5_us10_stock_candidate_score > scope:modeu5_us10_best_stock_priority_score }
+					save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }
+					save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }
+					save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }
 				}
 			}
 			else = {
-				set_global_variable = {
-					name = modeu5_us10_resolution_excluded_candidate_count
-					value = { value = global_var:modeu5_us10_resolution_excluded_candidate_count add = 1 }
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_excluded_candidate_count
+					value = { value = scope:modeu5_us10_excluded_candidate_count add = 1 }
 				}
 			}
 		}

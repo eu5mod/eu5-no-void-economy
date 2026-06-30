@@ -105,13 +105,6 @@ modeu5_clear_stock_demand_resolution_globals = {
 modeu5_initialize_stock_demand_resolution_outputs = {
 	modeu5_clear_stock_demand_resolution_globals = yes
 
-	set_global_variable = { name = modeu5_us10_resolution_candidate_count value = 0 }
-	set_global_variable = { name = modeu5_us10_resolution_excluded_candidate_count value = 0 }
-	set_global_variable = { name = modeu5_us10_resolution_total_available_candidate_stock value = 0 }
-	set_global_variable = { name = modeu5_us10_resolution_best_score value = -100000000 }
-	set_global_variable = { name = modeu5_us10_resolution_best_stock value = 0 }
-	set_global_variable = { name = modeu5_us10_resolution_best_bucket value = 999 }
-
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
@@ -121,28 +114,8 @@ modeu5_initialize_stock_demand_resolution_outputs = {
 }
 
 modeu5_store_stock_demand_resolution_outputs = {
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_candidate_count
-		value = global_var:modeu5_us10_resolution_candidate_count
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_excluded_candidate_count
-		value = global_var:modeu5_us10_resolution_excluded_candidate_count
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_total_available_candidate_stock
-		value = global_var:modeu5_us10_resolution_total_available_candidate_stock
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_best_stock_priority_score
-		value = global_var:modeu5_us10_resolution_best_score
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_best_candidate_stock
-		value = global_var:modeu5_us10_resolution_best_stock
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us10_best_candidate_bucket
-		value = global_var:modeu5_us10_resolution_best_bucket
-	}
+	# Candidate diagnostics are temporary outputs of a single resolver execution.
+	# Do not round-trip them through global variables: EU5 treats zero-valued
+	# globals as unset, which creates noisy `global_var` fetch errors.
+	save_temporary_scope_value_as = { name = modeu5_us10_outputs_stored value = 1 }
 }

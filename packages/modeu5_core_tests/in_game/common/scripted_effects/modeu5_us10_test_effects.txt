@@ -330,6 +330,9 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 		set_variable = { name = modeu5_us10_ui_seller_stock_after value = scope:modeu5_test_us10_seller_stock_after }
 		set_variable = { name = modeu5_us10_ui_buyer_capacity value = scope:modeu5_test_us10_trade_capacity }
 
+		debug_log = "ModeU5 US-10 DUMP consumption requested=[THIS.GetVariable('modeu5_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us10_ui_consumption_stock_after').GetValue|2] ordering_foreign_count=[THIS.GetVariable('modeu5_us10_ui_ordering_foreign_count').GetValue|0] ordering_own_stock_after=[THIS.GetVariable('modeu5_us10_ui_ordering_own_stock_after').GetValue|2]"
+		debug_log = "ModeU5 US-10 DUMP transfer requested=[THIS.GetVariable('modeu5_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('modeu5_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('modeu5_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('modeu5_us10_ui_buyer_capacity').GetValue|2]"
+
 		if = {
 			limit = {
 				scope:modeu5_test_us10_consumption_satisfied = 80
