@@ -165,6 +165,8 @@ expect(re.search(r"cmf_on_callback\s*=\s*\{.*modeu5_cmm_runtime_callback_pulse",
        "Runtime CMM overlay must hook cmf_on_callback")
 expect(re.search(r"modeu5_cmm_runtime_callback_pulse\s*=\s*\{.*modeu5_handle_cmm_runtime_callback\s*=\s*yes", runtime_on_actions, re.S) is not None,
        "Runtime CMM callback pulse must call modeu5_handle_cmm_runtime_callback")
+expect("modeu5_cmm_refresh_nve_main_enabled = yes" in runtime_on_actions,
+       "Runtime registration pulse must refresh modeu5_cmm_nve_main_enabled at startup")
 
 expected_dropdowns = {
     "nve_no_void_economy_main": ("nve_general", "nve_no_void_economy", "1", "3"),
@@ -237,6 +239,9 @@ for setting in add_gui_counts:
     changed_name = f"{plain_name}_on_changed"
     expect(plain_name in gui_defs or changed_name in gui_defs, f"Scripted GUI handler is missing for {setting}")
 
+expect("has_global_variable = modeu5_cmm_nve_main_enabled" in scripted_gui,
+       "Dependent NVE scripted GUI blocks must use modeu5_cmm_nve_main_enabled for visibility")
+
 expect(
     re.search(
         r"cmm_sync_dropdown_option_alias\s*=\s*\{[^}]*setting\s*=\s*no_void_economy__nve_no_void_economy_main[^}]*index\s*=\s*3[^}]*alias\s*=\s*variable_mapcmmflagno_void_economy__activate_no_void_economy0",
@@ -246,6 +251,8 @@ expect(
     is not None,
     "NVE main dropdown must sync the deactivation alias",
 )
+expect("modeu5_cmm_refresh_nve_main_enabled" in runtime_effects,
+       "modeu5_cmm_refresh_nve_main_enabled effect must be present in runtime effects")
 
 planned_restricted_settings = {
     "nve_decay_activate",
@@ -299,6 +306,8 @@ expect("trigger_event_non_silently = modeu5_cmm_warning.3" in runtime_effects,
        "Complete save callback must trigger a non-silent warning event")
 expect("modeu5_cmm_warning.2" in warning_events and "modeu5_cmm_warning.3" in warning_events,
        "Slow monthly check and complete save warning events must exist under in_game/events")
+expect("modeu5_cmm_refresh_nve_main_enabled" in runtime_callback_block,
+       "Main NVE dropdown callback must refresh the derived visibility marker")
 
 for path, text in {
     "in_game/common/scripted_effects/modeu5_configuration_effects.txt": config_effects,

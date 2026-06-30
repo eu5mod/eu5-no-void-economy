@@ -40,6 +40,56 @@ nve_cmf_activate_no_void_economy = {
 nve_cmf_activate_good_decay = {
 }
 
+# Refreshes a script-safe UI marker from the CMM main NVE dropdown.
+#
+# common/scripted_guis is not allowed to compare CMM value links directly:
+#
+#   "variable_map(cmm|flag:<setting>)" > 0
+#
+# That form produces invalid-left-side / unset-scope errors during scripted GUI
+# evaluation. Keep the CMM value-link read in a normal scripted effect, then let
+# scripted_guis read this simple derived marker.
+#
+# Visibility policy:
+#
+#   unset/default -> visible, because nve_no_void_economy_main default_index = 1
+#   value 1       -> visible
+#   value 2       -> visible
+#   value 3       -> hidden
+modeu5_refresh_nve_main_cmm_visibility = {
+	remove_global_variable = modeu5_cmm_nve_main_enabled
+
+	if = {
+		limit = {
+			NOT = { has_variable_map = cmm }
+		}
+		set_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_key_in_variable_map = {
+					name = cmm
+					target = flag:no_void_economy__nve_no_void_economy_main
+				}
+			}
+		}
+		set_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	else_if = {
+		limit = {
+			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 1
+		}
+		set_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	else_if = {
+		limit = {
+			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 2
+		}
+		set_global_variable = modeu5_cmm_nve_main_enabled
+	}
+}
+
 # CMM's normal bool/dropdown widgets are disabled through CMMCanEditSetting.
 # Mark planned services as requiring unrestricted tools so normal players see
 # them as unavailable without relying on generated scripted_gui is_valid blocks.
@@ -118,6 +168,23 @@ modeu5_cmm_reset_activate_trade_cost = {
 			name = cmm
 			key = flag:no_void_economy__activate_trade_cost
 		}
+	}
+}
+
+modeu5_cmm_refresh_nve_main_enabled = {
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_no_void_economy_main
+			}
+			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 3
+		}
+		remove_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	else = {
+		set_global_variable = modeu5_cmm_nve_main_enabled
 	}
 }
 
@@ -252,6 +319,10 @@ modeu5_cmm_reset_nve_subjects_persistance = {
 modeu5_handle_cmm_runtime_callback = {
 	switch = {
 		trigger = var:cmf_callback
+
+		flag:no_void_economy__nve_no_void_economy_main = {
+			modeu5_refresh_nve_main_cmm_visibility = yes
+		}
 
 		flag:no_void_economy__nve_monthly_stock_check = {
 			no_void_economy__nve_monthly_stock_check_on_changed = yes

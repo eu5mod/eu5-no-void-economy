@@ -10,6 +10,7 @@ cmf_on_mod_registration = {
 modeu5_cmm_runtime_registration_pulse = {
 	effect = {
 		modeu5_cmm_mark_planned_services_restricted = yes
+		modeu5_cmm_refresh_nve_main_enabled = yes
 	}
 }
 
