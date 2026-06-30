@@ -195,7 +195,6 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 	printf '%s\n' '}'
 
 	printf '%s\n\n' 'modeu5_process_us00_monthly_market_all_goods = {'
-	printf '\tmodeu5_mark_monthly_market_seen = yes\n'
 	for good in "${goods[@]}"; do
 		printf '\tmodeu5_process_us00_monthly_market_good_%s = yes\n' "$good"
 	done
@@ -218,10 +217,21 @@ mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$mo
 	printf '%s\n' '}'
 
 	printf '%s\n\n' 'modeu5_run_us00_monthly_pipeline_all_goods = {'
-	printf '%s\n' '	scope:modeu5_country = {'
-	printf '%s\n' '		every_market_present_in_country = {'
-	printf '%s\n' '			save_temporary_scope_as = modeu5_market'
-	printf '%s\n' '			modeu5_process_us00_monthly_market_all_goods = yes'
+	printf '%s\n' '	# Market-owned monthly dispatch: monthly_country_pulse still fires for every country,'
+	printf '%s\n' '	# but only countries owning market centers enter this loop, so each market-scale'
+	printf '%s\n' '	# US-00/US-10 pass is scheduled once from its market-center owner.'
+	printf '%s\n' '	every_market_center_in_country = {'
+	printf '%s\n' '		save_temporary_scope_as = modeu5_market'
+	printf '%s\n' '		save_temporary_scope_as = modeu5_market_country_cache_market'
+	printf '%s\n' '		modeu5_mark_monthly_market_seen = yes'
+	printf '%s\n' '		modeu5_rebuild_countries_present_in_market = yes'
+	printf '%s\n' '		if = {'
+	printf '%s\n' '			limit = { has_global_variable_list = modeu5_countries_present_in_market }'
+	printf '%s\n' '			every_in_global_list = {'
+	printf '%s\n' '				variable = modeu5_countries_present_in_market'
+	printf '%s\n' '				save_temporary_scope_as = modeu5_country'
+	printf '%s\n' '				modeu5_process_us00_monthly_market_all_goods = yes'
+	printf '%s\n' '			}'
 	printf '%s\n' '		}'
 	printf '%s\n' '	}'
 	printf '%s\n' '}'

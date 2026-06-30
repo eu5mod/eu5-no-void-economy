@@ -12,6 +12,22 @@ As a player or modder, I want to understand which stocks fulfilled a demand, whi
 
 ## Functional objective
 
+Implement a read-only ModeU5 goods summary panel for the selected market/country context.
+
+The panel must show one row per visible good with these columns:
+
+- Good
+- Country Stocks
+- Market Stocks
+- Overproduction
+- Production Efficiency
+
+The panel must distinguish:
+- country-owned stock vs market aggregate stock
+- stock over capacity vs monthly overproduction/surplus
+- production efficiency modifiers vs stock/demand outcomes
+
+Debug logs may support validation, but the player-facing panel is the primary deliverable.
 Provide mandatory debug for resolver inputs, ordered candidates, scores, exclusions, quantities per candidate, final outcomes, and the consumption/inter-market distinction; optionally expose a compact ModeU5 goods summary showing good, country stock/capacity, market stock/capacity, current overproduction, and production efficiency components.
 
 ## Runtime position
@@ -41,7 +57,7 @@ docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
 ```
 
-Optional custom panel files, only if the ModeU5 panel is implemented:
+Player-facing goods summary panel, only if the ModeU5 panel is implemented:
 
 ```txt
 in_game/gui/
@@ -215,8 +231,9 @@ Display as a signed percentage when a stable denominator exists:
 surplus_rate =
   - (monthly_surplus / monthly_consumption) # Or the production penalty defined in US-00.3
 ```
+This number should be red if under -5% 
 
-This number should be red if under -5%.
+
 
 If monthly consumption is zero, do not display a misleading percentage. Show the raw quantity instead:
 
@@ -228,26 +245,44 @@ Rate: n/a because monthly consumption is zero
 The UI label must use `Overproduction` for player readability, while tooltip text must define it as a current monthly surplus, not as over-cap stock and not as rejected production.
 
 ### Production Efficiency
+For each visible good, the panel may show a read-only Production Efficiency MVP display value when the required exposed modifier components are available.
 
-For each good, show a read-only `Production Efficiency` display value:
+This MVP value is a simplified, degraded visibility metric. It is not a full recomputation of market production efficiency and may not account for research effects, societal values, market/input conditions, precursor goods, or other engine-side production modifiers.
 
-```txt
+When both required components are available, the display value is:
+
 production_efficiency_display =
   global_production_efficiency
 + global_<good>_output_modifier
-```
-
-Tooltip must show the components separately:
-
-```txt
-Production efficiency: +15%
-Good output modifier: +20%
-Displayed production efficiency: +35%
-```
 
 The exact good-specific modifier key must be resolved per good from engine modifier exposure, because not every goods key is guaranteed to match the display name.
 
-This display value is informational only. It does not recompute production and does not replace the engine's own production calculation.
+Tooltip must show the confirmed components separately:
+
+Confirmed components:
+- Global production efficiency: +15%
+- Good output modifier: +20%
+Displayed production efficiency: simplified / partial +35%
+
+Tooltip must also warn that unavailable components may affect the real engine-side production efficiency:
+
+Warning:
+This is a simplified MVP metric. Real production efficiency may also be affected by unavailable or not-yet-exposed factors, including:
+- Research contribution
+- Societal value contribution
+- Precursor/input availability contribution
+- Market/input conditions
+- Other engine-side production modifiers
+Full engine production efficiency: unavailable
+
+If either required exposed component is unavailable, the display should be hidden or show:
+
+Production Efficiency: unavailable
+Reason: required exposed modifier components are not available
+
+This display is informational only. It does not recompute production, does not replace the engine’s own production calculation, and must not be used as an authoritative economic input.
+
+A future dedicated US-10-UI-1 should define full production-efficiency decomposition once the required modifier and precursor/input exposure is confirmed.
 
 ### Scope and selector
 
@@ -303,7 +338,7 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 ### Setup
 
 ```txt
-Run one multi-stock consumption and one capacity-limited inter-market transfer.
+Run one US-00 monthly runtime smoke test, one multi-stock consumption, and one capacity-limited inter-market transfer
 Include at-war, embargoed, empty, and wrong-market candidates where exposed.
 Include one good at normal country capacity, one good below country capacity, and one good above country capacity. Include at least one market aggregate below capacity and one market aggregate above capacity.
 Include one good with positive monthly surplus and one good with negative monthly surplus.
@@ -313,6 +348,7 @@ Include one good with both `global_production_efficiency` and a good-specific ou
 ### Expected result
 
 ```txt
+US-00 shows produced/added/rejected, void wealth, price source, previous/new penalty, and modifier mode
 Each demand shows ordered usage and exclusions.
 Consumption is labeled non-trade.
 Transfer shows actual quantity and states that logistics/trade-income adjustments are out of scope.
