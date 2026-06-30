@@ -22,8 +22,13 @@ resolver core:
 - callers use `modeu5_resolve_inter_market_stock_transfer` with
   `buyer_country`, `source_market`, `target_market`, `good`, and
   `requested_quantity`;
-- the generated per-good adapter iterates countries present in the source market
-  while remaining demand is positive;
+- the generated per-good adapter rebuilds the source-market country cache,
+  scans candidates once for aggregate diagnostics, then transfers stock by
+  deterministic priority bucket;
+- own/source stock is tried before subject/overlord, market-owner, and other
+  foreign seller stock;
+- zero/below-threshold stock, at-war candidates, embargoed candidates, and
+  disallowed subject/market-owner/foreign buckets are excluded before mutation;
 - the implementation fails closed for same-market requests;
 - successful inter-market movement calls `modeu5_transfer_stock` only;
 - buyer target capacity is enforced through the central transfer operator;
@@ -31,8 +36,8 @@ resolver core:
 
 Full vanilla trade iteration remains gated by TECH-01 056. Until the exact
 gameplay-script quantity is confirmed, deterministic tests use an explicit
-ModeU5 request. Full scored/bucketed seller ordering and per-candidate exclusion
-diagnostics remain partially wired follow-up work.
+ModeU5 request. Full score-based seller tie-breaking and per-candidate exclusion
+diagnostics remain follow-up work.
 
 ## Runtime position
 
@@ -96,12 +101,12 @@ Related US: US-10.3, US-10-UI
 ## Acceptance criteria
 
 - [ ] Same-market requests do not enter US-10.2.
-- [ ] Multiple source sellers can fulfill one request in order.
+- [x] Multiple source sellers can fulfill one request in bucket order.
 - [ ] Seller/source stocks decrease and buyer/target stocks increase consistently.
 - [ ] Buyer capacity is never exceeded.
 - [ ] Unsatisfied quantity equals request minus actual transfer.
 - [ ] All mutations use `modeu5_transfer_stock`.
-- [ ] Debug shows markets, sellers, scores, capacity, quantities, and exclusions.
+- [ ] Debug shows per-candidate sellers, scores, capacity, quantities, and exclusions.
 
 ## Manual test scenario
 
@@ -124,4 +129,9 @@ Recorded transferred quantity is 70
 
 ## Known limitations
 
-Vanilla trade iteration, source/target markets, traded goods, and exact GUI quantity accessors are documented in local vanilla files. Their gameplay-script equivalents inside a trade iterator remain `TO_TEST`; explicit ModeU5 requests may be used only as one approved fallback.
+Bucket ordering is implemented for explicit ModeU5 transfer requests. Vanilla
+trade iteration, source/target markets, traded goods, and exact GUI quantity
+accessors are documented in local vanilla files. Their gameplay-script
+equivalents inside a trade iterator remain `TO_TEST`; explicit ModeU5 requests
+may be used only as one approved fallback. Full score-based seller tie-breaking
+remains follow-up work.

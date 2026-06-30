@@ -28,6 +28,38 @@ modeu5_us10_clear_wheat_stock_in_market = {
 	}
 }
 
+modeu5_us10_seed_foreign_wheat_stock_in_market = {
+	$market$ = {
+		save_temporary_scope_as = modeu5_us10_seed_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	$excluded_country$ = { save_temporary_scope_as = modeu5_us10_seed_excluded_country }
+	save_temporary_scope_value_as = { name = modeu5_us10_seed_foreign_stock_quantity value = $quantity$ }
+	save_temporary_scope_value_as = { name = modeu5_us10_seed_foreign_country_count value = 0 }
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_us10_seed_country
+			if = {
+				limit = { scope:modeu5_us10_seed_country != scope:modeu5_us10_seed_excluded_country }
+				modeu5_add_stock = {
+					country = scope:modeu5_us10_seed_country
+					market = scope:modeu5_us10_seed_market
+					good = wheat
+					quantity = scope:modeu5_us10_seed_foreign_stock_quantity
+					capacity_policy = allow_over_capacity
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us10_seed_foreign_country_count
+					value = { value = scope:modeu5_us10_seed_foreign_country_count add = 1 }
+				}
+			}
+		}
+	}
+}
+
 modeu5_us10_read_fra_wheat_consumption_outcome = {
 	c:FRA = {
 		if = {
@@ -196,6 +228,46 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 		modeu5_debug_replace_country_wheat_capacity = {
 			country = c:FRA
 			market = scope:modeu5_us10_target_market
+			value = 200
+		}
+		modeu5_us10_clear_wheat_stock_in_market = {
+			market = scope:modeu5_us10_target_market
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			quantity = 40
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_us10_seed_foreign_wheat_stock_in_market = {
+			market = scope:modeu5_us10_target_market
+			excluded_country = c:FRA
+			quantity = 80
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_test_us10_ordering_foreign_count
+			value = scope:modeu5_us10_seed_foreign_country_count
+		}
+		modeu5_resolve_stock_consumption = {
+			consumer_country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			requested_quantity = 60
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_ordering_satisfied value = scope:modeu5_satisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_test_us10_ordering_unsatisfied value = scope:modeu5_unsatisfied_quantity }
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_ordering_own_stock_after value = scope:modeu5_read_country_stock }
+		modeu5_us10_read_fra_wheat_consumption_outcome = yes
+
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
 			value = 70
 		}
 		modeu5_reset_country_market_trade_outcome = {
@@ -249,6 +321,8 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 		set_variable = { name = modeu5_us10_ui_consumption_satisfied value = scope:modeu5_test_us10_consumption_satisfied_record }
 		set_variable = { name = modeu5_us10_ui_consumption_unsatisfied value = scope:modeu5_test_us10_consumption_unsatisfied_record }
 		set_variable = { name = modeu5_us10_ui_consumption_stock_after value = scope:modeu5_test_us10_consumption_stock_after }
+		set_variable = { name = modeu5_us10_ui_ordering_foreign_count value = scope:modeu5_test_us10_ordering_foreign_count }
+		set_variable = { name = modeu5_us10_ui_ordering_own_stock_after value = scope:modeu5_test_us10_ordering_own_stock_after }
 		set_variable = { name = modeu5_us10_ui_trade_requested value = scope:modeu5_test_us10_trade_requested_record }
 		set_variable = { name = modeu5_us10_ui_trade_transferred value = scope:modeu5_test_us10_trade_transferred_record }
 		set_variable = { name = modeu5_us10_ui_trade_unsatisfied value = scope:modeu5_test_us10_trade_unsatisfied_record }
@@ -261,8 +335,12 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 				scope:modeu5_test_us10_consumption_satisfied = 80
 				scope:modeu5_test_us10_consumption_unsatisfied = 20
 				scope:modeu5_test_us10_consumption_stock_after = 0
-				scope:modeu5_test_us10_consumption_requested_record = 100
-				scope:modeu5_test_us10_consumption_satisfied_record = 80
+				scope:modeu5_test_us10_ordering_foreign_count > 0
+				scope:modeu5_test_us10_ordering_satisfied = 60
+				scope:modeu5_test_us10_ordering_unsatisfied = 0
+				scope:modeu5_test_us10_ordering_own_stock_after = 0
+				scope:modeu5_test_us10_consumption_requested_record = 160
+				scope:modeu5_test_us10_consumption_satisfied_record = 140
 				scope:modeu5_test_us10_consumption_unsatisfied_record = 20
 				scope:modeu5_test_us10_trade_transferred = 70
 				scope:modeu5_test_us10_trade_unsatisfied = 30
