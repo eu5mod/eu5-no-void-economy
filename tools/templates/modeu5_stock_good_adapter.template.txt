@@ -1643,12 +1643,414 @@ modeu5_seed_opening_market_good___GOOD__ = {
 				}
 			}
 			modeu5_initialization_mark_failure = { code = 18 }
+			}
 		}
+	}
+
+modeu5_promote_market_to_detailed_accounting_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_promotion_good }
+	scope:modeu5_promotion_market = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	save_temporary_scope_as = modeu5_consistency_controller
+	modeu5_rebuild_countries_present_in_market = yes
+	modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = yes
+
+	save_temporary_scope_value_as = {
+		name = modeu5_promotion_market_aggregate_before
+		value = {
+			value = scope:modeu5_scanned_market_stock
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_promotion_country_sum_before
+		value = {
+			value = scope:modeu5_expected_market_stock
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_promotion_quantity_to_materialize
+		value = {
+			value = scope:modeu5_promotion_market_aggregate_before
+			subtract = scope:modeu5_promotion_country_sum_before
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_promotion_overmaterialized_quantity
+		value = {
+			value = scope:modeu5_promotion_country_sum_before
+			subtract = scope:modeu5_promotion_market_aggregate_before
+			min = 0
+		}
+	}
+
+	set_global_variable = {
+		name = modeu5_perf14_promotion_market_goods_checked
+		value = {
+			value = global_var:modeu5_perf14_promotion_market_goods_checked
+			add = 1
+		}
+	}
+	set_global_variable = {
+		name = modeu5_perf14_promotion_aggregate_total_before
+		value = {
+			value = global_var:modeu5_perf14_promotion_aggregate_total_before
+			add = scope:modeu5_promotion_market_aggregate_before
+		}
+	}
+	set_global_variable = {
+		name = modeu5_perf14_promotion_country_sum_total_before
+		value = {
+			value = global_var:modeu5_perf14_promotion_country_sum_total_before
+			add = scope:modeu5_promotion_country_sum_before
+		}
+	}
+	set_global_variable = {
+		name = modeu5_perf14_promotion_delta_total
+		value = {
+			value = global_var:modeu5_perf14_promotion_delta_total
+			add = scope:modeu5_promotion_quantity_to_materialize
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon }
+		set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+		set_global_variable = {
+			name = modeu5_perf14_promotion_overmaterialized_failures
+			value = {
+				value = global_var:modeu5_perf14_promotion_overmaterialized_failures
+				add = 1
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			scope:modeu5_promotion_market_aggregate_before <= 0
+			scope:modeu5_promotion_country_sum_before <= 0
+		}
+		set_global_variable = {
+			name = modeu5_perf14_promotion_zero_source_count
+			value = {
+				value = global_var:modeu5_perf14_promotion_zero_source_count
+				add = 1
+			}
+		}
+	}
+	else_if = {
+		limit = { scope:modeu5_promotion_quantity_to_materialize > modeu5_initialization_rounding_epsilon }
+		set_global_variable = { name = modeu5_perf14_promotion_market_total_capacity value = 0 }
+		set_global_variable = { name = modeu5_perf14_promotion_market_eligible_country_count value = 0 }
+		set_global_variable = { name = modeu5_perf14_promotion_market_allocated_quantity value = 0 }
+		set_global_variable = { name = modeu5_perf14_promotion_market_negative_capacity_failure value = 0 }
+		remove_global_variable = modeu5_perf14_promotion_residue_recipient_selected
+
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				if = {
+					limit = {
+						has_variable_map = modeu5_stock_cap_by_market
+						is_key_in_variable_map = {
+							name = modeu5_stock_cap_by_market
+							target = scope:modeu5_promotion_market
+						}
+					}
+					save_temporary_scope_value_as = {
+						name = modeu5_perf14_promotion_country_capacity_raw
+						value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_promotion_market)"
+					}
+				}
+				else = {
+					save_temporary_scope_value_as = {
+						name = modeu5_perf14_promotion_country_capacity_raw
+						value = 0
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_perf14_promotion_country_capacity
+					value = {
+						value = scope:modeu5_perf14_promotion_country_capacity_raw
+						min = 0
+					}
+				}
+				if = {
+					limit = { scope:modeu5_perf14_promotion_country_capacity_raw < 0 }
+					set_global_variable = { name = modeu5_perf14_promotion_market_negative_capacity_failure value = 1 }
+				}
+				if = {
+					limit = { scope:modeu5_perf14_promotion_country_capacity > 0 }
+					set_global_variable = {
+						name = modeu5_perf14_promotion_market_total_capacity
+						value = {
+							value = global_var:modeu5_perf14_promotion_market_total_capacity
+							add = scope:modeu5_perf14_promotion_country_capacity
+						}
+					}
+					set_global_variable = {
+						name = modeu5_perf14_promotion_market_eligible_country_count
+						value = {
+							value = global_var:modeu5_perf14_promotion_market_eligible_country_count
+							add = 1
+						}
+					}
+					if = {
+						limit = {
+							NOT = { has_global_variable = modeu5_perf14_promotion_residue_recipient_selected }
+						}
+						save_temporary_scope_as = modeu5_perf14_promotion_residue_country
+						set_global_variable = modeu5_perf14_promotion_residue_recipient_selected
+					}
+				}
+			}
+		}
+
+		save_temporary_scope_value_as = {
+			name = modeu5_perf14_promotion_total_capacity
+			value = global_var:modeu5_perf14_promotion_market_total_capacity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_perf14_promotion_negative_capacity_failure
+			value = global_var:modeu5_perf14_promotion_market_negative_capacity_failure
+		}
+
+		if = {
+			limit = { scope:modeu5_perf14_promotion_negative_capacity_failure > 0 }
+			set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+			set_global_variable = {
+				name = modeu5_perf14_promotion_negative_capacity_failures
+				value = {
+					value = global_var:modeu5_perf14_promotion_negative_capacity_failures
+					add = 1
+				}
+			}
+		}
+		else_if = {
+			limit = { scope:modeu5_perf14_promotion_total_capacity <= 0 }
+			set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+			set_global_variable = {
+				name = modeu5_perf14_promotion_zero_capacity_failures
+				value = {
+					value = global_var:modeu5_perf14_promotion_zero_capacity_failures
+					add = 1
+				}
+			}
+		}
+		else = {
+			# modeu5_add_stock increments the market aggregate. Rebase the aggregate
+			# to the existing country sum first, then add only the aggregate-only delta.
+			save_temporary_scope_value_as = {
+				name = modeu5_expected_market_stock
+				value = scope:modeu5_promotion_country_sum_before
+			}
+			scope:modeu5_promotion_market = { save_temporary_scope_as = modeu5_market }
+			modeu5_store_rebuilt_market_aggregate_good___GOOD__ = yes
+
+			if = {
+				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				every_in_global_list = {
+					variable = modeu5_countries_present_in_market
+					if = {
+						limit = {
+							has_variable_map = modeu5_stock_cap_by_market
+							is_key_in_variable_map = {
+								name = modeu5_stock_cap_by_market
+								target = scope:modeu5_promotion_market
+							}
+							"variable_map(modeu5_stock_cap_by_market|scope:modeu5_promotion_market)" > 0
+						}
+						save_temporary_scope_value_as = {
+							name = modeu5_perf14_promotion_country_capacity
+							value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_promotion_market)"
+						}
+						save_temporary_scope_value_as = {
+							name = modeu5_perf14_promotion_requested_country_quantity
+							value = {
+								value = scope:modeu5_promotion_quantity_to_materialize
+								multiply = scope:modeu5_perf14_promotion_country_capacity
+								divide = scope:modeu5_perf14_promotion_total_capacity
+							}
+						}
+						if = {
+							limit = { scope:modeu5_perf14_promotion_requested_country_quantity > 0 }
+							modeu5_add_stock = {
+								country = this
+								market = scope:modeu5_promotion_market
+								good = __GOOD__
+								quantity = scope:modeu5_perf14_promotion_requested_country_quantity
+								capacity_policy = allow_over_capacity
+							}
+							set_global_variable = {
+								name = modeu5_perf14_promotion_market_allocated_quantity
+								value = {
+									value = global_var:modeu5_perf14_promotion_market_allocated_quantity
+									add = scope:modeu5_actual_added_quantity
+								}
+							}
+							set_global_variable = {
+								name = modeu5_perf14_promotion_allocated_total
+								value = {
+									value = global_var:modeu5_perf14_promotion_allocated_total
+									add = scope:modeu5_actual_added_quantity
+								}
+							}
+							if = {
+								limit = {
+									scope:modeu5_actual_added_quantity != scope:modeu5_perf14_promotion_requested_country_quantity
+								}
+								set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+							}
+						}
+					}
+				}
+			}
+
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_allocated_quantity
+				value = global_var:modeu5_perf14_promotion_market_allocated_quantity
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_remaining_quantity
+				value = {
+					value = scope:modeu5_promotion_quantity_to_materialize
+					subtract = scope:modeu5_perf14_promotion_allocated_quantity
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_negative_residue
+				value = {
+					value = scope:modeu5_perf14_promotion_allocated_quantity
+					subtract = scope:modeu5_promotion_quantity_to_materialize
+					min = 0
+				}
+			}
+			if = {
+				limit = { scope:modeu5_perf14_promotion_negative_residue > modeu5_initialization_rounding_epsilon }
+				set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+				set_global_variable = {
+					name = modeu5_perf14_promotion_validation_failures
+					value = {
+						value = global_var:modeu5_perf14_promotion_validation_failures
+						add = 1
+					}
+				}
+			}
+			if = {
+				limit = {
+					scope:modeu5_perf14_promotion_remaining_quantity > modeu5_initialization_rounding_epsilon
+					exists = scope:modeu5_perf14_promotion_residue_country
+				}
+				scope:modeu5_perf14_promotion_residue_country = {
+					modeu5_add_stock = {
+						country = this
+						market = scope:modeu5_promotion_market
+						good = __GOOD__
+						quantity = scope:modeu5_perf14_promotion_remaining_quantity
+						capacity_policy = allow_over_capacity
+					}
+					set_global_variable = {
+						name = modeu5_perf14_promotion_market_allocated_quantity
+						value = {
+							value = global_var:modeu5_perf14_promotion_market_allocated_quantity
+							add = scope:modeu5_actual_added_quantity
+						}
+					}
+					set_global_variable = {
+						name = modeu5_perf14_promotion_allocated_total
+						value = {
+							value = global_var:modeu5_perf14_promotion_allocated_total
+							add = scope:modeu5_actual_added_quantity
+						}
+					}
+					if = {
+						limit = { scope:modeu5_actual_added_quantity != scope:modeu5_perf14_promotion_remaining_quantity }
+						set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+					}
+				}
+			}
+
+			scope:modeu5_promotion_market = {
+				save_temporary_scope_as = modeu5_market
+				save_temporary_scope_as = modeu5_market_country_cache_market
+			}
+			save_temporary_scope_as = modeu5_consistency_controller
+			modeu5_rebuild_countries_present_in_market = yes
+			modeu5_scan_stock_sources_from_prepared_market_country_cache_good___GOOD__ = yes
+
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_final_country_sum_under
+				value = {
+					value = scope:modeu5_promotion_market_aggregate_before
+					subtract = scope:modeu5_expected_market_stock
+					min = 0
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_final_country_sum_over
+				value = {
+					value = scope:modeu5_expected_market_stock
+					subtract = scope:modeu5_promotion_market_aggregate_before
+					min = 0
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_final_market_under
+				value = {
+					value = scope:modeu5_promotion_market_aggregate_before
+					subtract = scope:modeu5_scanned_market_stock
+					min = 0
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_perf14_promotion_final_market_over
+				value = {
+					value = scope:modeu5_scanned_market_stock
+					subtract = scope:modeu5_promotion_market_aggregate_before
+					min = 0
+				}
+			}
+			if = {
+				limit = {
+					OR = {
+						scope:modeu5_perf14_promotion_final_country_sum_under > modeu5_initialization_rounding_epsilon
+						scope:modeu5_perf14_promotion_final_country_sum_over > modeu5_initialization_rounding_epsilon
+						scope:modeu5_perf14_promotion_final_market_under > modeu5_initialization_rounding_epsilon
+						scope:modeu5_perf14_promotion_final_market_over > modeu5_initialization_rounding_epsilon
+					}
+				}
+				set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 1 }
+				set_global_variable = {
+					name = modeu5_perf14_promotion_validation_failures
+					value = {
+						value = global_var:modeu5_perf14_promotion_validation_failures
+						add = 1
+					}
+				}
+			}
+			else = {
+				set_global_variable = {
+					name = modeu5_perf14_promotion_goods_materialized
+					value = {
+						value = global_var:modeu5_perf14_promotion_goods_materialized
+						add = 1
+					}
+				}
+			}
+		}
+	}
+	else = {
+		scope:modeu5_promotion_market = { save_temporary_scope_as = modeu5_dirty_market }
+		modeu5_mark_dirty_market_good___GOOD__ = yes
 	}
 }
 
-# Fault injection for the deterministic CORE-01.6 test only.
-modeu5_debug_corrupt_market_stock_good___GOOD__ = {
+	# Fault injection for the deterministic CORE-01.6 test only.
+	modeu5_debug_corrupt_market_stock_good___GOOD__ = {
 	if = {
 		limit = {
 			has_global_variable_map = __MARKET_MAP__

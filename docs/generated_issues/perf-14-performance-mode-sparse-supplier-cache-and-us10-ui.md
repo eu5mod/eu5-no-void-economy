@@ -27,9 +27,44 @@ Performance Mode narrows detailed Market x Country accounting.
 In Performance Mode, detailed country x market x good accounting is maintained only when all of these are true:
 
 - the country is human-played; and
-- the country owns at least one location in the market.
+- the market is returned by `every_market_present_in_country` for that country.
 
-Important boundary: a country that is merely present in a market because of foreign buildings, foreign ownership, access, or other indirect participation is not eligible for detailed Market x Country accounting in Performance Mode.
+Phase 1 uses the confirmed country-market iterator as the human-relevant market
+discovery path:
+
+```txt
+every_country limit = { is_ai = no }
+  -> every_market_present_in_country
+```
+
+The human-relevant list is a scheduling/detail gate, not authoritative stock
+state. ModeU5 must not pre-materialize zero-valued country x market x good
+records for every possible tuple. When a previously non-detailed market becomes
+human-relevant, the accounting gate may mark it as human-relevant on demand for
+read-only eligibility. It does not split aggregate stock or authorize
+stock-affecting detailed mutation by itself. Capacity refresh and stock/ledger
+creation still belong to the existing US-02 and CORE-01/CORE-02/CORE-03/US-00
+paths.
+
+Two edge cases are explicitly in scope for the first stacked PR:
+
+- new country finalizers refresh the new country's storage-capacity records and
+  mark its present markets as human-relevant if the new country is human-played;
+- a human country entering a new market converts that market from non-detailed
+  to detailed either through the CORE-03 owner-change hook or on demand when the
+  country-market accounting gate sees the market in
+  `every_market_present_in_country`.
+
+For this first read-only plumbing PR, “detailed accounting enabled” means the
+country-market pair is eligible for detailed accounting diagnostics. It must
+not be treated as permission for stock-affecting code to mutate country x
+market records until the dedicated promotion initializer below exists and
+succeeds.
+
+If later tests prove this iterator is broader than the desired
+owned-location-market definition, the fallback PR must either accept that scope
+or introduce a confirmed narrower discovery hook. Do not replace it with an
+unconfirmed one-off scan in the hot path.
 
 Normal Mode keeps the existing broad accounting behavior.
 
@@ -102,7 +137,80 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
   - `modeu5_detailed_country_market_accounting_enabled`
   - `modeu5_market_level_fallback_required`
 - Add debug capture for the resolved mode and accounting decision.
-- Update localization/tooltips so Performance Mode explicitly says it tracks human-owned-location market detail only.
+- Update localization/tooltips so Performance Mode explicitly says it tracks human-relevant market detail only.
+
+Implementation note for the first stacked PR:
+
+- `modeu5_refresh_nve_main_mode_from_cmm_country_scope` derives script-safe
+  `performance`, `normal`, and `deactivated` runtime flags from CMM.
+- Performance Mode refresh rebuilds `modeu5_performance_relevant_markets` from
+  human countries with `every_market_present_in_country`.
+- The rebuild is monthly-stamped so `monthly_country_pulse` does not rebuild the
+  global human-relevant list once per country.
+- `modeu5_prepare_country_market_accounting_decision` can mark a human-present
+  market as human-relevant on demand when it was not yet in the list.
+- CORE-03 owner-change and new-country finalizer hooks opportunistically mark
+  new human-relevant markets without waiting for the next monthly rebuild.
+- `modeu5_prepare_country_market_accounting_decision` computes the read-only
+  country-market decision for the next fallback PR.
+- `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
+  human-relevant market list, the non-detailed -> detailed eligibility edge case,
+  the positive human market-presence Performance Mode decision, and negative
+  Performance Mode decisions for AI countries and human countries in markets not
+  returned by `every_market_present_in_country`.
+- The first stacked PR deliberately does not route real runtime stock mutations
+  through the Performance Mode gate, implement market-level fallback, or prove
+  the foreign-building-only negative case.
+- The promotion initializer exists so later stock-affecting PRs have a safe
+  boundary between read-only eligibility and detailed mutation permission.
+
+### Promotion initializer
+
+Before any later PR routes US-03 decay, US-10 fallback, US-17, US-20, or any
+other stock-affecting path through the Performance Mode accounting gate, the
+target market must have completed the dedicated promotion initializer:
+
+```txt
+modeu5_promote_market_to_detailed_accounting = {
+  market = <market>
+
+  # no-op if the market is already promoted for the current schema/version
+  # refresh country x market capacities for countries present in this market
+  # allocate existing market-level aggregate stock into country records
+  # preserve market aggregate exactly
+  # mark affected market/good records dirty or validation-required
+}
+```
+
+Promotion requirements:
+
+- delegate to existing US-02 capacity refresh and CORE-02-style
+  capacity-proportional allocation policy;
+- split any existing market-level aggregate stock by the approved
+  capacity-proportional allocation policy;
+- preserve `sum(country x market stock) == market aggregate stock`;
+- be idempotent, so running promotion twice cannot duplicate stock;
+- only after successful promotion may stock-affecting code use detailed
+  country x market mutation paths for that market.
+
+Implemented boundary:
+
+- `modeu5_detailed_country_market_accounting_enabled` means read-only
+  eligibility only.
+- `modeu5_market_detailed_accounting_promoted_trigger` proves that a market has
+  completed detailed-accounting promotion in Performance Mode.
+- `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is the
+  stricter gate for later stock-affecting paths. In Normal Mode it remains true
+  for detailed accounting; in Performance Mode it also requires the promotion
+  marker.
+- `modeu5_promote_market_to_detailed_accounting` is idempotent, rebuilds the
+  market countries-present cache, refreshes country x market capacity for
+  present countries, materializes aggregate-only stock into country records by
+  capacity share, preserves the market aggregate, and marks affected market-good
+  records dirty for later validation.
+- `event modeu5_perf14_debug.1` covers positive aggregate-only promotion,
+  idempotent re-run, partial-state promotion where some country stock already
+  exists, and a negative non-human-relevant market path.
 
 ### Phase 2 — accounting gate and fallback operators
 
@@ -110,6 +218,8 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 - Add market-level-only variants or branches for systems that change stock while detailed accounting is disabled.
 - Ensure market aggregate deltas remain consistent with centralized stock mutation semantics.
 - Add audit logs for fallback usage.
+- Block stock-affecting fallback routing unless
+  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true.
 
 ### Phase 3 — sparse supplier lists
 
@@ -127,8 +237,8 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 
 ## Acceptance criteria
 
-- Performance Mode only maintains detailed Market x Country accounting for human countries that own at least one location in the market.
-- Foreign-building-only or indirect market presence does not enable detailed country x market accounting.
+- Performance Mode only maintains detailed Market x Country accounting for human countries in markets returned by `every_market_present_in_country`.
+- Foreign-building-only or indirect market presence remains a Phase 2 boundary question unless it is covered by the confirmed iterator.
 - In Performance Mode, skipped country x market mutations fall back to market-level aggregate changes rather than being dropped.
 - US-03, US-17, and US-20 have explicit fallback plans/tests before they rely on detailed country x market state.
 - US-10 supplier scanning prefers sparse supplier lists and only falls back to all-country scans in debug/fallback conditions.
@@ -172,4 +282,4 @@ New targeted scenarios:
 - Whether sparse supplier cache entries should be keyed by market x good only, or market x good x accounting-mode.
 - Whether market-level-only fallback should be implemented as new central operators or as explicit branches inside existing central operators.
 - How much of US-17 / US-20 should be implemented in this master PR versus reserved for child PRs after the fallback contract exists.
-- Whether Performance Mode should track all human-owned-location markets for every human country in multiplayer, or only the current player country in single-player contexts.
+- Whether Performance Mode should track all human-relevant markets for every human country in multiplayer, or only the current player country in single-player contexts.

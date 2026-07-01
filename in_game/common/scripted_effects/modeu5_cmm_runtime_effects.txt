@@ -178,20 +178,7 @@ modeu5_cmm_reset_activate_trade_cost = {
 }
 
 modeu5_cmm_refresh_nve_main_enabled = {
-	if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_no_void_economy_main
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 3
-		}
-		remove_global_variable = modeu5_cmm_nve_main_enabled
-	}
-	else = {
-		set_global_variable = modeu5_cmm_nve_main_enabled
-	}
+	modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes
 }
 
 modeu5_cmm_reset_nve_balance_war_shorter = {

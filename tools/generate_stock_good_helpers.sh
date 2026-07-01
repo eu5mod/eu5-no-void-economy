@@ -370,16 +370,24 @@ modeu5_initialize_storage_capacities = {
 
 modeu5_initialize_opening_stocks = {
 TXT
-	for good in "${goods[@]}"; do
-		printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
-	done
-	cat <<'TXT'
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_initialize_opening_stocks_good_%s = yes\n' "$good"
+		done
+		cat <<'TXT'
+}
+
+modeu5_promote_market_to_detailed_accounting_all_goods = {
+TXT
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_promote_market_to_detailed_accounting_good_%s = yes\n' "$good"
+		done
+		cat <<'TXT'
 }
 
 modeu5_core03_transfer_location_all_goods = {
 TXT
-	for good in "${goods[@]}"; do
-		printf '\tmodeu5_core03_transfer_location_good_%s = yes\n' "$good"
+		for good in "${goods[@]}"; do
+			printf '\tmodeu5_core03_transfer_location_good_%s = yes\n' "$good"
 	done
 	cat <<'TXT'
 }
