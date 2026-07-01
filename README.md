@@ -50,30 +50,24 @@ The **Extensions** that provide Balance change but requires to be activated at t
  101. ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
  102. ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
  103. ⏳Redesign the Economic Base
- 200. ⏳Remove Average Control Penalty on research seed (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
- 300. ⏳RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
- 301. ⏳Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
+ 200. (❌ : Need modding endpoint)Remove Average Control Penalty on research seed - Mechanic introduced in 1.3
+ 300. (❌ : Need modding endpoint)RGO prices don't scale with Good's Market Price -  Mechanic introduced in 1.2
+ 301. (❌ : Need modding endpoint)Maintenance price don't increase with time - Mechanic introduced in 1.3
 
 
 ### War & Rebel Design & Balance ###
 
 #### Design
- 500. ⏳Independantist don't start the war Initial Owner get a CB for 12  year (Status : ⏳)
- 501. ⏳New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
- 502. ⏳Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
+ 500. ⏳Independantist don't start the war Initial Owner get a CB for 12  year
+ 501. ⏳New "Autonomous Province" type of subject, can be granted to Rebel under specific condition
+ 502. (Status : ❌ : Need Analysis) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  
 
 #### Balance
- 400. ⏳Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
- 401. ⏳Rebel threshold adjusted (Status : ⏳)
- 402. ⏳Shorter war (Status : ⏳)
+ 400. ⏳Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed )
+ 401. ⏳Rebel threshold adjusted
+ 402. ⏳Shorter war
 
 ⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
-
-
-<!--
- ### Economic Balance Extension (Optional)
- We remove punitive incentive (4 & 5) and rebalance economy toward highet production but costs (sliders) (2&3). You should feel building creation more rewarding while penalising overextension.
-  -->
 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)
