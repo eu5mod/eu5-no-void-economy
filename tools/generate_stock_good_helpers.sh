@@ -113,6 +113,46 @@ def stub_future_effect_blocks(source: str) -> str:
 
 text = stub_future_effect_blocks(text)
 
+# CORE-01.3's transfer primitive exposes the single-operation result through
+# modeu5_transferred_quantity. US-10.2 also needs a multi-candidate aggregate.
+# Keep those two concepts separate in generated adapters, otherwise a single
+# 70-unit transfer becomes 140 in resolver outputs after the primitive writes
+# the same temporary name that the bucket loop is about to increment.
+text = re.sub(
+    r"save_temporary_scope_value_as = \{ name = modeu5_transferred_quantity value = 0 \}",
+    "save_temporary_scope_value_as = { name = modeu5_us10_total_transferred_quantity value = 0 }",
+    text,
+)
+transfer_accumulator_pattern = re.compile(
+    r"(?P<indent>\t+)save_temporary_scope_value_as = \{\n"
+    r"(?P=indent)\tname = modeu5_transferred_quantity\n"
+    r"(?P=indent)\tvalue = \{\n"
+    r"(?P=indent)\t\tvalue = scope:modeu5_transferred_quantity\n"
+    r"(?P=indent)\t\tadd = scope:modeu5_actual_transferred_quantity\n"
+    r"(?P=indent)\t}\n"
+    r"(?P=indent)\}",
+)
+text = transfer_accumulator_pattern.sub(
+    lambda match: (
+        f"{match.group('indent')}save_temporary_scope_value_as = {{\n"
+        f"{match.group('indent')}\tname = modeu5_us10_total_transferred_quantity\n"
+        f"{match.group('indent')}\tvalue = {{\n"
+        f"{match.group('indent')}\t\tvalue = scope:modeu5_us10_total_transferred_quantity\n"
+        f"{match.group('indent')}\t\tadd = scope:modeu5_actual_transferred_quantity\n"
+        f"{match.group('indent')}\t}}\n"
+        f"{match.group('indent')}}}"
+    ),
+    text,
+)
+text = re.sub(
+    r"(?P<indent>\t+)save_temporary_scope_value_as = \{ name = modeu5_satisfied_quantity value = scope:modeu5_transferred_quantity \}",
+    lambda match: (
+        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = modeu5_transferred_quantity value = scope:modeu5_us10_total_transferred_quantity }}\n"
+        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = modeu5_satisfied_quantity value = scope:modeu5_transferred_quantity }}"
+    ),
+    text,
+)
+
 bad_lines = [
     line for line in text.splitlines()
     if "add_to_variable_map" in line and "value = {" in line and " add = " in line
@@ -130,6 +170,9 @@ for forbidden in (
 ):
     if forbidden in text:
         raise SystemExit(f"ModeU5 generator emitted unwired target reference: {forbidden}")
+
+if "name = modeu5_transferred_quantity\n\t\t\t\t\tvalue = {\n\t\t\t\t\t\tvalue = scope:modeu5_transferred_quantity\n\t\t\t\t\t\tadd = scope:modeu5_actual_transferred_quantity" in text:
+    raise SystemExit("ModeU5 generator emitted US-10 transfer accumulator using primitive output name")
 
 path.write_text(text)
 PY
@@ -428,15 +471,11 @@ postprocess_stock_goods_output "$output"
 } > "$modifiers_output"
 
 {
-	printf '\357\273\277%s\n' 'l_english:'
-	printf ' %s: "%s"\n' \
-		'modeu5_us00_generated_static_modifiers_header' \
-		'ModeU5 generated US-00 production penalty modifiers'
+	printf '%s\n' 'l_english:'
 	for good in "${goods[@]}"; do
-		label="$(printf '%s' "$good" | sed 's/_/ /g')"
-		printf ' STATIC_MODIFIER_NAME_modeu5_%s_production_penalty_modifier: "ModeU5 %s production penalty"\n' \
-			"$good" "$label"
-		printf ' STATIC_MODIFIER_DESC_modeu5_%s_production_penalty_modifier: "ModeU5 overproduction correction for %s from the previous monthly stock cycle."\n' \
-			"$good" "$label"
+		key="modeu5_${good}_production_penalty_modifier"
+		label="${good//_/ }"
+		printf ' %s:0 "ModeU5 %s Production Penalty"\n' "$key" "$label"
+		printf ' %s_desc:0 "Production output adjustment applied by ModeU5 when stock capacity is saturated."\n' "$key"
 	done
 } > "$modifiers_localization_output"
