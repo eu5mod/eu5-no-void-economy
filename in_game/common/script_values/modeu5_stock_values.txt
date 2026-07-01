@@ -28,7 +28,7 @@ modeu5_production_penalty_per_effective_overproduction = {
 }
 
 modeu5_max_production_penalty = {
-	value = 0.95
+	value = 0.90
 }
 
 modeu5_void_wealth_price_weight = {
