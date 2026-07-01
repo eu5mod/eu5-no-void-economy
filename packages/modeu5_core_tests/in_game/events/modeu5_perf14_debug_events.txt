@@ -1,0 +1,49 @@
+namespace = modeu5_perf14_debug
+
+modeu5_perf14_debug.1 = {
+	type = country_event
+	title = modeu5_perf14_debug.1.title
+	desc = modeu5_perf14_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_perf14_debug.1.a
+		modeu5_debug_run_perf14_performance_mode_cmm_test = yes
+		trigger_event_non_silently = modeu5_perf14_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_perf14_debug.2 = {
+	type = country_event
+	title = modeu5_perf14_debug.2.title
+	desc = modeu5_perf14_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.perf14_performance_mode_cmm.pass
+		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_passed }
+	}
+	option = {
+		name = modeu5_debug.test.perf14_performance_mode_cmm.blocked
+		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
+	}
+	option = {
+		name = modeu5_debug.test.perf14_performance_mode_cmm.fail
+		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

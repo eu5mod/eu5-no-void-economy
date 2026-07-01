@@ -26,6 +26,26 @@ modeu5_audit_runtime_mode_trigger = {
 	has_global_variable = modeu5_runtime_mode_audit
 }
 
+modeu5_performance_mode_enabled_trigger = {
+	has_global_variable = modeu5_performance_mode_enabled
+}
+
+modeu5_nve_normal_mode_trigger = {
+	has_global_variable = modeu5_normal_mode_enabled
+}
+
+modeu5_nve_deactivated_trigger = {
+	has_global_variable = modeu5_nve_deactivated
+}
+
+modeu5_detailed_country_market_accounting_enabled_trigger = {
+	scope:modeu5_detailed_country_market_accounting_enabled > 0
+}
+
+modeu5_market_level_fallback_required_trigger = {
+	scope:modeu5_market_level_fallback_required > 0
+}
+
 modeu5_debug_enabled_trigger = {
 	modeu5_debug_runtime_mode_trigger = yes
 }

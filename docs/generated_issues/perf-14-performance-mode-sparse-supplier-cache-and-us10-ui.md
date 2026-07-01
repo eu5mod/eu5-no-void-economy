@@ -27,9 +27,20 @@ Performance Mode narrows detailed Market x Country accounting.
 In Performance Mode, detailed country x market x good accounting is maintained only when all of these are true:
 
 - the country is human-played; and
-- the country owns at least one location in the market.
+- the market is returned by `every_market_present_in_country` for that country.
 
-Important boundary: a country that is merely present in a market because of foreign buildings, foreign ownership, access, or other indirect participation is not eligible for detailed Market x Country accounting in Performance Mode.
+Phase 1 uses the confirmed country-market iterator as the human-relevant market
+discovery path:
+
+```txt
+every_country limit = { is_ai = no }
+  -> every_market_present_in_country
+```
+
+If later tests prove this iterator is broader than the desired
+owned-location-market definition, the fallback PR must either accept that scope
+or introduce a confirmed narrower discovery hook. Do not replace it with an
+unconfirmed one-off scan in the hot path.
 
 Normal Mode keeps the existing broad accounting behavior.
 
@@ -102,7 +113,21 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
   - `modeu5_detailed_country_market_accounting_enabled`
   - `modeu5_market_level_fallback_required`
 - Add debug capture for the resolved mode and accounting decision.
-- Update localization/tooltips so Performance Mode explicitly says it tracks human-owned-location market detail only.
+- Update localization/tooltips so Performance Mode explicitly says it tracks human-relevant market detail only.
+
+Implementation note for the first stacked PR:
+
+- `modeu5_refresh_nve_main_mode_from_cmm_country_scope` derives script-safe
+  `performance`, `normal`, and `deactivated` runtime flags from CMM.
+- Performance Mode refresh rebuilds `modeu5_performance_relevant_markets` from
+  human countries with `every_market_present_in_country`.
+- `modeu5_prepare_country_market_accounting_decision` computes the read-only
+  country-market decision for the next fallback PR.
+- `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
+  human-relevant market list, and the positive human market-presence
+  Performance Mode decision.
+- The first stacked PR deliberately does not mutate stock, implement
+  market-level fallback, or prove the foreign-building-only negative case.
 
 ### Phase 2 — accounting gate and fallback operators
 
@@ -127,8 +152,8 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 
 ## Acceptance criteria
 
-- Performance Mode only maintains detailed Market x Country accounting for human countries that own at least one location in the market.
-- Foreign-building-only or indirect market presence does not enable detailed country x market accounting.
+- Performance Mode only maintains detailed Market x Country accounting for human countries in markets returned by `every_market_present_in_country`.
+- Foreign-building-only or indirect market presence remains a Phase 2 boundary question unless it is covered by the confirmed iterator.
 - In Performance Mode, skipped country x market mutations fall back to market-level aggregate changes rather than being dropped.
 - US-03, US-17, and US-20 have explicit fallback plans/tests before they rely on detailed country x market state.
 - US-10 supplier scanning prefers sparse supplier lists and only falls back to all-country scans in debug/fallback conditions.
@@ -172,4 +197,4 @@ New targeted scenarios:
 - Whether sparse supplier cache entries should be keyed by market x good only, or market x good x accounting-mode.
 - Whether market-level-only fallback should be implemented as new central operators or as explicit branches inside existing central operators.
 - How much of US-17 / US-20 should be implemented in this master PR versus reserved for child PRs after the fallback contract exists.
-- Whether Performance Mode should track all human-owned-location markets for every human country in multiplayer, or only the current player country in single-player contexts.
+- Whether Performance Mode should track all human-relevant markets for every human country in multiplayer, or only the current player country in single-player contexts.
