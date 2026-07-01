@@ -484,6 +484,8 @@ TXT
 			printf '\n'
 		fi
 		first=0
+		transport_cost="$(modeu5_good_transport_cost "$good")"
+		transport_cost_defaulted="$(modeu5_good_transport_cost_defaulted "$good")"
 		sed \
 			-e "s/__GOOD__/$good/g" \
 			-e "s/__STOCK_MAP__/modeu5_${good}_stock_by_market/g" \
@@ -501,6 +503,8 @@ TXT
 			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
 			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
 			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
+			-e "s/__TRANSPORT_COST__/$transport_cost/g" \
+			-e "s/__TRANSPORT_COST_DEFAULTED__/$transport_cost_defaulted/g" \
 			"$template"
 	done
 } > "$output"
