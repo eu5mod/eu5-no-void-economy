@@ -21,15 +21,20 @@ resolver core:
 
 - callers use `modeu5_resolve_stock_consumption` with `consumer_country`,
   `market`, `good`, and `requested_quantity`;
-- the generated per-good adapter iterates countries present in the market while
-  remaining demand is positive;
+- the generated per-good adapter rebuilds the current-market country cache,
+  scans candidates once for aggregate diagnostics, then mutates stock by
+  deterministic priority bucket;
+- own stock is consumed before subject/overlord, market-owner, and other
+  foreign stock;
+- zero/below-threshold stock, at-war candidates, embargoed candidates, and
+  disallowed subject/market-owner/foreign buckets are excluded before mutation;
 - the implementation removes stock through `modeu5_remove_stock` only;
 - satisfied and unsatisfied quantities are exposed and handed to US-10.3;
 - no intra-market trade income, logistics cost, or trade-capacity use is created.
 
-Full scored/bucketed ordering and per-candidate exclusion diagnostics remain
-partially wired follow-up work. Runtime vanilla Pop demand quantity remains
-`NOT_CONFIRMED`, so the deterministic test uses an explicit ModeU5 request.
+Full score-based tie-breaking and per-candidate exclusion diagnostics remain
+follow-up work. Runtime vanilla Pop demand quantity remains `NOT_CONFIRMED`, so
+the deterministic test uses an explicit ModeU5 request.
 
 ## Runtime position
 
@@ -87,13 +92,13 @@ Related US: US-04, US-10-UI
 
 ## Acceptance criteria
 
-- [ ] One demand can use multiple ordered stocks.
+- [x] One demand can use multiple bucket-ordered stocks.
 - [ ] No stock goes negative.
 - [ ] Country and market stocks decrease by matching actual quantities.
 - [ ] Satisfied plus unsatisfied equals requested quantity.
 - [ ] Same-market resolution creates no trade economics.
 - [ ] Every mutation uses `modeu5_remove_stock`.
-- [ ] Debug shows candidates, order, quantities by candidate, and exclusions.
+- [ ] Debug shows per-candidate order, quantities by candidate, and exclusions.
 
 ## Manual test scenario
 
@@ -116,4 +121,7 @@ No trade cost/income/capacity use is created
 
 ## Known limitations
 
-Candidate scoring and ordering are documented. Runtime local Pop demand quantity and Estate/other consumer demand context remain `NOT_CONFIRMED`; a simulated demand source requires explicit acceptance and disclosure.
+Bucket ordering is implemented for the explicit-request MVP. Runtime local Pop
+demand quantity and Estate/other consumer demand context remain
+`NOT_CONFIRMED`; a simulated demand source requires explicit acceptance and
+disclosure. Full score-based tie-breaking remains follow-up work.

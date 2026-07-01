@@ -14,6 +14,29 @@ As a modder, I want a shared stock-demand resolver so consumption and inter-mark
 
 Implement `modeu5_resolve_stock_demand` as a non-mutating resolver that accepts demand context, builds eligible candidates, scores and orders them, and returns candidate/exclusion diagnostics.
 
+## Current implementation slice
+
+The current stacked PR wires the first deterministic ordering layer into the
+generated per-good mutation adapters:
+
+- candidate hard filters run before stock mutation;
+- zero or below-threshold stocks are excluded;
+- at-war and embargoed candidates are excluded when the default allow flags are
+  disabled;
+- subject/overlord, market-owner, and foreign allow flags are applied as hard
+  filters;
+- valid candidates are consumed/transferred by priority bucket:
+  1. own country stock;
+  2. subject or overlord stock;
+  3. market-owner stock;
+  4. other foreign stock;
+- aggregate candidate diagnostics record candidate count, excluded count, total
+  available candidate stock, best score, best stock, and best bucket.
+
+This is intentionally a bucketed deterministic MVP. Full score-based sorting,
+opinion/trade-advantage tie-breaking, and candidate-by-candidate diagnostic
+dumps remain follow-up work.
+
 ## Runtime position
 
 ```txt
@@ -77,8 +100,8 @@ Related US: US-10.3, US-10-UI
 ## Acceptance criteria
 
 - [ ] Consumption and inter-market callers can use the same resolver.
-- [ ] Invalid candidates are excluded before scoring.
-- [ ] Valid candidates are deterministically ordered.
+- [x] Invalid candidates are excluded before scoring in the generated adapters.
+- [x] Valid candidates are deterministically bucket-ordered.
 - [ ] Configured own/subject/market-owner/opinion/trade weights are applied only when confirmed.
 - [ ] Resolver output is non-mutating.
 - [ ] Debug explains every selected or excluded candidate.
@@ -102,4 +125,8 @@ No stock changes during resolver execution
 
 ## Known limitations
 
-All required relation, access, ownership, and deterministic ordering primitives are documented. Runtime tests must still validate argument syntax, score direction, and stable tie-breaking.
+All required relation, access, ownership, and deterministic ordering primitives
+are documented. Runtime tests must still validate argument syntax. Full
+score-direction and stable score tie-breaking remain follow-up work because the
+current implementation uses deterministic priority buckets rather than an
+`order_by` score sort.

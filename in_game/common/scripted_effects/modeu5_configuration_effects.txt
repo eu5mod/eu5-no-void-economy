@@ -62,6 +62,16 @@ modeu5_initialize_configuration_state_effect = {
 		value = 100
 	}
 
+	modeu5_enter_normal_runtime_mode = yes
+	set_global_variable = {
+		name = modeu5_debug_level
+		value = 0
+	}
+	modeu5_enter_minimal_accounting_persistence = yes
+	set_global_variable = modeu5_cmm_nve_main_enabled
+}
+
+modeu5_refresh_configuration_from_cmm_country_scope = {
 	if = {
 		limit = {
 			has_variable_map = cmm

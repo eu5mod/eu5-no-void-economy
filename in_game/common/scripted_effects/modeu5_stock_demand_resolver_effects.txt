@@ -107,6 +107,119 @@ modeu5_prepare_stock_candidate_scoring_defaults = {
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage_weight value = 0 }
 }
 
+modeu5_mark_stock_candidate_excluded = {
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 0 }
+}
+
+modeu5_prepare_current_stock_candidate_relations = {
+	if = {
+		limit = { scope:modeu5_candidate_country = scope:modeu5_demanding_country }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_own_country value = 1 }
+	}
+	else = {
+		if = {
+			limit = {
+				scope:modeu5_candidate_country = {
+					is_subject_of = scope:modeu5_demanding_country
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_subject value = 1 }
+		}
+		if = {
+			limit = {
+				scope:modeu5_demanding_country = {
+					is_subject_of = scope:modeu5_candidate_country
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_overlord value = 1 }
+		}
+		if = {
+			limit = {
+				scope:modeu5_market = {
+					owner ?= scope:modeu5_candidate_country
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_us10_candidate_is_market_owner value = 1 }
+		}
+	}
+}
+
+modeu5_apply_current_stock_candidate_hard_filters = {
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			NOT = { scope:modeu5_candidate_stock > scope:modeu5_us10_minimum_stock_to_consider }
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 1 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_us10_allow_at_war_stocks = 0
+			scope:modeu5_candidate_country != scope:modeu5_demanding_country
+			scope:modeu5_candidate_country = {
+				is_at_war_with = scope:modeu5_demanding_country
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 2 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_us10_allow_embargoed_stocks = 0
+			scope:modeu5_candidate_country != scope:modeu5_demanding_country
+			OR = {
+				scope:modeu5_candidate_country = {
+					is_embargoing = scope:modeu5_demanding_country
+				}
+				scope:modeu5_candidate_country = {
+					is_embargoed_by = scope:modeu5_demanding_country
+				}
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 3 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_us10_allow_subject_stocks = 0
+			OR = {
+				scope:modeu5_us10_candidate_is_subject > 0
+				scope:modeu5_us10_candidate_is_overlord > 0
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 4 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_us10_allow_market_owner_stock = 0
+			scope:modeu5_us10_candidate_is_market_owner > 0
+			scope:modeu5_us10_candidate_is_own_country = 0
+			scope:modeu5_us10_candidate_is_subject = 0
+			scope:modeu5_us10_candidate_is_overlord = 0
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 5 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_us10_allow_foreign_stocks = 0
+			scope:modeu5_us10_candidate_is_own_country = 0
+			scope:modeu5_us10_candidate_is_subject = 0
+			scope:modeu5_us10_candidate_is_overlord = 0
+			scope:modeu5_us10_candidate_is_market_owner = 0
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 6 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+}
+
 modeu5_prepare_current_stock_candidate_priority_bucket = {
 	# Cheap pre-ordering. Full score remains available for debug and tie-breaking,
 	# but generated candidate scans should avoid an O(n²) generic sort when these
@@ -129,17 +242,6 @@ modeu5_prepare_current_stock_candidate_priority_bucket = {
 	else_if = {
 		limit = { scope:modeu5_us10_candidate_is_market_owner > 0 }
 		save_temporary_scope_value_as = { name = modeu5_us10_candidate_priority_bucket value = 3 }
-	}
-}
-
-modeu5_mark_stock_candidate_excluded = {
-	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 0 }
-	set_global_variable = {
-		name = modeu5_us10_resolution_excluded_candidate_count
-		value = {
-			value = global_var:modeu5_us10_resolution_excluded_candidate_count
-			add = 1
-		}
 	}
 }
 

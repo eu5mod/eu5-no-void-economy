@@ -9,6 +9,7 @@ This runbook validates the explicit-request implementation of:
 - US-10.1 consumption stock resolution within one market;
 - US-10.2 inter-market stock transfer;
 - US-10.3 requested / satisfied / unsatisfied outcome tracking.
+- US-10.0 bucketed candidate ordering for explicit requests.
 
 This PR does not infer Pop, Estate, or vanilla trade requested quantities from
 unconfirmed engine values. Callers pass one requested quantity to the resolver,
@@ -51,10 +52,12 @@ PASS - US-10 demand resolution
 Expected dump:
 
 ```txt
-Consumption requested = 100
-Consumption satisfied = 80
+Consumption requested = 160
+Consumption satisfied = 140
 Consumption unsatisfied = 20
 FRA stock after consumption = 0
+Ordering foreign candidate count > 0
+Ordering own stock after = 0
 
 Trade requested = 100
 Trade transferred = 70
@@ -64,14 +67,22 @@ Seller stock after = 20
 Buyer capacity before transfer = 70
 ```
 
-## Manual scenario 1 — same-market consumption
+The consumption dump is aggregated across two deterministic sub-scenarios:
+
+1. a base request of 100 with FRA stock 80, producing 80 satisfied and 20
+   unsatisfied;
+2. an ordering request of 60 with FRA stock 40 and at least one other country in
+   the same market seeded with wheat. The expected own-stock-after value is 0,
+   proving the bucketed resolver consumes own stock before foreign stock.
+
+## Manual scenario 1 — same-market consumption with bucket order
 
 ### Setup
 
 ```txt
-Market M has country A stock = 40 wheat.
-Market M has country B stock = 35 wheat.
-A consumer requests 100 wheat in Market M.
+Market M has consumer country A stock = 40 wheat.
+Market M has foreign country B stock = 80 wheat.
+A consumer requests 60 wheat in Market M.
 ```
 
 ### Command or event to run
@@ -90,8 +101,10 @@ modeu5_resolve_stock_consumption = {
 ### Expected result
 
 ```txt
-satisfied_quantity = 75
-unsatisfied_quantity = 25
+satisfied_quantity = 60
+unsatisfied_quantity = 0
+country A stock after = 0
+country B is used only after A's own stock is exhausted
 modeu5_remove_stock is the only stock mutation effect used
 same-market trade income generated = no
 transport cost generated = no
@@ -107,6 +120,7 @@ modeu5_debug_last_us10_unsatisfied_quantity
 modeu5_debug_last_us10_candidate_count
 modeu5_debug_last_us10_excluded_candidate_count
 modeu5_debug_last_us10_total_available_candidate_stock
+modeu5_debug_last_us10_best_candidate_bucket
 modeu5_debug_last_us10_is_intra_market_trade
 modeu5_debug_last_us10_trade_income_generated
 modeu5_debug_last_us10_transport_cost_generated
@@ -242,3 +256,5 @@ exact scenario lines and classify any remaining non-blocking noise.
 - Exact vanilla trade requested/actual quantity is not read yet.
 - Pop/location outcome tracking is validated through the explicit fallback caller
   until live Pop demand exposure is confirmed.
+- Candidate mutation is bucket-ordered. Full score-based tie-breaking and
+  per-candidate diagnostic dumps remain follow-up work.
