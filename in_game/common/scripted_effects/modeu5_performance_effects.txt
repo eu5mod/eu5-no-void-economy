@@ -20,7 +20,24 @@ modeu5_clear_performance_relevant_markets = {
 	}
 }
 
+modeu5_prepare_performance_relevant_market_counters = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_human_country_count } }
+		set_global_variable = { name = modeu5_performance_human_country_count value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_relevant_market_native_iterations } }
+		set_global_variable = { name = modeu5_performance_relevant_market_native_iterations value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_relevant_market_added_count } }
+		set_global_variable = { name = modeu5_performance_relevant_market_added_count value = 0 }
+	}
+}
+
 modeu5_mark_performance_relevant_market = {
+	modeu5_prepare_performance_relevant_market_counters = yes
+
 	if = {
 		limit = {
 			NOT = { has_global_variable_list = modeu5_performance_relevant_markets }
@@ -60,7 +77,61 @@ modeu5_mark_performance_relevant_market = {
 	}
 }
 
+modeu5_mark_human_relevant_market_for_country = {
+	$country$ = { save_temporary_scope_as = modeu5_performance_country }
+	$market$ = { save_temporary_scope_as = modeu5_performance_relevant_market }
+
+	if = {
+		limit = {
+			modeu5_performance_mode_enabled_trigger = yes
+			scope:modeu5_performance_country = { is_ai = no }
+		}
+		modeu5_mark_performance_relevant_market = yes
+	}
+}
+
+modeu5_promote_human_relevant_market_if_present = {
+	$country$ = { save_temporary_scope_as = modeu5_performance_country }
+	$market$ = {
+		save_temporary_scope_as = modeu5_performance_target_market
+		save_temporary_scope_as = modeu5_performance_relevant_market
+	}
+
+	save_temporary_scope_value_as = { name = modeu5_performance_target_market_present value = 0 }
+
+	if = {
+		limit = {
+			modeu5_performance_mode_enabled_trigger = yes
+			scope:modeu5_performance_country = { is_ai = no }
+		}
+		scope:modeu5_performance_country = {
+			set_local_variable = { name = modeu5_performance_target_market_present value = 0 }
+			every_market_present_in_country = {
+				save_temporary_scope_as = modeu5_performance_iterated_market
+				if = {
+					limit = {
+						scope:modeu5_performance_iterated_market = scope:modeu5_performance_target_market
+					}
+					scope:modeu5_performance_country = {
+						set_local_variable = { name = modeu5_performance_target_market_present value = 1 }
+					}
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_performance_target_market_present
+				value = local_var:modeu5_performance_target_market_present
+			}
+		}
+		if = {
+			limit = { scope:modeu5_performance_target_market_present > 0 }
+			modeu5_mark_performance_relevant_market = yes
+		}
+	}
+}
+
 modeu5_add_country_present_markets_to_performance_relevant_list = {
+	modeu5_prepare_performance_relevant_market_counters = yes
+
 	scope:modeu5_performance_country = {
 		every_market_present_in_country = {
 			save_temporary_scope_as = modeu5_performance_relevant_market
@@ -73,6 +144,18 @@ modeu5_add_country_present_markets_to_performance_relevant_list = {
 			}
 			modeu5_mark_performance_relevant_market = yes
 		}
+	}
+}
+
+modeu5_mark_human_relevant_markets_for_country = {
+	$country$ = { save_temporary_scope_as = modeu5_performance_country }
+
+	if = {
+		limit = {
+			modeu5_performance_mode_enabled_trigger = yes
+			scope:modeu5_performance_country = { is_ai = no }
+		}
+		modeu5_add_country_present_markets_to_performance_relevant_list = yes
 	}
 }
 

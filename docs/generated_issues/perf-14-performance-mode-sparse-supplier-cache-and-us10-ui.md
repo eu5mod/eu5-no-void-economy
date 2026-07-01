@@ -37,6 +37,23 @@ every_country limit = { is_ai = no }
   -> every_market_present_in_country
 ```
 
+The human-relevant list is a scheduling/detail gate, not authoritative stock
+state. ModeU5 must not pre-materialize zero-valued country x market x good
+records for every possible tuple. When a previously non-detailed market becomes
+human-relevant, the accounting gate promotes it on demand, refreshes/uses the
+existing country x market capacity path, and lets CORE-01/CORE-02/CORE-03/US-00
+create stock and ledger entries only through their normal non-zero mutation or
+ledger-update paths.
+
+Two edge cases are explicitly in scope for the first stacked PR:
+
+- new country finalizers refresh the new country's storage-capacity records and
+  mark its present markets as human-relevant if the new country is human-played;
+- a human country entering a new market converts that market from non-detailed
+  to detailed either through the CORE-03 owner-change hook or on demand when the
+  country-market accounting gate sees the market in
+  `every_market_present_in_country`.
+
 If later tests prove this iterator is broader than the desired
 owned-location-market definition, the fallback PR must either accept that scope
 or introduce a confirmed narrower discovery hook. Do not replace it with an
@@ -121,11 +138,17 @@ Implementation note for the first stacked PR:
   `performance`, `normal`, and `deactivated` runtime flags from CMM.
 - Performance Mode refresh rebuilds `modeu5_performance_relevant_markets` from
   human countries with `every_market_present_in_country`.
+- The rebuild is monthly-stamped so `monthly_country_pulse` does not rebuild the
+  global human-relevant list once per country.
+- `modeu5_prepare_country_market_accounting_decision` can promote a
+  human-present market to detailed on demand when it was not yet in the list.
+- CORE-03 owner-change and new-country finalizer hooks opportunistically mark
+  new human-relevant markets without waiting for the next monthly rebuild.
 - `modeu5_prepare_country_market_accounting_decision` computes the read-only
   country-market decision for the next fallback PR.
 - `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
-  human-relevant market list, and the positive human market-presence
-  Performance Mode decision.
+  human-relevant market list, the non-detailed -> detailed promotion edge case,
+  and the positive human market-presence Performance Mode decision.
 - The first stacked PR deliberately does not mutate stock, implement
   market-level fallback, or prove the foreign-building-only negative case.
 

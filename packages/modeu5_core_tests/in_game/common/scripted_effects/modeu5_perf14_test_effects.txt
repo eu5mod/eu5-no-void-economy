@@ -190,6 +190,9 @@ modeu5_debug_run_perf14_performance_mode_cmm_test = {
 		capital.market = { save_temporary_scope_as = modeu5_perf14_test_market }
 
 		modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+		# Force the non-detailed -> detailed edge case: the accounting gate must
+		# promote a human-present market even when the monthly list is empty.
+		modeu5_clear_performance_relevant_markets = yes
 		modeu5_prepare_country_market_accounting_decision = {
 			country = scope:modeu5_perf14_test_country
 			market = scope:modeu5_perf14_test_market

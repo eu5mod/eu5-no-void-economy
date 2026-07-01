@@ -1560,6 +1560,7 @@ modeu5_reconciliation_finalize = {
 modeu5_run_monthly_stock_cycle = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		modeu5_prepare_performance_mode_human_relevant_markets = yes
 		modeu5_run_monthly_capacity_refresh_for_current_country = yes
 		modeu5_prepare_monthly_market_seen_registry = yes
 		modeu5_prepare_human_relevant_full_ledger_markets = yes

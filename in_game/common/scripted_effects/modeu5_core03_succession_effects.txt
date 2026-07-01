@@ -31,6 +31,10 @@ modeu5_core03_handle_location_changed_owner = {
 		scope:modeu5_core03_winner = {
 			modeu5_rebuild_and_refresh_country_storage_capacities = yes
 		}
+		modeu5_mark_human_relevant_market_for_country = {
+			country = scope:modeu5_core03_winner
+			market = scope:modeu5_core03_market
+		}
 	}
 	else = {
 		set_global_variable = modeu5_core03_last_location_transfer_skipped
@@ -40,8 +44,12 @@ modeu5_core03_handle_location_changed_owner = {
 modeu5_core03_handle_new_country_finalizer = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = modeu5_core03_new_country
 		set_global_variable = modeu5_core03_last_country_finalizer_attempted
 		modeu5_rebuild_and_refresh_country_storage_capacities = yes
+		modeu5_mark_human_relevant_markets_for_country = {
+			country = scope:modeu5_core03_new_country
+		}
 	}
 	else = {
 		set_global_variable = modeu5_core03_last_country_finalizer_skipped

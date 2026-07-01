@@ -6,9 +6,9 @@ Validate the first stacked implementation under the PERF-14 / US-10-UI master
 PR.
 
 This test proves only the CMM mode plumbing, the human-relevant market discovery
-list, and the first read-only country-market accounting decision. It does not
-yet prove market-level fallback stock mutation, sparse supplier cache
-maintenance, or US-10 UI rendering.
+list, the non-detailed -> detailed promotion edge case, and the first read-only
+country-market accounting decision. It does not yet prove market-level fallback
+stock mutation, sparse supplier cache maintenance, or US-10 UI rendering.
 
 ## Setup
 
@@ -80,6 +80,11 @@ every_country limit = { is_ai = no }
   -> every_market_present_in_country
 ```
 
+The test also clears the relevant-market list before the Performance Mode
+decision, then expects the accounting gate to promote the current human-present
+market on demand. A PASS therefore proves that a market can become detailed at
+the point where runtime accounting needs it, not only after startup rebuild.
+
 ## Static Checks
 
 Run:
@@ -99,6 +104,7 @@ git diff --check
 - This PR does not yet prove the foreign-building-only negative case; it uses
   the confirmed `every_market_present_in_country` iterator as the current
   human-relevant market definition.
-- This PR does not yet define a long-lived cache invalidation policy for moving
-  market borders.
+- Market-border movement is handled by a monthly-stamped rebuild and on-demand
+  promotion; removing stale human-relevant markets before the next monthly
+  rebuild is not required because stale over-inclusion is safe but less sparse.
 - Sparse supplier lists and US-10 UI diagnostics remain later stacked PRs.
