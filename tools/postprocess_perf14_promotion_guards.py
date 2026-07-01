@@ -20,11 +20,16 @@ GUARDED_GLOBALS = {
     "modeu5_perf14_promotion_market_negative_capacity_failure",
 }
 
-SAVE_TEMP_RE = re.compile(
+MULTILINE_SAVE_TEMP_RE = re.compile(
     r"(?P<indent>\t*)save_temporary_scope_value_as = \{\n"
     r"(?P=indent)\tname = (?P<temp>[a-zA-Z0-9_]+)\n"
     r"(?P=indent)\tvalue = global_var:(?P<glob>modeu5_perf14_promotion_market_[a-zA-Z0-9_]+)\n"
     r"(?P=indent)\}",
+    re.M,
+)
+
+ONELINE_SAVE_TEMP_RE = re.compile(
+    r"(?P<indent>\t*)save_temporary_scope_value_as = \{ name = (?P<temp>[a-zA-Z0-9_]+) value = global_var:(?P<glob>modeu5_perf14_promotion_market_[a-zA-Z0-9_]+) \}",
     re.M,
 )
 
@@ -49,6 +54,22 @@ def guard_save_temp(match: re.Match[str]) -> str:
     )
 
 
+def assert_no_unguarded_generated_reads(text: str) -> None:
+    """Reject generated one-line/multiline unsafe promotion reads.
+
+    The guarded replacement still contains `value = global_var:<name>`, so this
+    check is deliberately structural: it only rejects a direct save-temp read,
+    not the guarded branch emitted by `guard_save_temp`.
+    """
+
+    for regex in (MULTILINE_SAVE_TEMP_RE, ONELINE_SAVE_TEMP_RE):
+        for match in regex.finditer(text):
+            glob = match.group("glob")
+            if glob in GUARDED_GLOBALS:
+                line_no = text.count("\n", 0, match.start()) + 1
+                raise SystemExit(f"unguarded PERF-14 promotion global read remains at generated line {line_no}: {glob}")
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         print("usage: postprocess_perf14_promotion_guards.py <modeu5_stock_goods_generated.txt>", file=sys.stderr)
@@ -56,15 +77,10 @@ def main() -> int:
 
     path = Path(sys.argv[1])
     text = path.read_text()
-    updated = SAVE_TEMP_RE.sub(guard_save_temp, text)
+    updated = MULTILINE_SAVE_TEMP_RE.sub(guard_save_temp, text)
+    updated = ONELINE_SAVE_TEMP_RE.sub(guard_save_temp, updated)
 
-    for glob in GUARDED_GLOBALS:
-        unsafe = f"value = global_var:{glob}"
-        if unsafe in updated:
-            # The only remaining allowed read is inside the guarded branch we emit.
-            guarded = f"limit = {{ has_global_variable = {glob} }}"
-            if guarded not in updated:
-                raise SystemExit(f"unguarded PERF-14 promotion global read remains: {glob}")
+    assert_no_unguarded_generated_reads(updated)
 
     path.write_text(updated)
     return 0
