@@ -13,6 +13,7 @@ if [[ -f "$local_config" ]]; then
 fi
 
 "$repo_root/tools/generate_stock_good_helpers.sh"
+"$repo_root/tools/generate_good_transport_helpers.sh"
 
 if [[ "${MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES:-0}" == "1" && -x "$repo_root/tools/generate_us09_economy_overrides.sh" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	"$repo_root/tools/generate_us09_economy_overrides.sh" "${MODEU5_US09_BONUS_PERCENT:-5}"

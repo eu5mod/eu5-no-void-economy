@@ -118,6 +118,72 @@ What this proves:
 - vanilla market trade signals are observed only as blocked diagnostics unless
   an explicit transfer quantity is available.
 
+## Focused Trade-Capacity Conversion Test
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 trade-capacity conversion test
+```
+
+Expected dump shape:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_trade_capacity_conversion
+ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=20 transport_cost=... computed_goods_quantity=...
+ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 transport_cost=... computed_goods_quantity=...
+ModeU5 TEST PASS scenario=us10_trade_capacity_conversion
+```
+
+This validates the generated static helper:
+
+```txt
+modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+```
+
+The static `transport_cost` comes from local vanilla `common/goods`. Missing
+static fields use the documented vanilla default `1`; the generated helper also
+clamps the denominator so it cannot divide by zero.
+
+## Direct Trade Formula Probe
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Probe direct trade quantity formula
+```
+
+This probe tests the proposed direct formula from trade scope:
+
+```txt
+good_quantity = trade_volume / traded_goods:transport_cost
+```
+
+Expected dump shape if at least one vanilla trade is available:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_direct_trade_quantity_formula
+ModeU5 TRADE DIRECT FORMULA trade_count=... trade_volume=... transport_cost=... computed_goods_quantity=...
+ModeU5 TEST PASS scenario=us10_direct_trade_quantity_formula
+```
+
+If no trade scope is iterated, the scenario is `BLOCKED`, not failed. If the
+engine rejects the chained value expression, inspect `error.log`; TECH-01 138
+must remain `TO_TEST`, and runtime stock movement must continue using explicit
+ModeU5 request quantities or the generated static diagnostic helper only.
+
 ## Manual scenario 1 — same-market consumption with bucket order
 
 ### Setup

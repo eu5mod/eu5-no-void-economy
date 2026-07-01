@@ -349,6 +349,7 @@ modeu5_reset_us10_monthly_runtime_counters = {
 	set_global_variable = { name = modeu5_us10_monthly_consumption_unsatisfied_quantity value = 0 }
 	set_global_variable = { name = modeu5_us10_monthly_trade_signals_blocked value = 0 }
 	set_global_variable = { name = modeu5_us10_monthly_trade_signal_quantity value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_trade_signal_estimated_goods_quantity value = 0 }
 }
 
 modeu5_ensure_us10_monthly_runtime_counters = {
@@ -358,6 +359,7 @@ modeu5_ensure_us10_monthly_runtime_counters = {
 	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_consumption_unsatisfied_quantity } } set_global_variable = { name = modeu5_us10_monthly_consumption_unsatisfied_quantity value = 0 } }
 	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_trade_signals_blocked } } set_global_variable = { name = modeu5_us10_monthly_trade_signals_blocked value = 0 } }
 	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_trade_signal_quantity } } set_global_variable = { name = modeu5_us10_monthly_trade_signal_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_trade_signal_estimated_goods_quantity } } set_global_variable = { name = modeu5_us10_monthly_trade_signal_estimated_goods_quantity value = 0 } }
 }
 
 modeu5_note_us10_monthly_consumption_request_processed = {
@@ -386,6 +388,7 @@ modeu5_note_us10_monthly_consumption_request_processed = {
 modeu5_note_us10_monthly_trade_signal_blocked = {
 	modeu5_ensure_us10_monthly_runtime_counters = yes
 	save_temporary_scope_value_as = { name = modeu5_us10_monthly_trade_signal_delta value = { value = $quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us10_monthly_trade_signal_estimated_goods_delta value = { value = $estimated_goods_quantity$ min = 0 } }
 	set_global_variable = {
 		name = modeu5_us10_monthly_trade_signals_blocked
 		value = { value = global_var:modeu5_us10_monthly_trade_signals_blocked add = 1 }
@@ -393,6 +396,10 @@ modeu5_note_us10_monthly_trade_signal_blocked = {
 	set_global_variable = {
 		name = modeu5_us10_monthly_trade_signal_quantity
 		value = { value = global_var:modeu5_us10_monthly_trade_signal_quantity add = scope:modeu5_us10_monthly_trade_signal_delta }
+	}
+	set_global_variable = {
+		name = modeu5_us10_monthly_trade_signal_estimated_goods_quantity
+		value = { value = global_var:modeu5_us10_monthly_trade_signal_estimated_goods_quantity add = scope:modeu5_us10_monthly_trade_signal_estimated_goods_delta }
 	}
 }
 

@@ -72,6 +72,34 @@ Inter-market stock transfer remains available only through explicit calls to:
 modeu5_resolve_inter_market_stock_transfer
 ```
 
+## Capacity-To-Quantity Diagnostics
+
+ModeU5 now generates a static transport-cost helper per good from vanilla
+`common/goods`:
+
+```txt
+modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+```
+
+The helper computes:
+
+```txt
+modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+```
+
+This is an estimated conversion from a known capacity-like volume, not an exact
+vanilla trade quantity. Missing static `transport_cost` fields use the vanilla
+default `1`, and denominators are clamped so the helper cannot divide by zero.
+
+A separate debug probe tests the possible direct trade-scope formula:
+
+```txt
+good_quantity = trade_volume / traded_goods:transport_cost
+```
+
+That direct formula remains `TO_TEST` in TECH-01 until a controlled runtime log
+confirms it. It must not drive stock transfer while unconfirmed.
+
 ## Acceptance Criteria
 
 - A monthly queued consumption request is processed once and removed.
@@ -80,6 +108,8 @@ modeu5_resolve_inter_market_stock_transfer
 - Monthly runtime counters expose processed requests and blocked trade signals.
 - Positive `traded_in_market:<good>` never triggers stock transfer without an
   explicit requested quantity.
+- Capacity-to-goods conversion helpers expose `modeu5_computed_goods_quantity`
+  and are labelled as estimated/diagnostic, never actual vanilla quantity.
 
 ## Test Protocol
 
@@ -122,6 +152,33 @@ event modeu5_us10_debug.1
 Choose:
 
 ```txt
+Run US-10 trade-capacity conversion test
+```
+
+Then run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Probe direct trade quantity formula
+```
+
+This probe may return `BLOCKED` if no trade scope is iterated. Script errors
+from this probe mean TECH-01 138 remains unconfirmed.
+
+Then run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
 Run US-10 demand-resolution test
 ```
 
@@ -144,5 +201,9 @@ Logs remain the source of truth for PR validation comments.
 - Live vanilla Pop/Estate requested quantities remain fallback-only.
 - Exact vanilla trade requested/actual quantities remain fallback-only.
 - `traded_in_market:<good>` is used only as a blocked trade signal.
+- The generated transport-cost helper estimates quantity from a known capacity
+  volume. It does not prove the exact vanilla trade quantity endpoint.
+- The direct `trade_volume / traded_goods:transport_cost` formula is probe-only
+  until TECH-01 138 is confirmed by runtime logs.
 - Location-level Pop integration and US-04 read/reset timing remain follow-up
   work.

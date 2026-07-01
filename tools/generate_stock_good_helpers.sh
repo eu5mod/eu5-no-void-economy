@@ -7,19 +7,9 @@ output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_gener
 modifiers_output="${2:-$repo_root/main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt}"
 modifiers_localization_output="${3:-$repo_root/main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml}"
 
-goods=(
-	cotton sugar tobacco
-	tar porcelain naval_supplies firearms cannons weaponry glass steel cloth
-	fine_cloth liquor beer paper books jewelry leather tools masonry
-	lacquerware pottery furniture
-	horses clay sand coal iron copper goods_gold silver stone tin lead silk
-	dyes incense tea cocoa coffee fiber_crops ivory lumber salt medicaments
-	gems pearls amber saltpeter alum wine elephants marble mercury saffron
-	pepper cloves chili
-	wool wild_game fur fish wheat maize rice millet legumes potato livestock
-	olives fruit beeswax
-	slaves_goods
-)
+# shellcheck source=tools/modeu5_goods.sh
+source "$repo_root/tools/modeu5_goods.sh"
+goods=("${modeu5_goods[@]}")
 
 mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$modifiers_localization_output")"
 

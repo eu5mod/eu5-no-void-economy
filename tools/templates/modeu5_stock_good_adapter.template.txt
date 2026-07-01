@@ -2817,8 +2817,12 @@ modeu5_probe_us10_monthly_market_trade_signal_good___GOOD__ = {
 
 	if = {
 		limit = { scope:modeu5_us10_monthly_trade_signal_quantity > 0 }
+		modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
+			capacity_volume = scope:modeu5_us10_monthly_trade_signal_quantity
+		}
 		modeu5_note_us10_monthly_trade_signal_blocked = {
 			quantity = scope:modeu5_us10_monthly_trade_signal_quantity
+			estimated_goods_quantity = scope:modeu5_computed_goods_quantity
 		}
 	}
 }

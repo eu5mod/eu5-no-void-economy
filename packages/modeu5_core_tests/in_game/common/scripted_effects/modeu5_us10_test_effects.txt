@@ -7,6 +7,12 @@ modeu5_us10_clear_test_results = {
 	remove_global_variable = modeu5_test_us10_monthly_runtime_passed
 	remove_global_variable = modeu5_test_us10_monthly_runtime_failed
 	remove_global_variable = modeu5_test_us10_monthly_runtime_blocked
+	remove_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
+	remove_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
+	remove_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
+	remove_global_variable = modeu5_test_us10_direct_trade_formula_passed
+	remove_global_variable = modeu5_test_us10_direct_trade_formula_failed
+	remove_global_variable = modeu5_test_us10_direct_trade_formula_blocked
 }
 
 modeu5_us10_clear_wheat_stock_in_market = {
@@ -542,5 +548,152 @@ modeu5_debug_run_us10_monthly_runtime_tests = {
 	else = {
 		set_global_variable = modeu5_test_us10_monthly_runtime_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us10_monthly_runtime_integration reason=missing_FRA_or_runtime_not_ready"
+	}
+}
+
+modeu5_debug_run_us10_trade_capacity_conversion_tests = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_us10_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=us10_trade_capacity_conversion"
+
+	modeu5_compute_goods_quantity_from_trade_capacity_good_wheat = {
+		capacity_volume = 20
+	}
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_wheat_capacity value = scope:modeu5_trade_capacity_volume_raw }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_wheat_transport_cost value = scope:modeu5_good_transport_cost }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_wheat_quantity value = scope:modeu5_computed_goods_quantity }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_wheat_defaulted value = scope:modeu5_good_transport_cost_defaulted }
+
+	set_variable = { name = modeu5_us10_ui_conversion_wheat_capacity value = scope:modeu5_us10_conversion_wheat_capacity }
+	set_variable = { name = modeu5_us10_ui_conversion_wheat_transport_cost value = scope:modeu5_us10_conversion_wheat_transport_cost }
+	set_variable = { name = modeu5_us10_ui_conversion_wheat_quantity value = scope:modeu5_us10_conversion_wheat_quantity }
+	set_variable = { name = modeu5_us10_ui_conversion_wheat_defaulted value = scope:modeu5_us10_conversion_wheat_defaulted }
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_capacity').GetValue|2] transport_cost=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_defaulted').GetValue|0]"
+
+	modeu5_compute_goods_quantity_from_trade_capacity_good_copper = {
+		capacity_volume = 20
+	}
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_capacity value = scope:modeu5_trade_capacity_volume_raw }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_transport_cost value = scope:modeu5_good_transport_cost }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_quantity value = scope:modeu5_computed_goods_quantity }
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_defaulted value = scope:modeu5_good_transport_cost_defaulted }
+
+	set_variable = { name = modeu5_us10_ui_conversion_copper_capacity value = scope:modeu5_us10_conversion_copper_capacity }
+	set_variable = { name = modeu5_us10_ui_conversion_copper_transport_cost value = scope:modeu5_us10_conversion_copper_transport_cost }
+	set_variable = { name = modeu5_us10_ui_conversion_copper_quantity value = scope:modeu5_us10_conversion_copper_quantity }
+	set_variable = { name = modeu5_us10_ui_conversion_copper_defaulted value = scope:modeu5_us10_conversion_copper_defaulted }
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_capacity').GetValue|2] transport_cost=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_defaulted').GetValue|0]"
+
+	modeu5_compute_goods_quantity_from_trade_capacity_with_route_good_copper = {
+		capacity_volume = 20
+		route_cost_multiplier = 2
+	}
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_route_quantity value = scope:modeu5_computed_goods_quantity }
+	set_variable = { name = modeu5_us10_ui_conversion_copper_route_quantity value = scope:modeu5_us10_conversion_copper_route_quantity }
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 route_cost_multiplier=2 computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_route_quantity').GetValue|4]"
+
+	modeu5_compute_goods_quantity_from_trade_capacity_good_copper = {
+		capacity_volume = 0
+	}
+	save_temporary_scope_value_as = { name = modeu5_us10_conversion_copper_zero_quantity value = scope:modeu5_computed_goods_quantity }
+
+	save_temporary_scope_value_as = { name = modeu5_us10_assertion_failure_count value = 0 }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_wheat_transport_cost > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_transport_cost_positive" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_wheat_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_quantity_positive" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_copper_transport_cost > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_transport_cost_positive" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_copper_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_quantity_positive" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_copper_route_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_route_quantity_positive" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_copper_route_quantity < scope:modeu5_us10_conversion_copper_quantity } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_route_multiplier_reduces_quantity" }
+	if = { limit = { NOT = { scope:modeu5_us10_conversion_copper_zero_quantity = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_zero_capacity_returns_zero" }
+
+	if = {
+		limit = { scope:modeu5_us10_assertion_failure_count = 0 }
+		set_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
+		debug_log = "ModeU5 TEST PASS scenario=us10_trade_capacity_conversion"
+	}
+	else = {
+		set_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us10_trade_capacity_conversion"
+		error_log = "ModeU5 deterministic US-10 trade-capacity conversion test failed; see DUMP and assertion lines."
+	}
+}
+
+modeu5_debug_probe_us10_direct_trade_quantity_formula = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_us10_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=us10_direct_trade_quantity_formula"
+	save_temporary_scope_as = modeu5_direct_trade_probe_controller
+
+	set_global_variable = { name = modeu5_test_us10_direct_trade_formula_trade_count value = 0 }
+	set_global_variable = { name = modeu5_test_us10_direct_trade_formula_error_count value = 0 }
+	set_variable = { name = modeu5_us10_ui_direct_trade_formula_trade_count value = 0 }
+	set_variable = { name = modeu5_us10_ui_direct_trade_formula_trade_volume value = 0 }
+	set_variable = { name = modeu5_us10_ui_direct_trade_formula_transport_cost value = 0 }
+	set_variable = { name = modeu5_us10_ui_direct_trade_formula_quantity value = 0 }
+
+	every_trade = {
+		save_temporary_scope_value_as = {
+			name = modeu5_direct_trade_volume
+			value = {
+				value = trade_volume
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_direct_trade_transport_cost
+			value = {
+				value = traded_goods:transport_cost
+				min = 0.0001
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_direct_trade_computed_goods_quantity
+			value = {
+				value = scope:modeu5_direct_trade_volume
+				divide = scope:modeu5_direct_trade_transport_cost
+				min = 0
+			}
+		}
+		set_global_variable = {
+			name = modeu5_test_us10_direct_trade_formula_trade_count
+			value = {
+				value = global_var:modeu5_test_us10_direct_trade_formula_trade_count
+				add = 1
+			}
+		}
+		scope:modeu5_direct_trade_probe_controller = {
+			set_variable = { name = modeu5_us10_ui_direct_trade_formula_trade_count value = global_var:modeu5_test_us10_direct_trade_formula_trade_count }
+			set_variable = { name = modeu5_us10_ui_direct_trade_formula_trade_volume value = scope:modeu5_direct_trade_volume }
+			set_variable = { name = modeu5_us10_ui_direct_trade_formula_transport_cost value = scope:modeu5_direct_trade_transport_cost }
+			set_variable = { name = modeu5_us10_ui_direct_trade_formula_quantity value = scope:modeu5_direct_trade_computed_goods_quantity }
+		}
+		if = {
+			limit = { NOT = { scope:modeu5_direct_trade_transport_cost > 0 } }
+			set_global_variable = {
+				name = modeu5_test_us10_direct_trade_formula_error_count
+				value = {
+					value = global_var:modeu5_test_us10_direct_trade_formula_error_count
+					add = 1
+				}
+			}
+		}
+	}
+
+	debug_log = "ModeU5 TRADE DIRECT FORMULA trade_count=[THIS.GetVariable('modeu5_us10_ui_direct_trade_formula_trade_count').GetValue|0] trade_volume=[THIS.GetVariable('modeu5_us10_ui_direct_trade_formula_trade_volume').GetValue|4] transport_cost=[THIS.GetVariable('modeu5_us10_ui_direct_trade_formula_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_direct_trade_formula_quantity').GetValue|4]"
+
+	if = {
+		limit = { NOT = { global_var:modeu5_test_us10_direct_trade_formula_trade_count > 0 } }
+		set_global_variable = modeu5_test_us10_direct_trade_formula_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us10_direct_trade_quantity_formula reason=no_trade_scope_iterated"
+	}
+	else_if = {
+		limit = { global_var:modeu5_test_us10_direct_trade_formula_error_count = 0 }
+		set_global_variable = modeu5_test_us10_direct_trade_formula_passed
+		debug_log = "ModeU5 TEST PASS scenario=us10_direct_trade_quantity_formula"
+	}
+	else = {
+		set_global_variable = modeu5_test_us10_direct_trade_formula_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us10_direct_trade_quantity_formula"
+		error_log = "ModeU5 direct trade quantity formula probe failed; inspect script errors and DUMP lines."
 	}
 }
