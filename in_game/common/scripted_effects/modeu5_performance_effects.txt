@@ -215,6 +215,136 @@ modeu5_prepare_human_relevant_full_ledger_markets = {
 	}
 }
 
+modeu5_clear_detailed_accounting_promoted_markets = {
+	if = {
+		limit = { has_global_variable_list = modeu5_detailed_accounting_promoted_markets }
+		clear_global_variable_list = modeu5_detailed_accounting_promoted_markets
+	}
+}
+
+modeu5_mark_market_detailed_accounting_promoted = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = modeu5_detailed_accounting_promoted_markets }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_detailed_accounting_promoted_markets
+			target = scope:modeu5_promotion_market
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_detailed_accounting_promoted_markets
+					target = scope:modeu5_promotion_market
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_detailed_accounting_promoted_markets
+			target = scope:modeu5_promotion_market
+		}
+	}
+}
+
+modeu5_reset_market_promotion_metrics = {
+	remove_global_variable = modeu5_perf14_promotion_last_result
+	remove_global_variable = modeu5_perf14_promotion_noop_already_promoted
+	remove_global_variable = modeu5_perf14_promotion_blocked_not_human_relevant
+	remove_global_variable = modeu5_perf14_promotion_capacity_country_count
+	remove_global_variable = modeu5_perf14_promotion_market_goods_checked
+	remove_global_variable = modeu5_perf14_promotion_goods_materialized
+	remove_global_variable = modeu5_perf14_promotion_allocated_total
+	remove_global_variable = modeu5_perf14_promotion_delta_total
+	remove_global_variable = modeu5_perf14_promotion_aggregate_total_before
+	remove_global_variable = modeu5_perf14_promotion_country_sum_total_before
+	remove_global_variable = modeu5_perf14_promotion_zero_source_count
+	remove_global_variable = modeu5_perf14_promotion_zero_capacity_failures
+	remove_global_variable = modeu5_perf14_promotion_negative_capacity_failures
+	remove_global_variable = modeu5_perf14_promotion_overmaterialized_failures
+	remove_global_variable = modeu5_perf14_promotion_validation_failures
+	remove_global_variable = modeu5_perf14_promotion_failure_detected
+
+	set_global_variable = { name = modeu5_perf14_promotion_last_result value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_noop_already_promoted value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_blocked_not_human_relevant value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_capacity_country_count value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_market_goods_checked value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_goods_materialized value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_allocated_total value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_delta_total value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_aggregate_total_before value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_country_sum_total_before value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_zero_source_count value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_zero_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_negative_capacity_failures value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_overmaterialized_failures value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_validation_failures value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 0 }
+}
+
+modeu5_refresh_market_promotion_country_capacities = {
+	scope:modeu5_promotion_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+	modeu5_rebuild_countries_present_in_market = yes
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_country
+			scope:modeu5_promotion_market = { save_temporary_scope_as = modeu5_market }
+			modeu5_recalculate_country_market_capacity_shared = yes
+			set_global_variable = {
+				name = modeu5_perf14_promotion_capacity_country_count
+				value = {
+					value = global_var:modeu5_perf14_promotion_capacity_country_count
+					add = 1
+				}
+			}
+		}
+	}
+}
+
+modeu5_promote_market_to_detailed_accounting = {
+	$market$ = {
+		save_temporary_scope_as = modeu5_promotion_market
+		save_temporary_scope_as = modeu5_market
+	}
+
+	modeu5_reset_market_promotion_metrics = yes
+
+	if = {
+		limit = { modeu5_market_detailed_accounting_promoted_trigger = yes }
+		set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
+		set_global_variable = { name = modeu5_perf14_promotion_noop_already_promoted value = 1 }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				NOT = { has_global_variable_list = modeu5_performance_relevant_markets }
+				NOT = {
+					is_target_in_global_variable_list = {
+						name = modeu5_performance_relevant_markets
+						target = scope:modeu5_promotion_market
+					}
+				}
+			}
+		}
+		set_global_variable = { name = modeu5_perf14_promotion_blocked_not_human_relevant value = 1 }
+	}
+	else = {
+		modeu5_refresh_market_promotion_country_capacities = yes
+		modeu5_promote_market_to_detailed_accounting_all_goods = yes
+
+		if = {
+			limit = { global_var:modeu5_perf14_promotion_failure_detected = 0 }
+			modeu5_mark_market_detailed_accounting_promoted = yes
+			set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
+		}
+	}
+}
+
 modeu5_perf13_reset_active_repair_metrics = {
 	remove_global_variable = modeu5_perf13_active_repair_goods_scanned
 	remove_global_variable = modeu5_perf13_active_repair_market_good_scans

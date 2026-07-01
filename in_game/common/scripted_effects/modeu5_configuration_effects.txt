@@ -135,6 +135,7 @@ modeu5_prepare_country_market_accounting_decision = {
 
 	save_temporary_scope_value_as = { name = modeu5_detailed_country_market_accounting_enabled value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_market_level_fallback_required value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_detailed_country_market_stock_mutation_allowed value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_accounting_decision_country_is_human value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_accounting_decision_market_human_relevant value = 0 }
 
@@ -180,6 +181,15 @@ modeu5_prepare_country_market_accounting_decision = {
 		}
 		else = {
 			save_temporary_scope_value_as = { name = modeu5_market_level_fallback_required value = 1 }
+		}
+	}
+
+	if = {
+		limit = { modeu5_detailed_country_market_accounting_enabled_trigger = yes }
+		scope:modeu5_accounting_market = { save_temporary_scope_as = modeu5_market }
+		if = {
+			limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
+			save_temporary_scope_value_as = { name = modeu5_detailed_country_market_stock_mutation_allowed value = 1 }
 		}
 	}
 }

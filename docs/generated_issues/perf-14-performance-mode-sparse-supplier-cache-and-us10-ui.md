@@ -158,15 +158,17 @@ Implementation note for the first stacked PR:
   the positive human market-presence Performance Mode decision, and negative
   Performance Mode decisions for AI countries and human countries in markets not
   returned by `every_market_present_in_country`.
-- The first stacked PR deliberately does not mutate stock, implement
-  market-level fallback, split aggregate stock into country records, or prove
+- The first stacked PR deliberately does not route real runtime stock mutations
+  through the Performance Mode gate, implement market-level fallback, or prove
   the foreign-building-only negative case.
+- The promotion initializer exists so later stock-affecting PRs have a safe
+  boundary between read-only eligibility and detailed mutation permission.
 
-### Required before stock-affecting fallback PRs
+### Promotion initializer
 
 Before any later PR routes US-03 decay, US-10 fallback, US-17, US-20, or any
-other stock-affecting path through the Performance Mode accounting gate, add a
-dedicated promotion initializer:
+other stock-affecting path through the Performance Mode accounting gate, the
+target market must have completed the dedicated promotion initializer:
 
 ```txt
 modeu5_promote_market_to_detailed_accounting = {
@@ -182,8 +184,8 @@ modeu5_promote_market_to_detailed_accounting = {
 
 Promotion requirements:
 
-- delegate to existing US-02 capacity and CORE-02 allocation helpers wherever
-  possible instead of copying allocation logic;
+- delegate to existing US-02 capacity refresh and CORE-02-style
+  capacity-proportional allocation policy;
 - split any existing market-level aggregate stock by the approved
   capacity-proportional allocation policy;
 - preserve `sum(country x market stock) == market aggregate stock`;
@@ -191,14 +193,33 @@ Promotion requirements:
 - only after successful promotion may stock-affecting code use detailed
   country x market mutation paths for that market.
 
+Implemented boundary:
+
+- `modeu5_detailed_country_market_accounting_enabled` means read-only
+  eligibility only.
+- `modeu5_market_detailed_accounting_promoted_trigger` proves that a market has
+  completed detailed-accounting promotion in Performance Mode.
+- `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is the
+  stricter gate for later stock-affecting paths. In Normal Mode it remains true
+  for detailed accounting; in Performance Mode it also requires the promotion
+  marker.
+- `modeu5_promote_market_to_detailed_accounting` is idempotent, rebuilds the
+  market countries-present cache, refreshes country x market capacity for
+  present countries, materializes aggregate-only stock into country records by
+  capacity share, preserves the market aggregate, and marks affected market-good
+  records dirty for later validation.
+- `event modeu5_perf14_debug.1` covers positive aggregate-only promotion,
+  idempotent re-run, partial-state promotion where some country stock already
+  exists, and a negative non-human-relevant market path.
+
 ### Phase 2 — accounting gate and fallback operators
 
 - Introduce a shared accounting gate effect used before country x market map writes.
 - Add market-level-only variants or branches for systems that change stock while detailed accounting is disabled.
 - Ensure market aggregate deltas remain consistent with centralized stock mutation semantics.
 - Add audit logs for fallback usage.
-- Block stock-affecting fallback routing until
-  `modeu5_promote_market_to_detailed_accounting` exists and is tested.
+- Block stock-affecting fallback routing unless
+  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true.
 
 ### Phase 3 — sparse supplier lists
 
