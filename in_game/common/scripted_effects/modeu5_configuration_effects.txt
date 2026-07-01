@@ -50,6 +50,30 @@ modeu5_enter_human_relevant_accounting_persistence = {
 	set_global_variable = modeu5_accounting_persistence_human_relevant
 }
 
+modeu5_apply_debug_mode_cmm_defaults = {
+	if = {
+		limit = { debug_only = yes }
+		if = {
+			limit = {
+				has_variable_map = cmm
+				is_key_in_variable_map = {
+					name = cmm
+					target = flag:no_void_economy__nve_debug_messages
+				}
+			}
+			remove_from_variable_map = {
+				name = cmm
+				key = flag:no_void_economy__nve_debug_messages
+			}
+		}
+		add_to_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_debug_messages
+			value = 3
+		}
+	}
+}
+
 modeu5_initialize_configuration_state_effect = {
 	if = {
 		limit = {
@@ -69,9 +93,13 @@ modeu5_initialize_configuration_state_effect = {
 	}
 	modeu5_enter_minimal_accounting_persistence = yes
 	set_global_variable = modeu5_cmm_nve_main_enabled
+	modeu5_apply_debug_mode_cmm_defaults = yes
+	modeu5_refresh_configuration_from_cmm_country_scope = yes
 }
 
 modeu5_refresh_configuration_from_cmm_country_scope = {
+	modeu5_apply_debug_mode_cmm_defaults = yes
+
 	if = {
 		limit = {
 			has_variable_map = cmm
