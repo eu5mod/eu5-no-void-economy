@@ -75,26 +75,27 @@ modeu5_apply_debug_mode_cmm_defaults = {
 }
 
 modeu5_initialize_configuration_state_effect = {
-	if = {
-		limit = {
-			NOT = { has_global_variable = modeu5_core_package_loaded }
-		}
-		set_global_variable = modeu5_core_package_loaded
-	}
-	set_global_variable = {
-		name = modeu5_core_package_version
-		value = 100
-	}
+    if = {
+        limit = {
+            NOT = { has_global_variable = modeu5_core_package_loaded }
+        }
+        set_global_variable = modeu5_core_package_loaded
+    }
 
-	modeu5_enter_normal_runtime_mode = yes
-	set_global_variable = {
-		name = modeu5_debug_level
-		value = 0
-	}
-	modeu5_enter_minimal_accounting_persistence = yes
-	set_global_variable = modeu5_cmm_nve_main_enabled
-	modeu5_apply_debug_mode_cmm_defaults = yes
-	modeu5_refresh_configuration_from_cmm_country_scope = yes
+    set_global_variable = {
+        name = modeu5_core_package_version
+        value = 100
+    }
+
+    modeu5_enter_normal_runtime_mode = yes
+
+    set_global_variable = {
+        name = modeu5_debug_level
+        value = 0
+    }
+
+    modeu5_enter_minimal_accounting_persistence = yes
+    set_global_variable = modeu5_cmm_nve_main_enabled
 }
 
 modeu5_refresh_configuration_from_cmm_country_scope = {
