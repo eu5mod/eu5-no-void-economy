@@ -20,47 +20,54 @@ This mode intend to reflect the real economy; only good that are sold generate a
 
 The **Core** ensure that only sold goods creates a revenue & estates adapt their productions to the revenues. We had to include minor balances to keep revenues consistant. 
 The **Community Balance Options**, are a options you can activate/deactivate to balance the game. 
- - 100 to 199 - Are economic flavour options designed to increase realism & strategic depth
+ - 100 to 199 - Increase economic realism & strategic depth
  - 200 to 299 - Remove punitive gameplay
  - 300 to 399 - Create balancing "anchor", Only fixed price can allow to balance the game.
- - 400 to 499 - Balance
- - 500 to 599 - Flavour
-The **Extensions** that provide Balance change but requires to be activated at the begining of the game.
+ - 400 to 499 - Military & Rebel balance
+ - 500 to 599 - Increase Military realism & strategic depth
 
-### Core (Required) - Community No Void Economics Package
+The **Extensions** that provide Balance change but requires to be activated at the begining of the campain.
 
- - Create individual storage capacity for each country (Status : ✅ )
- - Move stored goods safely when territory changes owner (Status : ✅)
- - Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ⏳)
- - Estate will adapt their productions of a given good to avoid overproduction (Status : ⏳)
- - AI will be sensitive to these change in building&RGO rentabilities (Status : ⏳)
- - Economy 10% faster (Status : ✅ ) - Required to compensate revenue loss
- - Estate consumption increasead 1.5% (Status : ⏳) - Required to compensate economic speed
- - Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
- - MarketPlaces gives a 5% Local Burgher Power instead of 10% (Status : ⏳) - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
+### Gameplay - Community Balance Patch
 
-#### Community Balance Options :
-__**Philosophy**__ : Replace punitive mechanism by constraints (Rebel, Coalition, Cassus Belli)
+ 1.⏳ [Imperial Hurbis](https://github.com/eu5mod/eu5-no-void-economy/issues/112) - Implement Empire Military Difficulties
+ 2.⏳ [War Exhaustion a Political Pressure](https://github.com/eu5mod/eu5-no-void-economy/issues/68) - Implement War Impact on a country stability & a governement Legitimacy 
+ 3.⏳ [Trade can't be profitable both way](https://github.com/eu5mod/eu5-no-void-economy/issues/118) - Trade profit is de difference of price between market minus logitic cost
+ 4.✅ [Country have own stocks](https://github.com/eu5mod/eu5-no-void-economy/milestone/1) - Country have own stocks **🔵 Required for many mechanic such as Boycotts**
 
- - **Option 100:** Goods decay : Country looses 1% of their stored goods monthly (Status : ⏳)
- - **Option 101:** Production bonus per building level is 1.5% instead of 1% (Status : ⏳)  - Further local spécialisqtion
- - **Option 200:** Remove Average Control Penalty on research seed (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
- - **Option 300:** RGO prices don't scale with Good's Market Price. (Status : ❌ : Need modding endpoint) -  Mechanic introduced in 1.2
- - **Option 301:** Maintenance price don't increase with time (Status : ❌ : Need modding endpoint) - Mechanic introduced in 1.3
- - **Option 400:** Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed ) (Status : ⏳)
- - **Option 401:** Rebel threshold adjusted (Status : ⏳)
- - **Option 402:** Shorter war & War exhaustion rework. (Status : ⏳)
- - **Option 500:** Independantist don't start the war Initial Owner get a CB for 12  year (Status : ⏳)
- - **Option 501:** New "Autonomous Province" type of subject, can be granted to Rebel under specific condition. (Status : ⏳)
- - **Option 502:** Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  (Status : ❌ : Need  Analysis)
+### Economics Design & Balance ###
+
+#### Design
+ - 🔵 ✅ Boycotts & War block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own) (Status : ✅)
+ - 🔵 ✅ Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold (Status : ✅)
+ - 🔵 ⏳ Economy 10% faster (Status : ⏳ ) - To compensate revenue loss
+ - 🔵 ⏳ Supply influence pop - Required to compensate economic speed
+ - 🔵 ⏳ Sliders based on Wealth not Tax base (Status : ⏳) - Required to compensate economic speed
+ - 🔵 ⏳ Monthly goods decay
+
+
+#### Balance
+ 101. ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
+ 102. ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
+ 103. ⏳Redesign the Economic Base
+ 200. (❌ : Need modding endpoint)Remove Average Control Penalty on research seed - Mechanic introduced in 1.3
+ 300. (❌ : Need modding endpoint)RGO prices don't scale with Good's Market Price -  Mechanic introduced in 1.2
+ 301. (❌ : Need modding endpoint)Maintenance price don't increase with time - Mechanic introduced in 1.3
+
+
+### War & Rebel Design & Balance ###
+
+#### Design
+ 500. ⏳Independantist don't start the war Initial Owner get a CB for 12  year
+ 501. ⏳New "Autonomous Province" type of subject, can be granted to Rebel under specific condition
+ 502. (Status : ❌ : Need Analysis) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy.  
+
+#### Balance
+ 400. ⏳Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed )
+ 401. ⏳Rebel threshold adjusted
+ 402. ⏳Shorter war
 
 ⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
-
-
-<!--
- ### Economic Balance Extension (Optional)
- We remove punitive incentive (4 & 5) and rebalance economy toward highet production but costs (sliders) (2&3). You should feel building creation more rewarding while penalising overextension.
-  -->
 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)
