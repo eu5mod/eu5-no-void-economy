@@ -639,13 +639,17 @@ modeu5_debug_probe_us10_direct_trade_quantity_formula = {
 				min = 0
 			}
 		}
-		save_temporary_scope_value_as = {
-			name = modeu5_direct_trade_transport_cost
-			value = {
-				value = traded_goods:transport_cost
-				min = 0.0001
+
+		traded_goods = {
+			save_temporary_scope_value_as = {
+				name = modeu5_direct_trade_transport_cost
+				value = {
+					value = transport_cost
+					min = 0.0001
+				}
 			}
 		}
+
 		save_temporary_scope_value_as = {
 			name = modeu5_direct_trade_computed_goods_quantity
 			value = {
@@ -654,6 +658,7 @@ modeu5_debug_probe_us10_direct_trade_quantity_formula = {
 				min = 0
 			}
 		}
+	}
 		set_global_variable = {
 			name = modeu5_test_us10_direct_trade_formula_trade_count
 			value = {
