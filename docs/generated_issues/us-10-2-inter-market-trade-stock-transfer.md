@@ -36,8 +36,9 @@ resolver core:
 
 Full vanilla trade iteration remains gated by TECH-01 056. Until the exact
 gameplay-script quantity is confirmed, deterministic tests use an explicit
-ModeU5 request. Full score-based seller tie-breaking and per-candidate exclusion
-diagnostics remain follow-up work.
+ModeU5 request. Full score-based seller tie-breaking and exhaustive candidate UI
+remain follow-up work; audit runtime emits bounded seller scan and mutation
+traces in `debug.log`.
 
 ## Runtime position
 
@@ -106,7 +107,7 @@ Related US: US-10.3, US-10-UI
 - [ ] Buyer capacity is never exceeded.
 - [ ] Unsatisfied quantity equals request minus actual transfer.
 - [ ] All mutations use `modeu5_transfer_stock`.
-- [ ] Debug shows per-candidate sellers, scores, capacity, quantities, and exclusions.
+- [x] Audit debug shows bounded per-candidate sellers, buckets, scores, quantities, and exclusions.
 
 ## Manual test scenario
 

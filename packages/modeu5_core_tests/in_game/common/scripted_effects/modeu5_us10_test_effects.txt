@@ -621,6 +621,5 @@ modeu5_debug_run_us10_trade_capacity_conversion_tests = {
 modeu5_debug_probe_us10_direct_trade_quantity_formula = {
 	modeu5_enter_test_audit_runtime_mode = yes
 	modeu5_us10_clear_test_results = yes
-	debug_log = "ModeU5 TEST BLOCKED scenario=us10_direct_trade_quantity_formula reason=transport_cost_not_script_readable_from_goods_scope_use_generated_constants"
 	set_global_variable = modeu5_test_us10_direct_trade_formula_blocked
 }

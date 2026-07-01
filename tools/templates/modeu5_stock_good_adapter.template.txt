@@ -2484,6 +2484,76 @@ modeu5_prepare_us10_candidate_good___GOOD__ = {
 	}
 }
 
+modeu5_audit_log_us10_candidate_trace_good___GOOD__ = {
+	if = {
+		limit = {
+			modeu5_audit_enabled_trigger = yes
+			exists = scope:modeu5_us10_resolution_controller
+		}
+		scope:modeu5_us10_resolution_controller = {
+			if = {
+				limit = { local_var:modeu5_us10_audit_candidate_trace_count < 5 }
+				change_local_variable = { name = modeu5_us10_audit_candidate_trace_count add = 1 }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_index value = local_var:modeu5_us10_audit_candidate_trace_count }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_stock value = scope:modeu5_us10_candidate_stock }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_allowed value = scope:modeu5_us10_candidate_allowed }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_exclusion_reason value = scope:modeu5_us10_candidate_exclusion_reason }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+				set_variable = { name = modeu5_debug_us10_candidate_trace_score value = scope:modeu5_us10_stock_candidate_score }
+				debug_log = "ModeU5 US-10 CANDIDATE TRACE phase=scan good=__GOOD__ index=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_index').GetValue|0] stock=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_stock').GetValue|2] allowed=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_allowed').GetValue|0] exclusion_reason=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_exclusion_reason').GetValue|0] bucket=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_bucket').GetValue|0] score=[THIS.GetVariable('modeu5_debug_us10_candidate_trace_score').GetValue|2]"
+			}
+		}
+	}
+}
+
+modeu5_audit_log_us10_consumption_mutation_trace_good___GOOD__ = {
+	if = {
+		limit = {
+			modeu5_audit_enabled_trigger = yes
+			exists = scope:modeu5_us10_resolution_controller
+		}
+		scope:modeu5_us10_resolution_controller = {
+			if = {
+				limit = { local_var:modeu5_us10_audit_mutation_trace_count < 5 }
+				change_local_variable = { name = modeu5_us10_audit_mutation_trace_count add = 1 }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_index value = local_var:modeu5_us10_audit_mutation_trace_count }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_score value = scope:modeu5_us10_stock_candidate_score }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_stock_before value = scope:modeu5_us10_candidate_stock }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_requested value = scope:modeu5_requested_quantity }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_selected value = scope:modeu5_us10_candidate_take_quantity }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_actual value = scope:modeu5_actual_removed_quantity }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_remaining value = scope:modeu5_remaining_quantity }
+				debug_log = "ModeU5 US-10 MUTATION TRACE phase=consumption good=__GOOD__ index=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_index').GetValue|0] bucket=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_bucket').GetValue|0] score=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_score').GetValue|2] stock_before=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_stock_before').GetValue|2] selected=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_selected').GetValue|2] actual_removed=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_actual').GetValue|2] remaining_after=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_remaining').GetValue|2]"
+			}
+		}
+	}
+}
+
+modeu5_audit_log_us10_transfer_mutation_trace_good___GOOD__ = {
+	if = {
+		limit = {
+			modeu5_audit_enabled_trigger = yes
+			exists = scope:modeu5_us10_resolution_controller
+		}
+		scope:modeu5_us10_resolution_controller = {
+			if = {
+				limit = { local_var:modeu5_us10_audit_mutation_trace_count < 5 }
+				change_local_variable = { name = modeu5_us10_audit_mutation_trace_count add = 1 }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_index value = local_var:modeu5_us10_audit_mutation_trace_count }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_bucket value = scope:modeu5_us10_candidate_priority_bucket }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_score value = scope:modeu5_us10_stock_candidate_score }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_stock_before value = scope:modeu5_us10_candidate_stock }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_requested value = scope:modeu5_requested_quantity }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_selected value = scope:modeu5_us10_transfer_requested_before }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_actual value = scope:modeu5_actual_transferred_quantity }
+				set_variable = { name = modeu5_debug_us10_mutation_trace_remaining value = scope:modeu5_remaining_quantity }
+				debug_log = "ModeU5 US-10 MUTATION TRACE phase=transfer good=__GOOD__ index=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_index').GetValue|0] bucket=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_bucket').GetValue|0] score=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_score').GetValue|2] stock_before=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_stock_before').GetValue|2] requested_before=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_selected').GetValue|2] actual_transferred=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_actual').GetValue|2] remaining_after=[THIS.GetVariable('modeu5_debug_us10_mutation_trace_remaining').GetValue|2]"
+			}
+		}
+	}
+}
+
 modeu5_scan_us10_candidates_good___GOOD__ = {
 	# Candidate scan counters must live on a persistent country/controller scope.
 	# Do not use global variables: zero-valued globals can read back as unset.
@@ -2495,6 +2565,7 @@ modeu5_scan_us10_candidates_good___GOOD__ = {
 		set_local_variable = { name = modeu5_us10_best_stock_priority_score value = -100000000 }
 		set_local_variable = { name = modeu5_us10_best_candidate_stock value = 0 }
 		set_local_variable = { name = modeu5_us10_best_candidate_bucket value = 999 }
+		set_local_variable = { name = modeu5_us10_audit_candidate_trace_count value = 0 }
 	}
 
 	if = {
@@ -2506,6 +2577,7 @@ modeu5_scan_us10_candidates_good___GOOD__ = {
 				change_local_variable = { name = modeu5_us10_candidate_count add = 1 }
 			}
 			modeu5_prepare_us10_candidate_good___GOOD__ = yes
+			modeu5_audit_log_us10_candidate_trace_good___GOOD__ = yes
 			if = {
 				limit = { scope:modeu5_us10_candidate_allowed > 0 }
 				scope:modeu5_us10_resolution_controller = {
@@ -2603,6 +2675,7 @@ modeu5_resolve_stock_consumption_bucket_good___GOOD__ = {
 							min = 0
 						}
 					}
+					modeu5_audit_log_us10_consumption_mutation_trace_good___GOOD__ = yes
 				}
 			}
 		}
@@ -2622,6 +2695,7 @@ modeu5_resolve_stock_consumption_good___GOOD__ = {
 	modeu5_rebuild_countries_present_in_market = yes
 	scope:modeu5_consumer_country = {
 		save_temporary_scope_as = modeu5_us10_resolution_controller
+		set_local_variable = { name = modeu5_us10_audit_mutation_trace_count value = 0 }
 	}
 	modeu5_scan_us10_candidates_good___GOOD__ = yes
 	modeu5_store_stock_demand_resolution_outputs = yes
@@ -2654,6 +2728,7 @@ modeu5_resolve_inter_market_stock_transfer_bucket_good___GOOD__ = {
 					scope:modeu5_us10_candidate_allowed > 0
 					scope:modeu5_us10_candidate_priority_bucket = scope:modeu5_us10_current_bucket
 				}
+				save_temporary_scope_value_as = { name = modeu5_us10_transfer_requested_before value = scope:modeu5_remaining_quantity }
 				modeu5_transfer_stock = {
 					seller_country = scope:modeu5_seller_country
 					buyer_country = scope:modeu5_buyer_country
@@ -2678,6 +2753,7 @@ modeu5_resolve_inter_market_stock_transfer_bucket_good___GOOD__ = {
 						min = 0
 					}
 				}
+				modeu5_audit_log_us10_transfer_mutation_trace_good___GOOD__ = yes
 			}
 		}
 	}
@@ -2698,6 +2774,7 @@ modeu5_resolve_inter_market_stock_transfer_good___GOOD__ = {
 	modeu5_rebuild_countries_present_in_market = yes
 	scope:modeu5_buyer_country = {
 		save_temporary_scope_as = modeu5_us10_resolution_controller
+		set_local_variable = { name = modeu5_us10_audit_mutation_trace_count value = 0 }
 	}
 	modeu5_scan_us10_candidates_good___GOOD__ = yes
 	modeu5_store_stock_demand_resolution_outputs = yes

@@ -32,8 +32,10 @@ resolver core:
 - satisfied and unsatisfied quantities are exposed and handed to US-10.3;
 - no intra-market trade income, logistics cost, or trade-capacity use is created.
 
-Full score-based tie-breaking and per-candidate exclusion diagnostics remain
-follow-up work. Runtime vanilla Pop demand quantity remains `NOT_CONFIRMED`, so
+Full score-based tie-breaking and exhaustive candidate UI remain follow-up work.
+Audit runtime emits bounded per-candidate scan and mutation traces in `debug.log`
+so failures can be localized without persisting candidate lists in US-10.3
+outcome maps. Runtime vanilla Pop demand quantity remains `NOT_CONFIRMED`, so
 the deterministic test uses an explicit ModeU5 request.
 
 ## Runtime position
@@ -98,7 +100,7 @@ Related US: US-04, US-10-UI
 - [ ] Satisfied plus unsatisfied equals requested quantity.
 - [ ] Same-market resolution creates no trade economics.
 - [ ] Every mutation uses `modeu5_remove_stock`.
-- [ ] Debug shows per-candidate order, quantities by candidate, and exclusions.
+- [x] Audit debug shows bounded per-candidate buckets, scores, quantities, and exclusions.
 
 ## Manual test scenario
 

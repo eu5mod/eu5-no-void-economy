@@ -183,6 +183,9 @@ If no trade scope is iterated, the scenario is `BLOCKED`, not failed. If the
 engine rejects the chained value expression, inspect `error.log`; TECH-01 138
 must remain `TO_TEST`, and runtime stock movement must continue using explicit
 ModeU5 request quantities or the generated static diagnostic helper only.
+When the probe is blocked before a trade scope is available, the harness relies
+on the localized result event and intentionally avoids a raw blocked `debug_log`
+line to prevent a localization-disabled assertion in this console-command path.
 
 ## Manual scenario 1 — same-market consumption with bucket order
 
@@ -366,4 +369,6 @@ exact scenario lines and classify any remaining non-blocking noise.
 - Pop/location outcome tracking is validated through the explicit fallback caller
   until live Pop demand exposure is confirmed.
 - Candidate mutation is bucket-ordered. Full score-based tie-breaking and
-  per-candidate diagnostic dumps remain follow-up work.
+  exhaustive candidate UI remain follow-up work. Audit runtime now emits bounded
+  `ModeU5 US-10 CANDIDATE TRACE` and `ModeU5 US-10 MUTATION TRACE` log lines for
+  the first candidates/mutations in a resolver pass.
