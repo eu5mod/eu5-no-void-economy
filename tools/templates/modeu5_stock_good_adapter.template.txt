@@ -2736,13 +2736,17 @@ modeu5_queue_monthly_stock_consumption_good___GOOD__ = {
 		else = {
 			save_temporary_scope_value_as = { name = modeu5_monthly_consumption_pending_before value = 0 }
 		}
-		add_to_variable_map = {
-			name = modeu5_consumption___GOOD___pending_requested_by_market
-			key = scope:modeu5_monthly_consumption_market
+		save_temporary_scope_value_as = {
+			name = modeu5_monthly_consumption_pending_after
 			value = {
 				value = scope:modeu5_monthly_consumption_pending_before
 				add = scope:modeu5_monthly_consumption_requested_quantity
 			}
+		}
+		add_to_variable_map = {
+			name = modeu5_consumption___GOOD___pending_requested_by_market
+			key = scope:modeu5_monthly_consumption_market
+			value = scope:modeu5_monthly_consumption_pending_after
 		}
 	}
 }

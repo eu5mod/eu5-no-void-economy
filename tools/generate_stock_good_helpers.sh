@@ -143,14 +143,38 @@ text = re.sub(
     text,
 )
 
-bad_lines = [
-    line for line in text.splitlines()
-    if "add_to_variable_map" in line and "value = {" in line and " add = " in line
+def find_map_mutation_blocks(source: str) -> list[tuple[int, str]]:
+    blocks: list[tuple[int, str]] = []
+    pattern = re.compile(r"(?m)^\\s*add_to(?:_global)?_variable_map\\s*=\\s*\\{")
+    for match in pattern.finditer(source):
+        depth = 0
+        end = None
+        for index in range(match.start(), len(source)):
+            char = source[index]
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    end = index + 1
+                    break
+        if end is None:
+            raise SystemExit("ModeU5 generator emitted an unterminated add_to_variable_map block")
+        line_no = source.count("\n", 0, match.start()) + 1
+        blocks.append((line_no, source[match.start():end]))
+    return blocks
+
+
+bad_map_value_blocks = [
+    (line_no, block)
+    for line_no, block in find_map_mutation_blocks(text)
+    if re.search(r"\\bvalue\\s*=\\s*\\{", block)
 ]
-if bad_lines:
+if bad_map_value_blocks:
     raise SystemExit(
-        "ModeU5 generator emitted nested arithmetic directly inside add_to_variable_map:\n"
-        + "\n".join(bad_lines[:20])
+        "ModeU5 generator emitted nested value blocks directly inside add_to_variable_map/add_to_global_variable_map. "
+        "Precompute arithmetic with save_temporary_scope_value_as, then pass a scalar value. First offending generated lines:\n"
+        + "\n".join(f"line {line_no}: {block.splitlines()[0].strip()}" for line_no, block in bad_map_value_blocks[:20])
     )
 
 for forbidden in (
