@@ -271,9 +271,11 @@ modeu5_reset_market_promotion_metrics = {
 	remove_global_variable = modeu5_perf14_promotion_market_negative_capacity_failure
 	remove_global_variable = modeu5_perf14_promotion_residue_recipient_selected
 
-	set_global_variable = { name = modeu5_perf14_promotion_last_result value = 0 }
-	set_global_variable = { name = modeu5_perf14_promotion_noop_already_promoted value = 0 }
-	set_global_variable = { name = modeu5_perf14_promotion_blocked_not_human_relevant value = 0 }
+	# Zero-valued globals can behave as unset in raw global_var reads. Keep these
+	# branch-result flags persistent with -1 until the promotion path writes 1.
+	set_global_variable = { name = modeu5_perf14_promotion_last_result value = -1 }
+	set_global_variable = { name = modeu5_perf14_promotion_noop_already_promoted value = -1 }
+	set_global_variable = { name = modeu5_perf14_promotion_blocked_not_human_relevant value = -1 }
 	set_global_variable = { name = modeu5_perf14_promotion_capacity_country_count value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_market_goods_checked value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_goods_materialized value = 0 }
@@ -286,7 +288,7 @@ modeu5_reset_market_promotion_metrics = {
 	set_global_variable = { name = modeu5_perf14_promotion_negative_capacity_failures value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_overmaterialized_failures value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_validation_failures value = 0 }
-	set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = 0 }
+	set_global_variable = { name = modeu5_perf14_promotion_failure_detected value = -1 }
 	set_global_variable = { name = modeu5_perf14_promotion_market_total_capacity value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_market_eligible_country_count value = 0 }
 	set_global_variable = { name = modeu5_perf14_promotion_market_allocated_quantity value = 0 }
@@ -352,7 +354,7 @@ modeu5_promote_market_to_detailed_accounting = {
 			set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
 		}
 		else_if = {
-			limit = { global_var:modeu5_perf14_promotion_failure_detected = 0 }
+			limit = { global_var:modeu5_perf14_promotion_failure_detected <= 0 }
 			modeu5_mark_market_detailed_accounting_promoted = yes
 			set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
 		}
