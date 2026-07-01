@@ -31,6 +31,7 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_foreign_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future foreign-storage hook | keep |
 | `modeu5_<good>_production_penalty_by_market` | country | market | gameplay carryover | US-00, generated modifiers | next-month production penalty | keep normal-runtime persistent |
 | `modeu5_<good>_us00_active_record_by_market` | country | market | scheduling index | PERF-15 monthly dispatch | cheap previous-state probe | keep while PERF-15 dispatch uses it |
+| `modeu5_consumption_<good>_pending_requested_by_market` | country | market | current month input queue | US-10.1 monthly runtime integration | explicit country-market consumption request waiting for the next US-10 monthly pass | remove when processed |
 | `modeu5_consumption_<good>_requested_by_market` | country | market | current month | US-10.1, US-10.3, US-10-UI/debug | same-market consumption request quantity | keep until monthly consumers/UI read it |
 | `modeu5_consumption_<good>_satisfied_by_market` | country | market | current month | US-10.1, US-10.3, US-10-UI/debug | same-market consumption quantity removed from stock | keep until monthly consumers/UI read it |
 | `modeu5_consumption_<good>_unsatisfied_by_market` | country | market | current month | US-10.1, US-10.3, US-10-UI/debug, future US-04 bridge | same-market consumption shortage signal | keep until monthly consumers/UI read it |

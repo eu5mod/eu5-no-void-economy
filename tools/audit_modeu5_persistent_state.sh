@@ -50,7 +50,7 @@ done
 			}
 		' "$file"
 	done
-} | sort -u > "$tmp_discovered"
+	} | grep -Ev '_modifier$' | sort -u > "$tmp_discovered"
 
 cat > "$tmp_expected" <<'EOF'
 __ACTIVE_LIST__
@@ -83,6 +83,7 @@ modeu5_<good>_ui_monthly_surplus_by_market
 modeu5_<good>_us00_active_record_by_market
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market
+modeu5_consumption_<good>_pending_requested_by_market
 modeu5_consumption_<good>_requested_by_market
 modeu5_consumption_<good>_satisfied_by_market
 modeu5_consumption_<good>_unsatisfied_by_market

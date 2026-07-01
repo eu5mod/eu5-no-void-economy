@@ -27,7 +27,7 @@ Expected:
 ```txt
 ModeU5 per-good loop audit
 Shared capacity per-good helpers: 0
-Runtime traded_in_market dependencies: 0
+Runtime traded_in_market dependencies: US-10 monthly trade-signal guard only
 ```
 
 ## Install
@@ -107,8 +107,8 @@ ModeU5 PERF-12 RESULT market_values PASS
 
 The June 20, 2026 validation confirmed `traded_in_market:wheat` in market
 scope. If a future retest fails or `error.log` reports syntax/scope errors,
-keep `traded_in_market:<good>` out of runtime code and update TECH-01 with the
-observed failure.
+disable the US-10 monthly trade-signal guard and update TECH-01 with the
+observed failure. Do not use this value as an exact transfer quantity.
 
 ## Source Of Truth
 

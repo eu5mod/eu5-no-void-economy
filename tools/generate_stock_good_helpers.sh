@@ -7,19 +7,9 @@ output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_gener
 modifiers_output="${2:-$repo_root/main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt}"
 modifiers_localization_output="${3:-$repo_root/main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml}"
 
-goods=(
-	cotton sugar tobacco
-	tar porcelain naval_supplies firearms cannons weaponry glass steel cloth
-	fine_cloth liquor beer paper books jewelry leather tools masonry
-	lacquerware pottery furniture
-	horses clay sand coal iron copper goods_gold silver stone tin lead silk
-	dyes incense tea cocoa coffee fiber_crops ivory lumber salt medicaments
-	gems pearls amber saltpeter alum wine elephants marble mercury saffron
-	pepper cloves chili
-	wool wild_game fur fish wheat maize rice millet legumes potato livestock
-	olives fruit beeswax
-	slaves_goods
-)
+# shellcheck source=tools/modeu5_goods.sh
+source "$repo_root/tools/modeu5_goods.sh"
+goods=("${modeu5_goods[@]}")
 
 mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$modifiers_localization_output")"
 
@@ -153,14 +143,38 @@ text = re.sub(
     text,
 )
 
-bad_lines = [
-    line for line in text.splitlines()
-    if "add_to_variable_map" in line and "value = {" in line and " add = " in line
+def find_map_mutation_blocks(source: str) -> list[tuple[int, str]]:
+    blocks: list[tuple[int, str]] = []
+    pattern = re.compile(r"(?m)^\\s*add_to(?:_global)?_variable_map\\s*=\\s*\\{")
+    for match in pattern.finditer(source):
+        depth = 0
+        end = None
+        for index in range(match.start(), len(source)):
+            char = source[index]
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    end = index + 1
+                    break
+        if end is None:
+            raise SystemExit("ModeU5 generator emitted an unterminated add_to_variable_map block")
+        line_no = source.count("\n", 0, match.start()) + 1
+        blocks.append((line_no, source[match.start():end]))
+    return blocks
+
+
+bad_map_value_blocks = [
+    (line_no, block)
+    for line_no, block in find_map_mutation_blocks(text)
+    if re.search(r"\\bvalue\\s*=\\s*\\{", block)
 ]
-if bad_lines:
+if bad_map_value_blocks:
     raise SystemExit(
-        "ModeU5 generator emitted nested arithmetic directly inside add_to_variable_map:\n"
-        + "\n".join(bad_lines[:20])
+        "ModeU5 generator emitted nested value blocks directly inside add_to_variable_map/add_to_global_variable_map. "
+        "Precompute arithmetic with save_temporary_scope_value_as, then pass a scalar value. First offending generated lines:\n"
+        + "\n".join(f"line {line_no}: {block.splitlines()[0].strip()}" for line_no, block in bad_map_value_blocks[:20])
     )
 
 for forbidden in (
@@ -389,6 +403,42 @@ TXT
 	cat <<'TXT'
 }
 
+modeu5_process_us10_monthly_market_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_process_us10_monthly_market_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
+modeu5_probe_us10_monthly_market_trade_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_probe_us10_monthly_market_trade_signal_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
+modeu5_run_us10_monthly_stock_resolution_all_goods = {
+	# Market-owned monthly dispatch: each country pulse only handles markets whose
+	# market center is in the current country, preventing one market pass per
+	# country in the world.
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_rebuild_countries_present_in_market = yes
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				save_temporary_scope_as = modeu5_country
+				modeu5_process_us10_monthly_market_all_goods = yes
+			}
+		}
+		modeu5_probe_us10_monthly_market_trade_all_goods = yes
+	}
+}
+
 modeu5_clear_retired_us00_diagnostic_fields_all_goods = {
 TXT
 	for good in "${goods[@]}"; do
@@ -434,6 +484,8 @@ TXT
 			printf '\n'
 		fi
 		first=0
+		transport_cost="$(modeu5_good_transport_cost "$good")"
+		transport_cost_defaulted="$(modeu5_good_transport_cost_defaulted "$good")"
 		sed \
 			-e "s/__GOOD__/$good/g" \
 			-e "s/__STOCK_MAP__/modeu5_${good}_stock_by_market/g" \
@@ -451,6 +503,8 @@ TXT
 			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
 			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
 			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
+			-e "s/__TRANSPORT_COST__/$transport_cost/g" \
+			-e "s/__TRANSPORT_COST_DEFAULTED__/$transport_cost_defaulted/g" \
 			"$template"
 	done
 } > "$output"

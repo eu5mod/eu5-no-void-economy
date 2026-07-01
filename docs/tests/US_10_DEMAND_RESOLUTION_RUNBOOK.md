@@ -14,6 +14,10 @@ This runbook validates the explicit-request implementation of:
 This PR does not infer Pop, Estate, or vanilla trade requested quantities from
 unconfirmed engine values. Callers pass one requested quantity to the resolver,
 and the resolver records whether the request was satisfied or unsatisfied.
+The monthly runtime pass can also consume explicit queued
+country-market-good requests. A positive `traded_in_market:<good>` value is
+logged as a blocked trade signal only; it is not converted into a stock transfer
+until an exact vanilla trade quantity exposure is confirmed.
 
 The deterministic in-game scenario and the manual scenarios below use different
 fixture stocks, so their expected quantities differ intentionally.
@@ -74,6 +78,111 @@ The consumption dump is aggregated across two deterministic sub-scenarios:
 2. an ordering request of 60 with FRA stock 40 and at least one other country in
    the same market seeded with wheat. The expected own-stock-after value is 0,
    proving the bucketed resolver consumes own stock before foreign stock.
+
+## Focused Monthly Runtime Integration Test
+
+Start a disposable campaign after ModeU5 initialization has completed. Then run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 monthly runtime integration test
+```
+
+Expected result:
+
+```txt
+PASS - US-10 demand resolution
+```
+
+Expected dump:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_monthly_runtime_integration
+ModeU5 US-10 DUMP monthly_runtime requested=30 satisfied=30 unsatisfied=0 stock_after=20 processed=1 trade_signals_blocked=...
+ModeU5 TEST PASS scenario=us10_monthly_runtime_integration
+```
+
+What this proves:
+
+- the monthly input queue `modeu5_consumption_<good>_pending_requested_by_market`
+  is read and removed;
+- consumption is resolved from ModeU5 country x market x good stock through
+  `modeu5_resolve_stock_consumption`;
+- the stock mutation still goes through `modeu5_remove_stock`;
+- US-10.3 country-market outcome counters are written;
+- vanilla market trade signals are observed only as blocked diagnostics unless
+  an explicit transfer quantity is available.
+
+## Focused Trade-Capacity Conversion Test
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 trade-capacity conversion test
+```
+
+Expected dump shape:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_trade_capacity_conversion
+ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=20 transport_cost=... computed_goods_quantity=...
+ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 transport_cost=... computed_goods_quantity=...
+ModeU5 TEST PASS scenario=us10_trade_capacity_conversion
+```
+
+This validates the generated static helper:
+
+```txt
+modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+```
+
+The static `transport_cost` comes from local vanilla `common/goods`. Missing
+static fields use the documented vanilla default `1`; the generated helper also
+clamps the denominator so it cannot divide by zero.
+
+## Direct Trade Formula Probe
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Probe direct trade quantity formula
+```
+
+This probe tests the proposed direct formula from trade scope:
+
+```txt
+good_quantity = trade_volume / traded_goods:transport_cost
+```
+
+Expected dump shape if at least one vanilla trade is available:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_direct_trade_quantity_formula
+ModeU5 TRADE DIRECT FORMULA trade_count=... trade_volume=... transport_cost=... computed_goods_quantity=...
+ModeU5 TEST PASS scenario=us10_direct_trade_quantity_formula
+```
+
+If no trade scope is iterated, the scenario is `BLOCKED`, not failed. If the
+engine rejects the chained value expression, inspect `error.log`; TECH-01 138
+must remain `TO_TEST`, and runtime stock movement must continue using explicit
+ModeU5 request quantities or the generated static diagnostic helper only.
 
 ## Manual scenario 1 — same-market consumption with bucket order
 

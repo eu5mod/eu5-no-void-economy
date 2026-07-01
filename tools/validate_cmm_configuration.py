@@ -343,19 +343,22 @@ for pattern in cmm_mutation_bans[:3] + cmm_mutation_bans[5:]:
            "CMM runtime overlay must not mutate gameplay state directly")
 
 init_block = top_level_block(config_effects, "modeu5_initialize_configuration_state_effect")
-expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*3.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*2", init_block, re.S) is not None,
+refresh_block = top_level_block(config_effects, "modeu5_refresh_configuration_from_cmm_country_scope")
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*3.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*2", refresh_block, re.S) is not None,
        "Detailed debug CMM value must derive debug level 2")
-expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*2.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*1", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_debug_messages\)\"\s*=\s*2.*modeu5_enter_debug_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*1", refresh_block, re.S) is not None,
        "Basic debug CMM value must derive debug level 1")
-expect(re.search(r"modeu5_enter_normal_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*0", init_block, re.S) is not None,
+expect(re.search(r"modeu5_enter_normal_runtime_mode\s*=\s*yes.*name\s*=\s*modeu5_debug_level\s+value\s*=\s*0", refresh_block, re.S) is not None,
        "Unset/default debug CMM value must derive normal runtime and debug level 0")
-expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_monthly_stock_check\)\"\s*=\s*2.*modeu5_enter_test_audit_runtime_mode\s*=\s*yes.*modeu5_enter_audit_runtime_mode\s*=\s*yes", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_monthly_stock_check\)\"\s*=\s*2.*modeu5_enter_test_audit_runtime_mode\s*=\s*yes.*modeu5_enter_audit_runtime_mode\s*=\s*yes", refresh_block, re.S) is not None,
        "Monthly stock check CMM value must enable audit mode and preserve debug+audit when debug is active")
-expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*3.*modeu5_enter_strict_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*3.*modeu5_enter_strict_accounting_persistence\s*=\s*yes", refresh_block, re.S) is not None,
        "Complete save CMM value must derive strict persistence")
-expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*2.*modeu5_enter_human_relevant_accounting_persistence\s*=\s*yes", init_block, re.S) is not None,
+expect(re.search(r"variable_map\(cmm\|flag:no_void_economy__nve_save_mode\)\"\s*=\s*2.*modeu5_enter_human_relevant_accounting_persistence\s*=\s*yes", refresh_block, re.S) is not None,
        "Balanced save CMM value must derive human-relevant persistence")
 expect("modeu5_enter_minimal_accounting_persistence = yes" in init_block,
+       "Initialization default save mode must derive minimal persistence")
+expect("modeu5_enter_minimal_accounting_persistence = yes" in refresh_block,
        "Default save mode must derive minimal persistence")
 
 full_ledger_block = top_level_block(config_triggers, "modeu5_us00_full_ledger_persistence_allowed_trigger")

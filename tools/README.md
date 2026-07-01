@@ -51,10 +51,37 @@ names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
 counters, and repair behavior remain in shared EU5 scripted effects. The shell
 contains enumeration only, not stock or reconciliation business rules.
 
+Generate static good transport-cost helpers:
+
+```bash
+./tools/generate_good_transport_helpers.sh
+```
+
+`./tools/generate_all.sh` runs this generator automatically. When
+`EU5_GAME_COMMON_DIR` points to vanilla `game/in_game/common`, the generator
+reads `common/goods/*` and emits one helper per good into:
+
+```txt
+in_game/common/scripted_effects/modeu5_transport_cost_generated.txt
+```
+
+The helpers convert a known trade-capacity-like volume into an estimated goods
+quantity:
+
+```txt
+modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+```
+
+This is a diagnostic capacity-to-quantity conversion, not exact vanilla trade
+quantity. If the vanilla source path is unavailable, safe default helpers are
+generated with `transport_cost = 1` so runtime references fail closed instead
+of calling missing effects.
+
 Do not edit
 `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
-The generated output is ignored by Git and must not be committed. After changing
-the template or goods registry, run `./tools/generate_all.sh` and then
+The generated output is ignored by Git and must not be committed. The same rule
+applies to `modeu5_transport_cost_generated.txt`. After changing the template,
+goods registry, or transport-cost generator, run `./tools/generate_all.sh` and then
 `./tools/validate_module_packages.sh`; generation must be idempotent and no
 physical map identifier may retain `$`.
 
@@ -65,9 +92,9 @@ Audit the intentional generated per-good loops:
 ```
 
 This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
-and US-11 helpers while failing if shared US-02 capacity refresh helpers return
-to generated per-good adapters. It also blocks runtime use of
-`traded_in_market:<good>` until the dedicated PERF-12 probe confirms the value.
+US-10, and US-11 helpers while failing if shared US-02 capacity refresh helpers
+return to generated per-good adapters. It allows `traded_in_market:<good>` only
+inside the generated US-10 monthly trade-signal guard.
 
 Audit the structured persistent state surface:
 
@@ -196,8 +223,8 @@ ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
 ```
 
 The broad chain includes the PERF-10/11/13 active-list repair metrics probe.
-The PERF-12 market-value probe is intentionally separate because it tests an
-unconfirmed `traded_in_market:<good>` value:
+The PERF-12 market-value probe remains useful when retesting
+`traded_in_market:<good>` exposure directly:
 
 ```txt
 event modeu5_perf12_debug.1
