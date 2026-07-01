@@ -40,10 +40,11 @@ every_country limit = { is_ai = no }
 The human-relevant list is a scheduling/detail gate, not authoritative stock
 state. ModeU5 must not pre-materialize zero-valued country x market x good
 records for every possible tuple. When a previously non-detailed market becomes
-human-relevant, the accounting gate promotes it on demand, refreshes/uses the
-existing country x market capacity path, and lets CORE-01/CORE-02/CORE-03/US-00
-create stock and ledger entries only through their normal non-zero mutation or
-ledger-update paths.
+human-relevant, the accounting gate may mark it as human-relevant on demand for
+read-only eligibility. It does not split aggregate stock or authorize
+stock-affecting detailed mutation by itself. Capacity refresh and stock/ledger
+creation still belong to the existing US-02 and CORE-01/CORE-02/CORE-03/US-00
+paths.
 
 Two edge cases are explicitly in scope for the first stacked PR:
 
@@ -53,6 +54,12 @@ Two edge cases are explicitly in scope for the first stacked PR:
   to detailed either through the CORE-03 owner-change hook or on demand when the
   country-market accounting gate sees the market in
   `every_market_present_in_country`.
+
+For this first read-only plumbing PR, “detailed accounting enabled” means the
+country-market pair is eligible for detailed accounting diagnostics. It must
+not be treated as permission for stock-affecting code to mutate country x
+market records until the dedicated promotion initializer below exists and
+succeeds.
 
 If later tests prove this iterator is broader than the desired
 owned-location-market definition, the fallback PR must either accept that scope
@@ -140,17 +147,49 @@ Implementation note for the first stacked PR:
   human countries with `every_market_present_in_country`.
 - The rebuild is monthly-stamped so `monthly_country_pulse` does not rebuild the
   global human-relevant list once per country.
-- `modeu5_prepare_country_market_accounting_decision` can promote a
-  human-present market to detailed on demand when it was not yet in the list.
+- `modeu5_prepare_country_market_accounting_decision` can mark a human-present
+  market as human-relevant on demand when it was not yet in the list.
 - CORE-03 owner-change and new-country finalizer hooks opportunistically mark
   new human-relevant markets without waiting for the next monthly rebuild.
 - `modeu5_prepare_country_market_accounting_decision` computes the read-only
   country-market decision for the next fallback PR.
 - `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
-  human-relevant market list, the non-detailed -> detailed promotion edge case,
-  and the positive human market-presence Performance Mode decision.
+  human-relevant market list, the non-detailed -> detailed eligibility edge case,
+  the positive human market-presence Performance Mode decision, and negative
+  Performance Mode decisions for AI countries and human countries in markets not
+  returned by `every_market_present_in_country`.
 - The first stacked PR deliberately does not mutate stock, implement
-  market-level fallback, or prove the foreign-building-only negative case.
+  market-level fallback, split aggregate stock into country records, or prove
+  the foreign-building-only negative case.
+
+### Required before stock-affecting fallback PRs
+
+Before any later PR routes US-03 decay, US-10 fallback, US-17, US-20, or any
+other stock-affecting path through the Performance Mode accounting gate, add a
+dedicated promotion initializer:
+
+```txt
+modeu5_promote_market_to_detailed_accounting = {
+  market = <market>
+
+  # no-op if the market is already promoted for the current schema/version
+  # refresh country x market capacities for countries present in this market
+  # allocate existing market-level aggregate stock into country records
+  # preserve market aggregate exactly
+  # mark affected market/good records dirty or validation-required
+}
+```
+
+Promotion requirements:
+
+- delegate to existing US-02 capacity and CORE-02 allocation helpers wherever
+  possible instead of copying allocation logic;
+- split any existing market-level aggregate stock by the approved
+  capacity-proportional allocation policy;
+- preserve `sum(country x market stock) == market aggregate stock`;
+- be idempotent, so running promotion twice cannot duplicate stock;
+- only after successful promotion may stock-affecting code use detailed
+  country x market mutation paths for that market.
 
 ### Phase 2 — accounting gate and fallback operators
 
@@ -158,6 +197,8 @@ Implementation note for the first stacked PR:
 - Add market-level-only variants or branches for systems that change stock while detailed accounting is disabled.
 - Ensure market aggregate deltas remain consistent with centralized stock mutation semantics.
 - Add audit logs for fallback usage.
+- Block stock-affecting fallback routing until
+  `modeu5_promote_market_to_detailed_accounting` exists and is tested.
 
 ### Phase 3 — sparse supplier lists
 

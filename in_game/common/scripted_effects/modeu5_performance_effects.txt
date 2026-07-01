@@ -90,7 +90,7 @@ modeu5_mark_human_relevant_market_for_country = {
 	}
 }
 
-modeu5_promote_human_relevant_market_if_present = {
+modeu5_mark_human_relevant_market_if_present = {
 	$country$ = { save_temporary_scope_as = modeu5_performance_country }
 	$market$ = {
 		save_temporary_scope_as = modeu5_performance_target_market

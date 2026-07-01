@@ -155,7 +155,7 @@ modeu5_prepare_country_market_accounting_decision = {
 		}
 		if = {
 			limit = { scope:modeu5_accounting_decision_country_is_human > 0 }
-			modeu5_promote_human_relevant_market_if_present = {
+			modeu5_mark_human_relevant_market_if_present = {
 				country = scope:modeu5_accounting_country
 				market = scope:modeu5_accounting_market
 			}
