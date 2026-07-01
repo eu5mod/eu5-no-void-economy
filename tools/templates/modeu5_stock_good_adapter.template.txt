@@ -2808,41 +2808,6 @@ modeu5_process_us10_monthly_market_good___GOOD__ = {
 	}
 }
 
-modeu5_compute_goods_quantity_from_trade_capacity_with_route_good___GOOD__ = {
-	modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
-		capacity_volume = $capacity_volume$
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_route_cost_multiplier_raw
-		value = $route_cost_multiplier$
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_route_cost_multiplier
-		value = {
-			value = scope:modeu5_trade_route_cost_multiplier_raw
-			min = 0.0001
-		}
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_effective_trade_transport_cost
-		value = {
-			value = scope:modeu5_good_transport_cost
-			multiply = scope:modeu5_trade_route_cost_multiplier
-			min = 0.0001
-		}
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_computed_goods_quantity
-		value = {
-			value = scope:modeu5_trade_capacity_volume
-			divide = scope:modeu5_effective_trade_transport_cost
-			min = 0
-		}
-	}
-}
-
-
-
 modeu5_probe_us10_monthly_market_trade_signal_good___GOOD__ = {
 	scope:modeu5_market = {
 		save_temporary_scope_value_as = {
@@ -2857,39 +2822,8 @@ modeu5_probe_us10_monthly_market_trade_signal_good___GOOD__ = {
 	if = {
 		limit = { scope:modeu5_us10_monthly_trade_signal_quantity > 0 }
 		modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_capacity_volume_raw
-		value = $capacity_volume$
-	}
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_capacity_volume
-		value = {
-			value = scope:modeu5_trade_capacity_volume_raw
-			min = 0
+			capacity_volume = scope:modeu5_us10_monthly_trade_signal_quantity
 		}
-	}
-	save_temporary_scope_value_as = { name = modeu5_good_transport_cost value = __TRANSPORT_COST__ }
-	save_temporary_scope_value_as = { name = modeu5_good_transport_cost_defaulted value = __TRANSPORT_COST_DEFAULTED__ }
-	if = {
-		limit = { NOT = { scope:modeu5_good_transport_cost > 0 } }
-		save_temporary_scope_value_as = { name = modeu5_good_transport_cost value = 1 }
-		save_temporary_scope_value_as = { name = modeu5_good_transport_cost_defaulted value = 1 }
-	}
-	if = {
-		limit = { scope:modeu5_trade_capacity_volume > 0 }
-		save_temporary_scope_value_as = {
-			name = modeu5_computed_goods_quantity
-			value = {
-				value = scope:modeu5_trade_capacity_volume
-				divide = scope:modeu5_good_transport_cost
-				min = 0
-			}
-		}
-	}
-	else = {
-		save_temporary_scope_value_as = { name = modeu5_computed_goods_quantity value = 0 }
-	}
-}
 		modeu5_note_us10_monthly_trade_signal_blocked = {
 			quantity = scope:modeu5_us10_monthly_trade_signal_quantity
 			estimated_goods_quantity = scope:modeu5_computed_goods_quantity
