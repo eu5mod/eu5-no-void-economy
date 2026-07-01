@@ -347,12 +347,12 @@ modeu5_promote_market_to_detailed_accounting = {
 		modeu5_promote_market_to_detailed_accounting_all_goods = yes
 
 		if = {
-			limit = {
-				OR = {
-					NOT = { has_global_variable = modeu5_perf14_promotion_failure_detected }
-					global_var:modeu5_perf14_promotion_failure_detected = 0
-				}
-			}
+			limit = { NOT = { has_global_variable = modeu5_perf14_promotion_failure_detected } }
+			modeu5_mark_market_detailed_accounting_promoted = yes
+			set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
+		}
+		else_if = {
+			limit = { global_var:modeu5_perf14_promotion_failure_detected = 0 }
 			modeu5_mark_market_detailed_accounting_promoted = yes
 			set_global_variable = { name = modeu5_perf14_promotion_last_result value = 1 }
 		}
