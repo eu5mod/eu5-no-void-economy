@@ -323,6 +323,62 @@ modeu5_debug_last_us10_total_available_candidate_stock
 modeu5_debug_last_us10_mutation_effect_called
 ```
 
+## Focused Issue #109 Fast-Path And Pruning Test
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 #109 fast-path/pruning test
+```
+
+Expected result:
+
+```txt
+PASS - US-10 demand resolution
+```
+
+Expected dump shape:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_issue109_fast_path_pruning
+ModeU5 US-10 DUMP issue109 fast_path_used=1 fast_taken=30 fast_satisfied=30 fast_unsatisfied=0 fast_stock_after=10 fast_candidate_count=0
+ModeU5 US-10 DUMP issue109 floor_transferred=0 floor_unsatisfied=10 floor_candidates=... floor_excluded=... floor_seller_stock_after=5
+ModeU5 US-10 DUMP issue109 prefilter_used=1 prefilter_blocked=1 prefilter_candidates=0 prefilter_transferred=0 prefilter_unsatisfied=10
+ModeU5 TEST PASS scenario=us10_issue109_fast_path_pruning
+```
+
+What this proves:
+
+- own country stock is consumed first through `modeu5_remove_stock`;
+- a fully satisfied own-stock request skips the fallback supplier scan unless
+  `modeu5_us10_debug_force_full_candidate_scan` is enabled;
+- external suppliers below the configured reserve floor are excluded before
+  mutation;
+- an empty ModeU5 market aggregate fails closed before rebuilding the candidate
+  list;
+- audit mode provides bounded candidate and mutation traces without requiring a
+  full log read for every candidate.
+
+Additional debug fields to inspect:
+
+```txt
+modeu5_debug_last_us10_own_stock_fast_path_used
+modeu5_debug_last_us10_own_stock_taken
+modeu5_debug_last_us10_market_aggregate_prefilter_used
+modeu5_debug_last_us10_supplier_stock_floor_ratio
+modeu5_debug_last_us10_negative_balance_exclusions
+modeu5_debug_last_us10_bucket_1_candidates
+modeu5_debug_last_us10_bucket_2_candidates
+modeu5_debug_last_us10_bucket_3_candidates
+modeu5_debug_last_us10_bucket_4_candidates
+```
+
 ## Broad Revalidation
 
 The broad chain now includes the US-10 scenario:
@@ -348,6 +404,8 @@ Expected summary includes:
 ```txt
 ModeU5 TEST ENTERED scenario=us10_demand_resolution
 ModeU5 TEST PASS scenario=us10_demand_resolution
+ModeU5 TEST ENTERED scenario=us10_issue109_fast_path_pruning
+ModeU5 TEST PASS scenario=us10_issue109_fast_path_pruning
 Missing expected scenarios: 0
 Failed:  0
 Blocked: 0

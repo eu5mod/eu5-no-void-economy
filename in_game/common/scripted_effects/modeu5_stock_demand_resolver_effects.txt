@@ -33,7 +33,7 @@ modeu5_select_stock_demand_type_inter_market_trade = {
 	modeu5_load_trade_scoring_profile = yes
 }
 
-modeu5_resolve_stock_demand = {
+modeu5_prepare_stock_demand_context = {
 	$demanding_country$ = {
 		save_temporary_scope_as = modeu5_demanding_country
 		save_temporary_scope_as = modeu5_us10_demanding_country
@@ -67,6 +67,16 @@ modeu5_resolve_stock_demand = {
 
 	modeu5_select_stock_demand_type_$demand_type$ = yes
 	modeu5_initialize_stock_demand_resolution_outputs = yes
+}
+
+modeu5_resolve_stock_demand = {
+	modeu5_prepare_stock_demand_context = {
+		demanding_country = $demanding_country$
+		market = $market$
+		good = $good$
+		demand_type = $demand_type$
+		requested_quantity = $requested_quantity$
+	}
 
 	if = {
 		limit = { scope:modeu5_requested_quantity > 0 }
@@ -98,6 +108,13 @@ modeu5_prepare_stock_candidate_scoring_defaults = {
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_trade_advantage value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_capacity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_capacity_floor value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_negative_balance_reserve value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_monthly_added value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_monthly_requested value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_monthly_net_balance value = 0 }
 
 	# Bucket ids are intentionally coarse. They provide a cheap deterministic
 	# ordering layer before a future full sort is considered.
@@ -109,6 +126,52 @@ modeu5_prepare_stock_candidate_scoring_defaults = {
 
 modeu5_mark_stock_candidate_excluded = {
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_allowed value = 0 }
+}
+
+modeu5_apply_current_stock_candidate_stock_filters = {
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			NOT = { scope:modeu5_candidate_stock > 0 }
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 1 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			NOT = { scope:modeu5_candidate_stock > scope:modeu5_us10_minimum_stock_to_consider }
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 2 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_candidate_country != scope:modeu5_demanding_country
+			scope:modeu5_us10_candidate_capacity_floor > 0
+			NOT = { scope:modeu5_candidate_stock > scope:modeu5_us10_candidate_capacity_floor }
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 3 }
+		modeu5_mark_stock_candidate_excluded = yes
+	}
+	if = {
+		limit = {
+			scope:modeu5_us10_candidate_allowed > 0
+			scope:modeu5_candidate_country != scope:modeu5_demanding_country
+			scope:modeu5_us10_candidate_monthly_net_balance < 0
+			scope:modeu5_us10_candidate_negative_balance_reserve > 0
+			NOT = { scope:modeu5_candidate_stock > scope:modeu5_us10_candidate_negative_balance_reserve }
+		}
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 4 }
+		modeu5_mark_stock_candidate_excluded = yes
+		if = {
+			limit = { exists = scope:modeu5_us10_resolution_controller }
+			scope:modeu5_us10_resolution_controller = {
+				change_local_variable = { name = modeu5_us10_negative_balance_exclusions add = 1 }
+			}
+		}
+	}
 }
 
 modeu5_prepare_current_stock_candidate_relations = {
@@ -148,21 +211,13 @@ modeu5_apply_current_stock_candidate_hard_filters = {
 	if = {
 		limit = {
 			scope:modeu5_us10_candidate_allowed > 0
-			NOT = { scope:modeu5_candidate_stock > scope:modeu5_us10_minimum_stock_to_consider }
-		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 1 }
-		modeu5_mark_stock_candidate_excluded = yes
-	}
-	if = {
-		limit = {
-			scope:modeu5_us10_candidate_allowed > 0
 			scope:modeu5_us10_allow_at_war_stocks = 0
 			scope:modeu5_candidate_country != scope:modeu5_demanding_country
 			scope:modeu5_candidate_country = {
 				is_at_war_with = scope:modeu5_demanding_country
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 2 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 5 }
 		modeu5_mark_stock_candidate_excluded = yes
 	}
 	if = {
@@ -179,7 +234,7 @@ modeu5_apply_current_stock_candidate_hard_filters = {
 				}
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 3 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 6 }
 		modeu5_mark_stock_candidate_excluded = yes
 	}
 	if = {
@@ -191,7 +246,7 @@ modeu5_apply_current_stock_candidate_hard_filters = {
 				scope:modeu5_us10_candidate_is_overlord > 0
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 4 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 9 }
 		modeu5_mark_stock_candidate_excluded = yes
 	}
 	if = {
@@ -203,7 +258,7 @@ modeu5_apply_current_stock_candidate_hard_filters = {
 			scope:modeu5_us10_candidate_is_subject = 0
 			scope:modeu5_us10_candidate_is_overlord = 0
 		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 5 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 10 }
 		modeu5_mark_stock_candidate_excluded = yes
 	}
 	if = {
@@ -215,7 +270,7 @@ modeu5_apply_current_stock_candidate_hard_filters = {
 			scope:modeu5_us10_candidate_is_overlord = 0
 			scope:modeu5_us10_candidate_is_market_owner = 0
 		}
-		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 6 }
+		save_temporary_scope_value_as = { name = modeu5_us10_candidate_exclusion_reason value = 8 }
 		modeu5_mark_stock_candidate_excluded = yes
 	}
 }
@@ -407,16 +462,17 @@ modeu5_note_us10_monthly_trade_signal_blocked = {
 # US-10.1 / US-10.2 explicit-request runtime wrappers.
 #
 # These wrappers intentionally delegate requested-quantity normalization and
-# demand-type profile loading to the canonical #103 resolver API before running
-# the generated mutating adapter.  The generated adapters still own physical
-# per-good map access and stock mutation.
+# demand-type profile loading to the canonical #103 resolver context before
+# running the generated mutating adapter. The read-only public resolver still
+# performs a candidate scan for diagnostics, but the mutating wrappers do not
+# run that scan before their own-stock fast path.
 
 modeu5_resolve_stock_consumption = {
 	$consumer_country$ = { save_temporary_scope_as = modeu5_consumer_country }
 	$market$ = { save_temporary_scope_as = modeu5_market }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 
-	modeu5_resolve_stock_demand = {
+	modeu5_prepare_stock_demand_context = {
 		demanding_country = scope:modeu5_consumer_country
 		market = scope:modeu5_market
 		good = $good$
@@ -462,7 +518,7 @@ modeu5_resolve_inter_market_stock_transfer = {
 	$target_market$ = { save_temporary_scope_as = modeu5_target_market }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 
-	modeu5_resolve_stock_demand = {
+	modeu5_prepare_stock_demand_context = {
 		demanding_country = scope:modeu5_buyer_country
 		market = scope:modeu5_source_market
 		good = $good$

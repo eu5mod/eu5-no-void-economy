@@ -31,6 +31,10 @@ modeu5_load_default_scoring_profile = {
 
 modeu5_load_default_stock_resolution_controls = {
 	save_temporary_scope_value_as = { name = modeu5_us10_minimum_stock_to_consider value = 0.01 }
+	save_temporary_scope_value_as = { name = modeu5_us10_supplier_min_stock_ratio value = 0.10 }
+	save_temporary_scope_value_as = { name = modeu5_us10_supplier_negative_balance_reserve_ratio value = 0.50 }
+	save_temporary_scope_value_as = { name = modeu5_us10_vanilla_extra_trade_min_stockpile_ratio value = 0.50 }
+	save_temporary_scope_value_as = { name = modeu5_us10_vanilla_extra_trade_stockpile_percentage value = 0.05 }
 
 	# Boolean switches use 1 = yes, 0 = no.
 	save_temporary_scope_value_as = { name = modeu5_us10_allow_subject_stocks value = 1 }
@@ -68,6 +72,11 @@ modeu5_load_default_stock_resolution_controls = {
 	save_temporary_scope_value_as = { name = modeu5_us10_use_own_stock_fast_path value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us10_candidate_ordering_mode value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us10_debug_force_full_candidate_scan value = 0 }
+
+	if = {
+		limit = { has_global_variable = modeu5_us10_debug_force_full_candidate_scan }
+		save_temporary_scope_value_as = { name = modeu5_us10_debug_force_full_candidate_scan value = global_var:modeu5_us10_debug_force_full_candidate_scan }
+	}
 }
 
 modeu5_load_consumption_scoring_profile = {
@@ -114,6 +123,18 @@ modeu5_initialize_stock_demand_resolution_outputs = {
 	save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = -100000000 }
 	save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_bucket value = 999 }
+	save_temporary_scope_value_as = { name = modeu5_us10_own_stock_fast_path_used value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_own_stock_taken value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_market_aggregate_prefilter_used value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_market_aggregate_prefilter_blocked value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_market_aggregate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_vanilla_market_surplus_signal value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_negative_balance_exclusions value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_bucket_1_candidates value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_bucket_2_candidates value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_bucket_3_candidates value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_bucket_4_candidates value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_mutation_effect_called value = 0 }
 }
 
 modeu5_store_stock_demand_resolution_outputs = {
