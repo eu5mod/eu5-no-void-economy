@@ -27,21 +27,46 @@ modeu5_audit_runtime_mode_trigger = {
 }
 
 modeu5_debug_enabled_trigger = {
-	OR = {
-		modeu5_debug_runtime_mode_trigger = yes
-		has_game_rule = modeu5_debug_basic
-		has_game_rule = modeu5_debug_verbose
-	}
+	modeu5_debug_runtime_mode_trigger = yes
 }
 
 modeu5_verbose_debug_enabled_trigger = {
-	has_game_rule = modeu5_debug_verbose
+	modeu5_debug_runtime_mode_trigger = yes
+	has_global_variable = modeu5_debug_level
+	global_var:modeu5_debug_level > 1
 }
 
 modeu5_audit_enabled_trigger = {
+	modeu5_audit_runtime_mode_trigger = yes
+}
+
+modeu5_accounting_minimal_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_minimal
+}
+
+modeu5_accounting_strict_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_strict
+}
+
+modeu5_accounting_human_relevant_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_human_relevant
+}
+
+modeu5_human_relevant_full_ledger_market_trigger = {
+	modeu5_accounting_human_relevant_persistence_trigger = yes
+	has_global_variable_list = modeu5_performance_relevant_markets
+	is_target_in_global_variable_list = {
+		name = modeu5_performance_relevant_markets
+		target = scope:modeu5_market
+	}
+}
+
+modeu5_us00_full_ledger_persistence_allowed_trigger = {
 	OR = {
-		modeu5_audit_runtime_mode_trigger = yes
-		has_game_rule = modeu5_audit_on
+		modeu5_accounting_strict_persistence_trigger = yes
+		modeu5_human_relevant_full_ledger_market_trigger = yes
+		modeu5_debug_enabled_trigger = yes
+		modeu5_audit_enabled_trigger = yes
 	}
 }
 

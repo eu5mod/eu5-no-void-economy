@@ -1,0 +1,89 @@
+namespace = modeu5_us10_debug
+
+modeu5_us10_debug.1 = {
+	type = country_event
+	title = modeu5_us10_debug.1.title
+	desc = modeu5_us10_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us10_debug.1.a
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_run_us10_demand_resolution_tests = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
+		name = modeu5_us10_debug.1.b
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_run_us10_monthly_runtime_tests = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
+		name = modeu5_us10_debug.1.c
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_run_us10_trade_capacity_conversion_tests = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
+		name = modeu5_us10_debug.1.d
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_probe_us10_direct_trade_quantity_formula = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us10_debug.2 = {
+	type = country_event
+	title = modeu5_us10_debug.2.title
+	desc = modeu5_us10_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us10_debug.result.pass
+		trigger = {
+			OR = {
+				has_global_variable = modeu5_test_us10_demand_resolution_passed
+				has_global_variable = modeu5_test_us10_monthly_runtime_passed
+				has_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
+				has_global_variable = modeu5_test_us10_direct_trade_formula_passed
+			}
+		}
+	}
+	option = {
+		name = modeu5_us10_debug.result.blocked
+		trigger = {
+			OR = {
+				has_global_variable = modeu5_test_us10_demand_resolution_blocked
+				has_global_variable = modeu5_test_us10_monthly_runtime_blocked
+				has_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
+				has_global_variable = modeu5_test_us10_direct_trade_formula_blocked
+			}
+		}
+	}
+	option = {
+		name = modeu5_us10_debug.result.fail
+		trigger = {
+			OR = {
+				has_global_variable = modeu5_test_us10_demand_resolution_failed
+				has_global_variable = modeu5_test_us10_monthly_runtime_failed
+				has_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
+				has_global_variable = modeu5_test_us10_direct_trade_formula_failed
+			}
+		}
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

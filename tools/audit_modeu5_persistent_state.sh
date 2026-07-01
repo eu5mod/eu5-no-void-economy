@@ -17,6 +17,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_void_economy_effects.txt"
 	"in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
 	"in_game/common/scripted_effects/modeu5_performance_effects.txt"
+	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_effects.txt"
 	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
 )
@@ -33,18 +34,23 @@ done
 				$name =~ s/\$\{good\}/<good>/;
 				print "$name\n";
 			}
-			while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
-				print "$&\n";
-			}
-			while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
-				print "$&\n";
-			}
+				while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
+					print "$&\n";
+				}
+				while (/\bmodeu5_(?:consumption|trade)___GOOD___[a-z0-9_]+_by_market\b/g) {
+					my $name = $&;
+					$name =~ s/___GOOD___/_<good>_/;
+					print "$name\n";
+				}
+				while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
+					print "$&\n";
+				}
 			while (/\bmodeu5_(?:active_markets_any_good|countries_present_in_market|market_country_cache_dirty_markets|monthly_markets_seen_this_cycle|performance_relevant_markets|core03_probe_seen_locations)\b/g) {
 				print "$&\n";
 			}
 		' "$file"
 	done
-} | sort -u > "$tmp_discovered"
+	} | grep -Ev '_modifier$' | sort -u > "$tmp_discovered"
 
 cat > "$tmp_expected" <<'EOF'
 __ACTIVE_LIST__
@@ -58,6 +64,8 @@ __PRODUCTION_PENALTY_MAP__
 __REJECTED_MAP__
 __STOCK_MAP__
 __US00_ACTIVE_MAP__
+__UI_MONTHLY_CONSUMPTION_MAP__
+__UI_MONTHLY_SURPLUS_MAP__
 __VOID_TAXABLE_PROXY_MAP__
 __VOID_WEALTH_MAP__
 modeu5_<good>_active_markets
@@ -70,9 +78,18 @@ modeu5_<good>_produced_by_market
 modeu5_<good>_production_penalty_by_market
 modeu5_<good>_rejected_by_market
 modeu5_<good>_stock_by_market
+modeu5_<good>_ui_monthly_consumption_by_market
+modeu5_<good>_ui_monthly_surplus_by_market
 modeu5_<good>_us00_active_record_by_market
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market
+modeu5_consumption_<good>_pending_requested_by_market
+modeu5_consumption_<good>_requested_by_market
+modeu5_consumption_<good>_satisfied_by_market
+modeu5_consumption_<good>_unsatisfied_by_market
+modeu5_trade_<good>_requested_by_market
+modeu5_trade_<good>_transferred_by_market
+modeu5_trade_<good>_unsatisfied_by_market
 modeu5_active_markets_any_good
 modeu5_base_capacity_by_market
 modeu5_building_capacity_by_market
@@ -89,7 +106,10 @@ EOF
 comm -23 "$tmp_discovered" <(sort -u "$tmp_expected") > "$tmp_unclassified"
 
 ui_shadow_count="$(
-	(grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" || true) | wc -l | tr -d ' '
+	(
+		(grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" || true) |
+			grep -Ev 'modeu5_<good>_ui_monthly_(surplus|consumption)_by_market|__UI_MONTHLY_(SURPLUS|CONSUMPTION)_MAP__' || true
+	) | wc -l | tr -d ' '
 )"
 
 unclassified_count="$(wc -l < "$tmp_unclassified" | tr -d ' ')"
@@ -100,6 +120,7 @@ printf '%s\n' 'Capacity maps: kept/shared'
 printf '%s\n' 'Capacity breakdown maps: kept'
 printf '%s\n' 'US-00 gameplay carryover maps: kept'
 printf '%s\n' 'US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only'
+printf '%s\n' 'UI monthly counter maps: human country current-month only'
 printf 'UI shadow maps: %s\n' "$ui_shadow_count"
 printf 'Unclassified persistent maps: %s\n' "$unclassified_count"
 

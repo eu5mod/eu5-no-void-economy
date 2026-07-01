@@ -32,6 +32,9 @@ modeu5_revalidate_clear_results = {
 	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_passed
 	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_failed
 	remove_global_variable = modeu5_revalidation_us00_monthly_runtime_blocked
+	remove_global_variable = modeu5_revalidation_us10_demand_resolution_passed
+	remove_global_variable = modeu5_revalidation_us10_demand_resolution_failed
+	remove_global_variable = modeu5_revalidation_us10_demand_resolution_blocked
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_passed
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_failed
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_blocked
@@ -190,6 +193,22 @@ modeu5_revalidate_run_us00_monthly_runtime = {
 	}
 }
 
+modeu5_revalidate_run_us10_demand_resolution = {
+	modeu5_debug_run_us10_demand_resolution_tests = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_us10_demand_resolution_passed }
+		set_global_variable = modeu5_revalidation_us10_demand_resolution_passed
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_us10_demand_resolution_blocked }
+		set_global_variable = modeu5_revalidation_us10_demand_resolution_blocked
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_us10_demand_resolution_failed
+	}
+}
+
 modeu5_revalidate_run_perf10_13_active_repair_metrics = {
 	debug_log = "ModeU5 TEST ENTERED scenario=perf10_13_active_repair_metrics"
 	modeu5_debug_run_perf10_13_active_repair_metrics_probe = yes
@@ -220,6 +239,7 @@ modeu5_revalidate_finalize = {
 			has_global_variable = modeu5_revalidation_core02_initialization_passed
 			has_global_variable = modeu5_revalidation_us00_controlled_pipeline_passed
 			has_global_variable = modeu5_revalidation_us00_monthly_runtime_passed
+			has_global_variable = modeu5_revalidation_us10_demand_resolution_passed
 			has_global_variable = modeu5_revalidation_perf10_13_active_repair_passed
 		}
 		set_global_variable = modeu5_revalidation_passed
@@ -235,6 +255,7 @@ modeu5_revalidate_finalize = {
 				has_global_variable = modeu5_revalidation_core02_initialization_failed
 				has_global_variable = modeu5_revalidation_us00_controlled_pipeline_failed
 				has_global_variable = modeu5_revalidation_us00_monthly_runtime_failed
+				has_global_variable = modeu5_revalidation_us10_demand_resolution_failed
 				has_global_variable = modeu5_revalidation_perf10_13_active_repair_failed
 			}
 		}
@@ -250,6 +271,7 @@ modeu5_revalidate_finalize = {
 				has_global_variable = modeu5_revalidation_core02_initialization_blocked
 				has_global_variable = modeu5_revalidation_us00_controlled_pipeline_blocked
 				has_global_variable = modeu5_revalidation_us00_monthly_runtime_blocked
+				has_global_variable = modeu5_revalidation_us10_demand_resolution_blocked
 				has_global_variable = modeu5_revalidation_perf10_13_active_repair_blocked
 			}
 		}

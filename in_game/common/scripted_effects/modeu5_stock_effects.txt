@@ -1279,6 +1279,7 @@ modeu5_prepare_monthly_market_seen_registry = {
 			name = modeu5_monthly_markets_seen_duplicate_count
 			value = 0
 		}
+		modeu5_reset_us10_monthly_runtime_counters = yes
 	}
 }
 
@@ -1561,8 +1562,10 @@ modeu5_run_monthly_stock_cycle = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		modeu5_run_monthly_capacity_refresh_for_current_country = yes
 		modeu5_prepare_monthly_market_seen_registry = yes
+		modeu5_prepare_human_relevant_full_ledger_markets = yes
 		save_temporary_scope_as = modeu5_country
 		modeu5_run_us00_monthly_pipeline_all_goods = yes
+		modeu5_run_monthly_stock_demand_resolution = yes
 		if = {
 			limit = { modeu5_audit_enabled_trigger = yes }
 			modeu5_run_monthly_stock_reconciliation_once = yes

@@ -1,0 +1,123 @@
+# ModeU5 US-10 stock-demand resolver scoring profiles.
+#
+# These effects only load parser-safe temporary values. They do not read,
+# remove, transfer, create, or mutate stock.
+#
+# Current MVP scoring profile:
+#
+# modeu5_load_default_scoring_profile = {
+#   own_country_bonus = 1000
+#   overlord_bonus = 500
+#   subject_bonus = 500
+#   market_owner_bonus = 200
+#   opinion_coefficient = 1
+#   trade_advantage_coefficient = 1
+# }
+#
+# Specification drift note:
+# The PR intentionally uses one unified resolver profile for consumption and
+# inter-market trade candidate selection. Keep `modeu5_load_trade_scoring_profile`
+# as an alias of the default profile unless a later accepted spec split restores
+# trade-specific constants.
+
+modeu5_load_default_scoring_profile = {
+	save_temporary_scope_value_as = { name = modeu5_us10_own_country_bonus value = 1000 }
+	save_temporary_scope_value_as = { name = modeu5_us10_overlord_bonus value = 500 }
+	save_temporary_scope_value_as = { name = modeu5_us10_subject_bonus value = 500 }
+	save_temporary_scope_value_as = { name = modeu5_us10_market_owner_bonus value = 200 }
+	save_temporary_scope_value_as = { name = modeu5_us10_opinion_coefficient value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_trade_advantage_coefficient value = 1 }
+}
+
+modeu5_load_default_stock_resolution_controls = {
+	save_temporary_scope_value_as = { name = modeu5_us10_minimum_stock_to_consider value = 0.01 }
+
+	# Boolean switches use 1 = yes, 0 = no.
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_subject_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_market_owner_stock value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_foreign_stocks value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_at_war_stocks value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_allow_embargoed_stocks value = 0 }
+
+	# Performance / determinism controls for the generated candidate scanner.
+	#
+	# `modeu5_us10_enable_opinion_scoring`
+	#   Opinion is potentially expensive and hard to invalidate if cached. The
+	#   generated scanner should read it only after cheap hard filters pass and
+	#   only when this flag and `modeu5_us10_opinion_coefficient` are non-zero.
+	#
+	# `modeu5_us10_enable_trade_advantage_scoring`
+	#   Same principle for trade-advantage style values.
+	#
+	# `modeu5_us10_use_market_aggregate_prefilter`
+	#   Skip country candidate scans when the market aggregate for the good is at
+	#   or below `minimum_stock_to_consider`.
+	#
+	# `modeu5_us10_use_own_stock_fast_path`
+	#   For consumption, allow an early return when demanding-country stock can
+	#   satisfy the full request. Debug may still force a full scan.
+	#
+	# `modeu5_us10_candidate_ordering_mode`
+	#   1 = bucketed priority order, 2 = future full score sort.
+	#
+	# `modeu5_us10_debug_force_full_candidate_scan`
+	#   1 disables fast paths so debug can show all candidate exclusions/scores.
+	save_temporary_scope_value_as = { name = modeu5_us10_enable_opinion_scoring value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_enable_trade_advantage_scoring value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_use_market_aggregate_prefilter value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_use_own_stock_fast_path value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_ordering_mode value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us10_debug_force_full_candidate_scan value = 0 }
+}
+
+modeu5_load_consumption_scoring_profile = {
+	modeu5_load_default_scoring_profile = yes
+	modeu5_load_default_stock_resolution_controls = yes
+
+	# 1 = consumption.
+	save_temporary_scope_value_as = { name = modeu5_us10_scoring_profile_type value = 1 }
+}
+
+modeu5_load_trade_scoring_profile = {
+	# Intentional specification drift: trade currently shares the same constants
+	# as consumption. If a future accepted spec restores a dedicated trade profile,
+	# override the bonus values here only.
+	modeu5_load_default_scoring_profile = yes
+	modeu5_load_default_stock_resolution_controls = yes
+
+	# 2 = trade / inter-market transfer candidate selection.
+	save_temporary_scope_value_as = { name = modeu5_us10_scoring_profile_type value = 2 }
+}
+
+modeu5_load_inter_market_trade_scoring_profile = {
+	modeu5_load_trade_scoring_profile = yes
+}
+
+# Legacy cleanup only. Current US-10 candidate diagnostics are resolver-local
+# temporaries accumulated through a persistent country/controller scope, because
+# zero-valued globals can read as unset and market scopes cannot persist locals.
+modeu5_clear_stock_demand_resolution_globals = {
+	remove_global_variable = modeu5_us10_resolution_candidate_count
+	remove_global_variable = modeu5_us10_resolution_excluded_candidate_count
+	remove_global_variable = modeu5_us10_resolution_total_available_candidate_stock
+	remove_global_variable = modeu5_us10_resolution_best_score
+	remove_global_variable = modeu5_us10_resolution_best_stock
+	remove_global_variable = modeu5_us10_resolution_best_bucket
+}
+
+modeu5_initialize_stock_demand_resolution_outputs = {
+	modeu5_clear_stock_demand_resolution_globals = yes
+
+	save_temporary_scope_value_as = { name = modeu5_us10_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_excluded_candidate_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_total_available_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_best_stock_priority_score value = -100000000 }
+	save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_stock value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_best_candidate_bucket value = 999 }
+}
+
+modeu5_store_stock_demand_resolution_outputs = {
+	# Candidate diagnostics are temporary outputs of a single resolver execution,
+	# copied from controller-scope local variables by the generated adapter.
+	save_temporary_scope_value_as = { name = modeu5_us10_outputs_stored value = 1 }
+}
