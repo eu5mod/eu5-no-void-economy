@@ -80,6 +80,7 @@ expected_scenarios=(
 	us00_controlled_pipeline
 	us00_monthly_runtime
 	us10_demand_resolution
+	us10_issue109_fast_path_pruning
 	perf10_13_active_repair_metrics
 	main_revalidation_summary
 )

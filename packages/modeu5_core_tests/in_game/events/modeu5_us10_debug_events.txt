@@ -36,6 +36,12 @@ modeu5_us10_debug.1 = {
 		trigger_event_non_silently = modeu5_us10_debug.2
 	}
 	option = {
+		name = modeu5_us10_debug.1.e
+		modeu5_us10_clear_test_results = yes
+		modeu5_debug_run_us10_issue109_tests = yes
+		trigger_event_non_silently = modeu5_us10_debug.2
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -57,6 +63,7 @@ modeu5_us10_debug.2 = {
 				has_global_variable = modeu5_test_us10_demand_resolution_passed
 				has_global_variable = modeu5_test_us10_monthly_runtime_passed
 				has_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
+				has_global_variable = modeu5_test_us10_issue109_passed
 				has_global_variable = modeu5_test_us10_direct_trade_formula_passed
 			}
 		}
@@ -68,6 +75,7 @@ modeu5_us10_debug.2 = {
 				has_global_variable = modeu5_test_us10_demand_resolution_blocked
 				has_global_variable = modeu5_test_us10_monthly_runtime_blocked
 				has_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
+				has_global_variable = modeu5_test_us10_issue109_blocked
 				has_global_variable = modeu5_test_us10_direct_trade_formula_blocked
 			}
 		}
@@ -79,6 +87,7 @@ modeu5_us10_debug.2 = {
 				has_global_variable = modeu5_test_us10_demand_resolution_failed
 				has_global_variable = modeu5_test_us10_monthly_runtime_failed
 				has_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
+				has_global_variable = modeu5_test_us10_issue109_failed
 				has_global_variable = modeu5_test_us10_direct_trade_formula_failed
 			}
 		}
