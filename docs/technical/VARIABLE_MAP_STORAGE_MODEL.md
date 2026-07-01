@@ -160,6 +160,7 @@ country/market demand outcomes that cannot live on a more specific consumer scop
 US-10.3 current-month country × market × good outcome fields are:
 
 ```txt
+consumption_pending_requested
 consumption_requested
 consumption_satisfied
 consumption_unsatisfied
@@ -168,9 +169,11 @@ trade_transferred
 trade_unsatisfied
 ```
 
-They are additive current-month counters written by explicit US-10.1/US-10.2
-requests. They must not duplicate Pop location records once a more specific
-consumer scope is available.
+`consumption_pending_requested` is an explicit monthly input queue. It is removed
+when the US-10 monthly pass processes the country-market-good request. The other
+fields are additive current-month outcome counters written by explicit
+US-10.1/US-10.2 requests. They must not duplicate Pop location records once a
+more specific consumer scope is available.
 
 Capacity is deliberately not stored in this per-good record. US-02 capacity is
 the same for every good in one country-market relation, so persisting it here

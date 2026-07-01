@@ -329,7 +329,7 @@ modeu5_handle_cmm_runtime_callback = {
 		trigger = var:cmf_callback
 
 		flag:no_void_economy__nve_no_void_economy_main = {
-			modeu5_refresh_nve_main_cmm_visibility = yes
+			modeu5_cmm_refresh_nve_main_enabled = yes
 		}
 
 		flag:no_void_economy__nve_debug_messages = {

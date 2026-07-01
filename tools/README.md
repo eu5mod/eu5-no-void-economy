@@ -65,9 +65,9 @@ Audit the intentional generated per-good loops:
 ```
 
 This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
-and US-11 helpers while failing if shared US-02 capacity refresh helpers return
-to generated per-good adapters. It also blocks runtime use of
-`traded_in_market:<good>` until the dedicated PERF-12 probe confirms the value.
+US-10, and US-11 helpers while failing if shared US-02 capacity refresh helpers
+return to generated per-good adapters. It allows `traded_in_market:<good>` only
+inside the generated US-10 monthly trade-signal guard.
 
 Audit the structured persistent state surface:
 
@@ -196,8 +196,8 @@ ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
 ```
 
 The broad chain includes the PERF-10/11/13 active-list repair metrics probe.
-The PERF-12 market-value probe is intentionally separate because it tests an
-unconfirmed `traded_in_market:<good>` value:
+The PERF-12 market-value probe remains useful when retesting
+`traded_in_market:<good>` exposure directly:
 
 ```txt
 event modeu5_perf12_debug.1

@@ -4,6 +4,9 @@ modeu5_us10_clear_test_results = {
 	remove_global_variable = modeu5_test_us10_demand_resolution_passed
 	remove_global_variable = modeu5_test_us10_demand_resolution_failed
 	remove_global_variable = modeu5_test_us10_demand_resolution_blocked
+	remove_global_variable = modeu5_test_us10_monthly_runtime_passed
+	remove_global_variable = modeu5_test_us10_monthly_runtime_failed
+	remove_global_variable = modeu5_test_us10_monthly_runtime_blocked
 }
 
 modeu5_us10_clear_wheat_stock_in_market = {
@@ -451,5 +454,93 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			set_global_variable = modeu5_test_us10_demand_resolution_blocked
 			debug_log = "ModeU5 TEST BLOCKED scenario=us10_demand_resolution reason=primary_unusable_and_fallback_missing_or_same_market"
 		}
+	}
+}
+
+modeu5_debug_run_us10_monthly_runtime_tests = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_us10_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=us10_monthly_runtime_integration"
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			c:FRA = { modeu5_stock_runtime_ready_trigger = yes }
+		}
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
+		modeu5_debug_replace_country_wheat_capacity = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			value = 100
+		}
+		modeu5_reset_country_market_consumption_outcome = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		modeu5_reset_monthly_stock_consumption_request = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		modeu5_us10_clear_wheat_stock_in_market = {
+			market = scope:modeu5_us10_target_market
+		}
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			quantity = 50
+			capacity_policy = allow_over_capacity
+		}
+		modeu5_queue_monthly_stock_consumption = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+			requested_quantity = 30
+		}
+		modeu5_reset_us10_monthly_runtime_counters = yes
+		c:FRA = {
+			modeu5_run_monthly_stock_demand_resolution = yes
+		}
+
+		modeu5_read_country_stock_record = {
+			country = c:FRA
+			market = scope:modeu5_us10_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_test_us10_monthly_stock_after value = scope:modeu5_read_country_stock }
+		modeu5_us10_read_fra_wheat_consumption_outcome = yes
+
+		set_variable = { name = modeu5_us10_ui_monthly_requested value = scope:modeu5_test_us10_consumption_requested_record }
+		set_variable = { name = modeu5_us10_ui_monthly_satisfied value = scope:modeu5_test_us10_consumption_satisfied_record }
+		set_variable = { name = modeu5_us10_ui_monthly_unsatisfied value = scope:modeu5_test_us10_consumption_unsatisfied_record }
+		set_variable = { name = modeu5_us10_ui_monthly_stock_after value = scope:modeu5_test_us10_monthly_stock_after }
+		set_variable = { name = modeu5_us10_ui_monthly_processed value = global_var:modeu5_us10_monthly_consumption_requests_processed }
+		set_variable = { name = modeu5_us10_ui_monthly_trade_blocked value = global_var:modeu5_us10_monthly_trade_signals_blocked }
+
+		debug_log = "ModeU5 US-10 DUMP monthly_runtime requested=[THIS.GetVariable('modeu5_us10_ui_monthly_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_monthly_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_monthly_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us10_ui_monthly_stock_after').GetValue|2] processed=[THIS.GetVariable('modeu5_us10_ui_monthly_processed').GetValue|0] trade_signals_blocked=[THIS.GetVariable('modeu5_us10_ui_monthly_trade_blocked').GetValue|0]"
+
+		save_temporary_scope_value_as = { name = modeu5_us10_assertion_failure_count value = 0 }
+		if = { limit = { NOT = { scope:modeu5_test_us10_consumption_requested_record = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_requested expected=30" }
+		if = { limit = { NOT = { scope:modeu5_test_us10_consumption_satisfied_record = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_satisfied expected=30" }
+		if = { limit = { NOT = { scope:modeu5_test_us10_consumption_unsatisfied_record = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_unsatisfied expected=0" }
+		if = { limit = { NOT = { scope:modeu5_test_us10_monthly_stock_after = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_stock_after expected=20" }
+		if = { limit = { NOT = { global_var:modeu5_us10_monthly_consumption_requests_processed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_processed_count expected_gt=0" }
+
+		if = {
+			limit = { scope:modeu5_us10_assertion_failure_count = 0 }
+			set_global_variable = modeu5_test_us10_monthly_runtime_passed
+			debug_log = "ModeU5 TEST PASS scenario=us10_monthly_runtime_integration"
+		}
+		else = {
+			set_global_variable = modeu5_test_us10_monthly_runtime_failed
+			debug_log = "ModeU5 TEST FAIL scenario=us10_monthly_runtime_integration"
+			error_log = "ModeU5 deterministic US-10 monthly runtime integration test failed; see DUMP and assertion lines."
+		}
+	}
+	else = {
+		set_global_variable = modeu5_test_us10_monthly_runtime_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us10_monthly_runtime_integration reason=missing_FRA_or_runtime_not_ready"
 	}
 }

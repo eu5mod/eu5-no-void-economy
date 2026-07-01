@@ -389,6 +389,42 @@ TXT
 	cat <<'TXT'
 }
 
+modeu5_process_us10_monthly_market_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_process_us10_monthly_market_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
+modeu5_probe_us10_monthly_market_trade_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_probe_us10_monthly_market_trade_signal_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
+modeu5_run_us10_monthly_stock_resolution_all_goods = {
+	# Market-owned monthly dispatch: each country pulse only handles markets whose
+	# market center is in the current country, preventing one market pass per
+	# country in the world.
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_rebuild_countries_present_in_market = yes
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				save_temporary_scope_as = modeu5_country
+				modeu5_process_us10_monthly_market_all_goods = yes
+			}
+		}
+		modeu5_probe_us10_monthly_market_trade_all_goods = yes
+	}
+}
+
 modeu5_clear_retired_us00_diagnostic_fields_all_goods = {
 TXT
 	for good in "${goods[@]}"; do

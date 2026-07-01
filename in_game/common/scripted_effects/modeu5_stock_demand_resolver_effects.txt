@@ -342,6 +342,60 @@ modeu5_calculate_current_stock_candidate_score = {
 	}
 }
 
+modeu5_reset_us10_monthly_runtime_counters = {
+	set_global_variable = { name = modeu5_us10_monthly_consumption_requests_processed value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_consumption_requested_quantity value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_consumption_satisfied_quantity value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_consumption_unsatisfied_quantity value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_trade_signals_blocked value = 0 }
+	set_global_variable = { name = modeu5_us10_monthly_trade_signal_quantity value = 0 }
+}
+
+modeu5_ensure_us10_monthly_runtime_counters = {
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_consumption_requests_processed } } set_global_variable = { name = modeu5_us10_monthly_consumption_requests_processed value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_consumption_requested_quantity } } set_global_variable = { name = modeu5_us10_monthly_consumption_requested_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_consumption_satisfied_quantity } } set_global_variable = { name = modeu5_us10_monthly_consumption_satisfied_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_consumption_unsatisfied_quantity } } set_global_variable = { name = modeu5_us10_monthly_consumption_unsatisfied_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_trade_signals_blocked } } set_global_variable = { name = modeu5_us10_monthly_trade_signals_blocked value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_us10_monthly_trade_signal_quantity } } set_global_variable = { name = modeu5_us10_monthly_trade_signal_quantity value = 0 } }
+}
+
+modeu5_note_us10_monthly_consumption_request_processed = {
+	modeu5_ensure_us10_monthly_runtime_counters = yes
+	save_temporary_scope_value_as = { name = modeu5_us10_monthly_requested_delta value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us10_monthly_satisfied_delta value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us10_monthly_unsatisfied_delta value = { value = $unsatisfied_quantity$ min = 0 } }
+	set_global_variable = {
+		name = modeu5_us10_monthly_consumption_requests_processed
+		value = { value = global_var:modeu5_us10_monthly_consumption_requests_processed add = 1 }
+	}
+	set_global_variable = {
+		name = modeu5_us10_monthly_consumption_requested_quantity
+		value = { value = global_var:modeu5_us10_monthly_consumption_requested_quantity add = scope:modeu5_us10_monthly_requested_delta }
+	}
+	set_global_variable = {
+		name = modeu5_us10_monthly_consumption_satisfied_quantity
+		value = { value = global_var:modeu5_us10_monthly_consumption_satisfied_quantity add = scope:modeu5_us10_monthly_satisfied_delta }
+	}
+	set_global_variable = {
+		name = modeu5_us10_monthly_consumption_unsatisfied_quantity
+		value = { value = global_var:modeu5_us10_monthly_consumption_unsatisfied_quantity add = scope:modeu5_us10_monthly_unsatisfied_delta }
+	}
+}
+
+modeu5_note_us10_monthly_trade_signal_blocked = {
+	modeu5_ensure_us10_monthly_runtime_counters = yes
+	save_temporary_scope_value_as = { name = modeu5_us10_monthly_trade_signal_delta value = { value = $quantity$ min = 0 } }
+	set_global_variable = {
+		name = modeu5_us10_monthly_trade_signals_blocked
+		value = { value = global_var:modeu5_us10_monthly_trade_signals_blocked add = 1 }
+	}
+	set_global_variable = {
+		name = modeu5_us10_monthly_trade_signal_quantity
+		value = { value = global_var:modeu5_us10_monthly_trade_signal_quantity add = scope:modeu5_us10_monthly_trade_signal_delta }
+	}
+}
+
 
 # US-10.1 / US-10.2 explicit-request runtime wrappers.
 #
@@ -427,6 +481,45 @@ modeu5_resolve_inter_market_stock_transfer = {
 		requested_quantity = scope:modeu5_requested_quantity
 		satisfied_quantity = scope:modeu5_transferred_quantity
 		unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+	}
+}
+
+modeu5_queue_monthly_stock_consumption = {
+	$country$ = { save_temporary_scope_as = modeu5_monthly_consumption_country }
+	$market$ = { save_temporary_scope_as = modeu5_monthly_consumption_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_monthly_consumption_requested_raw
+		value = $requested_quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_monthly_consumption_requested_quantity
+		value = {
+			value = scope:modeu5_monthly_consumption_requested_raw
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_monthly_consumption_requested_raw < 0 }
+		error_log = "ModeU5 monthly stock consumption request received a negative quantity; request normalized to zero."
+	}
+	if = {
+		limit = { scope:modeu5_monthly_consumption_requested_quantity > 0 }
+		modeu5_queue_monthly_stock_consumption_good_$good$ = yes
+	}
+}
+
+modeu5_reset_monthly_stock_consumption_request = {
+	$country$ = { save_temporary_scope_as = modeu5_monthly_consumption_country }
+	$market$ = { save_temporary_scope_as = modeu5_monthly_consumption_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	modeu5_reset_monthly_stock_consumption_request_good_$good$ = yes
+}
+
+modeu5_run_monthly_stock_demand_resolution = {
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		modeu5_run_us10_monthly_stock_resolution_all_goods = yes
 	}
 }
 
