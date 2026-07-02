@@ -28,7 +28,7 @@ The panel must distinguish:
 - production efficiency modifiers vs stock/demand outcomes
 
 Debug logs may support validation, but the player-facing panel is the primary deliverable.
-Provide mandatory debug for resolver inputs, ordered candidates, scores, exclusions, quantities per candidate, final outcomes, and the consumption/inter-market distinction; optionally expose a compact ModeU5 goods summary showing good, country stock/capacity, market stock/capacity, current overproduction, and production efficiency components.
+Provide mandatory debug for resolver inputs, ordered candidates, scores, exclusions, quantities per candidate, final outcomes, and the consumption/inter-market distinction. The player-facing tab exposes a compact ModeU5 goods summary showing good, country stock/capacity, market stock/capacity, current overproduction, and production efficiency availability.
 
 ## Runtime position
 
@@ -45,22 +45,47 @@ Feeds counters to: player/modder diagnostics
 | Resolver/outcome records | demand/country/market/location/good | current transaction diagnostics plus direct reads of US-10.3 outcome maps | CONFIRMED | 007, 040, 067-077 |
 | Debug event and logs | effect scope | event triggers and `debug_log` | CONFIRMED | 013 |
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
-| Optional custom panel | UI | ModeU5 window | OUT_OF_SCOPE | N/A |
+| Player-facing stock tab | in-game production UI | ModeU5 tab / lateralview plus scripted GUI refresh actions | TO_TEST | 142 |
 
 ## Current implementation status
 
 The current #119 stack implements the US-10-UI MVP as a read-only
-event/log presentation layer, not as a custom GUI window.
+player-facing ModeU5 stock tab in the production interface.
 
-Implemented visibility surface:
+Implemented player-facing surface:
+
+- the production tab set gains a `ModeU5 Stocks` tab opening
+  `modeu5_us10_stock_lateralview`;
+- the tab has the required columns:
+  `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`,
+  `Production Efficiency`;
+- the tab supports refresh and market switching through scripted GUI actions,
+  backed by the same read-only table helpers and `every_market_present_in_country`;
+- the current MVP rows cover Grain/Wheat, Iron, and Tools, matching the first
+  practical player-facing table slice requested for validation;
+- country stock/capacity reads the canonical country x market x good record;
+- market stock reads the canonical market aggregate cache;
+- market capacity is computed read-only by summing existing country x market
+  shared capacity records for countries present in the selected market;
+- overproduction reads the existing US-00 overproduction ratio for the selected
+  country x market x good;
+- Production Efficiency is shown as `n/a` until the required engine modifier
+  components are exposed as an authoritative read-only decomposition.
+
+Implemented read-model support:
+
+- `modeu5_us10_ui_prepare_current_market_table` populates country-owned UI
+  display variables from canonical ModeU5 records;
+- market selection is backed by a non-authoritative work list built through
+  `every_market_present_in_country`;
+- `ModeU5 US-10-UI TABLE` logs expose the same table values for validation.
+
+Implemented debug support:
 
 - `event modeu5_us10_debug.1` -> `Run US-10 UI visibility summary`;
 - `event modeu5_revalidate_debug.1` includes `scenario=us10_ui_visibility`;
 - `tools/summarize_modeu5_test_logs.sh` prints the dedicated
-  `ModeU5 US-10-UI ...` lines;
-- the localized US-10 result event shows a compact Wheat row with country
-  stock/capacity, market stock, and explicit availability flags for market
-  capacity, overproduction, and production efficiency;
+  `ModeU5 US-10-UI ...` lines, including `ModeU5 US-10-UI TABLE`;
 - audit logs expose bounded candidate and mutation traces, including bucket,
   score, stock, selected/actual quantity, remaining quantity, exclusion reason
   id, sparse supplier markers, own-stock fast path, and aggregate prefilter
@@ -70,30 +95,24 @@ Implemented visibility surface:
 
 Deliberate limitation:
 
-- no custom scripted GUI panel is created in this layer;
-- market capacity, current overproduction, and production efficiency are shown
-  as unavailable unless their required authoritative counters/exposure are
-  present; the UI layer must not guess them;
-- the compact row is a deterministic Wheat validation row. A broader per-good
-  panel remains future UI polish.
+- the MVP table is a narrow three-good table. A generated all-visible-goods
+  table remains follow-up after the tab hook is validated in game;
+- the tab/lateralview exposure is `TO_TEST` until runtime logs confirm it loads,
+  the buttons execute, and the table variables render without GUI errors;
+- Production Efficiency remains unavailable rather than guessed.
 
 ## Files expected to change
 
 ```txt
-in_game/events/
 in_game/localization/
+in_game/common/scripted_effects/
+in_game/common/scripted_guis/
+in_game/gui/
+packages/modeu5_core_tests/in_game/
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
-```
-
-Player-facing goods summary panel, only if the ModeU5 panel is implemented:
-
-```txt
-in_game/gui/
-in_game/common/scripted_guis/
-in_game/common/script_values/
-in_game/common/scripted_effects/
+tools/summarize_modeu5_test_logs.sh
 ```
 
 ## Dependencies
@@ -107,7 +126,7 @@ Related US: US-04-UI
 ## Implementation rules
 
 - Follow `AGENTS.md`, `CLAUDE.md`, and project debug conventions.
-- Debug is mandatory; custom GUI is optional.
+- Debug is mandatory, and the US-10-UI MVP requires a player-facing in-game tab.
 - Show demand type, scope, requested/satisfied/unsatisfied, candidates, scores, quantities, and exclusions.
 - Explain that same-market consumption is not trade.
 - Explain that logistics costs and trade-income adjustments are outside the surviving MVP story set.
@@ -336,11 +355,12 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 - [x] Consumption display shows no transport/trade economics.
 - [x] Inter-market display shows source, target, capacity, and actual transfer.
 - [x] Exclusion reasons are human-readable and stable in the debug reason map.
-- [x] Country Stocks are shown as `country_current_stock/country_stock_capacity` without hiding usage, free capacity, or over-cap details in the event result.
-- [ ] Market Stocks are shown as `market_current_stock/market_stock_capacity` without hiding usage, free capacity, or over-cap details in tooltip.
-- [ ] Country and market stock values are visually distinct and not conflated.
+- [x] Country Stocks are shown as `country_current_stock/country_stock_capacity` without hiding usage, free capacity, or over-cap details in the read-model/log result.
+- [x] Market Stocks are shown as `market_current_stock/market_stock_capacity` in the read-model/log result.
+- [ ] The ModeU5 Stocks tab renders these values in the in-game production UI without GUI errors.
+- [x] Country and market stock values are visually distinct and not conflated.
 - [x] Stock above capacity is marked as over-cap stock, not overproduction.
-- [ ] Current surplus is shown as production balance, not storage overflow.
+- [x] Current overproduction reads the US-00 overproduction ratio, not storage overflow.
 - [ ] Surplus percentage handles zero consumption safely.
 - [ ] Production Efficiency tooltip separates global production efficiency and good-specific output.
 - [x] Missing modifier exposure does not block stock visibility.
@@ -356,10 +376,12 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 - [x] No logistics or trade-income adjustment is hidden in this display layer.
 - [x] Player can see one compact deterministic Wheat row in the debug/result event.
 - [x] The row shows country-owned stock as `country_current_stock/country_stock_capacity`.
-- [ ] Each row shows selected-market aggregate stock as `market_current_stock/market_stock_capacity`.
-- [ ] Country and market capacity, usage, free capacity, and over-cap quantity are available in tooltips.
-- [ ] Each row shows current overproduction/surplus or deficit where counters exist.
-- [ ] Each row shows current Production Efficiency where engine exposure exists.
+- [x] Each MVP row shows selected-market aggregate stock as `market_current_stock/market_stock_capacity`.
+- [ ] The player-facing production UI contains a ModeU5 Stocks tab with Grain/Wheat, Iron, and Tools rows.
+- [ ] The tab supports Refresh and Next Market without mutating stock or resolver state.
+- [x] Country and market over-cap quantities are visible in the event details.
+- [x] Each MVP row shows current US-00 overproduction ratio where records exist.
+- [x] Production Efficiency is shown as unavailable rather than guessed.
 - [ ] Production Efficiency tooltip shows `global_production_efficiency` and the good-specific output modifier separately.
 - [x] The panel does not create or mutate resolver, stock, capacity, production, demand, or modifier state.
 
@@ -391,6 +413,8 @@ Production Efficiency tooltip separates global production efficiency from good-s
 
 ## Known limitations
 
-MVP may rely on deterministic debug events. A full custom stock-resolution panel is outside scope unless explicitly requested.
+The deterministic debug events validate the read-model and resolver traces, but
+they are not the US-10-UI player-facing deliverable. The MVP deliverable is the
+ModeU5 Stocks tab in the production interface.
 
 The player-facing goods summary depends on exposed market aggregates, production, consumption, transfer, and modifier counters. If any exposure is missing, the corresponding column must be hidden, marked unavailable, or kept blocked by TECH-01 rather than guessed.

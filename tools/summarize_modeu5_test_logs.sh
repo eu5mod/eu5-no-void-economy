@@ -79,7 +79,7 @@ grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$perf14_file" || true
 
-grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|RESOLUTION|CANDIDATE_TRACE|MUTATION_TRACE|FAST_PATH|REASON_MAP)' "${log_files[@]}" \
+grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|RESOLUTION|CANDIDATE_TRACE|MUTATION_TRACE|FAST_PATH|REASON_MAP)' "${log_files[@]}" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us10ui_file" || true
 

@@ -1,0 +1,32 @@
+modeu5_us10_ui_refresh_on_click = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = yes
+	}
+
+	effect = {
+		modeu5_us10_ui_prepare_current_market_table = yes
+	}
+}
+
+modeu5_us10_ui_next_market_on_click = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = yes
+	}
+
+	effect = {
+		modeu5_us10_ui_select_next_market = yes
+		modeu5_us10_ui_prepare_current_market_table = yes
+	}
+}

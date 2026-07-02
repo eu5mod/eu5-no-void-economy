@@ -930,6 +930,10 @@ modeu5_us10_evaluate_ui_visibility_assertions = {
 	if = { limit = { NOT = { var:modeu5_us10_ui_trade_unsatisfied = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_unsatisfied expected=30" }
 	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_country_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_country_stock expected=70" }
 	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_market_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_selected_market_available = 1 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_selected_market_available expected=1" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_country_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_country_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_market_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_market_capacity > 0 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_capacity expected_gt=0" }
 	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_trace_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_candidate_trace_visible expected_gt=0" }
 	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_mutation_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_mutation_trace_visible expected_gt=0" }
 	if = { limit = { NOT = { var:modeu5_us10_ui_issue109_floor_excluded_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
@@ -955,6 +959,13 @@ modeu5_us10_run_ui_visibility_fixture_for_pair = {
 		source_market = scope:modeu5_us10_source_market
 	}
 	modeu5_us10_capture_ui_visibility_summary = yes
+	c:FRA = {
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_ui_fixture_market }
+		modeu5_us10_ui_set_selected_market = {
+			market = scope:modeu5_us10_ui_fixture_market
+		}
+		modeu5_us10_ui_prepare_current_market_table = yes
+	}
 	modeu5_us10_run_issue109_fixture = {
 		source_country = scope:modeu5_us10_source_country
 		source_market = scope:modeu5_us10_source_market
