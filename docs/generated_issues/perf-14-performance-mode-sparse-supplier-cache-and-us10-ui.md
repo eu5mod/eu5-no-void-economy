@@ -24,10 +24,17 @@ Performance Mode narrows detailed Market x Country accounting.
 
 ### Performance Mode eligibility
 
-In Performance Mode, detailed country x market x good accounting is maintained only when all of these are true:
+In Performance Mode, detailed country x market x good accounting is maintained
+for human-relevant markets. A market is human-relevant when at least one
+human-played country is present in it through the confirmed iterator:
 
-- the country is human-played; and
-- the market is returned by `every_market_present_in_country` for that country.
+- `every_country limit = { is_ai = no }`; then
+- `every_market_present_in_country`.
+
+Once a market is human-relevant and promoted, all stock-affecting country x
+market mutations inside that market use the detailed path, including AI country
+records. This preserves the central invariant that the market stock is a cache
+of country stocks.
 
 Phase 1 uses the confirmed country-market iterator as the human-relevant market
 discovery path:
@@ -218,8 +225,32 @@ Implemented boundary:
 - Add market-level-only variants or branches for systems that change stock while detailed accounting is disabled.
 - Ensure market aggregate deltas remain consistent with centralized stock mutation semantics.
 - Add audit logs for fallback usage.
-- Block stock-affecting fallback routing unless
-  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true.
+- Block detailed stock-affecting country x market routing unless
+  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true, and
+  select a market-level fallback path otherwise.
+
+Second stacked PR boundary:
+
+- `modeu5_prepare_stock_mutation_accounting_mode` is the shared pre-mutation
+  gate for future stock-affecting callers.
+- The gate first reuses `modeu5_prepare_country_market_accounting_decision`.
+- In Normal Mode, it allows detailed country x market mutation immediately.
+- In Performance Mode, the stock-affecting decision is market-level: if the
+  target market is human-relevant but has not been promoted, it attempts
+  `modeu5_promote_market_to_detailed_accounting`.
+- If the market is promoted, the gate sets
+  `modeu5_stock_mutation_use_detailed_accounting`.
+- If the market is not human-relevant or promotion fails, the gate sets
+  `modeu5_stock_mutation_use_market_level_fallback`.
+- If No Void Economy is deactivated, the gate sets
+  `modeu5_stock_mutation_blocked`.
+- Once a market is promoted, all country x market stock mutations inside that
+  market must use the detailed path, including AI countries, so the market
+  aggregate remains a cache of the detailed country records.
+- This PR still does not implement the market-level fallback mutation operator
+  itself, and it does not yet route US-03, US-10, US-17, or US-20 through the
+  gate. Those callers must be wired in later stacked PRs and must not use the
+  weaker read-only eligibility trigger as mutation permission.
 
 ### Phase 3 — sparse supplier lists
 
@@ -237,7 +268,9 @@ Implemented boundary:
 
 ## Acceptance criteria
 
-- Performance Mode only maintains detailed Market x Country accounting for human countries in markets returned by `every_market_present_in_country`.
+- Performance Mode maintains detailed Market x Country accounting for promoted
+  human-relevant markets returned by `every_market_present_in_country` from at
+  least one human country.
 - Foreign-building-only or indirect market presence remains a Phase 2 boundary question unless it is covered by the confirmed iterator.
 - In Performance Mode, skipped country x market mutations fall back to market-level aggregate changes rather than being dropped.
 - US-03, US-17, and US-20 have explicit fallback plans/tests before they rely on detailed country x market state.
@@ -269,9 +302,16 @@ event modeu5_revalidate_debug.1
 
 New targeted scenarios:
 
-- Performance Mode human country owns a location in the market: detailed country x market accounting is retained.
-- Performance Mode human country has only foreign-building/indirect presence: detailed accounting is skipped and market aggregate fallback is used.
-- Performance Mode AI country: detailed accounting is skipped and market aggregate fallback is used where a supported mutation applies.
+- Performance Mode human country owns a location in the market: the market
+  becomes human-relevant and detailed accounting is retained after promotion.
+- Performance Mode AI country in a human-relevant promoted market: detailed
+  accounting is used because the market aggregate is now a cache of detailed
+  country records.
+- Performance Mode AI country in a non-human-relevant market: market aggregate
+  fallback is selected where a supported mutation applies.
+- Performance Mode human country has only foreign-building/indirect presence:
+  detailed accounting is skipped and market aggregate fallback is used unless a
+  confirmed iterator later proves that presence should make the market relevant.
 - Normal Mode: existing detailed accounting path remains available.
 - Sparse supplier cache: only meaningful suppliers are scanned in the hot path.
 - Debug fallback: all-country scan can still be forced for diagnostics.
