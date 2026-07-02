@@ -172,6 +172,23 @@ modeu5_revalidate_debug.80 = {
 
 	immediate = {
 		modeu5_revalidate_run_perf10_13_active_repair_metrics = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.90 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.90 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_core04_market_entry = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 1 }
 	}
 }

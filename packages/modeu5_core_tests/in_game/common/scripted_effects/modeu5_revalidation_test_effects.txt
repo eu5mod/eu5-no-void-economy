@@ -41,6 +41,9 @@ modeu5_revalidate_clear_results = {
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_passed
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_failed
 	remove_global_variable = modeu5_revalidation_perf10_13_active_repair_blocked
+	remove_global_variable = modeu5_revalidation_core04_market_entry_passed
+	remove_global_variable = modeu5_revalidation_core04_market_entry_failed
+	remove_global_variable = modeu5_revalidation_core04_market_entry_blocked
 }
 
 modeu5_revalidate_run_us02_capacity = {
@@ -245,6 +248,22 @@ modeu5_revalidate_run_perf10_13_active_repair_metrics = {
 	}
 }
 
+modeu5_revalidate_run_core04_market_entry = {
+	modeu5_debug_run_core04_market_entry_test = yes
+
+	if = {
+		limit = { has_global_variable = modeu5_test_core04_market_entry_passed }
+		set_global_variable = modeu5_revalidation_core04_market_entry_passed
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_core04_market_entry_blocked }
+		set_global_variable = modeu5_revalidation_core04_market_entry_blocked
+	}
+	else = {
+		set_global_variable = modeu5_revalidation_core04_market_entry_failed
+	}
+}
+
 modeu5_revalidate_finalize = {
 	set_global_variable = modeu5_revalidation_finished
 	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation_summary"
@@ -261,6 +280,7 @@ modeu5_revalidate_finalize = {
 			has_global_variable = modeu5_revalidation_us10_demand_resolution_passed
 			has_global_variable = modeu5_revalidation_us10_issue109_passed
 			has_global_variable = modeu5_revalidation_perf10_13_active_repair_passed
+			has_global_variable = modeu5_revalidation_core04_market_entry_passed
 		}
 		set_global_variable = modeu5_revalidation_passed
 		debug_log = "ModeU5 TEST PASS scenario=main_revalidation_summary"
@@ -278,6 +298,7 @@ modeu5_revalidate_finalize = {
 				has_global_variable = modeu5_revalidation_us10_demand_resolution_failed
 				has_global_variable = modeu5_revalidation_us10_issue109_failed
 				has_global_variable = modeu5_revalidation_perf10_13_active_repair_failed
+				has_global_variable = modeu5_revalidation_core04_market_entry_failed
 			}
 		}
 		set_global_variable = modeu5_revalidation_failed
@@ -295,6 +316,7 @@ modeu5_revalidate_finalize = {
 				has_global_variable = modeu5_revalidation_us10_demand_resolution_blocked
 				has_global_variable = modeu5_revalidation_us10_issue109_blocked
 				has_global_variable = modeu5_revalidation_perf10_13_active_repair_blocked
+				has_global_variable = modeu5_revalidation_core04_market_entry_blocked
 			}
 		}
 		set_global_variable = modeu5_revalidation_blocked

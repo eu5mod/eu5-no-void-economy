@@ -25,6 +25,26 @@ The missing runtime coverage is:
 4. the above behaves correctly in Normal Mode, Performance Mode, and Deactivated
    mode.
 
+## Implementation status
+
+This branch implements the explicit runtime migration layer:
+
+- `modeu5_prepare_core04_market_entry_stock_migration` accepts an explicit
+  `country`, `source_market`, `target_market`, and `location`;
+- generated per-good helpers move stock through `modeu5_transfer_stock`;
+- Normal Mode migrates directly;
+- Performance Mode calls the stock-mutation gate and promotes human-relevant
+  markets before mutation;
+- Deactivated Mode blocks and logs a diagnostic;
+- a location last-known-market memory is refreshed at campaign initialization
+  and after monthly country pulses.
+
+The location market memory is not yet consumed as an automatic stock-migration
+source. TECH-01 141 tracks the remaining exposure question: whether a market
+scope persisted on a location can safely be re-entered as a script scope later.
+Until that is confirmed, stock-affecting CORE-04 callers must pass
+`old_market/source_market` and `new_market/target_market` explicitly.
+
 ## Core rule
 
 For first entry into a new market, reuse the CORE-03 storage-share principle:
