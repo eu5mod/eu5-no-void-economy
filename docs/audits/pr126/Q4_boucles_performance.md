@@ -65,3 +65,29 @@ travail lourd: marchés promus × pays présents × goods actifs / trades pertin
 ```
 
 Le point clef est que `P` doit rester beaucoup plus petit que `M` en mode performance, et que `G_a` doit rester plus petit que `G` grâce aux active-good lists. Si le mode normal promeut tous les marchés du pays courant, le gain sera surtout de maintenance/cache et moins spectaculaire, mais il évite quand même que chaque US reconstruise son propre monde.
+
+### Hypothèse chiffrée de revue : 60 goods, 100 marchés, 800 pays
+
+Hypothèse de dimensionnement demandée :
+
+```txt
+G = 60 goods
+M = 100 marchés
+C = 800 pays
+P_normal = 100 marchés promus
+P_performance = 5 marchés promus probables
+```
+
+| Scénario | Formule simplifiée | Itérations-logiques avant filtres fins | Lecture |
+|---|---:|---:|---|
+| Current large, pire cas all country × all market × all goods | `C * M * G` | `800 * 100 * 60 = 4 800 000` | Baseline mensuelle inquiétante si les pipelines larges retouchent tous les axes. |
+| Promoted-market Normal, si tous les marchés restent promus et tous les pays/goods restent actifs | `P_normal * C * G` | `100 * 800 * 60 = 4 800 000` | Pas de gain asymptotique dans le pire cas, mais meilleur câblage/cache et moins de rescans par US. |
+| Promoted-market Performance, si 5 marchés promus mais tous les pays/goods restent candidats | `P_performance * C * G` | `5 * 800 * 60 = 240 000` | Environ `20x` moins que le pire cas current grâce au seul filtre marché. |
+| Performance + pays réellement présents par marché (`K_m = 40`) + all goods | `P_performance * K_m * G` | `5 * 40 * 60 = 12 000` | Environ `400x` moins que `4 800 000`. |
+| Performance + pays présents (`K_m = 40`) + goods actifs (`G_a = 10`) | `P_performance * K_m * G_a` | `5 * 40 * 10 = 2 000` | Environ `2 400x` moins que le pire cas all-axis. |
+
+Conclusion avec cette hypothèse :
+
+1. **Normal mode (`P = 100`)** : le target promoted-market n'est pas surtout un gain asymptotique si tout reste promu et actif. Son intérêt principal est la maintenabilité : un seul propriétaire de boucle marché, des caches préparés une fois, et moins de rescans par US.
+2. **Performance mode (`P ≈ 5`)** : le target promoted-market devient clairement meilleur. Le seul filtre marché donne déjà environ `20x`; si `countries_present_in_market` et active goods filtrent réellement, l'ordre de grandeur devient `~400x` à `~2 400x` sur les branches goods/local-market.
+3. Le facteur réel dépendra surtout de trois nombres à mesurer dans les logs : `P` marchés promus, `K_m` pays présents par marché promu, et `G_a` goods actifs par marché promu.
