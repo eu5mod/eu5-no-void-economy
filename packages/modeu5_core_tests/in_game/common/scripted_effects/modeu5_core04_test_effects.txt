@@ -111,7 +111,7 @@ modeu5_core04_test_select_fixture_markets = {
 	}
 }
 
-modeu5_core04_test_log_result_dump = {
+modeu5_core04_test_prepare_result_dump = {
 	set_variable = { name = modeu5_core04_ui_last_result value = global_var:modeu5_core04_market_entry_last_result }
 	set_variable = { name = modeu5_core04_ui_gate_result value = global_var:modeu5_core04_market_entry_gate_result }
 	set_variable = { name = modeu5_core04_ui_goods_checked value = global_var:modeu5_core04_market_entry_goods_checked }
@@ -124,7 +124,26 @@ modeu5_core04_test_log_result_dump = {
 	set_variable = { name = modeu5_core04_ui_source_stock value = scope:modeu5_core04_test_source_stock }
 	set_variable = { name = modeu5_core04_ui_target_stock value = scope:modeu5_core04_test_target_stock }
 	set_variable = { name = modeu5_core04_ui_total_stock value = scope:modeu5_core04_test_total_stock }
-	debug_log = "ModeU5 CORE-04 DUMP phase=$phase$ result=[THIS.GetVariable('modeu5_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('modeu5_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('modeu5_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('modeu5_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('modeu5_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('modeu5_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('modeu5_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('modeu5_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('modeu5_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('modeu5_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('modeu5_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('modeu5_core04_ui_goods_moved').GetValue|0]"
+}
+
+modeu5_core04_test_log_normal_first_entry_dump = {
+	modeu5_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=normal_first_entry result=[THIS.GetVariable('modeu5_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('modeu5_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('modeu5_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('modeu5_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('modeu5_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('modeu5_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('modeu5_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('modeu5_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('modeu5_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('modeu5_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('modeu5_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('modeu5_core04_ui_goods_moved').GetValue|0]"
+}
+
+modeu5_core04_test_log_known_market_oscillation_dump = {
+	modeu5_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=known_market_oscillation result=[THIS.GetVariable('modeu5_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('modeu5_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('modeu5_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('modeu5_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('modeu5_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('modeu5_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('modeu5_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('modeu5_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('modeu5_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('modeu5_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('modeu5_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('modeu5_core04_ui_goods_moved').GetValue|0]"
+}
+
+modeu5_core04_test_log_performance_promoted_first_entry_dump = {
+	modeu5_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=performance_promoted_first_entry result=[THIS.GetVariable('modeu5_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('modeu5_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('modeu5_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('modeu5_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('modeu5_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('modeu5_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('modeu5_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('modeu5_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('modeu5_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('modeu5_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('modeu5_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('modeu5_core04_ui_goods_moved').GetValue|0]"
+}
+
+modeu5_core04_test_log_deactivated_blocked_dump = {
+	modeu5_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=deactivated_blocked result=[THIS.GetVariable('modeu5_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('modeu5_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('modeu5_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('modeu5_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('modeu5_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('modeu5_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('modeu5_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('modeu5_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('modeu5_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('modeu5_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('modeu5_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('modeu5_core04_ui_goods_moved').GetValue|0]"
 }
 
 modeu5_core04_note_assertion_failure = {
@@ -177,7 +196,7 @@ modeu5_debug_run_core04_market_entry_test = {
 			location = scope:modeu5_core04_test_location
 		}
 		modeu5_core04_test_read_wheat_totals = yes
-		modeu5_core04_test_log_result_dump = { phase = normal_first_entry }
+		modeu5_core04_test_log_normal_first_entry_dump = yes
 		if = {
 			limit = {
 				OR = {
@@ -200,7 +219,7 @@ modeu5_debug_run_core04_market_entry_test = {
 			location = scope:modeu5_core04_test_location
 		}
 		modeu5_core04_test_read_wheat_totals = yes
-		modeu5_core04_test_log_result_dump = { phase = known_market_oscillation }
+		modeu5_core04_test_log_known_market_oscillation_dump = yes
 		if = {
 			limit = {
 				OR = {
@@ -228,7 +247,7 @@ modeu5_debug_run_core04_market_entry_test = {
 			location = scope:modeu5_core04_test_location
 		}
 		modeu5_core04_test_read_wheat_totals = yes
-		modeu5_core04_test_log_result_dump = { phase = performance_promoted_first_entry }
+		modeu5_core04_test_log_performance_promoted_first_entry_dump = yes
 		if = {
 			limit = {
 				OR = {
@@ -252,7 +271,7 @@ modeu5_debug_run_core04_market_entry_test = {
 			location = scope:modeu5_core04_test_location
 		}
 		modeu5_core04_test_read_wheat_totals = yes
-		modeu5_core04_test_log_result_dump = { phase = deactivated_blocked }
+		modeu5_core04_test_log_deactivated_blocked_dump = yes
 		if = {
 			limit = { NOT = { global_var:modeu5_core04_market_entry_last_result = 4 } }
 			modeu5_core04_note_assertion_failure = yes

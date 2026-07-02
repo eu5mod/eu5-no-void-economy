@@ -33,9 +33,14 @@ modeu5_core04_reset_market_entry_metrics = {
 	set_global_variable = { name = modeu5_core04_market_entry_promotion_succeeded value = 0 }
 }
 
-modeu5_core04_log_blocked_market_entry = {
+modeu5_core04_log_blocked_nve_deactivated_market_entry = {
 	set_global_variable = { name = modeu5_core04_market_entry_last_result value = 4 }
-	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=$reason$"
+	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=nve_deactivated"
+}
+
+modeu5_core04_log_blocked_mutation_gate_market_entry = {
+	set_global_variable = { name = modeu5_core04_market_entry_last_result value = 4 }
+	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=mutation_gate_blocked"
 }
 
 modeu5_core04_mark_source_and_target_dirty = {
@@ -182,7 +187,7 @@ modeu5_prepare_core04_market_entry_stock_migration = {
 	if = {
 		limit = { modeu5_nve_deactivated_trigger = yes }
 		set_global_variable = { name = modeu5_core04_market_entry_last_reason value = 1 }
-		modeu5_core04_log_blocked_market_entry = { reason = nve_deactivated }
+		modeu5_core04_log_blocked_nve_deactivated_market_entry = yes
 	}
 	else_if = {
 		limit = { scope:modeu5_core04_source_market = scope:modeu5_core04_target_market }
@@ -191,6 +196,15 @@ modeu5_prepare_core04_market_entry_stock_migration = {
 		debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation moved_stock=0 reason=same_source_target_market"
 	}
 	else = {
+		modeu5_core04_prepare_country_market_known_state = {
+			country = scope:modeu5_core04_country
+			market = scope:modeu5_core04_target_market
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core04_target_was_known_before_gate
+			value = scope:modeu5_core04_country_market_known
+		}
+
 		modeu5_prepare_stock_mutation_accounting_mode = {
 			country = scope:modeu5_core04_country
 			market = scope:modeu5_core04_target_market
@@ -210,12 +224,8 @@ modeu5_prepare_core04_market_entry_stock_migration = {
 
 		if = {
 			limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes }
-			modeu5_core04_prepare_country_market_known_state = {
-				country = scope:modeu5_core04_country
-				market = scope:modeu5_core04_target_market
-			}
 			if = {
-				limit = { scope:modeu5_core04_country_market_known > 0 }
+				limit = { scope:modeu5_core04_target_was_known_before_gate > 0 }
 				modeu5_core04_refresh_country_after_market_entry = yes
 				set_global_variable = { name = modeu5_core04_market_entry_last_result value = 2 }
 				debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation moved_stock=0 reason=target_market_already_known"
@@ -246,7 +256,7 @@ modeu5_prepare_core04_market_entry_stock_migration = {
 		}
 		else = {
 			set_global_variable = { name = modeu5_core04_market_entry_last_reason value = 3 }
-			modeu5_core04_log_blocked_market_entry = { reason = mutation_gate_blocked }
+			modeu5_core04_log_blocked_mutation_gate_market_entry = yes
 		}
 	}
 }
