@@ -108,6 +108,45 @@ This avoids high-cardinality country x market storage for non-human-relevant
 markets without weakening the central invariant. There is no persistent
 ModeU5-only market aggregate for skipped markets.
 
+## Monthly runtime business rule
+
+Performance Mode is a market-level runtime filter, not a replacement economy.
+
+The monthly runtime rule is:
+
+```txt
+1. Identify human-relevant markets.
+2. monthly_country_pulse
+   -> every_market_center_in_country
+   -> modeu5_prepare_market_runtime_accounting_mode(market)
+3. If the market is human-relevant and promoted:
+   -> run the normal ModeU5 detailed runtime for that market
+   -> use centralized stock operators such as add/remove/transfer/decay through
+      their existing callers
+   -> run the relevant ModeU5 balance mechanisms for that market
+4. Otherwise:
+   -> skip ModeU5 stock-affecting runtime for that market
+   -> leave vanilla behavior untouched
+   -> log vanilla fallback when debug/audit is active
+```
+
+Current implementation boundary:
+
+- US-00 monthly production ingestion, rejection ledger, overproduction ratios,
+  void wealth, and production-penalty bookkeeping are gated by the market
+  runtime decision.
+- US-10 monthly consumption and inter-market transfer resolution are gated by
+  the same market runtime decision.
+- US-03 decay, US-17, US-20, and any future monthly balancing/runtime systems
+  must use this same gate before invoking stock-affecting ModeU5 logic.
+- US-09 static/generated economy rebalance overrides are package-level static
+  data, not a monthly stock mutation path. If a future US-09-adjacent runtime
+  balance mechanic is added, it must follow the same market runtime rule.
+
+This preserves the spirit of the mod in human-relevant markets while avoiding
+side effects and high-cardinality storage in markets where vanilla behavior is
+the intended fallback.
+
 ## Sparse supplier cache/list objective
 
 #109 accepted generated per-good pruning before expensive reads as the MVP. This follow-up should replace that with a true sparse supplier path where safe.

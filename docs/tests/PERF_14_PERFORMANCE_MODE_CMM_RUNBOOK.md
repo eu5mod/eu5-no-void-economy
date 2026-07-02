@@ -15,6 +15,30 @@ ModeU5 detailed accounting, while non-human-relevant markets are left to vanilla
 fallback. It does not yet prove sparse supplier cache maintenance or US-10 UI
 rendering.
 
+## Business Rule Under Test
+
+Performance Mode keeps the ModeU5 economic layer only where it matters for the
+human player:
+
+```txt
+monthly_country_pulse
+  -> every_market_center_in_country
+  -> if market is human-relevant and promoted:
+       run ModeU5 detailed monthly runtime for that market
+     else:
+       use vanilla fallback and skip ModeU5 stock-affecting runtime
+```
+
+For this PR, the gate is wired for:
+
+- US-00 monthly production ingestion and balance/penalty bookkeeping;
+- US-10 monthly consumption and inter-market transfer resolution.
+
+Future monthly stock-affecting runtime paths, including US-03 decay and any
+US-17/US-20 follow-up, must use the same market-runtime gate. US-09 static
+rebalance files are package-level static data, not a monthly runtime mutation;
+only future runtime balancing logic adjacent to US-09 would need this gate.
+
 ## Setup
 
 Use a disposable campaign with the ModeU5 Core test package installed.
