@@ -2180,10 +2180,14 @@ modeu5_core04_move_market_entry_stock_good___GOOD__ = {
 				}
 			}
 		}
-		scope:modeu5_core04_source_market = { save_temporary_scope_as = modeu5_market }
-		modeu5_validate_stock_consistency_good___GOOD__ = yes
-		scope:modeu5_core04_target_market = { save_temporary_scope_as = modeu5_market }
-		modeu5_validate_stock_consistency_good___GOOD__ = yes
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_core04_source_market
+			good = __GOOD__
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_core04_target_market
+			good = __GOOD__
+		}
 	}
 }
 
