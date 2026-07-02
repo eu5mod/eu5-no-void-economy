@@ -149,16 +149,94 @@ flowchart TD
 | Target nouveau dispatcher | `modeu5_run_monthly_market_trade_cycle` | à créer | Nom proposé pour rendre E explicite. |
 | Itérateurs à confirmer | `every_trade`, `every_market_center` | TECH-01 à compléter avant gameplay | Le target les montre comme design souhaité, pas exposition confirmée. |
 
-## 6. Ordre de refactor recommandé
+
+## 6. Variante cible proposée par review — market promotion puis boucles ségrégées
+
+Je pense que cette variante est meilleure comme **premier refactor concret** que le target E précédent, parce qu'elle s'appuie d'abord sur les boucles déjà proches du code actuel (`monthly_country_pulse`, `every_market_present_in_country`, market promotion), puis sépare proprement le traitement **country/market/good** du traitement **trade/inter-market**.
+
+```mermaid
+flowchart TD
+    A[1. monthly_country_pulse] --> B{modeu5_stock_runtime_ready_trigger ?}
+    B -->|non| Z[Fail closed / diagnostic only]
+    B -->|oui| C[1.1 every_market_present_in_country]
+
+    subgraph PREP[1. Préparation pays -> marchés]
+        C --> C1[Cache countries_present_in_market<br/>target helper: modeu5_prepare_country_present_market_caches]
+        C1 --> C2{Mode Performance ?<br/>modeu5_performance_mode_enabled_trigger}
+        C2 -->|oui| C3[Cache human_relevant_market<br/>modeu5_prepare_performance_mode_human_relevant_markets]
+        C2 -->|non| C4[human_relevant_market = all current-country markets]
+        C3 --> C5[1.3 Market Promotion<br/>modeu5_promote_market_to_detailed_accounting]
+        C4 --> C5
+        C5 --> C6[1.4 Future market-focused US<br/>non-good / non-trade scoped]
+    end
+
+    C6 --> D[2. Segregated loop every_market_promoted]
+
+    subgraph PROMOTED[2. Boucle séparée par marché promu]
+        D --> M[every_market_promoted]
+        M --> M1[2.1.1 countries_present_in_market]
+        M1 --> M2[2.1.2 US-00 scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
+        M2 --> M3[2.1.3 Same-market consumption<br/>modeu5_resolve_stock_consumption]
+        M3 --> M4[2.1.4 Future same-market US]
+
+        M --> T1[2.2.1 every_trade<br/>TECH-01 exposure required]
+        T1 --> T2[2.2.2 Trade resolution / inter-market transfer<br/>modeu5_resolve_inter_market_stock_transfer<br/>modeu5_transfer_stock]
+        T2 --> T3[2.2.3 Future inter-market US]
+    end
+
+    M4 --> V[Validate promoted market-good<br/>modeu5_validate_stock_consistency]
+    T3 --> V
+    V --> R{Divergence ?}
+    R -->|yes| RB[modeu5_rebuild_market_stock_from_country_stocks]
+    R -->|no| N[Next promoted market]
+    RB --> N
+    N --> END[Reset counters after readers]
+```
+
+### Avis sur cette variante
+
+| Point | Avis | Raison | Garde-fou |
+|---|---|---|---|
+| `monthly_country_pulse` reste l'entrée | Oui | Compatible avec le câblage actuel et les on_actions existants | Garder le readiness gate avant toute mutation |
+| `every_market_present_in_country` en préparation | Oui | C'est le bon endroit pour construire les listes de marchés du pays et les caches nécessaires | Ne pas recalculer par good |
+| `countries_present_in_market` cache | Oui, prioritaire | Donne au marché promu sa liste de pays une seule fois | Le cache reste dérivé, jamais source de stock |
+| Performance: `human_relevant_market` filtré | Oui | Réduit les scopes sans changer l'ordre métier | Normal mode doit définir l'équivalent comme tous les marchés du pays courant, pas tous les marchés globaux |
+| Market Promotion avant US | Oui | Très bon pivot File/Cache : seules les boucles suivantes lisent les marchés promus | Documenter les critères de promotion et les raisons de fallback |
+| Boucle séparée `every_market_promoted` | Oui | Clarifie le propriétaire de scope et évite que US-00/US-10 scannent chacun leurs propres marchés | Ajouter un helper unique pour itérer les marchés promus |
+| Branche 2.1 countries/US-00/same-market | Oui | Sépare le local market-good de l'inter-market | Garder les mutations via opérateurs centraux uniquement |
+| Branche 2.2 `every_trade` / transfer | Oui comme target | C'est la bonne séparation conceptuelle pour inter-market | Bloqué tant que `every_trade` n'est pas confirmé dans TECH-01 ; prévoir fallback queued-demand |
+| Future US non-good / market-focused | Oui | Bon emplacement avant les goods/trade loops | Ne pas mélanger avec les per-good adapters |
+
+### Ajustement recommandé par rapport au target E précédent
+
+Le target E précédent partait d'une orchestration `market/trade` générique. La variante proposée ici est plus opérationnelle :
+
+```txt
+monthly country
+→ build/promote market set
+→ every promoted market
+  → local country/market/good branch
+  → inter-market trade branch
+```
+
+Je recommanderais donc de faire de cette variante le **target process principal** et de garder `modeu5_run_monthly_market_trade_cycle` comme nom possible pour l'étape 2, ou de choisir un nom plus précis :
+
+```txt
+modeu5_run_monthly_promoted_market_cycle
+```
+
+Ce nom décrit mieux la mécanique : on ne parcourt pas tous les marchés ni tous les trades, on parcourt d'abord les marchés promus par la préparation File/Cache.
+
+## 7. Ordre de refactor recommandé
 
 ```mermaid
 flowchart LR
     A[1. File/Cache inventory] --> B[2. Classer source vs cache vs debug]
     B --> C[3. Supprimer ou fusionner les caches redondants]
     C --> D[4. Extraire helpers B/C/D]
-    D --> E[5. Créer target Subloop E dispatcher]
-    E --> F[6. Rebrancher B/C/D sous E]
+    D --> E[5. Créer dispatcher every_market_promoted]
+    E --> F[6. Brancher local branch et trade branch]
     F --> G[7. Tests comparatifs Normal / Performance / Audit / Debug]
 ```
 
-L'ordre reste File/Cache d'abord, car le target E ne sera fiable que si chaque sous-boucle sait clairement quel record est source de vérité, quel record est cache dérivé, et quel record n'existe que pour debug/audit.
+L'ordre reste File/Cache d'abord, car le cycle des marchés promus ne sera fiable que si chaque sous-boucle sait clairement quel record est source de vérité, quel record est cache dérivé, et quel record n'existe que pour debug/audit.
