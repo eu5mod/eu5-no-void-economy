@@ -203,6 +203,7 @@ generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifier
 generated_us00_modifier_localization="main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml"
 stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
+stock_postprocessor="tools/postprocess_perf14_promotion_guards.py"
 generated_stock_helpers_tmp="$(mktemp)"
 generated_us00_modifiers_tmp="$(mktemp)"
 generated_us00_modifier_localization_tmp="$(mktemp)"
@@ -210,6 +211,7 @@ trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp" "$gen
 
 require_file "$stock_adapter_template"
 require_file "$stock_generator"
+require_file "$stock_postprocessor"
 require_file "$generated_stock_helpers"
 require_file "$generated_us00_modifiers"
 require_file "$generated_us00_modifier_localization"
@@ -218,6 +220,7 @@ require_file "$generated_us00_modifier_localization"
 	"$generated_stock_helpers_tmp" \
 	"$generated_us00_modifiers_tmp" \
 	"$generated_us00_modifier_localization_tmp"
+python3 "$stock_postprocessor" "$generated_stock_helpers_tmp"
 
 if ! cmp -s "$generated_stock_helpers" "$generated_stock_helpers_tmp"; then
 	printf 'Generated stock helpers are stale. Run tools/generate_all.sh.\n' >&2
