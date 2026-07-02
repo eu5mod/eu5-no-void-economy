@@ -29,6 +29,171 @@ modeu5_enter_test_audit_runtime_mode = {
 	set_global_variable = modeu5_runtime_mode_audit
 }
 
+modeu5_clear_nve_main_mode_flags = {
+	remove_global_variable = modeu5_performance_mode_enabled
+	remove_global_variable = modeu5_normal_mode_enabled
+	remove_global_variable = modeu5_nve_deactivated
+	remove_global_variable = modeu5_cmm_nve_main_enabled
+	remove_global_variable = modeu5_nve_main_mode
+}
+
+modeu5_enter_nve_performance_mode = {
+	modeu5_clear_nve_main_mode_flags = yes
+	set_global_variable = modeu5_performance_mode_enabled
+	set_global_variable = modeu5_cmm_nve_main_enabled
+	set_global_variable = {
+		name = modeu5_nve_main_mode
+		value = 1
+	}
+}
+
+modeu5_enter_nve_normal_mode = {
+	modeu5_clear_nve_main_mode_flags = yes
+	set_global_variable = modeu5_normal_mode_enabled
+	set_global_variable = modeu5_cmm_nve_main_enabled
+	set_global_variable = {
+		name = modeu5_nve_main_mode
+		value = 2
+	}
+}
+
+modeu5_enter_nve_deactivated_mode = {
+	modeu5_clear_nve_main_mode_flags = yes
+	set_global_variable = modeu5_nve_deactivated
+	set_global_variable = {
+		name = modeu5_nve_main_mode
+		value = 3
+	}
+}
+
+modeu5_refresh_nve_main_mode_from_cmm_country_scope = {
+	if = {
+		limit = {
+			NOT = { has_variable_map = cmm }
+		}
+		modeu5_enter_nve_performance_mode = yes
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_key_in_variable_map = {
+					name = cmm
+					target = flag:no_void_economy__nve_no_void_economy_main
+				}
+			}
+		}
+		modeu5_enter_nve_performance_mode = yes
+	}
+	else_if = {
+		limit = {
+			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 2
+		}
+		modeu5_enter_nve_normal_mode = yes
+	}
+	else_if = {
+		limit = {
+			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 3
+		}
+		modeu5_enter_nve_deactivated_mode = yes
+	}
+	else = {
+		modeu5_enter_nve_performance_mode = yes
+	}
+}
+
+modeu5_prepare_performance_mode_human_relevant_markets = {
+	if = {
+		limit = { modeu5_performance_mode_enabled_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_performance_human_relevant_markets_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable = modeu5_performance_human_relevant_markets_stamp }
+					global_var:modeu5_performance_human_relevant_markets_stamp != scope:modeu5_performance_human_relevant_markets_stamp
+					NOT = { has_global_variable_list = modeu5_performance_relevant_markets }
+				}
+			}
+			set_global_variable = {
+				name = modeu5_performance_human_relevant_markets_stamp
+				value = scope:modeu5_performance_human_relevant_markets_stamp
+			}
+			modeu5_rebuild_human_relevant_markets = yes
+		}
+	}
+}
+
+modeu5_prepare_country_market_accounting_decision = {
+	$country$ = { save_temporary_scope_as = modeu5_accounting_country }
+	$market$ = { save_temporary_scope_as = modeu5_accounting_market }
+
+	save_temporary_scope_value_as = { name = modeu5_detailed_country_market_accounting_enabled value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_level_fallback_required value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_detailed_country_market_stock_mutation_allowed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_accounting_decision_country_is_human value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_accounting_decision_market_human_relevant value = 0 }
+
+	if = {
+		limit = { modeu5_nve_deactivated_trigger = yes }
+		save_temporary_scope_value_as = { name = modeu5_market_level_fallback_required value = 0 }
+	}
+	else_if = {
+		limit = { modeu5_nve_normal_mode_trigger = yes }
+		save_temporary_scope_value_as = { name = modeu5_detailed_country_market_accounting_enabled value = 1 }
+	}
+	else = {
+		scope:modeu5_accounting_country = {
+			if = {
+				limit = { is_ai = no }
+				save_temporary_scope_value_as = { name = modeu5_accounting_decision_country_is_human value = 1 }
+			}
+		}
+		if = {
+			limit = { scope:modeu5_accounting_decision_country_is_human > 0 }
+			modeu5_mark_human_relevant_market_if_present = {
+				country = scope:modeu5_accounting_country
+				market = scope:modeu5_accounting_market
+			}
+		}
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_performance_relevant_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_performance_relevant_markets
+					target = scope:modeu5_accounting_market
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_accounting_decision_market_human_relevant value = 1 }
+		}
+
+		if = {
+			limit = {
+				scope:modeu5_accounting_decision_country_is_human > 0
+				scope:modeu5_accounting_decision_market_human_relevant > 0
+			}
+			save_temporary_scope_value_as = { name = modeu5_detailed_country_market_accounting_enabled value = 1 }
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_market_level_fallback_required value = 1 }
+		}
+	}
+
+	if = {
+		limit = { modeu5_detailed_country_market_accounting_enabled_trigger = yes }
+		scope:modeu5_accounting_market = { save_temporary_scope_as = modeu5_market }
+		if = {
+			limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
+			save_temporary_scope_value_as = { name = modeu5_detailed_country_market_stock_mutation_allowed value = 1 }
+		}
+	}
+}
+
 modeu5_clear_accounting_persistence_flags = {
 	remove_global_variable = modeu5_accounting_persistence_minimal
 	remove_global_variable = modeu5_accounting_persistence_human_relevant
@@ -88,6 +253,8 @@ modeu5_initialize_configuration_state_effect = {
     }
 
     modeu5_enter_normal_runtime_mode = yes
+    modeu5_enter_nve_performance_mode = yes
+    modeu5_prepare_performance_mode_human_relevant_markets = yes
 
     set_global_variable = {
         name = modeu5_debug_level
@@ -95,11 +262,12 @@ modeu5_initialize_configuration_state_effect = {
     }
 
     modeu5_enter_minimal_accounting_persistence = yes
-    set_global_variable = modeu5_cmm_nve_main_enabled
 }
 
 modeu5_refresh_configuration_from_cmm_country_scope = {
 	modeu5_apply_debug_mode_cmm_defaults = yes
+	modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes
+	modeu5_prepare_performance_mode_human_relevant_markets = yes
 
 	if = {
 		limit = {

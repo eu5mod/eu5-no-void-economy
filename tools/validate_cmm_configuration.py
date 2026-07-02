@@ -360,6 +360,38 @@ expect("modeu5_enter_minimal_accounting_persistence = yes" in init_block,
        "Initialization default save mode must derive minimal persistence")
 expect("modeu5_enter_minimal_accounting_persistence = yes" in refresh_block,
        "Default save mode must derive minimal persistence")
+expect("modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes" in refresh_block,
+       "Configuration refresh must derive the main NVE mode from the CMM dropdown")
+expect("modeu5_prepare_performance_mode_human_relevant_markets = yes" in init_block,
+       "Initialization must prepare the human-relevant market list for default Performance Mode")
+expect("modeu5_prepare_performance_mode_human_relevant_markets = yes" in refresh_block,
+       "Configuration refresh must prepare the human-relevant market list when Performance Mode is active")
+
+nve_mode_refresh_block = top_level_block(config_effects, "modeu5_refresh_nve_main_mode_from_cmm_country_scope")
+for expected_mode_effect in (
+    "modeu5_enter_nve_performance_mode",
+    "modeu5_enter_nve_normal_mode",
+    "modeu5_enter_nve_deactivated_mode",
+):
+    expect(expected_mode_effect in nve_mode_refresh_block,
+           f"Main NVE mode refresh must be able to call {expected_mode_effect}")
+
+expect("modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes" in top_level_block(runtime_effects, "modeu5_cmm_refresh_nve_main_enabled"),
+       "Runtime CMM main-mode refresh wrapper must delegate to the full NVE mode resolver")
+
+performance_mode_market_block = top_level_block(config_effects, "modeu5_prepare_performance_mode_human_relevant_markets")
+expect("modeu5_performance_mode_enabled_trigger" in performance_mode_market_block and "modeu5_rebuild_human_relevant_markets = yes" in performance_mode_market_block,
+       "Performance Mode must rebuild human-relevant markets from the confirmed human-country iterator path")
+
+for required_nve_trigger in (
+    "modeu5_performance_mode_enabled_trigger",
+    "modeu5_nve_normal_mode_trigger",
+    "modeu5_nve_deactivated_trigger",
+    "modeu5_detailed_country_market_accounting_enabled_trigger",
+    "modeu5_market_level_fallback_required_trigger",
+):
+    expect(required_nve_trigger in config_triggers,
+           f"Configuration triggers must expose {required_nve_trigger}")
 
 full_ledger_block = top_level_block(config_triggers, "modeu5_us00_full_ledger_persistence_allowed_trigger")
 for required_gate in (

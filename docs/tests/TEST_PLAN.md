@@ -167,6 +167,14 @@ country. For the first inverse-cache pass, use:
 docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
 ```
 
+Performance Mode CMM plumbing PRs must prove that the CMM
+`nve_no_void_economy_main` dropdown resolves to script-safe runtime flags before
+any stock mutation path relies on it. For the first PERF-14 pass, use:
+
+```txt
+docs/tests/PERF_14_PERFORMANCE_MODE_CMM_RUNBOOK.md
+```
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation
