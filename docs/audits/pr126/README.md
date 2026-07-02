@@ -14,6 +14,7 @@ Ce dossier matérialise l'audit demandé sous forme de rapports empilables : un 
 | 4 | [Boucles et performance](./Q4_boucles_performance.md) | réalisé |
 | 5 | [Flux logique global](./Q5_flux_logique_global.md) | réalisé |
 | 6 | [Description fonctionnelle](./Q6_description_fonctionnelle.md) | réalisé |
+| Agent | [Instructions de refactor AGENT](./AGENT_REFACTOR_INSTRUCTIONS.md) | réalisé |
 
 ## Résumé exécutif global
 
