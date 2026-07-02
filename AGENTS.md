@@ -177,7 +177,83 @@ or rebuild stock.
 A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation only when the Rebalance Economy package is loaded, reset annual counters, and run diagnostics if enabled.
 
 The monthly and yearly stock cycles must not mutate ModeU5 stock until CORE-02 has set the current schema version and marked initialization complete. A missing, failed, older unsupported, or newer incompatible initialization state fails closed and remains diagnostic-only.
+## Target monthly orchestration architecture
 
+The target monthly stock orchestration is promoted-market driven.
+
+The old broad-flow architecture must not be expanded further. New monthly stock work should converge toward the following shape:
+
+```mermaid
+flowchart TD
+    A[Monthly stock cycle] --> B{Runtime ready ?}
+    B -->|No| Z[Diagnostic only / fail closed]
+    B -->|Yes| C[Refresh capacity prerequisites]
+
+    C --> D[Build promoted-market work list]
+
+    D --> E{Mode}
+    E -->|Normal| F[Promote all current-country markets]
+    E -->|Performance| G[Promote human / performance-relevant markets]
+    E -->|Audit / Debug| H[Promote according to mode + diagnostics]
+
+    F --> I[every_market_promoted]
+    G --> I
+    H --> I
+
+    I --> J[Rebuild countries_present_in_market once]
+    J --> K[B: capacity/cache helper]
+    K --> L[C: generated-good scoped adapter bridge]
+    L --> M[D: same-market consumption branch]
+    M --> N{Inter-market demand exists ?}
+
+    N -->|No| O[Validate scoped market-good consistency]
+    N -->|Yes| P{source_market != target_market ?}
+
+    P -->|No| M
+    P -->|Yes| Q[Inter-market transfer branch]
+    Q --> R[modeu5_resolve_inter_market_stock_transfer]
+    R --> S[modeu5_transfer_stock]
+    S --> O
+
+    O --> T[Monthly decay]
+    T --> U[US-00 ratios / void wealth / next-month penalty]
+    U --> V[Optional US-05 / package-dependent follow-ups]
+    V --> W[Final validation / reconciliation if enabled]
+    W --> X[Reset monthly counters after readers]
+```
+
+### Architecture contract
+
+- `country_market_good_stock` remains the source of truth.
+- `market_good_stock` remains a derived aggregate/cache.
+- `countries_present_in_market` is a rebuilt work cache, not durable stock truth.
+- Monthly runtime must converge toward one promoted-market outer loop.
+- US-00, US-10.1, US-10.2, validation, and debug must not independently rescan all markets when the promoted-market scope is already available.
+- Same-market consumption and inter-market trade are separate branches.
+- Same-market consumption must not create trade income, transport cost, trade capacity usage, or trade profit.
+- Inter-market transfer must go through `modeu5_resolve_inter_market_stock_transfer` and `modeu5_transfer_stock`.
+- `every_trade` and `every_market_center` must not be used in gameplay unless TECH-01 confirms the exposure.
+- The new promoted-market dispatcher must remain test-only or feature-gated until comparative Normal / Performance / Audit / Debug probes pass.
+
+### Anti-spaghetti rule
+
+Do not add new monthly broad scans as a shortcut.
+
+Before adding a monthly loop, identify which target layer owns it:
+
+```txt
+A. readiness / fail-closed guard
+B. capacity/cache prerequisite
+C. promoted-market selection
+D. scoped generated-good bridge
+E. same-market consumption
+F. inter-market transfer
+G. validation / reconciliation
+H. debug / audit capture
+I. monthly reset after all readers
+```
+
+If the new code does not clearly belong to one of these layers, stop and update the architecture documentation before implementing it.
 ## Stock succession rule
 
 After initialization, permanent location ownership changes conserve stock and reassign the capacity-proportional share:
