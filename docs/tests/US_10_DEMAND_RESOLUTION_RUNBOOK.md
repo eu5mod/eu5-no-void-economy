@@ -379,9 +379,61 @@ modeu5_debug_last_us10_bucket_3_candidates
 modeu5_debug_last_us10_bucket_4_candidates
 ```
 
+## Focused US-10-UI Visibility Test
+
+Run:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 UI visibility summary
+```
+
+Expected result:
+
+```txt
+PASS - US-10 demand resolution
+```
+
+Expected dump shape in `debug.log` and in
+`./tools/summarize_modeu5_test_logs.sh`:
+
+```txt
+ModeU5 TEST ENTERED scenario=us10_ui_visibility
+ModeU5 US-10-UI SUMMARY good=wheat country_stock=70 country_capacity=70 ... market_stock=70 market_capacity_available=0 overproduction_available=0 production_efficiency_available=0
+ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=1 requested=160 satisfied=140 unsatisfied=20 trade_income_generated=0 transport_cost_generated=0 trade_capacity_used=0
+ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=100 transferred=70 unsatisfied=30 ...
+ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=... excluded=... best_bucket=... trace_exclusion_reason=...
+ModeU5 US-10-UI MUTATION_TRACE bounded=1 ... selected=... actual=... remaining=...
+ModeU5 US-10-UI FAST_PATH own_stock_used=1 ... aggregate_prefilter_used=1 ...
+ModeU5 US-10-UI REASON_MAP 0=allowed 1=no_stock ... 11=aggregate_prefilter_empty
+ModeU5 TEST PASS scenario=us10_ui_visibility
+```
+
+What this proves:
+
+- US-10 visibility is read-only and does not create a second authoritative
+  stock, capacity, production, demand, resolver, or modifier store;
+- the localized result event exposes a compact Wheat row with country stock,
+  country capacity, market stock, over-cap state, and unavailable markers for
+  market capacity / overproduction / production efficiency when those values are
+  not exposed;
+- same-market consumption is explicitly non-trade and shows zero trade income,
+  zero transport cost, and zero trade capacity usage;
+- inter-market transfer shows requested, transferred, unsatisfied, buyer stock,
+  seller stock, and buyer capacity;
+- audit mode provides bounded candidate and mutation traces with candidate
+  bucket, score, stock, selected/actual quantity, remaining quantity, exclusion
+  id, sparse supplier markers, fast-path markers, and aggregate-prefilter
+  markers.
+
 ## Broad Revalidation
 
-The broad chain now includes the US-10 scenario:
+The broad chain now includes the US-10 scenarios:
 
 ```txt
 event modeu5_revalidate_debug.1
@@ -406,6 +458,8 @@ ModeU5 TEST ENTERED scenario=us10_demand_resolution
 ModeU5 TEST PASS scenario=us10_demand_resolution
 ModeU5 TEST ENTERED scenario=us10_issue109_fast_path_pruning
 ModeU5 TEST PASS scenario=us10_issue109_fast_path_pruning
+ModeU5 TEST ENTERED scenario=us10_ui_visibility
+ModeU5 TEST PASS scenario=us10_ui_visibility
 Missing expected scenarios: 0
 Failed:  0
 Blocked: 0
@@ -430,3 +484,7 @@ exact scenario lines and classify any remaining non-blocking noise.
   exhaustive candidate UI remain follow-up work. Audit runtime now emits bounded
   `ModeU5 US-10 CANDIDATE TRACE` and `ModeU5 US-10 MUTATION TRACE` log lines for
   the first candidates/mutations in a resolver pass.
+- US-10-UI currently exposes a deterministic read-only result-event/log summary.
+  It is not a full custom scripted GUI panel. Market capacity, current
+  overproduction, and Production Efficiency remain unavailable in the US-10-UI
+  row unless authoritative counters/exposure are present.

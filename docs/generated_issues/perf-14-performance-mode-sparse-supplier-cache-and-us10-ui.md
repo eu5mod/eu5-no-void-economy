@@ -329,6 +329,23 @@ Second stacked PR boundary:
 - Ensure consumption and inter-market transfer displays differ clearly.
 - Add Performance Mode fallback markers to the same diagnostics.
 
+Implemented boundary for the #119 stack:
+
+- `event modeu5_us10_debug.1` includes `Run US-10 UI visibility summary`.
+- `event modeu5_revalidate_debug.1` includes `scenario=us10_ui_visibility`.
+- `tools/summarize_modeu5_test_logs.sh` prints `ModeU5 US-10-UI ...` lines
+  and bounded US-10 candidate / mutation traces.
+- The visibility layer is read-only and reuses existing stock, capacity,
+  outcome, resolver-debug, sparse-supplier, and Performance Mode fallback
+  values. It does not introduce a second authoritative UI map.
+- Same-market consumption is labelled as non-trade and explicitly shows no
+  trade income, no transport cost, and no trade-capacity usage.
+- Market capacity, current overproduction, and Production Efficiency are shown
+  as unavailable when no authoritative value is exposed; this layer must not
+  guess those values.
+- The current presentation is a localized debug/result-event and log summary,
+  not a full custom scripted GUI panel.
+
 ## Acceptance criteria
 
 - Performance Mode maintains detailed Market x Country accounting for promoted
@@ -382,6 +399,9 @@ New targeted scenarios:
   for debug/fallback.
 - Debug fallback: all-country scan can still be forced for diagnostics.
 - US-10-UI: candidate order, exclusion reason, and mutation quantity are visible for consumption and transfer.
+- US-10-UI: run `Run US-10 UI visibility summary` and confirm
+  `ModeU5 US-10-UI SUMMARY`, `RESOLUTION`, `CANDIDATE_TRACE`,
+  `MUTATION_TRACE`, `FAST_PATH`, and `REASON_MAP` lines appear.
 
 ## Open design questions
 

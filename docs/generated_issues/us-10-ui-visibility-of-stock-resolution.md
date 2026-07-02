@@ -47,6 +47,36 @@ Feeds counters to: player/modder diagnostics
 | Localization/tooltips | UI | `custom_tooltip`, modifier descriptions, localization keys | CONFIRMED | 014 |
 | Optional custom panel | UI | ModeU5 window | OUT_OF_SCOPE | N/A |
 
+## Current implementation status
+
+The current #119 stack implements the US-10-UI MVP as a read-only
+event/log presentation layer, not as a custom GUI window.
+
+Implemented visibility surface:
+
+- `event modeu5_us10_debug.1` -> `Run US-10 UI visibility summary`;
+- `event modeu5_revalidate_debug.1` includes `scenario=us10_ui_visibility`;
+- `tools/summarize_modeu5_test_logs.sh` prints the dedicated
+  `ModeU5 US-10-UI ...` lines;
+- the localized US-10 result event shows a compact Wheat row with country
+  stock/capacity, market stock, and explicit availability flags for market
+  capacity, overproduction, and production efficiency;
+- audit logs expose bounded candidate and mutation traces, including bucket,
+  score, stock, selected/actual quantity, remaining quantity, exclusion reason
+  id, sparse supplier markers, own-stock fast path, and aggregate prefilter
+  markers;
+- same-market consumption is explicitly labelled as non-trade and confirms that
+  no trade income, transport cost, or trade capacity usage is generated.
+
+Deliberate limitation:
+
+- no custom scripted GUI panel is created in this layer;
+- market capacity, current overproduction, and production efficiency are shown
+  as unavailable unless their required authoritative counters/exposure are
+  present; the UI layer must not guess them;
+- the compact row is a deterministic Wheat validation row. A broader per-good
+  panel remains future UI polish.
+
 ## Files expected to change
 
 ```txt
@@ -303,35 +333,35 @@ MVP should prefer the selected-market summary because `Country Stocks` and `Mark
 
 ## US-specific boundary checks
 
-- [ ] Consumption display shows no transport/trade economics.
-- [ ] Inter-market display shows source, target, capacity, and actual transfer.
-- [ ] Exclusion reasons are human-readable and stable.
-- [ ] Country Stocks are shown as `country_current_stock/country_stock_capacity` without hiding usage, free capacity, or over-cap details in tooltip.
+- [x] Consumption display shows no transport/trade economics.
+- [x] Inter-market display shows source, target, capacity, and actual transfer.
+- [x] Exclusion reasons are human-readable and stable in the debug reason map.
+- [x] Country Stocks are shown as `country_current_stock/country_stock_capacity` without hiding usage, free capacity, or over-cap details in the event result.
 - [ ] Market Stocks are shown as `market_current_stock/market_stock_capacity` without hiding usage, free capacity, or over-cap details in tooltip.
 - [ ] Country and market stock values are visually distinct and not conflated.
-- [ ] Stock above capacity is marked as over-cap stock, not overproduction.
+- [x] Stock above capacity is marked as over-cap stock, not overproduction.
 - [ ] Current surplus is shown as production balance, not storage overflow.
 - [ ] Surplus percentage handles zero consumption safely.
 - [ ] Production Efficiency tooltip separates global production efficiency and good-specific output.
-- [ ] Missing modifier exposure does not block stock visibility.
-- [ ] Player-facing panel remains read-only.
+- [x] Missing modifier exposure does not block stock visibility.
+- [x] Player-facing panel remains read-only.
 
 ## Acceptance criteria
 
-- [ ] Demand type and all quantity outcomes are visible.
-- [ ] Stocks used, order, score, and quantity per candidate are visible.
-- [ ] Excluded candidates and reasons are visible.
-- [ ] Same-market versus inter-market behavior is explicit.
-- [ ] Requested, transferred, and unsatisfied quantities are separately visible for transfers.
-- [ ] No logistics or trade-income adjustment is hidden in this display layer.
-- [ ] Player can see one compact row per visible good.
-- [ ] Each row shows country-owned stock as `country_current_stock/country_stock_capacity`.
+- [x] Demand type and all quantity outcomes are visible.
+- [x] Stocks used, order, score, and quantity per candidate are visible in bounded audit traces and the result event.
+- [x] Excluded candidates and reasons are visible.
+- [x] Same-market versus inter-market behavior is explicit.
+- [x] Requested, transferred, and unsatisfied quantities are separately visible for transfers.
+- [x] No logistics or trade-income adjustment is hidden in this display layer.
+- [x] Player can see one compact deterministic Wheat row in the debug/result event.
+- [x] The row shows country-owned stock as `country_current_stock/country_stock_capacity`.
 - [ ] Each row shows selected-market aggregate stock as `market_current_stock/market_stock_capacity`.
 - [ ] Country and market capacity, usage, free capacity, and over-cap quantity are available in tooltips.
 - [ ] Each row shows current overproduction/surplus or deficit where counters exist.
 - [ ] Each row shows current Production Efficiency where engine exposure exists.
 - [ ] Production Efficiency tooltip shows `global_production_efficiency` and the good-specific output modifier separately.
-- [ ] The panel does not create or mutate resolver, stock, capacity, production, demand, or modifier state.
+- [x] The panel does not create or mutate resolver, stock, capacity, production, demand, or modifier state.
 
 ## Manual test scenario
 

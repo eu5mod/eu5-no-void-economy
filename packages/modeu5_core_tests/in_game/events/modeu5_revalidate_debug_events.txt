@@ -3,12 +3,12 @@ namespace = modeu5_revalidate_debug
 # Revalidation execution contract:
 # - Revalidation is a manual/debug console event chain only; never call it from
 #   monthly/yearly on_actions or any runtime tick.
-# - A full revalidation run is split into at most 10 scenario steps. The final
+# - A full revalidation run is split into small scenario steps. The final
 #   summary event is not a scenario step and must not run additional tests.
 # - Continuations use days = 0 so the chain remains on the same in-game day and
 #   does not cross a monthly tick between scenarios.
-# - If adding an 11th scenario, split the suite into a separate manual entry
-#   event instead of extending this chain.
+# - If this chain becomes too slow or noisy, split specialist suites into
+#   separate manual entry events instead of hiding failures in the summary.
 
 modeu5_revalidate_debug.1 = {
 	type = country_event
@@ -25,7 +25,7 @@ modeu5_revalidate_debug.1 = {
 		name = modeu5_revalidate_debug.1.a
 		modeu5_revalidate_clear_results = yes
 		set_global_variable = modeu5_revalidation_started
-		# Step 1/10
+		# Step 1/12
 		modeu5_revalidate_run_us02_capacity = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.10 days = 0 }
 	}
@@ -46,7 +46,7 @@ modeu5_revalidate_debug.10 = {
 	}
 
 	immediate = {
-		# Step 2/10
+		# Step 2/12
 		modeu5_revalidate_run_core01_single_record = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.20 days = 0 }
 	}
@@ -64,7 +64,7 @@ modeu5_revalidate_debug.20 = {
 	}
 
 	immediate = {
-		# Step 3/10
+		# Step 3/12
 		modeu5_revalidate_run_core01_same_market_transfer = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.30 days = 0 }
 	}
@@ -82,7 +82,7 @@ modeu5_revalidate_debug.30 = {
 	}
 
 	immediate = {
-		# Step 4/10
+		# Step 4/12
 		modeu5_revalidate_run_core01_inter_market_transfer = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.40 days = 0 }
 	}
@@ -100,7 +100,7 @@ modeu5_revalidate_debug.40 = {
 	}
 
 	immediate = {
-		# Step 5/10
+		# Step 5/12
 		modeu5_revalidate_run_core02_initialization = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.50 days = 0 }
 	}
@@ -118,7 +118,7 @@ modeu5_revalidate_debug.50 = {
 	}
 
 	immediate = {
-		# Step 6/10
+		# Step 6/12
 		modeu5_revalidate_run_us00_controlled_pipeline = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.60 days = 0 }
 	}
@@ -136,7 +136,7 @@ modeu5_revalidate_debug.60 = {
 	}
 
 	immediate = {
-		# Step 7/10
+		# Step 7/12
 		modeu5_revalidate_run_us00_monthly_runtime = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.70 days = 0 }
 	}
@@ -154,7 +154,7 @@ modeu5_revalidate_debug.70 = {
 	}
 
 	immediate = {
-		# Step 8/10
+		# Step 8/12
 		modeu5_revalidate_run_us10_demand_resolution = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.75 days = 0 }
 	}
@@ -172,8 +172,26 @@ modeu5_revalidate_debug.75 = {
 	}
 
 	immediate = {
-		# Step 9/10
+		# Step 9/12
 		modeu5_revalidate_run_us10_issue109_fast_path_pruning = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.77 days = 0 }
+	}
+}
+
+modeu5_revalidate_debug.77 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		# Step 10/12
+		modeu5_revalidate_run_us10_ui_visibility = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.80 days = 0 }
 	}
 }
@@ -190,7 +208,7 @@ modeu5_revalidate_debug.80 = {
 	}
 
 	immediate = {
-		# Step 10/10
+		# Step 11/12
 		modeu5_revalidate_run_perf10_13_active_repair_metrics = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.90 days = 2 }
 	}
@@ -208,6 +226,7 @@ modeu5_revalidate_debug.90 = {
 	}
 
 	immediate = {
+		# Step 12/12
 		modeu5_revalidate_run_core04_market_entry = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 1 }
 	}
