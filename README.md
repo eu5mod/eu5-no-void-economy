@@ -24,7 +24,6 @@ No void economy is born from the desire to fix :
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
     - incl : ✅ Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold
     - incl : ⏳ Economy 5% faster  - To compensate revenue loss
-    - incl : ⏳ Supply influence pop - Required to compensate economic speed
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
 ### Economics Design & Balance ###
@@ -32,6 +31,7 @@ No void economy is born from the desire to fix :
 #### Design
  - ⏳ Sliders based on Wealth not Tax base
  - ⏳ Monthly goods decay (1%)
+ - ⏳ Supply Influence Pop
 
 #### Balance
  - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
