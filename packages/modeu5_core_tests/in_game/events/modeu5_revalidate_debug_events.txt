@@ -121,6 +121,57 @@ modeu5_revalidate_debug.60 = {
 
 	immediate = {
 		modeu5_revalidate_run_us00_monthly_runtime = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.70 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.70 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_us10_demand_resolution = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.75 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.75 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_us10_issue109_fast_path_pruning = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.80 days = 2 }
+	}
+}
+
+modeu5_revalidate_debug.80 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = {
+		always = yes
+	}
+
+	immediate = {
+		modeu5_revalidate_run_perf10_13_active_repair_metrics = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 1 }
 	}
 }

@@ -64,7 +64,7 @@ Related issue: #60 performance optimization track
 - Do not recreate `modeu5_<good>_stock_cap_by_market` or other per-good capacity maps.
 - Keep per-good stock and market-stock maps unchanged.
 - Keep generated per-good adapters as the only place that reads/writes persistent map identifiers.
-- Recalculate country storage capacity once through the generated sentinel dispatcher; do not loop all goods for identical capacity.
+- Recalculate country storage capacity once through shared good-neutral capacity effects; do not loop all goods or select a sentinel good for identical capacity.
 - Build one country-level location/rank capacity pool, then divide it across markets present in the country.
 - Add the target market's own merchant/trade-capacity contribution when writing the country-market capacity key.
 - Do not scan owned locations once per market during the saved country refresh.
@@ -77,6 +77,8 @@ Related issue: #60 performance optimization track
 - [ ] Generated helpers read `modeu5_stock_cap_by_market` for every good.
 - [ ] Generated helpers do not contain `modeu5_<good>_stock_cap_by_market`.
 - [ ] The country-level capacity refresh no longer dispatches one recalculation per good.
+- [ ] The country-level capacity refresh does not call `goods:wheat` or any other sentinel good.
+- [ ] Capacity-only writes do not mark any per-good active-market list.
 - [ ] The monthly country-level capacity refresh reads the cached country location pool and does not scan owned locations.
 - [ ] Campaign start, location-owner change, location-rank change, and capital move rebuild the affected country location pool.
 - [ ] US-02 deterministic test dumps and validates `market_trade_capacity + country_location_pool_total / market_count = tested capacity`.

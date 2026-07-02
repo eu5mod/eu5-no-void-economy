@@ -26,22 +26,109 @@ modeu5_audit_runtime_mode_trigger = {
 	has_global_variable = modeu5_runtime_mode_audit
 }
 
-modeu5_debug_enabled_trigger = {
-	OR = {
-		modeu5_debug_runtime_mode_trigger = yes
-		has_game_rule = modeu5_debug_basic
-		has_game_rule = modeu5_debug_verbose
+modeu5_performance_mode_enabled_trigger = {
+	has_global_variable = modeu5_performance_mode_enabled
+}
+
+modeu5_nve_normal_mode_trigger = {
+	has_global_variable = modeu5_normal_mode_enabled
+}
+
+modeu5_nve_deactivated_trigger = {
+	has_global_variable = modeu5_nve_deactivated
+}
+
+modeu5_detailed_country_market_accounting_enabled_trigger = {
+	scope:modeu5_detailed_country_market_accounting_enabled > 0
+}
+
+modeu5_market_detailed_accounting_promoted_trigger = {
+	has_global_variable_list = modeu5_detailed_accounting_promoted_markets
+	is_target_in_global_variable_list = {
+		name = modeu5_detailed_accounting_promoted_markets
+		target = scope:modeu5_market
 	}
 }
 
+modeu5_detailed_country_market_stock_mutation_allowed_trigger = {
+	OR = {
+		modeu5_nve_normal_mode_trigger = yes
+		AND = {
+			modeu5_performance_mode_enabled_trigger = yes
+			modeu5_market_detailed_accounting_promoted_trigger = yes
+		}
+	}
+}
+
+modeu5_market_level_fallback_required_trigger = {
+	scope:modeu5_market_level_fallback_required > 0
+}
+
+modeu5_stock_mutation_use_detailed_accounting_trigger = {
+	scope:modeu5_stock_mutation_use_detailed_accounting > 0
+}
+
+modeu5_stock_mutation_use_market_level_fallback_trigger = {
+	scope:modeu5_stock_mutation_use_market_level_fallback > 0
+}
+
+modeu5_stock_mutation_blocked_trigger = {
+	scope:modeu5_stock_mutation_blocked > 0
+}
+
+modeu5_market_runtime_use_detailed_accounting_trigger = {
+	scope:modeu5_market_runtime_use_detailed_accounting > 0
+}
+
+modeu5_market_runtime_use_vanilla_fallback_trigger = {
+	scope:modeu5_market_runtime_use_vanilla_fallback > 0
+}
+
+modeu5_market_runtime_blocked_trigger = {
+	scope:modeu5_market_runtime_blocked > 0
+}
+
+modeu5_debug_enabled_trigger = {
+	modeu5_debug_runtime_mode_trigger = yes
+}
+
 modeu5_verbose_debug_enabled_trigger = {
-	has_game_rule = modeu5_debug_verbose
+	modeu5_debug_runtime_mode_trigger = yes
+	has_global_variable = modeu5_debug_level
+	global_var:modeu5_debug_level > 1
 }
 
 modeu5_audit_enabled_trigger = {
+	modeu5_audit_runtime_mode_trigger = yes
+}
+
+modeu5_accounting_minimal_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_minimal
+}
+
+modeu5_accounting_strict_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_strict
+}
+
+modeu5_accounting_human_relevant_persistence_trigger = {
+	has_global_variable = modeu5_accounting_persistence_human_relevant
+}
+
+modeu5_human_relevant_full_ledger_market_trigger = {
+	modeu5_accounting_human_relevant_persistence_trigger = yes
+	has_global_variable_list = modeu5_performance_relevant_markets
+	is_target_in_global_variable_list = {
+		name = modeu5_performance_relevant_markets
+		target = scope:modeu5_market
+	}
+}
+
+modeu5_us00_full_ledger_persistence_allowed_trigger = {
 	OR = {
-		modeu5_audit_runtime_mode_trigger = yes
-		has_game_rule = modeu5_audit_on
+		modeu5_accounting_strict_persistence_trigger = yes
+		modeu5_human_relevant_full_ledger_market_trigger = yes
+		modeu5_debug_enabled_trigger = yes
+		modeu5_audit_enabled_trigger = yes
 	}
 }
 

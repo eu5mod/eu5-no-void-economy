@@ -120,7 +120,7 @@ that EU5 is loading the intended branch and commit.
 
 ## Pre-campaign debug configuration
 
-`modeu5_debug_level` is selected through EU5's built-in Game Rules screen before the campaign starts:
+`modeu5_debug_level` is selected through the Community Mod Manager before the campaign starts:
 
 ```txt
 Off = 0
@@ -128,9 +128,9 @@ Basic = 1
 Verbose = 2
 ```
 
-The startup configuration effect copies the selected rule to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
+The startup configuration effect copies the selected CMM setting to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
 
-There is no custom in-game configuration panel. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
+There is no custom in-game configuration panel and no ModeU5 debug game rule. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
 
 ## Log-first deterministic test dumps
 

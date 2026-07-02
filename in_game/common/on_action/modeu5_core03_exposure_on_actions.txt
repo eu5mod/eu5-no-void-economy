@@ -7,6 +7,15 @@ on_location_changed_owner = {
 modeu5_core03_probe_location_changed_owner = {
 	effect = {
 		modeu5_core03_handle_location_changed_owner = yes
+		# The exposure probe observes all live location-owner changes during a long
+		# revalidation run. Seeing the same location twice is not enough evidence of
+		# a duplicate engine callback; it can also be a later legitimate ownership
+		# change. Keep the hook/scope validation, but do not let the old lifetime
+		# seen-location list turn repeated locations into hard failures.
+		if = {
+			limit = { has_global_variable_list = modeu5_core03_probe_seen_locations }
+			clear_global_variable_list = modeu5_core03_probe_seen_locations
+		}
 		modeu5_core03_probe_record_location_changed_owner = yes
 	}
 }

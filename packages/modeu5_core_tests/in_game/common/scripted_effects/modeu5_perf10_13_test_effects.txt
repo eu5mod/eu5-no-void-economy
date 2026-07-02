@@ -1,0 +1,110 @@
+# Deterministic probes for PERF-10/11/13.
+
+modeu5_perf10_13_clear_test_results = {
+	remove_global_variable = modeu5_test_perf10_13_active_repair_passed
+	remove_global_variable = modeu5_test_perf10_13_active_repair_failed
+	remove_global_variable = modeu5_test_perf10_13_active_repair_blocked
+}
+
+modeu5_perf10_13_write_active_repair_dump_variables = {
+	set_variable = {
+		name = modeu5_perf10_13_ui_goods_scanned
+		value = global_var:modeu5_perf13_active_repair_goods_scanned
+	}
+	set_variable = {
+		name = modeu5_perf10_13_ui_market_good_scans
+		value = global_var:modeu5_perf13_active_repair_market_good_scans
+	}
+	set_variable = {
+		name = modeu5_perf10_13_ui_country_source_checks
+		value = global_var:modeu5_perf13_active_repair_country_source_checks
+	}
+	set_variable = {
+		name = modeu5_perf10_13_ui_market_aggregate_hits
+		value = global_var:modeu5_perf13_active_repair_market_aggregate_hits
+	}
+	set_variable = {
+		name = modeu5_perf10_13_ui_country_state_hits
+		value = global_var:modeu5_perf13_active_repair_country_state_hits
+	}
+	set_variable = {
+		name = modeu5_perf10_13_ui_market_goods_marked
+		value = global_var:modeu5_perf13_active_repair_market_goods_marked
+	}
+}
+
+modeu5_perf10_13_log_active_repair_dump = {
+	debug_log = "ModeU5 PERF-11 DUMP active_repair good=wheat goods_scanned=[THIS.GetVariable('modeu5_perf10_13_ui_goods_scanned').GetValue|0] market_good_scans=[THIS.GetVariable('modeu5_perf10_13_ui_market_good_scans').GetValue|0] country_source_checks=[THIS.GetVariable('modeu5_perf10_13_ui_country_source_checks').GetValue|0] market_aggregate_hits=[THIS.GetVariable('modeu5_perf10_13_ui_market_aggregate_hits').GetValue|0] country_state_hits=[THIS.GetVariable('modeu5_perf10_13_ui_country_state_hits').GetValue|0] market_goods_marked=[THIS.GetVariable('modeu5_perf10_13_ui_market_goods_marked').GetValue|0]"
+	debug_log = "ModeU5 PERF-13 DUMP metrics_probe path=active_repair metrics_disabled_in_normal_runtime=yes"
+}
+
+modeu5_debug_run_perf10_13_active_repair_metrics_probe = {
+	modeu5_perf10_13_clear_test_results = yes
+	save_temporary_scope_as = modeu5_perf10_13_controller
+	save_temporary_scope_as = modeu5_active_repair_controller
+
+	if = {
+		limit = { country_exists = c:FRA }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf10_13_test_market }
+
+		modeu5_add_stock = {
+			country = c:FRA
+			market = scope:modeu5_perf10_13_test_market
+			good = wheat
+			quantity = 5
+			capacity_policy = allow_over_capacity
+		}
+
+		modeu5_clear_all_active_stock_markets = yes
+		modeu5_perf13_reset_active_repair_metrics = yes
+		modeu5_repair_active_markets_good_wheat = yes
+
+		modeu5_perf10_13_write_active_repair_dump_variables = yes
+		modeu5_perf10_13_log_active_repair_dump = yes
+
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_active_markets_any_good
+				has_global_variable_list = modeu5_wheat_active_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_active_markets_any_good
+					target = scope:modeu5_perf10_13_test_market
+				}
+				is_target_in_global_variable_list = {
+					name = modeu5_wheat_active_markets
+					target = scope:modeu5_perf10_13_test_market
+				}
+				global_var:modeu5_perf13_active_repair_goods_scanned >= 1
+				global_var:modeu5_perf13_active_repair_market_good_scans >= 1
+				global_var:modeu5_perf13_active_repair_market_goods_marked >= 1
+			}
+			set_global_variable = modeu5_test_perf10_13_active_repair_passed
+			debug_log = "ModeU5 PERF-11 RESULT active_repair PASS"
+			debug_log = "ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics"
+		}
+		else = {
+			set_global_variable = modeu5_test_perf10_13_active_repair_failed
+			debug_log = "ModeU5 PERF-11 RESULT active_repair FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=perf10_13_active_repair_metrics"
+			error_log = "ModeU5 PERF-11 active-list repair probe failed."
+		}
+
+		modeu5_remove_stock = {
+			country = c:FRA
+			market = scope:modeu5_perf10_13_test_market
+			good = wheat
+			quantity = 5
+			reason = debug_test
+		}
+		modeu5_clear_all_active_stock_markets = yes
+		modeu5_clear_all_dirty_stock_markets = yes
+	}
+	else = {
+		modeu5_perf13_reset_active_repair_metrics = yes
+		modeu5_perf10_13_write_active_repair_dump_variables = yes
+		modeu5_perf10_13_log_active_repair_dump = yes
+		set_global_variable = modeu5_test_perf10_13_active_repair_blocked
+		debug_log = "ModeU5 PERF-11 RESULT active_repair BLOCKED missing_FRA"
+		debug_log = "ModeU5 TEST BLOCKED scenario=perf10_13_active_repair_metrics reason=missing_FRA"
+	}
+}

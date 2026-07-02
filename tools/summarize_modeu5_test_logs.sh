@@ -8,7 +8,7 @@ logs_dir="$default_logs_dir"
 usage() {
 	printf 'Usage: %s [--logs-dir PATH]\n' "$0"
 	printf '\n'
-	printf 'Prints a compact summary of ModeU5 revalidation scenario markers.\n'
+	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, and PERF-14 diagnostics.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -52,16 +52,37 @@ if ((${#log_files[@]} == 0)); then
 	exit 1
 fi
 
-tmp_file="$(mktemp)"
-trap 'rm -f "$tmp_file"' EXIT
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+scenario_file="$tmp_dir/scenario_lines"
+debug_level_file="$tmp_dir/debug_level_lines"
+main_mode_file="$tmp_dir/main_mode_lines"
+perf14_file="$tmp_dir/perf14_lines"
+localization_only_file="$tmp_dir/localization_only_modeu5_lines"
 
 grep -hE 'ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=' "${log_files[@]}" \
 	| grep -v 'Tried to localize with localization disabled' \
-	>"$tmp_file" || true
+	>"$scenario_file" || true
+
+grep -hE 'ModeU5 DEBUG_LEVEL ' "${log_files[@]}" \
+	| grep -v 'Tried to localize with localization disabled' \
+	>"$debug_level_file" || true
+
+grep -hE 'ModeU5 PERF-14 (MAIN_MODE|DUMP main_mode=)' "${log_files[@]}" \
+	| grep -v 'Tried to localize with localization disabled' \
+	>"$main_mode_file" || true
+
+grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION|FAIL_REASON|RESULT)' "${log_files[@]}" \
+	| grep -v 'Tried to localize with localization disabled' \
+	>"$perf14_file" || true
+
+grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14)' "${log_files[@]}" \
+	>"$localization_only_file" || true
 
 count_marker() {
 	local marker="$1"
-	grep -c "ModeU5 TEST ${marker} " "$tmp_file" || true
+	grep -c "ModeU5 TEST ${marker} " "$scenario_file" || true
 }
 
 entered_count="$(count_marker ENTERED)"
@@ -69,6 +90,10 @@ pass_count="$(count_marker PASS)"
 fail_count="$(count_marker FAIL)"
 blocked_count="$(count_marker BLOCKED)"
 pending_count="$(count_marker PENDING)"
+debug_level_count="$(grep -c 'ModeU5 DEBUG_LEVEL ' "$debug_level_file" || true)"
+main_mode_count="$(grep -c 'ModeU5 PERF-14 ' "$main_mode_file" || true)"
+perf14_count="$(grep -c 'ModeU5 PERF-14 ' "$perf14_file" || true)"
+localization_only_count="$(grep -c 'ModeU5 ' "$localization_only_file" || true)"
 
 expected_scenarios=(
 	main_revalidation
@@ -79,12 +104,16 @@ expected_scenarios=(
 	core02_initialization
 	us00_controlled_pipeline
 	us00_monthly_runtime
+	us10_demand_resolution
+	us10_issue109_fast_path_pruning
+	perf10_13_active_repair_metrics
 	main_revalidation_summary
+	perf14_performance_mode_cmm
 )
 
 missing_scenarios=()
 for scenario in "${expected_scenarios[@]}"; do
-	if ! grep -q "scenario=${scenario}\\b" "$tmp_file"; then
+	if ! grep -q "scenario=${scenario}\\b" "$scenario_file"; then
 		missing_scenarios+=("$scenario")
 	fi
 done
@@ -97,20 +126,55 @@ printf 'Passed:  %s\n' "$pass_count"
 printf 'Failed:  %s\n' "$fail_count"
 printf 'Blocked: %s\n' "$blocked_count"
 printf 'Pending: %s\n' "$pending_count"
-printf 'Missing expected scenarios: %s\n' "${#missing_scenarios[@]}"
+printf 'Debug level markers: %s\n' "$debug_level_count"
+printf 'Main mode traces: %s\n' "$main_mode_count"
+printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
+printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
+printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
 printf '\n'
 
-if [[ ! -s "$tmp_file" ]]; then
-	printf 'No ModeU5 TEST scenario markers found.\n'
+if [[ ! -s "$scenario_file" ]]; then
+	printf 'No non-localization ModeU5 TEST scenario markers found.\n'
+	if [[ -s "$localization_only_file" ]]; then
+		printf 'Only localization-disabled copies of ModeU5 markers were found; inspect debug.log/game.log or enable Debug/Audit output before treating this run as PASS.\n'
+	fi
 	printf 'Run: event modeu5_revalidate_debug.1\n'
-	exit 0
+	printf 'For PERF-14 only: event modeu5_perf14_debug.1\n'
+	printf '\n'
 fi
 
-printf 'Scenario lines:\n'
-cat "$tmp_file"
+if [[ -s "$debug_level_file" ]]; then
+	printf 'Debug level lines:\n'
+	cat "$debug_level_file"
+	printf '\n'
+else
+	printf 'No ModeU5 DEBUG_LEVEL markers found.\n\n'
+fi
+
+if [[ -s "$main_mode_file" ]]; then
+	printf 'Main mode trace lines:\n'
+	printf 'Mode map: main_mode=1 Active Performance; main_mode=2 Active Normal; main_mode=3 Deactivated.\n'
+	cat "$main_mode_file"
+	printf '\n'
+else
+	printf 'No ModeU5 PERF-14 main-mode trace lines found.\n\n'
+fi
+
+if [[ -s "$perf14_file" ]]; then
+	printf 'PERF-14 diagnostic lines:\n'
+	cat "$perf14_file"
+	printf '\n'
+else
+	printf 'No non-localization PERF-14 diagnostic lines found.\n\n'
+fi
+
+if [[ -s "$scenario_file" ]]; then
+	printf 'Scenario lines:\n'
+	cat "$scenario_file"
+fi
 
 if ((${#missing_scenarios[@]} > 0)); then
 	printf '\n'
-	printf 'Missing expected scenario markers:\n'
+	printf 'Missing expected full-revalidation scenario markers:\n'
 	printf '%s\n' "${missing_scenarios[@]}"
 fi

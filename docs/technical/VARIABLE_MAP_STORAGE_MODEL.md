@@ -157,6 +157,24 @@ US-00 ratios, void wealth, and next-month penalty
 country/market demand outcomes that cannot live on a more specific consumer scope
 ```
 
+US-10.3 current-month country × market × good outcome fields are:
+
+```txt
+consumption_pending_requested
+consumption_requested
+consumption_satisfied
+consumption_unsatisfied
+trade_requested
+trade_transferred
+trade_unsatisfied
+```
+
+`consumption_pending_requested` is an explicit monthly input queue. It is removed
+when the US-10 monthly pass processes the country-market-good request. The other
+fields are additive current-month outcome counters written by explicit
+US-10.1/US-10.2 requests. They must not duplicate Pop location records once a
+more specific consumer scope is available.
+
 Capacity is deliberately not stored in this per-good record. US-02 capacity is
 the same for every good in one country-market relation, so persisting it here
 would multiply identical values by the number of goods and repeat the same
@@ -343,7 +361,7 @@ US-10.3, debug, or stock-consistency orchestration.
 | US-10.0 | No persistent map | Candidate lists, scores, and exclusions are transaction-local unless a debug snapshot is explicitly requested. |
 | US-10.1 | Uses stock maps | Keep requested/remaining/satisfied values local; persist only through US-10.3. |
 | US-10.2 | Uses stock maps | Keep one transfer transaction local; persist only through US-10.3. |
-| US-10.3 | Owns outcome-record fields | Add Pop outcomes to the shared location x good demand record and use the canonical country x market x good record pattern for broader aggregates. |
+| US-10.3 | Owns outcome-record fields | Persist current-month country-market-good consumption and trade outcome maps for explicit requests; add Pop outcomes to the shared location x good demand record once live Pop demand exposure is confirmed. |
 | US-10-UI | Reads maps and transaction diagnostics | Do not create a second authoritative outcome store. |
 | US-11 | Validates/rebuilds maps | Compare country source maps with market aggregate maps and repair only the aggregate. |
 | US-13 | No runtime map | Use static CB/wargoal variants and triggers. |
