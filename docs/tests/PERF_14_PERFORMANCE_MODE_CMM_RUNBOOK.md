@@ -54,9 +54,26 @@ The event temporarily changes the current country's CMM
 `nve_no_void_economy_main` value to:
 
 ```txt
-1 = Performance Mode
-2 = Normal Mode
+1 = Active Performance Mode
+2 = Active Normal Mode
 3 = Deactivated
+```
+
+For audit review, use the following map consistently:
+
+```txt
+nve_no_void_economy_main=1 -> Active Performance
+  performance=1 normal=0 deactivated=0
+  Performance sparsity applies: human-relevant/promoted markets use detailed ModeU5 runtime;
+  non-human-relevant markets use vanilla fallback.
+
+nve_no_void_economy_main=2 -> Active Normal
+  performance=0 normal=1 deactivated=0
+  Sparsity is disabled: detailed ModeU5 runtime is allowed without promotion.
+
+nve_no_void_economy_main=3 -> Deactivated
+  performance=0 normal=0 deactivated=1
+  ModeU5 stock-affecting runtime is blocked.
 ```
 
 It restores the original CMM value before finishing.
@@ -88,7 +105,9 @@ ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_pro
 ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm
 ModeU5 PERF-14 DUMP main_mode=...
 ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=1 fallback=0 blocked=0 promotion_attempted=1 promotion_succeeded=1 result=1
+# Active Performance / nve_no_void_economy_main=1 / human-relevant market -> detailed ModeU5 monthly runtime
 ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=1 vanilla_fallback=0 blocked=0 human_relevant=1 promotion_attempted=1 promotion_succeeded=1 result=1
+# Active Performance / nve_no_void_economy_main=1 / non-human-relevant market -> vanilla fallback
 ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=0 vanilla_fallback=1 blocked=0 human_relevant=0 promotion_attempted=0 promotion_succeeded=0 result=2
 ModeU5 PERF-14 PROMOTION positive aggregate=120 ...
 ModeU5 PERF-14 PROMOTION idempotent ...
@@ -108,6 +127,8 @@ For the Performance Mode branch, the dump should show:
 ```txt
 main_mode=1
 performance=1
+normal=0
+deactivated=0
 detailed=1
 mutation_allowed=1
 fallback=0
@@ -116,6 +137,12 @@ market_human_relevant=1
 current_market_human_relevant=1
 promotion_result=1
 ```
+
+The `main_mode=1 performance=1 normal=0 deactivated=0` tuple is the audit proof
+that the positive and vanilla-fallback `MARKET_RUNTIME_GATE` lines were evaluated
+under Active Performance Mode. Separate Normal and Deactivated gate probes should
+be read with this same mapping: `main_mode=2` means Active Normal, and
+`main_mode=3` means Deactivated.
 
 The relevant market list is rebuilt from:
 
@@ -169,42 +196,44 @@ distinct non-present market fixture, the probe returns BLOCKED instead of PASS.
 The same event now also validates the stock-affecting decision gate:
 
 ```txt
-Performance Mode + human-present unpromoted market
+Active Performance / nve_no_void_economy_main=1 + human-present unpromoted market
   -> promotion attempted
   -> promotion succeeds
   -> detailed stock mutation path allowed
 
-Performance Mode + AI market that is not human-relevant
+Active Performance / nve_no_void_economy_main=1 + AI market that is not human-relevant
   -> detailed mutation disabled
   -> vanilla fallback selected
 
-Performance Mode + AI country inside a human-relevant market
+Active Performance / nve_no_void_economy_main=1 + AI country inside a human-relevant market
   -> promotion attempted
   -> promotion succeeds
   -> detailed stock mutation path allowed
 
-Performance Mode + human country in non-present market
+Active Performance / nve_no_void_economy_main=1 + human country in non-present market
   -> detailed mutation disabled
   -> vanilla fallback selected
   -> promotion not attempted by the stock gate
 
-Performance Mode monthly market runtime gate + human-relevant unpromoted market
+Active Performance monthly market runtime gate / nve_no_void_economy_main=1 + human-relevant unpromoted market
   -> promotion attempted
   -> promotion succeeds
   -> detailed ModeU5 runtime selected
 
-Performance Mode monthly market runtime gate + market absent from the human-relevant list
+Active Performance monthly market runtime gate / nve_no_void_economy_main=1 + market absent from the human-relevant list
   -> detailed ModeU5 runtime disabled
   -> vanilla fallback selected
   -> promotion not attempted
 
-Normal Mode
+Active Normal / nve_no_void_economy_main=2
   -> detailed stock mutation path allowed without promotion
+  -> detailed monthly runtime allowed without Performance Mode promotion
 
-Deactivated Mode
+Deactivated / nve_no_void_economy_main=3
   -> detailed mutation disabled
   -> fallback disabled
   -> mutation blocked
+  -> monthly runtime blocked
 ```
 
 ## Log Summary Helper
