@@ -13,7 +13,50 @@ modeu5_perf14_debug.1 = {
 
 	option = {
 		name = modeu5_perf14_debug.1.a
+		modeu5_enter_test_audit_runtime_mode = yes
+		set_variable = { name = modeu5_perf14_debug_level_numeric value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_normal value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_debug value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_audit value = 0 }
+		if = {
+			limit = { has_global_variable = modeu5_debug_level }
+			set_variable = { name = modeu5_perf14_debug_level_numeric value = global_var:modeu5_debug_level }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_normal }
+			set_variable = { name = modeu5_perf14_runtime_normal value = 1 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_debug }
+			set_variable = { name = modeu5_perf14_runtime_debug value = 1 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_audit }
+			set_variable = { name = modeu5_perf14_runtime_audit value = 1 }
+		}
+		debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_probe level=[THIS.GetVariable('modeu5_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('modeu5_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('modeu5_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('modeu5_perf14_runtime_audit').GetValue|0]"
 		modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = yes
+		set_variable = { name = modeu5_perf14_debug_level_numeric value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_normal value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_debug value = 0 }
+		set_variable = { name = modeu5_perf14_runtime_audit value = 0 }
+		if = {
+			limit = { has_global_variable = modeu5_debug_level }
+			set_variable = { name = modeu5_perf14_debug_level_numeric value = global_var:modeu5_debug_level }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_normal }
+			set_variable = { name = modeu5_perf14_runtime_normal value = 1 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_debug }
+			set_variable = { name = modeu5_perf14_runtime_debug value = 1 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_runtime_mode_audit }
+			set_variable = { name = modeu5_perf14_runtime_audit value = 1 }
+		}
+		debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=after_guarded_probe level=[THIS.GetVariable('modeu5_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('modeu5_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('modeu5_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('modeu5_perf14_runtime_audit').GetValue|0]"
 		trigger_event_non_silently = modeu5_perf14_debug.2
 	}
 	option = {

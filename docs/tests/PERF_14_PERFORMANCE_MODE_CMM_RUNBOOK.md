@@ -58,6 +58,7 @@ PASS - Performance Mode CMM plumbing
 The logs should include:
 
 ```txt
+ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_probe level=... normal=0 debug=1 audit=1
 ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm
 ModeU5 PERF-14 DUMP main_mode=...
 ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=1 fallback=0 blocked=0 promotion_attempted=1 promotion_succeeded=1 result=1
@@ -66,7 +67,13 @@ ModeU5 PERF-14 PROMOTION idempotent ...
 ModeU5 PERF-14 PROMOTION partial aggregate=100 ...
 ModeU5 PERF-14 RESULT performance_mode_cmm PASS
 ModeU5 TEST PASS scenario=perf14_performance_mode_cmm
+ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=after_guarded_probe level=...
 ```
+
+`before_guarded_probe` must show `debug=1 audit=1`, which confirms the event
+entered test-audit runtime mode before running the guarded PERF-14 probes. The
+numeric `level` remains the configured CMM debug-message level, so the audit flag
+is the authoritative check for Audit runtime.
 
 For the Performance Mode branch, the dump should show:
 
@@ -161,6 +168,27 @@ Deactivated Mode
   -> fallback disabled
   -> mutation blocked
 ```
+
+## Log Summary Helper
+
+After running the event, use:
+
+```txt
+./tools/summarize_modeu5_test_logs.sh
+```
+
+The helper now prints separate sections for:
+
+```txt
+Debug level lines
+PERF-14 diagnostic lines
+Scenario lines
+Localization-disabled-only ModeU5 markers
+```
+
+If the summary shows only localization-disabled copies of `ModeU5 TEST`,
+`ModeU5 DEBUG_LEVEL`, or `ModeU5 PERF-14` lines, treat the runtime result as
+inconclusive and inspect `debug.log` / `game.log` before posting PASS.
 
 ## Static Checks
 
