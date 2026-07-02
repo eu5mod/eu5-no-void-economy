@@ -524,6 +524,7 @@ TXT
 			-e "s/__MARKET_MAP__/modeu5_${good}_market_stock/g" \
 			-e "s/__DIRTY_LIST__/modeu5_${good}_dirty_markets/g" \
 			-e "s/__ACTIVE_LIST__/modeu5_${good}_active_markets/g" \
+			-e "s/__SPARSE_SUPPLIER_LIST__/modeu5_${good}_us10_sparse_suppliers/g" \
 			-e "s/__PRODUCED_MAP__/modeu5_${good}_produced_by_market/g" \
 			-e "s/__ADDED_MAP__/modeu5_${good}_added_by_market/g" \
 			-e "s/__REJECTED_MAP__/modeu5_${good}_rejected_by_market/g" \

@@ -62,6 +62,7 @@ __OVERPRODUCTION_RATIO_MAP__
 __PRODUCED_MAP__
 __PRODUCTION_PENALTY_MAP__
 __REJECTED_MAP__
+__SPARSE_SUPPLIER_LIST__
 __STOCK_MAP__
 __US00_ACTIVE_MAP__
 __UI_MONTHLY_CONSUMPTION_MAP__
@@ -80,6 +81,7 @@ modeu5_<good>_rejected_by_market
 modeu5_<good>_stock_by_market
 modeu5_<good>_ui_monthly_consumption_by_market
 modeu5_<good>_ui_monthly_surplus_by_market
+modeu5_<good>_us10_sparse_suppliers
 modeu5_<good>_us00_active_record_by_market
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market

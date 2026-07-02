@@ -153,11 +153,16 @@ the intended fallback.
 
 Target behavior:
 
-- Maintain per-good meaningful supplier lists keyed by market or active market/good.
+- Prepare per-good meaningful supplier lists for the current market before US-10
+  candidate scans. This first safe layer is rebuilt on demand from the existing
+  `modeu5_countries_present_in_market` cache, so it cannot become stale across
+  market/country movement.
 - Include only countries with meaningful stock or production/balance state for that market/good.
 - Exclude countries that have no stock and no relevant monthly added/requested signal before relation/scoring work.
 - Preserve the all-country `modeu5_countries_present_in_market` scan as a fallback/debug path.
-- Invalidate or repair sparse lists when stock is added, removed, transferred, decayed, cleared, initialized, reconciled, or when market/country presence changes.
+- Keep durable invalidation/repair out of this layer unless a later PR introduces
+  persisted market x good supplier caches. On-demand rebuild is the safety
+  mechanism for now.
 - Do not introduce direct stock mutation; keep centralized operators authoritative.
 
 ## US-10-UI / #37 visibility objective
@@ -310,10 +315,12 @@ Second stacked PR boundary:
 
 ### Phase 3 — sparse supplier lists
 
-- Add per-good sparse supplier list generation and maintenance.
-- Update US-10 candidate scanning to prefer sparse supplier lists.
+- Add per-good sparse supplier list generation for the current market.
+- Update US-10 candidate scanning and bucket mutation loops to prefer sparse
+  supplier lists.
 - Keep all-country market scan behind fallback/debug mode.
-- Validate cache repair/invalidation against stock consistency checks.
+- Validate that the sparse list is used only when available, that debug can
+  force the all-country scan, and that no durable stale cache is introduced.
 
 ### Phase 4 — #37 debug visibility
 
@@ -370,12 +377,16 @@ New targeted scenarios:
   detailed accounting is skipped and vanilla fallback is used unless a
   confirmed iterator later proves that presence should make the market relevant.
 - Normal Mode: existing detailed accounting path remains available.
-- Sparse supplier cache: only meaningful suppliers are scanned in the hot path.
+- Sparse supplier list: only countries with positive current stock for the good
+  are scanned in the hot path; the full present-country scan remains available
+  for debug/fallback.
 - Debug fallback: all-country scan can still be forced for diagnostics.
 - US-10-UI: candidate order, exclusion reason, and mutation quantity are visible for consumption and transfer.
 
 ## Open design questions
 
-- Whether sparse supplier cache entries should be keyed by market x good only, or market x good x accounting-mode.
+- Whether a later durable sparse supplier cache should be keyed by market x good
+  only, or market x good x accounting-mode. The current PR avoids that choice by
+  rebuilding the list on demand.
 - How much of US-17 / US-20 should be implemented in this master PR versus reserved for child PRs after the vanilla fallback gate exists.
 - Whether Performance Mode should track all human-relevant markets for every human country in multiplayer, or only the current player country in single-player contexts.

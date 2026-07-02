@@ -42,6 +42,11 @@ modeu5_perf14_clear_test_results = {
 	remove_variable = modeu5_perf14_debug_promotion_allocated_total
 	remove_variable = modeu5_perf14_debug_idempotent_country_sum_before
 	remove_variable = modeu5_perf14_debug_idempotent_market_before
+	remove_variable = modeu5_perf14_debug_sparse_source_count
+	remove_variable = modeu5_perf14_debug_sparse_supplier_count
+	remove_variable = modeu5_perf14_debug_sparse_scan_used
+	remove_variable = modeu5_perf14_debug_sparse_fallback_used
+	remove_variable = modeu5_perf14_debug_sparse_candidate_count
 }
 
 modeu5_perf14_set_cmm_main_mode_for_test = {
