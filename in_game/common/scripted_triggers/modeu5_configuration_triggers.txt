@@ -76,6 +76,18 @@ modeu5_stock_mutation_blocked_trigger = {
 	scope:modeu5_stock_mutation_blocked > 0
 }
 
+modeu5_market_runtime_use_detailed_accounting_trigger = {
+	scope:modeu5_market_runtime_use_detailed_accounting > 0
+}
+
+modeu5_market_runtime_use_vanilla_fallback_trigger = {
+	scope:modeu5_market_runtime_use_vanilla_fallback > 0
+}
+
+modeu5_market_runtime_blocked_trigger = {
+	scope:modeu5_market_runtime_blocked > 0
+}
+
 modeu5_debug_enabled_trigger = {
 	modeu5_debug_runtime_mode_trigger = yes
 }

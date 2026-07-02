@@ -188,6 +188,81 @@ modeu5_rebuild_human_relevant_markets = {
 	}
 }
 
+modeu5_prepare_vanilla_fallback_counters = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_vanilla_fallback_us00_markets } }
+		set_global_variable = { name = modeu5_performance_vanilla_fallback_us00_markets value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_vanilla_fallback_us10_markets } }
+		set_global_variable = { name = modeu5_performance_vanilla_fallback_us10_markets value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_performance_blocked_runtime_markets } }
+		set_global_variable = { name = modeu5_performance_blocked_runtime_markets value = 0 }
+	}
+}
+
+modeu5_note_us00_vanilla_fallback_market = {
+	modeu5_prepare_vanilla_fallback_counters = yes
+	set_global_variable = {
+		name = modeu5_performance_vanilla_fallback_us00_markets
+		value = {
+			value = global_var:modeu5_performance_vanilla_fallback_us00_markets
+			add = 1
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				modeu5_debug_enabled_trigger = yes
+				modeu5_audit_enabled_trigger = yes
+			}
+		}
+		debug_log = "ModeU5 PERF-14 VANILLA_FALLBACK system=US00 reason=market_not_human_relevant_or_not_promoted"
+	}
+}
+
+modeu5_note_us10_vanilla_fallback_market = {
+	modeu5_prepare_vanilla_fallback_counters = yes
+	set_global_variable = {
+		name = modeu5_performance_vanilla_fallback_us10_markets
+		value = {
+			value = global_var:modeu5_performance_vanilla_fallback_us10_markets
+			add = 1
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				modeu5_debug_enabled_trigger = yes
+				modeu5_audit_enabled_trigger = yes
+			}
+		}
+		debug_log = "ModeU5 PERF-14 VANILLA_FALLBACK system=US10 reason=market_not_human_relevant_or_not_promoted"
+	}
+}
+
+modeu5_note_runtime_blocked_market = {
+	modeu5_prepare_vanilla_fallback_counters = yes
+	set_global_variable = {
+		name = modeu5_performance_blocked_runtime_markets
+		value = {
+			value = global_var:modeu5_performance_blocked_runtime_markets
+			add = 1
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				modeu5_debug_enabled_trigger = yes
+				modeu5_audit_enabled_trigger = yes
+			}
+		}
+		debug_log = "ModeU5 PERF-14 RUNTIME_BLOCKED reason=nve_deactivated"
+	}
+}
+
 modeu5_prepare_human_relevant_full_ledger_markets = {
 	if = {
 		limit = { modeu5_accounting_human_relevant_persistence_trigger = yes }

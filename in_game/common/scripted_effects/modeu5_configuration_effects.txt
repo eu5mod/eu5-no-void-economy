@@ -260,6 +260,76 @@ modeu5_prepare_stock_mutation_accounting_mode = {
 	}
 }
 
+modeu5_prepare_market_runtime_accounting_mode = {
+	$market$ = { save_temporary_scope_as = modeu5_market_runtime_market }
+
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_attempted value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_succeeded value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_market_runtime_market_human_relevant value = 0 }
+
+	if = {
+		limit = { modeu5_nve_deactivated_trigger = yes }
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 1 }
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 3 }
+	}
+	else_if = {
+		limit = { modeu5_nve_normal_mode_trigger = yes }
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
+	}
+	else_if = {
+		limit = { modeu5_performance_mode_enabled_trigger = yes }
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_performance_relevant_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_performance_relevant_markets
+					target = scope:modeu5_market_runtime_market
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_market_runtime_market_human_relevant value = 1 }
+		}
+		if = {
+			limit = { scope:modeu5_market_runtime_market_human_relevant > 0 }
+			scope:modeu5_market_runtime_market = { save_temporary_scope_as = modeu5_market }
+			if = {
+				limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
+				save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
+				save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
+			}
+			else = {
+				save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_attempted value = 1 }
+				modeu5_promote_market_to_detailed_accounting = {
+					market = scope:modeu5_market_runtime_market
+				}
+				scope:modeu5_market_runtime_market = { save_temporary_scope_as = modeu5_market }
+				if = {
+					limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
+					save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
+					save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_succeeded value = 1 }
+					save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
+				}
+				else = {
+					save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 1 }
+					save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 2 }
+				}
+			}
+		}
+		else = {
+			save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 1 }
+			save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 2 }
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 1 }
+		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 3 }
+	}
+}
+
 modeu5_clear_accounting_persistence_flags = {
 	remove_global_variable = modeu5_accounting_persistence_minimal
 	remove_global_variable = modeu5_accounting_persistence_human_relevant

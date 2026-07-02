@@ -77,12 +77,18 @@ Normal Mode keeps the existing broad accounting behavior.
 
 Deactivated Mode should not run the main NVE economic mutations where supported by the current module-option model.
 
-## Market-level fallback contract
+## Vanilla fallback contract
 
-When a country x market pair is not eligible for detailed accounting in Performance Mode, stock-changing systems must not silently disappear. They must fall back to market-level aggregate accounting.
+When a market is not eligible for detailed accounting in Performance Mode,
+ModeU5 must not silently create partial country-market state and must not invent
+a second aggregate-only stock system. The fallback is vanilla behavior: ModeU5
+skips its stock-affecting runtime logic for that market and logs that the market
+was left to vanilla.
 
-Initial fallback consumers to plan for:
+Initial consumers to gate:
 
+- US-00 monthly production ingestion and ledger writes;
+- US-10 monthly consumption / transfer resolution;
 - US-03 monthly decay;
 - US-17 trade-efficiency repurpose / reconciliation;
 - US-20 trade-maintenance received-goods loss factor.
@@ -90,14 +96,56 @@ Initial fallback consumers to plan for:
 Fallback rule:
 
 ```txt
-if detailed_country_market_accounting_enabled(country, market) = yes:
-  apply mutation through country x market stock maps and market aggregate
+if market_runtime_accounting_mode(market) = detailed:
+  apply ModeU5 mutation through country x market stock maps and market aggregate
 else:
-  apply mutation to the market aggregate only
-  record debug that the country x market detail was skipped by Performance Mode
+  skip ModeU5 mutation for this market
+  leave vanilla economy behavior untouched
+  record debug/audit that ModeU5 used vanilla fallback for this market
 ```
 
-This keeps aggregate market stock meaningful for non-human / non-owned-location markets while avoiding high-cardinality country x market storage.
+This avoids high-cardinality country x market storage for non-human-relevant
+markets without weakening the central invariant. There is no persistent
+ModeU5-only market aggregate for skipped markets.
+
+## Monthly runtime business rule
+
+Performance Mode is a market-level runtime filter, not a replacement economy.
+
+The monthly runtime rule is:
+
+```txt
+1. Identify human-relevant markets.
+2. monthly_country_pulse
+   -> every_market_center_in_country
+   -> modeu5_prepare_market_runtime_accounting_mode(market)
+3. If the market is human-relevant and promoted:
+   -> run the normal ModeU5 detailed runtime for that market
+   -> use centralized stock operators such as add/remove/transfer/decay through
+      their existing callers
+   -> run the relevant ModeU5 balance mechanisms for that market
+4. Otherwise:
+   -> skip ModeU5 stock-affecting runtime for that market
+   -> leave vanilla behavior untouched
+   -> log vanilla fallback when debug/audit is active
+```
+
+Current implementation boundary:
+
+- US-00 monthly production ingestion, rejection ledger, overproduction ratios,
+  void wealth, and production-penalty bookkeeping are gated by the market
+  runtime decision.
+- US-10 monthly consumption and inter-market transfer resolution are gated by
+  the same market runtime decision.
+- US-03 decay, US-17, US-20, and any future monthly balancing/runtime systems
+  must use this same gate before invoking stock-affecting ModeU5 logic.
+- US-09 static/generated economy rebalance overrides are package-level static
+  data, not a monthly stock mutation path. If a future US-09-adjacent runtime
+  balance mechanic is added, it must follow the same market runtime rule.
+
+This preserves the spirit of the mod in human-relevant markets while avoiding
+side effects and high-cardinality storage in markets where vanilla behavior is
+the intended fallback.
 
 ## Sparse supplier cache/list objective
 
@@ -129,7 +177,7 @@ Required visible fields:
 - aggregate prefilter used/blocked markers;
 - own-stock fast-path used/taken markers;
 - whether detailed country x market accounting was skipped by Performance Mode;
-- whether a market-level fallback mutation was used.
+- whether vanilla fallback was used.
 
 Same-market consumption must be labelled as non-trade. Inter-market transfer must show source, target, target capacity policy, actual transferred quantity, and unsatisfied transfer quantity.
 
@@ -159,21 +207,21 @@ Implementation note for the first stacked PR:
 - CORE-03 owner-change and new-country finalizer hooks opportunistically mark
   new human-relevant markets without waiting for the next monthly rebuild.
 - `modeu5_prepare_country_market_accounting_decision` computes the read-only
-  country-market decision for the next fallback PR.
+  country-market decision used by the later mutation and vanilla-fallback gates.
 - `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
   human-relevant market list, the non-detailed -> detailed eligibility edge case,
   the positive human market-presence Performance Mode decision, and negative
   Performance Mode decisions for AI countries and human countries in markets not
   returned by `every_market_present_in_country`.
 - The first stacked PR deliberately does not route real runtime stock mutations
-  through the Performance Mode gate, implement market-level fallback, or prove
-  the foreign-building-only negative case.
+  through the Performance Mode gate or prove the foreign-building-only negative
+  case.
 - The promotion initializer exists so later stock-affecting PRs have a safe
   boundary between read-only eligibility and detailed mutation permission.
 
 ### Promotion initializer
 
-Before any later PR routes US-03 decay, US-10 fallback, US-17, US-20, or any
+Before any later PR routes US-03 decay, US-10 resolution, US-17, US-20, or any
 other stock-affecting path through the Performance Mode accounting gate, the
 target market must have completed the dedicated promotion initializer:
 
@@ -219,15 +267,17 @@ Implemented boundary:
   idempotent re-run, partial-state promotion where some country stock already
   exists, and a negative non-human-relevant market path.
 
-### Phase 2 — accounting gate and fallback operators
+### Phase 2 — accounting gate and vanilla fallback
 
 - Introduce a shared accounting gate effect used before country x market map writes.
-- Add market-level-only variants or branches for systems that change stock while detailed accounting is disabled.
-- Ensure market aggregate deltas remain consistent with centralized stock mutation semantics.
-- Add audit logs for fallback usage.
+- Add a market-runtime gate so monthly market-owned dispatch can decide once per
+  market before traversing countries and goods.
+- Skip ModeU5 stock-affecting runtime work when the gate selects vanilla
+  fallback.
+- Add audit logs for fallback usage without mutating ModeU5 stock maps.
 - Block detailed stock-affecting country x market routing unless
   `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true, and
-  select a market-level fallback path otherwise.
+  select vanilla fallback otherwise.
 
 Second stacked PR boundary:
 
@@ -241,16 +291,22 @@ Second stacked PR boundary:
 - If the market is promoted, the gate sets
   `modeu5_stock_mutation_use_detailed_accounting`.
 - If the market is not human-relevant or promotion fails, the gate sets
-  `modeu5_stock_mutation_use_market_level_fallback`.
+  `modeu5_stock_mutation_use_market_level_fallback`. In this master PR, that
+  means vanilla fallback, not an aggregate-only ModeU5 mutation operator.
 - If No Void Economy is deactivated, the gate sets
   `modeu5_stock_mutation_blocked`.
 - Once a market is promoted, all country x market stock mutations inside that
   market must use the detailed path, including AI countries, so the market
   aggregate remains a cache of the detailed country records.
-- This PR still does not implement the market-level fallback mutation operator
-  itself, and it does not yet route US-03, US-10, US-17, or US-20 through the
-  gate. Those callers must be wired in later stacked PRs and must not use the
-  weaker read-only eligibility trigger as mutation permission.
+- `modeu5_prepare_market_runtime_accounting_mode` applies the same market-level
+  rule at monthly dispatch time: promoted human-relevant markets enter ModeU5
+  detailed runtime; non-human-relevant or failed-promotion markets use vanilla
+  fallback; deactivated mode blocks ModeU5 runtime.
+- US-00 monthly production ingestion and US-10 monthly demand resolution are
+  gated by `modeu5_prepare_market_runtime_accounting_mode`.
+- This PR does not yet route US-03, US-17, or US-20 through the gate. Those
+  callers must be wired in later stacked PRs and must not use the weaker
+  read-only eligibility trigger as mutation permission.
 
 ### Phase 3 — sparse supplier lists
 
@@ -272,7 +328,8 @@ Second stacked PR boundary:
   human-relevant markets returned by `every_market_present_in_country` from at
   least one human country.
 - Foreign-building-only or indirect market presence remains a Phase 2 boundary question unless it is covered by the confirmed iterator.
-- In Performance Mode, skipped country x market mutations fall back to market-level aggregate changes rather than being dropped.
+- In Performance Mode, skipped non-human-relevant markets fall back to vanilla
+  behavior rather than creating aggregate-only ModeU5 stock.
 - US-03, US-17, and US-20 have explicit fallback plans/tests before they rely on detailed country x market state.
 - US-10 supplier scanning prefers sparse supplier lists and only falls back to all-country scans in debug/fallback conditions.
 - #37 debug visibility shows ordered candidates, exclusions, quantities, scores, final outcomes, and same-market vs inter-market distinction.
@@ -307,10 +364,10 @@ New targeted scenarios:
 - Performance Mode AI country in a human-relevant promoted market: detailed
   accounting is used because the market aggregate is now a cache of detailed
   country records.
-- Performance Mode AI country in a non-human-relevant market: market aggregate
-  fallback is selected where a supported mutation applies.
+- Performance Mode AI country in a non-human-relevant market: vanilla fallback
+  is selected and ModeU5 stock mutation is skipped.
 - Performance Mode human country has only foreign-building/indirect presence:
-  detailed accounting is skipped and market aggregate fallback is used unless a
+  detailed accounting is skipped and vanilla fallback is used unless a
   confirmed iterator later proves that presence should make the market relevant.
 - Normal Mode: existing detailed accounting path remains available.
 - Sparse supplier cache: only meaningful suppliers are scanned in the hot path.
@@ -320,6 +377,5 @@ New targeted scenarios:
 ## Open design questions
 
 - Whether sparse supplier cache entries should be keyed by market x good only, or market x good x accounting-mode.
-- Whether market-level-only fallback should be implemented as new central operators or as explicit branches inside existing central operators.
-- How much of US-17 / US-20 should be implemented in this master PR versus reserved for child PRs after the fallback contract exists.
+- How much of US-17 / US-20 should be implemented in this master PR versus reserved for child PRs after the vanilla fallback gate exists.
 - Whether Performance Mode should track all human-relevant markets for every human country in multiplayer, or only the current player country in single-player contexts.
