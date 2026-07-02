@@ -17,6 +17,12 @@ modeu5_perf14_clear_test_results = {
 	remove_variable = modeu5_perf14_ui_human_relevant_market_count
 	remove_variable = modeu5_perf14_ui_current_market_human_relevant
 	remove_variable = modeu5_perf14_ui_mutation_allowed
+	remove_variable = modeu5_perf14_ui_stock_gate_detailed
+	remove_variable = modeu5_perf14_ui_stock_gate_fallback
+	remove_variable = modeu5_perf14_ui_stock_gate_blocked
+	remove_variable = modeu5_perf14_ui_stock_gate_promotion_attempted
+	remove_variable = modeu5_perf14_ui_stock_gate_promotion_succeeded
+	remove_variable = modeu5_perf14_ui_stock_gate_result
 	remove_variable = modeu5_perf14_ui_promotion_result
 	remove_variable = modeu5_perf14_ui_promotion_goods_materialized
 	remove_variable = modeu5_perf14_ui_promotion_delta_total
@@ -240,6 +246,37 @@ modeu5_perf14_mirror_decision_to_ui = {
 	else = {
 		set_variable = { name = modeu5_perf14_ui_promotion_allocated_total value = 0 }
 	}
+}
+
+modeu5_perf14_mirror_stock_mutation_gate_to_ui = {
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_detailed
+		value = scope:modeu5_stock_mutation_use_detailed_accounting
+	}
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_fallback
+		value = scope:modeu5_stock_mutation_use_market_level_fallback
+	}
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_blocked
+		value = scope:modeu5_stock_mutation_blocked
+	}
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_promotion_attempted
+		value = scope:modeu5_stock_mutation_promotion_attempted
+	}
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_promotion_succeeded
+		value = scope:modeu5_stock_mutation_promotion_succeeded
+	}
+	set_variable = {
+		name = modeu5_perf14_ui_stock_gate_result
+		value = scope:modeu5_stock_mutation_gate_result
+	}
+}
+
+modeu5_perf14_log_stock_mutation_gate_result = {
+	debug_log = "ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_detailed').GetValue|0] fallback=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_fallback').GetValue|0] blocked=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_blocked').GetValue|0] promotion_attempted=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_promotion_attempted').GetValue|0] promotion_succeeded=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_promotion_succeeded').GetValue|0] result=[THIS.GetVariable('modeu5_perf14_ui_stock_gate_result').GetValue|0]"
 }
 
 modeu5_perf14_log_probe_result = {

@@ -5,12 +5,13 @@
 Validate the first stacked implementation under the PERF-14 / US-10-UI master
 PR.
 
-This test proves only the CMM mode plumbing, the human-relevant market discovery
+This test proves the CMM mode plumbing, the human-relevant market discovery
 list, the non-detailed -> detailed eligibility edge case, the first read-only
-country-market accounting decision, and the explicit promotion boundary required
-before Performance Mode may use detailed country-market stock mutation. It does
-not yet prove market-level fallback stock mutation, sparse supplier cache
-maintenance, or US-10 UI rendering.
+country-market accounting decision, the explicit promotion boundary required
+before Performance Mode may use detailed country-market stock mutation, and the
+shared pre-mutation accounting gate. It does not yet prove market-level fallback
+stock mutation operators, sparse supplier cache maintenance, or US-10 UI
+rendering.
 
 ## Setup
 
@@ -57,14 +58,22 @@ PASS - Performance Mode CMM plumbing
 The logs should include:
 
 ```txt
+ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_probe level=... normal=0 debug=1 audit=1
 ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm
 ModeU5 PERF-14 DUMP main_mode=...
+ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=1 fallback=0 blocked=0 promotion_attempted=1 promotion_succeeded=1 result=1
 ModeU5 PERF-14 PROMOTION positive aggregate=120 ...
 ModeU5 PERF-14 PROMOTION idempotent ...
 ModeU5 PERF-14 PROMOTION partial aggregate=100 ...
 ModeU5 PERF-14 RESULT performance_mode_cmm PASS
 ModeU5 TEST PASS scenario=perf14_performance_mode_cmm
+ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=after_guarded_probe level=...
 ```
+
+`before_guarded_probe` must show `debug=1 audit=1`, which confirms the event
+entered test-audit runtime mode before running the guarded PERF-14 probes. The
+numeric `level` remains the configured CMM debug-message level, so the audit flag
+is the authoritative check for Audit runtime.
 
 For the Performance Mode branch, the dump should show:
 
@@ -129,6 +138,58 @@ Human country + a market not returned by every_market_present_in_country
 If the campaign bookmark cannot provide an AI-country market fixture or a
 distinct non-present market fixture, the probe returns BLOCKED instead of PASS.
 
+The same event now also validates the stock-affecting decision gate:
+
+```txt
+Performance Mode + human-present unpromoted market
+  -> promotion attempted
+  -> promotion succeeds
+  -> detailed stock mutation path allowed
+
+Performance Mode + AI market that is not human-relevant
+  -> detailed mutation disabled
+  -> market-level fallback selected
+
+Performance Mode + AI country inside a human-relevant market
+  -> promotion attempted
+  -> promotion succeeds
+  -> detailed stock mutation path allowed
+
+Performance Mode + human country in non-present market
+  -> detailed mutation disabled
+  -> market-level fallback selected
+  -> promotion not attempted by the stock gate
+
+Normal Mode
+  -> detailed stock mutation path allowed without promotion
+
+Deactivated Mode
+  -> detailed mutation disabled
+  -> fallback disabled
+  -> mutation blocked
+```
+
+## Log Summary Helper
+
+After running the event, use:
+
+```txt
+./tools/summarize_modeu5_test_logs.sh
+```
+
+The helper now prints separate sections for:
+
+```txt
+Debug level lines
+PERF-14 diagnostic lines
+Scenario lines
+Localization-disabled-only ModeU5 markers
+```
+
+If the summary shows only localization-disabled copies of `ModeU5 TEST`,
+`ModeU5 DEBUG_LEVEL`, or `ModeU5 PERF-14` lines, treat the runtime result as
+inconclusive and inspect `debug.log` / `game.log` before posting PASS.
+
 ## Static Checks
 
 Run:
@@ -143,8 +204,10 @@ git diff --check
 
 ## Known Limitations
 
-- This PR does not yet route stock mutations through the accounting gate.
-- This PR does not yet implement market-level aggregate fallback mutation.
+- This PR introduces the shared pre-mutation accounting gate but does not yet
+  route US-03, US-10, US-17, US-20, or other runtime stock mutations through it.
+- This PR does not yet implement market-level aggregate fallback mutation
+  operators; it only selects the fallback branch future callers must use.
 - This PR implements `modeu5_promote_market_to_detailed_accounting`, but later
   stock-affecting PRs must still call/check
   `modeu5_detailed_country_market_stock_mutation_allowed_trigger` before using
