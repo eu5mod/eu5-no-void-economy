@@ -73,7 +73,7 @@ grep -hE 'ModeU5 PERF-14 (MAIN_MODE|DUMP main_mode=)' "${log_files[@]}" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$main_mode_file" || true
 
-grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION|RESULT)' "${log_files[@]}" \
+grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION|FAIL_REASON|RESULT)' "${log_files[@]}" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$perf14_file" || true
 
@@ -130,7 +130,7 @@ printf 'Debug level markers: %s\n' "$debug_level_count"
 printf 'Main mode traces: %s\n' "$main_mode_count"
 printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
 printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
-printf 'Missing expected scenarios: %s\n' "${#missing_scenarios[@]}"
+printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
 printf '\n'
 
 if [[ ! -s "$scenario_file" ]]; then
@@ -175,6 +175,6 @@ fi
 
 if ((${#missing_scenarios[@]} > 0)); then
 	printf '\n'
-	printf 'Missing expected scenario markers:\n'
+	printf 'Missing expected full-revalidation scenario markers:\n'
 	printf '%s\n' "${missing_scenarios[@]}"
 fi
