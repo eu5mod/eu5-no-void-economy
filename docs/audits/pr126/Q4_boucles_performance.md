@@ -66,28 +66,69 @@ travail lourd: marchés promus × pays présents × goods actifs / trades pertin
 
 Le point clef est que `P` doit rester beaucoup plus petit que `M` en mode performance, et que `G_a` doit rester plus petit que `G` grâce aux active-good lists. Si le mode normal promeut tous les marchés du pays courant, le gain sera surtout de maintenance/cache et moins spectaculaire, mais il évite quand même que chaque US reconstruise son propre monde.
 
-### Hypothèse chiffrée de revue : 60 goods, 100 marchés, 800 pays
+### Comparaison chiffrée des 3 scénarii avec l'hypothèse de revue
 
-Hypothèse de dimensionnement demandée :
+Hypothèse commune demandée :
 
 ```txt
 G = 60 goods
 M = 100 marchés
 C = 800 pays
-P_normal = 100 marchés promus
-P_performance = 5 marchés promus probables
+P_normal = 100 marchés retenus/promus
+P_performance = 5 marchés retenus/promus probables
 ```
 
-| Scénario | Formule simplifiée | Itérations-logiques avant filtres fins | Lecture |
-|---|---:|---:|---|
-| Current large, pire cas all country × all market × all goods | `C * M * G` | `800 * 100 * 60 = 4 800 000` | Baseline mensuelle inquiétante si les pipelines larges retouchent tous les axes. |
-| Promoted-market Normal, si tous les marchés restent promus et tous les pays/goods restent actifs | `P_normal * C * G` | `100 * 800 * 60 = 4 800 000` | Pas de gain asymptotique dans le pire cas, mais meilleur câblage/cache et moins de rescans par US. |
-| Promoted-market Performance, si 5 marchés promus mais tous les pays/goods restent candidats | `P_performance * C * G` | `5 * 800 * 60 = 240 000` | Environ `20x` moins que le pire cas current grâce au seul filtre marché. |
-| Performance + pays réellement présents par marché (`K_m = 40`) + all goods | `P_performance * K_m * G` | `5 * 40 * 60 = 12 000` | Environ `400x` moins que `4 800 000`. |
-| Performance + pays présents (`K_m = 40`) + goods actifs (`G_a = 10`) | `P_performance * K_m * G_a` | `5 * 40 * 10 = 2 000` | Environ `2 400x` moins que le pire cas all-axis. |
+Les trois scénarii comparés sont :
 
-Conclusion avec cette hypothèse :
+1. **Current** : câblage pays + pipelines larges (`monthly_country_pulse` -> US-00 all-goods -> US-10 séparé).
+2. **Ma 2e proposition de review** : target E générique immédiatement après readiness gate, avec B/C/D sous E, mais sans promotion explicite comme mécanisme de réduction.
+3. **Ta proposition reviewée** : préparation `every_market_present_in_country`, cache `countries_present_in_market`, filtre human/performance, market promotion, puis `every_market_promoted` avec branche locale et branche trade.
 
-1. **Normal mode (`P = 100`)** : le target promoted-market n'est pas surtout un gain asymptotique si tout reste promu et actif. Son intérêt principal est la maintenabilité : un seul propriétaire de boucle marché, des caches préparés une fois, et moins de rescans par US.
-2. **Performance mode (`P ≈ 5`)** : le target promoted-market devient clairement meilleur. Le seul filtre marché donne déjà environ `20x`; si `countries_present_in_market` et active goods filtrent réellement, l'ordre de grandeur devient `~400x` à `~2 400x` sur les branches goods/local-market.
-3. Le facteur réel dépendra surtout de trois nombres à mesurer dans les logs : `P` marchés promus, `K_m` pays présents par marché promu, et `G_a` goods actifs par marché promu.
+#### Comparaison brute sans raffinement `K_m` / `G_a`
+
+Cette première table garde volontairement tous les pays (`C = 800`) et tous les goods (`G = 60`) candidats pour isoler uniquement l'effet du nombre de marchés parcourus.
+
+| Scénario | Normal, 100 marchés | Performance, 5 marchés | Gain Normal vs Current | Gain Performance vs Current | Lecture |
+|---|---:|---:|---:|---:|---|
+| 1. Current | `800 * 100 * 60 = 4 800 000` | `4 800 000` si les pipelines larges restent all-axis | `1x` | `1x` | Baseline inquiétante ; chaque US peut en plus refaire ses propres scans. |
+| 2. Target E générique | `100 * 800 * 60 = 4 800 000` | `5 * 800 * 60 = 240 000` si E reçoit bien seulement 5 marchés | `1x` | `20x` | Bon seulement si le sélecteur E est déjà restreint ; sinon il ressemble au current. |
+| 3. Target promoted-market | `80 000 prep + 100 * 800 * 60 = 4 880 000` | `80 000 prep + 5 * 800 * 60 = 320 000` | `~1x` brut | `15x` brut | Légèrement plus cher en brut à cause de la préparation, mais elle achète un cache partagé et évite les rescans par US. |
+
+#### Comparaison raffinée avec `countries_present_in_market` et goods actifs
+
+Cette seconde table montre pourquoi ta proposition devient nettement meilleure dès qu'elle exploite ses deux vrais filtres :
+
+```txt
+K_m = pays réellement présents dans le marché promu
+G_a = goods actifs dans le marché promu
+```
+
+Exemple illustratif conservateur : `K_m = 40`, `G_a = 10`.
+
+| Scénario | Formule Performance raffinée | Itérations-logiques | Gain vs Current `4 800 000` | Lecture |
+|---|---:|---:|---:|---|
+| 1. Current | `C * M * G` | `4 800 000` | `1x` | Ne bénéficie pas automatiquement de `K_m` / `G_a` si les pipelines restent larges. |
+| 2. Target E générique | `P_performance * K_m * G_a` si E est déjà filtré | `5 * 40 * 10 = 2 000` | `2 400x` théorique | Peut être aussi bon, mais seulement si on ajoute implicitement la même promotion/cache que ta proposition. |
+| 3. Target promoted-market | `C * M prep + P_performance * K_m * G_a` | `80 000 + 2 000 = 82 000` | `~58x` complet, `2 400x` sur la branche lourde | Meilleur design pratique : la préparation rend le filtre explicite, testable et réutilisable par US-00/US-10/future US. |
+
+#### Conclusion comparative
+
+| Rang performance-pratique | Scénario | Pourquoi |
+|---:|---|---|
+| 1 | Ta proposition `every_market_promoted` | Meilleure en pratique : elle rend `P`, `K_m` et `G_a` explicites, mesurables et partageables. Même si le coût complet inclut `80 000` de préparation, elle évite que chaque US reconstruise son propre filtre. |
+| 2 | Ma 2e proposition Target E générique | Peut égaler la performance théorique de ta proposition, mais seulement si elle reçoit déjà les mêmes marchés promus et caches. Sans cela, elle est trop abstraite. |
+| 3 | Current | Risque de rester proche de `4 800 000` unités logiques par passage large, multiplié par le nombre de pipelines US qui rescan. |
+
+Donc, avec l'hypothèse `60 goods / 100 marchés / 800 pays`, la réponse est :
+
+```txt
+Normal mode:
+  Current ≈ Target E ≈ Promoted-market en brut si 100 marchés et tous pays/goods restent actifs.
+  Promoted-market reste meilleur pour la maintenance et pour éviter les rescans par US.
+
+Performance mode:
+  Target E peut faire ~20x si limité à 5 marchés.
+  Promoted-market est le meilleur choix pratique, car il rend ce filtre explicite
+  et peut aller de ~15x complet brut à ~58x complet avec K_m/G_a,
+  voire ~2 400x sur la branche lourde hors coût de préparation.
+```
