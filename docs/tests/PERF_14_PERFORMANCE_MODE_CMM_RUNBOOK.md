@@ -244,14 +244,35 @@ After running the event, use:
 ./tools/summarize_modeu5_test_logs.sh
 ```
 
-The helper now prints separate sections for:
+The helper now prints separate counts and sections for:
 
 ```txt
+Debug level markers
+Main mode traces
+PERF-14 diagnostics
+
 Debug level lines
+Main mode trace lines
 PERF-14 diagnostic lines
 Scenario lines
 Localization-disabled-only ModeU5 markers
 ```
+
+The `Main mode trace lines` section is extracted from the runtime log line:
+
+```txt
+ModeU5 PERF-14 DUMP main_mode=... performance=... normal=... deactivated=...
+```
+
+and prints the audit map inline:
+
+```txt
+Mode map: main_mode=1 Active Performance; main_mode=2 Active Normal; main_mode=3 Deactivated.
+```
+
+`PERF-14 diagnostic lines` also includes `MARKET_RUNTIME_GATE` entries so the
+summary shows both the active CMM situation and the detailed/vanilla-fallback/
+blocked gate result in one place.
 
 If the summary shows only localization-disabled copies of `ModeU5 TEST`,
 `ModeU5 DEBUG_LEVEL`, or `ModeU5 PERF-14` lines, treat the runtime result as
