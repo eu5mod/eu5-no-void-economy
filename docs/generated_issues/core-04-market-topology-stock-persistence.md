@@ -7,13 +7,16 @@ Labels: `module:core`, `stock-persistence`, `performance-mode`
 Define how ModeU5 preserves stock when market topology changes, without adding
 location-level stock persistence.
 
-This PR is stacked on PERF-14 / PR #120. It covers the missing persistence class
-that is separate from CORE-03 ownership succession:
+This PR is stacked on PERF-14 / PR #120. PR #120 already implements the
+Performance Mode promotion initializer that materializes aggregate-only stock
+into detailed country x market records. CORE-04 covers the remaining market
+topology persistence class that is separate from CORE-03 ownership succession:
 
 - market creation or replacement;
 - market removal or merge;
 - a location moving from one market to another while keeping the same owner;
-- a country entering a newly human-relevant market in Performance Mode.
+- first-entry stock settlement when a country enters a new market through
+  topology change.
 
 ## Non-goal: no location-level stock
 
@@ -127,11 +130,21 @@ modeu5_recalculate_country_market_capacity_shared
 modeu5_calculate_location_storage_capacity
 modeu5_transfer_stock
 modeu5_validate_stock_consistency
+modeu5_promote_market_to_detailed_accounting
+modeu5_detailed_country_market_stock_mutation_allowed_trigger
+modeu5_market_detailed_accounting_promoted_trigger
 ```
 
-If CORE-02 opening allocation is too coupled to start-game initialization, split
-out a reusable lower-level capacity-share allocation helper and make both
-CORE-02 and Performance Mode promotion call it.
+PR #120 now owns Performance Mode aggregate promotion. CORE-04 must not add a
+second aggregate-to-country materialization path. If a later runtime
+implementation needs another capacity-share allocator for topology migration,
+extract a reusable helper rather than duplicating the PERF-14 or CORE-02 policy.
+
+Stock-affecting CORE-04 runtime code must not treat
+`modeu5_detailed_country_market_accounting_enabled_trigger` as permission to
+mutate detailed country x market stock. In Performance Mode, mutation is allowed
+only after `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is
+true.
 
 Suggested helper contracts:
 
@@ -149,6 +162,7 @@ modeu5_mark_country_market_known = {
 
 modeu5_promote_market_to_detailed_accounting = {
   market = <market>
+  # provided by PERF-14 / PR #120
   # aggregate -> country-record materialization, idempotent
 }
 
@@ -208,7 +222,8 @@ diagnostic and keep the behavior disabled until a safe fallback is approved.
 ### Performance Mode promotion
 
 When a market becomes human-relevant and detailed stock mutation is required,
-use the PERF-14 promotion initializer. It must:
+use the PERF-14 promotion initializer from PR #120. CORE-04 does not reimplement
+that promotion. It depends on the initializer to:
 
 - rebuild countries present in the market;
 - refresh country x market capacities;
@@ -220,6 +235,18 @@ use the PERF-14 promotion initializer. It must:
 Performance Mode promotion is a materialization step for aggregate-only stock,
 not a location-level stock migration. It should use the same capacity-share
 allocation policy, but it should not create a separate location stock store.
+
+For any later stock-affecting CORE-04 implementation, the safe gate is:
+
+```txt
+modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes
+```
+
+The weaker read-only gate is not enough:
+
+```txt
+modeu5_detailed_country_market_accounting_enabled_trigger = yes
+```
 
 ## Persistence invariants
 
@@ -242,23 +269,27 @@ Additional invariants:
 
 ## Test scenarios
 
-1. **Performance Mode aggregate promotion**: market aggregate stock exists, no
-   country records exist, promotion creates country records by capacity share and
-   preserves the aggregate.
-2. **Idempotent promotion**: running promotion twice does not duplicate stock.
-3. **Partial-state promotion**: some country records already exist; promotion
-   allocates only the missing/residual quantity.
-4. **First entry into new market**: country has stock/capacity in old market,
-   target market is unknown for that country, location enters target market, and
-   stock moves by moved storage-capacity share.
-5. **Known-market oscillation**: country has known history in both old and target
-   markets, a location moves between them, and no stock moves; only capacities,
-   caches, and validation state update.
-6. **Market creation/replacement**: new market receives stock only when it is a
-   first-entry market for that country or when an approved successor migration
-   requires it.
-7. **Unknown successor**: no guessed deletion; emit diagnostic and keep stock
-   unchanged.
+1. **Covered upstream by PERF-14 / PR #120 — Performance Mode aggregate
+   promotion**: market aggregate stock exists, no country records exist,
+   promotion creates country records by capacity share and preserves the
+   aggregate.
+2. **Covered upstream by PERF-14 / PR #120 — idempotent promotion**: running
+   promotion twice does not duplicate stock.
+3. **Covered upstream by PERF-14 / PR #120 — partial-state promotion**: some
+   country records already exist; promotion allocates only the missing/residual
+   quantity.
+4. **CORE-04 remaining scope — first entry into new market**: country has
+   stock/capacity in old market, target market is unknown for that country,
+   location enters target market, and stock moves by moved storage-capacity
+   share.
+5. **CORE-04 remaining scope — known-market oscillation**: country has known
+   history in both old and target markets, a location moves between them, and no
+   stock moves; only capacities, caches, and validation state update.
+6. **CORE-04 remaining scope — market creation/replacement**: new market
+   receives stock only when it is a first-entry market for that country or when
+   an approved successor migration requires it.
+7. **CORE-04 remaining scope — unknown successor**: no guessed deletion; emit
+   diagnostic and keep stock unchanged.
 
 ## Acceptance criteria
 
@@ -272,6 +303,9 @@ Additional invariants:
 - Market aggregates remain equal to country stock sums after every migration.
 - Any missing old/new market engine exposure is treated as a blocker, not as a
   guessed stock migration.
+- Performance Mode stock-affecting paths require
+  `modeu5_detailed_country_market_stock_mutation_allowed_trigger`, not only
+  `modeu5_detailed_country_market_accounting_enabled_trigger`.
 
 ## Open exposure questions
 
