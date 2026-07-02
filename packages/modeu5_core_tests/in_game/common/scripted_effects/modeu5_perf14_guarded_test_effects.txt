@@ -95,6 +95,54 @@ modeu5_perf14_guarded_probe_stock_mutation_gate_promotes = {
 	}
 }
 
+modeu5_perf14_guarded_probe_market_runtime_gate = {
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	modeu5_clear_detailed_accounting_promoted_markets = yes
+	modeu5_clear_performance_relevant_markets = yes
+	scope:modeu5_perf14_test_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
+	modeu5_mark_performance_relevant_market = yes
+	modeu5_prepare_market_runtime_accounting_mode = {
+		market = scope:modeu5_perf14_test_market
+	}
+	modeu5_perf14_mirror_market_runtime_gate_to_ui = yes
+	modeu5_perf14_log_market_runtime_gate_result = yes
+	if = {
+		limit = {
+			OR = {
+				NOT = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
+				modeu5_market_runtime_use_vanilla_fallback_trigger = yes
+				modeu5_market_runtime_blocked_trigger = yes
+				NOT = { scope:modeu5_market_runtime_market_human_relevant > 0 }
+				NOT = { scope:modeu5_market_runtime_promotion_attempted > 0 }
+				NOT = { scope:modeu5_market_runtime_promotion_succeeded > 0 }
+				NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
+			}
+		}
+		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+	}
+
+	modeu5_clear_detailed_accounting_promoted_markets = yes
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_prepare_market_runtime_accounting_mode = {
+		market = scope:modeu5_perf14_test_market
+	}
+	modeu5_perf14_mirror_market_runtime_gate_to_ui = yes
+	modeu5_perf14_log_market_runtime_gate_result = yes
+	if = {
+		limit = {
+			OR = {
+				modeu5_market_runtime_use_detailed_accounting_trigger = yes
+				NOT = { modeu5_market_runtime_use_vanilla_fallback_trigger = yes }
+				modeu5_market_runtime_blocked_trigger = yes
+				scope:modeu5_market_runtime_market_human_relevant > 0
+				scope:modeu5_market_runtime_promotion_attempted > 0
+				modeu5_market_detailed_accounting_promoted_trigger = yes
+			}
+		}
+		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+	}
+}
+
 modeu5_perf14_guarded_probe_positive_promotion = {
 	modeu5_clear_detailed_accounting_promoted_markets = yes
 	modeu5_clear_performance_relevant_markets = yes
@@ -383,6 +431,7 @@ modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = {
 		capital.market = { save_temporary_scope_as = modeu5_perf14_test_market }
 		modeu5_perf14_guarded_check_performance_mode_gate = yes
 		modeu5_perf14_guarded_probe_stock_mutation_gate_promotes = yes
+		modeu5_perf14_guarded_probe_market_runtime_gate = yes
 		modeu5_perf14_guarded_probe_positive_promotion = yes
 		modeu5_perf14_guarded_probe_idempotent_promotion = yes
 		modeu5_perf14_guarded_probe_partial_promotion = yes

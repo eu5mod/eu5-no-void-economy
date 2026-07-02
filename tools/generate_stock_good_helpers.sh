@@ -434,16 +434,28 @@ modeu5_run_us10_monthly_stock_resolution_all_goods = {
 	every_market_center_in_country = {
 		save_temporary_scope_as = modeu5_market
 		save_temporary_scope_as = modeu5_market_country_cache_market
-		modeu5_rebuild_countries_present_in_market = yes
+		modeu5_prepare_market_runtime_accounting_mode = { market = scope:modeu5_market }
 		if = {
-			limit = { has_global_variable_list = modeu5_countries_present_in_market }
-			every_in_global_list = {
-				variable = modeu5_countries_present_in_market
-				save_temporary_scope_as = modeu5_country
-				modeu5_process_us10_monthly_market_all_goods = yes
+			limit = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
+			modeu5_rebuild_countries_present_in_market = yes
+			if = {
+				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				every_in_global_list = {
+					variable = modeu5_countries_present_in_market
+					save_temporary_scope_as = modeu5_country
+					modeu5_process_us10_monthly_market_all_goods = yes
+				}
 			}
+			modeu5_probe_us10_monthly_market_trade_all_goods = yes
 		}
-		modeu5_probe_us10_monthly_market_trade_all_goods = yes
+		else_if = {
+			limit = { modeu5_market_runtime_use_vanilla_fallback_trigger = yes }
+			modeu5_note_us10_vanilla_fallback_market = yes
+		}
+		else_if = {
+			limit = { modeu5_market_runtime_blocked_trigger = yes }
+			modeu5_note_runtime_blocked_market = yes
+		}
 	}
 }
 
@@ -473,14 +485,26 @@ modeu5_run_us00_monthly_pipeline_all_goods = {
 		save_temporary_scope_as = modeu5_market
 		save_temporary_scope_as = modeu5_market_country_cache_market
 		modeu5_mark_monthly_market_seen = yes
-		modeu5_rebuild_countries_present_in_market = yes
+		modeu5_prepare_market_runtime_accounting_mode = { market = scope:modeu5_market }
 		if = {
-			limit = { has_global_variable_list = modeu5_countries_present_in_market }
-			every_in_global_list = {
-				variable = modeu5_countries_present_in_market
-				save_temporary_scope_as = modeu5_country
-				modeu5_process_us00_monthly_market_all_goods = yes
+			limit = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
+			modeu5_rebuild_countries_present_in_market = yes
+			if = {
+				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				every_in_global_list = {
+					variable = modeu5_countries_present_in_market
+					save_temporary_scope_as = modeu5_country
+					modeu5_process_us00_monthly_market_all_goods = yes
+				}
 			}
+		}
+		else_if = {
+			limit = { modeu5_market_runtime_use_vanilla_fallback_trigger = yes }
+			modeu5_note_us00_vanilla_fallback_market = yes
+		}
+		else_if = {
+			limit = { modeu5_market_runtime_blocked_trigger = yes }
+			modeu5_note_runtime_blocked_market = yes
 		}
 	}
 }

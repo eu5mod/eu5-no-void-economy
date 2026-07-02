@@ -9,8 +9,10 @@ This test proves the CMM mode plumbing, the human-relevant market discovery
 list, the non-detailed -> detailed eligibility edge case, the first read-only
 country-market accounting decision, the explicit promotion boundary required
 before Performance Mode may use detailed country-market stock mutation, and the
-shared pre-mutation accounting gate. It does not yet prove market-level fallback
-stock mutation operators, sparse supplier cache maintenance, or US-10 UI
+shared pre-mutation accounting gate. It also validates the market-level monthly
+runtime gate used by US-00 and US-10: human-relevant promoted markets run
+ModeU5 detailed accounting, while non-human-relevant markets are left to vanilla
+fallback. It does not yet prove sparse supplier cache maintenance or US-10 UI
 rendering.
 
 ## Setup
@@ -62,6 +64,8 @@ ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_pro
 ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm
 ModeU5 PERF-14 DUMP main_mode=...
 ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=1 fallback=0 blocked=0 promotion_attempted=1 promotion_succeeded=1 result=1
+ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=1 vanilla_fallback=0 blocked=0 human_relevant=1 promotion_attempted=1 promotion_succeeded=1 result=1
+ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=0 vanilla_fallback=1 blocked=0 human_relevant=0 promotion_attempted=0 promotion_succeeded=0 result=2
 ModeU5 PERF-14 PROMOTION positive aggregate=120 ...
 ModeU5 PERF-14 PROMOTION idempotent ...
 ModeU5 PERF-14 PROMOTION partial aggregate=100 ...
@@ -148,7 +152,7 @@ Performance Mode + human-present unpromoted market
 
 Performance Mode + AI market that is not human-relevant
   -> detailed mutation disabled
-  -> market-level fallback selected
+  -> vanilla fallback selected
 
 Performance Mode + AI country inside a human-relevant market
   -> promotion attempted
@@ -157,8 +161,18 @@ Performance Mode + AI country inside a human-relevant market
 
 Performance Mode + human country in non-present market
   -> detailed mutation disabled
-  -> market-level fallback selected
+  -> vanilla fallback selected
   -> promotion not attempted by the stock gate
+
+Performance Mode monthly market runtime gate + human-relevant unpromoted market
+  -> promotion attempted
+  -> promotion succeeds
+  -> detailed ModeU5 runtime selected
+
+Performance Mode monthly market runtime gate + market absent from the human-relevant list
+  -> detailed ModeU5 runtime disabled
+  -> vanilla fallback selected
+  -> promotion not attempted
 
 Normal Mode
   -> detailed stock mutation path allowed without promotion
@@ -204,10 +218,11 @@ git diff --check
 
 ## Known Limitations
 
-- This PR introduces the shared pre-mutation accounting gate but does not yet
-  route US-03, US-10, US-17, US-20, or other runtime stock mutations through it.
-- This PR does not yet implement market-level aggregate fallback mutation
-  operators; it only selects the fallback branch future callers must use.
+- This PR gates US-00 monthly production ingestion and US-10 monthly demand
+  resolution at market-runtime dispatch time. It does not yet route US-03,
+  US-17, US-20, or other runtime stock mutations through the same gate.
+- Performance Mode fallback is vanilla fallback. It deliberately does not
+  implement a market-level aggregate-only ModeU5 mutation operator.
 - This PR implements `modeu5_promote_market_to_detailed_accounting`, but later
   stock-affecting PRs must still call/check
   `modeu5_detailed_country_market_stock_mutation_allowed_trigger` before using
