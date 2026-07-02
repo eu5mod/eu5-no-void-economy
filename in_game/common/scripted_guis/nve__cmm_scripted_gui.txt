@@ -1,4 +1,4 @@
-﻿# NVE Pack (general_gameplay_tab) Tab
+﻿# Gameplay Improvement (general_gameplay_tab) Tab
 ## General Gameplay (general_gameplay_setting) Group
 no_void_economy__activate_trade_cost_on_changed = {
 	scope = country
@@ -26,7 +26,7 @@ no_void_economy__nve_subjects_persistance_on_changed = {
 	effect = { }
 }
 
-## NVE  (nve_general_trade_rework) Group
+## No Void Economy Pack (nve_general_trade_rework) Group
 no_void_economy___on_changed = {
 	scope = country
 
@@ -45,35 +45,9 @@ no_void_economy___on_changed = {
 	effect = { }
 }
 
-# Economic Balance (nve_balance) Tab
-## Economy (nve_balance_economy) Group
-no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
+# Economic Improvement (nve_balance) Tab
+## Improvements (nve_balance_economy) Group
 no_void_economy__nve_balance_economy_main_balance_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__nve_balance_ai_strategy_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -99,8 +73,35 @@ no_void_economy__nve_decay_activate_on_changed = {
 	effect = { }
 }
 
-# Difficulty levels (nve_rebels_n_subjects) Tab
-## Subjects (Subjects) Group
+## Balance () Group
+no_void_economy__nve_balance_ai_strategy_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# War & Rebel Improvement (nve_rebels_n_subjects) Tab
+## Difficulty Level (Subjects) Group
 no_void_economy__nve_balance_difficulty_on_changed = {
 	scope = country
 
@@ -110,7 +111,7 @@ no_void_economy__nve_balance_difficulty_on_changed = {
 	effect = { }
 }
 
-## Rebels (nve_rebels) Group
+## Improvements (nve_rebels) Group
 no_void_economy__nve_rebel_threshold_on_changed = {
 	scope = country
 
@@ -137,6 +138,7 @@ no_void_economy__nve_rebel_war_start_on_changed = {
 	effect = { }
 }
 
+## Balances () Group
 no_void_economy__nve_balance_war_shorter_on_changed = {
 	scope = country
 

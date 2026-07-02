@@ -1,10 +1,10 @@
 ﻿l_english:
  # Mod
- no_void_economy_name: "No Void Economy"
- no_void_economy_desc: "This mod makes the economy more physical: only goods that are actually sold create income. It includes the required No Void Economy core and optional balance extensions."
+ no_void_economy_name: "Community Balance Patch"
+ no_void_economy_desc: "This mod provide a wide range off gameplay improvements designed to balance the game"
 
- # NVE Pack (general_gameplay_tab) Tab
- no_void_economy__general_gameplay_tab_name: "NVE Pack"
+ # Gameplay Improvement (general_gameplay_tab) Tab
+ no_void_economy__general_gameplay_tab_name: "Gameplay Improvement"
  ## General Gameplay (general_gameplay_setting) Group
  no_void_economy__general_gameplay_tab__general_gameplay_setting_name: "General Gameplay"
  no_void_economy__general_gameplay_imperial_hubris_name: "(In development) Imperial Hubris - Empire military might weakens"
@@ -23,40 +23,46 @@
  no_void_economy__nve_no_void_economy_main_option_3_desc: "Disables the main NVE economic behavior where supported."
  no_void_economy__nve_subjects_persistance_name: "(In development) Persistence of resources"
  no_void_economy__nve_subjects_persistance_desc: ""
- ## NVE  (nve_general_trade_rework) Group
- no_void_economy__general_gameplay_tab__nve_general_trade_rework_name: "NVE "
+ ## No Void Economy Pack (nve_general_trade_rework) Group
+ no_void_economy__general_gameplay_tab__nve_general_trade_rework_name: "No Void Economy Pack"
  no_void_economy___name: "Only good that are sold generate an income"
  no_void_economy___desc: ""
  no_void_economy___name: "Boycotts"
  no_void_economy___desc: "Embargoed & Wars opponents are blocked from buying resources of a country even if the country don't own the Market Center"
 
- # Economic Balance (nve_balance) Tab
- no_void_economy__nve_balance_name: "Economic Balance"
- ## Economy (nve_balance_economy) Group
- no_void_economy__nve_balance__nve_balance_economy_name: "Economy"
- no_void_economy__nve_balance_economy_location_specialisation_name: "(In development) Increased Location Specialisation"
- no_void_economy__nve_balance_economy_location_specialisation_desc: ""
+ # Economic Improvement (nve_balance) Tab
+ no_void_economy__nve_balance_name: "Economic Improvement"
+ ## Improvements (nve_balance_economy) Group
+ no_void_economy__nve_balance__nve_balance_economy_name: "Improvements"
  no_void_economy__nve_balance_economy_main_balance_name: "(In development) Sliders adjustments"
  no_void_economy__nve_balance_economy_main_balance_desc: ""
- no_void_economy__nve_balance_ai_strategy_name: "(In development) Extra revenue to AI to compensate for lack of strategy"
- no_void_economy__nve_balance_ai_strategy_desc: ""
  no_void_economy__nve_decay_activate_name: "(In development) Activate Goods Decay"
  no_void_economy__nve_decay_activate_desc: "Stocks will decay 1% each month."
+ no_void_economy___name: "(In development) Supply influences pop consumption"
+ no_void_economy___desc: ""
+ ## Balance () Group
+ no_void_economy__nve_balance___name: "Balance"
+ no_void_economy__nve_balance_ai_strategy_name: "(In development) Extra revenue to AI to compensate for lack of strategy"
+ no_void_economy__nve_balance_ai_strategy_desc: ""
+ no_void_economy__nve_balance_economy_location_specialisation_name: "(In development) Increased Location Specialisation"
+ no_void_economy__nve_balance_economy_location_specialisation_desc: ""
 
- # Difficulty levels (nve_rebels_n_subjects) Tab
- no_void_economy__nve_rebels_n_subjects_name: "Difficulty levels"
- ## Subjects (Subjects) Group
- no_void_economy__nve_rebels_n_subjects__Subjects_name: "Subjects"
+ # War & Rebel Improvement (nve_rebels_n_subjects) Tab
+ no_void_economy__nve_rebels_n_subjects_name: "War & Rebel Improvement"
+ ## Difficulty Level (Subjects) Group
+ no_void_economy__nve_rebels_n_subjects__Subjects_name: "Difficulty Level"
  no_void_economy__nve_balance_difficulty_name: "Difficulty (Read tooltip carefully)"
  no_void_economy__nve_balance_difficulty_desc: "Set a difficulty level."
  no_void_economy__nve_balance_difficulty_option_1_name: "Hard (Historical, you may lose wars)"
  no_void_economy__nve_balance_difficulty_option_2_name: "Normal (Gameful, you might blob)"
- ## Rebels (nve_rebels) Group
- no_void_economy__nve_rebels_n_subjects__nve_rebels_name: "Rebels"
+ ## Improvements (nve_rebels) Group
+ no_void_economy__nve_rebels_n_subjects__nve_rebels_name: "Improvements"
  no_void_economy__nve_rebel_threshold_name: "(In development) Adjust Rebel Threshold"
  no_void_economy__nve_rebel_threshold_desc: ""
  no_void_economy__nve_rebel_war_start_name: "(In development) Overlord declares war"
  no_void_economy__nve_rebel_war_start_desc: ""
+ ## Balances () Group
+ no_void_economy__nve_rebels_n_subjects___name: "Balances"
  no_void_economy__nve_balance_war_shorter_name: "(In development) Shorter Wars"
  no_void_economy__nve_balance_war_shorter_desc: "AI will be smarter in peace acceptance."
 
@@ -96,6 +102,7 @@
  no_void_economy__general_gameplay_tab__general_gameplay_setting: "no_void_economy__general_gameplay_tab__general_gameplay_setting"
  no_void_economy__general_gameplay_tab__nve_general_trade_rework: "no_void_economy__general_gameplay_tab__nve_general_trade_rework"
  no_void_economy__nve_balance__nve_balance_economy: "no_void_economy__nve_balance__nve_balance_economy"
+ no_void_economy__nve_balance__: "no_void_economy__nve_balance__"
  no_void_economy__nve_rebels_n_subjects__Subjects: "no_void_economy__nve_rebels_n_subjects__Subjects"
  no_void_economy__nve_rebels_n_subjects__nve_rebels: "no_void_economy__nve_rebels_n_subjects__nve_rebels"
  no_void_economy__nve_rebels_n_subjects__: "no_void_economy__nve_rebels_n_subjects__"
@@ -107,10 +114,11 @@
  no_void_economy__nve_subjects_persistance: "no_void_economy__nve_subjects_persistance"
  no_void_economy__: "no_void_economy__"
  no_void_economy__: "no_void_economy__"
- no_void_economy__nve_balance_economy_location_specialisation: "no_void_economy__nve_balance_economy_location_specialisation"
  no_void_economy__nve_balance_economy_main_balance: "no_void_economy__nve_balance_economy_main_balance"
- no_void_economy__nve_balance_ai_strategy: "no_void_economy__nve_balance_ai_strategy"
  no_void_economy__nve_decay_activate: "no_void_economy__nve_decay_activate"
+ no_void_economy__: "no_void_economy__"
+ no_void_economy__nve_balance_ai_strategy: "no_void_economy__nve_balance_ai_strategy"
+ no_void_economy__nve_balance_economy_location_specialisation: "no_void_economy__nve_balance_economy_location_specialisation"
  no_void_economy__nve_balance_difficulty: "no_void_economy__nve_balance_difficulty"
  no_void_economy__nve_rebel_threshold: "no_void_economy__nve_rebel_threshold"
  no_void_economy__nve_rebel_war_start: "no_void_economy__nve_rebel_war_start"
