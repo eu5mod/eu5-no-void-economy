@@ -1,285 +1,209 @@
 ﻿# Root scope: country.
+# CMM ID standard:
+# - Tab IDs are lower_snake_case slugs of the visible tab label with a trailing _tab.
+# - Group IDs are lower_snake_case slugs of the visible group label with a trailing _group.
+# - Setting IDs are lower_snake_case slugs of the visible setting label with a trailing _setting.
+# - Localisation keys mirror those IDs exactly:
+#   no_void_economy__<tab_id>_name
+#   no_void_economy__<tab_id>__<group_id>_name
+#   no_void_economy__<setting_id>_name / _desc
 nve__register_cmf_mod = {
-	# Gameplay Improvement (general_gameplay_tab) Tab
-	## General Gameplay (general_gameplay_setting) Group
-	cmm_register_global_bool_setting = {
+	# Trade Rework (trade_rework_tab) Tab
+	## No Void Economy (no_void_economy_group) Group
+	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
-		setting_id = general_gameplay_imperial_hubris
-		tab_id = general_gameplay_tab
-		group_id = general_gameplay_setting
-		default_value = 1
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = general_gameplay_imperial_hubris
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = general_gameplay_war_exhaustion
-		tab_id = general_gameplay_tab
-		group_id = general_gameplay_setting
-		default_value = 1
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = general_gameplay_war_exhaustion
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = activate_trade_cost
-		tab_id = general_gameplay_tab
-		group_id = general_gameplay_setting
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = activate_trade_cost
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = activate_trade_cost
-	}
-
-	cmm_register_global_dropdown_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_no_void_economy_main
-		tab_id = general_gameplay_tab
-		group_id = general_gameplay_setting
+		setting_id = only_sold_goods_create_revenue_nve_setting
+		tab_id = trade_rework_tab
+		group_id = no_void_economy_group
 		default_index = 1
 		option_count = 3
 	}
 	cmm_sync_dropdown_option_alias = {
-		setting = no_void_economy__nve_no_void_economy_main
+		setting = no_void_economy__only_sold_goods_create_revenue_nve_setting
 		index = 3
 		alias = variable_mapcmmflagno_void_economy__activate_no_void_economy0
 	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_no_void_economy_main
-	}
 
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_subjects_persistance
-		tab_id = general_gameplay_tab
-		group_id = general_gameplay_setting
+		setting_id = activate_goods_decay_setting
+		tab_id = trade_rework_tab
+		group_id = no_void_economy_group
 		default_value = 0
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_subjects_persistance
+		setting_id = activate_goods_decay_setting
 	}
 
-	## No Void Economy Pack (nve_general_trade_rework) Group
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = 
-		tab_id = general_gameplay_tab
-		group_id = nve_general_trade_rework
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = 
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = 
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = 
-		tab_id = general_gameplay_tab
-		group_id = nve_general_trade_rework
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = 
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = 
-	}
-
-	# Economic Improvement (nve_balance) Tab
-	## Improvements (nve_balance_economy) Group
+	## Trade Rework (trade_rework_group) Group
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_economy_main_balance
-		tab_id = nve_balance
-		group_id = nve_balance_economy
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_economy_main_balance
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_decay_activate
-		tab_id = nve_balance
-		group_id = nve_balance_economy
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_decay_activate
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_decay_activate
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = 
-		tab_id = nve_balance
-		group_id = nve_balance_economy
-		default_value = 1
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = 
-	}
-
-	## Balance () Group
-	cmm_register_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_ai_strategy
-		tab_id = nve_balance
-		group_id = 
+		setting_id = trade_rework_setting
+		tab_id = trade_rework_tab
+		group_id = trade_rework_group
 		default_value = 0
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_ai_strategy
+		setting_id = trade_rework_setting
 	}
 
-	cmm_register_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_economy_location_specialisation
-		tab_id = nve_balance
-		group_id = 
-		default_value = 0
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_economy_location_specialisation
-	}
-
-	# War & Rebel Improvement (nve_rebels_n_subjects) Tab
-	## Difficulty Level (Subjects) Group
-	cmm_register_global_dropdown_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_difficulty
-		tab_id = nve_rebels_n_subjects
-		group_id = Subjects
-		default_index = 1
-		option_count = 2
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_difficulty
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_difficulty
-	}
-
-	## Improvements (nve_rebels) Group
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_threshold
-		tab_id = nve_rebels_n_subjects
-		group_id = nve_rebels
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_threshold
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_threshold
-	}
-
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_war_start
-		tab_id = nve_rebels_n_subjects
-		group_id = nve_rebels
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_war_start
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_rebel_war_start
-	}
-
-	## Balances () Group
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_war_shorter
-		tab_id = nve_rebels_n_subjects
-		group_id = 
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_war_shorter
-	}
-	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_balance_war_shorter
-	}
-
-	# Debug & Audit (nve_general) Tab
-	## Debug & Audit (nve_general_performance) Group
+	## Debug & Audit (debug_audit_group) Group
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_debug_messages
-		tab_id = nve_general
-		group_id = nve_general_performance
+		setting_id = debug_messages_setting
+		tab_id = trade_rework_tab
+		group_id = debug_audit_group
 		default_index = 1
 		option_count = 3
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_debug_messages
+		setting_id = debug_messages_setting
 	}
 
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_monthly_stock_check
-		tab_id = nve_general
-		group_id = nve_general_performance
+		setting_id = monthly_stock_check_setting
+		tab_id = trade_rework_tab
+		group_id = debug_audit_group
 		default_index = 1
 		option_count = 2
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_monthly_stock_check
+		setting_id = monthly_stock_check_setting
 	}
 
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_save_mode
-		tab_id = nve_general
-		group_id = nve_general_performance
+		setting_id = save_mode_setting
+		tab_id = trade_rework_tab
+		group_id = debug_audit_group
 		default_index = 1
 		option_count = 3
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_save_mode
+		setting_id = save_mode_setting
+	}
+
+	# Balance (balance_tab) Tab
+	## General (general_group) Group
+	cmm_register_dropdown_setting = {
+		mod_id = no_void_economy
+		setting_id = difficulty_setting
+		tab_id = balance_tab
+		group_id = general_group
+		default_index = 1
+		option_count = 2
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = difficulty_setting
+	}
+
+	## War (war_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = shorter_wars_setting
+		tab_id = balance_tab
+		group_id = war_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = shorter_wars_setting
+	}
+
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = war_exhaustion_political_pressure_setting
+		tab_id = balance_tab
+		group_id = war_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = war_exhaustion_political_pressure_setting
+	}
+
+	## Economy (economy_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = increased_location_specialisation_setting
+		tab_id = balance_tab
+		group_id = economy_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = increased_location_specialisation_setting
+	}
+
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = sliders_adjustments_setting
+		tab_id = balance_tab
+		group_id = economy_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = sliders_adjustments_setting
+	}
+
+	## Other (other_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting
+		tab_id = balance_tab
+		group_id = other_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting
+	}
+
+	# Rebels & Subjects (rebels_subjects_tab) Tab
+	## Rebels (rebels_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = adjust_rebel_threshold_setting
+		tab_id = rebels_subjects_tab
+		group_id = rebels_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = adjust_rebel_threshold_setting
+	}
+
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = overlord_declares_war_setting
+		tab_id = rebels_subjects_tab
+		group_id = rebels_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = overlord_declares_war_setting
+	}
+
+	## Subjects (subjects_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = persistence_of_resources_setting
+		tab_id = rebels_subjects_tab
+		group_id = subjects_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = persistence_of_resources_setting
 	}
 }
 
@@ -289,28 +213,25 @@ nve__register_cmf_mod = {
 nve__handle_cmf_callback = {
 	switch = {
 		trigger = var:cmf_callback
-		# Gameplay Improvement (general_gameplay_tab) Tab
-		## General Gameplay (general_gameplay_setting) Group
-		flag:no_void_economy__nve_no_void_economy_main = {
+		# Trade Rework (trade_rework_tab) Tab
+		## No Void Economy (no_void_economy_group) Group
+		flag:no_void_economy__only_sold_goods_create_revenue_nve_setting = {
 			cmm_sync_dropdown_option_alias = {
-				setting = no_void_economy__nve_no_void_economy_main
+				setting = no_void_economy__only_sold_goods_create_revenue_nve_setting
 				index = 3
 				alias = variable_mapcmmflagno_void_economy__activate_no_void_economy0
 			}
 			nve_cmf_activate_no_void_economy = yes
 		}
-		# Economic Improvement (nve_balance) Tab
-		## Improvements (nve_balance_economy) Group
-		flag:no_void_economy__nve_decay_activate = {
+		flag:no_void_economy__activate_goods_decay_setting = {
 			nve_cmf_activate_good_decay = yes
 		}
-		# Debug & Audit (nve_general) Tab
-		## Debug & Audit (nve_general_performance) Group
-		flag:no_void_economy__nve_monthly_stock_check = {
-			no_void_economy__nve_monthly_stock_check_on_changed = yes
+		## Debug & Audit (debug_audit_group) Group
+		flag:no_void_economy__monthly_stock_check_setting = {
+			no_void_economy__monthly_stock_check_setting_on_changed = yes
 		}
-		flag:no_void_economy__nve_save_mode = {
-			no_void_economy__nve_save_mode_on_changed = yes
+		flag:no_void_economy__save_mode_setting = {
+			no_void_economy__save_mode_setting_on_changed = yes
 		}
 	}
 }

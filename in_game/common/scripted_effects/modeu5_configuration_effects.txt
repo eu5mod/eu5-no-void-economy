@@ -78,7 +78,7 @@ modeu5_refresh_nve_main_mode_from_cmm_country_scope = {
 			NOT = {
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_no_void_economy_main
+					target = flag:no_void_economy__only_sold_goods_create_revenue_nve_setting
 				}
 			}
 		}
@@ -86,13 +86,13 @@ modeu5_refresh_nve_main_mode_from_cmm_country_scope = {
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 2
+			"variable_map(cmm|flag:no_void_economy__only_sold_goods_create_revenue_nve_setting)" = 2
 		}
 		modeu5_enter_nve_normal_mode = yes
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 3
+			"variable_map(cmm|flag:no_void_economy__only_sold_goods_create_revenue_nve_setting)" = 3
 		}
 		modeu5_enter_nve_deactivated_mode = yes
 	}
@@ -359,17 +359,17 @@ modeu5_apply_debug_mode_cmm_defaults = {
 				has_variable_map = cmm
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_debug_messages
+					target = flag:no_void_economy__debug_messages_setting
 				}
 			}
 			remove_from_variable_map = {
 				name = cmm
-				key = flag:no_void_economy__nve_debug_messages
+				key = flag:no_void_economy__debug_messages_setting
 			}
 		}
 		add_to_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_debug_messages
+			key = flag:no_void_economy__debug_messages_setting
 			value = 3
 		}
 	}
@@ -410,9 +410,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
+				target = flag:no_void_economy__debug_messages_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
+			"variable_map(cmm|flag:no_void_economy__debug_messages_setting)" = 3
 		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -425,9 +425,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
+				target = flag:no_void_economy__debug_messages_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 2
+			"variable_map(cmm|flag:no_void_economy__debug_messages_setting)" = 2
 		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -448,9 +448,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_monthly_stock_check
+				target = flag:no_void_economy__monthly_stock_check_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
+			"variable_map(cmm|flag:no_void_economy__monthly_stock_check_setting)" = 2
 		}
 		if = {
 			limit = { modeu5_debug_enabled_trigger = yes }
@@ -466,9 +466,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_save_mode
+				target = flag:no_void_economy__save_mode_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
+			"variable_map(cmm|flag:no_void_economy__save_mode_setting)" = 3
 		}
 		modeu5_enter_strict_accounting_persistence = yes
 	}
@@ -477,9 +477,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_save_mode
+				target = flag:no_void_economy__save_mode_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 2
+			"variable_map(cmm|flag:no_void_economy__save_mode_setting)" = 2
 		}
 		modeu5_enter_human_relevant_accounting_persistence = yes
 	}
