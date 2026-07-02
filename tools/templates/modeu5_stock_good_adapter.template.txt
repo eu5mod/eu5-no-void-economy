@@ -2105,6 +2105,92 @@ modeu5_core03_transfer_location_good___GOOD__ = {
 	}
 }
 
+modeu5_core04_move_market_entry_stock_good___GOOD__ = {
+	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
+	set_global_variable = {
+		name = modeu5_core04_market_entry_goods_checked
+		value = {
+			value = global_var:modeu5_core04_market_entry_goods_checked
+			add = 1
+		}
+	}
+
+	scope:modeu5_core04_country = {
+		save_temporary_scope_as = modeu5_country
+		scope:modeu5_core04_source_market = { save_temporary_scope_as = modeu5_market }
+		modeu5_read_country_stock_record_good___GOOD__ = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_core04_source_stock_before
+			value = scope:modeu5_read_country_stock
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_core04_requested_stock_move
+		value = 0
+	}
+	if = {
+		limit = {
+			scope:modeu5_core04_source_stock_before > 0
+			scope:modeu5_core04_move_ratio > 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_core04_requested_stock_move
+			value = {
+				value = scope:modeu5_core04_source_stock_before
+				multiply = scope:modeu5_core04_move_ratio
+				min = 0
+			}
+		}
+	}
+
+	set_global_variable = {
+		name = modeu5_core04_market_entry_requested_stock_total
+		value = {
+			value = global_var:modeu5_core04_market_entry_requested_stock_total
+			add = scope:modeu5_core04_requested_stock_move
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_core04_requested_stock_move > modeu5_initialization_rounding_epsilon }
+		modeu5_transfer_stock = {
+			seller_country = scope:modeu5_core04_country
+			buyer_country = scope:modeu5_core04_country
+			source_market = scope:modeu5_core04_source_market
+			target_market = scope:modeu5_core04_target_market
+			good = __GOOD__
+			quantity = scope:modeu5_core04_requested_stock_move
+			target_capacity_policy = allow_over_capacity
+		}
+		set_global_variable = {
+			name = modeu5_core04_market_entry_actual_stock_total
+			value = {
+				value = global_var:modeu5_core04_market_entry_actual_stock_total
+				add = scope:modeu5_actual_transferred_quantity
+			}
+		}
+		if = {
+			limit = { scope:modeu5_actual_transferred_quantity > 0 }
+			set_global_variable = {
+				name = modeu5_core04_market_entry_goods_moved
+				value = {
+					value = global_var:modeu5_core04_market_entry_goods_moved
+					add = 1
+				}
+			}
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_core04_source_market
+			good = __GOOD__
+		}
+		modeu5_validate_stock_consistency = {
+			market = scope:modeu5_core04_target_market
+			good = __GOOD__
+		}
+	}
+}
+
 modeu5_core03_transfer_residual_good___GOOD__ = {
 	goods:__GOOD__ = { save_temporary_scope_as = modeu5_good }
 	scope:modeu5_core03_annex_target = {

@@ -8,7 +8,7 @@ logs_dir="$default_logs_dir"
 usage() {
 	printf 'Usage: %s [--logs-dir PATH]\n' "$0"
 	printf '\n'
-	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, and PERF-14 diagnostics.\n'
+	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -59,6 +59,7 @@ scenario_file="$tmp_dir/scenario_lines"
 debug_level_file="$tmp_dir/debug_level_lines"
 main_mode_file="$tmp_dir/main_mode_lines"
 perf14_file="$tmp_dir/perf14_lines"
+core04_file="$tmp_dir/core04_lines"
 localization_only_file="$tmp_dir/localization_only_modeu5_lines"
 
 grep -hE 'ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=' "${log_files[@]}" \
@@ -77,7 +78,11 @@ grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$perf14_file" || true
 
-grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14)' "${log_files[@]}" \
+grep -hE 'ModeU5 CORE-04 (MARKET_ENTRY|DUMP|FAIL_REASON|RESULT)' "${log_files[@]}" \
+	| grep -v 'Tried to localize with localization disabled' \
+	>"$core04_file" || true
+
+grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14|CORE-04)' "${log_files[@]}" \
 	>"$localization_only_file" || true
 
 count_marker() {
@@ -93,6 +98,7 @@ pending_count="$(count_marker PENDING)"
 debug_level_count="$(grep -c 'ModeU5 DEBUG_LEVEL ' "$debug_level_file" || true)"
 main_mode_count="$(grep -c 'ModeU5 PERF-14 ' "$main_mode_file" || true)"
 perf14_count="$(grep -c 'ModeU5 PERF-14 ' "$perf14_file" || true)"
+core04_count="$(grep -c 'ModeU5 CORE-04 ' "$core04_file" || true)"
 localization_only_count="$(grep -c 'ModeU5 ' "$localization_only_file" || true)"
 
 expected_scenarios=(
@@ -107,6 +113,7 @@ expected_scenarios=(
 	us10_demand_resolution
 	us10_issue109_fast_path_pruning
 	perf10_13_active_repair_metrics
+	core04_market_entry
 	main_revalidation_summary
 	perf14_performance_mode_cmm
 )
@@ -129,6 +136,7 @@ printf 'Pending: %s\n' "$pending_count"
 printf 'Debug level markers: %s\n' "$debug_level_count"
 printf 'Main mode traces: %s\n' "$main_mode_count"
 printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
+printf 'CORE-04 topology diagnostics: %s\n' "$core04_count"
 printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
 printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
 printf '\n'
@@ -140,6 +148,7 @@ if [[ ! -s "$scenario_file" ]]; then
 	fi
 	printf 'Run: event modeu5_revalidate_debug.1\n'
 	printf 'For PERF-14 only: event modeu5_perf14_debug.1\n'
+	printf 'For CORE-04 only: event modeu5_core04_debug.1\n'
 	printf '\n'
 fi
 
@@ -166,6 +175,14 @@ if [[ -s "$perf14_file" ]]; then
 	printf '\n'
 else
 	printf 'No non-localization PERF-14 diagnostic lines found.\n\n'
+fi
+
+if [[ -s "$core04_file" ]]; then
+	printf 'CORE-04 topology diagnostic lines:\n'
+	cat "$core04_file"
+	printf '\n'
+else
+	printf 'No non-localization CORE-04 topology diagnostic lines found.\n\n'
 fi
 
 if [[ -s "$scenario_file" ]]; then

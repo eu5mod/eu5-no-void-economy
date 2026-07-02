@@ -392,6 +392,14 @@ TXT
 	cat <<'TXT'
 }
 
+modeu5_core04_move_market_entry_stock_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_core04_move_market_entry_stock_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
 modeu5_core03_transfer_residual_all_goods = {
 TXT
 	for good in "${goods[@]}"; do
