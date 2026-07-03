@@ -1,0 +1,75 @@
+template production_main_tabs {
+	button_main_tab_alt = {
+		using = layoutpolicy_expanding
+		tooltipwidget = {
+			using = TabBuildingsTooltip
+		}
+		widget = {
+			visible = "[Not(IsLateralViewOpened('production'))]"
+			size = { 100% 100% }
+			name = "tab_buildings"
+		}
+		down = "[And(IsLateralViewOpened('production'), Not(ProductionView.Vars.HasValue( 'display', 'modeu5_stocks' )))]"
+		datacontext = "[GetAutomatedSystemItem4('buildings', 'productionmethods', 'closebuildings', 'subsidizebuildings')]"
+		using = multi_automated_tab
+
+		blockoverride "on_action_left" {
+			on_action = "[OpenLateralView('production')]"
+			on_action = "[ProductionView.Vars.Set( 'display', 'lists' )]"
+		}
+		blockoverride "on_action_right_title" { title = "TOGGLE_PRODUCTION_AUTOMATION" }
+		blockoverride "text" { text = "PRODUCTION_TEXT" }
+	}
+
+	button_main_tab_alt = {
+		using = layoutpolicy_expanding
+		tooltipwidget = {
+			using = TabGoodsTooltip
+		}
+
+		down = "[IsLateralViewOpened('goods_production')]"
+		datacontext = "[GetAutomatedSystemItem('rgo')]"
+		using = automated_tab
+
+		blockoverride "on_action_left" { on_action = "[OpenLateralView('goods_production')]" }
+		blockoverride "text" { text = "EXPAND_RAW_GOODS_TEXT" }
+	}
+
+	button_main_tab_alt = {
+		using = layoutpolicy_expanding
+		blockoverride "tab_text"{
+			text = "FOOD_PRODUCTION_TEXT"
+		}
+		onclick = "[OpenLateralView('food_production')]"
+		down = "[IsLateralViewOpened('food_production')]"
+		tooltipwidget = {
+			using = TabFoodTooltip
+		}
+	}
+	
+	button_main_tab_alt = {
+		using = layoutpolicy_expanding
+		blockoverride "tab_text"{
+			text = "game_concept_locations"
+		}
+		onclick = "[OpenLateralView('town_rights')]"
+		down = "[IsLateralViewOpened('town_rights')]"
+		tooltipwidget = {
+			using = TabTownRightsTooltip
+		}
+	}
+
+	button_main_tab_alt = {
+		using = layoutpolicy_expanding
+		blockoverride "tab_text"{
+			text = "modeu5_us10_ui.tab"
+		}
+		onclick = "[OpenLateralView('production')]"
+		onclick = "[ProductionView.Vars.Set( 'display', 'modeu5_stocks' )]"
+		onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
+		down = "[And(IsLateralViewOpened('production'), ProductionView.Vars.HasValue( 'display', 'modeu5_stocks' ))]"
+		tooltipwidget = {
+			BasicFunctionalTooltip = {}
+		}
+	}
+}
