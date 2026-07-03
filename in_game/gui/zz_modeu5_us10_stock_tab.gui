@@ -1,5 +1,5 @@
 template production_main_tabs {
-	button_main_tab_alt = {
+		button_main_tab_alt = {
 		using = layoutpolicy_expanding
 		tooltipwidget = {
 			using = TabBuildingsTooltip
@@ -37,7 +37,6 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "FOOD_PRODUCTION_TEXT"
 		}
-		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
 		onclick = "[OpenLateralView('food_production')]"
 		down = "[IsLateralViewOpened('food_production')]"
 		tooltipwidget = {
@@ -50,7 +49,6 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "game_concept_locations"
 		}
-		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
 		onclick = "[OpenLateralView('town_rights')]"
 		down = "[IsLateralViewOpened('town_rights')]"
 		tooltipwidget = {
@@ -63,8 +61,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
-		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
-		onclick = "[ExecuteConsoleCommand('GUI.CreateWidget gui/modeu5_us10_stock_lateralview.gui modeu5_us10_stock')]"
+		onclick = "[OpenLateralView('modeu5_us10_stock')]"
 		down = no
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
