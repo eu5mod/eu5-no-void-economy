@@ -42,7 +42,7 @@ types modeu5_us10_stock
 			visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 			parentanchor = center
 			widgetanchor = center
-			size = { 860 420 }
+			size = { 980 610 }
 			using = bg_window_default_alt
 			movable = yes
 			alwaystransparent = no
@@ -62,27 +62,55 @@ types modeu5_us10_stock
 					}
 
 					button_regular = {
-						size = { 100 30 }
-						text = "modeu5_us10_ui.refresh"
-						using = bg_button_flavor_4
-						onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-						tooltipwidget = { BasicFunctionalTooltip = {} }
-					}
-
-					button_regular = {
-						size = { 130 30 }
-						text = "modeu5_us10_ui.next_market"
-						using = bg_button_flavor_4
-						onclick = "[GetScriptedGui('modeu5_us10_ui_next_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-						tooltipwidget = { BasicFunctionalTooltip = {} }
-					}
-
-					button_regular = {
 						size = { 80 30 }
 						raw_text = "Close"
 						using = bg_button_flavor_4
 						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
 						tooltipwidget = { BasicFunctionalTooltip = {} }
+					}
+				}
+
+				text_single = {
+					layoutpolicy_horizontal = expanding
+					autoresize = no
+					align = left|nobaseline
+					default_format = "#bold"
+					raw_text = "Market selector"
+				}
+
+				scrollbox = {
+					layoutpolicy_horizontal = expanding
+					size = { -1 180 }
+					datacontext = "[GetQuickVisibleMarkets(GetPlayer)]"
+
+					dynamicgridbox = {
+						layoutpolicy_horizontal = expanding
+						datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
+						datamodel_reuse_widgets = yes
+
+						item = {
+							widget = {
+								size = { 300 74 }
+								margin = { 4 4 }
+								visible = "[Or3(GreaterThan_CFixedPoint(Market.GetCountryPopulation(GetPlayer),'(CFixedPoint)0'), GreaterThan_CFixedPoint(Market.GetTotalMerchantCapacity(GetPlayer),'(CFixedPoint)0'), IsMarketInRange(Market.Self))]"
+								using = bg_market_card
+								using = bg_cabinet_card_frame
+
+								button = {
+									size = { 100% 100% }
+									alwaystransparent = yes
+									onclick = "[SetUIFocusMarket(Market.Self)]"
+									onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+									tooltipwidget = { using = Market_tooltip }
+								}
+
+								market_card = {
+									blockoverride "market_card_margins" {
+										margin = { 5 5 }
+									}
+								}
+							}
+						}
 					}
 				}
 

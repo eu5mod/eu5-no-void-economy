@@ -26,9 +26,12 @@ modeu5_us10_ui_select_market_on_click = {
 	}
 
 	effect = {
-		# Safety fallback: do not reference a GUI-provided market scope here.
-		# The previous implementation used scope:modeu5_us10_ui_clicked_market,
-		# which Jomini validates as an unset event target.
+		if = {
+			limit = {
+				scope:modeu5_us10_ui_clicked_market ?= { always = yes }
+			}
+			modeu5_us10_ui_set_selected_market = { market = scope:modeu5_us10_ui_clicked_market }
+		}
 		modeu5_us10_ui_prepare_current_market_table = yes
 	}
 }
