@@ -1,74 +1,3 @@
-template production_main_tabs {
-	button_main_tab_alt = {
-		using = layoutpolicy_expanding
-		tooltipwidget = {
-			using = TabBuildingsTooltip
-		}
-		widget = {
-			visible = "[Not(IsLateralViewOpened('production'))]"
-			size = { 100% 100% }
-			name = "tab_buildings"
-		}
-		down = "[IsLateralViewOpened('production')]"
-		datacontext = "[GetAutomatedSystemItem4('buildings', 'productionmethods', 'closebuildings', 'subsidizebuildings')]"
-		using = multi_automated_tab
-
-		blockoverride "on_action_left" { on_action = "[OpenLateralView('production')]" }
-		blockoverride "on_action_right_title" { title = "TOGGLE_PRODUCTION_AUTOMATION" }
-		blockoverride "text" { text = "PRODUCTION_TEXT" }
-	}
-
-	button_main_tab_alt = {
-		using = layoutpolicy_expanding
-		tooltipwidget = {
-			using = TabGoodsTooltip
-		}
-
-		down = "[IsLateralViewOpened('goods_production')]"
-		datacontext = "[GetAutomatedSystemItem('rgo')]"
-		using = automated_tab
-
-		blockoverride "on_action_left" { on_action = "[OpenLateralView('goods_production')]" }
-		blockoverride "text" { text = "EXPAND_RAW_GOODS_TEXT" }
-	}
-
-	button_main_tab_alt = {
-		using = layoutpolicy_expanding
-		blockoverride "tab_text" {
-			text = "FOOD_PRODUCTION_TEXT"
-		}
-		onclick = "[OpenLateralView('food_production')]"
-		down = "[IsLateralViewOpened('food_production')]"
-		tooltipwidget = {
-			using = TabFoodTooltip
-		}
-	}
-
-	button_main_tab_alt = {
-		using = layoutpolicy_expanding
-		blockoverride "tab_text" {
-			text = "game_concept_locations"
-		}
-		onclick = "[OpenLateralView('town_rights')]"
-		down = "[IsLateralViewOpened('town_rights')]"
-		tooltipwidget = {
-			using = TabTownRightsTooltip
-		}
-	}
-
-	button_main_tab_alt = {
-		using = layoutpolicy_expanding
-		blockoverride "tab_text" {
-			text = "modeu5_us10_ui.tab"
-		}
-		onclick = "[OpenLateralView('modeu5_us10_stock_lateralview')]"
-		down = "[IsLateralViewOpened('modeu5_us10_stock_lateralview')]"
-		tooltipwidget = {
-			BasicFunctionalTooltip = {}
-		}
-	}
-}
-
 template modeu5_us10_ui_header_cell {
 	layoutpolicy_horizontal = expanding
 	layoutstretchfactor_horizontal = 1
@@ -102,8 +31,8 @@ template modeu5_us10_ui_good_cell {
 }
 
 lateralview = {
-	name = "modeu5_us10_stock_lateralview"
-	widgetid = "modeu5_us10_stock_lateralview"
+	name = "modeu5_us10_stock"
+	widgetid = "modeu5_us10_stock"
 
 	blockoverride "panel_header" {
 		window_header_alt = {
@@ -223,7 +152,6 @@ lateralview = {
 							spacing = 8
 
 							text_single = {
-
 								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.good" }
 							}
@@ -250,7 +178,6 @@ lateralview = {
 							spacing = 8
 
 							text_single = {
-
 								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.wheat" }
 							}
@@ -277,7 +204,6 @@ lateralview = {
 							spacing = 8
 
 							text_single = {
-
 								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.iron" }
 							}
@@ -304,7 +230,6 @@ lateralview = {
 							spacing = 8
 
 							text_single = {
-
 								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.tools" }
 							}
