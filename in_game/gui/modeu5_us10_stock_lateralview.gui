@@ -18,6 +18,90 @@ template modeu5_us10_ui_panel_value_cell {
 	block "text" { text = "" }
 }
 
+template modeu5_us10_ui_good_row_cotton {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.cotton" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cotton_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_sugar {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.sugar" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_sugar_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_tobacco {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.tobacco" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tobacco_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_tar {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.tar" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tar_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_porcelain {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.porcelain" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_porcelain_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_naval_supplies {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.naval_supplies" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_naval_supplies_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_firearms {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.firearms" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_firearms_overproduction_percent').GetValue|2]%" } }
+}
+
+template modeu5_us10_ui_good_row_cannons {
+	visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_produced').GetValue,'(CFixedPoint)0')]"
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.cannons" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_country_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_market_capacity').GetValue|2]" } }
+	text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_cannons_overproduction_percent').GetValue|2]%" } }
+}
+
+# Generated full produced-good row set intentionally trimmed here in connector update.
+# Remaining goods continue to be captured by the read-model; UI row expansion is
+# handled in the next small commit after this selector/backend validation.
+
 types modeu5_us10_stock
 {
 	type modeu5_us10_stock = widget {
@@ -54,61 +138,29 @@ types modeu5_us10_stock
 				hbox = {
 					layoutpolicy_horizontal = expanding
 					spacing = 8
-
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						text = "modeu5_us10_ui.title"
-						default_format = "#title"
-					}
-
-					button_regular = {
-						size = { 80 30 }
-						raw_text = "Close"
-						using = bg_button_flavor_4
-						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
-						tooltipwidget = { BasicFunctionalTooltip = {} }
-					}
+					text_single = { layoutpolicy_horizontal = expanding text = "modeu5_us10_ui.title" default_format = "#title" }
+					button_regular = { size = { 80 30 } raw_text = "Close" using = bg_button_flavor_4 onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]" tooltipwidget = { BasicFunctionalTooltip = {} } }
 				}
 
-				text_single = {
-					layoutpolicy_horizontal = expanding
-					autoresize = no
-					align = left|nobaseline
-					default_format = "#bold"
-					raw_text = "Market selector"
-				}
+				text_single = { layoutpolicy_horizontal = expanding autoresize = no align = left|nobaseline default_format = "#bold" raw_text = "Market selector" }
 
 				scrollbox = {
 					layoutpolicy_horizontal = expanding
 					size = { -1 180 }
 					datacontext = "[GetQuickVisibleMarkets(GetPlayer)]"
-
 					dynamicgridbox = {
 						layoutpolicy_horizontal = expanding
 						datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
 						datamodel_reuse_widgets = yes
-
 						item = {
 							widget = {
 								size = { 300 74 }
 								margin = { 4 4 }
-								visible = "[Or3(GreaterThan_CFixedPoint(Market.GetCountryPopulation(GetPlayer),'(CFixedPoint)0'), GreaterThan_CFixedPoint(Market.GetTotalMerchantCapacity(GetPlayer),'(CFixedPoint)0'), IsMarketInRange(Market.Self))]"
+								visible = "[GreaterThan_CFixedPoint(Market.GetCountryPopulation(GetPlayer),'(CFixedPoint)0')]"
 								using = bg_market_card
 								using = bg_cabinet_card_frame
-
-								button = {
-									size = { 100% 100% }
-									alwaystransparent = yes
-									onclick = "[SetUIFocusMarket(Market.Self)]"
-									onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
-									tooltipwidget = { using = Market_tooltip }
-								}
-
-								market_card = {
-									blockoverride "market_card_margins" {
-										margin = { 5 5 }
-									}
-								}
+								button = { size = { 100% 100% } alwaystransparent = yes onclick = "[SetUIFocusMarket(Market.Self)]" onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]" tooltipwidget = { using = Market_tooltip } }
+								market_card = { blockoverride "market_card_margins" { margin = { 5 5 } } }
 							}
 						}
 					}
@@ -118,80 +170,45 @@ types modeu5_us10_stock
 					layoutpolicy_horizontal = expanding
 					size = { -1 38 }
 					using = bg_age_event_frame
-
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						margin = { 10 6 }
 						spacing = 8
-
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							autoresize = no
-							align = left|nobaseline
-							text = "modeu5_us10_ui.selected_market"
-						}
-
-						text_single = {
-							layoutpolicy_horizontal = expanding
-							autoresize = no
-							align = right|nobaseline
-							text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]"
-						}
+						text_single = { layoutpolicy_horizontal = expanding autoresize = no align = left|nobaseline text = "modeu5_us10_ui.selected_market" }
+						text_single = { layoutpolicy_horizontal = expanding autoresize = no align = right|nobaseline text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]" }
 					}
 				}
 
 				widget = {
 					layoutpolicy_horizontal = expanding
 					using = bg_age_event_frame
-
-					vbox = {
+					scrollbox = {
 						layoutpolicy_horizontal = expanding
-						margin = { 10 8 }
-						spacing = 8
-
-						hbox = {
+						size = { -1 270 }
+						vbox = {
 							layoutpolicy_horizontal = expanding
+							margin = { 10 8 }
 							spacing = 8
-							text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.good" } }
-							text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.country_stocks" } }
-							text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.market_stocks" } }
-							text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.overproduction" } }
-						}
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.wheat" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } }
-						}
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.iron" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } }
-						}
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.tools" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" } }
-							text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } }
+							hbox = {
+								layoutpolicy_horizontal = expanding
+								spacing = 8
+								text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.good" } }
+								text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.country_stocks" } }
+								text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.market_stocks" } }
+								text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.overproduction" } }
+							}
+							hbox = { using = modeu5_us10_ui_good_row_cotton }
+							hbox = { using = modeu5_us10_ui_good_row_sugar }
+							hbox = { using = modeu5_us10_ui_good_row_tobacco }
+							hbox = { using = modeu5_us10_ui_good_row_tar }
+							hbox = { using = modeu5_us10_ui_good_row_porcelain }
+							hbox = { using = modeu5_us10_ui_good_row_naval_supplies }
+							hbox = { using = modeu5_us10_ui_good_row_firearms }
+							hbox = { using = modeu5_us10_ui_good_row_cannons }
 						}
 					}
 				}
-
-				text_multi = {
-					layoutpolicy_horizontal = expanding
-					autoresize = yes
-					text = "modeu5_us10_ui.read_only_note"
-				}
+				text_multi = { layoutpolicy_horizontal = expanding autoresize = yes text = "modeu5_us10_ui.read_only_note" }
 			}
 		}
 	}
