@@ -70,40 +70,34 @@ template production_main_tabs {
 }
 
 template modeu5_us10_ui_header_cell {
-	text_single = {
-		layoutpolicy_horizontal = expanding
-		layoutstretchfactor_horizontal = 1
-		autoresize = no
-		align = left|nobaseline
-		default_format = "#bold"
-		block "text" {
-			text = ""
-		}
+	layoutpolicy_horizontal = expanding
+	layoutstretchfactor_horizontal = 1
+	autoresize = no
+	align = left|nobaseline
+	default_format = "#bold"
+	block "text" {
+		text = ""
 	}
 }
 
 template modeu5_us10_ui_value_cell {
-	text_single = {
-		layoutpolicy_horizontal = expanding
-		layoutstretchfactor_horizontal = 1
-		autoresize = no
-		align = left|nobaseline
-		block "text" {
-			text = ""
-		}
+	layoutpolicy_horizontal = expanding
+	layoutstretchfactor_horizontal = 1
+	autoresize = no
+	align = left|nobaseline
+	block "text" {
+		text = ""
 	}
 }
 
 template modeu5_us10_ui_good_cell {
-	text_single = {
-		layoutpolicy_horizontal = expanding
-		layoutstretchfactor_horizontal = 1
-		autoresize = no
-		align = left|nobaseline
-		default_format = "#high"
-		block "text" {
-			text = ""
-		}
+	layoutpolicy_horizontal = expanding
+	layoutstretchfactor_horizontal = 1
+	autoresize = no
+	align = left|nobaseline
+	default_format = "#high"
+	block "text" {
+		text = ""
 	}
 }
 
@@ -228,19 +222,25 @@ lateralview = {
 							layoutpolicy_horizontal = expanding
 							spacing = 8
 
-							modeu5_us10_ui_header_cell = {
+							text_single = {
+
+								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.good" }
 							}
-							modeu5_us10_ui_header_cell = {
+							text_single = {
+								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.country_stocks" }
 							}
-							modeu5_us10_ui_header_cell = {
+							text_single = {
+								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.market_stocks" }
 							}
-							modeu5_us10_ui_header_cell = {
+							text_single = {
+								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.overproduction" }
 							}
-							modeu5_us10_ui_header_cell = {
+							text_single = {
+								using = modeu5_us10_ui_header_cell
 								blockoverride "text" { text = "modeu5_us10_ui.column.production_efficiency" }
 							}
 						}
@@ -249,19 +249,25 @@ lateralview = {
 							layoutpolicy_horizontal = expanding
 							spacing = 8
 
-							modeu5_us10_ui_good_cell = {
+							text_single = {
+
+								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.wheat" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
 							}
 						}
@@ -270,19 +276,25 @@ lateralview = {
 							layoutpolicy_horizontal = expanding
 							spacing = 8
 
-							modeu5_us10_ui_good_cell = {
+							text_single = {
+
+								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.iron" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
 							}
 						}
@@ -291,19 +303,25 @@ lateralview = {
 							layoutpolicy_horizontal = expanding
 							spacing = 8
 
-							modeu5_us10_ui_good_cell = {
+							text_single = {
+
+								using = modeu5_us10_ui_good_cell
 								blockoverride "text" { text = "modeu5_us10_ui.good.tools" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
 							}
-							modeu5_us10_ui_value_cell = {
+							text_single = {
+								using = modeu5_us10_ui_value_cell
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
 							}
 						}
