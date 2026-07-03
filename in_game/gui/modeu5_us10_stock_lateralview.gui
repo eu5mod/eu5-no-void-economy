@@ -164,41 +164,44 @@ window = {
 						layoutpolicy_horizontal = expanding
 						spacing = 4
 
-						text_single = { size = { 94 24 } autoresize = no align = left|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.good" }
-						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
-						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
-						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
-						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
+						text_single = { size = { 38 24 } autoresize = no align = center|nobaseline default_format = "#bold" raw_text = "@goods!" }
+						text_single = { size = { 94 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
+						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
+						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
+						text_single = { size = { 86 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
 					}
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 4
-						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.wheat" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_produced').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
+						visible = "[GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_produced').GetValue, '(CFixedPoint)0')]"
+						text_single = { size = { 38 20 } autoresize = no align = center|nobaseline raw_text = "@wheat!" tooltip = "modeu5_us10_ui.good.wheat" }
+						text_single = { size = { 94 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_produced').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
+						text_single = { size = { 86 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
 					}
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 4
-						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.iron" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_produced').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
+						visible = "[GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_iron_produced').GetValue, '(CFixedPoint)0')]"
+						text_single = { size = { 38 20 } autoresize = no align = center|nobaseline raw_text = "@iron!" tooltip = "modeu5_us10_ui.good.iron" }
+						text_single = { size = { 94 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_produced').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
+						text_single = { size = { 86 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
 					}
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 4
-						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.tools" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_produced').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" }
-						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
-						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
+						visible = "[GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_tools_produced').GetValue, '(CFixedPoint)0')]"
+						text_single = { size = { 38 20 } autoresize = no align = center|nobaseline raw_text = "@tools!" tooltip = "modeu5_us10_ui.good.tools" }
+						text_single = { size = { 94 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_produced').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" }
+						text_single = { size = { 124 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
+						text_single = { size = { 86 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
 					}
 				}
 			}
