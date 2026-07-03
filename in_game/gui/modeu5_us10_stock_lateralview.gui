@@ -65,10 +65,11 @@ window = {
 				text = "modeu5_us10_ui.title"
 			}
 
-			button_close_alt = {
-				blockoverride "close_onclick" {
-					onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
-				}
+			button_regular = {
+				size = { 64 28 }
+				text = "modeu5_debug.close"
+				using = bg_button_flavor_4
+				onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
 			}
 		}
 
