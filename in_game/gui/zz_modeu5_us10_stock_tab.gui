@@ -1,5 +1,5 @@
 template production_main_tabs {
-		button_main_tab_alt = {
+	button_main_tab_alt = {
 		using = layoutpolicy_expanding
 		tooltipwidget = {
 			using = TabBuildingsTooltip
@@ -13,6 +13,7 @@ template production_main_tabs {
 		datacontext = "[GetAutomatedSystemItem4('buildings', 'productionmethods', 'closebuildings', 'subsidizebuildings')]"
 		using = multi_automated_tab
 
+		blockoverride "on_action_left" { on_action = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]" }
 		blockoverride "on_action_left" { on_action = "[OpenLateralView('production')]" }
 		blockoverride "on_action_right_title" { title = "TOGGLE_PRODUCTION_AUTOMATION" }
 		blockoverride "text" { text = "PRODUCTION_TEXT" }
@@ -28,6 +29,7 @@ template production_main_tabs {
 		datacontext = "[GetAutomatedSystemItem('rgo')]"
 		using = automated_tab
 
+		blockoverride "on_action_left" { on_action = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]" }
 		blockoverride "on_action_left" { on_action = "[OpenLateralView('goods_production')]" }
 		blockoverride "text" { text = "EXPAND_RAW_GOODS_TEXT" }
 	}
@@ -37,6 +39,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "FOOD_PRODUCTION_TEXT"
 		}
+		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
 		onclick = "[OpenLateralView('food_production')]"
 		down = "[IsLateralViewOpened('food_production')]"
 		tooltipwidget = {
@@ -49,6 +52,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "game_concept_locations"
 		}
+		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
 		onclick = "[OpenLateralView('town_rights')]"
 		down = "[IsLateralViewOpened('town_rights')]"
 		tooltipwidget = {
@@ -61,8 +65,9 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
-		onclick = "[OpenLateralView('modeu5_us10_stock')]"
-		down = "[IsLateralViewOpened('modeu5_us10_stock')]"
+		onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
+		onclick = "[ExecuteConsoleCommand('GUI.CreateWidget gui/modeu5_us10_stock_lateralview.gui modeu5_us10_stock')]"
+		down = no
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
