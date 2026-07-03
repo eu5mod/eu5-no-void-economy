@@ -166,7 +166,7 @@ window = {
 						spacing = 4
 
 						text_single = { size = { 94 24 } autoresize = no align = left|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.good" }
-						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.produced" }
+						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
 						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
 						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
 						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
