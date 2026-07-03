@@ -23,7 +23,6 @@ widget = {
 	name = "modeu5_us10_stock"
 	size = { 100% 100% }
 	alwaystransparent = yes
-	ignoreinvisible = yes
 
 	button_regular = {
 		visible = "[IsLateralViewOpened('production')]"
