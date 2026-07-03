@@ -62,7 +62,7 @@ template production_main_tabs {
 			text = "modeu5_us10_ui.tab"
 		}
 		onclick = "[OpenLateralView('modeu5_us10_stock')]"
-		down = no
+		down = "[IsLateralViewOpened('modeu5_us10_stock')]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
