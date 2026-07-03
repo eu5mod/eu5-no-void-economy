@@ -61,8 +61,8 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
-		onclick = "[ExecuteConsoleCommand('GUI.CreateWidget gui/modeu5_us10_stock_lateralview.gui modeu5_us10_stock')]"
-		down = no
+		onclick = "[OpenLateralView('modeu5_us10_stock')]"
+		down = "[IsLateralViewOpened('modeu5_us10_stock')]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
