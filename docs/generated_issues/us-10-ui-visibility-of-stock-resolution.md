@@ -54,8 +54,8 @@ player-facing ModeU5 stock tab in the production interface.
 
 Implemented player-facing surface:
 
-- the production tab set gains a `ModeU5 Stocks` tab opening
-  `modeu5_us10_stock_lateralview`;
+- the production tab set gains a `ModeU5 Stocks` tab opening the custom
+  lateralview alias `zz_modeu5_us10_stock` derived from the GUI file name;
 - the tab has the required columns:
   `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`,
   `Production Efficiency`;

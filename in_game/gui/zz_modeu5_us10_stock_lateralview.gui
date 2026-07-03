@@ -61,8 +61,8 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
-		onclick = "[OpenLateralView('modeu5_us10_stock')]"
-		down = "[IsLateralViewOpened('modeu5_us10_stock')]"
+		onclick = "[OpenLateralView('modeu5_us10_stock_lateralview')]"
+		down = "[IsLateralViewOpened('modeu5_us10_stock_lateralview')]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
@@ -259,7 +259,7 @@ lateralview = {
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
 							}
 							modeu5_us10_ui_value_cell = {
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
+								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
 							}
 							modeu5_us10_ui_value_cell = {
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
@@ -280,7 +280,7 @@ lateralview = {
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
 							}
 							modeu5_us10_ui_value_cell = {
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
+								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
 							}
 							modeu5_us10_ui_value_cell = {
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
@@ -301,7 +301,7 @@ lateralview = {
 								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
 							}
 							modeu5_us10_ui_value_cell = {
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
+								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
 							}
 							modeu5_us10_ui_value_cell = {
 								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
