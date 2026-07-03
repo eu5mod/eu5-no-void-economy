@@ -1,6 +1,6 @@
 lateralview = {
-	name = "modeu5_us10_stock_lateralview"
-	widgetid = "modeu5_us10_stock_lateralview"
+	name = "modeu5_us10_stock"
+	widgetid = "modeu5_us10_stock"
 
 	blockoverride "panel_header" {
 		window_header_alt = {
