@@ -1,6 +1,6 @@
-# ModeU5 US-10 stock panel.
-# Registered through gui/scripted_widgets/modeu5_us10_stock.txt.
-# Important: scripted_widgets expects a widget named modeu5_us10_stock in this file.
+# ModeU5 US-10 stock panel templates.
+# This file defines reusable GUI templates only. The panel is instantiated from
+# zz_modeu5_us10_production_tabs.gui, inside the existing production UI.
 
 template modeu5_us10_ui_panel_header_cell {
 	layoutpolicy_horizontal = expanding
@@ -19,23 +19,9 @@ template modeu5_us10_ui_panel_value_cell {
 	block "text" { text = "" }
 }
 
-widget = {
-	name = "modeu5_us10_stock"
+template modeu5_us10_stock_panel {
 	size = { 100% 100% }
 	alwaystransparent = yes
-
-	button_regular = {
-		visible = "[IsLateralViewOpened('production')]"
-		parentanchor = top|right
-		widgetanchor = top|right
-		position = { -20 140 }
-		size = { 150 34 }
-		text = "modeu5_us10_ui.tab"
-		using = bg_button_flavor_4
-		onclick = "[GetVariableSystem.Toggle('modeu5_us10_stock_tab')]"
-		onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-		tooltipwidget = { BasicFunctionalTooltip = {} }
-	}
 
 	window = {
 		visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
@@ -78,7 +64,7 @@ widget = {
 			scrollbox = {
 				layoutpolicy_horizontal = expanding
 				size = { -1 180 }
-				datacontext = "[GetQuickVisibleMarkets(GetPlayer)]"
+				datacontext = "[GetQuickVisibleMarkets(Player.Self)]"
 
 				dynamicgridbox = {
 					layoutpolicy_horizontal = expanding
@@ -89,7 +75,7 @@ widget = {
 						widget = {
 							size = { 300 74 }
 							margin = { 4 4 }
-							visible = "[GreaterThan_CFixedPoint(Market.GetCountryPopulation(GetPlayer),'(CFixedPoint)0')]"
+							visible = "[GreaterThan_CFixedPoint(Market.GetCountryPopulation(Player.Self),'(CFixedPoint)0')]"
 							using = bg_market_card
 							using = bg_cabinet_card_frame
 
@@ -97,7 +83,7 @@ widget = {
 								size = { 100% 100% }
 								alwaystransparent = yes
 								onclick = "[SetUIFocusMarket(Market.Self)]"
-								onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+								onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
 								tooltipwidget = { using = Market_tooltip }
 							}
 
@@ -129,7 +115,7 @@ widget = {
 						layoutpolicy_horizontal = expanding
 						autoresize = no
 						align = right|nobaseline
-						text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]"
+						text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[Player.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]"
 					}
 				}
 			}
@@ -154,27 +140,27 @@ widget = {
 						layoutpolicy_horizontal = expanding
 						spacing = 8
 						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.wheat" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } }
 					}
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 8
 						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.iron" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } }
 					}
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
 						spacing = 8
 						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.tools" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[GetPlayer.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" } }
+						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } }
 					}
 				}
 			}
