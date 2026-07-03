@@ -1,3 +1,66 @@
+modeu5_us10_stock = {
+	widget = {
+		name = "modeu5_us10_stock"
+		widgetid = "modeu5_us10_stock"
+		size = { 720 520 }
+		using = bg_main_inner_alt
+		using = bg_main_inner_image_alt
+		blockoverride "image" {
+			texture = "gfx/interface/illustrations/bg/bg_production.dds"
+		}
+
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			margin = { 12 12 }
+			spacing = 8
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				align = center|nobaseline
+				default_format = "#bold"
+				text = "modeu5_us10_ui.title"
+			}
+
+			button_regular = {
+				size = { 120 26 }
+				text = "modeu5_us10_ui.refresh"
+				using = bg_button_flavor_4
+				onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+				tooltipwidget = { BasicFunctionalTooltip = {} }
+			}
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				align = center|nobaseline
+				raw_text = "US-10 stock widget loaded via GUI.CreateWidget"
+			}
+
+			widget = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				using = bg_age_event_frame
+				vbox = {
+					layoutpolicy_horizontal = expanding
+					margin = { 8 8 }
+					spacing = 4
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						spacing = 4
+						text_single = { size = { 38 24 } autoresize = no align = center|nobaseline default_format = "#bold" raw_text = "@goods!" }
+						text_single = { size = { 94 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
+						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
+						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
+						text_single = { size = { 86 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
+					}
+				}
+			}
+		}
+	}
+}
+
 lateralview = {
 	name = "modeu5_us10_stock_lateralview"
 	widgetid = "modeu5_us10_stock_lateralview"
