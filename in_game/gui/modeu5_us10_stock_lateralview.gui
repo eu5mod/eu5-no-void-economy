@@ -1,111 +1,123 @@
-lateralview = {
+window = {
 	name = "modeu5_us10_stock"
-	widgetid = "modeu5_us10_stock"
+	parentanchor = topleft
+	widgetanchor = topleft
+	position = { 0 102 }
+	size = { 620 900 }
+	alwaystransparent = yes
 
-	blockoverride "panel_header" {
-		window_header_alt = {
-			blockoverride "header_text" {
+	vbox = {
+		size = { 620 900 }
+		using = bg_main_inner_alt
+		using = bg_main_inner_image_alt
+		blockoverride "image" {
+			texture = "gfx/interface/illustrations/bg/bg_production.dds"
+		}
+		using = window_main_tabs_margin_alt
+		spacing = 8
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 8
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				align = center|nobaseline
+				default_format = "#bold"
 				text = "modeu5_us10_ui.title"
 			}
-			blockoverride "window_header_alt_color_texture" {
-				using = color_production_texture
+
+			button_regular = {
+				size = { 64 28 }
+				text = "modeu5_debug.close"
+				using = bg_button_flavor_4
+				onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
+				tooltipwidget = { BasicFunctionalTooltip = {} }
 			}
 		}
-	}
 
-	blockoverride "panel_content" {
 		header_main_tabs = {
 			blockoverride "content" {
 				using = production_main_tabs
 			}
 		}
 
-		vbox = {
-			using = layoutpolicy_expanding
-			using = bg_main_inner_alt
-			using = bg_main_inner_image_alt
-			blockoverride "image" {
-				texture = "gfx/interface/illustrations/bg/bg_production.dds"
+		overlappingitembox = {
+			visible = no
+			state = {
+				name = modeu5_us10_ui_open_refresh
+				trigger_on_create = yes
+				duration = 1
+				on_finish = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
 			}
-			using = window_main_tabs_margin_alt
-			spacing = 8
+		}
 
-			overlappingitembox = {
-				visible = no
-				state = {
-					name = modeu5_us10_ui_open_refresh
-					trigger_on_create = yes
-					duration = 1
-					on_finish = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-				}
-			}
+		text_multi = {
+			layoutpolicy_horizontal = expanding
+			autoresize = no
+			size = { -1 42 }
+			text = "modeu5_us10_ui.subtitle"
+		}
 
-			text_multi = {
+		widget = {
+			layoutpolicy_horizontal = expanding
+			size = { -1 120 }
+			using = bg_age_event_frame
+
+			vbox = {
 				layoutpolicy_horizontal = expanding
-				autoresize = no
-				size = { -1 42 }
-				text = "modeu5_us10_ui.subtitle"
-			}
+				margin = { 8 8 }
+				spacing = 6
 
-			widget = {
-				layoutpolicy_horizontal = expanding
-				size = { -1 120 }
-				using = bg_age_event_frame
-
-				vbox = {
+				hbox = {
 					layoutpolicy_horizontal = expanding
-					margin = { 8 8 }
 					spacing = 6
-
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						spacing = 6
-						text_single = { layoutpolicy_horizontal = expanding autoresize = no align = left|nobaseline text = "modeu5_us10_ui.selected_market" }
-						text_single = { size = { 90 22 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[Player.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]" }
-						button_regular = {
-							size = { 92 24 }
-							text = "modeu5_us10_ui.refresh"
-							using = bg_button_flavor_4
-							onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-							tooltipwidget = { BasicFunctionalTooltip = {} }
-						}
-					}
-
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						autoresize = no
-						align = center|nobaseline
-						raw_text = "US-10 stock lateral view loaded"
+					text_single = { layoutpolicy_horizontal = expanding autoresize = no align = left|nobaseline text = "modeu5_us10_ui.selected_market" }
+					text_single = { size = { 90 22 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[Player.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]" }
+					button_regular = {
+						size = { 92 24 }
+						text = "modeu5_us10_ui.refresh"
+						using = bg_button_flavor_4
+						onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+						tooltipwidget = { BasicFunctionalTooltip = {} }
 					}
 				}
-			}
 
-			widget = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-				using = bg_age_event_frame
-				vbox = {
+				text_single = {
 					layoutpolicy_horizontal = expanding
-					margin = { 8 8 }
-					spacing = 4
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						spacing = 4
-						text_single = { size = { 38 24 } autoresize = no align = center|nobaseline default_format = "#bold" raw_text = "@goods!" }
-						text_single = { size = { 94 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
-						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
-						text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
-						text_single = { size = { 86 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
-					}
+					autoresize = no
+					align = center|nobaseline
+					raw_text = "US-10 stock widget loaded"
 				}
 			}
+		}
 
-			text_multi = {
+		widget = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			using = bg_age_event_frame
+			vbox = {
 				layoutpolicy_horizontal = expanding
-				autoresize = no
-				size = { -1 58 }
-				text = "modeu5_us10_ui.read_only_note"
+				margin = { 8 8 }
+				spacing = 4
+				hbox = {
+					layoutpolicy_horizontal = expanding
+					spacing = 4
+					text_single = { size = { 38 24 } autoresize = no align = center|nobaseline default_format = "#bold" raw_text = "@goods!" }
+					text_single = { size = { 94 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
+					text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
+					text_single = { size = { 124 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
+					text_single = { size = { 86 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
+				}
 			}
+		}
+
+		text_multi = {
+			layoutpolicy_horizontal = expanding
+			autoresize = no
+			size = { -1 58 }
+			text = "modeu5_us10_ui.read_only_note"
 		}
 	}
 }
