@@ -1,126 +1,84 @@
-template modeu5_us10_ui_header_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	default_format = "#bold"
-	block "text" {
-		text = ""
-	}
-}
-
-template modeu5_us10_ui_value_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	block "text" {
-		text = ""
-	}
-}
-
-template modeu5_us10_ui_good_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	default_format = "#high"
-	block "text" {
-		text = ""
-	}
-}
-
-lateralview = {
+window = {
 	name = "modeu5_us10_stock"
-	widgetid = "modeu5_us10_stock"
+	parentanchor = top|left
+	widgetanchor = top|left
+	position = { 0 102 }
+	size = { 520 900 }
+	alwaystransparent = yes
 
-	blockoverride "panel_header" {
-		window_header_alt = {
-			blockoverride "header_text" {
+	vbox = {
+		size = { 520 900 }
+		using = bg_main_inner_alt
+		using = bg_main_inner_image_alt
+		blockoverride "image" {
+			texture = "gfx/interface/illustrations/bg/bg_production.dds"
+		}
+		spacing = 8
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			margin = { 8 6 }
+			spacing = 8
+
+			text_single = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				align = center|nobaseline
+				default_format = "#bold"
 				text = "modeu5_us10_ui.title"
 			}
-			blockoverride "window_header_alt_color_texture" {
-				using = color_production_texture
+
+			button_regular = {
+				size = { 64 28 }
+				text = "modeu5_debug.close"
+				using = bg_button_flavor_4
+				onclick = "[ExecuteConsoleCommand('GUI.ClearWidgets modeu5_us10_stock')]"
+				tooltipwidget = { BasicFunctionalTooltip = {} }
 			}
 		}
-	}
 
-	blockoverride "panel_content" {
 		header_main_tabs = {
 			blockoverride "content" {
 				using = production_main_tabs
 			}
 		}
 
-		widget = {
-			using = layoutpolicy_expanding
+		overlappingitembox = {
+			visible = no
+			state = {
+				name = modeu5_us10_ui_open_refresh
+				trigger_on_create = yes
+				duration = 1
+				on_finish = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+			}
+		}
 
-			vbox = {
-				using = bg_main_inner_alt
-				using = bg_main_inner_image_alt
-				blockoverride "image" {
-					texture = "gfx/interface/illustrations/bg/bg_production.dds"
-				}
-				using = window_main_tabs_margin_alt
-				spacing = 10
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			margin = { 8 6 }
+			spacing = 8
 
-				overlappingitembox = {
-					visible = no
-					state = {
-						name = modeu5_us10_ui_open_refresh
-						trigger_on_create = yes
-						duration = 1
-						on_finish = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-					}
-				}
+			text_multi = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				size = { -1 42 }
+				text = "modeu5_us10_ui.subtitle"
+			}
 
-				hbox = {
+			widget = {
+				layoutpolicy_horizontal = expanding
+				size = { -1 190 }
+				using = bg_age_event_frame
+
+				vbox = {
 					layoutpolicy_horizontal = expanding
-					spacing = 8
-
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						autoresize = no
-						align = left|nobaseline
-						text = "modeu5_us10_ui.subtitle"
-					}
-
-					button_regular = {
-						size = { 130 34 }
-						text = "modeu5_us10_ui.refresh"
-						using = bg_button_flavor_4
-						tooltipwidget = {
-							BasicFunctionalTooltip = {}
-						}
-						action_tooltip = {
-							title = "modeu5_us10_ui.refresh.tooltip"
-							on_action = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-						}
-					}
-
-					button_regular = {
-						size = { 150 34 }
-						text = "modeu5_us10_ui.next_market"
-						using = bg_button_flavor_4
-						tooltipwidget = {
-							BasicFunctionalTooltip = {}
-						}
-						action_tooltip = {
-							title = "modeu5_us10_ui.next_market.tooltip"
-							on_action = "[GetScriptedGui('modeu5_us10_ui_next_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
-						}
-					}
-				}
-
-				widget = {
-					layoutpolicy_horizontal = expanding
-					size = { -1 38 }
-					using = bg_age_event_frame
+					margin = { 8 6 }
+					spacing = 6
 
 					hbox = {
 						layoutpolicy_horizontal = expanding
-						margin = { 10 6 }
-						spacing = 8
+						spacing = 6
 
 						text_single = {
 							layoutpolicy_horizontal = expanding
@@ -130,134 +88,126 @@ lateralview = {
 						}
 
 						text_single = {
-							layoutpolicy_horizontal = expanding
+							size = { 90 22 }
 							autoresize = no
 							align = right|nobaseline
 							text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[Player.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]"
 						}
-					}
-				}
 
-				widget = {
-					layoutpolicy_horizontal = expanding
-					using = bg_age_event_frame
+						button_regular = {
+							size = { 92 24 }
+							text = "modeu5_us10_ui.refresh"
+							using = bg_button_flavor_4
+							onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+							tooltipwidget = { BasicFunctionalTooltip = {} }
+						}
+					}
 
 					vbox = {
 						layoutpolicy_horizontal = expanding
-						margin = { 10 8 }
-						spacing = 8
+						layoutpolicy_vertical = expanding
+						spacing = 4
+						datacontext = "[GetQuickVisibleMarkets(Player.Self)]"
+						datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
 
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
+						item = {
+							widget = {
+								layoutpolicy_horizontal = expanding
+								size = { -1 58 }
+								visible = "[Or3(GreaterThan_CFixedPoint(Market.GetCountryPopulation(Player.Self),'(CFixedPoint)0'), GreaterThan_CFixedPoint(Market.GetTotalMerchantCapacity(Player.Self),'(CFixedPoint)0'), IsMarketInRange(Market.Self))]"
 
-							text_single = {
-								using = modeu5_us10_ui_header_cell
-								blockoverride "text" { text = "modeu5_us10_ui.column.good" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_header_cell
-								blockoverride "text" { text = "modeu5_us10_ui.column.country_stocks" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_header_cell
-								blockoverride "text" { text = "modeu5_us10_ui.column.market_stocks" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_header_cell
-								blockoverride "text" { text = "modeu5_us10_ui.column.overproduction" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_header_cell
-								blockoverride "text" { text = "modeu5_us10_ui.column.production_efficiency" }
-							}
-						}
+								hbox = {
+									using = bg_market_card
+									using = bg_cabinet_card_frame
 
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-
-							text_single = {
-								using = modeu5_us10_ui_good_cell
-								blockoverride "text" { text = "modeu5_us10_ui.good.wheat" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
-							}
-						}
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-
-							text_single = {
-								using = modeu5_us10_ui_good_cell
-								blockoverride "text" { text = "modeu5_us10_ui.good.iron" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
-							}
-						}
-
-						hbox = {
-							layoutpolicy_horizontal = expanding
-							spacing = 8
-
-							text_single = {
-								using = modeu5_us10_ui_good_cell
-								blockoverride "text" { text = "modeu5_us10_ui.good.tools" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
-							}
-							text_single = {
-								using = modeu5_us10_ui_value_cell
-								blockoverride "text" { text = "modeu5_us10_ui.not_available" }
+									market_card = {
+										blockoverride "market_card_margins" {
+											margin = { 5 5 }
+											margin_right = 0
+										}
+										blockoverride "market_card_title_action" {
+											action_tooltip = {
+												click_type = left
+												click_mode = single
+												title = "TOGGLE_MARKET_SELECTION"
+												on_action = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+											}
+											action_tooltip = {
+												click_type = right
+												click_mode = single
+												cursor = "market_menu"
+												title = "CLICK_ACTION_MARKET_CONTEXT_MENU"
+												on_action = "[PdxGuiWidget.ToggleContextMenu]"
+											}
+											onmousehierarchyenter = "[PdxGuiWidget.SetHighlightMarket(Market.Self)]"
+											ondoubleclick = "[PanToLocation(Market.GetCenterLocation)]"
+										}
+									}
+								}
 							}
 						}
 					}
 				}
+			}
 
-				text_multi = {
+			widget = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				using = bg_age_event_frame
+
+				vbox = {
 					layoutpolicy_horizontal = expanding
-					autoresize = no
-					text = "modeu5_us10_ui.read_only_note"
+					margin = { 8 8 }
+					spacing = 4
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						spacing = 4
+
+						text_single = { size = { 94 24 } autoresize = no align = left|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.good" }
+						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" raw_text = "Produced" }
+						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.country_stocks" }
+						text_single = { size = { 104 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.market_stocks" }
+						text_single = { size = { 70 24 } autoresize = no align = right|nobaseline default_format = "#bold" text = "modeu5_us10_ui.column.overproduction" }
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						spacing = 4
+						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.wheat" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_produced').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" }
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						spacing = 4
+						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.iron" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_produced').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" }
+					}
+
+					hbox = {
+						layoutpolicy_horizontal = expanding
+						spacing = 4
+						text_single = { size = { 94 20 } autoresize = no align = left|nobaseline default_format = "#high" text = "modeu5_us10_ui.good.tools" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_produced').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" }
+						text_single = { size = { 104 20 } autoresize = no align = right|nobaseline text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" }
+						text_single = { size = { 70 20 } autoresize = no align = right|nobaseline raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" }
+					}
 				}
+			}
+
+			text_multi = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				size = { -1 58 }
+				text = "modeu5_us10_ui.read_only_note"
 			}
 		}
 	}
