@@ -59,8 +59,9 @@ Target UX:
 | Full override of `production_lateralview.gui` | Worked in-game, but rejected architecturally because it copies too much vanilla UI and is patch-fragile. |
 | `scripted_widgets` standalone widget | Rejected. The widget can be loaded/validated, but it is not automatically instantiated into the UI tree. |
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
-| Current approach | Use vanilla Production as host; add a ModeU5 tab/button; inject body into an already-instantiated Production UI area. |
-| Current risk | We are still injecting the body too close to `production_main_tabs`; this caused clipping / missing panel / overlay input problems. |
+| `production_main_tabs` injection | Valid for adding a visible top tab. Rejected as final body injection point. |
+| Current best direction | ModeU5 should be a Production-hosted internal display mode/body, not a custom lateralview and not a floating overlay. |
+| Current risk | We do not yet have a clean additive body injection point without overriding a larger part of `production_lateralview.gui`. |
 
 ## M&T / vanilla Production observations
 
@@ -79,8 +80,45 @@ Observation:
 
 - This supports the idea that top tabs are only view selectors.
 - ModeU5 should not call `OpenLateralView('modeu5_*')`.
-- If ModeU5 is attached here, it should probably call `OpenLateralView('production')` and then set an internal UI state.
+- If ModeU5 is attached here, it can call `OpenLateralView('production')` and then set an internal UI state.
 - However, `production_main_tabs` is not a good final body injection point. It is a selector row, not the body area. Injecting body here caused clipping / missing panel / overlay behavior.
+- Test result confirmed this: a top-tab ModeU5 state can exist while the actual body remains the vanilla Production/Buildings body.
+
+### `production_lateralview` body structure
+
+M&T defines the actual `production_lateralview` root and places the top tabs in `panel_content` with:
+
+```gui
+header_main_tabs = {
+    blockoverride "content" {
+        using = production_main_tabs
+    }
+}
+```
+
+Then the body is a main `vbox` containing several `filtered_sorted_list` blocks.
+
+Important observed body blocks:
+
+```gui
+filtered_sorted_list = {
+    visible = "[ProductionView.Vars.NotExistOrHasValue( 'display', 'lists' )]"
+    name = "production_filtered_list"
+    ...
+}
+
+filtered_sorted_list = {
+    visible = "[ProductionView.Vars.HasValue( 'display', 'cards' )]"
+    name = "building_categories_filtered_list"
+    ...
+}
+```
+
+Observation:
+
+- The body is not driven by `GetVariableSystem` at this level; it is driven by `ProductionView.Vars('display')`.
+- The cleanest body integration is likely to add a new `filtered_sorted_list`/body block visible when `display = modeu5_stocks`.
+- But that likely requires overriding more of the `production_lateralview` root than the current `production_main_tabs` micro-override.
 
 ### `production_view_subtabs`
 
@@ -100,7 +138,41 @@ Observation:
 - This is closer to what ModeU5 needs than a top-level lateralview.
 - Best candidate direction: ModeU5 should become an internal Production display mode, not a separate lateralview.
 - Earlier attempts to call `ProductionView.Vars.Set(...)` from the top tab row failed because the tab template did not have a valid `ProductionView` context. Inside `production_view_subtabs`, the context should be correct.
-- Next likely path: override/extend `production_view_subtabs` to add a ModeU5 internal display button, then use the same `ProductionView.Vars` state to show/hide a ModeU5 body area.
+- However, `production_view_subtabs` is inserted inside each visible `filtered_sorted_list` through `searchbar_extra_pre_content`.
+- If we set `display = modeu5_stocks`, the existing `lists`/`cards` lists may hide, which can also hide the subtab template that would hold the ModeU5 button/body.
+- Therefore, overriding only `production_view_subtabs` may be enough for a button, but probably not enough for a full body unless we also add a ModeU5 body block in the lateralview content.
+
+### Vanilla market selector pattern
+
+M&T/vanilla do not simply render an inline market-card datamodel for market selection inside Production. They use a dedicated `select_menu_left` block with:
+
+```gui
+select_menu_left = {
+    datacontext = "[GetQuickVisibleMarkets(Player.Self)]"
+    blockoverride "menu_setup" {
+        name = "production_select_market"
+    }
+    ...
+    datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
+    ...
+    on_action = "[ProductionSelectMarket.Parent.FilterByMarket(Market.Self)]"
+}
+```
+
+The menu is opened from a parent filtered list with:
+
+```gui
+ProductionView.ToggleProductionSelectMarket(PdxGuiWidget.FindParent('production_filtered_list').Self)
+```
+
+Observation:
+
+- This is the strongest market-selector learning so far.
+- Vanilla market selection is tied to a parent widget/list (`production_filtered_list` or `building_categories_filtered_list`).
+- The selected market is applied by `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
+- For ModeU5 we should not yet clone the full market selector. First we need a stable body/list parent. Then we can either:
+  - reuse the vanilla select-menu pattern if we can attach it to our ModeU5 parent list; or
+  - emulate it only after the body is stable.
 
 ### Market card / market navigation patterns
 
@@ -131,7 +203,25 @@ Observation:
 | 4 | Add ModeU5 tab by overriding `production_main_tabs`; use `GetVariableSystem.Toggle`. | Tab appears. Good proof that micro tab override works. | Keep this part, but ensure state does not conflict with other vanilla tabs. |
 | 5 | Inject a movable overlay/window from the tab template. | Panel appeared once but was badly positioned, captured input, and could freeze the game when datamodel/read-model logic ran. | Rejected as final body strategy. Avoid floating overlay and heavy click actions. |
 | 6 | Replace body with safe static placeholder; remove scripted refresh and datamodel. | Safer, but latest report: tab can be active while another lateralview is active; placeholder not visible. | Need to move body injection into Production body, not tab row. |
-| 7 | Make ModeU5 a Production sub-mode by clicking `OpenLateralView('production')` then `GetVariableSystem.Set(...)`. | Pending test. | Transitional only. Long-term likely should use `ProductionView.Vars` inside body/subtab context. |
+| 7 | Make ModeU5 a Production sub-mode by clicking `OpenLateralView('production')` then `GetVariableSystem.Set(...)`. | Negative test on `12086c9`: clicking ModeU5 opens the Buildings panel; no ModeU5 body is visible. Logs are mostly noisy unused-variable warnings and no decisive GUI parser error. | Confirms top-tab state alone is insufficient. `OpenLateralView('production')` simply opens vanilla Buildings because no Production body display mode was actually added. |
+
+## Test notes
+
+### 2026-07-04 — `source_commit=12086c901e68c2803a4a70b21a35b64834b901d5`
+
+User result:
+
+- Negative.
+- Clicking `ModeU5 Stocks` goes to the vanilla Buildings panel.
+- No ModeU5 panel/body visible.
+- Logs contain the usual `anti_aliasing` / `portrait_multi_sampling` noise and many `Variable ... is set but is never used` warnings.
+- No strong GUI parse error was reported for this commit.
+
+Interpretation:
+
+- This commit proved that `OpenLateralView('production') + GetVariableSystem.Set(...)` is not enough.
+- It only selects the vanilla Production lateralview.
+- The actual body must be part of Production's `panel_content` display system, most likely as a `ProductionView.Vars('display')` mode and a matching body block.
 
 ## Important runtime log learnings
 
@@ -184,15 +274,21 @@ Could not push the provided stack context. ID: 0
 
 Still unclear. It appeared even outside hard GUI failures. Treat as warning unless directly tied to a click/freeze.
 
-## Current branch state at time of trail creation
+## Current branch state at time of this update
 
-Latest known code state before this document:
+Latest known code state before this document update:
 
 - `zz_modeu5_us10_production_tabs.gui` overrides `production_main_tabs`.
 - ModeU5 tab uses `OpenLateralView('production')` + `GetVariableSystem.Set('modeu5_us10_stock_tab','yes')`.
 - Other production tabs clear `modeu5_us10_stock_tab`.
 - `modeu5_us10_stock_lateralview.gui` is currently a safe static placeholder template.
 - Heavy refresh/read-model and dynamic market datamodel are intentionally removed from the tab click.
+
+Current assessment:
+
+- The tab part is validated.
+- The body part is not validated and is currently in the wrong place.
+- The next code batch should focus on body display-mode integration, not market cards or goods rows.
 
 ## Proposed next fixing sequence
 
@@ -207,9 +303,10 @@ Goal:
 - No freeze.
 - No body required yet.
 
-Expected result:
+Status:
 
-- No double-selected Locations + ModeU5 state.
+- Partially validated: tab exists.
+- Negative: top-tab state alone can still show vanilla Buildings body.
 
 ### Fix 2 — body injection point
 
@@ -229,6 +326,12 @@ visible = "[ProductionView.Vars.HasValue('display', 'modeu5_stocks')]"
 ```
 
 Only do this inside templates that already have `ProductionView` context.
+
+Current caution:
+
+- Adding a ModeU5 button to `production_view_subtabs` is likely easy.
+- Showing a ModeU5 body probably requires a corresponding `filtered_sorted_list`/body block visible under `display = modeu5_stocks`.
+- That may require a larger override than `production_main_tabs`, but still much smaller and more deliberate than the first accidental full override.
 
 ### Fix 3 — static ModeU5 body
 
