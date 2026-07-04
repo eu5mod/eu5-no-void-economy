@@ -12,6 +12,7 @@ ModeU5's architecture is healthy if each domain remains the owner of a precise t
 | Capacity | `in_game/common/scripted_effects/modeu5_capacity_effects.txt` | country×market capacity, breakdowns, capacity refresh | stock mutation, promoted-market selection |
 | Market-country cache | `in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt` | `countries_present_in_market`, dirty market-country work cache | stock source of truth, gameplay decisions |
 | Performance / promotion | `in_game/common/scripted_effects/modeu5_performance_effects.txt` | mode gates, human-relevant markets, promoted-market scheduling | direct economic mutation |
+| Promoted-market orchestration helpers | `in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt` | thin B/C/D helper entry points delegating to capacity/cache, generated adapters, and US-10 | formulas, direct stock writes, or enabling the new dispatcher |
 | US-00 | `in_game/common/scripted_effects/modeu5_void_economy_effects.txt` + generated adapters | production facts, admission/rejection ledgers, overproduction, void wealth, next-month penalty | consumption, inter-market trade |
 | US-10 | `in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt` | same-market consumption, inter-market stock transfer | vanilla production, US-00 penalty |
 | Configuration | `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt`, main menu files | pre-campaign configuration, package markers, script-safe settings | fake runtime toggle for statically loaded packages |
@@ -27,6 +28,7 @@ ModeU5's architecture is healthy if each domain remains the owner of a precise t
 | `modeu5_capacity_effects.txt` | Country-market capacity calculation and cache | Risk if callers redo location scans outside helpers | P1 | List the authorized entry points | S |
 | `modeu5_market_country_cache_effects.txt` | Market↔country cache | Cross-dependency with performance and validation | P1 | Declare caches as work caches, not stock sources | S |
 | `modeu5_performance_effects.txt` | Runtime gates and performance caches | Mixes mode, scheduling, and repair | P1 | Split only if the file grows further; do not move stock mutation here | M |
+| `modeu5_promoted_market_cycle_effects.txt` | PR126 B/C/D promoted-market helper entry points | New refactor seam; risk if it starts owning formulas | P1 | Keep as delegation-only until the dispatcher shell is introduced | S |
 | `modeu5_void_economy_effects.txt` | US-00 ledgers, ratios, void wealth, penalty | Several pipeline stages in one domain | P1 | Clearly separate ingestion facts and finalization/carryover | S |
 | `modeu5_stock_demand_resolver_effects.txt` | US-10 demand resolution and transfer | Risk of drifting into intra-market trade | P1 | Same-market = consumption; inter-market = transfer only | S |
 | `modeu5_configuration_effects.txt` | Script-safe configuration initialization | Scattered entry points | P2 | Single configuration index | S |

@@ -164,3 +164,24 @@ flowchart LR
 ```
 
 The order remains File/Cache first, because the promoted-market cycle will only be reliable if each sub-loop clearly knows which record is source of truth, which record is a derived cache, and which record exists only for debug/audit.
+
+## 8. PR3 helper extraction contract
+
+PR3 introduces the helper names needed by the future promoted-market shell while
+leaving `modeu5_run_monthly_stock_cycle` semantically unchanged. These helpers
+are delegation points only:
+
+| Block | Helper | Delegates to | Notes |
+|---|---|---|---|
+| B | `modeu5_prepare_promoted_market_country_cache` | `modeu5_rebuild_countries_present_in_market` | Rebuilds the current target market's country work list; not durable storage and not stock proof. |
+| B | `modeu5_prepare_promoted_country_market_capacity` | `modeu5_recalculate_country_market_capacity_from_prepared_pool_shared` | Refreshes one country-market capacity record from the cached country location pool and current market trade capacity. |
+| B | `modeu5_prepare_promoted_market_capacity_cache` | B country cache + B country-market capacity helper | Convenience wrapper for every country present in one promoted market. |
+| C | `modeu5_run_scoped_us00_market_good` | generated `modeu5_process_us00_monthly_market_good_<good>` | Future local branch entry point; not called by the current dispatcher in PR3. |
+| C | `modeu5_probe_scoped_us00_market_good_bridge` | generated `modeu5_probe_us00_previous_record_activity_good_<good>` | Non-mutating probe surface for tests. |
+| C/D | `modeu5_run_scoped_us10_monthly_market_good` | generated `modeu5_process_us10_monthly_market_good_<good>` | Processes one scoped queued same-market consumption request. |
+| D | `modeu5_resolve_scoped_same_market_consumption` | `modeu5_resolve_stock_consumption` | Same-market consumption remains non-trade and delegates stock removal to central operators. |
+| D | `modeu5_handoff_scoped_inter_market_transfer` | `modeu5_resolve_inter_market_stock_transfer` | The canonical resolver still owns the `source_market == target_market` guard and central transfer call. |
+
+The PR3 helpers must not be interpreted as an activated promoted-market
+dispatcher. PR4 remains responsible for creating the disabled/test-only
+promoted-market shell.

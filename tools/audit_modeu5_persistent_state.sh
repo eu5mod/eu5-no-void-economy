@@ -26,6 +26,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_void_economy_effects.txt"
 	"in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
 	"in_game/common/scripted_effects/modeu5_performance_effects.txt"
+	"in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_effects.txt"
 	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
