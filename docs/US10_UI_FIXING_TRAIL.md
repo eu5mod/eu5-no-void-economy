@@ -20,6 +20,14 @@ MEIOU-and-Taxes/MnT-EU5@develop/in_game/gui/production_lateralview.gui
 
 M&T is the primary reference for `ProductionView`, `OpenLateralView`, `filtered_sorted_list`, and market selector behavior. Vic3/CK3 are secondary references only for broad Jomini GUI state patterns such as `GetVariableSystem`.
 
+Primary US-10 UI specification:
+
+```txt
+docs/generated_issues/us-10-ui-visibility-of-stock-resolution.md
+```
+
+The player-facing compact table columns are: `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`, `Production Efficiency`.
+
 ## Testing cadence decision
 
 Manual EU5 testing costs about 5 minutes per run. We group safe analysis/code changes into coherent batches and request one test only when the batch should answer a specific question. Emergency single-commit tests are reserved for freeze/crash/input-lock fixes.
@@ -36,7 +44,7 @@ Target UX:
 
 1. Production shows a ModeU5 Stocks entry.
 2. ModeU5 opens inside the existing Production UI, not as a custom lateralview.
-3. Table shows one line per good produced in the selected market.
+3. Table shows one line per good produced in the selected market/country read-model.
 4. Columns follow the US-10 spec: country stock / country capacity and market stock / market capacity.
 5. Data/table should remain reusable if Plan B later generates a full `production_lateralview.gui` override.
 
@@ -50,7 +58,7 @@ Target UX:
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
 | `production_main_tabs` injection | Valid for adding a visible top tab. Not a final body injection point. |
 | `production_view_subtabs` injection | Validated. It can mount an inline ModeU5 body in the existing Production flow. |
-| Current best direction | Plan A is good enough for a V0 hand-off if height is acceptable; full automatic selector-click sync was not achieved in Plan A. |
+| Current best direction | Plan A is good enough for a V0 hand-off if height and table rendering are acceptable; full automatic selector-click sync was not achieved in Plan A. |
 
 ## Plan A acceptance criteria
 
@@ -125,10 +133,16 @@ V1 selector-hook result:
 | 10 | Taller panel + best-effort auto-sync. | Works through hover; not true selector-click sync. | Keep for Plan A. |
 | 11 | V1 standalone market selector hook. | No visible automatic click-sync effect. | Removed. |
 | 12 | Increase panel height to `940` and move hover-sync to whole ModeU5 body. | Pending test. | Current batch. |
+| 13 | Rebuild table to spec columns and generated static row list for all ModeU5 stock goods, visible only when produced > 0. | Pending test. | Current batch. |
 
 ## Latest implementation notes
 
 - `modeu5_us10_stock_table.gui` contains reusable table templates.
+- The table now follows the compact US-10 player-facing spec: `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`, `Production Efficiency`.
+- Generated rows exist for every ModeU5 stock good already captured by `modeu5_us10_ui_capture_all_good_rows`.
+- Rows are hidden unless `modeu5_us10_ui_<good>_produced > 0` in the current selected market/country read-model.
+- Country and market stocks are displayed as `current/capacity`.
+- `Production Efficiency` remains `n/a`, per the spec instruction not to guess when modifier exposure is incomplete.
 - `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
 - `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
 - `zz_modeu5_us10_production_tabs.gui` refreshes the ModeU5 table when opened from the top tab.
@@ -160,12 +174,12 @@ Unsupported property: position on widgets that are a child of a hbox/vbox
 Property 'margin_top' not handled
 ```
 
-Things to watch after height/whole-panel hover-sync:
+Things to watch after all-produced-goods table update:
 
 ```txt
-gui/modeu5_us10_stock_lateralview.gui
-Property 'size'
-ProductionView.GetSelectedMarket.MakeScope
+gui/modeu5_us10_stock_table.gui
+scrollarea
+GreaterThan_CFixedPoint(Player.MakeScope.GetVariable(...).GetValue, '(CFixedPoint)0')
 ```
 
 ## Current branch state
@@ -177,6 +191,7 @@ ProductionView.GetSelectedMarket.MakeScope
 - Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
 - Best-effort hover auto-sync exists on the whole panel.
 - No standalone selector override remains.
+- The table is generated for all captured goods and filters by positive production.
 
 ## Plan B trigger
 
