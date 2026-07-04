@@ -253,3 +253,244 @@ modeu5_run_monthly_promoted_market_cycle = {
 		}
 	}
 }
+
+# PR5: local branch under the promoted-market shell.
+#
+# This is still a controlled helper surface, not the live monthly dispatcher.
+# It proves the intended local order for one promoted market-good:
+#   B market country cache -> B country-market capacities -> C scoped US-00
+#   -> D same-market US-10 -> scoped consistency validation.
+
+modeu5_reset_promoted_market_local_branch_metrics = {
+	remove_global_variable = modeu5_promoted_market_local_branch_country_cache_rebuilds
+	remove_global_variable = modeu5_promoted_market_local_branch_capacity_country_count
+	remove_global_variable = modeu5_promoted_market_local_branch_us00_calls
+	remove_global_variable = modeu5_promoted_market_local_branch_us10_calls
+	remove_global_variable = modeu5_promoted_market_local_branch_validation_calls
+	remove_global_variable = modeu5_promoted_market_local_branch_validation_failures
+	remove_global_variable = modeu5_promoted_market_local_branch_markets_processed
+	remove_global_variable = modeu5_promoted_market_local_branch_us10_satisfied_quantity
+	remove_global_variable = modeu5_promoted_market_local_branch_step_counter
+	remove_global_variable = modeu5_promoted_market_local_branch_us00_step
+	remove_global_variable = modeu5_promoted_market_local_branch_us10_step
+	remove_global_variable = modeu5_promoted_market_local_branch_validation_step
+
+	set_global_variable = { name = modeu5_promoted_market_local_branch_country_cache_rebuilds value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_capacity_country_count value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us00_calls value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us10_calls value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_validation_calls value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_validation_failures value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_markets_processed value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us10_satisfied_quantity value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_step_counter value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us00_step value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us10_step value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_local_branch_validation_step value = 0 }
+}
+
+modeu5_note_promoted_market_local_branch_country_cache_rebuild = {
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_country_cache_rebuilds
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_country_cache_rebuilds
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_local_branch_capacity_country = {
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_capacity_country_count
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_capacity_country_count
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_local_branch_us00 = {
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_step_counter
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_step_counter
+			add = 1
+		}
+	}
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us00_step value = global_var:modeu5_promoted_market_local_branch_step_counter }
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_us00_calls
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_us00_calls
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_local_branch_us10 = {
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_step_counter
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_step_counter
+			add = 1
+		}
+	}
+	set_global_variable = { name = modeu5_promoted_market_local_branch_us10_step value = global_var:modeu5_promoted_market_local_branch_step_counter }
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_us10_calls
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_us10_calls
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_local_branch_validation = {
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_step_counter
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_step_counter
+			add = 1
+		}
+	}
+	set_global_variable = { name = modeu5_promoted_market_local_branch_validation_step value = global_var:modeu5_promoted_market_local_branch_step_counter }
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_validation_calls
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_validation_calls
+			add = 1
+		}
+	}
+}
+
+modeu5_validate_scoped_market_good_from_prepared_country_cache = {
+	$country$ = {
+		save_temporary_scope_as = modeu5_reconciliation_controller
+	}
+	$market$ = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_validate_stock_consistency_from_prepared_market_country_cache_good_$good$ = yes
+}
+
+modeu5_run_promoted_market_local_branch_market_good = {
+	$country$ = {
+		save_temporary_scope_as = modeu5_local_branch_country
+		save_temporary_scope_as = modeu5_country
+	}
+	$market$ = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_prepare_promoted_market_country_cache = {
+		market = scope:modeu5_market
+	}
+	modeu5_note_promoted_market_local_branch_country_cache_rebuild = yes
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_promoted_market_capacity_country
+			modeu5_prepare_promoted_country_market_capacity = {
+				country = scope:modeu5_promoted_market_capacity_country
+				market = scope:modeu5_market
+			}
+			modeu5_note_promoted_market_local_branch_capacity_country = yes
+		}
+	}
+
+	scope:modeu5_local_branch_country = {
+		save_temporary_scope_as = modeu5_country
+		save_temporary_scope_as = modeu5_reconciliation_controller
+	}
+
+	modeu5_note_promoted_market_local_branch_us00 = yes
+	modeu5_run_scoped_us00_market_good = {
+		country = scope:modeu5_local_branch_country
+		market = scope:modeu5_market
+		good = $good$
+	}
+
+	save_temporary_scope_value_as = { name = modeu5_satisfied_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_unsatisfied_quantity value = 0 }
+	modeu5_note_promoted_market_local_branch_us10 = yes
+	modeu5_run_scoped_us10_monthly_market_good = {
+		country = scope:modeu5_local_branch_country
+		market = scope:modeu5_market
+		good = $good$
+	}
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_us10_satisfied_quantity
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_us10_satisfied_quantity
+			add = scope:modeu5_satisfied_quantity
+		}
+	}
+
+	scope:modeu5_market = {
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	modeu5_note_promoted_market_local_branch_validation = yes
+	modeu5_validate_scoped_market_good_from_prepared_country_cache = {
+		country = scope:modeu5_local_branch_country
+		market = scope:modeu5_market
+		good = $good$
+	}
+	if = {
+		limit = { scope:modeu5_validation_failed_after_rebuild > 0 }
+		set_global_variable = {
+			name = modeu5_promoted_market_local_branch_validation_failures
+			value = {
+				value = global_var:modeu5_promoted_market_local_branch_validation_failures
+				add = 1
+			}
+		}
+	}
+
+	set_global_variable = {
+		name = modeu5_promoted_market_local_branch_markets_processed
+		value = {
+			value = global_var:modeu5_promoted_market_local_branch_markets_processed
+			add = 1
+		}
+	}
+}
+
+modeu5_run_first_promoted_market_local_branch_good = {
+	$country$ = {
+		save_temporary_scope_as = modeu5_local_branch_country
+		save_temporary_scope_as = modeu5_promoted_market_cycle_country
+	}
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	scope:modeu5_local_branch_country = {
+		set_local_variable = { name = modeu5_pr126_first_promoted_market_selected value = 0 }
+	}
+
+	if = {
+		limit = { has_global_variable_list = modeu5_promoted_markets_this_cycle }
+		every_in_global_list = {
+			variable = modeu5_promoted_markets_this_cycle
+			limit = {
+				scope:modeu5_local_branch_country = {
+					var:modeu5_pr126_first_promoted_market_selected = 0
+				}
+			}
+			save_temporary_scope_as = modeu5_market
+			modeu5_run_promoted_market_local_branch_market_good = {
+				country = scope:modeu5_local_branch_country
+				market = scope:modeu5_market
+				good = $good$
+			}
+			scope:modeu5_local_branch_country = {
+				set_local_variable = { name = modeu5_pr126_first_promoted_market_selected value = 1 }
+			}
+		}
+	}
+}

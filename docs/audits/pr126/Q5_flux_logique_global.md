@@ -204,3 +204,48 @@ PR4 deliberately keeps `modeu5_promoted_markets_this_cycle` separate from
 markets should this cycle consider?", while the latter answers "has this market
 completed detailed-accounting promotion?". Stock-affecting PRs must still check
 promotion readiness before using detailed country-market records.
+
+## 10. PR5 promoted-market local branch contract
+
+PR5 wires a controlled local branch under the promoted-market shell. It still
+does not replace `modeu5_run_monthly_stock_cycle`; it proves that the shell can
+drive one promoted market-good through the intended local order:
+
+```txt
+modeu5_run_monthly_promoted_market_cycle
+  -> modeu5_promoted_markets_this_cycle
+  -> modeu5_run_promoted_market_local_branch_market_good
+      -> B rebuild countries_present_in_market once for the promoted market
+      -> B refresh country-market capacities for countries present in that market
+      -> C run scoped US-00 generated-good bridge
+      -> D run scoped same-market US-10 generated-good bridge
+      -> validate scoped market-good consistency from the prepared country cache
+```
+
+The PR5 debug probe deliberately satisfies the US-10 request from the current
+country's own stock. This exercises the same-market consumption fast path and
+keeps the controlled test from using a broad supplier candidate fallback. The
+generated US-10 resolver still owns its internal candidate scan for cases where
+own stock cannot satisfy the request; that remaining narrowing belongs to a
+later PR126 layer, not to PR5.
+
+The probe validates the observable order with metrics:
+
+| Metric | Expected in PR5 probe | Meaning |
+|---|---:|---|
+| `modeu5_promoted_market_local_branch_country_cache_rebuilds` | 1 | The local branch prepared the market-country cache once. |
+| `modeu5_promoted_market_local_branch_capacity_country_count` | `> 0` | At least one country-market capacity record was refreshed. |
+| `modeu5_promoted_market_local_branch_us00_calls` | 1 | The scoped US-00 generated-good bridge ran before consumption. |
+| `modeu5_promoted_market_local_branch_us10_calls` | 1 | The scoped same-market US-10 bridge ran after US-00. |
+| `modeu5_promoted_market_local_branch_validation_calls` | 1 | The market-good consistency check ran after US-10. |
+| `modeu5_promoted_market_local_branch_validation_failures` | 0 | The market aggregate remained reconcilable from country stocks. |
+
+Known PR5 boundary:
+
+- live monthly dispatch remains unchanged;
+- the test covers one promoted market and one good (`wheat`);
+- inter-market trade branch wiring remains deferred;
+- US-10 supplier-candidate internals may still rebuild their own candidate
+  cache when own stock cannot satisfy the request;
+- PR5 establishes the outer local branch and scoped validation shape for the
+  next stacked PR, not the final optimized monthly cycle.
