@@ -15,11 +15,12 @@ template production_main_tabs {
 			size = { 100% 100% }
 			name = "tab_buildings"
 		}
-		down = "[IsLateralViewOpened('production')]"
+		down = "[And(IsLateralViewOpened('production'), Not(GetVariableSystem.Exists('modeu5_us10_stock_tab')))]"
 		datacontext = "[GetAutomatedSystemItem4('buildings', 'productionmethods', 'closebuildings', 'subsidizebuildings')]"
 		using = multi_automated_tab
 
 		blockoverride "on_action_left" {
+			on_action = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
 			on_action = "[OpenLateralView('production')]"
 		}
 		blockoverride "on_action_right_title" { title = "TOGGLE_PRODUCTION_AUTOMATION" }
@@ -37,6 +38,7 @@ template production_main_tabs {
 		using = automated_tab
 
 		blockoverride "on_action_left" {
+			on_action = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
 			on_action = "[OpenLateralView('goods_production')]"
 		}
 		blockoverride "text" { text = "EXPAND_RAW_GOODS_TEXT" }
@@ -47,6 +49,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "FOOD_PRODUCTION_TEXT"
 		}
+		onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
 		onclick = "[OpenLateralView('food_production')]"
 		down = "[IsLateralViewOpened('food_production')]"
 		tooltipwidget = {
@@ -59,6 +62,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "game_concept_locations"
 		}
+		onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
 		onclick = "[OpenLateralView('town_rights')]"
 		down = "[IsLateralViewOpened('town_rights')]"
 		tooltipwidget = {
@@ -71,17 +75,18 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
-		# Do not run the heavy table refresh from the tab click. First keep the
-		# interaction purely UI-state based; refresh can be added once the panel is stable.
-		onclick = "[GetVariableSystem.Toggle('modeu5_us10_stock_tab')]"
-		down = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+		# Keep ModeU5 as a sub-mode of the existing production lateralview.
+		# Do not call the heavy US-10 refresh/read-model from this tab.
+		onclick = "[OpenLateralView('production')]"
+		onclick = "[GetVariableSystem.Set('modeu5_us10_stock_tab', 'yes')]"
+		down = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
 	}
 
 	widget = {
-		visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+		visible = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
 		allow_outside = yes
 		using = modeu5_us10_stock_panel
 	}
