@@ -26,9 +26,7 @@ When an iterator, scope link, value, effect, or ownership rule is unconfirmed, r
 Reuse the existing generator model: tools/modeu5_tool_lib.sh, tools/modeu5_goods.sh, tools/templates/, tools/generate_all.sh, and tools/validate_generators.sh.
 ```
 
-## PR stack to request from an AGENT
-
-### PR 1 — File/Cache inventory executable audit
+## PR 1 — File/Cache inventory executable audit
 
 Goal: convert Q1/Q2/Q4 into a machine-checkable inventory before runtime refactor.
 
@@ -42,7 +40,7 @@ Likely files:
 
 Acceptance: source/cache/work/debug state is identified; suspicious stock writes outside central operators are flagged; generator conventions remain aligned with #131; gameplay files are not rewired.
 
-### PR 2 — Cache classification and cleanup plan
+## PR 2 — Cache classification and cleanup plan
 
 Goal: convert the inventory into explicit ownership rules.
 
@@ -50,7 +48,7 @@ Task: update documentation and comments so each cache has one owner, one rebuild
 
 Acceptance: every persistent/work cache has owner, rebuild, and reset policy; `countries_present_in_market` is documented as work cache, not stock source.
 
-### PR 3 — Extract helpers B/C/D without changing monthly order
+## PR 3 — Extract helpers B/C/D without changing monthly order
 
 Goal: prepare the promoted-market refactor without changing behaviour.
 
@@ -62,7 +60,7 @@ Task: extract no-op-equivalent helper entry points:
 
 Acceptance: monthly dispatcher order remains semantically unchanged; tests can call the helpers; no new direct stock write appears.
 
-### PR 4 — Create promoted-market list and dispatcher shell
+## PR 4 — Create promoted-market list and dispatcher shell
 
 Goal: implement the outer target shell, not the full logic.
 
@@ -70,7 +68,7 @@ Task: add `modeu5_run_monthly_promoted_market_cycle` as test-only or behind a di
 
 Acceptance: promoted-market count is observable; Normal and Performance promotion differ as expected; `every_market_promoted` is implemented as a ModeU5 work-list/helper pattern, not assumed to be a native EU5 iterator.
 
-### PR 5 — Wire local branch under promoted-market shell
+## PR 5 — Wire local branch under promoted-market shell
 
 Goal: run local market-good work under the promoted-market shell in controlled tests.
 
@@ -78,7 +76,7 @@ Task: for one promoted market, rebuild `countries_present_in_market` once, call 
 
 Acceptance: US-00 and same-market consumption do not rescan all markets independently; US-00 produced/added/rejected facts are frozen before consumption, trade, decay, validation, or reconciliation.
 
-### PR 6 — Wire inter-market trade branch
+## PR 6 — Wire inter-market trade branch
 
 Goal: add inter-market transfer after the local branch is stable.
 
@@ -86,7 +84,7 @@ Task: add the inter-market branch under the promoted-market shell. Use `every_tr
 
 Acceptance: `source_market == target_market` stays same-market; `source_market != target_market` enters inter-market; requested/transferred/unsatisfied quantities are recorded separately.
 
-### PR 7 — Switch monthly dispatcher and compare modes
+## PR 7 — Switch monthly dispatcher and compare modes
 
 Goal: replace the old broad path only after shell/local/trade tests pass.
 

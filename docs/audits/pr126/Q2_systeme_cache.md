@@ -1,47 +1,47 @@
-# Q2 — Système de cache et ownership
+# Q2 — Cache system and ownership
 
 ## Conclusion
 
-Le système de cache est volontairement riche. Il est acceptable si chaque état est classé et si un agent sait immédiatement s'il lit une source de vérité, un cache dérivé, un work cache, un ledger mensuel ou une variable debug. Le risque principal n'est pas le nombre de caches, mais l'utilisation d'un cache de scheduling comme preuve métier ou l'écriture directe hors helpers.
+The cache system is intentionally rich. It is acceptable if every state is classified and if an agent can immediately tell whether it is reading a source of truth, a derived cache, a work cache, a monthly ledger, or a debug variable. The main risk is not the number of caches, but using a scheduling cache as business proof or writing directly outside helpers.
 
-## Classification canonique
+## Canonical classification
 
-| Cache / variable / liste | Fichiers concernés | Classe | Source de vérité | Mise à jour / reset | Risque | Règle agent |
+| Cache / variable / list | Affected files | Class | Source of truth | Update / reset | Risk | Agent rule |
 |---|---|---|---|---|---|---|
-| `modeu5_<good>_stock_by_market` | `modeu5_stock_effects.txt`, adapters générés | source stock pays×marché×good | Oui | Toute mutation stock via opérateurs | P0 si écriture directe | Ne jamais écrire hors `modeu5_add/remove/transfer/decay_stock` |
-| `modeu5_<good>_market_stock` | adapters générés, validation | cache agrégé marché×good | Non, dérivé de country stock | Mutation centralisée, rebuild, validation | P0 si traité comme source | Rebuild depuis pays uniquement |
-| `modeu5_stock_cap_by_market` | `modeu5_capacity_effects.txt` | source calculée capacité pays×marché | Oui pour admission courante | Init, hooks owner/rank/capital, refresh mensuel | P1 si stale avant production | Refresh capacité avant admission stock |
-| `modeu5_base_capacity_by_market` | capacity/debug | debug breakdown | Non | Avec capacité | P3 | Explication seulement |
-| `modeu5_building_capacity_by_market` | capacity/debug | debug/future breakdown | Non | Avec capacité | P3 | Explication seulement |
-| `modeu5_foreign_capacity_by_market` | capacity/debug | debug/future breakdown | Non | Avec capacité | P3 | Explication seulement |
-| `modeu5_<good>_produced_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | Production lue/estimée | Figer après production/admission ; reset après lecteurs | P1 si reset/recalcul tardif | Ne pas recalculer après US-10/decay |
-| `modeu5_<good>_added_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | Résultat `modeu5_add_stock` | Figer après admission ; reset après lecteurs | P1 | Input overproduction |
-| `modeu5_<good>_rejected_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | Résultat `modeu5_add_stock` | Figer après admission ; reset après lecteurs | P1 | Input overproduction |
-| `modeu5_<good>_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | produced/added/rejected facts | Calcul après facts figés | P1 si recalcul post-decay | Lire facts figés, pas stock restant |
-| `modeu5_<good>_effective_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | ratio + buffer | Mensuel | P1 | Base de pénalité, pas vérité stock |
-| `modeu5_<good>_void_wealth_by_market` | `modeu5_void_economy_effects.txt` | US-00 finalization/carryover | facts US-00 figés + prix | Après readers métier, avant reset | P1 | Publier depuis facts figés |
-| `modeu5_<good>_void_taxable_income_proxy_by_market` | `modeu5_void_economy_effects.txt` | debug/proxy | void wealth | Avec finalization US-00 | P2 | Proxy sizing/debug seulement |
-| `modeu5_<good>_production_penalty_by_market` | `modeu5_void_economy_effects.txt` | carryover N+1 | ratio effectif figé | Mensuel, consommé mois suivant | P1 | Ne pas baser sur stock post-decay |
-| `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 ledger | Résolution demande same-market | Mensuel ; reset après US-10.3/UI | P1 | Same-market consumption, pas trade |
-| `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 ledger | Transfert inter-market réel | Mensuel ; reset après readers | P1 | Seulement `source_market != target_market` |
-| `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | work cache scheduling | Découverte pays→marchés | Rare/rebuild explicite | P1 si stale | Owner performance ; jamais preuve de stock |
-| `modeu5_active_markets_any_good` | performance + adapters | work cache union | Activité stock/good | Additif + rebuild/audit | P1 si jamais nettoyé | Scheduling seulement |
-| `modeu5_<good>_active_markets` | generated adapters | work cache par good | Activité good | Additif + rebuild/audit | P1 | Pas une preuve de quantité positive |
-| `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | work cache marché→pays | Relations pays/marché recalculables | Rebuild par marché promu | P1 si durable par erreur | Rebuild once per promoted market |
-| `modeu5_debug_last_*` | `modeu5_debug_effects.txt` | debug state | Opération courante | À chaque probe/opération | P3 | Ne jamais piloter la logique métier |
+| `modeu5_<good>_stock_by_market` | `modeu5_stock_effects.txt`, generated adapters | country×market×good stock source | Yes | Every stock mutation through operators | P0 if direct write | Never write outside `modeu5_add/remove/transfer/decay_stock` |
+| `modeu5_<good>_market_stock` | generated adapters, validation | market×good aggregate cache | No, derived from country stock | Centralized mutation, rebuild, validation | P0 if treated as source | Rebuild from country only |
+| `modeu5_stock_cap_by_market` | `modeu5_capacity_effects.txt` | calculated country×market capacity source | Yes for current admission | Init, owner/rank/capital hooks, monthly refresh | P1 if stale before production | Refresh capacity before stock admission |
+| `modeu5_base_capacity_by_market` | capacity/debug | debug breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_building_capacity_by_market` | capacity/debug | debug/future breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_foreign_capacity_by_market` | capacity/debug | debug/future breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_<good>_produced_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | Read/estimated production | Freeze after production/admission; reset after readers | P1 if reset/recomputed late | Do not recompute after US-10/decay |
+| `modeu5_<good>_added_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | `modeu5_add_stock` result | Freeze after admission; reset after readers | P1 | Overproduction input |
+| `modeu5_<good>_rejected_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | `modeu5_add_stock` result | Freeze after admission; reset after readers | P1 | Overproduction input |
+| `modeu5_<good>_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | produced/added/rejected facts | Calculate from frozen facts | P1 if recomputed after decay | Read frozen facts, not remaining stock |
+| `modeu5_<good>_effective_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | ratio + buffer | Monthly | P1 | Penalty basis, not stock truth |
+| `modeu5_<good>_void_wealth_by_market` | `modeu5_void_economy_effects.txt` | US-00 finalization/carryover | frozen US-00 facts + prices | After business readers, before reset | P1 | Publish from frozen facts |
+| `modeu5_<good>_void_taxable_income_proxy_by_market` | `modeu5_void_economy_effects.txt` | debug/proxy | void wealth | With US-00 finalization | P2 | Proxy sizing/debug only |
+| `modeu5_<good>_production_penalty_by_market` | `modeu5_void_economy_effects.txt` | N+1 carryover | frozen effective ratio | Monthly, consumed next month | P1 | Do not base on post-decay stock |
+| `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 ledger | same-market demand resolution | Monthly; reset after US-10.3/UI | P1 | Same-market consumption, not trade |
+| `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 ledger | actual inter-market transfer | Monthly; reset after readers | P1 | Only `source_market != target_market` |
+| `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | scheduling work cache | country→market discovery | Rare/explicit rebuild | P1 if stale | Performance owner; never proof of stock |
+| `modeu5_active_markets_any_good` | performance + adapters | union work cache | stock/good activity | Additive + rebuild/audit | P1 if never cleaned | Scheduling only |
+| `modeu5_<good>_active_markets` | generated adapters | per-good work cache | good activity | Additive + rebuild/audit | P1 | Not proof of positive quantity |
+| `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | market→countries work cache | recalculable country/market relations | Rebuild per promoted market | P1 if treated as durable | Rebuild once per promoted market |
+| `modeu5_debug_last_*` | `modeu5_debug_effects.txt` | debug state | current operation | At each probe/operation | P3 | Never drive business logic |
 
-## Caches dupliqués ou suspects
+## Duplicated or suspicious caches
 
-| Cache A | Cache B | Information dupliquée | Décision |
+| Cache A | Cache B | Duplicated information | Decision |
 |---|---|---|---|
-| `modeu5_<good>_stock_by_market` | `modeu5_<good>_market_stock` | Quantité de stock | Garder les deux : source pays vs agrégat marché |
-| `modeu5_stock_cap_by_market` | breakdown `base/building/foreign` | Capacité | Garder : total métier vs explication debug |
-| `modeu5_<good>_active_markets` | `modeu5_active_markets_any_good` | Marché actif | Garder : per-good vs union globale |
-| `modeu5_performance_relevant_markets` | active markets | Marchés à parcourir | Garder séparé : politique performance vs activité stock |
-| US-00 ledgers | UI monthly stock/consumption | État économique mensuel | Fusion partielle possible seulement après identification de tous les readers |
-| `modeu5_trade_*` | `modeu5_consumption_*` | Demande satisfaite/insatisfaite | Ne pas fusionner : inter-market vs same-market |
+| `modeu5_<good>_stock_by_market` | `modeu5_<good>_market_stock` | Stock quantity | Keep both: country source vs market aggregate |
+| `modeu5_stock_cap_by_market` | `base/building/foreign` breakdown | Capacity | Keep: business total vs debug explanation |
+| `modeu5_<good>_active_markets` | `modeu5_active_markets_any_good` | Active market | Keep: per-good vs global union |
+| `modeu5_performance_relevant_markets` | active markets | Markets to traverse | Keep separate: performance policy vs stock activity |
+| US-00 ledgers | UI monthly stock/consumption | Monthly economic state | Partial merge only after all readers are identified |
+| `modeu5_trade_*` | `modeu5_consumption_*` | Satisfied/unsatisfied demand | Do not merge: inter-market vs same-market |
 
-## Contrat de reset et rebuild
+## Reset and rebuild contract
 
 ```txt
 monthly start:
@@ -60,13 +60,13 @@ monthly end:
   reset monthly ledgers only after all readers
 ```
 
-## Questions obligatoires avant ajout d'un cache
+## Mandatory questions before adding a cache
 
-| Question | Réponse attendue |
+| Question | Expected answer |
 |---|---|
-| Quel est l'owner ? | country, market-global map, global list, debug controller, ou generated adapter |
-| Quelle est la classe ? | source, derived cache, work cache, monthly ledger, annual ledger, debug |
-| Quel est le rebuild trigger ? | init, monthly start, promoted market, validation, annual, manual probe |
-| Quelle est la reset policy ? | jamais, monthly after readers, annual after readers, rebuild-only |
-| Quels readers existent ? | lister runtime, UI, debug, tests avant suppression |
-| Quelle validation détecte une divergence ? | audit script, runtime probe, consistency validator ou TECH-01 entry |
+| Who owns it? | country, market-global map, global list, debug controller, or generated adapter |
+| What class is it? | source, derived cache, work cache, monthly ledger, annual ledger, debug |
+| What is the rebuild trigger? | init, monthly start, promoted market, validation, annual, manual probe |
+| What is the reset policy? | never, monthly after readers, annual after readers, rebuild-only |
+| Which readers exist? | list runtime, UI, debug, and tests before deletion |
+| Which validation detects divergence? | audit script, runtime probe, consistency validator, or TECH-01 entry |

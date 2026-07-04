@@ -1,47 +1,47 @@
-# Audit PR #126 — source de vérité refactor
+# PR #126 Audit — refactor source of truth
 
-Source de la demande : PR GitHub #126, « Developement balance ».
+Source request: GitHub PR #126, “Developement balance”.
 
-Ce dossier est la base de contexte pour les agents qui doivent transformer l'audit PR126 en petites PRs stackées, reviewables et testables. Les rapports Q1–Q6 ne sont pas des notes historiques séparées : ils constituent le contexte canonique à lire avant d'écrire du code.
+This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code.
 
-## Ordre de lecture pour un agent
+## Reading order for an agent
 
-| Étape | Rapport | À utiliser pour |
+| Step | Report | Use it to |
 |---|---|---|
-| 1 | [Q1 — Architecture de fichiers](./Q1_architecture_fichiers.md) | Choisir le fichier propriétaire avant modification |
-| 2 | [Q2 — Système de cache](./Q2_systeme_cache.md) | Identifier source, cache dérivé, work cache, ledger ou debug |
-| 3 | [Q3 — Redondances de code](./Q3_redondances_code.md) | Distinguer répétition générée acceptable et duplication à refactorer |
-| 4 | [Q4 — Boucles et performance](./Q4_boucles_performance.md) | Évaluer le coût des scans et la cible promoted-market |
-| 5 | [Q5 — Flux logique global](./Q5_flux_logique_global.md) | Comprendre le workflow actuel et le workflow cible |
-| 6 | [Q6 — Description fonctionnelle](./Q6_description_fonctionnelle.md) | Traduire les règles métier en garde-fous de code |
-| 7 | [Instructions AGENT](./AGENT_REFACTOR_INSTRUCTIONS.md) | Lancer la stack de PRs de refactor |
+| 1 | [Q1 — File architecture](./Q1_architecture_fichiers.md) | Choose the owning file before changing code |
+| 2 | [Q2 — Cache system](./Q2_systeme_cache.md) | Identify source, derived cache, work cache, ledger, or debug state |
+| 3 | [Q3 — Code redundancy](./Q3_redondances_code.md) | Distinguish acceptable generated repetition from duplication to refactor |
+| 4 | [Q4 — Loops and performance](./Q4_boucles_performance.md) | Evaluate scan cost and the promoted-market target |
+| 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
+| 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
+| 7 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
-## Résumé exécutif global
+## Global executive summary
 
-Le mod est structuré autour de domaines réels : `stock`, `capacity`, `void economy`, `demand resolver`, `performance`, `configuration`, `debug`, `tools` et `templates`. La base est saine, mais le risque release reste l'accumulation de flux mensuels larges et de caches synchronisés par convention.
+The mod is structured around real domains: `stock`, `capacity`, `void economy`, `demand resolver`, `performance`, `configuration`, `debug`, `tools`, and `templates`. The foundation is healthy, but the release risk remains the accumulation of broad monthly flows and convention-synchronized caches.
 
-Depuis la resynchronisation de `developement-balance` avec la stack #119/#130/#131, les recommandations ci-dessous doivent réutiliser les contrats déjà acquis : boundaries performance/promotion, UI US-10, registre canonique de goods, templates et validateurs de générateurs. Un agent ne doit pas recréer un modèle parallèle.
+Since `developement-balance` was resynchronized with the #119/#130/#131 stack, the recommendations below must reuse the existing contracts: performance/promotion boundaries, US-10 UI, canonical goods registry, templates, and generator validators. An agent must not recreate a parallel model.
 
-## Tableau de synthèse des risques release
+## Release-risk summary table
 
-| Priorité | Problème | Impact release | Fichiers concernés | Action recommandée | Effort |
+| Priority | Issue | Release impact | Affected files | Recommended action | Effort |
 |---|---|---|---|---|---|
-| P0 | Les scripts runtime reposent sur beaucoup de maps synchronisées par convention | Divergence silencieuse possible si un helper contourne les opérateurs centraux | `modeu5_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Vérification automatisée des écritures directes hors helpers | M |
-| P0 | Le workflow mensuel reste encore broad-flow plutôt que promoted-market driven | US-00, US-10, validation et debug peuvent rescanner ou reconstruire leur propre monde | `modeu5_stock_effects.txt`, `modeu5_void_economy_effects.txt`, `modeu5_stock_demand_resolver_effects.txt` | Introduire progressivement le dispatcher promoted-market test-only puis comparer les modes | L |
-| P1 | Caches de scheduling additifs sans retrait élémentaire confirmé | Sur-validation ou coût croissant après longue partie | `modeu5_performance_effects.txt`, generated adapters | Documenter owner, rebuild trigger et reset policy pour chaque cache | S |
-| P1 | US-00 mélange ingestion facts et finalisation/carryover dans le raisonnement | Risque de recalculer une pénalité depuis un stock post-consumption/post-decay | `modeu5_void_economy_effects.txt`, generated adapters | Figer produced/added/rejected/ratio inputs avant US-10, decay et reconciliation | M |
-| P1 | Configuration CMM, runtime gates et package markers dispersés | Mauvaise compréhension contributeur et faux toggle runtime | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintenir un index de configuration unique | S |
-| P2 | Plusieurs probes contiennent des scénarios longs et proches | Maintenance coûteuse lors des changements de contrats | `packages/modeu5_core_tests/...` | Factoriser les conventions de dump, pas les scénarios métier | M |
-| P2 | Noms historiques de packages (`trade`, `war`) moins alignés avec le contrat courant | Confusion de playset avant release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Renommer seulement si compatible ; sinon documenter l'alias | M |
+| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `modeu5_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
+| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `modeu5_stock_effects.txt`, `modeu5_void_economy_effects.txt`, `modeu5_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
+| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `modeu5_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
+| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `modeu5_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
+| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
+| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/modeu5_core_tests/...` | Factor dump conventions, not business scenarios | M |
+| P2 | Historical package names (`trade`, `war`) are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
 
-## Contrats non négociables pour la stack PR126
+## Non-negotiable contracts for the PR126 stack
 
 ```txt
-1. Ne pas muter les stocks hors opérateurs centraux.
-2. Ne pas reconstruire country stock depuis market stock.
-3. Ne pas utiliser de nom de map construit dynamiquement au runtime.
-4. Ne pas ajouter de liste privée de goods dans un générateur.
-5. Ne pas ajouter de cache sans owner, rebuild trigger, reset policy et classification audit.
-6. Ne pas utiliser every_trade ou every_market_center en gameplay sans TECH-01 confirmé ou fallback accepté.
-7. Ne pas recalculer les facts US-00 du mois après consumption, transfer, decay, validation ou reconciliation.
+1. Do not mutate stocks outside the central operators.
+2. Do not rebuild country stock from market stock.
+3. Do not use runtime-built map names.
+4. Do not add a private goods list inside a generator.
+5. Do not add a cache without owner, rebuild trigger, reset policy, and audit classification.
+6. Do not use every_trade or every_market_center in gameplay without TECH-01 confirmation or an accepted fallback.
+7. Do not recompute the month's US-00 facts after consumption, transfer, decay, validation, or reconciliation.
 ```
