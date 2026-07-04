@@ -22,6 +22,8 @@ The mod is structured around real domains: `stock`, `capacity`, `void economy`, 
 
 Since `developement-balance` was resynchronized with the #119/#130/#131 stack, the recommendations below must reuse the existing contracts: performance/promotion boundaries, US-10 UI, canonical goods registry, templates, and generator validators. An agent must not recreate a parallel model.
 
+The PR126 monthly target is ownership-split: country pulse prepares country-owned work, the promoted-market local branch runs once per promoted market, and the country-scope trade pass handles only trades assigned to the current country.
+
 ## Release-risk summary table
 
 | Priority | Issue | Release impact | Affected files | Recommended action | Effort |
@@ -32,7 +34,7 @@ Since `developement-balance` was resynchronized with the #119/#130/#131 stack, t
 | P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `modeu5_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
 | P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
 | P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/modeu5_core_tests/...` | Factor dump conventions, not business scenarios | M |
-| P2 | Historical package names (`trade`, `war`) are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
+| P2 | Historical optional package names are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
 
 ## Non-negotiable contracts for the PR126 stack
 
@@ -42,6 +44,8 @@ Since `developement-balance` was resynchronized with the #119/#130/#131 stack, t
 3. Do not use runtime-built map names.
 4. Do not add a private goods list inside a generator.
 5. Do not add a cache without owner, rebuild trigger, reset policy, and audit classification.
-6. Do not use every_trade or every_market_center in gameplay without TECH-01 confirmation or an accepted fallback.
-7. Do not recompute the month's US-00 facts after consumption, transfer, decay, validation, or reconciliation.
+6. Do not use every_trade outside its TECH-01 confirmed country scope, and do not use every_market_center in gameplay without TECH-01 confirmation or an accepted fallback.
+7. Do not treat every_market_promoted as a native engine iterator.
+8. Do not run promoted-market local mutations once per country present; use a once-per-promoted-market dispatcher or deterministic owner guard.
+9. Do not recompute the month's US-00 facts after consumption, transfer, decay, validation, or reconciliation.
 ```
