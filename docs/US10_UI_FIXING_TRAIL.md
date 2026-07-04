@@ -4,6 +4,37 @@ This document records the working trail for PR #130 / branch `feature/us10-vanil
 
 Purpose: avoid circular debugging by keeping every UI hypothesis, test, result, and decision in one place.
 
+## Source references
+
+Primary UI reference for this trail:
+
+```txt
+https://github.com/MEIOU-and-Taxes/MnT-EU5/tree/develop/in_game/gui
+```
+
+Primary file currently studied:
+
+```txt
+MEIOU-and-Taxes/MnT-EU5@develop/in_game/gui/production_lateralview.gui
+```
+
+Rationale:
+
+- M&T is an active EU5 GUI mod source, closer than Vic3/CK3 examples.
+- Vic3/CK3 remain useful only for broad Jomini GUI state patterns, especially `GetVariableSystem`, not for EU5 `ProductionView` / `OpenLateralView` behavior.
+
+## Testing cadence decision
+
+Manual EU5 testing costs about 5 minutes per run. We will therefore stop asking for one test per micro-commit unless the commit is a risky crash/freeze fix.
+
+Working cadence:
+
+1. Accumulate a small coherent batch of analysis + code changes.
+2. Update this trail before asking for a test.
+3. Ask for one test only when the batch should answer a specific question.
+4. The requested test must include the expected visible result and the expected relevant log changes.
+5. Keep emergency single-commit tests only for freeze/crash/input-lock fixes.
+
 ## Current working problem
 
 US-10 needs a Production UI entry that displays ModeU5 country-stock data by:
@@ -49,6 +80,7 @@ Observation:
 - This supports the idea that top tabs are only view selectors.
 - ModeU5 should not call `OpenLateralView('modeu5_*')`.
 - If ModeU5 is attached here, it should probably call `OpenLateralView('production')` and then set an internal UI state.
+- However, `production_main_tabs` is not a good final body injection point. It is a selector row, not the body area. Injecting body here caused clipping / missing panel / overlay behavior.
 
 ### `production_view_subtabs`
 
@@ -68,6 +100,7 @@ Observation:
 - This is closer to what ModeU5 needs than a top-level lateralview.
 - Best candidate direction: ModeU5 should become an internal Production display mode, not a separate lateralview.
 - Earlier attempts to call `ProductionView.Vars.Set(...)` from the top tab row failed because the tab template did not have a valid `ProductionView` context. Inside `production_view_subtabs`, the context should be correct.
+- Next likely path: override/extend `production_view_subtabs` to add a ModeU5 internal display button, then use the same `ProductionView.Vars` state to show/hide a ModeU5 body area.
 
 ### Market card / market navigation patterns
 
@@ -235,3 +268,4 @@ Goal:
 3. Every test result must update this document.
 4. Avoid full `production_lateralview.gui` override unless no smaller stable injection point exists.
 5. Treat M&T/vanilla Production as primary reference; Vic3/CK3 are secondary references for general Jomini GUI patterns only.
+6. Because in-game tests cost several minutes, group safe analysis/code cleanups into coherent batches and ask for one test per batch, not one test per commit.
