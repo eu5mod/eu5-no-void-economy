@@ -20,6 +20,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_effects.txt"
 	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
+	"in_game/common/scripted_effects/modeu5_us00_market_production_cache_effects.txt"
 )
 
 for file in "${scan_files[@]}"; do
@@ -34,17 +35,20 @@ done
 				$name =~ s/\$\{good\}/<good>/;
 				print "$name\n";
 			}
-				while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
-					print "$&\n";
-				}
-				while (/\bmodeu5_(?:consumption|trade)___GOOD___[a-z0-9_]+_by_market\b/g) {
-					my $name = $&;
-					$name =~ s/___GOOD___/_<good>_/;
-					print "$name\n";
-				}
-				while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
-					print "$&\n";
-				}
+			while (/\bmodeu5_\$key\$_vanilla_produced_markets\b/g) {
+				print "modeu5_<good>_vanilla_produced_markets\n";
+			}
+			while (/__[A-Z0-9_]+_(?:MAP|LIST)__/g) {
+				print "$&\n";
+			}
+			while (/\bmodeu5_(?:consumption|trade)___GOOD___[a-z0-9_]+_by_market\b/g) {
+				my $name = $&;
+				$name =~ s/___GOOD___/_<good>_/;
+				print "$name\n";
+			}
+			while (/\bmodeu5_(?:stock_cap|base_capacity|building_capacity|foreign_capacity|void_wealth)_by_market\b/g) {
+				print "$&\n";
+			}
 			while (/\bmodeu5_(?:active_markets_any_good|countries_present_in_market|market_country_cache_dirty_markets|monthly_markets_seen_this_cycle|performance_relevant_markets|core03_probe_seen_locations)\b/g) {
 				print "$&\n";
 			}
@@ -83,6 +87,7 @@ modeu5_<good>_ui_monthly_consumption_by_market
 modeu5_<good>_ui_monthly_surplus_by_market
 modeu5_<good>_us10_sparse_suppliers
 modeu5_<good>_us00_active_record_by_market
+modeu5_<good>_vanilla_produced_markets
 modeu5_<good>_void_taxable_income_proxy_by_market
 modeu5_<good>_void_wealth_by_market
 modeu5_consumption_<good>_pending_requested_by_market
