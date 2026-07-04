@@ -207,6 +207,7 @@ stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 us10_ui_generator="tools/generate_us10_ui_helpers.sh"
 stock_postprocessor="tools/postprocess_perf14_promotion_guards.py"
+generator_validator="tools/validate_generators.sh"
 generated_stock_helpers_tmp="$(mktemp)"
 generated_us00_modifiers_tmp="$(mktemp)"
 generated_us00_modifier_localization_tmp="$(mktemp)"
@@ -218,11 +219,14 @@ require_file "$stock_adapter_template"
 require_file "$stock_generator"
 require_file "$us10_ui_generator"
 require_file "$stock_postprocessor"
+require_file "$generator_validator"
 require_file "$generated_stock_helpers"
 require_file "$generated_us00_modifiers"
 require_file "$generated_us00_modifier_localization"
 require_file "$generated_us10_table"
 require_file "$generated_us10_market_production"
+
+bash "$generator_validator" >/dev/null
 
 "$stock_generator" \
 	"$generated_stock_helpers_tmp" \
