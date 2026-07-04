@@ -1,0 +1,271 @@
+# ModeU5 US-00 vanilla market-production cache.
+#
+# Refreshed once per market-center country during the monthly stock cycle, then
+# read by the US-10 Production-hosted stock table. The cache stores a boolean
+# per market x good telling whether vanilla says the good is produced in market,
+# independently from current ModeU5 stock or capacity saturation.
+
+modeu5_refresh_us00_vanilla_market_production_cache_current_country = {
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		modeu5_refresh_us00_vanilla_market_production_cache_all_goods = yes
+	}
+}
+
+modeu5_refresh_us00_vanilla_market_production_cache_all_goods = {
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = cotton key = cotton }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = sugar key = sugar }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = tobacco key = tobacco }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = tar key = tar }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = porcelain key = porcelain }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = naval_supplies key = naval_supplies }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = firearms key = firearms }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = cannons key = cannons }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = weaponry key = weaponry }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = glass key = glass }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = steel key = steel }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = cloth key = cloth }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = fine_cloth key = fine_cloth }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = liquor key = liquor }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = beer key = beer }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = paper key = paper }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = books key = books }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = jewelry key = jewelry }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = leather key = leather }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = tools key = tools }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = masonry key = masonry }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = lacquerware key = lacquerware }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = pottery key = pottery }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = furniture key = furniture }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = horses key = horses }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = clay key = clay }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = sand key = sand }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = coal key = coal }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = iron key = iron }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = copper key = copper }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = goods_gold key = goods_gold }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = silver key = silver }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = stone key = stone }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = tin key = tin }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = lead key = lead }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = silk key = silk }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = dyes key = dyes }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = incense key = incense }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = tea key = tea }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = cocoa key = cocoa }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = coffee key = coffee }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = fiber_crops key = fiber_crops }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = ivory key = ivory }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = lumber key = lumber }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = salt key = salt }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = medicaments key = medicaments }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = gems key = gems }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = pearls key = pearls }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = amber key = amber }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = saltpeter key = saltpeter }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = alum key = alum }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = wine key = wine }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = elephants key = elephants }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = marble key = marble }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = mercury key = mercury }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = saffron key = saffron }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = pepper key = pepper }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = cloves key = cloves }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = chili key = chili }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = wool key = wool }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = wild_game key = wild_game }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = fur key = fur }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = fish key = fish }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = wheat key = wheat }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = maize key = maize }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = rice key = rice }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = millet key = millet }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = legumes key = legumes }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = potato key = potato }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = livestock key = livestock }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = olives key = olives }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = fruit key = fruit }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = beeswax key = beeswax }
+	modeu5_refresh_us00_vanilla_market_production_cache_good = { good = slaves_goods key = slaves_goods }
+}
+
+modeu5_refresh_us00_vanilla_market_production_cache_good = {
+	if = {
+		limit = {
+			has_global_variable_map = modeu5_$key$_vanilla_produced_markets
+			is_key_in_global_variable_map = {
+				name = modeu5_$key$_vanilla_produced_markets
+				target = scope:modeu5_market
+			}
+		}
+		remove_from_global_variable_map = {
+			name = modeu5_$key$_vanilla_produced_markets
+			key = scope:modeu5_market
+		}
+	}
+	if = {
+		limit = { scope:modeu5_market = { is_produced_in_market = goods:$good$ } }
+		add_to_global_variable_map = {
+			name = modeu5_$key$_vanilla_produced_markets
+			key = scope:modeu5_market
+			value = 1
+		}
+	}
+}
+
+modeu5_us10_ui_prepare_current_market_table_from_us00_cache = {
+	modeu5_us10_ui_prepare_current_market_table = yes
+	modeu5_us10_ui_capture_cached_selected_market_produced_by_market = yes
+	scope:modeu5_us10_ui_country = {
+		debug_log = "ModeU5 US-10-UI FILTER-CACHE market_index=[THIS.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('modeu5_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('modeu5_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('modeu5_us10_ui_countries_present_in_market_count').GetValue|0] cached_rows=[THIS.GetVariable('modeu5_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('modeu5_us10_ui_stock_fallback_rows').GetValue|0] wheat_cache=[THIS.GetVariable('modeu5_us10_ui_wheat_is_produced_in_market').GetValue|0] iron_cache=[THIS.GetVariable('modeu5_us10_ui_iron_is_produced_in_market').GetValue|0] cloth_cache=[THIS.GetVariable('modeu5_us10_ui_cloth_is_produced_in_market').GetValue|0]"
+	}
+}
+
+modeu5_us10_ui_capture_cached_selected_market_produced_by_market = {
+	save_temporary_scope_as = modeu5_us10_ui_country
+	set_variable = { name = modeu5_us10_ui_produced_positive_rows value = 0 }
+	set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = 0 }
+	set_variable = { name = modeu5_us10_ui_countries_present_in_market_count value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = modeu5_us10_ui_selected_market }
+		every_in_global_list = {
+			variable = modeu5_us10_ui_selected_market
+			save_temporary_scope_as = modeu5_us10_ui_selected_market_scope
+			scope:modeu5_us10_ui_selected_market_scope = { save_temporary_scope_as = modeu5_market_country_cache_market }
+			modeu5_rebuild_countries_present_in_market = yes
+
+			if = {
+				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				every_in_global_list = {
+					variable = modeu5_countries_present_in_market
+					scope:modeu5_us10_ui_country = {
+						set_variable = { name = modeu5_us10_ui_countries_present_in_market_count value = { value = var:modeu5_us10_ui_countries_present_in_market_count add = 1 } }
+					}
+				}
+			}
+
+			modeu5_us10_ui_capture_cached_all_market_produced_rows = yes
+		}
+	}
+}
+
+modeu5_us10_ui_capture_cached_all_market_produced_rows = {
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = cotton key = cotton }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = sugar key = sugar }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = tobacco key = tobacco }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = tar key = tar }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = porcelain key = porcelain }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = naval_supplies key = naval_supplies }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = firearms key = firearms }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = cannons key = cannons }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = weaponry key = weaponry }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = glass key = glass }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = steel key = steel }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = cloth key = cloth }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = fine_cloth key = fine_cloth }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = liquor key = liquor }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = beer key = beer }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = paper key = paper }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = books key = books }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = jewelry key = jewelry }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = leather key = leather }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = tools key = tools }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = masonry key = masonry }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = lacquerware key = lacquerware }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = pottery key = pottery }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = furniture key = furniture }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = horses key = horses }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = clay key = clay }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = sand key = sand }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = coal key = coal }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = iron key = iron }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = copper key = copper }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = goods_gold key = goods_gold }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = silver key = silver }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = stone key = stone }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = tin key = tin }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = lead key = lead }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = silk key = silk }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = dyes key = dyes }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = incense key = incense }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = tea key = tea }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = cocoa key = cocoa }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = coffee key = coffee }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = fiber_crops key = fiber_crops }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = ivory key = ivory }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = lumber key = lumber }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = salt key = salt }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = medicaments key = medicaments }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = gems key = gems }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = pearls key = pearls }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = amber key = amber }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = saltpeter key = saltpeter }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = alum key = alum }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = wine key = wine }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = elephants key = elephants }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = marble key = marble }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = mercury key = mercury }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = saffron key = saffron }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = pepper key = pepper }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = cloves key = cloves }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = chili key = chili }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = wool key = wool }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = wild_game key = wild_game }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = fur key = fur }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = fish key = fish }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = wheat key = wheat }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = maize key = maize }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = rice key = rice }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = millet key = millet }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = legumes key = legumes }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = potato key = potato }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = livestock key = livestock }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = olives key = olives }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = fruit key = fruit }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = beeswax key = beeswax }
+	modeu5_us10_ui_capture_cached_market_produced_row = { good = slaves_goods key = slaves_goods }
+}
+
+modeu5_us10_ui_capture_cached_market_produced_row = {
+	scope:modeu5_us10_ui_country = {
+		set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = 0 }
+		set_variable = { name = modeu5_us10_ui_$key$_ledger_produced_by_market value = 0 }
+		set_variable = { name = modeu5_us10_ui_$key$_is_produced_in_market value = 0 }
+		set_variable = { name = modeu5_us10_ui_$key$_visible value = 0 }
+		set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 0 }
+	}
+
+	if = {
+		limit = {
+			has_global_variable_map = modeu5_$key$_vanilla_produced_markets
+			is_key_in_global_variable_map = {
+				name = modeu5_$key$_vanilla_produced_markets
+				target = scope:modeu5_us10_ui_selected_market_scope
+			}
+			"global_variable_map(modeu5_$key$_vanilla_produced_markets|scope:modeu5_us10_ui_selected_market_scope)" > 0
+		}
+		scope:modeu5_us10_ui_country = {
+			set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = 1 }
+			set_variable = { name = modeu5_us10_ui_$key$_is_produced_in_market value = 1 }
+			set_variable = { name = modeu5_us10_ui_$key$_visible value = 1 }
+			set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 1 }
+			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+		}
+	}
+	else_if = {
+		limit = {
+			scope:modeu5_us10_ui_country = {
+				OR = {
+					var:modeu5_us10_ui_$key$_market_stock > 0
+					var:modeu5_us10_ui_$key$_country_stock > 0
+				}
+			}
+		}
+		scope:modeu5_us10_ui_country = {
+			set_variable = { name = modeu5_us10_ui_$key$_visible value = 1 }
+			set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 2 }
+			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+		}
+	}
+}
