@@ -130,21 +130,15 @@ modeu5_note_country_trade_owner_outcome_quantities = {
 }
 
 modeu5_capture_country_trade_owner_trade_quantity = {
+	save_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 0 }
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_owner_goods_quantity
+		name = modeu5_trade_owner_trade_volume
 		value = {
 			value = trade_volume
-			divide = traded_goods:transport_cost
 			min = 0
 		}
 	}
-	if = {
-		limit = { scope:modeu5_trade_owner_goods_quantity > 0 }
-		modeu5_note_country_trade_owner_quantity_confirmed_trade = yes
-	}
-	else = {
-		modeu5_note_country_trade_owner_quantity_blocked_trade = yes
-	}
+	modeu5_note_country_trade_owner_quantity_blocked_trade = yes
 }
 
 # Country-scoped native trade-owner pass. It classifies trades reached from the
