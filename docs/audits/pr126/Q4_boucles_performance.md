@@ -8,6 +8,8 @@ The main cost comes from country↔market↔goods loops, validation/reconciliati
 2. heavy local work only once per promoted market, present countries, and active goods;
 3. a separate country-scope trade pass that handles only trades assigned to the current country and delegates stock effects to handlers.
 
+There is no separate Target E in the recommended design. Earlier generic market/trade Target E wording was removed because it blurs the ownership split: market-local work belongs under the promoted-market dispatcher or owner guard, while trade work belongs under the country-scope trade-owner pass.
+
 ## Audited loops
 
 | Loop / flow | Trigger | Frequency | Traversed scope | Cache used | Performance risk | Target optimization |
@@ -53,8 +55,7 @@ Reconciliation must not become the normal mechanism for recalculating country st
 | Solution | Dominant shape | Order of magnitude | Reading | Risk |
 |---|---|---|---|---|
 | Current state country + broad pipelines | `monthly_country_pulse` -> country-markets capacity -> US-00 all-goods -> separate US-10 | `O(C * M_c + C * M_c * G_market + resolver scans)` | Costly baseline; several US may revisit the same axes | caches prepared outside the market/trade container |
-| Generic market/trade Target E | readiness -> market/trade outer loop -> B/C/D under E | `O(P? * (K_m + G_a + T?))` | Good only if selector E is already restricted | too abstract if promotion and trade ownership are not explicit |
-| Ownership-split target | country prep -> promoted-market local branch -> country-scope trade pass | `O(C * M_c) + O(P * K_m * G_a) + trade pass cost` | Best compromise: explicit market-local owner and explicit trade owner | requires a robust promotion definition and owner guard |
+| Ownership-split target | country prep -> promoted-market local branch -> country-scope trade pass | `O(C * M_c) + O(P * K_m * G_a) + O(C * T_country)` | Recommended target: explicit market-local owner and explicit trade owner | requires a robust promotion definition, owner guard, and trade-owner definition |
 
 ## Expected order of magnitude
 
@@ -65,7 +66,7 @@ Without profiling EU5 directly, a reasonable sizing is:
 | Small campaign / few active goods | tens of thousands of logical monthly iterations | a few thousand plus trade pass cost | `~5x` to `~20x` on market-local work |
 | Medium campaign with many markets but few human-relevant markets | hundreds of thousands to a few million | tens of thousands plus trade pass cost | `~10x` to `~100x` on market-local work |
 | Large campaign / strict audit / all-goods | several million, plus rescans by US | hundreds of thousands if `P << M`, plus trade pass cost | `~10x` to `~50x`; less if everything is promoted |
-| Well-filtered Performance Mode | still costly if broad pipelines do not all respect the same filter | `P * G_a` for local work, plus country-scope trade pass | potentially `~100x` on goods/local branches; trade cost depends on assignment density |
+| Well-filtered Performance Mode | still costly if broad pipelines do not all respect the same filter | `P * K_m * G_a` for local work, plus country-scope trade pass | potentially `~100x` on goods/local branches; trade cost depends on assignment density |
 
 The key point is that `P` must remain much smaller than `M` in Performance Mode, and `G_a` must remain smaller than `G_market` thanks to active-good lists. The trade pass is intentionally not filtered down to a promoted market: it must be country-scoped and assignment-gated to avoid double accounting and to keep future trade systems such as US-17 and US-20 visible. If Normal Mode promotes all current-country markets, the gain is mostly maintainability/cache ownership rather than spectacular runtime reduction, but it still prevents each US from rebuilding its own world.
 
@@ -77,6 +78,8 @@ M = 100 markets
 C = 800 countries
 P_normal = 100 retained/promoted markets
 P_performance = 5 likely retained/promoted markets
+K_m = 40 countries present in a promoted market
+G_a = 10 active goods in a promoted market
 T_country = assigned trade candidates for one country
 ```
 
@@ -85,18 +88,36 @@ T_country = assigned trade candidates for one country
 | Scenario | Normal, 100 markets | Performance, 5 markets | Reading |
 |---|---:|---:|---|
 | Current | `800 * 100 * 60 = 4,800,000` | `4,800,000` if broad pipelines remain all-axis | worrying baseline |
-| Generic Target E | `100 * 800 * 60 = 4,800,000` | `5 * 800 * 60 = 240,000` | good only if E already receives the filter and does not double-count trade |
-| Ownership-split target | `80,000 prep + 100 * 800 * 60 + trade pass` | `80,000 prep + 5 * 800 * 60 + trade pass` | buys shared local cache and explicit trade ownership |
+| Ownership-split target | `80,000 prep + 100 * 40 * 10 + C*T_country` | `80,000 prep + 5 * 40 * 10 + C*T_country` | buys shared local cache and explicit trade ownership |
 
 ### Refined comparison
 
 With `K_m = 40` present countries and `G_a = 10` active goods:
 
-| Scenario | Refined Performance formula | Logical iterations | Gain vs current |
+| Scenario | Refined formula | Logical iterations | Gain vs current |
 |---|---:|---:|---:|
 | Current | `C * M * G_market` | `4,800,000` | `1x` |
-| Generic Target E | `P * K_m * G_a` if E is already filtered | `5 * 40 * 10 = 2,000` | theoretical `2,400x`, but incomplete without the trade pass |
-| Ownership-split target | `C * M prep + P * K_m * G_a + trade pass` | `80,000 + 2,000 + trade pass` | `~58x` before trade pass cost; trade remains explicit and non-duplicated |
+| Ownership-split target, normal | `C * M prep + P_normal * K_m * G_a + C*T_country` | `80,000 + 40,000 + C*T_country` | `~40x` before trade pass cost |
+| Ownership-split target, performance | `C * M prep + P_performance * K_m * G_a + C*T_country` | `80,000 + 2,000 + C*T_country` | `~58x` before trade pass cost |
+
+## Tick-time interpretation
+
+If the current ModeU5 monthly tick is about 5 seconds and the broad loop cost is the dominant cost, the refined sizing gives this rough upper-bound estimate before trade-pass and engine overhead:
+
+```txt
+normal target:      5s * 120,000 / 4,800,000 ≈ 0.125s
+performance target: 5s *  82,000 / 4,800,000 ≈ 0.085s
+```
+
+That is the optimistic loop-only estimate, not a promise for the whole EU5 tick. A safer practical estimate is:
+
+| Assumption | Approximate optimized tick |
+|---|---:|
+| ModeU5 broad loop is almost all of the 5s tick | `~0.2s` to `~0.8s` |
+| ModeU5 broad loop is about half of the 5s tick | `~2.5s` to `~3.0s` |
+| Vanilla/engine overhead already consumes most of the 5s tick | much smaller visible gain |
+
+Use this as an order-of-magnitude planning estimate until profiling counters measure the actual share of time spent in ModeU5 loops, engine overhead, and trade handlers.
 
 ## Design decision
 
