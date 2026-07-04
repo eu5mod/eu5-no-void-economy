@@ -210,7 +210,9 @@ write_market_production_effects() {
 # The Production-hosted stock table should not decide row visibility from stored
 # stock alone. The preferred row gate is a durable selected-market production
 # cache keyed by market and good. The cache is refreshed from the current US-00
-# ledger aggregate and, where exposed by the engine, vanilla produced_in_market.
+# ledger aggregate. A generic scripted-effect parameter cannot safely generate a
+# `produced_in_market:<good>` script-value string, so vanilla production probing
+# must be added later through per-good generated literal probes once confirmed.
 # Stock presence is kept as a temporary fallback so the panel does not go empty
 # while the production exposure is being validated in-game.
 
@@ -265,20 +267,7 @@ modeu5_us10_ui_capture_market_produced_row = {
 			value = local_var:modeu5_us10_ui_$key$_ledger_produced_by_market_accumulator
 		}
 		set_variable = { name = modeu5_us10_ui_$key$_ledger_produced_by_market value = scope:modeu5_us10_ui_$key$_ledger_produced_by_market_value }
-	}
-
-	scope:modeu5_us10_ui_selected_market_scope = {
-		save_temporary_scope_value_as = {
-			name = modeu5_us10_ui_$key$_vanilla_produced_by_market_value
-			value = {
-				value = "produced_in_market:$good$"
-				min = 0
-			}
-		}
-	}
-
-	scope:modeu5_us10_ui_country = {
-		set_variable = { name = modeu5_us10_ui_$key$_vanilla_produced_by_market value = scope:modeu5_us10_ui_$key$_vanilla_produced_by_market_value }
+		set_variable = { name = modeu5_us10_ui_$key$_vanilla_produced_by_market value = 0 }
 		set_variable = { name = modeu5_us10_ui_$key$_cached_produced_by_market value = 0 }
 	}
 
@@ -304,10 +293,6 @@ modeu5_us10_ui_capture_market_produced_row = {
 		if = {
 			limit = { var:modeu5_us10_ui_$key$_ledger_produced_by_market > var:modeu5_us10_ui_$key$_produced_by_market }
 			set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = var:modeu5_us10_ui_$key$_ledger_produced_by_market }
-		}
-		if = {
-			limit = { var:modeu5_us10_ui_$key$_vanilla_produced_by_market > var:modeu5_us10_ui_$key$_produced_by_market }
-			set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = var:modeu5_us10_ui_$key$_vanilla_produced_by_market }
 		}
 	}
 
