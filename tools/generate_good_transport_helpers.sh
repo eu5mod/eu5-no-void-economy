@@ -4,17 +4,14 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_transport_cost_generated.txt}"
-local_config="$repo_root/.modeu5.local.env"
+template="$repo_root/tools/templates/modeu5_good_transport_helper.template.txt"
 
-# shellcheck source=tools/modeu5_goods.sh
-source "$repo_root/tools/modeu5_goods.sh"
+# shellcheck source=tools/modeu5_tool_lib.sh
+source "$repo_root/tools/modeu5_tool_lib.sh"
+modeu5_load_local_config
+modeu5_load_goods_registry
 
-if [[ -f "$local_config" ]]; then
-	set -a
-	# shellcheck source=/dev/null
-	source "$local_config"
-	set +a
-fi
+modeu5_require_file "$template"
 
 common_dir="${EU5_GAME_COMMON_DIR:-}"
 goods_dir=""
@@ -24,14 +21,15 @@ fi
 
 mkdir -p "$(dirname "$output")"
 
-python3 - "$output" "$goods_dir" "${modeu5_goods[@]}" <<'PY'
+python3 - "$output" "$goods_dir" "$template" "${modeu5_goods[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
 
 output = Path(sys.argv[1])
 goods_dir_arg = sys.argv[2]
-wanted_goods = sys.argv[3:]
+template = Path(sys.argv[3]).read_text(encoding="utf-8")
+wanted_goods = sys.argv[4:]
 
 number_re = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)")
 
@@ -82,6 +80,23 @@ def fmt(value: float) -> str:
     return f"{value:.10f}".rstrip("0").rstrip(".")
 
 
+def render_good_block(good: str, raw_cost: float, defaulted: int) -> str:
+    replacements = {
+        "__GOOD__": good,
+        "__TRANSPORT_COST__": fmt(raw_cost),
+        "__TRANSPORT_COST_DEFAULTED__": str(defaulted),
+    }
+    rendered = template
+    for token, value in replacements.items():
+        rendered = rendered.replace(token, value)
+    unresolved = sorted(set(re.findall(r"__[A-Z0-9_]+__", rendered)))
+    if unresolved:
+        raise SystemExit(
+            "Unresolved placeholders in transport helper template: " + ", ".join(unresolved)
+        )
+    return rendered.rstrip()
+
+
 costs: dict[str, float] = {}
 source_mode = "safe defaults"
 if goods_dir_arg:
@@ -107,92 +122,7 @@ for good in wanted_goods:
         defaulted = 1
         missing_goods.append(good)
 
-    lines.extend(
-        [
-            f"modeu5_get_transport_cost_good_{good} = {{",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_good_transport_cost_raw",
-            f"\t\tvalue = {fmt(raw_cost)}",
-            "\t}",
-            f"\tsave_temporary_scope_value_as = {{ name = modeu5_good_transport_cost_defaulted value = {defaulted} }}",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_good_transport_cost",
-            "\t\tvalue = {",
-            "\t\t\tvalue = scope:modeu5_good_transport_cost_raw",
-            "\t\t\tmin = 0.0001",
-            "\t\t}",
-            "\t}",
-            "}",
-            "",
-            f"modeu5_compute_goods_quantity_from_trade_capacity_good_{good} = {{",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_trade_capacity_volume_raw",
-            "\t\tvalue = {",
-            "\t\t\tvalue = $capacity_volume$",
-            "\t\t\tmin = 0",
-            "\t\t}",
-            "\t}",
-            "",
-            f"\tmodeu5_get_transport_cost_good_{good} = yes",
-            "",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_computed_goods_quantity",
-            "\t\tvalue = {",
-            "\t\t\tvalue = scope:modeu5_trade_capacity_volume_raw",
-            "\t\t\tdivide = scope:modeu5_good_transport_cost",
-            "\t\t\tmin = 0",
-            "\t\t}",
-            "\t}",
-            "\tsave_temporary_scope_value_as = { name = modeu5_estimated_goods_quantity value = scope:modeu5_computed_goods_quantity }",
-            "}",
-            "",
-            f"modeu5_compute_goods_quantity_from_trade_capacity_with_route_good_{good} = {{",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_trade_capacity_volume_raw",
-            "\t\tvalue = {",
-            "\t\t\tvalue = $capacity_volume$",
-            "\t\t\tmin = 0",
-            "\t\t}",
-            "\t}",
-            "",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_trade_route_cost_multiplier",
-            "\t\tvalue = {",
-            "\t\t\tvalue = $route_cost_multiplier$",
-            "\t\t\tmin = 0.0001",
-            "\t\t}",
-            "\t}",
-            "",
-            f"\tmodeu5_get_transport_cost_good_{good} = yes",
-            "",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_trade_quantity_denominator",
-            "\t\tvalue = {",
-            "\t\t\tvalue = scope:modeu5_good_transport_cost",
-            "\t\t\tmultiply = scope:modeu5_trade_route_cost_multiplier",
-            "\t\t\tmin = 0.0001",
-            "\t\t}",
-            "\t}",
-            "",
-            "\tsave_temporary_scope_value_as = {",
-            "\t\tname = modeu5_computed_goods_quantity",
-            "\t\tvalue = {",
-            "\t\t\tvalue = scope:modeu5_trade_capacity_volume_raw",
-            "\t\t\tdivide = scope:modeu5_trade_quantity_denominator",
-            "\t\t\tmin = 0",
-            "\t\t}",
-            "\t}",
-            "\tsave_temporary_scope_value_as = { name = modeu5_estimated_goods_quantity value = scope:modeu5_computed_goods_quantity }",
-            "}",
-            "",
-            f"modeu5_diagnostic_trade_capacity_conversion_good_{good} = {{",
-            f"\tmodeu5_compute_goods_quantity_from_trade_capacity_good_{good} = {{",
-            "\t\tcapacity_volume = $capacity_volume$",
-            "\t}",
-            "}",
-            "",
-        ]
-    )
+    lines.extend([render_good_block(good, raw_cost, defaulted), ""])
 
 if missing_goods:
     lines.extend(
