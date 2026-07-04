@@ -1,44 +1,14 @@
-# ModeU5 US-10 stock panel templates.
+# ModeU5 US-10 stock panel shell.
 #
-# Plan A: inline Production body. No custom lateralview, no floating window,
-# no dynamic market selector and no scripted GUI refresh in the click path.
-
-template modeu5_us10_stock_header_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	default_format = "#bold"
-	block "text" { raw_text = "" }
-}
-
-template modeu5_us10_stock_value_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	block "text" { raw_text = "" }
-}
-
-template modeu5_us10_stock_row {
-	layoutpolicy_horizontal = expanding
-	spacing = 8
-	block "good" { text_single = { using = modeu5_us10_stock_value_cell } }
-	block "produced" { text_single = { using = modeu5_us10_stock_value_cell } }
-	block "country_stock" { text_single = { using = modeu5_us10_stock_value_cell } }
-	block "market_stock" { text_single = { using = modeu5_us10_stock_value_cell } }
-	block "capacity" { text_single = { using = modeu5_us10_stock_value_cell } }
-	block "overproduction" { text_single = { using = modeu5_us10_stock_value_cell } }
-}
+# Plan A mounts this shell inside Production through
+# zz_modeu5_us10_production_subtabs.gui. The stock table itself lives in
+# modeu5_us10_stock_table.gui so it can be reused unchanged by Plan B if needed.
 
 template modeu5_us10_stock_panel {
 	visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 	layoutpolicy_horizontal = expanding
-	# HBox/VBox children cannot use position. Use a negative top margin as the
-	# Plan A coverage probe so the inline body overlaps the Production search and
-	# icon strip while still remaining inside the layout flow.
-	margin_top = -74
-	size = { -1 760 }
+	layoutpolicy_vertical = expanding
+	size = { -1 790 }
 	using = bg_age_event_frame
 
 	vbox = {
@@ -72,6 +42,7 @@ template modeu5_us10_stock_panel {
 			layoutpolicy_horizontal = expanding
 			size = { -1 44 }
 			using = bg_window_default_alt
+			datacontext = "[ProductionView.GetSelectedMarket]"
 
 			hbox = {
 				layoutpolicy_horizontal = expanding
@@ -90,68 +61,21 @@ template modeu5_us10_stock_panel {
 					layoutpolicy_horizontal = expanding
 					autoresize = no
 					align = right|nobaseline
-					raw_text = "Burgos Market"
+					text = "[Market.GetName]"
+				}
+
+				button_regular = {
+					size = { 90 28 }
+					raw_text = "Sync"
+					using = bg_button_flavor_4
+					onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+					tooltipwidget = { BasicFunctionalTooltip = {} }
 				}
 			}
 		}
 
 		widget = {
-			layoutpolicy_horizontal = expanding
-			layoutpolicy_vertical = expanding
-			using = bg_window_default_alt
-
-			vbox = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-				margin = { 10 8 }
-				spacing = 7
-
-				hbox = {
-					layoutpolicy_horizontal = expanding
-					spacing = 8
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Good" } }
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Produced" } }
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Country stock" } }
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Market stock" } }
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Capacity" } }
-					text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Overproduction" } }
-				}
-
-				hbox = {
-					using = modeu5_us10_stock_row
-					blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Wheat" } } }
-					blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "24.50" } } }
-					blockoverride "country_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]" } } }
-					blockoverride "market_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]" } } }
-					blockoverride "capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } } }
-					blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } } }
-				}
-
-				hbox = {
-					using = modeu5_us10_stock_row
-					blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Iron" } } }
-					blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "7.52" } } }
-					blockoverride "country_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]" } } }
-					blockoverride "market_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]" } } }
-					blockoverride "capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } } }
-					blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } } }
-				}
-
-				hbox = {
-					using = modeu5_us10_stock_row
-					blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Tools" } } }
-					blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "1.45" } } }
-					blockoverride "country_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]" } } }
-					blockoverride "market_stock" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]" } } }
-					blockoverride "capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } } }
-					blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } } }
-				}
-
-				widget = {
-					layoutpolicy_horizontal = expanding
-					layoutpolicy_vertical = expanding
-				}
-			}
+			using = modeu5_us10_stock_table
 		}
 	}
 }

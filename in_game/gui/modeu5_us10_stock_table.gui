@@ -1,0 +1,88 @@
+# ModeU5 US-10 reusable stock table templates.
+#
+# Kept separate from the Plan A mounting point so the table can be reused if
+# Plan B later generates a full production_lateralview.gui override.
+
+template modeu5_us10_stock_header_cell {
+	layoutpolicy_horizontal = expanding
+	layoutstretchfactor_horizontal = 1
+	autoresize = no
+	align = left|nobaseline
+	fontsize = 14
+	default_format = "#bold"
+	block "text" { raw_text = "" }
+}
+
+template modeu5_us10_stock_value_cell {
+	layoutpolicy_horizontal = expanding
+	layoutstretchfactor_horizontal = 1
+	autoresize = no
+	align = left|nobaseline
+	fontsize = 14
+	block "text" { raw_text = "" }
+}
+
+template modeu5_us10_stock_row {
+	layoutpolicy_horizontal = expanding
+	spacing = 8
+	block "good" { text_single = { using = modeu5_us10_stock_value_cell } }
+	block "produced" { text_single = { using = modeu5_us10_stock_value_cell } }
+	block "country_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell } }
+	block "market_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell } }
+	block "overproduction" { text_single = { using = modeu5_us10_stock_value_cell } }
+}
+
+template modeu5_us10_stock_table {
+	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = expanding
+	using = bg_window_default_alt
+
+	vbox = {
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+		margin = { 10 8 }
+		spacing = 7
+
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 8
+			text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Good" } }
+			text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Produced" } }
+			text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Country stock / cap" } }
+			text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Market stock / cap" } }
+			text_single = { using = modeu5_us10_stock_header_cell blockoverride "text" { raw_text = "Overproduction" } }
+		}
+
+		hbox = {
+			using = modeu5_us10_stock_row
+			blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Wheat" } } }
+			blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_produced').GetValue|2]" } } }
+			blockoverride "country_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } } }
+			blockoverride "market_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" } } }
+			blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } } }
+		}
+
+		hbox = {
+			using = modeu5_us10_stock_row
+			blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Iron" } } }
+			blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_produced').GetValue|2]" } } }
+			blockoverride "country_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } } }
+			blockoverride "market_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" } } }
+			blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } } }
+		}
+
+		hbox = {
+			using = modeu5_us10_stock_row
+			blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "Tools" } } }
+			blockoverride "produced" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_produced').GetValue|2]" } } }
+			blockoverride "country_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } } }
+			blockoverride "market_stock_capacity" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" } } }
+			blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } } }
+		}
+
+		widget = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+		}
+	}
+}

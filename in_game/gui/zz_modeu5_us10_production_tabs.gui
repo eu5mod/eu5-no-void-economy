@@ -77,10 +77,12 @@ template production_main_tabs {
 			text = "modeu5_us10_ui.tab"
 		}
 		# Keep ModeU5 as a sub-mode of the existing production lateralview.
-		# The inline body is mounted from production_view_subtabs, where the
-		# ProductionView context is available.
+		# Opening from the top tab cannot access ProductionView.GetSelectedMarket,
+		# so this only refreshes/validates the existing ModeU5 selected market.
+		# The inline Sync button uses the actual Production selected market context.
 		onclick = "[OpenLateralView('production')]"
 		onclick = "[GetVariableSystem.Set('modeu5_us10_stock_tab', 'yes')]"
+		onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
 		down = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
