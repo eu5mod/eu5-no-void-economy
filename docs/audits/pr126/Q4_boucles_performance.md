@@ -1,86 +1,86 @@
-# Q4 — Boucles et performance
+# Q4 — Loops and performance
 
 ## Conclusion
 
-Le coût principal vient des boucles pays↔marchés↔goods et des validations/reconciliations. La cible performance n'est pas seulement de réduire une boucle : elle doit rendre explicites les scopes qui portent le travail lourd. Le modèle cible est donc : préparation légère par pays/marchés, puis travail lourd uniquement sur marchés promus, pays présents, goods actifs et demandes pertinentes.
+The main cost comes from country↔market↔goods loops and from validation/reconciliation. The performance target is not only to reduce one loop: it must make the scopes that own heavy work explicit. The target model is therefore: lightweight preparation by countries/markets, then heavy work only on promoted markets, present countries, active goods, and relevant demands.
 
-## Boucles auditées
+## Audited loops
 
-| Boucle / flux | Déclencheur | Fréquence | Scope parcouru | Cache utilisé | Risque performance | Optimisation cible |
+| Loop / flow | Trigger | Frequency | Traversed scope | Cache used | Performance risk | Target optimization |
 |---|---|---|---|---|---|---|
-| Refresh capacité pays-marché | Cycle mensuel + hooks capacité | Mensuel / événement | Pays, marchés présents | `modeu5_stock_cap_by_market`, pool location pays | Moyen | Lire le pool location pays, ne pas rescanner par marché/good |
-| Production US-00 | Cycle mensuel | Mensuel | Pays → locations possédées → goods suivis | ledgers par good/marché | Élevé si all-good/all-location global | Brancher sous marché promu et good actif |
-| Admission stock | Après production | Mensuel | Records pays×marché×good produits | stock/cap maps | Moyen | Garder batch par good via adapters générés |
-| Résolution consommation US-10.1 | Cycle mensuel ou demande | Mensuel | Pays/marché/good demandés | stock maps + ledgers consommation | Moyen | Same-market consumption uniquement |
-| Transferts US-10.2 | Demandes inter-market | Mensuel/à la demande | Marchés source candidats | sparse supplier cache / active markets | Élevé | Pruning rapide avant scoring détaillé |
-| Validation/rebuild agrégats | Fin cycle mensuel/annuel/audit | Mensuel/annuel/debug | Marchés actifs, pays présents, goods actifs | active market lists, country-present cache | Élevé | Rebuild `countries_present_in_market` une fois par marché promu |
-| Réconciliation | Divergence ou audit strict | Exceptionnel/diagnostic | Pays du marché pour un good | country stock source | Très élevé si globale | Déclencher sur divergence, init/yearly strict ou test explicite |
-| Debug/probes | Événements tests | Manuel | Scopes ciblés | debug variables | Faible hors tests | Garder dans package core_tests |
-| CMM callbacks | Main menu/runtime callback | Rare | Variables de configuration | CMM variables | Faible | Aucun scan économique |
+| Country-market capacity refresh | Monthly cycle + capacity hooks | Monthly / event | Countries, present markets | `modeu5_stock_cap_by_market`, country location pool | Medium | Read the country location pool; do not rescan per market/good |
+| US-00 production | Monthly cycle | Monthly | Country → owned locations → tracked goods | per-good/market ledgers | High if all-good/all-location global | Wire under promoted market and active good |
+| Stock admission | After production | Monthly | Produced country×market×good records | stock/cap maps | Medium | Keep per-good batch through generated adapters |
+| US-10.1 consumption resolution | Monthly cycle or demand | Monthly | Requested country/market/good | stock maps + consumption ledgers | Medium | Same-market consumption only |
+| US-10.2 transfers | Inter-market demands | Monthly/on demand | Candidate source markets | sparse supplier cache / active markets | High | Fast pruning before detailed scoring |
+| Aggregate validation/rebuild | End of monthly/annual/audit cycle | Monthly/annual/debug | Active markets, present countries, active goods | active market lists, country-present cache | High | Rebuild `countries_present_in_market` once per promoted market |
+| Reconciliation | Divergence or strict audit | Exceptional/diagnostic | Market countries for one good | country stock source | Very high if global | Trigger on divergence, strict init/yearly, or explicit test |
+| Debug/probes | Test events | Manual | Targeted scopes | debug variables | Low outside tests | Keep in core_tests package |
+| CMM callbacks | Main menu/runtime callback | Rare | Configuration variables | CMM variables | Low | No economic scan |
 
-## Notation performance canonique
+## Canonical performance notation
 
-| Symbole | Signification |
+| Symbol | Meaning |
 |---|---|
-| `C` | nombre de pays parcourus par un pulse mensuel complet |
-| `M_c` | nombre moyen de marchés présents dans un pays |
-| `M` | nombre total de marchés |
-| `P` | nombre de marchés promus après filtre human/performance |
-| `K_m` | nombre moyen de pays présents dans un marché promu |
-| `G_supported` | nombre total de goods supportés par les adapters générés |
-| `G_market` | nombre de goods candidats ou produits dans un marché donné |
-| `G_a` | nombre de goods actifs dans un marché promu après filtres/cache |
-| `T_m` | nombre de demandes/trades inter-market pertinents pour le marché promu |
+| `C` | number of countries traversed by a full monthly pulse |
+| `M_c` | average number of markets present in a country |
+| `M` | total number of markets |
+| `P` | number of markets promoted after human/performance filtering |
+| `K_m` | average number of countries present in a promoted market |
+| `G_supported` | total goods supported by generated adapters |
+| `G_market` | candidate or produced goods in a given market |
+| `G_a` | active goods in a promoted market after filters/cache |
+| `T_m` | relevant inter-market demands/trades for the promoted market |
 
-`G_market = 60` peut rester une hypothèse de charge par marché. Ce n'est pas le nombre total de goods supportés par le mod : un marché chinois, africain ou européen n'a pas le même ensemble de goods produits ou actifs.
+`G_market = 60` can remain a market-level load assumption. It is not the total number of goods supported by the mod: a Chinese, African, or European market will not necessarily have the same set of produced or active goods.
 
-## Comparaison des orchestrations
+## Orchestration comparison
 
-| Solution | Shape dominant | Ordre de grandeur | Lecture | Risque |
+| Solution | Dominant shape | Order of magnitude | Reading | Risk |
 |---|---|---|---|---|
-| Current state pays + pipelines larges | `monthly_country_pulse` -> capacité pays-marchés -> US-00 all-goods -> US-10 séparé | `O(C * M_c + C * M_c * G_market + resolver scans)` | Baseline coûteuse ; plusieurs US peuvent revisiter les mêmes axes | caches préparés hors conteneur market/trade |
-| Target E générique market/trade | readiness -> market/trade outer loop -> B/C/D sous E | `O(P? * (K_m + G_a + T_m))` | Bon si le sélecteur E est déjà restreint | trop abstrait si la promotion n'est pas explicite |
-| Target promoted-market | préparation `every_market_present_in_country` -> promotion -> local branch + trade branch | `O(C * M_c) + O(P * (K_m * G_a + T_m))` | Meilleur compromis : filtre explicite, mesurable, partagé | demande une définition robuste de promotion et rebuild |
+| Current state country + broad pipelines | `monthly_country_pulse` -> country-markets capacity -> US-00 all-goods -> separate US-10 | `O(C * M_c + C * M_c * G_market + resolver scans)` | Costly baseline; several US may revisit the same axes | caches prepared outside the market/trade container |
+| Generic market/trade Target E | readiness -> market/trade outer loop -> B/C/D under E | `O(P? * (K_m + G_a + T_m))` | Good if selector E is already restricted | too abstract if promotion is not explicit |
+| Promoted-market target | `every_market_present_in_country` preparation -> promotion -> local branch + trade branch | `O(C * M_c) + O(P * (K_m * G_a + T_m))` | Best compromise: explicit, measurable, shared filter | requires a robust promotion definition and rebuild |
 
-## Hypothèse chiffrée de revue
+## Review sizing assumption
 
 ```txt
-G_market = 60 goods candidats / produits par marché
-M = 100 marchés
-C = 800 pays
-P_normal = 100 marchés retenus/promus
-P_performance = 5 marchés retenus/promus probables
+G_market = 60 candidate / produced goods per market
+M = 100 markets
+C = 800 countries
+P_normal = 100 retained/promoted markets
+P_performance = 5 likely retained/promoted markets
 ```
 
-### Comparaison brute
+### Raw comparison
 
-| Scénario | Normal, 100 marchés | Performance, 5 marchés | Lecture |
+| Scenario | Normal, 100 markets | Performance, 5 markets | Reading |
 |---|---:|---:|---|
-| Current | `800 * 100 * 60 = 4 800 000` | `4 800 000` si les pipelines restent all-axis | baseline inquiétante |
-| Target E générique | `100 * 800 * 60 = 4 800 000` | `5 * 800 * 60 = 240 000` | bon seulement si E reçoit déjà le filtre |
-| Promoted-market | `80 000 prep + 100 * 800 * 60 = 4 880 000` | `80 000 prep + 5 * 800 * 60 = 320 000` | achète un cache partagé et évite les rescans |
+| Current | `800 * 100 * 60 = 4,800,000` | `4,800,000` if broad pipelines remain all-axis | worrying baseline |
+| Generic Target E | `100 * 800 * 60 = 4,800,000` | `5 * 800 * 60 = 240,000` | good only if E already receives the filter |
+| Promoted-market | `80,000 prep + 100 * 800 * 60 = 4,880,000` | `80,000 prep + 5 * 800 * 60 = 320,000` | buys a shared cache and avoids rescans |
 
-### Comparaison raffinée
+### Refined comparison
 
-Avec `K_m = 40` pays présents et `G_a = 10` goods actifs :
+With `K_m = 40` present countries and `G_a = 10` active goods:
 
-| Scénario | Formule Performance raffinée | Itérations-logiques | Gain vs current |
+| Scenario | Refined Performance formula | Logical iterations | Gain vs current |
 |---|---:|---:|---:|
-| Current | `C * M * G_market` | `4 800 000` | `1x` |
-| Target E générique | `P * K_m * G_a` si E est déjà filtré | `5 * 40 * 10 = 2 000` | `2 400x` théorique |
-| Promoted-market | `C * M prep + P * K_m * G_a` | `80 000 + 2 000 = 82 000` | `~58x` complet, `2 400x` sur branche lourde |
+| Current | `C * M * G_market` | `4,800,000` | `1x` |
+| Generic Target E | `P * K_m * G_a` if E is already filtered | `5 * 40 * 10 = 2,000` | theoretical `2,400x` |
+| Promoted-market | `C * M prep + P * K_m * G_a` | `80,000 + 2,000 = 82,000` | `~58x` complete, `2,400x` on the heavy branch |
 
-## Décision de design
+## Design decision
 
-Le target promoted-market est préférable car il rend `P`, `K_m` et `G_a` explicites. Même lorsque le coût complet inclut une préparation, cette préparation produit un contexte partagé pour US-00, US-10, validation, debug et futures US.
+The promoted-market target is preferable because it makes `P`, `K_m`, and `G_a` explicit. Even when the full cost includes a preparation phase, that preparation creates shared context for US-00, US-10, validation, debug, and future US.
 
-## Checklist performance pour agent
+## Performance checklist for agents
 
 ```txt
-1. Quel est l'outer loop propriétaire ?
-2. Le marché est-il découvert ou promu ?
-3. Le good est-il supporté, produit dans ce marché, ou actif après filtre ?
-4. countries_present_in_market est-il reconstruit une seule fois ?
-5. La modification ajoute-t-elle un nouveau scan large mensuel ?
-6. Le cache utilisé est-il source, dérivé, work cache ou debug ?
+1. What is the owning outer loop?
+2. Is the market discovered or promoted?
+3. Is the good supported, produced in this market, or active after filtering?
+4. Is countries_present_in_market rebuilt exactly once?
+5. Does the change add a new broad monthly scan?
+6. Is the cache being used a source, derived cache, work cache, or debug state?
 ```
