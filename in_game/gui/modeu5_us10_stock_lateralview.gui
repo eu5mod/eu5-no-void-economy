@@ -82,6 +82,10 @@ template modeu5_us10_stock_panel {
 		}
 
 		widget = {
+			layoutpolicy_horizontal = fixed
+			layoutpolicy_vertical = expanding
+			minimumsize = { 520 760 }
+			maximumsize = { 520 760 }
 			using = modeu5_us10_stock_table
 		}
 	}
