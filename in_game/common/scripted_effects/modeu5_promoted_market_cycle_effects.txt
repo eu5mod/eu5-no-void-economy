@@ -1,0 +1,120 @@
+# PR126 promoted-market orchestration helper surface.
+#
+# This file intentionally does not change the monthly dispatcher yet. It only
+# names the B/C/D entry points that later PR126 stack layers can call from the
+# promoted-market shell. Each helper delegates to the current domain owner:
+# capacity, market-country cache, generated good adapters, or US-10 resolver.
+
+# B: prepare the current promoted market's country work cache. The cache remains
+# a rebuilt work list, never durable per-market storage and never a stock source.
+modeu5_prepare_promoted_market_country_cache = {
+	$market$ = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+
+	modeu5_rebuild_countries_present_in_market = yes
+}
+
+# B: refresh one selected country-market capacity record from the existing
+# country location pool and the selected market's trade-capacity contribution.
+# This is the promoted-market-compatible capacity entry point: it avoids the
+# full owned-location pool rebuild and expects lifecycle hooks/startup to own
+# that persistent country pool.
+modeu5_prepare_promoted_country_market_capacity = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+
+	scope:modeu5_country = {
+		modeu5_calculate_country_storage_capacity_pool = yes
+	}
+	modeu5_recalculate_country_market_capacity_from_prepared_pool_shared = yes
+}
+
+# B: refresh capacities for every country currently present in one promoted
+# market. Later dispatcher PRs can call this after market promotion; current
+# monthly order is not rewired in this PR.
+modeu5_prepare_promoted_market_capacity_cache = {
+	$market$ = { save_temporary_scope_as = modeu5_market }
+
+	modeu5_prepare_promoted_market_country_cache = {
+		market = scope:modeu5_market
+	}
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_country
+			modeu5_prepare_promoted_country_market_capacity = {
+				country = scope:modeu5_country
+				market = scope:modeu5_market
+			}
+		}
+	}
+}
+
+# C: generated-good adapter bridge for scoped US-00 market-good work. This is a
+# naming layer over the existing generated adapter; it is not called by the
+# current monthly dispatcher yet.
+modeu5_run_scoped_us00_market_good = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_process_us00_monthly_market_good_$good$ = yes
+}
+
+# C: non-mutating generated-good bridge probe. Tests can call this to verify the
+# scoped generated adapter surface without ingesting production.
+modeu5_probe_scoped_us00_market_good_bridge = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_probe_us00_previous_record_activity_good_$good$ = yes
+}
+
+# C/D: generated-good bridge for the existing same-market monthly consumption
+# queue. It processes only the scoped country-market-good request already stored
+# in the US-10 pending-request map.
+modeu5_run_scoped_us10_monthly_market_good = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_process_us10_monthly_market_good_$good$ = yes
+}
+
+# D: same-market consumption wrapper used by future promoted-market local branch
+# tests. This delegates to the canonical US-10.1 resolver and stock operators.
+modeu5_resolve_scoped_same_market_consumption = {
+	$country$ = { save_temporary_scope_as = modeu5_consumer_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_resolve_stock_consumption = {
+		consumer_country = scope:modeu5_consumer_country
+		market = scope:modeu5_market
+		good = $good$
+		requested_quantity = $requested_quantity$
+	}
+}
+
+# D: inter-market handoff wrapper used by future promoted-market trade branch
+# tests. The canonical resolver still owns the same-market guard and the actual
+# transfer mutation through modeu5_transfer_stock.
+modeu5_handoff_scoped_inter_market_transfer = {
+	$buyer_country$ = { save_temporary_scope_as = modeu5_buyer_country }
+	$source_market$ = { save_temporary_scope_as = modeu5_source_market }
+	$target_market$ = { save_temporary_scope_as = modeu5_target_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_resolve_inter_market_stock_transfer = {
+		buyer_country = scope:modeu5_buyer_country
+		source_market = scope:modeu5_source_market
+		target_market = scope:modeu5_target_market
+		good = $good$
+		requested_quantity = $requested_quantity$
+	}
+}

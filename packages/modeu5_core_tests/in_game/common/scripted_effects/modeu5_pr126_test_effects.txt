@@ -1,0 +1,146 @@
+# PR126 helper extraction smoke probe.
+#
+# This test validates that the B/C/D promoted-market helper entry points are
+# callable from deterministic probes. It does not switch the monthly dispatcher
+# and avoids US-00 production ingestion by using the non-mutating C bridge.
+
+modeu5_debug_run_pr126_promoted_market_helper_test = {
+	remove_global_variable = modeu5_test_pr126_promoted_market_helpers_passed
+	remove_global_variable = modeu5_test_pr126_promoted_market_helpers_failed
+	remove_global_variable = modeu5_test_pr126_promoted_market_helpers_blocked
+
+	remove_global_variable = modeu5_test_pr126_b_country_cache_ready
+	remove_global_variable = modeu5_test_pr126_b_capacity_ready
+	remove_global_variable = modeu5_test_pr126_c_us00_bridge_called
+	remove_global_variable = modeu5_test_pr126_c_us10_bridge_called
+	remove_global_variable = modeu5_test_pr126_d_same_market_called
+	remove_global_variable = modeu5_test_pr126_d_inter_market_handoff_called
+
+	debug_log = "ModeU5 TEST ENTERED scenario=pr126_promoted_market_helpers"
+
+	if = {
+		limit = { NOT = { country_exists = c:FRA } }
+		set_global_variable = modeu5_test_pr126_promoted_market_helpers_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_promoted_market_helpers reason=missing_FRA"
+	}
+	else = {
+		c:FRA = {
+			save_temporary_scope_as = modeu5_pr126_test_country
+			capital.market = { save_temporary_scope_as = modeu5_pr126_test_market }
+		}
+		scope:modeu5_pr126_test_country = {
+			save_temporary_scope_as = modeu5_country
+			modeu5_rebuild_country_location_capacity_pool = yes
+		}
+
+		modeu5_prepare_promoted_market_country_cache = {
+			market = scope:modeu5_pr126_test_market
+		}
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_countries_present_in_market
+				is_target_in_global_variable_list = {
+					name = modeu5_countries_present_in_market
+					target = scope:modeu5_pr126_test_country
+				}
+			}
+			set_global_variable = modeu5_test_pr126_b_country_cache_ready
+		}
+
+		modeu5_prepare_promoted_country_market_capacity = {
+			country = scope:modeu5_pr126_test_country
+			market = scope:modeu5_pr126_test_market
+		}
+		if = {
+			limit = {
+				scope:modeu5_pr126_test_country = {
+					has_variable_map = modeu5_stock_cap_by_market
+					is_key_in_variable_map = {
+						name = modeu5_stock_cap_by_market
+						target = scope:modeu5_pr126_test_market
+					}
+				}
+			}
+			set_global_variable = modeu5_test_pr126_b_capacity_ready
+		}
+
+		modeu5_probe_scoped_us00_market_good_bridge = {
+			country = scope:modeu5_pr126_test_country
+			market = scope:modeu5_pr126_test_market
+			good = wheat
+		}
+		set_global_variable = modeu5_test_pr126_c_us00_bridge_called
+
+		modeu5_run_scoped_us10_monthly_market_good = {
+			country = scope:modeu5_pr126_test_country
+			market = scope:modeu5_pr126_test_market
+			good = wheat
+		}
+		set_global_variable = modeu5_test_pr126_c_us10_bridge_called
+
+		modeu5_resolve_scoped_same_market_consumption = {
+			country = scope:modeu5_pr126_test_country
+			market = scope:modeu5_pr126_test_market
+			good = wheat
+			requested_quantity = 0
+		}
+		if = {
+			limit = {
+				scope:modeu5_requested_quantity = 0
+				scope:modeu5_satisfied_quantity = 0
+				scope:modeu5_unsatisfied_quantity = 0
+			}
+			set_global_variable = modeu5_test_pr126_d_same_market_called
+		}
+
+		modeu5_handoff_scoped_inter_market_transfer = {
+			buyer_country = scope:modeu5_pr126_test_country
+			source_market = scope:modeu5_pr126_test_market
+			target_market = scope:modeu5_pr126_test_market
+			good = wheat
+			requested_quantity = 0
+		}
+		if = {
+			limit = {
+				scope:modeu5_us10_same_market_transfer_skipped = 1
+				scope:modeu5_transferred_quantity = 0
+				scope:modeu5_satisfied_quantity = 0
+				scope:modeu5_unsatisfied_quantity = 0
+			}
+			set_global_variable = modeu5_test_pr126_d_inter_market_handoff_called
+		}
+
+		set_variable = { name = modeu5_pr126_ui_country_cache_ready value = 0 }
+		set_variable = { name = modeu5_pr126_ui_capacity_ready value = 0 }
+		set_variable = { name = modeu5_pr126_ui_us00_bridge_called value = 0 }
+		set_variable = { name = modeu5_pr126_ui_us10_bridge_called value = 0 }
+		set_variable = { name = modeu5_pr126_ui_same_market_called value = 0 }
+		set_variable = { name = modeu5_pr126_ui_inter_market_handoff_called value = 0 }
+
+		if = { limit = { has_global_variable = modeu5_test_pr126_b_country_cache_ready } set_variable = { name = modeu5_pr126_ui_country_cache_ready value = 1 } }
+		if = { limit = { has_global_variable = modeu5_test_pr126_b_capacity_ready } set_variable = { name = modeu5_pr126_ui_capacity_ready value = 1 } }
+		if = { limit = { has_global_variable = modeu5_test_pr126_c_us00_bridge_called } set_variable = { name = modeu5_pr126_ui_us00_bridge_called value = 1 } }
+		if = { limit = { has_global_variable = modeu5_test_pr126_c_us10_bridge_called } set_variable = { name = modeu5_pr126_ui_us10_bridge_called value = 1 } }
+		if = { limit = { has_global_variable = modeu5_test_pr126_d_same_market_called } set_variable = { name = modeu5_pr126_ui_same_market_called value = 1 } }
+		if = { limit = { has_global_variable = modeu5_test_pr126_d_inter_market_handoff_called } set_variable = { name = modeu5_pr126_ui_inter_market_handoff_called value = 1 } }
+
+		debug_log = "ModeU5 PR126 HELPERS BCD country_cache=[THIS.GetVariable('modeu5_pr126_ui_country_cache_ready').GetValue|0] capacity=[THIS.GetVariable('modeu5_pr126_ui_capacity_ready').GetValue|0] us00_bridge=[THIS.GetVariable('modeu5_pr126_ui_us00_bridge_called').GetValue|0] us10_bridge=[THIS.GetVariable('modeu5_pr126_ui_us10_bridge_called').GetValue|0] same_market=[THIS.GetVariable('modeu5_pr126_ui_same_market_called').GetValue|0] handoff=[THIS.GetVariable('modeu5_pr126_ui_inter_market_handoff_called').GetValue|0]"
+
+		if = {
+			limit = {
+				has_global_variable = modeu5_test_pr126_b_country_cache_ready
+				has_global_variable = modeu5_test_pr126_b_capacity_ready
+				has_global_variable = modeu5_test_pr126_c_us00_bridge_called
+				has_global_variable = modeu5_test_pr126_c_us10_bridge_called
+				has_global_variable = modeu5_test_pr126_d_same_market_called
+				has_global_variable = modeu5_test_pr126_d_inter_market_handoff_called
+			}
+			set_global_variable = modeu5_test_pr126_promoted_market_helpers_passed
+			debug_log = "ModeU5 TEST PASS scenario=pr126_promoted_market_helpers"
+		}
+		else = {
+			set_global_variable = modeu5_test_pr126_promoted_market_helpers_failed
+			debug_log = "ModeU5 TEST FAIL scenario=pr126_promoted_market_helpers"
+		}
+	}
+}
