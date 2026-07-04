@@ -1,62 +1,62 @@
-# Q3 — Redondances de code et génération
+# Q3 — Code redundancy and generation
 
 ## Conclusion
 
-Toutes les répétitions ne sont pas des problèmes. Dans ModeU5, certaines redondances sont nécessaires parce que le moteur EU5 exige des identifiants littéraux par good, map ou widget. Le refactor doit supprimer la duplication non contrôlée, pas les expansions générées intentionnelles.
+Not every repetition is a problem. In ModeU5, some redundancy is required because the EU5 engine needs literal identifiers per good, map, or widget. The refactor must remove uncontrolled duplication, not intentional generated expansions.
 
-## Classification des répétitions
+## Repetition classification
 
-| Élément répété | Type | Statut | Règle de refactor | Priorité |
+| Repeated element | Type | Status | Refactor rule | Priority |
 |---|---|---|---|---|
-| Adapters par good | Répétition générée nécessaire | À conserver | Passer par `tools/modeu5_goods.sh`, template et validation ; ne pas factoriser à la main | P0 |
-| Familles de maps par good | Limite moteur / variable maps | À conserver | Identifiants littéraux complets ; pas de nom de map runtime en paramètre | P0 |
-| Templates de blocs générés | Répétition maîtrisée | À renforcer | Ajouter/adapter un template si un bloc répété devient source de divergence | P1 |
-| Dumps `modeu5_debug_last_*` | Debug standardisé | À documenter | Nomenclature centrale, pas de wrapper métier masquant les inputs | P2 |
-| Scénarios de probes core_tests | Tests métier séparés | À conserver avec prudence | Factoriser les helpers de dump, pas les scénarios | P2 |
-| Lecture/suppression/réécriture de maps | Pattern imposé par maps | À encapsuler | Centraliser les helpers record-level ; ne pas bypasser | P1 |
-| Garde initialization/schema | Fail-closed | À tolérer | Trigger unique seulement si déjà confirmé et plus lisible | P1 |
-| Runtime/audit/debug gates | Intentions proches | À clarifier | Nommer explicitement config/audit/performance/debug | P1 |
-| Rebuild/validation caches actifs | Réparation / scheduling | À auditer | Déclarer l'owner de chaque réparation | P2 |
-| Wrappers reset CMM | UI/config | À tolérer | Garder tant que les noms CMM restent explicites | P3 |
+| Per-good adapters | Necessary generated repetition | Keep | Use `tools/modeu5_goods.sh`, template, and validation; do not factor by hand | P0 |
+| Per-good map families | Engine / variable-map limitation | Keep | Full literal identifiers; no runtime map name parameter | P0 |
+| Generated block templates | Controlled repetition | Strengthen | Add/adapt a template if a repeated block becomes a divergence source | P1 |
+| `modeu5_debug_last_*` dumps | Standardized debug | Document | Central naming convention, no business wrapper hiding inputs | P2 |
+| core_tests probe scenarios | Separate business tests | Keep carefully | Factor logging helpers, not scenarios | P2 |
+| Map read/delete/rewrite | Map-imposed pattern | Encapsulate | Centralize record-level helpers; do not bypass | P1 |
+| Initialization/schema guard | Fail-closed | Tolerate | Single trigger only if already confirmed and more readable | P1 |
+| Runtime/audit/debug gates | Similar intent | Clarify | Name config/audit/performance/debug explicitly | P1 |
+| Active cache rebuild/validation | Repair / scheduling | Audit | Declare the owner of each repair | P2 |
+| CMM reset wrappers | UI/config | Tolerate | Keep while CMM names remain explicit | P3 |
 
-## Contrat tooling actuel
+## Current tooling contract
 
-Le modèle de génération standard est :
+The standard generation model is:
 
 ```txt
 tools/modeu5_tool_lib.sh      shared helpers
-tools/modeu5_goods.sh         registre canonique des goods
-tools/templates/              templates des blocs générés
-tools/generate_all.sh         point d'entrée génération
-tools/validate_generators.sh  validation conventions générateurs
+tools/modeu5_goods.sh         canonical goods registry
+tools/templates/              generated block templates
+tools/generate_all.sh         generation entry point
+tools/validate_generators.sh  generator convention validation
 ```
 
-Un agent doit étendre ce modèle existant. Il ne doit pas créer un générateur autonome avec sa propre liste de goods, son propre renderer ou des blocs répétés assemblés à la main.
+An agent must extend this existing model. It must not create a standalone generator with its own goods list, its own renderer, or repeated blocks assembled by hand.
 
-## Redondance acceptable vs redondance à corriger
+## Acceptable redundancy vs redundancy to fix
 
-| Cas | Acceptable ? | Décision |
+| Case | Acceptable? | Decision |
 |---|---:|---|
-| 74 adapters littéraux issus du même template | Oui | Garder ; le diff est gros mais auditable |
-| 74 blocs copiés à la main dans un fichier non généré | Non | Remplacer par template/générateur |
-| Famille `modeu5_<good>_...` littérale dans un generated file | Oui | Nécessaire pour EU5 |
-| Paramètre scripted-effect contenant un nom de map à construire | Non | Générer un helper littéral par good |
-| Deux probes similaires mais couvrant deux contrats métier | Oui | Garder distincts |
-| Deux probes identiques qui diffèrent seulement par dump format | Non | Factoriser le dump |
-| Cache union + cache per-good | Oui | Les scopes de scheduling diffèrent |
-| Cache qui duplique une source sans rebuild/reset clair | Non | Classer ou supprimer après readers identifiés |
+| 74 literal adapters from the same template | Yes | Keep; the diff is large but auditable |
+| 74 hand-copied blocks in a non-generated file | No | Replace with template/generator |
+| Literal `modeu5_<good>_...` family in a generated file | Yes | Required for EU5 |
+| Scripted-effect parameter containing a map name to construct | No | Generate a literal helper per good |
+| Two similar probes covering two business contracts | Yes | Keep distinct |
+| Two identical probes differing only by dump format | No | Factor the dump |
+| Union cache + per-good cache | Yes | Scheduling scopes differ |
+| Cache duplicating a source without clear rebuild/reset | No | Classify or delete after readers are identified |
 
-## Checklist de refactor pour agent
+## Refactor checklist for agents
 
-Avant de supprimer ou factoriser une répétition :
+Before deleting or factoring a repetition:
 
 ```txt
-1. Est-ce une répétition imposée par EU5 literal identifiers ?
-2. Est-ce généré depuis un template unique ?
-3. Est-ce que tools/validate_generators.sh couvre le cas ?
-4. Est-ce que la répétition protège un test métier distinct ?
-5. Est-ce que tous les readers runtime/UI/debug sont identifiés ?
-6. Est-ce que la factorisation risque d'introduire un nom dynamique non supporté ?
+1. Is this repetition imposed by EU5 literal identifiers?
+2. Is it generated from a single template?
+3. Does tools/validate_generators.sh cover it?
+4. Does the repetition protect a distinct business test?
+5. Are all runtime/UI/debug readers identified?
+6. Could the factorization introduce an unsupported dynamic name?
 ```
 
-Si la réponse à 1 ou 6 est oui, ne pas factoriser en runtime dynamique. Générer du littéral.
+If the answer to 1 or 6 is yes, do not factor into runtime dynamic code. Generate literal code instead.
