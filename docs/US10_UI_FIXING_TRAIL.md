@@ -50,7 +50,7 @@ Target UX:
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
 | `production_main_tabs` injection | Valid for adding a visible top tab. Not a final body injection point. |
 | `production_view_subtabs` injection | Validated. It can mount an inline ModeU5 body in the existing Production flow. |
-| Current best direction | Continue Plan A only if the inline body can behave like a credible active panel body quickly. |
+| Current best direction | Plan A is good enough for a V0 hand-off if the final height and refresh behavior are acceptable. |
 
 ## Plan A acceptance criteria
 
@@ -96,11 +96,13 @@ Then the body is a main `vbox` containing several `filtered_sorted_list` blocks.
 
 M&T uses `production_view_subtabs` as an internal display/control strip. It has valid `ProductionView` context and can be overridden without a full `production_lateralview.gui` copy.
 
-As of `a7ed5a0`, a static ModeU5 placeholder rendered inline inside Production. As of `db6936c`, a real table-shaped UI rendered. The remaining problem is vertical coverage and data sync.
+As of `a7ed5a0`, a static ModeU5 placeholder rendered inline inside Production. As of `db6936c`, a real table-shaped UI rendered. As of `9271b3b`, table/panel split and selected-market sync were in place.
 
 ### Vanilla market selector pattern
 
-Vanilla market selection is tied to a parent filtered list and `ProductionView.GetSelectedMarket`. For the ModeU5 Plan A path, the inline body now displays `ProductionView.GetSelectedMarket` and includes a `Sync` action that passes `Market.MakeScope` to the existing ModeU5 scripted GUI.
+Vanilla market selection is tied to a parent filtered list and `ProductionView.GetSelectedMarket`. For the ModeU5 Plan A path, the inline body displays `ProductionView.GetSelectedMarket` and includes a `Sync` action that passes `Market.MakeScope` to the existing ModeU5 scripted GUI.
+
+A true automatic refresh exactly at the vanilla selector's selection event would require patching the vanilla selector `on_action` / a deeper body override. Current Plan A implements a safer best-effort auto-sync on entering the ModeU5 selected-market strip, plus a manual `Sync` fallback.
 
 ## Trail of attempts and results
 
@@ -114,23 +116,18 @@ Vanilla market selection is tied to a parent filtered list and `ProductionView.G
 | 6 | Static inline placeholder via `production_view_subtabs`. | Appears in Production. | Validates Plan A injection point. |
 | 7 | Coverage probe using `position`. | GUI error: layout children cannot use `position`. | Rejected. |
 | 8 | Coverage probe using `margin_top`. | GUI error: `margin_top` not handled on this widget. | Rejected. |
-| 9 | Table iteration. | Table appears but columns needed correction and data must sync to selected market. | Current batch addresses this. |
+| 9 | Table iteration. | Table appears; selected market name and values update through Sync. | Good enough visually. |
+| 10 | Taller panel + best-effort auto-sync. | Pending test. | Current batch. |
 
-## Latest user requirements for next iteration
-
-From the 2026-07-04 feedback:
-
-1. Data must be connected to the selected Production market.
-2. Data logic and table structure should be segregated so Plan B can reuse them.
-3. Table columns must be corrected to `country stock / country capacity` and `market stock / market capacity`.
-4. Vertical coverage still needs improvement.
-
-Current code response:
+## Latest implementation notes
 
 - `modeu5_us10_stock_table.gui` contains reusable table templates.
-- `modeu5_us10_stock_lateralview.gui` is now only the reusable panel shell.
-- `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active, and syncs from `ProductionView.GetSelectedMarket` through the existing scripted GUI.
+- `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
+- `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
 - `zz_modeu5_us10_production_tabs.gui` refreshes the ModeU5 table when opened from the top tab.
+- Panel height is now raised from `790` to `860`.
+- The selected-market strip uses `onmousehierarchyenter` to refresh the read-model from `ProductionView.GetSelectedMarket` when the cursor returns to the ModeU5 body after a vanilla market change.
+- The explicit `Sync` button remains as a fallback.
 
 ## Important runtime log learnings
 
@@ -161,7 +158,8 @@ Property 'margin_top' not handled
 - Inline ModeU5 panel exists inside Production.
 - Table/panel are separated for reuse.
 - Top tab refreshes existing ModeU5 read-model.
-- Inline `Sync` action uses the actual `ProductionView.GetSelectedMarket` context.
+- Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
+- Best-effort hover auto-sync has been added.
 - No dynamic market datamodel has been reintroduced.
 
 ## Plan B trigger
