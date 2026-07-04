@@ -286,7 +286,7 @@ require_match 'modeu5_wheat_us00_active_record_by_market' \
 require_match 'modeu5_us10_ui_capture_market_produced_row = \{ good = wheat key = wheat \}' \
 	"$generated_us10_market_production" \
 	'Generated US-10 UI helpers must contain literal per-good produced-by-market capture'
-require_match "modeu5_us10_ui_wheat_produced_by_market" \
+require_match "modeu5_us10_ui_wheat_visible" \
 	"$generated_us10_table" \
 	'Generated US-10 UI table must contain literal per-good visibility bindings'
 
