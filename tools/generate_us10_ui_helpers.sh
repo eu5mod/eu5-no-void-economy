@@ -3,12 +3,19 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# shellcheck source=tools/modeu5_goods.sh
-source "$repo_root/tools/modeu5_goods.sh"
+# shellcheck source=tools/modeu5_tool_lib.sh
+source "$repo_root/tools/modeu5_tool_lib.sh"
+modeu5_load_goods_registry
 goods=("${modeu5_goods[@]}")
+
+stock_table_row_template="$repo_root/tools/templates/modeu5_us10_stock_table_row.template.gui"
+market_production_good_template="$repo_root/tools/templates/modeu5_us10_market_production_good.template.txt"
 
 table_output="${1:-$repo_root/in_game/gui/modeu5_us10_stock_table.gui}"
 market_production_output="${2:-$repo_root/in_game/common/scripted_effects/modeu5_us10_ui_market_production_effects.txt}"
+
+modeu5_require_file "$stock_table_row_template"
+modeu5_require_file "$market_production_good_template"
 
 mkdir -p "$(dirname "$table_output")" "$(dirname "$market_production_output")"
 
@@ -172,18 +179,8 @@ template modeu5_us10_stock_table {
 TXT
 
 	for good in "${goods[@]}"; do
-		cat <<TXT
-
-					hbox = {
-						using = modeu5_us10_stock_row
-						visible = "[GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_produced_by_market').GetValue, '(CFixedPoint)0')]"
-						blockoverride "good" { widget = { using = modeu5_us10_stock_good_icon_cell icon = { parentanchor = center size = { 22 22 } texture = "gfx/interface/icons/trade_goods/icon_goods_${good}.dds" texture_density = 2 } } }
-						blockoverride "country_stocks" { text_single = { using = modeu5_us10_stock_value_cell_stock blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_country_capacity').GetValue|2]" } } }
-						blockoverride "market_stocks" { text_single = { using = modeu5_us10_stock_value_cell_stock blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_market_capacity').GetValue|2]" } } }
-						blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell_overproduction blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_${good}_overproduction_percent').GetValue|2]%" } } }
-						blockoverride "production_efficiency" { text_single = { using = modeu5_us10_stock_value_cell_efficiency blockoverride "text" { raw_text = "n/a" } } }
-					}
-TXT
+		printf '\n'
+		modeu5_render_template_to_stdout "$stock_table_row_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'
@@ -260,7 +257,7 @@ modeu5_us10_ui_capture_all_market_produced_rows = {
 TXT
 
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_us10_ui_capture_market_produced_row = { good = %s key = %s }\n' "$good" "$good"
+		modeu5_render_template_to_stdout "$market_production_good_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'

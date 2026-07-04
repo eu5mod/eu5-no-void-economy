@@ -3,14 +3,10 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-local_config="$repo_root/.modeu5.local.env"
 
-if [[ -f "$local_config" ]]; then
-	set -a
-	# shellcheck source=/dev/null
-	source "$local_config"
-	set +a
-fi
+# shellcheck source=tools/modeu5_tool_lib.sh
+source "$repo_root/tools/modeu5_tool_lib.sh"
+modeu5_load_local_config
 
 "$repo_root/tools/generate_stock_good_helpers.sh"
 python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
