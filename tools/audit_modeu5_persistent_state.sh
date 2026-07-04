@@ -84,6 +84,7 @@ def is_state_like(name: str) -> bool:
         "modeu5_market_country_cache_dirty_markets",
         "modeu5_monthly_markets_seen_this_cycle",
         "modeu5_performance_relevant_markets",
+        "modeu5_promoted_markets_this_cycle",
     }
     known_good_lists = {
         "modeu5_<good>_active_markets",
@@ -154,6 +155,7 @@ modeu5_foreign_capacity_by_market	variable map	capacity breakdown	country	capaci
 modeu5_market_country_cache_dirty_markets	global list	work cache	global	ownership/cache repair marks affected markets	clear during cache repair	dirty until repair
 modeu5_monthly_markets_seen_this_cycle	global list	work cache	global	monthly seen-market preparation	reset once per month	reset once per month
 modeu5_performance_relevant_markets	global list	work cache	global	human/performance relevance rebuild	clear before relevance rebuild	rare/explicit rebuild
+modeu5_promoted_markets_this_cycle	global list	work cache	global	PR126 promoted-market dispatcher shell preparation	clear before each promoted-market shell preparation	test-only shell work list until dispatcher is wired
 modeu5_stock_cap_by_market	variable map	capacity source	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	init/hooks/monthly capacity refresh
 modeu5_trade_<good>_requested_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 modeu5_trade_<good>_transferred_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset

@@ -61,6 +61,7 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_market_country_cache_dirty_markets` | global | market | dirty until repair | market-country cache repair | schedule cache repair after ownership changes | keep |
 | `modeu5_monthly_markets_seen_this_cycle` | global | market | reset once per month | PERF-06 diagnostics and market-owned scheduling | monthly seen-market diagnostics | keep as scheduling/diagnostic index |
 | `modeu5_performance_relevant_markets` | global | market | rare rebuild | PERF-02 / future human relevance | human-relevant market discovery | keep as rare performance list |
+| `modeu5_promoted_markets_this_cycle` | global | market | rebuilt by PR126 promoted-market shell | PR126 dispatcher shell / future monthly promoted-market cycle | current shell work list built from `every_market_present_in_country` and filtered by mode | keep as rebuilt work cache only |
 | `modeu5_detailed_accounting_promoted_markets` | global | market | rebuilt/marked by promotion | PERF-14 / promoted-market runtime gates | tracks markets whose aggregate stock has been promoted to detailed country-market records | work cache only; never stock source |
 | `modeu5_core03_probe_seen_locations` | global | location | explicit debug probe only | CORE-03 exposure probe | duplicate-hook detection | debug/probe only |
 
@@ -106,6 +107,7 @@ this section before moving a reader or deleting a cache.
 | `modeu5_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |
 | `modeu5_monthly_markets_seen_this_cycle` | work cache | global | monthly seen-market preparation | reset once per month |
 | `modeu5_performance_relevant_markets` | work cache | global | human/performance relevance rebuild | clear before relevance rebuild |
+| `modeu5_promoted_markets_this_cycle` | work cache | global | PR126 promoted-market dispatcher shell preparation | clear before each promoted-market shell preparation |
 | `modeu5_detailed_accounting_promoted_markets` | work cache | global | PERF-14 successful promotion | clear on explicit promoted-market rebuild/reset |
 | `modeu5_core03_probe_seen_locations` | debug-only | global | CORE-03 explicit debug probe | clear before probe |
 

@@ -185,3 +185,22 @@ are delegation points only:
 The PR3 helpers must not be interpreted as an activated promoted-market
 dispatcher. PR4 remains responsible for creating the disabled/test-only
 promoted-market shell.
+
+## 9. PR4 promoted-market shell contract
+
+PR4 introduces the explicit work-list pattern that replaces the conceptual
+`every_market_promoted` loop. There is still no native EU5 iterator by that
+name and the live monthly dispatcher remains unchanged in this PR.
+
+| Layer | Helper / state | Role | Notes |
+|---|---|---|---|
+| Shell prep | `modeu5_prepare_promoted_market_work_list_for_current_country` | Builds the current-cycle promoted-market list from `every_market_present_in_country`. | Normal mode promotes all current-country markets; Performance mode keeps only markets in `modeu5_performance_relevant_markets`. |
+| Work list | `modeu5_promoted_markets_this_cycle` | Current-cycle market targets for the future promoted-market dispatcher. | Rebuilt work cache only; not durable storage and not proof of stock/capacity readiness. |
+| Shell loop | `modeu5_run_monthly_promoted_market_cycle` | Iterates `modeu5_promoted_markets_this_cycle` and records shell iteration metrics. | Test-only in PR4; B/C/D business work is wired by later PR126 layers. |
+| Observability | `modeu5_promoted_market_*` counters | Candidate, promoted, rejected, and shell-iteration counts. | Debug metrics only; they must not drive stock mutation. |
+
+PR4 deliberately keeps `modeu5_promoted_markets_this_cycle` separate from
+`modeu5_detailed_accounting_promoted_markets`. The former answers "which
+markets should this cycle consider?", while the latter answers "has this market
+completed detailed-accounting promotion?". Stock-affecting PRs must still check
+promotion readiness before using detailed country-market records.
