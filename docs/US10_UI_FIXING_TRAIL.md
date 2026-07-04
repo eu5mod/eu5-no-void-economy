@@ -50,7 +50,28 @@ Target UX:
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
 | `production_main_tabs` injection | Valid for adding a visible top tab. Rejected as final body injection point. |
 | `production_view_subtabs` injection | Validated on 2026-07-04. It can mount an inline ModeU5 body in the existing Production flow. |
-| Current best direction | Continue Plan A: ModeU5 as a Production-hosted internal body block, not a custom lateralview and not a floating overlay. |
+| Current best direction | Continue Plan A only if the inline body can behave like the active panel body and cover the visible Buildings content. |
+
+## Plan A acceptance criteria
+
+Plan A is only acceptable if the inline body behaves visually like the active Production body, not like a small informational card.
+
+Acceptance criteria from the user:
+
+1. The inline panel must descend to the bottom of the visible screen/body so the Buildings list is covered or pushed out of the visible area.
+2. The inline panel must be raised enough to cover the search bar and the line of icons.
+3. If those two conditions cannot be reached cleanly, Plan A is not sufficient and Plan B should be considered.
+
+Implementation probe after this note:
+
+```txt
+modeu5_us10_stock_panel
+- position = { 0 -74 }
+- size = { -1 720 }
+- allow_outside = yes
+```
+
+This is still a validation probe: no market selector, no datamodel, no scripted GUI refresh, no stock read-model call.
 
 ## M&T / vanilla Production observations
 
@@ -124,7 +145,7 @@ Observations:
 - It has valid `ProductionView` context.
 - It is inserted inside the visible Production list through `searchbar_extra_pre_content`.
 - As of commit `a7ed5a0`, a static ModeU5 placeholder renders inline inside Production without a floating window and without a custom lateralview.
-- Limitation: because this is mounted above the vanilla list, the vanilla Buildings list remains visible underneath. Hiding/replacing it likely requires either a deeper body override or Plan B.
+- Limitation: because this is mounted above the vanilla list, the vanilla Buildings list remains visible underneath unless the panel is made large/raised enough or unless we move to a deeper body override.
 
 ### Vanilla market selector pattern
 
@@ -164,7 +185,8 @@ Observations:
 | 5 | Inject a movable overlay/window from the tab template. | Panel appeared once but was badly positioned, captured input, and could freeze the game when datamodel/read-model logic ran. | Rejected. Avoid floating overlay and heavy click actions. |
 | 6 | Replace body with safe static placeholder; remove scripted refresh and datamodel. | Safer, but placeholder did not show when mounted from tab row. | Need body injection into Production flow, not tab row. |
 | 7 | Make ModeU5 a Production sub-mode by clicking `OpenLateralView('production')` then `GetVariableSystem.Set(...)`. | Negative test on `12086c9`: clicking ModeU5 opened vanilla Buildings panel; no ModeU5 body. | Confirms top-tab state alone is insufficient. |
-| 8 | Override `production_view_subtabs`; mount safe inline body through `modeu5_us10_stock_panel`. | Positive test on `a7ed5a0`: inline body appears in Production, no freeze, no new GUI parser errors reported. | Plan A validated. Continue with inline body refinement before considering Plan B. |
+| 8 | Override `production_view_subtabs`; mount safe inline body through `modeu5_us10_stock_panel`. | Positive test on `a7ed5a0`: inline body appears in Production, no freeze, no new GUI parser errors reported. | Plan A viable but not yet accepted; it must cover the Buildings body. |
+| 9 | Extend/raise inline panel: `position = { 0 -74 }`, `size = { -1 720 }`. | Pending test. | This is the acceptance test for Plan A coverage. |
 
 ## Test notes
 
@@ -184,7 +206,7 @@ Interpretation:
 
 ### 2026-07-04 — `source_commit=a7ed5a06e0094e70934b75a7393143eddeebc915`
 
-Result: positive.
+Result: positive but not sufficient for Plan A acceptance.
 
 - The ModeU5 inline placeholder appears in Production.
 - It is not a custom lateralview and not a floating window.
@@ -195,9 +217,8 @@ Result: positive.
 
 Interpretation:
 
-- Plan A is viable.
 - `production_view_subtabs` is a valid insertion point with a working Production context.
-- The next problem is product design/layout: whether we keep ModeU5 as an inline panel above vanilla Buildings or invest in hiding/replacing the vanilla list.
+- Plan A still needs a coverage test: panel must cover the Buildings content and the search/icon area.
 
 ## Important runtime log learnings
 
@@ -251,24 +272,24 @@ Could not push the provided stack context. ID: 0
 
 Still unclear. Treat as warning unless directly tied to a click/freeze.
 
-## Current branch state after successful Plan A probe
+## Current branch state after Plan A coverage probe
 
 - `zz_modeu5_us10_production_tabs.gui` overrides `production_main_tabs` and keeps the top ModeU5 tab state-only.
 - `zz_modeu5_us10_production_subtabs.gui` overrides `production_view_subtabs` and mounts the inline ModeU5 body in the Production flow.
-- `modeu5_us10_stock_lateralview.gui` now contains an inline safe placeholder template, not a floating window.
+- `modeu5_us10_stock_lateralview.gui` now contains a raised/tall inline placeholder coverage probe, not a floating window.
 - Heavy refresh/read-model and dynamic market datamodel remain intentionally absent from the click path.
 
 ## Proposed next fixing sequence
 
 Do not add full backend or all goods rows until these are resolved in order.
 
-### Fix 1 — inline body refinement
+### Fix 1 — Plan A coverage acceptance
 
 Goal:
 
-- Keep the current working inline body.
-- Improve layout so it looks like a real ModeU5 panel.
-- Keep it static/no backend.
+- The inline body covers the Buildings list to the bottom of the visible panel.
+- The inline body is raised enough to cover the search bar and icon row.
+- No freeze and no new GUI parser error.
 
 ### Fix 2 — market selector visual-only
 
@@ -302,7 +323,7 @@ Goal:
 
 ### Plan B trigger
 
-Move to generated full `production_lateralview.gui` override only if Plan A cannot hide/replace vanilla Buildings content cleanly enough for final UX.
+Move to generated full `production_lateralview.gui` override if Plan A cannot cover/replace vanilla Buildings content cleanly enough for final UX.
 
 ## Working rules from now on
 
