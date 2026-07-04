@@ -7,11 +7,17 @@
 template modeu5_us10_stock_panel {
 	visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 	layoutpolicy_horizontal = expanding
-	size = { -1 170 }
+	# Validation target for Plan A: the inline panel must behave like the active
+	# Production body, covering the search/icons zone and pushing the vanilla
+	# Buildings list out of the visible area.
+	allow_outside = yes
+	position = { 0 -74 }
+	size = { -1 720 }
 	using = bg_age_event_frame
 
 	vbox = {
 		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
 		margin = { 10 8 }
 		spacing = 8
 
@@ -24,7 +30,7 @@ template modeu5_us10_stock_panel {
 				autoresize = no
 				align = left|nobaseline
 				default_format = "#bold"
-				raw_text = "ModeU5 Stocks — inline Production body"
+				raw_text = "ModeU5 Stocks — Plan A inline body coverage test"
 			}
 
 			button_regular = {
@@ -39,13 +45,40 @@ template modeu5_us10_stock_panel {
 		text_multi = {
 			layoutpolicy_horizontal = expanding
 			autoresize = yes
-			raw_text = "Safe UI placeholder. This is not a custom lateralview and not a floating window. It is mounted inside the existing Production internal content flow."
+			raw_text = "Plan A validation probe. This inline panel is intentionally taller and raised upward so it covers the Production search/icons area and occupies the visible body instead of leaving the vanilla Buildings list exposed."
 		}
 
 		text_multi = {
 			layoutpolicy_horizontal = expanding
 			autoresize = yes
-			raw_text = "Next step after this is stable: add the market selector as a visual-only block, then reconnect stock rows and read-model refresh."
+			raw_text = "There is still no market selector, datamodel, scripted GUI refresh, or stock read-model call in this click path."
+		}
+
+		widget = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			using = bg_window_default_alt
+
+			vbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+				margin = { 10 8 }
+				spacing = 6
+
+				text_single = {
+					layoutpolicy_horizontal = expanding
+					autoresize = no
+					align = left|nobaseline
+					default_format = "#bold"
+					raw_text = "Future ModeU5 content zone"
+				}
+
+				text_multi = {
+					layoutpolicy_horizontal = expanding
+					autoresize = yes
+					raw_text = "If this covers the visible Production body acceptably, the next batch can replace this placeholder with selected-market display, table headers, and safe static rows."
+				}
+			}
 		}
 	}
 }
