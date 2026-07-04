@@ -61,7 +61,26 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_market_country_cache_dirty_markets` | global | market | dirty until repair | market-country cache repair | schedule cache repair after ownership changes | keep |
 | `modeu5_monthly_markets_seen_this_cycle` | global | market | reset once per month | PERF-06 diagnostics and market-owned scheduling | monthly seen-market diagnostics | keep as scheduling/diagnostic index |
 | `modeu5_performance_relevant_markets` | global | market | rare rebuild | PERF-02 / future human relevance | human-relevant market discovery | keep as rare performance list |
+| `modeu5_detailed_accounting_promoted_markets` | global | market | rebuilt/marked by promotion | PERF-14 / promoted-market runtime gates | tracks markets whose aggregate stock has been promoted to detailed country-market records | work cache only; never stock source |
 | `modeu5_core03_probe_seen_locations` | global | location | explicit debug probe only | CORE-03 exposure probe | duplicate-hook detection | debug/probe only |
+
+## Scalar Debug And Work State
+
+The executable audit also counts scalar debug/work variables. These are not
+persistent map families, but PR126 requires them to be visible because they can
+otherwise look like hidden business state.
+
+| Family | Class | Owner | Lifecycle | Rule |
+| --- | --- | --- | --- | --- |
+| `modeu5_debug_last_*` | debug-only scalar | current debug/probe scope | overwritten by the next capture/probe | never drive business logic |
+| `modeu5_debug_us10_*_trace_*` | audit/debug trace scalar | current US-10 resolver scope | overwritten during bounded audit trace | diagnostics only |
+| `modeu5_perf13_*`, `modeu5_perf14_*` | work/metric scalar | global | reset by owning probe/helper before measurement | metrics only, not business source |
+| `modeu5_performance_*_count` / fallback counters | work/metric scalar | global | reset by owning performance helper | counters only, not stock source |
+
+Adding a scalar debug/work family does not require a map row, but it must remain
+diagnostic or metric-only. If a scalar starts controlling business behaviour,
+its owner and lifecycle must be documented in the relevant feature docs before
+the audit is widened.
 
 ## Normal-Runtime Target
 
@@ -78,6 +97,25 @@ Capacity breakdown maps: kept
 US-00 gameplay carryover maps: kept
 US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only
 UI monthly counter maps: human country current-month only
+Work caches: scheduling only, never stock source
+Debug variables: diagnostic only, never business source
 UI shadow maps: 0
 Unclassified persistent maps: 0
+Direct stock-map write candidates outside generated adapter template: 0
 ```
+
+## Executable Audit Contract
+
+`tools/audit_modeu5_persistent_state.sh` is the machine-checkable form of this
+document. It must fail when:
+
+- a new ModeU5 persistent map/list family is discovered but not classified;
+- an unexpected UI shadow map/list family appears;
+- a direct write to `modeu5_<good>_stock_by_market` is found outside the
+  generated stock adapter template;
+- source/cache/work/debug classifications drift from the documented inventory.
+
+The stock-write guard deliberately allows the generated adapter template because
+that template is the literal per-good persistence surface used by the central
+stock operators. Gameplay files must still call the central stock effects
+instead of writing stock maps directly.
