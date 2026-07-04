@@ -64,6 +64,57 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_detailed_accounting_promoted_markets` | global | market | rebuilt/marked by promotion | PERF-14 / promoted-market runtime gates | tracks markets whose aggregate stock has been promoted to detailed country-market records | work cache only; never stock source |
 | `modeu5_core03_probe_seen_locations` | global | location | explicit debug probe only | CORE-03 exposure probe | duplicate-hook detection | debug/probe only |
 
+## Ownership, Rebuild, And Reset Plan
+
+Every persistent map/list family must have one owner, one rebuild or write
+trigger, and one reset policy before runtime refactor work can depend on it.
+This table is intentionally operational: later PR126 runtime PRs should check
+this section before moving a reader or deleting a cache.
+
+| Family | Class | Owner | Rebuild / write trigger | Reset policy |
+| --- | --- | --- | --- | --- |
+| `modeu5_<good>_stock_by_market` | source | country | central stock operators only | never clear except explicit migration/test |
+| `modeu5_<good>_market_stock` | derived cache | global | central stock operators or rebuild from country stock | never treat as source; rebuild from country stock |
+| `modeu5_stock_cap_by_market` | capacity source | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `modeu5_base_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `modeu5_building_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `modeu5_foreign_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `modeu5_<good>_production_penalty_by_market` | gameplay carryover | country | US-00 next-month penalty finalization | replace when next penalty is finalized |
+| `modeu5_<good>_us00_active_record_by_market` | work cache | country | PERF-15 active-record probe/update | rebuild or remove when record becomes inactive |
+| `modeu5_<good>_produced_by_market` | monthly ledger | country | US-00 production ingestion | monthly after readers |
+| `modeu5_<good>_added_by_market` | monthly ledger | country | US-00 stock-admission result | monthly after readers |
+| `modeu5_<good>_rejected_by_market` | monthly ledger | country | US-00 stock-admission result | monthly after readers |
+| `modeu5_<good>_overproduction_ratio_by_market` | derived monthly ledger | country | US-00 ratio calculation from frozen facts | monthly after readers |
+| `modeu5_<good>_effective_overproduction_ratio_by_market` | derived monthly ledger | country | US-00 ratio finalization from frozen facts | monthly after readers |
+| `modeu5_<good>_void_wealth_by_market` | diagnostic ledger | country | US-00 void-wealth finalization | strict/debug/audit or monthly after readers |
+| `modeu5_<good>_void_taxable_income_proxy_by_market` | diagnostic ledger | country | US-00 taxable-proxy finalization | strict/debug/audit or monthly after readers |
+| `modeu5_void_wealth_by_market` | diagnostic ledger | country | US-00 all-goods void-wealth aggregation | strict/debug/audit or monthly after readers |
+| `modeu5_consumption_<good>_pending_requested_by_market` | monthly input queue | country | explicit US-10 request enqueue | remove when processed by monthly pass |
+| `modeu5_consumption_<good>_requested_by_market` | monthly ledger | country | US-10 same-market consumption resolution | monthly after US-10.3/UI readers |
+| `modeu5_consumption_<good>_satisfied_by_market` | monthly ledger | country | US-10 same-market consumption resolution | monthly after US-10.3/UI readers |
+| `modeu5_consumption_<good>_unsatisfied_by_market` | monthly ledger | country | US-10 same-market consumption resolution | monthly after US-10.3/UI readers |
+| `modeu5_trade_<good>_requested_by_market` | monthly ledger | country | US-10 inter-market transfer resolution | monthly after US-10.3/UI readers |
+| `modeu5_trade_<good>_transferred_by_market` | monthly ledger | country | US-10 inter-market transfer resolution | monthly after US-10.3/UI readers |
+| `modeu5_trade_<good>_unsatisfied_by_market` | monthly ledger | country | US-10 inter-market transfer resolution | monthly after US-10.3/UI readers |
+| `modeu5_<good>_ui_monthly_surplus_by_market` | UI monthly counter | human country | US-00/UI current-month capture | monthly after UI/readers |
+| `modeu5_<good>_ui_monthly_consumption_by_market` | UI monthly counter | human country | US-10/UI current-month capture | monthly after UI/readers |
+| `modeu5_<good>_dirty_markets` | work cache | global | central stock mutation marks dirty | clear after reconciliation/explicit reset |
+| `modeu5_<good>_active_markets` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
+| `modeu5_<good>_us10_sparse_suppliers` | work cache | global | US-10 sparse supplier preparation | clear before each market/good rebuild |
+| `modeu5_active_markets_any_good` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
+| `modeu5_countries_present_in_market` | work cache | global | `modeu5_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
+| `modeu5_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |
+| `modeu5_monthly_markets_seen_this_cycle` | work cache | global | monthly seen-market preparation | reset once per month |
+| `modeu5_performance_relevant_markets` | work cache | global | human/performance relevance rebuild | clear before relevance rebuild |
+| `modeu5_detailed_accounting_promoted_markets` | work cache | global | PERF-14 successful promotion | clear on explicit promoted-market rebuild/reset |
+| `modeu5_core03_probe_seen_locations` | debug-only | global | CORE-03 explicit debug probe | clear before probe |
+
+`modeu5_countries_present_in_market` deserves special care in PR126 follow-up
+work. It is a rebuilt work cache for the current target/promoted market. It is
+not durable per market, not a stock source, and not proof that a country has
+positive stock. Runtime code may use it to choose which country records to read
+or validate after it has just been rebuilt for the target market.
+
 ## Scalar Debug And Work State
 
 The executable audit also counts scalar debug/work variables. These are not
@@ -102,6 +153,7 @@ Debug variables: diagnostic only, never business source
 UI shadow maps: 0
 Unclassified persistent maps: 0
 Direct stock-map write candidates outside generated adapter template: 0
+Ownership/rebuild/reset policy gaps: 0
 ```
 
 ## Executable Audit Contract
@@ -113,6 +165,8 @@ document. It must fail when:
 - an unexpected UI shadow map/list family appears;
 - a direct write to `modeu5_<good>_stock_by_market` is found outside the
   generated stock adapter template;
+- an inventory entry is missing an owner, rebuild/write trigger, or reset
+  policy;
 - source/cache/work/debug classifications drift from the documented inventory.
 
 The stock-write guard deliberately allows the generated adapter template because
