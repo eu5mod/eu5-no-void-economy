@@ -1,8 +1,9 @@
-# US-10 minimal Production UI injection.
+# US-10 minimal Production top-tab injection.
 #
 # Custom lateralviews are not registered through OpenLateralView. This file only
-# overrides the existing production tab template, adds a ModeU5 tab button, and
-# instantiates the ModeU5 panel template in the already-loaded Production UI.
+# adds a top-level ModeU5 entry that opens the existing Production lateralview
+# and sets ModeU5 UI state. The actual body is mounted by
+# zz_modeu5_us10_production_subtabs.gui inside Production's internal content flow.
 
 template production_main_tabs {
 	button_main_tab_alt = {
@@ -76,18 +77,13 @@ template production_main_tabs {
 			text = "modeu5_us10_ui.tab"
 		}
 		# Keep ModeU5 as a sub-mode of the existing production lateralview.
-		# Do not call the heavy US-10 refresh/read-model from this tab.
+		# The inline body is mounted from production_view_subtabs, where the
+		# ProductionView context is available.
 		onclick = "[OpenLateralView('production')]"
 		onclick = "[GetVariableSystem.Set('modeu5_us10_stock_tab', 'yes')]"
 		down = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}
-	}
-
-	widget = {
-		visible = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
-		allow_outside = yes
-		using = modeu5_us10_stock_panel
 	}
 }
