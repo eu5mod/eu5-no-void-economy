@@ -1,36 +1,18 @@
 # ModeU5 US-10 stock panel templates.
-# This file defines reusable GUI templates only. The panel is instantiated from
-# zz_modeu5_us10_production_tabs.gui, inside the existing production UI.
-
-template modeu5_us10_ui_panel_header_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	default_format = "#bold"
-	block "text" { text = "" }
-}
-
-template modeu5_us10_ui_panel_value_cell {
-	layoutpolicy_horizontal = expanding
-	layoutstretchfactor_horizontal = 1
-	autoresize = no
-	align = left|nobaseline
-	block "text" { text = "" }
-}
+# Safe placeholder panel: no datamodel, no scripted GUI execution, no dynamic
+# market list. This validates the injected tab/body lifecycle before adding
+# market cards and stock rows back.
 
 template modeu5_us10_stock_panel {
-	# This template is injected as a child of the tab hbox. Keep the injector
-	# widget zero-sized and draw the actual panel as an anchored overlay.
+	# Injected as a child of production_main_tabs. Keep this container inert.
 	size = { 0 0 }
 	alwaystransparent = yes
 
 	window = {
-		visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 		parentanchor = top|left
 		widgetanchor = top|left
 		position = { -560 45 }
-		size = { 560 530 }
+		size = { 540 240 }
 		using = bg_window_default_alt
 		movable = yes
 		alwaystransparent = no
@@ -42,11 +24,15 @@ template modeu5_us10_stock_panel {
 			hbox = {
 				layoutpolicy_horizontal = expanding
 				spacing = 8
+
 				text_single = {
 					layoutpolicy_horizontal = expanding
-					text = "modeu5_us10_ui.title"
+					autoresize = no
+					align = left|nobaseline
 					default_format = "#bold"
+					raw_text = "ModeU5 Stocks"
 				}
+
 				button_regular = {
 					size = { 80 30 }
 					raw_text = "Close"
@@ -56,124 +42,28 @@ template modeu5_us10_stock_panel {
 				}
 			}
 
-			text_single = {
-				layoutpolicy_horizontal = expanding
-				autoresize = no
-				align = left|nobaseline
-				default_format = "#bold"
-				raw_text = "Market selector"
-			}
-
-			scrollbox = {
-				layoutpolicy_horizontal = expanding
-				size = { -1 150 }
-				datacontext = "[GetQuickVisibleMarkets(Player.Self)]"
-
-				vbox = {
-					layoutpolicy_horizontal = expanding
-					spacing = 6
-					datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
-
-					item = {
-						widget = {
-							size = { 500 70 }
-							visible = "[GreaterThan_CFixedPoint(Market.GetCountryPopulation(Player.Self),'(CFixedPoint)0')]"
-
-							hbox = {
-								using = bg_market_card
-								using = bg_cabinet_card_frame
-
-								button = {
-									size = { 100% 100% }
-									alwaystransparent = yes
-									onclick = "[SetUIFocusMarket(Market.Self)]"
-									onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
-									tooltipwidget = { using = Market_tooltip }
-								}
-
-								market_card = {
-									blockoverride "market_card_margins" {
-										margin = { 5 5 }
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
 			widget = {
 				layoutpolicy_horizontal = expanding
-				size = { -1 38 }
+				size = { -1 120 }
 				using = bg_age_event_frame
-				hbox = {
-					layoutpolicy_horizontal = expanding
-					margin = { 10 6 }
-					spacing = 8
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						autoresize = no
-						align = left|nobaseline
-						text = "modeu5_us10_ui.selected_market"
-					}
-					text_single = {
-						layoutpolicy_horizontal = expanding
-						autoresize = no
-						align = right|nobaseline
-						text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0]/[Player.MakeScope.GetVariable('modeu5_us10_ui_market_count').GetValue|0]"
-					}
-				}
-			}
 
-			widget = {
-				layoutpolicy_horizontal = expanding
-				using = bg_age_event_frame
 				vbox = {
 					layoutpolicy_horizontal = expanding
 					margin = { 10 8 }
 					spacing = 8
-					hbox = {
+
+					text_multi = {
 						layoutpolicy_horizontal = expanding
-						spacing = 8
-						text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.good" } }
-						text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.country_stocks" } }
-						text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.market_stocks" } }
-						text_single = { using = modeu5_us10_ui_panel_header_cell blockoverride "text" { text = "modeu5_us10_ui.column.overproduction" } }
+						autoresize = yes
+						raw_text = "Safe UI placeholder. The tab and body are now injected into Production without OpenLateralView, without scripted_widgets, and without executing the US-10 refresh/read-model."
 					}
 
-					hbox = {
+					text_multi = {
 						layoutpolicy_horizontal = expanding
-						spacing = 8
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.wheat" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_wheat_overproduction_percent').GetValue|2]%" } }
-					}
-
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						spacing = 8
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.iron" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_iron_overproduction_percent').GetValue|2]%" } }
-					}
-
-					hbox = {
-						layoutpolicy_horizontal = expanding
-						spacing = 8
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "modeu5_us10_ui.good.tools" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_country_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_market_capacity').GetValue|2]" } }
-						text_single = { using = modeu5_us10_ui_panel_value_cell blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_tools_overproduction_percent').GetValue|2]%" } }
+						autoresize = yes
+						raw_text = "Next step after this is stable: add the market selector back as a lightweight visual block, then add the stock rows."
 					}
 				}
-			}
-
-			text_multi = {
-				layoutpolicy_horizontal = expanding
-				autoresize = yes
-				text = "modeu5_us10_ui.read_only_note"
 			}
 		}
 	}
