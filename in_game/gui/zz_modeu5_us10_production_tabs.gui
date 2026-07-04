@@ -71,8 +71,9 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "modeu5_us10_ui.tab"
 		}
+		# Do not run the heavy table refresh from the tab click. First keep the
+		# interaction purely UI-state based; refresh can be added once the panel is stable.
 		onclick = "[GetVariableSystem.Toggle('modeu5_us10_stock_tab')]"
-		onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
 		down = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
@@ -80,6 +81,8 @@ template production_main_tabs {
 	}
 
 	widget = {
+		visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+		allow_outside = yes
 		using = modeu5_us10_stock_panel
 	}
 }
