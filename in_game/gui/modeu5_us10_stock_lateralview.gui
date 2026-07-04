@@ -8,8 +8,14 @@ template modeu5_us10_stock_panel {
 	visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
 	layoutpolicy_horizontal = expanding
 	layoutpolicy_vertical = expanding
-	size = { -1 860 }
+	size = { -1 940 }
 	using = bg_age_event_frame
+	# Best-effort Plan A auto-sync: when the player returns the cursor anywhere
+	# inside the ModeU5 body after changing the vanilla Production market, refresh
+	# the read-model from ProductionView.GetSelectedMarket. A true click-time sync
+	# would require patching the original production selector inside the vanilla
+	# lateralview body.
+	onmousehierarchyenter = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', ProductionView.GetSelectedMarket.MakeScope).End)]"
 
 	vbox = {
 		layoutpolicy_horizontal = expanding
@@ -43,10 +49,6 @@ template modeu5_us10_stock_panel {
 			size = { -1 44 }
 			using = bg_window_default_alt
 			datacontext = "[ProductionView.GetSelectedMarket]"
-			# Best-effort Plan A auto-sync: when the player returns the cursor to the
-			# ModeU5 body after changing the vanilla Production market, refresh the
-			# read-model from ProductionView.GetSelectedMarket. Full true selection-hook
-			# sync requires overriding the vanilla market-selector on_action / Plan B.
 			onmousehierarchyenter = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
 
 			hbox = {

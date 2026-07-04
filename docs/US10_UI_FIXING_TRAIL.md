@@ -50,7 +50,7 @@ Target UX:
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
 | `production_main_tabs` injection | Valid for adding a visible top tab. Not a final body injection point. |
 | `production_view_subtabs` injection | Validated. It can mount an inline ModeU5 body in the existing Production flow. |
-| Current best direction | Plan A is good enough for a V0 hand-off if the final height and refresh behavior are acceptable. |
+| Current best direction | Plan A is good enough for a V0 hand-off if height is acceptable; full automatic selector-click sync was not achieved in Plan A. |
 
 ## Plan A acceptance criteria
 
@@ -102,18 +102,12 @@ As of `a7ed5a0`, a static ModeU5 placeholder rendered inline inside Production. 
 
 Vanilla market selection is tied to a parent filtered list and `ProductionView.GetSelectedMarket`. M&T's Production selector uses `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)` on the selected market card.
 
-V1 hook:
+V1 selector-hook result:
 
-- `zz_modeu5_us10_production_select_market.gui` is a small copy of the vanilla/M&T `select_menu_left` block.
-- It preserves `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
-- It adds one action immediately after selection: `modeu5_us10_ui_select_market_on_click` with `Market.MakeScope`.
-- This should refresh ModeU5 automatically when a market is selected in the vanilla Production market selector.
-
-Risk note:
-
-- This is more invasive than hover-sync because it overrides the selector definition.
-- It is still far smaller than overriding the full 5,500-line `production_lateralview.gui`.
-- If it causes a duplicate/GUI error, delete `zz_modeu5_us10_production_select_market.gui` and fall back to Sync + hover-sync.
+- `zz_modeu5_us10_production_select_market.gui` attempted to override the selector and add a ModeU5 refresh after `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
+- Runtime result: the table still refreshed only through hover or explicit Sync; no selector-file GUI error was logged.
+- Conclusion: the separate selector file is not a reliable Plan A hook. It either did not override the active selector instance, or the active click path is not the path copied into the standalone file.
+- Decision: remove the selector hook and keep Plan A to table + hover-sync + explicit Sync. True click-time selector sync belongs in Plan B, where the original selector can be patched inside the full generated `production_lateralview.gui`.
 
 ## Trail of attempts and results
 
@@ -128,8 +122,9 @@ Risk note:
 | 7 | Coverage probe using `position`. | GUI error: layout children cannot use `position`. | Rejected. |
 | 8 | Coverage probe using `margin_top`. | GUI error: `margin_top` not handled on this widget. | Rejected. |
 | 9 | Table iteration. | Table appears; selected market name and values update through Sync. | Good enough visually. |
-| 10 | Taller panel + best-effort auto-sync. | Pending test. | Current batch. |
-| 11 | V1 market selector hook. | Pending test. | Should provide true refresh on market selection if override loads cleanly. |
+| 10 | Taller panel + best-effort auto-sync. | Works through hover; not true selector-click sync. | Keep for Plan A. |
+| 11 | V1 standalone market selector hook. | No visible automatic click-sync effect. | Removed. |
+| 12 | Increase panel height to `940` and move hover-sync to whole ModeU5 body. | Pending test. | Current batch. |
 
 ## Latest implementation notes
 
@@ -137,9 +132,10 @@ Risk note:
 - `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
 - `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
 - `zz_modeu5_us10_production_tabs.gui` refreshes the ModeU5 table when opened from the top tab.
-- `zz_modeu5_us10_production_select_market.gui` hooks the market-selection action.
-- Panel height is now `860`.
-- The selected-market strip still has hover auto-sync and explicit `Sync` fallback.
+- The ineffective standalone selector hook file was removed.
+- Panel height is now `940`.
+- Hover auto-sync is now on the whole ModeU5 panel and the selected-market strip.
+- The explicit `Sync` button remains as fallback.
 
 ## Important runtime log learnings
 
@@ -164,13 +160,12 @@ Unsupported property: position on widgets that are a child of a hbox/vbox
 Property 'margin_top' not handled
 ```
 
-New thing to watch after V1 selector hook:
+Things to watch after height/whole-panel hover-sync:
 
 ```txt
-gui/zz_modeu5_us10_production_select_market.gui
-select_menu_left
-ProductionSelectMarket.Parent.FilterByMarket
-modeu5_us10_ui_clicked_market
+gui/modeu5_us10_stock_lateralview.gui
+Property 'size'
+ProductionView.GetSelectedMarket.MakeScope
 ```
 
 ## Current branch state
@@ -180,9 +175,9 @@ modeu5_us10_ui_clicked_market
 - Table/panel are separated for reuse.
 - Top tab refreshes existing ModeU5 read-model.
 - Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
-- Best-effort hover auto-sync has been added.
-- V1 market selection hook has been added.
+- Best-effort hover auto-sync exists on the whole panel.
+- No standalone selector override remains.
 
 ## Plan B trigger
 
-Move to generated full `production_lateralview.gui` override if Plan A cannot cover/replace vanilla Buildings content cleanly enough for a V0 that can be handed to a UI specialist, or if the selector hook cannot be kept cleanly without duplicate GUI errors.
+Move to generated full `production_lateralview.gui` override if Plan A cannot cover/replace vanilla Buildings content cleanly enough for a V0 that can be handed to a UI specialist, or if true selector-click sync is required for V0 acceptance.
