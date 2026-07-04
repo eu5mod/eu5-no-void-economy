@@ -20,14 +20,17 @@ template modeu5_us10_ui_panel_value_cell {
 }
 
 template modeu5_us10_stock_panel {
-	size = { 100% 100% }
+	# This template is injected as a child of the tab hbox. Keep the injector
+	# widget zero-sized and draw the actual panel as an anchored overlay.
+	size = { 0 0 }
 	alwaystransparent = yes
 
 	window = {
 		visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
-		parentanchor = center
-		widgetanchor = center
-		size = { 980 610 }
+		parentanchor = top|left
+		widgetanchor = top|left
+		position = { -560 45 }
+		size = { 560 530 }
 		using = bg_window_default_alt
 		movable = yes
 		alwaystransparent = no
@@ -42,7 +45,7 @@ template modeu5_us10_stock_panel {
 				text_single = {
 					layoutpolicy_horizontal = expanding
 					text = "modeu5_us10_ui.title"
-					default_format = "#title"
+					default_format = "#bold"
 				}
 				button_regular = {
 					size = { 80 30 }
@@ -63,33 +66,35 @@ template modeu5_us10_stock_panel {
 
 			scrollbox = {
 				layoutpolicy_horizontal = expanding
-				size = { -1 180 }
+				size = { -1 150 }
 				datacontext = "[GetQuickVisibleMarkets(Player.Self)]"
 
-				dynamicgridbox = {
+				vbox = {
 					layoutpolicy_horizontal = expanding
+					spacing = 6
 					datamodel = "[QuickVisibleMarkets.GetVisibleMarkets]"
-					datamodel_reuse_widgets = yes
 
 					item = {
 						widget = {
-							size = { 300 74 }
-							margin = { 4 4 }
+							size = { 500 70 }
 							visible = "[GreaterThan_CFixedPoint(Market.GetCountryPopulation(Player.Self),'(CFixedPoint)0')]"
-							using = bg_market_card
-							using = bg_cabinet_card_frame
 
-							button = {
-								size = { 100% 100% }
-								alwaystransparent = yes
-								onclick = "[SetUIFocusMarket(Market.Self)]"
-								onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
-								tooltipwidget = { using = Market_tooltip }
-							}
+							hbox = {
+								using = bg_market_card
+								using = bg_cabinet_card_frame
 
-							market_card = {
-								blockoverride "market_card_margins" {
-									margin = { 5 5 }
+								button = {
+									size = { 100% 100% }
+									alwaystransparent = yes
+									onclick = "[SetUIFocusMarket(Market.Self)]"
+									onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+									tooltipwidget = { using = Market_tooltip }
+								}
+
+								market_card = {
+									blockoverride "market_card_margins" {
+										margin = { 5 5 }
+									}
 								}
 							}
 						}
