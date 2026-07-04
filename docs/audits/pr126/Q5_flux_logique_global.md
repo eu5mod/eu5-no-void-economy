@@ -6,7 +6,9 @@ The previous diagram was useful to discuss the **expected business process**, bu
 
 1. the callgraph actually visible in dispatchers;
 2. business sub-loops required by the target design;
-3. loops still to be confirmed (`every_trade`, `every_market_center`).
+3. loops whose exact scope had to be confirmed before gameplay use (`every_trade`, `every_market_center_in_country`).
+
+The TECH-01 consequence is important for the target design: `every_trade` is confirmed as a country-scope iterator, not as a market-scope iterator. The consequence is **not** to filter the trade loop down to the current promoted market. The safer target is one country-level trade pass that visits all trades for which the current country is the ModeU5 trade owner, so each trade is processed once and only once. Stock movement remains owned by the add/remove/transfer handlers; the trade pass is an orchestration surface, not a direct stock writer. The promoted-market local branch has a separate anti-duplication requirement: each promoted market must be locally processed once per month, either by a real promoted-market dispatcher or by a deterministic country owner guard if the implementation is still launched from country pulse. `every_market_center_in_country` is confirmed for market-center-owned scheduling, but Q5's current PR4/PR5 shell still builds the work list from `every_market_present_in_country`.
 
 The concerning point is real: in the audited current wiring, `modeu5_run_monthly_stock_cycle` starts from the current country, launches a few global preparations, then calls broad pipelines (`modeu5_run_us00_monthly_pipeline_all_goods`, `modeu5_run_monthly_stock_demand_resolution`). The market/trade loop is not the explicit container for B/C/D. This makes scope auditing difficult and encourages File/Cache redundancy.
 
@@ -66,90 +68,150 @@ flowchart TD
 
 | Finding | Why it is concerning | Refactor consequence |
 |---|---|---|
-| The current country is the visible outer loop | Markets/trades are not the main orchestration container | Hard to share B/C/D by market center |
+| The current country is the visible outer loop | Markets/trades are not the main orchestration container | Country pulse should prepare country-owned work, but must not make every country execute the same market-owned local branch |
 | Capacity has its own `every_market_present_in_country` loop | Good input data, but it does not frame US-00/US-10 | Risk of redundant recalculation/cache glue |
 | US-00 is called as an all-goods pipeline | Simple to call, but less clear for market/trade scope | Requires an explicit goods/market policy |
-| US-10 is called after US-00 as a separate resolver | Same-market and inter-market are not structured under the same market loop | Makes `every_trade` / market supplier loops difficult to audit |
+| US-10 is called after US-00 as a separate resolver | Same-market and inter-market are not structured under explicit ownership phases | Local market work should be once-per-promoted-market; trade work should be country-level and owner-gated. |
 | Audit/reconciliation is a conditional end-of-cycle step | Correct for diagnostics, but not a process container | Must not compensate for suboptimal orchestration |
 
-## 6. Main recommended target — market promotion then segregated loops
+## 6. Main recommended target — country prep, market-local branch, country trade pass
 
-I think this variant is better as the **first concrete refactor**, because it first relies on loops already close to the current code (`monthly_country_pulse`, `every_market_present_in_country`, market promotion), then cleanly separates **country/market/good** processing from **trade/inter-market** processing.
+I recommend the target as **three ownership phases**, not as one monolithic country pulse that mutates everything:
+
+```txt
+on_monthly_pulse(country)
+  1. Country -> markets preparation
+     - build/update country-owned work caches
+     - register promoted-market candidates
+     - do not execute the full market-local branch for every country
+
+every_market_promoted / promoted-market dispatcher
+  2. Promoted-market local branch
+     - process each promoted market once per month
+     - if launched from country pulse, require a deterministic processing-owner guard
+     - local US-00 / same-market US-10 / validation are market-local, not repeated by all countries present
+
+on_monthly_pulse(country)
+  3. Country-owned trade branch
+     - country-scoped every_trade
+     - process trades owned by this country once
+     - delegate add/remove/transfer stock consequences to handlers
+```
+
+This is closest to your second option. The only caveat is implementation: `every_market_promoted` is still a ModeU5 work-list/helper pattern, not a confirmed native engine iterator. Therefore PR4/PR5 may still be driven by country pulse while test-only, but the design contract must be equivalent to a once-per-promoted-market dispatcher. If the shell is launched from country scope, the promoted-market local branch needs a processing-owner guard so the same market is not processed by every country present in it.
 
 ```mermaid
 flowchart TD
-    A[1. monthly_country_pulse] --> B{modeu5_stock_runtime_ready_trigger ?}
+    A[monthly tick / country pulse framework] --> B{modeu5_stock_runtime_ready_trigger ?}
     B -->|no| Z[Fail closed / diagnostic only]
-    B -->|yes| C[1.1 every_market_present_in_country]
+    B -->|yes| C[1. on_monthly_pulse country prep]
 
     subgraph PREP[1. Country -> markets preparation]
-        C --> C1[Cache countries_present_in_market<br/>target helper: modeu5_prepare_country_present_market_caches]
-        C1 --> C2{Performance Mode ?<br/>modeu5_performance_mode_enabled_trigger}
-        C2 -->|yes| C3[Cache human_relevant_market<br/>modeu5_prepare_performance_mode_human_relevant_markets]
-        C2 -->|no| C4[human_relevant_market = all current-country markets]
-        C3 --> C5[1.3 Market Promotion<br/>modeu5_promote_market_to_detailed_accounting]
-        C4 --> C5
-        C5 --> C6[1.4 Future market-focused US<br/>non-good / non-trade scoped]
+        C --> C1[Scan current country markets<br/>every_market_present_in_country]
+        C1 --> C2[Build/update country-owned work caches]
+        C2 --> C3{Performance Mode ?<br/>modeu5_performance_mode_enabled_trigger}
+        C3 -->|yes| C4[Register performance-relevant promoted-market candidates]
+        C3 -->|no| C5[Register all current-country market candidates]
+        C4 --> C6[Promoted-market work list / candidates]
+        C5 --> C6
     end
 
-    C6 --> D[2. Segregated loop every_market_promoted]
+    C6 --> D[2. every_market_promoted logical dispatcher]
 
-    subgraph PROMOTED[2. Separate loop by promoted market]
-        D --> M[every_market_promoted]
-        M --> M1[2.1.1 countries_present_in_market]
-        M1 --> M2[2.1.2 US-00 scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
-        M2 --> M3[2.1.3 Same-market consumption<br/>modeu5_resolve_stock_consumption]
-        M3 --> M4[2.1.4 Future same-market US]
-
-        M --> T1[2.2.1 every_trade<br/>TECH-01 exposure required]
-        T1 --> T2[2.2.2 Trade resolution / inter-market transfer<br/>modeu5_resolve_inter_market_stock_transfer<br/>modeu5_transfer_stock]
-        T2 --> T3[2.2.3 Future inter-market US]
+    subgraph LOCAL[2. Promoted-market local branch]
+        D --> O{This market's processing owner?}
+        O -->|no| S[Skip local mutation for this country]
+        O -->|yes| M1[2.1 rebuild countries_present_in_market once]
+        M1 --> M2[2.2 capacity/cache for countries present]
+        M2 --> M3[2.3 US-00 scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
+        M3 --> M4[2.4 Same-market consumption<br/>modeu5_resolve_stock_consumption]
+        M4 --> M5[2.5 Validate market-local result]
     end
 
-    M4 --> V[Validate promoted market-good<br/>modeu5_validate_stock_consistency]
+    A --> T0[3. on_monthly_pulse country trade pass]
+
+    subgraph TRADE[3. Country-owned trade branch]
+        T0 --> T1[3.1 country-scoped every_trade<br/>trades owned by current country<br/>TECH-01 047]
+        T1 --> T2[3.2 Trade handlers decide effects<br/>add/remove/transfer stock<br/>no direct stock write in loop]
+        T2 --> T3[3.3 Future trade US<br/>US-17 / US-20 planning surface]
+    end
+
+    M5 --> V[Monthly validation / reconciliation]
     T3 --> V
     V --> R{Divergence ?}
     R -->|yes| RB[modeu5_rebuild_market_stock_from_country_stocks]
-    R -->|no| N[Next promoted market]
+    R -->|no| N[Next monthly stage]
     RB --> N
     N --> END[Reset counters after readers]
 ```
 
-`every_market_promoted` is a diagram label for a ModeU5 work list built by the mod. It is not assumed to be a native EU5 engine exposure.
+`every_market_promoted` is a diagram label for a ModeU5 work list built by the mod. It is not assumed to be a native EU5 engine exposure. Its design meaning is **once per promoted market**, not “once per country that can see this market.”
 
-US-00 scoped market-good must produce and freeze the `produced / added / rejected / overproduction input` facts before the US-10 branch, decay, validation, or reconciliation. Late US-00 finalization must read only these frozen facts.
+The promoted-market local branch must have one of these two execution models:
+
+| Execution model | Status | Guardrail |
+|---|---|---|
+| Real promoted-market dispatcher | Preferred target | Process each promoted market once, then run local B/C/D work. |
+| Country-pulse-launched shell | Acceptable for PR4/PR5 tests and early implementation | Add a deterministic market processing-owner guard; non-owner countries may prepare/register candidates but must not run the market-local mutations. |
+
+`every_trade` is different: TECH-01 confirms it as a country-scope iterator that enters trade scope. The target trade branch should run from the monthly country context and process all trades for which that country is the ModeU5 trade owner. It should **not** be narrowed to the currently promoted market. That avoids double accounting across countries while preserving visibility for future trade-oriented systems such as US-17 and US-20.
+
+The trade loop must remain orchestration-only: stock consequences go through the existing add/remove/transfer handlers, which own the source/target market logic and same-market/inter-market distinction.
+
+US-00 scoped market-good must produce and freeze the `produced / added / rejected / overproduction input` facts before same-market consumption, trade pass, decay, validation, or reconciliation. Late US-00 finalization must read only these frozen facts.
 
 ### Opinion on this variant
 
 | Point | Opinion | Reason | Guardrail |
 |---|---|---|---|
-| `monthly_country_pulse` remains the entry point | Yes | Compatible with current wiring and existing on_actions | Keep readiness gate before any mutation |
-| `every_market_present_in_country` in preparation | Yes | The right place to build country market lists and required caches | Do not recalculate per good |
-| `countries_present_in_market` cache | Yes, priority | Gives the promoted market its country list once | Cache remains derived, never stock source |
-| Performance: filtered `human_relevant_market` | Yes | Reduces scopes without changing business order | Normal mode must define the equivalent as all current-country markets, not all global markets |
-| Market Promotion before US | Yes | Very good File/Cache pivot: following loops read promoted markets only | Document promotion criteria and fallback reasons |
-| Separate `every_market_promoted` loop | Yes | Clarifies scope owner and avoids US-00/US-10 each scanning their own markets | Add a single helper to iterate promoted markets |
-| Branch 2.1 countries/US-00/same-market | Yes | Separates local market-good from inter-market | Keep mutations through central operators only |
-| Branch 2.2 `every_trade` / transfer | Yes as target | Correct conceptual separation for inter-market | Blocked until `every_trade` is confirmed in TECH-01; provide queued-demand fallback |
-| Future non-good / market-focused US | Yes | Good location before goods/trade loops | Do not mix with per-good adapters |
+| `monthly_country_pulse` remains a required entry point | Yes | Compatible with current wiring and existing on_actions | Use it for country prep and country-owned trade, not for repeated market-local mutation |
+| `every_market_present_in_country` in preparation | Yes | The right place to discover candidate markets and required caches | Discovery may happen per country; market-local mutation must not |
+| `countries_present_in_market` cache | Yes, priority | Gives the promoted market its country list once | Cache remains derived/work state, never stock source |
+| Performance: filtered `human_relevant_market` | Yes | Reduces promoted-market candidates without changing business order | Normal mode must define the equivalent as all current-country markets, not all global markets |
+| Market promotion before local branch | Yes | Good File/Cache pivot before local B/C/D | Add processing-owner guard if country pulse launches the shell |
+| Separate `every_market_promoted` local branch | Yes, as once-per-market logical dispatcher | Clarifies market-local scope and avoids US-00/US-10 each scanning independently | Do not run local branch once per country present in the market |
+| Branch 2 local countries/US-00/same-market | Yes | Separates market-local work from trade-owned work | Keep mutations through central operators only |
+| Country-level `every_trade` pass | Yes as target, but only owner-gated | All trades deserve processing and future trade systems need a full pass | Process only trades owned by the current country to avoid double accounting; do not filter to promoted market. |
+| Future non-good / market-focused US | Yes | Good location before goods/trade loops | Attach to the phase whose ownership matches the feature |
 
-his proposed variant is more operational:
+This proposed variant is more operational:
 
 ```txt
-monthly country
-→ build/promote market set
-→ every promoted market
-  → local country/market/good branch
-  → inter-market trade branch
+monthly country pulse
+→ country -> markets preparation only
+→ register promoted-market candidates
+
+promoted-market dispatcher / owner-guarded shell
+→ every promoted market exactly once
+  → market-local country/market/good branch
+  → local validation
+
+monthly country pulse
+→ country-owned every_trade pass
+  → every trade owned by current country
+  → stock handlers decide add/remove/transfer consequences
+  → future US-17 / US-20 hooks can attach here
 ```
 
-I therefore recommend making this variant the **main target process** and keeping `modeu5_run_monthly_market_trade_cycle` only as a possible name for step 2, or choosing a more precise name:
+I therefore recommend naming the two executable surfaces separately:
 
 ```txt
 modeu5_run_monthly_promoted_market_cycle
+modeu5_run_monthly_country_trade_owner_cycle
 ```
 
-This name better describes the mechanism: we do not traverse all markets or all trades; we first traverse markets promoted by the File/Cache preparation.
+This names the two different mechanisms: promoted-market local work is driven by a once-per-market ModeU5 work list, while trade work is driven by a country-scoped ownership pass over all owned trades.
+
+### Impact on the PR126 stacked PRs
+
+| PR layer | Impact from TECH-01 row 047 and monthly ownership clarification | Action for the layer |
+|---|---|---|
+| PR1 — File/Cache inventory | Yes, audit/check impact only | Inventory scripts should classify `every_trade` as a confirmed **country-scope** iterator and flag raw market-scope usage as suspicious. Also flag future market-local mutation paths that can run once per country without an owner guard. |
+| PR2 — Cache ownership plan | Yes, ownership wording | Keep `countries_present_in_market` as a promoted-market work cache; define how a promoted market gets a single processing owner if the dispatcher is country-pulse-launched. Trade ownership remains a separate country-level orchestration rule. |
+| PR3 — Helper extraction B/C/D | Small interface guardrail | Do not expose a helper that implies market-scoped `every_trade`. Do not expose local B/C/D helpers that silently process the same promoted market for every country present. |
+| PR4 — Promoted-market shell | Direct shell impact | The shell must distinguish candidate registration from once-per-promoted-market execution. If still country-launched, it needs an owner guard or equivalent test-only restriction. |
+| PR5 — Local branch | Direct local-branch impact | PR5 remains local/test-only, but the contract must say the local branch represents a once-per-promoted-market execution surface, not a per-country repeated market mutation. |
+| PR6 — Country-owned trade branch | Direct trade impact | This is the first layer that should run the country-scoped, owner-gated `every_trade` pass over all owned trades, then delegate stock consequences to handlers. |
 
 ## 7. Recommended refactor order
 
@@ -158,12 +220,13 @@ flowchart LR
     A[1. File/Cache inventory] --> B[2. Classify source vs cache vs debug]
     B --> C[3. Remove or merge redundant caches]
     C --> D[4. Extract B/C/D helpers]
-    D --> E[5. Create every_market_promoted dispatcher]
-    E --> F[6. Wire local branch and trade branch]
-    F --> G[7. Comparative tests Normal / Performance / Audit / Debug]
+    D --> E[5. Create promoted-market work list + owner guard]
+    E --> F[6. Wire once-per-market local branch]
+    F --> G[7. Wire country-owned trade branch]
+    G --> H[8. Comparative tests Normal / Performance / Audit / Debug]
 ```
 
-The order remains File/Cache first, because the promoted-market cycle will only be reliable if each sub-loop clearly knows which record is source of truth, which record is a derived cache, and which record exists only for debug/audit.
+The order remains File/Cache first, because the promoted-market cycle and the country-owned trade pass will only be reliable if each sub-loop clearly knows which record is source of truth, which record is a derived cache, which record exists only for debug/audit, and which scope owns the right to execute mutations.
 
 ## 8. PR3 helper extraction contract
 
@@ -175,7 +238,7 @@ are delegation points only:
 |---|---|---|---|
 | B | `modeu5_prepare_promoted_market_country_cache` | `modeu5_rebuild_countries_present_in_market` | Rebuilds the current target market's country work list; not durable storage and not stock proof. |
 | B | `modeu5_prepare_promoted_country_market_capacity` | `modeu5_recalculate_country_market_capacity_from_prepared_pool_shared` | Refreshes one country-market capacity record from the cached country location pool and current market trade capacity. |
-| B | `modeu5_prepare_promoted_market_capacity_cache` | B country cache + B country-market capacity helper | Convenience wrapper for every country present in one promoted market. |
+| B | `modeu5_prepare_promoted_market_capacity_cache` | B country cache + B country-market capacity helper | Convenience wrapper for every country present in one promoted market; must be called from a once-per-market owner surface when it becomes stock-affecting. |
 | C | `modeu5_run_scoped_us00_market_good` | generated `modeu5_process_us00_monthly_market_good_<good>` | Future local branch entry point; not called by the current dispatcher in PR3. |
 | C | `modeu5_probe_scoped_us00_market_good_bridge` | generated `modeu5_probe_us00_previous_record_activity_good_<good>` | Non-mutating probe surface for tests. |
 | C/D | `modeu5_run_scoped_us10_monthly_market_good` | generated `modeu5_process_us10_monthly_market_good_<good>` | Processes one scoped queued same-market consumption request. |
@@ -184,7 +247,7 @@ are delegation points only:
 
 The PR3 helpers must not be interpreted as an activated promoted-market
 dispatcher. PR4 remains responsible for creating the disabled/test-only
-promoted-market shell.
+promoted-market shell and its once-per-market owner guard.
 
 ## 9. PR4 promoted-market shell contract
 
@@ -194,10 +257,11 @@ name and the live monthly dispatcher remains unchanged in this PR.
 
 | Layer | Helper / state | Role | Notes |
 |---|---|---|---|
-| Shell prep | `modeu5_prepare_promoted_market_work_list_for_current_country` | Builds the current-cycle promoted-market list from `every_market_present_in_country`. | Normal mode promotes all current-country markets; Performance mode keeps only markets in `modeu5_performance_relevant_markets`. |
+| Shell prep | `modeu5_prepare_promoted_market_work_list_for_current_country` | Builds candidate promoted-market entries from `every_market_present_in_country`. | Normal mode promotes all current-country markets; Performance mode keeps only markets in `modeu5_performance_relevant_markets`. Candidate registration may happen per country. |
 | Work list | `modeu5_promoted_markets_this_cycle` | Current-cycle market targets for the future promoted-market dispatcher. | Rebuilt work cache only; not durable storage and not proof of stock/capacity readiness. |
-| Shell loop | `modeu5_run_monthly_promoted_market_cycle` | Iterates `modeu5_promoted_markets_this_cycle` and records shell iteration metrics. | Test-only in PR4; B/C/D business work is wired by later PR126 layers. |
-| Observability | `modeu5_promoted_market_*` counters | Candidate, promoted, rejected, and shell-iteration counts. | Debug metrics only; they must not drive stock mutation. |
+| Processing owner | `modeu5_promoted_market_processing_owner` / equivalent guard | Ensures one country-owned launch cannot make every country present execute the same market-local branch. | Required before local market mutation is generalized beyond controlled probes. |
+| Shell loop | `modeu5_run_monthly_promoted_market_cycle` | Iterates promoted-market work and records shell iteration metrics. | Test-only in PR4; B/C/D business work is wired by later PR126 layers. |
+| Observability | `modeu5_promoted_market_*` counters | Candidate, promoted, rejected, owner-skip, and shell-iteration counts. | Debug metrics only; they must not drive stock mutation. |
 
 PR4 deliberately keeps `modeu5_promoted_markets_this_cycle` separate from
 `modeu5_detailed_accounting_promoted_markets`. The former answers "which
@@ -214,6 +278,7 @@ drive one promoted market-good through the intended local order:
 ```txt
 modeu5_run_monthly_promoted_market_cycle
   -> modeu5_promoted_markets_this_cycle
+  -> processing-owner guard for the promoted market
   -> modeu5_run_promoted_market_local_branch_market_good
       -> B rebuild countries_present_in_market once for the promoted market
       -> B refresh country-market capacities for countries present in that market
@@ -228,6 +293,11 @@ keeps the controlled test from using a broad supplier candidate fallback. The
 generated US-10 resolver still owns its internal candidate scan for cases where
 own stock cannot satisfy the request; that remaining narrowing belongs to a
 later PR126 layer, not to PR5.
+
+The local-branch contract is **once per promoted market**. If the implementation
+is still launched from country pulse, non-owner countries may register or refresh
+candidate data, but they must not execute the market-local mutation branch for
+the same promoted market.
 
 The probe validates the observable order with metrics:
 
@@ -247,5 +317,5 @@ Known PR5 boundary:
 - inter-market trade branch wiring remains deferred;
 - US-10 supplier-candidate internals may still rebuild their own candidate
   cache when own stock cannot satisfy the request;
-- PR5 establishes the outer local branch and scoped validation shape for the
-  next stacked PR, not the final optimized monthly cycle.
+- PR5 establishes the outer local branch, owner-guard expectation, and scoped
+  validation shape for the next stacked PR, not the final optimized monthly cycle.
