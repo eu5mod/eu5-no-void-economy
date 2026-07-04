@@ -24,6 +24,12 @@ modeu5_pr126_debug.1 = {
 		trigger_event_non_silently = modeu5_pr126_debug.3
 	}
 	option = {
+		name = modeu5_pr126_debug.1.c
+		modeu5_enter_test_audit_runtime_mode = yes
+		modeu5_debug_run_pr126_promoted_market_local_branch_test = yes
+		trigger_event_non_silently = modeu5_pr126_debug.4
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -49,6 +55,33 @@ modeu5_pr126_debug.2 = {
 	option = {
 		name = modeu5_debug.test.pr126_helpers.fail
 		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_helpers_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_pr126_debug.4 = {
+	type = country_event
+	title = modeu5_pr126_debug.4.title
+	desc = modeu5_pr126_debug.4.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.pr126_local_branch.pass
+		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_passed }
+	}
+	option = {
+		name = modeu5_debug.test.pr126_local_branch.blocked
+		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_blocked }
+	}
+	option = {
+		name = modeu5_debug.test.pr126_local_branch.fail
+		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_failed }
 	}
 	option = {
 		name = modeu5_debug.close

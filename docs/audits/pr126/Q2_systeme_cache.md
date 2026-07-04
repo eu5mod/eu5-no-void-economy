@@ -118,3 +118,19 @@ The list is deliberately separate from
 `modeu5_detailed_accounting_promoted_markets`: a market can be scheduled for a
 cycle before the later PR layers run the promotion/readiness checks needed for
 stock-affecting logic.
+
+## PR5 local branch cache use
+
+PR5 keeps `modeu5_promoted_markets_this_cycle` as a scheduling work cache and
+uses `modeu5_countries_present_in_market` as the per-promoted-market country
+work cache inside the controlled local branch probe. The branch rebuilds the
+country list once at the start of the market-good pass, reuses it for
+country-market capacity refresh, and then validates the scoped market-good
+aggregate from the prepared cache.
+
+This does not turn `modeu5_countries_present_in_market` into durable storage.
+It remains a temporary list for the current target market. It also does not
+remove all internal candidate-list behavior from US-10: when same-market demand
+cannot be satisfied from own stock, the canonical US-10 resolver may still
+prepare candidate relations internally. PR5 only standardizes the outer cache
+ownership for the promoted-market local branch.
