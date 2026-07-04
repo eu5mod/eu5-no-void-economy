@@ -1,73 +1,51 @@
 # ModeU5 US-10 stock panel templates.
-# Safe placeholder panel: no datamodel, no scripted GUI execution, no dynamic
-# market list. This validates the injected tab/body lifecycle before adding
-# market cards and stock rows back.
+#
+# Plan A placeholder: no datamodel, no scripted GUI execution, no dynamic
+# market list. This is mounted inside the existing Production content flow by
+# zz_modeu5_us10_production_subtabs.gui.
 
 template modeu5_us10_stock_panel {
-	# Injected as a child of production_main_tabs. Keep this container inert but
-	# allow the anchored child window to draw outside of the tab row.
-	size = { 0 0 }
-	alwaystransparent = yes
-	allow_outside = yes
+	visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+	layoutpolicy_horizontal = expanding
+	size = { -1 170 }
+	using = bg_age_event_frame
 
-	window = {
-		allow_outside = yes
-		parentanchor = top|right
-		widgetanchor = top|right
-		position = { 0 45 }
-		size = { 540 240 }
-		using = bg_window_default_alt
-		movable = yes
-		alwaystransparent = no
+	vbox = {
+		layoutpolicy_horizontal = expanding
+		margin = { 10 8 }
+		spacing = 8
 
-		vbox = {
-			margin = { 14 12 }
-			spacing = 10
+		hbox = {
+			layoutpolicy_horizontal = expanding
+			spacing = 8
 
-			hbox = {
+			text_single = {
 				layoutpolicy_horizontal = expanding
-				spacing = 8
-
-				text_single = {
-					layoutpolicy_horizontal = expanding
-					autoresize = no
-					align = left|nobaseline
-					default_format = "#bold"
-					raw_text = "ModeU5 Stocks"
-				}
-
-				button_regular = {
-					size = { 80 30 }
-					raw_text = "Close"
-					using = bg_button_flavor_4
-					onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
-					tooltipwidget = { BasicFunctionalTooltip = {} }
-				}
+				autoresize = no
+				align = left|nobaseline
+				default_format = "#bold"
+				raw_text = "ModeU5 Stocks — inline Production body"
 			}
 
-			widget = {
-				layoutpolicy_horizontal = expanding
-				size = { -1 120 }
-				using = bg_age_event_frame
-
-				vbox = {
-					layoutpolicy_horizontal = expanding
-					margin = { 10 8 }
-					spacing = 8
-
-					text_multi = {
-						layoutpolicy_horizontal = expanding
-						autoresize = yes
-						raw_text = "Safe UI placeholder. ModeU5 is now a sub-mode of the existing Production lateralview. This panel intentionally has no datamodel and no scripted GUI refresh."
-					}
-
-					text_multi = {
-						layoutpolicy_horizontal = expanding
-						autoresize = yes
-						raw_text = "Next step after this is stable: move this content into the Production body, then add the market selector and stock rows."
-					}
-				}
+			button_regular = {
+				size = { 80 30 }
+				raw_text = "Close"
+				using = bg_button_flavor_4
+				onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+				tooltipwidget = { BasicFunctionalTooltip = {} }
 			}
+		}
+
+		text_multi = {
+			layoutpolicy_horizontal = expanding
+			autoresize = yes
+			raw_text = "Safe UI placeholder. This is not a custom lateralview and not a floating window. It is mounted inside the existing Production internal content flow."
+		}
+
+		text_multi = {
+			layoutpolicy_horizontal = expanding
+			autoresize = yes
+			raw_text = "Next step after this is stable: add the market selector as a visual-only block, then reconnect stock rows and read-model refresh."
 		}
 	}
 }
