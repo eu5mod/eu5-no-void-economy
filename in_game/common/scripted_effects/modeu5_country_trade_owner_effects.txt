@@ -1,0 +1,220 @@
+# PR126 PR6 country trade-owner pass.
+#
+# This file intentionally does not switch the monthly dispatcher yet. It adds a
+# country-scoped trade pass surface that can be tested before PR7 wires it into
+# the live monthly order.
+#
+# TECH-01 047 confirms every_trade as a country-scope iterator. TECH-01 056/138
+# are treated as runtime-confirmed for the actual moved-goods quantity formula:
+#
+#   goods_quantity = trade_volume / traded_goods:transport_cost
+#
+# The country trade-owner pass therefore records the confirmed per-trade moved
+# goods quantity. PR6 still does not mutate stock from native vanilla trade
+# objects because the stock-affecting generated per-good dispatch is deliberately
+# deferred; stock consequences continue to go through explicit ModeU5 requests,
+# existing US-10 handlers, and central stock operators.
+
+modeu5_reset_country_trade_owner_pass_metrics = {
+	remove_global_variable = modeu5_country_trade_owner_pass_runs
+	remove_global_variable = modeu5_country_trade_owner_trades_seen
+	remove_global_variable = modeu5_country_trade_owner_same_market_trades
+	remove_global_variable = modeu5_country_trade_owner_inter_market_trades
+	remove_global_variable = modeu5_country_trade_owner_quantity_confirmed_trades
+	remove_global_variable = modeu5_country_trade_owner_quantity_blocked_trades
+	remove_global_variable = modeu5_country_trade_owner_explicit_requests
+	remove_global_variable = modeu5_country_trade_owner_same_market_consumptions
+	remove_global_variable = modeu5_country_trade_owner_inter_market_transfers
+	remove_global_variable = modeu5_country_trade_owner_requested_quantity
+	remove_global_variable = modeu5_country_trade_owner_confirmed_trade_quantity
+	remove_global_variable = modeu5_country_trade_owner_transferred_quantity
+	remove_global_variable = modeu5_country_trade_owner_unsatisfied_quantity
+
+	set_global_variable = { name = modeu5_country_trade_owner_pass_runs value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_trades_seen value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_same_market_trades value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_inter_market_trades value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_quantity_confirmed_trades value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_quantity_blocked_trades value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_explicit_requests value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_same_market_consumptions value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_inter_market_transfers value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_requested_quantity value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_confirmed_trade_quantity value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_transferred_quantity value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_unsatisfied_quantity value = 0 }
+}
+
+modeu5_note_country_trade_owner_pass_run = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_pass_runs
+		value = { value = global_var:modeu5_country_trade_owner_pass_runs add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_trade_seen = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_trades_seen
+		value = { value = global_var:modeu5_country_trade_owner_trades_seen add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_same_market_trade = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_same_market_trades
+		value = { value = global_var:modeu5_country_trade_owner_same_market_trades add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_inter_market_trade = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_inter_market_trades
+		value = { value = global_var:modeu5_country_trade_owner_inter_market_trades add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_quantity_confirmed_trade = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_quantity_confirmed_trades
+		value = { value = global_var:modeu5_country_trade_owner_quantity_confirmed_trades add = 1 }
+	}
+	set_global_variable = {
+		name = modeu5_country_trade_owner_confirmed_trade_quantity
+		value = { value = global_var:modeu5_country_trade_owner_confirmed_trade_quantity add = scope:modeu5_trade_owner_goods_quantity }
+	}
+}
+
+modeu5_note_country_trade_owner_quantity_blocked_trade = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_quantity_blocked_trades
+		value = { value = global_var:modeu5_country_trade_owner_quantity_blocked_trades add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_explicit_request = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_explicit_requests
+		value = { value = global_var:modeu5_country_trade_owner_explicit_requests add = 1 }
+	}
+	save_temporary_scope_value_as = { name = modeu5_country_trade_owner_requested_delta value = { value = $requested_quantity$ min = 0 } }
+	set_global_variable = {
+		name = modeu5_country_trade_owner_requested_quantity
+		value = { value = global_var:modeu5_country_trade_owner_requested_quantity add = scope:modeu5_country_trade_owner_requested_delta }
+	}
+}
+
+modeu5_note_country_trade_owner_same_market_consumption = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_same_market_consumptions
+		value = { value = global_var:modeu5_country_trade_owner_same_market_consumptions add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_inter_market_transfer = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_inter_market_transfers
+		value = { value = global_var:modeu5_country_trade_owner_inter_market_transfers add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_outcome_quantities = {
+	save_temporary_scope_value_as = { name = modeu5_country_trade_owner_transferred_delta value = { value = $transferred_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_country_trade_owner_unsatisfied_delta value = { value = $unsatisfied_quantity$ min = 0 } }
+	set_global_variable = {
+		name = modeu5_country_trade_owner_transferred_quantity
+		value = { value = global_var:modeu5_country_trade_owner_transferred_quantity add = scope:modeu5_country_trade_owner_transferred_delta }
+	}
+	set_global_variable = {
+		name = modeu5_country_trade_owner_unsatisfied_quantity
+		value = { value = global_var:modeu5_country_trade_owner_unsatisfied_quantity add = scope:modeu5_country_trade_owner_unsatisfied_delta }
+	}
+}
+
+modeu5_capture_country_trade_owner_trade_quantity = {
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_owner_goods_quantity
+		value = {
+			value = trade_volume
+			divide = traded_goods:transport_cost
+			min = 0
+		}
+	}
+	if = {
+		limit = { scope:modeu5_trade_owner_goods_quantity > 0 }
+		modeu5_note_country_trade_owner_quantity_confirmed_trade = yes
+	}
+	else = {
+		modeu5_note_country_trade_owner_quantity_blocked_trade = yes
+	}
+}
+
+# Country-scoped native trade-owner pass. It classifies the trades owned by the
+# current country and records the confirmed actual moved-goods quantity via
+# trade_volume / traded_goods:transport_cost. PR6 does not yet perform stock
+# mutation from the native trade object because that requires a generated/static
+# good dispatch layer; explicit ModeU5 requests remain the stock-affecting path.
+modeu5_run_monthly_country_trade_owner_cycle = {
+	save_temporary_scope_as = modeu5_trade_owner_country
+	modeu5_note_country_trade_owner_pass_run = yes
+
+	every_trade = {
+		save_temporary_scope_as = modeu5_trade_owner_trade
+		modeu5_note_country_trade_owner_trade_seen = yes
+
+		from_market = { save_temporary_scope_as = modeu5_trade_owner_source_market }
+		to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
+		traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
+		modeu5_capture_country_trade_owner_trade_quantity = yes
+
+		if = {
+			limit = { scope:modeu5_trade_owner_source_market = scope:modeu5_trade_owner_target_market }
+			modeu5_note_country_trade_owner_same_market_trade = yes
+		}
+		else = {
+			modeu5_note_country_trade_owner_inter_market_trade = yes
+		}
+	}
+}
+
+# Explicit-request handler for tests and future ModeU5-owned trade requests. It
+# is the stock-affecting path for PR6 and delegates to the already-owned US-10
+# same-market / inter-market handlers instead of writing stock directly.
+modeu5_process_country_trade_owner_explicit_request = {
+	$buyer_country$ = { save_temporary_scope_as = modeu5_country_trade_owner_buyer_country }
+	$source_market$ = { save_temporary_scope_as = modeu5_country_trade_owner_source_market }
+	$target_market$ = { save_temporary_scope_as = modeu5_country_trade_owner_target_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_note_country_trade_owner_explicit_request = { requested_quantity = $requested_quantity$ }
+
+	if = {
+		limit = { scope:modeu5_country_trade_owner_source_market = scope:modeu5_country_trade_owner_target_market }
+		modeu5_note_country_trade_owner_same_market_trade = yes
+		modeu5_resolve_scoped_same_market_consumption = {
+			country = scope:modeu5_country_trade_owner_buyer_country
+			market = scope:modeu5_country_trade_owner_target_market
+			good = $good$
+			requested_quantity = $requested_quantity$
+		}
+		modeu5_note_country_trade_owner_same_market_consumption = yes
+		modeu5_note_country_trade_owner_outcome_quantities = {
+			transferred_quantity = scope:modeu5_satisfied_quantity
+			unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+		}
+	}
+	else = {
+		modeu5_note_country_trade_owner_inter_market_trade = yes
+		modeu5_handoff_scoped_inter_market_transfer = {
+			buyer_country = scope:modeu5_country_trade_owner_buyer_country
+			source_market = scope:modeu5_country_trade_owner_source_market
+			target_market = scope:modeu5_country_trade_owner_target_market
+			good = $good$
+			requested_quantity = $requested_quantity$
+		}
+		modeu5_note_country_trade_owner_inter_market_transfer = yes
+		modeu5_note_country_trade_owner_outcome_quantities = {
+			transferred_quantity = scope:modeu5_transferred_quantity
+			unsatisfied_quantity = scope:modeu5_unsatisfied_quantity
+		}
+	}
+}
