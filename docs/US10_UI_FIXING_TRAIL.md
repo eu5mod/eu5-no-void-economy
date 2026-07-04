@@ -18,8 +18,6 @@ Primary file studied:
 MEIOU-and-Taxes/MnT-EU5@develop/in_game/gui/production_lateralview.gui
 ```
 
-M&T is the primary reference for `ProductionView`, `OpenLateralView`, `filtered_sorted_list`, and market selector behavior. Vic3/CK3 are secondary references only for broad Jomini GUI state patterns such as `GetVariableSystem`.
-
 Primary US-10 UI specification:
 
 ```txt
@@ -44,7 +42,7 @@ Target UX:
 
 1. Production shows a ModeU5 Stocks entry.
 2. ModeU5 opens inside the existing Production UI, not as a custom lateralview.
-3. Table shows one line per visible stock-bearing good in the selected market/country read-model.
+3. Table rows should represent goods produced in the selected market, not merely goods that have stored stock.
 4. Columns follow the US-10 spec: country stock / country capacity and market stock / market capacity.
 5. Data/table should remain reusable if Plan B later generates a full `production_lateralview.gui` override.
 
@@ -58,18 +56,7 @@ Target UX:
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
 | `production_main_tabs` injection | Valid for adding a visible top tab. Not a final body injection point. |
 | `production_view_subtabs` injection | Validated. It can mount an inline ModeU5 body in the existing Production flow. |
-| Current best direction | Plan A is good enough for a V0 hand-off if height and table rendering are acceptable; full automatic selector-click sync was not achieved in Plan A. |
-
-## Plan A acceptance criteria
-
-Plan A is acceptable only if the inline body looks like a credible active Production body, not like a small probe card.
-
-Acceptance criteria from the user:
-
-1. The inline panel must descend to the bottom of the visible screen/body so the Buildings list is covered or pushed out of the visible area.
-2. The panel should cover as much as possible of the Buildings-only controls. Search may remain a later UI-specialist topic if hiding it cleanly requires a deeper override.
-3. The probe text must be removed and replaced with a real table structure.
-4. If vertical coverage remains unacceptable, move to Plan B generated override.
+| Current best direction | Plan A remains viable for V0: Production-hosted inline body, compact fixed-width table, explicit Sync/hover-sync, and production-based row visibility. |
 
 ## M&T / vanilla Production observations
 
@@ -84,21 +71,7 @@ OpenLateralView('food_production')
 OpenLateralView('town_rights')
 ```
 
-This supports Chris's recommendation: do not call `OpenLateralView('modeu5_*')`. ModeU5 can call `OpenLateralView('production')` and set internal UI state.
-
-### `production_lateralview` body structure
-
-M&T defines the actual `production_lateralview` root and places the top tabs in `panel_content` with:
-
-```gui
-header_main_tabs = {
-    blockoverride "content" {
-        using = production_main_tabs
-    }
-}
-```
-
-Then the body is a main `vbox` containing several `filtered_sorted_list` blocks. The body is largely driven by `ProductionView.Vars('display')`.
+This supports the current architecture: do not call `OpenLateralView('modeu5_*')`. ModeU5 calls `OpenLateralView('production')` and sets internal UI state.
 
 ### `production_view_subtabs`
 
@@ -131,7 +104,7 @@ M&T uses static trade-good icon textures in the pattern:
 icon = { size = { 20 20 } texture = "gfx/interface/icons/trade_goods/icon_goods_cloth.dds" texture_density = 2 }
 ```
 
-For the compact ModeU5 V0 table, the first column should be an icon column, not a text-good-name column. Use `gfx/interface/icons/trade_goods/icon_goods_<good>.dds` for known goods. Keep a tooltip/name follow-up for later if needed.
+For the compact ModeU5 V0 table, the first column is an icon column, not a text-good-name column. Use `gfx/interface/icons/trade_goods/icon_goods_<good>.dds` for known goods. Keep a tooltip/name follow-up for later if needed.
 
 ## Trail of attempts and results
 
@@ -149,33 +122,30 @@ For the compact ModeU5 V0 table, the first column should be an icon column, not 
 | 10 | Taller panel + best-effort auto-sync. | Works through hover; not true selector-click sync. | Keep for Plan A. |
 | 11 | V1 standalone market selector hook. | No visible automatic click-sync effect. | Removed. |
 | 12 | Increase panel height to `940` and move hover-sync to whole ModeU5 body. | Works visually; panel covers enough for V0, but not a true replacement of search/selector. | Keep. |
-| 13 | Rebuild table to spec columns and generated static row list for all ModeU5 stock goods, visible only when produced > 0. | Runtime showed an empty table because `*_produced` is a ModeU5 ledger value and not a vanilla-production presence signal. | Rejected. |
-| 14 | Change row visibility to stock-bearing/overproduction signals: country stock > 0 OR market stock > 0 OR overproduction > 0. | Rows reappeared. | Keep for V0. |
+| 13 | All-goods generated table filtered by `modeu5_us10_ui_<good>_produced`. | Runtime showed an empty table because the country-level US-00 produced ledger was not a reliable vanilla-production presence signal. | Rejected. |
+| 14 | Stock-bearing visibility: country stock > 0 OR market stock > 0 OR overproduction > 0. | Rows reappeared. Later screenshots showed the visible-good list stayed suspiciously similar across markets. | Reclassed as temporary debug workaround only. |
 | 15 | All-goods hardcoded table. | Suspected to make `Loading Game resources` heavier. | Rejected for V0; prefer compact row set. |
 | 16 | Right-align value columns and remove `the Good`. | UI still displayed `the Good`; log showed file was loaded and `text` localization was being parsed. | Header issue likely caused by localization/key handling; use direct `raw_text = "Good"` and icon first column. |
 | 17 | Fixed row height using only `size = { -1 26 }`. | Visual row height did not materially change; rows still distributed across the scroll area. | Use `minimumsize`/`maximumsize` and `set_parent_dimension_to_minimum = height`. |
 | 18 | Overproduction values used `text = "[...|2]%"`. | Runtime emitted `Unlocalized text '[...overproduction_percent...]%'` warnings. | Use `raw_text` for dynamic literal formatted values. |
-| 19 | Compact icon rows. | Pending test at commit `6f2c144`. | Current batch. |
+| 19 | Compact icon rows. | In-game screenshots show major improvement, but columns overflowed/escaped the panel. | Fix with fixed-width compact columns. |
+| 20 | Production-based row visibility. | User observed same-good rows across Lisboa and Burgos; stock presence is not the right Production-table filter. | Use `modeu5_us10_ui_<good>_produced_by_market > 0`, aggregated across countries present in the selected market. |
 
-## Latest implementation notes
+## Current implementation notes
 
 - `modeu5_us10_stock_table.gui` contains reusable table templates.
-- The table follows the compact US-10 player-facing spec: `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`, `Production Efficiency`.
-- V0 now intentionally keeps a compact stock-bearing row set rather than all-goods hardcoding, because all-goods GUI expansion is heavier during `Loading Game resources` and fragile while Plan A is still stabilising.
-- Rows are hidden unless the selected market/country read-model has country stock, market stock, or overproduction for that good.
-- Do not use `modeu5_us10_ui_<good>_produced` as the GUI row visibility gate; the current US-00 produced ledger does not read vanilla production directly.
+- The table still follows the US-10 spec columns, but headers are compact labels to fit the Production panel: `Good`, `Country`, `Market`, `Overprod.`, `Eff.`.
+- Value columns are fixed width and right-aligned to prevent overflow into the map.
+- The first column is an icon column using `gfx/interface/icons/trade_goods/icon_goods_<good>.dds`.
+- Rows are now hidden unless `modeu5_us10_ui_<good>_produced_by_market > 0`.
+- `modeu5_us10_ui_<good>_produced_by_market` is a selected-market aggregate computed from the ModeU5 US-00 produced ledger across countries present in the market.
+- Stock presence alone is not a Production-row visibility gate; stock-bearing visibility was only a temporary debugging workaround.
 - Country and market stocks are displayed as `current/capacity`.
 - `Production Efficiency` remains `n/a`, per the spec instruction not to guess when modifier exposure is incomplete.
 - `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
 - `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
-- `zz_modeu5_us10_production_tabs.gui` refreshes the ModeU5 table when opened from the top tab.
-- The ineffective standalone selector hook file was removed.
-- Panel height is now `940`.
-- Hover auto-sync is now on the whole ModeU5 panel and the selected-market strip.
-- The explicit `Sync` button remains as fallback.
-- First column is now intended to be icons using `gfx/interface/icons/trade_goods/icon_goods_<good>.dds`.
-- Value columns are intended to be right-aligned.
-- Dynamic values that include literal suffixes such as `%` must use `raw_text`, not `text`, to avoid localization warnings.
+- `zz_modeu5_us10_production_tabs.gui` opens vanilla Production, sets `modeu5_us10_stock_tab`, and refreshes the read-model.
+- Hover auto-sync is still best-effort; explicit `Sync` remains the reliable fallback.
 
 ## Important runtime log learnings
 
@@ -202,27 +172,39 @@ Property 'margin_top' not handled
 Unlocalized text '[Player.MakeScope.GetVariable(...overproduction_percent...).GetValue|2]%' -> use raw_text, not text
 ```
 
-Things to watch after compact icon-row update:
-
-```txt
-gui/modeu5_us10_stock_table.gui
-minimumsize / maximumsize on hbox rows
-set_parent_dimension_to_minimum = height
-icon_goods_<good>.dds texture availability
-raw_text for all dynamic value cells with literal suffixes
-```
-
 ## Current branch state
 
 - Top ModeU5 tab exists and opens Production.
 - Inline ModeU5 panel exists inside Production.
 - Table/panel are separated for reuse.
-- Top tab refreshes existing ModeU5 read-model.
-- Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
-- Best-effort hover auto-sync exists on the whole panel.
+- Table uses icons, compact fixed-width columns, and right-aligned value cells.
+- Row visibility is based on selected-market produced-by-market, not on stock presence.
+- Top tab / Sync / hover-sync refresh through `modeu5_us10_ui_prepare_current_market_table_for_production_ui`.
 - No standalone selector override remains.
-- Current table is compact, stock-bearing, spec-column based, and should render a good icon first column.
-- Current head after logging this file is expected to be newer than `6f2c144`; check PR head before testing.
+
+## Current validation checklist
+
+```txt
+git fetch origin
+git reset --hard origin/feature/us10-vanilla-market-selector
+git rev-parse --short HEAD
+./tools/validate_module_packages.sh
+git diff --check
+```
+
+In-game checks:
+
+1. ModeU5 panel still opens inside Production.
+2. Table rows still show after Sync/hover refresh.
+3. First column uses icons, not text names.
+4. Header uses compact labels and does not show `the Good`.
+5. Numeric columns are right-aligned.
+6. Row height is compact.
+7. Columns no longer overflow into the map.
+8. Goods list changes by selected market because visibility uses `produced_by_market`.
+9. No GUI errors for `minimumsize` / `maximumsize` / `set_parent_dimension_to_minimum`.
+10. No `Unlocalized text` warning for overproduction values.
+11. No missing texture errors for the compact goods set.
 
 ## Plan B trigger
 

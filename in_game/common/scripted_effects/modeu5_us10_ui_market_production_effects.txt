@@ -1,0 +1,90 @@
+# ModeU5 US-10 UI market-production row visibility helpers.
+#
+# The Production-hosted stock table should not decide row visibility from stored
+# stock. Stock can exist in a market because it was imported, cached, or left from
+# a previous cycle. For the Production UI, rows should normally be visible when
+# the selected market produced that good in the ModeU5 US-00 ledger.
+
+modeu5_us10_ui_clear_market_produced_row = {
+	remove_variable = modeu5_us10_ui_$key$_produced_by_market
+}
+
+modeu5_us10_ui_clear_compact_market_produced_rows = {
+	modeu5_us10_ui_clear_market_produced_row = { key = cotton }
+	modeu5_us10_ui_clear_market_produced_row = { key = sugar }
+	modeu5_us10_ui_clear_market_produced_row = { key = tobacco }
+	modeu5_us10_ui_clear_market_produced_row = { key = tar }
+	modeu5_us10_ui_clear_market_produced_row = { key = porcelain }
+	modeu5_us10_ui_clear_market_produced_row = { key = naval_supplies }
+	modeu5_us10_ui_clear_market_produced_row = { key = wheat }
+	modeu5_us10_ui_clear_market_produced_row = { key = iron }
+	modeu5_us10_ui_clear_market_produced_row = { key = tools }
+}
+
+modeu5_us10_ui_capture_market_produced_row = {
+	scope:modeu5_us10_ui_country = {
+		set_local_variable = { name = modeu5_us10_ui_$key$_produced_by_market_accumulator value = 0 }
+	}
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_us10_ui_market_country
+
+			modeu5_read_void_economy_record = {
+				country = scope:modeu5_us10_ui_market_country
+				market = scope:modeu5_us10_ui_selected_market_scope
+				good = $good$
+			}
+
+			scope:modeu5_us10_ui_country = {
+				change_local_variable = {
+					name = modeu5_us10_ui_$key$_produced_by_market_accumulator
+					add = scope:modeu5_us00_produced
+				}
+			}
+		}
+	}
+
+	scope:modeu5_us10_ui_country = {
+		save_temporary_scope_value_as = {
+			name = modeu5_us10_ui_$key$_produced_by_market_value
+			value = local_var:modeu5_us10_ui_$key$_produced_by_market_accumulator
+		}
+		set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = scope:modeu5_us10_ui_$key$_produced_by_market_value }
+	}
+}
+
+modeu5_us10_ui_capture_compact_market_produced_rows = {
+	modeu5_us10_ui_capture_market_produced_row = { good = cotton key = cotton }
+	modeu5_us10_ui_capture_market_produced_row = { good = sugar key = sugar }
+	modeu5_us10_ui_capture_market_produced_row = { good = tobacco key = tobacco }
+	modeu5_us10_ui_capture_market_produced_row = { good = tar key = tar }
+	modeu5_us10_ui_capture_market_produced_row = { good = porcelain key = porcelain }
+	modeu5_us10_ui_capture_market_produced_row = { good = naval_supplies key = naval_supplies }
+	modeu5_us10_ui_capture_market_produced_row = { good = wheat key = wheat }
+	modeu5_us10_ui_capture_market_produced_row = { good = iron key = iron }
+	modeu5_us10_ui_capture_market_produced_row = { good = tools key = tools }
+}
+
+modeu5_us10_ui_capture_selected_market_produced_by_market = {
+	save_temporary_scope_as = modeu5_us10_ui_country
+	modeu5_us10_ui_clear_compact_market_produced_rows = yes
+
+	if = {
+		limit = { has_global_variable_list = modeu5_us10_ui_selected_market }
+		every_in_global_list = {
+			variable = modeu5_us10_ui_selected_market
+			save_temporary_scope_as = modeu5_us10_ui_selected_market_scope
+			scope:modeu5_us10_ui_selected_market_scope = { save_temporary_scope_as = modeu5_market_country_cache_market }
+			modeu5_rebuild_countries_present_in_market = yes
+			modeu5_us10_ui_capture_compact_market_produced_rows = yes
+		}
+	}
+}
+
+modeu5_us10_ui_prepare_current_market_table_for_production_ui = {
+	modeu5_us10_ui_prepare_current_market_table = yes
+	modeu5_us10_ui_capture_selected_market_produced_by_market = yes
+}
