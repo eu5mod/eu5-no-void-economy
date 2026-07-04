@@ -72,89 +72,9 @@ flowchart TD
 | US-10 is called after US-00 as a separate resolver | Same-market and inter-market are not structured under the same market loop | Makes `every_trade` / market supplier loops difficult to audit |
 | Audit/reconciliation is a conditional end-of-cycle step | Correct for diagnostics, but not a process container | Must not compensate for suboptimal orchestration |
 
-## 3. Mermaid diagram — initial conceptual target: Subloop E market/trade
-
-Goal: as soon as `modeu5_stock_runtime_ready_trigger` passes, enter an E loop oriented toward **market/trade**. The old B, C, and D sub-loops become sub-loops inside E, making the owning scope of each cache explicit and reducing redundancy.
-
-This Target E remains useful as an abstraction to understand the general objective. The **main target to implement first** is the promoted-market variant described in section 6; do not create two competing dispatchers.
-
-```mermaid
-flowchart TD
-    A[monthly_country_pulse] --> B[modeu5_run_monthly_stock_cycle]
-    B --> C{modeu5_stock_runtime_ready_trigger ?}
-    C -->|no| Z[Fail closed / diagnostic only]
-    C -->|yes| E[Subloop E FIRST<br/>market/trade orchestration<br/>target: modeu5_run_monthly_market_trade_cycle]
-
-    subgraph ELOOP[Subloop E — market center / trade candidate outer loop]
-        E --> E0[Build monthly_scope_policy<br/>modeu5_prepare_country_market_accounting_decision<br/>modeu5_prepare_market_runtime_accounting_mode]
-        E0 --> E1{Market source selected ?<br/>every_market_center / active market list}
-        E1 --> E2[Prepare market-country cache once<br/>modeu5_rebuild_countries_present_in_market]
-        E2 --> E3{Trade / demand candidate ?<br/>every_trade or queued demand}
-
-        subgraph B_LOOP[Subloop B inside E — capacity for this country-market]
-            E3 --> B1[Read or refresh capacity for selected market<br/>modeu5_recalculate_country_market_capacity_shared]
-            B1 --> B2[modeu5_store_capacity_record<br/>modeu5_stock_cap_by_market]
-        end
-
-        subgraph C_LOOP[Subloop C inside E — generated adapter for this market/trade]
-            B2 --> C1{Good included by monthly_scope_policy ?}
-            C1 --> C2[Generated adapter family<br/>US-00 production/admission adapter<br/>or US-10 demand adapter]
-            C2 --> C3[US-00 for scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
-        end
-
-        subgraph D_LOOP[Subloop D inside E — demand resolution for same market]
-            C3 --> D1{source_market == target_market ?}
-            D1 -->|yes| D2[Same-market consumption<br/>modeu5_resolve_stock_consumption<br/>modeu5_remove_stock]
-            D1 -->|no| D3[Inter-market candidate path<br/>modeu5_resolve_inter_market_stock_transfer]
-        end
-
-        D3 --> E4[Supplier scoring<br/>modeu5_prepare_current_stock_candidate_relations<br/>modeu5_calculate_current_stock_candidate_score]
-        E4 --> E5[Transfer if allowed<br/>modeu5_transfer_stock]
-        D2 --> E6[Record US-10 outcomes]
-        E5 --> E6[modeu5_record_country_market_trade_outcome]
-        E6 --> E7[Validate scoped market-good<br/>modeu5_validate_stock_consistency]
-        E7 --> E8{Divergence ?}
-        E8 -->|yes| E9[Rebuild aggregate from country stocks<br/>modeu5_rebuild_market_stock_from_country_stocks]
-        E8 -->|no| E10[Next market/trade candidate]
-        E9 --> E10
-    end
-
-    E10 --> F[End of monthly cycle<br/>reset after readers<br/>modeu5_reset_us10_monthly_runtime_counters<br/>modeu5_clear_us00_record]
-```
-
-## 4. Why this target is preferable
-
-| Dimension | Current state | Target process |
-|---|---|---|
-| Outer loop | Current country + broad pipelines | Market/trade loop immediately after readiness gate |
-| Cache owner visible | Scattered across capacity, performance, US-00, US-10 | Market/trade scope explicit before B/C/D |
-| B capacity loop | Before pipelines, but not a container | Sub-loop of E for the relevant market |
-| C goods loop | All-goods or broad active-goods pipeline | Sub-loop of E, filtered by policy and market/trade |
-| D demand loop | Separate resolver after production | Sub-loop of E, with same-market/inter-market visible in one place |
-| Reconciliation | End-of-cycle audit | Scoped market-good validation, localized rebuild |
-| File/Cache refactor | Hard to know which cache is source at each step | Each sub-loop declares its source/cache records |
-
-## 5. Technical index of diagram methods / loops
-
-| Mermaid zone | Associated method, trigger, or loop | Main file | Audit comment |
-|---|---|---|---|
-| Current monthly orchestrator | `monthly_country_pulse` -> `modeu5_run_monthly_stock_cycle` | `in_game/common/on_action/modeu5_stock_on_actions.txt`, `in_game/common/scripted_effects/modeu5_stock_effects.txt` | Actual current entry point. |
-| Runtime gate | `modeu5_stock_runtime_ready_trigger` | `in_game/common/scripted_triggers/modeu5_stock_triggers.txt` | Target keeps this gate before any mutation. |
-| Current performance preparation | `modeu5_prepare_performance_mode_human_relevant_markets` / current equivalent | `modeu5_performance_effects.txt` | To be turned into an input of `monthly_scope_policy`, not business orchestration. |
-| Current capacity | `modeu5_run_monthly_capacity_refresh_for_current_country`, `every_market_present_in_country` | `modeu5_capacity_effects.txt` | Becomes sub-loop B inside E. |
-| Current monthly registries | `modeu5_prepare_monthly_market_seen_registry`, `modeu5_prepare_human_relevant_full_ledger_markets` | `modeu5_stock_effects.txt`, `modeu5_performance_effects.txt` | Should be driven by policy E. |
-| Current US-00 | `modeu5_run_us00_monthly_pipeline_all_goods`, `modeu5_add_stock`, `modeu5_update_production_rejection_ledger` | `modeu5_void_economy_effects.txt` + generated adapters | Becomes market-good sub-loop C. |
-| Current US-10 | `modeu5_run_monthly_stock_demand_resolution`, `modeu5_resolve_stock_consumption`, `modeu5_resolve_inter_market_stock_transfer` | `modeu5_stock_demand_resolver_effects.txt` | Becomes sub-loop D under market/trade. |
-| Market countries cache | `modeu5_rebuild_countries_present_in_market`, `every_location_in_market`, `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | To prepare once per market center in E. |
-| Supplier scoring | `modeu5_prepare_current_stock_candidate_relations`, `modeu5_apply_current_stock_candidate_hard_filters`, `modeu5_calculate_current_stock_candidate_score` | `modeu5_stock_demand_resolver_effects.txt` | Remains in E after prefilter. |
-| Validation/rebuild | `modeu5_validate_stock_consistency`, `modeu5_rebuild_market_stock_from_country_stocks` | `modeu5_stock_effects.txt` | Target: scoped market-good rather than global end-of-cycle. |
-| New target dispatcher | `modeu5_run_monthly_promoted_market_cycle` | to create | Preferred name. `modeu5_run_monthly_market_trade_cycle` remains only an older conceptual name. |
-| Iterators to confirm | `every_trade`, `every_market_center` | TECH-01 to complete before gameplay | Target shows them as desired design, not confirmed exposure. |
-
-
 ## 6. Main recommended target — market promotion then segregated loops
 
-I think this variant is better as the **first concrete refactor** than the previous Target E, because it first relies on loops already close to the current code (`monthly_country_pulse`, `every_market_present_in_country`, market promotion), then cleanly separates **country/market/good** processing from **trade/inter-market** processing.
+I think this variant is better as the **first concrete refactor**, because it first relies on loops already close to the current code (`monthly_country_pulse`, `every_market_present_in_country`, market promotion), then cleanly separates **country/market/good** processing from **trade/inter-market** processing.
 
 ```mermaid
 flowchart TD
@@ -213,9 +133,7 @@ US-00 scoped market-good must produce and freeze the `produced / added / rejecte
 | Branch 2.2 `every_trade` / transfer | Yes as target | Correct conceptual separation for inter-market | Blocked until `every_trade` is confirmed in TECH-01; provide queued-demand fallback |
 | Future non-good / market-focused US | Yes | Good location before goods/trade loops | Do not mix with per-good adapters |
 
-### Recommended adjustment compared to the previous Target E
-
-The previous Target E started from generic `market/trade` orchestration. This proposed variant is more operational:
+his proposed variant is more operational:
 
 ```txt
 monthly country
