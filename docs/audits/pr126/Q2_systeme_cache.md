@@ -1,37 +1,72 @@
-# Q2 — Audit du système de cache
+# Q2 — Cache system and ownership
 
 ## Conclusion
 
-Le système de cache est volontairement riche. Les sources de vérité principales restent les maps pays×marché×good et les maps de capacité partagée. Les caches les plus risqués sont les listes globales de scheduling et les caches dérivés de performance : ils réduisent le coût des scans, mais doivent rester explicitement reconstruisibles et ne jamais devenir sources de vérité métier.
+The cache system is intentionally rich. It is acceptable if every state is classified and if an agent can immediately tell whether it is reading a source of truth, a derived cache, a work cache, a monthly ledger, or a debug variable. The main risk is not the number of caches, but using a scheduling cache as business proof or writing directly outside helpers.
 
-## Caches, variables, listes
+## Canonical classification
 
-| Cache / variable / liste | Fichiers concernés | Rôle | Source de vérité | Fréquence de mise à jour | Risque de duplication/stale | Recommandation |
+| Cache / variable / list | Affected files | Class | Source of truth | Update / reset | Risk | Agent rule |
 |---|---|---|---|---|---|---|
-| `modeu5_<good>_stock_by_market` | `modeu5_stock_effects.txt`, adapters générés | Stock pays×marché×good | Source de vérité stock | Toute mutation stock | Faible si opérateurs centraux respectés | Vérifier automatiquement les écritures directes |
-| `modeu5_<good>_market_stock` | adapters générés, validation | Cache agrégé marché×good | Somme des stocks pays | Rebuild/validation/mutation | Moyen : cache dérivé | Rebuild depuis pays uniquement |
-| `modeu5_stock_cap_by_market` | `modeu5_capacity_effects.txt` | Capacité pays×marché partagée | Calcul US-02 | Init, changement propriétaire/rang/capitale, refresh mensuel | Moyen si stale avant admission | Garder le refresh capacité en première étape mensuelle |
-| `modeu5_base_capacity_by_market` | `modeu5_capacity_effects.txt`, debug | Breakdown capacité | Calcul capacité | Avec capacité | Faible | Diagnostic only, ne pas l'utiliser comme cap |
-| `modeu5_building_capacity_by_market` | `modeu5_capacity_effects.txt`, debug | Breakdown futur | Calcul capacité | Avec capacité | Faible | Garder comme explication, pas source métier |
-| `modeu5_foreign_capacity_by_market` | `modeu5_capacity_effects.txt`, debug | Breakdown futur | Calcul capacité | Avec capacité | Faible | Même règle que ci-dessus |
-| `modeu5_<good>_produced/added/rejected_by_market` | `modeu5_void_economy_effects.txt` | Ledger US-00.1 | Production lue + résultat add_stock | Mensuel | Moyen si reset trop tôt | Reset seulement après consommateurs mensuels |
-| `modeu5_<good>_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | Ratio US-00.2 | Ledger mensuel | Mensuel | Moyen, dérivable | Garder en debug/audit strict si possible |
-| `modeu5_<good>_production_penalty_by_market` | `modeu5_void_economy_effects.txt` | Pénalité N+1 | Ratio effectif | Mensuel | Moyen | Documenter clairement application mois suivant |
-| `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 compteurs demande | Résolution de demande | Mensuel | Moyen si reset prématuré | Reset après US-10.3/UI |
-| `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 inter-market | Transfert réel | Mensuel | Moyen | Ne jamais utiliser pour same-market trade |
-| `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | Liste globale marchés humains pertinents | Découverte pays→marchés | Rare/rebuild | Moyen | Exposer date/compteur de rebuild |
-| `modeu5_active_markets_any_good` | `modeu5_performance_effects.txt`, generated adapters | Scheduling marchés actifs | Maps stock et activité | Additif/rebuild | Élevé si jamais nettoyé | Prévoir rebuild périodique ou audit strict |
-| `modeu5_<good>_active_markets` | generated adapters | Scheduling par good | Activité good | Additif/rebuild | Élevé | Ne pas le traiter comme preuve de stock positif |
-| `modeu5_countries_present_in_market` / work cache | `modeu5_market_country_cache_effects.txt` | Pays présents dans marché courant | Relations pays-marché | Rebuild selon flux | Moyen | Distinguer durable vs cache de travail dans commentaires |
-| `modeu5_debug_last_*` | `modeu5_debug_effects.txt` | Dernière opération/debug UI | Mutation ou calcul courant | À chaque opération | Faible, debug seulement | Maintenir inventaire documentaire |
+| `modeu5_<good>_stock_by_market` | `modeu5_stock_effects.txt`, generated adapters | country×market×good stock source | Yes | Every stock mutation through operators | P0 if direct write | Never write outside `modeu5_add/remove/transfer/decay_stock` |
+| `modeu5_<good>_market_stock` | generated adapters, validation | market×good aggregate cache | No, derived from country stock | Centralized mutation, rebuild, validation | P0 if treated as source | Rebuild from country only |
+| `modeu5_stock_cap_by_market` | `modeu5_capacity_effects.txt` | calculated country×market capacity source | Yes for current admission | Init, owner/rank/capital hooks, monthly refresh | P1 if stale before production | Refresh capacity before stock admission |
+| `modeu5_base_capacity_by_market` | capacity/debug | debug breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_building_capacity_by_market` | capacity/debug | debug/future breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_foreign_capacity_by_market` | capacity/debug | debug/future breakdown | No | With capacity | P3 | Explanation only |
+| `modeu5_<good>_produced_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | Read/estimated production | Freeze after production/admission; reset after readers | P1 if reset/recomputed late | Do not recompute after US-10/decay |
+| `modeu5_<good>_added_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | `modeu5_add_stock` result | Freeze after admission; reset after readers | P1 | Overproduction input |
+| `modeu5_<good>_rejected_by_market` | `modeu5_void_economy_effects.txt` | US-00 monthly fact | `modeu5_add_stock` result | Freeze after admission; reset after readers | P1 | Overproduction input |
+| `modeu5_<good>_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | produced/added/rejected facts | Calculate from frozen facts | P1 if recomputed after decay | Read frozen facts, not remaining stock |
+| `modeu5_<good>_effective_overproduction_ratio_by_market` | `modeu5_void_economy_effects.txt` | derived monthly ledger | ratio + buffer | Monthly | P1 | Penalty basis, not stock truth |
+| `modeu5_<good>_void_wealth_by_market` | `modeu5_void_economy_effects.txt` | US-00 finalization/carryover | frozen US-00 facts + prices | After business readers, before reset | P1 | Publish from frozen facts |
+| `modeu5_<good>_void_taxable_income_proxy_by_market` | `modeu5_void_economy_effects.txt` | debug/proxy | void wealth | With US-00 finalization | P2 | Proxy sizing/debug only |
+| `modeu5_<good>_production_penalty_by_market` | `modeu5_void_economy_effects.txt` | N+1 carryover | frozen effective ratio | Monthly, consumed next month | P1 | Do not base on post-decay stock |
+| `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 ledger | same-market demand resolution | Monthly; reset after US-10.3/UI | P1 | Same-market consumption, not trade |
+| `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 ledger | actual inter-market transfer | Monthly; reset after readers | P1 | Only `source_market != target_market` |
+| `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | scheduling work cache | country→market discovery | Rare/explicit rebuild | P1 if stale | Performance owner; never proof of stock |
+| `modeu5_active_markets_any_good` | performance + adapters | union work cache | stock/good activity | Additive + rebuild/audit | P1 if never cleaned | Scheduling only |
+| `modeu5_<good>_active_markets` | generated adapters | per-good work cache | good activity | Additive + rebuild/audit | P1 | Not proof of positive quantity |
+| `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | market→countries work cache | recalculable country/market relations | Rebuild per promoted market | P1 if treated as durable | Rebuild once per promoted market |
+| `modeu5_debug_last_*` | `modeu5_debug_effects.txt` | debug state | current operation | At each probe/operation | P3 | Never drive business logic |
 
-## Caches dupliqués ou suspects
+## Duplicated or suspicious caches
 
-| Cache A | Cache B | Information dupliquée | Différence réelle | Peut-on fusionner ? | Risque si fusion | Priorité |
-|---|---|---|---|---|---|---|
-| `modeu5_<good>_stock_by_market` | `modeu5_<good>_market_stock` | Quantité de stock | Pays-source vs agrégat marché | Non | Perte de l'invariant pays source | P0 |
-| `modeu5_stock_cap_by_market` | breakdown `base/building/foreign` | Capacité | Total vs explication | Non | Debug moins explicable | P2 |
-| `modeu5_<good>_active_markets` | `modeu5_active_markets_any_good` | Marché actif | Par-good vs union globale | Non | Scheduling moins performant | P2 |
-| `modeu5_performance_relevant_markets` | active markets | Marchés à parcourir | Pertinence humaine vs activité stock | Non | Mélange politique/performance | P1 |
-| US-00 ledgers | UI monthly surplus/consumption | État économique mensuel | Diagnostic complet vs affichage humain | Partiellement | Perte d'explication audit | P2 |
-| `modeu5_trade_*` | `modeu5_consumption_*` | Demande satisfaite/insatisfaite | Inter-market vs same-market | Non | Violation US-10 | P1 |
+| Cache A | Cache B | Duplicated information | Decision |
+|---|---|---|---|
+| `modeu5_<good>_stock_by_market` | `modeu5_<good>_market_stock` | Stock quantity | Keep both: country source vs market aggregate |
+| `modeu5_stock_cap_by_market` | `base/building/foreign` breakdown | Capacity | Keep: business total vs debug explanation |
+| `modeu5_<good>_active_markets` | `modeu5_active_markets_any_good` | Active market | Keep: per-good vs global union |
+| `modeu5_performance_relevant_markets` | active markets | Markets to traverse | Keep separate: performance policy vs stock activity |
+| US-00 ledgers | UI monthly stock/consumption | Monthly economic state | Partial merge only after all readers are identified |
+| `modeu5_trade_*` | `modeu5_consumption_*` | Satisfied/unsatisfied demand | Do not merge: inter-market vs same-market |
+
+## Reset and rebuild contract
+
+```txt
+monthly start:
+  refresh capacity prerequisites
+  prepare/rebuild promoted-market scheduling work caches when needed
+
+production admission:
+  write US-00 produced/added/rejected facts
+  freeze US-00 facts for the month
+
+same month readers:
+  US-10 consumption/transfer, UI/debug, US-00 finalization read frozen facts
+
+monthly end:
+  validation/reconciliation if enabled
+  reset monthly ledgers only after all readers
+```
+
+## Mandatory questions before adding a cache
+
+| Question | Expected answer |
+|---|---|
+| Who owns it? | country, market-global map, global list, debug controller, or generated adapter |
+| What class is it? | source, derived cache, work cache, monthly ledger, annual ledger, debug |
+| What is the rebuild trigger? | init, monthly start, promoted market, validation, annual, manual probe |
+| What is the reset policy? | never, monthly after readers, annual after readers, rebuild-only |
+| Which readers exist? | list runtime, UI, debug, and tests before deletion |
+| Which validation detects divergence? | audit script, runtime probe, consistency validator, or TECH-01 entry |

@@ -1,34 +1,67 @@
-# Q1 — Audit de l'architecture de fichiers
+# Q1 — Target file architecture
 
 ## Conclusion
 
-L'architecture est globalement cohérente par domaine fonctionnel : les stocks, capacités, demandes, configuration, debug et performance ont chacun des fichiers dédiés. La frontière la plus fragile se situe entre configuration, runtime gates CMM et marqueurs de packages : le modèle est documenté, mais les points d'entrée sont éparpillés entre `main_menu`, `in_game/common/on_action` et plusieurs scripted effects.
+ModeU5's architecture is healthy if each domain remains the owner of a precise type of responsibility. The PR126 refactor must not try to reduce the number of files at all costs; it must make the responsibility graph readable for an agent: which file owns the scope, which file owns the state, which file owns the calculation, and which file should only be an adapter or a test.
 
-## Audit architecture fichiers
+## Canonical responsibilities
 
-| Fichier | Responsabilité actuelle | Problème identifié | Gravité | Recommandation | Effort estimé |
-|---|---|---|---|---|---|
-| `in_game/common/scripted_effects/modeu5_stock_effects.txt` | Opérateurs centraux de mutation, lecture, rebuild et validation des stocks | Fichier naturellement critique et volumineux ; tout mélange supplémentaire rendrait l'invariant plus difficile à auditer | P0 certain | Garder comme noyau unique, mais interdire explicitement toute logique US métier longue dans ce fichier | M |
-| `in_game/common/scripted_effects/modeu5_capacity_effects.txt` | Calcul et cache de capacité pays-marché | Bonne séparation du domaine capacité ; risque si des callers mensuels refont des scans de locations hors helpers | P1 probable | Ajouter une note d'en-tête listant les seuls points d'entrée autorisés | S |
-| `in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt` | Cache de relation marché↔pays | Domaine clair, mais dépendance transverse avec performance et validation | P1 probable | Documenter dans le fichier quels caches sont sources et lesquels sont work caches | S |
-| `in_game/common/scripted_effects/modeu5_performance_effects.txt` | Runtime gates et caches de performance | Mélange de politique de mode, scheduling et réparation active | P1 probable | Scinder seulement si le fichier continue de grossir : `performance_mode`, `performance_scheduling`, `performance_repair` | M |
-| `in_game/common/scripted_effects/modeu5_void_economy_effects.txt` | US-00 ledger, ratios, void wealth, pénalité | Fichier domaine légitime mais avec plusieurs étapes de pipeline | P1 certain | Conserver le fichier, ajouter des séparateurs très explicites par étape US-00.1/00.2/00.3/00.4 | S |
-| `in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt` | US-10 résolution de demande et transfert | Bon regroupement par feature ; attention à ne pas y ajouter de simulation de commerce intra-marché | P1 probable | Ajouter un garde documentaire : same-market = consommation de stock, inter-market = transfert uniquement | S |
-| `in_game/common/scripted_effects/modeu5_configuration_effects.txt` | Initialisation de configuration script-safe | Frontière correcte, mais visible seulement si on connaît les on_actions de configuration | P2 certain | Créer un index docs/configuration pointant vers CMM, startup et package markers | S |
-| `in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt` | Callbacks et restrictions CMM runtime | Le nom CMM peut faire croire à de vrais toggles runtime alors que le contrat est pré-campagne | P1 probable | Renforcer les commentaires : CMM initialise/affiche, ne décharge pas les packages | S |
-| `in_game/common/scripted_effects/modeu5_debug_effects.txt` | Captures de debug standardisées | Rôle clair ; risque d'accumulation de champs sans schéma de nettoyage | P2 probable | Maintenir une table des variables `modeu5_debug_last_*` dans `DEBUG_CONVENTIONS.md` | S |
-| `in_game/common/on_action/modeu5_stock_on_actions.txt` | Orchestration des pulses stock/capacité | Bon placement ; fichier critique pour ordre runtime | P0 certain | Ne jamais ajouter de mutation directe ; appeler seulement les dispatchers documentés | S |
-| `packages/modeu5_core_tests/in_game/common/scripted_effects/*_test_effects.txt` | Probes et tests déterministes | Plusieurs fichiers longs et proches ; acceptable car package test séparé | P2 probable | Factoriser les helpers de dump répétitifs seulement après stabilisation des contrats | M |
-| `tools/generate_stock_good_helpers.sh` et templates | Génération des adapters par good | Bonne frontière technique ; le risque est que la logique métier migre dans le générateur | P1 probable | Garder le générateur comme expansion de template, sans règles stock métier | S |
-| `docs/technical/*.md` | Contrats et expositions moteur | Très bonne documentation, mais dispersée pour un nouveau contributeur | P2 certain | Ajouter un index d'audit/release avec liens vers les contrats obligatoires | S |
-| `packages/modeu5_trade_rebalance`, `packages/modeu5_war_rebalance` | Packages optionnels historiques | Noms moins alignés avec le contrat actuel `Rebalance Estate Power` / `Early Blobbing` | P2 hypothèse | Vérifier si renommage package est possible sans casser les playsets ; sinon documenter l'alias | M |
-
-## Audit configuration / paramètres
-
-| Zone | Constat | Risque | Recommandation |
+| Domain | Owning file(s) | Allowed responsibility | Out of scope in this domain |
 |---|---|---|---|
-| CMM main menu | Les libellés et contrôles CMM sont séparés des effets runtime | Contributeur peut croire qu'une option décharge des fichiers statiques | Créer une page `docs/technical/CONFIGURATION_INDEX.md` |
-| Script values | Les valeurs numériques centrales de stock existent sous `in_game/common/script_values` | Bonne pratique, mais toutes les constantes ne sont pas évidentes à repérer | Ajouter un tableau des valeurs reconnues dans l'index configuration |
-| Package markers | Les packages optionnels sont la source de vérité | Risque si Core synthétise un marker absent | Garder les tests de validation de packages dans la checklist release |
-| Debug/audit/save mode | Sélection pré-campagne puis variables globales | Risque de confusion avec un panneau in-game | Répéter dans les en-têtes des effets CMM : pas de toggle in-game supporté |
+| Stock core | `in_game/common/scripted_effects/modeu5_stock_effects.txt` | central operators, validation, rebuild, minimal orchestration | long US-00/US-10 logic, performance policy, balance rules |
+| Capacity | `in_game/common/scripted_effects/modeu5_capacity_effects.txt` | country×market capacity, breakdowns, capacity refresh | stock mutation, promoted-market selection |
+| Market-country cache | `in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt` | `countries_present_in_market`, dirty market-country work cache | stock source of truth, gameplay decisions |
+| Performance / promotion | `in_game/common/scripted_effects/modeu5_performance_effects.txt` | mode gates, human-relevant markets, promoted-market scheduling | direct economic mutation |
+| US-00 | `in_game/common/scripted_effects/modeu5_void_economy_effects.txt` + generated adapters | production facts, admission/rejection ledgers, overproduction, void wealth, next-month penalty | consumption, inter-market trade |
+| US-10 | `in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt` | same-market consumption, inter-market stock transfer | vanilla production, US-00 penalty |
+| Configuration | `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt`, main menu files | pre-campaign configuration, package markers, script-safe settings | fake runtime toggle for statically loaded packages |
+| Debug / tests | `modeu5_debug_effects.txt`, `packages/modeu5_core_tests/...` | standardized captures, deterministic probes, dumps | new business logic |
+| Generated adapters | generated files + `tools/templates/` | literal per-good expansion | business policy hidden inside a generator |
+| Tools | `tools/*.sh`, `tools/templates/`, validators | generation, validation, audit, local offline probes | unconfirmed runtime assumptions |
 
+## Audit of current files
+
+| File | Current responsibility | Identified issue | Severity | Recommendation | Effort |
+|---|---|---|---|---|---|
+| `modeu5_stock_effects.txt` | Central mutation, read, rebuild, and validation operators | Critical and large file | P0 | Keep it as the single core; move long US rules into their domains | M |
+| `modeu5_capacity_effects.txt` | Country-market capacity calculation and cache | Risk if callers redo location scans outside helpers | P1 | List the authorized entry points | S |
+| `modeu5_market_country_cache_effects.txt` | Market↔country cache | Cross-dependency with performance and validation | P1 | Declare caches as work caches, not stock sources | S |
+| `modeu5_performance_effects.txt` | Runtime gates and performance caches | Mixes mode, scheduling, and repair | P1 | Split only if the file grows further; do not move stock mutation here | M |
+| `modeu5_void_economy_effects.txt` | US-00 ledgers, ratios, void wealth, penalty | Several pipeline stages in one domain | P1 | Clearly separate ingestion facts and finalization/carryover | S |
+| `modeu5_stock_demand_resolver_effects.txt` | US-10 demand resolution and transfer | Risk of drifting into intra-market trade | P1 | Same-market = consumption; inter-market = transfer only | S |
+| `modeu5_configuration_effects.txt` | Script-safe configuration initialization | Scattered entry points | P2 | Single configuration index | S |
+| `modeu5_cmm_runtime_effects.txt` | CMM callbacks and restrictions | May imply runtime toggles | P1 | Repeat that CMM initializes/displays, but does not unload packages | S |
+| `modeu5_debug_effects.txt` | Debug captures | Accumulation of `modeu5_debug_last_*` fields | P2 | Document inventory in `DEBUG_CONVENTIONS.md` | S |
+| `modeu5_stock_on_actions.txt` | Pulse orchestration | Critical for runtime order | P0 | Call documented dispatchers only | S |
+| `packages/modeu5_core_tests/...` | Deterministic probes and tests | Long and similar scenarios | P2 | Factor dumps only after contracts stabilize | M |
+| `tools/generate_*` and templates | Per-good adapter generation | Risk of business logic moving into the generator | P1 | Generator = orchestration/template; business rules = runtime/docs | S |
+
+## Change-routing table for agents
+
+| Requested change type | Read first | Main file to modify | Validate with |
+|---|---|---|---|
+| Stock invariant, add/remove/transfer/decay/rebuild | `VARIABLE_MAP_STORAGE_MODEL.md` | `modeu5_stock_effects.txt` | stock consistency probes |
+| Country×market capacity | US-02 docs + Q2 | `modeu5_capacity_effects.txt` | capacity/debug probes |
+| Performance market selection | Q4/Q5 | `modeu5_performance_effects.txt` | promoted-market counters |
+| Production, rejection, overproduction, penalty | Q5/Q6 | `modeu5_void_economy_effects.txt` + adapters | US-00 debug |
+| Same-market consumption | Q5/Q6 | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 probes |
+| Inter-market transfer | TECH-01 + Q5/Q6 | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 probes |
+| Repeated per-good block | `GENERATOR_AND_VALIDATOR_MODEL.md` | template + generator | `generate_all`, `validate_generators` |
+| Configuration / package marker | `MODULE_OPTION_MODEL.md` | configuration/CMM files | package validation |
+
+## Target structure contract
+
+```txt
+monthly dispatcher
+  -> readiness / fail-closed
+  -> capacity prerequisites
+  -> promoted-market work list
+  -> US-00 production facts
+  -> US-10 consumption / transfer
+  -> decay
+  -> US-00 finalization from frozen facts
+  -> validation / reconciliation
+  -> reset after readers
+```
+
+Each new PR must state which block it changes. If it does not fit any block, the architecture documentation must be corrected before the code.

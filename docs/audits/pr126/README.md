@@ -1,32 +1,47 @@
-# Audit PR #126 — résultats empilés par question principale
+# PR #126 Audit — refactor source of truth
 
-Source de la demande : PR GitHub #126, « Developement balance ».
+Source request: GitHub PR #126, “Developement balance”.
 
-Ce dossier matérialise l'audit demandé sous forme de rapports empilables : un fichier par question principale, afin que chaque constat puisse devenir une PR ciblée sans mélanger les sujets.
+This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code.
 
-## Rapports
+## Reading order for an agent
 
-| Question | Rapport | Statut |
+| Step | Report | Use it to |
 |---|---|---|
-| 1 | [Architecture de fichiers](./Q1_architecture_fichiers.md) | réalisé |
-| 2 | [Système de cache](./Q2_systeme_cache.md) | réalisé |
-| 3 | [Redondances de code](./Q3_redondances_code.md) | réalisé |
-| 4 | [Boucles et performance](./Q4_boucles_performance.md) | réalisé |
-| 5 | [Flux logique global](./Q5_flux_logique_global.md) | réalisé |
-| 6 | [Description fonctionnelle](./Q6_description_fonctionnelle.md) | réalisé |
-| Agent | [Instructions de refactor AGENT](./AGENT_REFACTOR_INSTRUCTIONS.md) | réalisé |
+| 1 | [Q1 — File architecture](./Q1_architecture_fichiers.md) | Choose the owning file before changing code |
+| 2 | [Q2 — Cache system](./Q2_systeme_cache.md) | Identify source, derived cache, work cache, ledger, or debug state |
+| 3 | [Q3 — Code redundancy](./Q3_redondances_code.md) | Distinguish acceptable generated repetition from duplication to refactor |
+| 4 | [Q4 — Loops and performance](./Q4_boucles_performance.md) | Evaluate scan cost and the promoted-market target |
+| 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
+| 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
+| 7 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
-## Résumé exécutif global
+## Global executive summary
 
-Le mod est structuré autour de domaines réels (`stock`, `capacity`, `void economy`, `demand resolver`, `performance`, `configuration`, `debug`), ce qui est une base saine avant release. Le principal risque release n'est pas l'absence de séparation, mais l'accumulation de fichiers longs qui mélangent orchestration, stockage, calcul, debug et adapters générés. Les caches sont nombreux et généralement documentés, mais certains index de performance sont volontairement additifs ou reconstruits, ce qui impose des runbooks de validation stricts avant publication.
+The mod is structured around real domains: `stock`, `capacity`, `void economy`, `demand resolver`, `performance`, `configuration`, `debug`, `tools`, and `templates`. The foundation is healthy, but the release risk remains the accumulation of broad monthly flows and convention-synchronized caches.
 
-## Tableau de synthèse des risques release
+Since `developement-balance` was resynchronized with the #119/#130/#131 stack, the recommendations below must reuse the existing contracts: performance/promotion boundaries, US-10 UI, canonical goods registry, templates, and generator validators. An agent must not recreate a parallel model.
 
-| Priorité | Problème | Impact release | Fichiers concernés | Action recommandée | Effort |
+## Release-risk summary table
+
+| Priority | Issue | Release impact | Affected files | Recommended action | Effort |
 |---|---|---|---|---|---|
-| P0 | Les scripts runtime reposent sur beaucoup de maps synchronisées par convention | Divergence silencieuse possible si un helper contourne les opérateurs centraux | `in_game/common/scripted_effects/modeu5_stock_effects.txt`, `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md` | Ajouter une vérification automatisée qui signale les écritures directes hors helpers | M |
-| P1 | Caches de scheduling additifs sans retrait élémentaire confirmé | Sur-validation ou coût croissant après longue partie | `in_game/common/scripted_effects/modeu5_performance_effects.txt`, `docs/technical/TECH-01_engine_exposure_matrix.md` | Documenter les rebuilds obligatoires et exposer un compteur de stale entries | S |
-| P1 | Configuration CMM, runtime gates et package markers dispersés entre main menu, on_actions et scripted effects | Mauvaise compréhension contributeur et risque de faux toggle runtime | `main_menu/localization`, `in_game/common/scripted_effects/modeu5_configuration_effects.txt`, `in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt` | Maintenir un index de configuration unique qui pointe vers les fichiers sources | S |
-| P2 | Plusieurs fichiers de test/probe contiennent des scénarios longs et proches | Maintenance coûteuse lors des changements de contrats | `packages/modeu5_core_tests/in_game/common/scripted_effects/*_test_effects.txt` | Factoriser seulement les conventions de dump, pas les scénarios métier | M |
-| P2 | Noms historiques de packages (`trade`, `war`) ne correspondent pas parfaitement au contrat actuel (`estate`, `early blobbing`) | Confusion de playset avant release | `packages/*/descriptor.mod`, `docs/technical/MODULE_OPTION_MODEL.md` | Décider si renommage ou documentation de compatibilité | M |
-| P3 | Certains fichiers domaine incluent à la fois logique et diagnostics | Lisibilité réduite, mais risque runtime limité | `modeu5_debug_effects.txt`, `modeu5_void_economy_effects.txt` | Extraire uniquement les dumps très verbeux si le fichier continue de grossir | S |
+| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `modeu5_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
+| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `modeu5_stock_effects.txt`, `modeu5_void_economy_effects.txt`, `modeu5_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
+| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `modeu5_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
+| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `modeu5_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
+| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
+| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/modeu5_core_tests/...` | Factor dump conventions, not business scenarios | M |
+| P2 | Historical package names (`trade`, `war`) are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
+
+## Non-negotiable contracts for the PR126 stack
+
+```txt
+1. Do not mutate stocks outside the central operators.
+2. Do not rebuild country stock from market stock.
+3. Do not use runtime-built map names.
+4. Do not add a private goods list inside a generator.
+5. Do not add a cache without owner, rebuild trigger, reset policy, and audit classification.
+6. Do not use every_trade or every_market_center in gameplay without TECH-01 confirmation or an accepted fallback.
+7. Do not recompute the month's US-00 facts after consumption, transfer, decay, validation, or reconciliation.
+```
