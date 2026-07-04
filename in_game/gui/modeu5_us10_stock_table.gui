@@ -51,6 +51,8 @@ template modeu5_us10_stock_value_cell_right {
 
 template modeu5_us10_stock_row {
 	layoutpolicy_horizontal = expanding
+	layoutpolicy_vertical = fixed
+	size = { -1 26 }
 	spacing = 8
 	block "good" { text_single = { using = modeu5_us10_stock_value_cell_left } }
 	block "country_stocks" { text_single = { using = modeu5_us10_stock_value_cell_right } }
@@ -68,12 +70,14 @@ template modeu5_us10_stock_table {
 		layoutpolicy_horizontal = expanding
 		layoutpolicy_vertical = expanding
 		margin = { 10 8 }
-		spacing = 7
+		spacing = 5
 
 		hbox = {
 			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = fixed
+			size = { -1 24 }
 			spacing = 8
-			text_single = { using = modeu5_us10_stock_header_cell_left blockoverride "text" { raw_text = "Good" } }
+			text_single = { using = modeu5_us10_stock_header_cell_left blockoverride "text" { raw_text = "#bold Good#!" } }
 			text_single = { using = modeu5_us10_stock_header_cell_right blockoverride "text" { raw_text = "Country Stocks" } }
 			text_single = { using = modeu5_us10_stock_header_cell_right blockoverride "text" { raw_text = "Market Stocks" } }
 			text_single = { using = modeu5_us10_stock_header_cell_right blockoverride "text" { raw_text = "Overproduction" } }
@@ -85,14 +89,12 @@ template modeu5_us10_stock_table {
 			scrollbarpolicy_horizontal = always_off
 			autoresizescrollarea = no
 
-			scrollbar_vertical = {
-				using = Scrollbar_Vertical
-			}
+			scrollbar_vertical = { using = Scrollbar_Vertical }
 
 			scrollwidget = {
 				vbox = {
 					layoutpolicy_horizontal = expanding
-					spacing = 5
+					spacing = 2
 
 					hbox = { using = modeu5_us10_stock_row visible = "[Or3(GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_country_stock').GetValue, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_market_stock').GetValue, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_overproduction_percent').GetValue, '(CFixedPoint)0'))]" blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell_left blockoverride "text" { raw_text = "Cotton" } } } blockoverride "country_stocks" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_country_capacity').GetValue|2]" } } } blockoverride "market_stocks" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_market_capacity').GetValue|2]" } } } blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_cotton_overproduction_percent').GetValue|2]%" } } } blockoverride "production_efficiency" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { raw_text = "n/a" } } } }
 					hbox = { using = modeu5_us10_stock_row visible = "[Or3(GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_country_stock').GetValue, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_market_stock').GetValue, '(CFixedPoint)0'), GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_overproduction_percent').GetValue, '(CFixedPoint)0'))]" blockoverride "good" { text_single = { using = modeu5_us10_stock_value_cell_left blockoverride "text" { raw_text = "Sugar" } } } blockoverride "country_stocks" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_country_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_country_capacity').GetValue|2]" } } } blockoverride "market_stocks" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_market_stock').GetValue|2]/[Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_market_capacity').GetValue|2]" } } } blockoverride "overproduction" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { text = "[Player.MakeScope.GetVariable('modeu5_us10_ui_sugar_overproduction_percent').GetValue|2]%" } } } blockoverride "production_efficiency" { text_single = { using = modeu5_us10_stock_value_cell_right blockoverride "text" { raw_text = "n/a" } } } }
