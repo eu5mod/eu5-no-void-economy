@@ -100,9 +100,20 @@ As of `a7ed5a0`, a static ModeU5 placeholder rendered inline inside Production. 
 
 ### Vanilla market selector pattern
 
-Vanilla market selection is tied to a parent filtered list and `ProductionView.GetSelectedMarket`. For the ModeU5 Plan A path, the inline body displays `ProductionView.GetSelectedMarket` and includes a `Sync` action that passes `Market.MakeScope` to the existing ModeU5 scripted GUI.
+Vanilla market selection is tied to a parent filtered list and `ProductionView.GetSelectedMarket`. M&T's Production selector uses `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)` on the selected market card.
 
-A true automatic refresh exactly at the vanilla selector's selection event would require patching the vanilla selector `on_action` / a deeper body override. Current Plan A implements a safer best-effort auto-sync on entering the ModeU5 selected-market strip, plus a manual `Sync` fallback.
+V1 hook:
+
+- `zz_modeu5_us10_production_select_market.gui` is a small copy of the vanilla/M&T `select_menu_left` block.
+- It preserves `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
+- It adds one action immediately after selection: `modeu5_us10_ui_select_market_on_click` with `Market.MakeScope`.
+- This should refresh ModeU5 automatically when a market is selected in the vanilla Production market selector.
+
+Risk note:
+
+- This is more invasive than hover-sync because it overrides the selector definition.
+- It is still far smaller than overriding the full 5,500-line `production_lateralview.gui`.
+- If it causes a duplicate/GUI error, delete `zz_modeu5_us10_production_select_market.gui` and fall back to Sync + hover-sync.
 
 ## Trail of attempts and results
 
@@ -118,6 +129,7 @@ A true automatic refresh exactly at the vanilla selector's selection event would
 | 8 | Coverage probe using `margin_top`. | GUI error: `margin_top` not handled on this widget. | Rejected. |
 | 9 | Table iteration. | Table appears; selected market name and values update through Sync. | Good enough visually. |
 | 10 | Taller panel + best-effort auto-sync. | Pending test. | Current batch. |
+| 11 | V1 market selector hook. | Pending test. | Should provide true refresh on market selection if override loads cleanly. |
 
 ## Latest implementation notes
 
@@ -125,9 +137,9 @@ A true automatic refresh exactly at the vanilla selector's selection event would
 - `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
 - `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
 - `zz_modeu5_us10_production_tabs.gui` refreshes the ModeU5 table when opened from the top tab.
-- Panel height is now raised from `790` to `860`.
-- The selected-market strip uses `onmousehierarchyenter` to refresh the read-model from `ProductionView.GetSelectedMarket` when the cursor returns to the ModeU5 body after a vanilla market change.
-- The explicit `Sync` button remains as a fallback.
+- `zz_modeu5_us10_production_select_market.gui` hooks the market-selection action.
+- Panel height is now `860`.
+- The selected-market strip still has hover auto-sync and explicit `Sync` fallback.
 
 ## Important runtime log learnings
 
@@ -152,6 +164,15 @@ Unsupported property: position on widgets that are a child of a hbox/vbox
 Property 'margin_top' not handled
 ```
 
+New thing to watch after V1 selector hook:
+
+```txt
+gui/zz_modeu5_us10_production_select_market.gui
+select_menu_left
+ProductionSelectMarket.Parent.FilterByMarket
+modeu5_us10_ui_clicked_market
+```
+
 ## Current branch state
 
 - Top ModeU5 tab exists and opens Production.
@@ -160,8 +181,8 @@ Property 'margin_top' not handled
 - Top tab refreshes existing ModeU5 read-model.
 - Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
 - Best-effort hover auto-sync has been added.
-- No dynamic market datamodel has been reintroduced.
+- V1 market selection hook has been added.
 
 ## Plan B trigger
 
-Move to generated full `production_lateralview.gui` override if Plan A cannot cover/replace vanilla Buildings content cleanly enough for a V0 that can be handed to a UI specialist.
+Move to generated full `production_lateralview.gui` override if Plan A cannot cover/replace vanilla Buildings content cleanly enough for a V0 that can be handed to a UI specialist, or if the selector hook cannot be kept cleanly without duplicate GUI errors.
