@@ -71,7 +71,7 @@ flowchart TD
 | The current country is the visible outer loop | Markets/trades are not the main orchestration container | Country pulse should prepare country-owned work, but must not make every country execute the same market-owned local branch |
 | Capacity has its own `every_market_present_in_country` loop | Good input data, but it does not frame US-00/US-10 | Risk of redundant recalculation/cache glue |
 | US-00 is called as an all-goods pipeline | Simple to call, but less clear for market/trade scope | Requires an explicit goods/market policy |
-| US-10 is called after US-00 as a separate resolver | Same-market and inter-market are not structured under explicit ownership phases | Local market work should be once-per-promoted-market; trade work should be country-level and owner-gated. |
+| US-10 is called after US-00 as a separate resolver | Local non-trade consumption and inter-market trade transfer are not structured under explicit ownership phases | Local non-trade consumption should be once-per-promoted-market; vanilla trade work should be country-level, owner-gated, and inter-market only. |
 | Audit/reconciliation is a conditional end-of-cycle step | Correct for diagnostics, but not a process container | Must not compensate for suboptimal orchestration |
 
 ## 6. Main recommended target — country prep, market-local branch, country trade pass
@@ -89,7 +89,7 @@ every_market_promoted / promoted-market dispatcher
   2. Promoted-market local branch
      - process each promoted market once per month
      - if launched from country pulse, require a deterministic processing-owner guard
-     - local US-00 / same-market US-10 / validation are market-local, not repeated by all countries present
+     - local US-00 / local non-trade consumption / validation are market-local, not repeated by all countries present
 
 on_monthly_pulse(country)
   3. Country-owned trade branch
@@ -124,7 +124,7 @@ flowchart TD
         O -->|yes| M1[2.1 rebuild countries_present_in_market once]
         M1 --> M2[2.2 capacity/cache for countries present]
         M2 --> M3[2.3 US-00 scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
-        M3 --> M4[2.4 Same-market consumption<br/>modeu5_resolve_stock_consumption]
+        M3 --> M4[2.4 Local non-trade consumption<br/>modeu5_resolve_stock_consumption]
         M4 --> M5[2.5 Validate market-local result]
     end
 
@@ -132,7 +132,8 @@ flowchart TD
 
     subgraph TRADE[3. Country-owned trade branch]
         T0 --> T1[3.1 country-scoped every_trade<br/>trades owned by current country<br/>TECH-01 047]
-        T1 --> T2[3.2 Trade handlers decide effects<br/>add/remove/transfer stock<br/>no direct stock write in loop]
+        T1 --> T2[3.2 Inter-market trade handlers decide effects<br/>transfer stock only<br/>no direct stock write in loop]
+        T2 --> T2B[Invariant: from_market != to_market<br/>same-market trade is impossible]
         T2 --> T3[3.3 Future trade US<br/>US-17 / US-20 planning surface]
     end
 
@@ -156,9 +157,11 @@ The promoted-market local branch must have one of these two execution models:
 
 `every_trade` is different: TECH-01 confirms it as a country-scope iterator that enters trade scope. The target trade branch should run from the monthly country context and process all trades for which that country is the ModeU5 trade owner. It should **not** be narrowed to the currently promoted market. That avoids double accounting across countries while preserving visibility for future trade-oriented systems such as US-17 and US-20.
 
-The trade loop must remain orchestration-only: stock consequences go through the existing add/remove/transfer handlers, which own the source/target market logic and same-market/inter-market distinction.
+The trade loop must remain orchestration-only: stock consequences go through the existing transfer handlers and central stock operators. Vanilla trade is inter-market only: `from_market` and `to_market` are always distinct. Do not model `source_market == target_market` as a trade branch.
 
-US-00 scoped market-good must produce and freeze the `produced / added / rejected / overproduction input` facts before same-market consumption, trade pass, decay, validation, or reconciliation. Late US-00 finalization must read only these frozen facts.
+Same-market stock consumption remains a local non-trade demand/consumption path in the promoted-market local branch. It is not a vanilla trade case and must not be handled by the country trade-owner pass.
+
+US-00 scoped market-good must produce and freeze the `produced / added / rejected / overproduction input` facts before local non-trade consumption, trade pass, decay, validation, or reconciliation. Late US-00 finalization must read only these frozen facts.
 
 ### Opinion on this variant
 
@@ -170,8 +173,8 @@ US-00 scoped market-good must produce and freeze the `produced / added / rejecte
 | Performance: filtered `human_relevant_market` | Yes | Reduces promoted-market candidates without changing business order | Normal mode must define the equivalent as all current-country markets, not all global markets |
 | Market promotion before local branch | Yes | Good File/Cache pivot before local B/C/D | Add processing-owner guard if country pulse launches the shell |
 | Separate `every_market_promoted` local branch | Yes, as once-per-market logical dispatcher | Clarifies market-local scope and avoids US-00/US-10 each scanning independently | Do not run local branch once per country present in the market |
-| Branch 2 local countries/US-00/same-market | Yes | Separates market-local work from trade-owned work | Keep mutations through central operators only |
-| Country-level `every_trade` pass | Yes as target, but only owner-gated | All trades deserve processing and future trade systems need a full pass | Process only trades owned by the current country to avoid double accounting; do not filter to promoted market. |
+| Branch 2 local countries/US-00/local consumption | Yes | Separates market-local non-trade work from trade-owned inter-market work | Keep mutations through central operators only |
+| Country-level `every_trade` pass | Yes as target, but only owner-gated | All trades deserve processing and future trade systems need a full pass | Process only trades owned by the current country to avoid double accounting; do not filter to promoted market; every vanilla trade is inter-market. |
 | Future non-good / market-focused US | Yes | Good location before goods/trade loops | Attach to the phase whose ownership matches the feature |
 
 This proposed variant is more operational:
@@ -188,7 +191,7 @@ promoted-market dispatcher / owner-guarded shell
 
 monthly country pulse
 → country-owned every_trade pass
-  → every trade owned by current country
+  → every inter-market trade owned by current country
   → stock handlers decide add/remove/transfer consequences
   → future US-17 / US-20 hooks can attach here
 ```
@@ -211,7 +214,7 @@ This names the two different mechanisms: promoted-market local work is driven by
 | PR3 — Helper extraction B/C/D | Small interface guardrail | Do not expose a helper that implies market-scoped `every_trade`. Do not expose local B/C/D helpers that silently process the same promoted market for every country present. |
 | PR4 — Promoted-market shell | Direct shell impact | The shell must distinguish candidate registration from once-per-promoted-market execution. If still country-launched, it needs an owner guard or equivalent test-only restriction. |
 | PR5 — Local branch | Direct local-branch impact | PR5 remains local/test-only, but the contract must say the local branch represents a once-per-promoted-market execution surface, not a per-country repeated market mutation. |
-| PR6 — Country-owned trade branch | Direct trade impact | This is the first layer that should run the country-scoped, owner-gated `every_trade` pass over all owned trades, then delegate stock consequences to handlers. |
+| PR6 — Country-owned trade branch | Direct trade impact | This is the first layer that should run the country-scoped, owner-gated every_trade pass. It must treat vanilla trade as inter-market only and must not implement a source_market == target_market branch. |
 
 ## 7. Recommended refactor order
 
