@@ -106,58 +106,58 @@ output.write_text("\n".join(sorted(found)) + "\n", encoding="utf-8")
 PY
 
 cat > "$tmp_inventory" <<'EOF'
-name	kind	class	owner	lifecycle
-__ACTIVE_LIST__	template list placeholder	work cache	global	generated per-good active-market list
-__ADDED_MAP__	template map placeholder	monthly ledger	country	current month until readers reset
-__DIRTY_LIST__	template list placeholder	work cache	global	dirty until reconciliation/clear
-__EFFECTIVE_OVERPRODUCTION_RATIO_MAP__	template map placeholder	derived monthly ledger	country	current month until readers reset
-__MARKET_MAP__	template map placeholder	derived cache	global	rebuilt/updated from country stock
-__OVERPRODUCTION_RATIO_MAP__	template map placeholder	derived monthly ledger	country	current month until readers reset
-__PRODUCED_MAP__	template map placeholder	monthly ledger	country	current month until readers reset
-__PRODUCTION_PENALTY_MAP__	template map placeholder	gameplay carryover	country	next-month carryover
-__REJECTED_MAP__	template map placeholder	monthly ledger	country	current month until readers reset
-__SPARSE_SUPPLIER_LIST__	template list placeholder	work cache	global	rebuilt per US-10 market/good scan
-__STOCK_MAP__	template map placeholder	source	country	durable authoritative stock
-__US00_ACTIVE_MAP__	template map placeholder	work cache	country	PERF-15 scheduling index
-__UI_MONTHLY_CONSUMPTION_MAP__	template map placeholder	UI monthly counter	human country	current month only
-__UI_MONTHLY_SURPLUS_MAP__	template map placeholder	UI monthly counter	human country	current month only
-__VOID_TAXABLE_PROXY_MAP__	template map placeholder	diagnostic ledger	country	strict/debug/audit or human-relevant only
-__VOID_WEALTH_MAP__	template map placeholder	diagnostic ledger	country	strict/debug/audit or human-relevant only
-modeu5_<good>_active_markets	global list	work cache	global	additive until rebuild/repair
-modeu5_<good>_added_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_<good>_dirty_markets	global list	work cache	global	dirty until reconciliation/clear
-modeu5_<good>_effective_overproduction_ratio_by_market	variable map	derived monthly ledger	country	current month until readers reset
-modeu5_<good>_market_stock	global variable map	derived cache	global	rebuilt from country stock
-modeu5_<good>_overproduction_ratio_by_market	variable map	derived monthly ledger	country	current month until readers reset
-modeu5_<good>_produced_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_<good>_production_penalty_by_market	variable map	gameplay carryover	country	next-month carryover
-modeu5_<good>_rejected_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_<good>_stock_by_market	variable map	source	country	durable authoritative stock
-modeu5_<good>_ui_monthly_consumption_by_market	variable map	UI monthly counter	human country	current month only
-modeu5_<good>_ui_monthly_surplus_by_market	variable map	UI monthly counter	human country	current month only
-modeu5_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-15 previous-state scheduling
-modeu5_<good>_us10_sparse_suppliers	global list	work cache	global	rebuilt per US-10 market/good scan
-modeu5_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	strict/debug/audit or human-relevant only
-modeu5_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	strict/debug/audit or human-relevant only
-modeu5_active_markets_any_good	global list	work cache	global	additive until rebuild/repair
-modeu5_base_capacity_by_market	variable map	capacity breakdown	country	with capacity refresh
-modeu5_building_capacity_by_market	variable map	capacity breakdown	country	with capacity refresh
-modeu5_consumption_<good>_pending_requested_by_market	variable map	monthly input queue	country	removed when US-10 monthly pass consumes it
-modeu5_consumption_<good>_requested_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_consumption_<good>_satisfied_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_consumption_<good>_unsatisfied_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_core03_probe_seen_locations	global list	debug-only	global	explicit CORE-03 probe only
-modeu5_countries_present_in_market	global list	work cache	global	rebuilt per target/promoted market
-modeu5_detailed_accounting_promoted_markets	global list	work cache	global	rebuilt/marked by PERF-14 promotion
-modeu5_foreign_capacity_by_market	variable map	capacity breakdown	country	with capacity refresh
-modeu5_market_country_cache_dirty_markets	global list	work cache	global	dirty until repair
-modeu5_monthly_markets_seen_this_cycle	global list	work cache	global	reset once per month
-modeu5_performance_relevant_markets	global list	work cache	global	rare/explicit rebuild
-modeu5_stock_cap_by_market	variable map	capacity source	country	init/hooks/monthly capacity refresh
-modeu5_trade_<good>_requested_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_trade_<good>_transferred_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_trade_<good>_unsatisfied_by_market	variable map	monthly ledger	country	current month until readers reset
-modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	strict/debug/audit or explicit UI only
+name	kind	class	owner	rebuild_or_write_trigger	reset_policy	lifecycle
+__ACTIVE_LIST__	template list placeholder	work cache	global	mark active market / active-list repair	clear during active-list rebuild	generated per-good active-market list
+__ADDED_MAP__	template map placeholder	monthly ledger	country	US-00 production rejection ledger update	monthly after readers	current month until readers reset
+__DIRTY_LIST__	template list placeholder	work cache	global	central stock mutation marks dirty	clear after reconciliation/explicit reset	dirty until reconciliation/clear
+__EFFECTIVE_OVERPRODUCTION_RATIO_MAP__	template map placeholder	derived monthly ledger	country	US-00 ratio finalization from frozen facts	monthly after readers	current month until readers reset
+__MARKET_MAP__	template map placeholder	derived cache	global	central stock operators or rebuild from country stock	never clear as source; rebuild from country stock	rebuilt/updated from country stock
+__OVERPRODUCTION_RATIO_MAP__	template map placeholder	derived monthly ledger	country	US-00 ratio calculation from frozen facts	monthly after readers	current month until readers reset
+__PRODUCED_MAP__	template map placeholder	monthly ledger	country	US-00 production ingestion	monthly after readers	current month until readers reset
+__PRODUCTION_PENALTY_MAP__	template map placeholder	gameplay carryover	country	US-00 next-month penalty finalization	replace when next penalty is finalized	next-month carryover
+__REJECTED_MAP__	template map placeholder	monthly ledger	country	US-00 stock admission result	monthly after readers	current month until readers reset
+__SPARSE_SUPPLIER_LIST__	template list placeholder	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
+__STOCK_MAP__	template map placeholder	source	country	central stock operators only	never clear except explicit migration/test	durable authoritative stock
+__US00_ACTIVE_MAP__	template map placeholder	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 scheduling index
+__UI_MONTHLY_CONSUMPTION_MAP__	template map placeholder	UI monthly counter	human country	US-10/UI current-month capture	monthly after UI/readers	current month only
+__UI_MONTHLY_SURPLUS_MAP__	template map placeholder	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
+__VOID_TAXABLE_PROXY_MAP__	template map placeholder	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
+__VOID_WEALTH_MAP__	template map placeholder	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
+modeu5_<good>_active_markets	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
+modeu5_<good>_added_by_market	variable map	monthly ledger	country	US-00 production rejection ledger update	monthly after readers	current month until readers reset
+modeu5_<good>_dirty_markets	global list	work cache	global	central stock mutation marks dirty	clear after reconciliation/explicit reset	dirty until reconciliation/clear
+modeu5_<good>_effective_overproduction_ratio_by_market	variable map	derived monthly ledger	country	US-00 ratio finalization from frozen facts	monthly after readers	current month until readers reset
+modeu5_<good>_market_stock	global variable map	derived cache	global	central stock operators or rebuild from country stock	never clear as source; rebuild from country stock	rebuilt from country stock
+modeu5_<good>_overproduction_ratio_by_market	variable map	derived monthly ledger	country	US-00 ratio calculation from frozen facts	monthly after readers	current month until readers reset
+modeu5_<good>_produced_by_market	variable map	monthly ledger	country	US-00 production ingestion	monthly after readers	current month until readers reset
+modeu5_<good>_production_penalty_by_market	variable map	gameplay carryover	country	US-00 next-month penalty finalization	replace when next penalty is finalized	next-month carryover
+modeu5_<good>_rejected_by_market	variable map	monthly ledger	country	US-00 stock admission result	monthly after readers	current month until readers reset
+modeu5_<good>_stock_by_market	variable map	source	country	central stock operators only	never clear except explicit migration/test	durable authoritative stock
+modeu5_<good>_ui_monthly_consumption_by_market	variable map	UI monthly counter	human country	US-10/UI current-month capture	monthly after UI/readers	current month only
+modeu5_<good>_ui_monthly_surplus_by_market	variable map	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
+modeu5_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 previous-state scheduling
+modeu5_<good>_us10_sparse_suppliers	global list	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
+modeu5_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
+modeu5_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
+modeu5_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
+modeu5_base_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
+modeu5_building_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
+modeu5_consumption_<good>_pending_requested_by_market	variable map	monthly input queue	country	explicit US-10 request enqueue	remove when processed by monthly pass	removed when US-10 monthly pass consumes it
+modeu5_consumption_<good>_requested_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_consumption_<good>_satisfied_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_consumption_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_core03_probe_seen_locations	global list	debug-only	global	CORE-03 explicit debug probe	clear before probe	explicit CORE-03 probe only
+modeu5_countries_present_in_market	global list	work cache	global	modeu5_rebuild_countries_present_in_market	clear before each target/promoted-market rebuild	rebuilt per target/promoted market
+modeu5_detailed_accounting_promoted_markets	global list	work cache	global	PERF-14 successful promotion	clear on explicit promoted-market rebuild/reset	rebuilt/marked by PERF-14 promotion
+modeu5_foreign_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
+modeu5_market_country_cache_dirty_markets	global list	work cache	global	ownership/cache repair marks affected markets	clear during cache repair	dirty until repair
+modeu5_monthly_markets_seen_this_cycle	global list	work cache	global	monthly seen-market preparation	reset once per month	reset once per month
+modeu5_performance_relevant_markets	global list	work cache	global	human/performance relevance rebuild	clear before relevance rebuild	rare/explicit rebuild
+modeu5_stock_cap_by_market	variable map	capacity source	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	init/hooks/monthly capacity refresh
+modeu5_trade_<good>_requested_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_trade_<good>_transferred_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_trade_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 
 cut -f1 "$tmp_inventory" | tail -n +2 | sort -u > "$tmp_expected_names"
@@ -235,6 +235,9 @@ ui_shadow_count="$(
 
 unclassified_count="$(wc -l < "$tmp_unclassified" | tr -d ' ')"
 direct_write_count="$(wc -l < "$tmp_direct_writes" | tr -d ' ')"
+policy_gap_count="$(
+	awk -F '\t' 'NR > 1 && (NF < 7 || $4 == "" || $5 == "" || $6 == "") { count++ } END { print count + 0 }' "$tmp_inventory"
+)"
 source_count="$(awk -F '\t' 'NR > 1 && $3 == "source" { count++ } END { print count + 0 }' "$tmp_inventory")"
 derived_count="$(awk -F '\t' 'NR > 1 && $3 ~ /derived|capacity breakdown|diagnostic/ { count++ } END { print count + 0 }' "$tmp_inventory")"
 work_count="$(awk -F '\t' 'NR > 1 && $3 ~ /work cache/ { count++ } END { print count + 0 }' "$tmp_inventory")"
@@ -261,6 +264,7 @@ printf '%s\n' 'UI monthly counter maps: human country current-month only'
 printf 'UI shadow maps: %s\n' "$ui_shadow_count"
 printf 'Unclassified persistent maps/lists: %s\n' "$unclassified_count"
 printf 'Direct stock-map write candidates outside generated adapter template: %s\n' "$direct_write_count"
+printf 'Ownership/rebuild/reset policy gaps: %s\n' "$policy_gap_count"
 
 if [[ "$ui_shadow_count" != "0" ]]; then
 	printf 'Unexpected UI shadow map/list families were found:\n' >&2
@@ -279,5 +283,11 @@ if [[ "$direct_write_count" != "0" ]]; then
 	printf 'Suspicious direct stock-map writes were found outside the generated adapter template:\n' >&2
 	cat "$tmp_direct_writes" >&2
 	printf 'Stock mutation must go through centralized operators and generated adapters.\n' >&2
+	exit 1
+fi
+
+if [[ "$policy_gap_count" != "0" ]]; then
+	printf 'Persistent state inventory entries missing owner/rebuild/reset policy:\n' >&2
+	awk -F '\t' 'NR > 1 && (NF < 7 || $4 == "" || $5 == "" || $6 == "") { print }' "$tmp_inventory" >&2
 	exit 1
 fi

@@ -80,3 +80,22 @@ work-cache, monthly/carryover, debug-scalar, and work/metric-scalar counts. It
 also fails if a stock map write appears outside the generated stock adapter
 template, which protects the central-operator rule before later promoted-market
 runtime PRs start moving dispatchers around.
+
+## PR2 ownership / rebuild / reset coverage
+
+PR2 upgrades the inventory from classification-only to operational cache policy.
+Every persistent map/list family must now declare:
+
+- one owner;
+- one rebuild or write trigger;
+- one reset policy.
+
+`tools/audit_modeu5_persistent_state.sh` fails if any inventory entry is missing
+one of those policy fields. This makes cache cleanup safer because a future PR
+can remove, merge, or narrow a cache only after its readers and replacement
+rebuild policy are known.
+
+`modeu5_countries_present_in_market` remains deliberately classified as a work
+cache. It is rebuilt for the current target/promoted market, may be used to
+choose which country records to inspect, and must never be treated as durable
+per-market storage or as proof that a country has positive stock.
