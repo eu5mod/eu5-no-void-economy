@@ -18,6 +18,15 @@ The main cost comes from country↔market↔goods loops and from validation/reco
 | Debug/probes | Test events | Manual | Targeted scopes | debug variables | Low outside tests | Keep in core_tests package |
 | CMM callbacks | Main menu/runtime callback | Rare | Configuration variables | CMM variables | Low | No economic scan |
 
+## Exact reconciliation cases to keep
+
+1. Annual rebuild or explicitly requested strict audit.
+2. Monthly validation detecting a divergence between market aggregate and the sum of country stocks.
+3. Targeted test/debug event.
+4. Controlled migration/init if the current schema requires it.
+
+Reconciliation must not become the normal mechanism for recalculating country stocks from market stock.
+
 ## Canonical performance notation
 
 | Symbol | Meaning |
@@ -41,6 +50,19 @@ The main cost comes from country↔market↔goods loops and from validation/reco
 | Current state country + broad pipelines | `monthly_country_pulse` -> country-markets capacity -> US-00 all-goods -> separate US-10 | `O(C * M_c + C * M_c * G_market + resolver scans)` | Costly baseline; several US may revisit the same axes | caches prepared outside the market/trade container |
 | Generic market/trade Target E | readiness -> market/trade outer loop -> B/C/D under E | `O(P? * (K_m + G_a + T_m))` | Good if selector E is already restricted | too abstract if promotion is not explicit |
 | Promoted-market target | `every_market_present_in_country` preparation -> promotion -> local branch + trade branch | `O(C * M_c) + O(P * (K_m * G_a + T_m))` | Best compromise: explicit, measurable, shared filter | requires a robust promotion definition and rebuild |
+
+## Expected order of magnitude
+
+Without profiling EU5 directly, a reasonable sizing is:
+
+| Situation | Current broad state | Promoted-market target | Expected gain |
+|---|---:|---:|---:|
+| Small campaign / few active goods | tens of thousands of logical monthly iterations | a few thousand | `~5x` to `~20x` |
+| Medium campaign with many markets but few human-relevant markets | hundreds of thousands to a few million | tens of thousands | `~10x` to `~100x` |
+| Large campaign / strict audit / all-goods | several million, plus rescans by US | hundreds of thousands if `P << M` | `~10x` to `~50x`; less if everything is promoted |
+| Well-filtered Performance Mode | still costly if broad pipelines do not all respect the same filter | `P * G_a` instead of `M * G_market` on heavy branches | potentially `~100x` on goods/trade branches |
+
+The key point is that `P` must remain much smaller than `M` in Performance Mode, and `G_a` must remain smaller than `G_market` thanks to active-good lists. If Normal Mode promotes all current-country markets, the gain is mostly maintainability/cache ownership rather than spectacular runtime reduction, but it still prevents each US from rebuilding its own world.
 
 ## Review sizing assumption
 
