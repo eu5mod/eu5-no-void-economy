@@ -18,13 +18,19 @@ Failed to fetch variable for 'modeu5_country_trade_owner_pass_runs'
 
 ## Root causes
 
-1. The generic trade-owner pass attempted to compute moved goods with:
+1. The generic trade-owner pass attempted to compute moved goods by directly reading:
 
 ```txt
 trade_volume / traded_goods:transport_cost
 ```
 
-Runtime testing showed this is not safe from generic trade scope: the scoped goods transport-cost read can evaluate to zero and produce Div/0 spam.
+Runtime testing showed this implementation shape is not safe from generic trade scope: the scoped goods transport-cost read can evaluate to zero and produce Div/0 spam.
+
+The formula remains correct, but it must be implemented through the generated literal-good transport-cost helpers:
+
+```txt
+modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+```
 
 2. The PR6 test market selector could leave the target-market event target unset when the current country did not expose two distinct markets through `every_market_present_in_country`.
 
@@ -40,11 +46,11 @@ every_trade
   -> from_market
   -> to_market
   -> traded_goods
-  -> trade_volume recorded as diagnostic context
-  -> quantity conversion counted as blocked
+  -> trade_volume recorded
+  -> generated literal-good dispatcher converts trade volume into goods quantity
 ```
 
-The safe quantity-conversion path remains the generated literal-good helper family:
+The safe quantity-conversion path is the generated literal-good helper family:
 
 ```txt
 modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
