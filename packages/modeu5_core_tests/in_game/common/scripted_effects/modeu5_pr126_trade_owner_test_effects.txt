@@ -2,10 +2,9 @@
 #
 # This probe validates the country-scoped trade-owner pass surface and a controlled
 # explicit inter-market transfer request. It does not switch the live monthly
-# dispatcher. Native every_trade quantities are read through the confirmed
-# trade_volume / traded_goods:transport_cost formula and reported as diagnostics;
-# stock-affecting mutation remains on the explicit ModeU5 inter-market request
-# path in PR6.
+# dispatcher. Native every_trade quantities are read as diagnostics only; direct
+# scoped transport-cost conversion is intentionally fail-closed in PR6.1 because
+# the generated literal-good helpers are the safe conversion path.
 #
 # Vanilla trade cannot have source_market == target_market. Same-market local
 # stock consumption is therefore intentionally absent from this probe.
@@ -50,6 +49,9 @@ modeu5_pr126_trade_owner_select_two_markets = {
 				}
 			}
 			save_temporary_scope_as = modeu5_pr126_trade_owner_source_market
+			# Default target to source so later comparisons never dereference an unset
+			# target. A second market replaces this below; otherwise the probe blocks.
+			save_temporary_scope_as = modeu5_pr126_trade_owner_target_market
 		}
 		else_if = {
 			limit = {
@@ -65,13 +67,11 @@ modeu5_pr126_trade_owner_select_two_markets = {
 	}
 
 	if = {
-		limit = {
-			OR = {
-				NOT = { exists = scope:modeu5_pr126_trade_owner_source_market }
-				NOT = { exists = scope:modeu5_pr126_trade_owner_target_market }
-				scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market
-			}
-		}
+		limit = { NOT = { exists = scope:modeu5_pr126_trade_owner_source_market } }
+		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
+	}
+	else_if = {
+		limit = { scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market }
 		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
 	}
 }
@@ -116,6 +116,7 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 
 	save_temporary_scope_as = modeu5_pr126_trade_owner_test_country
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+	modeu5_reset_country_trade_owner_pass_metrics = yes
 	modeu5_pr126_trade_owner_select_two_markets = yes
 
 	if = {
@@ -124,7 +125,6 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_country_trade_owner_pass reason=not_enough_distinct_current_country_markets"
 	}
 	else = {
-		modeu5_reset_country_trade_owner_pass_metrics = yes
 		modeu5_run_monthly_country_trade_owner_cycle = yes
 
 		modeu5_perf14_clear_wheat_stock_in_market = {
