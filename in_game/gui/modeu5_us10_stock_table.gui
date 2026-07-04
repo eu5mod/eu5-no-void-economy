@@ -10,8 +10,8 @@
 # Good | Country Stocks | Market Stocks | Overproduction | Production Efficiency
 #
 # Row visibility is generated for every ModeU5 stock good from tools/modeu5_goods.sh
-# and is based on the selected-market production cache, with stock presence kept
-# only as a temporary visibility fallback while the cache is being proven in-game.
+# and is based on the selected-market vanilla production trigger, with stock
+# presence kept as a temporary visibility fallback while diagnostics stabilize.
 
 template modeu5_us10_stock_header_cell_good {
 	layoutpolicy_horizontal = fixed
