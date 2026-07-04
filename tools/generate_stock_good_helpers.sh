@@ -7,8 +7,9 @@ output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_gener
 modifiers_output="${2:-$repo_root/main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt}"
 modifiers_localization_output="${3:-$repo_root/main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml}"
 
-# shellcheck source=tools/modeu5_goods.sh
-source "$repo_root/tools/modeu5_goods.sh"
+# shellcheck source=tools/modeu5_tool_lib.sh
+source "$repo_root/tools/modeu5_tool_lib.sh"
+modeu5_load_goods_registry
 goods=("${modeu5_goods[@]}")
 
 mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$modifiers_localization_output")"
@@ -392,6 +393,14 @@ TXT
 	cat <<'TXT'
 }
 
+modeu5_core04_move_market_entry_stock_all_goods = {
+TXT
+	for good in "${goods[@]}"; do
+		printf '\tmodeu5_core04_move_market_entry_stock_good_%s = yes\n' "$good"
+	done
+	cat <<'TXT'
+}
+
 modeu5_core03_transfer_residual_all_goods = {
 TXT
 	for good in "${goods[@]}"; do
@@ -518,27 +527,26 @@ TXT
 		first=0
 		transport_cost="$(modeu5_good_transport_cost "$good")"
 		transport_cost_defaulted="$(modeu5_good_transport_cost_defaulted "$good")"
-		sed \
-			-e "s/__GOOD__/$good/g" \
-			-e "s/__STOCK_MAP__/modeu5_${good}_stock_by_market/g" \
-			-e "s/__MARKET_MAP__/modeu5_${good}_market_stock/g" \
-			-e "s/__DIRTY_LIST__/modeu5_${good}_dirty_markets/g" \
-			-e "s/__ACTIVE_LIST__/modeu5_${good}_active_markets/g" \
-			-e "s/__SPARSE_SUPPLIER_LIST__/modeu5_${good}_us10_sparse_suppliers/g" \
-			-e "s/__PRODUCED_MAP__/modeu5_${good}_produced_by_market/g" \
-			-e "s/__ADDED_MAP__/modeu5_${good}_added_by_market/g" \
-			-e "s/__REJECTED_MAP__/modeu5_${good}_rejected_by_market/g" \
-			-e "s/__OVERPRODUCTION_RATIO_MAP__/modeu5_${good}_overproduction_ratio_by_market/g" \
-			-e "s/__EFFECTIVE_OVERPRODUCTION_RATIO_MAP__/modeu5_${good}_effective_overproduction_ratio_by_market/g" \
-			-e "s/__VOID_WEALTH_MAP__/modeu5_${good}_void_wealth_by_market/g" \
-			-e "s/__VOID_TAXABLE_PROXY_MAP__/modeu5_${good}_void_taxable_income_proxy_by_market/g" \
-			-e "s/__PRODUCTION_PENALTY_MAP__/modeu5_${good}_production_penalty_by_market/g" \
-			-e "s/__US00_ACTIVE_MAP__/modeu5_${good}_us00_active_record_by_market/g" \
-			-e "s/__UI_MONTHLY_SURPLUS_MAP__/modeu5_${good}_ui_monthly_surplus_by_market/g" \
-			-e "s/__UI_MONTHLY_CONSUMPTION_MAP__/modeu5_${good}_ui_monthly_consumption_by_market/g" \
-			-e "s/__TRANSPORT_COST__/$transport_cost/g" \
-			-e "s/__TRANSPORT_COST_DEFAULTED__/$transport_cost_defaulted/g" \
-			"$template"
+		modeu5_render_template_to_stdout "$template" \
+			"GOOD=$good" \
+			"STOCK_MAP=modeu5_${good}_stock_by_market" \
+			"MARKET_MAP=modeu5_${good}_market_stock" \
+			"DIRTY_LIST=modeu5_${good}_dirty_markets" \
+			"ACTIVE_LIST=modeu5_${good}_active_markets" \
+			"SPARSE_SUPPLIER_LIST=modeu5_${good}_us10_sparse_suppliers" \
+			"PRODUCED_MAP=modeu5_${good}_produced_by_market" \
+			"ADDED_MAP=modeu5_${good}_added_by_market" \
+			"REJECTED_MAP=modeu5_${good}_rejected_by_market" \
+			"OVERPRODUCTION_RATIO_MAP=modeu5_${good}_overproduction_ratio_by_market" \
+			"EFFECTIVE_OVERPRODUCTION_RATIO_MAP=modeu5_${good}_effective_overproduction_ratio_by_market" \
+			"VOID_WEALTH_MAP=modeu5_${good}_void_wealth_by_market" \
+			"VOID_TAXABLE_PROXY_MAP=modeu5_${good}_void_taxable_income_proxy_by_market" \
+			"PRODUCTION_PENALTY_MAP=modeu5_${good}_production_penalty_by_market" \
+			"US00_ACTIVE_MAP=modeu5_${good}_us00_active_record_by_market" \
+			"UI_MONTHLY_SURPLUS_MAP=modeu5_${good}_ui_monthly_surplus_by_market" \
+			"UI_MONTHLY_CONSUMPTION_MAP=modeu5_${good}_ui_monthly_consumption_by_market" \
+			"TRANSPORT_COST=$transport_cost" \
+			"TRANSPORT_COST_DEFAULTED=$transport_cost_defaulted"
 	done
 } > "$output"
 postprocess_stock_goods_output "$output"

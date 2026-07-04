@@ -20,6 +20,26 @@ install paths.
 
 ## Generated stock adapters
 
+## Generator and validator conventions
+
+ModeU5 generators follow the shared model documented in:
+
+```txt
+docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md
+```
+
+Short version:
+
+- `tools/modeu5_goods.sh` is the single good registry.
+- per-good generators load it through `tools/modeu5_tool_lib.sh`;
+- repeated generated blocks should live in `tools/templates/`;
+- `tools/validate_generators.sh` enforces the convention and is called by
+  `tools/validate_module_packages.sh`.
+
+Do not add a new private `goods=(...)` list to a generator. Do not hand-build a
+large repeated EU5 block in shell when a small template would make the shape
+reviewable.
+
 Regenerate every local generated artifact:
 
 ```bash
