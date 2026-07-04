@@ -72,9 +72,11 @@ flowchart TD
 | US-10 est appelé après US-00 comme resolver séparé | Same-market et inter-market ne sont pas structurés sous la même boucle marché | Rend `every_trade` / market supplier loops difficiles à auditer |
 | Audit/reconciliation est une fin de cycle conditionnelle | Correct pour diagnostics, mais pas un conteneur de process | Ne doit pas compenser une orchestration suboptimale |
 
-## 3. Diagramme Mermaid — target process recommandé
+## 3. Diagramme Mermaid — target conceptuel initial : Subloop E market/trade
 
 Objectif : dès que `modeu5_stock_runtime_ready_trigger` passe, entrer dans une boucle E orientée **market/trade**. Les anciennes sous-boucles B, C et D deviennent des sous-boucles de E, ce qui rend explicite le scope propriétaire de chaque cache et réduit la redondance.
+
+Ce target E reste utile comme abstraction pour comprendre l'objectif général. Le **target principal à implémenter en premier** est toutefois la variante promoted-market décrite en section 6 ; il ne faut pas créer deux dispatchers concurrents.
 
 ```mermaid
 flowchart TD
@@ -94,9 +96,9 @@ flowchart TD
             B1 --> B2[modeu5_store_capacity_record<br/>modeu5_stock_cap_by_market]
         end
 
-        subgraph C_LOOP[Subloop C inside E — goods adapter for this market/trade]
+        subgraph C_LOOP[Subloop C inside E — generated adapter for this market/trade]
             B2 --> C1{Good included by monthly_scope_policy ?}
-            C1 --> C2[Generated adapter<br/>modeu5_resolve_stock_demand_good_GOOD<br/>modeu5_GOOD_stock_by_market]
+            C1 --> C2[Generated adapter family<br/>US-00 production/admission adapter<br/>or US-10 demand adapter]
             C2 --> C3[US-00 for scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
         end
 
@@ -138,7 +140,7 @@ flowchart TD
 |---|---|---|---|
 | Orchestrateur mensuel actuel | `monthly_country_pulse` -> `modeu5_run_monthly_stock_cycle` | `in_game/common/on_action/modeu5_stock_on_actions.txt`, `in_game/common/scripted_effects/modeu5_stock_effects.txt` | Point d'entrée réel actuel. |
 | Gate runtime | `modeu5_stock_runtime_ready_trigger` | `in_game/common/scripted_triggers/modeu5_stock_triggers.txt` | Le target conserve ce gate avant toute mutation. |
-| Préparation performance actuelle | `modeu5_prepare_performance_mode_human_relevant_markets` | `modeu5_configuration_effects.txt` | À transformer en input de `monthly_scope_policy`, pas en orchestration métier. |
+| Préparation performance actuelle | `modeu5_prepare_performance_mode_human_relevant_markets` / équivalent courant | `modeu5_performance_effects.txt` | À transformer en input de `monthly_scope_policy`, pas en orchestration métier. |
 | Capacité actuelle | `modeu5_run_monthly_capacity_refresh_for_current_country`, `every_market_present_in_country` | `modeu5_capacity_effects.txt` | Devient sous-boucle B dans E. |
 | Registres mensuels actuels | `modeu5_prepare_monthly_market_seen_registry`, `modeu5_prepare_human_relevant_full_ledger_markets` | `modeu5_stock_effects.txt`, `modeu5_performance_effects.txt` | Devraient être pilotés par la policy E. |
 | US-00 actuel | `modeu5_run_us00_monthly_pipeline_all_goods`, `modeu5_add_stock`, `modeu5_update_production_rejection_ledger` | `modeu5_void_economy_effects.txt` + adapters générés | Devient sous-boucle C market-good. |
@@ -146,11 +148,11 @@ flowchart TD
 | Cache pays du marché | `modeu5_rebuild_countries_present_in_market`, `every_location_in_market`, `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | À préparer une fois par market center dans E. |
 | Scoring fournisseur | `modeu5_prepare_current_stock_candidate_relations`, `modeu5_apply_current_stock_candidate_hard_filters`, `modeu5_calculate_current_stock_candidate_score` | `modeu5_stock_demand_resolver_effects.txt` | Reste dans E après préfiltre. |
 | Validation/rebuild | `modeu5_validate_stock_consistency`, `modeu5_rebuild_market_stock_from_country_stocks` | `modeu5_stock_effects.txt` | Target : scoped market-good plutôt que fin de cycle globale. |
-| Target nouveau dispatcher | `modeu5_run_monthly_market_trade_cycle` | à créer | Nom proposé pour rendre E explicite. |
+| Target nouveau dispatcher | `modeu5_run_monthly_promoted_market_cycle` | à créer | Nom préféré. `modeu5_run_monthly_market_trade_cycle` reste seulement un nom conceptuel ancien. |
 | Itérateurs à confirmer | `every_trade`, `every_market_center` | TECH-01 à compléter avant gameplay | Le target les montre comme design souhaité, pas exposition confirmée. |
 
 
-## 6. Variante cible proposée par review — market promotion puis boucles ségrégées
+## 6. Target principal recommandé — market promotion puis boucles ségrégées
 
 Je pense que cette variante est meilleure comme **premier refactor concret** que le target E précédent, parce qu'elle s'appuie d'abord sur les boucles déjà proches du code actuel (`monthly_country_pulse`, `every_market_present_in_country`, market promotion), puis sépare proprement le traitement **country/market/good** du traitement **trade/inter-market**.
 
@@ -192,6 +194,10 @@ flowchart TD
     RB --> N
     N --> END[Reset counters after readers]
 ```
+
+`every_market_promoted` est un label de diagramme pour une work-list ModeU5 construite par le mod. Ce n'est pas une exposition moteur EU5 supposée.
+
+US-00 scoped market-good doit produire et figer les facts `produced / added / rejected / overproduction input` avant la branche US-10, le decay, la validation ou la reconciliation. La finalisation tardive US-00 ne doit lire que ces facts figés.
 
 ### Avis sur cette variante
 
