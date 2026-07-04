@@ -118,3 +118,138 @@ modeu5_handoff_scoped_inter_market_transfer = {
 		requested_quantity = $requested_quantity$
 	}
 }
+
+# PR4: promoted-market dispatcher shell.
+#
+# This shell is intentionally not wired into `modeu5_run_monthly_stock_cycle`
+# yet. It proves the outer work-list shape that future PR126 layers will use:
+# current country -> every_market_present_in_country -> promoted market list.
+# Normal mode promotes all current-country markets. Performance mode promotes
+# only markets already present in `modeu5_performance_relevant_markets`.
+
+modeu5_clear_promoted_market_cycle_work_list = {
+	remove_global_variable = modeu5_promoted_market_candidate_count
+	remove_global_variable = modeu5_promoted_market_count
+	remove_global_variable = modeu5_promoted_market_rejected_count
+	remove_global_variable = modeu5_promoted_market_shell_iterations
+
+	set_global_variable = { name = modeu5_promoted_market_candidate_count value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_count value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_rejected_count value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_shell_iterations value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = modeu5_promoted_markets_this_cycle }
+		clear_global_variable_list = modeu5_promoted_markets_this_cycle
+	}
+}
+
+modeu5_note_promoted_market_cycle_candidate = {
+	set_global_variable = {
+		name = modeu5_promoted_market_candidate_count
+		value = {
+			value = global_var:modeu5_promoted_market_candidate_count
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_cycle_rejected = {
+	set_global_variable = {
+		name = modeu5_promoted_market_rejected_count
+		value = {
+			value = global_var:modeu5_promoted_market_rejected_count
+			add = 1
+		}
+	}
+}
+
+modeu5_add_current_market_to_promoted_market_cycle_work_list = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = modeu5_promoted_markets_this_cycle }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_promoted_markets_this_cycle
+			target = scope:modeu5_promoted_market_candidate
+		}
+		set_global_variable = {
+			name = modeu5_promoted_market_count
+			value = {
+				value = global_var:modeu5_promoted_market_count
+				add = 1
+			}
+		}
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_promoted_markets_this_cycle
+					target = scope:modeu5_promoted_market_candidate
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_promoted_markets_this_cycle
+			target = scope:modeu5_promoted_market_candidate
+		}
+		set_global_variable = {
+			name = modeu5_promoted_market_count
+			value = {
+				value = global_var:modeu5_promoted_market_count
+				add = 1
+			}
+		}
+	}
+}
+
+modeu5_prepare_promoted_market_work_list_for_current_country = {
+	save_temporary_scope_as = modeu5_promoted_market_cycle_country
+	modeu5_clear_promoted_market_cycle_work_list = yes
+
+	every_market_present_in_country = {
+		save_temporary_scope_as = modeu5_promoted_market_candidate
+		modeu5_note_promoted_market_cycle_candidate = yes
+
+		if = {
+			limit = { modeu5_nve_normal_mode_trigger = yes }
+			modeu5_add_current_market_to_promoted_market_cycle_work_list = yes
+		}
+		else_if = {
+			limit = {
+				modeu5_performance_mode_enabled_trigger = yes
+				has_global_variable_list = modeu5_performance_relevant_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_performance_relevant_markets
+					target = scope:modeu5_promoted_market_candidate
+				}
+			}
+			modeu5_add_current_market_to_promoted_market_cycle_work_list = yes
+		}
+		else = {
+			modeu5_note_promoted_market_cycle_rejected = yes
+		}
+	}
+}
+
+modeu5_run_monthly_promoted_market_cycle = {
+	# Test-only shell in PR4. Future PRs wire B/C/D logic under this iteration.
+	save_temporary_scope_as = modeu5_promoted_market_cycle_country
+	modeu5_prepare_promoted_market_work_list_for_current_country = yes
+
+	if = {
+		limit = { has_global_variable_list = modeu5_promoted_markets_this_cycle }
+		every_in_global_list = {
+			variable = modeu5_promoted_markets_this_cycle
+			save_temporary_scope_as = modeu5_promoted_market
+			set_global_variable = {
+				name = modeu5_promoted_market_shell_iterations
+				value = {
+					value = global_var:modeu5_promoted_market_shell_iterations
+					add = 1
+				}
+			}
+		}
+	}
+}

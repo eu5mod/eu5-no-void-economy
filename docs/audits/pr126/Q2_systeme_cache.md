@@ -25,6 +25,7 @@ The cache system is intentionally rich. It is acceptable if every state is class
 | `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 ledger | same-market demand resolution | Monthly; reset after US-10.3/UI | P1 | Same-market consumption, not trade |
 | `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 ledger | actual inter-market transfer | Monthly; reset after readers | P1 | Only `source_market != target_market` |
 | `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | scheduling work cache | country→market discovery | Rare/explicit rebuild | P1 if stale | Performance owner; never proof of stock |
+| `modeu5_promoted_markets_this_cycle` | `modeu5_promoted_market_cycle_effects.txt` | scheduling work cache | `every_market_present_in_country` filtered by NVE mode | Clear before each PR126 promoted-market shell preparation | P1 if treated as stock proof | Dispatcher shell owner; current-cycle target list only |
 | `modeu5_detailed_accounting_promoted_markets` | `modeu5_performance_effects.txt` | scheduling work cache | successful market promotion | Rebuilt/marked by promotion helpers | P1 if treated as stock proof | Promotion owner; detailed mutation gates must still validate readiness |
 | `modeu5_active_markets_any_good` | performance + adapters | union work cache | stock/good activity | Additive + rebuild/audit | P1 if never cleaned | Scheduling only |
 | `modeu5_<good>_active_markets` | generated adapters | per-good work cache | good activity | Additive + rebuild/audit | P1 | Not proof of positive quantity |
@@ -39,6 +40,7 @@ The cache system is intentionally rich. It is acceptable if every state is class
 | `modeu5_stock_cap_by_market` | `base/building/foreign` breakdown | Capacity | Keep: business total vs debug explanation |
 | `modeu5_<good>_active_markets` | `modeu5_active_markets_any_good` | Active market | Keep: per-good vs global union |
 | `modeu5_performance_relevant_markets` | active markets | Markets to traverse | Keep separate: performance policy vs stock activity |
+| `modeu5_promoted_markets_this_cycle` | `modeu5_detailed_accounting_promoted_markets` | Market traversal target vs promotion-readiness marker | Keep separate: one is current-cycle scheduling, one proves detailed-accounting promotion completed |
 | US-00 ledgers | UI monthly stock/consumption | Monthly economic state | Partial merge only after all readers are identified |
 | `modeu5_trade_*` | `modeu5_consumption_*` | Satisfied/unsatisfied demand | Do not merge: inter-market vs same-market |
 
@@ -99,3 +101,20 @@ rebuild policy are known.
 cache. It is rebuilt for the current target/promoted market, may be used to
 choose which country records to inspect, and must never be treated as durable
 per-market storage or as proof that a country has positive stock.
+
+## PR4 promoted-market shell coverage
+
+PR4 adds `modeu5_promoted_markets_this_cycle` as the explicit
+`every_market_promoted` replacement pattern. It is not a native iterator and it
+is not durable state. The shell rebuilds the list from
+`every_market_present_in_country` each time it is called:
+
+- Normal mode adds every current-country market to the work list.
+- Performance mode adds only markets already present in
+  `modeu5_performance_relevant_markets`.
+- Deactivated or unknown modes reject candidates and leave the list empty.
+
+The list is deliberately separate from
+`modeu5_detailed_accounting_promoted_markets`: a market can be scheduled for a
+cycle before the later PR layers run the promotion/readiness checks needed for
+stock-affecting logic.
