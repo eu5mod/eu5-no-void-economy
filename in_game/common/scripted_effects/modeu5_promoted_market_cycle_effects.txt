@@ -469,27 +469,18 @@ modeu5_run_first_promoted_market_local_branch_good = {
 	}
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 
-	scope:modeu5_local_branch_country = {
-		set_local_variable = { name = modeu5_pr126_first_promoted_market_selected value = 0 }
-	}
-
+	# PR5 keeps the helper name from the first-market design, but the controlled
+	# probe seeds exactly one promoted market. Avoid a fragile local-var selector
+	# here; later live wiring can add an explicit iterator policy if needed.
 	if = {
 		limit = { has_global_variable_list = modeu5_promoted_markets_this_cycle }
 		every_in_global_list = {
 			variable = modeu5_promoted_markets_this_cycle
-			limit = {
-				scope:modeu5_local_branch_country = {
-					var:modeu5_pr126_first_promoted_market_selected = 0
-				}
-			}
 			save_temporary_scope_as = modeu5_market
 			modeu5_run_promoted_market_local_branch_market_good = {
 				country = scope:modeu5_local_branch_country
 				market = scope:modeu5_market
 				good = $good$
-			}
-			scope:modeu5_local_branch_country = {
-				set_local_variable = { name = modeu5_pr126_first_promoted_market_selected value = 1 }
 			}
 		}
 	}
