@@ -9,17 +9,20 @@
 #
 #   goods_quantity = trade_volume / traded_goods:transport_cost
 #
-# The country trade-owner pass therefore records the confirmed per-trade moved
-# goods quantity. PR6 still does not mutate stock from native vanilla trade
-# objects because the stock-affecting generated per-good dispatch is deliberately
-# deferred; stock consequences continue to go through explicit ModeU5 requests,
-# existing US-10 handlers, and central stock operators.
+# The trade owner is the trade-scope `owner` scope link, not an implicit copy of
+# the country that happens to run the iterator. The country pulse/controller still
+# schedules the pass, but attribution must come from trade.owner. PR6 still does
+# not mutate stock from native vanilla trade objects because the stock-affecting
+# generated per-good dispatch is deliberately deferred; stock consequences
+# continue to go through explicit ModeU5 requests, existing US-10 handlers, and
+# central stock operators.
 
 modeu5_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = modeu5_country_trade_owner_pass_runs
 	remove_global_variable = modeu5_country_trade_owner_trades_seen
 	remove_global_variable = modeu5_country_trade_owner_same_market_trades
 	remove_global_variable = modeu5_country_trade_owner_inter_market_trades
+	remove_global_variable = modeu5_country_trade_owner_owner_mismatches
 	remove_global_variable = modeu5_country_trade_owner_quantity_confirmed_trades
 	remove_global_variable = modeu5_country_trade_owner_quantity_blocked_trades
 	remove_global_variable = modeu5_country_trade_owner_explicit_requests
@@ -34,6 +37,7 @@ modeu5_reset_country_trade_owner_pass_metrics = {
 	set_global_variable = { name = modeu5_country_trade_owner_trades_seen value = 0 }
 	set_global_variable = { name = modeu5_country_trade_owner_same_market_trades value = 0 }
 	set_global_variable = { name = modeu5_country_trade_owner_inter_market_trades value = 0 }
+	set_global_variable = { name = modeu5_country_trade_owner_owner_mismatches value = 0 }
 	set_global_variable = { name = modeu5_country_trade_owner_quantity_confirmed_trades value = 0 }
 	set_global_variable = { name = modeu5_country_trade_owner_quantity_blocked_trades value = 0 }
 	set_global_variable = { name = modeu5_country_trade_owner_explicit_requests value = 0 }
@@ -70,6 +74,13 @@ modeu5_note_country_trade_owner_inter_market_trade = {
 	set_global_variable = {
 		name = modeu5_country_trade_owner_inter_market_trades
 		value = { value = global_var:modeu5_country_trade_owner_inter_market_trades add = 1 }
+	}
+}
+
+modeu5_note_country_trade_owner_owner_mismatch = {
+	set_global_variable = {
+		name = modeu5_country_trade_owner_owner_mismatches
+		value = { value = global_var:modeu5_country_trade_owner_owner_mismatches add = 1 }
 	}
 }
 
@@ -148,23 +159,31 @@ modeu5_capture_country_trade_owner_trade_quantity = {
 	}
 }
 
-# Country-scoped native trade-owner pass. It classifies the trades owned by the
-# current country and records the confirmed actual moved-goods quantity via
-# trade_volume / traded_goods:transport_cost. PR6 does not yet perform stock
-# mutation from the native trade object because that requires a generated/static
-# good dispatch layer; explicit ModeU5 requests remain the stock-affecting path.
+# Country-scoped native trade-owner pass. It classifies trades reached from the
+# current country iterator, but attributes each trade through the trade-scope
+# `owner` link. The current country is retained only as the controller/scheduler
+# so tests can detect whether country-scoped every_trade ever yields a trade whose
+# owner differs from the country that scheduled the pass.
 modeu5_run_monthly_country_trade_owner_cycle = {
-	save_temporary_scope_as = modeu5_trade_owner_country
+	save_temporary_scope_as = modeu5_trade_owner_controller_country
 	modeu5_note_country_trade_owner_pass_run = yes
 
 	every_trade = {
 		save_temporary_scope_as = modeu5_trade_owner_trade
 		modeu5_note_country_trade_owner_trade_seen = yes
 
+		owner = { save_temporary_scope_as = modeu5_trade_owner_country }
 		from_market = { save_temporary_scope_as = modeu5_trade_owner_source_market }
 		to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
 		traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
 		modeu5_capture_country_trade_owner_trade_quantity = yes
+
+		if = {
+			limit = {
+				NOT = { scope:modeu5_trade_owner_country = scope:modeu5_trade_owner_controller_country }
+			}
+			modeu5_note_country_trade_owner_owner_mismatch = yes
+		}
 
 		if = {
 			limit = { scope:modeu5_trade_owner_source_market = scope:modeu5_trade_owner_target_market }
