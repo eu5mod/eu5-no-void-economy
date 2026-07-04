@@ -5,10 +5,13 @@
 # the live monthly order.
 #
 # TECH-01 047 confirms every_trade as a country-scope iterator. TECH-01 056/138
-# are treated as runtime-confirmed for the actual moved-goods quantity formula:
+# are treated as runtime-confirmed for the actual moved-goods quantity formula,
+# but the implementation must not read `traded_goods:transport_cost` directly
+# from generic trade scope.
 #
 #   goods_quantity = trade_volume / traded_goods:transport_cost
 #
+# PR6.1 implements this through generated literal-good transport-cost helpers.
 # The trade owner is the trade-scope `owner` scope link, not an implicit copy of
 # the country that happens to run the iterator. The country pulse/controller still
 # schedules the pass, but attribution must come from trade.owner.
@@ -131,15 +134,28 @@ modeu5_note_country_trade_owner_outcome_quantities = {
 
 modeu5_capture_country_trade_owner_trade_quantity = {
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_owner_goods_quantity
+		name = modeu5_trade_owner_trade_volume
 		value = {
 			value = trade_volume
-			divide = traded_goods:transport_cost
 			min = 0
 		}
 	}
+
+	# Do not divide by `traded_goods:transport_cost` here. The safe current
+	# implementation is the generated literal-good helper pattern:
+	#
+	#   modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+	#
+	# The generated dispatcher matches the saved traded-good scope to a literal
+	# good and then uses the existing static transport-cost denominator with
+	# the same 0.0001 clamp as the current implementation.
+	modeu5_compute_trade_owner_goods_quantity_from_traded_good = yes
+
 	if = {
-		limit = { scope:modeu5_trade_owner_goods_quantity > 0 }
+		limit = {
+			scope:modeu5_trade_owner_quantity_matched > 0
+			scope:modeu5_trade_owner_goods_quantity > 0
+		}
 		modeu5_note_country_trade_owner_quantity_confirmed_trade = yes
 	}
 	else = {

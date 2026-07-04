@@ -96,6 +96,38 @@ def render_good_block(good: str, raw_cost: float, defaulted: int) -> str:
         )
     return rendered.rstrip()
 
+def render_trade_owner_dispatcher(goods: list[str]) -> list[str]:
+    lines: list[str] = [
+        "# Generated PR126 trade-owner quantity dispatcher.",
+        "# Converts native trade_volume through the literal-good static transport helpers.",
+        "# Caller must set:",
+        "# - modeu5_trade_owner_good",
+        "# - modeu5_trade_owner_trade_volume",
+        "",
+        "modeu5_compute_trade_owner_goods_quantity_from_traded_good = {",
+        "\tsave_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 0 }",
+        "\tsave_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 0 }",
+    ]
+    for good in goods:
+        lines.extend(
+            [
+                "\tif = {",
+                "\t\tlimit = {",
+                "\t\t\tscope:modeu5_trade_owner_quantity_matched = 0",
+                f"\t\t\tscope:modeu5_trade_owner_good = goods:{good}",
+                "\t\t}",
+                f"\t\tmodeu5_compute_goods_quantity_from_trade_capacity_good_{good} = {{",
+                "\t\t\tcapacity_volume = scope:modeu5_trade_owner_trade_volume",
+                "\t\t}",
+                "\t\tsave_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = scope:modeu5_computed_goods_quantity }",
+                "\t\tsave_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 1 }",
+                "\t}",
+            ]
+        )
+    lines.append("}")
+    return lines
+
+
 
 costs: dict[str, float] = {}
 source_mode = "safe defaults"
@@ -133,5 +165,7 @@ if missing_goods:
         ]
     )
 
+lines.extend(render_trade_owner_dispatcher(wanted_goods))
+lines.append("")
 output.write_text("\n".join(lines), encoding="utf-8")
 PY

@@ -2,15 +2,31 @@
 #
 # This probe validates the country-scoped trade-owner pass surface and a controlled
 # explicit inter-market transfer request. It does not switch the live monthly
-# dispatcher. Native every_trade quantities are read through the confirmed
-# trade_volume / traded_goods:transport_cost formula and reported as diagnostics;
-# stock-affecting mutation remains on the explicit ModeU5 inter-market request
-# path in PR6.
+# dispatcher. Native every_trade quantities are converted through generated
+# literal-good transport helpers for diagnostics only; stock-affecting mutation
+# remains on the explicit ModeU5 inter-market request path in PR6.1.
 #
 # Vanilla trade cannot have source_market == target_market. Same-market local
 # stock consumption is therefore intentionally absent from this probe.
 
+modeu5_pr126_trade_owner_ensure_metric_globals = {
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_pass_runs } } set_global_variable = { name = modeu5_country_trade_owner_pass_runs value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_trades_seen } } set_global_variable = { name = modeu5_country_trade_owner_trades_seen value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_inter_market_trades } } set_global_variable = { name = modeu5_country_trade_owner_inter_market_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_owner_mismatches } } set_global_variable = { name = modeu5_country_trade_owner_owner_mismatches value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_quantity_confirmed_trades } } set_global_variable = { name = modeu5_country_trade_owner_quantity_confirmed_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_quantity_blocked_trades } } set_global_variable = { name = modeu5_country_trade_owner_quantity_blocked_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_explicit_requests } } set_global_variable = { name = modeu5_country_trade_owner_explicit_requests value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_inter_market_transfers } } set_global_variable = { name = modeu5_country_trade_owner_inter_market_transfers value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_requested_quantity } } set_global_variable = { name = modeu5_country_trade_owner_requested_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_confirmed_trade_quantity } } set_global_variable = { name = modeu5_country_trade_owner_confirmed_trade_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_transferred_quantity } } set_global_variable = { name = modeu5_country_trade_owner_transferred_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_unsatisfied_quantity } } set_global_variable = { name = modeu5_country_trade_owner_unsatisfied_quantity value = 0 } }
+}
+
 modeu5_pr126_trade_owner_capture_metrics = {
+	modeu5_pr126_trade_owner_ensure_metric_globals = yes
+
 	set_variable = { name = modeu5_pr126_ui_trade_owner_pass_runs value = 0 }
 	set_variable = { name = modeu5_pr126_ui_trade_owner_trades_seen value = 0 }
 	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market value = 0 }
@@ -24,18 +40,18 @@ modeu5_pr126_trade_owner_capture_metrics = {
 	set_variable = { name = modeu5_pr126_ui_trade_owner_transferred value = 0 }
 	set_variable = { name = modeu5_pr126_ui_trade_owner_unsatisfied value = 0 }
 
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_pass_runs } set_variable = { name = modeu5_pr126_ui_trade_owner_pass_runs value = global_var:modeu5_country_trade_owner_pass_runs } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_trades_seen } set_variable = { name = modeu5_pr126_ui_trade_owner_trades_seen value = global_var:modeu5_country_trade_owner_trades_seen } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_inter_market_trades } set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market value = global_var:modeu5_country_trade_owner_inter_market_trades } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_owner_mismatches } set_variable = { name = modeu5_pr126_ui_trade_owner_owner_mismatches value = global_var:modeu5_country_trade_owner_owner_mismatches } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_quantity_confirmed_trades } set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed value = global_var:modeu5_country_trade_owner_quantity_confirmed_trades } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_quantity_blocked_trades } set_variable = { name = modeu5_pr126_ui_trade_owner_blocked value = global_var:modeu5_country_trade_owner_quantity_blocked_trades } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_explicit_requests } set_variable = { name = modeu5_pr126_ui_trade_owner_explicit_requests value = global_var:modeu5_country_trade_owner_explicit_requests } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_inter_market_transfers } set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market_transfers value = global_var:modeu5_country_trade_owner_inter_market_transfers } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_requested_quantity } set_variable = { name = modeu5_pr126_ui_trade_owner_requested value = global_var:modeu5_country_trade_owner_requested_quantity } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_confirmed_trade_quantity } set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed_quantity value = global_var:modeu5_country_trade_owner_confirmed_trade_quantity } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_transferred_quantity } set_variable = { name = modeu5_pr126_ui_trade_owner_transferred value = global_var:modeu5_country_trade_owner_transferred_quantity } }
-	if = { limit = { has_global_variable = modeu5_country_trade_owner_unsatisfied_quantity } set_variable = { name = modeu5_pr126_ui_trade_owner_unsatisfied value = global_var:modeu5_country_trade_owner_unsatisfied_quantity } }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_pass_runs value = global_var:modeu5_country_trade_owner_pass_runs }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_trades_seen value = global_var:modeu5_country_trade_owner_trades_seen }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market value = global_var:modeu5_country_trade_owner_inter_market_trades }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_owner_mismatches value = global_var:modeu5_country_trade_owner_owner_mismatches }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed value = global_var:modeu5_country_trade_owner_quantity_confirmed_trades }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_blocked value = global_var:modeu5_country_trade_owner_quantity_blocked_trades }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_explicit_requests value = global_var:modeu5_country_trade_owner_explicit_requests }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market_transfers value = global_var:modeu5_country_trade_owner_inter_market_transfers }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_requested value = global_var:modeu5_country_trade_owner_requested_quantity }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed_quantity value = global_var:modeu5_country_trade_owner_confirmed_trade_quantity }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_transferred value = global_var:modeu5_country_trade_owner_transferred_quantity }
+	set_variable = { name = modeu5_pr126_ui_trade_owner_unsatisfied value = global_var:modeu5_country_trade_owner_unsatisfied_quantity }
 }
 
 modeu5_pr126_trade_owner_select_two_markets = {
@@ -50,6 +66,9 @@ modeu5_pr126_trade_owner_select_two_markets = {
 				}
 			}
 			save_temporary_scope_as = modeu5_pr126_trade_owner_source_market
+			# Default target to source so later comparisons never dereference an unset
+			# target. A second market replaces this below; otherwise the probe blocks.
+			save_temporary_scope_as = modeu5_pr126_trade_owner_target_market
 		}
 		else_if = {
 			limit = {
@@ -65,13 +84,11 @@ modeu5_pr126_trade_owner_select_two_markets = {
 	}
 
 	if = {
-		limit = {
-			OR = {
-				NOT = { exists = scope:modeu5_pr126_trade_owner_source_market }
-				NOT = { exists = scope:modeu5_pr126_trade_owner_target_market }
-				scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market
-			}
-		}
+		limit = { NOT = { exists = scope:modeu5_pr126_trade_owner_source_market } }
+		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
+	}
+	else_if = {
+		limit = { scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market }
 		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
 	}
 }
@@ -116,6 +133,7 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 
 	save_temporary_scope_as = modeu5_pr126_trade_owner_test_country
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+	modeu5_reset_country_trade_owner_pass_metrics = yes
 	modeu5_pr126_trade_owner_select_two_markets = yes
 
 	if = {
@@ -124,7 +142,6 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_country_trade_owner_pass reason=not_enough_distinct_current_country_markets"
 	}
 	else = {
-		modeu5_reset_country_trade_owner_pass_metrics = yes
 		modeu5_run_monthly_country_trade_owner_cycle = yes
 
 		modeu5_perf14_clear_wheat_stock_in_market = {
@@ -158,10 +175,9 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 			good = wheat
 			requested_quantity = 4
 		}
-
-		modeu5_pr126_trade_owner_capture_metrics = yes
 	}
 
+	modeu5_pr126_trade_owner_capture_metrics = yes
 	debug_log = "ModeU5 PR126 TRADE_OWNER pass_runs=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_pass_runs').GetValue|0] trades_seen=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_trades_seen').GetValue|0] inter_market=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_inter_market').GetValue|0] owner_mismatches=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_owner_mismatches').GetValue|0] confirmed_trades=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_confirmed').GetValue|0] blocked=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_blocked').GetValue|0] confirmed_quantity=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_confirmed_quantity').GetValue|2] explicit_requests=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_explicit_requests').GetValue|0] inter_market_transfers=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_inter_market_transfers').GetValue|0] requested=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_unsatisfied').GetValue|2]"
 
 	if = {
