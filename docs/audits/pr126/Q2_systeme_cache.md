@@ -25,6 +25,7 @@ The cache system is intentionally rich. It is acceptable if every state is class
 | `modeu5_consumption_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.1 ledger | same-market demand resolution | Monthly; reset after US-10.3/UI | P1 | Same-market consumption, not trade |
 | `modeu5_trade_<good>_*_by_market` | `modeu5_stock_demand_resolver_effects.txt` | US-10.2 ledger | actual inter-market transfer | Monthly; reset after readers | P1 | Only `source_market != target_market` |
 | `modeu5_performance_relevant_markets` | `modeu5_performance_effects.txt` | scheduling work cache | country→market discovery | Rare/explicit rebuild | P1 if stale | Performance owner; never proof of stock |
+| `modeu5_detailed_accounting_promoted_markets` | `modeu5_performance_effects.txt` | scheduling work cache | successful market promotion | Rebuilt/marked by promotion helpers | P1 if treated as stock proof | Promotion owner; detailed mutation gates must still validate readiness |
 | `modeu5_active_markets_any_good` | performance + adapters | union work cache | stock/good activity | Additive + rebuild/audit | P1 if never cleaned | Scheduling only |
 | `modeu5_<good>_active_markets` | generated adapters | per-good work cache | good activity | Additive + rebuild/audit | P1 | Not proof of positive quantity |
 | `modeu5_countries_present_in_market` | `modeu5_market_country_cache_effects.txt` | market→countries work cache | recalculable country/market relations | Rebuild per promoted market | P1 if treated as durable | Rebuild once per promoted market |
@@ -70,3 +71,12 @@ monthly end:
 | What is the reset policy? | never, monthly after readers, annual after readers, rebuild-only |
 | Which readers exist? | list runtime, UI, debug, and tests before deletion |
 | Which validation detects divergence? | audit script, runtime probe, consistency validator, or TECH-01 entry |
+
+## PR1 executable audit coverage
+
+`tools/audit_modeu5_persistent_state.sh` turns this classification into a
+machine-checkable inventory. It reports source, derived/cache/diagnostic,
+work-cache, monthly/carryover, debug-scalar, and work/metric-scalar counts. It
+also fails if a stock map write appears outside the generated stock adapter
+template, which protects the central-operator rule before later promoted-market
+runtime PRs start moving dispatchers around.
