@@ -44,7 +44,7 @@ Target UX:
 
 1. Production shows a ModeU5 Stocks entry.
 2. ModeU5 opens inside the existing Production UI, not as a custom lateralview.
-3. Table shows one line per good produced in the selected market/country read-model.
+3. Table shows one line per visible stock-bearing good in the selected market/country read-model.
 4. Columns follow the US-10 spec: country stock / country capacity and market stock / market capacity.
 5. Data/table should remain reusable if Plan B later generates a full `production_lateralview.gui` override.
 
@@ -117,6 +117,12 @@ V1 selector-hook result:
 - Conclusion: the separate selector file is not a reliable Plan A hook. It either did not override the active selector instance, or the active click path is not the path copied into the standalone file.
 - Decision: remove the selector hook and keep Plan A to table + hover-sync + explicit Sync. True click-time selector sync belongs in Plan B, where the original selector can be patched inside the full generated `production_lateralview.gui`.
 
+### Selected-market label versus table refresh
+
+The `Selected market` label changes automatically because it is a live GUI binding to `ProductionView.GetSelectedMarket` and `Market.GetName`.
+
+The table does not automatically recalculate from that binding because it reads ModeU5 variables materialised on `Player.MakeScope` by scripted effects. Jomini text binding re-evaluates display accessors, but it does not cascade into a scripted effect when the view-model value changes.
+
 ## Trail of attempts and results
 
 | Step | Change / hypothesis | Result | Decision |
@@ -133,14 +139,16 @@ V1 selector-hook result:
 | 10 | Taller panel + best-effort auto-sync. | Works through hover; not true selector-click sync. | Keep for Plan A. |
 | 11 | V1 standalone market selector hook. | No visible automatic click-sync effect. | Removed. |
 | 12 | Increase panel height to `940` and move hover-sync to whole ModeU5 body. | Pending test. | Current batch. |
-| 13 | Rebuild table to spec columns and generated static row list for all ModeU5 stock goods, visible only when produced > 0. | Pending test. | Current batch. |
+| 13 | Rebuild table to spec columns and generated static row list for all ModeU5 stock goods, visible only when produced > 0. | Runtime showed an empty table because `*_produced` is a ModeU5 ledger value and not a vanilla-production presence signal. | Rejected. |
+| 14 | Change row visibility to stock-bearing/overproduction signals: country stock > 0 OR market stock > 0 OR overproduction > 0. | Pending test. | Current batch. |
 
 ## Latest implementation notes
 
 - `modeu5_us10_stock_table.gui` contains reusable table templates.
-- The table now follows the compact US-10 player-facing spec: `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`, `Production Efficiency`.
+- The table follows the compact US-10 player-facing spec: `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`, `Production Efficiency`.
 - Generated rows exist for every ModeU5 stock good already captured by `modeu5_us10_ui_capture_all_good_rows`.
-- Rows are hidden unless `modeu5_us10_ui_<good>_produced > 0` in the current selected market/country read-model.
+- Rows are now hidden unless the selected market/country read-model has country stock, market stock, or overproduction for that good.
+- Do not use `modeu5_us10_ui_<good>_produced` as the GUI row visibility gate; the current US-00 produced ledger does not read vanilla production directly.
 - Country and market stocks are displayed as `current/capacity`.
 - `Production Efficiency` remains `n/a`, per the spec instruction not to guess when modifier exposure is incomplete.
 - `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
@@ -174,12 +182,12 @@ Unsupported property: position on widgets that are a child of a hbox/vbox
 Property 'margin_top' not handled
 ```
 
-Things to watch after all-produced-goods table update:
+Things to watch after stock-bearing row visibility update:
 
 ```txt
 gui/modeu5_us10_stock_table.gui
 scrollarea
-GreaterThan_CFixedPoint(Player.MakeScope.GetVariable(...).GetValue, '(CFixedPoint)0')
+Or3(GreaterThan_CFixedPoint(...country_stock...), GreaterThan_CFixedPoint(...market_stock...), GreaterThan_CFixedPoint(...overproduction_percent...))
 ```
 
 ## Current branch state
@@ -191,7 +199,7 @@ GreaterThan_CFixedPoint(Player.MakeScope.GetVariable(...).GetValue, '(CFixedPoin
 - Inline Sync action uses the actual `ProductionView.GetSelectedMarket` context.
 - Best-effort hover auto-sync exists on the whole panel.
 - No standalone selector override remains.
-- The table is generated for all captured goods and filters by positive production.
+- The table is generated for all captured goods and filters by stock/overproduction signals.
 
 ## Plan B trigger
 
