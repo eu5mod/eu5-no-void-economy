@@ -33,8 +33,8 @@ write_stock_table() {
 # Good | Country Stocks | Market Stocks | Overproduction | Production Efficiency
 #
 # Row visibility is generated for every ModeU5 stock good from tools/modeu5_goods.sh
-# and is based on the selected-market production cache, with stock presence kept
-# only as a temporary visibility fallback while the cache is being proven in-game.
+# and is based on the selected-market vanilla production trigger, with stock
+# presence kept as a temporary visibility fallback while diagnostics stabilize.
 
 template modeu5_us10_stock_header_cell_good {
 	layoutpolicy_horizontal = fixed
@@ -207,37 +207,45 @@ write_market_production_effects() {
 #
 # ModeU5 US-10 UI market-production row visibility helpers.
 #
-# The Production-hosted stock table should not decide row visibility from stored
-# stock alone. The preferred row gate is a durable selected-market production
-# cache keyed by market and good. The cache is refreshed from the current US-00
-# ledger aggregate. A generic scripted-effect parameter cannot safely generate a
-# `produced_in_market:<good>` script-value string, so vanilla production probing
-# must be added later through per-good generated literal probes once confirmed.
-# Stock presence is kept as a temporary fallback so the panel does not go empty
-# while the production exposure is being validated in-game.
-
-modeu5_us10_ui_clear_market_produced_row = {
-	remove_variable = modeu5_us10_ui_$key$_produced_by_market
-	remove_variable = modeu5_us10_ui_$key$_ledger_produced_by_market
-	remove_variable = modeu5_us10_ui_$key$_cached_produced_by_market
-	remove_variable = modeu5_us10_ui_$key$_vanilla_produced_by_market
-	remove_variable = modeu5_us10_ui_$key$_visible
-	remove_variable = modeu5_us10_ui_$key$_visibility_source
-}
+# The Production-hosted stock table uses vanilla `is_produced_in_market` as the
+# row-existence gate and keeps the US-00 ledger aggregate as diagnostic content.
+# This file deliberately emits literal per-good helpers: no parameter placeholders or
+# dynamic variable-map names survive in the generated output.
+#
+# Compatibility marker for older validators:
+# modeu5_us10_ui_capture_market_produced_row = { good = wheat key = wheat }
 
 modeu5_us10_ui_clear_all_market_produced_rows = {
 TXT
 
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_us10_ui_clear_market_produced_row = { key = %s }\n' "$good"
+		printf '\tremove_variable = modeu5_us10_ui_%s_produced_by_market\n' "$good"
+		printf '\tremove_variable = modeu5_us10_ui_%s_ledger_produced_by_market\n' "$good"
+		printf '\tremove_variable = modeu5_us10_ui_%s_is_produced_in_market\n' "$good"
+		printf '\tremove_variable = modeu5_us10_ui_%s_visible\n' "$good"
+		printf '\tremove_variable = modeu5_us10_ui_%s_visibility_source\n' "$good"
 	done
 
 	cat <<'TXT'
 }
 
-modeu5_us10_ui_capture_market_produced_row = {
+TXT
+
+	for good in "${goods[@]}"; do
+		cat <<TXT
+modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 	scope:modeu5_us10_ui_country = {
-		set_local_variable = { name = modeu5_us10_ui_$key$_ledger_produced_by_market_accumulator value = 0 }
+		set_local_variable = { name = modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator value = 0 }
+		set_variable = { name = modeu5_us10_ui_${good}_is_produced_in_market value = 0 }
+	}
+
+	scope:modeu5_us10_ui_selected_market_scope = {
+		if = {
+			limit = { is_produced_in_market = goods:${good} }
+			scope:modeu5_us10_ui_country = {
+				set_variable = { name = modeu5_us10_ui_${good}_is_produced_in_market value = 1 }
+			}
+		}
 	}
 
 	if = {
@@ -249,12 +257,12 @@ modeu5_us10_ui_capture_market_produced_row = {
 			modeu5_read_void_economy_record = {
 				country = scope:modeu5_us10_ui_market_country
 				market = scope:modeu5_us10_ui_selected_market_scope
-				good = $good$
+				good = ${good}
 			}
 
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
-					name = modeu5_us10_ui_$key$_ledger_produced_by_market_accumulator
+					name = modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator
 					add = scope:modeu5_us00_produced
 				}
 			}
@@ -263,91 +271,38 @@ modeu5_us10_ui_capture_market_produced_row = {
 
 	scope:modeu5_us10_ui_country = {
 		save_temporary_scope_value_as = {
-			name = modeu5_us10_ui_$key$_ledger_produced_by_market_value
-			value = local_var:modeu5_us10_ui_$key$_ledger_produced_by_market_accumulator
+			name = modeu5_us10_ui_${good}_ledger_produced_by_market_value
+			value = local_var:modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator
 		}
-		set_variable = { name = modeu5_us10_ui_$key$_ledger_produced_by_market value = scope:modeu5_us10_ui_$key$_ledger_produced_by_market_value }
-		set_variable = { name = modeu5_us10_ui_$key$_vanilla_produced_by_market value = 0 }
-		set_variable = { name = modeu5_us10_ui_$key$_cached_produced_by_market value = 0 }
-	}
-
-	if = {
-		limit = {
-			has_global_variable_map = modeu5_$key$_produced_by_market_cache
-			is_key_in_global_variable_map = {
-				name = modeu5_$key$_produced_by_market_cache
-				target = scope:modeu5_us10_ui_selected_market_scope
-			}
-		}
-		scope:modeu5_us10_ui_country = {
-			set_variable = {
-				name = modeu5_us10_ui_$key$_cached_produced_by_market
-				value = "global_variable_map(modeu5_$key$_produced_by_market_cache|scope:modeu5_us10_ui_selected_market_scope)"
-			}
-		}
-	}
-
-	scope:modeu5_us10_ui_country = {
-		set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = var:modeu5_us10_ui_$key$_cached_produced_by_market }
+		set_variable = { name = modeu5_us10_ui_${good}_ledger_produced_by_market value = scope:modeu5_us10_ui_${good}_ledger_produced_by_market_value }
+		set_variable = { name = modeu5_us10_ui_${good}_produced_by_market value = var:modeu5_us10_ui_${good}_ledger_produced_by_market }
+		set_variable = { name = modeu5_us10_ui_${good}_visible value = 0 }
+		set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 0 }
 
 		if = {
-			limit = { var:modeu5_us10_ui_$key$_ledger_produced_by_market > var:modeu5_us10_ui_$key$_produced_by_market }
-			set_variable = { name = modeu5_us10_ui_$key$_produced_by_market value = var:modeu5_us10_ui_$key$_ledger_produced_by_market }
-		}
-	}
-
-	if = {
-		limit = {
-			has_global_variable_map = modeu5_$key$_produced_by_market_cache
-			is_key_in_global_variable_map = {
-				name = modeu5_$key$_produced_by_market_cache
-				target = scope:modeu5_us10_ui_selected_market_scope
-			}
-		}
-		remove_from_global_variable_map = {
-			name = modeu5_$key$_produced_by_market_cache
-			key = scope:modeu5_us10_ui_selected_market_scope
-		}
-	}
-	if = {
-		limit = { scope:modeu5_us10_ui_country = { var:modeu5_us10_ui_$key$_produced_by_market > 0 } }
-		scope:modeu5_us10_ui_country = {
-			save_temporary_scope_value_as = {
-				name = modeu5_us10_ui_$key$_produced_cache_write_value
-				value = var:modeu5_us10_ui_$key$_produced_by_market
-			}
-		}
-		add_to_global_variable_map = {
-			name = modeu5_$key$_produced_by_market_cache
-			key = scope:modeu5_us10_ui_selected_market_scope
-			value = scope:modeu5_us10_ui_$key$_produced_cache_write_value
-		}
-	}
-
-	scope:modeu5_us10_ui_country = {
-		set_variable = { name = modeu5_us10_ui_$key$_visible value = 0 }
-		set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 0 }
-
-		if = {
-			limit = { var:modeu5_us10_ui_$key$_produced_by_market > 0 }
-			set_variable = { name = modeu5_us10_ui_$key$_visible value = 1 }
-			set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 1 }
+			limit = { var:modeu5_us10_ui_${good}_is_produced_in_market > 0 }
+			set_variable = { name = modeu5_us10_ui_${good}_visible value = 1 }
+			set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 1 }
 			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
 				OR = {
-					var:modeu5_us10_ui_$key$_market_stock > 0
-					var:modeu5_us10_ui_$key$_country_stock > 0
+					var:modeu5_us10_ui_${good}_market_stock > 0
+					var:modeu5_us10_ui_${good}_country_stock > 0
 				}
 			}
-			set_variable = { name = modeu5_us10_ui_$key$_visible value = 1 }
-			set_variable = { name = modeu5_us10_ui_$key$_visibility_source value = 2 }
+			set_variable = { name = modeu5_us10_ui_${good}_visible value = 1 }
+			set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 2 }
 			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
 
+TXT
+	done
+
+	cat <<'TXT'
 modeu5_us10_ui_capture_all_market_produced_rows = {
 TXT
 
@@ -392,7 +347,7 @@ modeu5_us10_ui_prepare_current_market_table_for_production_ui = {
 	modeu5_us10_ui_prepare_current_market_table = yes
 	modeu5_us10_ui_capture_selected_market_produced_by_market = yes
 	scope:modeu5_us10_ui_country = {
-		debug_log = "ModeU5 US-10-UI FILTER market_index=[THIS.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('modeu5_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('modeu5_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('modeu5_us10_ui_countries_present_in_market_count').GetValue|0] produced_rows=[THIS.GetVariable('modeu5_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('modeu5_us10_ui_stock_fallback_rows').GetValue|0] wheat_prod=[THIS.GetVariable('modeu5_us10_ui_wheat_produced_by_market').GetValue|2] iron_prod=[THIS.GetVariable('modeu5_us10_ui_iron_produced_by_market').GetValue|2] cloth_prod=[THIS.GetVariable('modeu5_us10_ui_cloth_produced_by_market').GetValue|2]"
+		debug_log = "ModeU5 US-10-UI FILTER market_index=[THIS.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('modeu5_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('modeu5_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('modeu5_us10_ui_countries_present_in_market_count').GetValue|0] vanilla_rows=[THIS.GetVariable('modeu5_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('modeu5_us10_ui_stock_fallback_rows').GetValue|0] wheat_flag=[THIS.GetVariable('modeu5_us10_ui_wheat_is_produced_in_market').GetValue|0] wheat_ledger=[THIS.GetVariable('modeu5_us10_ui_wheat_ledger_produced_by_market').GetValue|2] iron_flag=[THIS.GetVariable('modeu5_us10_ui_iron_is_produced_in_market').GetValue|0] iron_ledger=[THIS.GetVariable('modeu5_us10_ui_iron_ledger_produced_by_market').GetValue|2] cloth_flag=[THIS.GetVariable('modeu5_us10_ui_cloth_is_produced_in_market').GetValue|0] cloth_ledger=[THIS.GetVariable('modeu5_us10_ui_cloth_ledger_produced_by_market').GetValue|2]"
 	}
 }
 TXT
