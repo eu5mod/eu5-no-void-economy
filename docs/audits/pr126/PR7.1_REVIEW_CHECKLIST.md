@@ -23,6 +23,13 @@ Use this checklist when reviewing the PR7.1 follow-up.
 - [ ] The local branch still rebuilds `countries_present_in_market` once for the promoted market.
 - [ ] `every_trade` remains outside the promoted-market local branch.
 
+## Diagram / documentation clarity
+
+- [ ] The Q5.1 diagram distinguishes guard-complete skip paths from actual ledger / consumption work.
+- [ ] The Q5.1 diagram shows that the previous-state US-00 probe is only relevant when `produced_in_market` is not positive.
+- [ ] Generated literal per-good call surfaces are not described as dynamic active-good lists.
+- [ ] Q8 records follow-up optimisation findings without widening the PR146 runtime scope.
+
 ## Metrics
 
 - [ ] Metrics distinguish generated helper calls from meaningful business work.
