@@ -12,6 +12,7 @@ required_templates=(
 	"tools/templates/modeu5_good_transport_helper.template.txt"
 	"tools/templates/modeu5_us10_stock_table_row.template.gui"
 	"tools/templates/modeu5_us10_market_production_good.template.txt"
+	"tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt"
 )
 
 for template in "${required_templates[@]}"; do
@@ -23,6 +24,7 @@ required_common_tooling_users=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
+	"tools/generate_pr71_active_good_dispatch_helpers.sh"
 )
 
 for script in "${required_common_tooling_users[@]}"; do
@@ -33,6 +35,7 @@ per_good_generators=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
+	"tools/generate_pr71_active_good_dispatch_helpers.sh"
 )
 
 for script in "${per_good_generators[@]}"; do
@@ -57,5 +60,64 @@ if [[ -n "$literal_good_arrays" ]]; then
 	printf '%s\n' "$literal_good_arrays" >&2
 	exit 1
 fi
+
+pr71_generated_output="in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
+pr71_generated_tmp="$(mktemp)"
+trap 'rm -f "$pr71_generated_tmp"' EXIT
+
+bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh" "$pr71_generated_tmp" >/dev/null
+
+if modeu5_search_quiet '__[A-Z_]+__' "$pr71_generated_tmp"; then
+	modeu5_search_lines '__[A-Z_]+__' "$pr71_generated_tmp" >&2
+	printf '%s\n' 'Generated PR7.1 active-good dispatch output must not contain unresolved template placeholders.' >&2
+	exit 1
+fi
+
+if [[ -f "$pr71_generated_output" ]] && ! cmp -s "$pr71_generated_output" "$pr71_generated_tmp"; then
+	printf '%s\n' 'Generated PR7.1 active-good dispatch file is stale. Run tools/generate_all.sh before validation or install.' >&2
+	exit 1
+fi
+
+modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_good_wheat' \
+	"$pr71_generated_tmp" \
+	'PR7.1 generated US-00 guard must contain the canonical wheat helper surface'
+modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_good_wheat' \
+	"$pr71_generated_tmp" \
+	'PR7.1 generated US-10 guard must contain the canonical wheat helper surface'
+modeu5_require_match 'produced_in_market:wheat' \
+	"$pr71_generated_tmp" \
+	'PR7.1 US-00 guard must preserve the produced-in-market business gate'
+modeu5_require_match 'modeu5_probe_us00_previous_record_activity_good_wheat = yes' \
+	"$pr71_generated_tmp" \
+	'PR7.1 US-00 guard must preserve the previous-record business gate'
+modeu5_require_match 'modeu5_consumption_wheat_pending_requested_by_market' \
+	"$pr71_generated_tmp" \
+	'PR7.1 US-10 guard must preserve the pending-request map gate'
+modeu5_require_match 'modeu5_process_us00_monthly_market_good_wheat = yes' \
+	"$pr71_generated_tmp" \
+	'PR7.1 US-00 guard must call the existing heavy per-good helper only after gating'
+modeu5_require_match 'modeu5_process_us10_monthly_market_good_wheat = yes' \
+	"$pr71_generated_tmp" \
+	'PR7.1 US-10 guard must call the existing heavy per-good helper only after gating'
+
+if modeu5_search_quiet '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp"; then
+	modeu5_search_lines '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp" >&2
+	printf '%s\n' 'PR7.1 generator must not emit a duplicate live local-branch effect; EU5 rejects duplicate scripted-effect keys.' >&2
+	exit 1
+fi
+
+tracked_live_effect="in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt"
+modeu5_require_match 'modeu5_prepare_promoted_country_market_capacity' \
+	"$tracked_live_effect" \
+	'Q4.1 loop merge must preserve per-country capacity refresh in the tracked live handoff'
+modeu5_require_match 'modeu5_pr71_prepare_active_good_metrics = yes' \
+	"$tracked_live_effect" \
+	'Tracked live handoff must prepare PR7.1 active-good metrics'
+modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_active_goods = yes' \
+	"$tracked_live_effect" \
+	'Q4.1 loop merge must run guarded US-00 in the fused capacity/US-00 pass'
+modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_pending_goods = yes' \
+	"$tracked_live_effect" \
+	'PR7.1 tracked live handoff must keep US-10 in the pending-request dispatcher'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'
