@@ -84,6 +84,9 @@ modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_good_wheat' \
 modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_good_wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 generated US-10 guard must contain the canonical wheat helper surface'
+modeu5_require_match 'modeu5_pr71_metrics_enabled_trigger' \
+	"$pr71_generated_tmp" \
+	'Q8.1 generated PR7.1 metrics must be gated behind the debug/audit metrics trigger'
 modeu5_require_match 'produced_in_market:wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the produced-in-market business gate'
@@ -119,5 +122,24 @@ modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_active_goods = yes
 modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_pending_goods = yes' \
 	"$tracked_live_effect" \
 	'PR7.1 tracked live handoff must keep US-10 in the pending-request dispatcher'
+
+tracked_config_triggers="in_game/common/scripted_triggers/modeu5_configuration_triggers.txt"
+modeu5_require_match '^modeu5_pr71_metrics_enabled_trigger[[:space:]]*=' \
+	"$tracked_config_triggers" \
+	'Q8.1 must define the PR7.1 metrics trigger in the configuration trigger surface'
+
+tracked_capacity_effect="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
+modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool_raw[[:space:]]*=' \
+	"$tracked_capacity_effect" \
+	'Q8.3 must keep a raw country capacity-pool calculator behind the stamped public entry point'
+modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool[[:space:]]*=' \
+	"$tracked_capacity_effect" \
+	'Q8.3 must route the public country capacity-pool helper through the monthly stamp'
+modeu5_require_match 'modeu5_capacity_pool_monthly_stamp' \
+	"$tracked_capacity_effect" \
+	'Q8.3 must stamp the reusable country capacity-pool facts by month'
+modeu5_require_match 'modeu5_capacity_pool_cached_location_rank_per_market' \
+	"$tracked_capacity_effect" \
+	'Q8.3 must cache the reusable country-wide per-market capacity share'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'

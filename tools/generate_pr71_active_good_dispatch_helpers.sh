@@ -30,82 +30,93 @@ mkdir -p "$(dirname "$output")"
 # call into the heavy generated helpers; it does not remove the generated
 # helpers from the repository.
 #
+# Q8.1 keeps those business guards live but gates the temporary PR7.1 metrics
+# behind modeu5_pr71_metrics_enabled_trigger. Normal gameplay still considers
+# generated literal goods, but it no longer writes per-good debug/profile
+# counters unless debug or audit mode enabled those metrics.
+#
 # The live monthly handoff is intentionally not generated here. EU5 rejects
 # duplicate scripted-effect keys, so the tracked PR7 live effect must call the
 # generated PR7.1 dispatchers directly.
 
 modeu5_pr71_reset_active_good_metrics = {
-	remove_global_variable = modeu5_pr71_active_good_metrics_stamp
-	remove_global_variable = modeu5_pr71_us00_goods_considered
-	remove_global_variable = modeu5_pr71_us00_goods_processed
-	remove_global_variable = modeu5_pr71_us00_goods_produced_gate_hits
-	remove_global_variable = modeu5_pr71_us00_goods_previous_state_hits
-	remove_global_variable = modeu5_pr71_us10_goods_considered
-	remove_global_variable = modeu5_pr71_us10_requests_processed
-	remove_global_variable = modeu5_pr71_us10_pending_request_hits
+	if = {
+		limit = { modeu5_pr71_metrics_enabled_trigger = yes }
+		remove_global_variable = modeu5_pr71_active_good_metrics_stamp
+		remove_global_variable = modeu5_pr71_us00_goods_considered
+		remove_global_variable = modeu5_pr71_us00_goods_processed
+		remove_global_variable = modeu5_pr71_us00_goods_produced_gate_hits
+		remove_global_variable = modeu5_pr71_us00_goods_previous_state_hits
+		remove_global_variable = modeu5_pr71_us10_goods_considered
+		remove_global_variable = modeu5_pr71_us10_requests_processed
+		remove_global_variable = modeu5_pr71_us10_pending_request_hits
 
-	set_global_variable = { name = modeu5_pr71_us00_goods_considered value = 0 }
-	set_global_variable = { name = modeu5_pr71_us00_goods_processed value = 0 }
-	set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = 0 }
-	set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = 0 }
-	set_global_variable = { name = modeu5_pr71_us10_goods_considered value = 0 }
-	set_global_variable = { name = modeu5_pr71_us10_requests_processed value = 0 }
-	set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = 0 }
+		set_global_variable = { name = modeu5_pr71_us00_goods_considered value = 0 }
+		set_global_variable = { name = modeu5_pr71_us00_goods_processed value = 0 }
+		set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = 0 }
+		set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = 0 }
+		set_global_variable = { name = modeu5_pr71_us10_goods_considered value = 0 }
+		set_global_variable = { name = modeu5_pr71_us10_requests_processed value = 0 }
+		set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = 0 }
+	}
 }
 
 modeu5_pr71_prepare_active_good_metrics = {
-	save_temporary_scope_value_as = {
-		name = modeu5_pr71_active_good_metrics_stamp
-		value = {
-			value = current_year
-			multiply = 12
-			add = current_month
-		}
-	}
-
 	if = {
-		limit = {
-			OR = {
-				NOT = { has_global_variable = modeu5_pr71_active_good_metrics_stamp }
-				global_var:modeu5_pr71_active_good_metrics_stamp != scope:modeu5_pr71_active_good_metrics_stamp
+		limit = { modeu5_pr71_metrics_enabled_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = modeu5_pr71_active_good_metrics_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
 			}
 		}
-		modeu5_pr71_reset_active_good_metrics = yes
-		set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
-	}
-	else_if = {
-		limit = { NOT = { has_global_variable = modeu5_pr71_us00_goods_considered } }
-		modeu5_pr71_reset_active_good_metrics = yes
-		set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
+
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable = modeu5_pr71_active_good_metrics_stamp }
+					global_var:modeu5_pr71_active_good_metrics_stamp != scope:modeu5_pr71_active_good_metrics_stamp
+				}
+			}
+			modeu5_pr71_reset_active_good_metrics = yes
+			set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
+		}
+		else_if = {
+			limit = { NOT = { has_global_variable = modeu5_pr71_us00_goods_considered } }
+			modeu5_pr71_reset_active_good_metrics = yes
+			set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
+		}
 	}
 }
 
 modeu5_pr71_note_us00_goods_considered = {
-	set_global_variable = { name = modeu5_pr71_us00_goods_considered value = { value = global_var:modeu5_pr71_us00_goods_considered add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_considered value = { value = global_var:modeu5_pr71_us00_goods_considered add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_processed = {
-	set_global_variable = { name = modeu5_pr71_us00_goods_processed value = { value = global_var:modeu5_pr71_us00_goods_processed add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_processed value = { value = global_var:modeu5_pr71_us00_goods_processed add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_produced_gate_hit = {
-	set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = { value = global_var:modeu5_pr71_us00_goods_produced_gate_hits add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = { value = global_var:modeu5_pr71_us00_goods_produced_gate_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_previous_state_hit = {
-	set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = { value = global_var:modeu5_pr71_us00_goods_previous_state_hits add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = { value = global_var:modeu5_pr71_us00_goods_previous_state_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us10_goods_considered = {
-	set_global_variable = { name = modeu5_pr71_us10_goods_considered value = { value = global_var:modeu5_pr71_us10_goods_considered add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_goods_considered value = { value = global_var:modeu5_pr71_us10_goods_considered add = 1 } } }
 }
 
 modeu5_pr71_note_us10_pending_request_hit = {
-	set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = { value = global_var:modeu5_pr71_us10_pending_request_hits add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = { value = global_var:modeu5_pr71_us10_pending_request_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us10_request_processed = {
-	set_global_variable = { name = modeu5_pr71_us10_requests_processed value = { value = global_var:modeu5_pr71_us10_requests_processed add = 1 } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_requests_processed value = { value = global_var:modeu5_pr71_us10_requests_processed add = 1 } } }
 }
 
 TXT

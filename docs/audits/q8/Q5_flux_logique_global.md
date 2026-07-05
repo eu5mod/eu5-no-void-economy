@@ -58,3 +58,47 @@ If Q5.2 is added later, it should be a Q5 flow checkpoint or subsection before Q
 ## Q8.0 baseline decision
 
 Q8.0 adds no runtime flow change. It creates this Q8-owned flow contract for future stacked PRs.
+
+## Q8.1 update — no flow-order change
+
+Q8.1 gates PR7.1 metrics only.
+
+```txt
+US-00 active-good guard still runs.
+US-10 pending-request guard still runs.
+Heavy helper calls remain controlled by the existing business gates.
+Only the temporary PR7.1 metric writes are gated.
+```
+
+Therefore Q8.1 does not change the Q5 phase order.
+
+## Q8.3 update — refined capacity preparation internals
+
+Q8.3 preserves the Q5 ordering:
+
+```txt
+country capacity preparation / promoted-market country-market capacity refresh
+before
+US-00 admission
+before
+US-10 same-market consumption
+before
+country-owned trade / validation / reconciliation
+```
+
+The refined capacity step is:
+
+```txt
+modeu5_calculate_country_storage_capacity_pool
+  -> if country/month stamp missing or stale:
+       modeu5_calculate_country_storage_capacity_pool_raw
+       modeu5_store_country_storage_capacity_pool_cache
+  -> else:
+       modeu5_load_country_storage_capacity_pool_cache
+
+modeu5_apply_country_storage_capacity_pool_to_current_market
+  -> still reads current market merchant capacity
+  -> still writes country-market capacity maps
+```
+
+The promoted-market dispatcher semantics are unchanged: it still gets a refreshed country-market capacity record before US-00, but the country-wide pool facts may be reused for that country during the same month.
