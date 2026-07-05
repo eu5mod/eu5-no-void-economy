@@ -54,7 +54,7 @@ Sparse supplier lists remain a supplier-country narrowing mechanism after a US-1
 
 ## PR7.1 safe target
 
-The stacked Q4.1 / PR7.1 target is generated runtime code, not only documentation:
+The stacked Q4.1 / PR7.1 target is runtime code, not only documentation:
 
 ```txt
 - preserve PR7 market-center ownership;
@@ -67,4 +67,4 @@ The stacked Q4.1 / PR7.1 target is generated runtime code, not only documentatio
 - avoid claiming the full Q4 G_a target until EU5 runtime validation confirms it.
 ```
 
-This still uses generated literal-symbol helpers because EU5 scripted effect names and map names must remain literal.
+This still uses generated literal-symbol helpers because EU5 scripted effect names and map names must remain literal. The generated file owns only new PR7.1 helper effects; the tracked PR7 live effect owns the live handoff. EU5 rejected the earlier same-name generated override as a duplicate key, so that override must not return.

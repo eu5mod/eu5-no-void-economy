@@ -29,6 +29,10 @@ mkdir -p "$(dirname "$output")"
 # scripted effect names and map names must remain literal. PR7.1 narrows the
 # call into the heavy generated helpers; it does not remove the generated
 # helpers from the repository.
+#
+# The live monthly handoff is intentionally not generated here. EU5 rejects
+# duplicate scripted-effect keys, so the tracked PR7 live effect must call the
+# generated PR7.1 dispatchers directly.
 
 modeu5_pr71_reset_active_good_metrics = {
 	remove_global_variable = modeu5_pr71_active_good_metrics_stamp
@@ -126,55 +130,6 @@ TXT
 		printf '\tmodeu5_pr71_process_us10_monthly_market_good_%s = yes\n' "$good"
 	done
 	cat <<'TXT'
-}
-
-# Override the PR7 live local branch with the Q4.1 / PR7.1 guarded dispatch path.
-# The name intentionally matches the PR7 effect so the monthly stock cycle keeps
-# the same external contract while the inner per-good calls are narrowed.
-modeu5_run_promoted_market_live_local_branch_market_all_goods = {
-	$country$ = {
-		save_temporary_scope_as = modeu5_local_branch_country
-		save_temporary_scope_as = modeu5_reconciliation_controller
-	}
-	$market$ = {
-		save_temporary_scope_as = modeu5_market
-		save_temporary_scope_as = modeu5_market_country_cache_market
-	}
-
-	modeu5_pr71_prepare_active_good_metrics = yes
-
-	modeu5_prepare_promoted_market_country_cache = {
-		market = scope:modeu5_market
-	}
-	modeu5_note_promoted_market_live_country_cache_rebuild = yes
-
-	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
-
-		# Q4.1 loop merge: capacity refresh is fused with the US-00 country pass.
-		# Keep US-10 in a second pass so every present country's US-00 facts are
-		# updated before any same-market consumption scans the market stock.
-		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
-			save_temporary_scope_as = modeu5_country
-			save_temporary_scope_as = modeu5_promoted_market_capacity_country
-			modeu5_prepare_promoted_country_market_capacity = {
-				country = scope:modeu5_promoted_market_capacity_country
-				market = scope:modeu5_market
-			}
-			modeu5_note_promoted_market_live_capacity_country = yes
-			modeu5_note_promoted_market_live_us00_country_pass = yes
-			modeu5_pr71_process_us00_monthly_market_active_goods = yes
-		}
-		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
-			save_temporary_scope_as = modeu5_country
-			modeu5_note_promoted_market_live_us10_country_pass = yes
-			modeu5_pr71_process_us10_monthly_market_pending_goods = yes
-		}
-	}
-
-	modeu5_note_promoted_market_live_local_market_processed = yes
 }
 TXT
 } > "$output"
