@@ -54,13 +54,17 @@ Sparse supplier lists remain a supplier-country narrowing mechanism after a US-1
 
 ## PR7.1 safe target
 
-The safe first stacked PR is instrumentation and documentation:
+The stacked Q4.1 / PR7.1 target is runtime code, not only documentation:
 
 ```txt
-- document that PR7 is an ownership switch, not the active-good optimization;
+- preserve PR7 market-center ownership;
+- rebuild countries_present_in_market once for the promoted market;
+- fuse capacity refresh into the US-00 country-present pass;
+- keep US-10 in a second country-present pass after all US-00 work;
+- dispatch US-00 through active-good guards;
+- dispatch US-10 through pending-request guards;
 - split counters between generated helper calls and meaningful business work;
-- avoid claiming the Q4 `G_a` performance target until active-good scheduling lands;
-- keep runtime behavior unchanged except debug/audit counters.
+- avoid claiming the full Q4 G_a target until EU5 runtime validation confirms it.
 ```
 
-A later/full implementation may replace or guard all-good helper invocation with a safe active-good scheduler, but that requires EU5 runtime validation.
+This still uses generated literal-symbol helpers because EU5 scripted effect names and map names must remain literal. The generated file owns only new PR7.1 helper effects; the tracked PR7 live effect owns the live handoff. EU5 rejected the earlier same-name generated override as a duplicate key, so that override must not return.

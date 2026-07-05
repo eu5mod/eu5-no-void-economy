@@ -2,7 +2,7 @@
 
 Source request: GitHub PR #126, “Developement balance”.
 
-This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code.
+This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code. Q8 records future optimisation findings that should not be mixed into the current runtime-validation PR unless they become correctness blockers.
 
 ## Reading order for an agent
 
@@ -14,7 +14,11 @@ This folder is the context base for agents that need to turn the PR126 audit int
 | 4 | [Q4 — Loops and performance](./Q4_boucles_performance.md) | Evaluate scan cost and the promoted-market target |
 | 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
 | 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
-| 7 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
+| 7 | [Q8 — Future optimisations](./Q8_future_optimisations.md) | Track follow-up performance findings without widening the active PR |
+| 8 | [Q8/F9 — Rolling location cache](./Q8_F9_location_cache_rolling_verification.md) | Evaluate the location owner/market cache, rolling verification, and Q4 win estimate |
+| 9 | [Q8/F9 — TECH-01 storage compatibility](./Q8_F9_TECH01_storage_compatibility.md) | Constrain F9 against variable-map storage limits, early-exit limits, and dirty-set-first design |
+| 10 | [Q8/F9c — Market-sliced verifier](./Q8_F9C_market_sliced_verifier.md) | Evaluate deterministic market slicing, candidate-list slicing, count probes, and Performance Mode viability |
+| 11 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
 ## Global executive summary
 
