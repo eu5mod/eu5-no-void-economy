@@ -1,61 +1,102 @@
-# Q8.2 / Q8.4 / Q8.5 / Q8.6 / Q8.7 — Probe clearance PR
+# Q8.2 / Q8.4 / Q8.5 / Q8.6 / Q8.7 — Big probe PR
 
 ## Purpose
 
-This stacked PR clears the remaining Q8 candidates by converting each one into an explicit probe decision.
+This stacked PR contains all five remaining Q8 probes in one PR.
 
-It is intentionally not a gameplay refactor PR:
+It is intentionally not five stacked PRs. The probes are simple and belong together as a single clearance layer before the next implementation wave.
+
+## Scope
+
+Adds one shared probe effect file and one shared event menu in the test package:
 
 ```txt
-- no stock mutation;
-- no dispatcher switch;
-- no body-helper split;
-- no live verifier;
-- no broad monthly world scan.
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_q8_probe_debug_events.txt
 ```
 
-The goal is to decide which later implementation PRs are justified, which need runtime evidence, and which must stay deferred.
+Adds one static structural audit:
 
-## Clearance matrix
+```txt
+tools/audit_q8_remaining_candidates.sh
+```
 
-| Track | Candidate | Probe outcome expected from this PR | Next allowed PR |
+## Probe event
+
+Run from the test package:
+
+```txt
+event modeu5_q8_probe_debug.1
+```
+
+Available options:
+
+```txt
+all probes
+Q8.2 only
+Q8.4 only
+Q8.5 only
+Q8.6 only
+Q8.7 only
+```
+
+The aggregate runtime entry point is:
+
+```txt
+modeu5_debug_run_q8_remaining_candidate_probes
+```
+
+## Five probes in this PR
+
+| Track | Probe effect | What it checks | What it does not do |
 |---|---|---|---|
-| Q8.2 / F2 | US-10 aggregate pending-request gate | static + metric-snapshot probe; determine whether a country-market has-any-pending gate is needed before generated per-good dispatch | `audit/q8-us10-gating` or `feature/q8-us10-aggregate-gate` |
-| Q8.4 / F4 | split guarded helpers from body helpers | static caller-inventory probe; do not split until all generated helper callers are classified | `audit/q8-helper-caller-inventory` |
-| Q8.5 / F5/F9a | dirty derived-cache architecture | confirm existing dirty-market producers/consumers before inventing new cache model | `probe/q8-dirty-derived-caches` |
-| Q8.6 / F9c | market-sliced verifier | clear only candidate/dirty market slicing as probe scope; no live verifier | `probe/q8-f9c-market-slicing` |
-| Q8.7 / F7 | native global market-local pass | exposure probe only; no switch from market-center owner workaround | `probe/q8-global-market-pass` |
+| Q8.2 / F2 | `modeu5_q8_probe_us10_pending_gate` | Reads the canonical wheat pending-request map for the capital market and records whether the country-market probe surface is usable. | Does not add a generated aggregate has-any-pending gate. |
+| Q8.4 / F4 | `modeu5_q8_probe_helper_inventory` | Adds a runtime marker for the helper-inventory probe and pairs with static script checks for generated heavy-helper calls. | Does not split guarded helpers from body helpers. |
+| Q8.5 / F5/F9a | `modeu5_q8_probe_dirty_cache_lifecycle` | Marks the capital market dirty, repairs dirty market-country caches, and checks repair count. | Does not mutate stock or expand the dirty cache model. |
+| Q8.6 / F9c | `modeu5_q8_probe_market_sliced_verifier_candidate` | Builds and verifies a candidate-market slice list using the capital market. | Does not run a live verifier or repair market stock. |
+| Q8.7 / F7 | `modeu5_q8_probe_global_market_iterator_exposure` | Isolated test-package exposure check for the global market iterator. | Does not replace the current market-center ownership workaround. |
 
-## Static probe command
+## Guardrails
+
+```txt
+1. No stock mutation.
+2. No monthly dispatcher change.
+3. No body-helper split.
+4. No live verifier.
+5. Q8.7 exposure remains in the test package only.
+6. Any later implementation must update the Q8-owned Q-docs directly.
+```
+
+## Static validation
+
+Run:
 
 ```sh
 bash tools/audit_q8_remaining_candidates.sh
 ```
 
-The script checks repository structure and prints PASS/PENDING/FAIL classifications. PENDING is expected for runtime-only questions; FAIL is reserved for missing guardrails or accidental live usage.
-
-## Runtime evidence still required
-
-The static probe cannot prove EU5 runtime behaviour. The later probe PRs should add/run runtime evidence for:
+Expected static result:
 
 ```txt
-Q8.2 — debug/audit monthly PR7.1 counters: considered vs pending-hit vs processed.
-Q8.5 — dirty-market producer lifecycle and repair count on an actual market.
-Q8.6 — candidate/dirty market slice coverage and save/reload stability.
-Q8.7 — whether every_market_in_world is valid from a safe once-per-month global surface.
+PASS for all five probe entry points.
+PENDING because runtime logs are still required before implementing Q8.2/Q8.4/Q8.5/Q8.6/Q8.7.
 ```
 
-## Guardrails
+## Runtime validation expectations
+
+Expected log markers:
 
 ```txt
-1. Probes may write debug/profile variables only.
-2. Probes must not mutate stock.
-3. Probes must not alter the monthly dispatcher.
-4. Probes must not add every_market_in_world to live runtime files.
-5. Probes must not use every_location_in_the_world as a monthly verifier substitute.
-6. Any later implementation must update the Q8-owned Q-docs directly.
+ModeU5 Q8.2 PROBE us10_pending_gate PASS
+ModeU5 Q8.4 PROBE helper_inventory PASS
+ModeU5 Q8.5 PROBE dirty_cache_lifecycle PASS
+ModeU5 Q8.6 PROBE market_slice_candidate PASS
+ModeU5 Q8.7 PROBE global_market_iterator PASS
+ModeU5 Q8 PROBE RESULT all_remaining_candidates PASS
 ```
+
+If Q8.7 fails to parse or run, Q8.7 remains blocked and the current market-center ownership workaround remains authoritative.
 
 ## Resulting interpretation
 
-This PR does not implement Q8.2, Q8.4, Q8.5, Q8.6, or Q8.7. It clears their next-step classification so the stack can proceed without ambiguity.
+This PR contains all five probes. It does not implement the later optimisations. The purpose is to collect evidence and clear which implementation PRs are safe next.
