@@ -31,3 +31,20 @@ This document is the Q8-owned redundancy standard for helper extraction, generat
 Q8.0 adds no helper or generator changes.
 
 It classifies Q8.4 / F4 as `PROBE_FIRST`: split guarded helpers from body helpers only after caller inventory.
+
+## Q8.4 probe update — helper inventory bridge
+
+PR #150 adds a test-package Q8.4 marker probe:
+
+```txt
+modeu5_q8_probe_helper_inventory
+```
+
+This runtime marker is paired with the static audit script, which checks that the generated PR7.1 wrappers still call the existing heavy helpers:
+
+```txt
+modeu5_process_us00_monthly_market_good_wheat = yes
+modeu5_process_us10_monthly_market_good_wheat = yes
+```
+
+Q8.4 remains blocked from implementation until a full caller inventory classifies all calls as safe guarded wrappers, explicit tests, or unsafe/unknown.
