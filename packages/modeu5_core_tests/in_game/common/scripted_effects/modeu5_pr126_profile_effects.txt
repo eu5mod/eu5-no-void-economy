@@ -1,8 +1,8 @@
 # PR126 monthly phase profile probe.
 #
-# This is a manual/debug probe only. It does not provide millisecond timing from
-# script, but debug.log includes wall-clock timestamps. Compare PROFILE START/END
-# timestamps to identify which Q5 phase consumes visible time.
+# These are manual/debug probes only. Script cannot read millisecond timing, but
+# debug.log includes wall-clock timestamps. Compare PROFILE START/END timestamps
+# to identify which Q5 or on_action phase consumes visible time.
 
 modeu5_debug_profile_pr126_monthly_phases = {
 	debug_log = "ModeU5 PROFILE ENTER scenario=pr126_monthly_phase_profile"
@@ -47,4 +47,21 @@ modeu5_debug_profile_pr126_monthly_phases = {
 	}
 
 	debug_log = "ModeU5 PROFILE EXIT scenario=pr126_monthly_phase_profile"
+}
+
+modeu5_debug_profile_pr126_live_monthly_on_action_shape = {
+	debug_log = "ModeU5 PROFILE ENTER scenario=pr126_live_monthly_on_action_shape"
+
+	debug_log = "ModeU5 PROFILE START phase=on_action_stock_cycle"
+	modeu5_run_monthly_stock_cycle = yes
+	debug_log = "ModeU5 PROFILE END phase=on_action_stock_cycle"
+
+	debug_log = "ModeU5 PROFILE START phase=on_action_core04_location_market_memory_refresh"
+	modeu5_core04_refresh_current_country_location_market_memory = yes
+	debug_log = "ModeU5 PROFILE END phase=on_action_core04_location_market_memory_refresh"
+
+	modeu5_pr126_capture_live_dispatcher_metrics = { prefix = on_action_profile }
+	debug_log = "ModeU5 PROFILE COUNTERS scenario=pr126_live_monthly_on_action_shape dispatcher_runs=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_runs_on_action_profile').GetValue|0] detailed=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_detailed_on_action_profile').GetValue|0] fallback=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_fallback_on_action_profile').GetValue|0] blocked=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_blocked_on_action_profile').GetValue|0] cache=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_cache_on_action_profile').GetValue|0] capacity_countries=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_capacity_countries_on_action_profile').GetValue|0] us00_goods=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_us00_goods_on_action_profile').GetValue|0] us10_goods=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_us10_goods_on_action_profile').GetValue|0] local_markets=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_local_markets_on_action_profile').GetValue|0] trade_passes=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_trade_passes_on_action_profile').GetValue|0] trade_seen=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_trade_seen_on_action_profile').GetValue|0] trade_confirmed=[THIS.GetVariable('modeu5_pr126_ui_dispatcher_trade_confirmed_on_action_profile').GetValue|0]"
+
+	debug_log = "ModeU5 PROFILE EXIT scenario=pr126_live_monthly_on_action_shape"
 }
