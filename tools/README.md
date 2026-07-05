@@ -145,6 +145,19 @@ The unquoted form is easy to reintroduce in generated or generated-adjacent
 CMM files and can be parsed by EU5 as a bad trigger instead of a value
 expression. The generated-file workflow runs the check mode in CI.
 
+Validate scripted-test assertion safety:
+
+```bash
+./tools/validate_modeu5_script_safety.sh
+```
+
+This check fails on direct variable-to-variable comparisons such as
+`var:foo > var:bar`. For deterministic tests, initialize the metric first,
+snapshot it into a temporary `scope:` value, and compare the `scope:` values.
+The package validator runs this check automatically so the PR126-style
+unset-variable assertion regression is caught before EU5 emits script-system
+errors.
+
 The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 

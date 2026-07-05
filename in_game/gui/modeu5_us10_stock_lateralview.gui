@@ -79,6 +79,13 @@ template modeu5_us10_stock_panel {
 					tooltipwidget = { BasicFunctionalTooltip = {} }
 				}
 			}
+
+			text_multi = {
+				layoutpolicy_horizontal = expanding
+				autoresize = no
+				size = { -1 58 }
+				text = "modeu5_us10_ui.read_only_note"
+			}
 		}
 
 		widget = {

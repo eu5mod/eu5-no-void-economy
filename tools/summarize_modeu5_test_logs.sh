@@ -4,11 +4,15 @@ set -euo pipefail
 
 default_logs_dir="${MODEU5_LOG_DIR:-${HOME}/Documents/Paradox Interactive/Europa Universalis V/logs}"
 logs_dir="$default_logs_dir"
+since_time="${MODEU5_LOG_SINCE:-}"
+expected_mode="${MODEU5_EXPECTED_SCENARIOS:-full}"
 
 usage() {
-	printf 'Usage: %s [--logs-dir PATH]\n' "$0"
+	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|none]\n' "$0"
 	printf '\n'
 	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, and CORE-04 topology diagnostics.\n'
+	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
+	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -22,6 +26,22 @@ while (($# > 0)); do
 			logs_dir="$2"
 			shift 2
 			;;
+		--since)
+			if (($# < 2)); then
+				printf 'Missing HH:MM:SS after --since.\n' >&2
+				exit 2
+			fi
+			since_time="$2"
+			shift 2
+			;;
+		--expected)
+			if (($# < 2)); then
+				printf 'Missing mode after --expected.\n' >&2
+				exit 2
+			fi
+			expected_mode="$2"
+			shift 2
+			;;
 		-h|--help)
 			usage
 			exit 0
@@ -33,6 +53,20 @@ while (($# > 0)); do
 			;;
 	esac
 done
+
+if [[ -n "$since_time" && ! "$since_time" =~ ^[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; then
+	printf 'Invalid --since value: %s. Expected HH:MM:SS.\n' "$since_time" >&2
+	exit 2
+fi
+
+case "$expected_mode" in
+	full|pr126|none)
+		;;
+	*)
+		printf 'Invalid --expected mode: %s. Expected full, pr126, or none.\n' "$expected_mode" >&2
+		exit 2
+		;;
+esac
 
 if [[ ! -d "$logs_dir" ]]; then
 	printf 'EU5 logs directory does not exist: %s\n' "$logs_dir" >&2
@@ -55,6 +89,7 @@ fi
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
+all_lines_file="$tmp_dir/all_lines"
 scenario_file="$tmp_dir/scenario_lines"
 debug_level_file="$tmp_dir/debug_level_lines"
 main_mode_file="$tmp_dir/main_mode_lines"
@@ -63,31 +98,45 @@ us10ui_file="$tmp_dir/us10_ui_lines"
 core04_file="$tmp_dir/core04_lines"
 localization_only_file="$tmp_dir/localization_only_modeu5_lines"
 
-grep -hE 'ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=' "${log_files[@]}" \
+cat "${log_files[@]}" > "$all_lines_file"
+
+if [[ -n "$since_time" ]]; then
+	filtered_all_lines_file="$tmp_dir/all_lines_since"
+	awk -v since="$since_time" '
+		match($0, /^\[([0-9][0-9]:[0-9][0-9]:[0-9][0-9])\]/, m) {
+			if (m[1] >= since) {
+				print
+			}
+		}
+	' "$all_lines_file" > "$filtered_all_lines_file"
+	all_lines_file="$filtered_all_lines_file"
+fi
+
+grep -hE 'ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$scenario_file" || true
 
-grep -hE 'ModeU5 DEBUG_LEVEL ' "${log_files[@]}" \
+grep -hE 'ModeU5 DEBUG_LEVEL ' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$debug_level_file" || true
 
-grep -hE 'ModeU5 PERF-14 (MAIN_MODE|DUMP main_mode=)' "${log_files[@]}" \
+grep -hE 'ModeU5 PERF-14 (MAIN_MODE|DUMP main_mode=)' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$main_mode_file" || true
 
-grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION|SPARSE_SUPPLIERS|FAIL_REASON|RESULT)' "${log_files[@]}" \
+grep -hE 'ModeU5 PERF-14 (DUMP|STOCK_MUTATION_GATE|MARKET_RUNTIME_GATE|PROMOTION|SPARSE_SUPPLIERS|FAIL_REASON|RESULT)' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$perf14_file" || true
 
-grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|RESOLUTION|CANDIDATE_TRACE|MUTATION_TRACE|FAST_PATH|REASON_MAP)' "${log_files[@]}" \
+grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|RESOLUTION|CANDIDATE_TRACE|MUTATION_TRACE|FAST_PATH|REASON_MAP)' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us10ui_file" || true
 
-grep -hE 'ModeU5 CORE-04 (MARKET_ENTRY|DUMP|FAIL_REASON|RESULT)' "${log_files[@]}" \
+grep -hE 'ModeU5 CORE-04 (MARKET_ENTRY|DUMP|FAIL_REASON|RESULT)' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$core04_file" || true
 
-grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14|US-10|CORE-04)' "${log_files[@]}" \
+grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14|US-10|CORE-04)' "$all_lines_file" \
 	>"$localization_only_file" || true
 
 count_marker() {
@@ -107,23 +156,36 @@ us10ui_count="$(grep -c 'ModeU5 US-10' "$us10ui_file" || true)"
 core04_count="$(grep -c 'ModeU5 CORE-04 ' "$core04_file" || true)"
 localization_only_count="$(grep -c 'ModeU5 ' "$localization_only_file" || true)"
 
-expected_scenarios=(
-	main_revalidation
-	us02_capacity
-	core01_single_record
-	core01_same_market_transfer
-	core01_inter_market_transfer
-	core02_initialization
-	us00_controlled_pipeline
-	us00_monthly_runtime
-	us10_demand_resolution
-	us10_issue109_fast_path_pruning
-	us10_ui_visibility
-	perf10_13_active_repair_metrics
-	core04_market_entry
-	main_revalidation_summary
-	perf14_performance_mode_cmm
-)
+expected_scenarios=()
+case "$expected_mode" in
+	full)
+		expected_scenarios=(
+			main_revalidation
+			us02_capacity
+			core01_single_record
+			core01_same_market_transfer
+			core01_inter_market_transfer
+			core02_initialization
+			us00_controlled_pipeline
+			us00_monthly_runtime
+			us10_demand_resolution
+			us10_issue109_fast_path_pruning
+			us10_ui_visibility
+			perf10_13_active_repair_metrics
+			core04_market_entry
+			main_revalidation_summary
+			perf14_performance_mode_cmm
+		)
+		;;
+	pr126)
+		expected_scenarios=(
+			pr126_monthly_dispatcher_compare
+		)
+		;;
+	none)
+		expected_scenarios=()
+		;;
+esac
 
 missing_scenarios=()
 for scenario in "${expected_scenarios[@]}"; do
@@ -135,6 +197,10 @@ done
 printf 'ModeU5 revalidation summary\n'
 printf 'Logs directory: %s\n' "$logs_dir"
 printf 'Files scanned: %s\n' "${#log_files[@]}"
+if [[ -n "$since_time" ]]; then
+	printf 'Since: %s\n' "$since_time"
+fi
+printf 'Expected scenario set: %s\n' "$expected_mode"
 printf 'Entered: %s\n' "$entered_count"
 printf 'Passed:  %s\n' "$pass_count"
 printf 'Failed:  %s\n' "$fail_count"
@@ -146,7 +212,17 @@ printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
 printf 'US-10 visibility diagnostics: %s\n' "$us10ui_count"
 printf 'CORE-04 topology diagnostics: %s\n' "$core04_count"
 printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
-printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
+case "$expected_mode" in
+	full)
+		printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
+		;;
+	pr126)
+		printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}"
+		;;
+	none)
+		printf 'Expected scenario checking disabled.\n'
+		;;
+esac
 printf '\n'
 
 if [[ ! -s "$scenario_file" ]]; then
@@ -155,6 +231,7 @@ if [[ ! -s "$scenario_file" ]]; then
 		printf 'Only localization-disabled copies of ModeU5 markers were found; inspect debug.log/game.log or enable Debug/Audit output before treating this run as PASS.\n'
 	fi
 	printf 'Run: event modeu5_revalidate_debug.1\n'
+	printf 'For PR126 dispatcher only: event modeu5_pr126_profile_debug.1; event modeu5_pr126_profile_debug.2; event modeu5_pr126_debug.1\n'
 	printf 'For PERF-14 only: event modeu5_perf14_debug.1\n'
 	printf 'For CORE-04 only: event modeu5_core04_debug.1\n'
 	printf '\n'
@@ -208,6 +285,16 @@ fi
 
 if ((${#missing_scenarios[@]} > 0)); then
 	printf '\n'
-	printf 'Missing expected full-revalidation scenario markers:\n'
+	case "$expected_mode" in
+		full)
+			printf 'Missing expected full-revalidation scenario markers:\n'
+			;;
+		pr126)
+			printf 'Missing expected PR126 dispatcher scenario markers:\n'
+			;;
+		none)
+			printf 'Missing expected scenario markers:\n'
+			;;
+	esac
 	printf '%s\n' "${missing_scenarios[@]}"
 fi

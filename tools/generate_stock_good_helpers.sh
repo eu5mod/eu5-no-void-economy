@@ -199,6 +199,12 @@ PY
 # Do not edit manually.
 # Literal map access is generated from tools/templates/modeu5_stock_good_adapter.template.txt.
 
+TXT
+	printf 'modeu5_capture_generated_stock_good_count = {\n'
+	printf '\tsave_temporary_scope_value_as = { name = modeu5_generated_stock_good_count value = %d }\n' "${#goods[@]}"
+	printf '}\n\n'
+	cat <<'TXT'
+
 modeu5_mark_active_market_any_good = {
 	if = {
 		limit = {
