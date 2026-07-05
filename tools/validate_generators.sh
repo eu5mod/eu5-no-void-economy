@@ -96,11 +96,14 @@ modeu5_require_match 'modeu5_process_us10_monthly_market_good_wheat = yes' \
 modeu5_require_match 'modeu5_run_promoted_market_live_local_branch_market_all_goods' \
 	"$pr71_generated_tmp" \
 	'PR7.1 generated output must expose the guarded live local-branch handoff'
+modeu5_require_match 'modeu5_prepare_promoted_country_market_capacity = \{' \
+	"$pr71_generated_tmp" \
+	'Q4.1 loop merge must preserve per-country capacity refresh in the guarded handoff'
 modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_active_goods = yes' \
 	"$pr71_generated_tmp" \
-	'PR7.1 guarded handoff must use the active US-00 dispatcher'
+	'Q4.1 loop merge must run guarded US-00 in the fused capacity/US-00 pass'
 modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_pending_goods = yes' \
 	"$pr71_generated_tmp" \
-	'PR7.1 guarded handoff must use the pending-request US-10 dispatcher'
+	'PR7.1 guarded handoff must keep US-10 in the pending-request dispatcher'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'
