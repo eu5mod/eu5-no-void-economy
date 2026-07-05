@@ -1,0 +1,29 @@
+# PR126 var-safe probe entry points.
+
+modeu5_debug_run_pr126_monthly_dispatcher_compare_test_varsafe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=pr126_monthly_dispatcher_compare"
+	modeu5_pr126_dispatcher_compare_setup_varsafe = yes
+	modeu5_pr126_dispatcher_compare_run_cases_varsafe = yes
+	modeu5_pr126_dispatcher_assert_varsafe = yes
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+}
+
+modeu5_pr126_shell_run_cases_varsafe = {
+	modeu5_pr126_shell_run_normal_varsafe = yes
+	if = {
+		limit = { scope:modeu5_pr126_shell_promoted_normal < 2 }
+		set_global_variable = modeu5_test_pr126_promoted_market_shell_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_promoted_market_shell reason=not_enough_current_country_markets"
+	}
+	else = { modeu5_pr126_shell_run_performance_varsafe = yes }
+}
+
+modeu5_debug_run_pr126_promoted_market_shell_test_varsafe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=pr126_promoted_market_shell"
+	modeu5_pr126_shell_setup_varsafe = yes
+	modeu5_pr126_shell_run_cases_varsafe = yes
+	modeu5_pr126_shell_assert_varsafe = yes
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+}

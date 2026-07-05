@@ -1,0 +1,33 @@
+# PR126 var-safe shell assertions.
+
+modeu5_pr126_shell_snapshot_varsafe = {
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_candidates_normal value = var:modeu5_pr126_ui_shell_candidates_normal }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_normal value = var:modeu5_pr126_ui_shell_promoted_normal }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_normal value = var:modeu5_pr126_ui_shell_iterations_normal }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_performance value = var:modeu5_pr126_ui_shell_promoted_performance }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_performance value = var:modeu5_pr126_ui_shell_iterations_performance }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_rejected_performance value = var:modeu5_pr126_ui_shell_rejected_performance }
+}
+
+modeu5_pr126_shell_assert_varsafe = {
+	modeu5_pr126_shell_snapshot_varsafe = yes
+	debug_log = "ModeU5 PR126 PROMOTED_MARKET_SHELL normal_candidates=[THIS.GetVariable('modeu5_pr126_ui_shell_candidates_normal').GetValue|0] normal_promoted=[THIS.GetVariable('modeu5_pr126_ui_shell_promoted_normal').GetValue|0] performance_promoted=[THIS.GetVariable('modeu5_pr126_ui_shell_promoted_performance').GetValue|0]"
+	if = {
+		limit = {
+			NOT = { has_global_variable = modeu5_test_pr126_promoted_market_shell_blocked }
+			scope:modeu5_pr126_shell_candidates_normal = scope:modeu5_pr126_shell_promoted_normal
+			scope:modeu5_pr126_shell_iterations_normal = scope:modeu5_pr126_shell_promoted_normal
+			scope:modeu5_pr126_shell_promoted_performance = 1
+			scope:modeu5_pr126_shell_iterations_performance = scope:modeu5_pr126_shell_promoted_performance
+			scope:modeu5_pr126_shell_promoted_normal > scope:modeu5_pr126_shell_promoted_performance
+			scope:modeu5_pr126_shell_rejected_performance > 0
+		}
+		set_global_variable = modeu5_test_pr126_promoted_market_shell_passed
+		debug_log = "ModeU5 TEST PASS scenario=pr126_promoted_market_shell"
+	}
+	else_if = {
+		limit = { NOT = { has_global_variable = modeu5_test_pr126_promoted_market_shell_blocked } }
+		set_global_variable = modeu5_test_pr126_promoted_market_shell_failed
+		debug_log = "ModeU5 TEST FAIL scenario=pr126_promoted_market_shell"
+	}
+}

@@ -1,0 +1,16 @@
+namespace = modeu5_pr126_varsafe_debug
+
+modeu5_pr126_varsafe_debug.1 = {
+	type = country_event
+	title = modeu5_pr126_debug.1.title
+	desc = modeu5_pr126_debug.1.desc
+	outcome = neutral
+	orphan = yes
+	trigger = { always = no }
+	option = {
+		name = modeu5_pr126_debug.1.d
+		modeu5_enter_test_audit_runtime_mode = yes
+		modeu5_debug_run_pr126_monthly_dispatcher_compare_test_varsafe = yes
+	}
+	option = { name = modeu5_debug.close }
+}

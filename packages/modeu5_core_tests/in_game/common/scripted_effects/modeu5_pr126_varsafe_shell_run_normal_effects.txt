@@ -1,0 +1,8 @@
+# PR126 var-safe shell normal run.
+
+modeu5_pr126_shell_run_normal_varsafe = {
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+	modeu5_run_monthly_promoted_market_cycle = yes
+	modeu5_pr126_capture_promoted_market_shell_metrics = { prefix = normal }
+	save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_normal value = var:modeu5_pr126_ui_shell_promoted_normal }
+}
