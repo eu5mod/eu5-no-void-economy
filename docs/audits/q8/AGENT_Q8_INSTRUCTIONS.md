@@ -16,12 +16,13 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 3. docs/audits/q8/Q8_0_POST_PR126_BASELINE_AUDIT.md
 4. docs/audits/q8/Q8_IMPLEMENTATION_BACKLOG.md
 5. docs/audits/pr126/Q5_flux_logique_global.md
-6. docs/audits/pr126/Q8_future_optimisations.md
-7. docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md
-8. docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md
-9. docs/audits/pr126/Q8_F9C_market_sliced_verifier.md
-10. docs/technical/PERSISTENT_STATE_AUDIT.md
-11. docs/technical/TECH-01_engine_exposure_matrix.md
+6. docs/audits/pr126/Q5.1_current_global_flow.md
+7. docs/audits/pr126/Q8_future_optimisations.md
+8. docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md
+9. docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md
+10. docs/audits/pr126/Q8_F9C_market_sliced_verifier.md
+11. docs/technical/PERSISTENT_STATE_AUDIT.md
+12. docs/technical/TECH-01_engine_exposure_matrix.md
 ```
 
 ## Work rules
