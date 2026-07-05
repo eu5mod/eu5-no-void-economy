@@ -96,7 +96,7 @@ modeu5_require_match 'modeu5_process_us10_monthly_market_good_wheat = yes' \
 modeu5_require_match 'modeu5_run_promoted_market_live_local_branch_market_all_goods' \
 	"$pr71_generated_tmp" \
 	'PR7.1 generated output must expose the guarded live local-branch handoff'
-modeu5_require_match 'modeu5_prepare_promoted_country_market_capacity = \{' \
+modeu5_require_match 'modeu5_prepare_promoted_country_market_capacity = [{' \
 	"$pr71_generated_tmp" \
 	'Q4.1 loop merge must preserve per-country capacity refresh in the guarded handoff'
 modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_active_goods = yes' \
