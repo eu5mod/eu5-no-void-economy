@@ -1,9 +1,9 @@
 # PR126 promoted-market orchestration helper surface.
 #
-# This file intentionally does not change the monthly dispatcher yet. It only
-# names the B/C/D entry points that later PR126 stack layers can call from the
-# promoted-market shell. Each helper delegates to the current domain owner:
-# capacity, market-country cache, generated good adapters, or US-10 resolver.
+# The early PR126 helpers below name the B/C/D entry points that stacked layers
+# call from the promoted-market shell. PR7 also adds the live promoted dispatcher
+# at the bottom of this file. Each helper delegates to the current domain owner:
+# capacity, market-country cache, generated good adapters, US-00, or US-10.
 
 # B: prepare the current promoted market's country work cache. The cache remains
 # a rebuilt work list, never durable per-market storage and never a stock source.
@@ -482,6 +482,275 @@ modeu5_run_first_promoted_market_local_branch_good = {
 				market = scope:modeu5_market
 				good = $good$
 			}
+		}
+	}
+}
+
+# PR7: live promoted-market dispatcher.
+#
+# The live dispatcher is scheduled from `every_market_center_in_country` so a
+# market-local mutation branch runs once from the market-center owner instead of
+# once for every country present in that market. Performance mode still uses the
+# existing human-relevant/detailed-accounting gate; non-relevant markets fall
+# back to vanilla behavior and do not mutate ModeU5 stock.
+
+modeu5_reset_promoted_market_live_dispatcher_metrics = {
+	remove_global_variable = modeu5_promoted_market_live_dispatcher_runs
+	remove_global_variable = modeu5_promoted_market_live_markets_detailed
+	remove_global_variable = modeu5_promoted_market_live_markets_fallback
+	remove_global_variable = modeu5_promoted_market_live_markets_blocked
+	remove_global_variable = modeu5_promoted_market_live_owner_skips
+	remove_global_variable = modeu5_promoted_market_live_country_cache_rebuilds
+	remove_global_variable = modeu5_promoted_market_live_capacity_country_count
+	remove_global_variable = modeu5_promoted_market_live_us00_country_passes
+	remove_global_variable = modeu5_promoted_market_live_us10_country_passes
+	remove_global_variable = modeu5_promoted_market_live_us00_good_scans
+	remove_global_variable = modeu5_promoted_market_live_us10_good_scans
+	remove_global_variable = modeu5_promoted_market_live_local_markets_processed
+	remove_global_variable = modeu5_promoted_market_live_trade_owner_passes
+	remove_global_variable = modeu5_promoted_market_live_validation_calls
+	remove_global_variable = modeu5_promoted_market_live_validation_failures
+
+	set_global_variable = { name = modeu5_promoted_market_live_dispatcher_runs value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_markets_detailed value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_markets_fallback value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_markets_blocked value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_owner_skips value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_country_cache_rebuilds value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_capacity_country_count value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_us00_country_passes value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_us10_country_passes value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_us00_good_scans value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_us10_good_scans value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_local_markets_processed value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_trade_owner_passes value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_validation_calls value = 0 }
+	set_global_variable = { name = modeu5_promoted_market_live_validation_failures value = 0 }
+
+	modeu5_reset_country_trade_owner_pass_metrics = yes
+}
+
+modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics = {
+	save_temporary_scope_value_as = {
+		name = modeu5_promoted_market_live_dispatcher_stamp
+		value = {
+			value = current_year
+			multiply = 12
+			add = current_month
+		}
+	}
+
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_global_variable = modeu5_promoted_market_live_dispatcher_stamp }
+				global_var:modeu5_promoted_market_live_dispatcher_stamp != scope:modeu5_promoted_market_live_dispatcher_stamp
+			}
+		}
+		set_global_variable = {
+			name = modeu5_promoted_market_live_dispatcher_stamp
+			value = scope:modeu5_promoted_market_live_dispatcher_stamp
+		}
+		modeu5_reset_promoted_market_live_dispatcher_metrics = yes
+	}
+	else_if = {
+		limit = { NOT = { has_global_variable = modeu5_promoted_market_live_dispatcher_runs } }
+		modeu5_reset_promoted_market_live_dispatcher_metrics = yes
+	}
+}
+
+modeu5_note_promoted_market_live_dispatcher_run = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_dispatcher_runs
+		value = {
+			value = global_var:modeu5_promoted_market_live_dispatcher_runs
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_detailed_market = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_markets_detailed
+		value = {
+			value = global_var:modeu5_promoted_market_live_markets_detailed
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_fallback_market = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_markets_fallback
+		value = {
+			value = global_var:modeu5_promoted_market_live_markets_fallback
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_blocked_market = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_markets_blocked
+		value = {
+			value = global_var:modeu5_promoted_market_live_markets_blocked
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_country_cache_rebuild = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_country_cache_rebuilds
+		value = {
+			value = global_var:modeu5_promoted_market_live_country_cache_rebuilds
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_capacity_country = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_capacity_country_count
+		value = {
+			value = global_var:modeu5_promoted_market_live_capacity_country_count
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_us00_country_pass = {
+	modeu5_capture_generated_stock_good_count = yes
+	set_global_variable = {
+		name = modeu5_promoted_market_live_us00_country_passes
+		value = {
+			value = global_var:modeu5_promoted_market_live_us00_country_passes
+			add = 1
+		}
+	}
+	set_global_variable = {
+		name = modeu5_promoted_market_live_us00_good_scans
+		value = {
+			value = global_var:modeu5_promoted_market_live_us00_good_scans
+			add = scope:modeu5_generated_stock_good_count
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_us10_country_pass = {
+	modeu5_capture_generated_stock_good_count = yes
+	set_global_variable = {
+		name = modeu5_promoted_market_live_us10_country_passes
+		value = {
+			value = global_var:modeu5_promoted_market_live_us10_country_passes
+			add = 1
+		}
+	}
+	set_global_variable = {
+		name = modeu5_promoted_market_live_us10_good_scans
+		value = {
+			value = global_var:modeu5_promoted_market_live_us10_good_scans
+			add = scope:modeu5_generated_stock_good_count
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_local_market_processed = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_local_markets_processed
+		value = {
+			value = global_var:modeu5_promoted_market_live_local_markets_processed
+			add = 1
+		}
+	}
+}
+
+modeu5_note_promoted_market_live_trade_owner_pass = {
+	set_global_variable = {
+		name = modeu5_promoted_market_live_trade_owner_passes
+		value = {
+			value = global_var:modeu5_promoted_market_live_trade_owner_passes
+			add = 1
+		}
+	}
+}
+
+modeu5_run_promoted_market_live_local_branch_market_all_goods = {
+	$country$ = {
+		save_temporary_scope_as = modeu5_local_branch_country
+		save_temporary_scope_as = modeu5_reconciliation_controller
+	}
+	$market$ = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+
+	modeu5_pr71_prepare_active_good_metrics = yes
+
+	modeu5_prepare_promoted_market_country_cache = {
+		market = scope:modeu5_market
+	}
+	modeu5_note_promoted_market_live_country_cache_rebuild = yes
+
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+
+		# Q4.1 loop merge: capacity refresh is fused with the US-00 country pass.
+		# Keep US-10 in a second pass so every present country's US-00 facts are
+		# updated before any same-market consumption scans the market stock.
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_country
+			save_temporary_scope_as = modeu5_promoted_market_capacity_country
+			modeu5_prepare_promoted_country_market_capacity = {
+				country = scope:modeu5_promoted_market_capacity_country
+				market = scope:modeu5_market
+			}
+			modeu5_note_promoted_market_live_capacity_country = yes
+			modeu5_note_promoted_market_live_us00_country_pass = yes
+			modeu5_pr71_process_us00_monthly_market_active_goods = yes
+		}
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_country
+			modeu5_note_promoted_market_live_us10_country_pass = yes
+			modeu5_pr71_process_us10_monthly_market_pending_goods = yes
+		}
+	}
+
+	modeu5_note_promoted_market_live_local_market_processed = yes
+}
+
+modeu5_run_monthly_promoted_market_local_cycle = {
+	save_temporary_scope_as = modeu5_promoted_market_cycle_country
+	modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics = yes
+	modeu5_note_promoted_market_live_dispatcher_run = yes
+
+	every_market_center_in_country = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_mark_monthly_market_seen = yes
+		modeu5_prepare_market_runtime_accounting_mode = {
+			market = scope:modeu5_market
+		}
+		if = {
+			limit = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
+			modeu5_note_promoted_market_live_detailed_market = yes
+			modeu5_run_promoted_market_live_local_branch_market_all_goods = {
+				country = scope:modeu5_promoted_market_cycle_country
+				market = scope:modeu5_market
+			}
+		}
+		else_if = {
+			limit = { modeu5_market_runtime_use_vanilla_fallback_trigger = yes }
+			modeu5_note_promoted_market_live_fallback_market = yes
+			modeu5_note_us00_vanilla_fallback_market = yes
+			modeu5_note_us10_vanilla_fallback_market = yes
+		}
+		else_if = {
+			limit = { modeu5_market_runtime_blocked_trigger = yes }
+			modeu5_note_promoted_market_live_blocked_market = yes
+			modeu5_note_runtime_blocked_market = yes
 		}
 	}
 }

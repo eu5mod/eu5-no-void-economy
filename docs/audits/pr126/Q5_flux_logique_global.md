@@ -322,3 +322,61 @@ Known PR5 boundary:
   cache when own stock cannot satisfy the request;
 - PR5 establishes the outer local branch, owner-guard expectation, and scoped
   validation shape for the next stacked PR, not the final optimized monthly cycle.
+
+## 11. PR7 live monthly dispatcher contract
+
+PR7 switches `modeu5_run_monthly_stock_cycle` from the older separated
+US-00-all-markets / US-10-all-markets calls to one promoted-market local
+dispatcher plus one country-owned trade pass:
+
+```txt
+monthly_country_pulse
+  -> modeu5_run_monthly_stock_cycle
+      -> runtime ready gate
+      -> performance human-relevant market refresh
+      -> current-country capacity refresh
+      -> monthly market seen registry
+      -> modeu5_run_monthly_promoted_market_local_cycle
+          -> every_market_center_in_country
+          -> modeu5_prepare_market_runtime_accounting_mode
+          -> detailed: rebuild current market country cache once
+          -> detailed: refresh capacities for countries present in the market
+          -> detailed: run US-00 for all present countries and all goods
+          -> detailed: run US-10 same-market monthly requests for all present countries and all goods
+          -> fallback: leave the market to vanilla behavior
+      -> modeu5_run_monthly_country_trade_owner_cycle
+      -> monthly audit reconciliation when audit mode is enabled
+```
+
+The owner guard for the live local branch is `every_market_center_in_country`.
+This preserves the PR126 anti-duplication rule: a market-local mutation branch
+can run only from the market-center country pulse, not from every country that
+has locations in the market.
+
+Performance mode does **not** disable vanilla markets. It narrows ModeU5
+detailed accounting to markets that were marked human-relevant and successfully
+promoted to detailed accounting. Non-human-relevant markets take the explicit
+vanilla fallback path for ModeU5 stock effects.
+
+US-00 and US-10 are intentionally ordered in two phases inside each promoted
+market: all US-00 production/admission work for present countries runs before
+any US-10 same-market demand request for that market. This avoids a first
+country's consumption pass reading the market before another present country's
+current-month production has been admitted.
+
+The country-owned trade pass remains separate from the promoted-market local
+branch. `every_trade` is confirmed as a country-scope iterator, so PR7 calls
+`modeu5_run_monthly_country_trade_owner_cycle` once from the current country
+after local market work. It must not be filtered to the currently promoted
+market, and it must not write stock directly.
+
+The PR7 comparison probe (`event modeu5_pr126_debug.1` -> monthly dispatcher
+comparison) records:
+
+| Metric family | Purpose |
+|---|---|
+| `modeu5_promoted_market_live_markets_detailed/fallback/blocked` | Compare Normal and Performance market routing. |
+| `modeu5_promoted_market_live_country_cache_rebuilds` | Confirm the local branch rebuilds the market country cache once per detailed market. |
+| `modeu5_promoted_market_live_us00_good_scans` / `modeu5_promoted_market_live_us10_good_scans` | Confirm Performance reduces detailed per-good work. |
+| `modeu5_promoted_market_live_trade_owner_passes` | Confirm the country trade-owner pass still runs in both modes. |
+| wheat consumption outcome in Normal and Performance | Confirm controlled stock behavior remains comparable while scan counts differ. |
