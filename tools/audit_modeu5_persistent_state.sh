@@ -32,6 +32,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
 	"in_game/common/scripted_effects/modeu5_core04_market_entry_effects.txt"
 	"in_game/common/scripted_effects/modeu5_us10_ui_effects.txt"
+	"in_game/common/scripted_effects/modeu5_us00_market_production_cache_effects.txt"
 )
 
 for file in "${scan_files[@]}"; do
@@ -60,11 +61,12 @@ name_context_patterns = [
 free_patterns = [
     re.compile(r"__[A-Z0-9_]+_(?:MAP|LIST)__"),
     re.compile(r"\bmodeu5_\$\{good\}_[A-Za-z0-9_]+(?:_by_market|_markets|_suppliers|_market_stock)\b"),
+    re.compile(r"\bmodeu5_\$key\$_vanilla_produced_markets\b"),
     re.compile(r"\bmodeu5_(?:consumption|trade)___GOOD___[A-Za-z0-9_]+_by_market\b"),
 ]
 
 def normalize_good(name: str) -> str:
-    normalized = name.replace("${good}", "<good>").replace("___GOOD___", "_<good>_")
+    normalized = name.replace("${good}", "<good>").replace("$key$", "<good>").replace("___GOOD___", "_<good>_")
     for good in goods:
         normalized = re.sub(rf"\bmodeu5_{re.escape(good)}_", "modeu5_<good>_", normalized)
         normalized = re.sub(rf"\bmodeu5_consumption_{re.escape(good)}_", "modeu5_consumption_<good>_", normalized)
@@ -91,7 +93,11 @@ def is_state_like(name: str) -> bool:
         "modeu5_<good>_dirty_markets",
         "modeu5_<good>_us10_sparse_suppliers",
     }
-    return name in known_lists or name in known_good_lists or name == "modeu5_<good>_market_stock"
+    known_good_maps = {
+        "modeu5_<good>_market_stock",
+        "modeu5_<good>_vanilla_produced_markets",
+    }
+    return name in known_lists or name in known_good_lists or name in known_good_maps
 
 for path in files:
     text = path.read_text(encoding="utf-8")
@@ -139,6 +145,7 @@ modeu5_<good>_ui_monthly_consumption_by_market	variable map	UI monthly counter	h
 modeu5_<good>_ui_monthly_surplus_by_market	variable map	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
 modeu5_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 previous-state scheduling
 modeu5_<good>_us10_sparse_suppliers	global list	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
+modeu5_<good>_vanilla_produced_markets	global variable map	monthly cache	global	US-00 vanilla production-cache refresh	replace during monthly production-cache refresh	refreshed monthly per market-center country
 modeu5_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 modeu5_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 modeu5_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair

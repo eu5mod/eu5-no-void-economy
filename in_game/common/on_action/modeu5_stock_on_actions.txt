@@ -44,6 +44,7 @@ modeu5_capacity_capital_moved_pulse = {
 
 modeu5_monthly_stock_cycle_pulse = {
 	effect = {
+		modeu5_refresh_us00_vanilla_market_production_cache_current_country = yes
 		modeu5_run_monthly_stock_cycle = yes
 		modeu5_core04_refresh_current_country_location_market_memory = yes
 	}
