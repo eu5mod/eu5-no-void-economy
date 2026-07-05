@@ -12,6 +12,7 @@ required_templates=(
 	"tools/templates/modeu5_good_transport_helper.template.txt"
 	"tools/templates/modeu5_us10_stock_table_row.template.gui"
 	"tools/templates/modeu5_us10_market_production_good.template.txt"
+	"tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt"
 )
 
 for template in "${required_templates[@]}"; do
@@ -23,6 +24,7 @@ required_common_tooling_users=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
+	"tools/generate_pr71_active_good_dispatch_helpers.sh"
 )
 
 for script in "${required_common_tooling_users[@]}"; do
@@ -33,6 +35,7 @@ per_good_generators=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
+	"tools/generate_pr71_active_good_dispatch_helpers.sh"
 )
 
 for script in "${per_good_generators[@]}"; do
