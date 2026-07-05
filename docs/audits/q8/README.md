@@ -34,6 +34,20 @@ Read these first:
 
 Q5.x flow clarifications belong with Q5, not with the Q8 future-optimisation findings. If a Q5.2 checkpoint is added later, place it as a Q5 subsection or immediate follow-up to Q5.1 before the Q8 documents in this reading order.
 
+## Q1–Q5 actualisation rule for stacked PRs
+
+Every stacked Q8 PR must explicitly check the inherited PR126 Q1–Q5 audit documents:
+
+```txt
+Q1 — file architecture / owning file changes
+Q2 — cache system, ownership, rebuild, reset, source-vs-cache classification
+Q3 — redundancy, helper duplication, generated repetition boundaries
+Q4 — loops, performance model, counters, dispatch ownership
+Q5 — global flow, phase order, ownership split
+```
+
+If a stacked PR materially changes a Q1–Q5 contract, it must update the affected source document or add a dedicated actualisation file explaining the update. If a document is not affected, the PR should say so explicitly.
+
 ## Q8 target outcome
 
 The target is not one large runtime rewrite. The target is an ordered optimisation programme:
