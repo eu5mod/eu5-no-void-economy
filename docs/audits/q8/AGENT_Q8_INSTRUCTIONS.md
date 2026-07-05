@@ -13,16 +13,21 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 ```txt
 1. AGENTS.md
 2. docs/audits/q8/README.md
-3. docs/audits/q8/Q8_0_POST_PR126_BASELINE_AUDIT.md
-4. docs/audits/q8/Q8_IMPLEMENTATION_BACKLOG.md
-5. docs/audits/pr126/Q5_flux_logique_global.md
-6. docs/audits/pr126/Q5.1_current_global_flow.md
-7. docs/audits/pr126/Q8_future_optimisations.md
-8. docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md
-9. docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md
-10. docs/audits/pr126/Q8_F9C_market_sliced_verifier.md
-11. docs/technical/PERSISTENT_STATE_AUDIT.md
-12. docs/technical/TECH-01_engine_exposure_matrix.md
+3. docs/audits/q8/Q1_architecture_fichiers.md
+4. docs/audits/q8/Q2_systeme_cache.md
+5. docs/audits/q8/Q3_redondances_code.md
+6. docs/audits/q8/Q4_boucles_performance.md
+7. docs/audits/q8/Q5_flux_logique_global.md
+8. docs/audits/q8/Q8_0_POST_PR126_BASELINE_AUDIT.md
+9. docs/audits/q8/Q8_IMPLEMENTATION_BACKLOG.md
+10. docs/audits/pr126/Q5_flux_logique_global.md
+11. docs/audits/pr126/Q5.1_current_global_flow.md
+12. docs/audits/pr126/Q8_future_optimisations.md
+13. docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md
+14. docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md
+15. docs/audits/pr126/Q8_F9C_market_sliced_verifier.md
+16. docs/technical/PERSISTENT_STATE_AUDIT.md
+17. docs/technical/TECH-01_engine_exposure_matrix.md
 ```
 
 ## Work rules
@@ -38,7 +43,7 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 8. Do not rely on market-scope variables unless TECH-01 confirms support.
 9. Do not fuse US-10 into the US-00 pass if that breaks the all-present-countries US-00 before any US-10 invariant.
 10. Every new persistent map/list family must be documented and accepted by `tools/audit_modeu5_persistent_state.sh`.
-11. Every stacked PR must include a Q1-Q5 actualisation check: update affected Q1-Q5 documents directly when the change materially changes their contract, or add an explicit note explaining why each Q1-Q5 document is not affected.
+11. Every stacked PR must update the relevant Q8-owned Q-docs in `docs/audits/q8/Q1...Q5...md` when it affects file ownership, cache ownership, redundancy, loop shape, or global flow. If a Q-doc is not affected, state that in the PR body.
 ```
 
 ## Branch naming
@@ -68,9 +73,9 @@ This PR implements / audits Q8.<n>: <name>.
 - <files touched>
 - <runtime behaviour changed? yes/no>
 
-## Q1-Q5 actualisation
+## Q1–Q5 Q8 audit docs
 
-State which inherited PR126 audit documents are affected:
+State which Q8-owned audit docs are updated:
 
 ```txt
 Q1 architecture/files: <updated / not affected + why>
@@ -80,7 +85,7 @@ Q4 loops/performance: <updated / not affected + why>
 Q5 global flow: <updated / not affected + why>
 ```
 
-If a contract changes materially, update the relevant Q1-Q5 source document or add a dedicated actualisation file in the stacked PR.
+Update the relevant `docs/audits/q8/Qx_*.md` files directly when the PR materially changes their contract.
 
 ## Guardrails
 
