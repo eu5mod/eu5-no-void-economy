@@ -16,6 +16,13 @@ Use this checklist when reviewing the PR7.1 follow-up.
 - [ ] Sparse supplier lists remain candidate-country narrowing, not a replacement good scheduler.
 - [ ] Vanilla fallback markets remain vanilla and do not create partial ModeU5 country-market-good state.
 
+## Q4.1 loop shape
+
+- [ ] Capacity refresh is fused into the US-00 country-present pass.
+- [ ] US-10 remains in a second country-present pass after all present-country US-00 work.
+- [ ] The local branch still rebuilds `countries_present_in_market` once for the promoted market.
+- [ ] `every_trade` remains outside the promoted-market local branch.
+
 ## Metrics
 
 - [ ] Metrics distinguish generated helper calls from meaningful business work.
