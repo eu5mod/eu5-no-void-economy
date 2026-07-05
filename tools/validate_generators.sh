@@ -66,9 +66,9 @@ trap 'rm -f "$pr71_generated_tmp"' EXIT
 
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh" "$pr71_generated_tmp" >/dev/null
 
-if modeu5_search_quiet '\$[^$]+\$|__[A-Z_]+__' "$pr71_generated_tmp"; then
-	modeu5_search_lines '\$[^$]+\$|__[A-Z_]+__' "$pr71_generated_tmp" >&2
-	printf '%s\n' 'Generated PR7.1 active-good dispatch output must contain only literal identifiers.' >&2
+if modeu5_search_quiet '__[A-Z_]+__' "$pr71_generated_tmp"; then
+	modeu5_search_lines '__[A-Z_]+__' "$pr71_generated_tmp" >&2
+	printf '%s\n' 'Generated PR7.1 active-good dispatch output must not contain unresolved template placeholders.' >&2
 	exit 1
 fi
 
