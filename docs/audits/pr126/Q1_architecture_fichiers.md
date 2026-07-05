@@ -51,6 +51,24 @@ ModeU5's architecture is healthy if each domain remains the owner of a precise t
 | Repeated per-good block | `GENERATOR_AND_VALIDATOR_MODEL.md` | template + generator | `generate_all`, `validate_generators` |
 | Configuration / package marker | `MODULE_OPTION_MODEL.md` | configuration/CMM files | package validation |
 
+## PR126 naming convention
+
+`pr126` is a test/probe namespace, not a runtime product namespace. Keep
+`modeu5_pr126_*` names in deterministic test effects, debug events, temporary
+test metrics, and PR126 audit documentation. Runtime effects, persistent maps,
+and monthly dispatcher surfaces should use durable business names such as:
+
+```txt
+modeu5_run_monthly_promoted_market_cycle
+modeu5_run_monthly_country_trade_owner_cycle
+modeu5_promoted_markets_this_cycle
+modeu5_country_trade_owner_*
+```
+
+When a PR126 test needs to assert runtime metrics, initialize the test variable,
+snapshot it into a temporary `scope:` value, and compare the `scope:` values.
+Do not compare `var:` values directly in `limit` blocks.
+
 ## Target structure contract
 
 ```txt
