@@ -23,11 +23,12 @@ Read these first:
 
 | Source | Why it matters |
 |---|---|
+| `docs/audits/pr126/Q5_flux_logique_global.md` | Current monthly ordering and target workflow |
+| `docs/audits/pr126/Q5.1_current_global_flow.md` | Post-PR144/Q4.1/PR7.1 live-flow checkpoint and guarded-dispatch diagram |
 | `docs/audits/pr126/Q8_future_optimisations.md` | Original F1–F7 future optimisation list |
 | `docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md` | Location-derived dirty-set and rolling verification idea |
 | `docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md` | Storage constraints and narrowing of F9 |
 | `docs/audits/pr126/Q8_F9C_market_sliced_verifier.md` | Market-sliced verifier probe and Performance Mode variant |
-| `docs/audits/pr126/Q5_flux_logique_global.md` | Current monthly ordering and target workflow |
 | `docs/technical/PERSISTENT_STATE_AUDIT.md` | Persistent map/list classification rules |
 | `docs/technical/TECH-01_engine_exposure_matrix.md` | Confirmed and unconfirmed engine exposure |
 
