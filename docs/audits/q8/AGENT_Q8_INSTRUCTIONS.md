@@ -38,6 +38,7 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 8. Do not rely on market-scope variables unless TECH-01 confirms support.
 9. Do not fuse US-10 into the US-00 pass if that breaks the all-present-countries US-00 before any US-10 invariant.
 10. Every new persistent map/list family must be documented and accepted by `tools/audit_modeu5_persistent_state.sh`.
+11. Every stacked PR must include a Q1-Q5 actualisation check: update affected Q1-Q5 documents directly when the change materially changes their contract, or add an explicit note explaining why each Q1-Q5 document is not affected.
 ```
 
 ## Branch naming
@@ -66,6 +67,20 @@ This PR implements / audits Q8.<n>: <name>.
 - <one layer only>
 - <files touched>
 - <runtime behaviour changed? yes/no>
+
+## Q1-Q5 actualisation
+
+State which inherited PR126 audit documents are affected:
+
+```txt
+Q1 architecture/files: <updated / not affected + why>
+Q2 cache system: <updated / not affected + why>
+Q3 redundancy/code generation: <updated / not affected + why>
+Q4 loops/performance: <updated / not affected + why>
+Q5 global flow: <updated / not affected + why>
+```
+
+If a contract changes materially, update the relevant Q1-Q5 source document or add a dedicated actualisation file in the stacked PR.
 
 ## Guardrails
 
