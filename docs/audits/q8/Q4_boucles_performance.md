@@ -108,3 +108,17 @@ O(C * M_c preparation) + O(P * K_m * G_a) + O(C * T_country)
 ```
 
 But the constant factor inside capacity preparation and promoted-market country-market capacity refresh is reduced for countries seen repeatedly in the same month.
+
+## Q8.2 / Q8.4 / Q8.5 / Q8.6 / Q8.7 probe update
+
+PR #150 contains all five remaining probes in one PR. They are test-package probes only and do not change the runtime work model yet.
+
+```txt
+Q8.2 — pending-request probe before an aggregate country-market gate.
+Q8.4 — helper inventory bridge before any body-helper split.
+Q8.5 — dirty repair lifecycle probe before cache expansion.
+Q8.6 — candidate market slice probe before verifier promotion.
+Q8.7 — isolated global market iterator exposure probe before dispatcher replacement.
+```
+
+The Q4 classification remains `PROBE_FIRST` until runtime logs are attached to #150.
