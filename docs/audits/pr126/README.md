@@ -15,7 +15,8 @@ This folder is the context base for agents that need to turn the PR126 audit int
 | 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
 | 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
 | 7 | [Q8 — Future optimisations](./Q8_future_optimisations.md) | Track follow-up performance findings without widening the active PR |
-| 8 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
+| 8 | [Q8/F9 — Rolling location cache](./Q8_F9_location_cache_rolling_verification.md) | Evaluate the location owner/market cache, rolling verification, and Q4 win estimate |
+| 9 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
 ## Global executive summary
 
