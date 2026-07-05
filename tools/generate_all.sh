@@ -10,6 +10,7 @@ modeu5_load_local_config
 
 "$repo_root/tools/generate_stock_good_helpers.sh"
 python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
+bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
 "$repo_root/tools/generate_good_transport_helpers.sh"
 bash "$repo_root/tools/generate_us10_ui_helpers.sh"
 
