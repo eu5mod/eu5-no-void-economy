@@ -128,7 +128,7 @@ TXT
 	cat <<'TXT'
 }
 
-# Override the PR7 live local branch with the PR7.1 guarded dispatch path.
+# Override the PR7 live local branch with the Q4.1 / PR7.1 guarded dispatch path.
 # The name intentionally matches the PR7 effect so the monthly stock cycle keeps
 # the same external contract while the inner per-good calls are narrowed.
 modeu5_run_promoted_market_live_local_branch_market_all_goods = {
@@ -150,22 +150,19 @@ modeu5_run_promoted_market_live_local_branch_market_all_goods = {
 
 	if = {
 		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+
+		# Q4.1 loop merge: capacity refresh is fused with the US-00 country pass.
+		# Keep US-10 in a second pass so every present country's US-00 facts are
+		# updated before any same-market consumption scans the market stock.
 		every_in_global_list = {
 			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_country
 			save_temporary_scope_as = modeu5_promoted_market_capacity_country
 			modeu5_prepare_promoted_country_market_capacity = {
 				country = scope:modeu5_promoted_market_capacity_country
 				market = scope:modeu5_market
 			}
 			modeu5_note_promoted_market_live_capacity_country = yes
-		}
-
-		# Preserve the economic order: all country production/admission and US-00
-		# ledgers for the market are updated before any same-market consumption
-		# request can scan the market's country stock.
-		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
-			save_temporary_scope_as = modeu5_country
 			modeu5_note_promoted_market_live_us00_country_pass = yes
 			modeu5_pr71_process_us00_monthly_market_active_goods = yes
 		}
