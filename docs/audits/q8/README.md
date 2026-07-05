@@ -32,6 +32,8 @@ Read these first:
 | `docs/technical/PERSISTENT_STATE_AUDIT.md` | Persistent map/list classification rules |
 | `docs/technical/TECH-01_engine_exposure_matrix.md` | Confirmed and unconfirmed engine exposure |
 
+Q5.x flow clarifications belong with Q5, not with the Q8 future-optimisation findings. If a Q5.2 checkpoint is added later, place it as a Q5 subsection or immediate follow-up to Q5.1 before the Q8 documents in this reading order.
+
 ## Q8 target outcome
 
 The target is not one large runtime rewrite. The target is an ordered optimisation programme:
