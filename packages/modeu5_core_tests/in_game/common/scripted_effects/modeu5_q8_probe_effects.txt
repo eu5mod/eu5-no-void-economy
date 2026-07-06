@@ -199,52 +199,82 @@ modeu5_q8_probe_market_sliced_verifier_candidate = {
 }
 
 modeu5_q8_7_increment_global_market_count = {
-	set_global_variable = {
-		name = modeu5_test_q8_7_global_market_count
-		value = {
-			value = global_var:modeu5_test_q8_7_global_market_count
-			add = 1
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_global_market_count
+			value = {
+				value = global_var:modeu5_test_q8_7_global_market_count
+				add = 1
+			}
 		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_count value = 1 }
 	}
 }
 
 modeu5_q8_7_increment_global_market_unique_count = {
-	set_global_variable = {
-		name = modeu5_test_q8_7_global_market_unique_count
-		value = {
-			value = global_var:modeu5_test_q8_7_global_market_unique_count
-			add = 1
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_unique_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_global_market_unique_count
+			value = {
+				value = global_var:modeu5_test_q8_7_global_market_unique_count
+				add = 1
+			}
 		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_unique_count value = 1 }
 	}
 }
 
 modeu5_q8_7_increment_global_market_duplicate_count = {
-	set_global_variable = {
-		name = modeu5_test_q8_7_global_market_duplicate_count
-		value = {
-			value = global_var:modeu5_test_q8_7_global_market_duplicate_count
-			add = 1
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_duplicate_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_global_market_duplicate_count
+			value = {
+				value = global_var:modeu5_test_q8_7_global_market_duplicate_count
+				add = 1
+			}
 		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_duplicate_count value = 1 }
 	}
 }
 
 modeu5_q8_7_increment_market_country_cache_rebuild_count = {
-	set_global_variable = {
-		name = modeu5_test_q8_7_market_country_cache_rebuild_count
-		value = {
-			value = global_var:modeu5_test_q8_7_market_country_cache_rebuild_count
-			add = 1
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_market_country_cache_rebuild_count
+			value = {
+				value = global_var:modeu5_test_q8_7_market_country_cache_rebuild_count
+				add = 1
+			}
 		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_market_country_cache_rebuild_count value = 1 }
 	}
 }
 
 modeu5_q8_7_increment_market_country_cache_failed_count = {
-	set_global_variable = {
-		name = modeu5_test_q8_7_market_country_cache_failed_count
-		value = {
-			value = global_var:modeu5_test_q8_7_market_country_cache_failed_count
-			add = 1
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_market_country_cache_failed_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_market_country_cache_failed_count
+			value = {
+				value = global_var:modeu5_test_q8_7_market_country_cache_failed_count
+				add = 1
+			}
 		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_market_country_cache_failed_count value = 1 }
 	}
 }
 
@@ -294,11 +324,6 @@ modeu5_q8_probe_global_market_iterator_exposure = {
 	remove_global_variable = modeu5_test_q8_7_global_market_duplicate_count
 	remove_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count
 	remove_global_variable = modeu5_test_q8_7_market_country_cache_failed_count
-	set_global_variable = { name = modeu5_test_q8_7_global_market_count value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_global_market_unique_count value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_global_market_duplicate_count value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_market_country_cache_rebuild_count value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_market_country_cache_failed_count value = 0 }
 
 	if = {
 		limit = { has_global_variable_list = modeu5_q8_7_global_market_seen_markets }
@@ -320,11 +345,14 @@ modeu5_q8_probe_global_market_iterator_exposure = {
 
 	if = {
 		limit = {
+			has_global_variable = modeu5_test_q8_7_global_market_count
 			global_var:modeu5_test_q8_7_global_market_count > 0
+			has_global_variable = modeu5_test_q8_7_global_market_unique_count
 			global_var:modeu5_test_q8_7_global_market_unique_count > 0
-			global_var:modeu5_test_q8_7_global_market_duplicate_count < 1
+			NOT = { has_global_variable = modeu5_test_q8_7_global_market_duplicate_count }
+			has_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count
 			global_var:modeu5_test_q8_7_market_country_cache_rebuild_count > 0
-			global_var:modeu5_test_q8_7_market_country_cache_failed_count < 1
+			NOT = { has_global_variable = modeu5_test_q8_7_market_country_cache_failed_count }
 		}
 		set_global_variable = modeu5_test_q8_7_global_market_probe_passed
 		debug_log = "ModeU5 Q8.7 PROBE global_market_local_pass PASS"
