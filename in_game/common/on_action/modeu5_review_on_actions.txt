@@ -1,0 +1,11 @@
+monthly_country_pulse = {
+	on_actions = {
+		modeu5_review_printing_press_pulse
+	}
+}
+
+modeu5_review_printing_press_pulse = {
+	effect = {
+		trigger_event_non_silently = modeu5_review.1
+	}
+}
