@@ -159,3 +159,148 @@ confirmed topology/lifecycle producer
 ```
 
 The dirty repair path is scheduling/repair flow only. It does not authorize a durable `market -> countries_present_in_market` cache and does not change stock mutation order.
+
+## Mermaid flow delta — before this PR vs HEAD
+
+Source for the before-state is `docs/audits/pr126/Q5.1_current_global_flow.md`. That document records the PR144 + Q4.1/PR7.1 global flow before the Q8.2/Q8.5 implementation.
+
+### Before this PR — Q5.1 / PR144 + Q4.1 / PR7.1
+
+```mermaid
+flowchart TB
+    subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
+        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
+        B --> P0["performance / relevance preparation"]
+        P0 --> P1["current-country capacity refresh"]
+        P1 --> P2["monthly market seen registry"]
+        P2 --> L0["modeu5_run_monthly_promoted_market_local_cycle"]
+
+        subgraph LOOP_MARKET_CENTER["Loop: every_market_center_in_country"]
+            L0 --> L1["prepare market runtime accounting mode"]
+            L1 --> L2{"market runtime mode"}
+            L2 -->|detailed| L3["modeu5_run_promoted_market_live_local_branch_market_all_goods"]
+
+            subgraph LOOP_MARKET_LOC["Loop: every_location_in_market"]
+                L3 --> M0["rebuild countries_present_in_market"]
+            end
+
+            subgraph LOOP_COUNTRIES_CAP_US00["Loop: countries_present_in_market / fused capacity + US-00"]
+                M0 --> D1["refresh country-market capacity"]
+                D1 --> U1["modeu5_pr71_process_us00_monthly_market_active_goods"]
+                U1 --> U2["generated per-good US-00 active-good guard"]
+                U2 --> U3{"produced or previous US-00 state?"}
+                U3 -->|yes| U4["heavy US-00 helper"]
+                U3 -. no .-> U5["skip heavy US-00 helper"]
+            end
+
+            subgraph LOOP_COUNTRIES_US10["Loop: countries_present_in_market / US-10 pass"]
+                U4 --> S0["modeu5_pr71_process_us10_monthly_market_pending_goods"]
+                U5 --> S0
+                S0 --> S1["generated per-good US-10 pending wrapper"]
+                S1 --> S2{"pending same-market request?"}
+                S2 -->|yes| S3["heavy US-10 helper"]
+                S2 -. no .-> S4["skip heavy US-10 helper"]
+            end
+
+            S3 --> LEND["record local market processed"]
+            S4 --> LEND
+            L2 -->|vanilla fallback| F1["record fallback / no ModeU5 mutation"]
+            L2 -->|blocked| F2["record blocked"]
+        end
+
+        LEND --> T0["modeu5_run_monthly_country_trade_owner_cycle"]
+        F1 --> T0
+        F2 --> T0
+        T0 --> T1["country-scope every_trade / inter-market only"]
+        T1 --> R0["optional audit reconciliation"]
+    end
+```
+
+Before-state interpretation:
+
+```txt
+US-10 still had a per-good pending guard, but a no-request country-market still entered the generated per-good US-10 wrapper surface.
+Dirty market-country repair existed as a probe/consumer surface, but the guarded if-needed runtime consumer was not yet part of the Q8 implementation contract.
+```
+
+### HEAD after Q8.2 / Q8.5
+
+```mermaid
+flowchart TB
+    subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
+        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
+        B --> P0["performance / relevance preparation"]
+        P0 --> P1["current-country capacity refresh"]
+        P1 --> P2["monthly market seen registry"]
+        P2 --> L0["modeu5_run_monthly_promoted_market_local_cycle"]
+
+        subgraph LOOP_MARKET_CENTER["Loop: every_market_center_in_country"]
+            L0 --> L1["prepare market runtime accounting mode"]
+            L1 --> L2{"market runtime mode"}
+            L2 -->|detailed| L3["modeu5_run_promoted_market_live_local_branch_market_all_goods"]
+
+            subgraph LOOP_MARKET_LOC["Loop: every_location_in_market"]
+                L3 --> M0["rebuild countries_present_in_market"]
+            end
+
+            subgraph LOOP_COUNTRIES_CAP_US00["Loop: countries_present_in_market / fused capacity + US-00"]
+                M0 --> D1["refresh country-market capacity"]
+                D1 --> U1["modeu5_pr71_process_us00_monthly_market_active_goods"]
+                U1 --> U2["generated per-good US-00 active-good guard"]
+                U2 --> U3{"produced or previous US-00 state?"}
+                U3 -->|yes| U4["heavy US-00 helper"]
+                U3 -. no .-> U5["skip heavy US-00 helper"]
+            end
+
+            subgraph LOOP_COUNTRIES_US10["Loop: countries_present_in_market / US-10 pass"]
+                U4 --> S0["modeu5_pr71_process_us10_monthly_market_pending_goods"]
+                U5 --> S0
+                S0 --> G0["Q8.2: modeu5_pr71_prepare_us10_pending_request_gate"]
+                G0 --> G1{"any positive pending request for this country-market?"}
+                G1 -->|yes| S1["generated per-good US-10 pending wrapper"]
+                G1 -. no .-> S_SKIP["skip generated per-good US-10 dispatch"]
+                S1 --> S2{"pending same-market request for this good?"}
+                S2 -->|yes| S3["heavy US-10 helper"]
+                S2 -. no .-> S4["skip heavy US-10 helper"]
+            end
+
+            S3 --> LEND["record local market processed"]
+            S4 --> LEND
+            S_SKIP --> LEND
+            L2 -->|vanilla fallback| F1["record fallback / no ModeU5 mutation"]
+            L2 -->|blocked| F2["record blocked"]
+        end
+
+        LEND --> T0["modeu5_run_monthly_country_trade_owner_cycle"]
+        F1 --> T0
+        F2 --> T0
+        T0 --> T1["country-scope every_trade / inter-market only"]
+        T1 --> R0["optional audit reconciliation"]
+    end
+
+    subgraph DIRTY_CACHE["Q8.5 dirty market-country cache scheduling"]
+        D0["topology / lifecycle producer"] --> D2["modeu5_mark_market_country_cache_dirty"]
+        D2 --> D3["modeu5_market_country_cache_dirty_markets"]
+        D3 --> D4["modeu5_repair_dirty_market_country_caches_if_needed"]
+        D4 --> D5["modeu5_rebuild_countries_present_in_market for dirty markets"]
+    end
+```
+
+HEAD interpretation:
+
+```txt
+Q8.2 adds a country-market aggregate gate before the generated per-good US-10 wrapper surface.
+No-request country-market pairs now skip generated per-good US-10 dispatch entirely.
+Positive request country-market pairs still use the existing generated per-good wrappers and heavy helper gates.
+Q8.5 adds a guarded dirty repair consumer while keeping modeu5_countries_present_in_market as a rebuilt current-market work cache.
+```
+
+## Delta summary
+
+| Area | Before this PR | HEAD after this PR |
+|---|---|---|
+| US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; each good checks its own pending map. | Runs Q8.2 aggregate gate first; skips generated per-good US-10 dispatch if no positive pending request exists. |
+| US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Same behaviour after the aggregate gate passes. |
+| US-00 ordering | Runs before any US-10 pass. | Unchanged. |
+| Dirty market-country cache | Dirty writer/consumer existed and was probed. | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` is now part of the runtime contract. |
+| Durable per-market country-list cache | Not confirmed. | Still not confirmed; no durable `market -> countries_present_in_market` cache is introduced. |
