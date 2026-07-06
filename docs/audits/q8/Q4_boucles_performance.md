@@ -30,6 +30,7 @@ monthly_country_pulse
 | `G_supported` | generated supported goods |
 | `G_a` | active / produced / pending goods after Q8 guards |
 | `T_country` | trade candidates owned by a country |
+| `V_m` | candidate markets selected by the Q8.6 verifier slice |
 
 ## Target work shape
 
@@ -38,6 +39,7 @@ country preparation:              O(C * M_c)
 promoted-market local work:        O(P * K_m * G_a)
 country-owned trade pass:          O(C * T_country)
 validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
+Q8.6 verifier slice:               O(V_m * locations_in_candidate_market), debug/audit only
 ```
 
 ## Current Q8 classification
@@ -49,7 +51,7 @@ validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
 | Q8.3 / F1 | avoid repeated country-wide capacity-pool calculation inside promoted-market capacity refresh | IMPLEMENTED |
 | Q8.4 / F4 | reduce duplicate guard layers after caller inventory | PROBE_FIRST |
 | Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | IMPLEMENTED |
-| Q8.6 / F9c | verify candidate/dirty market slices before verifier promotion | PROBE_FIRST |
+| Q8.6 / F9c | verify candidate/dirty market slices before verifier promotion | IMPLEMENTED as debug/audit candidate slice; no stock repair |
 | Q8.7 / F7 | replace market-center ownership workaround only if global market pass is proven safe | PROBE_FIRST |
 
 ## Performance guardrails
@@ -177,3 +179,30 @@ scope: dirty markets only
 ```
 
 It does not introduce durable per-market country-list storage and therefore does not change the Q4 assumption that `modeu5_countries_present_in_market` is a rebuilt current-market work cache.
+
+## Q8.6 implementation update
+
+Q8.6 adds a bounded debug/audit verifier slice:
+
+```txt
+candidate producers:
+  modeu5_market_country_cache_dirty_markets
+  modeu5_promoted_markets_this_cycle
+
+candidate list:
+  modeu5_market_sliced_verifier_candidate_markets
+
+runner:
+  modeu5_run_market_sliced_verifier_candidates
+```
+
+Work shape:
+
+```txt
+build candidate list from dirty/promoted markets
+for each candidate market only:
+  rebuild current-market countries_present_in_market work cache
+  record pass/fail counters
+```
+
+This changes validation/debug work shape only. It avoids blind world-location scans and does not run in normal runtime unless debug/audit mode enables the verifier.
