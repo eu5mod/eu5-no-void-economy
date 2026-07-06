@@ -1,0 +1,26 @@
+namespace = modeu5_review
+
+modeu5_review.1 = {
+	type = country_event
+	title = modeu5_review.1.title
+	desc = modeu5_review.1.desc
+	historical_info = modeu5_review.1.historical_info
+	outcome = neutral
+
+	trigger = {
+		is_ai = no
+		current_date >= 1450.1.1
+		NOT = { has_variable = modeu5_review_printing_press_prompt_seen }
+	}
+
+	immediate = {
+		set_variable = modeu5_review_printing_press_prompt_seen
+	}
+
+	option = {
+		name = modeu5_review.1.a
+	}
+	option = {
+		name = modeu5_review.1.b
+	}
+}
