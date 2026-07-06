@@ -172,24 +172,23 @@ while IFS= read -r -d '' source_file; do
 		printf '%s\n' '# Do not edit manually.'
 		printf '# Source: %s\n' "$(source_label "$source_file")"
 		printf '# Output multiplier: %s (%s%%)\n\n' "$(format_decimal "$output_multiplier")" "$percent"
-		MODEU5_US09_OUTPUT_MULTIPLIER="$output_multiplier" \
-			strip_utf8_bom_stream "$source_file" | perl -pe '
-				BEGIN {
-					$multiplier = $ENV{"MODEU5_US09_OUTPUT_MULTIPLIER"};
-				}
+		strip_utf8_bom_stream "$source_file" | MODEU5_US09_OUTPUT_MULTIPLIER="$output_multiplier" perl -pe '
+			BEGIN {
+				$multiplier = $ENV{"MODEU5_US09_OUTPUT_MULTIPLIER"};
+			}
 
-				sub format_decimal {
-					my ($value) = @_;
-					my $formatted = sprintf("%.10f", $value);
-					$formatted =~ s/0+$//;
-					$formatted =~ s/\.$/.0/;
-					return $formatted;
-				}
+			sub format_decimal {
+				my ($value) = @_;
+				my $formatted = sprintf("%.10f", $value);
+				$formatted =~ s/0+$//;
+				$formatted =~ s/\.$/.0/;
+				return $formatted;
+			}
 
-				if (/^(\s*output\s*=\s*)([0-9]+(?:\.[0-9]+)?)(\s*(?:#.*)?)$/) {
-					$_ = $1 . format_decimal($2 * $multiplier) . $3 . "\n";
-				}
-			'
+			if (/^(\s*output\s*=\s*)([0-9]+(?:\.[0-9]+)?)(\s*(?:#.*)?)$/) {
+				$_ = $1 . format_decimal($2 * $multiplier) . $3 . "\n";
+			}
+		'
 	} > "$output_file"
 
 	generated_building_files=$((generated_building_files + 1))
@@ -212,17 +211,16 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 	printf '# RGO expansion gold multiplier: %s (inverse of 1 + %s%%)\n\n' "$(format_decimal "$rgo_price_multiplier")" "$percent"
 
 	for price_key in "${price_keys[@]}"; do
-		source_gold="$([
-			TARGET_PRICE_KEY="$price_key" \
-				strip_utf8_bom_stream "$prices_source_file" | perl -0ne '
-					my $key = $ENV{"TARGET_PRICE_KEY"};
-					if (/\b\Q$key\E\s*=\s*\{[^{}]*?\bgold\s*=\s*([0-9]+(?:\.[0-9]+)?)/s) {
-						print $1;
-						exit 0;
-					}
-					exit 1;
-				'
-		)]"
+		source_gold="$(
+			strip_utf8_bom_stream "$prices_source_file" | TARGET_PRICE_KEY="$price_key" perl -0ne '
+				my $key = $ENV{"TARGET_PRICE_KEY"};
+				if (/\b\Q$key\E\s*=\s*\{[^{}]*?\bgold\s*=\s*([0-9]+(?:\.[0-9]+)?)/s) {
+					print $1;
+					exit 0;
+				}
+				exit 1;
+			'
+		)"
 		adjusted_gold="$(awk -v gold="$source_gold" -v multiplier="$rgo_price_multiplier" 'BEGIN { printf "%.12f", gold * multiplier }')"
 
 		printf '%s = {\n' "$price_key"
@@ -231,7 +229,7 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 	done
 } > "$prices_output_file"
 
-if grep -Iq . "$building_types_output_dir"/*.txt 2>/dev/null && grep -RIl $'\xEF\xBB\xBF' "$building_types_output_dir" "$prices_output_dir" >/dev/null 2>&1; then
+if LC_ALL=C grep -RIl $'\xEF\xBB\xBF' "$building_types_output_dir" "$prices_output_dir" >/dev/null 2>&1; then
 	printf '%s\n' 'Generated US-09 files must not contain UTF-8 BOM bytes.' >&2
 	exit 1
 fi
