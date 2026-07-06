@@ -25,7 +25,7 @@ Q8.3 — IMPLEMENTED: country capacity-pool stamping.
 Q8.4 — PROBED ONLY: helper inventory bridge passed; body-helper split remains blocked.
 Q8.5 — IMPLEMENTED IN STACKED PR: guarded dirty market-country cache repair consumer.
 Q8.6 — IMPLEMENTED IN STACKED PR: debug/audit market-sliced verifier over dirty/promoted candidate markets.
-Q8.7 — PROBED ONLY: every_market_in_world exposed in test package; no gameplay dispatcher replacement.
+Q8.7 — PROOF IN STACKED PR: native global market-local pass can be probed; no gameplay dispatcher replacement.
 ```
 
 ## Q8.1 / F3 — Gate or remove PR7.1 profiling counters
@@ -251,6 +251,11 @@ Replace the market-center ownership workaround with a structural market-owned pa
 
 ```txt
 Probe passed in the test package with count=129.
+Stacked Q8.7 proof PR expands this into a market-local pass proof:
+  every_market_in_world
+    -> deduplicate visited markets
+    -> rebuild countries_present_in_market from market scope
+    -> record stable PASS/FAIL counters
 No gameplay dispatcher replacement is implemented.
 ```
 
@@ -261,12 +266,14 @@ No gameplay dispatcher replacement is implemented.
 - Do not call `every_trade` from market scope.
 - Do not process market-local mutation once per country present.
 - If no safe global monthly entry point exists, keep the market-center workaround.
+- Q8.7 proof code must stay test-package only until a live replacement PR proves equivalent economic results.
 ```
 
 ### Exit criterion
 
 ```txt
 A future PR can switch live market-local work only after equivalent economic results and reduced work-shape counters are proven.
+The Q8.7 proof PR may prove native iterator + market-scope work-cache feasibility, but it does not authorize the live switch by itself.
 ```
 
 ## Rejected or postponed ideas
