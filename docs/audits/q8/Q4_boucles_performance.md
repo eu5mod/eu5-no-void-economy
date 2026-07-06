@@ -65,3 +65,72 @@ validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
 ## Q8.0 baseline decision
 
 Q8.0 freezes this post-PR126 performance model but does not alter runtime behaviour.
+
+## Q8.1 update — metric-write reduction
+
+Q8.1 changes metric-write cost, not the business loop count.
+
+```txt
+Normal runtime:
+  PR7.1 per-good business guards still run.
+  PR7.1 per-good metric writes are skipped unless debug/audit enables them.
+
+Debug/audit runtime:
+  PR7.1 counters remain available for validation/profile scenarios.
+```
+
+Interpretation:
+
+```txt
+Q8.1 reduces hot-path write overhead and debug-state churn in normal runtime.
+It does not yet reduce G_supported guard traversal.
+Q8.2 remains responsible for probing whether an aggregate US-10 country-market gate is needed.
+```
+
+## Q8.3 update — capacity-pool recalculation reduction
+
+Q8.3 changes the capacity-pool recalculation shape:
+
+```txt
+Before:
+  country-market capacity refresh could recalculate country-wide pool facts again for the same country/month.
+
+After:
+  first public pool calculation for country/month computes and caches country-wide pool facts;
+  later country-market refreshes reuse the stamped pool facts;
+  each market still recalculates merchant/trade-capacity contribution.
+```
+
+The high-level work model remains:
+
+```txt
+O(C * M_c preparation) + O(P * K_m * G_a) + O(C * T_country)
+```
+
+But the constant factor inside capacity preparation and promoted-market country-market capacity refresh is reduced for countries seen repeatedly in the same month.
+
+## Q8.2 / Q8.4 / Q8.5 / Q8.6 / Q8.7 probe update
+
+PR #150 contains all five remaining probes in one PR. They are test-package probes only and do not change the runtime work model yet.
+
+```txt
+Q8.2 — pending-request probe before an aggregate country-market gate.
+Q8.4 — helper inventory bridge before any body-helper split.
+Q8.5 — dirty repair lifecycle probe before cache expansion.
+Q8.6 — candidate market slice probe before verifier promotion.
+Q8.7 — isolated global market iterator exposure probe before dispatcher replacement.
+```
+
+Runtime validation attached to #150 on 2026-07-06 shows all five probes passed through:
+
+```txt
+event modeu5_q8_probe_debug.1
+```
+
+The full revalidation suite is not required for this performance-probe PR:
+
+```txt
+event modeu5_revalidate_debug.1   # not required for #150
+```
+
+The Q4 classification remains `PROBE_FIRST` for implementation. The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.
