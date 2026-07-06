@@ -48,3 +48,37 @@ modeu5_process_us10_monthly_market_good_wheat = yes
 ```
 
 Q8.4 remains blocked from implementation until a full caller inventory classifies all calls as safe guarded wrappers, explicit tests, or unsafe/unknown.
+
+## Q8.2 / Q8.5 implementation update
+
+Q8.2 changes the generated wrapper layer, not the heavy US-10 helper family.
+
+New generated wrapper helper:
+
+```txt
+modeu5_pr71_prepare_us10_pending_request_gate
+```
+
+Updated generated dispatcher:
+
+```txt
+modeu5_pr71_process_us10_monthly_market_pending_goods
+  -> modeu5_pr71_prepare_us10_pending_request_gate
+  -> if country-market has any pending request:
+       modeu5_pr71_process_us10_monthly_market_good_<good>
+```
+
+The existing per-good wrapper helpers and heavy helpers are preserved:
+
+```txt
+modeu5_pr71_process_us10_monthly_market_good_<good>
+modeu5_process_us10_monthly_market_good_<good>
+```
+
+Q8.5 adds a guarded dirty repair consumer but no parallel cache family:
+
+```txt
+modeu5_repair_dirty_market_country_caches_if_needed
+```
+
+This is intentionally not a body-helper split, not a durable per-market list, and not a replacement for `modeu5_rebuild_countries_present_in_market`.
