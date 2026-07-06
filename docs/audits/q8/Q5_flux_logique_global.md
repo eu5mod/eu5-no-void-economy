@@ -102,3 +102,31 @@ modeu5_apply_country_storage_capacity_pool_to_current_market
 ```
 
 The promoted-market dispatcher semantics are unchanged: it still gets a refreshed country-market capacity record before US-00, but the country-wide pool facts may be reused for that country during the same month.
+
+## Q8.2 / Q8.4 / Q8.5 / Q8.6 / Q8.7 probe update
+
+PR #150 contains all five remaining probes in one test-package PR and does not change the Q5 flow.
+
+```txt
+modeu5_q8_probe_us10_pending_gate
+modeu5_q8_probe_helper_inventory
+modeu5_q8_probe_dirty_cache_lifecycle
+modeu5_q8_probe_market_sliced_verifier_candidate
+modeu5_q8_probe_global_market_iterator_exposure
+```
+
+The aggregate event entry point is:
+
+```txt
+event modeu5_q8_probe_debug.1
+```
+
+Runtime validation attached on 2026-07-06 confirms the probe layer passed through this Q8-specific event.
+
+The full revalidation event is not required for this Q8 probe PR:
+
+```txt
+event modeu5_revalidate_debug.1   # not required for #150
+```
+
+Q5 phase order remains unchanged. No gameplay flow change is authorised by #150 until a later implementation PR proves equivalence and updates this document again.

@@ -105,3 +105,23 @@ Important distinction:
 The cached scalar pool facts do not replace country-market capacity maps.
 modeu5_stock_cap_by_market and capacity breakdown maps remain the country-market capacity records read by stock admission and UI/debug.
 ```
+
+## Q8.5 probe update — dirty cache lifecycle
+
+PR #150 adds a test-package dirty-cache lifecycle probe:
+
+```txt
+modeu5_q8_probe_dirty_cache_lifecycle
+```
+
+The probe marks the capital market dirty, runs the existing dirty repair consumer, and checks that the repair count is greater than zero.
+
+It confirms the current writer/consumer surface can be exercised:
+
+```txt
+modeu5_mark_market_country_cache_dirty
+modeu5_repair_dirty_market_country_caches
+modeu5_market_country_cache_dirty_markets
+```
+
+It does not add a new dirty cache model and does not mutate stock.
