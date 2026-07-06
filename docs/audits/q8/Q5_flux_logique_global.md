@@ -51,7 +51,7 @@ If Q5.2 is added later, it should be a Q5 flow checkpoint or subsection before Q
 | Country prep | country | capacity/relevance/monthly registries | may prepare caches, not repeat market-local mutation for each country. |
 | Promoted-market local | market-local logical owner, market-center workaround in current implementation | `modeu5_run_monthly_promoted_market_local_cycle` | process each promoted market once according to the chosen owner rule. |
 | US-00 | present country inside promoted market | PR7.1 active-good dispatch | run before US-10 for all present-country admission facts. |
-| US-10 local | present country inside promoted market | PR7.1 pending-request dispatch | same-market consumption only; keep after US-00. |
+| US-10 local | present country inside promoted market | PR7.1 pending-request dispatch with Q8.2 aggregate gate | same-market consumption only; skip per-good dispatch when no country-market request exists. |
 | Trade | country | country-owned trade pass | inter-market only; owner-gated; no direct stock writes. |
 | Validation | audit/debug/reconciliation surface | optional monthly/audit helpers | bounded, diagnostic, or repair after divergence. |
 
@@ -130,3 +130,32 @@ event modeu5_revalidate_debug.1   # not required for #150
 ```
 
 Q5 phase order remains unchanged. No gameplay flow change is authorised by #150 until a later implementation PR proves equivalence and updates this document again.
+
+## Q8.2 / Q8.5 implementation update
+
+Q8.2 preserves the phase order and changes only the internal US-10 local dispatch gate:
+
+```txt
+promoted-market local cycle
+  -> market country cache
+  -> country-market capacity refresh
+  -> US-00 active-good dispatch for all present countries
+  -> US-10 pending-request dispatch
+       -> Q8.2 aggregate country-market pending gate
+       -> if pending exists: existing per-good US-10 pending dispatcher
+       -> if no pending exists: skip generated per-good US-10 dispatcher
+```
+
+The US-00-before-US-10 invariant is unchanged. Q8.2 does not move consumption earlier and does not alter the stock resolver.
+
+Q8.5 preserves the same flow position for market-country work-cache rebuilds:
+
+```txt
+confirmed topology/lifecycle producer
+  -> modeu5_mark_market_country_cache_dirty
+  -> modeu5_market_country_cache_dirty_markets scheduling list
+  -> modeu5_repair_dirty_market_country_caches_if_needed
+  -> modeu5_rebuild_countries_present_in_market for dirty markets only
+```
+
+The dirty repair path is scheduling/repair flow only. It does not authorize a durable `market -> countries_present_in_market` cache and does not change stock mutation order.
