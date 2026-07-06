@@ -44,6 +44,12 @@ modeu5_require_match 'generate_local_runtime_config\.sh' \
 modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 	".modeu5.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
+modeu5_require_match 'strip_utf8_bom_stream' \
+	"tools/generate_us09_economy_overrides.sh" \
+	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'
+modeu5_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
+	"tools/generate_us09_economy_overrides.sh" \
+	'US-09 generator must fail if generated output still contains BOM bytes'
 
 local_runtime_tmp_normal="$(mktemp)"
 local_runtime_tmp_debug="$(mktemp)"
