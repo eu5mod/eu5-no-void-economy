@@ -1,0 +1,4 @@
+l_english:
+ modeu5_revalidate_debug.2.title: "ModeU5 Revalidate 2"
+ modeu5_revalidate_debug.2.desc: "Run the second manual revalidation surface for performance-mode and CMM accounting probes. This is separate from the main operations chain so PERF-14 diagnostics can be run and summarized explicitly."
+ modeu5_revalidate_debug.2.a: "Run PERF-14 performance/CMM revalidation"
