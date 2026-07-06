@@ -16,6 +16,8 @@
  no_void_economy__nve_no_void_economy_main_option_2_desc: "Detailed country-market accounting remains broadly available. More complete for diagnostics, but heavier."
  no_void_economy__nve_no_void_economy_main_option_3_name: "Deactivated"
  no_void_economy__nve_no_void_economy_main_option_3_desc: "Disables the main NVE economic behavior where supported."
+ no_void_economy__review_pop_name: "Review popup"
+ no_void_economy__review_pop_desc: "Shows one optional, historical-fun-fact reminder asking for a comment or review after 20 February 1524. The popup disables this setting after either answer."
  no_void_economy__nve_decay_activate_name: "(In development) Activate Goods Decay"
  no_void_economy__nve_decay_activate_desc: "Stocks will decay 1% each month."
  ## Trade Rework (nve_general_trade_rework) Group
@@ -100,6 +102,7 @@
  no_void_economy__nve_rebels_n_subjects__nve_rebels: "no_void_economy__nve_rebels_n_subjects__nve_rebels"
  no_void_economy__nve_rebels_n_subjects__Subjects: "no_void_economy__nve_rebels_n_subjects__Subjects"
  no_void_economy__nve_no_void_economy_main: "no_void_economy__nve_no_void_economy_main"
+ no_void_economy__review_pop: "no_void_economy__review_pop"
  no_void_economy__nve_decay_activate: "no_void_economy__nve_decay_activate"
  no_void_economy__activate_trade_cost: "no_void_economy__activate_trade_cost"
  no_void_economy__nve_debug_messages: "no_void_economy__nve_debug_messages"
