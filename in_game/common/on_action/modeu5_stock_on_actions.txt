@@ -7,7 +7,6 @@ on_game_start = {
 
 modeu5_start_game_stock_initialization_pulse = {
 	effect = {
-		modeu5_apply_local_runtime_mode = yes
 		modeu5_start_game_stock_initialization_dispatcher = yes
 		modeu5_core04_refresh_all_location_market_memory = yes
 	}
