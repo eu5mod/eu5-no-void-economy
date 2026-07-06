@@ -35,6 +35,11 @@ mkdir -p "$(dirname "$output")"
 # generated literal goods, but it no longer writes per-good debug/profile
 # counters unless debug or audit mode enabled those metrics.
 #
+# Q8.2 adds a generated country-market aggregate pending-request gate before
+# the US-10 per-good pending dispatcher. No-request country-market pairs skip
+# the generated per-good US-10 dispatcher entirely; positive pairs still use the
+# existing literal per-good pending maps and heavy helpers.
+#
 # The live monthly handoff is intentionally not generated here. EU5 rejects
 # duplicate scripted-effect keys, so the tracked PR7 live effect must call the
 # generated PR7.1 dispatchers directly.
@@ -119,6 +124,32 @@ modeu5_pr71_note_us10_request_processed = {
 	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_requests_processed value = { value = global_var:modeu5_pr71_us10_requests_processed add = 1 } } }
 }
 
+modeu5_pr71_prepare_us10_pending_request_gate = {
+	save_temporary_scope_value_as = { name = modeu5_pr71_us10_country_market_has_pending_request value = 0 }
+
+	scope:modeu5_country = {
+TXT
+
+	for good in "${goods[@]}"; do
+		cat <<TXT
+		if = {
+			limit = {
+				has_variable_map = modeu5_consumption_${good}_pending_requested_by_market
+				is_key_in_variable_map = {
+					name = modeu5_consumption_${good}_pending_requested_by_market
+					target = scope:modeu5_market
+				}
+				"variable_map(modeu5_consumption_${good}_pending_requested_by_market|scope:modeu5_market)" > 0
+			}
+			save_temporary_scope_value_as = { name = modeu5_pr71_us10_country_market_has_pending_request value = 1 }
+		}
+TXT
+	done
+
+	cat <<'TXT'
+	}
+}
+
 TXT
 
 	for good in "${goods[@]}"; do
@@ -136,11 +167,16 @@ TXT
 }
 
 modeu5_pr71_process_us10_monthly_market_pending_goods = {
+	modeu5_pr71_prepare_us10_pending_request_gate = yes
+
+	if = {
+		limit = { scope:modeu5_pr71_us10_country_market_has_pending_request > 0 }
 TXT
 	for good in "${goods[@]}"; do
-		printf '\tmodeu5_pr71_process_us10_monthly_market_good_%s = yes\n' "$good"
+		printf '\t\tmodeu5_pr71_process_us10_monthly_market_good_%s = yes\n' "$good"
 	done
 	cat <<'TXT'
+	}
 }
 TXT
 } > "$output"
