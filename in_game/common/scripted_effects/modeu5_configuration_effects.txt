@@ -1,5 +1,8 @@
 # ModeU5 package selection is owned by the launcher playset.
 # Community Mod Framework configures diagnostic/performance behavior.
+# Local developer runtime mode is generated from .modeu5.local.env by
+# tools/generate_local_runtime_config.sh. It must not depend on the EU5 engine
+# --debug_mode launch argument.
 # Package presence is captured for a new campaign; existing-save package changes are unsupported.
 
 modeu5_clear_runtime_mode_flags = {
@@ -352,27 +355,9 @@ modeu5_enter_human_relevant_accounting_persistence = {
 }
 
 modeu5_apply_debug_mode_cmm_defaults = {
-	if = {
-		limit = { debug_only = yes }
-		if = {
-			limit = {
-				has_variable_map = cmm
-				is_key_in_variable_map = {
-					name = cmm
-					target = flag:no_void_economy__nve_debug_messages
-				}
-			}
-			remove_from_variable_map = {
-				name = cmm
-				key = flag:no_void_economy__nve_debug_messages
-			}
-		}
-		add_to_variable_map = {
-			name = cmm
-			key = flag:no_void_economy__nve_debug_messages
-			value = 3
-		}
-	}
+	# Intentionally no-op.
+	# ModeU5 debug runtime is now controlled by generated local config / CMM,
+	# not by EU5 engine --debug_mode.
 }
 
 modeu5_initialize_configuration_state_effect = {
@@ -388,7 +373,7 @@ modeu5_initialize_configuration_state_effect = {
         value = 100
     }
 
-    modeu5_enter_normal_runtime_mode = yes
+    modeu5_apply_generated_local_runtime_mode = yes
     modeu5_enter_nve_performance_mode = yes
     modeu5_prepare_performance_mode_human_relevant_markets = yes
 
@@ -436,7 +421,7 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 		}
 	}
 	else = {
-		modeu5_enter_normal_runtime_mode = yes
+		modeu5_apply_generated_local_runtime_mode = yes
 		set_global_variable = {
 			name = modeu5_debug_level
 			value = 0

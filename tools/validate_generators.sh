@@ -21,6 +21,7 @@ done
 
 required_common_tooling_users=(
 	"tools/generate_all.sh"
+	"tools/generate_local_runtime_config.sh"
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
@@ -30,6 +31,43 @@ required_common_tooling_users=(
 for script in "${required_common_tooling_users[@]}"; do
 	modeu5_require_match 'modeu5_tool_lib\.sh' "$script" "Generator must source the shared ModeU5 tool library"
 done
+
+modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME' \
+	"tools/generate_local_runtime_config.sh" \
+	'Local runtime config generator must read the explicit ModeU5 debug runtime flag'
+modeu5_require_match 'MODEU5_LOCAL_CONFIG_FILE' \
+	"tools/generate_local_runtime_config.sh" \
+	'Local runtime config generator must allow validation to use an explicit local env file'
+modeu5_require_match 'generate_local_runtime_config\.sh' \
+	"tools/generate_all.sh" \
+	'generate_all must emit the local runtime config before install'
+modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
+	".modeu5.local.env.template" \
+	'Local env template must default ModeU5 debug runtime to false'
+
+local_runtime_tmp_normal="$(mktemp)"
+local_runtime_tmp_debug="$(mktemp)"
+local_runtime_env_normal="$(mktemp)"
+local_runtime_env_debug="$(mktemp)"
+pr71_generated_tmp="$(mktemp)"
+trap 'rm -f "$local_runtime_tmp_normal" "$local_runtime_tmp_debug" "$local_runtime_env_normal" "$local_runtime_env_debug" "$pr71_generated_tmp"' EXIT
+
+printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=false' > "$local_runtime_env_normal"
+printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=true' > "$local_runtime_env_debug"
+bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_normal" "$local_runtime_env_normal" >/dev/null
+bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_debug" "$local_runtime_env_debug" >/dev/null
+modeu5_require_match 'modeu5_enter_normal_runtime_mode = yes' \
+	"$local_runtime_tmp_normal" \
+	'Local runtime config must generate normal runtime when MODEU5_ENABLE_DEBUG_RUNTIME=false'
+modeu5_require_match 'modeu5_enter_debug_runtime_mode = yes' \
+	"$local_runtime_tmp_debug" \
+	'Local runtime config must generate debug runtime when MODEU5_ENABLE_DEBUG_RUNTIME=true'
+modeu5_require_match 'modeu5_apply_generated_local_runtime_mode = yes' \
+	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
+	'Configuration initialization must apply the generated local runtime mode'
+modeu5_require_match 'ModeU5 debug runtime is now controlled by generated local config / CMM' \
+	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
+	'EU5 engine --debug_mode must not force ModeU5 debug runtime through CMM defaults'
 
 per_good_generators=(
 	"tools/generate_stock_good_helpers.sh"
@@ -62,8 +100,6 @@ if [[ -n "$literal_good_arrays" ]]; then
 fi
 
 pr71_generated_output="in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
-pr71_generated_tmp="$(mktemp)"
-trap 'rm -f "$pr71_generated_tmp"' EXIT
 
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh" "$pr71_generated_tmp" >/dev/null
 
