@@ -1,5 +1,8 @@
 # ModeU5 package selection is owned by the launcher playset.
 # Community Mod Framework configures diagnostic/performance behavior.
+# Local developer runtime mode is generated from .modeu5.local.env by
+# tools/generate_local_runtime_config.sh and must not depend on the EU5 engine
+# --debug_mode launch argument.
 # Package presence is captured for a new campaign; existing-save package changes are unsupported.
 
 modeu5_clear_runtime_mode_flags = {
@@ -27,6 +30,10 @@ modeu5_enter_test_audit_runtime_mode = {
 	modeu5_clear_runtime_mode_flags = yes
 	set_global_variable = modeu5_runtime_mode_debug
 	set_global_variable = modeu5_runtime_mode_audit
+}
+
+modeu5_apply_local_runtime_mode = {
+	modeu5_apply_generated_local_runtime_mode = yes
 }
 
 modeu5_clear_nve_main_mode_flags = {
@@ -257,233 +264,5 @@ modeu5_prepare_stock_mutation_accounting_mode = {
 	else = {
 		save_temporary_scope_value_as = { name = modeu5_stock_mutation_blocked value = 1 }
 		save_temporary_scope_value_as = { name = modeu5_stock_mutation_gate_result value = 3 }
-	}
-}
-
-modeu5_prepare_market_runtime_accounting_mode = {
-	$market$ = { save_temporary_scope_as = modeu5_market_runtime_market }
-
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_attempted value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_succeeded value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_market_runtime_market_human_relevant value = 0 }
-
-	if = {
-		limit = { modeu5_nve_deactivated_trigger = yes }
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 1 }
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 3 }
-	}
-	else_if = {
-		limit = { modeu5_nve_normal_mode_trigger = yes }
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
-	}
-	else_if = {
-		limit = { modeu5_performance_mode_enabled_trigger = yes }
-		if = {
-			limit = {
-				has_global_variable_list = modeu5_performance_relevant_markets
-				is_target_in_global_variable_list = {
-					name = modeu5_performance_relevant_markets
-					target = scope:modeu5_market_runtime_market
-				}
-			}
-			save_temporary_scope_value_as = { name = modeu5_market_runtime_market_human_relevant value = 1 }
-		}
-		if = {
-			limit = { scope:modeu5_market_runtime_market_human_relevant > 0 }
-			scope:modeu5_market_runtime_market = { save_temporary_scope_as = modeu5_market }
-			if = {
-				limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
-				save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
-				save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
-			}
-			else = {
-				save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_attempted value = 1 }
-				modeu5_promote_market_to_detailed_accounting = {
-					market = scope:modeu5_market_runtime_market
-				}
-				scope:modeu5_market_runtime_market = { save_temporary_scope_as = modeu5_market }
-				if = {
-					limit = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
-					save_temporary_scope_value_as = { name = modeu5_market_runtime_use_detailed_accounting value = 1 }
-					save_temporary_scope_value_as = { name = modeu5_market_runtime_promotion_succeeded value = 1 }
-					save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 1 }
-				}
-				else = {
-					save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 1 }
-					save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 2 }
-				}
-			}
-		}
-		else = {
-			save_temporary_scope_value_as = { name = modeu5_market_runtime_use_vanilla_fallback value = 1 }
-			save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 2 }
-		}
-	}
-	else = {
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_blocked value = 1 }
-		save_temporary_scope_value_as = { name = modeu5_market_runtime_gate_result value = 3 }
-	}
-}
-
-modeu5_clear_accounting_persistence_flags = {
-	remove_global_variable = modeu5_accounting_persistence_minimal
-	remove_global_variable = modeu5_accounting_persistence_human_relevant
-	remove_global_variable = modeu5_accounting_persistence_strict
-}
-
-modeu5_enter_minimal_accounting_persistence = {
-	modeu5_clear_accounting_persistence_flags = yes
-	set_global_variable = modeu5_accounting_persistence_minimal
-}
-
-modeu5_enter_strict_accounting_persistence = {
-	modeu5_clear_accounting_persistence_flags = yes
-	set_global_variable = modeu5_accounting_persistence_strict
-}
-
-modeu5_enter_human_relevant_accounting_persistence = {
-	modeu5_clear_accounting_persistence_flags = yes
-	set_global_variable = modeu5_accounting_persistence_human_relevant
-}
-
-modeu5_apply_debug_mode_cmm_defaults = {
-	if = {
-		limit = { debug_only = yes }
-		if = {
-			limit = {
-				has_variable_map = cmm
-				is_key_in_variable_map = {
-					name = cmm
-					target = flag:no_void_economy__nve_debug_messages
-				}
-			}
-			remove_from_variable_map = {
-				name = cmm
-				key = flag:no_void_economy__nve_debug_messages
-			}
-		}
-		add_to_variable_map = {
-			name = cmm
-			key = flag:no_void_economy__nve_debug_messages
-			value = 3
-		}
-	}
-}
-
-modeu5_initialize_configuration_state_effect = {
-    if = {
-        limit = {
-            NOT = { has_global_variable = modeu5_core_package_loaded }
-        }
-        set_global_variable = modeu5_core_package_loaded
-    }
-
-    set_global_variable = {
-        name = modeu5_core_package_version
-        value = 100
-    }
-
-    modeu5_enter_normal_runtime_mode = yes
-    modeu5_enter_nve_performance_mode = yes
-    modeu5_prepare_performance_mode_human_relevant_markets = yes
-
-    set_global_variable = {
-        name = modeu5_debug_level
-        value = 0
-    }
-
-    modeu5_enter_minimal_accounting_persistence = yes
-}
-
-modeu5_refresh_configuration_from_cmm_country_scope = {
-	modeu5_apply_debug_mode_cmm_defaults = yes
-	modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes
-	modeu5_prepare_performance_mode_human_relevant_markets = yes
-
-	if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
-		}
-		modeu5_enter_debug_runtime_mode = yes
-		set_global_variable = {
-			name = modeu5_debug_level
-			value = 2
-		}
-	}
-	else_if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 2
-		}
-		modeu5_enter_debug_runtime_mode = yes
-		set_global_variable = {
-			name = modeu5_debug_level
-			value = 1
-		}
-	}
-	else = {
-		modeu5_enter_normal_runtime_mode = yes
-		set_global_variable = {
-			name = modeu5_debug_level
-			value = 0
-		}
-	}
-
-	if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_monthly_stock_check
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
-		}
-		if = {
-			limit = { modeu5_debug_enabled_trigger = yes }
-			modeu5_enter_test_audit_runtime_mode = yes
-		}
-		else = {
-			modeu5_enter_audit_runtime_mode = yes
-		}
-	}
-
-	if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_save_mode
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
-		}
-		modeu5_enter_strict_accounting_persistence = yes
-	}
-	else_if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__nve_save_mode
-			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 2
-		}
-		modeu5_enter_human_relevant_accounting_persistence = yes
-	}
-	else = {
-		modeu5_enter_minimal_accounting_persistence = yes
 	}
 }
