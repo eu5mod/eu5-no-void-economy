@@ -8,6 +8,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repo_root/tools/modeu5_tool_lib.sh"
 modeu5_load_local_config
 
+bash "$repo_root/tools/generate_local_runtime_config.sh"
 "$repo_root/tools/generate_stock_good_helpers.sh"
 python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
