@@ -35,6 +35,9 @@ done
 modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME' \
 	"tools/generate_local_runtime_config.sh" \
 	'Local runtime config generator must read the explicit ModeU5 debug runtime flag'
+modeu5_require_match 'MODEU5_LOCAL_CONFIG_FILE' \
+	"tools/generate_local_runtime_config.sh" \
+	'Local runtime config generator must allow validation to use an explicit local env file'
 modeu5_require_match 'generate_local_runtime_config\.sh' \
 	"tools/generate_all.sh" \
 	'generate_all must emit the local runtime config before install'
@@ -44,11 +47,15 @@ modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 
 local_runtime_tmp_normal="$(mktemp)"
 local_runtime_tmp_debug="$(mktemp)"
+local_runtime_env_normal="$(mktemp)"
+local_runtime_env_debug="$(mktemp)"
 pr71_generated_tmp="$(mktemp)"
-trap 'rm -f "$local_runtime_tmp_normal" "$local_runtime_tmp_debug" "$pr71_generated_tmp"' EXIT
+trap 'rm -f "$local_runtime_tmp_normal" "$local_runtime_tmp_debug" "$local_runtime_env_normal" "$local_runtime_env_debug" "$pr71_generated_tmp"' EXIT
 
-MODEU5_ENABLE_DEBUG_RUNTIME=false bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_normal" >/dev/null
-MODEU5_ENABLE_DEBUG_RUNTIME=true bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_debug" >/dev/null
+printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=false' > "$local_runtime_env_normal"
+printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=true' > "$local_runtime_env_debug"
+bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_normal" "$local_runtime_env_normal" >/dev/null
+bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_debug" "$local_runtime_env_debug" >/dev/null
 modeu5_require_match 'modeu5_enter_normal_runtime_mode = yes' \
 	"$local_runtime_tmp_normal" \
 	'Local runtime config must generate normal runtime when MODEU5_ENABLE_DEBUG_RUNTIME=false'
