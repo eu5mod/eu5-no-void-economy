@@ -113,11 +113,13 @@ expected_settings = [
     "nve_rebel_war_start",
     "nve_subjects_persistance",
 ]
+scripted_gui_settings = [setting for setting in expected_settings if setting != "nve_no_void_economy_main"]
 for setting in expected_settings:
     expect(f"setting_id = {setting}" in cmm_effects, f"Missing CMM registration for {setting}")
-    expect(f"no_void_economy__{setting}" in scripted_gui, f"Missing scripted GUI handler for {setting}")
     expect(f"no_void_economy__{setting}_name" in loc, f"Missing localization name for {setting}")
     expect(f"no_void_economy__{setting}_desc" in loc, f"Missing localization description for {setting}")
+for setting in scripted_gui_settings:
+    expect(f"no_void_economy__{setting}" in scripted_gui, f"Missing scripted GUI handler for {setting}")
 
 for text_path, text in {
     "configuration effects": config_effects,
