@@ -50,6 +50,12 @@ docs/audits/q8/Q5_flux_logique_global.md
 
 Stacked Q8 PRs should update the affected Q8 Q-docs directly. They should not mutate the inherited PR126 Q1–Q5 documents unless the change intentionally corrects historical PR126 documentation.
 
+## Q8 implementation notes
+
+| Note | Why it matters |
+|---|---|
+| `docs/audits/q8/Q8_7_GLOBAL_MARKET_LOCAL_PASS_PROOF.md` | Q8.7 native global market-local pass proof; test-package only, no live dispatcher replacement. |
+
 ## Q8 target outcome
 
 The target is not one large runtime rewrite. The target is an ordered optimisation programme:
