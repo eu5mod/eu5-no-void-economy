@@ -18,18 +18,6 @@ nve__register_cmf_mod = {
 
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = review_pop
-		tab_id = nve_general
-		group_id = nve_no_void_economy
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = review_pop
-	}
-
-	cmm_register_bool_setting = {
-		mod_id = no_void_economy
 		setting_id = nve_decay_activate
 		tab_id = nve_general
 		group_id = nve_no_void_economy
@@ -226,8 +214,6 @@ nve__handle_cmf_callback = {
 				alias = variable_mapcmmflagno_void_economy__activate_no_void_economy0
 			}
 			nve_cmf_activate_no_void_economy = yes
-		}
-		flag:no_void_economy__review_pop = {
 		}
 		flag:no_void_economy__nve_decay_activate = {
 			nve_cmf_activate_good_decay = yes
