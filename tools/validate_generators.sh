@@ -87,6 +87,15 @@ modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_good_wheat' \
 modeu5_require_match 'modeu5_pr71_metrics_enabled_trigger' \
 	"$pr71_generated_tmp" \
 	'Q8.1 generated PR7.1 metrics must be gated behind the debug/audit metrics trigger'
+modeu5_require_match 'modeu5_pr71_prepare_us10_pending_request_gate' \
+	"$pr71_generated_tmp" \
+	'Q8.2 generated US-10 dispatcher must prepare the country-market aggregate pending-request gate'
+modeu5_require_match 'modeu5_pr71_us10_country_market_has_pending_request' \
+	"$pr71_generated_tmp" \
+	'Q8.2 generated US-10 dispatcher must expose the aggregate has-pending result value'
+modeu5_require_match 'limit = \{ scope:modeu5_pr71_us10_country_market_has_pending_request > 0 \}' \
+	"$pr71_generated_tmp" \
+	'Q8.2 generated US-10 dispatcher must skip per-good dispatch when no country-market request exists'
 modeu5_require_match 'produced_in_market:wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the produced-in-market business gate'
@@ -141,5 +150,13 @@ modeu5_require_match 'modeu5_capacity_pool_monthly_stamp' \
 modeu5_require_match 'modeu5_capacity_pool_cached_location_rank_per_market' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must cache the reusable country-wide per-market capacity share'
+
+tracked_market_country_cache="in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
+modeu5_require_match '^modeu5_repair_dirty_market_country_caches_if_needed[[:space:]]*=' \
+	"$tracked_market_country_cache" \
+	'Q8.5 must expose a guarded dirty market-country cache repair consumer'
+modeu5_require_match 'modeu5_market_country_cache_dirty_markets' \
+	"$tracked_market_country_cache" \
+	'Q8.5 must keep dirty market scheduling in the market-country cache surface'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'
