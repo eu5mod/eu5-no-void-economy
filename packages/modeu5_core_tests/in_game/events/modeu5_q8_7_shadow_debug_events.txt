@@ -43,3 +43,47 @@ modeu5_q8_probe_debug.4 = {
 		name = modeu5_debug.close
 	}
 }
+
+modeu5_q8_probe_debug.5 = {
+	type = country_event
+	title = modeu5_q8_probe_debug.5.title
+	desc = modeu5_q8_probe_debug.5.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_q8_probe_debug.5.a
+		modeu5_q8_7_probe_shadow_market_center_global_equivalence = yes
+		trigger_event_non_silently = modeu5_q8_probe_debug.6
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_q8_probe_debug.6 = {
+	type = country_event
+	title = modeu5_q8_probe_debug.6.title
+	desc = modeu5_q8_probe_debug.6.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_q8_probe_debug.result.q87_shadow_compare.pass
+		trigger = { has_global_variable = modeu5_test_q8_7_shadow_comparison_passed }
+	}
+	option = {
+		name = modeu5_q8_probe_debug.result.q87_shadow_compare.fail
+		trigger = { has_global_variable = modeu5_test_q8_7_shadow_comparison_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
