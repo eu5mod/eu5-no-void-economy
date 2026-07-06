@@ -87,15 +87,6 @@ modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_good_wheat' \
 modeu5_require_match 'modeu5_pr71_metrics_enabled_trigger' \
 	"$pr71_generated_tmp" \
 	'Q8.1 generated PR7.1 metrics must be gated behind the debug/audit metrics trigger'
-modeu5_require_match 'modeu5_pr71_prepare_us10_pending_request_gate' \
-	"$pr71_generated_tmp" \
-	'Q8.2 generated US-10 dispatcher must prepare the country-market aggregate pending-request gate'
-modeu5_require_match 'modeu5_pr71_us10_country_market_has_pending_request' \
-	"$pr71_generated_tmp" \
-	'Q8.2 generated US-10 dispatcher must expose the aggregate has-pending result value'
-modeu5_require_match 'limit = \{ scope:modeu5_pr71_us10_country_market_has_pending_request > 0 \}' \
-	"$pr71_generated_tmp" \
-	'Q8.2 generated US-10 dispatcher must skip per-good dispatch when no country-market request exists'
 modeu5_require_match 'produced_in_market:wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the produced-in-market business gate'
@@ -111,6 +102,12 @@ modeu5_require_match 'modeu5_process_us00_monthly_market_good_wheat = yes' \
 modeu5_require_match 'modeu5_process_us10_monthly_market_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-10 guard must call the existing heavy per-good helper only after gating'
+
+if modeu5_search_quiet '^modeu5_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp"; then
+	modeu5_search_lines '^modeu5_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp" >&2
+	printf '%s\n' 'Q8.2 aggregate US-10 pre-gate must remain deferred and absent from default generated runtime output.' >&2
+	exit 1
+fi
 
 if modeu5_search_quiet '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp"; then
 	modeu5_search_lines '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp" >&2

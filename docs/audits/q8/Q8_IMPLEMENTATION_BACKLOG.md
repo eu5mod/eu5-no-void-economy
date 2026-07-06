@@ -7,7 +7,7 @@ This backlog translates the PR126 Q8 findings into a stacked implementation trac
 ```mermaid
 flowchart LR
     A[Q8.0 Baseline audit] --> B[Q8.1 Gate/remove profiling counters]
-    A --> C[Q8.2 US-10 aggregate pending gate]
+    A --> C[Q8.2 Sparse pending work index]
     A --> D[Q8.3 Capacity pool stamp]
     A --> E[Q8.4 Generated helper body split]
     A --> F[Q8.5 Dirty-set architecture]
@@ -20,7 +20,7 @@ flowchart LR
 ```txt
 Q8.0 — MERGED INTO MASTER TRACK: baseline checkpoint.
 Q8.1 — IMPLEMENTED: PR7.1 debug/profile metric writes are gated.
-Q8.2 — IMPLEMENTED IN STACKED PR: generated US-10 country-market aggregate pending gate.
+Q8.2 — DEFERRED: aggregate all-goods pending pre-gate is not live; future design should be sparse pending index.
 Q8.3 — IMPLEMENTED: country capacity-pool stamping.
 Q8.4 — PROBED ONLY: helper inventory bridge passed; body-helper split remains blocked.
 Q8.5 — IMPLEMENTED IN STACKED PR: guarded dirty market-country cache repair consumer.
@@ -58,25 +58,39 @@ Normal mode has no unconditional per-good debug/profile metric writes in the hot
 Profile/debug mode still emits comparable validation counters.
 ```
 
-## Q8.2 / F2 — US-10 aggregate pending-request gating
+## Q8.2 / F2 — US-10 pending-request scheduling
 
 ### Goal
 
-Avoid entering the generated per-good US-10 pending dispatcher for country-market pairs that have no queued same-market consumption request.
+Avoid entering unnecessary generated US-10 work for country-market pairs or goods with no queued same-market consumption request.
 
-### Implemented shape
+### Deferred shape
+
+The aggregate pre-gate is not live:
 
 ```txt
 modeu5_pr71_process_us10_monthly_market_pending_goods
-  -> modeu5_pr71_prepare_us10_pending_request_gate
-  -> if modeu5_pr71_us10_country_market_has_pending_request > 0:
+  -> all-goods aggregate pending pre-scan
+  -> if any pending request exists:
        generated per-good US-10 pending wrappers
 ```
 
-The authoritative request state remains the per-good map family:
+Reason:
 
 ```txt
-modeu5_consumption_<good>_pending_requested_by_market[market]
+If most country-market pairs have at least one pending request, the aggregate pre-scan duplicates work before the existing per-good dispatcher.
+```
+
+### Preferred next implementation shape
+
+```txt
+At request-write time:
+  add country-market or country-market-good to a sparse pending work list
+
+At monthly US-10 time:
+  iterate only pending work items
+  process requests
+  clear the sparse pending list
 ```
 
 ### Guardrails
@@ -86,13 +100,13 @@ modeu5_consumption_<good>_pending_requested_by_market[market]
 - Sparse supplier lists remain candidate narrowing after a good/request is selected.
 - Do not change stock resolver semantics.
 - Do not remove per-good literal pending maps.
+- Do not add all-goods pre-scans to default runtime without profiling proof.
 ```
 
 ### Exit criterion
 
 ```txt
-No-request country-market pairs skip generated per-good US-10 wrapper dispatch.
-Positive request country-market pairs still run the existing per-good pending dispatcher.
+A future implementation avoids no-request work without adding an all-goods pre-scan to most country-market pairs.
 ```
 
 ## Q8.3 / F1 — Capacity pool stamping
@@ -255,4 +269,5 @@ A future PR can switch live market-local work only after equivalent economic res
 - Runtime-generated map names.
 - Broad monthly every_location_in_the_world rebuilds as a normal runtime solution.
 - Fusing US-10 into the US-00 pass if it breaks all-countries US-00 before any US-10 consumption.
+- Q8.2 all-goods aggregate pre-scan as default runtime optimisation.
 ```

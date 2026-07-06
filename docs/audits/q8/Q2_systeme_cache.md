@@ -19,7 +19,6 @@ This document is the Q8-owned cache standard. Stacked Q8 PRs must update it when
 | `modeu5_promoted_markets_this_cycle` | global | current-cycle work list | No | Current-cycle scheduling only; separate from detailed promotion readiness. |
 | `modeu5_detailed_accounting_promoted_markets` | global | readiness / promotion work cache | No stock truth | Must not bypass business readiness checks. |
 | `modeu5_pr71_*` counters | global | debug/profile metrics | No | Metrics only; normal runtime should not pay per-good metric writes unless enabled. |
-| `modeu5_pr71_us10_country_market_has_pending_request` | temporary country-market value | generated scheduler gate | No | Q8.2 gate only; skip generated per-good US-10 dispatch when no pending request exists. |
 
 ## Cache design questions for stacked Q8 PRs
 
@@ -129,28 +128,26 @@ It does not add a new dirty cache model and does not mutate stock.
 
 ## Q8.2 / Q8.5 implementation update
 
-Q8.2 adds a generated temporary scheduler value:
+Q8.2 is deferred.
+
+Rejected runtime cache shape:
 
 ```txt
 modeu5_pr71_us10_country_market_has_pending_request
 ```
 
-The authoritative pending requests remain the per-good maps:
+Reason:
 
 ```txt
-modeu5_consumption_<good>_pending_requested_by_market[market]
+A temporary aggregate country-market pending flag requires an all-goods pre-scan.
+If most country-market pairs have at least one pending request, that pre-scan adds work before the existing per-good pending dispatcher.
 ```
 
-The new value is temporary scheduler state written by:
+Preferred later cache/scheduler shape:
 
 ```txt
-modeu5_pr71_prepare_us10_pending_request_gate
-```
-
-It is read by:
-
-```txt
-modeu5_pr71_process_us10_monthly_market_pending_goods
+request writer -> sparse pending country-market or country-market-good list
+monthly US-10 -> iterate sparse pending work list -> clear after processing
 ```
 
 Q8.5 adds the guarded dirty repair consumer:

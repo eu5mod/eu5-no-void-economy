@@ -42,13 +42,13 @@ validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
 
 ## Current Q8 classification
 
-| Track | Performance intent | Q8.0 classification |
+| Track | Performance intent | Current status |
 |---|---|---|
-| Q8.1 / F3 | remove normal-runtime per-good debug/profile counter writes | IMPLEMENT_NOW |
-| Q8.2 / F2 | avoid generated US-10 per-good checks for no-request country-market pairs if still present | IMPLEMENT_NOW after PR150 probe |
-| Q8.3 / F1 | avoid repeated country-wide capacity-pool calculation inside promoted-market capacity refresh | IMPLEMENT_NOW |
+| Q8.1 / F3 | remove normal-runtime per-good debug/profile counter writes | IMPLEMENTED |
+| Q8.2 / F2 | avoid generated US-10 per-good checks for no-request country-market pairs if still present | DEFERRED; aggregate pre-scan likely unprofitable when pending demand is common |
+| Q8.3 / F1 | avoid repeated country-wide capacity-pool calculation inside promoted-market capacity refresh | IMPLEMENTED |
 | Q8.4 / F4 | reduce duplicate guard layers after caller inventory | PROBE_FIRST |
-| Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | IMPLEMENT_NOW after PR150 probe |
+| Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | IMPLEMENTED |
 | Q8.6 / F9c | verify candidate/dirty market slices before verifier promotion | PROBE_FIRST |
 | Q8.7 / F7 | replace market-center ownership workaround only if global market pass is proven safe | PROBE_FIRST |
 
@@ -84,7 +84,7 @@ Interpretation:
 ```txt
 Q8.1 reduces hot-path write overhead and debug-state churn in normal runtime.
 It does not yet reduce G_supported guard traversal.
-Q8.2 remains responsible for probing whether an aggregate US-10 country-market gate is needed.
+Q8.2 remains responsible for proving a better sparse pending-work design if US-10 dispatch needs further narrowing.
 ```
 
 ## Q8.3 update — capacity-pool recalculation reduction
@@ -137,25 +137,30 @@ The probe layer itself is passed; implementation still requires separate PRs and
 
 ## Q8.2 / Q8.5 implementation update
 
-Q8.2 changes the normal US-10 work shape for no-request country-market pairs:
+Q8.2 is deferred.
+
+Rejected live shape:
 
 ```txt
-Before:
-  for each country present in promoted market:
-    count US-10 country pass
-    generated US-10 dispatcher enters every per-good wrapper
-    each per-good wrapper checks its own pending-request map
-
-After:
-  for each country present in promoted market:
-    generated aggregate pending-request gate checks whether any supported good has a positive pending request
-    if no pending request exists:
-      skip the generated per-good US-10 dispatcher
-    if at least one pending request exists:
-      run the existing per-good pending dispatcher unchanged
+for each country present in promoted market:
+  generated aggregate pending-request gate scans supported goods
+  if any pending request exists:
+    run the existing per-good pending dispatcher
 ```
 
-This reduces generated per-good wrapper dispatch for the common no-request country-market case. It does not remove the per-good literal map surface and does not split Q8.4 body helpers.
+Reason:
+
+```txt
+If most country-market pairs have at least one pending request, the aggregate gate adds a full pre-scan before the existing per-good dispatch.
+It is only profitable when no-request country-market pairs dominate.
+```
+
+Preferred later work shape:
+
+```txt
+request write -> sparse pending country-market / country-market-good index
+monthly US-10 -> iterate sparse pending work -> clear index after processing
+```
 
 Q8.5 changes dirty-cache repair from probe-only evidence to a guarded repair consumer:
 

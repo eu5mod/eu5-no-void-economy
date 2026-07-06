@@ -14,7 +14,7 @@ This document is the Q8-owned equivalent of the PR126 Q1 document. It is maintai
 | Promoted-market local orchestration | `in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt` | logical market-local work, physically launched through country/market-center workaround | Do not duplicate this dispatcher. Change it only when a stacked PR proves ordering and owner semantics. |
 | Capacity | `in_game/common/scripted_effects/modeu5_capacity_effects.txt` | country-owned pool + country-market record refresh | Optimise by separating reusable country facts from market-specific capacity contribution. |
 | Runtime mode/config triggers | `in_game/common/scripted_triggers/modeu5_configuration_triggers.txt` | feature gates and debug/audit/runtime switches | Add gates here rather than scattering runtime-mode checks across generated bodies. |
-| Generated active-good dispatch | `tools/generate_pr71_active_good_dispatch_helpers.sh`, `tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt`, generated scripted effects | generated literal per-good guard surface | Keep generated names literal. Do not hand-edit generated output unless the generator is updated. |
+| Generated active-good dispatch | `tools/generate_pr71_active_good_dispatch_helpers.sh`, `tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt`, generated scripted effects | generated literal per-good guard surface | Keep generated names literal. Q8.2 aggregate pre-gating is deferred; do not add it to default generated output without a later sparse-index design. |
 | Market-country work cache | `in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt` | current-market country-list work cache plus dirty scheduling surface | Keep `modeu5_countries_present_in_market` as a rebuilt work cache; dirty lists are scheduling state only, not durable per-market storage. |
 | Validation and tooling | `tools/validate_generators.sh`, `tools/audit_modeu5_persistent_state.sh` | machine-checkable standards | Any new generator convention or persistent-state family needs validator/audit coverage. |
 | Test-package Q8 probes | `packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt`, `packages/modeu5_core_tests/in_game/events/modeu5_q8_probe_debug_events.txt` | isolated test/probe surface | May test unproven exposure or candidate scopes, but must not alter gameplay runtime. |
@@ -39,19 +39,19 @@ No runtime file ownership changes are made by Q8.0.
 
 ## Q8.2 / Q8.5 implementation update
 
-This stacked implementation PR changes two existing ownership surfaces without adding a new dispatcher:
+This stacked PR changes one runtime ownership surface and records one deferred optimisation decision:
 
 ```txt
 Q8.2:
   owner: tools/generate_pr71_active_good_dispatch_helpers.sh
-  generated surface: modeu5_pr71_process_us10_monthly_market_pending_goods
-  change: add modeu5_pr71_prepare_us10_pending_request_gate before generated per-good US-10 dispatch.
+  status: deferred
+  reason: aggregate all-goods pre-scan is likely not profitable if most country-market pairs have at least one pending request.
 
 Q8.5:
   owner: in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt
   change: promote the dirty market-country cache writer/consumer surface to a guarded runtime repair helper.
 ```
 
-The live promoted-market dispatcher remains owned by `modeu5_promoted_market_cycle_effects.txt`; it continues to call the public generated PR7.1 US-10 dispatcher and therefore inherits the Q8.2 gate without a dispatcher rewrite.
+The live promoted-market dispatcher remains owned by `modeu5_promoted_market_cycle_effects.txt`; it continues to call the public generated PR7.1 US-10 dispatcher. No live Q8.2 aggregate pre-gate is introduced.
 
 No Q8.4 body-helper split is included. No Q8.7 global market dispatcher switch is included.

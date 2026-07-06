@@ -37,12 +37,6 @@ monthly_country_pulse
 7. A future global market-local pass must prove equivalence before replacing the market-center owner workaround.
 ```
 
-## Q5.1 / future Q5.2 placement
-
-Q5.1 is a flow checkpoint and belongs with Q5 context, not inside Q8 future-optimisation findings.
-
-If Q5.2 is added later, it should be a Q5 flow checkpoint or subsection before Q8 implementation notes. It should clarify current flow, not become a separate optimisation track.
-
 ## Flow ownership table
 
 | Phase | Owner | Current surface | Q8 rule |
@@ -51,7 +45,7 @@ If Q5.2 is added later, it should be a Q5 flow checkpoint or subsection before Q
 | Country prep | country | capacity/relevance/monthly registries | may prepare caches, not repeat market-local mutation for each country. |
 | Promoted-market local | market-local logical owner, market-center workaround in current implementation | `modeu5_run_monthly_promoted_market_local_cycle` | process each promoted market once according to the chosen owner rule. |
 | US-00 | present country inside promoted market | PR7.1 active-good dispatch | run before US-10 for all present-country admission facts. |
-| US-10 local | present country inside promoted market | PR7.1 pending-request dispatch with Q8.2 aggregate gate | same-market consumption only; skip per-good dispatch when no country-market request exists. |
+| US-10 local | present country inside promoted market | PR7.1 pending-request dispatch | same-market consumption only; keep after US-00. Q8.2 aggregate pre-gate is deferred. |
 | Trade | country | country-owned trade pass | inter-market only; owner-gated; no direct stock writes. |
 | Validation | audit/debug/reconciliation surface | optional monthly/audit helpers | bounded, diagnostic, or repair after divergence. |
 
@@ -115,25 +109,15 @@ modeu5_q8_probe_market_sliced_verifier_candidate
 modeu5_q8_probe_global_market_iterator_exposure
 ```
 
-The aggregate event entry point is:
-
-```txt
-event modeu5_q8_probe_debug.1
-```
-
-Runtime validation attached on 2026-07-06 confirms the probe layer passed through this Q8-specific event.
-
-The full revalidation event is not required for this Q8 probe PR:
-
-```txt
-event modeu5_revalidate_debug.1   # not required for #150
-```
+Runtime validation attached on 2026-07-06 confirms the probe layer passed through `event modeu5_q8_probe_debug.1`.
 
 Q5 phase order remains unchanged. No gameplay flow change is authorised by #150 until a later implementation PR proves equivalence and updates this document again.
 
 ## Q8.2 / Q8.5 implementation update
 
-Q8.2 preserves the phase order and changes only the internal US-10 local dispatch gate:
+Q8.2 is deferred.
+
+Rejected live flow shape:
 
 ```txt
 promoted-market local cycle
@@ -141,12 +125,17 @@ promoted-market local cycle
   -> country-market capacity refresh
   -> US-00 active-good dispatch for all present countries
   -> US-10 pending-request dispatch
-       -> Q8.2 aggregate country-market pending gate
+       -> aggregate all-goods country-market pending pre-scan
        -> if pending exists: existing per-good US-10 pending dispatcher
        -> if no pending exists: skip generated per-good US-10 dispatcher
 ```
 
-The US-00-before-US-10 invariant is unchanged. Q8.2 does not move consumption earlier and does not alter the stock resolver.
+Reason:
+
+```txt
+If most country-market pairs have at least one pending request, the aggregate pre-scan adds work before the existing per-good dispatcher.
+Q8.2 should instead become a later sparse pending-index design written when requests are created.
+```
 
 Q8.5 preserves the same flow position for market-country work-cache rebuilds:
 
@@ -162,7 +151,7 @@ The dirty repair path is scheduling/repair flow only. It does not authorize a du
 
 ## Mermaid flow delta — before this PR vs HEAD
 
-Source for the before-state is `docs/audits/pr126/Q5.1_current_global_flow.md`. That document records the PR144 + Q4.1/PR7.1 global flow before the Q8.2/Q8.5 implementation.
+Source for the before-state is `docs/audits/pr126/Q5.1_current_global_flow.md`. That document records the PR144 + Q4.1/PR7.1 global flow before the Q8.5 implementation and before the Q8.2 deferral decision.
 
 ### Before this PR — Q5.1 / PR144 + Q4.1 / PR7.1
 
@@ -216,14 +205,7 @@ flowchart TD
     end
 ```
 
-Before-state interpretation:
-
-```txt
-US-10 still had a per-good pending guard, but a no-request country-market still entered the generated per-good US-10 wrapper surface.
-Dirty market-country repair existed as a probe/consumer surface, but the guarded if-needed runtime consumer was not yet part of the Q8 implementation contract.
-```
-
-### HEAD after Q8.2 / Q8.5
+### HEAD after Q8.5 and Q8.2 deferral
 
 ```mermaid
 flowchart TD
@@ -255,18 +237,14 @@ flowchart TD
             subgraph LOOP_COUNTRIES_US10["Loop: countries_present_in_market / US-10 pass"]
                 U4 --> S0["modeu5_pr71_process_us10_monthly_market_pending_goods"]
                 U5 --> S0
-                S0 --> G0["Q8.2: modeu5_pr71_prepare_us10_pending_request_gate"]
-                G0 --> G1{"any positive pending request for this country-market?"}
-                G1 -->|yes| S1["generated per-good US-10 pending wrapper"]
-                G1 -. no .-> S_SKIP["skip generated per-good US-10 dispatch"]
-                S1 --> S2{"pending same-market request for this good?"}
+                S0 --> S1["generated per-good US-10 pending wrapper"]
+                S1 --> S2{"pending same-market request?"}
                 S2 -->|yes| S3["heavy US-10 helper"]
                 S2 -. no .-> S4["skip heavy US-10 helper"]
             end
 
             S3 --> LEND["record local market processed"]
             S4 --> LEND
-            S_SKIP --> LEND
             L2 -->|vanilla fallback| F1["record fallback / no ModeU5 mutation"]
             L2 -->|blocked| F2["record blocked"]
         end
@@ -289,9 +267,7 @@ flowchart TD
 HEAD interpretation:
 
 ```txt
-Q8.2 adds a country-market aggregate gate before the generated per-good US-10 wrapper surface.
-No-request country-market pairs now skip generated per-good US-10 dispatch entirely.
-Positive request country-market pairs still use the existing generated per-good wrappers and heavy helper gates.
+Q8.2 does not change the live US-10 flow in this PR.
 Q8.5 adds a guarded dirty repair consumer while keeping modeu5_countries_present_in_market as a rebuilt current-market work cache.
 ```
 
@@ -299,8 +275,8 @@ Q8.5 adds a guarded dirty repair consumer while keeping modeu5_countries_present
 
 | Area | Before this PR | HEAD after this PR |
 |---|---|---|
-| US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; each good checks its own pending map. | Runs Q8.2 aggregate gate first; skips generated per-good US-10 dispatch if no positive pending request exists. |
-| US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Same behaviour after the aggregate gate passes. |
+| US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; each good checks its own pending map. | Unchanged in this PR; Q8.2 aggregate pre-gate is deferred. |
+| US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Unchanged in this PR. |
 | US-00 ordering | Runs before any US-10 pass. | Unchanged. |
 | Dirty market-country cache | Dirty writer/consumer existed and was probed. | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` is now part of the runtime contract. |
 | Durable per-market country-list cache | Not confirmed. | Still not confirmed; no durable `market -> countries_present_in_market` cache is introduced. |

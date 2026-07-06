@@ -1,54 +1,61 @@
-# Q8.2 / Q8.5 — implementation
+# Q8.2 / Q8.5 — implementation status
 
 ## Purpose
 
-This stacked PR implements the two Q8 tracks that were cleared by the PR150 probe layer and are safe to implement without changing stock semantics:
+This stacked PR implements Q8.5 and records the Q8.2 decision reached during review.
 
 ```txt
-Q8.2 / F2  — generated US-10 aggregate pending-request gate
-Q8.5 / F5  — guarded dirty market-country cache repair consumer
+Q8.5 / F5  — implemented: guarded dirty market-country cache repair consumer
+Q8.2 / F2  — deferred: aggregate US-10 pending pre-gate is not live
 ```
+
+The Q8.2 aggregate pre-gate is deferred because it is only profitable when no-request country-market pairs dominate. If most market countries have at least one good in pending demand, an aggregate all-goods pre-scan adds work before the existing per-good pending dispatcher.
 
 It deliberately does not implement:
 
 ```txt
+Q8.2 — live aggregate pre-gate
 Q8.4 — body-helper split
 Q8.6 — live verifier
 Q8.7 — global market-local dispatcher replacement
 ```
 
-## Q8.2 implementation
+## Q8.2 decision — deferred
 
-The generated PR7.1 US-10 dispatcher now performs a country-market aggregate pending-request gate before entering the per-good US-10 wrappers.
-
-New generated helper:
-
-```txt
-modeu5_pr71_prepare_us10_pending_request_gate
-```
-
-Temporary result value:
-
-```txt
-modeu5_pr71_us10_country_market_has_pending_request
-```
-
-Updated generated dispatcher shape:
+Rejected live shape for now:
 
 ```txt
 modeu5_pr71_process_us10_monthly_market_pending_goods
-  -> modeu5_pr71_prepare_us10_pending_request_gate
-  -> if modeu5_pr71_us10_country_market_has_pending_request > 0:
-       modeu5_pr71_process_us10_monthly_market_good_<good>
+  -> scan all supported goods to determine whether any pending request exists
+  -> if any pending exists:
+       run the existing generated per-good US-10 dispatcher
 ```
 
-Authoritative source state remains unchanged:
+Reason:
 
 ```txt
-modeu5_consumption_<good>_pending_requested_by_market[market]
+If pending demand is common, this adds an all-goods pre-scan before the existing per-good wrapper surface.
+That can be neutral-negative or anti-optimising.
 ```
 
-The gate is scheduler state only. It does not replace the per-good pending request maps and does not change the stock resolver.
+Preferred later design:
+
+```txt
+At request-write time:
+  add country-market or country-market-good to a sparse pending work list
+
+At monthly US-10 time:
+  iterate only pending work items
+  process requests
+  clear the sparse pending work list
+```
+
+This later design should avoid both:
+
+```txt
+- scanning all goods just to discover that demand likely exists;
+- entering per-good wrappers for country-market pairs with no demand.
+```
 
 ## Q8.5 implementation
 
@@ -89,7 +96,7 @@ TECH-01 row 126 therefore remains NOT_CONFIRMED unless a later PR proves durable
 
 ## Files changed
 
-Runtime / generator:
+Runtime / generator / validation:
 
 ```txt
 tools/generate_pr71_active_good_dispatch_helpers.sh
@@ -112,6 +119,7 @@ docs/audits/q8/Q5_flux_logique_global.md
 ```txt
 - No stock mutation semantics changed.
 - No US-00 / US-10 ordering change.
+- No live Q8.2 aggregate pre-gate.
 - No Q8.4 body-helper split.
 - No live verifier.
 - No Q8.7 global-market dispatcher replacement.
@@ -142,6 +150,6 @@ event modeu5_q8_probe_debug.1
 Expected interpretation:
 
 ```txt
-Q8.2: no-request country-market pairs skip generated per-good US-10 dispatcher.
 Q8.5: dirty market-country cache repair remains guarded and scheduling-only.
+Q8.2: deferred unless a later sparse pending-index PR proves a better design.
 ```
