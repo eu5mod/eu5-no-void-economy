@@ -15,7 +15,9 @@ This document is the Q8-owned cache standard. Stacked Q8 PRs must update it when
 | `modeu5_stock_cap_by_market` | country | country-market capacity record | Yes for stock admission cap | Refresh before stock admission; market-specific contribution must stay current. |
 | `modeu5_base_capacity_by_market` / breakdown maps | country | explanation/debug breakdown | No | Keep with capacity refresh; do not drive business independently. |
 | `modeu5_countries_present_in_market` | global | rebuilt work cache | No | Rebuild for current promoted/target market; not durable per-market storage. |
-| `modeu5_market_country_cache_dirty_markets` | global | dirty scheduling list | No | Scheduling only; Q8.5 should probe producers/consumers before expanding. |
+| `modeu5_market_country_cache_dirty_markets` | global | dirty scheduling list | No | Scheduling only; Q8.5 repairs affected work-cache consumers but does not create durable per-market storage. |
+| `modeu5_market_sliced_verifier_candidate_markets` | global | debug/audit verifier candidate list | No | Q8.6 scheduling only; built from dirty/promoted market lists, cleared each verifier run. |
+| `modeu5_market_sliced_verifier_*` counters | global | debug/audit verifier counters | No | Diagnostic only; must not drive stock mutation. |
 | `modeu5_promoted_markets_this_cycle` | global | current-cycle work list | No | Current-cycle scheduling only; separate from detailed promotion readiness. |
 | `modeu5_detailed_accounting_promoted_markets` | global | readiness / promotion work cache | No stock truth | Must not bypass business readiness checks. |
 | `modeu5_pr71_*` counters | global | debug/profile metrics | No | Metrics only; normal runtime should not pay per-good metric writes unless enabled. |
@@ -125,3 +127,77 @@ modeu5_market_country_cache_dirty_markets
 ```
 
 It does not add a new dirty cache model and does not mutate stock.
+
+## Q8.2 / Q8.5 implementation update
+
+Q8.2 is deferred.
+
+Rejected runtime cache shape:
+
+```txt
+modeu5_pr71_us10_country_market_has_pending_request
+```
+
+Reason:
+
+```txt
+A temporary aggregate country-market pending flag requires an all-goods pre-scan.
+If most country-market pairs have at least one pending request, that pre-scan adds work before the existing per-good pending dispatcher.
+```
+
+Preferred later cache/scheduler shape:
+
+```txt
+request writer -> sparse pending country-market or country-market-good list
+monthly US-10 -> iterate sparse pending work list -> clear after processing
+```
+
+Q8.5 adds the guarded dirty repair consumer:
+
+```txt
+modeu5_repair_dirty_market_country_caches_if_needed
+```
+
+Boundary:
+
+```txt
+modeu5_countries_present_in_market remains a rebuilt current-market work cache.
+modeu5_market_country_cache_dirty_markets remains scheduling state only.
+Q8.5 does not confirm durable per-market country-list storage.
+```
+
+## Q8.6 implementation update
+
+Q8.6 adds bounded verifier scheduling state:
+
+```txt
+modeu5_market_sliced_verifier_candidate_markets
+modeu5_market_sliced_verifier_candidates_built
+modeu5_market_sliced_verifier_candidates_checked
+modeu5_market_sliced_verifier_candidates_passed
+modeu5_market_sliced_verifier_candidates_failed
+modeu5_market_sliced_verifier_last_run_skipped
+modeu5_market_sliced_verifier_last_run_empty
+modeu5_market_sliced_verifier_last_run_failed
+modeu5_market_sliced_verifier_last_run_passed
+```
+
+Classification:
+
+```txt
+owner: global verifier/debug surface
+class: verifier candidate list and diagnostic counters
+source of truth: no
+business source: no
+write trigger: modeu5_run_market_sliced_verifier_candidates
+reader: debug/audit inspection only
+```
+
+The verifier uses candidate markets from:
+
+```txt
+modeu5_market_country_cache_dirty_markets
+modeu5_promoted_markets_this_cycle
+```
+
+It may rebuild `modeu5_countries_present_in_market` for each candidate market to verify the market-country work-cache path. It does not mutate stock, does not repair stock, and does not clear dirty scheduling lists.

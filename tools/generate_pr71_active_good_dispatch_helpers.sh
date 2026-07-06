@@ -35,6 +35,11 @@ mkdir -p "$(dirname "$output")"
 # generated literal goods, but it no longer writes per-good debug/profile
 # counters unless debug or audit mode enabled those metrics.
 #
+# Q8.2 aggregate pre-gating is deferred. The all-goods pre-scan can become an
+# anti-optimisation when most country-market pairs have at least one pending
+# demand. Keep the current PR7.1 per-good pending dispatcher until a later
+# sparse pending-index implementation is proven.
+#
 # The live monthly handoff is intentionally not generated here. EU5 rejects
 # duplicate scripted-effect keys, so the tracked PR7 live effect must call the
 # generated PR7.1 dispatchers directly.
