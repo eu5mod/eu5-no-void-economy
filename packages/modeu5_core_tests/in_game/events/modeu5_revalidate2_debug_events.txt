@@ -15,7 +15,7 @@ modeu5_revalidate_debug.2 = {
 		name = modeu5_revalidate_debug.2.a
 		modeu5_enter_test_audit_runtime_mode = yes
 		modeu5_perf14_log_debug_level_before_guarded_probe = yes
-		modeu5_debug_run_perf14_performance_mode_cmm_test_guarded_country_gate = yes
+		modeu5_debug_run_perf14_performance_mode_cmm_test_guarded_diagnostic = yes
 		modeu5_perf14_log_debug_level_after_guarded_probe = yes
 		trigger_event_non_silently = modeu5_perf14_debug.2
 	}
