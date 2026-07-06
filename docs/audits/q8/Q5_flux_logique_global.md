@@ -167,7 +167,7 @@ Source for the before-state is `docs/audits/pr126/Q5.1_current_global_flow.md`. 
 ### Before this PR — Q5.1 / PR144 + Q4.1 / PR7.1
 
 ```mermaid
-flowchart TB
+flowchart TD
     subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
         A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
         B --> P0["performance / relevance preparation"]
@@ -226,7 +226,7 @@ Dirty market-country repair existed as a probe/consumer surface, but the guarded
 ### HEAD after Q8.2 / Q8.5
 
 ```mermaid
-flowchart TB
+flowchart TD
     subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
         A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
         B --> P0["performance / relevance preparation"]
