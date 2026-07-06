@@ -45,10 +45,10 @@ validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
 | Track | Performance intent | Q8.0 classification |
 |---|---|---|
 | Q8.1 / F3 | remove normal-runtime per-good debug/profile counter writes | IMPLEMENT_NOW |
-| Q8.2 / F2 | avoid generated US-10 per-good checks for no-request country-market pairs if still present | PROBE_FIRST |
+| Q8.2 / F2 | avoid generated US-10 per-good checks for no-request country-market pairs if still present | IMPLEMENT_NOW after PR150 probe |
 | Q8.3 / F1 | avoid repeated country-wide capacity-pool calculation inside promoted-market capacity refresh | IMPLEMENT_NOW |
 | Q8.4 / F4 | reduce duplicate guard layers after caller inventory | PROBE_FIRST |
-| Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | PROBE_FIRST |
+| Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | IMPLEMENT_NOW after PR150 probe |
 | Q8.6 / F9c | verify candidate/dirty market slices before verifier promotion | PROBE_FIRST |
 | Q8.7 / F7 | replace market-center ownership workaround only if global market pass is proven safe | PROBE_FIRST |
 
@@ -133,4 +133,42 @@ The full revalidation suite is not required for this performance-probe PR:
 event modeu5_revalidate_debug.1   # not required for #150
 ```
 
-The Q4 classification remains `PROBE_FIRST` for implementation. The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.
+The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.
+
+## Q8.2 / Q8.5 implementation update
+
+Q8.2 changes the normal US-10 work shape for no-request country-market pairs:
+
+```txt
+Before:
+  for each country present in promoted market:
+    count US-10 country pass
+    generated US-10 dispatcher enters every per-good wrapper
+    each per-good wrapper checks its own pending-request map
+
+After:
+  for each country present in promoted market:
+    generated aggregate pending-request gate checks whether any supported good has a positive pending request
+    if no pending request exists:
+      skip the generated per-good US-10 dispatcher
+    if at least one pending request exists:
+      run the existing per-good pending dispatcher unchanged
+```
+
+This reduces generated per-good wrapper dispatch for the common no-request country-market case. It does not remove the per-good literal map surface and does not split Q8.4 body helpers.
+
+Q8.5 changes dirty-cache repair from probe-only evidence to a guarded repair consumer:
+
+```txt
+modeu5_repair_dirty_market_country_caches_if_needed
+```
+
+The dirty repair path remains candidate-scoped:
+
+```txt
+producers: confirmed lifecycle hooks that call modeu5_mark_market_country_cache_dirty
+consumer: modeu5_repair_dirty_market_country_caches / if_needed wrapper
+scope: dirty markets only
+```
+
+It does not introduce durable per-market country-list storage and therefore does not change the Q4 assumption that `modeu5_countries_present_in_market` is a rebuilt current-market work cache.
