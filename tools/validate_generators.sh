@@ -55,12 +55,12 @@ modeu5_require_match 'modeu5_enter_normal_runtime_mode = yes' \
 modeu5_require_match 'modeu5_enter_debug_runtime_mode = yes' \
 	"$local_runtime_tmp_debug" \
 	'Local runtime config must generate debug runtime when MODEU5_ENABLE_DEBUG_RUNTIME=true'
-modeu5_require_match '^modeu5_apply_local_runtime_mode[[:space:]]*=' \
+modeu5_require_match 'modeu5_apply_generated_local_runtime_mode = yes' \
 	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
-	'Configuration effects must expose a local runtime mode application entry point'
-modeu5_require_match 'modeu5_apply_local_runtime_mode = yes' \
-	"in_game/common/on_action/modeu5_stock_on_actions.txt" \
-	'Startup on_action must apply the generated local runtime mode before initialization'
+	'Configuration initialization must apply the generated local runtime mode'
+modeu5_require_match 'ModeU5 debug runtime is now controlled by generated local config / CMM' \
+	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
+	'EU5 engine --debug_mode must not force ModeU5 debug runtime through CMM defaults'
 
 per_good_generators=(
 	"tools/generate_stock_good_helpers.sh"
