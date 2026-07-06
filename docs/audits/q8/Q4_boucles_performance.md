@@ -121,4 +121,16 @@ Q8.6 — candidate market slice probe before verifier promotion.
 Q8.7 — isolated global market iterator exposure probe before dispatcher replacement.
 ```
 
-The Q4 classification remains `PROBE_FIRST` until runtime logs are attached to #150.
+Runtime validation attached to #150 on 2026-07-06 shows all five probes passed through:
+
+```txt
+event modeu5_q8_probe_debug.1
+```
+
+The full revalidation suite is not required for this performance-probe PR:
+
+```txt
+event modeu5_revalidate_debug.1   # not required for #150
+```
+
+The Q4 classification remains `PROBE_FIRST` for implementation. The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.

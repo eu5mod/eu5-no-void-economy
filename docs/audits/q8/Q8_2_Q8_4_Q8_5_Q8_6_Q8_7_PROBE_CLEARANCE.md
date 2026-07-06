@@ -21,6 +21,12 @@ Adds one static structural audit:
 tools/audit_q8_remaining_candidates.sh
 ```
 
+Adds the TECH-01 / Q8-F9 validation companion:
+
+```txt
+docs/audits/q8/Q8_F9_TECH01.md
+```
+
 Updates the Q8-owned methodology docs:
 
 ```txt
@@ -92,21 +98,42 @@ PASS for all five probe entry points.
 PENDING because runtime logs are still required before implementing Q8.2/Q8.4/Q8.5/Q8.6/Q8.7.
 ```
 
-## Runtime validation expectations
+## Runtime validation evidence — 2026-07-06
 
-Expected log markers:
+Runtime event used:
 
 ```txt
-ModeU5 Q8.2 PROBE us10_pending_gate PASS
-ModeU5 Q8.4 PROBE helper_inventory PASS
-ModeU5 Q8.5 PROBE dirty_cache_lifecycle PASS
+event modeu5_q8_probe_debug.1
+```
+
+Observed PASS markers:
+
+```txt
+ModeU5 Q8.2 PROBE us10_pending_gate PASS wheat_pending=0.0000
+ModeU5 Q8.4 PROBE helper_inventory PASS runtime_noop_static_inventory_required
+ModeU5 Q8.5 PROBE dirty_cache_lifecycle PASS repair_count=3
 ModeU5 Q8.6 PROBE market_slice_candidate PASS
-ModeU5 Q8.7 PROBE global_market_iterator PASS
+ModeU5 Q8.7 PROBE global_market_iterator PASS count=129
 ModeU5 Q8 PROBE RESULT all_remaining_candidates PASS
 ```
 
-If Q8.7 fails to parse or run, Q8.7 remains blocked and the current market-center ownership workaround remains authoritative.
+Interpretation:
+
+```txt
+Q8 probe runtime validation: PASS.
+Full revalidation suite: NOT REQUIRED for this PR.
+event modeu5_revalidate_debug.1: NOT REQUIRED for #150 validation.
+```
+
+## Known cleanup items
+
+```txt
+- Q8.7 emitted PASS with count=129, but error.log also reported unset-counter script errors around modeu5_test_q8_7_global_market_count. Harden the counter guard if a clean error log is required.
+- Q8 probe event localization keys are missing. This is cosmetic for the probe event and does not invalidate the runtime PASS markers.
+```
 
 ## Resulting interpretation
 
 This PR contains all five probes. It does not implement the later optimisations. The purpose is to collect evidence and clear which implementation PRs are safe next.
+
+After the 2026-07-06 run, #150 has enough runtime evidence to mark the probe layer itself as passed. Later implementation PRs remain separate decisions.

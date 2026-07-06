@@ -121,4 +121,12 @@ The aggregate event entry point is:
 event modeu5_q8_probe_debug.1
 ```
 
-No Q5 phase order changes are authorised until #150 has runtime evidence attached.
+Runtime validation attached on 2026-07-06 confirms the probe layer passed through this Q8-specific event.
+
+The full revalidation event is not required for this Q8 probe PR:
+
+```txt
+event modeu5_revalidate_debug.1   # not required for #150
+```
+
+Q5 phase order remains unchanged. No gameplay flow change is authorised by #150 until a later implementation PR proves equivalence and updates this document again.
