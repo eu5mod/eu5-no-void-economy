@@ -15,10 +15,11 @@ This document is the Q8-owned cache standard. Stacked Q8 PRs must update it when
 | `modeu5_stock_cap_by_market` | country | country-market capacity record | Yes for stock admission cap | Refresh before stock admission; market-specific contribution must stay current. |
 | `modeu5_base_capacity_by_market` / breakdown maps | country | explanation/debug breakdown | No | Keep with capacity refresh; do not drive business independently. |
 | `modeu5_countries_present_in_market` | global | rebuilt work cache | No | Rebuild for current promoted/target market; not durable per-market storage. |
-| `modeu5_market_country_cache_dirty_markets` | global | dirty scheduling list | No | Scheduling only; Q8.5 should probe producers/consumers before expanding. |
+| `modeu5_market_country_cache_dirty_markets` | global | dirty scheduling list | No | Scheduling only; Q8.5 repairs affected work-cache consumers but does not create durable per-market storage. |
 | `modeu5_promoted_markets_this_cycle` | global | current-cycle work list | No | Current-cycle scheduling only; separate from detailed promotion readiness. |
 | `modeu5_detailed_accounting_promoted_markets` | global | readiness / promotion work cache | No stock truth | Must not bypass business readiness checks. |
 | `modeu5_pr71_*` counters | global | debug/profile metrics | No | Metrics only; normal runtime should not pay per-good metric writes unless enabled. |
+| `modeu5_pr71_us10_country_market_has_pending_request` | temporary country-market value | generated scheduler gate | No | Q8.2 gate only; skip generated per-good US-10 dispatch when no pending request exists. |
 
 ## Cache design questions for stacked Q8 PRs
 
@@ -125,3 +126,43 @@ modeu5_market_country_cache_dirty_markets
 ```
 
 It does not add a new dirty cache model and does not mutate stock.
+
+## Q8.2 / Q8.5 implementation update
+
+Q8.2 adds a generated temporary scheduler value:
+
+```txt
+modeu5_pr71_us10_country_market_has_pending_request
+```
+
+The authoritative pending requests remain the per-good maps:
+
+```txt
+modeu5_consumption_<good>_pending_requested_by_market[market]
+```
+
+The new value is temporary scheduler state written by:
+
+```txt
+modeu5_pr71_prepare_us10_pending_request_gate
+```
+
+It is read by:
+
+```txt
+modeu5_pr71_process_us10_monthly_market_pending_goods
+```
+
+Q8.5 adds the guarded dirty repair consumer:
+
+```txt
+modeu5_repair_dirty_market_country_caches_if_needed
+```
+
+Boundary:
+
+```txt
+modeu5_countries_present_in_market remains a rebuilt current-market work cache.
+modeu5_market_country_cache_dirty_markets remains scheduling state only.
+Q8.5 does not confirm durable per-market country-list storage.
+```
