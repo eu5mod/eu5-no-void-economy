@@ -133,6 +133,9 @@ tracked_config_triggers="in_game/common/scripted_triggers/modeu5_configuration_t
 modeu5_require_match '^modeu5_pr71_metrics_enabled_trigger[[:space:]]*=' \
 	"$tracked_config_triggers" \
 	'Q8.1 must define the PR7.1 metrics trigger in the configuration trigger surface'
+modeu5_require_match '^modeu5_market_sliced_verifier_allowed_trigger[[:space:]]*=' \
+	"$tracked_config_triggers" \
+	'Q8.6 must define a debug/audit gate for the market-sliced verifier surface'
 
 tracked_capacity_effect="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool_raw[[:space:]]*=' \
@@ -155,5 +158,20 @@ modeu5_require_match '^modeu5_repair_dirty_market_country_caches_if_needed[[:spa
 modeu5_require_match 'modeu5_market_country_cache_dirty_markets' \
 	"$tracked_market_country_cache" \
 	'Q8.5 must keep dirty market scheduling in the market-country cache surface'
+
+tracked_market_sliced_verifier="in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt"
+modeu5_require_file "$tracked_market_sliced_verifier"
+modeu5_require_match '^modeu5_run_market_sliced_verifier_candidates[[:space:]]*=' \
+	"$tracked_market_sliced_verifier" \
+	'Q8.6 must expose the bounded market-sliced verifier runner'
+modeu5_require_match 'modeu5_market_sliced_verifier_candidate_markets' \
+	"$tracked_market_sliced_verifier" \
+	'Q8.6 must use a bounded candidate market list'
+modeu5_require_match 'modeu5_market_sliced_verifier_allowed_trigger' \
+	"$tracked_market_sliced_verifier" \
+	'Q8.6 verifier must be gated behind debug/audit runtime'
+modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
+	"$tracked_market_sliced_verifier" \
+	'Q8.6 verifier may rebuild only the current-market country work cache for candidate markets'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'
