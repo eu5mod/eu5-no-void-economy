@@ -210,4 +210,21 @@ modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 verifier may rebuild only the current-market country work cache for candidate markets'
 
+tracked_q8_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt"
+modeu5_require_match '^modeu5_q8_probe_global_market_iterator_exposure[[:space:]]*=' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 must expose the test-package global market-local pass probe'
+modeu5_require_match 'every_market_in_world = \{' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must exercise the native global market iterator'
+modeu5_require_match 'modeu5_q8_7_global_market_seen_markets' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must deduplicate visited markets'
+modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must prove the market-local country work-cache rebuild from market scope'
+modeu5_require_match 'ModeU5 TEST PASS scenario=q87_global_market_local_pass' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must emit a stable runtime scenario PASS marker'
+
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'
