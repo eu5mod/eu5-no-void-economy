@@ -20,18 +20,7 @@ modeu5_pr126_debug.1 = {
 	option = {
 		name = modeu5_pr126_debug.1.b
 		modeu5_enter_test_audit_runtime_mode = yes
-		# Defensive defaults: the shell probe snapshots UI variables through var:
-		# links. Seed them on the country scope before the probe so blocked or
-		# short-circuited paths cannot emit unset-variable script errors.
-		set_variable = { name = modeu5_pr126_ui_shell_candidates_normal value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_promoted_normal value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_rejected_normal value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_iterations_normal value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_candidates_performance value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_promoted_performance value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_rejected_performance value = 0 }
-		set_variable = { name = modeu5_pr126_ui_shell_iterations_performance value = 0 }
-		modeu5_debug_run_pr126_promoted_market_shell_test = yes
+		modeu5_debug_run_pr126_promoted_market_shell_test_without_var_snapshot = yes
 		trigger_event_non_silently = modeu5_pr126_debug.3
 	}
 	option = {
