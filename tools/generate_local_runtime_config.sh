@@ -3,10 +3,11 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_local_runtime_config_generated.txt}"
+local_config="${2:-${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.modeu5.local.env}}"
 
 # shellcheck source=tools/modeu5_tool_lib.sh
 source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_local_config
+modeu5_load_local_config "$local_config"
 
 normalize_bool() {
 	local raw="${1:-false}"
