@@ -9,18 +9,30 @@ modeu5_review.1 = {
 
 	trigger = {
 		is_ai = no
-		current_date >= 1450.1.1
-		NOT = { has_variable = modeu5_review_printing_press_prompt_seen }
+		current_date >= 1524.2.20
+		NOT = { has_variable = modeu5_review_pop_prompt_seen }
+		has_variable_map = cmm
+		OR = {
+			NOT = {
+				is_key_in_variable_map = {
+					name = cmm
+					target = flag:no_void_economy__review_pop
+				}
+			}
+			"variable_map(cmm|flag:no_void_economy__review_pop)" = 1
+		}
 	}
 
 	immediate = {
-		set_variable = modeu5_review_printing_press_prompt_seen
+		set_variable = modeu5_review_pop_prompt_seen
 	}
 
 	option = {
 		name = modeu5_review.1.a
+		modeu5_disable_review_pop = yes
 	}
 	option = {
 		name = modeu5_review.1.b
+		modeu5_disable_review_pop = yes
 	}
 }
