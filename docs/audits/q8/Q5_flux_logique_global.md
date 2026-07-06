@@ -46,6 +46,7 @@ monthly_country_pulse
 | Promoted-market local | market-local logical owner, market-center workaround in current implementation | `modeu5_run_monthly_promoted_market_local_cycle` | process each promoted market once according to the chosen owner rule. |
 | US-00 | present country inside promoted market | PR7.1 active-good dispatch | run before US-10 for all present-country admission facts. |
 | US-10 local | present country inside promoted market | PR7.1 pending-request dispatch | same-market consumption only; keep after US-00. Q8.2 aggregate pre-gate is deferred. |
+| Q8.6 verifier | debug/audit verifier surface | `modeu5_run_market_sliced_verifier_candidates` | bounded candidate-market verification only; no stock mutation or repair. |
 | Trade | country | country-owned trade pass | inter-market only; owner-gated; no direct stock writes. |
 | Validation | audit/debug/reconciliation surface | optional monthly/audit helpers | bounded, diagnostic, or repair after divergence. |
 
@@ -149,63 +150,35 @@ confirmed topology/lifecycle producer
 
 The dirty repair path is scheduling/repair flow only. It does not authorize a durable `market -> countries_present_in_market` cache and does not change stock mutation order.
 
-## Mermaid flow delta — before this PR vs HEAD
+## Q8.6 implementation update
 
-Source for the before-state is `docs/audits/pr126/Q5.1_current_global_flow.md`. That document records the PR144 + Q4.1/PR7.1 global flow before the Q8.5 implementation and before the Q8.2 deferral decision.
+Q8.6 adds a debug/audit-only verifier flow:
 
-### Before this PR — Q5.1 / PR144 + Q4.1 / PR7.1
-
-```mermaid
-flowchart TD
-    subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
-        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
-        B --> P0["performance / relevance preparation"]
-        P0 --> P1["current-country capacity refresh"]
-        P1 --> P2["monthly market seen registry"]
-        P2 --> L0["modeu5_run_monthly_promoted_market_local_cycle"]
-
-        subgraph LOOP_MARKET_CENTER["Loop: every_market_center_in_country"]
-            L0 --> L1["prepare market runtime accounting mode"]
-            L1 --> L2{"market runtime mode"}
-            L2 -->|detailed| L3["modeu5_run_promoted_market_live_local_branch_market_all_goods"]
-
-            subgraph LOOP_MARKET_LOC["Loop: every_location_in_market"]
-                L3 --> M0["rebuild countries_present_in_market"]
-            end
-
-            subgraph LOOP_COUNTRIES_CAP_US00["Loop: countries_present_in_market / fused capacity + US-00"]
-                M0 --> D1["refresh country-market capacity"]
-                D1 --> U1["modeu5_pr71_process_us00_monthly_market_active_goods"]
-                U1 --> U2["generated per-good US-00 active-good guard"]
-                U2 --> U3{"produced or previous US-00 state?"}
-                U3 -->|yes| U4["heavy US-00 helper"]
-                U3 -. no .-> U5["skip heavy US-00 helper"]
-            end
-
-            subgraph LOOP_COUNTRIES_US10["Loop: countries_present_in_market / US-10 pass"]
-                U4 --> S0["modeu5_pr71_process_us10_monthly_market_pending_goods"]
-                U5 --> S0
-                S0 --> S1["generated per-good US-10 pending wrapper"]
-                S1 --> S2{"pending same-market request?"}
-                S2 -->|yes| S3["heavy US-10 helper"]
-                S2 -. no .-> S4["skip heavy US-10 helper"]
-            end
-
-            S3 --> LEND["record local market processed"]
-            S4 --> LEND
-            L2 -->|vanilla fallback| F1["record fallback / no ModeU5 mutation"]
-            L2 -->|blocked| F2["record blocked"]
-        end
-
-        LEND --> T0["modeu5_run_monthly_country_trade_owner_cycle"]
-        F1 --> T0
-        F2 --> T0
-        T0 --> T1["country-scope every_trade / inter-market only"]
-        T1 --> R0["optional audit reconciliation"]
-    end
+```txt
+modeu5_run_market_sliced_verifier_candidates
+  -> modeu5_prepare_market_sliced_verifier_candidates
+     -> copy dirty markets from modeu5_market_country_cache_dirty_markets
+     -> copy promoted markets from modeu5_promoted_markets_this_cycle
+  -> for each candidate market only:
+       modeu5_rebuild_countries_present_in_market
+       record pass/fail counters
 ```
 
-### HEAD after Q8.5 and Q8.2 deferral
+Boundary:
+
+```txt
+- no stock mutation;
+- no stock repair;
+- dirty market scheduling list is not cleared;
+- no global market iterator is used;
+- no live dispatcher is replaced.
+```
+
+## Mermaid flow delta — before Q8.6 vs HEAD
+
+Source for the before-state is the #151 Q5 flow: Q8.5 dirty repair exists, Q8.2 is deferred, and no Q8.6 live verifier surface exists.
+
+### Before Q8.6 — #151 flow
 
 ```mermaid
 flowchart TD
@@ -264,19 +237,91 @@ flowchart TD
     end
 ```
 
+### HEAD after Q8.6
+
+```mermaid
+flowchart TD
+    subgraph LOOP_COUNTRY["Loop: monthly_country_pulse / current country"]
+        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle"]
+        B --> P0["performance / relevance preparation"]
+        P0 --> P1["current-country capacity refresh"]
+        P1 --> P2["monthly market seen registry"]
+        P2 --> L0["modeu5_run_monthly_promoted_market_local_cycle"]
+
+        subgraph LOOP_MARKET_CENTER["Loop: every_market_center_in_country"]
+            L0 --> L1["prepare market runtime accounting mode"]
+            L1 --> L2{"market runtime mode"}
+            L2 -->|detailed| L3["modeu5_run_promoted_market_live_local_branch_market_all_goods"]
+
+            subgraph LOOP_MARKET_LOC["Loop: every_location_in_market"]
+                L3 --> M0["rebuild countries_present_in_market"]
+            end
+
+            subgraph LOOP_COUNTRIES_CAP_US00["Loop: countries_present_in_market / fused capacity + US-00"]
+                M0 --> D1["refresh country-market capacity"]
+                D1 --> U1["modeu5_pr71_process_us00_monthly_market_active_goods"]
+                U1 --> U2["generated per-good US-00 active-good guard"]
+                U2 --> U3{"produced or previous US-00 state?"}
+                U3 -->|yes| U4["heavy US-00 helper"]
+                U3 -. no .-> U5["skip heavy US-00 helper"]
+            end
+
+            subgraph LOOP_COUNTRIES_US10["Loop: countries_present_in_market / US-10 pass"]
+                U4 --> S0["modeu5_pr71_process_us10_monthly_market_pending_goods"]
+                U5 --> S0
+                S0 --> S1["generated per-good US-10 pending wrapper"]
+                S1 --> S2{"pending same-market request?"}
+                S2 -->|yes| S3["heavy US-10 helper"]
+                S2 -. no .-> S4["skip heavy US-10 helper"]
+            end
+
+            S3 --> LEND["record local market processed"]
+            S4 --> LEND
+            L2 -->|vanilla fallback| F1["record fallback / no ModeU5 mutation"]
+            L2 -->|blocked| F2["record blocked"]
+        end
+
+        LEND --> T0["modeu5_run_monthly_country_trade_owner_cycle"]
+        F1 --> T0
+        F2 --> T0
+        T0 --> T1["country-scope every_trade / inter-market only"]
+        T1 --> R0["optional audit reconciliation"]
+    end
+
+    subgraph DIRTY_CACHE["Q8.5 dirty market-country cache scheduling"]
+        D0["topology / lifecycle producer"] --> D2["modeu5_mark_market_country_cache_dirty"]
+        D2 --> D3["modeu5_market_country_cache_dirty_markets"]
+        D3 --> D4["modeu5_repair_dirty_market_country_caches_if_needed"]
+        D4 --> D5["modeu5_rebuild_countries_present_in_market for dirty markets"]
+    end
+
+    subgraph Q86["Q8.6 debug/audit market-sliced verifier"]
+        V0["modeu5_run_market_sliced_verifier_candidates"] --> V1["build candidate market slice"]
+        D3 -. copy only .-> V1
+        P2 -. promoted/current-cycle markets .-> V1
+        V1 --> V2["modeu5_market_sliced_verifier_candidate_markets"]
+        V2 --> V3["for each candidate market"]
+        V3 --> V4["modeu5_rebuild_countries_present_in_market"]
+        V4 --> V5["record pass/fail counters"]
+    end
+```
+
 HEAD interpretation:
 
 ```txt
-Q8.2 does not change the live US-10 flow in this PR.
+Q8.2 does not change the live US-10 flow.
 Q8.5 adds a guarded dirty repair consumer while keeping modeu5_countries_present_in_market as a rebuilt current-market work cache.
+Q8.6 adds an opt-in debug/audit verifier slice over dirty/promoted candidate markets; it does not mutate or repair stock.
 ```
 
 ## Delta summary
 
-| Area | Before this PR | HEAD after this PR |
+| Area | Before Q8.6 | HEAD after Q8.6 |
 |---|---|---|
-| US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; each good checks its own pending map. | Unchanged in this PR; Q8.2 aggregate pre-gate is deferred. |
-| US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Unchanged in this PR. |
+| US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; Q8.2 aggregate pre-gate deferred. | Unchanged. |
+| US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Unchanged. |
 | US-00 ordering | Runs before any US-10 pass. | Unchanged. |
-| Dirty market-country cache | Dirty writer/consumer existed and was probed. | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` is now part of the runtime contract. |
+| Dirty market-country cache | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` exists. | Unchanged; Q8.6 copies dirty candidates but does not clear the dirty list. |
+| Market-sliced verifier | Probe-only candidate list in test package. | Debug/audit runtime verifier slice exists, bounded to dirty/promoted candidate markets. |
+| Stock mutation / repair | No verifier stock mutation. | Still none; Q8.6 records counters only. |
 | Durable per-market country-list cache | Not confirmed. | Still not confirmed; no durable `market -> countries_present_in_market` cache is introduced. |

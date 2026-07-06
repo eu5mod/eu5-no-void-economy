@@ -16,6 +16,7 @@ This document is the Q8-owned equivalent of the PR126 Q1 document. It is maintai
 | Runtime mode/config triggers | `in_game/common/scripted_triggers/modeu5_configuration_triggers.txt` | feature gates and debug/audit/runtime switches | Add gates here rather than scattering runtime-mode checks across generated bodies. |
 | Generated active-good dispatch | `tools/generate_pr71_active_good_dispatch_helpers.sh`, `tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt`, generated scripted effects | generated literal per-good guard surface | Keep generated names literal. Q8.2 aggregate pre-gating is deferred; do not add it to default generated output without a later sparse-index design. |
 | Market-country work cache | `in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt` | current-market country-list work cache plus dirty scheduling surface | Keep `modeu5_countries_present_in_market` as a rebuilt work cache; dirty lists are scheduling state only, not durable per-market storage. |
+| Market-sliced verifier | `in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt` | debug/audit candidate-market verifier slice | Q8.6 may verify dirty/promoted candidate markets only; no stock mutation, no stock repair, no global market pass. |
 | Validation and tooling | `tools/validate_generators.sh`, `tools/audit_modeu5_persistent_state.sh` | machine-checkable standards | Any new generator convention or persistent-state family needs validator/audit coverage. |
 | Test-package Q8 probes | `packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt`, `packages/modeu5_core_tests/in_game/events/modeu5_q8_probe_debug_events.txt` | isolated test/probe surface | May test unproven exposure or candidate scopes, but must not alter gameplay runtime. |
 | Q8 methodology docs | `docs/audits/q8/Q*.md` | current Q8 standards | Update these documents when stacked PRs alter Q8 architecture/cache/loop/flow contracts. |
@@ -53,5 +54,18 @@ Q8.5:
 ```
 
 The live promoted-market dispatcher remains owned by `modeu5_promoted_market_cycle_effects.txt`; it continues to call the public generated PR7.1 US-10 dispatcher. No live Q8.2 aggregate pre-gate is introduced.
+
+## Q8.6 implementation update
+
+Q8.6 adds a new debug/audit-only verifier surface:
+
+```txt
+owner: in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt
+entry: modeu5_run_market_sliced_verifier_candidates
+gate: modeu5_market_sliced_verifier_allowed_trigger
+candidate list: modeu5_market_sliced_verifier_candidate_markets
+```
+
+It builds a bounded candidate slice from dirty and promoted market lists, then verifies only those markets by rebuilding the current-market country work cache. It does not mutate stock, does not repair stock, does not clear dirty lists, and does not replace the live promoted-market dispatcher.
 
 No Q8.4 body-helper split is included. No Q8.7 global market dispatcher switch is included.

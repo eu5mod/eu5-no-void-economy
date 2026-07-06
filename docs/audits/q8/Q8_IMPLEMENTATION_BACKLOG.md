@@ -11,7 +11,7 @@ flowchart LR
     A --> D[Q8.3 Capacity pool stamp]
     A --> E[Q8.4 Generated helper body split]
     A --> F[Q8.5 Dirty-set architecture]
-    F --> G[Q8.6 Market-sliced verifier probe]
+    F --> G[Q8.6 Market-sliced verifier]
     G --> H[Q8.7 Global market-local pass probe]
 ```
 
@@ -24,7 +24,7 @@ Q8.2 — DEFERRED: aggregate all-goods pending pre-gate is not live; future desi
 Q8.3 — IMPLEMENTED: country capacity-pool stamping.
 Q8.4 — PROBED ONLY: helper inventory bridge passed; body-helper split remains blocked.
 Q8.5 — IMPLEMENTED IN STACKED PR: guarded dirty market-country cache repair consumer.
-Q8.6 — PROBED ONLY: candidate market-slice list passed; no live verifier yet.
+Q8.6 — IMPLEMENTED IN STACKED PR: debug/audit market-sliced verifier over dirty/promoted candidate markets.
 Q8.7 — PROBED ONLY: every_market_in_world exposed in test package; no gameplay dispatcher replacement.
 ```
 
@@ -205,32 +205,40 @@ No durable per-market country-list cache is introduced.
 A dirty producer/consumer path exists for confirmed topology hooks, without claiming durable per-market country-list storage.
 ```
 
-## Q8.6 / F9c — Market-sliced verifier probe
+## Q8.6 / F9c — Market-sliced verifier
 
 ### Goal
 
-Prove a market-first verifier can check relevant/promoted/candidate markets without blind world-location scanning.
+Allow a market-first verifier to check relevant/promoted/candidate markets without blind world-location scanning.
 
-### Current status
+### Implemented shape
 
 ```txt
-Probe passed.
-No live verifier is implemented yet.
+modeu5_run_market_sliced_verifier_candidates
+  -> build modeu5_market_sliced_verifier_candidate_markets from:
+       modeu5_market_country_cache_dirty_markets
+       modeu5_promoted_markets_this_cycle
+  -> for each candidate market:
+       modeu5_rebuild_countries_present_in_market
+       record pass/fail counters
 ```
 
 ### Guardrails
 
 ```txt
+- Debug/audit gate only.
 - No live gameplay dependency.
 - No stock mutation.
-- Prefer candidate-list slicing in Performance Mode.
-- Do not assume stable market ordering until proven after save/reload and monthly tick.
+- No stock repair.
+- Dirty list is copied as input, not consumed.
+- No global market iterator.
+- Do not assume durable per-market country-list storage.
 ```
 
 ### Exit criterion
 
 ```txt
-The probe proves deterministic coverage and market-level dirty skip before any verifier becomes live.
+The verifier can check candidate markets only and record diagnostic counters without broad world scans or stock mutation.
 ```
 
 ## Q8.7 / F7 — Native global market-local pass

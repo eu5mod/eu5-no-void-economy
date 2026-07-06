@@ -59,6 +59,7 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_active_markets_any_good` | global | market | rebuilt maintenance index | US-11 active validation | active market scheduling across goods | keep |
 | `modeu5_countries_present_in_market` | global | country | temporary rebuilt work cache | market-country cache helpers, validation | current-market country work list | keep as rebuilt cache, not durable per-market storage |
 | `modeu5_market_country_cache_dirty_markets` | global | market | dirty until repair | market-country cache repair | schedule cache repair after ownership changes | keep |
+| `modeu5_market_sliced_verifier_candidate_markets` | global | market | clear before each verifier run | Q8.6 debug/audit verifier | candidate-market verifier slice | debug/audit scheduling only |
 | `modeu5_monthly_markets_seen_this_cycle` | global | market | reset once per month | PERF-06 diagnostics and market-owned scheduling | monthly seen-market diagnostics | keep as scheduling/diagnostic index |
 | `modeu5_performance_relevant_markets` | global | market | rare rebuild | PERF-02 / future human relevance | human-relevant market discovery | keep as rare performance list |
 | `modeu5_promoted_markets_this_cycle` | global | market | rebuilt by PR126 promoted-market shell | PR126 dispatcher shell / future monthly promoted-market cycle | current shell work list built from `every_market_present_in_country` and filtered by mode | keep as rebuilt work cache only |
@@ -105,6 +106,7 @@ this section before moving a reader or deleting a cache.
 | `modeu5_active_markets_any_good` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `modeu5_countries_present_in_market` | work cache | global | `modeu5_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
 | `modeu5_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |
+| `modeu5_market_sliced_verifier_candidate_markets` | work cache | global | Q8.6 verifier candidate preparation | clear before each verifier run |
 | `modeu5_monthly_markets_seen_this_cycle` | work cache | global | monthly seen-market preparation | reset once per month |
 | `modeu5_performance_relevant_markets` | work cache | global | human/performance relevance rebuild | clear before relevance rebuild |
 | `modeu5_promoted_markets_this_cycle` | work cache | global | PR126 promoted-market dispatcher shell preparation | clear before each promoted-market shell preparation |
@@ -129,6 +131,7 @@ otherwise look like hidden business state.
 | `modeu5_debug_us10_*_trace_*` | audit/debug trace scalar | current US-10 resolver scope | overwritten during bounded audit trace | diagnostics only |
 | `modeu5_perf13_*`, `modeu5_perf14_*` | work/metric scalar | global | reset by owning probe/helper before measurement | metrics only, not business source |
 | `modeu5_performance_*_count` / fallback counters | work/metric scalar | global | reset by owning performance helper | counters only, not stock source |
+| `modeu5_market_sliced_verifier_*` | debug/audit verifier scalar | global | reset by Q8.6 verifier runner | diagnostics only, not business source |
 
 Adding a scalar debug/work family does not require a map row, but it must remain
 diagnostic or metric-only. If a scalar starts controlling business behaviour,
