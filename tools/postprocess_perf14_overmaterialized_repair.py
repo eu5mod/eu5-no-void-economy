@@ -98,14 +98,16 @@ def render_repair_branch(good: str) -> str:
 \t\t}}
 \t\tscope:modeu5_promotion_market = {{ save_temporary_scope_as = modeu5_market }}
 \t\tmodeu5_store_rebuilt_market_aggregate_good_{good} = yes
-\n\t\tscope:modeu5_promotion_market = {{
+
+\t\tscope:modeu5_promotion_market = {{
 \t\t\tsave_temporary_scope_as = modeu5_market
 \t\t\tsave_temporary_scope_as = modeu5_market_country_cache_market
 \t\t}}
 \t\tsave_temporary_scope_as = modeu5_consistency_controller
 \t\tmodeu5_rebuild_countries_present_in_market = yes
 \t\tmodeu5_scan_stock_sources_from_prepared_market_country_cache_good_{good} = yes
-\n\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_country_sum_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
+
+\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_country_sum_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_over value = {{ value = scope:modeu5_expected_market_stock subtract = scope:modeu5_promotion_country_sum_before min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_under value = {{ value = scope:modeu5_promotion_country_sum_before subtract = scope:modeu5_scanned_market_stock min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_over value = {{ value = scope:modeu5_scanned_market_stock subtract = scope:modeu5_promotion_country_sum_before min = 0 }} }}
@@ -169,10 +171,19 @@ def patch_ai_gate_blocked_test(path: Path) -> bool:
     if AI_GATE_MARKER in text:
         return False
 
-    needle = """\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
+    # Patch the second AI stock-mutation probe, after the market was deliberately
+    # marked human-relevant.  The earlier AI probe must remain a normal fallback
+    # assertion and should not be turned into a migration block.
+    needle = """\t\tmodeu5_clear_detailed_accounting_promoted_markets = yes
+\t\tscope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
+\t\tmodeu5_mark_performance_relevant_market = yes
+\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
 \t\tif = {
 """
-    replacement = """\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
+    replacement = """\t\tmodeu5_clear_detailed_accounting_promoted_markets = yes
+\t\tscope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
+\t\tmodeu5_mark_performance_relevant_market = yes
+\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
 \t\tif = {
 \t\t\tlimit = {
 \t\t\t\thas_global_variable = modeu5_perf14_promotion_overmaterialized_failures
@@ -184,7 +195,7 @@ def patch_ai_gate_blocked_test(path: Path) -> bool:
 \t\tif = {
 """
     if needle not in text:
-        raise SystemExit(f"Could not find AI gate promotion check in {path}")
+        raise SystemExit(f"Could not find AI human-relevant promotion check in {path}")
     path.write_text(text.replace(needle, replacement, 1))
     return True
 
