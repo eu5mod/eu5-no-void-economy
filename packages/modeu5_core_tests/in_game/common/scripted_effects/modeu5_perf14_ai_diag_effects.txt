@@ -1,156 +1,75 @@
 # Manual PERF-14 AI/human-relevant-market diagnostic.
-#
-# This is intentionally separate from the guarded PASS/FAIL assertion so a single
-# local run can explain which predicate is false when the recurring
-# ai_human_relevant_market_promotion_unexpected_state failure appears.
+# Static YES/NO logs only; no dynamic localization placeholders.
 
 modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 	modeu5_enter_test_audit_runtime_mode = yes
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
 
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_decision_detailed value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_decision_fallback value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_country_is_human value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_market_human_relevant value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_detailed value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_fallback value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_blocked value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_promotion_attempted value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_detailed value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_fallback value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_blocked value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_promotion_attempted value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_promotion_succeeded value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_market_promoted value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_last_result value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_failure_detected value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_blocked_not_human_relevant value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_zero_capacity_failures value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_negative_capacity_failures value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_overmaterialized_failures value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_validation_failures value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_capacity_country_count value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_total_capacity value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_eligible_country_count value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_delta_total value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_allocated_total value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 0 }
 
 	if = {
 		limit = { country_exists = c:ENG c:ENG = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
-		c:ENG = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
-		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		c:ENG = { save_temporary_scope_as = modeu5_perf14_ai_country }
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		debug_log = "ModeU5 PERF-14 AI_DIAG fixture ENG"
 	}
 	else_if = {
 		limit = { country_exists = c:FRA c:FRA = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
-		c:FRA = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		c:FRA = { save_temporary_scope_as = modeu5_perf14_ai_country }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		debug_log = "ModeU5 PERF-14 AI_DIAG fixture FRA"
 	}
 	else_if = {
 		limit = { country_exists = c:POR c:POR = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
-		c:POR = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
-		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		c:POR = { save_temporary_scope_as = modeu5_perf14_ai_country }
+		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		debug_log = "ModeU5 PERF-14 AI_DIAG fixture POR"
 	}
 
 	if = {
-		limit = { scope:modeu5_perf14_diag_ai_fixture_available > 0 }
+		limit = { scope:modeu5_perf14_ai_fixture_available > 0 }
 		modeu5_clear_performance_relevant_markets = yes
 		modeu5_clear_detailed_accounting_promoted_markets = yes
 
-		modeu5_prepare_country_market_accounting_decision = {
-			country = scope:modeu5_perf14_diag_ai_country
-			market = scope:modeu5_perf14_diag_ai_market
-		}
-		if = { limit = { modeu5_detailed_country_market_accounting_enabled_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_decision_detailed value = 1 } }
-		if = { limit = { modeu5_market_level_fallback_required_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_decision_fallback value = 1 } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_country_is_human value = scope:modeu5_accounting_decision_country_is_human }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_market_human_relevant value = scope:modeu5_accounting_decision_market_human_relevant }
-
-		modeu5_prepare_stock_mutation_accounting_mode = {
-			country = scope:modeu5_perf14_diag_ai_country
-			market = scope:modeu5_perf14_diag_ai_market
-		}
-		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_detailed value = 1 } }
-		if = { limit = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_fallback value = 1 } }
-		if = { limit = { modeu5_stock_mutation_blocked_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_stock_blocked value = 1 } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_before_promotion_attempted value = scope:modeu5_stock_mutation_promotion_attempted }
-
-		modeu5_clear_detailed_accounting_promoted_markets = yes
-		scope:modeu5_perf14_diag_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
+		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
 		modeu5_mark_performance_relevant_market = yes
+
 		if = {
 			limit = {
 				has_global_variable_list = modeu5_performance_relevant_markets
-				is_target_in_global_variable_list = {
-					name = modeu5_performance_relevant_markets
-					target = scope:modeu5_perf14_diag_ai_market
-				}
+				is_target_in_global_variable_list = { name = modeu5_performance_relevant_markets target = scope:modeu5_perf14_ai_market }
 			}
-			save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = 1 }
+			debug_log = "ModeU5 PERF-14 AI_DIAG relevant_list YES"
 		}
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG relevant_list NO" }
 
-		modeu5_prepare_stock_mutation_accounting_mode = {
-			country = scope:modeu5_perf14_diag_ai_country
-			market = scope:modeu5_perf14_diag_ai_market
-		}
-		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_detailed value = 1 } }
-		if = { limit = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_fallback value = 1 } }
-		if = { limit = { modeu5_stock_mutation_blocked_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_stock_blocked value = 1 } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_promotion_attempted value = scope:modeu5_stock_mutation_promotion_attempted }
-		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_promotion_succeeded value = scope:modeu5_stock_mutation_promotion_succeeded }
-		if = { limit = { modeu5_market_detailed_accounting_promoted_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_after_market_promoted value = 1 } }
+		modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
 
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_last_result } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_last_result value = global_var:modeu5_perf14_promotion_last_result } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_failure_detected } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_failure_detected value = global_var:modeu5_perf14_promotion_failure_detected } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_blocked_not_human_relevant } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_blocked_not_human_relevant value = global_var:modeu5_perf14_promotion_blocked_not_human_relevant } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_zero_capacity_failures } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_zero_capacity_failures value = global_var:modeu5_perf14_promotion_zero_capacity_failures } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_negative_capacity_failures } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_negative_capacity_failures value = global_var:modeu5_perf14_promotion_negative_capacity_failures } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_overmaterialized_failures } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_overmaterialized_failures value = global_var:modeu5_perf14_promotion_overmaterialized_failures } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_validation_failures } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_validation_failures value = global_var:modeu5_perf14_promotion_validation_failures } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_capacity_country_count } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_capacity_country_count value = global_var:modeu5_perf14_promotion_capacity_country_count } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_market_total_capacity } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_total_capacity value = global_var:modeu5_perf14_promotion_market_total_capacity } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_market_eligible_country_count } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_eligible_country_count value = global_var:modeu5_perf14_promotion_market_eligible_country_count } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_delta_total } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_delta_total value = global_var:modeu5_perf14_promotion_delta_total } }
-		if = { limit = { has_global_variable = modeu5_perf14_promotion_allocated_total } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_allocated_total value = global_var:modeu5_perf14_promotion_allocated_total } }
+		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } debug_log = "ModeU5 PERF-14 AI_DIAG detailed YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG detailed NO" }
+		if = { limit = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes } debug_log = "ModeU5 PERF-14 AI_DIAG fallback YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG fallback NO" }
+		if = { limit = { modeu5_stock_mutation_blocked_trigger = yes } debug_log = "ModeU5 PERF-14 AI_DIAG blocked YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG blocked NO" }
+		if = { limit = { scope:modeu5_stock_mutation_promotion_attempted > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG attempted YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG attempted NO" }
+		if = { limit = { scope:modeu5_stock_mutation_promotion_succeeded > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG succeeded YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG succeeded NO" }
+
+		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_market }
+		if = { limit = { modeu5_market_detailed_accounting_promoted_trigger = yes } debug_log = "ModeU5 PERF-14 AI_DIAG promoted YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_DIAG promoted NO" }
+
+		if = { limit = { has_global_variable = modeu5_perf14_promotion_blocked_not_human_relevant global_var:modeu5_perf14_promotion_blocked_not_human_relevant > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_not_relevant YES" }
+		if = { limit = { has_global_variable = modeu5_perf14_promotion_zero_capacity_failures global_var:modeu5_perf14_promotion_zero_capacity_failures > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_zero_capacity YES" }
+		if = { limit = { has_global_variable = modeu5_perf14_promotion_negative_capacity_failures global_var:modeu5_perf14_promotion_negative_capacity_failures > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_negative_capacity YES" }
+		if = { limit = { has_global_variable = modeu5_perf14_promotion_overmaterialized_failures global_var:modeu5_perf14_promotion_overmaterialized_failures > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_overmaterialized YES" }
+		if = { limit = { has_global_variable = modeu5_perf14_promotion_validation_failures global_var:modeu5_perf14_promotion_validation_failures > 0 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_validation YES" }
 	}
-
-	set_variable = { name = modeu5_perf14_diag_ai_fixture_available value = scope:modeu5_perf14_diag_ai_fixture_available }
-	set_variable = { name = modeu5_perf14_diag_ai_before_decision_detailed value = scope:modeu5_perf14_diag_ai_before_decision_detailed }
-	set_variable = { name = modeu5_perf14_diag_ai_before_decision_fallback value = scope:modeu5_perf14_diag_ai_before_decision_fallback }
-	set_variable = { name = modeu5_perf14_diag_ai_before_country_is_human value = scope:modeu5_perf14_diag_ai_before_country_is_human }
-	set_variable = { name = modeu5_perf14_diag_ai_before_market_human_relevant value = scope:modeu5_perf14_diag_ai_before_market_human_relevant }
-	set_variable = { name = modeu5_perf14_diag_ai_before_stock_detailed value = scope:modeu5_perf14_diag_ai_before_stock_detailed }
-	set_variable = { name = modeu5_perf14_diag_ai_before_stock_fallback value = scope:modeu5_perf14_diag_ai_before_stock_fallback }
-	set_variable = { name = modeu5_perf14_diag_ai_before_stock_blocked value = scope:modeu5_perf14_diag_ai_before_stock_blocked }
-	set_variable = { name = modeu5_perf14_diag_ai_before_promotion_attempted value = scope:modeu5_perf14_diag_ai_before_promotion_attempted }
-	set_variable = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = scope:modeu5_perf14_diag_ai_relevant_list_after_mark }
-	set_variable = { name = modeu5_perf14_diag_ai_after_stock_detailed value = scope:modeu5_perf14_diag_ai_after_stock_detailed }
-	set_variable = { name = modeu5_perf14_diag_ai_after_stock_fallback value = scope:modeu5_perf14_diag_ai_after_stock_fallback }
-	set_variable = { name = modeu5_perf14_diag_ai_after_stock_blocked value = scope:modeu5_perf14_diag_ai_after_stock_blocked }
-	set_variable = { name = modeu5_perf14_diag_ai_after_promotion_attempted value = scope:modeu5_perf14_diag_ai_after_promotion_attempted }
-	set_variable = { name = modeu5_perf14_diag_ai_after_promotion_succeeded value = scope:modeu5_perf14_diag_ai_after_promotion_succeeded }
-	set_variable = { name = modeu5_perf14_diag_ai_after_market_promoted value = scope:modeu5_perf14_diag_ai_after_market_promoted }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_last_result value = scope:modeu5_perf14_diag_ai_promotion_last_result }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_failure_detected value = scope:modeu5_perf14_diag_ai_promotion_failure_detected }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_blocked_not_human_relevant value = scope:modeu5_perf14_diag_ai_promotion_blocked_not_human_relevant }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_zero_capacity_failures value = scope:modeu5_perf14_diag_ai_promotion_zero_capacity_failures }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_negative_capacity_failures value = scope:modeu5_perf14_diag_ai_promotion_negative_capacity_failures }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_overmaterialized_failures value = scope:modeu5_perf14_diag_ai_promotion_overmaterialized_failures }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_validation_failures value = scope:modeu5_perf14_diag_ai_promotion_validation_failures }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_capacity_country_count value = scope:modeu5_perf14_diag_ai_promotion_capacity_country_count }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_total_capacity value = scope:modeu5_perf14_diag_ai_promotion_total_capacity }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_eligible_country_count value = scope:modeu5_perf14_diag_ai_promotion_eligible_country_count }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_delta_total value = scope:modeu5_perf14_diag_ai_promotion_delta_total }
-	set_variable = { name = modeu5_perf14_diag_ai_promotion_allocated_total value = scope:modeu5_perf14_diag_ai_promotion_allocated_total }
-
-	debug_log = "ModeU5 PERF-14 AI_DIAG_A fixture=[THIS.GetVariable('modeu5_perf14_diag_ai_fixture_available').GetValue|0] before_decision_detailed=[THIS.GetVariable('modeu5_perf14_diag_ai_before_decision_detailed').GetValue|0] before_decision_fallback=[THIS.GetVariable('modeu5_perf14_diag_ai_before_decision_fallback').GetValue|0] before_country_human=[THIS.GetVariable('modeu5_perf14_diag_ai_before_country_is_human').GetValue|0] before_market_relevant=[THIS.GetVariable('modeu5_perf14_diag_ai_before_market_human_relevant').GetValue|0]"
-	debug_log = "ModeU5 PERF-14 AI_DIAG_B before_stock_detailed=[THIS.GetVariable('modeu5_perf14_diag_ai_before_stock_detailed').GetValue|0] before_stock_fallback=[THIS.GetVariable('modeu5_perf14_diag_ai_before_stock_fallback').GetValue|0] before_stock_blocked=[THIS.GetVariable('modeu5_perf14_diag_ai_before_stock_blocked').GetValue|0] before_promotion_attempted=[THIS.GetVariable('modeu5_perf14_diag_ai_before_promotion_attempted').GetValue|0]"
-	debug_log = "ModeU5 PERF-14 AI_DIAG_C relevant_list_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_relevant_list_after_mark').GetValue|0] after_stock_detailed=[THIS.GetVariable('modeu5_perf14_diag_ai_after_stock_detailed').GetValue|0] after_stock_fallback=[THIS.GetVariable('modeu5_perf14_diag_ai_after_stock_fallback').GetValue|0] after_stock_blocked=[THIS.GetVariable('modeu5_perf14_diag_ai_after_stock_blocked').GetValue|0]"
-	debug_log = "ModeU5 PERF-14 AI_DIAG_D after_promotion_attempted=[THIS.GetVariable('modeu5_perf14_diag_ai_after_promotion_attempted').GetValue|0] after_promotion_succeeded=[THIS.GetVariable('modeu5_perf14_diag_ai_after_promotion_succeeded').GetValue|0] after_market_promoted=[THIS.GetVariable('modeu5_perf14_diag_ai_after_market_promoted').GetValue|0] promotion_last_result=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_last_result').GetValue|0]"
-	debug_log = "ModeU5 PERF-14 AI_DIAG_E promotion_failure=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_failure_detected').GetValue|0] blocked_not_human_relevant=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_blocked_not_human_relevant').GetValue|0] zero_capacity=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_zero_capacity_failures').GetValue|0] negative_capacity=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_negative_capacity_failures').GetValue|0] overmaterialized=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_overmaterialized_failures').GetValue|0]"
-	debug_log = "ModeU5 PERF-14 AI_DIAG_F validation_failures=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_validation_failures').GetValue|0] capacity_country_count=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_capacity_country_count').GetValue|0] total_capacity=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_total_capacity').GetValue|2] eligible_countries=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_eligible_country_count').GetValue|0] delta_total=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_delta_total').GetValue|2] allocated_total=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_allocated_total').GetValue|2]"
+	else = {
+		debug_log = "ModeU5 PERF-14 AI_DIAG fixture NONE"
+	}
 }
