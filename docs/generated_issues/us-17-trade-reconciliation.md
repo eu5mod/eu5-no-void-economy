@@ -1,115 +1,102 @@
-# US-17 — Trade-efficiency reconciliation inside Q8.7 trade-owner loop
+# US-17 — Trade-efficiency redefinition inside Q8.7 trade-owner loop
 
-## Status of older text
+## Supersession rule
 
-The old #105 / early #107 wording is superseded by the PERF-14 / CMM accounting-mode baseline from #120.
+The old #105 / early #107 text is superseded by the trade-efficiency redefinition carried by #120.
 
-Keep from the older story only the business goal:
-
-```txt
-remove the old price-side buying/selling efficiency bonus
-and replace it with an explicit reconciliation effect
-```
-
-Do not keep the old runtime shape:
+Use this document as the corrected US-17 contract for this PR.
 
 ```txt
-every_market_center_in_country -> every_trade
+#120 defines the meaning of trade efficiency.
+#161 defines where the route-level hook belongs.
 ```
 
-Do not keep old comments that say positive efficiency increases maintenance. Positive efficiency is beneficial.
+Older wording remains useful only as historical context for the problem being solved: vanilla `buying_efficiency` and `selling_efficiency` create a price-side bonus that must not survive once ModeU5 redefines trade efficiency.
 
-## Authoritative runtime baseline
+## Redefined trade-efficiency meaning
 
-#120 establishes the CMM / Performance Mode accounting baseline:
+Under the corrected model, `buying_efficiency` and `selling_efficiency` are no longer treated as a direct vanilla price-side profit amplifier.
+
+They become an explicit ModeU5 route-level reconciliation input:
 
 ```txt
-- main mode is resolved by parser-safe runtime helpers;
-- Performance Mode discovers human-relevant markets;
-- detailed accounting is gated by accounting-mode decisions;
-- skipped detailed work must use an explicit fallback path, not silently disappear;
-- PERF-14 probes are read-only unless a later PR wires mutation through the gate.
+buying_efficiency + selling_efficiency
+  -> clamped_average_efficiency
+  -> explicit trade-owner money reconciliation
 ```
 
-#161 then changes the live monthly owner shape:
+The implementation must therefore:
+
+```txt
+1. identify the old vanilla price-side bonus;
+2. remove that old bonus from the engine result;
+3. add only the new ModeU5-defined money-side effect;
+4. attribute the route delta to the saved trade owner.
+```
+
+The engine result is not replaced wholesale. The mod applies a delta:
+
+```txt
+final_trade_owner_income =
+    engine_trade_owner_income
+  + money_reconciliation_delta
+```
+
+## Q8.7 runtime placement
+
+#161 introduces the live monthly owner split:
 
 ```txt
 modeu5_monthly_stock_cycle_pulse
   -> modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-     -> once-per-month market-local owner pass
+     -> every_market_in_world market-local pass
      -> country trade-owner pass
      -> optional audit reconciliation
 ```
 
-The market-local owner pass is:
+US-17 must not run inside the `every_market_in_world` market-local body.
 
-```txt
-modeu5_run_monthly_q8_7_global_market_local_cycle_once
-  -> every_market_in_world
-     -> modeu5_prepare_market_runtime_accounting_mode
-     -> modeu5_run_promoted_market_live_local_branch_market_all_goods
-```
-
-US-17 must not run in that `every_market_in_world` body. That body is for market-local stock and demand processing.
-
-## Correct US-17 insertion point
-
-US-17 belongs inside the #161 country trade-owner route loop:
+US-17 must run inside the country trade-owner route loop:
 
 ```txt
 modeu5_run_monthly_country_trade_owner_cycle
   -> every_trade
-     -> save trade route scopes
+     -> save route scopes
      -> capture route quantity
-     -> US-17 route reconciliation
+     -> compute US-17 money reconciliation
+     -> add delta to saved trade owner
 ```
 
-Required local shape:
+Required insertion point:
 
 ```txt
-modeu5_run_monthly_country_trade_owner_cycle = {
-  save_temporary_scope_as = modeu5_trade_owner_controller_country
-  modeu5_note_country_trade_owner_pass_run = yes
+every_trade = {
+  save_temporary_scope_as = modeu5_trade_owner_trade
 
-  every_trade = {
-    save_temporary_scope_as = modeu5_trade_owner_trade
-    modeu5_note_country_trade_owner_trade_seen = yes
+  owner = { save_temporary_scope_as = modeu5_trade_owner_country }
+  from_market = { save_temporary_scope_as = modeu5_trade_owner_source_market }
+  to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
+  traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
 
-    owner = { save_temporary_scope_as = modeu5_trade_owner_country }
-    from_market = { save_temporary_scope_as = modeu5_trade_owner_source_market }
-    to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
-    traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
+  modeu5_capture_country_trade_owner_trade_quantity = yes
 
-    modeu5_capture_country_trade_owner_trade_quantity = yes
-
-    # US-17 hook
-    modeu5_compute_us17_trade_efficiency_delta = yes
-    modeu5_add_us17_trade_efficiency_delta_to_trade_owner = yes
-
-    modeu5_note_country_trade_owner_inter_market_trade = yes
-  }
+  # US-17 starts here
+  modeu5_compute_us17_trade_efficiency_money_delta = yes
+  modeu5_add_us17_money_delta_to_trade_owner = yes
 }
 ```
 
-The route owner is:
+The money owner is:
 
 ```txt
 scope:modeu5_trade_owner_country
 ```
 
-not the scheduler country and not the market-center owner.
+Do not use the scheduler country, the market-center owner, or a separate market-center route pass.
 
-## Business formula
+## Money-side formula
 
-The engine is assumed to have already calculated vanilla trade income. US-17 therefore applies a delta:
-
-```txt
-final_trade_owner_income =
-    engine_trade_owner_income
-  + reconciliation_delta
-```
-
-The old price-side bonus to remove is:
+The old bonus to remove remains the vanilla price-side bonus:
 
 ```txt
 old_price_side_bonus =
@@ -117,14 +104,14 @@ old_price_side_bonus =
   + quantity * buy_price * buying_efficiency * (1 + export_cost_modifier)
 ```
 
-Average efficiency is clamped:
+The corrected efficiency input is:
 
 ```txt
 clamped_average_efficiency =
     clamp((buying_efficiency + selling_efficiency) / 2, 0, 1)
 ```
 
-EU5 value syntax should use bounds:
+EU5 bound notation:
 
 ```txt
 modeu5_us17_clamped_average_efficiency = {
@@ -137,38 +124,30 @@ modeu5_us17_clamped_average_efficiency = {
 }
 ```
 
-US-17 maintenance-side saving:
+US-17 money delta:
 
 ```txt
-new_maintenance_saving =
-    current_trade_maintenance
-  * clamped_average_efficiency
-```
-
-Route reconciliation:
-
-```txt
-reconciliation_delta =
+money_reconciliation_delta =
     - old_price_side_bonus
-    + new_maintenance_saving
+    + modeu5_trade_efficiency_money_effect
 ```
 
-## PERF-14 / Performance Mode rule
+`modeu5_trade_efficiency_money_effect` is the #120-defined replacement effect. Do not revert to pre-#120 assumptions unless #120 explicitly says so.
+
+## PERF-14 / CMM accounting rule
 
 US-17 must respect #120 accounting decisions.
 
 ```txt
 Detailed route accounting available:
-  calculate route-level delta inside every_trade
-  add money delta to scope:modeu5_trade_owner_country
+  compute route-level money delta in every_trade
+  add route delta to saved trade owner
 
-Detailed route accounting unavailable / blocked:
-  emit blocked or fallback diagnostics
-  use only the approved fallback path
-  do not silently skip the economic effect
+Detailed accounting unavailable or blocked:
+  emit explicit fallback/block diagnostics
+  use the approved fallback only
+  do not silently drop the trade-efficiency redefinition
 ```
-
-If a direct formula override is later confirmed, do not also apply the delta fallback.
 
 ## Current PR scaffold
 
@@ -180,20 +159,18 @@ in_game/common/script_values/zzz_trade_reconciliation_values.txt
 in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt
 ```
 
-Before making this live:
+Before live implementation:
 
 ```txt
 - rename zzz_* files/effects into modeu5_us17_* naming;
-- remove the old market-center route loop scaffold;
+- remove the old every_market_center_in_country route scaffold;
 - insert the US-17 hook into modeu5_run_monthly_country_trade_owner_cycle;
-- replace TODO trade price / quantity / maintenance values with confirmed exposure or blocked diagnostics;
+- replace TODO route values with confirmed script-doc values or blocked diagnostics;
 - add route-level debug output;
-- update TECH-01 for each confirmed or blocked exposure.
+- update TECH-01 for confirmed/blocked exposures.
 ```
 
 ## Debug contract
-
-Route debug should include:
 
 ```txt
 trade_owner
@@ -208,9 +185,8 @@ buying_efficiency
 selling_efficiency
 clamped_average_efficiency
 old_price_side_bonus
-current_trade_maintenance
-new_maintenance_saving
-reconciliation_delta
+modeu5_trade_efficiency_money_effect
+money_reconciliation_delta
 trade_owner_accumulated_delta
 accounting_mode_detailed_or_fallback
 ```
@@ -218,13 +194,14 @@ accounting_mode_detailed_or_fallback
 ## Acceptance checks
 
 ```txt
+- #120 trade-efficiency redefinition supersedes old #105/#107 wording.
+- #161 defines only the runtime insertion point.
 - US-17 runs from the country trade-owner every_trade loop.
 - US-17 does not add a second every_market_center_in_country route pass.
 - US-17 does not run in the every_market_in_world market-local body.
-- Positive efficiency reduces/offsets cost through the approved money reconciliation.
 - Old price-side bonus is removed.
+- New ModeU5 trade-efficiency money effect is added.
 - Delta is accumulated on the saved trade owner.
-- No stock mutation is introduced by US-17.
-- PERF-14 blocked/fallback accounting emits diagnostics.
-- error.log has no new blocking diagnostics.
+- No stock-side mutation is introduced by US-17.
+- PERF-14 fallback/block state is visible in diagnostics.
 ```
