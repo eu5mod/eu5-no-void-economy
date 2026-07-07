@@ -9,7 +9,6 @@ modeu5_review.1 = {
 
 	trigger = {
 		is_ai = no
-		current_date >= 1524.2.20
 		OR = {
 			NOT = { has_variable_map = cmm }
 			AND = {
