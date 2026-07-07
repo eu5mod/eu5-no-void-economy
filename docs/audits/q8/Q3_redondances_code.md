@@ -15,6 +15,7 @@ This document is the Q8-owned redundancy standard for helper extraction, generat
 | Capacity helpers | Public helpers may be called from several surfaces. | Prefer changing the public helper contract once rather than editing each large dispatcher caller. |
 | Market-sliced verifier helpers | Verifier helpers can drift into hidden repair or stock mutation. | Keep Q8.6 verifier helpers debug/audit gated, candidate-sliced, and non-stock-mutating. |
 | Q8.7 shadow-comparison helpers | Probe helpers can be mistaken for live dispatcher replacement or copied into production before economic equivalence. | Keep Q8.7 helpers test-package only until a later PR proves no-op / economic equivalence. |
+| Runtime configuration triggers | A proof can reveal an incorrect policy boundary and require a central trigger correction. | If the change is production-facing, document it as a trigger-policy correction rather than as test-package-only work. |
 | Debug/profile counters | Metrics can look like business state when scattered. | Centralize gates and keep metrics explicitly diagnostic. |
 | Q8 docs vs PR126 docs | Duplicated methodology can drift. | Q8 owns new Q1–Q5 documents; PR126 documents remain inherited context. |
 
@@ -129,25 +130,34 @@ global market-local pass
      -> market-local work
 ```
 
-The Q8.7 redundancy evidence is now split into two separate proof surfaces:
+The Q8.7 redundancy evidence is now split into four proof surfaces:
 
 ```txt
 Normal Mode:
   modeu5_q8_7_probe_global_market_center_shadow_compare
   compares every_market_in_world with every_country -> every_market_center_in_country
 
-Performance Mode:
+Performance Mode relevant-market set:
   modeu5_q8_7_probe_performance_relevant_global_shadow_compare
   compares modeu5_performance_relevant_markets with every_market_in_world filtered to that same list
+
+Performance Mode owner workshape:
+  modeu5_q8_7_probe_performance_market_owner_workshape_shadow
+  compares current market-center ownership shape with candidate global market-local shape without US-00, US-10, trade-owner work, validation, or stock mutation
+
+Performance Mode no-op dispatcher shadow:
+  modeu5_q8_7_probe_performance_noop_dispatcher_shadow
+  compares pass counters for current and candidate market-local dispatcher shapes without executing mutating work
 ```
 
 Consequence for Q3:
 
 ```txt
-The duplicated market ownership surface is now measurable in both Normal Mode and Performance Mode.
+The duplicated market ownership surface is now measurable in Normal Mode and Performance Mode.
 The market-center workaround is still not removed.
 No generated goods helper split is introduced.
 No live dispatcher replacement is introduced.
+The central configuration trigger correction is not a duplicate helper family; it is a policy-boundary correction for Performance Mode.
 ```
 
 Important non-deduplication boundary:
