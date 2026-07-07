@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <defs>
+    <linearGradient id="parchment" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d6b87a"/>
+      <stop offset="0.55" stop-color="#bb8f55"/>
+      <stop offset="1" stop-color="#6c4a32"/>
+    </linearGradient>
+    <linearGradient id="storm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f7780"/>
+      <stop offset="1" stop-color="#244f62"/>
+    </linearGradient>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="1524"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.12"/>
+      </feComponentTransfer>
+      <feBlend mode="multiply" in2="SourceGraphic"/>
+    </filter>
+    <style>
+      .ink{stroke:#2e2117;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .thin{stroke:#2e2117;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .paper{fill:#ead7a9;stroke:#2e2117;stroke-width:5;stroke-linejoin:round}
+      .wood{fill:#6a3f25;stroke:#2e2117;stroke-width:6;stroke-linejoin:round}
+      .town{fill:#8d6944;stroke:#2e2117;stroke-width:5;stroke-linejoin:round}
+      .roof{fill:#583231;stroke:#2e2117;stroke-width:5;stroke-linejoin:round}
+      .water{fill:#326d7b;stroke:#2e2117;stroke-width:5;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#parchment)"/>
+  <rect x="8" y="8" width="1584" height="884" class="ink"/>
+
+  <!-- arched storm window -->
+  <path d="M930 560V180 Q930 90 1210 90 Q1490 90 1490 180 V560 Z" fill="url(#storm)" stroke="#2e2117" stroke-width="8"/>
+  <g opacity="0.65" stroke="#c7d5d9" stroke-width="4">
+    <path d="M980 125 l-60 150M1060 125 l-70 190M1145 120 l-80 220M1240 120 l-95 240M1350 130 l-105 260M1440 155 l-115 285"/>
+  </g>
+
+  <!-- flooded town outside -->
+  <g transform="translate(915 420)">
+    <rect x="0" y="-95" width="80" height="95" class="town"/><path d="M-10 -95 L40 -145 L90 -95" class="roof"/>
+    <rect x="95" y="-130" width="95" height="130" class="town"/><path d="M85 -130 L142 -185 L200 -130" class="roof"/>
+    <rect x="210" y="-105" width="85" height="105" class="town"/><path d="M200 -105 L252 -150 L305 -105" class="roof"/>
+    <rect x="325" y="-190" width="80" height="190" class="town"/><path d="M312 -190 L365 -265 L418 -190" class="roof"/>
+    <circle cx="365" cy="-120" r="21" fill="#d9bf73" stroke="#2e2117" stroke-width="4"/>
+  </g>
+  <path d="M910 580 C1020 535 1110 620 1220 575 C1345 525 1460 595 1510 560 V900 H900 Z" class="water" opacity="0.92"/>
+  <path d="M905 645 C1025 605 1120 685 1245 635 C1370 585 1460 655 1515 625" class="thin"/>
+  <path d="M935 710 C1035 675 1130 735 1240 700 C1360 662 1460 720 1500 690" class="thin"/>
+
+  <!-- floor / printer workshop -->
+  <rect x="0" y="570" width="1600" height="160" fill="#956a45" opacity="0.88"/>
+  <path d="M0 612 H1600M0 670 H1600M0 728 H1600" class="thin" opacity="0.6"/>
+
+  <!-- printing press -->
+  <g transform="translate(110 605) scale(1.7)">
+    <rect x="0" y="0" width="245" height="25" class="wood"/>
+    <rect x="30" y="-165" width="26" height="270" class="wood"/>
+    <rect x="200" y="-165" width="26" height="270" class="wood"/>
+    <rect x="10" y="-165" width="235" height="28" class="wood"/>
+    <rect x="72" y="-115" width="120" height="36" fill="#4a3023" stroke="#2e2117" stroke-width="5"/>
+    <path d="M128 -205 V-80M82 -195 H176" class="ink"/>
+    <polygon points="95,-50 210,-70 224,48 105,60" class="paper"/>
+    <circle cx="158" cy="-14" r="28" class="thin"/>
+    <path d="M118 22 C150 5 175 38 205 21M122 42 C152 27 176 57 210 39" stroke="#2f6672" stroke-width="5" fill="none"/>
+  </g>
+
+  <!-- astrologer / reader -->
+  <g transform="translate(780 495)">
+    <path d="M0 0 L42 125 L-45 125 Z" fill="#555d62" stroke="#2e2117" stroke-width="6"/>
+    <circle cx="0" cy="-40" r="29" fill="#b98255" stroke="#2e2117" stroke-width="5"/>
+    <path d="M-50 -10 L0 -85 L55 -10 Z" fill="#432b25" stroke="#2e2117" stroke-width="5"/>
+    <polygon points="60,38 145,18 156,82 70,100" class="paper"/>
+  </g>
+
+  <!-- astrological chart -->
+  <g transform="translate(515 185)">
+    <circle r="95" class="ink"/>
+    <circle r="45" class="thin"/>
+    <g class="thin">
+      <path d="M0,-95 V95M-95,0 H95M-67,-67 L67,67M67,-67 L-67,67"/>
+    </g>
+    <circle r="15" fill="#2e2117"/>
+  </g>
+
+  <!-- flying printed rumors -->
+  <g opacity="0.95">
+    <polygon points="950,230 1020,205 1034,270 962,292" class="paper"/>
+    <polygon points="1180,185 1262,168 1274,235 1190,255" class="paper"/>
+    <polygon points="1345,330 1428,312 1444,382 1356,402" class="paper"/>
+    <polygon points="1080,405 1150,385 1165,445 1090,468" class="paper"/>
+  </g>
+
+  <rect width="1600" height="900" filter="url(#rough)" opacity="0.55"/>
+</svg>
