@@ -14,6 +14,7 @@ flowchart LR
     F --> G[Q8.6 Market-sliced verifier]
     G --> H[Q8.7 Global market-local pass proof]
     H --> I[Q8.7 Live global market owner switch]
+    I --> J[Q8.7 Prune legacy rollback owner]
 ```
 
 ## Current implementation state
@@ -26,7 +27,8 @@ Q8.3 — IMPLEMENTED: country capacity-pool stamping.
 Q8.4 — PROBED ONLY: helper inventory bridge passed; body-helper split remains blocked.
 Q8.5 — IMPLEMENTED IN STACKED PR: guarded dirty market-country cache repair consumer.
 Q8.6 — IMPLEMENTED IN STACKED PR: debug/audit market-sliced verifier over dirty/promoted candidate markets.
-Q8.7 — LIVE SWITCH IN THIS STACKED PR: market-local owner moves from market-center workaround to a once-per-month global market pass, with fallback retained.
+Q8.7 — LIVE SWITCH IN STACKED PR: market-local owner moves from market-center workaround to a once-per-month global market pass.
+Q8.7 cleanup — IMPLEMENTED IN STACKED PR: temporary legacy rollback owner branch is pruned.
 ```
 
 ## Q8.1 / F3 — Gate or remove PR7.1 profiling counters
@@ -115,7 +117,7 @@ modeu5_run_market_sliced_verifier_candidates
        record pass/fail counters
 ```
 
-Guardrails:
+Boundary:
 
 ```txt
 - Debug/audit gate only.
@@ -132,7 +134,7 @@ Guardrails:
 
 Replace the market-center ownership workaround with a structural market-owned pass while preserving the PR126 monthly ordering and stock mutation contracts.
 
-### Proof stack completed before this PR
+### Proof stack completed before the live switch
 
 ```txt
 #155 — native every_market_in_world market-local pass proof.
@@ -141,7 +143,7 @@ Replace the market-center ownership workaround with a structural market-owned pa
 #160 — Performance Mode relevant-market shadow, workshape shadow, no-op dispatcher shadow, and human-relevant-market trigger clarification.
 ```
 
-### Live implementation shape in this PR
+### Live implementation shape
 
 ```txt
 modeu5_run_monthly_stock_cycle_q8_7_owner_switch
@@ -171,18 +173,28 @@ then:
     run US-10 pending-good dispatcher
 ```
 
-### Fallback
+### Rollback owner cleanup
 
-The old market-center owner remains available through:
+The temporary legacy rollback branch has been pruned from the Q8.7 monthly owner switch.
+
+Removed:
 
 ```txt
 modeu5_q8_7_live_global_market_owner_disabled
+modeu5_enable_q8_7_live_global_market_owner
+modeu5_disable_q8_7_live_global_market_owner
+modeu5_q8_7_live_global_market_owner_enabled_trigger
+modeu5_q8_7_live_global_market_owner_disabled_trigger
+owner-selection else branch -> modeu5_run_monthly_promoted_market_local_cycle
 ```
 
-When present, the wrapper calls the old:
+Kept:
 
 ```txt
-modeu5_run_monthly_promoted_market_local_cycle
+modeu5_run_monthly_q8_7_global_market_local_cycle_once
+  -> every_market_in_world
+  -> per-market detailed / vanilla fallback / blocked runtime paths
+modeu5_run_monthly_country_trade_owner_cycle
 ```
 
 ### Guardrails
@@ -191,7 +203,7 @@ modeu5_run_monthly_promoted_market_local_cycle
 - Preserve ordering: country prep -> market-local -> country trade -> validation.
 - Do not call every_trade from market scope.
 - Do not process market-local mutation once per country present.
-- Keep the old market-center owner as a fallback path for validation.
+- Keep per-market vanilla fallback inside the global owner loop.
 - Keep US-00 for all present countries before any US-10 same-market consumption.
 - Keep Performance Mode scoped to human-relevant markets, not human countries only.
 ```
@@ -199,7 +211,7 @@ modeu5_run_monthly_promoted_market_local_cycle
 ### Exit criterion
 
 ```txt
-A runtime validation pass must compare the new global owner and the fallback market-center owner from the same save, then document equivalent economic results and reduced/equivalent work-shape counters.
+Runtime validation must show no duplicate market-local mutation, clean stock validation, and country trade-owner execution after the global market-local owner.
 ```
 
 ## Rejected or postponed ideas
