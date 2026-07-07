@@ -26,7 +26,6 @@ modeu5_perf14_ai_diag.2 = {
 	title = modeu5_perf14_ai_diag.2.title
 	desc = modeu5_perf14_ai_diag.2.desc
 	outcome = neutral
-	orphan = yes
 
 	trigger = {
 		always = yes
