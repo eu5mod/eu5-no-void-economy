@@ -69,3 +69,44 @@ candidate list: modeu5_market_sliced_verifier_candidate_markets
 It builds a bounded candidate slice from dirty and promoted market lists, then verifies only those markets by rebuilding the current-market country work cache. It does not mutate stock, does not repair stock, does not clear dirty lists, and does not replace the live promoted-market dispatcher.
 
 No Q8.4 body-helper split is included. No Q8.7 global market dispatcher switch is included.
+
+## Q8.7 proof-stack update
+
+Q8.7 currently adds proof surfaces only. They remain isolated in `packages/modeu5_core_tests` and do not move live runtime ownership.
+
+The proof surfaces are:
+
+```txt
+# global market-local exposure / cache-rebuild proof
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_q8_probe_debug_events.txt
+
+# Normal Mode market-universe shadow comparison
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_7_shadow_dispatcher_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_q8_7_shadow_debug_events.txt
+
+# Performance Mode relevant-market shadow comparison
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_7_performance_relevant_shadow_effects.txt
+packages/modeu5_core_tests/in_game/events/modeu5_q8_7_performance_relevant_shadow_debug_events.txt
+packages/modeu5_core_tests/in_game/localization/modeu5_q8_7_performance_relevant_l_english.yml
+```
+
+Q8.7 therefore changes Q1 only as a proof-track architecture update:
+
+```txt
+No production package is reorganised.
+No live dispatcher file is moved.
+No stock-source file is touched.
+No generated runtime file is changed.
+No gameplay package boundary is changed.
+```
+
+The target architecture becomes better evidenced:
+
+```txt
+country preparation / relevance discovery
+  -> future global market-local owner
+  -> future country trade-owner pass
+```
+
+But the live owner remains the current market-center workaround until a later economic-equivalence PR proves the full switch is safe.
