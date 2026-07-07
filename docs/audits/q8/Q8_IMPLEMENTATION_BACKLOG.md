@@ -1,6 +1,6 @@
 # Q8 — implementation backlog
 
-This backlog translates the PR126 Q8 findings into a stacked implementation track. It deliberately starts with audits and probes. Do not collapse this backlog into one broad runtime PR.
+This backlog translates the PR126 Q8 findings into a stacked implementation track. It deliberately starts with audits and probes. Do not collapse unrelated runtime work into one broad PR.
 
 ## Stack overview
 
@@ -12,7 +12,8 @@ flowchart LR
     A --> E[Q8.4 Generated helper body split]
     A --> F[Q8.5 Dirty-set architecture]
     F --> G[Q8.6 Market-sliced verifier]
-    G --> H[Q8.7 Global market-local pass probe]
+    G --> H[Q8.7 Global market-local pass proof]
+    H --> I[Q8.7 Live global market owner switch]
 ```
 
 ## Current implementation state
@@ -25,25 +26,14 @@ Q8.3 — IMPLEMENTED: country capacity-pool stamping.
 Q8.4 — PROBED ONLY: helper inventory bridge passed; body-helper split remains blocked.
 Q8.5 — IMPLEMENTED IN STACKED PR: guarded dirty market-country cache repair consumer.
 Q8.6 — IMPLEMENTED IN STACKED PR: debug/audit market-sliced verifier over dirty/promoted candidate markets.
-Q8.7 — PROOF IN STACKED PR: native global market-local pass can be probed; no gameplay dispatcher replacement.
+Q8.7 — LIVE SWITCH IN THIS STACKED PR: market-local owner moves from market-center workaround to a once-per-month global market pass, with fallback retained.
 ```
 
 ## Q8.1 / F3 — Gate or remove PR7.1 profiling counters
 
-### Goal
+Implemented. Normal runtime skips temporary PR7.1 metric writes. Profile/debug mode still emits comparable validation counters.
 
-Stable main should not pay unconditional per-good debug/profile counter writes in the monthly hot path.
-
-### Implemented shape
-
-```txt
-modeu5_pr71_metrics_enabled_trigger
-  -> debug capture or audit runtime only
-```
-
-Normal runtime skips temporary PR7.1 metric writes. Business guards still run.
-
-### Guardrails
+Guardrails:
 
 ```txt
 - Do not remove counters needed for economic correctness.
@@ -51,49 +41,13 @@ Normal runtime skips temporary PR7.1 metric writes. Business guards still run.
 - Keep validation events able to prove considered vs processed work when profiling is enabled.
 ```
 
-### Exit criterion
-
-```txt
-Normal mode has no unconditional per-good debug/profile metric writes in the hot path.
-Profile/debug mode still emits comparable validation counters.
-```
-
 ## Q8.2 / F2 — US-10 pending-request scheduling
 
-### Goal
+Deferred.
 
-Avoid entering unnecessary generated US-10 work for country-market pairs or goods with no queued same-market consumption request.
+The aggregate all-goods pre-gate is not live because it can duplicate work before the existing per-good dispatcher. Preferred future shape remains a sparse pending work list written at request-write time and consumed by monthly US-10.
 
-### Deferred shape
-
-The aggregate pre-gate is not live:
-
-```txt
-modeu5_pr71_process_us10_monthly_market_pending_goods
-  -> all-goods aggregate pending pre-scan
-  -> if any pending request exists:
-       generated per-good US-10 pending wrappers
-```
-
-Reason:
-
-```txt
-If most country-market pairs have at least one pending request, the aggregate pre-scan duplicates work before the existing per-good dispatcher.
-```
-
-### Preferred next implementation shape
-
-```txt
-At request-write time:
-  add country-market or country-market-good to a sparse pending work list
-
-At monthly US-10 time:
-  iterate only pending work items
-  process requests
-  clear the sparse pending list
-```
-
-### Guardrails
+Guardrails:
 
 ```txt
 - Preserve US-00 before US-10 ordering.
@@ -103,29 +57,13 @@ At monthly US-10 time:
 - Do not add all-goods pre-scans to default runtime without profiling proof.
 ```
 
-### Exit criterion
-
-```txt
-A future implementation avoids no-request work without adding an all-goods pre-scan to most country-market pairs.
-```
-
 ## Q8.3 / F1 — Capacity pool stamping
 
-### Goal
+Implemented.
 
-Avoid recalculating a country-wide capacity pool once per country per promoted market.
+Country-wide capacity-pool calculation is stamped once per country/month while market-specific trade-capacity contribution is still refreshed per country-market.
 
-### Implemented shape
-
-```txt
-modeu5_calculate_country_storage_capacity_pool
-  -> monthly country-scope stamp
-  -> raw pool calculation only when missing/stale
-```
-
-Market-specific trade-capacity contribution is still refreshed per country-market.
-
-### Guardrails
+Guardrails:
 
 ```txt
 - Do not reuse a pool across countries.
@@ -134,26 +72,11 @@ Market-specific trade-capacity contribution is still refreshed per country-marke
 - Persist or classify every new stamp/cache in PERSISTENT_STATE_AUDIT.
 ```
 
-### Exit criterion
-
-```txt
-Validation proves the same country-wide pool is calculated at most once per country per month while country-market capacity records remain correct.
-```
-
 ## Q8.4 / F4 — Split guarded helpers from body helpers
 
-### Goal
+Probe passed. Implementation remains blocked until caller inventory is complete.
 
-Avoid paying duplicate guard layers after PR7.1 generated dispatch has already proven an active-good or pending-request gate.
-
-### Current status
-
-```txt
-Probe passed.
-Implementation remains blocked until caller inventory is complete.
-```
-
-### Guardrails
+Guardrails:
 
 ```txt
 - Do not remove public guarded helpers until all callers are proven safe.
@@ -161,19 +84,9 @@ Implementation remains blocked until caller inventory is complete.
 - Use the canonical goods registry; no private goods list.
 ```
 
-### Exit criterion
-
-```txt
-Runtime validation shows equivalent economic results with fewer repeated guard checks on processed goods.
-```
-
 ## Q8.5 / F5 + F9a — Dirty-set architecture for derived caches
 
-### Goal
-
-Move from broad speculative rebuilds to explicit dirty-country / dirty-market / dirty-country-market rebuild consumers where the underlying cache model supports it.
-
-### Implemented shape
+Implemented.
 
 ```txt
 modeu5_mark_market_country_cache_dirty
@@ -190,40 +103,19 @@ modeu5_market_country_cache_dirty_markets remains scheduling state only.
 No durable per-market country-list cache is introduced.
 ```
 
-### Guardrails
-
-```txt
-- `countries_present_in_market` remains a work cache, never source of truth.
-- Dirty sets are scheduling state only.
-- Do not introduce nested maps or runtime-built names.
-- Do not depend on market-scope variables.
-```
-
-### Exit criterion
-
-```txt
-A dirty producer/consumer path exists for confirmed topology hooks, without claiming durable per-market country-list storage.
-```
-
 ## Q8.6 / F9c — Market-sliced verifier
 
-### Goal
-
-Allow a market-first verifier to check relevant/promoted/candidate markets without blind world-location scanning.
-
-### Implemented shape
+Implemented as debug/audit verifier only.
 
 ```txt
 modeu5_run_market_sliced_verifier_candidates
-  -> build modeu5_market_sliced_verifier_candidate_markets from:
-       modeu5_market_country_cache_dirty_markets
-       modeu5_promoted_markets_this_cycle
+  -> build modeu5_market_sliced_verifier_candidate_markets from dirty/promoted inputs
   -> for each candidate market:
        modeu5_rebuild_countries_present_in_market
        record pass/fail counters
 ```
 
-### Guardrails
+Guardrails:
 
 ```txt
 - Debug/audit gate only.
@@ -231,49 +123,83 @@ modeu5_run_market_sliced_verifier_candidates
 - No stock mutation.
 - No stock repair.
 - Dirty list is copied as input, not consumed.
-- No global market iterator.
 - Do not assume durable per-market country-list storage.
-```
-
-### Exit criterion
-
-```txt
-The verifier can check candidate markets only and record diagnostic counters without broad world scans or stock mutation.
 ```
 
 ## Q8.7 / F7 — Native global market-local pass
 
 ### Goal
 
-Replace the market-center ownership workaround with a structural market-owned pass if the engine supports safe once-per-month global/none scope execution.
+Replace the market-center ownership workaround with a structural market-owned pass while preserving the PR126 monthly ordering and stock mutation contracts.
 
-### Current status
+### Proof stack completed before this PR
 
 ```txt
-Probe passed in the test package with count=129.
-Stacked Q8.7 proof PR expands this into a market-local pass proof:
-  every_market_in_world
-    -> deduplicate visited markets
-    -> rebuild countries_present_in_market from market scope
-    -> record stable PASS/FAIL counters
-No gameplay dispatcher replacement is implemented.
+#155 — native every_market_in_world market-local pass proof.
+#158 — global market dispatcher shadow probe and PERF-14/revalidate2 cleanup.
+#159 — Normal Mode global market pass vs market-center workaround shadow comparison.
+#160 — Performance Mode relevant-market shadow, workshape shadow, no-op dispatcher shadow, and human-relevant-market trigger clarification.
+```
+
+### Live implementation shape in this PR
+
+```txt
+modeu5_run_monthly_stock_cycle_q8_7_owner_switch
+  -> country preparation stays under monthly_country_pulse
+  -> modeu5_run_monthly_q8_7_global_market_local_cycle_once
+       -> every_market_in_world
+       -> existing market-local live branch
+  -> modeu5_run_monthly_country_trade_owner_cycle
+  -> optional audit reconciliation
+```
+
+The mutating market-local branch remains:
+
+```txt
+modeu5_run_promoted_market_live_local_branch_market_all_goods
+```
+
+That helper still performs:
+
+```txt
+for each country present in market:
+  refresh capacity
+  run US-00 active-good dispatcher
+
+then:
+  for each country present in market:
+    run US-10 pending-good dispatcher
+```
+
+### Fallback
+
+The old market-center owner remains available through:
+
+```txt
+modeu5_q8_7_live_global_market_owner_disabled
+```
+
+When present, the wrapper calls the old:
+
+```txt
+modeu5_run_monthly_promoted_market_local_cycle
 ```
 
 ### Guardrails
 
 ```txt
 - Preserve ordering: country prep -> market-local -> country trade -> validation.
-- Do not call `every_trade` from market scope.
+- Do not call every_trade from market scope.
 - Do not process market-local mutation once per country present.
-- If no safe global monthly entry point exists, keep the market-center workaround.
-- Q8.7 proof code must stay test-package only until a live replacement PR proves equivalent economic results.
+- Keep the old market-center owner as a fallback path for validation.
+- Keep US-00 for all present countries before any US-10 same-market consumption.
+- Keep Performance Mode scoped to human-relevant markets, not human countries only.
 ```
 
 ### Exit criterion
 
 ```txt
-A future PR can switch live market-local work only after equivalent economic results and reduced work-shape counters are proven.
-The Q8.7 proof PR may prove native iterator + market-scope work-cache feasibility, but it does not authorize the live switch by itself.
+A runtime validation pass must compare the new global owner and the fallback market-center owner from the same save, then document equivalent economic results and reduced/equivalent work-shape counters.
 ```
 
 ## Rejected or postponed ideas
@@ -285,4 +211,5 @@ The Q8.7 proof PR may prove native iterator + market-scope work-cache feasibilit
 - Broad monthly every_location_in_the_world rebuilds as a normal runtime solution.
 - Fusing US-10 into the US-00 pass if it breaks all-countries US-00 before any US-10 consumption.
 - Q8.2 all-goods aggregate pre-scan as default runtime optimisation.
+- Moving every_trade into a market-scope Q8.7 pass.
 ```
