@@ -25,6 +25,8 @@ monthly_country_pulse
 |---|---|
 | `C` | countries touched by monthly country pulse |
 | `M_c` | markets present in a country |
+| `M_world` | all markets exposed by `every_market_in_world` |
+| `M_rel` | Performance Mode human-relevant markets |
 | `P` | promoted / relevant markets processed by local branch |
 | `K_m` | countries present in a promoted market |
 | `G_supported` | generated supported goods |
@@ -40,6 +42,7 @@ promoted-market local work:        O(P * K_m * G_a)
 country-owned trade pass:          O(C * T_country)
 validation/debug/probes:           bounded, opt-in, or dirty/candidate scoped
 Q8.6 verifier slice:               O(V_m * locations_in_candidate_market), debug/audit only
+Q8.7 candidate market owner:        proof-only now; future target O(M_rel * K_m * G_a) in Performance Mode
 ```
 
 ## Current Q8 classification
@@ -52,7 +55,7 @@ Q8.6 verifier slice:               O(V_m * locations_in_candidate_market), debug
 | Q8.4 / F4 | reduce duplicate guard layers after caller inventory | PROBE_FIRST |
 | Q8.5 / F5/F9a | move derived cache repair toward dirty/candidate consumers | IMPLEMENTED |
 | Q8.6 / F9c | verify candidate/dirty market slices before verifier promotion | IMPLEMENTED as debug/audit candidate slice; no stock repair |
-| Q8.7 / F7 | replace market-center ownership workaround only if global market pass is proven safe | PROBE_FIRST |
+| Q8.7 / F7 | replace market-center ownership workaround only if global market pass is proven safe | PROBE_STACK; universe, relevant-market, workshape, and no-op dispatcher shadows exist; no live switch |
 
 ## Performance guardrails
 
@@ -62,6 +65,7 @@ Q8.6 verifier slice:               O(V_m * locations_in_candidate_market), debug
 3. Debug/profile counters must not become normal-runtime overhead unless they are necessary for business correctness.
 4. Broad world scans are rejected unless they replace more work than they add and are debug/probe scoped first.
 5. Performance Mode should stay candidate/promoted/relevant-market scoped.
+6. Human-relevant-market scoping must not collapse the market-local work surface to human countries only.
 ```
 
 ## Q8.0 baseline decision
@@ -127,12 +131,6 @@ Runtime validation attached to #150 on 2026-07-06 shows all five probes passed t
 
 ```txt
 event modeu5_q8_probe_debug.1
-```
-
-The full revalidation suite is not required for this performance-probe PR:
-
-```txt
-event modeu5_revalidate_debug.1   # not required for #150
 ```
 
 The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.
@@ -206,3 +204,86 @@ for each candidate market only:
 ```
 
 This changes validation/debug work shape only. It avoids blind world-location scans and does not run in normal runtime unless debug/audit mode enables the verifier.
+
+## Q8.7 proof-stack update
+
+Q8.7 adds proof-only loop evidence for replacing the current market-center ownership workaround later.
+
+Existing live owner shape remains:
+
+```txt
+monthly_country_pulse
+  -> every_market_center_in_country
+     -> promoted-market local branch
+```
+
+Q8.7 proof surfaces now cover:
+
+```txt
+Exposure / cache-rebuild proof:
+  every_market_in_world
+    -> current-market country cache rebuild
+
+Normal Mode universe shadow comparison:
+  every_market_in_world
+    == every_country -> every_market_center_in_country
+
+Performance Mode relevant-market shadow comparison:
+  modeu5_performance_relevant_markets
+    == every_market_in_world filtered to modeu5_performance_relevant_markets
+
+Performance Mode market-owner workshape shadow:
+  current market-center workaround
+    == every_market_in_world filtered to modeu5_performance_relevant_markets
+    -> rebuild countries_present_in_market
+    -> count present-country work surface
+
+Performance Mode no-op dispatcher shadow:
+  current market-center workaround pass counters
+    == candidate global market-local pass counters
+    without capacity mutation, US-00, US-10, trade-owner work, validation, or stock mutation
+```
+
+The #160 Performance Mode proof stack adds only lightweight loop shapes:
+
+```txt
+every_market_in_world
+  -> if market in modeu5_performance_relevant_markets
+     -> rebuild countries_present_in_market
+     -> count countries / pass surfaces only
+```
+
+Boundary:
+
+```txt
+No US-00 loop is run by the Q8.7 proof stack.
+No US-10 loop is run by the Q8.7 proof stack.
+No generated-good loop is run by the Q8.7 proof stack.
+No stock mutation loop is run by the Q8.7 proof stack.
+No validation or repair loop is run by the Q8.7 proof stack.
+No every_trade-from-market-scope pattern is introduced.
+```
+
+Updated Q4 interpretation:
+
+```txt
+Performance Mode should reduce the number of markets processed.
+It should not incorrectly reduce the processing surface to human countries only.
+The relevant-market set is the boundary; all countries present inside that relevant market remain part of the market-local work surface.
+```
+
+Therefore the intended future Performance Mode work shape is:
+
+```txt
+M_rel * K_m * G_a
+```
+
+not:
+
+```txt
+human countries only * their markets * G_a
+```
+
+The #160 configuration trigger correction is a production policy-boundary correction, not a dispatcher loop change. It does not by itself replace the market-center workaround or authorise live execution of the candidate global market-local dispatcher.
+
+Q8.7 still does not authorise a live dispatcher switch. The next required step is the actual switch PR with economic equivalence validation before moving US-00 or US-10 live work.

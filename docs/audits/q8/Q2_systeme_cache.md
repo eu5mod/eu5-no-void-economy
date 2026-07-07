@@ -20,6 +20,7 @@ This document is the Q8-owned cache standard. Stacked Q8 PRs must update it when
 | `modeu5_market_sliced_verifier_*` counters | global | debug/audit verifier counters | No | Diagnostic only; must not drive stock mutation. |
 | `modeu5_promoted_markets_this_cycle` | global | current-cycle work list | No | Current-cycle scheduling only; separate from detailed promotion readiness. |
 | `modeu5_detailed_accounting_promoted_markets` | global | readiness / promotion work cache | No stock truth | Must not bypass business readiness checks. |
+| `modeu5_performance_relevant_markets` | global | Performance Mode relevance work list | No | Rebuilt by relevance preparation; may be consumed by future market-local owner, but must not become stock truth. |
 | `modeu5_pr71_*` counters | global | debug/profile metrics | No | Metrics only; normal runtime should not pay per-good metric writes unless enabled. |
 
 ## Cache design questions for stacked Q8 PRs
@@ -201,3 +202,76 @@ modeu5_promoted_markets_this_cycle
 ```
 
 It may rebuild `modeu5_countries_present_in_market` for each candidate market to verify the market-country work-cache path. It does not mutate stock, does not repair stock, and does not clear dirty scheduling lists.
+
+## Q8.7 proof-stack update
+
+Q8.7 adds no new production cache. It exercises existing work/relevance surfaces from the test package and clarifies the business meaning of one existing production cache surface.
+
+The proof stack now classifies the following diagnostic state as probe-only:
+
+```txt
+modeu5_test_q8_7_global_market_seen_markets
+modeu5_test_q8_7_shadow_comparison_center_markets
+modeu5_test_q8_7_shadow_comparison_global_markets
+modeu5_test_q8_7_perf_relevant_cache_rebuild_count
+modeu5_test_q8_7_perf_relevant_country_count
+modeu5_test_q8_7_perf_relevant_human_country_count
+modeu5_test_q8_7_perf_relevant_ai_country_count
+modeu5_test_q8_7_current_owner_cache_rebuild_count
+modeu5_test_q8_7_candidate_global_cache_rebuild_count
+modeu5_test_q8_7_noop_current_* counters
+modeu5_test_q8_7_noop_global_* counters
+```
+
+Classification:
+
+```txt
+owner: test-package Q8.7 probe surface
+class: diagnostic lists/counters
+source of truth: no
+business source: no
+write trigger: explicit debug event only
+reader: debug/audit inspection only
+persistent-state audit: no, because these are test-package runtime probes
+```
+
+The production-relevant surfaces exercised by #160 are:
+
+```txt
+modeu5_performance_relevant_markets
+modeu5_countries_present_in_market
+modeu5_detailed_accounting_promoted_markets
+```
+
+Cache interpretation:
+
+```txt
+modeu5_performance_relevant_markets:
+  class: Performance Mode relevance work list
+  source of truth: no stock truth
+  owner: relevance preparation
+  future reader: candidate global market-local pass
+  business meaning: market-level Performance Mode detailed boundary
+
+modeu5_countries_present_in_market:
+  class: rebuilt current-market work cache
+  source of truth: no
+  owner: current market-local helper
+  future owner candidate: global market-local pass
+
+modeu5_detailed_accounting_promoted_markets:
+  class: promotion/readiness work list
+  source of truth: no stock truth
+  owner: promotion gate
+  reader: stock mutation / market runtime gate checks
+```
+
+Spec boundary recorded by #160:
+
+```txt
+Performance Mode detailed processing is scoped by human-relevant markets.
+It is not a human-country-only cache filter.
+AI-controlled countries present inside a relevant market remain part of the market-country work-cache surface.
+```
+
+No durable `market -> countries_present_in_market` cache is introduced. No stock-source map is changed.
