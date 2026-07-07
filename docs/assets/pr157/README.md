@@ -57,6 +57,14 @@ Freshness check:
 bash tools/generate_dds_assets.sh --check
 ```
 
+List generated files in zsh-safe form:
+
+```sh
+find docs/assets/pr157 -maxdepth 1 -name '*.dds' -print
+```
+
+Avoid bare unmatched zsh globs such as `docs/assets/pr157/*.dds` before the files exist; zsh raises `no matches found` instead of passing the literal glob through.
+
 ## Theme
 
 ```txt
