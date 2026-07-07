@@ -161,9 +161,9 @@ if command -v jq >/dev/null 2>&1; then
 			any(.relationships[]?;
 				.rel_type == "dependency" and
 				.id == "modeu5_core" and
-				display_name == "No Void Economy (NVE)" and
-				resource_type == "mod" and
-				version == "0.1.*"
+				.display_name == "No Void Economy (NVE)" and
+				.resource_type == "mod" and
+				.version == "0.1.*"
 			)
 		' "$metadata_file" >/dev/null
 	done
