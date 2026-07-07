@@ -1,11 +1,10 @@
 # Manual PERF-14 AI/human-relevant-market diagnostic.
-#
-# Dynamic debug_log interpolation is unsafe when localization is disabled, so the
-# source of truth is mirrored to country-scope variables and displayed by the
-# localized result event modeu5_perf14_ai_diag.2.
+# Values are mirrored to country-scope variables for the localized result event.
 
 modeu5_perf14_diag_reset_ui = {
 	set_variable = { name = modeu5_perf14_ai_diag_fixture value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_before_relevant_marker value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_before_promoted_marker value = 0 }
 	set_variable = { name = modeu5_perf14_ai_diag_relevant_list value = 0 }
 	set_variable = { name = modeu5_perf14_ai_diag_detailed value = 0 }
 	set_variable = { name = modeu5_perf14_ai_diag_fallback value = 0 }
@@ -18,6 +17,12 @@ modeu5_perf14_diag_reset_ui = {
 	set_variable = { name = modeu5_perf14_ai_diag_reason_negative_capacity value = 0 }
 	set_variable = { name = modeu5_perf14_ai_diag_reason_overmaterialized value = 0 }
 	set_variable = { name = modeu5_perf14_ai_diag_reason_validation value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_goods_checked value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_country_sum_before value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_market_aggregate_before value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_existing_country_stock value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_overmaterialized_delta value = 0 }
+	set_variable = { name = modeu5_perf14_ai_diag_audit_missing_materialization_delta value = 0 }
 }
 
 modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
@@ -54,6 +59,24 @@ modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 
 	if = {
 		limit = { scope:modeu5_perf14_ai_fixture_available > 0 }
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_performance_relevant_markets
+				is_target_in_global_variable_list = { name = modeu5_performance_relevant_markets target = scope:modeu5_perf14_ai_market }
+			}
+			set_variable = { name = modeu5_perf14_ai_diag_before_relevant_marker value = 1 }
+			debug_log = "ModeU5 PERF-14 AI_AUDIT before_relevant_marker YES"
+		}
+		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT before_relevant_marker NO" }
+
+		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_market }
+		if = {
+			limit = { modeu5_market_detailed_accounting_promoted_trigger = yes }
+			set_variable = { name = modeu5_perf14_ai_diag_before_promoted_marker value = 1 }
+			debug_log = "ModeU5 PERF-14 AI_AUDIT before_promoted_marker YES"
+		}
+		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT before_promoted_marker NO" }
+
 		modeu5_clear_performance_relevant_markets = yes
 		modeu5_clear_detailed_accounting_promoted_markets = yes
 
@@ -71,6 +94,16 @@ modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG relevant_list NO" }
 
 		modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
+
+		set_variable = { name = modeu5_perf14_ai_diag_audit_goods_checked value = global_var:modeu5_perf14_promotion_market_goods_checked }
+		set_variable = { name = modeu5_perf14_ai_diag_audit_country_sum_before value = global_var:modeu5_perf14_promotion_country_sum_total_before }
+		set_variable = { name = modeu5_perf14_ai_diag_audit_market_aggregate_before value = global_var:modeu5_perf14_promotion_aggregate_total_before }
+		set_variable = { name = modeu5_perf14_ai_diag_audit_missing_materialization_delta value = global_var:modeu5_perf14_promotion_delta_total }
+		set_variable = { name = modeu5_perf14_ai_diag_audit_overmaterialized_delta value = { value = global_var:modeu5_perf14_promotion_country_sum_total_before subtract = global_var:modeu5_perf14_promotion_aggregate_total_before min = 0 } }
+		if = { limit = { global_var:modeu5_perf14_promotion_country_sum_total_before > 0 } set_variable = { name = modeu5_perf14_ai_diag_audit_existing_country_stock value = 1 } debug_log = "ModeU5 PERF-14 AI_AUDIT existing_country_stock YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT existing_country_stock NO" }
+		if = { limit = { global_var:modeu5_perf14_promotion_country_sum_total_before > global_var:modeu5_perf14_promotion_aggregate_total_before } debug_log = "ModeU5 PERF-14 AI_AUDIT country_sum_gt_market_aggregate YES" }
+		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT country_sum_gt_market_aggregate NO" }
 
 		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } set_variable = { name = modeu5_perf14_ai_diag_detailed value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG detailed YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG detailed NO" }
