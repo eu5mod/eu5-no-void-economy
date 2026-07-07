@@ -20,7 +20,7 @@ modeu5_pr126_debug.1 = {
 	option = {
 		name = modeu5_pr126_debug.1.b
 		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_promoted_market_shell_test = yes
+		modeu5_debug_run_pr126_promoted_market_shell_test_without_var_snapshot = yes
 		trigger_event_non_silently = modeu5_pr126_debug.3
 	}
 	option = {

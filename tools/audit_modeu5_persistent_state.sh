@@ -25,6 +25,7 @@ scan_files=(
 	"in_game/common/scripted_effects/modeu5_capacity_effects.txt"
 	"in_game/common/scripted_effects/modeu5_void_economy_effects.txt"
 	"in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
+	"in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt"
 	"in_game/common/scripted_effects/modeu5_performance_effects.txt"
 	"in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt"
 	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
@@ -82,6 +83,7 @@ def is_state_like(name: str) -> bool:
         "modeu5_core03_probe_seen_locations",
         "modeu5_detailed_accounting_promoted_markets",
         "modeu5_market_country_cache_dirty_markets",
+        "modeu5_market_sliced_verifier_candidate_markets",
         "modeu5_monthly_markets_seen_this_cycle",
         "modeu5_performance_relevant_markets",
         "modeu5_promoted_markets_this_cycle",
@@ -153,6 +155,7 @@ modeu5_countries_present_in_market	global list	work cache	global	modeu5_rebuild_
 modeu5_detailed_accounting_promoted_markets	global list	work cache	global	PERF-14 successful promotion	clear on explicit promoted-market rebuild/reset	rebuilt/marked by PERF-14 promotion
 modeu5_foreign_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
 modeu5_market_country_cache_dirty_markets	global list	work cache	global	ownership/cache repair marks affected markets	clear during cache repair	dirty until repair
+modeu5_market_sliced_verifier_candidate_markets	global list	work cache	global	Q8.6 verifier candidate preparation	clear before each verifier run	debug/audit candidate-market verifier slice
 modeu5_monthly_markets_seen_this_cycle	global list	work cache	global	monthly seen-market preparation	reset once per month	reset once per month
 modeu5_performance_relevant_markets	global list	work cache	global	human/performance relevance rebuild	clear before relevance rebuild	rare/explicit rebuild
 modeu5_promoted_markets_this_cycle	global list	work cache	global	PR126 promoted-market dispatcher shell preparation	clear before each promoted-market shell preparation	test-only shell work list until dispatcher is wired
