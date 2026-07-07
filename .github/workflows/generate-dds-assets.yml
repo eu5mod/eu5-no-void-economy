@@ -7,10 +7,12 @@ on:
       - 'docs/assets/**/*.png'
       - 'docs/assets/**/*.jpg'
       - 'docs/assets/**/*.jpeg'
+      - 'docs/assets/**/*.txt'
       - 'in_game/gfx/interface/illustrations/**/*.svg'
       - 'in_game/gfx/interface/illustrations/**/*.png'
       - 'in_game/gfx/interface/illustrations/**/*.jpg'
       - 'in_game/gfx/interface/illustrations/**/*.jpeg'
+      - 'tools/generate_review_popup_assets.py'
       - 'tools/generate_dds_assets.sh'
       - '.github/workflows/generate-dds-assets.yml'
   pull_request:
@@ -20,11 +22,13 @@ on:
       - 'docs/assets/**/*.jpg'
       - 'docs/assets/**/*.jpeg'
       - 'docs/assets/**/*.dds'
+      - 'docs/assets/**/*.txt'
       - 'in_game/gfx/interface/illustrations/**/*.svg'
       - 'in_game/gfx/interface/illustrations/**/*.png'
       - 'in_game/gfx/interface/illustrations/**/*.jpg'
       - 'in_game/gfx/interface/illustrations/**/*.jpeg'
       - 'in_game/gfx/interface/illustrations/**/*.dds'
+      - 'tools/generate_review_popup_assets.py'
       - 'tools/generate_dds_assets.sh'
       - '.github/workflows/generate-dds-assets.yml'
   workflow_dispatch:
@@ -42,29 +46,42 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'qrcode[pil]'
+
       - name: Install image conversion tools
         run: |
           sudo apt-get update
           sudo apt-get install -y librsvg2-bin imagemagick
 
-      - name: Validate generated DDS assets on pull requests
+      - name: Generate review popup source assets
+        run: python tools/generate_review_popup_assets.py
+
+      - name: Validate asset generation on pull requests
         if: github.event_name == 'pull_request'
-        run: bash tools/generate_dds_assets.sh --check
+        run: bash tools/generate_dds_assets.sh
 
       - name: Generate DDS assets on branch pushes
         if: github.event_name == 'push'
         run: bash tools/generate_dds_assets.sh
 
-      - name: Commit generated DDS assets
+      - name: Commit generated assets
         if: github.event_name == 'push'
         run: |
           if [[ -z "$(git status --porcelain -- docs/assets in_game/gfx/interface/illustrations)" ]]; then
-            echo "DDS assets already up to date."
+            echo "Generated assets already up to date."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/assets in_game/gfx/interface/illustrations
-          git commit -m "Generate DDS copies for source image assets"
+          git commit -m "Generate QR, SVG, and DDS review popup assets"
           git push origin "HEAD:${GITHUB_REF_NAME}"
