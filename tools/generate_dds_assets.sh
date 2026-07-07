@@ -60,14 +60,15 @@ imagemagick_cmd="$(select_imagemagick)"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-mapfile -t sources < <(find "$assets_root" -type f \( -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) | sort)
+sources_file="$tmp_dir/sources.txt"
+find "$assets_root" -type f \( -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) | sort > "$sources_file"
 
-if [[ "${#sources[@]}" -eq 0 ]]; then
+if [[ ! -s "$sources_file" ]]; then
 	printf '%s\n' "No SVG/PNG/JPG source assets found under $assets_root."
 	exit 0
 fi
 
-for source in "${sources[@]}"; do
+while IFS= read -r source; do
 	format="$(asset_format "$source")"
 	case "$format" in
 		svg|png|jpg) ;;
@@ -105,7 +106,7 @@ for source in "${sources[@]}"; do
 	fi
 
 	printf 'Generated %s from %s\n' "$output" "$source"
-done
+done < "$sources_file"
 
 if [[ "$mode" == "check" ]]; then
 	status="$(git status --porcelain -- "$assets_root" || true)"
