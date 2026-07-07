@@ -6,6 +6,7 @@ modeu5_review.1 = {
 	desc = modeu5_review.1.desc
 	historical_info = modeu5_review.1.historical_info
 	outcome = neutral
+	image = "gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds"
 
 	trigger = {
 		is_ai = no
