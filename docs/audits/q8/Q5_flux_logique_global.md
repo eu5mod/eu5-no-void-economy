@@ -47,6 +47,7 @@ monthly_country_pulse
 | US-00 | present country inside promoted market | PR7.1 active-good dispatch | run before US-10 for all present-country admission facts. |
 | US-10 local | present country inside promoted market | PR7.1 pending-request dispatch | same-market consumption only; keep after US-00. Q8.2 aggregate pre-gate is deferred. |
 | Q8.6 verifier | debug/audit verifier surface | `modeu5_run_market_sliced_verifier_candidates` | bounded candidate-market verification only; no stock mutation or repair. |
+| Q8.7 proof stack | test-package proof surface | `event modeu5_q8_probe_debug.7` and related Q8.7 probes | prove future global market-local ownership before live replacement; no stock mutation. |
 | Trade | country | country-owned trade pass | inter-market only; owner-gated; no direct stock writes. |
 | Validation | audit/debug/reconciliation surface | optional monthly/audit helpers | bounded, diagnostic, or repair after divergence. |
 
@@ -173,6 +174,68 @@ Boundary:
 - no global market iterator is used;
 - no live dispatcher is replaced.
 ```
+
+## Q8.7 proof-stack update
+
+Q8.7 now proves progressively more of the future global market-local pass while keeping the live Q5 flow unchanged.
+
+Current live flow remains:
+
+```txt
+country preparation / relevance discovery
+  -> promoted-market local cycle through every_market_center_in_country workaround
+  -> country trade-owner pass
+  -> validation / reconciliation
+```
+
+Future target flow remains:
+
+```txt
+country preparation / relevance discovery
+  -> global market-local pass
+  -> country trade-owner pass
+  -> validation / reconciliation
+```
+
+The proof stack currently covers:
+
+```txt
+#155:
+  every_market_in_world can enter market-local scope and rebuild countries_present_in_market.
+
+#159:
+  every_market_in_world sees the same Normal Mode market universe as the market-center workaround.
+
+#160:
+  every_market_in_world filtered to modeu5_performance_relevant_markets sees the same Performance Mode relevant-market set and can rebuild countries_present_in_market for those markets.
+```
+
+#160 clarifies the Performance Mode boundary:
+
+```txt
+Performance Mode relevance discovery remains a preparation step.
+The future global market-local pass consumes the relevant-market set.
+Once inside a relevant market, the pass may process all countries present in that market.
+```
+
+Spec reading:
+
+```txt
+human-relevant market
+not human-country-only
+```
+
+Consequence for Q5:
+
+```txt
+Current monthly flow is unchanged.
+Trade position is unchanged.
+US-00 before US-10 ordering is unchanged.
+Validation/reconciliation position is unchanged.
+Live market-local ownership is unchanged.
+```
+
+The next Q8.7/F7 proof should be an economic no-op / shadow-run comparison between current live dispatcher counters and the candidate global market-local dispatcher before moving US-00 or US-10 work.
 
 ## Mermaid flow delta — before Q8.6 vs HEAD
 
@@ -312,16 +375,19 @@ HEAD interpretation:
 Q8.2 does not change the live US-10 flow.
 Q8.5 adds a guarded dirty repair consumer while keeping modeu5_countries_present_in_market as a rebuilt current-market work cache.
 Q8.6 adds an opt-in debug/audit verifier slice over dirty/promoted candidate markets; it does not mutate or repair stock.
+Q8.7 adds proof-only global market-local comparisons; it does not change live monthly flow yet.
 ```
 
 ## Delta summary
 
-| Area | Before Q8.6 | HEAD after Q8.6 |
+| Area | Before Q8.6 | HEAD after Q8.6 / Q8.7 proofs |
 |---|---|---|
 | US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; Q8.2 aggregate pre-gate deferred. | Unchanged. |
 | US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Unchanged. |
 | US-00 ordering | Runs before any US-10 pass. | Unchanged. |
 | Dirty market-country cache | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` exists. | Unchanged; Q8.6 copies dirty candidates but does not clear the dirty list. |
 | Market-sliced verifier | Probe-only candidate list in test package. | Debug/audit runtime verifier slice exists, bounded to dirty/promoted candidate markets. |
-| Stock mutation / repair | No verifier stock mutation. | Still none; Q8.6 records counters only. |
+| Q8.7 global market-local pass | Not implemented. | Proof-only comparisons exist for Normal Mode market universe and Performance Mode relevant-market subset. No live switch. |
+| Performance Mode relevant-market boundary | Not separately documented in Q5. | Human-relevant market is the boundary; AI-controlled countries inside such markets remain in market-local scope. |
+| Stock mutation / repair | No verifier stock mutation. | Still none; Q8.6 and Q8.7 record counters only. |
 | Durable per-market country-list cache | Not confirmed. | Still not confirmed; no durable `market -> countries_present_in_market` cache is introduced. |
