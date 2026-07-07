@@ -4,3 +4,8 @@
 # Generated ModeU5 script adapters and generated override scaffolds.
 # Regenerate locally with ./tools/generate_all.sh; do not commit the output.
 modeu5_*_generated.txt
+
+# Generated US-09 static override scaffolds.
+# These depend on the local EU5 install path/config and must remain reproducible output.
+packages/modeu5_economy_rebalance/in_game/common/building_types/zzzz_modeu5_us09_*.txt
+packages/modeu5_economy_rebalance/in_game/common/prices/zzzz_modeu5_us09_expand_rgo_prices.txt
