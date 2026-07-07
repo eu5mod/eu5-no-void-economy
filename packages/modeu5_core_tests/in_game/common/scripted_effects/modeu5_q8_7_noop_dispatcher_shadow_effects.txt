@@ -30,15 +30,11 @@ modeu5_q8_7_clear_noop_dispatcher_shadow_state = {
 	remove_global_variable = modeu5_test_q8_7_noop_global_human_country_passes
 	remove_global_variable = modeu5_test_q8_7_noop_current_ai_country_passes
 	remove_global_variable = modeu5_test_q8_7_noop_global_ai_country_passes
-	remove_global_variable = modeu5_test_q8_7_noop_current_markets_seen_list
-	remove_global_variable = modeu5_test_q8_7_noop_global_markets_seen_list
 
 	set_global_variable = { name = modeu5_test_q8_7_noop_current_markets value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_global_markets value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_current_cache_rebuilds value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_global_cache_rebuilds value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_noop_current_cache_failures value = 0 }
-	set_global_variable = { name = modeu5_test_q8_7_noop_global_cache_failures value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_current_capacity_passes value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_global_capacity_passes value = 0 }
 	set_global_variable = { name = modeu5_test_q8_7_noop_current_us00_passes value = 0 }
@@ -68,11 +64,19 @@ modeu5_q8_7_note_noop_global_cache_rebuild = {
 }
 
 modeu5_q8_7_note_noop_current_cache_failure = {
-	set_global_variable = { name = modeu5_test_q8_7_noop_current_cache_failures value = { value = global_var:modeu5_test_q8_7_noop_current_cache_failures add = 1 } }
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_noop_current_cache_failures }
+		set_global_variable = { name = modeu5_test_q8_7_noop_current_cache_failures value = { value = global_var:modeu5_test_q8_7_noop_current_cache_failures add = 1 } }
+	}
+	else = { set_global_variable = { name = modeu5_test_q8_7_noop_current_cache_failures value = 1 } }
 }
 
 modeu5_q8_7_note_noop_global_cache_failure = {
-	set_global_variable = { name = modeu5_test_q8_7_noop_global_cache_failures value = { value = global_var:modeu5_test_q8_7_noop_global_cache_failures add = 1 } }
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_noop_global_cache_failures }
+		set_global_variable = { name = modeu5_test_q8_7_noop_global_cache_failures value = { value = global_var:modeu5_test_q8_7_noop_global_cache_failures add = 1 } }
+	}
+	else = { set_global_variable = { name = modeu5_test_q8_7_noop_global_cache_failures value = 1 } }
 }
 
 modeu5_q8_7_note_noop_current_present_country = {
@@ -197,9 +201,13 @@ modeu5_q8_7_probe_performance_noop_dispatcher_shadow = {
 			global_var:modeu5_test_q8_7_noop_current_markets > 0
 			global_var:modeu5_test_q8_7_noop_global_markets > 0
 			global_var:modeu5_test_q8_7_noop_current_markets = global_var:modeu5_test_q8_7_noop_global_markets
+			has_global_variable = modeu5_test_q8_7_noop_current_cache_rebuilds
+			has_global_variable = modeu5_test_q8_7_noop_global_cache_rebuilds
 			global_var:modeu5_test_q8_7_noop_current_cache_rebuilds = global_var:modeu5_test_q8_7_noop_global_cache_rebuilds
-			global_var:modeu5_test_q8_7_noop_current_cache_failures = 0
-			global_var:modeu5_test_q8_7_noop_global_cache_failures = 0
+			NOT = { has_global_variable = modeu5_test_q8_7_noop_current_cache_failures }
+			NOT = { has_global_variable = modeu5_test_q8_7_noop_global_cache_failures }
+			has_global_variable = modeu5_test_q8_7_noop_current_capacity_passes
+			has_global_variable = modeu5_test_q8_7_noop_global_capacity_passes
 			global_var:modeu5_test_q8_7_noop_current_capacity_passes > 0
 			global_var:modeu5_test_q8_7_noop_global_capacity_passes > 0
 			global_var:modeu5_test_q8_7_noop_current_capacity_passes = global_var:modeu5_test_q8_7_noop_global_capacity_passes
