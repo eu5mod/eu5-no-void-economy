@@ -1,6 +1,6 @@
 {
-    "name": "NVE : No Void Economy (Required - Core)",
     "id": "modeu5_core",
+    "name": "NVE : No Void Economy (Required - Core)",
     "version": "0.1.0",
     "game_id": "eu5",
     "supported_game_version": "1.*.*",
