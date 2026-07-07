@@ -56,6 +56,7 @@ Capacity maps: kept/shared
 Capacity breakdown maps: kept
 US-00 gameplay carryover maps: kept
 US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only
+UI monthly counter maps: human country current-month only
 UI shadow maps: 0
 Unclassified persistent maps: 0
 ```
@@ -66,4 +67,3 @@ Unclassified persistent maps: 0
   static validation only.
 - It does not remove or migrate any map.
 - It does not implement minimal persistence; that belongs to PERF-17.
-

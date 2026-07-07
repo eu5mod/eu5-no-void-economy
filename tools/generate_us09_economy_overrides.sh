@@ -60,6 +60,15 @@ find_default_common_dir() {
 	return 1
 }
 
+# Vanilla files may carry an UTF-8 BOM. If we copy that byte sequence into a
+# generated override after the ModeU5 header, EU5 reads the first key as a
+# different BOM-prefixed identifier such as `﻿cannon_maker` or even `﻿`.
+# Strip BOMs at source-read boundaries so present and future US-09 generated
+# files never leak BOM-prefixed keys into `common/building_types` or prices.
+strip_utf8_bom_stream() {
+	perl -CSD -pe 's/^\x{FEFF}// if $. == 1' "$1"
+}
+
 percent=""
 common_dir=""
 package_common_dir="$repo_root/tools/generated/us09_economy_overrides/common"
@@ -152,7 +161,7 @@ rgo_price_multiplier="$(awk -v percent="$percent" 'BEGIN { printf "%.12f", 1 / (
 generated_building_files=0
 
 while IFS= read -r -d '' source_file; do
-	if ! grep -Eq '^[[:space:]]*output[[:space:]]*=' "$source_file"; then
+	if ! strip_utf8_bom_stream "$source_file" | grep -Eq '^[[:space:]]*output[[:space:]]*='; then
 		continue
 	fi
 
@@ -163,24 +172,23 @@ while IFS= read -r -d '' source_file; do
 		printf '%s\n' '# Do not edit manually.'
 		printf '# Source: %s\n' "$(source_label "$source_file")"
 		printf '# Output multiplier: %s (%s%%)\n\n' "$(format_decimal "$output_multiplier")" "$percent"
-		MODEU5_US09_OUTPUT_MULTIPLIER="$output_multiplier" \
-			perl -pe '
-				BEGIN {
-					$multiplier = $ENV{"MODEU5_US09_OUTPUT_MULTIPLIER"};
-				}
+		strip_utf8_bom_stream "$source_file" | MODEU5_US09_OUTPUT_MULTIPLIER="$output_multiplier" perl -pe '
+			BEGIN {
+				$multiplier = $ENV{"MODEU5_US09_OUTPUT_MULTIPLIER"};
+			}
 
-				sub format_decimal {
-					my ($value) = @_;
-					my $formatted = sprintf("%.10f", $value);
-					$formatted =~ s/0+$//;
-					$formatted =~ s/\.$/.0/;
-					return $formatted;
-				}
+			sub format_decimal {
+				my ($value) = @_;
+				my $formatted = sprintf("%.10f", $value);
+				$formatted =~ s/0+$//;
+				$formatted =~ s/\.$/.0/;
+				return $formatted;
+			}
 
-				if (/^(\s*output\s*=\s*)([0-9]+(?:\.[0-9]+)?)(\s*(?:#.*)?)$/) {
-					$_ = $1 . format_decimal($2 * $multiplier) . $3 . "\n";
-				}
-			' "$source_file"
+			if (/^(\s*output\s*=\s*)([0-9]+(?:\.[0-9]+)?)(\s*(?:#.*)?)$/) {
+				$_ = $1 . format_decimal($2 * $multiplier) . $3 . "\n";
+			}
+		'
 	} > "$output_file"
 
 	generated_building_files=$((generated_building_files + 1))
@@ -204,15 +212,14 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 
 	for price_key in "${price_keys[@]}"; do
 		source_gold="$(
-			TARGET_PRICE_KEY="$price_key" \
-				perl -0ne '
-					my $key = $ENV{"TARGET_PRICE_KEY"};
-					if (/\b\Q$key\E\s*=\s*\{[^{}]*?\bgold\s*=\s*([0-9]+(?:\.[0-9]+)?)/s) {
-						print $1;
-						exit 0;
-					}
-					exit 1;
-				' "$prices_source_file"
+			strip_utf8_bom_stream "$prices_source_file" | TARGET_PRICE_KEY="$price_key" perl -0ne '
+				my $key = $ENV{"TARGET_PRICE_KEY"};
+				if (/\b\Q$key\E\s*=\s*\{[^{}]*?\bgold\s*=\s*([0-9]+(?:\.[0-9]+)?)/s) {
+					print $1;
+					exit 0;
+				}
+				exit 1;
+			'
 		)"
 		adjusted_gold="$(awk -v gold="$source_gold" -v multiplier="$rgo_price_multiplier" 'BEGIN { printf "%.12f", gold * multiplier }')"
 
@@ -221,6 +228,11 @@ prices_output_file="$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt"
 		printf '}\n\n'
 	done
 } > "$prices_output_file"
+
+if LC_ALL=C grep -RIl $'\xEF\xBB\xBF' "$building_types_output_dir" "$prices_output_dir" >/dev/null 2>&1; then
+	printf '%s\n' 'Generated US-09 files must not contain UTF-8 BOM bytes.' >&2
+	exit 1
+fi
 
 printf 'Generated %d building override files and 1 RGO expansion price override file for US-09 (%s%%).\n' \
 	"$generated_building_files" "$percent"

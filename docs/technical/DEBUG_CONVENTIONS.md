@@ -120,7 +120,7 @@ that EU5 is loading the intended branch and commit.
 
 ## Pre-campaign debug configuration
 
-`modeu5_debug_level` is selected through EU5's built-in Game Rules screen before the campaign starts:
+`modeu5_debug_level` is selected through the Community Mod Manager before the campaign starts:
 
 ```txt
 Off = 0
@@ -128,9 +128,9 @@ Basic = 1
 Verbose = 2
 ```
 
-The startup configuration effect copies the selected rule to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
+The startup configuration effect copies the selected CMM setting to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
 
-There is no custom in-game configuration panel. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
+There is no custom in-game configuration panel and no ModeU5 debug game rule. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
 
 ## Log-first deterministic test dumps
 
@@ -732,6 +732,27 @@ has_global_variable = modeu5_test_<case>_passed
 Use `NOT = { has_global_variable = ... }` for FAIL / NOT RUN. Do not compare an
 unset marker numerically; the engine reports missing-variable and invalid
 comparison errors.
+
+For numeric deterministic assertions, do not compare `var:` values directly in
+`limit` blocks. A persistent/current variable can be unset on the current scope,
+and EU5 can reject `var:<name>` as an invalid comparison left side. Snapshot the
+inputs into initialized temporary `scope:` values first, then compare those
+temporary values:
+
+```txt
+save_temporary_scope_value_as = { name = modeu5_test_actual value = var:modeu5_some_metric }
+save_temporary_scope_value_as = { name = modeu5_test_expected value = 1 }
+
+if = {
+	limit = { scope:modeu5_test_actual = scope:modeu5_test_expected }
+	...
+}
+```
+
+The repository validation blocks direct `var:` against `var:` comparisons. If a
+rare direct variable-to-variable comparison is intentionally proven safe, it
+must carry an explicit same-line `modeu5-allow-var-comparison` marker and a
+documented justification.
 
 Expected business outcomes, including an intentionally rejected same-record
 transfer, belong in debug snapshots and result rows. Reserve `error_log` for a

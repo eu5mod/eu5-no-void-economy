@@ -59,12 +59,16 @@ assert_absent \
 	'modeu5_(recalculate_saved_country_storage_capacities|recalculate_country_market_capacity|recalculate_country_market_capacity_from_prepared_pool|store_capacity_record|load_capacity_breakdown)_good_' \
 	"$generated_stock"
 
-assert_absent \
-	'Runtime code must not depend on traded_in_market:<good> until TECH-01 confirms exact syntax and scope. Keep it in explicit test probes only.' \
-	'traded_in_market:' \
-	in_game/common \
-	tools/templates \
-	tools/generate_stock_good_helpers.sh
+traded_matches="$(search_lines 'traded_in_market:' in_game/common tools/templates tools/generate_stock_good_helpers.sh 2>/dev/null || true)"
+unexpected_traded_matches="$(
+	printf '%s\n' "$traded_matches" |
+		grep -Ev 'tools/templates/modeu5_stock_good_adapter.template.txt:.*traded_in_market:__GOOD__|in_game/common/scripted_effects/modeu5_stock_goods_generated.txt:.*traded_in_market:[a-z_]+$' || true
+)"
+if [[ -n "$unexpected_traded_matches" ]]; then
+	printf '%s\n' 'Runtime traded_in_market:<good> use is allowed only in the generated US-10 monthly trade-signal guard.' >&2
+	printf '%s\n' "$unexpected_traded_matches" >&2
+	exit 1
+fi
 
 printf 'ModeU5 per-good loop audit\n'
 printf 'Generated stock adapters: %s\n' "$generated_stock"
@@ -79,4 +83,4 @@ printf 'PERF-15 US-00 loaded-clear helpers: %s\n' "$(count_lines '^modeu5_clear_
 printf 'US-11 active validators: %s\n' "$(count_lines '^modeu5_validate_active_market_good_' "$generated_stock")"
 printf 'PERF-11 active repair helpers: %s\n' "$(count_lines '^modeu5_repair_active_markets_good_' "$generated_stock")"
 printf 'Shared capacity per-good helpers: 0\n'
-printf 'Runtime traded_in_market dependencies: 0\n'
+printf 'Runtime traded_in_market dependencies: US-10 monthly trade-signal guard only\n'

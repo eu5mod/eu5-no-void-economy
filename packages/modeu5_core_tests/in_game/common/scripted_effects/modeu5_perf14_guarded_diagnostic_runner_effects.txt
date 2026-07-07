@@ -1,0 +1,111 @@
+# PERF-14 guarded diagnostic runner.
+#
+# Keep the original PERF-14 guardrail intact, then emit a focused diagnostic
+# snapshot when the guarded runner fails. This is intentionally separate from the
+# guarded assertions so diagnostics cannot weaken the runtime/test policy.
+
+modeu5_perf14_log_ai_human_relevant_gate_diagnostics = {
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_market_relevant_before_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_country_is_human_before_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_decision_fallback_before_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_decision_detailed_before_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_detailed_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_fallback_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_blocked_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_attempted_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_succeeded_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_gate_result_after_mark value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promoted_list_after_gate value = 0 }
+
+	if = {
+		limit = { country_exists = c:ENG c:ENG = { is_ai = yes has_markets = yes } }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
+		c:ENG = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+	}
+	else_if = {
+		limit = { country_exists = c:FRA c:FRA = { is_ai = yes has_markets = yes } }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
+		c:FRA = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+	}
+	else_if = {
+		limit = { country_exists = c:POR c:POR = { is_ai = yes has_markets = yes } }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_fixture_available value = 1 }
+		c:POR = { save_temporary_scope_as = modeu5_perf14_diag_ai_country }
+		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_diag_ai_market }
+	}
+
+	if = {
+		limit = { scope:modeu5_perf14_diag_ai_fixture_available > 0 }
+		modeu5_clear_performance_relevant_markets = yes
+		modeu5_clear_detailed_accounting_promoted_markets = yes
+
+		modeu5_prepare_country_market_accounting_decision = {
+			country = scope:modeu5_perf14_diag_ai_country
+			market = scope:modeu5_perf14_diag_ai_market
+		}
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_country_is_human_before_mark value = scope:modeu5_accounting_decision_country_is_human }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_market_relevant_before_mark value = scope:modeu5_accounting_decision_market_human_relevant }
+		if = { limit = { modeu5_market_level_fallback_required_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_decision_fallback_before_mark value = 1 } }
+		if = { limit = { modeu5_detailed_country_market_accounting_enabled_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_decision_detailed_before_mark value = 1 } }
+
+		scope:modeu5_perf14_diag_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
+		modeu5_mark_performance_relevant_market = yes
+		if = {
+			limit = {
+				has_global_variable_list = modeu5_performance_relevant_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_performance_relevant_markets
+					target = scope:modeu5_perf14_diag_ai_market
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = 1 }
+		}
+
+		modeu5_prepare_stock_mutation_accounting_mode = {
+			country = scope:modeu5_perf14_diag_ai_country
+			market = scope:modeu5_perf14_diag_ai_market
+		}
+		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_detailed_after_mark value = 1 } }
+		if = { limit = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_fallback_after_mark value = 1 } }
+		if = { limit = { modeu5_stock_mutation_blocked_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_stock_blocked_after_mark value = 1 } }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_attempted_after_mark value = scope:modeu5_stock_mutation_promotion_attempted }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promotion_succeeded_after_mark value = scope:modeu5_stock_mutation_promotion_succeeded }
+		save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_gate_result_after_mark value = scope:modeu5_stock_mutation_gate_result }
+		scope:modeu5_perf14_diag_ai_market = { save_temporary_scope_as = modeu5_market }
+		if = { limit = { modeu5_market_detailed_accounting_promoted_trigger = yes } save_temporary_scope_value_as = { name = modeu5_perf14_diag_ai_promoted_list_after_gate value = 1 } }
+
+		set_variable = { name = modeu5_perf14_diag_ai_fixture_available value = scope:modeu5_perf14_diag_ai_fixture_available }
+		set_variable = { name = modeu5_perf14_diag_ai_country_is_human_before_mark value = scope:modeu5_perf14_diag_ai_country_is_human_before_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_market_relevant_before_mark value = scope:modeu5_perf14_diag_ai_market_relevant_before_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_decision_fallback_before_mark value = scope:modeu5_perf14_diag_ai_decision_fallback_before_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_decision_detailed_before_mark value = scope:modeu5_perf14_diag_ai_decision_detailed_before_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_relevant_list_after_mark value = scope:modeu5_perf14_diag_ai_relevant_list_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_stock_detailed_after_mark value = scope:modeu5_perf14_diag_ai_stock_detailed_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_stock_fallback_after_mark value = scope:modeu5_perf14_diag_ai_stock_fallback_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_stock_blocked_after_mark value = scope:modeu5_perf14_diag_ai_stock_blocked_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_promotion_attempted_after_mark value = scope:modeu5_perf14_diag_ai_promotion_attempted_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_promotion_succeeded_after_mark value = scope:modeu5_perf14_diag_ai_promotion_succeeded_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_gate_result_after_mark value = scope:modeu5_perf14_diag_ai_gate_result_after_mark }
+		set_variable = { name = modeu5_perf14_diag_ai_promoted_list_after_gate value = scope:modeu5_perf14_diag_ai_promoted_list_after_gate }
+		debug_log = "ModeU5 PERF-14 AI_GATE_DIAGNOSTIC fixture=[THIS.GetVariable('modeu5_perf14_diag_ai_fixture_available').GetValue|0] country_human_before_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_country_is_human_before_mark').GetValue|0] market_relevant_before_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_market_relevant_before_mark').GetValue|0] decision_detailed_before_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_decision_detailed_before_mark').GetValue|0] decision_fallback_before_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_decision_fallback_before_mark').GetValue|0] relevant_list_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_relevant_list_after_mark').GetValue|0] stock_detailed_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_stock_detailed_after_mark').GetValue|0] stock_fallback_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_stock_fallback_after_mark').GetValue|0] stock_blocked_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_stock_blocked_after_mark').GetValue|0] promotion_attempted_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_attempted_after_mark').GetValue|0] promotion_succeeded_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_promotion_succeeded_after_mark').GetValue|0] gate_result_after_mark=[THIS.GetVariable('modeu5_perf14_diag_ai_gate_result_after_mark').GetValue|0] promoted_list_after_gate=[THIS.GetVariable('modeu5_perf14_diag_ai_promoted_list_after_gate').GetValue|0]"
+	}
+	else = {
+		debug_log = "ModeU5 PERF-14 AI_GATE_DIAGNOSTIC fixture=0 reason=no_ai_country_market_fixture"
+	}
+}
+
+modeu5_debug_run_perf14_performance_mode_cmm_test_guarded_diagnostic = {
+	modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = yes
+	if = {
+		limit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_failed }
+		modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+		modeu5_perf14_log_ai_human_relevant_gate_diagnostics = yes
+		modeu5_clear_performance_relevant_markets = yes
+		modeu5_clear_detailed_accounting_promoted_markets = yes
+		modeu5_perf14_restore_cmm_main_mode_after_test = yes
+	}
+}

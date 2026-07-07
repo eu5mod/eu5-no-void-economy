@@ -62,7 +62,7 @@ Static/scripted configuration:
 ```txt
 modeu5_current_stock_schema_version
 modeu5_initialization_rounding_epsilon
-modeu5_debug_level, read-only here and initialized by CORE-00 from the selected game rule
+modeu5_debug_level, read-only here and initialized by CORE-18 from the selected CMM setting
 ```
 
 Physical numeric initialization states:

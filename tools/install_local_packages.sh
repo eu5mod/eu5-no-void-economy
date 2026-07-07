@@ -174,6 +174,15 @@ check_packages() {
 			failed=1
 		fi
 
+		if [[ "$package_id" == "modeu5_core" ]]; then
+			local pr71_generated="$destination/in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
+			if [[ -f "$pr71_generated" ]] && grep -Eq '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
+				printf '         stale PR7.1 generated dispatch defines duplicate live effect: %s\n' "$pr71_generated"
+				printf '         run ./tools/generate_all.sh and ./tools/install_local_packages.sh before testing.\n'
+				failed=1
+			fi
+		fi
+
 		while IFS= read -r -d '' file; do
 			if [[ "$(LC_ALL=C head -c 3 "$file" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
 				printf '         missing UTF-8 BOM in installed EU5 text file: %s\n' "$file"
