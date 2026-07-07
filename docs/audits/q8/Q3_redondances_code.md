@@ -14,6 +14,7 @@ This document is the Q8-owned redundancy standard for helper extraction, generat
 | PR7.1 guarded dispatch | Outer active-good / pending-request wrapper may call helpers that still contain internal guards. | Do not split body helpers until all callers are inventoried. Do not add Q8.2 aggregate pre-scan to default runtime without a sparse-index design. |
 | Capacity helpers | Public helpers may be called from several surfaces. | Prefer changing the public helper contract once rather than editing each large dispatcher caller. |
 | Market-sliced verifier helpers | Verifier helpers can drift into hidden repair or stock mutation. | Keep Q8.6 verifier helpers debug/audit gated, candidate-sliced, and non-stock-mutating. |
+| Q8.7 shadow-comparison helpers | Probe helpers can be mistaken for live dispatcher replacement or copied into production before economic equivalence. | Keep Q8.7 helpers test-package only until a later PR proves no-op / economic equivalence. |
 | Debug/profile counters | Metrics can look like business state when scattered. | Centralize gates and keep metrics explicitly diagnostic. |
 | Q8 docs vs PR126 docs | Duplicated methodology can drift. | Q8 owns new Q1–Q5 documents; PR126 documents remain inherited context. |
 
@@ -107,3 +108,65 @@ Boundary:
 - no live dispatcher replacement;
 - no durable per-market country-list cache.
 ```
+
+## Q8.7 proof-stack update
+
+Q8.7 adds a test-package helper family to measure whether the market-center ownership workaround can later be simplified.
+
+Current workaround shape:
+
+```txt
+country pulse
+  -> every_market_center_in_country
+     -> market-local work
+```
+
+Candidate future shape:
+
+```txt
+global market-local pass
+  -> every_market_in_world
+     -> market-local work
+```
+
+The Q8.7 redundancy evidence is now split into two separate proof surfaces:
+
+```txt
+Normal Mode:
+  modeu5_q8_7_probe_global_market_center_shadow_compare
+  compares every_market_in_world with every_country -> every_market_center_in_country
+
+Performance Mode:
+  modeu5_q8_7_probe_performance_relevant_global_shadow_compare
+  compares modeu5_performance_relevant_markets with every_market_in_world filtered to that same list
+```
+
+Consequence for Q3:
+
+```txt
+The duplicated market ownership surface is now measurable in both Normal Mode and Performance Mode.
+The market-center workaround is still not removed.
+No generated goods helper split is introduced.
+No live dispatcher replacement is introduced.
+```
+
+Important non-deduplication boundary:
+
+```txt
+Do not treat AI-controlled countries inside a human-relevant market as duplicate work.
+They are part of the market-local processing surface once the market itself is relevant.
+```
+
+Therefore the duplication candidate is:
+
+```txt
+market ownership / enumeration workaround
+```
+
+not:
+
+```txt
+country participation inside a relevant market
+```
+
+Any later removal of the market-center workaround must still preserve all present-country processing inside each relevant market.
