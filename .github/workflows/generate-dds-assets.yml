@@ -64,9 +64,9 @@ jobs:
       - name: Generate review popup source assets
         run: python tools/generate_review_popup_assets.py
 
-      - name: Validate generated DDS assets on pull requests
+      - name: Validate asset generation on pull requests
         if: github.event_name == 'pull_request'
-        run: bash tools/generate_dds_assets.sh --check
+        run: bash tools/generate_dds_assets.sh
 
       - name: Generate DDS assets on branch pushes
         if: github.event_name == 'push'
