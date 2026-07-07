@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-"""Patch generated PERF-14 promotion overmaterialization handling.
+"""Patch generated PERF-14 promotion aggregate/country-ledger mismatch handling.
 
-The stock-good adapter template still contains the conservative failure branch:
-country_sum > market_aggregate => promotion failure.  The current-save audit
-showed a migration/stale-ledger case where detailed country stock can remain
-above the market aggregate while the promoted marker is missing.
+The stock-good adapter template contains a conservative failure branch:
+country_sum > market_aggregate => promotion failure. The current-save audit
+showed a migration/stale-ledger case where detailed country stock can differ
+from the market aggregate while the promoted marker is missing.
 
-For this exception the market aggregate is treated as the cap/source of truth:
-rebuild country stocks downward from the aggregate, validate, then allow
-promotion only if the repaired country sum and market aggregate agree.
+Business rule for this exception:
+
+    if country_sum is non-zero and country_sum != market_aggregate:
+        market aggregate is the cap/source of truth
+        rebuild country stocks from the aggregate
+        validate
+        promote only if the repaired country sum and aggregate agree
+
+If country_sum is zero and the market aggregate is positive, the original
+materialization branch remains responsible for seeding country stocks from the
+market aggregate, because there is no existing country ledger to rescale.
 
 The PERF-14 AI live-market probe is marked BLOCKED when this repair is observed
 so the test log explains that the campaign needed a migration repair instead of
@@ -39,7 +47,7 @@ OLD_OVERMATERIALIZED_BRANCH = """\tif = {
 \t}
 """
 
-AI_GATE_MARKER = "reason=ai_human_relevant_market_overmaterialized_repaired"
+AI_GATE_MARKER = "reason=ai_human_relevant_market_mismatch_repaired"
 
 
 def find_matching_brace(source: str, open_index: int) -> int:
@@ -82,9 +90,16 @@ def find_matching_brace(source: str, open_index: int) -> int:
 def render_repair_branch(good: str) -> str:
     stock_map = f"modeu5_{good}_stock_by_market"
     return f"""\tif = {{
-\t\tlimit = {{ scope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon }}
+\t\tlimit = {{
+\t\t\tscope:modeu5_promotion_country_sum_before > modeu5_initialization_rounding_epsilon
+\t\t\tOR = {{
+\t\t\t\tscope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon
+\t\t\t\tscope:modeu5_promotion_quantity_to_materialize > modeu5_initialization_rounding_epsilon
+\t\t\t}}
+\t\t}}
 \t\t# Pragmatic migration repair: market aggregate is the cap/source of truth;
-\t\t# rebuild the overmaterialized country ledger downward from that aggregate.
+\t\t# rebuild any non-zero country ledger from that aggregate when they differ.
+\t\t# The historical counter name is kept so existing PERF-14 probes can observe it.
 \t\tset_global_variable = {{
 \t\t\tname = modeu5_perf14_promotion_overmaterialized_failures
 \t\t\tvalue = {{
@@ -92,7 +107,7 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\tadd = 1
 \t\t\t}}
 \t\t}}
-\t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=overmaterialized_country_sum_gt_market_aggregate source=country_ledger_above_market_aggregate action=rebuild_country_stocks_from_market_aggregate\"
+\t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=country_sum_differs_from_market_aggregate source=market_aggregate action=rebuild_country_stocks_from_market_aggregate\"
 
 \t\tif = {{
 \t\t\tlimit = {{ has_global_variable_list = modeu5_countries_present_in_market }}
@@ -114,32 +129,31 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\telse = {{
 \t\t\t\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_stock_before value = 0 }}
 \t\t\t\t}}
-\t\t\t\tsave_temporary_scope_value_as = {{
-\t\t\t\t\tname = modeu5_perf14_repair_country_stock_after
-\t\t\t\t\tvalue = {{
-\t\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_before
-\t\t\t\t\t\tmultiply = scope:modeu5_promotion_market_aggregate_before
-\t\t\t\t\t\tdivide = scope:modeu5_promotion_country_sum_before
-\t\t\t\t\t\tmin = 0
-\t\t\t\t\t}}
+\t\t\tsave_temporary_scope_value_as = {{
+\t\t\t\tname = modeu5_perf14_repair_country_stock_after
+\t\t\t\tvalue = {{
+\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_before
+\t\t\t\t\tmultiply = scope:modeu5_promotion_market_aggregate_before
+\t\t\t\t\tdivide = scope:modeu5_promotion_country_sum_before
+\t\t\t\t\tmin = 0
 \t\t\t\t}}
-\t\t\t\tif = {{
-\t\t\t\t\tlimit = {{
-\t\t\t\t\t\thas_variable_map = {stock_map}
-\t\t\t\t\t\tis_key_in_variable_map = {{
-\t\t\t\t\t\t\tname = {stock_map}
-\t\t\t\t\t\t\ttarget = scope:modeu5_promotion_market
-\t\t\t\t\t\t}}
-\t\t\t\t\t}}
-\t\t\t\t\tremove_from_variable_map = {{ name = {stock_map} key = scope:modeu5_promotion_market }}
-\t\t\t\t}}
-\t\t\t\tif = {{
-\t\t\t\t\tlimit = {{ scope:modeu5_perf14_repair_country_stock_after > modeu5_initialization_rounding_epsilon }}
-\t\t\t\t\tadd_to_variable_map = {{
+\t\t\t}}
+\t\t\tif = {{
+\t\t\t\tlimit = {{
+\t\t\t\t\thas_variable_map = {stock_map}
+\t\t\t\t\tis_key_in_variable_map = {{
 \t\t\t\t\t\tname = {stock_map}
-\t\t\t\t\t\tkey = scope:modeu5_promotion_market
-\t\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_after
+\t\t\t\t\t\ttarget = scope:modeu5_promotion_market
 \t\t\t\t\t}}
+\t\t\t\t}}
+\t\t\t\tremove_from_variable_map = {{ name = {stock_map} key = scope:modeu5_promotion_market }}
+\t\t\t}}
+\t\t\tif = {{
+\t\t\t\tlimit = {{ scope:modeu5_perf14_repair_country_stock_after > modeu5_initialization_rounding_epsilon }}
+\t\t\t\tadd_to_variable_map = {{
+\t\t\t\t\tname = {stock_map}
+\t\t\t\t\tkey = scope:modeu5_promotion_market
+\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_after
 \t\t\t\t}}
 \t\t\t}}
 \t\t}}
@@ -236,9 +250,9 @@ def patch_ai_gate_blocked_test(path: Path) -> bool:
 \t\t\t\thas_global_variable = modeu5_perf14_promotion_overmaterialized_failures
 \t\t\t\tglobal_var:modeu5_perf14_promotion_overmaterialized_failures > 0
 \t\t\t}
-\t\t\tdebug_log = "ModeU5 PERF-14 BLOCKED reason=ai_human_relevant_market_overmaterialized_repaired source=current_save_existing_country_stock_gt_market_aggregate action=rebuild_country_stocks_from_market_aggregate"
+\t\t\tdebug_log = "ModeU5 PERF-14 BLOCKED reason=ai_human_relevant_market_mismatch_repaired source=current_save_country_sum_differs_from_market_aggregate action=rebuild_country_stocks_from_market_aggregate"
 \t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
-\t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired
+\t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired
 \t\t}
 \t\tif = {
 """
@@ -255,9 +269,9 @@ def patch_perf14_result_reason(path: Path) -> bool:
     clear_needle = "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
     clear_replacement = (
         "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
-        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired\n"
+        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired\n"
     )
-    if "modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired" not in text:
+    if "modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired" not in text:
         if clear_needle not in text:
             raise SystemExit(f"Could not find PERF-14 blocked clear marker in {path}")
         text = text.replace(clear_needle, clear_replacement, 1)
@@ -272,8 +286,8 @@ def patch_perf14_result_reason(path: Path) -> bool:
     result_replacement = """\telse_if = {
 \t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
 \t\tif = {
-\t\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired }
-\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED overmaterialized_repaired"
+\t\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired }
+\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED mismatch_repaired"
 \t\t}
 \t\telse = {
 \t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED missing_fixture"
