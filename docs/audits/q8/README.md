@@ -55,6 +55,8 @@ Stacked Q8 PRs should update the affected Q8 Q-docs directly. They should not mu
 | Note | Why it matters |
 |---|---|
 | `docs/audits/q8/Q8_7_GLOBAL_MARKET_LOCAL_PASS_PROOF.md` | Q8.7 native global market-local pass proof; test-package only, no live dispatcher replacement. |
+| `docs/audits/q8/Q8_7_PERFORMANCE_MARKET_OWNER_WORKSHAPE_PROOF.md` | Q8.7 Performance Mode relevant-market workshape proof; no live dispatcher replacement. |
+| `docs/audits/q8/Q8_7_LIVE_GLOBAL_MARKET_OWNER_SWITCH.md` | Q8.7 final runtime migration; monthly market-local owner switches to a once-per-month global market pass with fallback. |
 
 ## Q8 target outcome
 
@@ -79,7 +81,7 @@ The target is not one large runtime rewrite. The target is an ordered optimisati
 | Q8.4 / F4 | Split legacy guarded helpers from body helpers | Candidate optimisation | Inventory generated helper callers and guards |
 | Q8.5 / F5/F9a | Dirty-set architecture for market/country caches | Promising | Probe owner-change dirtying and derived-cache consumers |
 | Q8.6 / F9c | Market-sliced verifier | Probe only | Prove deterministic candidate-market slicing and dirty-market skip |
-| Q8.7 / F7 | Native global market-local pass | High-impact, high-risk | Confirm `every_market_in_world` monthly/global execution before implementation |
+| Q8.7 / F7 | Native global market-local pass | Live switch PR | Replace the market-center owner after proof stack and validate economic equivalence |
 
 ## Non-negotiable guardrails
 
@@ -93,6 +95,7 @@ The target is not one large runtime rewrite. The target is an ordered optimisati
 7. Performance Mode must verify candidate/promoted/relevant markets, not the whole world, unless the PR is explicitly a debug-only world-coverage probe.
 8. Each new cache must define owner, rebuild/write trigger, reset policy, and persistent-state audit classification.
 9. Each implementation PR must include a deterministic debug event or log evidence.
+10. Q8.7 must keep `every_trade` country-owned; no market-scope trade loop may be introduced.
 ```
 
 ## Completion definition for this master PR
