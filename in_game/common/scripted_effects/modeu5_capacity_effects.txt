@@ -6,6 +6,12 @@
 # across markets present in that country. Each market keeps its own
 # merchant/trade-capacity contribution. Generated per-good stock adapters read
 # the shared capacity maps. These effects never mutate stock.
+#
+# Q8.3 adds a monthly country capacity-pool stamp. The public
+# modeu5_calculate_country_storage_capacity_pool entry point now prepares the
+# country-wide pool facts once per country/month and reloads them for later
+# country-market capacity records. Market-specific merchant capacity is still
+# recalculated every time a country-market record is refreshed.
 
 modeu5_recalculate_country_market_capacity = {
 	$country$ = { save_temporary_scope_as = modeu5_country }
@@ -21,7 +27,7 @@ modeu5_recalculate_saved_country_market_storage_capacities = {
 
 modeu5_recalculate_saved_country_storage_capacities = {
 	scope:modeu5_country = {
-		modeu5_calculate_country_storage_capacity_pool = yes
+		modeu5_prepare_country_storage_capacity_pool_once_per_month = yes
 		every_market_present_in_country = {
 			save_temporary_scope_as = modeu5_market
 			modeu5_recalculate_country_market_capacity_from_prepared_pool_shared = yes
@@ -128,8 +134,21 @@ modeu5_calculate_location_storage_capacity = {
 	}
 }
 
+modeu5_clear_country_storage_capacity_pool_cache = {
+	scope:modeu5_country = {
+		remove_variable = modeu5_capacity_pool_monthly_stamp
+		remove_variable = modeu5_capacity_pool_cached_location_rank_capacity
+		remove_variable = modeu5_capacity_pool_cached_location_count
+		remove_variable = modeu5_capacity_pool_cached_market_count
+		remove_variable = modeu5_capacity_pool_cached_base
+		remove_variable = modeu5_capacity_pool_cached_total
+		remove_variable = modeu5_capacity_pool_cached_location_rank_per_market
+	}
+}
+
 modeu5_rebuild_country_location_capacity_pool = {
 	scope:modeu5_country = {
+		modeu5_clear_country_storage_capacity_pool_cache = yes
 		set_local_variable = { name = modeu5_capacity_pool_location_rank_accumulator value = 0 }
 		set_local_variable = { name = modeu5_capacity_pool_owned_location_count value = 0 }
 
@@ -158,7 +177,7 @@ modeu5_rebuild_country_location_capacity_pool = {
 	}
 }
 
-modeu5_calculate_country_storage_capacity_pool = {
+modeu5_calculate_country_storage_capacity_pool_raw = {
 	scope:modeu5_country = {
 		set_local_variable = { name = modeu5_capacity_pool_market_count value = 0 }
 
@@ -212,6 +231,61 @@ modeu5_calculate_country_storage_capacity_pool = {
 			}
 		}
 	}
+}
+
+modeu5_store_country_storage_capacity_pool_cache = {
+	scope:modeu5_country = {
+		set_variable = { name = modeu5_capacity_pool_monthly_stamp value = scope:modeu5_capacity_pool_current_month_stamp }
+		set_variable = { name = modeu5_capacity_pool_cached_location_rank_capacity value = scope:modeu5_capacity_pool_location_rank_capacity }
+		set_variable = { name = modeu5_capacity_pool_cached_location_count value = scope:modeu5_capacity_pool_location_count }
+		set_variable = { name = modeu5_capacity_pool_cached_market_count value = scope:modeu5_capacity_pool_market_count }
+		set_variable = { name = modeu5_capacity_pool_cached_base value = scope:modeu5_capacity_pool_base }
+		set_variable = { name = modeu5_capacity_pool_cached_total value = scope:modeu5_capacity_pool_total }
+		set_variable = { name = modeu5_capacity_pool_cached_location_rank_per_market value = scope:modeu5_capacity_pool_location_rank_per_market }
+	}
+}
+
+modeu5_load_country_storage_capacity_pool_cache = {
+	scope:modeu5_country = {
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_capacity value = var:modeu5_capacity_pool_cached_location_rank_capacity }
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_count value = var:modeu5_capacity_pool_cached_location_count }
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_market_count value = var:modeu5_capacity_pool_cached_market_count }
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_base value = var:modeu5_capacity_pool_cached_base }
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_total value = var:modeu5_capacity_pool_cached_total }
+		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_per_market value = var:modeu5_capacity_pool_cached_location_rank_per_market }
+	}
+}
+
+modeu5_calculate_country_storage_capacity_pool = {
+	scope:modeu5_country = {
+		save_temporary_scope_value_as = {
+			name = modeu5_capacity_pool_current_month_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_variable = modeu5_capacity_pool_monthly_stamp }
+					var:modeu5_capacity_pool_monthly_stamp != scope:modeu5_capacity_pool_current_month_stamp
+					NOT = { has_variable = modeu5_capacity_pool_cached_location_rank_per_market }
+				}
+			}
+			modeu5_calculate_country_storage_capacity_pool_raw = yes
+			modeu5_store_country_storage_capacity_pool_cache = yes
+		}
+		else = {
+			modeu5_load_country_storage_capacity_pool_cache = yes
+		}
+	}
+}
+
+modeu5_prepare_country_storage_capacity_pool_once_per_month = {
+	modeu5_calculate_country_storage_capacity_pool = yes
 }
 
 modeu5_apply_country_storage_capacity_pool_to_current_market = {
