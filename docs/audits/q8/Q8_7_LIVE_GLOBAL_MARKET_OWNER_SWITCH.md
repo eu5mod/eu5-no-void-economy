@@ -20,13 +20,13 @@ new live owner:
     -> market-local branch
 ```
 
-The old owner is not deleted. It remains available behind the fallback switch:
+The old owner is not deleted yet. It remains available behind a temporary transition/rollback switch:
 
 ```txt
 modeu5_q8_7_live_global_market_owner_disabled
 ```
 
-When that global variable is present, the monthly wrapper falls back to the old `modeu5_run_monthly_promoted_market_local_cycle` path.
+When that global variable is present, the monthly wrapper falls back to the old `modeu5_run_monthly_promoted_market_local_cycle` path. This is not the target architecture; it is a rollback/comparison branch that should be pruned after Q8.7 same-save validation proves the new global owner stable.
 
 ## Runtime entry point
 
@@ -168,7 +168,7 @@ Runtime, new owner:
 Run full revalidation with default Q8.7 global owner enabled.
 ```
 
-Runtime, fallback owner:
+Runtime, temporary rollback owner:
 
 ```txt
 Set modeu5_q8_7_live_global_market_owner_disabled.
@@ -185,6 +185,33 @@ The result should show:
 - no market-scope every_trade path;
 - stock validation remains clean.
 ```
+
+## What to do next
+
+If the same-save validation shows equivalent economic results and clean stock validation, open a small cleanup PR to prune the transition branch.
+
+Prune:
+
+```txt
+modeu5_q8_7_live_global_market_owner_disabled
+modeu5_enable_q8_7_live_global_market_owner
+modeu5_disable_q8_7_live_global_market_owner
+modeu5_q8_7_live_global_market_owner_enabled_trigger
+modeu5_q8_7_live_global_market_owner_disabled_trigger
+owner-selection else branch -> modeu5_run_monthly_promoted_market_local_cycle
+rollback-only documentation references
+```
+
+Keep:
+
+```txt
+modeu5_run_monthly_q8_7_global_market_local_cycle_once
+  -> every_market_in_world
+  -> per-market detailed / vanilla fallback / blocked runtime paths
+modeu5_run_monthly_country_trade_owner_cycle
+```
+
+The cleanup PR should not remove per-market vanilla fallback. It should only remove the old owner-selection rollback branch.
 
 ## Merge reading
 
