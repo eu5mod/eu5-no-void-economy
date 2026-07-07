@@ -80,6 +80,8 @@ flowchart TB
     %% Q8-owned Q5 flow after the live Q8.7 owner switch.
     %% Loop nesting is semantic: it defines who owns mutation.
     %% The detailed market-local branch is inside the every_market_in_world loop body.
+    %% modeu5_prepare_human_relevant_full_ledger_markets never skips the market loop;
+    %% the skip path belongs only to the Q8.7 once-per-month stamp guard.
 
     subgraph COUNTRY["Loop: monthly_country_pulse / current country"]
         direction TB
@@ -98,7 +100,8 @@ flowchart TB
 
         CP2 --> P2["modeu5_prepare_monthly_market_seen_registry"]
         P2 --> P3["modeu5_prepare_human_relevant_full_ledger_markets"]
-        P3 --> SW{"modeu5_q8_7_live_global_market_owner_enabled_trigger?"}
+        P3 --> OWNER_SELECT["owner selection after full-ledger preparation<br/>(no skip branch here)"]
+        OWNER_SELECT --> SW{"modeu5_q8_7_live_global_market_owner_enabled_trigger?"}
         SW -->|no<br/>modeu5_q8_7_live_global_market_owner_disabled| OLD["fallback owner:<br/>modeu5_run_monthly_promoted_market_local_cycle"]
         SW -->|yes| G0["modeu5_run_monthly_q8_7_global_market_local_cycle_once(country)"]
 
@@ -106,12 +109,12 @@ flowchart TB
 
         subgraph GLOBAL_CYCLE["Q8.7 global market-local owner"]
             direction TB
-            G0 --> STAMP{"month stamp already processed?<br/>modeu5_q8_7_live_global_owner_month_stamp"}
-            STAMP -->|yes| SKIP["modeu5_note_q8_7_live_global_owner_skip_run"]
-            STAMP -->|no| GM0["modeu5_reset_q8_7_live_global_owner_metrics"]
+            G0 --> STAMP{"once-per-month guard:<br/>has modeu5_q8_7_live_global_owner_month_stamp already run?"}
+            STAMP -->|yes, later country pulse| SKIP["skip every_market_in_world for this country pulse only<br/>modeu5_note_q8_7_live_global_owner_skip_run"]
+            STAMP -->|no, first country pulse this month| GM0["modeu5_reset_q8_7_live_global_owner_metrics"]
             GM0 --> GM1["modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics"]
             GM1 --> GM2["modeu5_note_q8_7_live_global_owner_run"]
-            GM2 --> WORLD_ENTRY["every_market_in_world"]
+            GM2 --> WORLD_ENTRY["start loop:<br/>every_market_in_world"]
 
             subgraph WORLD_LOOP["Loop body: every_market_in_world"]
                 direction TB
@@ -163,6 +166,8 @@ flowchart TB
         R1 --> END
     end
 ```
+
+Important reading rule: `modeu5_prepare_human_relevant_full_ledger_markets` has no scenario that skips market iteration. It prepares relevant full-ledger state, then the owner-selection branch chooses the Q8.7 global owner or the fallback owner. The only skip of `every_market_in_world` is inside `modeu5_run_monthly_q8_7_global_market_local_cycle_once`, where the month-stamp guard prevents the global market pass from running once for every country pulse.
 
 ## Promotion / migration repair boundary
 
