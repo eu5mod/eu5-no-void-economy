@@ -5,6 +5,10 @@
 # owner. Build a deduplicated work cache for the current market from its
 # locations, then consume that list inside market-driven effects instead of
 # scanning every_country.
+#
+# Q8.5 promotes the existing dirty writer/consumer surface from probe-only
+# evidence to a guarded runtime repair consumer. Dirty lists remain scheduling
+# state only; they do not create durable per-market country-list storage.
 
 modeu5_clear_countries_present_in_market_work_cache = {
 	remove_global_variable = modeu5_market_country_cache_locations_scanned
@@ -163,5 +167,12 @@ modeu5_repair_dirty_market_country_caches = {
 			}
 		}
 		clear_global_variable_list = modeu5_market_country_cache_dirty_markets
+	}
+}
+
+modeu5_repair_dirty_market_country_caches_if_needed = {
+	if = {
+		limit = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+		modeu5_repair_dirty_market_country_caches = yes
 	}
 }

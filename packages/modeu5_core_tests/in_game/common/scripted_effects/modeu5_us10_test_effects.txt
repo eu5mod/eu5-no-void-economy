@@ -13,6 +13,9 @@ modeu5_us10_clear_test_results = {
 	remove_global_variable = modeu5_test_us10_issue109_passed
 	remove_global_variable = modeu5_test_us10_issue109_failed
 	remove_global_variable = modeu5_test_us10_issue109_blocked
+	remove_global_variable = modeu5_test_us10_ui_visibility_passed
+	remove_global_variable = modeu5_test_us10_ui_visibility_failed
+	remove_global_variable = modeu5_test_us10_ui_visibility_blocked
 	remove_global_variable = modeu5_test_us10_direct_trade_formula_passed
 	remove_global_variable = modeu5_test_us10_direct_trade_formula_failed
 	remove_global_variable = modeu5_test_us10_direct_trade_formula_blocked
@@ -814,6 +817,216 @@ modeu5_debug_run_us10_issue109_tests = {
 		set_global_variable = modeu5_test_us10_issue109_failed
 		debug_log = "ModeU5 TEST FAIL scenario=us10_issue109_fast_path_pruning"
 		error_log = "ModeU5 deterministic US-10 issue #109 fast-path/pruning test failed."
+	}
+}
+
+modeu5_us10_capture_ui_visibility_summary = {
+	c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
+	modeu5_read_country_stock_record = {
+		country = c:FRA
+		market = scope:modeu5_us10_target_market
+		good = wheat
+	}
+
+	set_variable = { name = modeu5_us10_ui_visibility_country_stock value = scope:modeu5_read_country_stock }
+	set_variable = { name = modeu5_us10_ui_visibility_country_capacity value = scope:modeu5_read_country_stock_cap }
+	set_variable = { name = modeu5_us10_ui_visibility_country_available_capacity value = scope:modeu5_read_available_capacity }
+	set_variable = { name = modeu5_us10_ui_visibility_country_over_cap value = scope:modeu5_read_over_capacity }
+	set_variable = { name = modeu5_us10_ui_visibility_market_stock value = scope:modeu5_read_market_stock }
+	set_variable = { name = modeu5_us10_ui_visibility_market_capacity_available value = 0 }
+	set_variable = { name = modeu5_us10_ui_visibility_overproduction_available value = 0 }
+	set_variable = { name = modeu5_us10_ui_visibility_production_efficiency_available value = 0 }
+	set_variable = { name = modeu5_us10_ui_visibility_consumption_non_trade value = 1 }
+	set_variable = { name = modeu5_us10_ui_visibility_same_market_trade_income_generated value = 0 }
+	set_variable = { name = modeu5_us10_ui_visibility_same_market_transport_cost_generated value = 0 }
+	set_variable = { name = modeu5_us10_ui_visibility_same_market_trade_capacity_used value = 0 }
+}
+
+modeu5_us10_capture_ui_candidate_snapshot = {
+	c:FRA = {
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_candidate_count value = var:modeu5_debug_last_us10_candidate_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_excluded_candidate_count value = var:modeu5_debug_last_us10_excluded_candidate_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_available_candidate_stock value = var:modeu5_debug_last_us10_total_available_candidate_stock }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_best_candidate_bucket value = var:modeu5_debug_last_us10_best_candidate_bucket }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_best_candidate_stock value = var:modeu5_debug_last_us10_best_candidate_stock }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_prefilter_used value = var:modeu5_debug_last_us10_market_aggregate_prefilter_used }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_sparse_source_count value = var:modeu5_debug_last_us10_sparse_supplier_source_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_sparse_count value = var:modeu5_debug_last_us10_sparse_supplier_count }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_sparse_scan_used value = var:modeu5_debug_last_us10_sparse_supplier_scan_used }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_sparse_fallback_used value = var:modeu5_debug_last_us10_sparse_supplier_fallback_used }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_negative_balance_exclusions value = var:modeu5_debug_last_us10_negative_balance_exclusions }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_bucket_1 value = var:modeu5_debug_last_us10_bucket_1_candidates }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_bucket_2 value = var:modeu5_debug_last_us10_bucket_2_candidates }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_bucket_3 value = var:modeu5_debug_last_us10_bucket_3_candidates }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_bucket_4 value = var:modeu5_debug_last_us10_bucket_4_candidates }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_index value = var:modeu5_debug_us10_candidate_trace_index }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_stock value = var:modeu5_debug_us10_candidate_trace_stock }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_allowed value = var:modeu5_debug_us10_candidate_trace_allowed }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_exclusion_reason value = var:modeu5_debug_us10_candidate_trace_exclusion_reason }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_bucket value = var:modeu5_debug_us10_candidate_trace_bucket }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_trace_score value = var:modeu5_debug_us10_candidate_trace_score }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_index value = var:modeu5_debug_us10_mutation_trace_index }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_bucket value = var:modeu5_debug_us10_mutation_trace_bucket }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_score value = var:modeu5_debug_us10_mutation_trace_score }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_stock_before value = var:modeu5_debug_us10_mutation_trace_stock_before }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_requested value = var:modeu5_debug_us10_mutation_trace_requested }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_selected value = var:modeu5_debug_us10_mutation_trace_selected }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_actual value = var:modeu5_debug_us10_mutation_trace_actual }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_tmp_mutation_remaining value = var:modeu5_debug_us10_mutation_trace_remaining }
+	}
+
+	set_variable = { name = modeu5_us10_ui_visibility_candidate_count value = scope:modeu5_test_us10_issue109_floor_candidate_count }
+	set_variable = { name = modeu5_us10_ui_visibility_excluded_candidate_count value = scope:modeu5_test_us10_issue109_floor_excluded_count }
+	set_variable = { name = modeu5_us10_ui_visibility_available_candidate_stock value = scope:modeu5_us10_ui_tmp_available_candidate_stock }
+	set_variable = { name = modeu5_us10_ui_visibility_best_candidate_bucket value = scope:modeu5_us10_ui_tmp_best_candidate_bucket }
+	set_variable = { name = modeu5_us10_ui_visibility_best_candidate_stock value = scope:modeu5_us10_ui_tmp_best_candidate_stock }
+	set_variable = { name = modeu5_us10_ui_visibility_prefilter_used value = scope:modeu5_us10_ui_tmp_prefilter_used }
+	set_variable = { name = modeu5_us10_ui_visibility_sparse_source_count value = scope:modeu5_us10_ui_tmp_sparse_source_count }
+	set_variable = { name = modeu5_us10_ui_visibility_sparse_count value = scope:modeu5_us10_ui_tmp_sparse_count }
+	set_variable = { name = modeu5_us10_ui_visibility_sparse_scan_used value = scope:modeu5_us10_ui_tmp_sparse_scan_used }
+	set_variable = { name = modeu5_us10_ui_visibility_sparse_fallback_used value = scope:modeu5_us10_ui_tmp_sparse_fallback_used }
+	set_variable = { name = modeu5_us10_ui_visibility_negative_balance_exclusions value = scope:modeu5_us10_ui_tmp_negative_balance_exclusions }
+	set_variable = { name = modeu5_us10_ui_visibility_bucket_1 value = scope:modeu5_us10_ui_tmp_bucket_1 }
+	set_variable = { name = modeu5_us10_ui_visibility_bucket_2 value = scope:modeu5_us10_ui_tmp_bucket_2 }
+	set_variable = { name = modeu5_us10_ui_visibility_bucket_3 value = scope:modeu5_us10_ui_tmp_bucket_3 }
+	set_variable = { name = modeu5_us10_ui_visibility_bucket_4 value = scope:modeu5_us10_ui_tmp_bucket_4 }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_index value = scope:modeu5_us10_ui_tmp_trace_index }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_stock value = scope:modeu5_us10_ui_tmp_trace_stock }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_allowed value = scope:modeu5_us10_ui_tmp_trace_allowed }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_exclusion_reason value = scope:modeu5_us10_ui_tmp_trace_exclusion_reason }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_bucket value = scope:modeu5_us10_ui_tmp_trace_bucket }
+	set_variable = { name = modeu5_us10_ui_visibility_trace_score value = scope:modeu5_us10_ui_tmp_trace_score }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_index value = scope:modeu5_us10_ui_tmp_mutation_index }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_bucket value = scope:modeu5_us10_ui_tmp_mutation_bucket }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_score value = scope:modeu5_us10_ui_tmp_mutation_score }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_stock_before value = scope:modeu5_us10_ui_tmp_mutation_stock_before }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_requested value = scope:modeu5_us10_ui_tmp_mutation_requested }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_selected value = scope:modeu5_us10_ui_tmp_mutation_selected }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_actual value = scope:modeu5_us10_ui_tmp_mutation_actual }
+	set_variable = { name = modeu5_us10_ui_visibility_mutation_remaining value = scope:modeu5_us10_ui_tmp_mutation_remaining }
+}
+
+modeu5_us10_log_ui_visibility_dump = {
+	debug_log = "ModeU5 US-10-UI SUMMARY good=wheat country_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_country_stock').GetValue|2] country_capacity=[THIS.GetVariable('modeu5_us10_ui_visibility_country_capacity').GetValue|2] country_available_capacity=[THIS.GetVariable('modeu5_us10_ui_visibility_country_available_capacity').GetValue|2] country_over_cap=[THIS.GetVariable('modeu5_us10_ui_visibility_country_over_cap').GetValue|2] market_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_market_stock').GetValue|2] market_capacity_available=[THIS.GetVariable('modeu5_us10_ui_visibility_market_capacity_available').GetValue|0] overproduction_available=[THIS.GetVariable('modeu5_us10_ui_visibility_overproduction_available').GetValue|0] production_efficiency_available=[THIS.GetVariable('modeu5_us10_ui_visibility_production_efficiency_available').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=[THIS.GetVariable('modeu5_us10_ui_visibility_consumption_non_trade').GetValue|0] requested=[THIS.GetVariable('modeu5_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_unsatisfied').GetValue|2] trade_income_generated=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_trade_income_generated').GetValue|0] transport_cost_generated=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_transport_cost_generated').GetValue|0] trade_capacity_used=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_trade_capacity_used').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=[THIS.GetVariable('modeu5_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('modeu5_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('modeu5_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('modeu5_us10_ui_buyer_capacity').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=[THIS.GetVariable('modeu5_us10_ui_visibility_candidate_count').GetValue|0] excluded=[THIS.GetVariable('modeu5_us10_ui_visibility_excluded_candidate_count').GetValue|0] total_available=[THIS.GetVariable('modeu5_us10_ui_visibility_available_candidate_stock').GetValue|2] best_bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_best_candidate_bucket').GetValue|0] best_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_best_candidate_stock').GetValue|2] bucket_counts=[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_1').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_2').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_3').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_4').GetValue|0] trace_index=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_index').GetValue|0] trace_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_stock').GetValue|2] trace_allowed=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_allowed').GetValue|0] trace_exclusion_reason=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_exclusion_reason').GetValue|0] trace_bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_bucket').GetValue|0] trace_score=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_score').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI MUTATION_TRACE bounded=1 mutation_index=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_index').GetValue|0] bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_bucket').GetValue|0] score=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_score').GetValue|2] stock_before=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_stock_before').GetValue|2] requested=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_requested').GetValue|2] selected=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_selected').GetValue|2] actual=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_actual').GetValue|2] remaining=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_remaining').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI FAST_PATH own_stock_used=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_used').GetValue|0] own_stock_taken=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_taken').GetValue|2] aggregate_prefilter_used=[THIS.GetVariable('modeu5_us10_ui_visibility_prefilter_used').GetValue|0] sparse_source_count=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_source_count').GetValue|0] sparse_count=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_count').GetValue|0] sparse_scan_used=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_scan_used').GetValue|0] sparse_fallback_used=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_fallback_used').GetValue|0] negative_balance_exclusions=[THIS.GetVariable('modeu5_us10_ui_visibility_negative_balance_exclusions').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI REASON_MAP 0=allowed 1=no_stock 2=below_minimum_stock 3=below_capacity_floor 4=negative_monthly_balance_reserve 5=at_war 6=embargo 8=foreign_disallowed 9=subject_or_overlord_disallowed 10=market_owner_disallowed 11=aggregate_prefilter_empty"
+}
+
+modeu5_us10_evaluate_ui_visibility_assertions = {
+	save_temporary_scope_value_as = { name = modeu5_us10_assertion_failure_count value = 0 }
+
+	if = { limit = { NOT = { scope:modeu5_us10_fixture_passed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_demand_fixture_passed expected=1" }
+	if = { limit = { NOT = { scope:modeu5_us10_issue109_fixture_passed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_issue109_fixture_passed expected=1" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_consumption_non_trade = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_non_trade expected=1" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_consumption_requested = 160 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_requested expected=160" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_consumption_satisfied = 140 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_satisfied expected=140" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_consumption_unsatisfied = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_unsatisfied expected=20" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_trade_requested = 100 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_requested expected=100" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_trade_transferred = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_transferred expected=70" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_trade_unsatisfied = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_unsatisfied expected=30" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_country_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_country_stock expected=70" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_market_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_selected_market_available = 1 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_selected_market_available expected=1" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_country_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_country_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_market_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:modeu5_us10_ui_wheat_market_capacity > 0 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_capacity expected_gt=0" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_trace_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_candidate_trace_visible expected_gt=0" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_mutation_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_mutation_trace_visible expected_gt=0" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_issue109_floor_excluded_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_issue109_fast_path_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_fast_path_visible expected=1" }
+	if = { limit = { NOT = { var:modeu5_us10_ui_visibility_prefilter_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_prefilter_visible expected=1" }
+
+	if = {
+		limit = { scope:modeu5_us10_assertion_failure_count = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_visibility_fixture_passed value = 1 }
+	}
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_visibility_fixture_passed value = 0 }
+		error_log = "ModeU5 deterministic US-10-UI visibility test failed; see US-10-UI DUMP and assertion lines."
+	}
+}
+
+modeu5_us10_run_ui_visibility_fixture_for_pair = {
+	$source_country$ = { save_temporary_scope_as = modeu5_us10_source_country }
+	$source_market$ = { save_temporary_scope_as = modeu5_us10_source_market }
+
+	modeu5_us10_run_demand_resolution_fixture = {
+		source_country = scope:modeu5_us10_source_country
+		source_market = scope:modeu5_us10_source_market
+	}
+	modeu5_us10_capture_ui_visibility_summary = yes
+	c:FRA = {
+		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_ui_fixture_market }
+		modeu5_us10_ui_set_selected_market = {
+			market = scope:modeu5_us10_ui_fixture_market
+		}
+		modeu5_us10_ui_prepare_current_market_table = yes
+	}
+	modeu5_us10_run_issue109_fixture = {
+		source_country = scope:modeu5_us10_source_country
+		source_market = scope:modeu5_us10_source_market
+	}
+	modeu5_us10_capture_ui_candidate_snapshot = yes
+	modeu5_us10_log_ui_visibility_dump = yes
+	modeu5_us10_evaluate_ui_visibility_assertions = yes
+}
+
+modeu5_debug_run_us10_ui_visibility_tests = {
+	modeu5_enter_test_audit_runtime_mode = yes
+	modeu5_us10_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=us10_ui_visibility"
+	save_temporary_scope_value_as = { name = modeu5_us10_ui_visibility_fixture_passed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us10_ui_visibility_blocked value = 0 }
+
+	if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:ENG
+			NOT = { c:FRA.capital.market = c:ENG.capital.market }
+			c:ENG = { NOT = { is_at_war_with = c:FRA } }
+		}
+		c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_ui_source_market }
+		modeu5_us10_run_ui_visibility_fixture_for_pair = {
+			source_country = c:ENG
+			source_market = scope:modeu5_us10_ui_source_market
+		}
+	}
+	else_if = {
+		limit = {
+			country_exists = c:FRA
+			country_exists = c:POR
+			NOT = { c:FRA.capital.market = c:POR.capital.market }
+			c:POR = { NOT = { is_at_war_with = c:FRA } }
+		}
+		c:POR.capital.market = { save_temporary_scope_as = modeu5_us10_ui_source_market }
+		modeu5_us10_run_ui_visibility_fixture_for_pair = {
+			source_country = c:POR
+			source_market = scope:modeu5_us10_ui_source_market
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = { name = modeu5_us10_ui_visibility_blocked value = 1 }
+		set_global_variable = modeu5_test_us10_ui_visibility_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us10_ui_visibility reason=missing_FRA_or_no_non_war_distinct_ENG_POR_source_market"
+	}
+
+	if = {
+		limit = {
+			scope:modeu5_us10_ui_visibility_blocked = 0
+			scope:modeu5_us10_ui_visibility_fixture_passed > 0
+		}
+		set_global_variable = modeu5_test_us10_ui_visibility_passed
+		debug_log = "ModeU5 TEST PASS scenario=us10_ui_visibility"
+	}
+	else_if = {
+		limit = { scope:modeu5_us10_ui_visibility_blocked = 0 }
+		set_global_variable = modeu5_test_us10_ui_visibility_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us10_ui_visibility"
+		error_log = "ModeU5 deterministic US-10-UI visibility test failed."
 	}
 }
 

@@ -301,6 +301,10 @@ git diff --check
   stock-affecting PRs must still call/check
   `modeu5_detailed_country_market_stock_mutation_allowed_trigger` before using
   detailed country-market mutation in Performance Mode.
+- The sparse supplier stacked layer emits:
+  `ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=<n> sparse=<n> candidates=<n> used=1 fallback=0`.
+  A passing targeted run should show `used=1`, `fallback=0`, and
+  `candidates == sparse` for the wheat fixture.
 - This PR does not yet prove the foreign-building-only negative case; it uses
   the confirmed `every_market_present_in_country` iterator as the current
   human-relevant market definition.
@@ -308,4 +312,6 @@ git diff --check
   eligibility marking; removing stale human-relevant markets before the next
   monthly rebuild is not required because stale over-inclusion is safe but less
   sparse.
-- Sparse supplier lists and US-10 UI diagnostics remain later stacked PRs.
+- Durable sparse supplier cache invalidation and US-10 UI diagnostics remain
+  later stacked PRs. This layer uses on-demand sparse supplier lists, not a
+  persisted cache.

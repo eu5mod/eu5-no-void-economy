@@ -40,6 +40,7 @@ modeu5_perf14_load_promotion_globals_for_test = {
 
 modeu5_perf14_guarded_check_performance_mode_gate = {
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	modeu5_clear_detailed_accounting_promoted_markets = yes
 	modeu5_clear_performance_relevant_markets = yes
 	modeu5_prepare_country_market_accounting_decision = {
 		country = scope:modeu5_perf14_test_country
@@ -214,6 +215,42 @@ modeu5_perf14_guarded_probe_idempotent_promotion = {
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=idempotent_promotion_invariant"
+		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+	}
+}
+
+modeu5_perf14_guarded_probe_sparse_supplier_scan = {
+	scope:modeu5_perf14_test_market = {
+		save_temporary_scope_as = modeu5_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	scope:modeu5_perf14_test_country = {
+		save_temporary_scope_as = modeu5_demanding_country
+		save_temporary_scope_as = modeu5_us10_resolution_controller
+	}
+	modeu5_load_consumption_scoring_profile = yes
+	modeu5_rebuild_countries_present_in_market = yes
+	modeu5_scan_us10_candidates_good_wheat = yes
+
+	set_variable = { name = modeu5_perf14_debug_sparse_source_count value = scope:modeu5_us10_sparse_supplier_source_count }
+	set_variable = { name = modeu5_perf14_debug_sparse_supplier_count value = scope:modeu5_us10_sparse_supplier_count }
+	set_variable = { name = modeu5_perf14_debug_sparse_scan_used value = scope:modeu5_us10_sparse_supplier_scan_used }
+	set_variable = { name = modeu5_perf14_debug_sparse_fallback_used value = scope:modeu5_us10_sparse_supplier_fallback_used }
+	set_variable = { name = modeu5_perf14_debug_sparse_candidate_count value = scope:modeu5_us10_candidate_count }
+	debug_log = "ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=[THIS.GetVariable('modeu5_perf14_debug_sparse_source_count').GetValue|0] sparse=[THIS.GetVariable('modeu5_perf14_debug_sparse_supplier_count').GetValue|0] candidates=[THIS.GetVariable('modeu5_perf14_debug_sparse_candidate_count').GetValue|0] used=[THIS.GetVariable('modeu5_perf14_debug_sparse_scan_used').GetValue|0] fallback=[THIS.GetVariable('modeu5_perf14_debug_sparse_fallback_used').GetValue|0]"
+
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_us10_sparse_supplier_source_count <= 0
+				scope:modeu5_us10_sparse_supplier_count <= 0
+				scope:modeu5_us10_sparse_supplier_count > scope:modeu5_us10_sparse_supplier_source_count
+				NOT = { scope:modeu5_us10_sparse_supplier_scan_used = 1 }
+				scope:modeu5_us10_sparse_supplier_fallback_used > 0
+				scope:modeu5_us10_candidate_count != scope:modeu5_us10_sparse_supplier_count
+			}
+		}
+		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=sparse_supplier_scan_unexpected_state"
 		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
 	}
 }
@@ -451,6 +488,7 @@ modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = {
 		modeu5_perf14_guarded_probe_market_runtime_gate = yes
 		modeu5_perf14_guarded_probe_positive_promotion = yes
 		modeu5_perf14_guarded_probe_idempotent_promotion = yes
+		modeu5_perf14_guarded_probe_sparse_supplier_scan = yes
 		modeu5_perf14_guarded_probe_partial_promotion = yes
 		modeu5_perf14_guarded_probe_ai_gate = yes
 		modeu5_perf14_guarded_probe_nonpresent_block = yes
