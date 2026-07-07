@@ -105,9 +105,11 @@ for source in "${sources[@]}"; do
 done
 
 if [[ "$mode" == "check" ]]; then
-	status="$(git status --porcelain -- "$assets_root" || true)"
+	# DDS previews are generated artifacts. Only fail when generation dirties
+	# tracked files; missing ignored DDS previews should not block pull requests.
+	status="$(git status --porcelain --untracked-files=no -- "$assets_root" || true)"
 	if [[ -n "$status" ]]; then
-		printf '%s\n' 'DDS assets are missing or stale. Run tools/generate_dds_assets.sh and commit the generated .dds files.' >&2
+		printf '%s\n' 'Tracked DDS assets are stale. Run tools/generate_dds_assets.sh and commit the tracked updates.' >&2
 		printf '%s\n' "$status" >&2
 		exit 1
 	fi
