@@ -72,7 +72,7 @@ No Q8.4 body-helper split is included. No Q8.7 global market dispatcher switch i
 
 ## Q8.7 proof-stack update
 
-Q8.7 currently adds proof surfaces only. They remain isolated in `packages/modeu5_core_tests` and do not move live runtime ownership.
+Q8.7 mainly adds proof surfaces in `packages/modeu5_core_tests` and still does not move the live monthly dispatcher. PR #160 also updates one production configuration surface to align runtime gating with the proved Performance Mode boundary.
 
 The proof surfaces are:
 
@@ -89,9 +89,21 @@ packages/modeu5_core_tests/in_game/events/modeu5_q8_7_shadow_debug_events.txt
 packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_7_performance_relevant_shadow_effects.txt
 packages/modeu5_core_tests/in_game/events/modeu5_q8_7_performance_relevant_shadow_debug_events.txt
 packages/modeu5_core_tests/in_game/localization/modeu5_q8_7_performance_relevant_l_english.yml
+
+# Performance Mode market-owner workshape shadow
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_7_workshape_shadow_effects.txt
+
+# Performance Mode no-op dispatcher shadow
+packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_7_noop_dispatcher_shadow_effects.txt
 ```
 
-Q8.7 therefore changes Q1 only as a proof-track architecture update:
+Production surface updated by #160:
+
+```txt
+in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
+```
+
+Q1 reading:
 
 ```txt
 No production package is reorganised.
@@ -99,6 +111,7 @@ No live dispatcher file is moved.
 No stock-source file is touched.
 No generated runtime file is changed.
 No gameplay package boundary is changed.
+The runtime trigger surface is corrected so Performance Mode detailed processing can be market-relevant rather than human-country-only.
 ```
 
 The target architecture becomes better evidenced:
