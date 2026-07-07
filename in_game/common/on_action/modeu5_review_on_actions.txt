@@ -5,7 +5,7 @@ monthly_country_pulse = {
 }
 
 modeu5_review_pop_pulse = {
-	effect = {
-		trigger_event_non_silently = modeu5_review.1
+	events = {
+		modeu5_review.1
 	}
 }
