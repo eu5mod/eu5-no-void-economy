@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """Patch generated PERF-14 promotion aggregate/country-ledger mismatch handling.
 
-The stock-good adapter template contains a conservative failure branch:
-country_sum > market_aggregate => promotion failure. The current-save audit
-showed a migration/stale-ledger case where detailed country stock can differ
-from the market aggregate while the promoted marker is missing.
-
-Business rule for this exception:
+Business rule for the migration exception:
 
     if country_sum is non-zero and country_sum != market_aggregate:
         market aggregate is the cap/source of truth
@@ -18,9 +13,10 @@ If country_sum is zero and the market aggregate is positive, the original
 materialization branch remains responsible for seeding country stocks from the
 market aggregate, because there is no existing country ledger to rescale.
 
-The PERF-14 AI live-market probe is marked BLOCKED when this repair is observed
-so the test log explains that the campaign needed a migration repair instead of
-silently passing.
+This postprocessor intentionally patches only the generated stock-good adapter.
+Older invocations may still pass PERF-14 test files as compatibility arguments;
+those paths are accepted but not modified, so `tools/generate_all.sh` does not
+dirty hand-authored test files.
 """
 
 from __future__ import annotations
@@ -46,8 +42,6 @@ OLD_OVERMATERIALIZED_BRANCH = """\tif = {
 \t\t}
 \t}
 """
-
-AI_GATE_MARKER = "reason=ai_human_relevant_market_mismatch_repaired"
 
 
 def find_matching_brace(source: str, open_index: int) -> int:
@@ -227,98 +221,15 @@ def patch_generated_goods(path: Path) -> bool:
     return True
 
 
-def patch_ai_gate_blocked_test(path: Path) -> bool:
-    text = path.read_text()
-    if AI_GATE_MARKER in text:
-        return False
-
-    # Patch the second AI stock-mutation probe, after the market was deliberately
-    # marked human-relevant.  The earlier AI probe must remain a normal fallback
-    # assertion and should not be turned into a migration block.
-    needle = """\t\tmodeu5_clear_detailed_accounting_promoted_markets = yes
-\t\tscope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
-\t\tmodeu5_mark_performance_relevant_market = yes
-\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
-\t\tif = {
-"""
-    replacement = """\t\tmodeu5_clear_detailed_accounting_promoted_markets = yes
-\t\tscope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
-\t\tmodeu5_mark_performance_relevant_market = yes
-\t\tmodeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
-\t\tif = {
-\t\t\tlimit = {
-\t\t\t\thas_global_variable = modeu5_perf14_promotion_overmaterialized_failures
-\t\t\t\tglobal_var:modeu5_perf14_promotion_overmaterialized_failures > 0
-\t\t\t}
-\t\t\tdebug_log = "ModeU5 PERF-14 BLOCKED reason=ai_human_relevant_market_mismatch_repaired source=current_save_country_sum_differs_from_market_aggregate action=rebuild_country_stocks_from_market_aggregate"
-\t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
-\t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired
-\t\t}
-\t\tif = {
-"""
-    if needle not in text:
-        raise SystemExit(f"Could not find AI human-relevant promotion check in {path}")
-    path.write_text(text.replace(needle, replacement, 1))
-    return True
-
-
-def patch_perf14_result_reason(path: Path) -> bool:
-    text = path.read_text()
-    changed = False
-
-    clear_needle = "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
-    clear_replacement = (
-        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
-        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired\n"
-    )
-    if "modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired" not in text:
-        if clear_needle not in text:
-            raise SystemExit(f"Could not find PERF-14 blocked clear marker in {path}")
-        text = text.replace(clear_needle, clear_replacement, 1)
-        changed = True
-
-    result_needle = """\telse_if = {
-\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
-\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED missing_fixture"
-\t\tdebug_log = "ModeU5 TEST BLOCKED scenario=perf14_performance_mode_cmm"
-\t}
-"""
-    result_replacement = """\telse_if = {
-\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
-\t\tif = {
-\t\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_mismatch_repaired }
-\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED mismatch_repaired"
-\t\t}
-\t\telse = {
-\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED missing_fixture"
-\t\t}
-\t\tdebug_log = "ModeU5 TEST BLOCKED scenario=perf14_performance_mode_cmm"
-\t}
-"""
-    if result_needle in text:
-        text = text.replace(result_needle, result_replacement, 1)
-        changed = True
-
-    if changed:
-        path.write_text(text)
-    return changed
-
-
 def main() -> int:
-    if len(sys.argv) not in {3, 4}:
+    if len(sys.argv) not in {2, 3, 4}:
         print(
-            "usage: postprocess_perf14_overmaterialized_repair.py <modeu5_stock_goods_generated.txt> <modeu5_perf14_guarded_test_effects.txt> [modeu5_perf14_test_effects.txt]",
+            "usage: postprocess_perf14_overmaterialized_repair.py <modeu5_stock_goods_generated.txt> [legacy_perf14_guarded_test_effects.txt] [legacy_perf14_test_effects.txt]",
             file=sys.stderr,
         )
         return 2
 
-    generated_goods = Path(sys.argv[1])
-    guarded_test = Path(sys.argv[2])
-
-    patch_generated_goods(generated_goods)
-    patch_ai_gate_blocked_test(guarded_test)
-    if len(sys.argv) == 4:
-        patch_perf14_result_reason(Path(sys.argv[3]))
+    patch_generated_goods(Path(sys.argv[1]))
     return 0
 
 
