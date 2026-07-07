@@ -3,15 +3,16 @@
 
 The stock-good adapter template still contains the conservative failure branch:
 country_sum > market_aggregate => promotion failure.  The current-save audit
-showed a legitimate migration/stale-cache case where detailed country stock
-already exists, the market is human-relevant, but the promoted marker is missing
-and the market aggregate cache is stale below the country ledger.
+showed a migration/stale-ledger case where detailed country stock can remain
+above the market aggregate while the promoted marker is missing.
 
-This postprocessor turns that generated branch into an explicit audited repair:
-rebuild market aggregate upward from the country-stock sum, validate, then allow
-promotion.  It also marks the PERF-14 AI live-market probe as BLOCKED when this
-repair is observed so the test log explains that the campaign needed migration
-repair instead of silently passing.
+For this exception the market aggregate is treated as the cap/source of truth:
+rebuild country stocks downward from the aggregate, validate, then allow
+promotion only if the repaired country sum and market aggregate agree.
+
+The PERF-14 AI live-market probe is marked BLOCKED when this repair is observed
+so the test log explains that the campaign needed a migration repair instead of
+silently passing.
 """
 
 from __future__ import annotations
@@ -79,11 +80,11 @@ def find_matching_brace(source: str, open_index: int) -> int:
 
 
 def render_repair_branch(good: str) -> str:
+    stock_map = f"modeu5_{good}_stock_by_market"
     return f"""\tif = {{
 \t\tlimit = {{ scope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon }}
-\t\t# Pragmatic migration repair: detailed country stock already exists and is
-\t\t# above the market aggregate cache. Country stock is the source of truth;
-\t\t# rebuild the market aggregate upward, then allow promotion if validation passes.
+\t\t# Pragmatic migration repair: market aggregate is the cap/source of truth;
+\t\t# rebuild the overmaterialized country ledger downward from that aggregate.
 \t\tset_global_variable = {{
 \t\t\tname = modeu5_perf14_promotion_overmaterialized_failures
 \t\t\tvalue = {{
@@ -91,26 +92,69 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\tadd = 1
 \t\t\t}}
 \t\t}}
-\t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=overmaterialized_country_sum_gt_market_aggregate source=stale_promoted_marker_or_stale_market_cache action=rebuild_market_aggregate_from_country_sum\"
-\t\tsave_temporary_scope_value_as = {{
-\t\t\tname = modeu5_expected_market_stock
-\t\t\tvalue = scope:modeu5_promotion_country_sum_before
+\t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=overmaterialized_country_sum_gt_market_aggregate source=country_ledger_above_market_aggregate action=rebuild_country_stocks_from_market_aggregate\"
+\n\t\tif = {{
+\t\t\tlimit = {{ has_global_variable_list = modeu5_countries_present_in_market }}
+\t\t\tevery_in_global_list = {{
+\t\t\t\tvariable = modeu5_countries_present_in_market
+\t\t\t\tif = {{
+\t\t\t\t\tlimit = {{
+\t\t\t\t\t\thas_variable_map = {stock_map}
+\t\t\t\t\t\tis_key_in_variable_map = {{
+\t\t\t\t\t\t\tname = {stock_map}
+\t\t\t\t\t\t\ttarget = scope:modeu5_promotion_market
+\t\t\t\t\t\t}}
+\t\t\t\t\t}}
+\t\t\t\t\tsave_temporary_scope_value_as = {{
+\t\t\t\t\t\tname = modeu5_perf14_repair_country_stock_before
+\t\t\t\t\t\tvalue = \"variable_map({stock_map}|scope:modeu5_promotion_market)\"
+\t\t\t\t\t}}
+\t\t\t\t}}
+\t\t\t\telse = {{
+\t\t\t\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_stock_before value = 0 }}
+\t\t\t\t}}
+\t\t\t\tsave_temporary_scope_value_as = {{
+\t\t\t\t\tname = modeu5_perf14_repair_country_stock_after
+\t\t\t\t\tvalue = {{
+\t\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_before
+\t\t\t\t\t\tmultiply = scope:modeu5_promotion_market_aggregate_before
+\t\t\t\t\t\tdivide = scope:modeu5_promotion_country_sum_before
+\t\t\t\t\t\tmin = 0
+\t\t\t\t\t}}
+\t\t\t\t}}
+\t\t\t\tif = {{
+\t\t\t\t\tlimit = {{
+\t\t\t\t\t\thas_variable_map = {stock_map}
+\t\t\t\t\t\tis_key_in_variable_map = {{
+\t\t\t\t\t\t\tname = {stock_map}
+\t\t\t\t\t\t\ttarget = scope:modeu5_promotion_market
+\t\t\t\t\t\t}}
+\t\t\t\t\t}}
+\t\t\t\t\tremove_from_variable_map = {{ name = {stock_map} key = scope:modeu5_promotion_market }}
+\t\t\t\t}}
+\t\t\t\tif = {{
+\t\t\t\t\tlimit = {{ scope:modeu5_perf14_repair_country_stock_after > modeu5_initialization_rounding_epsilon }}
+\t\t\t\t\tadd_to_variable_map = {{
+\t\t\t\t\t\tname = {stock_map}
+\t\t\t\t\t\tkey = scope:modeu5_promotion_market
+\t\t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_after
+\t\t\t\t\t}}
+\t\t\t\t}}
+\t\t\t}}
 \t\t}}
-\t\tscope:modeu5_promotion_market = {{ save_temporary_scope_as = modeu5_market }}
-\t\tmodeu5_store_rebuilt_market_aggregate_good_{good} = yes
-
-\t\tscope:modeu5_promotion_market = {{
+\n\t\tscope:modeu5_promotion_market = {{
 \t\t\tsave_temporary_scope_as = modeu5_market
 \t\t\tsave_temporary_scope_as = modeu5_market_country_cache_market
+\t\t\tsave_temporary_scope_as = modeu5_active_market
 \t\t}}
+\t\tmodeu5_mark_active_market_good_{good} = yes
 \t\tsave_temporary_scope_as = modeu5_consistency_controller
 \t\tmodeu5_rebuild_countries_present_in_market = yes
 \t\tmodeu5_scan_stock_sources_from_prepared_market_country_cache_good_{good} = yes
-
-\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_country_sum_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
-\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_over value = {{ value = scope:modeu5_expected_market_stock subtract = scope:modeu5_promotion_country_sum_before min = 0 }} }}
-\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_under value = {{ value = scope:modeu5_promotion_country_sum_before subtract = scope:modeu5_scanned_market_stock min = 0 }} }}
-\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_over value = {{ value = scope:modeu5_scanned_market_stock subtract = scope:modeu5_promotion_country_sum_before min = 0 }} }}
+\n\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_market_aggregate_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
+\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_over value = {{ value = scope:modeu5_expected_market_stock subtract = scope:modeu5_promotion_market_aggregate_before min = 0 }} }}
+\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_under value = {{ value = scope:modeu5_promotion_market_aggregate_before subtract = scope:modeu5_scanned_market_stock min = 0 }} }}
+\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_over value = {{ value = scope:modeu5_scanned_market_stock subtract = scope:modeu5_promotion_market_aggregate_before min = 0 }} }}
 \t\tif = {{
 \t\t\tlimit = {{
 \t\t\t\tOR = {{
@@ -189,8 +233,9 @@ def patch_ai_gate_blocked_test(path: Path) -> bool:
 \t\t\t\thas_global_variable = modeu5_perf14_promotion_overmaterialized_failures
 \t\t\t\tglobal_var:modeu5_perf14_promotion_overmaterialized_failures > 0
 \t\t\t}
-\t\t\tdebug_log = "ModeU5 PERF-14 BLOCKED reason=ai_human_relevant_market_overmaterialized_repaired source=current_save_existing_country_stock_gt_market_aggregate action=rebuild_market_aggregate_from_country_sum"
+\t\t\tdebug_log = "ModeU5 PERF-14 BLOCKED reason=ai_human_relevant_market_overmaterialized_repaired source=current_save_existing_country_stock_gt_market_aggregate action=rebuild_country_stocks_from_market_aggregate"
 \t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
+\t\t\tset_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired
 \t\t}
 \t\tif = {
 """
