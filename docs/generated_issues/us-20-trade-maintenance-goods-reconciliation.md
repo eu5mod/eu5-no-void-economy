@@ -1,34 +1,38 @@
 # US-20 — Trade maintenance as received-goods loss factor
 
-## Supersession rule
+## Correct source mapping
 
-US-20 stacks over the trade-efficiency redefinition from #120.
+Use this corrected mapping:
 
 ```txt
-#120 defines the new meaning of trade efficiency.
-#161 defines the route-loop placement.
-US-20 defines the goods-received role of trade maintenance.
+#105 defines the new trade maintenance efficiency model.
+#120 defines the buying/selling trade efficiency model.
+#161 defines where both route-level hooks belong.
+US-20 defines how trade maintenance affects received goods.
 ```
 
-Older #105 / early #107 wording is not authoritative for the meaning of trade efficiency.
+#105 and #120 are complementary. #120 does not replace #105.
 
 ## Functional objective
 
-Under US-20:
+US-20 extends the route economics by assigning separate meanings:
 
 ```txt
-buying_efficiency + selling_efficiency
-  -> money-side route reconciliation
+#105 trade maintenance efficiency
+  -> maintenance-side route economics
 
-vanilla/current trade_maintenance
+#120 buying/selling efficiency
+  -> buy/sell route economics after old price-side bonus removal
+
+US-20 trade maintenance
   -> received-goods loss factor
 ```
 
-This means US-20 changes the US-17 money replacement rule and gives `trade_maintenance` a goods-delivery role.
+The old vanilla price-side buying/selling bonus still must be removed so that the #120 buy/sell model does not stack on top of vanilla.
 
 ## Money-side rule
 
-US-20 keeps the removal of the old price-side bonus:
+The old price-side bonus to remove is:
 
 ```txt
 old_price_side_bonus =
@@ -36,17 +40,33 @@ old_price_side_bonus =
   + quantity * buy_price * buying_efficiency * (1 + export_cost_modifier)
 ```
 
-The corrected efficiency input is:
+The corrected money delta combines the separate #105 and #120 effects:
 
 ```txt
-clamped_average_efficiency =
-    clamp((buying_efficiency + selling_efficiency) / 2, 0, 1)
+money_reconciliation_delta =
+    - old_price_side_bonus
+    + new_trade_maintenance_efficiency_effect
+    + new_buying_selling_efficiency_effect
 ```
 
-EU5 bound notation:
+Where:
 
 ```txt
-modeu5_us20_clamped_average_efficiency = {
+new_trade_maintenance_efficiency_effect
+  comes from #105
+
+new_buying_selling_efficiency_effect
+  comes from #120
+```
+
+Do not collapse both into one generic `trade_efficiency_money_effect` in documentation or debug output.
+
+## Buying/selling efficiency support value
+
+The #120 buy/sell side may use a clamped average read from the saved trade owner country:
+
+```txt
+modeu5_clamped_buying_selling_efficiency = {
   value = scope:modeu5_trade_owner_country.modifier:buying_efficiency
   add = scope:modeu5_trade_owner_country.modifier:selling_efficiency
   divide = 2
@@ -56,15 +76,7 @@ modeu5_us20_clamped_average_efficiency = {
 }
 ```
 
-US-20 money delta:
-
-```txt
-money_reconciliation_delta =
-    - old_price_side_bonus
-    + modeu5_trade_efficiency_money_effect
-```
-
-`modeu5_trade_efficiency_money_effect` is the #120-defined replacement effect. Do not restore pre-#120 maintenance-saving assumptions.
+This belongs to #120. It is not the #105 trade-maintenance-efficiency definition.
 
 ## Goods-side rule
 
@@ -101,14 +113,15 @@ goods_reconciliation_delta =
 
 ## Q8.7 runtime placement
 
-US-20 belongs in the same route loop as US-17:
+US-20 belongs in the same route loop as the US-17 money-side route economics:
 
 ```txt
 modeu5_run_monthly_country_trade_owner_cycle
   -> every_trade
      -> save owner / source / target / good
      -> capture quantity
-     -> US-17 or US-20 money-side reconciliation
+     -> #105 maintenance-efficiency money-side route effect
+     -> #120 buying/selling-efficiency money-side route effect
      -> US-20 goods-received reconciliation
 ```
 
@@ -127,8 +140,9 @@ every_trade = {
 
   modeu5_capture_country_trade_owner_trade_quantity = yes
 
-  modeu5_compute_us20_money_delta = yes
-  modeu5_add_us20_money_delta_to_trade_owner = yes
+  modeu5_compute_trade_maintenance_efficiency_delta = yes
+  modeu5_compute_buying_selling_efficiency_delta = yes
+  modeu5_add_trade_money_delta_to_trade_owner = yes
 
   modeu5_compute_us20_goods_received_delta = yes
   modeu5_apply_us20_goods_delta_to_target_market_good = yes
@@ -150,7 +164,7 @@ scope:modeu5_trade_owner_good
 
 ## PERF-14 / CMM accounting rule
 
-US-20 must respect #120 accounting decisions.
+The route hook must respect PERF-14 accounting mode plumbing.
 
 ```txt
 Detailed route accounting available:
@@ -161,7 +175,7 @@ Detailed route accounting available:
 
 Detailed accounting unavailable or blocked:
   emit explicit fallback/block diagnostics
-  do not silently drop the trade-efficiency or goods-received effect
+  do not silently drop the route economics or goods-received effect
 ```
 
 If detailed Market x Country x Good accounting is unavailable, US-20 must either use a confirmed market-level fallback or emit a blocked diagnostic. It must not pretend country-level goods reconciliation happened.
@@ -172,8 +186,13 @@ US-20 should remain transaction-local for MVP.
 
 ```txt
 Route-local calculated fields:
-  clamped_average_efficiency
+  trade_maintenance_efficiency_inputs
+  buying_efficiency
+  selling_efficiency
+  clamped_buying_selling_efficiency
   old_price_side_bonus
+  new_trade_maintenance_efficiency_effect
+  new_buying_selling_efficiency_effect
   money_reconciliation_delta
   preserved_trade_maintenance
   goods_amount_sent
@@ -213,11 +232,13 @@ engine_goods_amount_received
 preserved_trade_maintenance
 target_goods_amount_received
 goods_reconciliation_delta
+trade_maintenance_efficiency_inputs
 buying_efficiency
 selling_efficiency
-clamped_average_efficiency
+clamped_buying_selling_efficiency
 old_price_side_bonus
-modeu5_trade_efficiency_money_effect
+new_trade_maintenance_efficiency_effect
+new_buying_selling_efficiency_effect
 money_reconciliation_delta
 accounting_mode_detailed_or_fallback
 ```
@@ -225,13 +246,15 @@ accounting_mode_detailed_or_fallback
 ## Acceptance checks
 
 ```txt
-- US-20 stacks over the #120 trade-efficiency redefinition.
+- #105 is documented as the trade maintenance efficiency source.
+- #120 is documented as the buying/selling trade efficiency source.
 - #161 defines only the route-loop placement.
 - US-20 runs inside the country trade-owner every_trade loop.
 - US-20 does not run in the every_market_in_world market-local body.
 - US-20 does not add a second market-center trade loop.
 - Money delta is owned by the saved trade owner.
 - Goods delta is owned by target market/good.
+- #105 and #120 effects are separate in debug output.
 - Missing detailed accounting is visible as fallback/block diagnostics.
 - No silent money or goods adjustment occurs.
 ```
