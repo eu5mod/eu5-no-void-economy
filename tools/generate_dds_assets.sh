@@ -42,6 +42,7 @@ asset_format() {
 	case "$ext" in
 		svg|svgz) printf '%s\n' svg ;;
 		png) printf '%s\n' png ;;
+		jpg|jpeg) printf '%s\n' jpg ;;
 		dds)
 			if [[ "$(LC_ALL=C head -c 4 "$path" 2>/dev/null || true)" == "DDS " ]]; then
 				printf '%s\n' dds
@@ -59,17 +60,17 @@ imagemagick_cmd="$(select_imagemagick)"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
-mapfile -t sources < <(find "$assets_root" -type f \( -iname '*.svg' -o -iname '*.png' \) | sort)
+mapfile -t sources < <(find "$assets_root" -type f \( -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) | sort)
 
 if [[ "${#sources[@]}" -eq 0 ]]; then
-	printf '%s\n' "No SVG/PNG source assets found under $assets_root."
+	printf '%s\n' "No SVG/PNG/JPG source assets found under $assets_root."
 	exit 0
 fi
 
 for source in "${sources[@]}"; do
 	format="$(asset_format "$source")"
 	case "$format" in
-		svg|png) ;;
+		svg|png|jpg) ;;
 		*)
 			printf 'Skipping unsupported source asset: %s\n' "$source" >&2
 			continue
@@ -82,8 +83,10 @@ for source in "${sources[@]}"; do
 
 	if [[ "$format" == "svg" ]]; then
 		rsvg-convert "$source" -o "$png_tmp"
-	else
+	elif [[ "$format" == "png" ]]; then
 		cp "$source" "$png_tmp"
+	else
+		"$imagemagick_cmd" "$source" "$png_tmp"
 	fi
 
 	# ImageMagick writes DDS files from the raster PNG. The dds:compression define
@@ -105,11 +108,9 @@ for source in "${sources[@]}"; do
 done
 
 if [[ "$mode" == "check" ]]; then
-	# DDS previews are generated artifacts. Only fail when generation dirties
-	# tracked files; missing ignored DDS previews should not block pull requests.
-	status="$(git status --porcelain --untracked-files=no -- "$assets_root" || true)"
+	status="$(git status --porcelain -- "$assets_root" || true)"
 	if [[ -n "$status" ]]; then
-		printf '%s\n' 'Tracked DDS assets are stale. Run tools/generate_dds_assets.sh and commit the tracked updates.' >&2
+		printf '%s\n' 'DDS assets are missing or stale. Run tools/generate_dds_assets.sh and commit the generated .dds files.' >&2
 		printf '%s\n' "$status" >&2
 		exit 1
 	fi
