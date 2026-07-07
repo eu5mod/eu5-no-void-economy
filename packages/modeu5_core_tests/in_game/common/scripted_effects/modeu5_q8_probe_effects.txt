@@ -36,10 +36,18 @@ modeu5_q8_clear_remaining_probe_results = {
 	remove_global_variable = modeu5_test_q8_7_global_market_probe_failed
 
 	remove_global_variable = modeu5_test_q8_7_global_market_count
+	remove_global_variable = modeu5_test_q8_7_global_market_unique_count
+	remove_global_variable = modeu5_test_q8_7_global_market_duplicate_count
+	remove_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count
+	remove_global_variable = modeu5_test_q8_7_market_country_cache_failed_count
 
 	if = {
 		limit = { has_global_variable_list = modeu5_q8_probe_market_slice_candidates }
 		clear_global_variable_list = modeu5_q8_probe_market_slice_candidates
+	}
+	if = {
+		limit = { has_global_variable_list = modeu5_q8_7_global_market_seen_markets }
+		clear_global_variable_list = modeu5_q8_7_global_market_seen_markets
 	}
 }
 
@@ -190,17 +198,9 @@ modeu5_q8_probe_market_sliced_verifier_candidate = {
 	}
 }
 
-# Q8.7 — global market iterator exposure probe.
-#
-# This deliberately lives in the test package, not live runtime. A failure here
-# means Q8.7 must stay blocked and the market-center ownership workaround must
-# remain authoritative.
-modeu5_q8_probe_global_market_iterator_exposure = {
-	set_global_variable = modeu5_test_q8_7_global_market_probe_started
-	remove_global_variable = modeu5_test_q8_7_global_market_count
-	set_global_variable = { name = modeu5_test_q8_7_global_market_count value = 0 }
-
-	every_market_in_world = {
+modeu5_q8_7_increment_global_market_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_count }
 		set_global_variable = {
 			name = modeu5_test_q8_7_global_market_count
 			value = {
@@ -209,14 +209,158 @@ modeu5_q8_probe_global_market_iterator_exposure = {
 			}
 		}
 	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_count value = 1 }
+	}
+}
+
+modeu5_q8_7_increment_global_market_unique_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_unique_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_global_market_unique_count
+			value = {
+				value = global_var:modeu5_test_q8_7_global_market_unique_count
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_unique_count value = 1 }
+	}
+}
+
+modeu5_q8_7_increment_global_market_duplicate_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_global_market_duplicate_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_global_market_duplicate_count
+			value = {
+				value = global_var:modeu5_test_q8_7_global_market_duplicate_count
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_global_market_duplicate_count value = 1 }
+	}
+}
+
+modeu5_q8_7_increment_market_country_cache_rebuild_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_market_country_cache_rebuild_count
+			value = {
+				value = global_var:modeu5_test_q8_7_market_country_cache_rebuild_count
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_market_country_cache_rebuild_count value = 1 }
+	}
+}
+
+modeu5_q8_7_increment_market_country_cache_failed_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_market_country_cache_failed_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_market_country_cache_failed_count
+			value = {
+				value = global_var:modeu5_test_q8_7_market_country_cache_failed_count
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = modeu5_test_q8_7_market_country_cache_failed_count value = 1 }
+	}
+}
+
+modeu5_q8_7_note_seen_global_market = {
+	if = {
+		limit = {
+			NOT = { has_global_variable_list = modeu5_q8_7_global_market_seen_markets }
+		}
+		add_to_global_variable_list = {
+			name = modeu5_q8_7_global_market_seen_markets
+			target = scope:modeu5_q8_7_global_market_candidate
+		}
+		modeu5_q8_7_increment_global_market_unique_count = yes
+	}
+	else_if = {
+		limit = {
+			NOT = {
+				is_target_in_global_variable_list = {
+					name = modeu5_q8_7_global_market_seen_markets
+					target = scope:modeu5_q8_7_global_market_candidate
+				}
+			}
+		}
+		add_to_global_variable_list = {
+			name = modeu5_q8_7_global_market_seen_markets
+			target = scope:modeu5_q8_7_global_market_candidate
+		}
+		modeu5_q8_7_increment_global_market_unique_count = yes
+	}
+	else = {
+		modeu5_q8_7_increment_global_market_duplicate_count = yes
+	}
+}
+
+# Q8.7 — global market-local pass proof.
+#
+# This deliberately lives in the test package, not live runtime. It proves more
+# than raw iterator exposure: a global/none-scope entry can enter each market,
+# deduplicate the market set, and call the existing market-country work-cache
+# rebuild from market scope without stock mutation or a dispatcher switch.
+modeu5_q8_probe_global_market_iterator_exposure = {
+	set_global_variable = modeu5_test_q8_7_global_market_probe_started
+	debug_log = "ModeU5 TEST ENTERED scenario=q87_global_market_local_pass"
+
+	remove_global_variable = modeu5_test_q8_7_global_market_count
+	remove_global_variable = modeu5_test_q8_7_global_market_unique_count
+	remove_global_variable = modeu5_test_q8_7_global_market_duplicate_count
+	remove_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count
+	remove_global_variable = modeu5_test_q8_7_market_country_cache_failed_count
 
 	if = {
-		limit = { global_var:modeu5_test_q8_7_global_market_count > 0 }
+		limit = { has_global_variable_list = modeu5_q8_7_global_market_seen_markets }
+		clear_global_variable_list = modeu5_q8_7_global_market_seen_markets
+	}
+
+	every_market_in_world = {
+		save_temporary_scope_as = modeu5_q8_7_global_market_candidate
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		modeu5_q8_7_increment_global_market_count = yes
+		modeu5_q8_7_note_seen_global_market = yes
+		modeu5_rebuild_countries_present_in_market = yes
+		modeu5_q8_7_increment_market_country_cache_rebuild_count = yes
+		if = {
+			limit = { has_global_variable = modeu5_market_country_cache_last_rebuild_failed }
+			modeu5_q8_7_increment_market_country_cache_failed_count = yes
+		}
+	}
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_q8_7_global_market_count
+			global_var:modeu5_test_q8_7_global_market_count > 0
+			has_global_variable = modeu5_test_q8_7_global_market_unique_count
+			global_var:modeu5_test_q8_7_global_market_unique_count > 0
+			NOT = { has_global_variable = modeu5_test_q8_7_global_market_duplicate_count }
+			has_global_variable = modeu5_test_q8_7_market_country_cache_rebuild_count
+			global_var:modeu5_test_q8_7_market_country_cache_rebuild_count > 0
+			NOT = { has_global_variable = modeu5_test_q8_7_market_country_cache_failed_count }
+		}
 		set_global_variable = modeu5_test_q8_7_global_market_probe_passed
-		debug_log = "ModeU5 Q8.7 PROBE global_market_iterator PASS count=[GetGlobalVariable('modeu5_test_q8_7_global_market_count').GetValue|0]"
+		debug_log = "ModeU5 Q8.7 PROBE global_market_local_pass PASS"
+		debug_log = "ModeU5 TEST PASS scenario=q87_global_market_local_pass"
 	}
 	else = {
 		set_global_variable = modeu5_test_q8_7_global_market_probe_failed
-		error_log = "ModeU5 Q8.7 PROBE global_market_iterator FAIL"
+		error_log = "ModeU5 Q8.7 PROBE global_market_local_pass FAIL"
+		error_log = "ModeU5 TEST FAIL scenario=q87_global_market_local_pass"
 	}
 }

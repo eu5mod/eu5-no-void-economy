@@ -44,6 +44,12 @@ modeu5_require_match 'generate_local_runtime_config\.sh' \
 modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 	".modeu5.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
+modeu5_require_match 'strip_utf8_bom_stream' \
+	"tools/generate_us09_economy_overrides.sh" \
+	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'
+modeu5_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
+	"tools/generate_us09_economy_overrides.sh" \
+	'US-09 generator must fail if generated output still contains BOM bytes'
 
 local_runtime_tmp_normal="$(mktemp)"
 local_runtime_tmp_debug="$(mktemp)"
@@ -209,5 +215,22 @@ modeu5_require_match 'modeu5_market_sliced_verifier_allowed_trigger' \
 modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 verifier may rebuild only the current-market country work cache for candidate markets'
+
+tracked_q8_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt"
+modeu5_require_match '^modeu5_q8_probe_global_market_iterator_exposure[[:space:]]*=' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 must expose the test-package global market-local pass probe'
+modeu5_require_match 'every_market_in_world = \{' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must exercise the native global market iterator'
+modeu5_require_match 'modeu5_q8_7_global_market_seen_markets' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must deduplicate visited markets'
+modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must prove the market-local country work-cache rebuild from market scope'
+modeu5_require_match 'ModeU5 TEST PASS scenario=q87_global_market_local_pass' \
+	"$tracked_q8_probe_effect" \
+	'Q8.7 probe must emit a stable runtime scenario PASS marker'
 
 printf '%s\n' 'ModeU5 generator and validator convention checks passed'

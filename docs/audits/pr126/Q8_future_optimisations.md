@@ -530,6 +530,7 @@ F7.2 Shadow comparison pass
   - compare market sets:
       market-center-owned set == global detailed/promoted set
   - log mismatches: missing, extra, duplicate, fallback, blocked
+  - current #159 increment: Normal Mode market-universe comparison only; no stock mutation, no US-00/US-10, no live switch
 
 F7.3 Switch market-local ownership
   - move live market-local branch to every_market_in_world
@@ -653,7 +654,7 @@ These improvements are compatible with both the current market-center workaround
 ```txt
 PR146 runtime validation
 PR7.1 metric interpretation and cleanup plan
-F3 profile counter removal/gating for stable main
+F3 profile counter removal/gating for stable main once validation is done
 F1 country capacity-pool stamping, if implemented as a country-owned monthly prep contract
 instrumentation that measures loop entries and heavy helper entries
 small documentation/checklist fixes that prevent future ownership mistakes
@@ -713,6 +714,14 @@ If the optimisation changes business ordering:
 3. Create F7.1 no-op every_market_in_world probe.
 4. If F7.1 proves true global once-per-month execution, prioritise F7 over deeper nested-branch optimisation.
 5. After F7 ownership is settled, implement F1/F2/F5 under the final architecture.
+```
+
+After #159, step 3/4 should be read as partially advanced:
+
+```txt
+- F7.1/F7.2 proof track now has a Normal Mode market-universe shadow comparison.
+- The next proof is still performance-mode / human-relevant market equivalence.
+- Live runtime remains unchanged until both the ownership and economic equivalence proofs pass.
 ```
 
 ## Priority order

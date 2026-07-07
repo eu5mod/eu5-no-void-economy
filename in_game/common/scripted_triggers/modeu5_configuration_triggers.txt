@@ -39,7 +39,13 @@ modeu5_nve_deactivated_trigger = {
 }
 
 modeu5_detailed_country_market_accounting_enabled_trigger = {
-	scope:modeu5_detailed_country_market_accounting_enabled > 0
+	OR = {
+		scope:modeu5_detailed_country_market_accounting_enabled > 0
+		AND = {
+			modeu5_performance_mode_enabled_trigger = yes
+			scope:modeu5_accounting_decision_market_human_relevant > 0
+		}
+	}
 }
 
 modeu5_market_detailed_accounting_promoted_trigger = {
@@ -62,6 +68,7 @@ modeu5_detailed_country_market_stock_mutation_allowed_trigger = {
 
 modeu5_market_level_fallback_required_trigger = {
 	scope:modeu5_market_level_fallback_required > 0
+	NOT = { scope:modeu5_accounting_decision_market_human_relevant > 0 }
 }
 
 modeu5_stock_mutation_use_detailed_accounting_trigger = {

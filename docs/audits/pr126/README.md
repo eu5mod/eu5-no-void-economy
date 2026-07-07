@@ -18,7 +18,8 @@ This folder is the context base for agents that need to turn the PR126 audit int
 | 8 | [Q8/F9 — Rolling location cache](./Q8_F9_location_cache_rolling_verification.md) | Evaluate the location owner/market cache, rolling verification, and Q4 win estimate |
 | 9 | [Q8/F9 — TECH-01 storage compatibility](./Q8_F9_TECH01_storage_compatibility.md) | Constrain F9 against variable-map storage limits, early-exit limits, and dirty-set-first design |
 | 10 | [Q8/F9c — Market-sliced verifier](./Q8_F9C_market_sliced_verifier.md) | Evaluate deterministic market slicing, candidate-list slicing, count probes, and Performance Mode viability |
-| 11 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
+| 11 | [Q8.7 — Q1 to Q5 impact](./Q8.7_Q1_Q5_impact.md) | Read the Q8.7/F7 shadow-comparison consequences for Q1–Q5 before switching live runtime |
+| 12 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
 ## Global executive summary
 
