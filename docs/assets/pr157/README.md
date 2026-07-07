@@ -9,14 +9,14 @@ review_popup_1524_event_source.svg
 review_popup_1524_situation_source.svg
 ```
 
-DDS previews are generated next to the source files when needed:
+DDS copies are generated next to the source files:
 
 ```txt
 review_popup_1524_event_source.dds
 review_popup_1524_situation_source.dds
 ```
 
-Those `.dds` previews are generated artifacts and are intentionally ignored by Git. Keep the source SVGs tracked, then regenerate DDS previews locally or in CI when validating the artwork.
+Those `.dds` files are generated artifacts, but they are committed so pull requests carry both the editable source images and the generated texture previews.
 
 ## Intended use
 
@@ -41,7 +41,9 @@ A repository workflow now watches source image assets:
 tools/generate_dds_assets.sh
 ```
 
-On pushes and pull requests, the workflow regenerates `.dds` previews from committed `.svg` / `.png` files under `docs/assets/` and verifies that generation succeeds without dirtying tracked files.
+On branch pushes, the workflow generates adjacent `.dds` copies for committed `.svg`, `.png`, `.jpg`, and `.jpeg` files under `docs/assets/`, then commits the generated DDS files back to the branch.
+
+On pull requests, the workflow runs in check mode and fails if the DDS files are missing or stale.
 
 Local generation:
 
