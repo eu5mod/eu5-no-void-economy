@@ -14,12 +14,46 @@ jobs:
       - name: Generate local artifacts
         run: ./tools/generate_all.sh
 
+      - name: Validate US-09 generator with fixture common dir
+        run: |
+          set -euo pipefail
+
+          fixture_common="$RUNNER_TEMP/us09_common"
+          fixture_package="$RUNNER_TEMP/us09_package/in_game/common"
+
+          mkdir -p "$fixture_common/building_types" "$fixture_common/prices"
+          mkdir -p "$fixture_package/building_types" "$fixture_package/prices"
+
+          cat > "$fixture_common/building_types/00_test_production.txt" <<'EOF'
+          test_production = {
+              output = 10
+          }
+          EOF
+
+          cat > "$fixture_common/prices/00_hardcoded.txt" <<'EOF'
+          expand_rgo_mining = { gold = 100 }
+          expand_rgo_farming = { gold = 100 }
+          expand_rgo_hunting = { gold = 100 }
+          expand_rgo_gathering = { gold = 100 }
+          expand_rgo_forestry = { gold = 100 }
+          EOF
+
+          ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package"
+
+          test -f "$fixture_package/building_types/zzzz_modeu5_us09_00_test_production.txt"
+          test -f "$fixture_package/prices/zzzz_modeu5_us09_expand_rgo_prices.txt"
+          grep -q 'output = 11.0' "$fixture_package/building_types/zzzz_modeu5_us09_00_test_production.txt"
+          grep -q 'expand_rgo_mining' "$fixture_package/prices/zzzz_modeu5_us09_expand_rgo_prices.txt"
+
       - name: Validate package structure and generated adapters
         run: ./tools/validate_module_packages.sh
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+          tracked_generated="$({ git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$'; git ls-files | grep -E '^packages/modeu5_economy_rebalance/in_game/common/(building_types/zzzz_modeu5_us09_.*\.txt|prices/zzzz_modeu5_us09_expand_rgo_prices\.txt)$'; } || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"
