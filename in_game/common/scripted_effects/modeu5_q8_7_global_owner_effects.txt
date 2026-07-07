@@ -10,15 +10,7 @@
 # - US-00 remains a full present-country pass before US-10 starts.
 # - every_trade remains owned by the country trade-owner pass.
 # - validation/reconciliation ordering is unchanged.
-# - old market-center owner remains available through the fallback switch.
-
-modeu5_enable_q8_7_live_global_market_owner = {
-	remove_global_variable = modeu5_q8_7_live_global_market_owner_disabled
-}
-
-modeu5_disable_q8_7_live_global_market_owner = {
-	set_global_variable = modeu5_q8_7_live_global_market_owner_disabled
-}
+# - the legacy market-center rollback owner was pruned after Q8.7 validation.
 
 modeu5_reset_q8_7_live_global_owner_metrics = {
 	remove_global_variable = modeu5_q8_7_live_global_owner_runs
@@ -191,14 +183,8 @@ modeu5_run_monthly_stock_cycle_q8_7_owner_switch = {
 		modeu5_prepare_monthly_market_seen_registry = yes
 		modeu5_prepare_human_relevant_full_ledger_markets = yes
 		save_temporary_scope_as = modeu5_country
-		if = {
-			limit = { modeu5_q8_7_live_global_market_owner_enabled_trigger = yes }
-			modeu5_run_monthly_q8_7_global_market_local_cycle_once = {
-				country = scope:modeu5_country
-			}
-		}
-		else = {
-			modeu5_run_monthly_promoted_market_local_cycle = yes
+		modeu5_run_monthly_q8_7_global_market_local_cycle_once = {
+			country = scope:modeu5_country
 		}
 		modeu5_run_monthly_country_trade_owner_cycle = yes
 		modeu5_note_promoted_market_live_trade_owner_pass = yes
