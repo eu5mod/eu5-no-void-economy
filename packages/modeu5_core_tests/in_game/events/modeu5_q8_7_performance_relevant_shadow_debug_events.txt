@@ -113,3 +113,60 @@ modeu5_q8_probe_debug.10 = {
 		name = modeu5_debug.close
 	}
 }
+
+modeu5_q8_probe_debug.11 = {
+	type = country_event
+	title = modeu5_q8_probe_debug.11.title
+	desc = modeu5_q8_probe_debug.11.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_q8_probe_debug.11.a
+		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = 1 }
+		if = {
+			limit = {
+				has_variable_map = cmm
+				is_key_in_variable_map = {
+					name = cmm
+					target = flag:no_void_economy__nve_no_void_economy_main
+				}
+			}
+			save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 1 }
+			save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
+		}
+		modeu5_q8_7_probe_performance_noop_dispatcher_shadow = yes
+		trigger_event_non_silently = modeu5_q8_probe_debug.12
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_q8_probe_debug.12 = {
+	type = country_event
+	title = modeu5_q8_probe_debug.12.title
+	desc = modeu5_q8_probe_debug.12.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_q8_probe_debug.result.q87_noop_dispatcher_shadow.pass
+		trigger = { has_global_variable = modeu5_test_q8_7_noop_dispatcher_shadow_passed }
+	}
+	option = {
+		name = modeu5_q8_probe_debug.result.q87_noop_dispatcher_shadow.fail
+		trigger = { has_global_variable = modeu5_test_q8_7_noop_dispatcher_shadow_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
