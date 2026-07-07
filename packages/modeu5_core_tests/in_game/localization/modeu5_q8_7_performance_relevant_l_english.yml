@@ -1,0 +1,8 @@
+l_english:
+ modeu5_q8_probe_debug.7.title: "ModeU5 Q8.7 Performance Relevant Shadow Probe"
+ modeu5_q8_probe_debug.7.desc: "Compare the PERF-14 human-relevant market list with a native global market pass filtered to the same relevant markets. Rebuilds present-country work caches and counts countries, but performs no stock mutation."
+ modeu5_q8_probe_debug.7.a: "Run Q8.7 performance relevant shadow probe"
+ modeu5_q8_probe_debug.8.title: "ModeU5 Q8.7 Performance Relevant Shadow Result"
+ modeu5_q8_probe_debug.8.desc: "The Q8.7 performance relevant shadow probe finished. Review debug.log or tools/summarize_modeu5_test_logs.sh for the q87_performance_relevant_global_shadow_compare scenario markers."
+ modeu5_q8_probe_debug.result.q87_perf_relevant_shadow.pass: "PASS - Q8.7 performance relevant global shadow comparison"
+ modeu5_q8_probe_debug.result.q87_perf_relevant_shadow.fail: "FAIL - Q8.7 performance relevant global shadow comparison"
