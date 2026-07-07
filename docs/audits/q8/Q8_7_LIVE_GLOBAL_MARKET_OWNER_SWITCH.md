@@ -2,9 +2,9 @@
 
 ## Status
 
-Implemented in this PR as the final Q8.7 runtime-migration layer.
+Implemented as the final Q8.7 runtime-migration layer, then cleaned up by pruning the temporary rollback owner branch.
 
-The PR moves the live market-local owner from the market-center workaround to a once-per-month global market pass:
+Q8.7 moved the live market-local owner from the market-center workaround to a once-per-month global market pass:
 
 ```txt
 old live owner:
@@ -13,24 +13,27 @@ old live owner:
     -> every_market_center_in_country
     -> market-local branch
 
-new live owner:
+current live owner:
   monthly_country_pulse
     -> current country
     -> once-per-month every_market_in_world
     -> market-local branch
 ```
 
-The old owner is not deleted yet. It remains available behind a temporary transition/rollback switch:
+The old owner-selection rollback switch has been removed. The Q8.7 monthly wrapper no longer supports:
 
 ```txt
-modeu5_q8_7_live_global_market_owner_disabled
+Q8.7 global owner disabled
+  -> legacy rollback owner
+     -> every_market_center_in_country
+     -> detailed / vanilla fallback / blocked
 ```
 
-When that global variable is present, the monthly wrapper falls back to the old `modeu5_run_monthly_promoted_market_local_cycle` path. This is not the target architecture; it is a rollback/comparison branch that should be pruned after Q8.7 same-save validation proves the new global owner stable.
+The permanent per-market vanilla fallback/blocked paths remain inside the global owner loop.
 
 ## Runtime entry point
 
-The monthly on-action now calls:
+The monthly on-action calls:
 
 ```txt
 modeu5_run_monthly_stock_cycle_q8_7_owner_switch
@@ -51,11 +54,11 @@ That wrapper preserves the existing monthly ordering:
 8. optional audit reconciliation
 ```
 
-Only step 6 changes owner shape.
+Only step 6 changed owner shape.
 
-## New owner shape
+## Live owner shape
 
-The new owner is:
+The live owner is now unconditionally:
 
 ```txt
 modeu5_run_monthly_q8_7_global_market_local_cycle_once
@@ -77,7 +80,7 @@ The mutating market-local branch is still the existing helper:
 modeu5_run_promoted_market_live_local_branch_market_all_goods
 ```
 
-This means the PR does not rewrite generated-good internals. It preserves the existing Q4.1/PR7.1 live branch shape:
+This means Q8.7 does not rewrite generated-good internals. It preserves the existing Q4.1/PR7.1 live branch shape:
 
 ```txt
 for each country present in market:
@@ -109,7 +112,7 @@ There is still no `every_trade` call from market scope.
 
 ## Performance Mode boundary
 
-The new global owner relies on the #160 clarification:
+The global owner relies on the #160 clarification:
 
 ```txt
 Performance Mode detailed processing is scoped by human-relevant markets,
@@ -120,7 +123,7 @@ Once a market is relevant, the market-local work surface remains all countries p
 
 ## Diagnostics
 
-The PR adds Q8.7 live-owner counters:
+Q8.7 live-owner counters:
 
 ```txt
 modeu5_q8_7_live_global_owner_runs
@@ -162,35 +165,26 @@ Static:
 git diff --check
 ```
 
-Runtime, new owner:
+Runtime:
 
 ```txt
-Run full revalidation with default Q8.7 global owner enabled.
-```
-
-Runtime, temporary rollback owner:
-
-```txt
-Set modeu5_q8_7_live_global_market_owner_disabled.
-Run the same save and full revalidation again.
+Run full revalidation with the Q8.7 global owner enabled.
 ```
 
 The result should show:
 
 ```txt
 - no duplicate market-local mutation;
-- same relevant-market surface;
+- relevant-market surface is preserved;
 - US-00 country passes before US-10 country passes;
 - country trade-owner pass still runs after market-local work;
 - no market-scope every_trade path;
 - stock validation remains clean.
 ```
 
-## What to do next
+## Cleanup applied
 
-If the same-save validation shows equivalent economic results and clean stock validation, open a small cleanup PR to prune the transition branch.
-
-Prune:
+Removed from the Q8.7 owner-selection path:
 
 ```txt
 modeu5_q8_7_live_global_market_owner_disabled
@@ -199,10 +193,9 @@ modeu5_disable_q8_7_live_global_market_owner
 modeu5_q8_7_live_global_market_owner_enabled_trigger
 modeu5_q8_7_live_global_market_owner_disabled_trigger
 owner-selection else branch -> modeu5_run_monthly_promoted_market_local_cycle
-rollback-only documentation references
 ```
 
-Keep:
+Kept:
 
 ```txt
 modeu5_run_monthly_q8_7_global_market_local_cycle_once
@@ -211,10 +204,10 @@ modeu5_run_monthly_q8_7_global_market_local_cycle_once
 modeu5_run_monthly_country_trade_owner_cycle
 ```
 
-The cleanup PR should not remove per-market vanilla fallback. It should only remove the old owner-selection rollback branch.
+This cleanup removes only the old owner-selection rollback branch. It does not remove per-market vanilla fallback.
 
 ## Merge reading
 
-A successful merge means Q8.7 has moved from proof track to live owner migration.
+A successful merge means Q8.7 has moved from proof track to live owner migration and the temporary rollback branch has been pruned.
 
 It does not mean Q8.2 sparse pending scheduling or Q8.4 body-helper splitting are implemented. Those remain separate backlog items.
