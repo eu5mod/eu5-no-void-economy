@@ -74,7 +74,7 @@ modeu5_perf14_guarded_probe_ai_country_in_human_relevant_market = {
 			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
 		}
 
-		debug_log = "ModeU5 PERF-14 AI_RELEVANT_MARKET boundary=market country_is_human=[SCOPE.GetValue('modeu5_accounting_decision_country_is_human')|0] market_human_relevant=[SCOPE.GetValue('modeu5_accounting_decision_market_human_relevant')|0] detailed=[SCOPE.GetValue('modeu5_stock_mutation_use_detailed_accounting')|0] fallback=[SCOPE.GetValue('modeu5_stock_mutation_use_market_level_fallback')|0] promotion_attempted=[SCOPE.GetValue('modeu5_stock_mutation_promotion_attempted')|0] promotion_succeeded=[SCOPE.GetValue('modeu5_stock_mutation_promotion_succeeded')|0]"
+		debug_log = "ModeU5 PERF-14 AI_RELEVANT_MARKET boundary=human_relevant_market country=ai result=checked"
 	}
 	else = {
 		set_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
