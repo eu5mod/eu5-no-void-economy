@@ -1,0 +1,82 @@
+# Q8.7 continuation probe.
+# Test package only: exercises the candidate global market-local dispatcher shape
+# without replacing live monthly runtime and without stock mutation.
+
+modeu5_q8_7_increment_shadow_market_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_shadow_market_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_shadow_market_count
+			value = { value = global_var:modeu5_test_q8_7_shadow_market_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = modeu5_test_q8_7_shadow_market_count value = 1 } }
+}
+
+modeu5_q8_7_increment_shadow_cache_rebuild_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_shadow_cache_rebuild_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_shadow_cache_rebuild_count
+			value = { value = global_var:modeu5_test_q8_7_shadow_cache_rebuild_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = modeu5_test_q8_7_shadow_cache_rebuild_count value = 1 } }
+}
+
+modeu5_q8_7_increment_shadow_failure_count = {
+	if = {
+		limit = { has_global_variable = modeu5_test_q8_7_shadow_failure_count }
+		set_global_variable = {
+			name = modeu5_test_q8_7_shadow_failure_count
+			value = { value = global_var:modeu5_test_q8_7_shadow_failure_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = modeu5_test_q8_7_shadow_failure_count value = 1 } }
+}
+
+modeu5_q8_7_shadow_market_local_dispatcher_shell = {
+	# This shell intentionally stops at market-local preparation. It proves that a
+	# future live switch can enter each market exactly once and rebuild the current
+	# market country work cache before market-local runtime work is considered.
+	modeu5_rebuild_countries_present_in_market = yes
+	modeu5_q8_7_increment_shadow_cache_rebuild_count = yes
+	if = {
+		limit = { has_global_variable = modeu5_market_country_cache_last_rebuild_failed }
+		modeu5_q8_7_increment_shadow_failure_count = yes
+	}
+}
+
+modeu5_q8_7_probe_shadow_market_local_dispatcher = {
+	debug_log = "ModeU5 TEST ENTERED scenario=q87_global_market_dispatcher_shadow"
+	remove_global_variable = modeu5_test_q8_7_shadow_market_count
+	remove_global_variable = modeu5_test_q8_7_shadow_cache_rebuild_count
+	remove_global_variable = modeu5_test_q8_7_shadow_failure_count
+	remove_global_variable = modeu5_test_q8_7_shadow_dispatcher_passed
+	remove_global_variable = modeu5_test_q8_7_shadow_dispatcher_failed
+
+	every_market_in_world = {
+		save_temporary_scope_as = modeu5_market_country_cache_market
+		remove_global_variable = modeu5_market_country_cache_last_rebuild_failed
+		modeu5_q8_7_increment_shadow_market_count = yes
+		modeu5_q8_7_shadow_market_local_dispatcher_shell = yes
+	}
+
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_q8_7_shadow_market_count
+			global_var:modeu5_test_q8_7_shadow_market_count > 0
+			has_global_variable = modeu5_test_q8_7_shadow_cache_rebuild_count
+			global_var:modeu5_test_q8_7_shadow_cache_rebuild_count > 0
+			NOT = { has_global_variable = modeu5_test_q8_7_shadow_failure_count }
+		}
+		set_global_variable = modeu5_test_q8_7_shadow_dispatcher_passed
+		debug_log = "ModeU5 Q8.7 PROBE global_market_dispatcher_shadow PASS"
+		debug_log = "ModeU5 TEST PASS scenario=q87_global_market_dispatcher_shadow"
+	}
+	else = {
+		set_global_variable = modeu5_test_q8_7_shadow_dispatcher_failed
+		error_log = "ModeU5 Q8.7 PROBE global_market_dispatcher_shadow FAIL"
+		error_log = "ModeU5 TEST FAIL scenario=q87_global_market_dispatcher_shadow"
+	}
+}
