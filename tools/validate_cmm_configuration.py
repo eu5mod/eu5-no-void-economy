@@ -97,23 +97,24 @@ expect("modeu5_cmm_runtime_callback_pulse" in runtime_on_actions, "Runtime CMM o
 expect("modeu5_cmm_refresh_nve_main_enabled = yes" in runtime_on_actions, "Runtime registration must refresh CMM main-mode visibility")
 
 expected_settings = [
-    "nve_no_void_economy_main",
-    "nve_debug_messages",
-    "nve_monthly_stock_check",
-    "nve_save_mode",
-    "nve_balance_difficulty",
-    "nve_decay_activate",
-    "activate_trade_cost",
-    "nve_balance_war_shorter",
-    "nve_balance_war_exhaustion",
-    "nve_balance_economy_location_specialisation",
-    "nve_balance_economy_main_balance",
-    "nve_balance_ai_strategy",
-    "nve_rebel_threshold",
-    "nve_rebel_war_start",
-    "nve_subjects_persistance",
+    "only_sold_goods_create_revenue_nve_setting",
+    "debug_messages_setting",
+    "monthly_stock_check_setting",
+    "save_mode_setting",
+    "difficulty_setting",
+    "activate_goods_decay_setting",
+    "trade_rework_setting",
+    "shorter_wars_setting",
+    "war_exhaustion_political_pressure_setting",
+    "increased_location_specialisation_setting",
+    "sliders_adjustments_setting",
+    "extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting",
+    "adjust_rebel_threshold_setting",
+    "overlord_declares_war_setting",
+    "persistence_of_resources_setting",
 ]
-scripted_gui_settings = [setting for setting in expected_settings if setting != "nve_no_void_economy_main"]
+main_dropdown_setting = "only_sold_goods_create_revenue_nve_setting"
+scripted_gui_settings = [setting for setting in expected_settings if setting != main_dropdown_setting]
 for setting in expected_settings:
     expect(f"setting_id = {setting}" in cmm_effects, f"Missing CMM registration for {setting}")
     expect(f"no_void_economy__{setting}_name" in loc, f"Missing localization name for {setting}")
