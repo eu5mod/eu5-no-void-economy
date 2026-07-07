@@ -93,7 +93,8 @@ def render_repair_branch(good: str) -> str:
 \t\t\t}}
 \t\t}}
 \t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=overmaterialized_country_sum_gt_market_aggregate source=country_ledger_above_market_aggregate action=rebuild_country_stocks_from_market_aggregate\"
-\n\t\tif = {{
+
+\t\tif = {{
 \t\t\tlimit = {{ has_global_variable_list = modeu5_countries_present_in_market }}
 \t\t\tevery_in_global_list = {{
 \t\t\t\tvariable = modeu5_countries_present_in_market
@@ -142,7 +143,8 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\t}}
 \t\t\t}}
 \t\t}}
-\n\t\tscope:modeu5_promotion_market = {{
+
+\t\tscope:modeu5_promotion_market = {{
 \t\t\tsave_temporary_scope_as = modeu5_market
 \t\t\tsave_temporary_scope_as = modeu5_market_country_cache_market
 \t\t\tsave_temporary_scope_as = modeu5_active_market
@@ -151,7 +153,8 @@ def render_repair_branch(good: str) -> str:
 \t\tsave_temporary_scope_as = modeu5_consistency_controller
 \t\tmodeu5_rebuild_countries_present_in_market = yes
 \t\tmodeu5_scan_stock_sources_from_prepared_market_country_cache_good_{good} = yes
-\n\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_market_aggregate_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
+
+\t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_under value = {{ value = scope:modeu5_promotion_market_aggregate_before subtract = scope:modeu5_expected_market_stock min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_country_over value = {{ value = scope:modeu5_expected_market_stock subtract = scope:modeu5_promotion_market_aggregate_before min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_under value = {{ value = scope:modeu5_promotion_market_aggregate_before subtract = scope:modeu5_scanned_market_stock min = 0 }} }}
 \t\tsave_temporary_scope_value_as = {{ name = modeu5_perf14_repair_market_over value = {{ value = scope:modeu5_scanned_market_stock subtract = scope:modeu5_promotion_market_aggregate_before min = 0 }} }}
@@ -245,10 +248,52 @@ def patch_ai_gate_blocked_test(path: Path) -> bool:
     return True
 
 
+def patch_perf14_result_reason(path: Path) -> bool:
+    text = path.read_text()
+    changed = False
+
+    clear_needle = "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
+    clear_replacement = (
+        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked\n"
+        "\tremove_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired\n"
+    )
+    if "modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired" not in text:
+        if clear_needle not in text:
+            raise SystemExit(f"Could not find PERF-14 blocked clear marker in {path}")
+        text = text.replace(clear_needle, clear_replacement, 1)
+        changed = True
+
+    result_needle = """\telse_if = {
+\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
+\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED missing_fixture"
+\t\tdebug_log = "ModeU5 TEST BLOCKED scenario=perf14_performance_mode_cmm"
+\t}
+"""
+    result_replacement = """\telse_if = {
+\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
+\t\tif = {
+\t\t\tlimit = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked_overmaterialized_repaired }
+\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED overmaterialized_repaired"
+\t\t}
+\t\telse = {
+\t\t\tdebug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm BLOCKED missing_fixture"
+\t\t}
+\t\tdebug_log = "ModeU5 TEST BLOCKED scenario=perf14_performance_mode_cmm"
+\t}
+"""
+    if result_needle in text:
+        text = text.replace(result_needle, result_replacement, 1)
+        changed = True
+
+    if changed:
+        path.write_text(text)
+    return changed
+
+
 def main() -> int:
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in {3, 4}:
         print(
-            "usage: postprocess_perf14_overmaterialized_repair.py <modeu5_stock_goods_generated.txt> <modeu5_perf14_guarded_test_effects.txt>",
+            "usage: postprocess_perf14_overmaterialized_repair.py <modeu5_stock_goods_generated.txt> <modeu5_perf14_guarded_test_effects.txt> [modeu5_perf14_test_effects.txt]",
             file=sys.stderr,
         )
         return 2
@@ -258,6 +303,8 @@ def main() -> int:
 
     patch_generated_goods(generated_goods)
     patch_ai_gate_blocked_test(guarded_test)
+    if len(sys.argv) == 4:
+        patch_perf14_result_reason(Path(sys.argv[3]))
     return 0
 
 
