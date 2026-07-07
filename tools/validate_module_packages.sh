@@ -207,6 +207,9 @@ stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 us10_ui_generator="tools/generate_us10_ui_helpers.sh"
 stock_postprocessor="tools/postprocess_perf14_promotion_guards.py"
+stock_overmaterialized_repair_postprocessor="tools/postprocess_perf14_overmaterialized_repair.py"
+perf14_guarded_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_guarded_test_effects.txt"
+perf14_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
 generator_validator="tools/validate_generators.sh"
 script_safety_validator="tools/validate_modeu5_script_safety.sh"
 generated_stock_helpers_tmp="$(mktemp)"
@@ -214,12 +217,17 @@ generated_us00_modifiers_tmp="$(mktemp)"
 generated_us00_modifier_localization_tmp="$(mktemp)"
 generated_us10_table_tmp="$(mktemp)"
 generated_us10_market_production_tmp="$(mktemp)"
-trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp" "$generated_us00_modifier_localization_tmp" "$generated_us10_table_tmp" "$generated_us10_market_production_tmp"' EXIT
+perf14_guarded_test_effects_tmp="$(mktemp)"
+perf14_test_effects_tmp="$(mktemp)"
+trap 'rm -f "$generated_stock_helpers_tmp" "$generated_us00_modifiers_tmp" "$generated_us00_modifier_localization_tmp" "$generated_us10_table_tmp" "$generated_us10_market_production_tmp" "$perf14_guarded_test_effects_tmp" "$perf14_test_effects_tmp"' EXIT
 
 require_file "$stock_adapter_template"
 require_file "$stock_generator"
 require_file "$us10_ui_generator"
 require_file "$stock_postprocessor"
+require_file "$stock_overmaterialized_repair_postprocessor"
+require_file "$perf14_guarded_test_effects"
+require_file "$perf14_test_effects"
 require_file "$generator_validator"
 require_file "$script_safety_validator"
 require_file "$generated_stock_helpers"
@@ -236,6 +244,12 @@ bash "$script_safety_validator" >/dev/null
 	"$generated_us00_modifiers_tmp" \
 	"$generated_us00_modifier_localization_tmp"
 python3 "$stock_postprocessor" "$generated_stock_helpers_tmp"
+cp "$perf14_guarded_test_effects" "$perf14_guarded_test_effects_tmp"
+cp "$perf14_test_effects" "$perf14_test_effects_tmp"
+python3 "$stock_overmaterialized_repair_postprocessor" \
+	"$generated_stock_helpers_tmp" \
+	"$perf14_guarded_test_effects_tmp" \
+	"$perf14_test_effects_tmp"
 bash "$us10_ui_generator" \
 	"$generated_us10_table_tmp" \
 	"$generated_us10_market_production_tmp"
