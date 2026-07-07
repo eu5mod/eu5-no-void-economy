@@ -6,6 +6,3 @@
 modeu5_*_generated.txt
 modeu5_*_generated_l_english.yml
 tools/generated/
-
-# Generated documentation DDS previews.
-docs/assets/**/*.dds
