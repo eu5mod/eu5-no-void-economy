@@ -79,67 +79,76 @@ modeu5_run_monthly_promoted_market_local_cycle
 flowchart TB
     %% Q8-owned Q5 flow after the live Q8.7 owner switch.
     %% Loop nesting is semantic: it defines who owns mutation.
+    %% The detailed market-local branch is inside the every_market_in_world loop body.
 
     subgraph COUNTRY["Loop: monthly_country_pulse / current country"]
         direction TB
         A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle_q8_7_owner_switch"]
-        B --> SW{"fallback variable present?<br/>modeu5_q8_7_live_global_market_owner_disabled"}
-        SW -->|yes| OLD["fallback owner:<br/>modeu5_run_monthly_promoted_market_local_cycle"]
-        SW -->|no| C["modeu5_run_monthly_stock_cycle"]
+        B --> READY{"modeu5_stock_runtime_ready_trigger?"}
+        READY -->|no| CLOSED["runtime not ready<br/>fail closed / diagnostics only"]
+        READY -->|yes| P0["modeu5_prepare_performance_mode_human_relevant_markets"]
+        P0 --> P1["modeu5_run_monthly_capacity_refresh_for_current_country"]
 
-        C --> READY{"runtime ready?"}
-        READY -->|no| CLOSED["fail closed / diagnostics only"]
-        READY -->|yes| P0["prepare performance human-relevant markets"]
-        P0 --> P1["refresh current-country capacities"]
-        P1 --> P2["prepare monthly market-seen registry"]
-        P2 --> P3["prepare human-relevant full-ledger markets"]
-        P3 --> G0["modeu5_run_monthly_q8_7_global_market_local_cycle_once"]
-
-        subgraph COUNTRY_PREP["Country-owned preparation"]
+        subgraph COUNTRY_PREP["Country-owned preparation before market-local owner"]
             direction TB
             P1 --> CP0["every_market_present_in_country"]
-            CP0 --> CP1["recalculate country-market capacity"]
-            CP1 --> CP2["store capacity/cache records"]
+            CP0 --> CP1["modeu5_recalculate_country_market_capacity_from_prepared_pool_shared"]
+            CP1 --> CP2["store country-market capacity/cache records"]
         end
 
-        G0 --> STAMP{"global market-local pass<br/>already run this month?"}
-        STAMP -->|yes| SKIP["record Q8.7 skip counter"]
-        STAMP -->|no| WORLD["every_market_in_world"]
+        CP2 --> P2["modeu5_prepare_monthly_market_seen_registry"]
+        P2 --> P3["modeu5_prepare_human_relevant_full_ledger_markets"]
+        P3 --> SW{"modeu5_q8_7_live_global_market_owner_enabled_trigger?"}
+        SW -->|no<br/>modeu5_q8_7_live_global_market_owner_disabled| OLD["fallback owner:<br/>modeu5_run_monthly_promoted_market_local_cycle"]
+        SW -->|yes| G0["modeu5_run_monthly_q8_7_global_market_local_cycle_once(country)"]
 
-        subgraph GLOBAL_OWNER["Market-local owner: one global market pass per month"]
+        OLD --> OLD_LOOP["every_market_center_in_country<br/>rollback/comparison only"]
+
+        subgraph GLOBAL_CYCLE["Q8.7 global market-local owner"]
             direction TB
-            WORLD --> M0["save market scope"]
-            M0 --> M1["modeu5_prepare_market_runtime_accounting_mode"]
-            M1 --> M2{"market runtime mode"}
-            M2 -->|detailed| LOCAL["modeu5_run_promoted_market_live_local_branch_market_all_goods"]
-            M2 -->|vanilla fallback| MF["record fallback<br/>no ModeU5 stock mutation"]
-            M2 -->|blocked| MB["record blocked"]
+            G0 --> STAMP{"month stamp already processed?<br/>modeu5_q8_7_live_global_owner_month_stamp"}
+            STAMP -->|yes| SKIP["modeu5_note_q8_7_live_global_owner_skip_run"]
+            STAMP -->|no| GM0["modeu5_reset_q8_7_live_global_owner_metrics"]
+            GM0 --> GM1["modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics"]
+            GM1 --> GM2["modeu5_note_q8_7_live_global_owner_run"]
+            GM2 --> WORLD_ENTRY["every_market_in_world"]
+
+            subgraph WORLD_LOOP["Loop body: every_market_in_world"]
+                direction TB
+                WORLD_ENTRY --> W0["save_temporary_scope_as:<br/>modeu5_market + modeu5_market_country_cache_market"]
+                W0 --> W1["modeu5_q8_7_run_global_market_local_owner_market(country, market)"]
+                W1 --> W2["modeu5_mark_monthly_market_seen"]
+                W2 --> W3["modeu5_prepare_market_runtime_accounting_mode(market)"]
+                W3 --> W4{"market runtime trigger"}
+                W4 -->|modeu5_market_runtime_use_detailed_accounting_trigger| LOCAL["modeu5_run_promoted_market_live_local_branch_market_all_goods(country, market)"]
+                W4 -->|modeu5_market_runtime_use_vanilla_fallback_trigger| MF["modeu5_note_us00/us10_vanilla_fallback_market<br/>no ModeU5 stock mutation"]
+                W4 -->|modeu5_market_runtime_blocked_trigger| MB["modeu5_note_runtime_blocked_market"]
+
+                subgraph LOCAL_DETAIL["Detailed market-local branch — still inside this market iteration"]
+                    direction TB
+                    LOCAL --> L0["modeu5_pr71_prepare_active_good_metrics"]
+                    L0 --> L1["modeu5_prepare_promoted_market_country_cache(market)"]
+                    L1 --> L2["modeu5_rebuild_countries_present_in_market"]
+                    L2 --> L3["every_in_global_list(modeu5_countries_present_in_market)<br/>capacity + US-00 pass"]
+                    L3 --> L4["modeu5_prepare_promoted_country_market_capacity"]
+                    L4 --> L5["modeu5_pr71_process_us00_monthly_market_active_goods"]
+                    L5 --> L6["US-00 facts frozen for all present countries"]
+                    L6 --> L7["every_in_global_list(modeu5_countries_present_in_market)<br/>US-10 pass"]
+                    L7 --> L8["modeu5_pr71_process_us10_monthly_market_pending_goods"]
+                    L8 --> L9["modeu5_note_promoted_market_live_local_market_processed"]
+                end
+
+                L9 --> WORLD_DONE["finish current market iteration"]
+                MF --> WORLD_DONE
+                MB --> WORLD_DONE
+            end
+
+            WORLD_DONE --> GM_DONE["every_market_in_world exhausted"]
         end
 
-        subgraph LOCAL_DETAIL["Detailed market-local branch"]
-            direction TB
-            LOCAL --> L0["rebuild countries_present_in_market once"]
-            L0 --> L1["for each present country:<br/>refresh country-market capacity"]
-            L1 --> L2["for each present country:<br/>US-00 active-good dispatcher"]
-            L2 --> L3{"active good / previous state?"}
-            L3 -->|yes| L4["heavy US-00 generated helper"]
-            L3 -. no .-> L5["skip heavy US-00 helper"]
-            L4 --> L6["US-00 facts frozen"]
-            L5 --> L6
-            L6 --> L7["for each present country:<br/>US-10 pending-good dispatcher"]
-            L7 --> L8{"pending same-market request?"}
-            L8 -->|yes| L9["heavy US-10 generated helper"]
-            L8 -. no .-> L10["skip heavy US-10 helper"]
-            L9 --> L11["same-market consumption processed"]
-            L10 --> L11
-            L11 --> L12["record local market processed"]
-        end
-
-        OLD --> TRADE0
+        OLD_LOOP --> TRADE0["modeu5_run_monthly_country_trade_owner_cycle"]
         SKIP --> TRADE0
-        L12 --> TRADE0["modeu5_run_monthly_country_trade_owner_cycle"]
-        MF --> TRADE0
-        MB --> TRADE0
+        GM_DONE --> TRADE0
 
         subgraph TRADE["Country-owned trade branch"]
             direction TB
@@ -148,8 +157,8 @@ flowchart TB
             T2 --> T3["delegate effects to stock handlers"]
         end
 
-        T3 --> AUDIT{"audit enabled?"}
-        AUDIT -->|yes| R1["monthly reconciliation / validation"]
+        T3 --> AUDIT{"modeu5_audit_enabled_trigger?"}
+        AUDIT -->|yes| R1["modeu5_run_monthly_stock_reconciliation_once"]
         AUDIT -->|no| END["end country monthly cycle"]
         R1 --> END
     end
