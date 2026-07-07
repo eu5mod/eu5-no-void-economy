@@ -205,7 +205,7 @@ It may rebuild `modeu5_countries_present_in_market` for each candidate market to
 
 ## Q8.7 proof-stack update
 
-Q8.7 adds no new production cache. It exercises existing work/relevance surfaces from the test package only.
+Q8.7 adds no new production cache. It exercises existing work/relevance surfaces from the test package and clarifies the business meaning of one existing production cache surface.
 
 The proof stack now classifies the following diagnostic state as probe-only:
 
@@ -217,6 +217,10 @@ modeu5_test_q8_7_perf_relevant_cache_rebuild_count
 modeu5_test_q8_7_perf_relevant_country_count
 modeu5_test_q8_7_perf_relevant_human_country_count
 modeu5_test_q8_7_perf_relevant_ai_country_count
+modeu5_test_q8_7_current_owner_cache_rebuild_count
+modeu5_test_q8_7_candidate_global_cache_rebuild_count
+modeu5_test_q8_7_noop_current_* counters
+modeu5_test_q8_7_noop_global_* counters
 ```
 
 Classification:
@@ -236,6 +240,7 @@ The production-relevant surfaces exercised by #160 are:
 ```txt
 modeu5_performance_relevant_markets
 modeu5_countries_present_in_market
+modeu5_detailed_accounting_promoted_markets
 ```
 
 Cache interpretation:
@@ -246,12 +251,19 @@ modeu5_performance_relevant_markets:
   source of truth: no stock truth
   owner: relevance preparation
   future reader: candidate global market-local pass
+  business meaning: market-level Performance Mode detailed boundary
 
 modeu5_countries_present_in_market:
   class: rebuilt current-market work cache
   source of truth: no
   owner: current market-local helper
   future owner candidate: global market-local pass
+
+modeu5_detailed_accounting_promoted_markets:
+  class: promotion/readiness work list
+  source of truth: no stock truth
+  owner: promotion gate
+  reader: stock mutation / market runtime gate checks
 ```
 
 Spec boundary recorded by #160:
