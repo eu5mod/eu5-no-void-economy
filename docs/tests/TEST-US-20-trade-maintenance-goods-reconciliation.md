@@ -16,6 +16,29 @@ loss reconciliation:
 
 The current PR implements/scaffolds formula, classification, explicit-receiver loss removal, market-level destination loss through `add_goods_supply`, blocked diagnostics, and status visibility. It does not yet implement every base add/transfer and generic country-stock path.
 
+## Public market-loss surface
+
+The EU5 Effect page documents `add_goods_supply` as a market-scope effect that adds goods to a market stockpile and accepts `goods` and `amount` parameters.
+
+US-20 uses that market-stockpile surface with a negative amount for delivery loss:
+
+```txt
+market_loss_delta = -goods_loss_quantity
+
+scope:target_market = {
+  add_goods_supply = {
+    goods = scope:route_good
+    amount = market_loss_delta
+  }
+}
+```
+
+The old `remove_good` probe is therefore replaced by a concrete market-loss path and a success counter:
+
+```txt
+modeu5_us20_market_goods_supply_loss_routes
+```
+
 ## Status legend
 
 ```txt
