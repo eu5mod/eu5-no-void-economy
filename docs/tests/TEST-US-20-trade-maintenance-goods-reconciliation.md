@@ -143,13 +143,15 @@ This proves the hook is dormant when the trade-rework setting is not active.
 
 ## Receiver allocator scenarios still to add
 
+US-20 receiver allocation must reuse the same US-10 bucket sorting and tie-break ordering. The receiver-specific change is eligibility, not ordering.
+
 | Scenario | Expected result | Current blocker |
 | --- | --- | --- |
-| Stored receiving country exists | stored receiver wins | implemented in fixture path |
-| Trade owner present in destination market | trade owner selected as receiver | live presence detection still scaffolded |
-| Trade owner absent; multiple candidates under capacity | choose lower fill-ratio / under-capacity receiver | generated receiver allocator missing |
-| Candidate at 99/100 capacity receiving 10 | eligible before receipt; may end at 109/100 | capacity-aware receiver allocator missing |
-| Candidate at or above capacity | ineligible receiver | capacity-aware receiver allocator missing |
+| Stored receiving country exists | stored receiver wins before fallback ordering | implemented in fixture path |
+| Trade owner present in destination market | trade owner selected as receiver before fallback ordering | live presence detection still scaffolded |
+| Trade owner absent; multiple candidates under capacity | apply the same US-10 bucket/tie-break ordering after filtering receiver-eligible candidates | generated receiver allocator missing |
+| Candidate at 99/100 capacity receiving 10 | eligible before receipt; may end at 109/100; ordering still follows US-10 buckets | capacity-aware receiver eligibility missing |
+| Candidate at or above capacity | ineligible receiver before US-10 ordering is applied | capacity-aware receiver eligibility missing |
 
 ## Income/profit probe scenarios still to add
 
@@ -170,9 +172,10 @@ This proves the hook is dormant when the trade-rework setting is not active.
    - case 4: transfer country-market -> country-market.
 4. Implement live trade-owner-present detection in the destination market.
 5. Extend US-10 candidate machinery with a receiver-allocation mode:
+   - keep the same US-10 bucket sorting and tie-break ordering;
+   - change only receiver eligibility thresholds;
    - ignore supplier protection thresholds;
    - require `current_stock < capacity` before receipt;
-   - prefer lower fill ratio;
    - do not clip the full receipt to free capacity for MVP.
 6. Replace blocked money-side probe counters only after TECH-01 confirms country-income / route-profit read-write APIs.
 
