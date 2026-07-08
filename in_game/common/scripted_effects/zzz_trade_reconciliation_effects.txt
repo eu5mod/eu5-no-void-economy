@@ -9,8 +9,13 @@
 #
 # This effect computes a route-local reconciliation delta. Applying that delta to
 # vanilla remains explicitly separated from the formula:
-# - money-side application requires a confirmed country-income or trade-profit API;
-# - goods-side delivery has a four-case origin/destination market accounting matrix;
+# - money-side treasury application uses the documented country-scope add_gold
+#   effect with the signed route delta;
+# - trade-profit / country-income display relation still requires a separate
+#   probe because add_gold mutates cash, not necessarily the visible route-profit
+#   ledger;
+# - goods-side delivery has a four-case origin/destination market accounting
+#   matrix;
 # - the base add/transfer of received goods is distinct from the loss removal;
 # - the US-20 loss is always removed at destination, never treated as a transfer.
 #
@@ -52,6 +57,8 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		remove_global_variable = modeu5_trade_efficiency_routes_quantity_blocked
 		remove_global_variable = modeu5_trade_efficiency_money_delta_routes
 		remove_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes
+		remove_global_variable = modeu5_trade_efficiency_treasury_application_routes
+		remove_global_variable = modeu5_trade_efficiency_treasury_application_blocked_routes
 		remove_global_variable = modeu5_trade_efficiency_income_application_blocked_routes
 		remove_global_variable = modeu5_trade_efficiency_income_application_probe_blocked
 		remove_global_variable = modeu5_trade_efficiency_probe_read_country_income_blocked
@@ -74,6 +81,8 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		set_global_variable = { name = modeu5_trade_efficiency_routes_quantity_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_money_delta_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_money_delta_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_treasury_application_routes value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_treasury_application_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_income_application_probe_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_probe_read_country_income_blocked value = 0 }
@@ -96,8 +105,10 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 
 modeu5_reset_trade_efficiency_reconciliation_accumulator = {
 	set_variable = { name = modeu5_trade_efficiency_money_delta_total value = 0 }
+	set_variable = { name = modeu5_trade_efficiency_treasury_delta_total value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_routes_seen value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_money_routes_blocked value = 0 }
+	set_variable = { name = modeu5_trade_efficiency_treasury_application_blocked value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_income_application_blocked value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_goods_routes_blocked value = 0 }
 }
@@ -130,6 +141,18 @@ modeu5_note_trade_efficiency_money_delta_blocked_route = {
 	}
 }
 
+modeu5_note_trade_efficiency_treasury_application_route = {
+	set_global_variable = { name = modeu5_trade_efficiency_treasury_application_routes value = { value = global_var:modeu5_trade_efficiency_treasury_application_routes add = 1 } }
+}
+
+modeu5_note_trade_efficiency_treasury_application_blocked_route = {
+	set_global_variable = { name = modeu5_trade_efficiency_treasury_application_blocked_routes value = { value = global_var:modeu5_trade_efficiency_treasury_application_blocked_routes add = 1 } }
+	if = {
+		limit = { exists = scope:modeu5_trade_owner_controller_country }
+		scope:modeu5_trade_owner_controller_country = { change_variable = { name = modeu5_trade_efficiency_treasury_application_blocked add = 1 } }
+	}
+}
+
 modeu5_note_trade_efficiency_income_application_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = { value = global_var:modeu5_trade_efficiency_income_application_blocked_routes add = 1 } }
 	if = {
@@ -140,11 +163,12 @@ modeu5_note_trade_efficiency_income_application_blocked_route = {
 
 modeu5_note_trade_efficiency_income_application_probe_blocked = {
 	set_global_variable = { name = modeu5_trade_efficiency_income_application_probe_blocked value = 1 }
-	debug_log = "ModeU5 US17/US20 INCOME_APPLICATION_PROBE blocked reason=no_confirmed_country_income_or_trade_profit_api candidate=trade_owner_income_or_trade_profit"
+	debug_log = "ModeU5 US17/US20 INCOME_APPLICATION_PROBE blocked reason=no_confirmed_country_income_or_trade_profit_api candidate=trade_owner_income_or_trade_profit treasury_application=add_gold"
 }
 
 modeu5_probe_trade_income_profit_application_surfaces = {
-	# Probe matrix required before applying money deltas to vanilla:
+	# Probe matrix still required for display/profit accounting, even though the
+	# treasury mutation is now available through add_gold:
 	# 1. read trade-owner country income before route adjustment;
 	# 2. read trade route profit before route adjustment;
 	# 3. add the route reconciliation delta to trade route profit;
@@ -152,17 +176,14 @@ modeu5_probe_trade_income_profit_application_surfaces = {
 	# 5. verify whether old_country_income = new_country_income - added_route_profit.
 	#
 	# If that equality holds after mutating trade profit, route profit feeds country
-	# income and the delta should be applied to route profit only. If it does not
-	# hold, country income and trade-route profit may be separate display/ledger
-	# surfaces and the implementation must decide whether to apply both.
-	#
-	# Do not add speculative effect names here. Replace these blocked counters only
-	# after TECH-01 confirms concrete EU5 read/write APIs.
+	# income and the delta should be displayed through route profit only. If it does
+	# not hold, country income and route profit may be separate display/ledger
+	# surfaces. Do not use this probe to gate treasury application.
 	set_global_variable = { name = modeu5_trade_efficiency_probe_read_country_income_blocked value = 1 }
 	set_global_variable = { name = modeu5_trade_efficiency_probe_read_trade_profit_blocked value = 1 }
 	set_global_variable = { name = modeu5_trade_efficiency_probe_add_trade_profit_blocked value = 1 }
 	set_global_variable = { name = modeu5_trade_efficiency_probe_country_income_relation_blocked value = 1 }
-	debug_log = "ModeU5 US17/US20 INCOME_PROFIT_PROBE blocked read_country_income=blocked read_trade_profit=blocked add_trade_profit=blocked equation=old_country_income_equals_new_country_income_minus_added_trade_profit pending=TECH01"
+	debug_log = "ModeU5 US17/US20 INCOME_PROFIT_PROBE blocked read_country_income=blocked read_trade_profit=blocked add_trade_profit=blocked equation=old_country_income_equals_new_country_income_minus_added_trade_profit pending=TECH01 treasury_application=add_gold"
 }
 
 modeu5_note_trade_efficiency_goods_delta_blocked_route = {
@@ -215,8 +236,6 @@ modeu5_note_us20_four_case_accounting_path = {
 	}
 }
 
-# Clear computed outputs only. Do not clear route inputs seeded by a live reader or
-# a deterministic event fixture before the reconciliation effect is called.
 modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_side_bonus value = 0 }
@@ -305,8 +324,7 @@ modeu5_compute_trade_efficiency_route_money_delta = {
 }
 
 modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = {
-	# This is only a ModeU5 accumulator. It is not yet a vanilla income/profit
-	# application. A confirmed country-income or trade-profit effect is still needed.
+	# ModeU5 diagnostic accumulator; separate from the treasury mutation below.
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_country }
 		scope:modeu5_trade_owner_country = { change_variable = { name = modeu5_trade_efficiency_money_delta_total add = scope:modeu5_trade_efficiency_route_money_delta } }
@@ -315,15 +333,28 @@ modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = {
 	else = { modeu5_note_trade_efficiency_owner_missing_route = yes }
 }
 
-modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = {
+modeu5_apply_trade_efficiency_treasury_reconciliation_to_trade_owner = {
 	if = {
-		limit = { scope:modeu5_trade_efficiency_income_application_available > 0 }
-		# Intentionally empty until TECH-01 confirms the actual EU5 income/profit API.
-		# Candidate surfaces to probe: trade owner country income, route trade profit,
-		# or both if the engine displays and consumes them separately.
+		limit = { exists = scope:modeu5_trade_owner_country NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
+		scope:modeu5_trade_owner_country = {
+			add_gold = scope:modeu5_trade_efficiency_route_money_delta
+			change_variable = { name = modeu5_trade_efficiency_treasury_delta_total add = scope:modeu5_trade_efficiency_route_money_delta }
+		}
+		modeu5_note_trade_efficiency_treasury_application_route = yes
 	}
 	else_if = {
 		limit = { NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
+		modeu5_note_trade_efficiency_treasury_application_blocked_route = yes
+		debug_log = "ModeU5 US17/US20 TREASURY_RECONCILIATION blocked reason=missing_trade_owner_country required_surface=country_add_gold"
+	}
+}
+
+modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = {
+	modeu5_apply_trade_efficiency_treasury_reconciliation_to_trade_owner = yes
+	if = {
+		limit = { NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
+		# Treasury cash has been applied through add_gold. Route-profit/country-income
+		# display linkage remains unconfirmed, so keep the probe visible and blocked.
 		modeu5_note_trade_efficiency_income_application_blocked_route = yes
 		modeu5_note_trade_efficiency_income_application_probe_blocked = yes
 		modeu5_probe_trade_income_profit_application_surfaces = yes
