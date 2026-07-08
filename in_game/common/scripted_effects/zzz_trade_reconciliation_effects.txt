@@ -7,6 +7,12 @@
 #        -> modeu5_capture_country_trade_owner_trade_quantity
 #        -> modeu5_run_us17_us20_route_reconciliation
 #
+# This effect computes a route-local reconciliation delta. Applying that delta to
+# vanilla remains explicitly separated from the formula:
+# - money-side application requires a confirmed country-income or trade-profit API;
+# - goods-side application is a loss and must use remove_stock at the receiving
+#   market x selected country x good level, never transfer_stock.
+#
 # The parent call and this effect both gate on modeu5_trade_rework_enabled_trigger.
 # This file deliberately does not reintroduce:
 #   every_market_center_in_country -> every_trade
@@ -29,14 +35,20 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		remove_global_variable = modeu5_trade_efficiency_routes_quantity_blocked
 		remove_global_variable = modeu5_trade_efficiency_money_delta_routes
 		remove_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes
+		remove_global_variable = modeu5_trade_efficiency_income_application_blocked_routes
+		remove_global_variable = modeu5_trade_efficiency_income_application_probe_blocked
 		remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+		remove_global_variable = modeu5_us20_goods_loss_routes
 		remove_global_variable = modeu5_trade_efficiency_owner_missing_routes
 		set_global_variable = { name = modeu5_trade_efficiency_routes_seen value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_routes_quantity_confirmed value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_routes_quantity_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_money_delta_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_money_delta_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_income_application_probe_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_owner_missing_routes value = 0 }
 	}
 }
@@ -45,6 +57,7 @@ modeu5_reset_trade_efficiency_reconciliation_accumulator = {
 	set_variable = { name = modeu5_trade_efficiency_money_delta_total value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_routes_seen value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_money_routes_blocked value = 0 }
+	set_variable = { name = modeu5_trade_efficiency_income_application_blocked value = 0 }
 	set_variable = { name = modeu5_trade_efficiency_goods_routes_blocked value = 0 }
 }
 
@@ -76,6 +89,19 @@ modeu5_note_trade_efficiency_money_delta_blocked_route = {
 	}
 }
 
+modeu5_note_trade_efficiency_income_application_blocked_route = {
+	set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = { value = global_var:modeu5_trade_efficiency_income_application_blocked_routes add = 1 } }
+	if = {
+		limit = { exists = scope:modeu5_trade_owner_country }
+		scope:modeu5_trade_owner_country = { change_variable = { name = modeu5_trade_efficiency_income_application_blocked add = 1 } }
+	}
+}
+
+modeu5_note_trade_efficiency_income_application_probe_blocked = {
+	set_global_variable = { name = modeu5_trade_efficiency_income_application_probe_blocked value = 1 }
+	debug_log = "ModeU5 US17/US20 INCOME_APPLICATION_PROBE blocked reason=no_confirmed_country_income_or_trade_profit_api candidate=trade_owner_income_or_trade_profit"
+}
+
 modeu5_note_trade_efficiency_goods_delta_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = { value = global_var:modeu5_trade_efficiency_goods_delta_blocked_routes add = 1 } }
 	if = {
@@ -84,12 +110,17 @@ modeu5_note_trade_efficiency_goods_delta_blocked_route = {
 	}
 }
 
+modeu5_note_us20_goods_loss_route = {
+	set_global_variable = { name = modeu5_us20_goods_loss_routes value = { value = global_var:modeu5_us20_goods_loss_routes add = 1 } }
+}
+
 modeu5_note_trade_efficiency_owner_missing_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_owner_missing_routes value = { value = global_var:modeu5_trade_efficiency_owner_missing_routes add = 1 } }
 }
 
+# Clear computed outputs only. Do not clear route inputs seeded by a live reader or
+# a deterministic event fixture before the reconciliation effect is called.
 modeu5_clear_trade_efficiency_route_values = {
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_side_bonus value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_side_bonus value = 0 }
@@ -99,8 +130,7 @@ modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_money_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance_loss_factor value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_received_loss value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_goods_loss_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_target_goods_amount_received value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
 }
@@ -108,10 +138,7 @@ modeu5_clear_trade_efficiency_route_values = {
 modeu5_compute_trade_maintenance_efficiency_delta = {
 	# US-20 overrides the old US-17 maintenance-saving rule: use the clamped
 	# average efficiency directly, without multiplying by trade maintenance.
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_maintenance_efficiency_delta
-		value = scope:modeu5_buying_selling_efficiency_clamped
-	}
+	save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = scope:modeu5_buying_selling_efficiency_clamped }
 }
 
 modeu5_compute_buying_selling_efficiency_delta = {
@@ -121,75 +148,47 @@ modeu5_compute_buying_selling_efficiency_delta = {
 	save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
 }
 
+modeu5_prepare_trade_efficiency_route_quantity_input = {
+	if = {
+		limit = { NOT = { scope:modeu5_trade_efficiency_formula_inputs_available > 0 } }
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = scope:modeu5_trade_owner_goods_quantity }
+	}
+}
+
 modeu5_compute_us17_us20_route_formula_from_current_values = {
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = { value = scope:modeu5_trade_efficiency_route_quantity min = 0 } }
 	save_temporary_scope_value_as = {
 		name = modeu5_buying_selling_efficiency_clamped
-		value = {
-			value = scope:modeu5_trade_efficiency_buying_efficiency
-			add = scope:modeu5_trade_efficiency_selling_efficiency
-			divide = 2
-			min = 0
-			max = 1
-		}
+		value = { value = scope:modeu5_trade_efficiency_buying_efficiency add = scope:modeu5_trade_efficiency_selling_efficiency divide = 2 min = 0 max = 1 }
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_sell_side_bonus
-		value = {
-			value = scope:modeu5_trade_efficiency_route_quantity
-			multiply = scope:modeu5_trade_efficiency_sell_price
-			multiply = scope:modeu5_trade_efficiency_selling_efficiency
-		}
+		value = { value = scope:modeu5_trade_efficiency_route_quantity multiply = scope:modeu5_trade_efficiency_sell_price multiply = scope:modeu5_trade_efficiency_selling_efficiency }
 	}
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_export_cost_factor value = { value = scope:modeu5_trade_efficiency_export_cost_modifier add = 1 } }
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_buy_side_bonus
-		value = {
-			value = scope:modeu5_trade_efficiency_route_quantity
-			multiply = scope:modeu5_trade_efficiency_buy_price
-			multiply = scope:modeu5_trade_efficiency_buying_efficiency
-			multiply = scope:modeu5_trade_efficiency_export_cost_factor
-		}
+		value = { value = scope:modeu5_trade_efficiency_route_quantity multiply = scope:modeu5_trade_efficiency_buy_price multiply = scope:modeu5_trade_efficiency_buying_efficiency multiply = scope:modeu5_trade_efficiency_export_cost_factor }
 	}
-	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_old_price_side_bonus
-		value = { value = scope:modeu5_trade_efficiency_sell_side_bonus add = scope:modeu5_trade_efficiency_buy_side_bonus }
-	}
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = { value = scope:modeu5_trade_efficiency_sell_side_bonus add = scope:modeu5_trade_efficiency_buy_side_bonus } }
 	modeu5_compute_trade_maintenance_efficiency_delta = yes
 	modeu5_compute_buying_selling_efficiency_delta = yes
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_route_money_delta
-		value = {
-			value = scope:modeu5_trade_efficiency_old_price_side_bonus
-			multiply = -1
-			add = scope:modeu5_trade_maintenance_efficiency_delta
-			add = scope:modeu5_buying_selling_efficiency_delta
-		}
+		value = { value = scope:modeu5_trade_efficiency_old_price_side_bonus multiply = -1 add = scope:modeu5_trade_maintenance_efficiency_delta add = scope:modeu5_buying_selling_efficiency_delta }
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_us20_trade_maintenance_loss_factor
-		value = {
-			value = 1
-			add = { value = scope:modeu5_us20_trade_maintenance multiply = -1 }
-			min = 0
-			max = 1
-		}
+		value = { value = 1 add = { value = scope:modeu5_us20_trade_maintenance multiply = -1 } min = 0 max = 1 }
 	}
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_received_loss value = { value = scope:modeu5_us20_trade_maintenance_loss_factor multiply = 0.1 } }
 	save_temporary_scope_value_as = {
 		name = modeu5_us20_target_goods_amount_received
-		value = {
-			value = scope:modeu5_us20_goods_amount_sent
-			add = { value = scope:modeu5_us20_goods_received_loss multiply = -1 }
-			min = 0
-		}
+		value = { value = scope:modeu5_us20_goods_amount_sent add = { value = scope:modeu5_us20_goods_received_loss multiply = -1 } min = 0 }
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_us20_goods_reconciliation_delta
-		value = {
-			value = scope:modeu5_us20_target_goods_amount_received
-			add = { value = scope:modeu5_us20_engine_goods_amount_received multiply = -1 }
-		}
+		value = { value = scope:modeu5_us20_target_goods_amount_received add = { value = scope:modeu5_us20_engine_goods_amount_received multiply = -1 } }
 	}
 }
 
@@ -199,31 +198,37 @@ modeu5_compute_trade_efficiency_route_money_delta = {
 		modeu5_compute_us17_us20_route_formula_from_current_values = yes
 	}
 	else = {
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = modeu5_trade_efficiency_route_quantity }
+		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
 		save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
 		save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
-		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
-		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
-		save_temporary_scope_value_as = {
-			name = modeu5_trade_efficiency_route_money_delta
-			value = {
-				value = scope:modeu5_trade_efficiency_old_price_side_bonus
-				multiply = -1
-				add = scope:modeu5_trade_maintenance_efficiency_delta
-				add = scope:modeu5_buying_selling_efficiency_delta
-			}
-		}
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_money_delta value = 0 }
 	}
 }
 
-modeu5_add_trade_efficiency_route_delta_to_trade_owner = {
+modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = {
+	# This is only a ModeU5 accumulator. It is not yet a vanilla income/profit
+	# application. A confirmed country-income or trade-profit effect is still needed.
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_country }
 		scope:modeu5_trade_owner_country = { change_variable = { name = modeu5_trade_efficiency_money_delta_total add = scope:modeu5_trade_efficiency_route_money_delta } }
 		modeu5_note_trade_efficiency_money_delta_route = yes
 	}
 	else = { modeu5_note_trade_efficiency_owner_missing_route = yes }
+}
+
+modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = {
+	if = {
+		limit = { scope:modeu5_trade_efficiency_income_application_available > 0 }
+		# Intentionally empty until TECH-01 confirms the actual EU5 income/profit API.
+		# Candidate surfaces to probe: trade owner country income, route trade profit,
+		# or both if the engine displays and consumes them separately.
+	}
+	else_if = {
+		limit = { NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
+		modeu5_note_trade_efficiency_income_application_blocked_route = yes
+		modeu5_note_trade_efficiency_income_application_probe_blocked = yes
+	}
 }
 
 modeu5_compute_us20_goods_received_delta = {
@@ -240,9 +245,39 @@ modeu5_compute_us20_goods_received_delta = {
 	}
 }
 
+modeu5_select_us20_goods_loss_target_country = {
+	if = {
+		limit = { exists = scope:modeu5_us20_receiving_country }
+		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
+	}
+	else_if = {
+		limit = { exists = scope:modeu5_trade_owner_country }
+		scope:modeu5_trade_owner_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
+	}
+}
+
 modeu5_apply_us20_goods_delta_to_target_market_good = {
-	# No direct stock mutation here. US-20 must go through a generated/literal-good
-	# centralized stock adapter once target received-goods exposure is confirmed.
+	if = {
+		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
+		save_temporary_scope_value_as = { name = modeu5_us20_goods_loss_quantity value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 } }
+		modeu5_select_us20_goods_loss_target_country = yes
+		if = {
+			limit = { scope:modeu5_us20_test_apply_wheat_loss_available > 0 exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market }
+			modeu5_remove_stock = {
+				country = scope:modeu5_us20_goods_loss_target_country
+				market = scope:modeu5_trade_owner_target_market
+				good = wheat
+				quantity = scope:modeu5_us20_goods_loss_quantity
+				reason = stock_loss
+			}
+			modeu5_note_us20_goods_loss_route = yes
+		}
+		else = {
+			# Live generic application remains blocked until a route good -> literal-good
+			# dispatcher is generated and target country selection is confirmed.
+			modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
+		}
+	}
 }
 
 modeu5_run_us17_us20_route_reconciliation = {
@@ -251,14 +286,13 @@ modeu5_run_us17_us20_route_reconciliation = {
 		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
 		modeu5_note_trade_efficiency_route_seen = yes
 		modeu5_clear_trade_efficiency_route_values = yes
+		modeu5_prepare_trade_efficiency_route_quantity_input = yes
 		if = {
-			limit = {
-				scope:modeu5_trade_owner_quantity_matched > 0
-				scope:modeu5_trade_owner_goods_quantity > 0
-			}
+			limit = { scope:modeu5_trade_owner_quantity_matched > 0 scope:modeu5_trade_owner_goods_quantity > 0 }
 			modeu5_note_trade_efficiency_quantity_confirmed = yes
 			modeu5_compute_trade_efficiency_route_money_delta = yes
-			modeu5_add_trade_efficiency_route_delta_to_trade_owner = yes
+			modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
+			modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
 			modeu5_compute_us20_goods_received_delta = yes
 			modeu5_apply_us20_goods_delta_to_target_market_good = yes
 		}
