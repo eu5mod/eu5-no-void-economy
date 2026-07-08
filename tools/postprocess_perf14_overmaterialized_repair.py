@@ -217,6 +217,7 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\t\tvalue = scope:modeu5_perf14_repair_country_stock_after
 \t\t\t\t}}
 \t\t\t}}
+\t\t\t}}
 \t\t}}
 
 \t\tscope:modeu5_promotion_market = {{
@@ -266,51 +267,51 @@ def render_us10_candidate_scan(good: str) -> str:
 
 \tif = {{
 \t\tlimit = {{ NOT = {{ scope:modeu5_us10_candidate_allowed > 0 }} }}
-\t	scope:modeu5_us10_resolution_controller = {{
-\t		change_local_variable = {{ name = modeu5_us10_excluded_candidate_count add = 1 }}
-		}}
-	}}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tchange_local_variable = {{ name = modeu5_us10_excluded_candidate_count add = 1 }}
+\t\t}}
+\t}}
 
-	if = {{
-		limit = {{ scope:modeu5_us10_candidate_allowed > 0 }}
-		if = {{
-			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 1 }}
-			scope:modeu5_us10_resolution_controller = {{
-				change_local_variable = {{ name = modeu5_us10_bucket_1_candidates add = 1 }}
-			}}
-		}}
-		else_if = {{
-			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 2 }}
-			scope:modeu5_us10_resolution_controller = {{
-				change_local_variable = {{ name = modeu5_us10_bucket_2_candidates add = 1 }}
-			}}
-		}}
-		else_if = {{
-			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 3 }}
-			scope:modeu5_us10_resolution_controller = {{
-				change_local_variable = {{ name = modeu5_us10_bucket_3_candidates add = 1 }}
-			}}
-		}}
-		else = {{
-			scope:modeu5_us10_resolution_controller = {{
-				change_local_variable = {{ name = modeu5_us10_bucket_4_candidates add = 1 }}
-			}}
-		}}
-		scope:modeu5_us10_resolution_controller = {{
-			change_local_variable = {{
-				name = modeu5_us10_total_available_candidate_stock
-				add = scope:modeu5_us10_candidate_stock
-			}}
-		}}
-		scope:modeu5_us10_resolution_controller = {{
-			if = {{
-				limit = {{ scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }}
-				set_local_variable = {{ name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }}
-				set_local_variable = {{ name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }}
-				set_local_variable = {{ name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }}
-			}}
-		}}
-	}}
+\tif = {{
+\t\tlimit = {{ scope:modeu5_us10_candidate_allowed > 0 }}
+\t\tif = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 1 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_1_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse_if = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 2 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_2_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse_if = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 3 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_3_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse = {{
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_4_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tchange_local_variable = {{
+\t\t\t\tname = modeu5_us10_total_available_candidate_stock
+\t\t\t\tadd = scope:modeu5_us10_candidate_stock
+\t\t\t}}
+\t\t}}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tif = {{
+\t\t\t\tlimit = {{ scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }}
+\t\t\t}}
+\t\t}}
+\t}}
 }}
 """
 
