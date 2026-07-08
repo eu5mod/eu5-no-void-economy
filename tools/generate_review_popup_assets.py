@@ -18,8 +18,9 @@ SOURCE_DIR = PR157 / "source"
 GENERATED_DIR = PR157 / "generated"
 QR_URL_PATH = PR157 / "review_popup_1524_qr_url.txt"
 QR_SVG_PATH = PR157 / "review_popup_1524_qr.svg"
-EVENT_TEMPLATE_PATH = PR157 / "review_popup_1524_event_template.svg"
+EVENT_TEMPLATE_PATH = SOURCE_DIR / "review_popup_1524_event_template.svg"
 EVENT_SOURCE_PATH = PR157 / "review_popup_1524_event_source.svg"
+DEFAULT_SELECTED_SOURCE = "review_popup_1524_event_choice_situation_wide_source.svg"
 
 
 def load_local_env() -> None:
@@ -65,7 +66,7 @@ CARD_H = env_int("MODEU5_REVIEW_POPUP_CARD_H", 475)
 QR_X = env_int("MODEU5_REVIEW_POPUP_QR_X", 37)
 QR_Y = env_int("MODEU5_REVIEW_POPUP_QR_Y", 92)
 QR_SIZE = env_int("MODEU5_REVIEW_POPUP_QR_SIZE", 355)
-SELECTED_SOURCE = env_str("MODEU5_REVIEW_POPUP_SELECTED_SOURCE", "")
+SELECTED_SOURCE = env_str("MODEU5_REVIEW_POPUP_SELECTED_SOURCE", DEFAULT_SELECTED_SOURCE)
 
 
 def read_qr_url() -> str:
