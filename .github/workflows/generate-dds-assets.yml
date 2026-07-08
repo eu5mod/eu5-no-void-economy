@@ -72,6 +72,27 @@ jobs:
         if: github.event_name == 'push'
         run: bash tools/generate_dds_assets.sh
 
+      - name: Assert PR157 source-folder smoke outputs
+        run: |
+          echo "Raw PR157 source SVGs:"
+          find docs/assets/pr157/source -maxdepth 1 -type f -name '*.svg' -print | sort
+          echo "Generated PR157 source-folder outputs:"
+          find docs/assets/pr157/generated -maxdepth 1 -type f \( -name '*.svg' -o -name '*.dds' \) -print | sort
+          test -f docs/assets/pr157/generated/review_popup_1524_ci_smoke_qr.svg
+          test -f docs/assets/pr157/generated/review_popup_1524_ci_smoke_qr.dds
+
+      - name: Upload PR157 generated asset preview
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr157-generated-assets
+          path: |
+            docs/assets/pr157/generated/*
+            docs/assets/pr157/review_popup_1524_event_source.svg
+            docs/assets/pr157/review_popup_1524_event_source.dds
+            in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+          if-no-files-found: error
+
       - name: Commit generated assets
         if: github.event_name == 'push'
         run: |
