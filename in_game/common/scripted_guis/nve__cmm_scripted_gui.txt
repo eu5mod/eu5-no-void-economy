@@ -1,6 +1,6 @@
-﻿# General Gameplay (trade_rework_tab) Tab
-## Gameplay (trade_rework_group) Group
-no_void_economy__trade_rework_setting_on_changed = {
+# General Gameplay (nve_general_gameplay_tab) Tab
+## Gameplay (nve_general_gameplay_gameplay_group) Group
+no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -13,8 +13,8 @@ no_void_economy__trade_rework_setting_on_changed = {
 	effect = { }
 }
 
-## Country Level Stocks (no_void_economy_group) Group
-no_void_economy___on_changed = {
+## Country Level Stocks (nve_general_gameplay_country_level_stocks_group) Group
+no_void_economy__nve_general_gameplay_country_level_stocks_only_sold_goods_create_revenue_settings_on_changed = {
 	scope = country
 
 	is_valid = {
@@ -23,7 +23,7 @@ no_void_economy___on_changed = {
 	effect = { }
 }
 
-no_void_economy___on_changed = {
+no_void_economy__nve_general_gameplay_country_level_stocks_boycotts_wars_block_resource_buying_settings_on_changed = {
 	scope = country
 
 	is_valid = {
@@ -32,8 +32,8 @@ no_void_economy___on_changed = {
 	effect = { }
 }
 
-## Other (other_group) Group
-no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting_on_changed = {
+## Other (nve_general_gameplay_other_group) Group
+no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -46,9 +46,9 @@ no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting_
 	effect = { }
 }
 
-# Economic Balance (balance_tab) Tab
-## Design (economy_group) Group
-no_void_economy__activate_goods_decay_setting_on_changed = {
+# Economic Balance (nve_economic_balance_tab) Tab
+## Design (nve_economic_balance_design_group) Group
+no_void_economy__nve_economic_balance_design_activate_goods_decay_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -61,7 +61,7 @@ no_void_economy__activate_goods_decay_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__sliders_adjustments_setting_on_changed = {
+no_void_economy__nve_economic_balance_design_sliders_adjustments_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -74,8 +74,8 @@ no_void_economy__sliders_adjustments_setting_on_changed = {
 	effect = { }
 }
 
-## Balance () Group
-no_void_economy__increased_location_specialisation_setting_on_changed = {
+## Balance (nve_economic_balance_balance_group) Group
+no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -88,7 +88,7 @@ no_void_economy__increased_location_specialisation_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy___on_changed = {
+no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings_on_changed = {
 	scope = country
 
 	is_valid = {
@@ -97,15 +97,15 @@ no_void_economy___on_changed = {
 	effect = { }
 }
 
-# War & Subjects Balance (rebels_subjects_tab) Tab
-## General (general_group) Group
-no_void_economy__difficulty_setting_on_changed = {
+# War & Subjects Balance (nve_war_subjects_balance_tab) Tab
+## General (nve_war_subjects_balance_general_group) Group
+no_void_economy__nve_war_subjects_balance_general_difficulty_settings_on_changed = {
 	scope = country
 	effect = { }
 }
 
-## Design (rebels_group) Group
-no_void_economy__overlord_declares_war_setting_on_changed = {
+## Design (nve_war_subjects_balance_design_group) Group
+no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -118,7 +118,7 @@ no_void_economy__overlord_declares_war_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__persistence_of_resources_setting_on_changed = {
+no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -131,8 +131,8 @@ no_void_economy__persistence_of_resources_setting_on_changed = {
 	effect = { }
 }
 
-## Balance (subjects_group) Group
-no_void_economy__shorter_wars_setting_on_changed = {
+## Balance (nve_war_subjects_balance_balance_group) Group
+no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -145,7 +145,7 @@ no_void_economy__shorter_wars_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__adjust_rebel_threshold_setting_on_changed = {
+no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -158,14 +158,14 @@ no_void_economy__adjust_rebel_threshold_setting_on_changed = {
 	effect = { }
 }
 
-# Debug & Audit () Tab
-## Debug & Audit (debug_audit_group) Group
-no_void_economy__debug_messages_setting_on_changed = {
+# Debug & Audit (nve_debug_audit_tab) Tab
+## Debug & Audit (nve_debug_audit_debug_audit_group) Group
+no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = {
 	scope = country
 	effect = { }
 }
 
-no_void_economy__monthly_stock_check_setting_on_changed = {
+no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -174,7 +174,7 @@ no_void_economy__monthly_stock_check_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__save_mode_setting_on_changed = {
+no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	scope = country
 
 	is_shown = {
