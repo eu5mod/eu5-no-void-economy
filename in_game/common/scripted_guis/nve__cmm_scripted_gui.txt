@@ -1,6 +1,54 @@
-﻿# Trade Rework (trade_rework_tab) Tab
-## No Void Economy (no_void_economy_group) Group
-no_void_economy__activate_goods_decay_setting_on_changed = {
+﻿# General Gameplay (nve_general_gameplay_tab) Tab
+## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
+no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## Country Stock Economy (nve_general_gameplay_country_level_stocks_group) Group
+no_void_economy__nve_general_gameplay_country_level_stocks_only_sold_goods_create_revenue_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_general_gameplay_country_level_stocks_boycotts_wars_block_resource_buying_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## AI Support (nve_general_gameplay_other_group) Group
+no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# Economic Balance (nve_economic_balance_tab) Tab
+## Economic Design (nve_economic_balance_design_group) Group
+no_void_economy__nve_economic_balance_design_activate_goods_decay_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -8,13 +56,12 @@ no_void_economy__activate_goods_decay_setting_on_changed = {
 	}
 
 	is_valid = {
-		1 = 2
+		always = no
 	}
 	effect = { }
 }
 
-## Trade Rework (trade_rework_group) Group
-no_void_economy__trade_rework_setting_on_changed = {
+no_void_economy__nve_economic_balance_design_sliders_adjustments_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -27,13 +74,98 @@ no_void_economy__trade_rework_setting_on_changed = {
 	effect = { }
 }
 
-## Debug & Audit (debug_audit_group) Group
-no_void_economy__debug_messages_setting_on_changed = {
+## Economic Balance (nve_economic_balance_balance_group) Group
+no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# War & Subjects Balance (nve_war_subjects_balance_tab) Tab
+## Campaign Pressure (nve_war_subjects_balance_general_group) Group
+no_void_economy__nve_war_subjects_balance_general_difficulty_settings_on_changed = {
 	scope = country
 	effect = { }
 }
 
-no_void_economy__monthly_stock_check_setting_on_changed = {
+## Subject Design (nve_war_subjects_balance_design_group) Group
+no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## War Balance (nve_war_subjects_balance_balance_group) Group
+no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# Debug & Audit (nve_debug_audit_tab) Tab
+## Debug & Audit (nve_debug_audit_debug_audit_group) Group
+no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = {
+	scope = country
+	effect = { }
+}
+
+no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -42,128 +174,11 @@ no_void_economy__monthly_stock_check_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__save_mode_setting_on_changed = {
+no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	scope = country
 
 	is_shown = {
 		has_global_variable = modeu5_cmm_nve_main_enabled
-	}
-	effect = { }
-}
-
-# Balance (balance_tab) Tab
-## General (general_group) Group
-no_void_economy__difficulty_setting_on_changed = {
-	scope = country
-	effect = { }
-}
-
-## War (war_group) Group
-no_void_economy__shorter_wars_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__war_exhaustion_political_pressure_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-## Economy (economy_group) Group
-no_void_economy__increased_location_specialisation_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__sliders_adjustments_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-## Other (other_group) Group
-no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-# Rebels & Subjects (rebels_subjects_tab) Tab
-## Rebels (rebels_group) Group
-no_void_economy__adjust_rebel_threshold_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__overlord_declares_war_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-## Subjects (subjects_group) Group
-no_void_economy__persistence_of_resources_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
 	}
 	effect = { }
 }
