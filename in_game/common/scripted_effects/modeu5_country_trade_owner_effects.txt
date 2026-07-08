@@ -193,8 +193,13 @@ modeu5_run_monthly_country_trade_owner_cycle = {
 		traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
 		modeu5_capture_country_trade_owner_trade_quantity = yes
 		if = {
-			limit = { modeu5_trade_rework_enabled_trigger = yes }
-			modeu5_run_us17_us20_route_reconciliation = yes
+			limit = { exists = scope:modeu5_trade_owner_country }
+			scope:modeu5_trade_owner_country = {
+				if = {
+					limit = { modeu5_trade_rework_enabled_trigger = yes }
+					modeu5_run_us17_us20_route_reconciliation = yes
+				}
+			}
 		}
 
 		if = {
