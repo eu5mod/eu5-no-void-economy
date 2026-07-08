@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -11,20 +12,66 @@ import qrcode
 import qrcode.image.svg
 
 ROOT = Path(__file__).resolve().parent.parent
+LOCAL_ENV_PATH = ROOT / ".modeu5.local.env"
 PR157 = ROOT / "docs" / "assets" / "pr157"
 QR_URL_PATH = PR157 / "review_popup_1524_qr_url.txt"
 QR_SVG_PATH = PR157 / "review_popup_1524_qr.svg"
 EVENT_TEMPLATE_PATH = PR157 / "review_popup_1524_event_template.svg"
 EVENT_SOURCE_PATH = PR157 / "review_popup_1524_event_source.svg"
 
+
+def load_local_env() -> None:
+    if not LOCAL_ENV_PATH.exists():
+        return
+
+    for raw_line in LOCAL_ENV_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if not key.startswith("MODEU5_REVIEW_POPUP_"):
+            continue
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
+
+
+def env_int(name: str, default: int) -> int:
+    raw_value = os.environ.get(name)
+    if raw_value is None or raw_value.strip() == "":
+        return default
+    try:
+        return int(raw_value.strip())
+    except ValueError as exc:
+        raise SystemExit(f"{name} must be an integer, got: {raw_value}") from exc
+
+
+def env_str(name: str, default: str) -> str:
+    raw_value = os.environ.get(name)
+    if raw_value is None or raw_value.strip() == "":
+        return default
+    return raw_value.strip()
+
+
+load_local_env()
+
 MARKER = "<!-- MODEU5_QR_OVERLAY -->"
-CARD_X = 1110
-CARD_Y = 50
-CARD_W = 380
-CARD_H = 410
-QR_X = 42
-QR_Y = 92
-QR_SIZE = 296
+CARD_X = env_int("MODEU5_REVIEW_POPUP_CARD_X", 1060)
+CARD_Y = env_int("MODEU5_REVIEW_POPUP_CARD_Y", 50)
+CARD_W = env_int("MODEU5_REVIEW_POPUP_CARD_W", 430)
+CARD_H = env_int("MODEU5_REVIEW_POPUP_CARD_H", 475)
+QR_X = env_int("MODEU5_REVIEW_POPUP_QR_X", 37)
+QR_Y = env_int("MODEU5_REVIEW_POPUP_QR_Y", 92)
+QR_SIZE = env_int("MODEU5_REVIEW_POPUP_QR_SIZE", 355)
+
+
+def read_qr_url() -> str:
+    env_url = env_str("MODEU5_REVIEW_POPUP_QR_URL", "")
+    if env_url:
+        return env_url
+    if not QR_URL_PATH.exists():
+        raise SystemExit(f"Missing QR URL file: {QR_URL_PATH}")
+    return QR_URL_PATH.read_text(encoding="utf-8").strip()
 
 
 def generate_qr_svg(url: str, output_path: Path) -> None:
@@ -71,13 +118,11 @@ def build_qr_overlay(qr_inner_svg: str, qr_width: float, qr_height: float) -> st
 
 
 def main() -> None:
-    if not QR_URL_PATH.exists():
-        raise SystemExit(f"Missing QR URL file: {QR_URL_PATH}")
     if not EVENT_TEMPLATE_PATH.exists():
         raise SystemExit(f"Missing review popup template SVG: {EVENT_TEMPLATE_PATH}")
-    url = QR_URL_PATH.read_text(encoding="utf-8").strip()
+    url = read_qr_url()
     if not url:
-        raise SystemExit(f"QR URL file is empty: {QR_URL_PATH}")
+        raise SystemExit("QR URL is empty")
     generate_qr_svg(url, QR_SVG_PATH)
     qr_inner_svg, qr_width, qr_height = read_qr_inner_svg(QR_SVG_PATH)
     overlay = build_qr_overlay(qr_inner_svg, qr_width, qr_height)

@@ -10,6 +10,8 @@ review_popup_1524_qr_url.txt
 review_popup_1524_qr.svg
 review_popup_1524_event_source.svg
 review_popup_1524_situation_source.svg
+review_popup_1524_event_choice_situation_wide_source.svg
+review_popup_1524_event_choice_situation_expanded_source.svg
 ```
 
 The event image is generated from the template and URL source:
@@ -21,11 +23,31 @@ review_popup_1524_qr_url.txt
   -> review_popup_1524_event_source.svg
 ```
 
+Additional `review_popup_1524_event_choice_*_source.svg` files are non-destructive visual candidates. They are committed so the event art can be compared without deleting or overwriting the current production source.
+
+## Available visual choices
+
+```txt
+review_popup_1524_event_source.svg
+  Current production event source with generated QR overlay.
+
+review_popup_1524_situation_source.svg
+  Existing situation/wide source.
+
+review_popup_1524_event_choice_situation_wide_source.svg
+  Exact situation-style wide candidate copied into the event choice set for side-by-side comparison.
+
+review_popup_1524_event_choice_situation_expanded_source.svg
+  New 1600x900 event-format candidate using the broader situation-style flood/crowd composition.
+```
+
 DDS copies are generated next to the source files:
 
 ```txt
 review_popup_1524_event_source.dds
 review_popup_1524_situation_source.dds
+review_popup_1524_event_choice_situation_wide_source.dds
+review_popup_1524_event_choice_situation_expanded_source.dds
 ```
 
 The event-format image is also packaged for EU5 event use:
@@ -50,7 +72,24 @@ Situation / wide format:
 
 The event template contains the `<!-- MODEU5_QR_OVERLAY -->` marker after the texture/grain layer. This keeps the generated QR card clean and scannable instead of applying the illustration grain over it.
 
-The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image.
+The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.modeu5.local.env`.
+
+## Local QR overlay overrides
+
+The committed defaults are CI-safe and require no local env file. To tune the layout locally, copy `.modeu5.local.env.template` to `.modeu5.local.env` and uncomment/change any of these values:
+
+```sh
+MODEU5_REVIEW_POPUP_QR_URL="https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701"
+MODEU5_REVIEW_POPUP_CARD_X=1060
+MODEU5_REVIEW_POPUP_CARD_Y=50
+MODEU5_REVIEW_POPUP_CARD_W=430
+MODEU5_REVIEW_POPUP_CARD_H=475
+MODEU5_REVIEW_POPUP_QR_X=37
+MODEU5_REVIEW_POPUP_QR_Y=92
+MODEU5_REVIEW_POPUP_QR_SIZE=355
+```
+
+`MODEU5_REVIEW_POPUP_QR_SIZE=355` is roughly 20% larger than the previous `296` default.
 
 ## Asset generation
 
@@ -65,7 +104,7 @@ tools/generate_dds_assets.sh
 On branch pushes, the workflow:
 
 ```txt
-1. regenerates the QR SVG from review_popup_1524_qr_url.txt
+1. regenerates the QR SVG from review_popup_1524_qr_url.txt or MODEU5_REVIEW_POPUP_QR_URL
 2. injects the QR overlay into review_popup_1524_event_template.svg
 3. writes review_popup_1524_event_source.svg
 4. generates adjacent .dds copies
@@ -73,7 +112,7 @@ On branch pushes, the workflow:
 6. commits generated files back to the branch
 ```
 
-On pull requests, the workflow runs in check mode and fails if generated assets are missing or stale.
+On pull requests, the workflow validates that asset generation succeeds.
 
 Local generation:
 
