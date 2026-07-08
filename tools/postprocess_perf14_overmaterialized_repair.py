@@ -1,22 +1,10 @@
 #!/usr/bin/env python3
-"""Patch generated PERF-14 promotion aggregate/country-ledger mismatch handling.
-
-Business rule for the migration exception:
-
-    if country_sum is non-zero and country_sum != market_aggregate:
-        market aggregate is the cap/source of truth
-        rebuild country stocks from the aggregate
-        validate
-        promote only if the repaired country sum and aggregate agree
-
-If country_sum is zero and the market aggregate is positive, the original
-materialization branch remains responsible for seeding country stocks from the
-market aggregate, because there is no existing country ledger to rescale.
+"""Patch generated stock-good helpers that are too risky to hand-maintain.
 
 This postprocessor intentionally patches only the generated stock-good adapter.
 Older invocations may still pass PERF-14 test files as compatibility arguments;
 those paths are accepted but not modified, so `tools/generate_all.sh` does not
-dirty hand-authored test files.
+ dirty hand-authored test files.
 """
 
 from __future__ import annotations
@@ -28,6 +16,10 @@ from pathlib import Path
 
 PROMOTION_FN_RE = re.compile(
     r"(?m)^modeu5_promote_market_to_detailed_accounting_good_(?P<good>[a-z0-9_]+)\s*=\s*\{"
+)
+
+US10_CANDIDATE_SCAN_FN_RE = re.compile(
+    r"(?m)^modeu5_scan_us10_candidate_country_good_(?P<good>[a-z0-9_]+)\s*=\s*\{"
 )
 
 OLD_OVERMATERIALIZED_BRANCH = """\tif = {
@@ -81,6 +73,45 @@ def find_matching_brace(source: str, open_index: int) -> int:
     raise ValueError("unterminated brace block")
 
 
+def assert_balanced_braces(source: str, *, label: str) -> None:
+    depth = 0
+    stack: list[int] = []
+    in_string = False
+    index = 0
+    while index < len(source):
+        char = source[index]
+        if in_string:
+            if char == "\\":
+                index += 2
+                continue
+            if char == '"':
+                in_string = False
+            index += 1
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "#":
+            newline = source.find("\n", index)
+            if newline < 0:
+                break
+            index = newline
+            continue
+        elif char == "{":
+            depth += 1
+            stack.append(source.count("\n", 0, index) + 1)
+        elif char == "}":
+            depth -= 1
+            if depth < 0:
+                line_no = source.count("\n", 0, index) + 1
+                raise SystemExit(f"{label}: generated script has an extra closing brace at line {line_no}")
+            stack.pop()
+        index += 1
+
+    if depth != 0:
+        first_unclosed = stack[-1] if stack else "unknown"
+        raise SystemExit(f"{label}: generated script has an unclosed brace block starting at line {first_unclosed}")
+
+
 def render_repair_branch(good: str) -> str:
     stock_map = f"modeu5_{good}_stock_by_market"
     return f"""\tif = {{
@@ -101,7 +132,7 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\tadd = 1
 \t\t\t}}
 \t\t}}
-\t\tdebug_log = \"ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=country_sum_differs_from_market_aggregate source=market_aggregate action=rebuild_country_stocks_from_market_aggregate\"
+\t\tdebug_log = "ModeU5 PERF-14 PROMOTION_REPAIR blocked=1 reason=country_sum_differs_from_market_aggregate source=market_aggregate action=rebuild_country_stocks_from_market_aggregate"
 
 \t\tif = {{
 \t\t\tlimit = {{ has_global_variable_list = modeu5_countries_present_in_market }}
@@ -117,7 +148,7 @@ def render_repair_branch(good: str) -> str:
 \t\t\t\t\t}}
 \t\t\t\t\tsave_temporary_scope_value_as = {{
 \t\t\t\t\t\tname = modeu5_perf14_repair_country_stock_before
-\t\t\t\t\t\tvalue = \"variable_map({stock_map}|scope:modeu5_promotion_market)\"
+\t\t\t\t\t\tvalue = "variable_map({stock_map}|scope:modeu5_promotion_market)"
 \t\t\t\t\t}}
 \t\t\t\t}}
 \t\t\t\telse = {{
@@ -188,11 +219,69 @@ def render_repair_branch(good: str) -> str:
 """
 
 
-def patch_generated_goods(path: Path) -> bool:
-    text = path.read_text()
+def render_us10_candidate_scan(good: str) -> str:
+    return f"""modeu5_scan_us10_candidate_country_good_{good} = {{
+\tsave_temporary_scope_as = modeu5_candidate_country
+\tscope:modeu5_us10_resolution_controller = {{
+\t\tchange_local_variable = {{ name = modeu5_us10_candidate_count add = 1 }}
+\t}}
+\tmodeu5_prepare_us10_candidate_good_{good} = yes
+\tmodeu5_audit_log_us10_candidate_trace_good_{good} = yes
+
+\tif = {{
+\t\tlimit = {{ NOT = {{ scope:modeu5_us10_candidate_allowed > 0 }} }}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tchange_local_variable = {{ name = modeu5_us10_excluded_candidate_count add = 1 }}
+\t\t}}
+\t}}
+
+\tif = {{
+\t\tlimit = {{ scope:modeu5_us10_candidate_allowed > 0 }}
+\t\tif = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 1 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_1_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse_if = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 2 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_2_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse_if = {{
+\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 3 }}
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_3_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\telse = {{
+\t\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_4_candidates add = 1 }}
+\t\t\t}}
+\t\t}}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tchange_local_variable = {{
+\t\t\t\tname = modeu5_us10_total_available_candidate_stock
+\t\t\t\tadd = scope:modeu5_us10_candidate_stock
+\t\t\t}}
+\t\t}}
+\t\tscope:modeu5_us10_resolution_controller = {{
+\t\t\tif = {{
+\t\t\t\tlimit = {{ scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }}
+\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }}
+\t\t\t}}
+\t\t}}
+\t}}
+}}
+"""
+
+
+def patch_promotion_blocks(text: str) -> str:
     pieces: list[str] = []
     position = 0
-    changed = False
     search_from = 0
 
     while True:
@@ -209,15 +298,45 @@ def patch_generated_goods(path: Path) -> bool:
             pieces.append(text[position:match.start()])
             pieces.append(patched)
             position = end
-            changed = True
 
         search_from = end
 
-    if not changed:
-        return False
+    pieces.append(text[position:])
+    return "".join(pieces)
+
+
+def patch_us10_candidate_scan_blocks(text: str) -> str:
+    pieces: list[str] = []
+    position = 0
+    search_from = 0
+
+    while True:
+        match = US10_CANDIDATE_SCAN_FN_RE.search(text, search_from)
+        if match is None:
+            break
+        open_index = text.find("{", match.start(), match.end())
+        end = find_matching_brace(text, open_index)
+        good = match.group("good")
+
+        pieces.append(text[position:match.start()])
+        pieces.append(render_us10_candidate_scan(good))
+        position = end
+        search_from = end
 
     pieces.append(text[position:])
-    path.write_text("".join(pieces))
+    return "".join(pieces)
+
+
+def patch_generated_goods(path: Path) -> bool:
+    text = path.read_text()
+    updated = patch_promotion_blocks(text)
+    updated = patch_us10_candidate_scan_blocks(updated)
+    assert_balanced_braces(updated, label=str(path))
+
+    if updated == text:
+        return False
+
+    path.write_text(updated)
     return True
 
 
