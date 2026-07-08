@@ -2,6 +2,27 @@
 
 Source artwork for PR #157 (`Add 1524 rumor-themed review popup with CMM toggle`).
 
+## Directory model
+
+```txt
+docs/assets/pr157/source/
+  Raw SVG candidates. Drop new SVG choices here.
+
+scripts:
+  tools/generate_review_popup_assets.py
+
+outputs:
+  docs/assets/pr157/generated/<source-name>_qr.svg
+  docs/assets/pr157/generated/<source-name>_qr.dds
+
+production event output:
+  docs/assets/pr157/review_popup_1524_event_source.svg
+  docs/assets/pr157/review_popup_1524_event_source.dds
+  in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+```
+
+Raw SVGs in `source/` are inputs only. The DDS generator skips that folder so it does not create unprocessed DDS files from raw candidates.
+
 ## Files
 
 ```txt
@@ -12,15 +33,27 @@ review_popup_1524_event_source.svg
 review_popup_1524_situation_source.svg
 review_popup_1524_event_choice_situation_wide_source.svg
 review_popup_1524_event_choice_situation_expanded_source.svg
+source/README.md
+generated/*.svg
 ```
 
-The event image is generated from the template and URL source:
+The event image is generated from the template and URL source by default:
 
 ```txt
 review_popup_1524_qr_url.txt
   -> tools/generate_review_popup_assets.py
   -> review_popup_1524_qr.svg
   -> review_popup_1524_event_source.svg
+```
+
+Any raw SVG added under `source/` is also processed:
+
+```txt
+source/my_candidate.svg
+  -> tools/generate_review_popup_assets.py
+  -> generated/my_candidate_qr.svg
+  -> tools/generate_dds_assets.sh
+  -> generated/my_candidate_qr.dds
 ```
 
 Additional `review_popup_1524_event_choice_*_source.svg` files are non-destructive visual candidates. They are committed so the event art can be compared without deleting or overwriting the current production source.
@@ -39,15 +72,19 @@ review_popup_1524_event_choice_situation_wide_source.svg
 
 review_popup_1524_event_choice_situation_expanded_source.svg
   New 1600x900 event-format candidate using the broader situation-style flood/crowd composition.
+
+source/*.svg
+  Raw future choices. Generated QR variants are written to generated/*_qr.svg.
 ```
 
-DDS copies are generated next to the source files:
+DDS copies are generated next to the generated/source files, except raw `source/` inputs:
 
 ```txt
 review_popup_1524_event_source.dds
 review_popup_1524_situation_source.dds
 review_popup_1524_event_choice_situation_wide_source.dds
 review_popup_1524_event_choice_situation_expanded_source.dds
+generated/*_qr.dds
 ```
 
 The event-format image is also packaged for EU5 event use:
@@ -72,6 +109,8 @@ Situation / wide format:
 
 The event template contains the `<!-- MODEU5_QR_OVERLAY -->` marker after the texture/grain layer. This keeps the generated QR card clean and scannable instead of applying the illustration grain over it.
 
+Raw SVGs in `source/` do not need the marker. If the marker is absent, the generator injects the QR overlay before `</svg>`.
+
 The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.modeu5.local.env`.
 
 ## Local QR overlay overrides
@@ -87,9 +126,12 @@ MODEU5_REVIEW_POPUP_CARD_H=475
 MODEU5_REVIEW_POPUP_QR_X=37
 MODEU5_REVIEW_POPUP_QR_Y=92
 MODEU5_REVIEW_POPUP_QR_SIZE=355
+MODEU5_REVIEW_POPUP_SELECTED_SOURCE="my_candidate.svg"
 ```
 
 `MODEU5_REVIEW_POPUP_QR_SIZE=355` is roughly 20% larger than the previous `296` default.
+
+`MODEU5_REVIEW_POPUP_SELECTED_SOURCE` is optional. When it is set to a filename under `source/`, the generated QR-overlay version of that raw source is also copied to `review_popup_1524_event_source.svg`, making it the production event source for the next DDS generation.
 
 ## Asset generation
 
@@ -105,11 +147,12 @@ On branch pushes, the workflow:
 
 ```txt
 1. regenerates the QR SVG from review_popup_1524_qr_url.txt or MODEU5_REVIEW_POPUP_QR_URL
-2. injects the QR overlay into review_popup_1524_event_template.svg
-3. writes review_popup_1524_event_source.svg
-4. generates adjacent .dds copies
-5. generates the packaged EU5 event illustration DDS
-6. commits generated files back to the branch
+2. processes raw SVG candidates from docs/assets/pr157/source/ into docs/assets/pr157/generated/
+3. injects the QR overlay into review_popup_1524_event_template.svg unless a selected source is configured
+4. writes review_popup_1524_event_source.svg
+5. generates adjacent .dds copies for generated and production SVGs
+6. generates the packaged EU5 event illustration DDS
+7. commits generated files back to the branch
 ```
 
 On pull requests, the workflow validates that asset generation succeeds.
@@ -131,6 +174,8 @@ bash tools/generate_dds_assets.sh --check
 List generated files in zsh-safe form:
 
 ```sh
+find docs/assets/pr157/generated -maxdepth 1 -name '*.svg' -print
+find docs/assets/pr157/generated -maxdepth 1 -name '*.dds' -print
 find docs/assets/pr157 -maxdepth 1 -name '*.dds' -print
 find in_game/gfx/interface/illustrations/modeu5_review -maxdepth 1 -name '*.dds' -print
 ```
