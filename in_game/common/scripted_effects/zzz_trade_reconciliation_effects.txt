@@ -139,48 +139,170 @@ modeu5_note_trade_efficiency_owner_missing_route = {
 modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_side_bonus value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_side_bonus value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_clamped value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_money_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance_loss_factor value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_goods_received_loss value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_target_goods_amount_received value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
 }
 
-# #105 hook. This is wired at the correct route-local point, but the actual
-# maintenance-efficiency monetary formula stays fail-closed until the underlying
-# route maintenance exposure is confirmed and recorded in TECH-01.
-modeu5_compute_trade_maintenance_efficiency_delta = {
-	save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
-	modeu5_note_trade_efficiency_money_delta_blocked_route = yes
-}
-
-# #120 hook. The route-level placement is live. The old price-side bonus removal
-# remains fail-closed until route sell price, buy price, and export-cost exposure
-# are confirmed. This prevents double-implementing speculative economics.
-modeu5_compute_buying_selling_efficiency_delta = {
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
-	modeu5_note_trade_efficiency_money_delta_blocked_route = yes
-}
-
-modeu5_compute_trade_efficiency_route_money_delta = {
+# Deterministic US-17/US-20 formula kernel. Runtime route exposure readers should
+# populate these scope values before calling the reconciliation effect:
+#
+#   modeu5_trade_efficiency_formula_inputs_available = 1
+#   modeu5_trade_efficiency_route_quantity
+#   modeu5_trade_efficiency_sell_price
+#   modeu5_trade_efficiency_buy_price
+#   modeu5_trade_efficiency_selling_efficiency
+#   modeu5_trade_efficiency_buying_efficiency
+#   modeu5_trade_efficiency_export_cost_modifier
+#   modeu5_us20_trade_maintenance
+#   modeu5_us20_goods_amount_sent
+#   modeu5_us20_engine_goods_amount_received
+#
+# US-17 removes the old price-side buying/selling bonus.
+# US-20 replaces US-17 maintenance saving with the clamped average efficiency,
+# and repurposes trade maintenance into received-goods loss.
+modeu5_compute_us17_us20_route_formula_from_current_values = {
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_route_quantity
-		value = modeu5_trade_efficiency_route_quantity
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			min = 0
+		}
 	}
-
-	modeu5_compute_trade_maintenance_efficiency_delta = yes
-	modeu5_compute_buying_selling_efficiency_delta = yes
-
+	save_temporary_scope_value_as = {
+		name = modeu5_buying_selling_efficiency_clamped
+		value = {
+			value = scope:modeu5_trade_efficiency_buying_efficiency
+			add = scope:modeu5_trade_efficiency_selling_efficiency
+			divide = 2
+			min = 0
+			max = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_sell_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			multiply = scope:modeu5_trade_efficiency_sell_price
+			multiply = scope:modeu5_trade_efficiency_selling_efficiency
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_export_cost_factor
+		value = {
+			value = scope:modeu5_trade_efficiency_export_cost_modifier
+			add = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_buy_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			multiply = scope:modeu5_trade_efficiency_buy_price
+			multiply = scope:modeu5_trade_efficiency_buying_efficiency
+			multiply = scope:modeu5_trade_efficiency_export_cost_factor
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_old_price_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_sell_side_bonus
+			add = scope:modeu5_trade_efficiency_buy_side_bonus
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_maintenance_efficiency_delta
+		value = scope:modeu5_buying_selling_efficiency_clamped
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_buying_selling_efficiency_delta
+		value = 0
+	}
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_route_money_delta
 		value = {
 			value = scope:modeu5_trade_efficiency_old_price_side_bonus
 			multiply = -1
 			add = scope:modeu5_trade_maintenance_efficiency_delta
-			add = scope:modeu5_buying_selling_efficiency_delta
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_trade_maintenance_loss_factor
+		value = {
+			value = 1
+			add = {
+				value = scope:modeu5_us20_trade_maintenance
+				multiply = -1
+			}
+			min = 0
+			max = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_goods_received_loss
+		value = {
+			value = scope:modeu5_us20_trade_maintenance_loss_factor
+			multiply = 0.1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_target_goods_amount_received
+		value = {
+			value = scope:modeu5_us20_goods_amount_sent
+			add = {
+				value = scope:modeu5_us20_goods_received_loss
+				multiply = -1
+			}
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_goods_reconciliation_delta
+		value = {
+			value = scope:modeu5_us20_target_goods_amount_received
+			add = {
+				value = scope:modeu5_us20_engine_goods_amount_received
+				multiply = -1
+			}
+		}
+	}
+}
+
+# #105/#120 money-side hook. It now has an executable formula branch for tests
+# and future confirmed route readers. It remains fail-closed in live runtime until
+# those readers set modeu5_trade_efficiency_formula_inputs_available > 0.
+modeu5_compute_trade_efficiency_route_money_delta = {
+	if = {
+		limit = { scope:modeu5_trade_efficiency_formula_inputs_available > 0 }
+		modeu5_compute_us17_us20_route_formula_from_current_values = yes
+	}
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_trade_efficiency_route_quantity
+			value = modeu5_trade_efficiency_route_quantity
+		}
+		save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
+		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
+		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
+		save_temporary_scope_value_as = {
+			name = modeu5_trade_efficiency_route_money_delta
+			value = {
+				value = scope:modeu5_trade_efficiency_old_price_side_bonus
+				multiply = -1
+				add = scope:modeu5_trade_maintenance_efficiency_delta
+				add = scope:modeu5_buying_selling_efficiency_delta
+			}
 		}
 	}
 }
@@ -201,25 +323,29 @@ modeu5_add_trade_efficiency_route_delta_to_trade_owner = {
 	}
 }
 
-# US-20 hook. The route-level goods-received hook is present and fail-closed.
-# It will apply no stock mutation until trade_maintenance and engine received
-# goods exposure are confirmed and the approved centralized stock operator call
-# can be selected by literal good.
+# US-20 goods-side hook. Uses the same executable formula branch when route
+# readers/test fixtures provide confirmed inputs. Otherwise it remains blocked.
 modeu5_compute_us20_goods_received_delta = {
-	save_temporary_scope_value_as = {
-		name = modeu5_us20_goods_amount_sent
-		value = scope:modeu5_trade_efficiency_route_quantity
+	if = {
+		limit = { scope:modeu5_trade_efficiency_formula_inputs_available > 0 }
+		# Already computed by modeu5_compute_us17_us20_route_formula_from_current_values.
 	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us20_engine_goods_amount_received
-		value = scope:modeu5_trade_efficiency_route_quantity
+	else = {
+		save_temporary_scope_value_as = {
+			name = modeu5_us20_goods_amount_sent
+			value = scope:modeu5_trade_efficiency_route_quantity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us20_engine_goods_amount_received
+			value = scope:modeu5_trade_efficiency_route_quantity
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us20_target_goods_amount_received
+			value = scope:modeu5_trade_efficiency_route_quantity
+		}
+		save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
+		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
 	}
-	save_temporary_scope_value_as = {
-		name = modeu5_us20_target_goods_amount_received
-		value = scope:modeu5_trade_efficiency_route_quantity
-	}
-	save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
-	modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
 }
 
 modeu5_apply_us20_goods_delta_to_target_market_good = {
