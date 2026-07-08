@@ -21,6 +21,9 @@ PROMOTION_FN_RE = re.compile(
 US10_CANDIDATE_SCAN_FN_RE = re.compile(
     r"(?m)^modeu5_scan_us10_candidate_country_good_(?P<good>[a-z0-9_]+)\s*=\s*\{"
 )
+US10_CANDIDATE_SCAN_END_RE = re.compile(
+    r"(?m)^modeu5_scan_us10_candidates_good_[a-z0-9_]+\s*=\s*\{"
+)
 
 OLD_OVERMATERIALIZED_BRANCH = """\tif = {
 \t\tlimit = { scope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon }
@@ -319,12 +322,18 @@ def patch_us10_candidate_scan_blocks(text: str) -> str:
         match = US10_CANDIDATE_SCAN_FN_RE.search(text, search_from)
         if match is None:
             break
-        open_index = text.find("{", match.start(), match.end())
-        end = find_matching_brace(text, open_index)
         good = match.group("good")
+        next_match = US10_CANDIDATE_SCAN_END_RE.search(text, match.end())
+        if next_match is None:
+            open_index = text.find("{", match.start(), match.end())
+            end = find_matching_brace(text, open_index)
+        else:
+            end = next_match.start()
 
         pieces.append(text[position:match.start()])
         pieces.append(render_us10_candidate_scan(good))
+        if not text.startswith("\n", end):
+            pieces.append("\n")
         position = end
         search_from = end
 
