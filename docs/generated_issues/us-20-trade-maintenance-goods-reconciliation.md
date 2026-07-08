@@ -445,7 +445,7 @@ new_buying_selling_efficiency_effect
 money_reconciliation_delta
 read_country_income_probe
 read_trade_route_profit_probe
-add_trade_route_profit_probe
+add_trade_profit_probe
 country_income_after_route_profit_delta_probe
 accounting_mode_detailed_or_fallback
 ```
