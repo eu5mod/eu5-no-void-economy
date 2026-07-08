@@ -9,6 +9,7 @@ dirty hand-authored test files.
 
 from __future__ import annotations
 
+import bisect
 import re
 import sys
 from pathlib import Path
@@ -24,6 +25,7 @@ US10_CANDIDATE_SCAN_FN_RE = re.compile(
 US10_CANDIDATE_SCAN_END_RE = re.compile(
     r"(?m)^modeu5_scan_us10_candidates_good_[a-z0-9_]+\s*=\s*\{"
 )
+SCRIPTED_EFFECT_START_RE = re.compile(r"(?m)^[A-Za-z0-9_]+\s*=\s*\{")
 
 OLD_OVERMATERIALIZED_BRANCH = """\tif = {
 \t\tlimit = { scope:modeu5_promotion_overmaterialized_quantity > modeu5_initialization_rounding_epsilon }
@@ -37,6 +39,32 @@ OLD_OVERMATERIALIZED_BRANCH = """\tif = {
 \t\t}
 \t}
 """
+
+
+def line_starts(source: str) -> list[int]:
+    starts = [0]
+    for match in re.finditer("\n", source):
+        starts.append(match.end())
+    return starts
+
+
+def line_number_for_index(starts: list[int], index: int) -> int:
+    return bisect.bisect_right(starts, index)
+
+
+def context_for_line(source: str, line_no: int, *, radius: int = 8) -> str:
+    lines = source.splitlines()
+    start = max(1, line_no - radius)
+    end = min(len(lines), line_no + radius)
+    rendered = [f"{number}: {lines[number - 1]}" for number in range(start, end + 1)]
+    return "\n".join(rendered)
+
+
+def nearest_scripted_effect_before(source: str, index: int) -> str:
+    candidate = "<unknown>"
+    for match in SCRIPTED_EFFECT_START_RE.finditer(source, 0, max(0, index)):
+        candidate = match.group(0).removesuffix("{").strip()
+    return candidate
 
 
 def find_matching_brace(source: str, open_index: int) -> int:
@@ -77,17 +105,12 @@ def find_matching_brace(source: str, open_index: int) -> int:
 
 
 def assert_balanced_braces(source: str, *, label: str) -> None:
-    depth = 0
-    stack: list[int] = []
+    starts = line_starts(source)
+    stack: list[tuple[int, int]] = []
     in_string = False
-    line_no = 1
     index = 0
     while index < len(source):
         char = source[index]
-        if char == "\n":
-            line_no += 1
-            index += 1
-            continue
         if in_string:
             if char == "\\":
                 index += 2
@@ -102,22 +125,27 @@ def assert_balanced_braces(source: str, *, label: str) -> None:
             newline = source.find("\n", index)
             if newline < 0:
                 break
-            line_no += source.count("\n", index, newline + 1)
             index = newline + 1
             continue
         elif char == "{":
-            depth += 1
-            stack.append(line_no)
+            stack.append((index, line_number_for_index(starts, index)))
         elif char == "}":
-            depth -= 1
-            if depth < 0:
-                raise SystemExit(f"{label}: generated script has an extra closing brace at line {line_no}")
+            if not stack:
+                line_no = line_number_for_index(starts, index)
+                context = context_for_line(source, line_no)
+                raise SystemExit(f"{label}: generated script has an extra closing brace at line {line_no}\n{context}")
             stack.pop()
         index += 1
 
-    if depth != 0:
-        first_unclosed = stack[-1] if stack else "unknown"
-        raise SystemExit(f"{label}: generated script has an unclosed brace block starting at line {first_unclosed}")
+    if stack:
+        open_index, line_no = stack[-1]
+        effect = nearest_scripted_effect_before(source, open_index)
+        context = context_for_line(source, line_no)
+        raise SystemExit(
+            f"{label}: generated script has an unclosed brace block starting at line {line_no}\n"
+            f"nearest_effect={effect}\n"
+            f"{context}"
+        )
 
 
 def render_repair_branch(good: str) -> str:
@@ -238,51 +266,51 @@ def render_us10_candidate_scan(good: str) -> str:
 
 \tif = {{
 \t\tlimit = {{ NOT = {{ scope:modeu5_us10_candidate_allowed > 0 }} }}
-\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\tchange_local_variable = {{ name = modeu5_us10_excluded_candidate_count add = 1 }}
-\t\t}}
-\t}}
+\t	scope:modeu5_us10_resolution_controller = {{
+\t		change_local_variable = {{ name = modeu5_us10_excluded_candidate_count add = 1 }}
+		}}
+	}}
 
-\tif = {{
-\t\tlimit = {{ scope:modeu5_us10_candidate_allowed > 0 }}
-\t\tif = {{
-\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 1 }}
-\t\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_1_candidates add = 1 }}
-\t\t\t}}
-\t\t}}
-\t\telse_if = {{
-\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 2 }}
-\t\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_2_candidates add = 1 }}
-\t\t\t}}
-\t\t}}
-\t\telse_if = {{
-\t\t\tlimit = {{ scope:modeu5_us10_candidate_priority_bucket = 3 }}
-\t\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_3_candidates add = 1 }}
-\t\t\t}}
-\t\t}}
-\t\telse = {{
-\t\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\t\tchange_local_variable = {{ name = modeu5_us10_bucket_4_candidates add = 1 }}
-\t\t\t}}
-\t\t}}
-\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\tchange_local_variable = {{
-\t\t\t\tname = modeu5_us10_total_available_candidate_stock
-\t\t\t\tadd = scope:modeu5_us10_candidate_stock
-\t\t\t}}
-\t\t}}
-\t\tscope:modeu5_us10_resolution_controller = {{
-\t\t\tif = {{
-\t\t\t\tlimit = {{ scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }}
-\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }}
-\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }}
-\t\t\t\tset_local_variable = {{ name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }}
-\t\t\t}}
-\t\t}}
-\t}}
+	if = {{
+		limit = {{ scope:modeu5_us10_candidate_allowed > 0 }}
+		if = {{
+			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 1 }}
+			scope:modeu5_us10_resolution_controller = {{
+				change_local_variable = {{ name = modeu5_us10_bucket_1_candidates add = 1 }}
+			}}
+		}}
+		else_if = {{
+			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 2 }}
+			scope:modeu5_us10_resolution_controller = {{
+				change_local_variable = {{ name = modeu5_us10_bucket_2_candidates add = 1 }}
+			}}
+		}}
+		else_if = {{
+			limit = {{ scope:modeu5_us10_candidate_priority_bucket = 3 }}
+			scope:modeu5_us10_resolution_controller = {{
+				change_local_variable = {{ name = modeu5_us10_bucket_3_candidates add = 1 }}
+			}}
+		}}
+		else = {{
+			scope:modeu5_us10_resolution_controller = {{
+				change_local_variable = {{ name = modeu5_us10_bucket_4_candidates add = 1 }}
+			}}
+		}}
+		scope:modeu5_us10_resolution_controller = {{
+			change_local_variable = {{
+				name = modeu5_us10_total_available_candidate_stock
+				add = scope:modeu5_us10_candidate_stock
+			}}
+		}}
+		scope:modeu5_us10_resolution_controller = {{
+			if = {{
+				limit = {{ scope:modeu5_us10_stock_candidate_score > local_var:modeu5_us10_best_stock_priority_score }}
+				set_local_variable = {{ name = modeu5_us10_best_stock_priority_score value = scope:modeu5_us10_stock_candidate_score }}
+				set_local_variable = {{ name = modeu5_us10_best_candidate_stock value = scope:modeu5_us10_candidate_stock }}
+				set_local_variable = {{ name = modeu5_us10_best_candidate_bucket value = scope:modeu5_us10_candidate_priority_bucket }}
+			}}
+		}}
+	}}
 }}
 """
 
