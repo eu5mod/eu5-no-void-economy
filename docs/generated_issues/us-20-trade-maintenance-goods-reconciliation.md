@@ -480,6 +480,44 @@ country_income_after_route_profit_delta_probe
 accounting_mode_detailed_or_fallback
 ```
 
+## Specification vs implementation status
+
+Status legend:
+
+```txt
+Implemented        = code path exists and is covered by static CI and/or deterministic in-game fixture surface
+Partial            = scaffold/classification exists, but at least one runtime operator or generic dispatcher is missing
+Specified only     = written contract exists, no concrete runtime code yet
+Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementation
+```
+
+| Area | Specification | Current implementation | Status | Gap / next action |
+| --- | --- | --- | --- | --- |
+| Source ownership | #105 = maintenance efficiency, #120 = buy/sell efficiency, #161 = route placement, US-20 = goods received loss | Documented in US-20 and separated in function names/comments | Implemented | Keep cross-issue wording aligned if #105/#120 change. |
+| Q8.7 placement | Run inside country trade-owner `every_trade`; no second market-center loop | Route reconciliation effect is called from the country trade-owner route loop and keeps the anti-second-loop guard | Implemented | Static only; still needs in-game monthly trace. |
+| CMM gate | Trade rework runs only when CMM setting is enabled | Parent and route effect are gated by `modeu5_trade_rework_enabled_trigger`; deterministic fixture tests disabled gate dormancy | Implemented | None for static PR; runtime CMM toggle should be tested in-game. |
+| Money formula | Remove old price-side bonus and add separate #105/#120 effects | Deterministic formula kernel computes old bonus, clamped average, and route money delta | Implemented | Current #120 side is zero placeholder pending final #120 runtime model. |
+| Money accumulator | Accumulate route-local money delta to trade owner | ModeU5-only country accumulator is updated | Implemented | This is not vanilla income/profit application. |
+| Vanilla income/profit application | Probe country income, route profit, add route profit, then test country-income relation | Probe matrix exists as blocked counters/logs; no speculative API calls are used | Blocked TECH-01 | Identify confirmed EU5 read/write APIs for country income and route profit. |
+| Goods received formula | `target = sent - 0.1 * clamp(1 - trade_maintenance, 0, 1)` | Formula kernel computes target, delta, and loss quantity | Implemented | Confirm if formula is absolute loss, not percentage-of-sent; current implementation follows written spec. |
+| Base movement vs loss | Base add/transfer is separate from destination loss removal | Code comments and status matrix separate receipt path from loss reconciliation | Partial | Implement generated-good base receipt operators separately. |
+| Four-case classification | Classify origin promoted and destination promoted | Runtime computes `modeu5_us20_origin_market_is_promoted` and `modeu5_us20_target_market_is_promoted`; counters exist for all four cases | Implemented | Deterministic fixture currently covers case 4 only. |
+| Case 1: origin non-promoted / destination non-promoted | Remove loss at destination market and destination country-market if available | Branch classified; destination non-promoted path blocks on missing market-level remove_good | Partial / Blocked TECH-01 | Confirm or implement market-level `remove_good` operator. |
+| Case 2: origin promoted / destination non-promoted | Remove loss at destination market and destination country-market if available | Branch classified; destination non-promoted path blocks on missing market-level remove_good | Partial / Blocked TECH-01 | Same as case 1; origin detail does not change destination-loss operator. |
+| Case 3: origin non-promoted / destination promoted | Add received goods at destination country-market; then remove destination loss | Branch classified; receiver/loss path exists for explicit receiver + wheat fixture; base add is not implemented | Partial | Generate literal-good add-at-destination operator and test case 3. |
+| Case 4: origin promoted / destination promoted | Transfer country-market to country-market; then remove destination loss | Branch classified; deterministic fixture asserts case 4 and tests loss removal with explicit receiver + wheat | Partial | Generate literal-good transfer receipt operator; generic route good dispatcher still missing. |
+| Stored receiving country | If earlier transfer/demand resolution stored receiver, use it | Implemented: `scope:modeu5_us20_receiving_country` wins | Implemented | Need actual upstream storage when base movement operator is implemented. |
+| Trade owner as receiver | If trade owner is present in destination market, use trade owner | Scaffolded behind `modeu5_us20_trade_owner_present_in_target_market` scope flag | Partial | Implement live presence detection against destination market country list/cache. |
+| US-10 receiver fallback | Reuse/extend US-10 candidate machinery for receiver allocation | Specified; blocked counter/log when explicit receiver and trade-owner-present path are unavailable | Specified only | Build generated literal-good receiver allocator. |
+| Receiver thresholds | Ignore supplier protection thresholds; prefer under-capacity / low fill ratio | Documented only | Specified only | Add receiver profile flag or separate resolver mode. |
+| Receiver capacity rule | Eligible if `current_stock < capacity`; do not clip full receipt to free capacity | Documented only | Specified only | Needs stock/capacity reads per candidate in receiver allocator. |
+| Generic good support | Apply US-20 to route good, not hard-coded wheat | Live generic path remains blocked; deterministic fixture uses wheat only | Partial | Generate route good -> literal-good dispatcher. |
+| Destination loss removal | Loss uses destination removal semantics, not transfer semantics | Deterministic wheat path calls `modeu5_remove_stock` with `reason = stock_loss` | Partial | Generic remove path pending literal-good dispatcher and receiver selection. |
+| Non-promoted destination removal | Use market-level `remove_good` semantics | Blocked with explicit counter/log; no speculative operator added | Blocked TECH-01 | Confirm central market-level `remove_good` API/operator. |
+| Debug visibility | Expose classification, blocked routes, probe states, loss values | Globals/logs exist for money probe, goods block, case counters, receiver-selection block | Implemented | Add UI/debug event summary if desired. |
+| Test coverage | Deterministic fixture should cover formula, CMM gate, probe blocking, and loss removal | Fixture covers disabled gate, formula, income-probe blocking, explicit receiver, case 4, wheat `remove_stock` loss | Partial | Add deterministic fixtures for cases 1, 2, and 3 once `remove_good`/add operator is available. |
+| Static CI | Generated files and validation must pass | CI currently validates parser/generator/static surfaces | Implemented | Does not prove EU5 runtime execution; needs in-game debug event run. |
+
 ## Acceptance checks
 
 ```txt
