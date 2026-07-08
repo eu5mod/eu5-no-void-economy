@@ -1,0 +1,169 @@
+# Deterministic US-17 / US-20 reconciliation fixture helpers.
+# Run through event modeu5_revalidate_debug.2.
+
+modeu5_us17_us20_clear_test_results = {
+	remove_global_variable = modeu5_test_us17_us20_reconciliation_started
+	remove_global_variable = modeu5_test_us17_us20_reconciliation_passed
+	remove_global_variable = modeu5_test_us17_us20_reconciliation_failed
+	remove_global_variable = modeu5_test_us17_us20_reconciliation_blocked
+
+	remove_global_variable = modeu5_trade_efficiency_month_stamp
+	remove_global_variable = modeu5_trade_efficiency_routes_seen
+	remove_global_variable = modeu5_trade_efficiency_routes_quantity_confirmed
+	remove_global_variable = modeu5_trade_efficiency_routes_quantity_blocked
+	remove_global_variable = modeu5_trade_efficiency_money_delta_routes
+	remove_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes
+	remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+	remove_global_variable = modeu5_trade_efficiency_owner_missing_routes
+
+	remove_variable = modeu5_trade_efficiency_money_delta_total
+	remove_variable = modeu5_trade_efficiency_routes_seen
+	remove_variable = modeu5_trade_efficiency_money_routes_blocked
+	remove_variable = modeu5_trade_efficiency_goods_routes_blocked
+	remove_variable = modeu5_us17_us20_debug_old_price_side_bonus
+	remove_variable = modeu5_us17_us20_debug_clamped_average_efficiency
+	remove_variable = modeu5_us17_us20_debug_money_delta
+	remove_variable = modeu5_us17_us20_debug_goods_target
+	remove_variable = modeu5_us17_us20_debug_goods_delta
+}
+
+modeu5_us17_us20_save_original_cmm_trade_rework_setting = {
+	save_temporary_scope_value_as = { name = modeu5_us17_us20_original_cmm_trade_rework_present value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us17_us20_original_cmm_trade_rework_value value = 0 }
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us17_us20_original_cmm_trade_rework_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us17_us20_original_cmm_trade_rework_value
+			value = "variable_map(cmm|flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings)"
+		}
+	}
+}
+
+modeu5_us17_us20_remove_cmm_trade_rework_setting_for_test = {
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			}
+		}
+		remove_from_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+		}
+	}
+}
+
+modeu5_us17_us20_set_cmm_trade_rework_setting_for_test = {
+	modeu5_us17_us20_remove_cmm_trade_rework_setting_for_test = yes
+	add_to_variable_map = {
+		name = cmm
+		key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+		value = $value$
+	}
+}
+
+modeu5_us17_us20_restore_original_cmm_trade_rework_setting = {
+	modeu5_us17_us20_remove_cmm_trade_rework_setting_for_test = yes
+	if = {
+		limit = { scope:modeu5_us17_us20_original_cmm_trade_rework_present > 0 }
+		add_to_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			value = scope:modeu5_us17_us20_original_cmm_trade_rework_value
+		}
+	}
+}
+
+modeu5_us17_us20_seed_reconciliation_fixture = {
+	save_temporary_scope_as = modeu5_trade_owner_controller_country
+	save_temporary_scope_as = modeu5_trade_owner_country
+	save_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_price value = 1.5 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_price value = 1.0 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = 0.10 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = 0.20 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_export_cost_modifier value = 0.00 }
+	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance value = 0.70 }
+	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 100 }
+}
+
+modeu5_us17_us20_note_assertion_failure = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us17_us20_assertion_failure_count
+		value = { value = scope:modeu5_us17_us20_assertion_failure_count add = 1 }
+	}
+}
+
+modeu5_us17_us20_log_fixture_values = {
+	set_variable = { name = modeu5_us17_us20_debug_old_price_side_bonus value = scope:modeu5_trade_efficiency_old_price_side_bonus }
+	set_variable = { name = modeu5_us17_us20_debug_clamped_average_efficiency value = scope:modeu5_buying_selling_efficiency_clamped }
+	set_variable = { name = modeu5_us17_us20_debug_money_delta value = scope:modeu5_trade_efficiency_route_money_delta }
+	set_variable = { name = modeu5_us17_us20_debug_goods_target value = scope:modeu5_us20_target_goods_amount_received }
+	set_variable = { name = modeu5_us17_us20_debug_goods_delta value = scope:modeu5_us20_goods_reconciliation_delta }
+	debug_log = "ModeU5 US17_US20 ROUTE_RECONCILIATION old_price_side_bonus=[THIS.GetVariable('modeu5_us17_us20_debug_old_price_side_bonus').GetValue|2] clamped_average=[THIS.GetVariable('modeu5_us17_us20_debug_clamped_average_efficiency').GetValue|2] money_delta=[THIS.GetVariable('modeu5_us17_us20_debug_money_delta').GetValue|2] goods_target=[THIS.GetVariable('modeu5_us17_us20_debug_goods_target').GetValue|2] goods_delta=[THIS.GetVariable('modeu5_us17_us20_debug_goods_delta').GetValue|2]"
+}
+
+modeu5_debug_run_us17_us20_reconciliation_tests = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us17_us20_route_reconciliation"
+	set_global_variable = modeu5_test_us17_us20_reconciliation_started
+	modeu5_us17_us20_clear_test_results = yes
+	modeu5_us17_us20_save_original_cmm_trade_rework_setting = yes
+	save_temporary_scope_value_as = { name = modeu5_us17_us20_assertion_failure_count value = 0 }
+
+	# Disabled CMM gate probe: a direct call must remain dormant.
+	modeu5_us17_us20_remove_cmm_trade_rework_setting_for_test = yes
+	modeu5_us17_us20_seed_reconciliation_fixture = yes
+	modeu5_run_us17_us20_route_reconciliation = yes
+	if = {
+		limit = {
+			has_global_variable = modeu5_trade_efficiency_routes_seen
+			global_var:modeu5_trade_efficiency_routes_seen > 0
+		}
+		modeu5_us17_us20_note_assertion_failure = yes
+		error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=disabled_gate_should_be_dormant"
+	}
+
+	# Enabled deterministic formula probe.
+	remove_global_variable = modeu5_trade_efficiency_month_stamp
+	modeu5_us17_us20_set_cmm_trade_rework_setting_for_test = { value = 1 }
+	modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
+	modeu5_us17_us20_seed_reconciliation_fixture = yes
+	modeu5_run_us17_us20_route_reconciliation = yes
+	modeu5_us17_us20_log_fixture_values = yes
+
+	if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_seen } NOT = { global_var:modeu5_trade_efficiency_routes_seen = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=route_seen expected=1" }
+	if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_quantity_confirmed } NOT = { global_var:modeu5_trade_efficiency_routes_quantity_confirmed = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=quantity_confirmed expected=1" }
+	if = { limit = { OR = { scope:modeu5_trade_efficiency_old_price_side_bonus < 34.99 scope:modeu5_trade_efficiency_old_price_side_bonus > 35.01 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=old_price_side_bonus expected=35" }
+	if = { limit = { OR = { scope:modeu5_buying_selling_efficiency_clamped < 0.14 scope:modeu5_buying_selling_efficiency_clamped > 0.16 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=clamped_average expected=0.15" }
+	if = { limit = { OR = { scope:modeu5_trade_efficiency_route_money_delta < -34.86 scope:modeu5_trade_efficiency_route_money_delta > -34.84 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=money_delta expected=-34.85" }
+	if = { limit = { OR = { scope:modeu5_us20_target_goods_amount_received < 99.96 scope:modeu5_us20_target_goods_amount_received > 99.98 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_target expected=99.97" }
+	if = { limit = { OR = { scope:modeu5_us20_goods_reconciliation_delta < -0.04 scope:modeu5_us20_goods_reconciliation_delta > -0.02 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_delta expected=-0.03" }
+	if = { limit = { OR = { scope:modeu5_trade_efficiency_money_delta_total < -34.86 scope:modeu5_trade_efficiency_money_delta_total > -34.84 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=trade_owner_accumulated_delta expected=-34.85" }
+	if = { limit = { has_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes global_var:modeu5_trade_efficiency_money_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_money_blocked_routes" }
+	if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_goods_blocked_routes" }
+
+	if = {
+		limit = { scope:modeu5_us17_us20_assertion_failure_count = 0 }
+		set_global_variable = modeu5_test_us17_us20_reconciliation_passed
+		debug_log = "ModeU5 TEST PASS scenario=us17_us20_route_reconciliation"
+	}
+	else = {
+		set_global_variable = modeu5_test_us17_us20_reconciliation_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us17_us20_route_reconciliation"
+	}
+
+	modeu5_us17_us20_restore_original_cmm_trade_rework_setting = yes
+}
