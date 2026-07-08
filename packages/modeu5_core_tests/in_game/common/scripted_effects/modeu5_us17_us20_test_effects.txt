@@ -14,6 +14,8 @@ modeu5_us17_us20_clear_test_results = {
 	remove_global_variable = modeu5_trade_efficiency_routes_quantity_blocked
 	remove_global_variable = modeu5_trade_efficiency_money_delta_routes
 	remove_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes
+	remove_global_variable = modeu5_trade_efficiency_treasury_application_routes
+	remove_global_variable = modeu5_trade_efficiency_treasury_application_blocked_routes
 	remove_global_variable = modeu5_trade_efficiency_income_application_blocked_routes
 	remove_global_variable = modeu5_trade_efficiency_income_application_probe_blocked
 	remove_global_variable = modeu5_trade_efficiency_probe_read_country_income_blocked
@@ -33,8 +35,10 @@ modeu5_us17_us20_clear_test_results = {
 	remove_global_variable = modeu5_trade_efficiency_owner_missing_routes
 
 	remove_variable = modeu5_trade_efficiency_money_delta_total
+	remove_variable = modeu5_trade_efficiency_treasury_delta_total
 	remove_variable = modeu5_trade_efficiency_routes_seen
 	remove_variable = modeu5_trade_efficiency_money_routes_blocked
+	remove_variable = modeu5_trade_efficiency_treasury_application_blocked
 	remove_variable = modeu5_trade_efficiency_income_application_blocked
 	remove_variable = modeu5_trade_efficiency_goods_routes_blocked
 	remove_variable = modeu5_us17_us20_debug_old_price_side_bonus
@@ -177,6 +181,11 @@ modeu5_debug_run_us17_us20_reconciliation_tests = {
 		# Enabled deterministic formula + application-boundary probe.
 		remove_global_variable = modeu5_trade_efficiency_month_stamp
 		modeu5_us17_us20_set_cmm_trade_rework_setting_for_test = { value = 1 }
+		if = {
+			limit = { NOT = { modeu5_trade_rework_enabled_trigger = yes } }
+			modeu5_us17_us20_note_assertion_failure = yes
+			error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=enabled_cmm_gate_should_open reason=cmm_trade_rework_setting_unreadable_or_not_equal_1"
+		}
 		modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
 		c:FRA.capital.market = {
 			add_goods_supply = {
@@ -193,46 +202,73 @@ modeu5_debug_run_us17_us20_reconciliation_tests = {
 		}
 		modeu5_us17_us20_seed_reconciliation_fixture = yes
 		modeu5_run_us17_us20_route_reconciliation = yes
-		save_temporary_scope_value_as = { name = modeu5_us17_us20_loss_removed_quantity value = scope:modeu5_actual_removed_quantity }
-		modeu5_us17_us20_log_fixture_values = yes
-		# Cleanup the stock injected by this fixture after the US-20 loss has been removed.
-		modeu5_remove_stock = {
-			country = c:FRA
-			market = c:FRA.capital.market
-			good = wheat
-			quantity = 0.97
-			reason = debug_test
-		}
-		c:FRA.capital.market = {
-			add_goods_supply = {
-				goods = goods:wheat
-				amount = -0.97
+
+		if = {
+			limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_seen } NOT = { global_var:modeu5_trade_efficiency_routes_seen = 1 } } }
+			modeu5_us17_us20_note_assertion_failure = yes
+			error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=route_seen expected=1 reason=route_reconciliation_did_not_run_after_cmm_enable"
+			# Cleanup the full injected stock because US-20 loss probably did not run.
+			modeu5_remove_stock = {
+				country = c:FRA
+				market = c:FRA.capital.market
+				good = wheat
+				quantity = 1
+				reason = debug_test
+			}
+			c:FRA.capital.market = {
+				add_goods_supply = {
+					goods = goods:wheat
+					amount = -1
+				}
 			}
 		}
+		else = {
+			# Recompute the deterministic formula in the fixture scope before assertions.
+			# Route-local temporary values created inside modeu5_run_us17_us20_route_reconciliation
+			# are not safe to read after the effect returns.
+			modeu5_compute_us17_us20_route_formula_from_current_values = yes
+			save_temporary_scope_value_as = { name = modeu5_us17_us20_loss_removed_quantity value = scope:modeu5_actual_removed_quantity }
+			modeu5_us17_us20_log_fixture_values = yes
 
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_seen } NOT = { global_var:modeu5_trade_efficiency_routes_seen = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=route_seen expected=1" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_quantity_confirmed } NOT = { global_var:modeu5_trade_efficiency_routes_quantity_confirmed = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=quantity_confirmed expected=1" }
-		if = { limit = { OR = { scope:modeu5_trade_efficiency_old_price_side_bonus < 34.99 scope:modeu5_trade_efficiency_old_price_side_bonus > 35.01 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=old_price_side_bonus expected=35" }
-		if = { limit = { OR = { scope:modeu5_buying_selling_efficiency_clamped < 0.14 scope:modeu5_buying_selling_efficiency_clamped > 0.16 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=clamped_average expected=0.15" }
-		if = { limit = { OR = { scope:modeu5_trade_efficiency_route_money_delta < -34.86 scope:modeu5_trade_efficiency_route_money_delta > -34.84 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=money_delta expected=-34.85" }
-		if = { limit = { OR = { scope:modeu5_us20_target_goods_amount_received < 99.96 scope:modeu5_us20_target_goods_amount_received > 99.98 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_target expected=99.97" }
-		if = { limit = { OR = { scope:modeu5_us20_goods_reconciliation_delta < -0.04 scope:modeu5_us20_goods_reconciliation_delta > -0.02 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_delta expected=-0.03" }
-		if = { limit = { OR = { scope:modeu5_us17_us20_loss_removed_quantity < 0.02 scope:modeu5_us17_us20_loss_removed_quantity > 0.04 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_removed_by_remove_stock expected=0.03" }
-		if = { limit = { OR = { scope:modeu5_trade_efficiency_money_delta_total < -34.86 scope:modeu5_trade_efficiency_money_delta_total > -34.84 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=trade_owner_accumulated_delta expected=-34.85" }
-		if = { limit = { has_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes global_var:modeu5_trade_efficiency_money_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_money_blocked_routes" }
-		if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=test_wheat_loss_path_should_not_emit_goods_blocked_routes" }
-		if = { limit = { has_global_variable = modeu5_us20_market_level_remove_good_blocked_routes global_var:modeu5_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=market_goods_supply_surface_should_not_be_blocked" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_market_goods_supply_loss_routes } NOT = { global_var:modeu5_us20_market_goods_supply_loss_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=market_goods_supply_loss_route_expected=1" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=promoted_origin_promoted_destination_case_expected=1" }
-		if = { limit = { has_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes global_var:modeu5_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_block_target_selection" }
-		if = { limit = { has_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes global_var:modeu5_us20_receiver_capacity_sort_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_require_receiver_capacity_sort" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_goods_loss_routes } NOT = { global_var:modeu5_us20_goods_loss_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_route_expected=1" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_income_application_blocked_routes } NOT = { global_var:modeu5_trade_efficiency_income_application_blocked_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=income_application_should_be_blocked_until_api_confirmed" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_income_application_probe_blocked } NOT = { global_var:modeu5_trade_efficiency_income_application_probe_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=income_api_probe_blocked_expected=1" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_read_country_income_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_read_country_income_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_read_country_income_required" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_read_trade_profit_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_read_trade_profit_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_read_trade_profit_required" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_add_trade_profit_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_add_trade_profit_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_add_trade_profit_required" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_country_income_relation_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_country_income_relation_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_country_income_relation_required" }
+			# Cleanup the stock injected by this fixture after the US-20 loss has been removed.
+			modeu5_remove_stock = {
+				country = c:FRA
+				market = c:FRA.capital.market
+				good = wheat
+				quantity = 0.97
+				reason = debug_test
+			}
+			c:FRA.capital.market = {
+				add_goods_supply = {
+					goods = goods:wheat
+					amount = -0.97
+				}
+			}
+
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_routes_quantity_confirmed } NOT = { global_var:modeu5_trade_efficiency_routes_quantity_confirmed = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=quantity_confirmed expected=1" }
+			if = { limit = { OR = { scope:modeu5_trade_efficiency_old_price_side_bonus < 34.99 scope:modeu5_trade_efficiency_old_price_side_bonus > 35.01 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=old_price_side_bonus expected=35" }
+			if = { limit = { OR = { scope:modeu5_buying_selling_efficiency_clamped < 0.14 scope:modeu5_buying_selling_efficiency_clamped > 0.16 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=clamped_average expected=0.15" }
+			if = { limit = { OR = { scope:modeu5_trade_efficiency_route_money_delta < -34.86 scope:modeu5_trade_efficiency_route_money_delta > -34.84 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=money_delta expected=-34.85" }
+			if = { limit = { OR = { scope:modeu5_us20_target_goods_amount_received < 99.96 scope:modeu5_us20_target_goods_amount_received > 99.98 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_target expected=99.97" }
+			if = { limit = { OR = { scope:modeu5_us20_goods_reconciliation_delta < -0.04 scope:modeu5_us20_goods_reconciliation_delta > -0.02 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_delta expected=-0.03" }
+			if = { limit = { OR = { scope:modeu5_us17_us20_loss_removed_quantity < 0.02 scope:modeu5_us17_us20_loss_removed_quantity > 0.04 } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_removed_by_remove_stock expected=0.03" }
+			if = { limit = { has_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes global_var:modeu5_trade_efficiency_money_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_money_blocked_routes" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_treasury_application_routes } NOT = { global_var:modeu5_trade_efficiency_treasury_application_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=treasury_application_route_expected=1" }
+			if = { limit = { has_global_variable = modeu5_trade_efficiency_treasury_application_blocked_routes global_var:modeu5_trade_efficiency_treasury_application_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=treasury_application_should_not_be_blocked" }
+			if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=test_wheat_loss_path_should_not_emit_goods_blocked_routes" }
+			if = { limit = { has_global_variable = modeu5_us20_market_level_remove_good_blocked_routes global_var:modeu5_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=market_goods_supply_surface_should_not_be_blocked" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_market_goods_supply_loss_routes } NOT = { global_var:modeu5_us20_market_goods_supply_loss_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=market_goods_supply_loss_route_expected=1" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=promoted_origin_promoted_destination_case_expected=1" }
+			if = { limit = { has_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes global_var:modeu5_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_block_target_selection" }
+			if = { limit = { has_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes global_var:modeu5_us20_receiver_capacity_sort_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_require_receiver_capacity_sort" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_goods_loss_routes } NOT = { global_var:modeu5_us20_goods_loss_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_route_expected=1" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_income_application_blocked_routes } NOT = { global_var:modeu5_trade_efficiency_income_application_blocked_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=income_application_probe_should_remain_blocked_until_route_profit_api_confirmed" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_income_application_probe_blocked } NOT = { global_var:modeu5_trade_efficiency_income_application_probe_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=income_api_probe_blocked_expected=1" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_read_country_income_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_read_country_income_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_read_country_income_required" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_read_trade_profit_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_read_trade_profit_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_read_trade_profit_required" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_add_trade_profit_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_add_trade_profit_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_add_trade_profit_required" }
+			if = { limit = { OR = { NOT = { has_global_variable = modeu5_trade_efficiency_probe_country_income_relation_blocked } NOT = { global_var:modeu5_trade_efficiency_probe_country_income_relation_blocked = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=probe_country_income_relation_required" }
+		}
 
 		if = {
 			limit = { scope:modeu5_us17_us20_assertion_failure_count = 0 }
