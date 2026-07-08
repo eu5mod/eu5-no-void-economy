@@ -15,6 +15,10 @@
 #        -> modeu5_capture_country_trade_owner_trade_quantity
 #        -> modeu5_run_us17_us20_route_reconciliation
 #
+# The parent call and this effect both gate on modeu5_trade_rework_enabled_trigger,
+# which is backed by the normalized CMM setting:
+#   no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+#
 # This file deliberately does not reintroduce:
 #   every_market_center_in_country -> every_trade
 
@@ -224,22 +228,25 @@ modeu5_apply_us20_goods_delta_to_target_market_good = {
 }
 
 modeu5_run_us17_us20_route_reconciliation = {
-	modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
-	modeu5_note_trade_efficiency_route_seen = yes
-	modeu5_clear_trade_efficiency_route_values = yes
-
 	if = {
-		limit = {
-			scope:modeu5_trade_owner_quantity_matched > 0
-			scope:modeu5_trade_owner_goods_quantity > 0
+		limit = { modeu5_trade_rework_enabled_trigger = yes }
+		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
+		modeu5_note_trade_efficiency_route_seen = yes
+		modeu5_clear_trade_efficiency_route_values = yes
+
+		if = {
+			limit = {
+				scope:modeu5_trade_owner_quantity_matched > 0
+				scope:modeu5_trade_owner_goods_quantity > 0
+			}
+			modeu5_note_trade_efficiency_quantity_confirmed = yes
+			modeu5_compute_trade_efficiency_route_money_delta = yes
+			modeu5_add_trade_efficiency_route_delta_to_trade_owner = yes
+			modeu5_compute_us20_goods_received_delta = yes
+			modeu5_apply_us20_goods_delta_to_target_market_good = yes
 		}
-		modeu5_note_trade_efficiency_quantity_confirmed = yes
-		modeu5_compute_trade_efficiency_route_money_delta = yes
-		modeu5_add_trade_efficiency_route_delta_to_trade_owner = yes
-		modeu5_compute_us20_goods_received_delta = yes
-		modeu5_apply_us20_goods_delta_to_target_market_good = yes
-	}
-	else = {
-		modeu5_note_trade_efficiency_quantity_blocked = yes
+		else = {
+			modeu5_note_trade_efficiency_quantity_blocked = yes
+		}
 	}
 }
