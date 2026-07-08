@@ -141,6 +141,15 @@ def source_svg_candidates() -> list[Path]:
     return sorted(path for path in SOURCE_DIR.glob("*.svg") if path.is_file())
 
 
+def cleanup_generated_variants() -> None:
+    if not GENERATED_DIR.exists():
+        return
+    for pattern in ("*_qr.svg", "*_qr.dds"):
+        for generated_path in GENERATED_DIR.glob(pattern):
+            generated_path.unlink()
+            print(f"Removed stale generated asset {generated_path.relative_to(ROOT)}")
+
+
 def main() -> None:
     url = read_qr_url()
     if not url:
@@ -150,6 +159,7 @@ def main() -> None:
     qr_inner_svg, qr_width, qr_height = read_qr_inner_svg(QR_SVG_PATH)
     overlay = build_qr_overlay(qr_inner_svg, qr_width, qr_height)
 
+    cleanup_generated_variants()
     candidates = source_svg_candidates()
     selected_generated_path: Path | None = None
     for source_path in candidates:
@@ -158,14 +168,19 @@ def main() -> None:
         if SELECTED_SOURCE and source_path.name == SELECTED_SOURCE:
             selected_generated_path = output_path
 
+    if SELECTED_SOURCE and selected_generated_path is None:
+        available = ", ".join(path.name for path in candidates) or "none"
+        raise SystemExit(
+            f"Selected source not found in {SOURCE_DIR}: {SELECTED_SOURCE}. "
+            f"Available source SVGs: {available}"
+        )
+
     if selected_generated_path is not None:
         EVENT_SOURCE_PATH.write_text(selected_generated_path.read_text(encoding="utf-8"), encoding="utf-8")
         print(f"Generated {EVENT_SOURCE_PATH.relative_to(ROOT)} from selected source {SELECTED_SOURCE}")
         return
 
     if not EVENT_TEMPLATE_PATH.exists():
-        if SELECTED_SOURCE:
-            raise SystemExit(f"Selected source not found in {SOURCE_DIR}: {SELECTED_SOURCE}")
         raise SystemExit(f"Missing review popup template SVG: {EVENT_TEMPLATE_PATH}")
 
     generate_overlay_svg(EVENT_TEMPLATE_PATH, EVENT_SOURCE_PATH, overlay)
