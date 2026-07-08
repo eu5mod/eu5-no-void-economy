@@ -21,6 +21,10 @@ modeu5_us17_us20_clear_test_results = {
 	remove_global_variable = modeu5_trade_efficiency_probe_add_trade_profit_blocked
 	remove_global_variable = modeu5_trade_efficiency_probe_country_income_relation_blocked
 	remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+	remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes
+	remove_global_variable = modeu5_us20_case_origin_promoted_destination_unpromoted_routes
+	remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes
+	remove_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes
 	remove_global_variable = modeu5_us20_market_level_remove_good_blocked_routes
 	remove_global_variable = modeu5_us20_goods_loss_routes
 	remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
@@ -103,7 +107,10 @@ modeu5_us17_us20_seed_reconciliation_fixture = {
 		save_temporary_scope_as = modeu5_trade_owner_country
 		save_temporary_scope_as = modeu5_us20_receiving_country
 	}
-	c:FRA.capital.market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
+	c:FRA.capital.market = {
+		save_temporary_scope_as = modeu5_trade_owner_source_market
+		save_temporary_scope_as = modeu5_trade_owner_target_market
+	}
 	save_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 100 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 1 }
@@ -116,6 +123,7 @@ modeu5_us17_us20_seed_reconciliation_fixture = {
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance value = 0.70 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 100 }
 	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_apply_wheat_loss_available value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_income_application_available value = 0 }
@@ -200,6 +208,7 @@ modeu5_debug_run_us17_us20_reconciliation_tests = {
 		if = { limit = { has_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes global_var:modeu5_trade_efficiency_money_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_money_blocked_routes" }
 		if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=test_wheat_loss_path_should_not_emit_goods_blocked_routes" }
 		if = { limit = { has_global_variable = modeu5_us20_market_level_remove_good_blocked_routes global_var:modeu5_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=promoted_fixture_should_not_use_market_level_remove_good" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=promoted_origin_promoted_destination_case_expected=1" }
 		if = { limit = { has_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes global_var:modeu5_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_block_target_selection" }
 		if = { limit = { has_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes global_var:modeu5_us20_receiver_capacity_sort_blocked_routes > 0 } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=explicit_receiving_country_should_not_require_receiver_capacity_sort" }
 		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_goods_loss_routes } NOT = { global_var:modeu5_us20_goods_loss_routes = 1 } } } modeu5_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_route_expected=1" }
