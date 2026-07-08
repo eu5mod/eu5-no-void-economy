@@ -173,6 +173,32 @@ loss reconciliation:
   remove the delivery loss at destination
 ```
 
+## Confirmed market-level destination loss surface
+
+EU5 public script documentation lists the market-scope effect:
+
+```txt
+add_goods_supply = {
+  goods = <goods>
+  amount = <amount>
+}
+```
+
+It is documented as adding goods to a market stockpile. US-20 uses this as the central market-level mutation surface by applying delivery loss as a negative `amount`:
+
+```txt
+market_loss_delta = -goods_loss_quantity
+
+scope:target_market = {
+  add_goods_supply = {
+    goods = scope:route_good
+    amount = market_loss_delta
+  }
+}
+```
+
+Therefore the previous `remove_good` probe is no longer required. The implementation should track this as market-stockpile loss application, not as a blocked missing surface.
+
 ## Four-case market-accounting matrix
 
 US-20 must classify both sides of the route:
@@ -191,9 +217,7 @@ The resulting four cases are:
      no country-market transfer is available.
 
    Loss reconciliation:
-     remove at destination:
-       - destination market surface
-       - destination country x market surface if/when available
+     remove at destination market through add_goods_supply with a negative amount.
 
 2. Origin market promoted + destination market non-promoted
 
@@ -201,9 +225,7 @@ The resulting four cases are:
      origin has country-market detail, destination does not.
 
    Loss reconciliation:
-     remove at destination:
-       - destination market surface
-       - destination country x market surface if/when available
+     remove at destination market through add_goods_supply with a negative amount.
 
 3. Origin market non-promoted + destination market promoted
 
@@ -212,8 +234,8 @@ The resulting four cases are:
 
    Loss reconciliation:
      remove the loss at destination:
-       - destination market surface
-       - destination country x market surface
+       - destination market through add_goods_supply with a negative amount
+       - destination country x market through remove_stock
 
 4. Origin market promoted + destination market promoted
 
@@ -222,13 +244,11 @@ The resulting four cases are:
 
    Loss reconciliation:
      remove the loss at destination:
-       - destination market surface
-       - destination country x market surface
+       - destination market through add_goods_supply with a negative amount
+       - destination country x market through remove_stock
 ```
 
 This means destination promotion decides whether a detailed receiver country can exist. Origin promotion decides whether the base receipt path is an add-at-destination or a country-market transfer.
-
-`remove_good` remains the market-level semantics for destination-market removal if no concrete central operator is confirmed yet. `remove_stock` remains the country-market loss operator when a selected destination receiver exists.
 
 ## Receiver-country selection for promoted destinations
 
@@ -319,7 +339,7 @@ Fallback receiver ordering:
 
 For MVP, once the best receiver is selected by the US-10 ordering after receiver eligibility filtering, allocate the whole goods receipt/loss to that receiver rather than splitting across candidates.
 
-If no selected receiver can be determined, US-20 must block the goods application and log the receiver-selection failure. It must not silently remove from the trade owner if the trade owner is not present in the destination market.
+If no selected receiver can be determined, US-20 must block the country-stock part of the goods application and log the receiver-selection failure. It must not silently remove from the trade owner if the trade owner is not present in the destination market.
 
 ## Q8.7 runtime placement
 
@@ -366,18 +386,18 @@ Money owner:
 scope:modeu5_trade_owner_country
 ```
 
-Goods loss owner when destination is promoted:
+Market-level goods loss owner:
+
+```txt
+scope:modeu5_trade_owner_target_market
+scope:modeu5_trade_owner_good
+```
+
+Country-stock goods loss owner when destination is promoted:
 
 ```txt
 scope:modeu5_trade_owner_target_market
 scope:modeu5_us20_goods_loss_target_country
-scope:modeu5_trade_owner_good
-```
-
-Goods loss owner when destination is not promoted:
-
-```txt
-scope:modeu5_trade_owner_target_market
 scope:modeu5_trade_owner_good
 ```
 
@@ -391,14 +411,15 @@ Detailed route accounting available:
   compute goods delta in every_trade
   classify origin/destination promotion
   apply money delta only after the income/profit API probe confirms the surface
-  apply goods loss through the four-case destination reconciliation matrix
+  apply market-level goods loss through add_goods_supply with a negative amount
+  apply promoted-destination country-stock loss through remove_stock
 
 Detailed accounting unavailable or blocked:
   emit explicit fallback/block diagnostics
   do not silently drop the route economics or goods-received effect
 ```
 
-If detailed Market x Country x Good accounting is unavailable, US-20 must either use a confirmed market-level fallback or emit a blocked diagnostic. It must not pretend country-level goods reconciliation happened.
+If detailed Market x Country x Good accounting is unavailable, US-20 must still apply the market-level destination loss if the target market and route good are saved. It must block only the missing country-stock part.
 
 ## Storage rule
 
@@ -420,6 +441,7 @@ Route-local calculated fields:
   target_goods_amount_received
   goods_reconciliation_delta
   goods_loss_quantity
+  market_goods_supply_delta
   origin_market_promoted
   destination_market_promoted
   selected_goods_loss_country
@@ -460,6 +482,7 @@ preserved_trade_maintenance
 target_goods_amount_received
 goods_reconciliation_delta
 goods_loss_quantity
+market_goods_supply_delta
 selected_goods_loss_country
 receiver_selection_source
 receiver_capacity_before
@@ -500,22 +523,22 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 | Money accumulator | Accumulate route-local money delta to trade owner | ModeU5-only country accumulator is updated | Implemented | This is not vanilla income/profit application. |
 | Vanilla income/profit application | Probe country income, route profit, add route profit, then test country-income relation | Probe matrix exists as blocked counters/logs; no speculative API calls are used | Blocked TECH-01 | Identify confirmed EU5 read/write APIs for country income and route profit. |
 | Goods received formula | `target = sent - 0.1 * clamp(1 - trade_maintenance, 0, 1)` | Formula kernel computes target, delta, and loss quantity | Implemented | Confirm if formula is absolute loss, not percentage-of-sent; current implementation follows written spec. |
+| Market-level destination loss | Remove delivery loss from destination market stockpile | Uses documented market-scope `add_goods_supply` with negative amount and route-good scope | Implemented | Needs in-game confirmation that negative amount is accepted as stockpile removal. |
 | Base movement vs loss | Base add/transfer is separate from destination loss removal | Code comments and status matrix separate receipt path from loss reconciliation | Partial | Implement generated-good base receipt operators separately. |
 | Four-case classification | Classify origin promoted and destination promoted | Runtime computes `modeu5_us20_origin_market_is_promoted` and `modeu5_us20_target_market_is_promoted`; counters exist for all four cases | Implemented | Deterministic fixture currently covers case 4 only. |
-| Case 1: origin non-promoted / destination non-promoted | Remove loss at destination market and destination country-market if available | Branch classified; destination non-promoted path blocks on missing market-level remove_good | Partial / Blocked TECH-01 | Confirm or implement market-level `remove_good` operator. |
-| Case 2: origin promoted / destination non-promoted | Remove loss at destination market and destination country-market if available | Branch classified; destination non-promoted path blocks on missing market-level remove_good | Partial / Blocked TECH-01 | Same as case 1; origin detail does not change destination-loss operator. |
-| Case 3: origin non-promoted / destination promoted | Add received goods at destination country-market; then remove destination loss | Branch classified; receiver/loss path exists for explicit receiver + wheat fixture; base add is not implemented | Partial | Generate literal-good add-at-destination operator and test case 3. |
-| Case 4: origin promoted / destination promoted | Transfer country-market to country-market; then remove destination loss | Branch classified; deterministic fixture asserts case 4 and tests loss removal with explicit receiver + wheat | Partial | Generate literal-good transfer receipt operator; generic route good dispatcher still missing. |
+| Case 1: origin non-promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through `add_goods_supply` | Partial | Add deterministic case-1 fixture and run in-game. |
+| Case 2: origin promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through `add_goods_supply` | Partial | Add deterministic case-2 fixture and run in-game. |
+| Case 3: origin non-promoted / destination promoted | Add received goods at destination country-market; then remove destination market + country-stock loss | Branch classified; market loss is implemented; receiver/country loss path exists for explicit receiver + wheat fixture; base add is not implemented | Partial | Generate literal-good add-at-destination operator and test case 3. |
+| Case 4: origin promoted / destination promoted | Transfer country-market to country-market; then remove destination market + country-stock loss | Branch classified; deterministic fixture asserts case 4, market loss, and country loss with explicit receiver + wheat | Partial | Generate literal-good transfer receipt operator; generic country-stock route-good dispatcher still missing. |
 | Stored receiving country | If earlier transfer/demand resolution stored receiver, use it | Implemented: `scope:modeu5_us20_receiving_country` wins | Implemented | Need actual upstream storage when base movement operator is implemented. |
 | Trade owner as receiver | If trade owner is present in destination market, use trade owner | Scaffolded behind `modeu5_us20_trade_owner_present_in_target_market` scope flag | Partial | Implement live presence detection against destination market country list/cache. |
 | US-10 receiver fallback | Reuse/extend US-10 candidate machinery for receiver allocation | Specified; blocked counter/log when explicit receiver and trade-owner-present path are unavailable | Specified only | Build generated literal-good receiver allocator that preserves US-10 bucket/tie-break ordering. |
 | Receiver thresholds | Ignore supplier protection thresholds; apply receiver eligibility before US-10 ordering | Documented only | Specified only | Add receiver profile flag or separate resolver mode that changes eligibility only. |
 | Receiver capacity rule | Eligible if `current_stock < capacity`; do not clip full receipt to free capacity | Documented only | Specified only | Needs stock/capacity eligibility reads per candidate; do not introduce a lower-fill priority sort. |
-| Generic good support | Apply US-20 to route good, not hard-coded wheat | Live generic path remains blocked; deterministic fixture uses wheat only | Partial | Generate route good -> literal-good dispatcher. |
-| Destination loss removal | Loss uses destination removal semantics, not transfer semantics | Deterministic wheat path calls `modeu5_remove_stock` with `reason = stock_loss` | Partial | Generic remove path pending literal-good dispatcher and receiver selection. |
-| Non-promoted destination removal | Use market-level `remove_good` semantics | Blocked with explicit counter/log; no speculative operator added | Blocked TECH-01 | Confirm central market-level `remove_good` API/operator. |
-| Debug visibility | Expose classification, blocked routes, probe states, loss values | Globals/logs exist for money probe, goods block, case counters, receiver-selection block | Implemented | Add UI/debug event summary if desired. |
-| Test coverage | Deterministic fixture should cover formula, CMM gate, probe blocking, and loss removal | Fixture covers disabled gate, formula, income-probe blocking, explicit receiver, case 4, wheat `remove_stock` loss | Partial | Add deterministic fixtures for cases 1, 2, and 3 once `remove_good`/add operator is available. |
+| Generic good support | Apply US-20 to route good, not hard-coded wheat | Market-level loss uses saved route good; country-stock `remove_stock` fixture is still wheat-only | Partial | Generate route good -> literal-good dispatcher for country-stock removal. |
+| Destination country-stock loss removal | Promoted-destination country-stock loss uses destination removal semantics, not transfer semantics | Deterministic wheat path calls `modeu5_remove_stock` with `reason = stock_loss` | Partial | Generic country-stock remove path pending literal-good dispatcher and receiver selection. |
+| Debug visibility | Expose classification, blocked routes, market-loss routes, probe states, loss values | Globals/logs exist for money probe, goods block, case counters, market-loss counter, receiver-selection block | Implemented | Add UI/debug event summary if desired. |
+| Test coverage | Deterministic fixture should cover formula, CMM gate, probe blocking, market loss, and country-stock loss | Fixture covers disabled gate, formula, income-probe blocking, explicit receiver, case 4, market loss, and wheat `remove_stock` loss | Partial | Add deterministic fixtures for cases 1, 2, and 3. |
 | Static CI | Generated files and validation must pass | CI currently validates parser/generator/static surfaces | Implemented | Does not prove EU5 runtime execution; needs in-game debug event run. |
 
 ## Acceptance checks
@@ -531,18 +554,19 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 - Vanilla money application remains blocked until country-income / trade-profit probes are confirmed.
 - Probe matrix covers read country income, read route profit, add route profit, and the country-income relation test.
 - US-20 classifies both origin-market promotion and destination-market promotion.
-- Case 1 origin non-promoted / destination non-promoted removes loss at destination.
-- Case 2 origin promoted / destination non-promoted removes loss at destination.
-- Case 3 origin non-promoted / destination promoted adds at destination country-market, then removes destination loss.
-- Case 4 origin promoted / destination promoted transfers country-market to country-market, then removes destination loss.
+- Destination market loss uses add_goods_supply with a negative amount.
+- Case 1 origin non-promoted / destination non-promoted removes loss at destination market.
+- Case 2 origin promoted / destination non-promoted removes loss at destination market.
+- Case 3 origin non-promoted / destination promoted adds at destination country-market, then removes destination market + country-stock loss.
+- Case 4 origin promoted / destination promoted transfers country-market to country-market, then removes destination market + country-stock loss.
 - Stored receiving country wins when available.
 - Trade owner is selected only if present in destination market.
 - If trade owner is not present, the receiver allocator extends US-10 while preserving bucket sorting and tie-break ordering.
 - Receiver allocation changes eligibility thresholds only; it does not add a lower-fill priority sort.
 - Receiver allocation ignores supplier-protection thresholds.
 - Receiver allocation uses under-capacity eligibility but does not cap the whole receipt to free capacity for MVP.
-- Goods loss uses destination removal semantics, not transfer semantics.
+- Country-stock goods loss uses destination removal semantics, not transfer semantics.
 - #105 and #120 effects are separate in debug output.
-- Missing detailed accounting is visible as fallback/block diagnostics.
-- No silent money or goods adjustment occurs.
+- Missing detailed country-stock accounting is visible as fallback/block diagnostics.
+- No silent money or country-stock goods adjustment occurs.
 ```
