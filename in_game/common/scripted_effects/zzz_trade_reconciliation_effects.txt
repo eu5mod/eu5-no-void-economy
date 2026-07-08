@@ -10,9 +10,21 @@
 # This effect computes a route-local reconciliation delta. Applying that delta to
 # vanilla remains explicitly separated from the formula:
 # - money-side application requires a confirmed country-income or trade-profit API;
-# - goods-side application is a loss and must use remove_stock at the receiving
-#   market x selected country x good level when the target market is promoted;
-# - non-promoted target markets require a market-level remove_good fallback.
+# - goods-side delivery has a four-case origin/destination market accounting matrix;
+# - the base add/transfer of received goods is distinct from the loss removal;
+# - the US-20 loss is always removed at destination, never treated as a transfer.
+#
+# Four goods-accounting cases:
+#   origin non-promoted, destination non-promoted:
+#     remove loss at destination market / destination country-market surface.
+#   origin promoted, destination non-promoted:
+#     remove loss at destination market / destination country-market surface.
+#   origin non-promoted, destination promoted:
+#     add received goods at destination country-market only, then remove loss at
+#     destination market + destination country-market.
+#   origin promoted, destination promoted:
+#     transfer received goods country-market -> country-market, then remove loss
+#     at destination market + destination country-market.
 #
 # The parent call and this effect both gate on modeu5_trade_rework_enabled_trigger.
 # This file deliberately does not reintroduce:
@@ -43,6 +55,10 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		remove_global_variable = modeu5_trade_efficiency_probe_add_trade_profit_blocked
 		remove_global_variable = modeu5_trade_efficiency_probe_country_income_relation_blocked
 		remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+		remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes
+		remove_global_variable = modeu5_us20_case_origin_promoted_destination_unpromoted_routes
+		remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes
+		remove_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes
 		remove_global_variable = modeu5_us20_market_level_remove_good_blocked_routes
 		remove_global_variable = modeu5_us20_goods_loss_routes
 		remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
@@ -60,6 +76,10 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		set_global_variable = { name = modeu5_trade_efficiency_probe_add_trade_profit_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_probe_country_income_relation_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_unpromoted_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_promoted_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_promoted_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_market_level_remove_good_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = 0 }
@@ -165,6 +185,24 @@ modeu5_note_us20_receiver_capacity_sort_blocked_route = {
 
 modeu5_note_trade_efficiency_owner_missing_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_owner_missing_routes value = { value = global_var:modeu5_trade_efficiency_owner_missing_routes add = 1 } }
+}
+
+modeu5_note_us20_four_case_accounting_path = {
+	if = {
+		limit = { scope:modeu5_us20_origin_market_is_promoted = 0 scope:modeu5_us20_target_market_is_promoted = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes value = { value = global_var:modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes add = 1 } }
+	}
+	else_if = {
+		limit = { scope:modeu5_us20_origin_market_is_promoted > 0 scope:modeu5_us20_target_market_is_promoted = 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_unpromoted_routes value = { value = global_var:modeu5_us20_case_origin_promoted_destination_unpromoted_routes add = 1 } }
+	}
+	else_if = {
+		limit = { scope:modeu5_us20_origin_market_is_promoted = 0 scope:modeu5_us20_target_market_is_promoted > 0 }
+		set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_promoted_routes value = { value = global_var:modeu5_us20_case_origin_unpromoted_destination_promoted_routes add = 1 } }
+	}
+	else = {
+		set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_promoted_routes value = { value = global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes add = 1 } }
+	}
 }
 
 # Clear computed outputs only. Do not clear route inputs seeded by a live reader or
@@ -295,13 +333,27 @@ modeu5_compute_us20_goods_received_delta = {
 	}
 }
 
-modeu5_classify_us20_target_market_accounting_surface = {
-	# Promoted target market gate:
-	# - non-promoted to_market: only market-level reconciliation is allowed, via a
-	#   future confirmed remove_good API/operator;
-	# - promoted to_market: use market x country accounting and apply the loss with
-	#   remove_stock/remove_good reconciliation at selected receiver-country level.
+modeu5_classify_us20_route_market_accounting_surfaces = {
+	# Origin promotion decides whether the base receipt path is add-at-destination or
+	# country-market transfer. Destination promotion decides whether a country
+	# receiver can exist for the detailed receipt/loss surface.
+	save_temporary_scope_value_as = { name = modeu5_us20_origin_market_is_promoted value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_target_market_is_promoted value = 0 }
+	if = {
+		limit = { scope:modeu5_us20_test_origin_market_promoted > 0 }
+		save_temporary_scope_value_as = { name = modeu5_us20_origin_market_is_promoted value = 1 }
+	}
+	else_if = {
+		limit = {
+			exists = scope:modeu5_trade_owner_source_market
+			has_global_variable_list = modeu5_promoted_markets_this_cycle
+			is_target_in_global_variable_list = {
+				name = modeu5_promoted_markets_this_cycle
+				target = scope:modeu5_trade_owner_source_market
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us20_origin_market_is_promoted value = 1 }
+	}
 	if = {
 		limit = { scope:modeu5_us20_test_target_market_promoted > 0 }
 		save_temporary_scope_value_as = { name = modeu5_us20_target_market_is_promoted value = 1 }
@@ -317,36 +369,32 @@ modeu5_classify_us20_target_market_accounting_surface = {
 		}
 		save_temporary_scope_value_as = { name = modeu5_us20_target_market_is_promoted value = 1 }
 	}
+	modeu5_note_us20_four_case_accounting_path = yes
 }
 
-modeu5_apply_us20_market_level_remove_good_reconciliation = {
-	# This is the required fallback when to_market is not promoted. Do not remove
-	# from an arbitrary country stock in that case. The actual market-level
-	# remove_good surface is not confirmed in TECH-01, so this remains blocked.
+modeu5_apply_us20_destination_market_loss_reconciliation = {
+	# Case 1/2 destination non-promoted:
+	#   origin promotion does not matter for the loss. Remove at destination market
+	#   and destination country-market surface if available. The actual market-level
+	#   remove_good API/operator is not confirmed, so this remains blocked.
 	modeu5_note_us20_market_level_remove_good_blocked_route = yes
 	modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
-	debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=target_market_not_promoted required_surface=market_level_remove_good"
+	debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=destination_not_promoted required_surface=destination_market_remove_good"
 }
 
 modeu5_select_us20_goods_receiver_country_for_promoted_market = {
-	# Receiver-selection contract for promoted markets:
+	# Receiver-selection contract for promoted destination markets:
 	# 1. If a receiving country was stored by the earlier transfer_stock / demand
-	#    resolution path, use it. This is the clean case.
-	# 2. Else, if the trade owner is present in the target market, use the trade
-	#    owner.
-	# 3. Else, reuse/extend the US-10 candidate-selection machinery, but with a
-	#    receiver-allocation profile rather than the supplier profile.
+	#    resolution path, use it.
+	# 2. Else, if the trade owner is present in the destination market, use it.
+	# 3. Else, reuse/extend US-10 candidate selection with a receiver-allocation
+	#    profile rather than a supplier profile.
 	#
-	# The receiver profile intentionally inverts several US-10 supplier assumptions:
+	# Receiver profile:
 	# - ignore minimum-stock and reserve/protection thresholds;
-	# - prefer lower fill-ratio / under-capacity countries, because low-stock
-	#   countries benefit most from receiving the trade;
+	# - prefer lower fill-ratio / under-capacity countries;
 	# - eligible receiver must be under capacity before receipt;
-	# - do not clip the received quantity to available capacity for MVP. A country
-	#   at 99/100 capacity can receive 10 and temporarily sit at 109/100.
-	#
-	# Current generic fallback is blocked until a generated literal-good receiver
-	# allocator exists. The deterministic test path uses explicit receiving country.
+	# - do not clip the receipt to available capacity for MVP.
 	if = {
 		limit = { exists = scope:modeu5_us20_receiving_country }
 		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
@@ -361,33 +409,51 @@ modeu5_select_us20_goods_receiver_country_for_promoted_market = {
 	}
 }
 
+modeu5_apply_us20_promoted_destination_receipt_path = {
+	# Case 3: origin non-promoted, destination promoted:
+	#   add received goods at destination country-market only, then remove loss at
+	#   destination market + destination country-market.
+	# Case 4: origin promoted, destination promoted:
+	#   transfer received goods country-market -> country-market, then remove loss
+	#   at destination market + destination country-market.
+	#
+	# This function classifies the required base receipt path, but the current
+	# reconciliation implementation applies only the loss. The add/transfer receipt
+	# operator must remain a separate generated-good implementation.
+}
+
+modeu5_apply_us20_promoted_destination_loss_reconciliation = {
+	modeu5_select_us20_goods_receiver_country_for_promoted_market = yes
+	modeu5_apply_us20_promoted_destination_receipt_path = yes
+	if = {
+		limit = { scope:modeu5_us20_test_apply_wheat_loss_available > 0 exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market }
+		modeu5_remove_stock = {
+			country = scope:modeu5_us20_goods_loss_target_country
+			market = scope:modeu5_trade_owner_target_market
+			good = wheat
+			quantity = scope:modeu5_us20_goods_loss_quantity
+			reason = stock_loss
+		}
+		modeu5_note_us20_goods_loss_route = yes
+	}
+	else = {
+		# Live generic application remains blocked until a route good -> literal-good
+		# dispatcher and receiver allocator are generated.
+		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
+	}
+}
+
 modeu5_apply_us20_goods_delta_to_target_market_good = {
 	if = {
 		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
 		save_temporary_scope_value_as = { name = modeu5_us20_goods_loss_quantity value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 } }
-		modeu5_classify_us20_target_market_accounting_surface = yes
+		modeu5_classify_us20_route_market_accounting_surfaces = yes
 		if = {
 			limit = { scope:modeu5_us20_target_market_is_promoted = 0 }
-			modeu5_apply_us20_market_level_remove_good_reconciliation = yes
+			modeu5_apply_us20_destination_market_loss_reconciliation = yes
 		}
 		else = {
-			modeu5_select_us20_goods_receiver_country_for_promoted_market = yes
-			if = {
-				limit = { scope:modeu5_us20_test_apply_wheat_loss_available > 0 exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market }
-				modeu5_remove_stock = {
-					country = scope:modeu5_us20_goods_loss_target_country
-					market = scope:modeu5_trade_owner_target_market
-					good = wheat
-					quantity = scope:modeu5_us20_goods_loss_quantity
-					reason = stock_loss
-				}
-				modeu5_note_us20_goods_loss_route = yes
-			}
-			else = {
-				# Live generic application remains blocked until a route good -> literal-good
-				# dispatcher and receiver allocator are generated.
-				modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
-			}
+			modeu5_apply_us20_promoted_destination_loss_reconciliation = yes
 		}
 	}
 }
