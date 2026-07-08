@@ -19,6 +19,9 @@ failures: list[str] = []
 
 CMM_MOD_ID = "no_void_economy"
 CMM_PREFIX = "nve"
+TRADE_REWORK_SETTING = "nve_general_gameplay_gameplay_trade_rework_settings"
+TRADE_REWORK_FLAG = f"flag:{CMM_MOD_ID}__{TRADE_REWORK_SETTING}"
+TRADE_REWORK_VALUE_LINK = f'"variable_map(cmm|{TRADE_REWORK_FLAG})" = 1'
 
 # Naming convention:
 #   tab:     <prefix>_<tabname>_tab
@@ -50,7 +53,7 @@ CMM_SETTINGS: dict[str, tuple[str, str, str, bool]] = {
         "war_exhaustion_political_pressure",
         False,
     ),
-    "nve_general_gameplay_gameplay_trade_rework_settings": (
+    TRADE_REWORK_SETTING: (
         "nve_general_gameplay_tab",
         "nve_general_gameplay_gameplay_group",
         "trade_rework",
@@ -254,14 +257,67 @@ def validate_cmm_registration_ids(cmm_effects: str) -> None:
         expect(setting_id.endswith("_settings"), f"CMM setting id {setting_id} must end with _settings")
 
 
+def validate_trade_rework_runtime_wiring(
+    *,
+    config_triggers: str,
+    country_trade_owner_effects: str,
+    q8_7_global_owner_effects: str,
+    stock_on_actions: str,
+    trade_reconciliation_effects: str,
+) -> None:
+    trade_trigger = block(config_triggers, "modeu5_trade_rework_enabled_trigger")
+    expect("has_variable_map = cmm" in trade_trigger, "Trade rework trigger must require the CMM variable map")
+    expect(TRADE_REWORK_FLAG in trade_trigger, "Trade rework trigger must read the normalized CMM trade-rework flag")
+    expect(TRADE_REWORK_VALUE_LINK in trade_trigger, "Trade rework trigger must require CMM trade-rework value 1")
+
+    country_cycle = block(country_trade_owner_effects, "modeu5_run_monthly_country_trade_owner_cycle")
+    hook_call = "modeu5_run_us17_us20_route_reconciliation = yes"
+    hook_index = country_cycle.find(hook_call)
+    every_trade_index = country_cycle.find("every_trade = {")
+    expect(hook_index >= 0, "Country trade-owner cycle must call US-17/US-20 route reconciliation")
+    expect(country_cycle.count(hook_call) == 1, "Country trade-owner cycle must call US-17/US-20 route reconciliation exactly once")
+    expect(every_trade_index >= 0, "Country trade-owner cycle must contain the native every_trade loop")
+    if hook_index >= 0 and every_trade_index >= 0:
+        expect(every_trade_index < hook_index, "US-17/US-20 reconciliation must be inside the country every_trade loop")
+        hook_guard_window = country_cycle[max(0, hook_index - 200) : hook_index]
+        expect("modeu5_trade_rework_enabled_trigger = yes" in hook_guard_window, "US-17/US-20 route reconciliation call must be gated by the trade-rework trigger")
+
+    prep_index = country_cycle.find("modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes")
+    expect(prep_index >= 0, "Country trade-owner cycle must prepare trade-rework metrics when enabled")
+    if prep_index >= 0:
+        prep_guard_window = country_cycle[max(0, prep_index - 200) : prep_index]
+        expect("modeu5_trade_rework_enabled_trigger = yes" in prep_guard_window, "Trade-rework metric preparation must be gated by the trade-rework trigger")
+
+    route_effect = block(trade_reconciliation_effects, "modeu5_run_us17_us20_route_reconciliation")
+    expect("modeu5_trade_rework_enabled_trigger = yes" in route_effect, "US-17/US-20 reconciliation effect must defensively gate itself")
+    expect("modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes" in route_effect, "US-17/US-20 reconciliation effect must prepare metrics only inside its gated body")
+    expect("modeu5_compute_trade_maintenance_efficiency_delta = yes" in trade_reconciliation_effects, "Trade maintenance side must remain separate from buy/sell side")
+    expect("modeu5_compute_buying_selling_efficiency_delta = yes" in trade_reconciliation_effects, "Buying/selling side must remain separate from maintenance side")
+
+    monthly_pulse = block(stock_on_actions, "modeu5_monthly_stock_cycle_pulse")
+    expect("modeu5_run_monthly_stock_cycle_q8_7_owner_switch = yes" in monthly_pulse, "Monthly pulse must enter the Q8.7 owner switch")
+    q8_7_switch = block(q8_7_global_owner_effects, "modeu5_run_monthly_stock_cycle_q8_7_owner_switch")
+    expect("modeu5_run_monthly_country_trade_owner_cycle = yes" in q8_7_switch, "Q8.7 owner switch must run the country trade-owner pass")
+    expect(hook_call not in q8_7_global_owner_effects, "US-17/US-20 hook must not be placed in the Q8.7 market-local body")
+    expect(hook_call not in stock_on_actions, "US-17/US-20 hook must not be placed directly in monthly on_actions")
+    expect(
+        "every_market_center_in_country = {" not in country_trade_owner_effects + trade_reconciliation_effects + q8_7_global_owner_effects,
+        "Trade-rework runtime must not reintroduce a market-center every_trade scaffold",
+    )
+
+
 required_files = [
     ".metadata/metadata.json",
+    "in_game/common/on_action/modeu5_stock_on_actions.txt",
     "in_game/common/on_action/nve__cmm_on_actions.txt",
     "in_game/common/on_action/nve_cmm_runtime_on_action.txt",
     "in_game/common/scripted_effects/nve__cmm_effects.txt",
     "in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt",
     "in_game/common/scripted_effects/modeu5_configuration_effects.txt",
+    "in_game/common/scripted_effects/modeu5_country_trade_owner_effects.txt",
     "in_game/common/scripted_effects/modeu5_performance_effects.txt",
+    "in_game/common/scripted_effects/modeu5_q8_7_global_owner_effects.txt",
+    "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt",
     "in_game/common/scripted_guis/nve__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/modeu5_configuration_triggers.txt",
     "in_game/events/modeu5_cmm_warning_events.txt",
@@ -282,12 +338,16 @@ expect(
     "Core package must declare CMF as a required dependency",
 )
 
+stock_on_actions = read("in_game/common/on_action/modeu5_stock_on_actions.txt")
 on_actions = read("in_game/common/on_action/nve__cmm_on_actions.txt")
 runtime_on_actions = read("in_game/common/on_action/nve_cmm_runtime_on_action.txt")
 cmm_effects = read("in_game/common/scripted_effects/nve__cmm_effects.txt")
 runtime_effects = read("in_game/common/scripted_effects/modeu5_cmm_runtime_effects.txt")
 scripted_gui = read("in_game/common/scripted_guis/nve__cmm_scripted_gui.txt")
 config_effects = read("in_game/common/scripted_effects/modeu5_configuration_effects.txt")
+country_trade_owner_effects = read("in_game/common/scripted_effects/modeu5_country_trade_owner_effects.txt")
+q8_7_global_owner_effects = read("in_game/common/scripted_effects/modeu5_q8_7_global_owner_effects.txt")
+trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
 config_triggers = read("in_game/common/scripted_triggers/modeu5_configuration_triggers.txt")
 performance_effects = read("in_game/common/scripted_effects/modeu5_performance_effects.txt")
 warning_events = read("in_game/events/modeu5_cmm_warning_events.txt")
@@ -295,6 +355,13 @@ loc = read("main_menu/localization/english/nve__cmm_l_english.yml")
 
 validate_cmm_identifier_catalog()
 validate_cmm_registration_ids(cmm_effects)
+validate_trade_rework_runtime_wiring(
+    config_triggers=config_triggers,
+    country_trade_owner_effects=country_trade_owner_effects,
+    q8_7_global_owner_effects=q8_7_global_owner_effects,
+    stock_on_actions=stock_on_actions,
+    trade_reconciliation_effects=trade_reconciliation_effects,
+)
 
 expect("nve__on_register_cmf_mod" in on_actions, "CMM registration on_action must call nve__on_register_cmf_mod")
 expect("nve__on_cmf_callback" in on_actions, "CMM callback on_action must call nve__on_cmf_callback")
@@ -347,6 +414,7 @@ for trigger in [
     "modeu5_performance_mode_enabled_trigger",
     "modeu5_nve_normal_mode_trigger",
     "modeu5_nve_deactivated_trigger",
+    "modeu5_trade_rework_enabled_trigger",
     "modeu5_detailed_country_market_accounting_enabled_trigger",
     "modeu5_market_level_fallback_required_trigger",
     "modeu5_us00_full_ledger_persistence_allowed_trigger",
