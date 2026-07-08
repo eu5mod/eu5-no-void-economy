@@ -39,6 +39,8 @@ The old `remove_good` probe is therefore replaced by a concrete market-loss path
 modeu5_us20_market_goods_supply_loss_routes
 ```
 
+Runtime note: static CI can verify the file surface, but the in-game fixture must still confirm that the engine accepts negative `amount` as stockpile removal.
+
 ## Status legend
 
 ```txt
@@ -57,7 +59,7 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 | Money formula | Implemented / partial | Old price-side bonus removal and route delta are computed; #120 side remains placeholder until final #120 runtime model. |
 | Vanilla income/profit application | Blocked TECH-01 | Probe matrix is documented/counted, but no speculative country-income or route-profit API calls are used. |
 | Goods received formula | Implemented | Target received amount and loss quantity are computed from `trade_maintenance`. |
-| Market-level destination loss | Implemented | Uses documented market-scope `add_goods_supply` with a negative amount. |
+| Market-level destination loss | Implemented | Uses documented market-scope `add_goods_supply` with a negative amount; requires in-game confirmation. |
 | Four-case market accounting | Implemented as classification | Runtime classifies origin/destination promoted status and counts all four paths. |
 | Case 1: origin non-promoted / destination non-promoted | Partial | Correct path is destination market loss through `add_goods_supply`; needs explicit non-promoted in-game fixture. |
 | Case 2: origin promoted / destination non-promoted | Partial | Same destination market loss as case 1; needs explicit non-promoted in-game fixture. |
@@ -190,25 +192,27 @@ US-20 receiver allocation must reuse the same US-10 bucket sorting and tie-break
 
 ## Next implementation steps
 
-1. Add explicit deterministic fixtures for case 1 and case 2 now that the market-level `add_goods_supply` surface is wired.
-2. Generate route-good -> literal-good dispatchers for country-stock `remove_stock` so US-20 country loss is not wheat-only.
-3. Implement base receipt operators separately from loss reconciliation:
+1. Run the existing fixture in-game to confirm `add_goods_supply` accepts negative `amount` for market stockpile loss.
+2. Add explicit deterministic fixtures for case 1 and case 2 now that the market-level `add_goods_supply` surface is wired.
+3. Generate route-good -> literal-good dispatchers for country-stock `remove_stock` so US-20 country loss is not wheat-only.
+4. Implement base receipt operators separately from loss reconciliation:
    - case 3: add at destination country-market;
    - case 4: transfer country-market -> country-market.
-4. Implement live trade-owner-present detection in the destination market.
-5. Extend US-10 candidate machinery with a receiver-allocation mode:
+5. Implement live trade-owner-present detection in the destination market.
+6. Extend US-10 candidate machinery with a receiver-allocation mode:
    - keep the same US-10 bucket sorting and tie-break ordering;
    - change only receiver eligibility thresholds;
    - ignore supplier protection thresholds;
    - require `current_stock < capacity` before receipt;
    - do not clip the full receipt to free capacity for MVP.
-6. Replace blocked money-side probe counters only after TECH-01 confirms country-income / route-profit read-write APIs.
+7. Replace blocked money-side probe counters only after TECH-01 confirms country-income / route-profit read-write APIs.
 
 ## Merge caution
 
 This PR is safe as a scaffold/formula/classification/market-loss PR, but it should not be described as full US-20 runtime completion until:
 
 ```txt
+- add_goods_supply with negative amount is confirmed in-game;
 - case 1 and case 2 are explicitly run in-game;
 - route-good literal dispatcher exists for country-stock remove_stock;
 - base add/transfer receipt operators exist;
