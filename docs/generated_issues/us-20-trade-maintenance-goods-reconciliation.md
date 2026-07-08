@@ -163,14 +163,49 @@ goods_loss_quantity =
     -goods_reconciliation_delta
 ```
 
-The loss must be applied with `modeu5_remove_stock`, not `modeu5_transfer_stock`.
-
-## Goods-loss target selection
-
-The target is not only `to_market x good`; it is:
+The loss must not be treated as a transfer. Depending on the target market accounting surface, it is either:
 
 ```txt
-to_market x selected_country x good
+non-promoted to_market:
+  market-level remove_good reconciliation
+
+promoted to_market:
+  Market x Country level allocation
+  then remove_stock / remove_good reconciliation against the selected receiver
+```
+
+`remove_good` is named here as the required market-level semantics. It remains a TECH-01/API confirmation item if no concrete EU5 surface exists yet.
+
+## Promoted-market gate
+
+Before selecting a receiver country, US-20 must classify the destination market:
+
+```txt
+is to_market promoted?
+```
+
+Rules:
+
+```txt
+No:
+  Do not invent a country receiver.
+  Reconcile at market level via remove_good.
+  If remove_good is unavailable, block and log.
+
+Yes:
+  Use Market x Country accounting.
+  Select a receiver country.
+  Apply the goods loss with remove_stock / remove_good reconciliation.
+```
+
+This aligns US-20 with the promoted-market accounting model. A non-promoted market does not have the detailed Market x Country x Good surface required to justify country-level receiver selection.
+
+## Receiver-country selection for promoted markets
+
+The target is:
+
+```txt
+to_market x selected_receiver_country x good
 ```
 
 Selection rules:
@@ -179,25 +214,27 @@ Selection rules:
 1. If the earlier transfer / demand-resolution path stored a receiving country,
    use that country.
 
-2. Else, if the trade owner is present at destination and has confirmed storage
-   ownership/capacity/stock exposure, the trade owner may be selected.
+2. Else, if the trade owner is present in the destination market, use the trade owner.
 
-3. Else, reuse the US-10 Demand Resolution bucket ordering over destination-market
-   stock holders:
-
-   bucket 1: own / demanding / trade-owner country stock
-   bucket 2: subject or overlord stock
-   bucket 3: market-owner stock
-   bucket 4: other foreign stock
+3. Else, reuse or extend US-10 candidate-selection machinery, but with a receiver
+   allocation profile rather than the current supplier-selection profile.
 ```
 
-Important difference from normal US-10 demand resolution:
+Important distinction from US-10 supplier selection:
 
 ```txt
-US-20 loss allocation ignores stock-protection thresholds.
+US-10 supplier selection answers:
+  Which country should goods be taken from?
+
+US-20 receiver allocation answers:
+  Which country should goods arrive to / be reconciled against?
 ```
 
-That means the candidate scan must not exclude a country only because it is below:
+That means US-10 cannot be reused blindly. The receiver profile must invert several assumptions.
+
+### Inverted threshold logic
+
+Supplier protection thresholds should be ignored:
 
 ```txt
 modeu5_us10_minimum_stock_to_consider
@@ -205,19 +242,54 @@ modeu5_us10_supplier_min_stock_ratio
 modeu5_us10_supplier_negative_balance_reserve_ratio
 ```
 
-Reason: this is not supplier selection. It is allocation of a route-delivery loss against the destination-side stock owner that received or would have received the goods.
-
-Hard exclusions still apply where appropriate:
+Reason:
 
 ```txt
-wrong market
-definitely zero or missing stock when a stock-backed loss must be removed
-invalid country scope
-invalid target market
-invalid good dispatcher
+These thresholds prevent supplier stock collapse.
+US-20 is not selecting a supplier.
+Low-stock countries should generally benefit from receiving goods.
 ```
 
-If no selected country can be determined, US-20 must block the goods application and log the target-selection failure. It must not silently remove from the trade owner if the trade owner has no destination stock/capacity.
+### Smooth maximal threshold / capacity logic
+
+Receiver eligibility should be based on whether the country is under capacity before receipt:
+
+```txt
+eligible_receiver =
+    current_stock < capacity
+```
+
+The quantity should not be clipped to available capacity for the MVP:
+
+```txt
+current_stock = 99
+capacity = 100
+received_quantity = 10
+
+post_receipt_stock = 109 / 100
+```
+
+This means:
+
+```txt
+- countries already at or above capacity are not eligible receivers;
+- countries below capacity remain eligible;
+- once selected, the receiver may temporarily exceed capacity;
+- follow-up capacity/decay/reconciliation logic can correct over-capacity later.
+```
+
+Preferred receiver ordering for the fallback selector:
+
+```txt
+1. trade owner if present in destination market
+2. lower fill ratio / more need for stock
+3. relation / subject / market-owner / foreign buckets as tie-breakers
+4. deterministic fallback ordering
+```
+
+For MVP, once the best receiver is selected, allocate the whole goods receipt/loss to that receiver rather than splitting across candidates.
+
+If no selected receiver can be determined, US-20 must block the goods application and log the receiver-selection failure. It must not silently remove from the trade owner if the trade owner is not present in the destination market.
 
 ## Q8.7 runtime placement
 
@@ -264,11 +336,18 @@ Money owner:
 scope:modeu5_trade_owner_country
 ```
 
-Goods loss owner:
+Goods loss owner when promoted:
 
 ```txt
 scope:modeu5_trade_owner_target_market
 scope:modeu5_us20_goods_loss_target_country
+scope:modeu5_trade_owner_good
+```
+
+Goods loss owner when not promoted:
+
+```txt
+scope:modeu5_trade_owner_target_market
 scope:modeu5_trade_owner_good
 ```
 
@@ -281,7 +360,7 @@ Detailed route accounting available:
   compute money delta in every_trade
   compute goods delta in every_trade
   apply money delta only after the income/profit API probe confirms the surface
-  apply goods delta with remove_stock to target market x selected country x good
+  apply goods delta through the promoted-market / receiver-selection gate
 
 Detailed accounting unavailable or blocked:
   emit explicit fallback/block diagnostics
@@ -310,6 +389,7 @@ Route-local calculated fields:
   target_goods_amount_received
   goods_reconciliation_delta
   goods_loss_quantity
+  target_market_promoted
   selected_goods_loss_country
 
 Persistent route-level state:
@@ -338,6 +418,7 @@ docs/tests/
 trade_owner
 source_market
 target_market
+target_market_promoted
 traded_good
 quantity_sent
 engine_goods_amount_received
@@ -346,6 +427,10 @@ target_goods_amount_received
 goods_reconciliation_delta
 goods_loss_quantity
 selected_goods_loss_country
+receiver_selection_source
+receiver_capacity_before
+receiver_stock_before
+receiver_fill_ratio_before
 trade_maintenance_efficiency_inputs
 buying_efficiency
 selling_efficiency
@@ -373,9 +458,16 @@ accounting_mode_detailed_or_fallback
 - Money delta is owned by the saved trade owner.
 - Vanilla money application remains blocked until country-income / trade-profit probes are confirmed.
 - Probe matrix covers read country income, read route profit, add route profit, and the country-income relation test.
-- Goods loss is owned by target market x selected country x good.
-- Goods loss uses remove_stock, not transfer_stock.
-- If no receiving country is stored, US-20 reuses US-10 bucket ordering but ignores protection thresholds.
+- US-20 checks whether to_market is promoted before country-level receiver selection.
+- Non-promoted to_market uses market-level remove_good semantics, or blocks if unavailable.
+- Promoted to_market uses Market x Country x Good receiver allocation.
+- Stored receiving country wins when available.
+- Trade owner is selected only if present in destination market.
+- If trade owner is not present, the receiver allocator extends US-10 but uses receiver-oriented capacity logic.
+- Receiver allocation ignores supplier-protection thresholds.
+- Receiver allocation uses under-capacity eligibility but does not cap the whole receipt to free capacity for MVP.
+- Goods loss is owned by target market x selected country x good when promoted.
+- Goods loss uses remove_stock / remove_good reconciliation, not transfer_stock.
 - #105 and #120 effects are separate in debug output.
 - Missing detailed accounting is visible as fallback/block diagnostics.
 - No silent money or goods adjustment occurs.
