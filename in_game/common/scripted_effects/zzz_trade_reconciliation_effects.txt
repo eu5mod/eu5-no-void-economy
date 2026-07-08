@@ -14,6 +14,10 @@
 # - the base add/transfer of received goods is distinct from the loss removal;
 # - the US-20 loss is always removed at destination, never treated as a transfer.
 #
+# Public EU5 script docs list add_goods_supply as the market-scope stockpile
+# mutation surface. US-20 therefore applies market-level delivery loss through
+# add_goods_supply with a negative amount.
+#
 # Four goods-accounting cases:
 #   origin non-promoted, destination non-promoted:
 #     remove loss at destination market / destination country-market surface.
@@ -60,6 +64,7 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes
 		remove_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes
 		remove_global_variable = modeu5_us20_market_level_remove_good_blocked_routes
+		remove_global_variable = modeu5_us20_market_goods_supply_loss_routes
 		remove_global_variable = modeu5_us20_goods_loss_routes
 		remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
 		remove_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes
@@ -81,6 +86,7 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_promoted_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_promoted_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_market_level_remove_good_blocked_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_market_goods_supply_loss_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_receiver_capacity_sort_blocked_routes value = 0 }
@@ -171,6 +177,10 @@ modeu5_note_us20_market_level_remove_good_blocked_route = {
 	set_global_variable = { name = modeu5_us20_market_level_remove_good_blocked_routes value = { value = global_var:modeu5_us20_market_level_remove_good_blocked_routes add = 1 } }
 }
 
+modeu5_note_us20_market_goods_supply_loss_route = {
+	set_global_variable = { name = modeu5_us20_market_goods_supply_loss_routes value = { value = global_var:modeu5_us20_market_goods_supply_loss_routes add = 1 } }
+}
+
 modeu5_note_us20_goods_loss_route = {
 	set_global_variable = { name = modeu5_us20_goods_loss_routes value = { value = global_var:modeu5_us20_goods_loss_routes add = 1 } }
 }
@@ -220,6 +230,7 @@ modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_loss_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_target_goods_amount_received value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_market_goods_supply_delta value = 0 }
 }
 
 modeu5_compute_trade_maintenance_efficiency_delta = {
@@ -372,14 +383,34 @@ modeu5_classify_us20_route_market_accounting_surfaces = {
 	modeu5_note_us20_four_case_accounting_path = yes
 }
 
+modeu5_apply_us20_market_stockpile_loss_reconciliation = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_market_goods_supply_delta
+		value = { value = scope:modeu5_us20_goods_loss_quantity multiply = -1 }
+	}
+	if = {
+		limit = { exists = scope:modeu5_trade_owner_target_market exists = scope:modeu5_trade_owner_good }
+		scope:modeu5_trade_owner_target_market = {
+			add_goods_supply = {
+				goods = scope:modeu5_trade_owner_good
+				amount = scope:modeu5_us20_market_goods_supply_delta
+			}
+		}
+		modeu5_note_us20_market_goods_supply_loss_route = yes
+	}
+	else = {
+		modeu5_note_us20_market_level_remove_good_blocked_route = yes
+		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
+		debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=missing_destination_market_or_goods_scope required_surface=market_add_goods_supply_negative_amount"
+	}
+}
+
 modeu5_apply_us20_destination_market_loss_reconciliation = {
 	# Case 1/2 destination non-promoted:
 	#   origin promotion does not matter for the loss. Remove at destination market
-	#   and destination country-market surface if available. The actual market-level
-	#   remove_good API/operator is not confirmed, so this remains blocked.
-	modeu5_note_us20_market_level_remove_good_blocked_route = yes
-	modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
-	debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=destination_not_promoted required_surface=destination_market_remove_good"
+	#   through the public market-scope add_goods_supply stockpile surface using a
+	#   negative amount.
+	modeu5_apply_us20_market_stockpile_loss_reconciliation = yes
 }
 
 modeu5_select_us20_goods_receiver_country_for_promoted_market = {
@@ -425,6 +456,7 @@ modeu5_apply_us20_promoted_destination_receipt_path = {
 modeu5_apply_us20_promoted_destination_loss_reconciliation = {
 	modeu5_select_us20_goods_receiver_country_for_promoted_market = yes
 	modeu5_apply_us20_promoted_destination_receipt_path = yes
+	modeu5_apply_us20_market_stockpile_loss_reconciliation = yes
 	if = {
 		limit = { scope:modeu5_us20_test_apply_wheat_loss_available > 0 exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market }
 		modeu5_remove_stock = {
@@ -437,8 +469,9 @@ modeu5_apply_us20_promoted_destination_loss_reconciliation = {
 		modeu5_note_us20_goods_loss_route = yes
 	}
 	else = {
-		# Live generic application remains blocked until a route good -> literal-good
-		# dispatcher and receiver allocator are generated.
+		# Live generic country-market application remains blocked until a route good ->
+		# literal-good dispatcher and receiver allocator are generated. The market-level
+		# add_goods_supply loss above is not blocked by this country-stock boundary.
 		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
 	}
 }
