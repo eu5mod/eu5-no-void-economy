@@ -61,6 +61,51 @@ new_buying_selling_efficiency_effect
 
 Do not collapse both into one generic `trade_efficiency_money_effect` in documentation or debug output.
 
+## Vanilla income / trade-profit application probe
+
+The money-side formula is not sufficient by itself. The implementation must prove how EU5 links route profit and country income before applying the delta to vanilla.
+
+The required probe matrix is:
+
+```txt
+1. Read old trade-owner country income.
+2. Read old trade route profit.
+3. Add the route reconciliation delta to trade route profit.
+4. Read new trade route profit.
+5. Read new trade-owner country income.
+6. Test:
+
+   old_country_income =
+       new_country_income
+     - added_trade_route_profit
+```
+
+Interpretation:
+
+```txt
+If the equality holds:
+  route profit feeds country income.
+  Apply the delta to route profit only.
+
+If the equality does not hold:
+  route profit and country income are separate surfaces.
+  Decide whether to apply the delta to country income, route profit, or both.
+
+If any read/write surface is unavailable:
+  block income application and log the missing API surface.
+```
+
+Required probe surfaces:
+
+```txt
+read_country_income
+read_trade_route_profit
+add_trade_route_profit
+verify_country_income_after_route_profit_delta
+```
+
+Until those are confirmed in TECH-01, only the ModeU5 accumulator may be updated; vanilla income/profit must remain blocked.
+
 ## Buying/selling efficiency support value
 
 The #120 buy/sell side may use a clamped average read from the saved trade owner country:
@@ -111,6 +156,69 @@ goods_reconciliation_delta =
   - engine_goods_amount_received
 ```
 
+When the delta is negative, it is a loss:
+
+```txt
+goods_loss_quantity =
+    -goods_reconciliation_delta
+```
+
+The loss must be applied with `modeu5_remove_stock`, not `modeu5_transfer_stock`.
+
+## Goods-loss target selection
+
+The target is not only `to_market x good`; it is:
+
+```txt
+to_market x selected_country x good
+```
+
+Selection rules:
+
+```txt
+1. If the earlier transfer / demand-resolution path stored a receiving country,
+   use that country.
+
+2. Else, if the trade owner is present at destination and has confirmed storage
+   ownership/capacity/stock exposure, the trade owner may be selected.
+
+3. Else, reuse the US-10 Demand Resolution bucket ordering over destination-market
+   stock holders:
+
+   bucket 1: own / demanding / trade-owner country stock
+   bucket 2: subject or overlord stock
+   bucket 3: market-owner stock
+   bucket 4: other foreign stock
+```
+
+Important difference from normal US-10 demand resolution:
+
+```txt
+US-20 loss allocation ignores stock-protection thresholds.
+```
+
+That means the candidate scan must not exclude a country only because it is below:
+
+```txt
+modeu5_us10_minimum_stock_to_consider
+modeu5_us10_supplier_min_stock_ratio
+modeu5_us10_supplier_negative_balance_reserve_ratio
+```
+
+Reason: this is not supplier selection. It is allocation of a route-delivery loss against the destination-side stock owner that received or would have received the goods.
+
+Hard exclusions still apply where appropriate:
+
+```txt
+wrong market
+definitely zero or missing stock when a stock-backed loss must be removed
+invalid country scope
+invalid target market
+invalid good dispatcher
+```
+
+If no selected country can be determined, US-20 must block the goods application and log the target-selection failure. It must not silently remove from the trade owner if the trade owner has no destination stock/capacity.
+
 ## Q8.7 runtime placement
 
 US-20 belongs in the same route loop as the US-17 money-side route economics:
@@ -142,7 +250,8 @@ every_trade = {
 
   modeu5_compute_trade_maintenance_efficiency_delta = yes
   modeu5_compute_buying_selling_efficiency_delta = yes
-  modeu5_add_trade_money_delta_to_trade_owner = yes
+  modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
+  modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
 
   modeu5_compute_us20_goods_received_delta = yes
   modeu5_apply_us20_goods_delta_to_target_market_good = yes
@@ -155,10 +264,11 @@ Money owner:
 scope:modeu5_trade_owner_country
 ```
 
-Goods owner:
+Goods loss owner:
 
 ```txt
 scope:modeu5_trade_owner_target_market
+scope:modeu5_us20_goods_loss_target_country
 scope:modeu5_trade_owner_good
 ```
 
@@ -170,8 +280,8 @@ The route hook must respect PERF-14 accounting mode plumbing.
 Detailed route accounting available:
   compute money delta in every_trade
   compute goods delta in every_trade
-  apply money delta to saved trade owner
-  apply goods delta to target market/good through the approved central operator
+  apply money delta only after the income/profit API probe confirms the surface
+  apply goods delta with remove_stock to target market x selected country x good
 
 Detailed accounting unavailable or blocked:
   emit explicit fallback/block diagnostics
@@ -199,6 +309,8 @@ Route-local calculated fields:
   engine_goods_amount_received
   target_goods_amount_received
   goods_reconciliation_delta
+  goods_loss_quantity
+  selected_goods_loss_country
 
 Persistent route-level state:
   none
@@ -232,6 +344,8 @@ engine_goods_amount_received
 preserved_trade_maintenance
 target_goods_amount_received
 goods_reconciliation_delta
+goods_loss_quantity
+selected_goods_loss_country
 trade_maintenance_efficiency_inputs
 buying_efficiency
 selling_efficiency
@@ -240,6 +354,10 @@ old_price_side_bonus
 new_trade_maintenance_efficiency_effect
 new_buying_selling_efficiency_effect
 money_reconciliation_delta
+read_country_income_probe
+read_trade_route_profit_probe
+add_trade_route_profit_probe
+country_income_after_route_profit_delta_probe
 accounting_mode_detailed_or_fallback
 ```
 
@@ -253,7 +371,11 @@ accounting_mode_detailed_or_fallback
 - US-20 does not run in the every_market_in_world market-local body.
 - US-20 does not add a second market-center trade loop.
 - Money delta is owned by the saved trade owner.
-- Goods delta is owned by target market/good.
+- Vanilla money application remains blocked until country-income / trade-profit probes are confirmed.
+- Probe matrix covers read country income, read route profit, add route profit, and the country-income relation test.
+- Goods loss is owned by target market x selected country x good.
+- Goods loss uses remove_stock, not transfer_stock.
+- If no receiving country is stored, US-20 reuses US-10 bucket ordering but ignores protection thresholds.
 - #105 and #120 effects are separate in debug output.
 - Missing detailed accounting is visible as fallback/block diagnostics.
 - No silent money or goods adjustment occurs.
