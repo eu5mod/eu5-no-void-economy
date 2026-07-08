@@ -4,7 +4,7 @@
 This postprocessor intentionally patches only the generated stock-good adapter.
 Older invocations may still pass PERF-14 test files as compatibility arguments;
 those paths are accepted but not modified, so `tools/generate_all.sh` does not
- dirty hand-authored test files.
+dirty hand-authored test files.
 """
 
 from __future__ import annotations
@@ -77,9 +77,14 @@ def assert_balanced_braces(source: str, *, label: str) -> None:
     depth = 0
     stack: list[int] = []
     in_string = False
+    line_no = 1
     index = 0
     while index < len(source):
         char = source[index]
+        if char == "\n":
+            line_no += 1
+            index += 1
+            continue
         if in_string:
             if char == "\\":
                 index += 2
@@ -94,15 +99,15 @@ def assert_balanced_braces(source: str, *, label: str) -> None:
             newline = source.find("\n", index)
             if newline < 0:
                 break
-            index = newline
+            line_no += source.count("\n", index, newline + 1)
+            index = newline + 1
             continue
         elif char == "{":
             depth += 1
-            stack.append(source.count("\n", 0, index) + 1)
+            stack.append(line_no)
         elif char == "}":
             depth -= 1
             if depth < 0:
-                line_no = source.count("\n", 0, index) + 1
                 raise SystemExit(f"{label}: generated script has an extra closing brace at line {line_no}")
             stack.pop()
         index += 1
