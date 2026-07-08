@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate PR157 review-popup SVG assets from a URL source of truth."""
+"""Generate PR157 review-popup SVG assets from URL and raw SVG sources."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ import qrcode.image.svg
 ROOT = Path(__file__).resolve().parent.parent
 LOCAL_ENV_PATH = ROOT / ".modeu5.local.env"
 PR157 = ROOT / "docs" / "assets" / "pr157"
+SOURCE_DIR = PR157 / "source"
+GENERATED_DIR = PR157 / "generated"
 QR_URL_PATH = PR157 / "review_popup_1524_qr_url.txt"
 QR_SVG_PATH = PR157 / "review_popup_1524_qr.svg"
 EVENT_TEMPLATE_PATH = PR157 / "review_popup_1524_event_template.svg"
@@ -63,6 +65,7 @@ CARD_H = env_int("MODEU5_REVIEW_POPUP_CARD_H", 475)
 QR_X = env_int("MODEU5_REVIEW_POPUP_QR_X", 37)
 QR_Y = env_int("MODEU5_REVIEW_POPUP_QR_Y", 92)
 QR_SIZE = env_int("MODEU5_REVIEW_POPUP_QR_SIZE", 355)
+SELECTED_SOURCE = env_str("MODEU5_REVIEW_POPUP_SELECTED_SOURCE", "")
 
 
 def read_qr_url() -> str:
@@ -117,21 +120,55 @@ def build_qr_overlay(qr_inner_svg: str, qr_width: float, qr_height: float) -> st
 """.rstrip()
 
 
+def inject_overlay(svg_text: str, overlay: str, source_path: Path) -> str:
+    if MARKER in svg_text:
+        return svg_text.replace(MARKER, overlay)
+    if "</svg>" not in svg_text:
+        raise SystemExit(f"Source SVG has no closing </svg>: {source_path}")
+    return svg_text.replace("</svg>", f"\n{overlay}\n</svg>", 1)
+
+
+def generate_overlay_svg(source_path: Path, output_path: Path, overlay: str) -> None:
+    svg_text = source_path.read_text(encoding="utf-8")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(inject_overlay(svg_text, overlay, source_path), encoding="utf-8")
+    print(f"Generated {output_path.relative_to(ROOT)} from {source_path.relative_to(ROOT)}")
+
+
+def source_svg_candidates() -> list[Path]:
+    if not SOURCE_DIR.exists():
+        return []
+    return sorted(path for path in SOURCE_DIR.glob("*.svg") if path.is_file())
+
+
 def main() -> None:
-    if not EVENT_TEMPLATE_PATH.exists():
-        raise SystemExit(f"Missing review popup template SVG: {EVENT_TEMPLATE_PATH}")
     url = read_qr_url()
     if not url:
         raise SystemExit("QR URL is empty")
+
     generate_qr_svg(url, QR_SVG_PATH)
     qr_inner_svg, qr_width, qr_height = read_qr_inner_svg(QR_SVG_PATH)
     overlay = build_qr_overlay(qr_inner_svg, qr_width, qr_height)
-    template_svg = EVENT_TEMPLATE_PATH.read_text(encoding="utf-8")
-    if MARKER not in template_svg:
-        raise SystemExit(f"Template marker not found in {EVENT_TEMPLATE_PATH}: {MARKER}")
-    EVENT_SOURCE_PATH.write_text(template_svg.replace(MARKER, overlay), encoding="utf-8")
-    print(f"Generated {QR_SVG_PATH.relative_to(ROOT)}")
-    print(f"Generated {EVENT_SOURCE_PATH.relative_to(ROOT)}")
+
+    candidates = source_svg_candidates()
+    selected_generated_path: Path | None = None
+    for source_path in candidates:
+        output_path = GENERATED_DIR / f"{source_path.stem}_qr.svg"
+        generate_overlay_svg(source_path, output_path, overlay)
+        if SELECTED_SOURCE and source_path.name == SELECTED_SOURCE:
+            selected_generated_path = output_path
+
+    if selected_generated_path is not None:
+        EVENT_SOURCE_PATH.write_text(selected_generated_path.read_text(encoding="utf-8"), encoding="utf-8")
+        print(f"Generated {EVENT_SOURCE_PATH.relative_to(ROOT)} from selected source {SELECTED_SOURCE}")
+        return
+
+    if not EVENT_TEMPLATE_PATH.exists():
+        if SELECTED_SOURCE:
+            raise SystemExit(f"Selected source not found in {SOURCE_DIR}: {SELECTED_SOURCE}")
+        raise SystemExit(f"Missing review popup template SVG: {EVENT_TEMPLATE_PATH}")
+
+    generate_overlay_svg(EVENT_TEMPLATE_PATH, EVENT_SOURCE_PATH, overlay)
 
 
 if __name__ == "__main__":
