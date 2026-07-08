@@ -6,10 +6,6 @@ no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed 
 	is_shown = {
 		always = yes
 	}
-
-	is_valid = {
-		always = no
-	}
 	effect = { }
 }
 
@@ -183,7 +179,7 @@ no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	effect = { }
 }
 
-## Misc () Group
+## default_value (default_value) Group
 no_void_economy__review_pop_on_changed = {
 	scope = country
 	effect = { }

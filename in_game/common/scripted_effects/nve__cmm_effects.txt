@@ -23,7 +23,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 		tab_id = nve_general_gameplay_tab
 		group_id = nve_general_gameplay_gameplay_group
-		default_value = 0
+		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
@@ -353,13 +353,13 @@ nve__register_cmf_mod = {
 		setting_id = nve_debug_audit_debug_audit_save_mode_settings
 	}
 
-	## Misc () Group
+	## default_value (default_value) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = review_pop
 		tab_id = nve_other_tab
-		group_id = 
-		default_value = 1
+		group_id = default_value
+		default_value = 0
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
