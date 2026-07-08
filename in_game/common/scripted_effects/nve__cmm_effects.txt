@@ -1,4 +1,4 @@
-﻿# Root scope: country.
+# Root scope: country.
 nve__register_cmf_mod = {
 	# General Gameplay  (nve_general_gameplay_tab) Tab
 	## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
@@ -312,13 +312,13 @@ nve__register_cmf_mod = {
 		setting_id = nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
 	}
 
-	# Other (nve_other_tab) Tab
-	## Debug & Audit (nve_other_debug_audit_group) Group
+	# Debug & Audit (nve_debug_audit_tab) Tab
+	## Debug & Audit (nve_debug_audit_debug_audit_group) Group
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_debug_audit_debug_audit_debug_messages_settings
-		tab_id = nve_other_tab
-		group_id = nve_other_debug_audit_group
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_debug_audit_group
 		default_index = 1
 		option_count = 3
 	}
@@ -330,8 +330,8 @@ nve__register_cmf_mod = {
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_debug_audit_debug_audit_monthly_stock_check_settings
-		tab_id = nve_other_tab
-		group_id = nve_other_debug_audit_group
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_debug_audit_group
 		default_index = 1
 		option_count = 2
 	}
@@ -343,27 +343,14 @@ nve__register_cmf_mod = {
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_debug_audit_debug_audit_save_mode_settings
-		tab_id = nve_other_tab
-		group_id = nve_other_debug_audit_group
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_debug_audit_group
 		default_index = 1
 		option_count = 3
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
 		setting_id = nve_debug_audit_debug_audit_save_mode_settings
-	}
-
-	## default_value (default_value) Group
-	cmm_register_global_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = review_pop
-		tab_id = nve_other_tab
-		group_id = default_value
-		default_value = 0
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = review_pop
 	}
 }
 
@@ -388,8 +375,8 @@ nve__handle_cmf_callback = {
 		flag:no_void_economy__nve_economic_balance_design_activate_goods_decay_settings = {
 			nve_cmf_activate_good_decay = yes
 		}
-		# Other (nve_other_tab) Tab
-		## Debug & Audit (nve_other_debug_audit_group) Group
+		# Debug & Audit (nve_debug_audit_tab) Tab
+		## Debug & Audit (nve_debug_audit_debug_audit_group) Group
 		flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings = {
 			modeu5_refresh_configuration_from_cmm_country_scope = yes
 		}
