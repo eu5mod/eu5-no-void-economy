@@ -163,49 +163,79 @@ goods_loss_quantity =
     -goods_reconciliation_delta
 ```
 
-The loss must not be treated as a transfer. Depending on the target market accounting surface, it is either:
+The loss must not be treated as a transfer. US-20 separates:
 
 ```txt
-non-promoted to_market:
-  market-level remove_good reconciliation
+base goods movement:
+  add at destination, or transfer country-market to country-market
 
-promoted to_market:
-  Market x Country level allocation
-  then remove_stock / remove_good reconciliation against the selected receiver
+loss reconciliation:
+  remove the delivery loss at destination
 ```
 
-`remove_good` is named here as the required market-level semantics. It remains a TECH-01/API confirmation item if no concrete EU5 surface exists yet.
+## Four-case market-accounting matrix
 
-## Promoted-market gate
-
-Before selecting a receiver country, US-20 must classify the destination market:
+US-20 must classify both sides of the route:
 
 ```txt
-is to_market promoted?
+is origin market promoted?
+is destination market promoted?
 ```
 
-Rules:
+The resulting four cases are:
 
 ```txt
-No:
-  Do not invent a country receiver.
-  Reconcile at market level via remove_good.
-  If remove_good is unavailable, block and log.
+1. Origin market non-promoted + destination market non-promoted
 
-Yes:
-  Use Market x Country accounting.
-  Select a receiver country.
-  Apply the goods loss with remove_stock / remove_good reconciliation.
+   Base movement:
+     no country-market transfer is available.
+
+   Loss reconciliation:
+     remove at destination:
+       - destination market surface
+       - destination country x market surface if/when available
+
+2. Origin market promoted + destination market non-promoted
+
+   Base movement:
+     origin has country-market detail, destination does not.
+
+   Loss reconciliation:
+     remove at destination:
+       - destination market surface
+       - destination country x market surface if/when available
+
+3. Origin market non-promoted + destination market promoted
+
+   Base movement:
+     add at destination country x market only.
+
+   Loss reconciliation:
+     remove the loss at destination:
+       - destination market surface
+       - destination country x market surface
+
+4. Origin market promoted + destination market promoted
+
+   Base movement:
+     transfer country x market -> country x market.
+
+   Loss reconciliation:
+     remove the loss at destination:
+       - destination market surface
+       - destination country x market surface
 ```
 
-This aligns US-20 with the promoted-market accounting model. A non-promoted market does not have the detailed Market x Country x Good surface required to justify country-level receiver selection.
+This means destination promotion decides whether a detailed receiver country can exist. Origin promotion decides whether the base receipt path is an add-at-destination or a country-market transfer.
 
-## Receiver-country selection for promoted markets
+`remove_good` remains the market-level semantics for destination-market removal if no concrete central operator is confirmed yet. `remove_stock` remains the country-market loss operator when a selected destination receiver exists.
+
+## Receiver-country selection for promoted destinations
 
 The target is:
 
 ```txt
-to_market x selected_receiver_country x good
+destination_market x selected_receiver_country x good
 ```
 
 Selection rules:
@@ -336,7 +366,7 @@ Money owner:
 scope:modeu5_trade_owner_country
 ```
 
-Goods loss owner when promoted:
+Goods loss owner when destination is promoted:
 
 ```txt
 scope:modeu5_trade_owner_target_market
@@ -344,7 +374,7 @@ scope:modeu5_us20_goods_loss_target_country
 scope:modeu5_trade_owner_good
 ```
 
-Goods loss owner when not promoted:
+Goods loss owner when destination is not promoted:
 
 ```txt
 scope:modeu5_trade_owner_target_market
@@ -359,8 +389,9 @@ The route hook must respect PERF-14 accounting mode plumbing.
 Detailed route accounting available:
   compute money delta in every_trade
   compute goods delta in every_trade
+  classify origin/destination promotion
   apply money delta only after the income/profit API probe confirms the surface
-  apply goods delta through the promoted-market / receiver-selection gate
+  apply goods loss through the four-case destination reconciliation matrix
 
 Detailed accounting unavailable or blocked:
   emit explicit fallback/block diagnostics
@@ -389,7 +420,8 @@ Route-local calculated fields:
   target_goods_amount_received
   goods_reconciliation_delta
   goods_loss_quantity
-  target_market_promoted
+  origin_market_promoted
+  destination_market_promoted
   selected_goods_loss_country
 
 Persistent route-level state:
@@ -418,7 +450,9 @@ docs/tests/
 trade_owner
 source_market
 target_market
-target_market_promoted
+origin_market_promoted
+destination_market_promoted
+four_case_accounting_path
 traded_good
 quantity_sent
 engine_goods_amount_received
@@ -458,16 +492,17 @@ accounting_mode_detailed_or_fallback
 - Money delta is owned by the saved trade owner.
 - Vanilla money application remains blocked until country-income / trade-profit probes are confirmed.
 - Probe matrix covers read country income, read route profit, add route profit, and the country-income relation test.
-- US-20 checks whether to_market is promoted before country-level receiver selection.
-- Non-promoted to_market uses market-level remove_good semantics, or blocks if unavailable.
-- Promoted to_market uses Market x Country x Good receiver allocation.
+- US-20 classifies both origin-market promotion and destination-market promotion.
+- Case 1 origin non-promoted / destination non-promoted removes loss at destination.
+- Case 2 origin promoted / destination non-promoted removes loss at destination.
+- Case 3 origin non-promoted / destination promoted adds at destination country-market, then removes destination loss.
+- Case 4 origin promoted / destination promoted transfers country-market to country-market, then removes destination loss.
 - Stored receiving country wins when available.
 - Trade owner is selected only if present in destination market.
 - If trade owner is not present, the receiver allocator extends US-10 but uses receiver-oriented capacity logic.
 - Receiver allocation ignores supplier-protection thresholds.
 - Receiver allocation uses under-capacity eligibility but does not cap the whole receipt to free capacity for MVP.
-- Goods loss is owned by target market x selected country x good when promoted.
-- Goods loss uses remove_stock / remove_good reconciliation, not transfer_stock.
+- Goods loss uses destination removal semantics, not transfer semantics.
 - #105 and #120 effects are separate in debug output.
 - Missing detailed accounting is visible as fallback/block diagnostics.
 - No silent money or goods adjustment occurs.
