@@ -14,7 +14,7 @@ loss reconciliation:
   remove the delivery loss at destination
 ```
 
-The current PR implements/scaffolds formula, classification, explicit-receiver loss removal, blocked diagnostics, and status visibility. It does not yet implement every base add/transfer and generic-good path.
+The current PR implements/scaffolds formula, classification, explicit-receiver loss removal, market-level destination loss through `add_goods_supply`, blocked diagnostics, and status visibility. It does not yet implement every base add/transfer and generic country-stock path.
 
 ## Status legend
 
@@ -34,13 +34,14 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 | Money formula | Implemented / partial | Old price-side bonus removal and route delta are computed; #120 side remains placeholder until final #120 runtime model. |
 | Vanilla income/profit application | Blocked TECH-01 | Probe matrix is documented/counted, but no speculative country-income or route-profit API calls are used. |
 | Goods received formula | Implemented | Target received amount and loss quantity are computed from `trade_maintenance`. |
+| Market-level destination loss | Implemented | Uses documented market-scope `add_goods_supply` with a negative amount. |
 | Four-case market accounting | Implemented as classification | Runtime classifies origin/destination promoted status and counts all four paths. |
-| Case 1: origin non-promoted / destination non-promoted | Partial / blocked | Correct path is destination loss removal; blocked pending confirmed market-level `remove_good`. |
-| Case 2: origin promoted / destination non-promoted | Partial / blocked | Same destination removal requirement as case 1; origin detail does not solve destination operator. |
-| Case 3: origin non-promoted / destination promoted | Partial | Requires base add-at-destination country-market operator; destination loss path exists only for explicit receiver + wheat fixture. |
-| Case 4: origin promoted / destination promoted | Partial | Deterministic fixture covers classification + explicit receiver + wheat `remove_stock` loss; generic transfer receipt still missing. |
+| Case 1: origin non-promoted / destination non-promoted | Partial | Correct path is destination market loss through `add_goods_supply`; needs explicit non-promoted in-game fixture. |
+| Case 2: origin promoted / destination non-promoted | Partial | Same destination market loss as case 1; needs explicit non-promoted in-game fixture. |
+| Case 3: origin non-promoted / destination promoted | Partial | Requires base add-at-destination country-market operator; destination market loss exists; country-stock loss path exists only for explicit receiver + wheat fixture. |
+| Case 4: origin promoted / destination promoted | Partial | Deterministic fixture covers classification + market loss + explicit receiver + wheat `remove_stock` loss; generic transfer receipt still missing. |
 | Receiver selection | Partial / specified | Stored receiving country wins; trade-owner-present is scaffolded; US-10-style receiver allocator is still specified only. |
-| Generic good support | Partial | Deterministic fixture is wheat-only; route-good literal dispatcher still required. |
+| Generic good support | Partial | Market-level `add_goods_supply` uses the saved route good scope; country-stock `remove_stock` fixture is still wheat-only. |
 | Static CI | Implemented | Generated Files and Generate README pass. |
 | EU5 runtime validation | Not run here | Needs in-game debug event execution. |
 
@@ -101,6 +102,7 @@ Expected path counters:
 
 ```txt
 modeu5_us20_case_origin_promoted_destination_promoted_routes = 1
+modeu5_us20_market_goods_supply_loss_routes = 1
 modeu5_us20_goods_loss_routes = 1
 modeu5_us20_market_level_remove_good_blocked_routes = 0
 modeu5_us20_goods_loss_target_selection_blocked_routes = 0
@@ -136,10 +138,10 @@ This proves the hook is dormant when the trade-rework setting is not active.
 
 | Scenario | Fixture setup | Expected behavior | Current blocker |
 | --- | --- | --- | --- |
-| Case 1: origin non-promoted / destination non-promoted | `origin_promoted = 0`, `destination_promoted = 0` | classify case 1; remove loss at destination market/country-market | requires confirmed market-level `remove_good` |
-| Case 2: origin promoted / destination non-promoted | `origin_promoted = 1`, `destination_promoted = 0` | classify case 2; remove loss at destination market/country-market | requires confirmed market-level `remove_good` |
-| Case 3: origin non-promoted / destination promoted | `origin_promoted = 0`, `destination_promoted = 1`, explicit receiver | add received goods at destination country-market; remove loss at destination | requires generated literal-good add-at-destination operator |
-| Case 4: origin promoted / destination promoted | `origin_promoted = 1`, `destination_promoted = 1`, explicit receiver | transfer country-market to country-market; remove loss at destination | current fixture covers classification + loss; still needs generic transfer receipt operator |
+| Case 1: origin non-promoted / destination non-promoted | `origin_promoted = 0`, `destination_promoted = 0`, saved route good | classify case 1; remove destination market loss through `add_goods_supply` | needs explicit case-1 fixture and in-game run |
+| Case 2: origin promoted / destination non-promoted | `origin_promoted = 1`, `destination_promoted = 0`, saved route good | classify case 2; remove destination market loss through `add_goods_supply` | needs explicit case-2 fixture and in-game run |
+| Case 3: origin non-promoted / destination promoted | `origin_promoted = 0`, `destination_promoted = 1`, explicit receiver | add received goods at destination country-market; remove loss at destination market and country-market | requires generated literal-good add-at-destination operator |
+| Case 4: origin promoted / destination promoted | `origin_promoted = 1`, `destination_promoted = 1`, explicit receiver | transfer country-market to country-market; remove loss at destination market and country-market | current fixture covers classification + market loss + country loss; still needs generic transfer receipt operator |
 
 ## Receiver allocator scenarios still to add
 
@@ -165,8 +167,8 @@ US-20 receiver allocation must reuse the same US-10 bucket sorting and tie-break
 
 ## Next implementation steps
 
-1. Confirm or implement a central market-level `remove_good` surface for non-promoted destinations.
-2. Generate route-good -> literal-good dispatchers so US-20 is not wheat-only.
+1. Add explicit deterministic fixtures for case 1 and case 2 now that the market-level `add_goods_supply` surface is wired.
+2. Generate route-good -> literal-good dispatchers for country-stock `remove_stock` so US-20 country loss is not wheat-only.
 3. Implement base receipt operators separately from loss reconciliation:
    - case 3: add at destination country-market;
    - case 4: transfer country-market -> country-market.
@@ -181,11 +183,11 @@ US-20 receiver allocation must reuse the same US-10 bucket sorting and tie-break
 
 ## Merge caution
 
-This PR is safe as a scaffold/formula/classification PR, but it should not be described as full US-20 runtime completion until:
+This PR is safe as a scaffold/formula/classification/market-loss PR, but it should not be described as full US-20 runtime completion until:
 
 ```txt
-- market-level remove_good is confirmed or implemented;
-- route-good literal dispatcher exists;
+- case 1 and case 2 are explicitly run in-game;
+- route-good literal dispatcher exists for country-stock remove_stock;
 - base add/transfer receipt operators exist;
 - receiver allocator is implemented;
 - in-game debug scenario passes outside static CI.
