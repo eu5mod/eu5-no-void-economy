@@ -4,35 +4,35 @@
 
 # Performance-warning callbacks kept as scripted effects because the generated
 # nve__cmm_effects callback may call them when the matching CMM setting changes.
-no_void_economy__nve_debug_messages_on_changed = {
+no_void_economy__debug_messages_setting_on_changed = {
 	modeu5_refresh_configuration_from_cmm_country_scope = yes
 }
 
-no_void_economy__nve_monthly_stock_check_on_changed = {
+no_void_economy__monthly_stock_check_setting_on_changed = {
 	modeu5_refresh_configuration_from_cmm_country_scope = yes
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_monthly_stock_check
+				target = flag:no_void_economy__monthly_stock_check_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
+			"variable_map(cmm|flag:no_void_economy__monthly_stock_check_setting)" = 2
 		}
 		trigger_event_non_silently = modeu5_cmm_warning.2
 	}
 }
 
-no_void_economy__nve_save_mode_on_changed = {
+no_void_economy__save_mode_setting_on_changed = {
 	modeu5_refresh_configuration_from_cmm_country_scope = yes
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_save_mode
+				target = flag:no_void_economy__save_mode_setting
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
+			"variable_map(cmm|flag:no_void_economy__save_mode_setting)" = 3
 		}
 		trigger_event_non_silently = modeu5_cmm_warning.3
 	}
@@ -58,7 +58,7 @@ nve_cmf_activate_good_decay = {
 #
 # Visibility policy:
 #
-#   unset/default -> visible, because nve_no_void_economy_main default_index = 1
+#   unset/default -> visible, because only_sold_goods_create_revenue_nve_setting default_index = 1
 #   value 1       -> visible
 #   value 2       -> visible
 #   value 3       -> hidden
@@ -76,7 +76,7 @@ modeu5_refresh_nve_main_cmm_visibility = {
 			NOT = {
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_no_void_economy_main
+					target = flag:no_void_economy__only_sold_goods_create_revenue_nve_setting
 				}
 			}
 		}
@@ -84,13 +84,13 @@ modeu5_refresh_nve_main_cmm_visibility = {
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 1
+			"variable_map(cmm|flag:no_void_economy__only_sold_goods_create_revenue_nve_setting)" = 1
 		}
 		set_global_variable = modeu5_cmm_nve_main_enabled
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 2
+			"variable_map(cmm|flag:no_void_economy__only_sold_goods_create_revenue_nve_setting)" = 2
 		}
 		set_global_variable = modeu5_cmm_nve_main_enabled
 	}
@@ -102,77 +102,77 @@ modeu5_refresh_nve_main_cmm_visibility = {
 modeu5_cmm_mark_planned_services_restricted = {
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_decay_activate
+		setting_id = activate_goods_decay_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = activate_trade_cost
+		setting_id = trade_rework_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_war_shorter
+		setting_id = shorter_wars_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_war_exhaustion
+		setting_id = war_exhaustion_political_pressure_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_economy_location_specialisation
+		setting_id = increased_location_specialisation_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_economy_main_balance
+		setting_id = sliders_adjustments_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_balance_ai_strategy
+		setting_id = extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_rebel_threshold
+		setting_id = adjust_rebel_threshold_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_rebel_war_start
+		setting_id = overlord_declares_war_setting
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_subjects_persistance
+		setting_id = persistence_of_resources_setting
 	}
 }
 
 # Silent fallback reset for planned services. If a setting still gets toggled
 # through a stale UI state, a debug tool, or an unrestricted-tools session, reset
 # it to the disabled/default value without showing a popup.
-modeu5_cmm_reset_nve_decay_activate = {
+modeu5_cmm_reset_activate_goods_decay_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_decay_activate
+				target = flag:no_void_economy__activate_goods_decay_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_decay_activate
+			key = flag:no_void_economy__activate_goods_decay_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_activate_trade_cost = {
+modeu5_cmm_reset_trade_rework_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__activate_trade_cost
+				target = flag:no_void_economy__trade_rework_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__activate_trade_cost
+			key = flag:no_void_economy__trade_rework_setting
 		}
 	}
 }
@@ -181,130 +181,130 @@ modeu5_cmm_refresh_nve_main_enabled = {
 	modeu5_refresh_nve_main_mode_from_cmm_country_scope = yes
 }
 
-modeu5_cmm_reset_nve_balance_war_shorter = {
+modeu5_cmm_reset_shorter_wars_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_balance_war_shorter
+				target = flag:no_void_economy__shorter_wars_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_balance_war_shorter
+			key = flag:no_void_economy__shorter_wars_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_balance_war_exhaustion = {
+modeu5_cmm_reset_war_exhaustion_political_pressure_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_balance_war_exhaustion
+				target = flag:no_void_economy__war_exhaustion_political_pressure_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_balance_war_exhaustion
+			key = flag:no_void_economy__war_exhaustion_political_pressure_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_balance_economy_location_specialisation = {
+modeu5_cmm_reset_increased_location_specialisation_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_balance_economy_location_specialisation
+				target = flag:no_void_economy__increased_location_specialisation_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_balance_economy_location_specialisation
+			key = flag:no_void_economy__increased_location_specialisation_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_balance_economy_main_balance = {
+modeu5_cmm_reset_sliders_adjustments_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_balance_economy_main_balance
+				target = flag:no_void_economy__sliders_adjustments_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_balance_economy_main_balance
+			key = flag:no_void_economy__sliders_adjustments_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_balance_ai_strategy = {
+modeu5_cmm_reset_extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_balance_ai_strategy
+				target = flag:no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_balance_ai_strategy
+			key = flag:no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_rebel_threshold = {
+modeu5_cmm_reset_adjust_rebel_threshold_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_rebel_threshold
+				target = flag:no_void_economy__adjust_rebel_threshold_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_rebel_threshold
+			key = flag:no_void_economy__adjust_rebel_threshold_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_rebel_war_start = {
+modeu5_cmm_reset_overlord_declares_war_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_rebel_war_start
+				target = flag:no_void_economy__overlord_declares_war_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_rebel_war_start
+			key = flag:no_void_economy__overlord_declares_war_setting
 		}
 	}
 }
 
-modeu5_cmm_reset_nve_subjects_persistance = {
+modeu5_cmm_reset_persistence_of_resources_setting = {
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_subjects_persistance
+				target = flag:no_void_economy__persistence_of_resources_setting
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_subjects_persistance
+			key = flag:no_void_economy__persistence_of_resources_setting
 		}
 	}
 }
@@ -315,60 +315,60 @@ modeu5_handle_cmm_runtime_callback = {
 	switch = {
 		trigger = var:cmf_callback
 
-		flag:no_void_economy__nve_no_void_economy_main = {
+		flag:no_void_economy__only_sold_goods_create_revenue_nve_setting = {
 			modeu5_cmm_refresh_nve_main_enabled = yes
 		}
 
-		flag:no_void_economy__nve_debug_messages = {
-			no_void_economy__nve_debug_messages_on_changed = yes
+		flag:no_void_economy__debug_messages_setting = {
+			no_void_economy__debug_messages_setting_on_changed = yes
 		}
 
-		flag:no_void_economy__nve_monthly_stock_check = {
-			no_void_economy__nve_monthly_stock_check_on_changed = yes
+		flag:no_void_economy__monthly_stock_check_setting = {
+			no_void_economy__monthly_stock_check_setting_on_changed = yes
 		}
 
-		flag:no_void_economy__nve_save_mode = {
-			no_void_economy__nve_save_mode_on_changed = yes
+		flag:no_void_economy__save_mode_setting = {
+			no_void_economy__save_mode_setting_on_changed = yes
 		}
 
-		flag:no_void_economy__nve_decay_activate = {
-			modeu5_cmm_reset_nve_decay_activate = yes
+		flag:no_void_economy__activate_goods_decay_setting = {
+			modeu5_cmm_reset_activate_goods_decay_setting = yes
 		}
 
-		flag:no_void_economy__activate_trade_cost = {
-			modeu5_cmm_reset_activate_trade_cost = yes
+		flag:no_void_economy__trade_rework_setting = {
+			modeu5_cmm_reset_trade_rework_setting = yes
 		}
 
-		flag:no_void_economy__nve_balance_war_shorter = {
-			modeu5_cmm_reset_nve_balance_war_shorter = yes
+		flag:no_void_economy__shorter_wars_setting = {
+			modeu5_cmm_reset_shorter_wars_setting = yes
 		}
 
-		flag:no_void_economy__nve_balance_war_exhaustion = {
-			modeu5_cmm_reset_nve_balance_war_exhaustion = yes
+		flag:no_void_economy__war_exhaustion_political_pressure_setting = {
+			modeu5_cmm_reset_war_exhaustion_political_pressure_setting = yes
 		}
 
-		flag:no_void_economy__nve_balance_economy_location_specialisation = {
-			modeu5_cmm_reset_nve_balance_economy_location_specialisation = yes
+		flag:no_void_economy__increased_location_specialisation_setting = {
+			modeu5_cmm_reset_increased_location_specialisation_setting = yes
 		}
 
-		flag:no_void_economy__nve_balance_economy_main_balance = {
-			modeu5_cmm_reset_nve_balance_economy_main_balance = yes
+		flag:no_void_economy__sliders_adjustments_setting = {
+			modeu5_cmm_reset_sliders_adjustments_setting = yes
 		}
 
-		flag:no_void_economy__nve_balance_ai_strategy = {
-			modeu5_cmm_reset_nve_balance_ai_strategy = yes
+		flag:no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting = {
+			modeu5_cmm_reset_extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting = yes
 		}
 
-		flag:no_void_economy__nve_rebel_threshold = {
-			modeu5_cmm_reset_nve_rebel_threshold = yes
+		flag:no_void_economy__adjust_rebel_threshold_setting = {
+			modeu5_cmm_reset_adjust_rebel_threshold_setting = yes
 		}
 
-		flag:no_void_economy__nve_rebel_war_start = {
-			modeu5_cmm_reset_nve_rebel_war_start = yes
+		flag:no_void_economy__overlord_declares_war_setting = {
+			modeu5_cmm_reset_overlord_declares_war_setting = yes
 		}
 
-		flag:no_void_economy__nve_subjects_persistance = {
-			modeu5_cmm_reset_nve_subjects_persistance = yes
+		flag:no_void_economy__persistence_of_resources_setting = {
+			modeu5_cmm_reset_persistence_of_resources_setting = yes
 		}
 	}
 }

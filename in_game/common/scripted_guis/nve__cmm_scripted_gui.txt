@@ -1,6 +1,6 @@
-﻿# Trade Rework (nve_general) Tab
-## No Void Economy (nve_no_void_economy) Group
-no_void_economy__nve_decay_activate_on_changed = {
+﻿# Trade Rework (trade_rework_tab) Tab
+## No Void Economy (no_void_economy_group) Group
+no_void_economy__activate_goods_decay_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -13,8 +13,8 @@ no_void_economy__nve_decay_activate_on_changed = {
 	effect = { }
 }
 
-## Trade Rework (nve_general_trade_rework) Group
-no_void_economy__activate_trade_cost_on_changed = {
+## Trade Rework (trade_rework_group) Group
+no_void_economy__trade_rework_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -27,13 +27,13 @@ no_void_economy__activate_trade_cost_on_changed = {
 	effect = { }
 }
 
-## Debug & Audit (nve_general_performance) Group
-no_void_economy__nve_debug_messages_on_changed = {
+## Debug & Audit (debug_audit_group) Group
+no_void_economy__debug_messages_setting_on_changed = {
 	scope = country
 	effect = { }
 }
 
-no_void_economy__nve_monthly_stock_check_on_changed = {
+no_void_economy__monthly_stock_check_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -42,7 +42,7 @@ no_void_economy__nve_monthly_stock_check_on_changed = {
 	effect = { }
 }
 
-no_void_economy__nve_save_mode_on_changed = {
+no_void_economy__save_mode_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -51,28 +51,15 @@ no_void_economy__nve_save_mode_on_changed = {
 	effect = { }
 }
 
-# Balance (nve_balance) Tab
-## General (nve_balance_general) Group
-no_void_economy__nve_balance_difficulty_on_changed = {
+# Balance (balance_tab) Tab
+## General (general_group) Group
+no_void_economy__difficulty_setting_on_changed = {
 	scope = country
 	effect = { }
 }
 
-## War (nve_balance_war) Group
-no_void_economy__nve_balance_war_shorter_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__nve_balance_war_exhaustion_on_changed = {
+## War (war_group) Group
+no_void_economy__shorter_wars_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -85,8 +72,7 @@ no_void_economy__nve_balance_war_exhaustion_on_changed = {
 	effect = { }
 }
 
-## Economy (nve_balance_economy) Group
-no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
+no_void_economy__war_exhaustion_political_pressure_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -99,7 +85,8 @@ no_void_economy__nve_balance_economy_location_specialisation_on_changed = {
 	effect = { }
 }
 
-no_void_economy__nve_balance_economy_main_balance_on_changed = {
+## Economy (economy_group) Group
+no_void_economy__increased_location_specialisation_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -112,8 +99,7 @@ no_void_economy__nve_balance_economy_main_balance_on_changed = {
 	effect = { }
 }
 
-## Other (nve_balance_other) Group
-no_void_economy__nve_balance_ai_strategy_on_changed = {
+no_void_economy__sliders_adjustments_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -126,9 +112,8 @@ no_void_economy__nve_balance_ai_strategy_on_changed = {
 	effect = { }
 }
 
-# Rebels & Subjects (nve_rebels_n_subjects) Tab
-## Rebels (nve_rebels) Group
-no_void_economy__nve_rebel_threshold_on_changed = {
+## Other (other_group) Group
+no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -141,7 +126,9 @@ no_void_economy__nve_rebel_threshold_on_changed = {
 	effect = { }
 }
 
-no_void_economy__nve_rebel_war_start_on_changed = {
+# Rebels & Subjects (rebels_subjects_tab) Tab
+## Rebels (rebels_group) Group
+no_void_economy__adjust_rebel_threshold_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -154,8 +141,21 @@ no_void_economy__nve_rebel_war_start_on_changed = {
 	effect = { }
 }
 
-## Subjects (Subjects) Group
-no_void_economy__nve_subjects_persistance_on_changed = {
+no_void_economy__overlord_declares_war_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+## Subjects (subjects_group) Group
+no_void_economy__persistence_of_resources_setting_on_changed = {
 	scope = country
 
 	is_shown = {
