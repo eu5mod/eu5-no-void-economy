@@ -192,6 +192,8 @@ scope:target_market = {
 
 Therefore the previous `remove_good` probe is no longer required. The implementation should track this as market-stockpile loss application, not as a blocked missing surface.
 
+Runtime note: public docs confirm the market mutation surface, but the in-game fixture must still confirm that the engine accepts a negative `amount` as stockpile removal.
+
 ## Four-case market-accounting matrix
 
 US-20 must classify both sides of the route:
