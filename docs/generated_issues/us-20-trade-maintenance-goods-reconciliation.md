@@ -246,8 +246,8 @@ Selection rules:
 
 2. Else, if the trade owner is present in the destination market, use the trade owner.
 
-3. Else, reuse or extend US-10 candidate-selection machinery, but with a receiver
-   allocation profile rather than the current supplier-selection profile.
+3. Else, reuse or extend US-10 candidate-selection machinery, but with receiver
+   eligibility thresholds rather than supplier-protection thresholds.
 ```
 
 Important distinction from US-10 supplier selection:
@@ -260,7 +260,7 @@ US-20 receiver allocation answers:
   Which country should goods arrive to / be reconciled against?
 ```
 
-That means US-10 cannot be reused blindly. The receiver profile must invert several assumptions.
+US-20 should reuse the same US-10 bucket sorting and tie-break ordering. The receiver-specific change is eligibility, not ordering.
 
 ### Inverted threshold logic
 
@@ -277,7 +277,7 @@ Reason:
 ```txt
 These thresholds prevent supplier stock collapse.
 US-20 is not selecting a supplier.
-Low-stock countries should generally benefit from receiving goods.
+Low-stock countries may be eligible receivers, but they are not preferred by a new fill-ratio ordering.
 ```
 
 ### Smooth maximal threshold / capacity logic
@@ -305,19 +305,19 @@ This means:
 - countries already at or above capacity are not eligible receivers;
 - countries below capacity remain eligible;
 - once selected, the receiver may temporarily exceed capacity;
-- follow-up capacity/decay/reconciliation logic can correct over-capacity later.
+- follow-up capacity/decay/reconciliation logic can correct over-capacity later;
+- capacity/fill is an eligibility filter, not a priority sort key.
 ```
 
-Preferred receiver ordering for the fallback selector:
+Fallback receiver ordering:
 
 ```txt
-1. trade owner if present in destination market
-2. lower fill ratio / more need for stock
-3. relation / subject / market-owner / foreign buckets as tie-breakers
-4. deterministic fallback ordering
+1. apply receiver eligibility filters;
+2. use the same US-10 bucket sorting and tie-break ordering;
+3. use deterministic fallback ordering when the US-10 order still ties.
 ```
 
-For MVP, once the best receiver is selected, allocate the whole goods receipt/loss to that receiver rather than splitting across candidates.
+For MVP, once the best receiver is selected by the US-10 ordering after receiver eligibility filtering, allocate the whole goods receipt/loss to that receiver rather than splitting across candidates.
 
 If no selected receiver can be determined, US-20 must block the goods application and log the receiver-selection failure. It must not silently remove from the trade owner if the trade owner is not present in the destination market.
 
@@ -508,9 +508,9 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 | Case 4: origin promoted / destination promoted | Transfer country-market to country-market; then remove destination loss | Branch classified; deterministic fixture asserts case 4 and tests loss removal with explicit receiver + wheat | Partial | Generate literal-good transfer receipt operator; generic route good dispatcher still missing. |
 | Stored receiving country | If earlier transfer/demand resolution stored receiver, use it | Implemented: `scope:modeu5_us20_receiving_country` wins | Implemented | Need actual upstream storage when base movement operator is implemented. |
 | Trade owner as receiver | If trade owner is present in destination market, use trade owner | Scaffolded behind `modeu5_us20_trade_owner_present_in_target_market` scope flag | Partial | Implement live presence detection against destination market country list/cache. |
-| US-10 receiver fallback | Reuse/extend US-10 candidate machinery for receiver allocation | Specified; blocked counter/log when explicit receiver and trade-owner-present path are unavailable | Specified only | Build generated literal-good receiver allocator. |
-| Receiver thresholds | Ignore supplier protection thresholds; prefer under-capacity / low fill ratio | Documented only | Specified only | Add receiver profile flag or separate resolver mode. |
-| Receiver capacity rule | Eligible if `current_stock < capacity`; do not clip full receipt to free capacity | Documented only | Specified only | Needs stock/capacity reads per candidate in receiver allocator. |
+| US-10 receiver fallback | Reuse/extend US-10 candidate machinery for receiver allocation | Specified; blocked counter/log when explicit receiver and trade-owner-present path are unavailable | Specified only | Build generated literal-good receiver allocator that preserves US-10 bucket/tie-break ordering. |
+| Receiver thresholds | Ignore supplier protection thresholds; apply receiver eligibility before US-10 ordering | Documented only | Specified only | Add receiver profile flag or separate resolver mode that changes eligibility only. |
+| Receiver capacity rule | Eligible if `current_stock < capacity`; do not clip full receipt to free capacity | Documented only | Specified only | Needs stock/capacity eligibility reads per candidate; do not introduce a lower-fill priority sort. |
 | Generic good support | Apply US-20 to route good, not hard-coded wheat | Live generic path remains blocked; deterministic fixture uses wheat only | Partial | Generate route good -> literal-good dispatcher. |
 | Destination loss removal | Loss uses destination removal semantics, not transfer semantics | Deterministic wheat path calls `modeu5_remove_stock` with `reason = stock_loss` | Partial | Generic remove path pending literal-good dispatcher and receiver selection. |
 | Non-promoted destination removal | Use market-level `remove_good` semantics | Blocked with explicit counter/log; no speculative operator added | Blocked TECH-01 | Confirm central market-level `remove_good` API/operator. |
@@ -537,7 +537,8 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 - Case 4 origin promoted / destination promoted transfers country-market to country-market, then removes destination loss.
 - Stored receiving country wins when available.
 - Trade owner is selected only if present in destination market.
-- If trade owner is not present, the receiver allocator extends US-10 but uses receiver-oriented capacity logic.
+- If trade owner is not present, the receiver allocator extends US-10 while preserving bucket sorting and tie-break ordering.
+- Receiver allocation changes eligibility thresholds only; it does not add a lower-fill priority sort.
 - Receiver allocation ignores supplier-protection thresholds.
 - Receiver allocation uses under-capacity eligibility but does not cap the whole receipt to free capacity for MVP.
 - Goods loss uses destination removal semantics, not transfer semantics.
