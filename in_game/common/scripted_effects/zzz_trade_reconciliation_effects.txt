@@ -37,8 +37,13 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		remove_global_variable = modeu5_trade_efficiency_money_delta_blocked_routes
 		remove_global_variable = modeu5_trade_efficiency_income_application_blocked_routes
 		remove_global_variable = modeu5_trade_efficiency_income_application_probe_blocked
+		remove_global_variable = modeu5_trade_efficiency_probe_read_country_income_blocked
+		remove_global_variable = modeu5_trade_efficiency_probe_read_trade_profit_blocked
+		remove_global_variable = modeu5_trade_efficiency_probe_add_trade_profit_blocked
+		remove_global_variable = modeu5_trade_efficiency_probe_country_income_relation_blocked
 		remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
 		remove_global_variable = modeu5_us20_goods_loss_routes
+		remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
 		remove_global_variable = modeu5_trade_efficiency_owner_missing_routes
 		set_global_variable = { name = modeu5_trade_efficiency_routes_seen value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_routes_quantity_confirmed value = 0 }
@@ -47,8 +52,13 @@ modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 		set_global_variable = { name = modeu5_trade_efficiency_money_delta_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_income_application_probe_blocked value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_probe_read_country_income_blocked value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_probe_read_trade_profit_blocked value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_probe_add_trade_profit_blocked value = 0 }
+		set_global_variable = { name = modeu5_trade_efficiency_probe_country_income_relation_blocked value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
+		set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = 0 }
 		set_global_variable = { name = modeu5_trade_efficiency_owner_missing_routes value = 0 }
 	}
 }
@@ -102,6 +112,28 @@ modeu5_note_trade_efficiency_income_application_probe_blocked = {
 	debug_log = "ModeU5 US17/US20 INCOME_APPLICATION_PROBE blocked reason=no_confirmed_country_income_or_trade_profit_api candidate=trade_owner_income_or_trade_profit"
 }
 
+modeu5_probe_trade_income_profit_application_surfaces = {
+	# Probe matrix required before applying money deltas to vanilla:
+	# 1. read trade-owner country income before route adjustment;
+	# 2. read trade route profit before route adjustment;
+	# 3. add the route reconciliation delta to trade route profit;
+	# 4. read trade-owner country income after route adjustment;
+	# 5. verify whether old_country_income = new_country_income - added_route_profit.
+	#
+	# If that equality holds after mutating trade profit, route profit feeds country
+	# income and the delta should be applied to route profit only. If it does not
+	# hold, country income and trade-route profit may be separate display/ledger
+	# surfaces and the implementation must decide whether to apply both.
+	#
+	# Do not add speculative effect names here. Replace these blocked counters only
+	# after TECH-01 confirms concrete EU5 read/write APIs.
+	set_global_variable = { name = modeu5_trade_efficiency_probe_read_country_income_blocked value = 1 }
+	set_global_variable = { name = modeu5_trade_efficiency_probe_read_trade_profit_blocked value = 1 }
+	set_global_variable = { name = modeu5_trade_efficiency_probe_add_trade_profit_blocked value = 1 }
+	set_global_variable = { name = modeu5_trade_efficiency_probe_country_income_relation_blocked value = 1 }
+	debug_log = "ModeU5 US17/US20 INCOME_PROFIT_PROBE blocked read_country_income=blocked read_trade_profit=blocked add_trade_profit=blocked equation=old_country_income_equals_new_country_income_minus_added_trade_profit pending=TECH01"
+}
+
 modeu5_note_trade_efficiency_goods_delta_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = { value = global_var:modeu5_trade_efficiency_goods_delta_blocked_routes add = 1 } }
 	if = {
@@ -112,6 +144,10 @@ modeu5_note_trade_efficiency_goods_delta_blocked_route = {
 
 modeu5_note_us20_goods_loss_route = {
 	set_global_variable = { name = modeu5_us20_goods_loss_routes value = { value = global_var:modeu5_us20_goods_loss_routes add = 1 } }
+}
+
+modeu5_note_us20_goods_loss_target_selection_blocked_route = {
+	set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = { value = global_var:modeu5_us20_goods_loss_target_selection_blocked_routes add = 1 } }
 }
 
 modeu5_note_trade_efficiency_owner_missing_route = {
@@ -228,6 +264,7 @@ modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = {
 		limit = { NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
 		modeu5_note_trade_efficiency_income_application_blocked_route = yes
 		modeu5_note_trade_efficiency_income_application_probe_blocked = yes
+		modeu5_probe_trade_income_profit_application_surfaces = yes
 	}
 }
 
@@ -246,13 +283,29 @@ modeu5_compute_us20_goods_received_delta = {
 }
 
 modeu5_select_us20_goods_loss_target_country = {
+	# Target selection contract:
+	# 1. If a receiving country was stored by the earlier transfer_stock / stock
+	#    demand resolution path, use it. This is the cleanest case.
+	# 2. Else, if the trade owner has destination-market stock/capacity exposure and
+	#    is selected by the caller, use the trade owner.
+	# 3. Else, reuse the US-10 bucket ordering over destination-market stock holders:
+	#    own/trade owner, subject-or-overlord, market owner, other foreign.
+	#    Difference from US-10 demand resolution: ignore supplier protection floors
+	#    (`minimum_stock_to_consider`, `supplier_min_stock_ratio`, and negative-balance
+	#    reserve). Loss allocation is not a supplier-selection decision.
+	#
+	# Generic live step 3 still needs a generated literal-good selector, so absence
+	# of an explicit receiving country remains blocked in live code.
 	if = {
 		limit = { exists = scope:modeu5_us20_receiving_country }
 		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
 	}
 	else_if = {
-		limit = { exists = scope:modeu5_trade_owner_country }
+		limit = { exists = scope:modeu5_trade_owner_country scope:modeu5_us20_trade_owner_destination_stock_confirmed > 0 }
 		scope:modeu5_trade_owner_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
+	}
+	else = {
+		modeu5_note_us20_goods_loss_target_selection_blocked_route = yes
 	}
 }
 
