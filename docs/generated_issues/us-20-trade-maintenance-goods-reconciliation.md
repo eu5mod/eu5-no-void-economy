@@ -175,16 +175,9 @@ loss reconciliation:
 
 ## Confirmed market-level destination loss surface
 
-EU5 public script documentation lists the market-scope effect:
+Public EU5 script documentation lists `add_goods_supply` as a market-scope effect that adds goods to a market stockpile and accepts `goods` and `amount` parameters.
 
-```txt
-add_goods_supply = {
-  goods = <goods>
-  amount = <amount>
-}
-```
-
-It is documented as adding goods to a market stockpile. US-20 uses this as the central market-level mutation surface by applying delivery loss as a negative `amount`:
+US-20 uses this market-stockpile surface with a negative amount for delivery loss:
 
 ```txt
 market_loss_delta = -goods_loss_quantity
