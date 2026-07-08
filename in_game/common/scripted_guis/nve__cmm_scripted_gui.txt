@@ -1,19 +1,5 @@
-﻿# Trade Rework (trade_rework_tab) Tab
-## No Void Economy (no_void_economy_group) Group
-no_void_economy__activate_goods_decay_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		has_global_variable = modeu5_cmm_nve_main_enabled
-	}
-
-	is_valid = {
-		1 = 2
-	}
-	effect = { }
-}
-
-## Trade Rework (trade_rework_group) Group
+﻿# General Gameplay (trade_rework_tab) Tab
+## Gameplay (trade_rework_group) Group
 no_void_economy__trade_rework_setting_on_changed = {
 	scope = country
 
@@ -27,44 +13,9 @@ no_void_economy__trade_rework_setting_on_changed = {
 	effect = { }
 }
 
-## Debug & Audit (debug_audit_group) Group
-no_void_economy__debug_messages_setting_on_changed = {
+## Country Level Stocks (no_void_economy_group) Group
+no_void_economy___on_changed = {
 	scope = country
-	effect = { }
-}
-
-no_void_economy__monthly_stock_check_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		has_global_variable = modeu5_cmm_nve_main_enabled
-	}
-	effect = { }
-}
-
-no_void_economy__save_mode_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		has_global_variable = modeu5_cmm_nve_main_enabled
-	}
-	effect = { }
-}
-
-# Balance (balance_tab) Tab
-## General (general_group) Group
-no_void_economy__difficulty_setting_on_changed = {
-	scope = country
-	effect = { }
-}
-
-## War (war_group) Group
-no_void_economy__shorter_wars_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
 
 	is_valid = {
 		always = no
@@ -72,39 +23,8 @@ no_void_economy__shorter_wars_setting_on_changed = {
 	effect = { }
 }
 
-no_void_economy__war_exhaustion_political_pressure_setting_on_changed = {
+no_void_economy___on_changed = {
 	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-## Economy (economy_group) Group
-no_void_economy__increased_location_specialisation_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
-
-	is_valid = {
-		always = no
-	}
-	effect = { }
-}
-
-no_void_economy__sliders_adjustments_setting_on_changed = {
-	scope = country
-
-	is_shown = {
-		always = yes
-	}
 
 	is_valid = {
 		always = no
@@ -126,9 +46,22 @@ no_void_economy__extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting_
 	effect = { }
 }
 
-# Rebels & Subjects (rebels_subjects_tab) Tab
-## Rebels (rebels_group) Group
-no_void_economy__adjust_rebel_threshold_setting_on_changed = {
+# Economic Balance (balance_tab) Tab
+## Design (economy_group) Group
+no_void_economy__activate_goods_decay_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		has_global_variable = modeu5_cmm_nve_main_enabled
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__sliders_adjustments_setting_on_changed = {
 	scope = country
 
 	is_shown = {
@@ -141,6 +74,37 @@ no_void_economy__adjust_rebel_threshold_setting_on_changed = {
 	effect = { }
 }
 
+## Balance () Group
+no_void_economy__increased_location_specialisation_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy___on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# War & Subjects Balance (rebels_subjects_tab) Tab
+## General (general_group) Group
+no_void_economy__difficulty_setting_on_changed = {
+	scope = country
+	effect = { }
+}
+
+## Design (rebels_group) Group
 no_void_economy__overlord_declares_war_setting_on_changed = {
 	scope = country
 
@@ -154,7 +118,6 @@ no_void_economy__overlord_declares_war_setting_on_changed = {
 	effect = { }
 }
 
-## Subjects (subjects_group) Group
 no_void_economy__persistence_of_resources_setting_on_changed = {
 	scope = country
 
@@ -164,6 +127,58 @@ no_void_economy__persistence_of_resources_setting_on_changed = {
 
 	is_valid = {
 		always = no
+	}
+	effect = { }
+}
+
+## Balance (subjects_group) Group
+no_void_economy__shorter_wars_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__adjust_rebel_threshold_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		always = yes
+	}
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+# Debug & Audit () Tab
+## Debug & Audit (debug_audit_group) Group
+no_void_economy__debug_messages_setting_on_changed = {
+	scope = country
+	effect = { }
+}
+
+no_void_economy__monthly_stock_check_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		has_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	effect = { }
+}
+
+no_void_economy__save_mode_setting_on_changed = {
+	scope = country
+
+	is_shown = {
+		has_global_variable = modeu5_cmm_nve_main_enabled
 	}
 	effect = { }
 }
