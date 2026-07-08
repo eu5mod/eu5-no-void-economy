@@ -1,6 +1,6 @@
-## Module description
+## Why this mod ? 
 
-No void economy is born from the desire to fix :
+This mod is born from the desire to fix :
  - PDX policy to balance snowbaling via punitive Gameplay
  - Economic issues such as unsold goods that create income
  - Economic issues such as [trade loops](https://github.com/user-attachments/assets/66c93022-9b1c-418c-b71d-2d30cbcbe329) 
@@ -22,25 +22,22 @@ No void economy is born from the desire to fix :
 4. ✅ **Countries have own stocks**  - Country have own stocks
     - incl : ✅ **Only good that are sold generate an income**; Thus reflecting the real economy
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
-    - incl : ✅ Goods (RGO & Building) don't bring revenue to Estates & Crown untill they are sold
     - incl : ⏳ Economy 5% faster  - To compensate revenue loss
-    - incl : ⏳Redesign the economic Base
+    - incl : ⏳ Redesign the economic Base
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
 ### Economics Design & Balance ###
 
 #### Design
- - ⏳ Sliders based on Wealth not Tax base
  - ⏳ Monthly goods decay (1%)
  - ⏳ Supply Influence Pop
 
 #### Balance
  - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
  - ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
-
- - (❌ Modding endpoint needed) Remove Average Control Penalty on research seed - Mechanic introduced in 1.3
- - (❌ Modding endpoint needed) RGO prices don't scale with Good's Market Price -  Mechanic introduced in 1.2
- - (❌ Modding endpoint needed) Maintenance price don't increase with time - Mechanic introduced in 1.3
+ - Remove Average Control Penalty on research seed - ( ❌ Introduced in 1.3 without modding endpoint )
+ - RGO prices don't scale with Good's Market Price - ( ❌ Introduced in 1.2 without modding endpoint )
+ - Maintenance price don't increase with time - ( ❌ Introduced in 1.3 without modding endpoint )
 
 ### War & Rebel Design & Balance ###
 
