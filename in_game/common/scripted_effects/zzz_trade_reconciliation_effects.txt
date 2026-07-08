@@ -387,14 +387,14 @@ modeu5_select_us20_goods_receiver_country_for_promoted_market = {
 	# 1. If a receiving country was stored by the earlier transfer_stock / demand
 	#    resolution path, use it.
 	# 2. Else, if the trade owner is present in the destination market, use it.
-	# 3. Else, reuse/extend US-10 candidate selection with a receiver-allocation
-	#    profile rather than a supplier profile.
+	# 3. Else, reuse/extend US-10 candidate selection while preserving the same
+	#    bucket sorting and tie-break ordering.
 	#
-	# Receiver profile:
-	# - ignore minimum-stock and reserve/protection thresholds;
-	# - prefer lower fill-ratio / under-capacity countries;
+	# Receiver profile changes eligibility only:
+	# - ignore supplier minimum-stock and reserve/protection thresholds;
 	# - eligible receiver must be under capacity before receipt;
-	# - do not clip the receipt to available capacity for MVP.
+	# - do not clip the receipt to available capacity for MVP;
+	# - do not introduce a lower-fill priority sort.
 	if = {
 		limit = { exists = scope:modeu5_us20_receiving_country }
 		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
