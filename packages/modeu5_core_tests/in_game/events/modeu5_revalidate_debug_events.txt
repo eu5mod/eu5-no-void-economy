@@ -9,11 +9,6 @@ namespace = modeu5_revalidate_debug
 #   does not cross a monthly tick between scenarios.
 # - If this chain becomes too slow or noisy, split specialist suites into
 #   separate manual entry events instead of hiding failures in the summary.
-# - The full deterministic regression chain forces NVE normal stock mode because
-#   core/US00/US10 fixtures validate detailed country-market stock behavior for
-#   FRA/ENG. PERF-14 performance-mode CMM behavior is validated by the dedicated
-#   PERF-14 debug event, not by leaking the user's current CMM mode into this
-#   full regression chain.
 
 modeu5_revalidate_debug.1 = {
 	type = country_event
@@ -29,9 +24,6 @@ modeu5_revalidate_debug.1 = {
 	option = {
 		name = modeu5_revalidate_debug.1.a
 		modeu5_revalidate_clear_results = yes
-		modeu5_enter_nve_normal_mode = yes
-		modeu5_enter_strict_accounting_persistence = yes
-		debug_log = "ModeU5 TEST_MODE scenario=main_revalidation forced_nve_mode=normal forced_accounting_persistence=strict reason=deterministic_full_revalidation"
 		set_global_variable = modeu5_revalidation_started
 		# Step 1/12
 		modeu5_revalidate_run_us02_capacity = yes
