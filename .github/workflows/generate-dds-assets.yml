@@ -1,0 +1,108 @@
+name: Generate DDS assets
+
+on:
+  push:
+    paths:
+      - 'docs/assets/**/*.svg'
+      - 'docs/assets/**/*.png'
+      - 'docs/assets/**/*.jpg'
+      - 'docs/assets/**/*.jpeg'
+      - 'docs/assets/**/*.txt'
+      - 'in_game/gfx/interface/illustrations/**/*.svg'
+      - 'in_game/gfx/interface/illustrations/**/*.png'
+      - 'in_game/gfx/interface/illustrations/**/*.jpg'
+      - 'in_game/gfx/interface/illustrations/**/*.jpeg'
+      - 'tools/generate_review_popup_assets.py'
+      - 'tools/generate_dds_assets.sh'
+      - '.github/workflows/generate-dds-assets.yml'
+  pull_request:
+    paths:
+      - 'docs/assets/**/*.svg'
+      - 'docs/assets/**/*.png'
+      - 'docs/assets/**/*.jpg'
+      - 'docs/assets/**/*.jpeg'
+      - 'docs/assets/**/*.dds'
+      - 'docs/assets/**/*.txt'
+      - 'in_game/gfx/interface/illustrations/**/*.svg'
+      - 'in_game/gfx/interface/illustrations/**/*.png'
+      - 'in_game/gfx/interface/illustrations/**/*.jpg'
+      - 'in_game/gfx/interface/illustrations/**/*.jpeg'
+      - 'in_game/gfx/interface/illustrations/**/*.dds'
+      - 'tools/generate_review_popup_assets.py'
+      - 'tools/generate_dds_assets.sh'
+      - '.github/workflows/generate-dds-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-dds-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'qrcode[pil]'
+
+      - name: Install image conversion tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin imagemagick
+
+      - name: Generate review popup source assets
+        run: python tools/generate_review_popup_assets.py
+
+      - name: Validate asset generation on pull requests
+        if: github.event_name == 'pull_request'
+        run: bash tools/generate_dds_assets.sh
+
+      - name: Generate DDS assets on branch pushes
+        if: github.event_name == 'push'
+        run: bash tools/generate_dds_assets.sh
+
+      - name: Assert PR157 source-folder smoke outputs
+        run: |
+          echo "Raw PR157 source SVGs:"
+          find docs/assets/pr157/source -maxdepth 1 -type f -name '*.svg' -print | sort
+          echo "Generated PR157 source-folder outputs:"
+          find docs/assets/pr157/generated -maxdepth 1 -type f \( -name '*.svg' -o -name '*.dds' \) -print | sort
+          test -f docs/assets/pr157/generated/review_popup_1524_ci_smoke_qr.svg
+          test -f docs/assets/pr157/generated/review_popup_1524_ci_smoke_qr.dds
+
+      - name: Upload PR157 generated asset preview
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr157-generated-assets
+          path: |
+            docs/assets/pr157/generated/*
+            docs/assets/pr157/review_popup_1524_event_source.svg
+            docs/assets/pr157/review_popup_1524_event_source.dds
+            in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+          if-no-files-found: error
+
+      - name: Commit generated assets
+        if: github.event_name == 'push'
+        run: |
+          if [[ -z "$(git status --porcelain -- docs/assets in_game/gfx/interface/illustrations)" ]]; then
+            echo "Generated assets already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets in_game/gfx/interface/illustrations
+          git commit -m "Generate QR, SVG, and DDS review popup assets"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
