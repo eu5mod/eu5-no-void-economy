@@ -81,7 +81,11 @@ for assets_root in "${asset_roots[@]}"; do
 		printf 'No %s directory found; skipping.\n' "$assets_root"
 		continue
 	fi
-	find "$assets_root" -type f \( -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) | sort >> "$sources_file"
+	find "$assets_root" \
+		-type f \
+		! -path 'docs/assets/pr157/source/*' \
+		\( -iname '*.svg' -o -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) \
+		| sort >> "$sources_file"
 done
 
 if [[ ! -s "$sources_file" ]]; then
