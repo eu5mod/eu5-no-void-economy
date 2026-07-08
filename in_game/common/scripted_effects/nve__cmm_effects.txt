@@ -1,7 +1,7 @@
-# Root scope: country.
+﻿# Root scope: country.
 nve__register_cmf_mod = {
 	# General Gameplay (nve_general_gameplay_tab) Tab
-	## Gameplay (nve_general_gameplay_gameplay_group) Group
+	## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
@@ -14,7 +14,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
 	}
 
-	cmm_register_bool_setting = {
+	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 		tab_id = nve_general_gameplay_tab
@@ -25,6 +25,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -38,7 +42,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
 	}
 
-	## Country Level Stocks (nve_general_gameplay_country_level_stocks_group) Group
+	## Country Stock Economy (nve_general_gameplay_country_level_stocks_group) Group
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
@@ -92,7 +96,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_general_gameplay_country_level_stocks_boycotts_wars_block_resource_buying_settings
 	}
 
-	## Other (nve_general_gameplay_other_group) Group
+	## AI Support (nve_general_gameplay_other_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
@@ -106,7 +110,7 @@ nve__register_cmf_mod = {
 	}
 
 	# Economic Balance (nve_economic_balance_tab) Tab
-	## Design (nve_economic_balance_design_group) Group
+	## Economic Design (nve_economic_balance_design_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_design_activate_goods_decay_settings
@@ -139,7 +143,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_economic_balance_design_sliders_adjustments_settings
 	}
 
-	## Balance (nve_economic_balance_balance_group) Group
+	## Economic Balance (nve_economic_balance_balance_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
@@ -173,7 +177,7 @@ nve__register_cmf_mod = {
 	}
 
 	# War & Subjects Balance (nve_war_subjects_balance_tab) Tab
-	## General (nve_war_subjects_balance_general_group) Group
+	## Campaign Pressure (nve_war_subjects_balance_general_group) Group
 	cmm_register_global_dropdown_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_general_difficulty_settings
@@ -194,7 +198,7 @@ nve__register_cmf_mod = {
 		setting = no_void_economy__nve_war_subjects_balance_general_difficulty_settings
 	}
 
-	## Design (nve_war_subjects_balance_design_group) Group
+	## Subject Design (nve_war_subjects_balance_design_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_design_overlord_declares_war_settings
@@ -227,7 +231,7 @@ nve__register_cmf_mod = {
 		setting_id = nve_war_subjects_balance_design_persistence_of_resources_settings
 	}
 
-	## Balance (nve_war_subjects_balance_balance_group) Group
+	## War Balance (nve_war_subjects_balance_balance_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_balance_shorter_wars_settings
@@ -309,7 +313,7 @@ nve__handle_cmf_callback = {
 	switch = {
 		trigger = var:cmf_callback
 		# General Gameplay (nve_general_gameplay_tab) Tab
-		## Country Level Stocks (nve_general_gameplay_country_level_stocks_group) Group
+		## Country Stock Economy (nve_general_gameplay_country_level_stocks_group) Group
 		flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings = {
 			cmm_sync_dropdown_option_alias = {
 				setting = no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
@@ -319,7 +323,7 @@ nve__handle_cmf_callback = {
 			nve_cmf_activate_no_void_economy = yes
 		}
 		# Economic Balance (nve_economic_balance_tab) Tab
-		## Design (nve_economic_balance_design_group) Group
+		## Economic Design (nve_economic_balance_design_group) Group
 		flag:no_void_economy__nve_economic_balance_design_activate_goods_decay_settings = {
 			nve_cmf_activate_good_decay = yes
 		}

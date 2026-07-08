@@ -1,5 +1,5 @@
-# General Gameplay (nve_general_gameplay_tab) Tab
-## Gameplay (nve_general_gameplay_gameplay_group) Group
+﻿# General Gameplay (nve_general_gameplay_tab) Tab
+## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed = {
 	scope = country
 
@@ -13,7 +13,7 @@ no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed 
 	effect = { }
 }
 
-## Country Level Stocks (nve_general_gameplay_country_level_stocks_group) Group
+## Country Stock Economy (nve_general_gameplay_country_level_stocks_group) Group
 no_void_economy__nve_general_gameplay_country_level_stocks_only_sold_goods_create_revenue_settings_on_changed = {
 	scope = country
 
@@ -32,7 +32,7 @@ no_void_economy__nve_general_gameplay_country_level_stocks_boycotts_wars_block_r
 	effect = { }
 }
 
-## Other (nve_general_gameplay_other_group) Group
+## AI Support (nve_general_gameplay_other_group) Group
 no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings_on_changed = {
 	scope = country
 
@@ -47,7 +47,7 @@ no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings_on_chan
 }
 
 # Economic Balance (nve_economic_balance_tab) Tab
-## Design (nve_economic_balance_design_group) Group
+## Economic Design (nve_economic_balance_design_group) Group
 no_void_economy__nve_economic_balance_design_activate_goods_decay_settings_on_changed = {
 	scope = country
 
@@ -74,7 +74,7 @@ no_void_economy__nve_economic_balance_design_sliders_adjustments_settings_on_cha
 	effect = { }
 }
 
-## Balance (nve_economic_balance_balance_group) Group
+## Economic Balance (nve_economic_balance_balance_group) Group
 no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
 	scope = country
 
@@ -98,13 +98,13 @@ no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reductio
 }
 
 # War & Subjects Balance (nve_war_subjects_balance_tab) Tab
-## General (nve_war_subjects_balance_general_group) Group
+## Campaign Pressure (nve_war_subjects_balance_general_group) Group
 no_void_economy__nve_war_subjects_balance_general_difficulty_settings_on_changed = {
 	scope = country
 	effect = { }
 }
 
-## Design (nve_war_subjects_balance_design_group) Group
+## Subject Design (nve_war_subjects_balance_design_group) Group
 no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings_on_changed = {
 	scope = country
 
@@ -131,7 +131,7 @@ no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settin
 	effect = { }
 }
 
-## Balance (nve_war_subjects_balance_balance_group) Group
+## War Balance (nve_war_subjects_balance_balance_group) Group
 no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings_on_changed = {
 	scope = country
 
