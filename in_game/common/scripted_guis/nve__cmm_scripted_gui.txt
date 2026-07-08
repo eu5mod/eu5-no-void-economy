@@ -1,4 +1,4 @@
-﻿# General Gameplay (nve_general_gameplay_tab) Tab
+﻿# General Gameplay  (nve_general_gameplay_tab) Tab
 ## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed = {
 	scope = country
@@ -158,8 +158,8 @@ no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_setting
 	effect = { }
 }
 
-# Debug & Audit (nve_debug_audit_tab) Tab
-## Debug & Audit (nve_debug_audit_debug_audit_group) Group
+# Other (nve_other_tab) Tab
+## Debug & Audit (nve_other_debug_audit_group) Group
 no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = {
 	scope = country
 	effect = { }
@@ -180,5 +180,11 @@ no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	is_shown = {
 		has_global_variable = modeu5_cmm_nve_main_enabled
 	}
+	effect = { }
+}
+
+## Misc () Group
+no_void_economy__review_pop_on_changed = {
+	scope = country
 	effect = { }
 }
