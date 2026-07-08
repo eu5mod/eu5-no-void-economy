@@ -30,17 +30,16 @@ This mod is born from the desire to fix :
 ### Economics Design & Balance ###
 
 #### Design
- - ⏳ Sliders based on Wealth not Tax base
+ - ⏳ Sliders based on Wealth not tax base
  - ⏳ Monthly goods decay (1%)
  - ⏳ Supply Influence Pop
 
 #### Balance
  - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
  - ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
-
- - (❌ Modding endpoint needed) Remove Average Control Penalty on research seed - Mechanic introduced in 1.3
- - (❌ Modding endpoint needed) RGO prices don't scale with Good's Market Price -  Mechanic introduced in 1.2
- - (❌ Modding endpoint needed) Maintenance price don't increase with time - Mechanic introduced in 1.3
+ - Remove Average Control Penalty on research seed - ( ❌ Introduced in 1.3 without modding endpoint )
+ - RGO prices don't scale with Good's Market Price - ( ❌ Introduced in 1.2 without modding endpoint )
+ - Maintenance price don't increase with time - ( ❌ Introduced in 1.3 without modding endpoint )
 
 ### War & Rebel Design & Balance ###
 
