@@ -1,5 +1,19 @@
-# Root scope: country.
+﻿# Root scope: country.
 nve__register_cmf_mod = {
+	# nve_general (nve_general) Tab
+	## nve_no_void_economy (nve_no_void_economy) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = review_pop
+		tab_id = nve_general
+		group_id = nve_no_void_economy
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = review_pop
+	}
+
 	# General Gameplay  (nve_general_gameplay_tab) Tab
 	## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 	cmm_register_global_bool_setting = {
@@ -71,9 +85,6 @@ nve__register_cmf_mod = {
 	cmm_set_no_reset = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
-	}
-	cmm_set_dropdown_multiselector = {
-		setting = no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 	}
 
 	cmm_register_global_bool_setting = {
