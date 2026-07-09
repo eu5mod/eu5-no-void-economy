@@ -49,19 +49,9 @@ modeu5_apply_us20_promoted_destination_country_loss_by_route_good
 
 That dispatcher maps the saved route-good scope to the literal `modeu5_remove_stock` good token required by the central stock operator.
 
-## Status legend
-
-```txt
-Implemented        = code path exists and is covered by static CI and/or deterministic in-game fixture surface
-Validated          = deterministic in-game fixture has reached PASS for the stated surface
-Partial            = scaffold/classification exists, but at least one runtime operator or generic dispatcher is missing
-Specified only     = written contract exists, no concrete runtime code yet
-Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementation
-```
-
 ## Runtime validation snapshot — 2026-07-09
 
-Validation evidence captured from the installed PR branch during the US-17/US-20 revalidation session:
+Validation evidence captured from the installed PR branch before the latest generic-dispatcher patch:
 
 ```txt
 Expected scenario set: full
@@ -92,7 +82,6 @@ The deterministic probe still needs to be rerun on this latest head to confirm n
 | --- | --- | --- |
 | Q8.7 placement | Validated | Hook stays in `modeu5_run_monthly_country_trade_owner_cycle -> every_trade`; no second route-discovery loop. |
 | CMM trade-rework gate | Implemented | Route reconciliation is gated by `modeu5_trade_rework_enabled_trigger`; deterministic fixture checks dormant behavior when disabled. |
-| CMM review popup placement | Implemented | `review_pop` is normalized to `nve_debug_audit_misc_review_pop_settings`; CI forbids legacy placement. |
 | Money formula | Implemented / partial | Old price-side bonus removal and route delta are computed; #120 side remains placeholder until final #120 runtime model. |
 | Treasury money application | Validated | Signed route money delta is applied through `add_gold`; this proves treasury/cash mutation only. |
 | Vanilla income/profit application | Blocked TECH-01 | Probe matrix is documented/counted, but no speculative country-income or route-profit API calls are used. |
@@ -121,17 +110,6 @@ Run:
 ./tools/normalize_cmm_value_links.sh --check
 python3 ./tools/validate_cmm_configuration.py
 git diff --check
-```
-
-Expected result:
-
-```txt
-- no generated-file drift
-- package validation success
-- persistent-state audit success
-- CMM value-link validation success
-- CMM configuration validation success
-- no whitespace/check diff failure
 ```
 
 ## In-game stable baseline scenario
@@ -176,38 +154,6 @@ global_var returned an unset scope
 COUNTRY_LOSS_DISPATCH blocked
 ```
 
-## Deterministic route-reconciliation fixture expectations
-
-Expected result globals:
-
-```txt
-modeu5_test_us17_us20_reconciliation_started = yes
-modeu5_test_us17_us20_reconciliation_passed = yes
-modeu5_test_us17_us20_income_api_probe_blocked = yes
-```
-
-Expected deterministic values:
-
-```txt
-old_price_side_bonus ~= 35
-clamped_average_efficiency ~= 0.15
-money_delta ~= -34.85
-goods_target ~= 99.97
-goods_delta ~= -0.03
-goods_loss_removed ~= 0.03
-```
-
-Expected income/profit probe counters:
-
-```txt
-modeu5_trade_efficiency_income_application_blocked_routes = 1
-modeu5_trade_efficiency_income_application_probe_blocked = 1
-modeu5_trade_efficiency_probe_read_country_income_blocked = 1
-modeu5_trade_efficiency_probe_read_trade_profit_blocked = 1
-modeu5_trade_efficiency_probe_add_trade_profit_blocked = 1
-modeu5_trade_efficiency_probe_country_income_relation_blocked = 1
-```
-
 ## Four-case E2E probe assertions
 
 The promoted/non-promoted matrix probe asserts:
@@ -225,38 +171,11 @@ blocked goods-delta routes = 0
 blocked receiver selection routes = 0
 ```
 
-## Receiver allocator scenarios still to add
-
-US-20 receiver allocation must reuse the same US-10 bucket sorting and tie-break ordering. The receiver-specific change is eligibility, not ordering.
-
-| Scenario | Expected result | Current blocker |
-| --- | --- | --- |
-| Stored receiving country exists | stored receiver wins before fallback ordering | validated in deterministic probe |
-| Trade owner present in destination market | trade owner selected as receiver before fallback ordering | validated through deterministic forced-present path; live detection remains scaffolded |
-| Trade owner absent; multiple candidates under capacity | apply the same US-10 bucket/tie-break ordering after filtering receiver-eligible candidates | generated receiver allocator missing |
-| Candidate at 99/100 capacity receiving 10 | eligible before receipt; may end at 109/100; ordering still follows US-10 buckets | capacity-aware receiver eligibility missing |
-| Candidate at or above capacity | ineligible receiver before US-10 ordering is applied | capacity-aware receiver eligibility missing |
-
-## Income/profit probe scenarios still to add
-
-| Scenario | Expected result | Current blocker |
-| --- | --- | --- |
-| Read old trade-owner country income | value captured before route adjustment | confirmed EU5 API missing |
-| Read old trade route profit | value captured before route adjustment | confirmed EU5 API missing |
-| Add route delta to trade route profit | route profit mutates by delta | confirmed EU5 API missing |
-| Read new country income after route-profit mutation | value captured after route adjustment | confirmed EU5 API missing |
-| Verify relation | `old_country_income = new_country_income - added_trade_route_profit` if route profit feeds country income | confirmed EU5 API missing |
-
 ## Remaining implementation steps after #107
 
 1. Rerun the full baseline and US20 probe on the latest generic-dispatcher head.
 2. Implement live receiver detection in the destination market, beyond the deterministic forced-present test path.
-3. Extend US-10 candidate machinery with a receiver-allocation mode:
-   - keep the same US-10 bucket sorting and tie-break ordering;
-   - change only receiver eligibility thresholds;
-   - ignore supplier protection thresholds;
-   - require `current_stock < capacity` before receipt;
-   - do not clip the full receipt to free capacity for MVP.
+3. Extend US-10 candidate machinery with a receiver-allocation mode.
 4. Implement base receipt operators separately from loss reconciliation:
    - case 3: add at destination country-market;
    - case 4: transfer country-market -> country-market.
