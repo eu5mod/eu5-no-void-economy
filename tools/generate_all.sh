@@ -16,8 +16,10 @@ python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
 	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_guarded_test_effects.txt" \
 	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
+"$repo_root/tools/generate_us04_pop_demand_helpers.sh"
 "$repo_root/tools/generate_good_transport_helpers.sh"
 bash "$repo_root/tools/generate_us10_ui_helpers.sh"
+bash "$repo_root/tools/generate_us20_promoted_destination_receipt_dispatchers.sh"
 
 if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
 	if [[ "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "false" || "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "0" ]]; then

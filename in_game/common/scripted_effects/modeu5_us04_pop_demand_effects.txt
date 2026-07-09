@@ -1,0 +1,40 @@
+# US-04 annual local Pop demand adaptation.
+#
+# Runtime scope: country. The yearly pulse iterates owned locations and applies
+# generated location x good helpers. The generated helpers read US-10.3 annual
+# counters, adjust sparse multipliers, then clear the counters.
+
+modeu5_run_yearly_pop_demand_adaptation_for_current_country = {
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+		}
+		every_owned_location = {
+			modeu5_annual_adjust_location_pop_demand_all_goods = yes
+		}
+	}
+}
+
+modeu5_run_pop_demand_adaptation_for_location = {
+	$location$ = { save_temporary_scope_as = modeu5_us04_target_location }
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+		}
+		scope:modeu5_us04_target_location = {
+			modeu5_annual_adjust_location_pop_demand_all_goods = yes
+		}
+	}
+}
+
+modeu5_us04_debug_run_location_pop_demand_adaptation_fixture = {
+	$location$ = { save_temporary_scope_as = modeu5_us04_fixture_location }
+	scope:modeu5_us04_fixture_location = {
+		modeu5_annual_adjust_location_pop_demand_good_wheat = yes
+		modeu5_annual_adjust_location_pop_demand_good_beer = yes
+		modeu5_annual_adjust_location_pop_demand_good_cloth = yes
+		modeu5_annual_adjust_location_pop_demand_good_tools = yes
+	}
+}

@@ -1,0 +1,192 @@
+modeu5_get_pop_demand_multiplier_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_us04_multiplier_present value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_old_multiplier value = 1 }
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_multiplier
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				target = goods:__GOOD__
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_multiplier_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_old_multiplier
+			value = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:__GOOD__)"
+				min = 0.0001
+			}
+		}
+	}
+}
+
+modeu5_read_pop_demand_annual_counters_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_us04_satisfied_months value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_months value = 0 }
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_satisfied_months
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_satisfied_months
+				target = goods:__GOOD__
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_satisfied_months
+			value = "variable_map(modeu5_pop_demand_satisfied_months|goods:__GOOD__)"
+		}
+	}
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_unsatisfied_months
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_unsatisfied_months
+				target = goods:__GOOD__
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_unsatisfied_months
+			value = "variable_map(modeu5_pop_demand_unsatisfied_months|goods:__GOOD__)"
+		}
+	}
+}
+
+modeu5_write_pop_demand_multiplier_good___GOOD__ = {
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_multiplier
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				target = goods:__GOOD__
+			}
+		}
+		remove_from_variable_map = {
+			name = modeu5_pop_demand_multiplier
+			key = goods:__GOOD__
+		}
+	}
+	add_to_variable_map = {
+		name = modeu5_pop_demand_multiplier
+		key = goods:__GOOD__
+		value = {
+			value = $value$
+			min = 0.0001
+		}
+	}
+}
+
+modeu5_reset_pop_demand_annual_counters_good___GOOD__ = {
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_satisfied_months
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_satisfied_months
+				target = goods:__GOOD__
+			}
+		}
+		remove_from_variable_map = {
+			name = modeu5_pop_demand_satisfied_months
+			key = goods:__GOOD__
+		}
+	}
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_unsatisfied_months
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_unsatisfied_months
+				target = goods:__GOOD__
+			}
+		}
+		remove_from_variable_map = {
+			name = modeu5_pop_demand_unsatisfied_months
+			key = goods:__GOOD__
+		}
+	}
+}
+
+modeu5_set_pop_demand_annual_counters_good___GOOD__ = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_counter_satisfied_input
+		value = {
+			value = $satisfied_months$
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_counter_unsatisfied_input
+		value = {
+			value = $unsatisfied_months$
+			min = 0
+		}
+	}
+	modeu5_reset_pop_demand_annual_counters_good___GOOD__ = yes
+	if = {
+		limit = { scope:modeu5_us04_counter_satisfied_input > 0 }
+		add_to_variable_map = {
+			name = modeu5_pop_demand_satisfied_months
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_counter_satisfied_input
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_counter_unsatisfied_input > 0 }
+		add_to_variable_map = {
+			name = modeu5_pop_demand_unsatisfied_months
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_counter_unsatisfied_input
+		}
+	}
+}
+
+modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
+	modeu5_get_pop_demand_multiplier_good___GOOD__ = yes
+	modeu5_read_pop_demand_annual_counters_good___GOOD__ = yes
+
+	save_temporary_scope_value_as = { name = modeu5_us04_new_multiplier value = scope:modeu5_us04_old_multiplier }
+	save_temporary_scope_value_as = { name = modeu5_us04_adjustment_applied value = 0 }
+
+	if = {
+		limit = {
+			scope:modeu5_us04_satisfied_months >= 12
+			scope:modeu5_us04_unsatisfied_months = 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_new_multiplier
+			value = {
+				value = scope:modeu5_us04_old_multiplier
+				multiply = 1.01
+				min = 0.0001
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_adjustment_applied value = 1 }
+	}
+	else_if = {
+		limit = {
+			scope:modeu5_us04_satisfied_months = 0
+			scope:modeu5_us04_unsatisfied_months >= 12
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_new_multiplier
+			value = {
+				value = scope:modeu5_us04_old_multiplier
+				multiply = 0.99
+				min = 0.0001
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_adjustment_applied value = 2 }
+	}
+
+	if = {
+		limit = {
+			OR = {
+				scope:modeu5_us04_adjustment_applied > 0
+				scope:modeu5_us04_multiplier_present > 0
+			}
+		}
+		modeu5_write_pop_demand_multiplier_good___GOOD__ = {
+			value = scope:modeu5_us04_new_multiplier
+		}
+	}
+
+	modeu5_reset_pop_demand_annual_counters_good___GOOD__ = yes
+}

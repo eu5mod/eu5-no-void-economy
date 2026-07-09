@@ -38,6 +38,25 @@ modeu5_nve_deactivated_trigger = {
 	has_global_variable = modeu5_nve_deactivated
 }
 
+modeu5_trade_rework_enabled_trigger = {
+	has_variable_map = cmm
+	is_key_in_variable_map = {
+		name = cmm
+		target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+	}
+	"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings)" = 1
+}
+
+modeu5_pop_consumption_offer_demand_enabled_trigger = {
+	modeu5_economy_rebalance_loaded_trigger = yes
+	has_variable_map = cmm
+	is_key_in_variable_map = {
+		name = cmm
+		target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+	}
+	"variable_map(cmm|flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)" = 1
+}
+
 modeu5_detailed_country_market_accounting_enabled_trigger = {
 	OR = {
 		scope:modeu5_detailed_country_market_accounting_enabled > 0
