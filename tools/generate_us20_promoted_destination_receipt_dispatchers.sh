@@ -49,7 +49,7 @@ modeu5_apply_us20_promoted_destination_base_receipt_literal_good = {
 			quantity = scope:modeu5_us20_goods_base_receipt_quantity
 			capacity_policy = allow_over_capacity
 		}
-		debug_log = "ModeU5 US20 BASE_RECEIPT applied=add_at_destination good=$good$ capacity_policy=allow_over_capacity"
+		debug_log = "ModeU5 US20 BASE_RECEIPT applied=add_at_destination capacity_policy=allow_over_capacity"
 	}
 	else = {
 		modeu5_transfer_stock = {
@@ -61,7 +61,7 @@ modeu5_apply_us20_promoted_destination_base_receipt_literal_good = {
 			quantity = scope:modeu5_us20_goods_base_receipt_quantity
 			target_capacity_policy = allow_over_capacity
 		}
-		debug_log = "ModeU5 US20 BASE_RECEIPT applied=country_market_transfer good=$good$ capacity_policy=allow_over_capacity"
+		debug_log = "ModeU5 US20 BASE_RECEIPT applied=country_market_transfer capacity_policy=allow_over_capacity"
 	}
 	save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 1 }
 }
