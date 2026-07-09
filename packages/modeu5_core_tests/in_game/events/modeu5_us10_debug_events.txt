@@ -71,7 +71,6 @@ modeu5_us10_debug.2 = {
 				has_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
 				has_global_variable = modeu5_test_us10_issue109_passed
 				has_global_variable = modeu5_test_us10_ui_visibility_passed
-				has_global_variable = modeu5_test_us10_direct_trade_formula_passed
 			}
 		}
 	}
@@ -81,7 +80,6 @@ modeu5_us10_debug.2 = {
 			OR = {
 				has_global_variable = modeu5_test_us10_demand_resolution_blocked
 				has_global_variable = modeu5_test_us10_monthly_runtime_blocked
-				has_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
 				has_global_variable = modeu5_test_us10_issue109_blocked
 				has_global_variable = modeu5_test_us10_ui_visibility_blocked
 				has_global_variable = modeu5_test_us10_direct_trade_formula_blocked
@@ -97,7 +95,6 @@ modeu5_us10_debug.2 = {
 				has_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
 				has_global_variable = modeu5_test_us10_issue109_failed
 				has_global_variable = modeu5_test_us10_ui_visibility_failed
-				has_global_variable = modeu5_test_us10_direct_trade_formula_failed
 			}
 		}
 	}
