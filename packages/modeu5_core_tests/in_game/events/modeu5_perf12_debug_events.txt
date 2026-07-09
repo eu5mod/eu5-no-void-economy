@@ -1,0 +1,45 @@
+namespace = modeu5_perf12_debug
+
+modeu5_perf12_debug.1 = {
+	type = country_event
+	title = modeu5_perf12_debug.1.title
+	desc = modeu5_perf12_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_perf12_debug.1.a
+		modeu5_debug_run_perf12_market_value_probe = yes
+		trigger_event_non_silently = modeu5_perf12_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_perf12_debug.2 = {
+	type = country_event
+	title = modeu5_perf12_debug.2.title
+	desc = modeu5_perf12_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.perf12_market_values.pass
+		trigger = { has_global_variable = modeu5_test_perf12_market_value_probe_passed }
+	}
+	option = {
+		name = modeu5_debug.test.perf12_market_values.fail
+		trigger = { has_global_variable = modeu5_test_perf12_market_value_probe_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

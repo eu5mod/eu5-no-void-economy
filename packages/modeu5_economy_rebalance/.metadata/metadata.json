@@ -1,6 +1,6 @@
 {
-	"name": "NVE : Economy balance patch (Optional)",
 	"id": "modeu5_economy_rebalance",
+	"name": "NVE : Economy balance patch (Optional)",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
 	"short_description": "CAMPAIGN SETUP ONLY. Select before starting a campaign and keep the package set unchanged for that save. Includes runtime Economy systems and planned static US-08 overrides. Requires No Void Economy.",

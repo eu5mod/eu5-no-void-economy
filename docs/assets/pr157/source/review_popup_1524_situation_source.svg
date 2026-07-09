@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8aa4ad"/>
+      <stop offset="1" stop-color="#668991"/>
+    </linearGradient>
+    <linearGradient id="flood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a9aab"/>
+      <stop offset="1" stop-color="#3f7890"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" seed="157"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.05"/></feComponentTransfer>
+      <feBlend mode="multiply" in2="SourceGraphic"/>
+    </filter>
+    <style>
+      .ink{stroke:#38271b;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .thin{stroke:#38271b;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .paper{fill:#f3dfb2;stroke:#38271b;stroke-width:4;stroke-linejoin:round}
+      .town{fill:#ae8056;stroke:#38271b;stroke-width:4.5;stroke-linejoin:round}
+      .roof{fill:#7c4b48;stroke:#38271b;stroke-width:4.5;stroke-linejoin:round}
+      .wood{fill:#906039;stroke:#38271b;stroke-width:5;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <rect width="1600" height="600" fill="#d6ad73"/>
+  <rect width="1600" height="340" fill="url(#sky)"/>
+  <rect x="7" y="7" width="1586" height="586" class="ink" opacity="0.92"/>
+
+  <!-- storm clouds -->
+  <g fill="#6f858d" opacity="0.55">
+    <ellipse cx="120" cy="115" rx="210" ry="60"/><ellipse cx="255" cy="90" rx="200" ry="70"/>
+    <ellipse cx="500" cy="120" rx="240" ry="65"/><ellipse cx="680" cy="95" rx="190" ry="60"/>
+    <ellipse cx="960" cy="112" rx="260" ry="70"/><ellipse cx="1190" cy="88" rx="220" ry="65"/>
+    <ellipse cx="1400" cy="130" rx="260" ry="68"/>
+  </g>
+
+  <!-- celestial omen charts -->
+  <g class="thin" opacity="0.9">
+    <g transform="translate(245 105)"><circle r="48"/><circle r="22"/><path d="M0,-48 V48M-48,0 H48M-34,-34 L34,34M34,-34 L-34,34"/></g>
+    <g transform="translate(515 145)"><circle r="34"/><path d="M0,-34 V34M-34,0 H34M-24,-24 L24,24M24,-24 L-24,24"/></g>
+    <g transform="translate(1185 90)"><circle r="45"/><circle r="20"/><path d="M0,-45 V45M-45,0 H45M-32,-32 L32,32M32,-32 L-32,32"/></g>
+  </g>
+
+  <!-- town line -->
+  <g transform="translate(0 355)">
+    <g>
+      <rect x="20" y="-88" width="75" height="88" class="town"/><path d="M10 -88 L58 -132 L105 -88" class="roof"/>
+      <rect x="120" y="-125" width="90" height="125" class="town"/><path d="M110 -125 L165 -180 L222 -125" class="roof"/>
+      <rect x="235" y="-92" width="80" height="92" class="town"/><path d="M225 -92 L276 -138 L326 -92" class="roof"/>
+      <rect x="345" y="-158" width="85" height="158" class="town"/><path d="M334 -158 L388 -222 L442 -158" class="roof"/>
+      <rect x="465" y="-105" width="88" height="105" class="town"/><path d="M455 -105 L509 -154 L565 -105" class="roof"/>
+      <rect x="585" y="-120" width="92" height="120" class="town"/><path d="M573 -120 L630 -176 L690 -120" class="roof"/>
+      <rect x="720" y="-95" width="82" height="95" class="town"/><path d="M710 -95 L762 -140 L812 -95" class="roof"/>
+      <rect x="850" y="-155" width="92" height="155" class="town"/><path d="M838 -155 L895 -220 L955 -155" class="roof"/>
+      <rect x="990" y="-100" width="82" height="100" class="town"/><path d="M980 -100 L1030 -150 L1085 -100" class="roof"/>
+      <rect x="1125" y="-130" width="93" height="130" class="town"/><path d="M1113 -130 L1172 -188 L1232 -130" class="roof"/>
+      <rect x="1270" y="-95" width="83" height="95" class="town"/><path d="M1260 -95 L1310 -140 L1365 -95" class="roof"/>
+      <rect x="1405" y="-145" width="90" height="145" class="town"/><path d="M1393 -145 L1450 -205 L1510 -145" class="roof"/>
+    </g>
+  </g>
+
+  <!-- flood water -->
+  <path d="M0 330 C150 280 275 360 410 320 C560 275 695 365 850 315 C1015 263 1170 360 1325 315 C1450 280 1535 325 1600 300 V600 H0 Z" fill="url(#flood)" stroke="#38271b" stroke-width="6" opacity="0.9"/>
+  <path d="M0 390 C160 350 280 420 430 375 C575 335 710 420 870 372 C1030 325 1190 415 1350 370 C1460 340 1540 382 1600 355" class="thin" opacity="0.78"/>
+  <path d="M0 458 C150 420 285 485 430 445 C575 405 720 485 875 440 C1030 400 1190 480 1355 440 C1470 410 1540 450 1600 430" class="thin" opacity="0.78"/>
+
+  <!-- printing press silhouette on left -->
+  <g transform="translate(70 410) scale(0.95)">
+    <rect x="0" y="0" width="245" height="25" class="wood"/>
+    <rect x="30" y="-150" width="26" height="220" class="wood"/>
+    <rect x="200" y="-150" width="26" height="220" class="wood"/>
+    <rect x="10" y="-150" width="235" height="26" class="wood"/>
+    <path d="M128 -190 V-70M82 -180 H176" class="ink"/>
+    <polygon points="96,-46 208,-65 220,45 105,55" class="paper"/>
+  </g>
+
+  <!-- crowd -->
+  <g>
+    <g transform="translate(360 410)"><path d="M0 0 L22 70 L-22 70 Z" fill="#874f47" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+    <g transform="translate(485 455)"><path d="M0 0 L22 70 L-22 70 Z" fill="#657282" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+    <g transform="translate(660 420)"><path d="M0 0 L22 70 L-22 70 Z" fill="#827847" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+    <g transform="translate(850 470)"><path d="M0 0 L22 70 L-22 70 Z" fill="#705745" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+    <g transform="translate(1065 430)"><path d="M0 0 L22 70 L-22 70 Z" fill="#874f47" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+    <g transform="translate(1280 460)"><path d="M0 0 L22 70 L-22 70 Z" fill="#657282" stroke="#38271b" stroke-width="4"/><circle cy="-24" r="13" fill="#c99363" stroke="#38271b" stroke-width="3"/><polygon points="28,18 70,8 75,45 32,55" class="paper"/></g>
+  </g>
+
+  <!-- printed rumors carried by wind -->
+  <g opacity="0.96">
+    <polygon points="355,195 415,178 426,230 362,246" class="paper"/>
+    <polygon points="545,240 610,220 622,276 553,294" class="paper"/>
+    <polygon points="755,185 822,164 835,224 765,243" class="paper"/>
+    <polygon points="980,235 1048,218 1060,278 990,295" class="paper"/>
+    <polygon points="1240,180 1310,160 1322,222 1250,240" class="paper"/>
+    <polygon points="1400,250 1470,232 1485,292 1412,310" class="paper"/>
+  </g>
+
+  <!-- debris -->
+  <g fill="#906039" stroke="#38271b" stroke-width="4">
+    <ellipse cx="505" cy="520" rx="48" ry="16"/>
+    <ellipse cx="930" cy="535" rx="52" ry="18"/>
+    <ellipse cx="1215" cy="505" rx="44" ry="15"/>
+  </g>
+
+  <rect x="0" y="548" width="1600" height="52" fill="#5a4330" opacity="0.72"/>
+  <rect width="1600" height="600" filter="url(#grain)" opacity="0.18"/>
+</svg>

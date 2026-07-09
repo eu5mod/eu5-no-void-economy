@@ -12,14 +12,59 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate local artifacts
-        run: ./tools/generate_all.sh
+        run: |
+          set +e
+          ./tools/generate_all.sh > generate_all.log 2>&1
+          status=$?
+          cat generate_all.log
+          exit $status
+
+      - name: Upload generator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generate-all-log
+          path: generate_all.log
 
       - name: Validate package structure and generated adapters
-        run: ./tools/validate_module_packages.sh
+        run: |
+          set +e
+          /bin/bash ./tools/validate_module_packages.sh > validate_module_packages.log 2>&1
+          status=$?
+          cat validate_module_packages.log
+          exit $status
+
+      - name: Upload package validator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validate-module-packages-log
+          path: validate_module_packages.log
+
+      - name: Audit persistent state surface
+        run: /bin/bash ./tools/audit_modeu5_persistent_state.sh
+
+      - name: Validate CMM value-link quoting
+        run: /bin/bash ./tools/normalize_cmm_value_links.sh --check
+
+      - name: Validate CI static contracts
+        run: |
+          set +e
+          python3 ./tools/validate_ci_static_contracts.py > validate_ci_static_contracts.log 2>&1
+          status=$?
+          cat validate_ci_static_contracts.log
+          exit $status
+
+      - name: Upload CI static contract validator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validate-ci-static-contracts-log
+          path: validate_ci_static_contracts.log
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
+          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"

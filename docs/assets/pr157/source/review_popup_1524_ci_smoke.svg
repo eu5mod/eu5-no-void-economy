@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <defs>
+    <linearGradient id="smoke_sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8aa4ad"/>
+      <stop offset="1" stop-color="#d6ad73"/>
+    </linearGradient>
+    <linearGradient id="smoke_flood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a9aab"/>
+      <stop offset="1" stop-color="#3f7890"/>
+    </linearGradient>
+    <style>
+      .ink{stroke:#38271b;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .thin{stroke:#38271b;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;fill:none}
+      .paper{fill:#f3dfb2;stroke:#38271b;stroke-width:5;stroke-linejoin:round}
+      .town{fill:#ae8056;stroke:#38271b;stroke-width:5;stroke-linejoin:round}
+      .roof{fill:#7c4b48;stroke:#38271b;stroke-width:5;stroke-linejoin:round}
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#smoke_sky)"/>
+  <rect x="8" y="8" width="1584" height="884" class="ink" opacity="0.92"/>
+
+  <g fill="#6f858d" opacity="0.5">
+    <ellipse cx="220" cy="125" rx="260" ry="70"/>
+    <ellipse cx="620" cy="145" rx="300" ry="80"/>
+    <ellipse cx="1050" cy="125" rx="320" ry="80"/>
+    <ellipse cx="1420" cy="155" rx="240" ry="70"/>
+  </g>
+
+  <g class="thin" opacity="0.9">
+    <g transform="translate(330 160)"><circle r="64"/><circle r="28"/><path d="M0,-64 V64M-64,0 H64M-45,-45 L45,45M45,-45 L-45,45"/></g>
+    <g transform="translate(1210 145)"><circle r="58"/><circle r="24"/><path d="M0,-58 V58M-58,0 H58M-41,-41 L41,41M41,-41 L-41,41"/></g>
+  </g>
+
+  <g transform="translate(0 545)">
+    <rect x="80" y="-115" width="110" height="115" class="town"/><path d="M65 -115 L136 -185 L205 -115" class="roof"/>
+    <rect x="245" y="-170" width="125" height="170" class="town"/><path d="M230 -170 L308 -250 L388 -170" class="roof"/>
+    <rect x="430" y="-125" width="115" height="125" class="town"/><path d="M415 -125 L488 -195 L562 -125" class="roof"/>
+    <rect x="625" y="-195" width="130" height="195" class="town"/><path d="M608 -195 L690 -290 L774 -195" class="roof"/>
+    <rect x="850" y="-130" width="120" height="130" class="town"/><path d="M835 -130 L912 -200 L988 -130" class="roof"/>
+    <rect x="1060" y="-180" width="125" height="180" class="town"/><path d="M1042 -180 L1124 -260 L1206 -180" class="roof"/>
+    <rect x="1280" y="-125" width="115" height="125" class="town"/><path d="M1264 -125 L1338 -195 L1412 -125" class="roof"/>
+  </g>
+
+  <path d="M0 510 C170 445 310 555 470 498 C640 435 790 560 970 492 C1140 430 1300 545 1460 490 C1540 462 1585 480 1600 470 V900 H0 Z" fill="url(#smoke_flood)" stroke="#38271b" stroke-width="7" opacity="0.92"/>
+  <path d="M0 640 C170 590 325 675 500 620 C665 570 830 680 1000 620 C1180 560 1335 660 1510 612" class="thin" opacity="0.78"/>
+  <path d="M0 740 C160 700 330 780 510 728 C680 680 840 780 1015 725 C1190 675 1350 765 1515 720" class="thin" opacity="0.78"/>
+
+  <g opacity="0.96">
+    <polygon points="380,300 465,278 480,350 392,375" class="paper"/>
+    <polygon points="650,255 735,230 752,305 665,330" class="paper"/>
+    <polygon points="950,315 1035,292 1052,368 965,392" class="paper"/>
+  </g>
+
+  <text x="800" y="840" text-anchor="middle" font-size="36" fill="#38271b" font-family="serif" font-weight="700">CI source-folder smoke SVG</text>
+</svg>

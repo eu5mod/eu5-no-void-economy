@@ -114,8 +114,8 @@ Related US: every optional module story
 - Depend on Core from each companion; do not make Core depend on optional companions.
 - Do not claim dependency metadata visually nests companions or cascade-disables them.
 - Keep a metadata-only full-suite package as a separate future convenience, not part of the Core dependency graph.
-- Keep game rules subordinate to package activation.
-- Use the built-in Game Rules screen only for script-safe pre-campaign settings.
+- Keep CMM settings subordinate to package activation.
+- Use the Community Mod Manager only for script-safe pre-campaign settings.
 - Keep launcher selection as the activation mechanism for optional packages.
 - Make the full four-package suite the default/recommended launcher playset.
 - Publish the four source package roots as sibling launcher mods.
@@ -153,8 +153,8 @@ Related US: every optional module story
 - [ ] Removing an optional package before a new test campaign restores the corresponding vanilla behavior.
 - [ ] Startup debug lists all detected ModeU5 package versions.
 - [ ] No optional UI claims an inactive feature is enabled.
-- [ ] The ModeU5 debug game rule offers Off, Basic, and Verbose before campaign start.
-- [ ] The selected debug rule initializes `modeu5_debug_level` without mutating stock or package state.
+- [ ] The ModeU5 CMM Debug Messages setting offers Off, Basic, and Detailed before campaign start.
+- [ ] The selected CMM debug setting initializes `modeu5_debug_level` without mutating stock or package state.
 - [ ] Fresh stock seeding is absent from all configuration surfaces.
 - [ ] The lifecycle warning is visible from both the available-mod list and the selected playset.
 - [ ] TECH-01 and package-combination tests are updated.
@@ -184,10 +184,10 @@ US-13 behavior exists in campaigns 1 and 5
 Startup debug reports the exact package set
 No missing-dependency or stale optional effect is present
 Package descriptions warn that changing the package set for an existing save is unsupported
-The built-in Game Rules screen exposes the ModeU5 debug setting
+The Community Mod Manager exposes the ModeU5 debug setting
 No custom in-game configuration panel is present
 ```
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.

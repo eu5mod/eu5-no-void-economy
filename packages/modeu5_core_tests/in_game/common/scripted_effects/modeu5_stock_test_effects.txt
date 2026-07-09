@@ -2,7 +2,7 @@
 # Capacity is test setup data; stock setup and cleanup always use CORE operators.
 
 modeu5_debug_clear_stock_test_results = {
-	modeu5_enter_audit_runtime_mode = yes
+	modeu5_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = modeu5_test_add_allow_over_capacity_passed
 	remove_global_variable = modeu5_test_add_enforce_passed
@@ -10,7 +10,9 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_decay_passed
 	remove_global_variable = modeu5_test_same_market_transfer_passed
 	remove_global_variable = modeu5_test_invalid_same_record_passed
+	remove_global_variable = modeu5_test_same_market_transfer_blocked
 	remove_global_variable = modeu5_test_inter_market_transfer_passed
+	remove_global_variable = modeu5_test_inter_market_transfer_blocked
 	remove_global_variable = modeu5_test_rebuild_passed
 	remove_global_variable = modeu5_test_validation_repair_passed
 	remove_global_variable = modeu5_test_validation_noop_passed
@@ -21,11 +23,18 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_test_storage_capacity_timing_pending
 	remove_global_variable = modeu5_test_storage_capacity_timing_failed
 	remove_global_variable = modeu5_test_reconciliation_dirty_passed
+	remove_global_variable = modeu5_test_reconciliation_active_passed
 	remove_global_variable = modeu5_test_reconciliation_empty_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_failed
+	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
 	remove_global_variable = modeu5_test_core02_proportional_passed
 	remove_global_variable = modeu5_test_core02_over_capacity_passed
 	remove_global_variable = modeu5_test_core02_initialization_started
 	remove_global_variable = modeu5_test_core02_initialization_finished
+	remove_global_variable = modeu5_test_us10_demand_resolution_passed
+	remove_global_variable = modeu5_test_us10_demand_resolution_failed
+	remove_global_variable = modeu5_test_us10_demand_resolution_blocked
 	remove_global_variable = modeu5_test_core03_location_succession_started
 	remove_global_variable = modeu5_test_core03_location_succession_passed
 	remove_global_variable = modeu5_test_core03_location_succession_failed
@@ -39,6 +48,8 @@ modeu5_debug_clear_stock_test_results = {
 	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_trade_capacity
 	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
 	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_count
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_market_count
+	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_country_pool_total
 	remove_global_variable = modeu5_debug_us02_dump_fra_iron_capacity
 	remove_global_variable = modeu5_debug_us02_probe_started
 	remove_global_variable = modeu5_debug_us02_probe_before_capacity
@@ -70,6 +81,8 @@ modeu5_debug_clear_stock_test_results = {
 	remove_variable = modeu5_debug_us02_ui_fra_wheat_trade_capacity
 	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_rank_capacity
 	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_count
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_market_count
+	remove_variable = modeu5_debug_us02_ui_fra_wheat_country_pool_total
 	remove_variable = modeu5_debug_us02_ui_fra_iron_capacity
 	remove_variable = modeu5_debug_us02_ui_probe_before_capacity
 	remove_variable = modeu5_debug_us02_ui_probe_after_build_capacity
@@ -92,25 +105,44 @@ modeu5_debug_clear_stock_test_results = {
 	remove_variable = modeu5_debug_core03_ui_market_after
 	remove_variable = modeu5_debug_core03_ui_actual_transfer
 	remove_variable = modeu5_debug_core03_ui_market_delta
+	remove_variable = modeu5_debug_us11_ui_dirty_records_checked
+	remove_variable = modeu5_debug_us11_ui_dirty_inconsistencies
+	remove_variable = modeu5_debug_us11_ui_dirty_rebuilds
+	remove_variable = modeu5_debug_us11_ui_dirty_failures
+	remove_variable = modeu5_debug_us11_ui_dirty_market_stock
+	remove_variable = modeu5_debug_us11_ui_empty_records_checked
+	remove_variable = modeu5_debug_us11_ui_empty_inconsistencies
+	remove_variable = modeu5_debug_us11_ui_empty_rebuilds
+	remove_variable = modeu5_debug_us11_ui_empty_failures
+	remove_variable = modeu5_debug_us11_ui_active_type
+	remove_variable = modeu5_debug_us11_ui_active_records_checked
+	remove_variable = modeu5_debug_us11_ui_active_inconsistencies
+	remove_variable = modeu5_debug_us11_ui_active_rebuilds
+	remove_variable = modeu5_debug_us11_ui_active_failures
+	remove_variable = modeu5_debug_us11_ui_active_market_stock
+	remove_variable = modeu5_debug_us11_ui_market_owned_active_markets
+	remove_variable = modeu5_debug_us11_ui_market_owned_cache_rebuilds
+	remove_variable = modeu5_debug_us11_ui_market_owned_active_goods
+	remove_variable = modeu5_debug_us11_ui_market_owned_dirty_repairs
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
 	$country$ = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_stock_cap_by_market
+				has_variable_map = modeu5_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_stock_cap_by_market
+					name = modeu5_stock_cap_by_market
 					target = $market$
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_wheat_stock_cap_by_market
+				name = modeu5_stock_cap_by_market
 				key = $market$
 			}
 		}
 		add_to_variable_map = {
-			name = modeu5_wheat_stock_cap_by_market
+			name = modeu5_stock_cap_by_market
 			key = $market$
 			value = $value$
 		}
@@ -621,10 +653,23 @@ modeu5_debug_run_single_record_stock_tests = {
 		remove_global_variable = modeu5_test_decay_passed
 		error_log = "ModeU5 deterministic CORE-01 decay test failed."
 	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_add_allow_over_capacity_passed
+			has_global_variable = modeu5_test_add_enforce_passed
+			has_global_variable = modeu5_test_remove_passed
+			has_global_variable = modeu5_test_decay_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT single_record PASS"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT single_record FAIL"
+	}
 }
 
 modeu5_debug_run_same_market_transfer_tests = {
 	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_same_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -748,12 +793,28 @@ modeu5_debug_run_same_market_transfer_tests = {
 	else = {
 		remove_global_variable = modeu5_test_same_market_transfer_passed
 		remove_global_variable = modeu5_test_invalid_same_record_passed
+		set_global_variable = modeu5_test_same_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 transfer test requires FRA and ENG."
+	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_same_market_transfer_passed
+			has_global_variable = modeu5_test_invalid_same_record_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_same_market_transfer_blocked }
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer BLOCKED missing_FRA_ENG"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer FAIL"
 	}
 }
 
 modeu5_debug_run_inter_market_transfer_test = {
 	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_inter_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -874,7 +935,21 @@ modeu5_debug_run_inter_market_transfer_test = {
 	}
 	else = {
 		remove_global_variable = modeu5_test_inter_market_transfer_passed
+		set_global_variable = modeu5_test_inter_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
+	}
+	if = {
+		limit = {
+			has_global_variable = modeu5_test_inter_market_transfer_passed
+		}
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer PASS"
+	}
+	else_if = {
+		limit = { has_global_variable = modeu5_test_inter_market_transfer_blocked }
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer BLOCKED missing_FRA_ENG_or_distinct_markets"
+	}
+	else = {
+		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer FAIL"
 	}
 }
 
@@ -1058,6 +1133,7 @@ modeu5_debug_run_rebuild_and_validation_tests = {
 modeu5_debug_run_reconciliation_tests = {
 	save_temporary_scope_as = modeu5_test_controller
 	modeu5_clear_all_dirty_stock_markets = yes
+	modeu5_clear_all_active_stock_markets = yes
 
 	if = {
 		limit = {
@@ -1114,6 +1190,27 @@ modeu5_debug_run_reconciliation_tests = {
 			market = scope:modeu5_test_market
 			output = modeu5_test_reconciled_market_stock
 		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_dirty_records_checked
+			value = scope:modeu5_reconciliation_records_checked_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_dirty_inconsistencies
+			value = scope:modeu5_reconciliation_inconsistencies_found_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_dirty_rebuilds
+			value = scope:modeu5_reconciliation_rebuilds_called_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_dirty_failures
+			value = scope:modeu5_reconciliation_failures_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_dirty_market_stock
+			value = scope:modeu5_test_reconciled_market_stock
+		}
+		debug_log = "ModeU5 US-11 DUMP dirty_reconciliation records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_failures').GetValue|0] market_stock=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_market_stock').GetValue|2]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_records_checked_result = 1
@@ -1133,6 +1230,23 @@ modeu5_debug_run_reconciliation_tests = {
 		}
 
 		modeu5_validate_dirty_stock_consistency = yes
+		set_variable = {
+			name = modeu5_debug_us11_ui_empty_records_checked
+			value = scope:modeu5_reconciliation_records_checked_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_empty_inconsistencies
+			value = scope:modeu5_reconciliation_inconsistencies_found_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_empty_rebuilds
+			value = scope:modeu5_reconciliation_rebuilds_called_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_empty_failures
+			value = scope:modeu5_reconciliation_failures_result
+		}
+		debug_log = "ModeU5 US-11 DUMP empty_reconciliation records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_empty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_empty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_empty_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_empty_failures').GetValue|0]"
 		if = {
 			limit = {
 				scope:modeu5_reconciliation_records_checked_result = 0
@@ -1146,11 +1260,218 @@ modeu5_debug_run_reconciliation_tests = {
 			remove_global_variable = modeu5_test_reconciliation_empty_passed
 			error_log = "ModeU5 deterministic US-11 empty reconciliation test failed."
 		}
+
+		modeu5_debug_corrupt_market_stock_for_test = {
+			market = scope:modeu5_test_market
+			good = wheat
+			value = 175
+		}
+		modeu5_validate_active_stock_consistency = yes
+		modeu5_read_market_stock_good_wheat = {
+			market = scope:modeu5_test_market
+			output = modeu5_test_active_reconciled_market_stock
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_type
+			value = scope:modeu5_reconciliation_type
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_records_checked
+			value = scope:modeu5_reconciliation_records_checked_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_inconsistencies
+			value = scope:modeu5_reconciliation_inconsistencies_found_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_rebuilds
+			value = scope:modeu5_reconciliation_rebuilds_called_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_failures
+			value = scope:modeu5_reconciliation_failures_result
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_active_market_stock
+			value = scope:modeu5_test_active_reconciled_market_stock
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_active_markets_processed_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_active_markets
+				value = global_var:modeu5_market_owned_active_markets_processed_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_markets value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_country_cache_rebuild_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_cache_rebuilds
+				value = global_var:modeu5_market_owned_country_cache_rebuild_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_cache_rebuilds value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_owned_active_goods_processed_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_active_goods
+				value = global_var:modeu5_market_owned_active_goods_processed_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_goods value = 0 }
+		}
+		if = {
+			limit = { has_global_variable = modeu5_market_country_cache_dirty_repair_count }
+			set_variable = {
+				name = modeu5_debug_us11_ui_market_owned_dirty_repairs
+				value = global_var:modeu5_market_country_cache_dirty_repair_count
+			}
+		}
+		else = {
+			set_variable = { name = modeu5_debug_us11_ui_market_owned_dirty_repairs value = 0 }
+		}
+		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('modeu5_debug_us11_ui_active_type').GetValue|0] records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_active_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_active_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_active_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_active_failures').GetValue|0] market_stock=[THIS.GetVariable('modeu5_debug_us11_ui_active_market_stock').GetValue|2]"
+		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
+		if = {
+			limit = {
+				scope:modeu5_reconciliation_type = 3
+				scope:modeu5_reconciliation_records_checked_result = 1
+				scope:modeu5_reconciliation_inconsistencies_found_result = 1
+				scope:modeu5_reconciliation_rebuilds_called_result = 1
+				scope:modeu5_reconciliation_failures_result = 0
+				scope:modeu5_test_active_reconciled_market_stock = 150
+				global_var:modeu5_market_owned_active_markets_processed_count >= 1
+				global_var:modeu5_market_owned_country_cache_rebuild_count >= 1
+				global_var:modeu5_market_owned_active_goods_processed_count >= 1
+				has_global_variable_list = modeu5_active_markets_any_good
+				has_global_variable_list = modeu5_wheat_active_markets
+				is_target_in_global_variable_list = {
+					name = modeu5_active_markets_any_good
+					target = scope:modeu5_test_market
+				}
+				is_target_in_global_variable_list = {
+					name = modeu5_wheat_active_markets
+					target = scope:modeu5_test_market
+				}
+			}
+			set_global_variable = modeu5_test_reconciliation_active_passed
+		}
+		else = {
+			remove_global_variable = modeu5_test_reconciliation_active_passed
+			error_log = "ModeU5 deterministic US-11 active reconciliation test failed."
+		}
+		if = {
+			limit = {
+				has_global_variable = modeu5_test_reconciliation_dirty_passed
+				has_global_variable = modeu5_test_reconciliation_empty_passed
+				has_global_variable = modeu5_test_reconciliation_active_passed
+			}
+			debug_log = "ModeU5 US-11 RESULT reconciliation PASS"
+		}
+		else = {
+			debug_log = "ModeU5 US-11 RESULT reconciliation FAIL"
+		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_reconciliation_dirty_passed
+		remove_global_variable = modeu5_test_reconciliation_active_passed
 		remove_global_variable = modeu5_test_reconciliation_empty_passed
 		error_log = "ModeU5 deterministic US-11 tests require FRA and ENG."
+	}
+}
+
+modeu5_debug_run_reconciliation_cadence_tests = {
+	save_temporary_scope_as = modeu5_test_controller
+	remove_global_variable = modeu5_test_reconciliation_cadence_passed
+	remove_global_variable = modeu5_test_reconciliation_cadence_failed
+	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
+
+	if = {
+		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 0 }
+
+		modeu5_enter_normal_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		modeu5_enter_debug_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		modeu5_enter_audit_runtime_mode = yes
+		modeu5_run_monthly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 1 }
+		}
+
+		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+		modeu5_enter_normal_runtime_mode = yes
+		modeu5_run_four_yearly_stock_reconciliation_once = yes
+		if = {
+			limit = { has_global_variable = modeu5_last_four_yearly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 1 }
+		}
+
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_normal_monthly_stamp
+			value = scope:modeu5_test_cadence_normal_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_debug_monthly_stamp
+			value = scope:modeu5_test_cadence_debug_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_audit_monthly_stamp
+			value = scope:modeu5_test_cadence_audit_monthly_stamp
+		}
+		set_variable = {
+			name = modeu5_debug_us11_ui_cadence_four_yearly_stamp
+			value = scope:modeu5_test_cadence_four_yearly_stamp
+		}
+		debug_log = "ModeU5 US-11 DUMP cadence normal_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_normal_monthly_stamp').GetValue|0] debug_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_debug_monthly_stamp').GetValue|0] audit_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_audit_monthly_stamp').GetValue|0] four_yearly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_four_yearly_stamp').GetValue|0]"
+
+		if = {
+			limit = {
+				scope:modeu5_test_cadence_normal_monthly_stamp = 0
+				scope:modeu5_test_cadence_debug_monthly_stamp = 0
+				scope:modeu5_test_cadence_audit_monthly_stamp = 1
+				scope:modeu5_test_cadence_four_yearly_stamp = 1
+			}
+			set_global_variable = modeu5_test_reconciliation_cadence_passed
+			debug_log = "ModeU5 US-11 RESULT cadence PASS"
+		}
+		else = {
+			set_global_variable = modeu5_test_reconciliation_cadence_failed
+			error_log = "ModeU5 deterministic US-11 cadence test failed."
+			debug_log = "ModeU5 US-11 RESULT cadence FAIL"
+		}
+
+		modeu5_enter_test_audit_runtime_mode = yes
+	}
+	else = {
+		set_global_variable = modeu5_test_reconciliation_cadence_blocked
+		error_log = "ModeU5 deterministic US-11 cadence test requires completed CORE-02 initialization."
+		debug_log = "ModeU5 US-11 RESULT cadence BLOCKED runtime_not_ready"
 	}
 }
 
@@ -1227,9 +1548,11 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 200
 			}
 			set_global_variable = modeu5_test_core02_proportional_passed
+			debug_log = "ModeU5 CORE-02 RESULT proportional PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_proportional_passed
+			debug_log = "ModeU5 CORE-02 RESULT proportional FAIL"
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
 		}
 
@@ -1296,15 +1619,28 @@ modeu5_debug_run_core02_initialization_tests = {
 				global_var:modeu5_initialization_allocated_total = 150
 			}
 			set_global_variable = modeu5_test_core02_over_capacity_passed
+			debug_log = "ModeU5 CORE-02 RESULT over_capacity PASS"
 		}
 		else = {
 			remove_global_variable = modeu5_test_core02_over_capacity_passed
+			debug_log = "ModeU5 CORE-02 RESULT over_capacity FAIL"
 			error_log = "ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed."
+		}
+		if = {
+			limit = {
+				has_global_variable = modeu5_test_core02_proportional_passed
+				has_global_variable = modeu5_test_core02_over_capacity_passed
+			}
+			debug_log = "ModeU5 CORE-02 RESULT initialization PASS"
+		}
+		else = {
+			debug_log = "ModeU5 CORE-02 RESULT initialization FAIL"
 		}
 	}
 	else = {
 		remove_global_variable = modeu5_test_core02_proportional_passed
 		remove_global_variable = modeu5_test_core02_over_capacity_passed
+		debug_log = "ModeU5 CORE-02 RESULT initialization BLOCKED missing_FRA_ENG"
 		error_log = "ModeU5 deterministic CORE-02 initialization tests require FRA and ENG."
 	}
 }

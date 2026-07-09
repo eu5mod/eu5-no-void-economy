@@ -1,0 +1,292 @@
+# ModeU5 US-00 void-economy measurement helpers.
+#
+# These helpers own the produced/added/rejected ledger and downstream
+# overproduction, void-wealth, and next-cycle production-penalty fields.
+# They do not read vanilla production directly; TECH-01 021 must confirm that
+# source before monthly gameplay wiring is enabled.
+
+modeu5_read_void_economy_record = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_load_void_economy_record_good_$good$ = yes
+	modeu5_normalize_void_economy_record_read = yes
+}
+
+modeu5_normalize_void_economy_record_read = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_produced
+		value = {
+			value = scope:modeu5_us00_produced_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_added
+		value = {
+			value = scope:modeu5_us00_added_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_rejected
+		value = {
+			value = scope:modeu5_us00_rejected_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_read_overproduction_ratio
+		value = {
+			value = scope:modeu5_us00_overproduction_ratio_before_raw
+			min = 0
+			max = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_read_effective_overproduction_ratio
+		value = {
+			value = scope:modeu5_us00_effective_overproduction_ratio_before_raw
+			min = 0
+			max = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_read_void_wealth
+		value = {
+			value = scope:modeu5_us00_void_wealth_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_read_void_taxable_income_proxy
+		value = {
+			value = scope:modeu5_us00_void_taxable_income_proxy_before_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_read_production_penalty
+		value = scope:modeu5_us00_production_penalty_before_raw
+	}
+}
+
+modeu5_update_production_rejection_ledger = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_produced_quantity_raw
+		value = $produced_quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_added_quantity_raw
+		value = $actual_added_quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_rejected_quantity_raw
+		value = $rejected_quantity$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_produced_quantity
+		value = {
+			value = scope:modeu5_us00_produced_quantity_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_added_quantity
+		value = {
+			value = scope:modeu5_us00_added_quantity_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_rejected_quantity
+		value = {
+			value = scope:modeu5_us00_rejected_quantity_raw
+			min = 0
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us00_produced_quantity_raw < 0 }
+		error_log = "ModeU5 US-00 ledger received a negative produced quantity; normalized to zero."
+	}
+	if = {
+		limit = { scope:modeu5_us00_added_quantity_raw < 0 }
+		error_log = "ModeU5 US-00 ledger received a negative added quantity; normalized to zero."
+	}
+	if = {
+		limit = { scope:modeu5_us00_rejected_quantity_raw < 0 }
+		error_log = "ModeU5 US-00 ledger received a negative rejected quantity; normalized to zero."
+	}
+
+	modeu5_update_production_rejection_ledger_good_$good$ = yes
+}
+
+modeu5_calculate_us00_overproduction_ratio = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_calculate_overproduction_ratio_good_$good$ = yes
+}
+
+modeu5_calculate_us00_void_wealth = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price_raw
+		value = $good_price$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price
+		value = {
+			value = scope:modeu5_us00_good_price_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price_source
+		value = $good_price_source$
+	}
+	if = {
+		limit = { scope:modeu5_us00_good_price_raw < 0 }
+		error_log = "ModeU5 US-00 void wealth received a negative good price; normalized to zero."
+	}
+
+	modeu5_calculate_void_wealth_good_$good$ = yes
+}
+
+modeu5_calculate_us00_production_penalty = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_calculate_production_penalty_good_$good$ = yes
+}
+
+modeu5_run_us00_record_calculations = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price_raw
+		value = $good_price$
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price
+		value = {
+			value = scope:modeu5_us00_good_price_raw
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us00_good_price_source
+		value = $good_price_source$
+	}
+
+	modeu5_calculate_overproduction_ratio_good_$good$ = yes
+	modeu5_calculate_void_wealth_good_$good$ = yes
+	modeu5_calculate_production_penalty_good_$good$ = yes
+}
+
+modeu5_clear_us00_record = {
+	$country$ = { save_temporary_scope_as = modeu5_country }
+	$market$ = { save_temporary_scope_as = modeu5_market }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+
+	modeu5_clear_void_economy_record_good_$good$ = yes
+}
+
+modeu5_update_void_wealth_aggregates = {
+	if = {
+		limit = { scope:modeu5_us00_void_wealth_delta != 0 }
+		scope:modeu5_country = {
+			if = {
+				limit = {
+					has_variable_map = modeu5_void_wealth_by_market
+					is_key_in_variable_map = {
+						name = modeu5_void_wealth_by_market
+						target = scope:modeu5_market
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_market_void_wealth_before
+					value = "variable_map(modeu5_void_wealth_by_market|scope:modeu5_market)"
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_market_void_wealth_before
+					value = 0
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_us00_market_void_wealth_after
+				value = {
+					value = scope:modeu5_us00_market_void_wealth_before
+					add = scope:modeu5_us00_void_wealth_delta
+					min = 0
+				}
+			}
+			if = {
+				limit = {
+					has_variable_map = modeu5_void_wealth_by_market
+					is_key_in_variable_map = {
+						name = modeu5_void_wealth_by_market
+						target = scope:modeu5_market
+					}
+				}
+				remove_from_variable_map = {
+					name = modeu5_void_wealth_by_market
+					key = scope:modeu5_market
+				}
+			}
+			if = {
+				limit = { scope:modeu5_us00_market_void_wealth_after > 0 }
+				add_to_variable_map = {
+					name = modeu5_void_wealth_by_market
+					key = scope:modeu5_market
+					value = scope:modeu5_us00_market_void_wealth_after
+				}
+			}
+
+			if = {
+				limit = { has_variable = modeu5_total_void_wealth }
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_total_void_wealth_before
+					value = var:modeu5_total_void_wealth
+				}
+			}
+			else = {
+				save_temporary_scope_value_as = {
+					name = modeu5_us00_total_void_wealth_before
+					value = 0
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = modeu5_us00_total_void_wealth_after
+				value = {
+					value = scope:modeu5_us00_total_void_wealth_before
+					add = scope:modeu5_us00_void_wealth_delta
+					min = 0
+				}
+			}
+			if = {
+				limit = { scope:modeu5_us00_total_void_wealth_after > 0 }
+				set_variable = {
+					name = modeu5_total_void_wealth
+					value = scope:modeu5_us00_total_void_wealth_after
+				}
+			}
+			else = {
+				remove_variable = modeu5_total_void_wealth
+			}
+		}
+	}
+}

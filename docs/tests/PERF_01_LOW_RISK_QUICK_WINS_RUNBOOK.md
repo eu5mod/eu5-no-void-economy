@@ -40,8 +40,9 @@ Expected:
 modeu5_runtime_mode_normal is the active diagnostic mode.
 Opening-stock initialization skips zero-source market x good pairs before the
 country-capacity scan and still increments the zero-source counter.
-Automatic startup/yearly reconciliation does not call full all-market
-validation unless audit mode is active.
+Startup, normal monthly runtime, and verbose debug runtime do not call
+automatic reconciliation. Monthly reconciliation runs only when audit mode is
+active, and the four-year safety pass uses the active/dirty indexed path.
 No new ModeU5 script-system error appears in error.log.
 ```
 
@@ -66,9 +67,10 @@ event modeu5_debug.1
 Expected:
 
 ```txt
-The test fixture enters audit mode through modeu5_debug_clear_stock_test_results.
+The test fixture enters test-audit mode through modeu5_debug_clear_stock_test_results.
 CORE stock debug captures and deterministic dump values remain visible.
-Full validation remains available to explicit audit/test flows.
+Full validation remains available to explicit audit/test flows, but verbose
+debug alone does not enable automatic audit reconciliation.
 No generated stock adapter contains a dynamic map identifier.
 ```
 

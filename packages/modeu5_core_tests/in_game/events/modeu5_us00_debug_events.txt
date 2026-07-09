@@ -1,0 +1,83 @@
+namespace = modeu5_us00_debug
+
+modeu5_us00_debug.1 = {
+	type = country_event
+	title = modeu5_us00_debug.1.title
+	desc = modeu5_us00_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us00_debug.1.a
+		modeu5_us00_debug_run_controlled_e2e_test = yes
+		trigger_event_non_silently = modeu5_us00_debug.2
+	}
+	option = {
+		name = modeu5_us00_debug.1.b
+		modeu5_us00_debug_run_probe021 = yes
+		trigger_event_non_silently = modeu5_us00_debug.2
+	}
+	option = {
+		name = modeu5_us00_debug.1.c
+		modeu5_us00_debug_run_monthly_runtime_test = yes
+		trigger_event_non_silently = modeu5_us00_debug.2
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us00_debug.2 = {
+	type = country_event
+	title = modeu5_us00_debug.2.title
+	desc = modeu5_us00_debug.2.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_debug.test.us00_controlled_e2e.pass
+		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_passed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_controlled_e2e.fail
+		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_failed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_controlled_e2e.blocked
+		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_blocked }
+	}
+	option = {
+		name = modeu5_debug.test.probe021.pass
+		trigger = { has_global_variable = modeu5_test_probe021_passed }
+	}
+	option = {
+		name = modeu5_debug.test.probe021.pending
+		trigger = { has_global_variable = modeu5_test_probe021_pending }
+	}
+	option = {
+		name = modeu5_debug.test.probe021.fail
+		trigger = { has_global_variable = modeu5_test_probe021_failed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.pass
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_passed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.fail
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_failed }
+	}
+	option = {
+		name = modeu5_debug.test.us00_monthly_runtime.blocked
+		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_blocked }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}

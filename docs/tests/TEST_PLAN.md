@@ -64,6 +64,13 @@ New warnings explained
 Known vanilla warning ignored
 ```
 
+ModeU5-owned non-blocking noise should be removed where possible instead of
+being normalized as background noise. Use
+`docs/technical/LOG_NOISE_HYGIENE.md` to classify known cases, especially
+install-time UTF-8 BOM warnings, stale metadata warnings, generated static
+modifier localization placeholders, and tolerated test-only dynamic dump
+assertions.
+
 ## PR validation comments
 
 The PR body describes the current implementation contract and the test plan.
@@ -139,6 +146,44 @@ need. For the first pass, use:
 docs/tests/PERF_01_LOW_RISK_QUICK_WINS_RUNBOOK.md
 ```
 
+US-11 cadence changes must also prove that debug and verbose debug do not
+enable automatic reconciliation. Only dedicated audit mode may run monthly
+automatic reconciliation; explicit debug events and the four-year pulse remain
+valid reconciliation entry points.
+
+Native relationship traversal PRs must prove that country-driven flows use the
+native country-to-market iterator before broader sparse caches are introduced.
+For the first native traversal pass, use:
+
+```txt
+docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
+```
+
+Inverse market-to-country cache PRs must prove that market-driven flows can
+derive a deduplicated country list from market locations without scanning every
+country. For the first inverse-cache pass, use:
+
+```txt
+docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
+```
+
+Performance Mode CMM plumbing PRs must prove that the CMM
+`nve_no_void_economy_main` dropdown resolves to script-safe runtime flags before
+any stock mutation path relies on it. For the first PERF-14 pass, use:
+
+```txt
+docs/tests/PERF_14_PERFORMANCE_MODE_CMM_RUNBOOK.md
+```
+
+Market-entry stock-persistence PRs must prove that explicit
+`old_market -> new_market` transitions conserve country-market stock through
+centralized transfer operators and respect Normal, Performance, and Deactivated
+mode gates. Use:
+
+```txt
+docs/tests/CORE_04_MARKET_ENTRY_RUNBOOK.md
+```
+
 ## US-01 country stock tests
 
 ### Test ST1 - country, market, and good isolation
@@ -192,7 +237,8 @@ Expected:
 
 ```txt
 Total capacity equals base + domestic building + foreign building capacity
-Base capacity equals market merchant capacity + owned-location rank/capital contribution
+Base capacity equals target market trade-capacity contribution + per-market owned-location rank/capital share
+Country location pool divided by market count plus target market trade capacity equals the tested market capacity
 Country-level wrapper output matches direct wheat recalculation
 The four synchronized map fields read back the calculated values
 Wheat and iron capacity are equal for the same country and market
@@ -215,8 +261,7 @@ docs/tests/US_02_CONSOLE_TEST_RUNBOOK.md
 Setup:
 
 ```txt
-Run `./tools/generate_stock_good_helpers.sh`
-Run `./tools/generate_us09_economy_overrides.sh 5`
+Run `./tools/generate_all.sh`
 Run `./tools/validate_module_packages.sh`
 Run `./tools/install_local_packages.sh`
 Run `./tools/install_local_packages.sh --check`
@@ -359,24 +404,26 @@ Adding or removing an optional package from an existing campaign is unsupported 
 
 ## ModeU5 configuration tests
 
-### Test CFG1 - built-in Game Rules integration
+### Test CFG1 - CMM integration
 
 Setup:
 
 ```txt
 Load Core
-Open Game Rules before starting a campaign
-Locate ModeU5 Debug Output in the General tab
+Open the Community Mod Manager before starting a campaign
+Locate NVE Debug & Audit settings
 ```
 
 Expected:
 
 ```txt
-ModeU5 Debug Output offers Off, Basic, and Verbose
+Debug Messages offers Off, Basic, and Detailed
+Monthly Stock Check offers Off and On
+Save mode offers Light, Balanced, and Complete
 Off is the default
 No vanilla GUI file is replaced
 No custom in-game ModeU5 configuration panel is present
-No game-rule parse error is added to error.log
+No CMM value-link parse error is added to error.log
 ```
 
 ---
@@ -386,7 +433,7 @@ No game-rule parse error is added to error.log
 Setup:
 
 ```txt
-Start three clean campaigns with ModeU5 Debug Output set to Off, Basic, and Verbose
+Start three clean campaigns with NVE Debug Messages set to Off, Basic, and Detailed
 Inspect `modeu5_debug_level` after startup
 ```
 
@@ -425,8 +472,8 @@ The companion-only state is treated as invalid or causes Core to be restored bef
 Selecting Core alone does not enable optional companions
 An incompatible Core version produces a version-mismatch issue
 All four packages remain sibling entries
-Package presence, not a game rule, controls optional static overrides
-No Game Rules setting claims to unload Economy, Trade, or War packages
+Package presence, not a CMM setting, controls optional static overrides
+No CMM setting claims to unload Economy, Trade, or War packages
 Adding or removing a package still requires launcher/playset selection before campaign load
 No configuration action reseeds or mutates stock
 The installed source branch and commit are visible in `MODEU5_SOURCE.txt`
@@ -850,7 +897,7 @@ Country and market stock remain unchanged
 Expected:
 
 ```txt
-ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly/yearly stock reconciliation
+ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly audit and four-year stock reconciliation
 A permanent location owner change transfers loser stock by the transferred location capacity share
 The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
 The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
@@ -887,6 +934,7 @@ Same-market FRA -> ENG ownership transfer
 Inter-market FRA -> ENG transfer
 Rebuild and consistency validation
 US-11 dirty-record reconciliation
+US-11 reconciliation cadence gates
 ```
 
 Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
@@ -908,7 +956,9 @@ modeu5_test_rebuild_passed = 1
 modeu5_test_validation_repair_passed = 1
 modeu5_test_validation_noop_passed = 1
 modeu5_test_reconciliation_dirty_passed = 1
+modeu5_test_reconciliation_active_passed = 1
 modeu5_test_reconciliation_empty_passed = 1
+modeu5_test_reconciliation_cadence_passed = 1
 ```
 
 Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
@@ -1225,27 +1275,44 @@ A second pass with no mutation checks zero records
 
 ---
 
-### Test 8D — Pulse guards and yearly safety pass
+### Test 8D — Reconciliation cadence gates
 
 Setup:
 
 ```txt
-Use an initialized controlled fixture
-Trigger multiple country monthly pulses in one calendar month
-Corrupt one market/good cache without adding it to a dirty list
-Trigger multiple country yearly pulses in one calendar year
+Use an initialized controlled fixture.
+Run:
+event modeu5_debug.1
+
+Select "Test US-11 reconciliation cadence gates".
 ```
 
 Expected result:
 
 ```txt
-The monthly global reconciliation runs once for the month
-The yearly global reconciliation runs once for the year
-The yearly exhaustive pass detects and rebuilds the unindexed corruption
+Normal runtime does not stamp or run monthly reconciliation
+Debug runtime does not stamp or run monthly reconciliation
+Audit runtime stamps and runs monthly reconciliation
+Four-year reconciliation stamps and runs once for the current year
 Automatic reconciliation does not run before CORE-02 initialization completes and the persisted stock schema version matches the current schema
+debug.log contains:
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
 ```
 
 ## US-00 void economy tests
+
+Run the focused console procedure in:
+
+```txt
+docs/tests/US_00_VOID_ECONOMY_PIPELINE_RUNBOOK.md
+```
+
+The US-00 closure validates both the deterministic arithmetic fixture and the
+monthly runtime path. The runtime smoke test reads live `goods_output`, calls
+`modeu5_add_stock`, writes the US-00 record, values rejected production, stores
+the replacement penalty, and applies the previous penalty to producing
+locations through generated per-good modifiers.
 
 ### Test 9 — Location production aggregation
 
@@ -1385,9 +1452,77 @@ Counters reset only at the end of the monthly cycle
 Debug shows reset timing
 ```
 
+---
+
+### Test 14B — Monthly runtime ingestion and previous penalty application
+
+Setup:
+
+```txt
+CORE-02 initialization is complete
+FRA exists and has wheat output in its capital market
+Run event modeu5_us00_debug.1
+Choose "Run US-00 monthly runtime smoke test"
+```
+
+Expected:
+
+```txt
+ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat ...
+ModeU5 US-00 RESULT monthly_runtime PASS
+Produced, added, and rejected quantities are all positive
+Previous penalty and new penalty are both negative
+Affected and positive producing-location counts are positive
+Good price is positive
+Modifier application mode = good-specific local output modifier
+```
+
 ## US-10 demand resolution tests
 
-### Test 15 — Consumption from multiple stock candidates
+Focused deterministic runbook:
+
+```txt
+docs/tests/US_10_DEMAND_RESOLUTION_RUNBOOK.md
+```
+
+### Test 15 — Explicit-request US-10.1 / US-10.2 / US-10.3 smoke test
+
+Command:
+
+```txt
+event modeu5_us10_debug.1
+```
+
+Choose:
+
+```txt
+Run US-10 demand-resolution test
+```
+
+Expected:
+
+```txt
+Consumption requested = 100
+Consumption satisfied = 80
+Consumption unsatisfied = 20
+Inter-market requested = 100
+Inter-market transferred = 70
+Inter-market unsatisfied = 30
+All stock mutations call modeu5_remove_stock or modeu5_transfer_stock
+US-10.3 country-market-good counters record requested, satisfied/transferred, and unsatisfied quantities
+ModeU5 TEST PASS scenario=us10_demand_resolution
+```
+
+Known limitation:
+
+```txt
+This is an explicit ModeU5 request test. It does not yet read live vanilla Pop
+demand quantity or exact vanilla trade requested/actual quantity.
+```
+
+---
+
+### Test 16 — Consumption from multiple stock candidates
 
 Setup:
 
@@ -1412,7 +1547,7 @@ No trade income or transport cost is generated
 
 ---
 
-### Test 16 — Consumption with exclusions
+### Test 17 — Consumption with exclusions
 
 Setup:
 
@@ -1434,7 +1569,7 @@ Debug lists exclusion reason
 
 ---
 
-### Test 17 — Inter-market transfer limited by buyer capacity
+### Test 18 — Inter-market transfer limited by buyer capacity
 
 Setup:
 
@@ -1456,7 +1591,7 @@ transferred_quantity recorded for diagnostics = 35
 
 ## US-04 demand adaptation tests
 
-### Test 18 — Local demand grows after full-year satisfaction
+### Test 19 — Local demand grows after full-year satisfaction
 
 Setup:
 
@@ -1476,7 +1611,7 @@ annual counters reset
 
 ---
 
-### Test 19 — Local demand decays after full-year shortage
+### Test 20 — Local demand decays after full-year shortage
 
 Setup:
 
@@ -1496,7 +1631,7 @@ annual counters reset
 
 ---
 
-### Test 20 — Mixed year does not change demand
+### Test 21 — Mixed year does not change demand
 
 Setup:
 
@@ -1514,7 +1649,7 @@ annual counters reset
 
 ## US-05 Economic Base tests
 
-### Test 21 — Economic Base uses Wealth + Trade Income
+### Test 22 — Economic Base uses Wealth + Trade Income
 
 Setup:
 
@@ -1536,7 +1671,7 @@ Debug identifies the Wealth source and formula call site
 
 ## Static balance tests
 
-### Test 22 — US-07 trade building overrides
+### Test 23 — US-07 trade building overrides
 
 Expected:
 
@@ -1545,7 +1680,7 @@ Only confirmed static building fields are changed
 Tooltips do not contradict final values
 ```
 
-### Test 23 — US-08 fixed 50 ducat base price
+### Test 24 — US-08 fixed 50 ducat base price
 
 Expected:
 
@@ -1554,20 +1689,118 @@ Relevant RGO/building base price = 50
 Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 ```
 
-### Test 24 — US-09 global Production Efficiency bonus
+### Test 25 — US-09 global Production Efficiency bonus
 
 Expected:
 
 ```txt
-`./tools/generate_us09_economy_overrides.sh 5` regenerates the Economy package overrides deterministically
-Generated `building_types` overrides multiply each targeted `output =` value by `1.05`
-Generated `prices` overrides scale the five `expand_rgo_*` gold values by `1 / 1.05`
+`./tools/generate_us09_economy_overrides.sh 5` generates offline probe candidates deterministically
+Generated probe `building_types` candidates multiply each targeted `output =` value by `1.05`
+Generated probe `prices` candidates scale the five `expand_rgo_*` gold values by `1 / 1.05`
+No generated US-09 static candidate is loaded by the Economy package until duplicate-key-free replacement is confirmed
 No additive country-level production-efficiency modifier path is loaded for this implementation
+```
+
+## Performance tests
+
+### Test 26 — PERF-04 monthly US-00 loop fusion
+
+Expected:
+
+```txt
+Generated modeu5_run_us00_monthly_pipeline_all_goods loops each country market once
+Generated modeu5_process_us00_monthly_market_all_goods runs per-good US-00 helpers inside that market scope
+Single-good US-00 monthly wrappers remain available
+US-00 controlled and monthly runtime tests still emit PASS dumps
+Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
+```
+
+### Test 27 — PERF-05 reduce global market scans
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+PASS - Dirty market-good reconciliation
+PASS - Active market-good reconciliation
+PASS - Empty reconciliation is a no-op
+PASS - US-11 reconciliation cadence gates
+modeu5_active_markets_any_good contains the fixture market
+modeu5_wheat_active_markets contains the fixture market
+Active validation repairs the test market without requiring every_market_in_world
+Strict exhaustive validation remains available for explicit manual audit only
+```
+
+### Test 28 - PERF-07 market-owned runtime pass
+
+Setup:
+
+```txt
+Run:
+event modeu5_debug.1
+
+Choose "Test US-11 dirty-record reconciliation".
+```
+
+Expected:
+
+```txt
+ModeU5 PERF-07 DUMP market_owned_runtime active_markets>=1 cache_rebuilds>=1 active_goods>=1 dirty_repairs>=0
+Active validation uses the rebuilt current-market country work cache for active goods
+TECH-01 126 remains NOT_CONFIRMED for durable per-market country lists
+TECH-01 127 remains NOT_CONFIRMED for a dedicated market-change hook
+```
+
+### Test 29 - PERF-08 shared storage capacity cache
+
+Run the full protocol in:
+
+```txt
+docs/tests/PERF_08_SHARED_STORAGE_CAPACITY_RUNBOOK.md
+```
+
+Expected:
+
+```txt
+Generated helpers read modeu5_stock_cap_by_market, not modeu5_<good>_stock_cap_by_market
+ModeU5 US-02 DUMP capacity ... iron_wrapper_capacity=<same country-market capacity>
+ModeU5 US-02 RESULT capacity PASS
+CORE-01 add/transfer capacity enforcement tests pass
+CORE-02 initialization allocation tests pass
+ModeU5 US-00 RESULT controlled_e2e PASS
+ModeU5 US-00 RESULT monthly_runtime PASS
+No ModeU5 script-system error mentions missing per-good capacity maps
+```
+
+### Test 30 - PERF-10/13 second-phase performance guardrails
+
+Run the full protocol in:
+
+```txt
+docs/tests/PERF_10_13_SECOND_PHASE_RUNBOOK.md
+```
+
+Expected:
+
+```txt
+tools/audit_modeu5_per_good_loops.sh reports Shared capacity per-good helpers: 0
+Main revalidation emits ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
+PERF-11 active-list repair rebuilds active market-good lists from stock/ledger state, not capacity-only state
+PERF-13 metrics appear only in explicit debug/test dumps
+PERF-12 remains an explicit probe through event modeu5_perf12_debug.1
 ```
 
 ## US-13 tests
 
-### Test 25 — Non-horde conquest surcharge by age
+### Test 30 — Non-horde conquest surcharge by age
 
 Expected:
 

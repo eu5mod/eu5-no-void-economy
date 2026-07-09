@@ -8,17 +8,49 @@ Copy the local configuration template once:
 cp .modeu5.local.env.template .modeu5.local.env
 ```
 
-Then edit `.modeu5.local.env` with your local EU5 install path:
+Then edit `.modeu5.local.env` with your local EU5 install path and local runtime preferences:
 
 ```bash
 EU5_GAME_COMMON_DIR="<EU5_INSTALL_DIR>/game/in_game/common"
+MODEU5_ENABLE_DEBUG_RUNTIME=false
 MODEU5_US09_BONUS_PERCENT=5
 ```
 
 The real `.modeu5.local.env` file is ignored by Git. Do not commit personal
 install paths.
 
+`MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
+the EU5 engine `--debug_mode` launch argument:
+
+```txt
+false = generated local runtime config enters modeu5_runtime_mode_normal
+true  = generated local runtime config enters modeu5_runtime_mode_debug
+```
+
+Use `false` when comparing performance with normal users. Use `true` only when
+you want ModeU5 debug captures and PR7.1 metrics during local testing.
+
 ## Generated stock adapters
+
+## Generator and validator conventions
+
+ModeU5 generators follow the shared model documented in:
+
+```txt
+docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md
+```
+
+Short version:
+
+- `tools/modeu5_goods.sh` is the single good registry.
+- per-good generators load it through `tools/modeu5_tool_lib.sh`;
+- repeated generated blocks should live in `tools/templates/`;
+- `tools/validate_generators.sh` enforces the convention and is called by
+  `tools/validate_module_packages.sh`.
+
+Do not add a new private `goods=(...)` list to a generator. Do not hand-build a
+large repeated EU5 block in shell when a small template would make the shape
+reviewable.
 
 Regenerate every local generated artifact:
 
@@ -26,14 +58,29 @@ Regenerate every local generated artifact:
 ./tools/generate_all.sh
 ```
 
-The aggregate generator currently regenerates the literal per-good EU5
-persistence adapters and will also run optional generated-balance scaffolds when
-their script exists on the current branch and the required vanilla source path
-is configured.
+The aggregate generator currently regenerates the local runtime config, the
+literal per-good EU5 persistence adapters, and optional generated-balance
+scaffolds when their script exists on the current branch and the required
+vanilla source path is configured.
 
-Any new generated text artifact should follow the `modeu5_*_generated.txt`
-naming convention so it is ignored by Git and caught by the generated-file
-validation guard.
+Generated local runtime config is written to:
+
+```txt
+in_game/common/scripted_effects/modeu5_local_runtime_config_generated.txt
+```
+
+It is ignored by Git and generated from `.modeu5.local.env`. Do not edit it
+manually.
+
+Any new generated text artifact should follow the `modeu5_*_generated.txt` or
+`modeu5_*_generated_l_english.yml` naming convention so it is ignored by Git and
+caught by the generated-file validation guard.
+
+Regenerate only the local runtime config:
+
+```bash
+bash ./tools/generate_local_runtime_config.sh
+```
 
 Regenerate only the stock adapters:
 
@@ -51,28 +98,123 @@ names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
 counters, and repair behavior remain in shared EU5 scripted effects. The shell
 contains enumeration only, not stock or reconciliation business rules.
 
+Generate static good transport-cost helpers:
+
+```bash
+./tools/generate_good_transport_helpers.sh
+```
+
+`./tools/generate_all.sh` runs this generator automatically. When
+`EU5_GAME_COMMON_DIR` points to vanilla `game/in_game/common`, the generator
+reads `common/goods/*` and emits one helper per good into:
+
+```txt
+in_game/common/scripted_effects/modeu5_transport_cost_generated.txt
+```
+
+The helpers convert a known trade-capacity-like volume into an estimated goods
+quantity:
+
+```txt
+modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+```
+
+This is a diagnostic capacity-to-quantity conversion, not exact vanilla trade
+quantity. If the vanilla source path is unavailable, safe default helpers are
+generated with `transport_cost = 1` so runtime references fail closed instead
+of calling missing effects.
+
 Do not edit
 `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
-The generated output is ignored by Git and must not be committed. After changing
-the template or goods registry, run `./tools/generate_all.sh` and then
-`./tools/validate_module_packages.sh`; generation must be idempotent and no
-physical map identifier may retain `$`.
+The generated output is ignored by Git and must not be committed. The same rule
+applies to `modeu5_transport_cost_generated.txt` and
+`modeu5_local_runtime_config_generated.txt`. After changing the template,
+goods registry, local-runtime generator, or transport-cost generator, run
+`./tools/generate_all.sh` and then `./tools/validate_module_packages.sh`;
+generation must be idempotent and no physical map identifier may retain `$`.
 
-## US-09 economy overrides
+Audit the intentional generated per-good loops:
 
-Regenerate the Rebalance Economy static overrides for US-09:
+```bash
+./tools/audit_modeu5_per_good_loops.sh
+```
+
+This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
+US-10, and US-11 helpers while failing if shared US-02 capacity refresh helpers
+return to generated per-good adapters. It allows `traded_in_market:<good>` only
+inside the generated US-10 monthly trade-signal guard.
+
+Audit the structured persistent state surface:
+
+```bash
+./tools/audit_modeu5_persistent_state.sh
+```
+
+This audit classifies ModeU5 persistent variable maps and variable lists. It
+fails when a new map/list family appears without an entry in
+`docs/technical/PERSISTENT_STATE_AUDIT.md`, and it blocks accidental UI shadow
+maps until a UI story explicitly approves them.
+
+Normalize and validate CMM value-link quoting:
+
+```bash
+./tools/normalize_cmm_value_links.sh --write
+./tools/normalize_cmm_value_links.sh --check
+```
+
+CMM setting reads such as `variable_map(cmm|flag:<setting>)` must be quoted
+when used as value links:
+
+```txt
+"variable_map(cmm|flag:<setting>)"
+```
+
+The unquoted form is easy to reintroduce in generated or generated-adjacent
+CMM files and can be parsed by EU5 as a bad trigger instead of a value
+expression. The generated-file workflow runs the check mode in CI.
+
+Validate scripted-test assertion safety:
+
+```bash
+./tools/validate_modeu5_script_safety.sh
+```
+
+This check fails on direct variable-to-variable comparisons such as
+`var:foo > var:bar`. For deterministic tests, initialize the metric first,
+snapshot it into a temporary `scope:` value, and compare the `scope:` values.
+The package validator runs this check automatically so the PR126-style
+unset-variable assertion regression is caught before EU5 emits script-system
+errors.
+
+The same generator also writes the US-00 per-good production-penalty static
+modifiers to:
+
+```txt
+main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
+main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml
+```
+
+Those static modifiers are unit-sized location modifiers. Runtime code applies
+the calculated penalty through `add_location_modifier size = <penalty>`, so the
+static file must define `game_data.category = location` and must not hard-code a
+fixed penalty value. The matching generated localization prevents EU5 from
+printing placeholder `STATIC MODIFIER NAME ...` lines in `error.log`.
+
+## US-09 economy override probe
+
+Generate the US-09 static-override probe output:
 
 ```bash
 ./tools/generate_us09_economy_overrides.sh 5
 ```
 
 The generator reads vanilla `game/in_game/common/building_types` and
-`game/in_game/common/prices/00_hardcoded.txt`, then writes package-local
-overrides under:
+`game/in_game/common/prices/00_hardcoded.txt`, then writes offline probe
+output under:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/building_types/
-packages/modeu5_economy_rebalance/in_game/common/prices/
+tools/generated/us09_economy_overrides/common/building_types/
+tools/generated/us09_economy_overrides/common/prices/
 ```
 
 Pass the desired compensation percentage explicitly. Example:
@@ -83,6 +225,17 @@ Pass the desired compensation percentage explicitly. Example:
 
 If `.modeu5.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
 needed.
+
+Do not copy these files into the loaded Economy package as an implementation
+until duplicate-key static override loading has a clean runtime proof. The
+current engine log showed package-local duplicate `building_types` and `prices`
+entries are not applied cleanly and create load noise.
+
+For a local probe only, you can deliberately target the loaded package:
+
+```bash
+MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES=1 ./tools/generate_all.sh
+```
 
 Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
 installed vanilla files in place.
@@ -106,55 +259,30 @@ When you want to refresh the local mod install before testing:
 ./tools/clear_eu5_logs.sh
 ```
 
-## Module packages
+## Compact test-log summary
 
-Validate the source package roots, including the testing-only package:
+After running the broad in-game revalidation event:
 
-```bash
-./tools/validate_module_packages.sh
+```txt
+event modeu5_revalidate_debug.1
 ```
 
-Publish Core, the three optional gameplay companions, and the testing-only package as sibling local mods:
+choose:
 
-```bash
-./tools/install_local_packages.sh
+```txt
+Revalidate main operations
 ```
 
-The installer runs `./tools/generate_all.sh` before publishing so ignored
-generated artifacts are present in the installed local mod.
+The event chain runs the main deterministic scenarios with two in-game days
+between each step and writes compact markers to `debug.log`:
 
-The installer writes `MODEU5_SOURCE.txt` into every installed package so the
-branch and commit loaded by EU5 can be checked without guessing:
-
-```bash
-./tools/install_local_packages.sh --check
+```txt
+ModeU5 TEST ENTERED scenario=<name>
+ModeU5 TEST PASS scenario=<name>
+ModeU5 TEST FAIL scenario=<name>
+ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
 ```
 
-Use `--target PATH` when EU5 reads local mods from a different directory.
-After installation, refresh the launcher and enable the four gameplay ModeU5 entries in
-the recommended full-suite playset. Enable `No Void Economy Tests` only in a dedicated validation playset. If two `No Void Economy` entries appear,
-disable the older single-package entry backed by the `eu5voideco` path to avoid
-loading Core twice.
-
-Also remove or disable any stale real installation directory that can shadow
-the installed `modeu5_core`. `--check` and each package's
-`MODEU5_SOURCE.txt` are the source of truth for the branch and commit EU5 will
-load.
-
-## Local logs
-
-Close EU5, then truncate only `error.log` and `game.log` before a controlled
-test:
-
-```bash
-./tools/clear_eu5_logs.sh
-```
-
-Preview the targeted files without changing them:
-
-```bash
-./tools/clear_eu5_logs.sh --dry-run
-```
-
-Use `--logs-dir PATH` or the `MODEU5_LOG_DIR` environment variable when EU5
-stores logs elsewhere.
+The broad chain includes the PERF-10/11/13 active-list repair metrics probe.
+The PERF-12 market-value probe remains useful when retesting
+`traded_in_market:<good>` exposure directly:

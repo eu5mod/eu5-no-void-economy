@@ -14,12 +14,16 @@ As a player, I want rejected production converted into a stable ratio so negligi
 
 Calculate clamped monthly overproduction and effective overproduction ratios per `country × market × good`, with a configurable default buffer of `0.01`.
 
+## Current implementation boundary
+
+The US-00 closure PR calculates and persists the ratio fields from both the controlled stock-add fixture and the monthly runtime ledger. Live production ingestion is now wired through the confirmed US-00.1 location-output path.
+
 ## Runtime position
 
 ```txt
 Monthly step: 15
 Depends on counters from: US-00.1
-Feeds counters to: US-00.3, US-00-UI
+Feeds counters to: US-00.3, US-10-UI
 ```
 
 ## Required scopes / values / effects
@@ -49,7 +53,7 @@ docs/tests/
 ```txt
 Depends on: US-00.1, TECH-01
 Blocks: US-00.3
-Related US: EPIC US-00, US-00-UI
+Related US: EPIC US-00, US-10-UI
 ```
 
 ## Implementation rules
@@ -103,4 +107,4 @@ Case C raw/effective ratio: 0 with no error
 
 ## Known limitations
 
-The required arithmetic and keyed-ledger primitives are documented. Runtime testing must still verify map replacement semantics and the explicit `produced <= 0` division guard.
+The required arithmetic, keyed-ledger primitives, map replacement semantics, and `produced <= 0` division guard are covered by deterministic tests. Runtime smoke validation exercises the ratio calculation after live monthly ingestion for one representative good and market.

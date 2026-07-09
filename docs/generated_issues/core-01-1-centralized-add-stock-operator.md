@@ -28,7 +28,7 @@ Feeds counters to: US-00.1, debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
-| Country capacity field | country x market x good | country-scoped `modeu5_<good>_stock_cap_by_market` keyed by market | CONFIRMED | 007, 017 |
+| Country capacity field | country x market | country-scoped `modeu5_stock_cap_by_market` keyed by market and shared by all goods | CONFIRMED | 007, 017 |
 | Available capacity | transaction | `max(0, stock_cap - stock)` | CONFIRMED | 018, 026 |
 | Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
@@ -45,7 +45,7 @@ owner scope: country
 tuple/key: market x good logical tuple; market scope physical key
 confirmed physical map family:
   modeu5_<good>_stock_by_market
-  modeu5_<good>_stock_cap_by_market
+  modeu5_stock_cap_by_market
 physical value type: numeric
 default value: 0
 write owner: modeu5_add_stock for additions; other CORE operators for their mutations

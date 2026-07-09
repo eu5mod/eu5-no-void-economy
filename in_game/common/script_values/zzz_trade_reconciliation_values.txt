@@ -1,0 +1,63 @@
+# ModeU5 trade route reconciliation values.
+#
+# This file intentionally keeps the historical zzz filename for compatibility
+# with the current #107 branch, but the contents are parser-safe and no longer
+# depend on TODO_* placeholders.
+#
+# Source mapping:
+# - #105 owns the new trade-maintenance-efficiency route effect.
+# - #120 owns the buying/selling-efficiency route effect.
+# - #161 owns the Q8.7 route-loop placement.
+#
+# The executable route hook lives in:
+#   in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt
+# and is called from:
+#   modeu5_run_monthly_country_trade_owner_cycle -> every_trade
+
+modeu5_trade_efficiency_zero_value = {
+	value = 0
+}
+
+# Confirmed moved-goods quantity captured by
+# modeu5_capture_country_trade_owner_trade_quantity before the reconciliation
+# hook runs. It is derived from trade_volume / traded_goods:transport_cost by
+# the existing literal-good helper path.
+modeu5_trade_efficiency_route_quantity = {
+	value = scope:modeu5_trade_owner_goods_quantity
+	min = 0
+}
+
+# #120 support value. It currently fails closed because direct route-safe reads
+# of the trade owner's buying_efficiency and selling_efficiency still need a
+# controlled script-doc/runtime confirmation for this exact route context. The
+# runtime hook records the route as blocked instead of using speculative syntax.
+modeu5_buying_selling_efficiency_clamped = {
+	value = 0
+}
+
+# The following values intentionally fail closed until route price / export-cost
+# / trade-maintenance exposures are confirmed for live gameplay. They prevent the
+# old TODO placeholders from entering loaded runtime files while preserving the
+# expected named surfaces for tests and future hardening.
+modeu5_trade_efficiency_old_price_side_bonus = {
+	value = 0
+}
+
+modeu5_trade_maintenance_efficiency_effect = {
+	value = 0
+}
+
+modeu5_buying_selling_efficiency_effect = {
+	value = 0
+}
+
+modeu5_trade_efficiency_route_money_delta = {
+	value = modeu5_trade_efficiency_old_price_side_bonus
+	multiply = -1
+	add = modeu5_trade_maintenance_efficiency_effect
+	add = modeu5_buying_selling_efficiency_effect
+}
+
+modeu5_us20_goods_received_delta = {
+	value = 0
+}

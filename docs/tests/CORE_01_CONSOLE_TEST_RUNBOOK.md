@@ -7,8 +7,7 @@ Use this procedure to test all six CORE-01 stock operators.
 Close EU5, then run these commands from the repository:
 
 ```bash
-./tools/generate_stock_good_helpers.sh
-./tools/generate_us09_economy_overrides.sh 5
+./tools/generate_all.sh
 ./tools/validate_module_packages.sh
 ./tools/install_local_packages.sh
 ./tools/install_local_packages.sh --check
@@ -72,6 +71,12 @@ PASS - Remove stock
 PASS - Decay stock
 ```
 
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT single_record PASS
+```
+
 Transfer rows will display `FAIL / NOT RUN`. This is expected because this
 action clears previous markers and does not execute transfer tests.
 
@@ -95,6 +100,12 @@ Test same-market transfers
 ```txt
 PASS - Same-market transfer
 PASS - Invalid same-record transfer rejected
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT same_market_transfer PASS
 ```
 
 Add, remove, decay, and inter-market rows will display `FAIL / NOT RUN`. This
@@ -122,6 +133,12 @@ Test inter-market transfer
 
 ```txt
 PASS - Inter-market transfer
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-01 RESULT inter_market_transfer PASS
 ```
 
 All other rows will display `FAIL / NOT RUN`. This is expected.
@@ -177,6 +194,7 @@ Test US-11 dirty-record reconciliation
 
 ```txt
 PASS - Dirty market-good reconciliation
+PASS - Active market-good reconciliation
 PASS - Empty reconciliation is a no-op
 ```
 
@@ -189,6 +207,34 @@ inconsistencies = 1
 rebuilds = 1
 failures = 0
 market aggregate = 150
+```
+
+## Test F: US-11 cadence gates
+
+1. Close the result event.
+2. Enter again:
+
+```txt
+event modeu5_debug.1
+```
+
+3. Select:
+
+```txt
+Test US-11 reconciliation cadence gates
+```
+
+4. The result event must display:
+
+```txt
+PASS - US-11 reconciliation cadence gates
+```
+
+`debug.log` must contain:
+
+```txt
+ModeU5 US-11 DUMP cadence normal_monthly_stamp=0 debug_monthly_stamp=0 audit_monthly_stamp=1 four_yearly_stamp=1
+ModeU5 US-11 RESULT cadence PASS
 ```
 
 The second pass runs without another mutation and must report zero for every
