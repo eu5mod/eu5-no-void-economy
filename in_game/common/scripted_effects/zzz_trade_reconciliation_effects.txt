@@ -12,7 +12,12 @@
 # - trade_profit / country_income display-accounting remains TECH-01 expected-blocked;
 # - US-20 loss is always removed at destination, never treated as a transfer;
 # - market-level destination loss uses market-scope add_goods_supply with a negative amount;
-# - promoted destination country-stock loss is applied only when a receiver is safely known.
+# - promoted destination country-stock loss is applied when a receiver is safely known.
+#
+# Four-case support:
+# - destination non-promoted: destination market loss only;
+# - destination promoted: destination market loss plus receiver country-stock loss through
+#   modeu5_apply_us20_promoted_destination_country_loss_by_route_good.
 
 modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 	save_temporary_scope_value_as = {
@@ -204,6 +209,7 @@ modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_us20_market_goods_supply_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_owner_present_in_target_market value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_country_loss_good_matched value = 0 }
 }
 
 modeu5_compute_trade_maintenance_efficiency_delta = {
@@ -419,28 +425,14 @@ modeu5_select_us20_goods_receiver_country_for_promoted_market = {
 }
 
 modeu5_apply_us20_promoted_destination_receipt_path = {
-	# Base add/transfer receipt remains a separate generated-good implementation.
+	# Base add/transfer receipt remains separate from US20 loss reconciliation.
 }
 
 modeu5_apply_us20_promoted_destination_loss_reconciliation = {
 	modeu5_select_us20_goods_receiver_country_for_promoted_market = yes
 	modeu5_apply_us20_promoted_destination_receipt_path = yes
 	modeu5_apply_us20_market_stockpile_loss_reconciliation = yes
-	if = {
-		limit = { scope:modeu5_us20_test_apply_wheat_loss_available > 0 exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market }
-		modeu5_remove_stock = {
-			country = scope:modeu5_us20_goods_loss_target_country
-			market = scope:modeu5_trade_owner_target_market
-			good = wheat
-			quantity = scope:modeu5_us20_goods_loss_quantity
-			reason = stock_loss
-		}
-		modeu5_note_us20_goods_loss_route = yes
-	}
-	else_if = {
-		limit = { exists = scope:modeu5_us20_goods_loss_target_country }
-		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
-	}
+	modeu5_apply_us20_promoted_destination_country_loss_by_route_good = yes
 }
 
 modeu5_apply_us20_goods_delta_to_target_market_good = {
