@@ -49,7 +49,6 @@ modeu5_us17_us20_clear_test_results = {
 	remove_variable = modeu5_us17_us20_debug_goods_delta
 	remove_variable = modeu5_us17_us20_debug_goods_loss_removed
 	remove_variable = modeu5_us17_us20_debug_income_application_blocked
-	remove_variable = modeu5_us17_us20_expected_probe_blocked_count
 }
 
 modeu5_us17_us20_save_original_cmm_trade_rework_setting = {
@@ -147,10 +146,6 @@ modeu5_us17_us20_note_assertion_failure = {
 
 modeu5_us17_us20_note_expected_probe_blocked = {
 	set_global_variable = modeu5_test_us17_us20_expected_probe_blocked
-	save_temporary_scope_value_as = {
-		name = modeu5_us17_us20_expected_probe_blocked_count
-		value = { value = scope:modeu5_us17_us20_expected_probe_blocked_count add = 1 }
-	}
 	debug_log = "ModeU5 US17/US20 AUDIT outcome=EXPECTED_PROBE_BLOCKED category=probe boundary=trade_profit_country_income_display reason=no_confirmed_country_income_or_trade_profit_api hard_failure=no action=no_merge_blocker"
 }
 
@@ -179,7 +174,6 @@ modeu5_debug_run_us17_us20_reconciliation_tests = {
 	else = {
 		modeu5_us17_us20_save_original_cmm_trade_rework_setting = yes
 		save_temporary_scope_value_as = { name = modeu5_us17_us20_assertion_failure_count value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_us17_us20_expected_probe_blocked_count value = 0 }
 
 		# Disabled CMM gate probe: a direct call must remain dormant.
 		debug_log = "ModeU5 US17/US20 AUDIT CHECK phase=cmm_disabled_gate expected=dormant hard_failure_if=routes_seen_gt_0"
