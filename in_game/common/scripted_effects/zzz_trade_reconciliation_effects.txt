@@ -113,11 +113,45 @@ modeu5_reset_trade_efficiency_reconciliation_accumulator = {
 	set_variable = { name = modeu5_trade_efficiency_goods_routes_blocked value = 0 }
 }
 
+modeu5_ensure_trade_efficiency_reconciliation_accumulator = {
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_money_delta_total } }
+		set_variable = { name = modeu5_trade_efficiency_money_delta_total value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_treasury_delta_total } }
+		set_variable = { name = modeu5_trade_efficiency_treasury_delta_total value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_routes_seen } }
+		set_variable = { name = modeu5_trade_efficiency_routes_seen value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_money_routes_blocked } }
+		set_variable = { name = modeu5_trade_efficiency_money_routes_blocked value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_treasury_application_blocked } }
+		set_variable = { name = modeu5_trade_efficiency_treasury_application_blocked value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_income_application_blocked } }
+		set_variable = { name = modeu5_trade_efficiency_income_application_blocked value = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = modeu5_trade_efficiency_goods_routes_blocked } }
+		set_variable = { name = modeu5_trade_efficiency_goods_routes_blocked value = 0 }
+	}
+}
+
 modeu5_note_trade_efficiency_route_seen = {
 	set_global_variable = { name = modeu5_trade_efficiency_routes_seen value = { value = global_var:modeu5_trade_efficiency_routes_seen add = 1 } }
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_controller_country }
-		scope:modeu5_trade_owner_controller_country = { change_variable = { name = modeu5_trade_efficiency_routes_seen add = 1 } }
+		scope:modeu5_trade_owner_controller_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_routes_seen add = 1 }
+		}
 	}
 }
 
@@ -137,7 +171,10 @@ modeu5_note_trade_efficiency_money_delta_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_money_delta_blocked_routes value = { value = global_var:modeu5_trade_efficiency_money_delta_blocked_routes add = 1 } }
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_controller_country }
-		scope:modeu5_trade_owner_controller_country = { change_variable = { name = modeu5_trade_efficiency_money_routes_blocked add = 1 } }
+		scope:modeu5_trade_owner_controller_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_money_routes_blocked add = 1 }
+		}
 	}
 }
 
@@ -149,7 +186,10 @@ modeu5_note_trade_efficiency_treasury_application_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_treasury_application_blocked_routes value = { value = global_var:modeu5_trade_efficiency_treasury_application_blocked_routes add = 1 } }
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_controller_country }
-		scope:modeu5_trade_owner_controller_country = { change_variable = { name = modeu5_trade_efficiency_treasury_application_blocked add = 1 } }
+		scope:modeu5_trade_owner_controller_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_treasury_application_blocked add = 1 }
+		}
 	}
 }
 
@@ -157,7 +197,10 @@ modeu5_note_trade_efficiency_income_application_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_income_application_blocked_routes value = { value = global_var:modeu5_trade_efficiency_income_application_blocked_routes add = 1 } }
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_country }
-		scope:modeu5_trade_owner_country = { change_variable = { name = modeu5_trade_efficiency_income_application_blocked add = 1 } }
+		scope:modeu5_trade_owner_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_income_application_blocked add = 1 }
+		}
 	}
 }
 
@@ -190,7 +233,10 @@ modeu5_note_trade_efficiency_goods_delta_blocked_route = {
 	set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = { value = global_var:modeu5_trade_efficiency_goods_delta_blocked_routes add = 1 } }
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_controller_country }
-		scope:modeu5_trade_owner_controller_country = { change_variable = { name = modeu5_trade_efficiency_goods_routes_blocked add = 1 } }
+		scope:modeu5_trade_owner_controller_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_goods_routes_blocked add = 1 }
+		}
 	}
 }
 
@@ -327,7 +373,10 @@ modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = {
 	# ModeU5 diagnostic accumulator; separate from the treasury mutation below.
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_country }
-		scope:modeu5_trade_owner_country = { change_variable = { name = modeu5_trade_efficiency_money_delta_total add = scope:modeu5_trade_efficiency_route_money_delta } }
+		scope:modeu5_trade_owner_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
+			change_variable = { name = modeu5_trade_efficiency_money_delta_total add = scope:modeu5_trade_efficiency_route_money_delta }
+		}
 		modeu5_note_trade_efficiency_money_delta_route = yes
 	}
 	else = { modeu5_note_trade_efficiency_owner_missing_route = yes }
@@ -337,6 +386,7 @@ modeu5_apply_trade_efficiency_treasury_reconciliation_to_trade_owner = {
 	if = {
 		limit = { exists = scope:modeu5_trade_owner_country NOT = { scope:modeu5_trade_efficiency_route_money_delta = 0 } }
 		scope:modeu5_trade_owner_country = {
+			modeu5_ensure_trade_efficiency_reconciliation_accumulator = yes
 			add_gold = scope:modeu5_trade_efficiency_route_money_delta
 			change_variable = { name = modeu5_trade_efficiency_treasury_delta_total add = scope:modeu5_trade_efficiency_route_money_delta }
 		}
