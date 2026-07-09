@@ -19,38 +19,18 @@ usage() {
 while (($# > 0)); do
 	case "$1" in
 		--logs-dir)
-			if (($# < 2)); then
-				printf 'Missing path after --logs-dir.\n' >&2
-				exit 2
-			fi
-			logs_dir="$2"
-			shift 2
-			;;
+			if (($# < 2)); then printf 'Missing path after --logs-dir.\n' >&2; exit 2; fi
+			logs_dir="$2"; shift 2 ;;
 		--since)
-			if (($# < 2)); then
-				printf 'Missing HH:MM:SS after --since.\n' >&2
-				exit 2
-			fi
-			since_time="$2"
-			shift 2
-			;;
+			if (($# < 2)); then printf 'Missing HH:MM:SS after --since.\n' >&2; exit 2; fi
+			since_time="$2"; shift 2 ;;
 		--expected)
-			if (($# < 2)); then
-				printf 'Missing mode after --expected.\n' >&2
-				exit 2
-			fi
-			expected_mode="$2"
-			shift 2
-			;;
+			if (($# < 2)); then printf 'Missing mode after --expected.\n' >&2; exit 2; fi
+			expected_mode="$2"; shift 2 ;;
 		-h|--help)
-			usage
-			exit 0
-			;;
+			usage; exit 0 ;;
 		*)
-			printf 'Unknown argument: %s\n' "$1" >&2
-			usage >&2
-			exit 2
-			;;
+			printf 'Unknown argument: %s\n' "$1" >&2; usage >&2; exit 2 ;;
 	esac
 done
 
@@ -60,12 +40,8 @@ if [[ -n "$since_time" && ! "$since_time" =~ ^[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; th
 fi
 
 case "$expected_mode" in
-	full|pr126|none)
-		;;
-	*)
-		printf 'Invalid --expected mode: %s. Expected full, pr126, or none.\n' "$expected_mode" >&2
-		exit 2
-		;;
+	full|pr126|none) ;;
+	*) printf 'Invalid --expected mode: %s. Expected full, pr126, or none.\n' "$expected_mode" >&2; exit 2 ;;
 esac
 
 if [[ ! -d "$logs_dir" ]]; then
@@ -104,9 +80,7 @@ if [[ -n "$since_time" ]]; then
 	filtered_all_lines_file="$tmp_dir/all_lines_since"
 	awk -v since="$since_time" '
 		match($0, /^\[([0-9][0-9]:[0-9][0-9]:[0-9][0-9])\]/, m) {
-			if (m[1] >= since) {
-				print
-			}
+			if (m[1] >= since) { print }
 		}
 	' "$all_lines_file" > "$filtered_all_lines_file"
 	all_lines_file="$filtered_all_lines_file"
@@ -173,13 +147,12 @@ case "$expected_mode" in
 			us10_ui_visibility
 			perf10_13_active_repair_metrics
 			core04_market_entry
+			us17_us20_route_reconciliation
 			main_revalidation_summary
 		)
 		;;
 	pr126)
-		expected_scenarios=(
-			pr126_monthly_dispatcher_compare
-		)
+		expected_scenarios=(pr126_monthly_dispatcher_compare)
 		;;
 	none)
 		expected_scenarios=()
@@ -188,7 +161,7 @@ esac
 
 missing_scenarios=()
 for scenario in "${expected_scenarios[@]}"; do
-	if ! grep -q "scenario=${scenario}\\b" "$scenario_file"; then
+	if ! grep -q "scenario=${scenario}\b" "$scenario_file"; then
 		missing_scenarios+=("$scenario")
 	fi
 done
@@ -196,9 +169,7 @@ done
 printf 'ModeU5 revalidation summary\n'
 printf 'Logs directory: %s\n' "$logs_dir"
 printf 'Files scanned: %s\n' "${#log_files[@]}"
-if [[ -n "$since_time" ]]; then
-	printf 'Since: %s\n' "$since_time"
-fi
+if [[ -n "$since_time" ]]; then printf 'Since: %s\n' "$since_time"; fi
 printf 'Expected scenario set: %s\n' "$expected_mode"
 printf 'Entered: %s\n' "$entered_count"
 printf 'Passed:  %s\n' "$pass_count"
@@ -212,15 +183,9 @@ printf 'US-10 visibility diagnostics: %s\n' "$us10ui_count"
 printf 'CORE-04 topology diagnostics: %s\n' "$core04_count"
 printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
 case "$expected_mode" in
-	full)
-		printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}"
-		;;
-	pr126)
-		printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}"
-		;;
-	none)
-		printf 'Expected scenario checking disabled.\n'
-		;;
+	full) printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}" ;;
+	pr126) printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}" ;;
+	none) printf 'Expected scenario checking disabled.\n' ;;
 esac
 printf '\n'
 
@@ -236,46 +201,11 @@ if [[ ! -s "$scenario_file" ]]; then
 	printf '\n'
 fi
 
-if [[ -s "$debug_level_file" ]]; then
-	printf 'Debug level lines:\n'
-	cat "$debug_level_file"
-	printf '\n'
-else
-	printf 'No ModeU5 DEBUG_LEVEL markers found.\n\n'
-fi
-
-if [[ -s "$main_mode_file" ]]; then
-	printf 'Main mode trace lines:\n'
-	printf 'Mode map: main_mode=1 Active Performance; main_mode=2 Active Normal; main_mode=3 Deactivated.\n'
-	cat "$main_mode_file"
-	printf '\n'
-else
-	printf 'No ModeU5 PERF-14 main-mode trace lines found.\n\n'
-fi
-
-if [[ -s "$perf14_file" ]]; then
-	printf 'PERF-14 diagnostic lines:\n'
-	cat "$perf14_file"
-	printf '\n'
-else
-	printf 'No non-localization PERF-14 diagnostic lines found.\n\n'
-fi
-
-if [[ -s "$us10ui_file" ]]; then
-	printf 'US-10 visibility diagnostic lines:\n'
-	cat "$us10ui_file"
-	printf '\n'
-else
-	printf 'No non-localization US-10 visibility diagnostic lines found.\n\n'
-fi
-
-if [[ -s "$core04_file" ]]; then
-	printf 'CORE-04 topology diagnostic lines:\n'
-	cat "$core04_file"
-	printf '\n'
-else
-	printf 'No non-localization CORE-04 topology diagnostic lines found.\n\n'
-fi
+if [[ -s "$debug_level_file" ]]; then printf 'Debug level lines:\n'; cat "$debug_level_file"; printf '\n'; else printf 'No ModeU5 DEBUG_LEVEL markers found.\n\n'; fi
+if [[ -s "$main_mode_file" ]]; then printf 'Main mode trace lines:\n'; printf 'Mode map: main_mode=1 Active Performance; main_mode=2 Active Normal; main_mode=3 Deactivated.\n'; cat "$main_mode_file"; printf '\n'; else printf 'No ModeU5 PERF-14 main-mode trace lines found.\n\n'; fi
+if [[ -s "$perf14_file" ]]; then printf 'PERF-14 diagnostic lines:\n'; cat "$perf14_file"; printf '\n'; else printf 'No non-localization PERF-14 diagnostic lines found.\n\n'; fi
+if [[ -s "$us10ui_file" ]]; then printf 'US-10 visibility diagnostic lines:\n'; cat "$us10ui_file"; printf '\n'; else printf 'No non-localization US-10 visibility diagnostic lines found.\n\n'; fi
+if [[ -s "$core04_file" ]]; then printf 'CORE-04 topology diagnostic lines:\n'; cat "$core04_file"; printf '\n'; else printf 'No non-localization CORE-04 topology diagnostic lines found.\n\n'; fi
 
 if [[ -s "$scenario_file" ]]; then
 	printf 'Scenario lines:\n'
@@ -285,15 +215,9 @@ fi
 if ((${#missing_scenarios[@]} > 0)); then
 	printf '\n'
 	case "$expected_mode" in
-		full)
-			printf 'Missing expected full-revalidation scenario markers:\n'
-			;;
-		pr126)
-			printf 'Missing expected PR126 dispatcher scenario markers:\n'
-			;;
-		none)
-			printf 'Missing expected scenario markers:\n'
-			;;
+		full) printf 'Missing expected full-revalidation scenario markers:\n' ;;
+		pr126) printf 'Missing expected PR126 dispatcher scenario markers:\n' ;;
+		none) printf 'Missing expected scenario markers:\n' ;;
 	esac
 	printf '%s\n' "${missing_scenarios[@]}"
 fi

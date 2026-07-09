@@ -47,20 +47,20 @@ jobs:
       - name: Validate CMM value-link quoting
         run: /bin/bash ./tools/normalize_cmm_value_links.sh --check
 
-      - name: Validate CMM configuration surface
+      - name: Validate CI static contracts
         run: |
           set +e
-          python3 ./tools/validate_cmm_configuration.py > validate_cmm_configuration.log 2>&1
+          python3 ./tools/validate_ci_static_contracts.py > validate_ci_static_contracts.log 2>&1
           status=$?
-          cat validate_cmm_configuration.log
+          cat validate_ci_static_contracts.log
           exit $status
 
-      - name: Upload CMM validator log
+      - name: Upload CI static contract validator log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: validate-cmm-configuration-log
-          path: validate_cmm_configuration.log
+          name: validate-ci-static-contracts-log
+          path: validate_ci_static_contracts.log
 
       - name: Ensure generated outputs stay untracked
         run: |

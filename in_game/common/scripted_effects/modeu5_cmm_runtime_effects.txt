@@ -5,14 +5,14 @@
 modeu5_cmm_register_review_pop = {
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = review_pop
-		tab_id = nve_general
-		group_id = nve_no_void_economy
+		setting_id = nve_debug_audit_misc_review_pop_settings
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_misc_group
 		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = review_pop
+		setting_id = nve_debug_audit_misc_review_pop_settings
 	}
 }
 
@@ -341,8 +341,7 @@ modeu5_handle_cmm_runtime_callback = {
 			modeu5_cmm_refresh_nve_main_enabled = yes
 		}
 
-
-		flag:no_void_economy__review_pop = {
+		flag:no_void_economy__nve_debug_audit_misc_review_pop_settings = {
 		}
 		flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings = {
 			no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = yes

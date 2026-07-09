@@ -5,8 +5,7 @@ namespace = modeu5_revalidate_debug
 #   monthly/yearly on_actions or any runtime tick.
 # - A full revalidation run is split into small scenario steps. The final
 #   summary event is not a scenario step and must not run additional tests.
-# - Continuations use days = 0 so the chain remains on the same in-game day and
-#   does not cross a monthly tick between scenarios.
+# - Continuations use days = 0 except where an existing delayed probe needs a day.
 # - If this chain becomes too slow or noisy, split specialist suites into
 #   separate manual entry events instead of hiding failures in the summary.
 
@@ -25,7 +24,7 @@ modeu5_revalidate_debug.1 = {
 		name = modeu5_revalidate_debug.1.a
 		modeu5_revalidate_clear_results = yes
 		set_global_variable = modeu5_revalidation_started
-		# Step 1/12
+		# Step 1/14
 		modeu5_revalidate_run_us02_capacity = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.10 days = 0 }
 	}
@@ -41,12 +40,10 @@ modeu5_revalidate_debug.10 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 2/12
+		# Step 2/14
 		modeu5_revalidate_run_core01_single_record = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.20 days = 0 }
 	}
@@ -59,12 +56,10 @@ modeu5_revalidate_debug.20 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 3/12
+		# Step 3/14
 		modeu5_revalidate_run_core01_same_market_transfer = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.30 days = 0 }
 	}
@@ -77,12 +72,10 @@ modeu5_revalidate_debug.30 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 4/12
+		# Step 4/14
 		modeu5_revalidate_run_core01_inter_market_transfer = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.40 days = 0 }
 	}
@@ -95,12 +88,10 @@ modeu5_revalidate_debug.40 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 5/12
+		# Step 5/14
 		modeu5_revalidate_run_core02_initialization = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.50 days = 0 }
 	}
@@ -113,12 +104,10 @@ modeu5_revalidate_debug.50 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 6/12
+		# Step 6/14
 		modeu5_revalidate_run_us00_controlled_pipeline = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.60 days = 0 }
 	}
@@ -131,12 +120,10 @@ modeu5_revalidate_debug.60 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 7/12
+		# Step 7/14
 		modeu5_revalidate_run_us00_monthly_runtime = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.70 days = 0 }
 	}
@@ -149,12 +136,10 @@ modeu5_revalidate_debug.70 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 8/12
+		# Step 8/14
 		modeu5_revalidate_run_us10_demand_resolution = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.75 days = 0 }
 	}
@@ -167,12 +152,10 @@ modeu5_revalidate_debug.75 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 9/12
+		# Step 9/14
 		modeu5_revalidate_run_us10_issue109_fast_path_pruning = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.77 days = 0 }
 	}
@@ -185,12 +168,10 @@ modeu5_revalidate_debug.77 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 10/12
+		# Step 10/14
 		modeu5_revalidate_run_us10_ui_visibility = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.80 days = 0 }
 	}
@@ -203,12 +184,10 @@ modeu5_revalidate_debug.80 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 11/12
+		# Step 11/14
 		modeu5_revalidate_run_perf10_13_active_repair_metrics = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.90 days = 2 }
 	}
@@ -221,14 +200,44 @@ modeu5_revalidate_debug.90 = {
 	desc = empty_text
 	hidden = yes
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
-		# Step 12/12
+		# Step 12/14
 		modeu5_revalidate_run_core04_market_entry = yes
-		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 1 }
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.95 days = 1 }
+	}
+}
+
+modeu5_revalidate_debug.95 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		# Step 13/14
+		modeu5_revalidate_run_us17_us20_reconciliation = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.96 days = 0 }
+	}
+}
+
+modeu5_revalidate_debug.96 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		# Step 14/14: US-20 E2E market/accounting matrix and promoted receiver probe.
+		modeu5_debug_run_us20_case12_market_loss_probe = yes
+		trigger_event_non_silently = { id = modeu5_revalidate_debug.99 days = 0 }
 	}
 }
 
@@ -238,9 +247,7 @@ modeu5_revalidate_debug.99 = {
 	desc = modeu5_revalidate_debug.99.desc
 	outcome = neutral
 
-	trigger = {
-		always = yes
-	}
+	trigger = { always = yes }
 
 	immediate = {
 		# Summary only; do not add scenario work here.

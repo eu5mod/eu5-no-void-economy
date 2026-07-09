@@ -1,17 +1,17 @@
-﻿# Root scope: country.
+# Root scope: country.
 nve__register_cmf_mod = {
-	# nve_general (nve_general) Tab
-	## nve_no_void_economy (nve_no_void_economy) Group
+	# Debug & Audit (nve_debug_audit_tab) Tab
+	## Misc (nve_debug_audit_misc_group) Group
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = review_pop
-		tab_id = nve_general
-		group_id = nve_no_void_economy
+		setting_id = nve_debug_audit_misc_review_pop_settings
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_misc_group
 		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = review_pop
+		setting_id = nve_debug_audit_misc_review_pop_settings
 	}
 
 	# General Gameplay  (nve_general_gameplay_tab) Tab

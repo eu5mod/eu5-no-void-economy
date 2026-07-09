@@ -18,6 +18,20 @@ modeu5_us20_case12_probe_clear = {
 	remove_global_variable = modeu5_us20_receiver_selected_trade_owner_routes
 	remove_global_variable = modeu5_us20_receiver_allocator_blocked_routes
 	remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+
+	set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_unpromoted_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_promoted_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_promoted_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_market_level_remove_good_blocked_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_market_goods_supply_loss_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_receiver_capacity_sort_blocked_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_receiver_selected_explicit_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_receiver_selected_trade_owner_routes value = 0 }
+	set_global_variable = { name = modeu5_us20_receiver_allocator_blocked_routes value = 0 }
+	set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = 0 }
 }
 
 modeu5_us20_case12_probe_note_failure = {

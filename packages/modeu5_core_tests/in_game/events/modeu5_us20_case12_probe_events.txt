@@ -27,7 +27,6 @@ modeu5_us20_probe.2 = {
 	title = modeu5_us20_probe.2.title
 	desc = modeu5_us20_probe.2.desc
 	outcome = neutral
-	orphan = yes
 
 	trigger = {
 		always = no
