@@ -174,7 +174,6 @@ case "$expected_mode" in
 			perf10_13_active_repair_metrics
 			core04_market_entry
 			main_revalidation_summary
-			perf14_performance_mode_cmm
 		)
 		;;
 	pr126)
