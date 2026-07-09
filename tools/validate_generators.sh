@@ -13,6 +13,8 @@ required_templates=(
 	"tools/templates/modeu5_us10_stock_table_row.template.gui"
 	"tools/templates/modeu5_us10_market_production_good.template.txt"
 	"tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt"
+	"tools/templates/modeu5_us20_receiver_capacity_dispatch_good.template.txt"
+	"tools/templates/modeu5_us20_base_receipt_dispatch_good.template.txt"
 )
 
 for template in "${required_templates[@]}"; do
@@ -45,6 +47,15 @@ modeu5_require_match 'generate_local_runtime_config\.sh' \
 modeu5_require_match 'generate_us20_promoted_destination_receipt_dispatchers\.sh' \
 	"tools/generate_all.sh" \
 	'generate_all must regenerate the US20 promoted-destination receipt dispatcher'
+modeu5_require_match 'modeu5_us20_receiver_capacity_dispatch_good\.template\.txt' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must use the receiver-capacity per-good template'
+modeu5_require_match 'modeu5_us20_base_receipt_dispatch_good\.template\.txt' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must use the base-receipt per-good template'
+modeu5_require_match 'modeu5_render_template_to_stdout' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must render per-good Jomini through templates'
 modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 	".modeu5.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
