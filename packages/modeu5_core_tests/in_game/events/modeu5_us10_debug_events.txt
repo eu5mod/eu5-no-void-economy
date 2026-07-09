@@ -26,12 +26,24 @@ modeu5_us10_debug.1 = {
 	option = {
 		name = modeu5_us10_debug.1.c
 		modeu5_us10_clear_test_results = yes
+		# Parser hygiene: this fixture has no runtime blocked branch. Set/remove the
+		# impossible marker locally so Jomini does not report the cleanup reference as
+		# "used but never set" while preserving the runtime result contract.
+		set_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
+		remove_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
 		modeu5_debug_run_us10_trade_capacity_conversion_tests = yes
 		trigger_event_non_silently = modeu5_us10_debug.2
 	}
 	option = {
 		name = modeu5_us10_debug.1.d
 		modeu5_us10_clear_test_results = yes
+		# Parser hygiene: this probe is intentionally blocked-only. Set/remove the
+		# impossible pass/fail markers locally so the shared clear helper remains
+		# harmless without advertising these states as reachable outcomes.
+		set_global_variable = modeu5_test_us10_direct_trade_formula_passed
+		remove_global_variable = modeu5_test_us10_direct_trade_formula_passed
+		set_global_variable = modeu5_test_us10_direct_trade_formula_failed
+		remove_global_variable = modeu5_test_us10_direct_trade_formula_failed
 		modeu5_debug_probe_us10_direct_trade_quantity_formula = yes
 		trigger_event_non_silently = modeu5_us10_debug.2
 	}
