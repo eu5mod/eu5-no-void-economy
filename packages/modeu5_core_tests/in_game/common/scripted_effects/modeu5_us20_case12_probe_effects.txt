@@ -163,6 +163,14 @@ modeu5_us20_case12_probe_run_trade_owner_receiver = {
 
 modeu5_us20_case12_probe_run_allocator_receiver = {
 	modeu5_us20_case12_probe_seed_without_explicit_receiver = yes
+	# EU5 temporary receiver scopes can remain visible after a previous route/test.
+	# For allocator proof, deliberately override any inherited explicit receiver with
+	# a non-target-market country so the stored-receiver branch is rejected and the
+	# selector must fall through to the market-country allocator candidate path.
+	if = {
+		limit = { country_exists = c:ENG }
+		c:ENG = { save_temporary_scope_as = modeu5_us20_receiving_country }
+	}
 	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
