@@ -18,6 +18,7 @@ python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
 "$repo_root/tools/generate_good_transport_helpers.sh"
 bash "$repo_root/tools/generate_us10_ui_helpers.sh"
+bash "$repo_root/tools/generate_us20_promoted_destination_receipt_dispatchers.sh"
 
 if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
 	if [[ "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "false" || "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "0" ]]; then
