@@ -10,26 +10,27 @@ It is intentionally PR-owned. It does not rewrite the inherited Q8/Q5 flow. Inst
 
 PR #107 inherits the Q8.7 runtime flow:
 
-```txt
-monthly_country_pulse
-  -> modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-     -> readiness / runtime-mode gates
-     -> capacity and relevance preparation
-     -> Q8.7 global market-local cycle, once per month
-          -> every_market_in_world
-          -> detailed market-local US-00 / US-10 work
-          -> vanilla fallback / blocked markets without ModeU5 stock mutation
-     -> country trade-owner cycle
-          -> every_trade from country scope
-     -> optional audit reconciliation
+```mermaid
+flowchart TD
+    A[monthly_country_pulse] --> B[modeu5_run_monthly_stock_cycle_q8_7_owner_switch]
+    B --> C[Readiness / runtime-mode gates]
+    C --> D[Capacity and relevance preparation]
+    D --> E[Q8.7 global market-local cycle]
+    E --> F[every_market_in_world]
+    F --> G[Market-local US-00 / US-10 work]
+    F --> H[Vanilla fallback / blocked markets without ModeU5 stock mutation]
+    G --> I[Country trade-owner cycle]
+    H --> I
+    I --> J[every_trade from country scope]
+    J --> K[Optional audit reconciliation]
 ```
 
-The relevant inherited ordering rule is:
+The inherited ordering rule is:
 
-```txt
-market-local stock mutation first
-then country-owned inter-market trade pass
-then optional validation/reconciliation
+```mermaid
+flowchart LR
+    A[Market-local stock mutation] --> B[Country-owned inter-market trade pass]
+    B --> C[Optional validation / reconciliation]
 ```
 
 PR #107 must therefore attach to the country-owned trade pass. It must not add a second route-discovery pass and must not run trade reconciliation inside the market-local `every_market_in_world` body.
@@ -52,21 +53,43 @@ US-20 = trade maintenance as received-goods loss factor
 
 ## Current live workflow state
 
-```txt
-modeu5_run_monthly_country_trade_owner_cycle
-  -> every_trade
-     -> save trade owner / from_market / to_market / traded_goods
-     -> capture route quantity
-     -> if modeu5_trade_rework_enabled_trigger
-        -> modeu5_run_us17_us20_route_reconciliation
-           -> classify promoted/non-promoted origin/destination case
-           -> compute US-17 money delta
-           -> apply treasury delta through add_gold
-           -> compute US-20 received-goods target and loss quantity
-           -> apply destination market loss through negative add_goods_supply
-           -> if destination market is promoted and receiver is known
-              -> apply receiver country×market stock loss through route-good dispatcher
-           -> record TECH-01 expected-blocked counters for route-profit / country-income display-accounting
+```mermaid
+flowchart TD
+    A[modeu5_run_monthly_country_trade_owner_cycle] --> B[every_trade]
+    B --> C[Save trade owner / from_market / to_market / traded_goods]
+    C --> D[Capture route quantity]
+    D --> E{modeu5_trade_rework_enabled_trigger?}
+    E -- no --> Z[Route reconciliation dormant]
+    E -- yes --> F[modeu5_run_us17_us20_route_reconciliation]
+    F --> G[Classify origin/destination promoted state]
+    G --> H[Compute US-17 money delta]
+    H --> I[Apply treasury delta through add_gold]
+    I --> J[Compute US-20 received-goods target and loss quantity]
+    J --> K[Apply destination market loss through negative add_goods_supply]
+    K --> L{Destination market promoted?}
+    L -- no --> M[Market-level loss only]
+    L -- yes --> N{Receiver known?}
+    N -- yes --> O[Apply receiver country x market stock loss through route-good dispatcher]
+    N -- no --> P[Visible receiver-selection block]
+    O --> Q[Record TECH-01 expected-blocked route-profit / country-income counters]
+    M --> Q
+    P --> Q
+```
+
+## Historical flow delta introduced by PR107
+
+```mermaid
+flowchart LR
+    A[Q8/Q5 inherited workflow] --> B[Country trade-owner every_trade pass]
+    B --> C[PR107 US17 money reconciliation]
+    B --> D[PR107 US20 delivery-loss reconciliation]
+    C --> E[Treasury add_gold validated]
+    C --> F[Trade-profit / country-income remains TECH-01 blocked]
+    D --> G[Destination market loss via negative add_goods_supply]
+    D --> H{Destination promoted?}
+    H -- no --> I[Case 1/2 market-only loss]
+    H -- yes --> J[Case 3/4 receiver country-stock loss]
+    J --> K[Generic route-good to literal remove_stock dispatcher]
 ```
 
 ## Implemented surfaces
@@ -116,6 +139,25 @@ The pasted US20 PASS line was truncated after `hard_fail`, but the summarizer re
 
 ## Four-case US-20 state
 
+```mermaid
+flowchart TD
+    A[US20 route delivery-loss reconciliation] --> B{Origin market promoted?}
+    B -- no --> C{Destination market promoted?}
+    B -- yes --> D{Destination market promoted?}
+    C -- no --> E[Case 1: origin non-promoted / destination non-promoted]
+    C -- yes --> F[Case 3: origin non-promoted / destination promoted]
+    D -- no --> G[Case 2: origin promoted / destination non-promoted]
+    D -- yes --> H[Case 4: origin promoted / destination promoted]
+    E --> I[Destination market negative add_goods_supply only]
+    G --> I
+    F --> J[Destination market negative add_goods_supply]
+    H --> J
+    J --> K[Receiver country x market remove_stock through generic-good dispatcher]
+    K --> L{Receiver known?}
+    L -- yes --> M[Apply country-stock loss]
+    L -- no --> N[Visible receiver block until allocator exists]
+```
+
 | Case | Origin market | Destination market | Expected behavior | Current state |
 | --- | --- | --- | --- | --- |
 | 1 | non-promoted | non-promoted | Destination market loss only through negative `add_goods_supply`. | Validated in deterministic E2E probe. |
@@ -125,12 +167,16 @@ The pasted US20 PASS line was truncated after `hard_fail`, but the summarizer re
 
 ## Receiver workflow state
 
-Current receiver priority for promoted-destination loss reconciliation:
-
-```txt
-stored receiving country
-→ trade owner if explicitly/probably present in destination market
-→ otherwise visible block until US-10-style receiver allocator exists
+```mermaid
+flowchart TD
+    A[Destination promoted market] --> B{Stored receiving country exists?}
+    B -- yes --> C[Use stored receiver]
+    B -- no --> D{Trade owner explicitly/probably present in target market?}
+    D -- yes --> E[Use trade owner as receiver]
+    D -- no --> F[Block visibly]
+    F --> G[Follow-up: US-10-style receiver allocator]
+    G --> H[Capacity-aware eligibility]
+    G --> I[Bucket and tie-break ordering]
 ```
 
 Current state:
@@ -146,6 +192,17 @@ US-10-style receiver ordering: not implemented in PR107
 Receiver allocation must remain a follow-up because it is not just a route-loss patch; it requires a generated candidate-selection mode with US-10-style bucket/tie-break ordering and receiver-specific eligibility.
 
 ## Money/display-accounting workflow state
+
+```mermaid
+flowchart TD
+    A[US17 route money delta] --> B[Confirmed cash surface: add_gold]
+    B --> C[Treasury mutation validated]
+    A --> D[Visible trade-route profit]
+    A --> E[Country trade income ledger]
+    D --> F[TECH-01 expected-blocked]
+    E --> F
+    F --> G[Keep blocked counters visible until engine API proof exists]
+```
 
 Treasury mutation is confirmed only at cash level:
 
@@ -236,7 +293,7 @@ Post-run grep:
 
 ```sh
 grep -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|US20 CASE12|RECEIVER_SELECTION|COUNTRY_LOSS_DISPATCH|ASSERT FAIL|Failed to fetch variable for 'modeu5_us20|global_var returned an unset scope" \
-"/Users/pierre/Documents/Paradox Interactive/Europa Universalis V/logs/error.log"
+"<EU5_LOG_DIR>/error.log"
 ```
 
 Expected absence:
@@ -250,13 +307,15 @@ global_var returned an unset scope
 
 ## Next workflow decision
 
-If the latest generic-good dispatcher rerun is green, PR107 can be treated as a US17/US20 route-level MVP for all four US20 delivery-loss reconciliation cases.
-
-After PR107, open follow-up work for:
-
-```txt
-1. live receiver allocator;
-2. base receipt add/transfer operators;
-3. TECH-01 route-profit / country-income proof;
-4. cleanup of temporary/rollback-only diagnostics once stable evidence exists.
+```mermaid
+flowchart TD
+    A[Latest generic-good dispatcher rerun] --> B{Green?}
+    B -- yes --> C[Treat PR107 as US17/US20 route-level MVP for all four US20 delivery-loss reconciliation cases]
+    B -- no --> D[Fix dispatcher / receiver / scope failure]
+    C --> E[Follow-up 1: live receiver allocator]
+    C --> F[Follow-up 2: base receipt add/transfer operators]
+    C --> G[Follow-up 3: TECH-01 route-profit / country-income proof]
+    C --> H[Follow-up 4: cleanup temporary diagnostics]
 ```
+
+If the latest generic-good dispatcher rerun is green, PR107 can be treated as a US17/US20 route-level MVP for all four US20 delivery-loss reconciliation cases.
