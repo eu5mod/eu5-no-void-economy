@@ -1,4 +1,4 @@
-# Standalone US-20 case 1/2 market-loss probe.
+# Standalone US-20 four-case market-loss and promoted-receiver probe.
 # Deliberately not called by the full revalidation harness.
 
 modeu5_us20_case12_probe_clear = {
@@ -14,6 +14,9 @@ modeu5_us20_case12_probe_clear = {
 	remove_global_variable = modeu5_us20_goods_loss_routes
 	remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
 	remove_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes
+	remove_global_variable = modeu5_us20_receiver_selected_explicit_routes
+	remove_global_variable = modeu5_us20_receiver_selected_trade_owner_routes
+	remove_global_variable = modeu5_us20_receiver_allocator_blocked_routes
 	remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
 }
 
@@ -42,10 +45,41 @@ modeu5_us20_case12_probe_cleanup_supply_fixture = {
 	}
 }
 
+modeu5_us20_case12_probe_seed_without_explicit_receiver = {
+	c:FRA = {
+		save_temporary_scope_as = modeu5_trade_owner_controller_country
+		save_temporary_scope_as = modeu5_trade_owner_country
+	}
+	c:FRA.capital.market = {
+		save_temporary_scope_as = modeu5_trade_owner_source_market
+		save_temporary_scope_as = modeu5_trade_owner_target_market
+	}
+	goods:wheat = { save_temporary_scope_as = modeu5_trade_owner_good }
+	save_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_price value = 1.5 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_price value = 1.0 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = 0.10 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = 0.20 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_export_cost_modifier value = 0.00 }
+	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance value = 0.70 }
+	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 100 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_apply_wheat_loss_available value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_income_application_available value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_actual_removed_quantity value = 0 }
+}
+
 modeu5_us20_case12_probe_run_one = {
 	modeu5_us17_us20_seed_reconciliation_fixture = yes
 	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = $target_promoted$ }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
 	modeu5_compute_us17_us20_route_formula_from_current_values = yes
 	if = {
 		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
@@ -54,11 +88,38 @@ modeu5_us20_case12_probe_run_one = {
 			value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 }
 		}
 		modeu5_classify_us20_route_market_accounting_surfaces = yes
-		modeu5_apply_us20_destination_market_loss_reconciliation = yes
+		if = {
+			limit = { scope:modeu5_us20_target_market_is_promoted = 0 }
+			modeu5_apply_us20_destination_market_loss_reconciliation = yes
+		}
+		else = {
+			modeu5_apply_us20_promoted_destination_loss_reconciliation = yes
+		}
 	}
 	else = {
 		modeu5_us20_case12_probe_note_failure = yes
 		error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=expected_negative_goods_delta category=hard_failure"
+	}
+}
+
+modeu5_us20_case12_probe_run_trade_owner_receiver = {
+	modeu5_us20_case12_probe_seed_without_explicit_receiver = yes
+	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 1 }
+	modeu5_compute_us17_us20_route_formula_from_current_values = yes
+	if = {
+		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us20_goods_loss_quantity
+			value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 }
+		}
+		modeu5_classify_us20_route_market_accounting_surfaces = yes
+		modeu5_apply_us20_promoted_destination_loss_reconciliation = yes
+	}
+	else = {
+		modeu5_us20_case12_probe_note_failure = yes
+		error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=trade_owner_receiver_expected_negative_goods_delta category=hard_failure"
 	}
 }
 
@@ -67,7 +128,7 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 	set_global_variable = modeu5_test_us20_case12_probe_started
 	save_temporary_scope_value_as = { name = modeu5_us20_case12_probe_failure_count value = 0 }
 	debug_log = "ModeU5 TEST ENTERED scenario=us20_case12_market_loss_probe"
-	debug_log = "ModeU5 US20 CASE12 AUDIT START expected=case1_and_case2_destination_non_promoted_market_loss_only"
+	debug_log = "ModeU5 US20 CASE12 AUDIT START expected=four_case_classification_market_loss_and_promoted_receivers"
 
 	if = {
 		limit = { NOT = { country_exists = c:FRA } }
@@ -77,28 +138,44 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 	else = {
 		modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
 
+		# Run the no-explicit-receiver path first, before any explicit receiver scope is saved.
+		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case4_trade_owner_receiver origin_promoted=1 destination_promoted=1 expected=trade_owner_receiver_plus_country_loss"
+		modeu5_us20_case12_probe_add_supply_fixture = yes
+		modeu5_us20_case12_probe_run_trade_owner_receiver = { origin_promoted = 1 }
+		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
+
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case1 origin_promoted=0 destination_promoted=0 expected=market_loss_only"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
-		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 }
+		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 target_promoted = 0 }
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case2 origin_promoted=1 destination_promoted=0 expected=market_loss_only"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
-		modeu5_us20_case12_probe_run_one = { origin_promoted = 1 }
+		modeu5_us20_case12_probe_run_one = { origin_promoted = 1 target_promoted = 0 }
+		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
+
+		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case3_explicit_receiver origin_promoted=0 destination_promoted=1 expected=explicit_receiver_plus_country_loss"
+		modeu5_us20_case12_probe_add_supply_fixture = yes
+		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 target_promoted = 1 }
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
 		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes } NOT = { global_var:modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case1_classification_expected=1 category=hard_failure" }
 		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_unpromoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case2_classification_expected=1 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_market_goods_supply_loss_routes } NOT = { global_var:modeu5_us20_market_goods_supply_loss_routes = 2 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_loss_routes_expected=2 category=hard_failure" }
-		if = { limit = { has_global_variable = modeu5_us20_goods_loss_routes global_var:modeu5_us20_goods_loss_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=destination_non_promoted_should_not_emit_country_loss_route category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_unpromoted_destination_promoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case3_classification_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case4_classification_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_market_goods_supply_loss_routes } NOT = { global_var:modeu5_us20_market_goods_supply_loss_routes = 4 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_loss_routes_expected=4 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_goods_loss_routes } NOT = { global_var:modeu5_us20_goods_loss_routes = 2 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=promoted_destination_country_loss_routes_expected=2 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_receiver_selected_explicit_routes } NOT = { global_var:modeu5_us20_receiver_selected_explicit_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=explicit_receiver_selected_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_receiver_selected_trade_owner_routes } NOT = { global_var:modeu5_us20_receiver_selected_trade_owner_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=trade_owner_receiver_selected_expected=1 category=hard_failure" }
 		if = { limit = { has_global_variable = modeu5_us20_market_level_remove_good_blocked_routes global_var:modeu5_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_should_not_block category=hard_failure" }
 		if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=goods_delta_should_not_block category=hard_failure" }
+		if = { limit = { has_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes global_var:modeu5_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=receiver_selection_should_not_block_for_explicit_or_trade_owner_paths category=hard_failure" }
 	}
 
 	if = {
 		limit = { scope:modeu5_us20_case12_probe_failure_count = 0 }
 		set_global_variable = modeu5_test_us20_case12_probe_passed
-		debug_log = "ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0"
+		debug_log = "ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0 matrix=case1_case2_case3_case4 receivers=explicit_plus_trade_owner"
 	}
 	else = {
 		set_global_variable = modeu5_test_us20_case12_probe_failed
