@@ -1,6 +1,6 @@
 modeu5_get_pop_demand_multiplier_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_multiplier_present value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_us04_old_multiplier value = 1 }
+	save_temporary_scope_value_as = { name = modeu5_us04_old_multiplier value = modeu5_pop_demand_base_consumption_multiplier }
 	if = {
 		limit = {
 			has_variable_map = modeu5_pop_demand_multiplier

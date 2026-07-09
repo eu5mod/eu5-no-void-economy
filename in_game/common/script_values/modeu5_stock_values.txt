@@ -39,6 +39,12 @@ modeu5_void_taxable_income_proxy_ratio = {
 	value = 1
 }
 
+# US-04 Pop-demand adaptation coefficients. This is the ModeU5 baseline over
+# vanilla Pop consumption before annual local satisfaction/shortage adaptation.
+modeu5_pop_demand_base_consumption_multiplier = {
+	value = 1.20
+}
+
 # US-02 storage-capacity coefficients. Keep every business-rule value here.
 modeu5_storage_capacity_per_trade_capacity = {
 	value = 1

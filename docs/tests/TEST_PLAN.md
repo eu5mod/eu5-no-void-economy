@@ -1603,7 +1603,7 @@ capital location, then writes:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-ModeU5 US-04 DUMP wheat_multiplier=1.0100 beer_multiplier=0.9900 cloth_multiplier=1.0000 tools_multiplier=1.0000 ...
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 ...
 ModeU5 US-04 RESULT pop_demand_adaptation PASS
 ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
 ```

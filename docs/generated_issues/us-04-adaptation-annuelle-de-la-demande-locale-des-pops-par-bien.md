@@ -36,15 +36,24 @@ location-scoped variable map:
   value = numeric multiplier
 ```
 
-Each `location × good` multiplier entry must be initialized to `1` before use. If missing map entries do not safely resolve to `1`, the script value must provide an explicit fallback.
+Each `location × good` multiplier entry must initialize from the configured ModeU5 baseline before use. If missing map entries do not safely resolve to the baseline, the script value must provide an explicit fallback.
 
 Representation:
 
 ```txt
 adapted_pop_demand_coefficient[good] =
     base_pop_demand_coefficient[good]
+    × modeu5_pop_demand_base_consumption_multiplier
     × location.variable_map(modeu5_pop_demand_multiplier|good)
 ```
+
+ModeU5 baseline:
+
+```txt
+modeu5_pop_demand_base_consumption_multiplier = 1.20
+```
+
+This means Pop consumption starts 20% above vanilla before annual local adaptation.
 
 After 12 satisfied months, multiply the local Pop-demand multiplier by `1.01`.
 
@@ -61,6 +70,7 @@ Implemented by PR #69:
 - Full-year satisfaction multiplies the local good demand multiplier by `1.01`.
 - Full-year shortage multiplies the local good demand multiplier by `0.99`.
 - Mixed years and zero-demand years leave the multiplier unchanged.
+- Missing local multiplier entries fall back to the configured baseline `1.20`.
 - The yearly runtime is gated by the Rebalance Economy package and by the CMM setting `Pop consumption influenced by offer & demand`.
 - The deterministic debug fixture is available through `event modeu5_us04_debug.1`.
 
