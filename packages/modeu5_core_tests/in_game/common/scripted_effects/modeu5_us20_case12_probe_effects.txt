@@ -70,11 +70,15 @@ modeu5_us20_case12_probe_add_country_stock_fixture = {
 }
 
 modeu5_us20_case12_probe_cleanup_country_stock_fixture = {
+	# Before BR-27/BR-28, this fixture only needed to remove 0.97 after a 0.03
+	# loss. The promoted-destination base receipt path can now add the 100.00
+	# gross receipt first, then remove the 0.03 delivery loss. Removing 100.97 is
+	# safe because modeu5_remove_stock clips to available stock.
 	modeu5_remove_stock = {
 		country = c:FRA
 		market = c:FRA.capital.market
 		good = wheat
-		quantity = 0.97
+		quantity = 100.97
 		reason = debug_test
 	}
 }
@@ -172,7 +176,6 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 	else = {
 		modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
 
-		# Run the no-explicit-receiver path first, before any explicit receiver scope is saved.
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case4_trade_owner_receiver origin_promoted=1 destination_promoted=1 expected=trade_owner_receiver_plus_country_loss"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
 		modeu5_us20_case12_probe_add_country_stock_fixture = yes
