@@ -52,11 +52,29 @@ After 12 unsatisfied months, multiply the local Pop-demand multiplier by `0.99`.
 
 Mixed years and zero-demand years leave the multiplier unchanged. The annual adjustment is multiplicative and compounds over time.
 
+## Current implementation status
+
+Implemented by PR #69:
+
+- The annual `location × good` multiplier store is implemented as sparse location-scoped variable maps.
+- The annual satisfied/unsatisfied counters produced by US-10.3 are read before reset.
+- Full-year satisfaction multiplies the local good demand multiplier by `1.01`.
+- Full-year shortage multiplies the local good demand multiplier by `0.99`.
+- Mixed years and zero-demand years leave the multiplier unchanged.
+- The yearly runtime is gated by the Rebalance Economy package and by the CMM setting `Pop consumption influenced by offer & demand`.
+- The deterministic debug fixture is available through `event modeu5_us04_debug.1`.
+
+Still prototype-gated:
+
+- Direct vanilla `pop_demand` coefficient application from Pop scope remains an engine-exposure follow-up until the exact local location × good multiplier lookup is proven in runtime.
+- This implementation therefore persists the multiplier and validates annual behavior, but does not overclaim live vanilla Pop-demand coefficient integration.
+
 ## Module / availability
 
 ```txt
 Package: Rebalance Economy
 Activation: optional companion package
+CMM setting: Pop consumption influenced by offer & demand
 Behavior when absent:
   do not initialize or update Pop-demand multipliers
   vanilla Pop-demand coefficients remain unchanged
