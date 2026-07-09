@@ -2,12 +2,17 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+capacity_dispatch_template="$repo_root/tools/templates/modeu5_us20_receiver_capacity_dispatch_good.template.txt"
+base_receipt_dispatch_template="$repo_root/tools/templates/modeu5_us20_base_receipt_dispatch_good.template.txt"
 output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_us20_promoted_destination_receipt_dispatchers.txt}"
 
 # shellcheck source=tools/modeu5_tool_lib.sh
 source "$repo_root/tools/modeu5_tool_lib.sh"
 modeu5_load_goods_registry
 goods=("${modeu5_goods[@]}")
+
+modeu5_require_file "$capacity_dispatch_template"
+modeu5_require_file "$base_receipt_dispatch_template"
 
 mkdir -p "$(dirname "$output")"
 
@@ -69,7 +74,7 @@ modeu5_probe_us20_receiver_capacity_by_route_good = {
 TXT
 
 	for good in "${goods[@]}"; do
-		printf '\t\tif = { limit = { scope:modeu5_us20_route_good_matched = 0 scope:modeu5_trade_owner_good = goods:%s } modeu5_probe_us20_receiver_capacity_literal_good = { good = %s } }\n' "$good" "$good"
+		modeu5_render_template_to_stdout "$capacity_dispatch_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'
@@ -84,7 +89,7 @@ modeu5_apply_us20_promoted_destination_base_receipt_by_route_good = {
 TXT
 
 	for good in "${goods[@]}"; do
-		printf '\t\tif = { limit = { scope:modeu5_us20_receipt_good_matched = 0 scope:modeu5_trade_owner_good = goods:%s } modeu5_apply_us20_promoted_destination_base_receipt_literal_good = { good = %s } }\n' "$good" "$good"
+		modeu5_render_template_to_stdout "$base_receipt_dispatch_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'
