@@ -1,6 +1,20 @@
 ﻿# Root scope: country.
 nve__register_cmf_mod = {
-	# General Gameplay (nve_general_gameplay_tab) Tab
+	# nve_general (nve_general) Tab
+	## nve_no_void_economy (nve_no_void_economy) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = review_pop
+		tab_id = nve_general
+		group_id = nve_no_void_economy
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = review_pop
+	}
+
+	# General Gameplay  (nve_general_gameplay_tab) Tab
 	## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -13,13 +27,17 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 		tab_id = nve_general_gameplay_tab
 		group_id = nve_general_gameplay_gameplay_group
-		default_value = 0
+		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
@@ -59,9 +77,6 @@ nve__register_cmf_mod = {
 	cmm_set_no_reset = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
-	}
-	cmm_set_dropdown_multiselector = {
-		setting = no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 	}
 
 	cmm_register_global_bool_setting = {
@@ -105,6 +120,10 @@ nve__register_cmf_mod = {
 		default_value = 0
 	}
 	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
 	}
@@ -159,6 +178,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -172,6 +195,10 @@ nve__register_cmf_mod = {
 		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
 	}
 	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
 	}
@@ -214,6 +241,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_design_overlord_declares_war_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_war_subjects_balance_design_overlord_declares_war_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -227,6 +258,10 @@ nve__register_cmf_mod = {
 		setting_id = nve_war_subjects_balance_design_persistence_of_resources_settings
 	}
 	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_war_subjects_balance_design_persistence_of_resources_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_design_persistence_of_resources_settings
 	}
@@ -247,6 +282,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_balance_shorter_wars_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_war_subjects_balance_balance_shorter_wars_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -260,6 +299,10 @@ nve__register_cmf_mod = {
 		setting_id = nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
 	}
 	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
 	}
@@ -312,7 +355,7 @@ nve__register_cmf_mod = {
 nve__handle_cmf_callback = {
 	switch = {
 		trigger = var:cmf_callback
-		# General Gameplay (nve_general_gameplay_tab) Tab
+		# General Gameplay  (nve_general_gameplay_tab) Tab
 		## Country Stock Economy (nve_general_gameplay_country_level_stocks_group) Group
 		flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings = {
 			cmm_sync_dropdown_option_alias = {
@@ -329,11 +372,14 @@ nve__handle_cmf_callback = {
 		}
 		# Debug & Audit (nve_debug_audit_tab) Tab
 		## Debug & Audit (nve_debug_audit_debug_audit_group) Group
+		flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings = {
+			modeu5_refresh_configuration_from_cmm_country_scope = yes
+		}
 		flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings = {
-			no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = yes
+			modeu5_refresh_configuration_from_cmm_country_scope = yes
 		}
 		flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings = {
-			no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = yes
+			modeu5_refresh_configuration_from_cmm_country_scope = yes
 		}
 	}
 }

@@ -1,10 +1,10 @@
-﻿l_english:
+l_english:
  # Mod
  no_void_economy_name: "Community Balance Patch"
  no_void_economy_desc: "A modular balance package for EU5 focused on stock-aware economics, less punitive balancing, and clearer optional gameplay improvements."
 
- # General Gameplay (nve_general_gameplay_tab) Tab
- no_void_economy__nve_general_gameplay_tab_name: "General Gameplay"
+ # General Gameplay  (nve_general_gameplay_tab) Tab
+ no_void_economy__nve_general_gameplay_tab_name: "General Gameplay "
  ## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
  no_void_economy__nve_general_gameplay_tab__nve_general_gameplay_gameplay_group_name: "Strategic Gameplay"
  no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings_name: "Improve War Exhaustion Pressure"
@@ -95,6 +95,8 @@
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_2_desc: "Keeps more economic detail for markets connected to human-played countries, while limiting saved data elsewhere. Good balance between economic tracking and game smoothness."
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_3_name: "Complete Save - Slow"
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_3_desc: "Warning: keeps all monthly economic details for every market. Useful for testing, comparison, or diagnostics, but can strongly reduce smoothness during monthly ticks."
+ no_void_economy__review_pop_name: "Review popup"
+ no_void_economy__review_pop_desc: "Shows one optional, historical-fun-fact reminder asking for a comment or review after 20 February 1524. The popup disables this setting after either answer."
 
  # Optional: self-referencing flag keys to suppress IDE warnings (safe to remove if you want)
  no_void_economy: "no_void_economy"
@@ -130,3 +132,4 @@
  no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings: "no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings"
  no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings: "no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings"
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings: "no_void_economy__nve_debug_audit_debug_audit_save_mode_settings"
+ no_void_economy__review_pop: "no_void_economy__review_pop"
