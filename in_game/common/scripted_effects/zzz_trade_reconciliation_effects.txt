@@ -10,14 +10,13 @@
 # Scope and merge boundary:
 # - money-side reconciliation uses the confirmed country-scope add_gold surface;
 # - trade_profit / country_income display-accounting remains TECH-01 expected-blocked;
-# - US-20 loss is always removed at destination, never treated as a transfer;
+# - US-20 loss is always removed at destination;
 # - market-level destination loss uses market-scope add_goods_supply with a negative amount;
-# - promoted destination country-stock loss is applied when a receiver is safely known.
+# - promoted destination base receipt and country-stock loss use receiver country-stock dispatchers.
 #
 # Four-case support:
 # - destination non-promoted: destination market loss only;
-# - destination promoted: destination market loss plus receiver country-stock loss through
-#   modeu5_apply_us20_promoted_destination_country_loss_by_route_good.
+# - destination promoted: base receipt/add-transfer + destination market loss + receiver country-stock loss.
 
 modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = {
 	save_temporary_scope_value_as = {
@@ -204,12 +203,15 @@ modeu5_clear_trade_efficiency_route_values = {
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance_loss_factor value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_received_loss value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_loss_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_goods_base_receipt_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_target_goods_amount_received value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_reconciliation_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_market_goods_supply_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_owner_present_in_target_market value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_country_loss_good_matched value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_receiver_selected value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_receiver_capacity_eligible value = 0 }
 }
 
 modeu5_compute_trade_maintenance_efficiency_delta = {
@@ -400,32 +402,111 @@ modeu5_detect_us20_trade_owner_presence_in_target_market = {
 	}
 }
 
-modeu5_select_us20_goods_receiver_country_for_promoted_market = {
+modeu5_us20_select_candidate_receiver_if_capacity_eligible = {
 	if = {
-		limit = { exists = scope:modeu5_us20_receiving_country }
-		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
-		modeu5_note_us20_receiver_selected_explicit_route = yes
-		debug_log = "ModeU5 US20 RECEIVER_SELECTION selected=stored_receiver reason=explicit_receiving_country"
-	}
-	else = {
-		modeu5_detect_us20_trade_owner_presence_in_target_market = yes
+		limit = { exists = scope:modeu5_us20_candidate_receiver_country }
+		scope:modeu5_us20_candidate_receiver_country = { save_temporary_scope_as = modeu5_us20_receiver_capacity_probe_country }
+		modeu5_probe_us20_receiver_capacity_by_route_good = yes
 		if = {
-			limit = { exists = scope:modeu5_trade_owner_country scope:modeu5_us20_trade_owner_present_in_target_market > 0 }
-			scope:modeu5_trade_owner_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
-			modeu5_note_us20_receiver_selected_trade_owner_route = yes
-			debug_log = "ModeU5 US20 RECEIVER_SELECTION selected=trade_owner reason=present_in_target_market"
-		}
-		else = {
-			modeu5_note_us20_receiver_capacity_sort_blocked_route = yes
-			modeu5_note_us20_receiver_allocator_blocked_route = yes
-			modeu5_note_us20_goods_loss_target_selection_blocked_route = yes
-			debug_log = "ModeU5 US20 RECEIVER_SELECTION blocked reason=receiver_allocator_missing fallback=us10_ordering_required"
+			limit = {
+				scope:modeu5_us20_receiver_selected = 0
+				scope:modeu5_us20_receiver_capacity_eligible > 0
+			}
+			scope:modeu5_us20_candidate_receiver_country = { save_temporary_scope_as = modeu5_us20_goods_loss_target_country }
+			save_temporary_scope_value_as = { name = modeu5_us20_receiver_selected value = 1 }
 		}
 	}
 }
 
+modeu5_select_us20_goods_receiver_country_for_promoted_market = {
+	save_temporary_scope_value_as = { name = modeu5_us20_receiver_selected value = 0 }
+
+	if = {
+		limit = { exists = scope:modeu5_us20_receiving_country }
+		scope:modeu5_us20_receiving_country = { save_temporary_scope_as = modeu5_us20_candidate_receiver_country }
+		modeu5_us20_select_candidate_receiver_if_capacity_eligible = yes
+		if = {
+			limit = { scope:modeu5_us20_receiver_selected > 0 }
+			modeu5_note_us20_receiver_selected_explicit_route = yes
+			debug_log = "ModeU5 US20 RECEIVER_SELECTION selected=stored_receiver reason=explicit_receiving_country capacity_rule=current_stock_lt_capacity"
+		}
+		else = {
+			modeu5_note_us20_receiver_capacity_sort_blocked_route = yes
+			debug_log = "ModeU5 US20 RECEIVER_SELECTION rejected=stored_receiver reason=capacity_not_eligible capacity_rule=current_stock_lt_capacity"
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us20_receiver_selected = 0 }
+		modeu5_detect_us20_trade_owner_presence_in_target_market = yes
+		if = {
+			limit = { exists = scope:modeu5_trade_owner_country scope:modeu5_us20_trade_owner_present_in_target_market > 0 }
+			scope:modeu5_trade_owner_country = { save_temporary_scope_as = modeu5_us20_candidate_receiver_country }
+			modeu5_us20_select_candidate_receiver_if_capacity_eligible = yes
+			if = {
+				limit = { scope:modeu5_us20_receiver_selected > 0 }
+				modeu5_note_us20_receiver_selected_trade_owner_route = yes
+				debug_log = "ModeU5 US20 RECEIVER_SELECTION selected=trade_owner reason=present_in_target_market capacity_rule=current_stock_lt_capacity"
+			}
+			else = {
+				modeu5_note_us20_receiver_capacity_sort_blocked_route = yes
+				debug_log = "ModeU5 US20 RECEIVER_SELECTION rejected=trade_owner reason=capacity_not_eligible capacity_rule=current_stock_lt_capacity"
+			}
+		}
+	}
+
+	if = {
+		limit = {
+			scope:modeu5_us20_receiver_selected = 0
+			exists = scope:modeu5_trade_owner_target_market
+		}
+		scope:modeu5_trade_owner_target_market = { save_temporary_scope_as = modeu5_market_country_cache_market }
+		modeu5_rebuild_countries_present_in_market = yes
+		if = {
+			limit = { has_global_variable_list = modeu5_countries_present_in_market }
+			every_in_global_list = {
+				variable = modeu5_countries_present_in_market
+				if = {
+					limit = { scope:modeu5_us20_receiver_selected = 0 }
+					save_temporary_scope_as = modeu5_us20_candidate_receiver_country
+					modeu5_us20_select_candidate_receiver_if_capacity_eligible = yes
+					if = {
+						limit = { scope:modeu5_us20_receiver_selected > 0 }
+						debug_log = "ModeU5 US20 RECEIVER_SELECTION selected=allocator_candidate reason=capacity_eligible_market_country_cache ordering=deterministic_list_order capacity_rule=current_stock_lt_capacity"
+					}
+				}
+			}
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us20_receiver_selected = 0 }
+		modeu5_note_us20_receiver_capacity_sort_blocked_route = yes
+		modeu5_note_us20_receiver_allocator_blocked_route = yes
+		modeu5_note_us20_goods_loss_target_selection_blocked_route = yes
+		debug_log = "ModeU5 US20 RECEIVER_SELECTION blocked reason=no_capacity_eligible_receiver fallback=us10_ordering_required capacity_rule=current_stock_lt_capacity"
+	}
+}
+
 modeu5_apply_us20_promoted_destination_receipt_path = {
-	# Base add/transfer receipt remains separate from US20 loss reconciliation.
+	if = {
+		limit = {
+			exists = scope:modeu5_us20_goods_loss_target_country
+			exists = scope:modeu5_trade_owner_target_market
+			exists = scope:modeu5_trade_owner_good
+			scope:modeu5_us20_engine_goods_amount_received > 0
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us20_goods_base_receipt_quantity
+			value = scope:modeu5_us20_engine_goods_amount_received
+		}
+		modeu5_apply_us20_promoted_destination_base_receipt_by_route_good = yes
+	}
+	else_if = {
+		limit = { exists = scope:modeu5_us20_goods_loss_target_country }
+		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
+		debug_log = "ModeU5 US20 BASE_RECEIPT blocked reason=missing_receiver_or_good_or_receipt_quantity"
+	}
 }
 
 modeu5_apply_us20_promoted_destination_loss_reconciliation = {
