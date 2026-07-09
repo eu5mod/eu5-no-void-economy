@@ -61,6 +61,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_triggers/modeu5_configuration_triggers.txt",
     "in_game/events/modeu5_cmm_warning_events.txt",
     "packages/modeu5_core_tests/in_game/events/modeu5_revalidate_debug_events.txt",
+    "packages/modeu5_core_tests/in_game/events/modeu5_us20_case12_probe_events.txt",
     "packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us20_case12_probe_effects.txt",
     "main_menu/localization/english/nve__cmm_l_english.yml",
 ]
@@ -169,11 +170,13 @@ def validate_us17_us20_static_contract(
     q8_7_global_owner_effects: str,
     trade_reconciliation_effects: str,
     revalidate_events: str,
+    us20_probe_events: str,
     us20_probe_effects: str,
 ) -> None:
     country_cycle = block(country_trade_owner_effects, "modeu5_run_monthly_country_trade_owner_cycle")
     route_effect = block(trade_reconciliation_effects, "modeu5_run_us17_us20_route_reconciliation")
     hook_call = "modeu5_run_us17_us20_route_reconciliation = yes"
+    e2e_probe_call = "modeu5_debug_run_us20_case12_market_loss_probe = yes"
 
     expect(country_cycle.count(hook_call) == 1, "Country trade-owner cycle must call US-17/US-20 route reconciliation exactly once")
     expect("every_trade = {" in country_cycle, "Country trade-owner cycle must use the native every_trade loop")
@@ -201,8 +204,11 @@ def validate_us17_us20_static_contract(
     expect("amount = scope:modeu5_us20_market_goods_supply_delta" in trade_reconciliation_effects, "US20 market loss must use the computed negative market goods delta")
     expect("modeu5_select_us20_goods_receiver_country_for_promoted_market = yes" in trade_reconciliation_effects, "Promoted-destination loss must select a receiver before country-stock loss")
 
-    expect("modeu5_debug_run_us20_case12_market_loss_probe = yes" in revalidate_events, "Full revalidation must run the US20 four-case/receiver probe before summary")
-    expect("Step 14/14" in revalidate_events, "Full revalidation must document the US20 E2E probe as a scenario step")
+    expect(e2e_probe_call not in revalidate_events, "Experimental US20 E2E probe must stay outside stable full revalidation")
+    expect("Step 13/13" in revalidate_events, "Stable full revalidation must end at the US17/US20 route-reconciliation scenario")
+    expect(e2e_probe_call in us20_probe_events, "Standalone US20 probe event must call the US20 E2E probe explicitly")
+    expect("namespace = modeu5_us20_probe" in us20_probe_events, "Standalone US20 probe event namespace must remain available")
+    expect("modeu5_us20_probe.1" in us20_probe_events, "Standalone US20 probe entry event must remain available")
 
     required_probe_assertions = [
         "case1_classification_expected=1",
@@ -241,6 +247,7 @@ def main() -> int:
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/modeu5_q8_7_global_owner_effects.txt")
     trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
     revalidate_events = read("packages/modeu5_core_tests/in_game/events/modeu5_revalidate_debug_events.txt")
+    us20_probe_events = read("packages/modeu5_core_tests/in_game/events/modeu5_us20_case12_probe_events.txt")
     us20_probe_effects = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us20_case12_probe_effects.txt")
     loc = read("main_menu/localization/english/nve__cmm_l_english.yml")
 
@@ -252,6 +259,7 @@ def main() -> int:
         q8_7_global_owner_effects=q8_7_global_owner_effects,
         trade_reconciliation_effects=trade_reconciliation_effects,
         revalidate_events=revalidate_events,
+        us20_probe_events=us20_probe_events,
         us20_probe_effects=us20_probe_effects,
     )
 
