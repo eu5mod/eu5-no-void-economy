@@ -45,6 +45,26 @@ modeu5_us20_case12_probe_cleanup_supply_fixture = {
 	}
 }
 
+modeu5_us20_case12_probe_add_country_stock_fixture = {
+	modeu5_add_stock = {
+		country = c:FRA
+		market = c:FRA.capital.market
+		good = wheat
+		quantity = 1
+		capacity_policy = allow_over_capacity
+	}
+}
+
+modeu5_us20_case12_probe_cleanup_country_stock_fixture = {
+	modeu5_remove_stock = {
+		country = c:FRA
+		market = c:FRA.capital.market
+		good = wheat
+		quantity = 0.97
+		reason = debug_test
+	}
+}
+
 modeu5_us20_case12_probe_seed_without_explicit_receiver = {
 	c:FRA = {
 		save_temporary_scope_as = modeu5_trade_owner_controller_country
@@ -141,7 +161,9 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 		# Run the no-explicit-receiver path first, before any explicit receiver scope is saved.
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case4_trade_owner_receiver origin_promoted=1 destination_promoted=1 expected=trade_owner_receiver_plus_country_loss"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
+		modeu5_us20_case12_probe_add_country_stock_fixture = yes
 		modeu5_us20_case12_probe_run_trade_owner_receiver = { origin_promoted = 1 }
+		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case1 origin_promoted=0 destination_promoted=0 expected=market_loss_only"
@@ -156,7 +178,9 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case3_explicit_receiver origin_promoted=0 destination_promoted=1 expected=explicit_receiver_plus_country_loss"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
+		modeu5_us20_case12_probe_add_country_stock_fixture = yes
 		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 target_promoted = 1 }
+		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
 		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes } NOT = { global_var:modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case1_classification_expected=1 category=hard_failure" }
