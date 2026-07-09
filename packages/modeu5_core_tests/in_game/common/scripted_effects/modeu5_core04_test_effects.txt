@@ -263,7 +263,9 @@ modeu5_debug_run_core04_market_entry_test = {
 			debug_log = "ModeU5 CORE-04 FAIL_REASON reason=performance_first_entry_invariant"
 		}
 
-		modeu5_perf14_set_cmm_main_mode_for_test = { value = 3 }
+		# CORE-04 deactivation is a market-entry gate invariant. Force the derived
+		# runtime mode directly so this probe does not depend on a brittle CMM test key.
+		modeu5_enter_nve_deactivated_mode = yes
 		modeu5_prepare_core04_market_entry_stock_migration = {
 			country = scope:modeu5_core04_test_country
 			source_market = scope:modeu5_core04_test_source_market
