@@ -47,10 +47,6 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 	}
-	cmm_set_requires_unrestricted_tools_enabled = {
-		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
-	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -60,10 +56,6 @@ nve__register_cmf_mod = {
 		default_value = 0
 	}
 	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
-	}
-	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
 	}
@@ -153,10 +145,6 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_design_activate_goods_decay_settings
 	}
-	cmm_set_requires_unrestricted_tools_enabled = {
-		mod_id = no_void_economy
-		setting_id = nve_economic_balance_design_activate_goods_decay_settings
-	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -170,10 +158,6 @@ nve__register_cmf_mod = {
 		setting_id = nve_economic_balance_design_sliders_adjustments_settings
 	}
 	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_economic_balance_design_sliders_adjustments_settings
-	}
-	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_design_sliders_adjustments_settings
 	}
