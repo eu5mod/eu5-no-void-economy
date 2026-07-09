@@ -1,5 +1,9 @@
 namespace = modeu5_us20_probe
 
+# Experimental US-20 promoted-market probe.
+# This intentionally stays outside modeu5_revalidate_debug.1 so the stable
+# baseline summary remains available even if this larger E2E probe needs work.
+
 modeu5_us20_probe.1 = {
 	type = country_event
 	title = modeu5_us20_probe.1.title
@@ -15,7 +19,7 @@ modeu5_us20_probe.1 = {
 		name = modeu5_us20_probe.1.a
 		modeu5_enter_test_audit_runtime_mode = yes
 		modeu5_debug_run_us20_case12_market_loss_probe = yes
-		trigger_event_non_silently = modeu5_us20_probe.2
+		trigger_event_non_silently = { id = modeu5_us20_probe.2 days = 0 }
 	}
 	option = {
 		name = modeu5_debug.close
@@ -29,7 +33,7 @@ modeu5_us20_probe.2 = {
 	outcome = neutral
 
 	trigger = {
-		always = no
+		always = yes
 	}
 
 	option = {
