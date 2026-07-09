@@ -1,0 +1,88 @@
+# ModeU5 US-20 promoted-destination receipt/capacity dispatchers.
+#
+# This file implements the BR-27/BR-28/BR-30 runtime dispatcher surface for the
+# deterministic wheat route used by the current US20 probe. The generic all-good
+# expansion must be generated next using the same literal-good pattern as the
+# existing loss dispatcher.
+
+modeu5_probe_us20_receiver_capacity_by_route_good = {
+	save_temporary_scope_value_as = { name = modeu5_us20_receiver_capacity_eligible value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us20_route_good_matched value = 0 }
+
+	if = {
+		limit = {
+			exists = scope:modeu5_us20_receiver_capacity_probe_country
+			exists = scope:modeu5_trade_owner_target_market
+			exists = scope:modeu5_trade_owner_good
+			scope:modeu5_trade_owner_good = goods:wheat
+		}
+		modeu5_read_country_stock_record = {
+			country = scope:modeu5_us20_receiver_capacity_probe_country
+			market = scope:modeu5_trade_owner_target_market
+			good = wheat
+		}
+		save_temporary_scope_value_as = { name = modeu5_us20_route_good_matched value = 1 }
+		if = {
+			limit = { scope:modeu5_read_country_stock < scope:modeu5_read_country_stock_cap }
+			save_temporary_scope_value_as = { name = modeu5_us20_receiver_capacity_eligible value = 1 }
+		}
+	}
+
+	if = {
+		limit = { scope:modeu5_us20_route_good_matched = 0 }
+		debug_log = "ModeU5 US20 RECEIVER_CAPACITY_DISPATCH blocked reason=unsupported_route_good current_scope=wheat_only_scaffold"
+	}
+}
+
+modeu5_apply_us20_promoted_destination_base_receipt_by_route_good = {
+	save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 0 }
+
+	if = {
+		limit = {
+			exists = scope:modeu5_us20_goods_loss_target_country
+			exists = scope:modeu5_trade_owner_target_market
+			exists = scope:modeu5_trade_owner_good
+			scope:modeu5_trade_owner_good = goods:wheat
+			scope:modeu5_us20_goods_base_receipt_quantity > 0
+			scope:modeu5_us20_origin_market_is_promoted = 0
+		}
+		modeu5_add_stock = {
+			country = scope:modeu5_us20_goods_loss_target_country
+			market = scope:modeu5_trade_owner_target_market
+			good = wheat
+			quantity = scope:modeu5_us20_goods_base_receipt_quantity
+			capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 1 }
+		debug_log = "ModeU5 US20 BASE_RECEIPT applied=add_at_destination good=wheat capacity_policy=allow_over_capacity"
+	}
+	else_if = {
+		limit = {
+			exists = scope:modeu5_us20_goods_loss_target_country
+			exists = scope:modeu5_trade_owner_country
+			exists = scope:modeu5_trade_owner_source_market
+			exists = scope:modeu5_trade_owner_target_market
+			exists = scope:modeu5_trade_owner_good
+			scope:modeu5_trade_owner_good = goods:wheat
+			scope:modeu5_us20_goods_base_receipt_quantity > 0
+			scope:modeu5_us20_origin_market_is_promoted > 0
+		}
+		modeu5_transfer_stock = {
+			seller_country = scope:modeu5_trade_owner_country
+			buyer_country = scope:modeu5_us20_goods_loss_target_country
+			source_market = scope:modeu5_trade_owner_source_market
+			target_market = scope:modeu5_trade_owner_target_market
+			good = wheat
+			quantity = scope:modeu5_us20_goods_base_receipt_quantity
+			target_capacity_policy = allow_over_capacity
+		}
+		save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 1 }
+		debug_log = "ModeU5 US20 BASE_RECEIPT applied=country_market_transfer good=wheat capacity_policy=allow_over_capacity"
+	}
+
+	if = {
+		limit = { scope:modeu5_us20_receipt_good_matched = 0 }
+		modeu5_note_trade_efficiency_goods_delta_blocked_route = yes
+		debug_log = "ModeU5 US20 BASE_RECEIPT_DISPATCH blocked reason=unsupported_route_good_or_missing_scope current_scope=wheat_only_scaffold"
+	}
+}
