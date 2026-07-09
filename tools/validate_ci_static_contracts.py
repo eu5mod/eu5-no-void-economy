@@ -213,14 +213,16 @@ def validate_us17_us20_static_contract(
     required_probe_assertions = [
         "case1_classification_expected=1",
         "case2_classification_expected=1",
-        "case3_classification_expected=1",
+        "case3_classification_expected=2",
         "case4_classification_expected=1",
-        "market_goods_supply_loss_routes_expected=4",
-        "promoted_destination_country_loss_routes_expected=2",
+        "market_goods_supply_loss_routes_expected=5",
+        "promoted_destination_country_loss_routes_expected=3",
         "explicit_receiver_selected_expected=1",
         "trade_owner_receiver_selected_expected=1",
         "goods_delta_should_not_block",
-        "receiver_selection_should_not_block_for_explicit_or_trade_owner_paths",
+        "receiver_selection_should_not_block_for_explicit_trade_owner_or_allocator_paths",
+        "case5_allocator_receiver",
+        "receivers=explicit_plus_trade_owner_plus_allocator",
     ]
     for assertion in required_probe_assertions:
         expect(assertion in us20_probe_effects, f"US20 E2E probe must assert {assertion}")
