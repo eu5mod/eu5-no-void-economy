@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
           ref: refactor/cbp-variable-prefixes
 
-      - name: Apply explicit GUI-precedence correction
+      - name: Apply explicit GUI-precedence corrections
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -37,6 +37,14 @@ jobs:
           text = text.replace(
               '"test_cbp_us10_ui_visibility_result_blocked"',
               '"gui_cbp_us10_ui_visibility_result_blocked"',
+          )
+          text = text.replace(
+              'old_price_side_bonus|route_money_delta|money_delta_total|treasury_delta_total)$',
+              'old_price_side_bonus|route_money_delta|money_delta_total|treasury_delta_total|sell_price|buy_price|export_cost_modifier)$',
+          )
+          text = text.replace(
+              'if object_overlap != SCRIPT_OBJECT_OVERLAPS:',
+              'if not object_overlap.issubset(SCRIPT_OBJECT_OVERLAPS):',
           )
           path.write_text(text, encoding='utf-8')
           PY
@@ -105,5 +113,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git reset cbp-migration-logs/ || true
-          git commit -m "Refactor variables to CBP prefix contract"
+          git commit -m "Refactor remaining trade-accounting GUI variables"
           git push origin HEAD:refactor/cbp-variable-prefixes
