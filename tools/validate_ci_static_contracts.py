@@ -203,7 +203,7 @@ def validate_us17_owner_modifier_contract(
     expect("cbp_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
 
     average_assignment = re.search(
-        r"name\s*=\s*modeu5_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
+        r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
         formula,
         re.DOTALL,
     )
