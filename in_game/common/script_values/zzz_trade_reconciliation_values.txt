@@ -29,18 +29,29 @@ modeu5_trade_efficiency_route_quantity = {
 	min = 0
 }
 
+# Effective loaded base merchant-maintenance cost. NVE may override this define;
+# reading the define here prevents the route formula from duplicating or
+# hardcoding the configured value.
+modeu5_trade_base_merchant_maintenance_cost = {
+	value = define:NCountry|MERCHANT_MAINTENANCE_COST
+	min = 0
+}
+
 # Country-scoped modifier inputs. These values must be evaluated while the
 # current scope is the saved trade-owner country.
+#
+# US-17's semantic "buying efficiency" maps to EU5 import_efficiency. The
+# literal modifier:buying_efficiency does not exist in the tested build.
 modeu5_trade_owner_buying_efficiency = {
-	value = modifier:buying_efficiency
+	value = modifier:import_efficiency
 }
 
 modeu5_trade_owner_selling_efficiency = {
 	value = modifier:selling_efficiency
 }
 
-modeu5_trade_owner_merchant_maintenance_cost = {
-	value = modifier:merchant_maintenance_cost
+modeu5_trade_owner_merchant_maintenance_efficiency = {
+	value = modifier:merchant_maintenance_efficiency
 }
 
 # #120 support value. The average is capped only at 1. Negative values are
@@ -54,8 +65,9 @@ modeu5_buying_selling_efficiency_clamped = {
 }
 
 # The following route-money values still fail closed until route-safe price,
-# export-cost, base-maintenance, and visible income/profit surfaces are confirmed.
-# The country modifier inputs above are no longer part of that blocked set.
+# export-cost, and visible income/profit surfaces are confirmed. Base merchant
+# maintenance itself is no longer blocked: it is trade_volume multiplied by the
+# effective NCountry MERCHANT_MAINTENANCE_COST define.
 modeu5_trade_efficiency_old_price_side_bonus = {
 	value = 0
 }
