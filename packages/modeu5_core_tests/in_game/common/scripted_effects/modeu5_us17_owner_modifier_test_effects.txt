@@ -1,4 +1,4 @@
-# Focused US-17 trade-owner modifier and maximum-only cap probe.
+# Focused US-17 trade-owner modifier, maintenance-define, and maximum-only cap probe.
 # Run through event modeu5_us17_owner_modifiers.1.
 
 modeu5_us17_owner_modifiers_clear_test_results = {
@@ -26,6 +26,7 @@ modeu5_us17_owner_modifiers_seed_common_formula_inputs = {
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_price value = 1.0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_export_cost_modifier value = 0.0 }
 	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_base_maintenance_amount value = 20 }
+	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_merchant_maintenance_efficiency value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance value = 0.70 }
 	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 100 }
 	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 100 }
@@ -35,7 +36,7 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 	modeu5_us17_owner_modifiers_clear_test_results = yes
 	set_global_variable = modeu5_test_us17_owner_modifiers_started
 	debug_log = "ModeU5 TEST ENTERED scenario=us17_trade_owner_modifiers"
-	debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT START expected=owner_country_reads_plus_maximum_only_cap"
+	debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT START expected=owner_country_import_selling_merchant_maintenance_efficiency_plus_loaded_define_plus_maximum_only_cap"
 
 	if = {
 		limit = { NOT = { country_exists = c:FRA } }
@@ -45,12 +46,22 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 	else = {
 		save_temporary_scope_value_as = { name = modeu5_us17_owner_modifiers_failure_count value = 0 }
 
-		# Confirm that the capture helper reads the current trade-owner country.
+		# Confirm that the capture helper reads the current trade-owner country and
+		# derives base maintenance from the effective loaded define.
+		save_temporary_scope_value_as = { name = modeu5_trade_owner_trade_volume value = 40 }
+		save_temporary_scope_value_as = { name = modeu5_us17_expected_base_maintenance_unit_cost value = define:NCountry|MERCHANT_MAINTENANCE_COST }
+		save_temporary_scope_value_as = {
+			name = modeu5_us17_expected_base_maintenance_amount
+			value = {
+				value = scope:modeu5_trade_owner_trade_volume
+				multiply = scope:modeu5_us17_expected_base_maintenance_unit_cost
+			}
+		}
 		c:FRA = {
 			save_temporary_scope_as = modeu5_trade_owner_country
-			save_temporary_scope_value_as = { name = modeu5_us17_expected_buying_efficiency value = modifier:buying_efficiency }
+			save_temporary_scope_value_as = { name = modeu5_us17_expected_buying_efficiency value = modifier:import_efficiency }
 			save_temporary_scope_value_as = { name = modeu5_us17_expected_selling_efficiency value = modifier:selling_efficiency }
-			save_temporary_scope_value_as = { name = modeu5_us17_expected_merchant_maintenance_cost value = modifier:merchant_maintenance_cost }
+			save_temporary_scope_value_as = { name = modeu5_us17_expected_merchant_maintenance_efficiency value = modifier:merchant_maintenance_efficiency }
 			modeu5_capture_trade_owner_country_modifier_inputs = yes
 		}
 
@@ -62,7 +73,7 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 		if = {
 			limit = { NOT = { scope:modeu5_trade_efficiency_buying_efficiency = scope:modeu5_us17_expected_buying_efficiency } }
 			modeu5_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=buying_efficiency_source expected=trade_owner_country_modifier"
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=import_efficiency_source expected=trade_owner_country_modifier"
 		}
 		if = {
 			limit = { NOT = { scope:modeu5_trade_efficiency_selling_efficiency = scope:modeu5_us17_expected_selling_efficiency } }
@@ -70,17 +81,26 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=selling_efficiency_source expected=trade_owner_country_modifier"
 		}
 		if = {
-			limit = { NOT = { scope:modeu5_trade_efficiency_merchant_maintenance_cost = scope:modeu5_us17_expected_merchant_maintenance_cost } }
+			limit = { NOT = { scope:modeu5_trade_efficiency_merchant_maintenance_efficiency = scope:modeu5_us17_expected_merchant_maintenance_efficiency } }
 			modeu5_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_cost_source expected=trade_owner_country_modifier"
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_efficiency_source expected=trade_owner_country_modifier"
 		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=country_modifier_capture expected=trade_owner_country"
+		if = {
+			limit = { NOT = { scope:modeu5_trade_efficiency_base_maintenance_unit_cost = scope:modeu5_us17_expected_base_maintenance_unit_cost } }
+			modeu5_us17_owner_modifiers_note_failure = yes
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=base_maintenance_define_source expected=define_NCountry_MERCHANT_MAINTENANCE_COST"
+		}
+		if = {
+			limit = { NOT = { scope:modeu5_trade_efficiency_base_maintenance_amount = scope:modeu5_us17_expected_base_maintenance_amount } }
+			modeu5_us17_owner_modifiers_note_failure = yes
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=base_maintenance_amount expected=trade_volume_times_loaded_define"
+		}
+		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=country_modifier_capture expected=trade_owner_country inputs=import_selling_merchant_maintenance_efficiency base=trade_volume_times_loaded_define"
 
 		# Lower-bound probe: -0.4 and -0.2 average to -0.3 and must remain negative.
 		modeu5_us17_owner_modifiers_seed_common_formula_inputs = yes
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = -0.4 }
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = -0.2 }
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_merchant_maintenance_cost value = 0 }
 		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
 		if = {
 			limit = {
@@ -108,7 +128,6 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 		modeu5_us17_owner_modifiers_seed_common_formula_inputs = yes
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = 1.4 }
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = 1.2 }
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_merchant_maintenance_cost value = 0 }
 		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
 		if = {
 			limit = { NOT = { scope:modeu5_buying_selling_efficiency_clamped = 1 } }
@@ -120,50 +139,51 @@ modeu5_debug_run_us17_owner_modifier_probe = {
 		# Combined formula probe:
 		# old price bonus = 35
 		# capped average = 0.15
-		# adjusted base maintenance = 20 * (1 + 0.20) = 24
-		# maintenance saving = 24 * 0.15 = 3.6
-		# route money delta = -35 + 3.6 = -31.4
+		# current maintenance factor = 1 - 0.20 = 0.80
+		# adjusted base maintenance = 20 * 0.80 = 16
+		# maintenance saving = 16 * 0.15 = 2.4
+		# route money delta = -35 + 2.4 = -32.6
 		modeu5_us17_owner_modifiers_seed_common_formula_inputs = yes
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = 0.20 }
 		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = 0.10 }
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_merchant_maintenance_cost value = 0.20 }
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_merchant_maintenance_efficiency value = 0.20 }
 		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
 		if = {
 			limit = {
 				OR = {
-					scope:modeu5_trade_efficiency_merchant_maintenance_factor < 1.199
-					scope:modeu5_trade_efficiency_merchant_maintenance_factor > 1.201
+					scope:modeu5_trade_efficiency_merchant_maintenance_factor < 0.799
+					scope:modeu5_trade_efficiency_merchant_maintenance_factor > 0.801
 				}
 			}
 			modeu5_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_factor expected=1.20"
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_factor expected=0.80"
 		}
 		if = {
 			limit = {
 				OR = {
-					scope:modeu5_trade_maintenance_efficiency_delta < 3.59
-					scope:modeu5_trade_maintenance_efficiency_delta > 3.61
+					scope:modeu5_trade_maintenance_efficiency_delta < 2.39
+					scope:modeu5_trade_maintenance_efficiency_delta > 2.41
 				}
 			}
 			modeu5_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=maintenance_saving expected=3.60"
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=maintenance_saving expected=2.40"
 		}
 		if = {
 			limit = {
 				OR = {
-					scope:modeu5_trade_efficiency_route_money_delta < -31.41
-					scope:modeu5_trade_efficiency_route_money_delta > -31.39
+					scope:modeu5_trade_efficiency_route_money_delta < -32.61
+					scope:modeu5_trade_efficiency_route_money_delta > -32.59
 				}
 			}
 			modeu5_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=route_money_delta expected=-31.40"
+			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=route_money_delta expected=-32.60"
 		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=combined_owner_modifier_formula expected=old_bonus_35_maintenance_saving_3.6_delta_minus_31.4"
+		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=combined_owner_modifier_formula expected=old_bonus_35_current_maintenance_16_saving_2.4_delta_minus_32.6"
 
 		if = {
 			limit = { scope:modeu5_us17_owner_modifiers_failure_count = 0 }
 			set_global_variable = modeu5_test_us17_owner_modifiers_passed
-			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=buying_selling_merchant_maintenance clamp=maximum_only"
+			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only"
 		}
 		else = {
 			set_global_variable = modeu5_test_us17_owner_modifiers_failed
