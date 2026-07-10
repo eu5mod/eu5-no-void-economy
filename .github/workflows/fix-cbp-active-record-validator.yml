@@ -14,10 +14,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  fix:
+  diagnose:
     if: github.head_ref == 'refactor/cbp-variable-prefixes'
     runs-on: ubuntu-latest
     steps:
@@ -27,39 +27,43 @@ jobs:
           ref: refactor/cbp-variable-prefixes
           fetch-depth: 0
 
-      - name: Correct active-record assertion
+      - name: Run fail-fast validation with diagnostics
+        id: validate
+        shell: bash
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
+          set +e
+          mkdir -p cbp-final-validation-logs
+          status=0
+          for command in \
+            './tools/generate_all.sh' \
+            'python3 tools/cbp_variable_prefixes.py --check' \
+            './tools/validate_generators.sh' \
+            './tools/validate_module_packages.sh' \
+            './tools/audit_modeu5_persistent_state.sh' \
+            'python3 ./tools/validate_ci_static_contracts.py' \
+            'git diff --check'
+          do
+            {
+              echo "### $command"
+              bash -lc "$command"
+            } >> cbp-final-validation-logs/validation.log 2>&1
+            status=$?
+            if [ "$status" -ne 0 ]; then
+              echo "first_failed_command=$command" >> cbp-final-validation-logs/validation.log
+              break
+            fi
+          done
+          cat cbp-final-validation-logs/validation.log
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
-          path = Path('tools/validate_module_packages.sh')
-          text = path.read_text(encoding='utf-8')
-          text = text.replace(
-              'modeu5_wheat_us00_active_record_by_market',
-              'cbp_wheat_us00_active_record_by_market',
-          )
-          path.write_text(text, encoding='utf-8')
-          PY
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cbp-final-validation-diagnostics
+          path: cbp-final-validation-logs/
 
-      - name: Commit assertion correction
-        run: |
-          if git diff --quiet && git diff --cached --quiet; then
-            echo 'No changes required.'
-          else
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add tools/validate_module_packages.sh
-            git commit -m 'Correct CBP active-record validator token'
-            git push origin HEAD:refactor/cbp-variable-prefixes
-          fi
-
-      - name: Regenerate and validate with fail-fast semantics
-        run: |
-          set -euo pipefail
-          ./tools/generate_all.sh
-          python3 tools/cbp_variable_prefixes.py --check
-          ./tools/validate_generators.sh
-          ./tools/validate_module_packages.sh
-          ./tools/audit_modeu5_persistent_state.sh
-          python3 ./tools/validate_ci_static_contracts.py
-          git diff --check
+      - name: Fail invalid branch
+        if: steps.validate.outputs.status != '0'
+        run: exit 1
