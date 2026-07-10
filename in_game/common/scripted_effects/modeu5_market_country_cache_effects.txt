@@ -11,28 +11,28 @@
 # state only; they do not create durable per-market country-list storage.
 
 modeu5_clear_countries_present_in_market_work_cache = {
-	remove_global_variable = modeu5_market_country_cache_locations_scanned
-	remove_global_variable = modeu5_market_country_cache_locations_with_owner
-	remove_global_variable = modeu5_market_country_cache_countries_added
-	remove_global_variable = modeu5_market_country_cache_last_rebuild_started
-	remove_global_variable = modeu5_market_country_cache_last_rebuild_failed
-	remove_global_variable = modeu5_market_country_cache_last_rebuild_empty
+	remove_global_variable = cbp_market_country_cache_locations_scanned
+	remove_global_variable = cbp_market_country_cache_locations_with_owner
+	remove_global_variable = cbp_market_country_cache_countries_added
+	remove_global_variable = cbp_market_country_cache_last_rebuild_started
+	remove_global_variable = cbp_market_country_cache_last_rebuild_failed
+	remove_global_variable = cbp_market_country_cache_last_rebuild_empty
 
-	set_global_variable = { name = modeu5_market_country_cache_locations_scanned value = 0 }
-	set_global_variable = { name = modeu5_market_country_cache_locations_with_owner value = 0 }
-	set_global_variable = { name = modeu5_market_country_cache_countries_added value = 0 }
+	set_global_variable = { name = cbp_market_country_cache_locations_scanned value = 0 }
+	set_global_variable = { name = cbp_market_country_cache_locations_with_owner value = 0 }
+	set_global_variable = { name = cbp_market_country_cache_countries_added value = 0 }
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
-		clear_global_variable_list = modeu5_countries_present_in_market
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
+		clear_global_variable_list = cbp_countries_present_in_market
 	}
 }
 
 modeu5_increment_market_country_cache_location_scan = {
 	set_global_variable = {
-		name = modeu5_market_country_cache_locations_scanned
+		name = cbp_market_country_cache_locations_scanned
 		value = {
-			value = global_var:modeu5_market_country_cache_locations_scanned
+			value = global_var:cbp_market_country_cache_locations_scanned
 			add = 1
 		}
 	}
@@ -40,9 +40,9 @@ modeu5_increment_market_country_cache_location_scan = {
 
 modeu5_increment_market_country_cache_location_with_owner = {
 	set_global_variable = {
-		name = modeu5_market_country_cache_locations_with_owner
+		name = cbp_market_country_cache_locations_with_owner
 		value = {
-			value = global_var:modeu5_market_country_cache_locations_with_owner
+			value = global_var:cbp_market_country_cache_locations_with_owner
 			add = 1
 		}
 	}
@@ -50,9 +50,9 @@ modeu5_increment_market_country_cache_location_with_owner = {
 
 modeu5_increment_market_country_cache_country_added = {
 	set_global_variable = {
-		name = modeu5_market_country_cache_countries_added
+		name = cbp_market_country_cache_countries_added
 		value = {
-			value = global_var:modeu5_market_country_cache_countries_added
+			value = global_var:cbp_market_country_cache_countries_added
 			add = 1
 		}
 	}
@@ -61,10 +61,10 @@ modeu5_increment_market_country_cache_country_added = {
 modeu5_add_country_to_current_market_country_cache = {
 	if = {
 		limit = {
-			NOT = { has_global_variable_list = modeu5_countries_present_in_market }
+			NOT = { has_global_variable_list = cbp_countries_present_in_market }
 		}
 		add_to_global_variable_list = {
-			name = modeu5_countries_present_in_market
+			name = cbp_countries_present_in_market
 			target = scope:modeu5_market_country_cache_country
 		}
 		modeu5_increment_market_country_cache_country_added = yes
@@ -73,13 +73,13 @@ modeu5_add_country_to_current_market_country_cache = {
 		limit = {
 			NOT = {
 				is_target_in_global_variable_list = {
-					name = modeu5_countries_present_in_market
+					name = cbp_countries_present_in_market
 					target = scope:modeu5_market_country_cache_country
 				}
 			}
 		}
 		add_to_global_variable_list = {
-			name = modeu5_countries_present_in_market
+			name = cbp_countries_present_in_market
 			target = scope:modeu5_market_country_cache_country
 		}
 		modeu5_increment_market_country_cache_country_added = yes
@@ -88,7 +88,7 @@ modeu5_add_country_to_current_market_country_cache = {
 
 modeu5_rebuild_countries_present_in_market = {
 	modeu5_clear_countries_present_in_market_work_cache = yes
-	set_global_variable = modeu5_market_country_cache_last_rebuild_started
+	set_global_variable = cbp_market_country_cache_last_rebuild_started
 
 	if = {
 		limit = { exists = scope:modeu5_market_country_cache_market }
@@ -104,13 +104,13 @@ modeu5_rebuild_countries_present_in_market = {
 		}
 		if = {
 			limit = {
-				NOT = { has_global_variable_list = modeu5_countries_present_in_market }
+				NOT = { has_global_variable_list = cbp_countries_present_in_market }
 			}
-			set_global_variable = modeu5_market_country_cache_last_rebuild_empty
+			set_global_variable = cbp_market_country_cache_last_rebuild_empty
 		}
 	}
 	else = {
-		set_global_variable = modeu5_market_country_cache_last_rebuild_failed
+		set_global_variable = cbp_market_country_cache_last_rebuild_failed
 		error_log = "ModeU5 PERF-03 market-country cache rebuild skipped because no market scope was provided."
 	}
 }
@@ -119,10 +119,10 @@ modeu5_mark_market_country_cache_dirty = {
 	if = {
 		limit = {
 			exists = scope:modeu5_market_country_cache_dirty_market
-			NOT = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+			NOT = { has_global_variable_list = cbp_market_country_cache_dirty_markets }
 		}
 		add_to_global_variable_list = {
-			name = modeu5_market_country_cache_dirty_markets
+			name = cbp_market_country_cache_dirty_markets
 			target = scope:modeu5_market_country_cache_dirty_market
 		}
 	}
@@ -131,13 +131,13 @@ modeu5_mark_market_country_cache_dirty = {
 			exists = scope:modeu5_market_country_cache_dirty_market
 			NOT = {
 				is_target_in_global_variable_list = {
-					name = modeu5_market_country_cache_dirty_markets
+					name = cbp_market_country_cache_dirty_markets
 					target = scope:modeu5_market_country_cache_dirty_market
 				}
 			}
 		}
 		add_to_global_variable_list = {
-			name = modeu5_market_country_cache_dirty_markets
+			name = cbp_market_country_cache_dirty_markets
 			target = scope:modeu5_market_country_cache_dirty_market
 		}
 	}
@@ -149,30 +149,30 @@ modeu5_mark_current_market_country_cache_dirty = {
 }
 
 modeu5_repair_dirty_market_country_caches = {
-	remove_global_variable = modeu5_market_country_cache_dirty_repair_count
-	set_global_variable = { name = modeu5_market_country_cache_dirty_repair_count value = 0 }
+	remove_global_variable = cbp_market_country_cache_dirty_repair_count
+	set_global_variable = { name = cbp_market_country_cache_dirty_repair_count value = 0 }
 
 	if = {
-		limit = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+		limit = { has_global_variable_list = cbp_market_country_cache_dirty_markets }
 		every_in_global_list = {
-			variable = modeu5_market_country_cache_dirty_markets
+			variable = cbp_market_country_cache_dirty_markets
 			save_temporary_scope_as = modeu5_market_country_cache_market
 			modeu5_rebuild_countries_present_in_market = yes
 			set_global_variable = {
-				name = modeu5_market_country_cache_dirty_repair_count
+				name = cbp_market_country_cache_dirty_repair_count
 				value = {
-					value = global_var:modeu5_market_country_cache_dirty_repair_count
+					value = global_var:cbp_market_country_cache_dirty_repair_count
 					add = 1
 				}
 			}
 		}
-		clear_global_variable_list = modeu5_market_country_cache_dirty_markets
+		clear_global_variable_list = cbp_market_country_cache_dirty_markets
 	}
 }
 
 modeu5_repair_dirty_market_country_caches_if_needed = {
 	if = {
-		limit = { has_global_variable_list = modeu5_market_country_cache_dirty_markets }
+		limit = { has_global_variable_list = cbp_market_country_cache_dirty_markets }
 		modeu5_repair_dirty_market_country_caches = yes
 	}
 }

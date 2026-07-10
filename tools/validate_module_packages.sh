@@ -176,25 +176,25 @@ if search_lines 'set_global_variable = modeu5_(economy|trade|war)_rebalance_load
 	exit 1
 fi
 
-require_match 'set_global_variable = modeu5_economy_rebalance_loaded' \
+require_match 'set_global_variable = cbp_economy_rebalance_loaded' \
 	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
 	'Economy companion package marker missing'
-require_match 'set_global_variable = modeu5_trade_rebalance_loaded' \
+require_match 'set_global_variable = cbp_trade_rebalance_loaded' \
 	packages/modeu5_trade_rebalance/in_game/common/on_action/modeu5_trade_package_on_actions.txt \
 	'Trade companion package marker missing'
-require_match 'set_global_variable = modeu5_war_rebalance_loaded' \
+require_match 'set_global_variable = cbp_war_rebalance_loaded' \
 	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt \
 	'War companion package marker missing'
-require_match 'name = modeu5_core_package_version' \
+require_match 'name = cbp_core_package_version' \
 	in_game/common/scripted_effects/modeu5_configuration_effects.txt \
 	'Core package version marker missing'
-require_match 'name = modeu5_economy_package_version' \
+require_match 'name = cbp_economy_package_version' \
 	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
 	'Economy package version missing'
-require_match 'name = modeu5_trade_package_version' \
+require_match 'name = cbp_trade_package_version' \
 	packages/modeu5_trade_rebalance/in_game/common/on_action/modeu5_trade_package_on_actions.txt \
 	'Trade package version missing'
-require_match 'name = modeu5_war_package_version' \
+require_match 'name = cbp_war_package_version' \
 	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt \
 	'War package version missing'
 
@@ -288,7 +288,7 @@ if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifier_localization";
 	exit 1
 fi
 
-require_match 'variable_map\(modeu5_wheat_stock_by_market\|scope:modeu5_market\)' \
+require_match 'variable_map\(test_cbp_wheat_stock_by_market\|scope:modeu5_market\)' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must contain literal per-good map access'
 require_match 'modeu5_load_capacity_breakdown = yes' \
@@ -303,7 +303,7 @@ require_match 'modeu5_wheat_us00_active_record_by_market' \
 require_match 'modeu5_us10_ui_capture_market_produced_row = \{ good = wheat key = wheat \}' \
 	"$generated_us10_market_production" \
 	'Generated US-10 UI helpers must contain literal per-good produced-by-market capture'
-require_match "modeu5_us10_ui_wheat_visible" \
+require_match "gui_cbp_us10_ui_wheat_visible" \
 	"$generated_us10_table" \
 	'Generated US-10 UI table must contain literal per-good visibility bindings'
 

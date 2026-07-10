@@ -21,31 +21,31 @@
 
 modeu5_capture_trade_owner_country_modifier_inputs = {
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_buying_efficiency
+		name = gui_cbp_trade_efficiency_buying_efficiency
 		value = modeu5_trade_owner_buying_efficiency
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_selling_efficiency
+		name = gui_cbp_trade_efficiency_selling_efficiency
 		value = modeu5_trade_owner_selling_efficiency
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_merchant_maintenance_efficiency
+		name = gui_cbp_trade_efficiency_merchant_maintenance_efficiency
 		value = modeu5_trade_owner_merchant_maintenance_efficiency
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_base_maintenance_unit_cost
+		name = gui_cbp_trade_efficiency_base_maintenance_unit_cost
 		value = modeu5_trade_base_merchant_maintenance_cost
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_base_maintenance_amount
+		name = gui_cbp_trade_efficiency_base_maintenance_amount
 		value = {
-			value = scope:modeu5_trade_owner_trade_volume
-			multiply = scope:modeu5_trade_efficiency_base_maintenance_unit_cost
+			value = scope:cbp_trade_owner_trade_volume
+			multiply = scope:gui_cbp_trade_efficiency_base_maintenance_unit_cost
 			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_country_modifier_inputs_available
+		name = cbp_trade_efficiency_country_modifier_inputs_available
 		value = 1
 	}
 }
@@ -68,106 +68,106 @@ modeu5_capture_trade_owner_country_modifier_inputs = {
 # negative saving and therefore an added route cost.
 modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_merchant_maintenance_factor
+		name = gui_cbp_trade_efficiency_merchant_maintenance_factor
 		value = {
 			value = 1
 			add = {
-				value = scope:modeu5_trade_efficiency_merchant_maintenance_efficiency
+				value = scope:gui_cbp_trade_efficiency_merchant_maintenance_efficiency
 				multiply = -1
 			}
 			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_adjusted_base_maintenance_amount
+		name = gui_cbp_trade_efficiency_adjusted_base_maintenance_amount
 		value = {
-			value = scope:modeu5_trade_efficiency_base_maintenance_amount
-			multiply = scope:modeu5_trade_efficiency_merchant_maintenance_factor
+			value = scope:gui_cbp_trade_efficiency_base_maintenance_amount
+			multiply = scope:gui_cbp_trade_efficiency_merchant_maintenance_factor
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_maintenance_efficiency_delta
+		name = gui_cbp_trade_maintenance_efficiency_delta
 		value = {
-			value = scope:modeu5_trade_efficiency_adjusted_base_maintenance_amount
-			multiply = scope:modeu5_buying_selling_efficiency_clamped
+			value = scope:gui_cbp_trade_efficiency_adjusted_base_maintenance_amount
+			multiply = scope:gui_cbp_buying_selling_efficiency_clamped
 		}
 	}
 }
 
 modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_route_quantity
+		name = gui_cbp_trade_efficiency_route_quantity
 		value = {
-			value = scope:modeu5_trade_efficiency_route_quantity
+			value = scope:gui_cbp_trade_efficiency_route_quantity
 			min = 0
 		}
 	}
 
 	# Maximum-only cap: values below zero remain below zero.
 	save_temporary_scope_value_as = {
-		name = modeu5_buying_selling_efficiency_clamped
+		name = gui_cbp_buying_selling_efficiency_clamped
 		value = {
-			value = scope:modeu5_trade_efficiency_buying_efficiency
-			add = scope:modeu5_trade_efficiency_selling_efficiency
+			value = scope:gui_cbp_trade_efficiency_buying_efficiency
+			add = scope:gui_cbp_trade_efficiency_selling_efficiency
 			divide = 2
 			max = 1
 		}
 	}
 
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_sell_side_bonus
+		name = gui_cbp_trade_efficiency_sell_side_bonus
 		value = {
-			value = scope:modeu5_trade_efficiency_route_quantity
-			multiply = scope:modeu5_trade_efficiency_sell_price
-			multiply = scope:modeu5_trade_efficiency_selling_efficiency
+			value = scope:gui_cbp_trade_efficiency_route_quantity
+			multiply = scope:test_cbp_trade_efficiency_sell_price
+			multiply = scope:gui_cbp_trade_efficiency_selling_efficiency
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_export_cost_factor
+		name = gui_cbp_trade_efficiency_export_cost_factor
 		value = {
-			value = scope:modeu5_trade_efficiency_export_cost_modifier
+			value = scope:test_cbp_trade_efficiency_export_cost_modifier
 			add = 1
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_buy_side_bonus
+		name = gui_cbp_trade_efficiency_buy_side_bonus
 		value = {
-			value = scope:modeu5_trade_efficiency_route_quantity
-			multiply = scope:modeu5_trade_efficiency_buy_price
-			multiply = scope:modeu5_trade_efficiency_buying_efficiency
-			multiply = scope:modeu5_trade_efficiency_export_cost_factor
+			value = scope:gui_cbp_trade_efficiency_route_quantity
+			multiply = scope:test_cbp_trade_efficiency_buy_price
+			multiply = scope:gui_cbp_trade_efficiency_buying_efficiency
+			multiply = scope:gui_cbp_trade_efficiency_export_cost_factor
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_old_price_side_bonus
+		name = gui_cbp_trade_efficiency_old_price_side_bonus
 		value = {
-			value = scope:modeu5_trade_efficiency_sell_side_bonus
-			add = scope:modeu5_trade_efficiency_buy_side_bonus
+			value = scope:gui_cbp_trade_efficiency_sell_side_bonus
+			add = scope:gui_cbp_trade_efficiency_buy_side_bonus
 		}
 	}
 
 	modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes
 	save_temporary_scope_value_as = {
-		name = modeu5_buying_selling_efficiency_delta
+		name = gui_cbp_buying_selling_efficiency_delta
 		value = 0
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_route_money_delta
+		name = gui_cbp_trade_efficiency_route_money_delta
 		value = {
-			value = scope:modeu5_trade_efficiency_old_price_side_bonus
+			value = scope:gui_cbp_trade_efficiency_old_price_side_bonus
 			multiply = -1
-			add = scope:modeu5_trade_maintenance_efficiency_delta
-			add = scope:modeu5_buying_selling_efficiency_delta
+			add = scope:gui_cbp_trade_maintenance_efficiency_delta
+			add = scope:gui_cbp_buying_selling_efficiency_delta
 		}
 	}
 
 	# US-20 remains based on its separately preserved route maintenance input.
 	save_temporary_scope_value_as = {
-		name = modeu5_us20_trade_maintenance_loss_factor
+		name = gui_cbp_us20_trade_maintenance_loss_factor
 		value = {
 			value = 1
 			add = {
-				value = scope:modeu5_us20_trade_maintenance
+				value = scope:gui_cbp_us20_trade_maintenance
 				multiply = -1
 			}
 			min = 0
@@ -175,29 +175,29 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_us20_goods_received_loss
+		name = gui_cbp_us20_goods_received_loss
 		value = {
-			value = scope:modeu5_us20_trade_maintenance_loss_factor
+			value = scope:gui_cbp_us20_trade_maintenance_loss_factor
 			multiply = 0.1
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_us20_target_goods_amount_received
+		name = gui_cbp_us20_target_goods_amount_received
 		value = {
-			value = scope:modeu5_us20_goods_amount_sent
+			value = scope:gui_cbp_us20_goods_amount_sent
 			add = {
-				value = scope:modeu5_us20_goods_received_loss
+				value = scope:gui_cbp_us20_goods_received_loss
 				multiply = -1
 			}
 			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_us20_goods_reconciliation_delta
+		name = gui_cbp_us20_goods_reconciliation_delta
 		value = {
-			value = scope:modeu5_us20_target_goods_amount_received
+			value = scope:gui_cbp_us20_target_goods_amount_received
 			add = {
-				value = scope:modeu5_us20_engine_goods_amount_received
+				value = scope:gui_cbp_us20_engine_goods_amount_received
 				multiply = -1
 			}
 		}
@@ -207,17 +207,17 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = {
 	if = {
 		limit = {
-			scope:modeu5_trade_efficiency_formula_inputs_available > 0
-			scope:modeu5_trade_efficiency_country_modifier_inputs_available > 0
+			scope:cbp_trade_efficiency_formula_inputs_available > 0
+			scope:cbp_trade_efficiency_country_modifier_inputs_available > 0
 		}
 		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
 	}
 	else = {
 		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
-		save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_money_delta value = 0 }
+		save_temporary_scope_value_as = { name = gui_cbp_trade_maintenance_efficiency_delta value = 0 }
+		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_old_price_side_bonus value = 0 }
+		save_temporary_scope_value_as = { name = gui_cbp_buying_selling_efficiency_delta value = 0 }
+		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_money_delta value = 0 }
 	}
 }
 
@@ -233,8 +233,8 @@ modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
 		modeu5_prepare_trade_efficiency_route_quantity_input = yes
 		if = {
 			limit = {
-				scope:modeu5_trade_owner_quantity_matched > 0
-				scope:modeu5_trade_owner_goods_quantity > 0
+				scope:test_cbp_trade_owner_quantity_matched > 0
+				scope:test_cbp_trade_owner_goods_quantity > 0
 			}
 			modeu5_note_trade_efficiency_quantity_confirmed = yes
 			modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes

@@ -400,9 +400,9 @@ modeu5_us10_ui_capture_market_produced_row_good_cotton = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -414,7 +414,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cotton = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_cotton_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -434,7 +434,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cotton = {
 			limit = { var:modeu5_us10_ui_cotton_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_cotton_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cotton_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -445,7 +445,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cotton = {
 			}
 			set_variable = { name = modeu5_us10_ui_cotton_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cotton_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -466,9 +466,9 @@ modeu5_us10_ui_capture_market_produced_row_good_sugar = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -480,7 +480,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sugar = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_sugar_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -500,7 +500,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sugar = {
 			limit = { var:modeu5_us10_ui_sugar_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_sugar_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_sugar_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -511,7 +511,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sugar = {
 			}
 			set_variable = { name = modeu5_us10_ui_sugar_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_sugar_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -532,9 +532,9 @@ modeu5_us10_ui_capture_market_produced_row_good_tobacco = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -546,7 +546,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tobacco = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_tobacco_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -566,7 +566,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tobacco = {
 			limit = { var:modeu5_us10_ui_tobacco_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_tobacco_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tobacco_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -577,7 +577,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tobacco = {
 			}
 			set_variable = { name = modeu5_us10_ui_tobacco_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tobacco_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -598,9 +598,9 @@ modeu5_us10_ui_capture_market_produced_row_good_tar = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -612,7 +612,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tar = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_tar_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -632,7 +632,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tar = {
 			limit = { var:modeu5_us10_ui_tar_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_tar_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tar_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -643,7 +643,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tar = {
 			}
 			set_variable = { name = modeu5_us10_ui_tar_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tar_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -664,9 +664,9 @@ modeu5_us10_ui_capture_market_produced_row_good_porcelain = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -678,7 +678,7 @@ modeu5_us10_ui_capture_market_produced_row_good_porcelain = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_porcelain_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -698,7 +698,7 @@ modeu5_us10_ui_capture_market_produced_row_good_porcelain = {
 			limit = { var:modeu5_us10_ui_porcelain_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_porcelain_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_porcelain_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -709,7 +709,7 @@ modeu5_us10_ui_capture_market_produced_row_good_porcelain = {
 			}
 			set_variable = { name = modeu5_us10_ui_porcelain_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_porcelain_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -730,9 +730,9 @@ modeu5_us10_ui_capture_market_produced_row_good_naval_supplies = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -744,7 +744,7 @@ modeu5_us10_ui_capture_market_produced_row_good_naval_supplies = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_naval_supplies_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -764,7 +764,7 @@ modeu5_us10_ui_capture_market_produced_row_good_naval_supplies = {
 			limit = { var:modeu5_us10_ui_naval_supplies_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_naval_supplies_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_naval_supplies_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -775,7 +775,7 @@ modeu5_us10_ui_capture_market_produced_row_good_naval_supplies = {
 			}
 			set_variable = { name = modeu5_us10_ui_naval_supplies_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_naval_supplies_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -796,9 +796,9 @@ modeu5_us10_ui_capture_market_produced_row_good_firearms = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -810,7 +810,7 @@ modeu5_us10_ui_capture_market_produced_row_good_firearms = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_firearms_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -830,7 +830,7 @@ modeu5_us10_ui_capture_market_produced_row_good_firearms = {
 			limit = { var:modeu5_us10_ui_firearms_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_firearms_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_firearms_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -841,7 +841,7 @@ modeu5_us10_ui_capture_market_produced_row_good_firearms = {
 			}
 			set_variable = { name = modeu5_us10_ui_firearms_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_firearms_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -862,9 +862,9 @@ modeu5_us10_ui_capture_market_produced_row_good_cannons = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -876,7 +876,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cannons = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_cannons_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -896,7 +896,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cannons = {
 			limit = { var:modeu5_us10_ui_cannons_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_cannons_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cannons_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -907,7 +907,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cannons = {
 			}
 			set_variable = { name = modeu5_us10_ui_cannons_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cannons_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -928,9 +928,9 @@ modeu5_us10_ui_capture_market_produced_row_good_weaponry = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -942,7 +942,7 @@ modeu5_us10_ui_capture_market_produced_row_good_weaponry = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_weaponry_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -962,7 +962,7 @@ modeu5_us10_ui_capture_market_produced_row_good_weaponry = {
 			limit = { var:modeu5_us10_ui_weaponry_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_weaponry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_weaponry_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -973,7 +973,7 @@ modeu5_us10_ui_capture_market_produced_row_good_weaponry = {
 			}
 			set_variable = { name = modeu5_us10_ui_weaponry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_weaponry_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -994,9 +994,9 @@ modeu5_us10_ui_capture_market_produced_row_good_glass = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1008,7 +1008,7 @@ modeu5_us10_ui_capture_market_produced_row_good_glass = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_glass_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1028,7 +1028,7 @@ modeu5_us10_ui_capture_market_produced_row_good_glass = {
 			limit = { var:modeu5_us10_ui_glass_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_glass_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_glass_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1039,7 +1039,7 @@ modeu5_us10_ui_capture_market_produced_row_good_glass = {
 			}
 			set_variable = { name = modeu5_us10_ui_glass_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_glass_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1060,9 +1060,9 @@ modeu5_us10_ui_capture_market_produced_row_good_steel = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1074,7 +1074,7 @@ modeu5_us10_ui_capture_market_produced_row_good_steel = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_steel_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1094,7 +1094,7 @@ modeu5_us10_ui_capture_market_produced_row_good_steel = {
 			limit = { var:modeu5_us10_ui_steel_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_steel_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_steel_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1105,7 +1105,7 @@ modeu5_us10_ui_capture_market_produced_row_good_steel = {
 			}
 			set_variable = { name = modeu5_us10_ui_steel_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_steel_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1126,9 +1126,9 @@ modeu5_us10_ui_capture_market_produced_row_good_cloth = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1140,7 +1140,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloth = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_cloth_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1160,7 +1160,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloth = {
 			limit = { var:modeu5_us10_ui_cloth_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_cloth_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cloth_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1171,7 +1171,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloth = {
 			}
 			set_variable = { name = modeu5_us10_ui_cloth_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cloth_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1192,9 +1192,9 @@ modeu5_us10_ui_capture_market_produced_row_good_fine_cloth = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1206,7 +1206,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fine_cloth = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_fine_cloth_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1226,7 +1226,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fine_cloth = {
 			limit = { var:modeu5_us10_ui_fine_cloth_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_fine_cloth_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fine_cloth_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1237,7 +1237,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fine_cloth = {
 			}
 			set_variable = { name = modeu5_us10_ui_fine_cloth_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fine_cloth_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1258,9 +1258,9 @@ modeu5_us10_ui_capture_market_produced_row_good_liquor = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1272,7 +1272,7 @@ modeu5_us10_ui_capture_market_produced_row_good_liquor = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_liquor_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1292,7 +1292,7 @@ modeu5_us10_ui_capture_market_produced_row_good_liquor = {
 			limit = { var:modeu5_us10_ui_liquor_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_liquor_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_liquor_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1303,7 +1303,7 @@ modeu5_us10_ui_capture_market_produced_row_good_liquor = {
 			}
 			set_variable = { name = modeu5_us10_ui_liquor_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_liquor_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1324,9 +1324,9 @@ modeu5_us10_ui_capture_market_produced_row_good_beer = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1338,7 +1338,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beer = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_beer_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1358,7 +1358,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beer = {
 			limit = { var:modeu5_us10_ui_beer_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_beer_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_beer_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1369,7 +1369,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beer = {
 			}
 			set_variable = { name = modeu5_us10_ui_beer_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_beer_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1390,9 +1390,9 @@ modeu5_us10_ui_capture_market_produced_row_good_paper = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1404,7 +1404,7 @@ modeu5_us10_ui_capture_market_produced_row_good_paper = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_paper_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1424,7 +1424,7 @@ modeu5_us10_ui_capture_market_produced_row_good_paper = {
 			limit = { var:modeu5_us10_ui_paper_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_paper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_paper_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1435,7 +1435,7 @@ modeu5_us10_ui_capture_market_produced_row_good_paper = {
 			}
 			set_variable = { name = modeu5_us10_ui_paper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_paper_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1456,9 +1456,9 @@ modeu5_us10_ui_capture_market_produced_row_good_books = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1470,7 +1470,7 @@ modeu5_us10_ui_capture_market_produced_row_good_books = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_books_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1490,7 +1490,7 @@ modeu5_us10_ui_capture_market_produced_row_good_books = {
 			limit = { var:modeu5_us10_ui_books_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_books_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_books_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1501,7 +1501,7 @@ modeu5_us10_ui_capture_market_produced_row_good_books = {
 			}
 			set_variable = { name = modeu5_us10_ui_books_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_books_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1522,9 +1522,9 @@ modeu5_us10_ui_capture_market_produced_row_good_jewelry = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1536,7 +1536,7 @@ modeu5_us10_ui_capture_market_produced_row_good_jewelry = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_jewelry_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1556,7 +1556,7 @@ modeu5_us10_ui_capture_market_produced_row_good_jewelry = {
 			limit = { var:modeu5_us10_ui_jewelry_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_jewelry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_jewelry_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1567,7 +1567,7 @@ modeu5_us10_ui_capture_market_produced_row_good_jewelry = {
 			}
 			set_variable = { name = modeu5_us10_ui_jewelry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_jewelry_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1588,9 +1588,9 @@ modeu5_us10_ui_capture_market_produced_row_good_leather = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1602,7 +1602,7 @@ modeu5_us10_ui_capture_market_produced_row_good_leather = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_leather_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1622,7 +1622,7 @@ modeu5_us10_ui_capture_market_produced_row_good_leather = {
 			limit = { var:modeu5_us10_ui_leather_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_leather_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_leather_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1633,7 +1633,7 @@ modeu5_us10_ui_capture_market_produced_row_good_leather = {
 			}
 			set_variable = { name = modeu5_us10_ui_leather_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_leather_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1654,9 +1654,9 @@ modeu5_us10_ui_capture_market_produced_row_good_tools = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1668,7 +1668,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tools = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_tools_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1688,7 +1688,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tools = {
 			limit = { var:modeu5_us10_ui_tools_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_tools_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tools_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1699,7 +1699,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tools = {
 			}
 			set_variable = { name = modeu5_us10_ui_tools_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tools_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1720,9 +1720,9 @@ modeu5_us10_ui_capture_market_produced_row_good_masonry = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1734,7 +1734,7 @@ modeu5_us10_ui_capture_market_produced_row_good_masonry = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_masonry_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1754,7 +1754,7 @@ modeu5_us10_ui_capture_market_produced_row_good_masonry = {
 			limit = { var:modeu5_us10_ui_masonry_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_masonry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_masonry_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1765,7 +1765,7 @@ modeu5_us10_ui_capture_market_produced_row_good_masonry = {
 			}
 			set_variable = { name = modeu5_us10_ui_masonry_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_masonry_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1786,9 +1786,9 @@ modeu5_us10_ui_capture_market_produced_row_good_lacquerware = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1800,7 +1800,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lacquerware = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_lacquerware_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1820,7 +1820,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lacquerware = {
 			limit = { var:modeu5_us10_ui_lacquerware_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_lacquerware_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lacquerware_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1831,7 +1831,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lacquerware = {
 			}
 			set_variable = { name = modeu5_us10_ui_lacquerware_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lacquerware_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1852,9 +1852,9 @@ modeu5_us10_ui_capture_market_produced_row_good_pottery = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1866,7 +1866,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pottery = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_pottery_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1886,7 +1886,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pottery = {
 			limit = { var:modeu5_us10_ui_pottery_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_pottery_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pottery_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1897,7 +1897,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pottery = {
 			}
 			set_variable = { name = modeu5_us10_ui_pottery_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pottery_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1918,9 +1918,9 @@ modeu5_us10_ui_capture_market_produced_row_good_furniture = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1932,7 +1932,7 @@ modeu5_us10_ui_capture_market_produced_row_good_furniture = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_furniture_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -1952,7 +1952,7 @@ modeu5_us10_ui_capture_market_produced_row_good_furniture = {
 			limit = { var:modeu5_us10_ui_furniture_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_furniture_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_furniture_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -1963,7 +1963,7 @@ modeu5_us10_ui_capture_market_produced_row_good_furniture = {
 			}
 			set_variable = { name = modeu5_us10_ui_furniture_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_furniture_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -1984,9 +1984,9 @@ modeu5_us10_ui_capture_market_produced_row_good_horses = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -1998,7 +1998,7 @@ modeu5_us10_ui_capture_market_produced_row_good_horses = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_horses_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2018,7 +2018,7 @@ modeu5_us10_ui_capture_market_produced_row_good_horses = {
 			limit = { var:modeu5_us10_ui_horses_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_horses_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_horses_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2029,7 +2029,7 @@ modeu5_us10_ui_capture_market_produced_row_good_horses = {
 			}
 			set_variable = { name = modeu5_us10_ui_horses_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_horses_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2050,9 +2050,9 @@ modeu5_us10_ui_capture_market_produced_row_good_clay = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2064,7 +2064,7 @@ modeu5_us10_ui_capture_market_produced_row_good_clay = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_clay_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2084,7 +2084,7 @@ modeu5_us10_ui_capture_market_produced_row_good_clay = {
 			limit = { var:modeu5_us10_ui_clay_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_clay_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_clay_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2095,7 +2095,7 @@ modeu5_us10_ui_capture_market_produced_row_good_clay = {
 			}
 			set_variable = { name = modeu5_us10_ui_clay_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_clay_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2116,9 +2116,9 @@ modeu5_us10_ui_capture_market_produced_row_good_sand = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2130,7 +2130,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sand = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_sand_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2150,7 +2150,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sand = {
 			limit = { var:modeu5_us10_ui_sand_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_sand_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_sand_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2161,7 +2161,7 @@ modeu5_us10_ui_capture_market_produced_row_good_sand = {
 			}
 			set_variable = { name = modeu5_us10_ui_sand_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_sand_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2182,9 +2182,9 @@ modeu5_us10_ui_capture_market_produced_row_good_coal = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2196,7 +2196,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coal = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_coal_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2216,7 +2216,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coal = {
 			limit = { var:modeu5_us10_ui_coal_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_coal_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_coal_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2227,7 +2227,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coal = {
 			}
 			set_variable = { name = modeu5_us10_ui_coal_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_coal_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2248,9 +2248,9 @@ modeu5_us10_ui_capture_market_produced_row_good_iron = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2262,7 +2262,7 @@ modeu5_us10_ui_capture_market_produced_row_good_iron = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_iron_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2282,7 +2282,7 @@ modeu5_us10_ui_capture_market_produced_row_good_iron = {
 			limit = { var:modeu5_us10_ui_iron_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_iron_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_iron_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2293,7 +2293,7 @@ modeu5_us10_ui_capture_market_produced_row_good_iron = {
 			}
 			set_variable = { name = modeu5_us10_ui_iron_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_iron_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2314,9 +2314,9 @@ modeu5_us10_ui_capture_market_produced_row_good_copper = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2328,7 +2328,7 @@ modeu5_us10_ui_capture_market_produced_row_good_copper = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_copper_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2348,7 +2348,7 @@ modeu5_us10_ui_capture_market_produced_row_good_copper = {
 			limit = { var:modeu5_us10_ui_copper_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_copper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_copper_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2359,7 +2359,7 @@ modeu5_us10_ui_capture_market_produced_row_good_copper = {
 			}
 			set_variable = { name = modeu5_us10_ui_copper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_copper_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2380,9 +2380,9 @@ modeu5_us10_ui_capture_market_produced_row_good_goods_gold = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2394,7 +2394,7 @@ modeu5_us10_ui_capture_market_produced_row_good_goods_gold = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_goods_gold_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2414,7 +2414,7 @@ modeu5_us10_ui_capture_market_produced_row_good_goods_gold = {
 			limit = { var:modeu5_us10_ui_goods_gold_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_goods_gold_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_goods_gold_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2425,7 +2425,7 @@ modeu5_us10_ui_capture_market_produced_row_good_goods_gold = {
 			}
 			set_variable = { name = modeu5_us10_ui_goods_gold_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_goods_gold_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2446,9 +2446,9 @@ modeu5_us10_ui_capture_market_produced_row_good_silver = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2460,7 +2460,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silver = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_silver_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2480,7 +2480,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silver = {
 			limit = { var:modeu5_us10_ui_silver_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_silver_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_silver_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2491,7 +2491,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silver = {
 			}
 			set_variable = { name = modeu5_us10_ui_silver_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_silver_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2512,9 +2512,9 @@ modeu5_us10_ui_capture_market_produced_row_good_stone = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2526,7 +2526,7 @@ modeu5_us10_ui_capture_market_produced_row_good_stone = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_stone_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2546,7 +2546,7 @@ modeu5_us10_ui_capture_market_produced_row_good_stone = {
 			limit = { var:modeu5_us10_ui_stone_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_stone_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_stone_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2557,7 +2557,7 @@ modeu5_us10_ui_capture_market_produced_row_good_stone = {
 			}
 			set_variable = { name = modeu5_us10_ui_stone_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_stone_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2578,9 +2578,9 @@ modeu5_us10_ui_capture_market_produced_row_good_tin = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2592,7 +2592,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tin = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_tin_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2612,7 +2612,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tin = {
 			limit = { var:modeu5_us10_ui_tin_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_tin_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tin_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2623,7 +2623,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tin = {
 			}
 			set_variable = { name = modeu5_us10_ui_tin_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tin_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2644,9 +2644,9 @@ modeu5_us10_ui_capture_market_produced_row_good_lead = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2658,7 +2658,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lead = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_lead_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2678,7 +2678,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lead = {
 			limit = { var:modeu5_us10_ui_lead_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_lead_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lead_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2689,7 +2689,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lead = {
 			}
 			set_variable = { name = modeu5_us10_ui_lead_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lead_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2710,9 +2710,9 @@ modeu5_us10_ui_capture_market_produced_row_good_silk = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2724,7 +2724,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silk = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_silk_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2744,7 +2744,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silk = {
 			limit = { var:modeu5_us10_ui_silk_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_silk_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_silk_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2755,7 +2755,7 @@ modeu5_us10_ui_capture_market_produced_row_good_silk = {
 			}
 			set_variable = { name = modeu5_us10_ui_silk_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_silk_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2776,9 +2776,9 @@ modeu5_us10_ui_capture_market_produced_row_good_dyes = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2790,7 +2790,7 @@ modeu5_us10_ui_capture_market_produced_row_good_dyes = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_dyes_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2810,7 +2810,7 @@ modeu5_us10_ui_capture_market_produced_row_good_dyes = {
 			limit = { var:modeu5_us10_ui_dyes_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_dyes_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_dyes_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2821,7 +2821,7 @@ modeu5_us10_ui_capture_market_produced_row_good_dyes = {
 			}
 			set_variable = { name = modeu5_us10_ui_dyes_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_dyes_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2842,9 +2842,9 @@ modeu5_us10_ui_capture_market_produced_row_good_incense = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2856,7 +2856,7 @@ modeu5_us10_ui_capture_market_produced_row_good_incense = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_incense_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2876,7 +2876,7 @@ modeu5_us10_ui_capture_market_produced_row_good_incense = {
 			limit = { var:modeu5_us10_ui_incense_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_incense_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_incense_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2887,7 +2887,7 @@ modeu5_us10_ui_capture_market_produced_row_good_incense = {
 			}
 			set_variable = { name = modeu5_us10_ui_incense_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_incense_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2908,9 +2908,9 @@ modeu5_us10_ui_capture_market_produced_row_good_tea = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2922,7 +2922,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tea = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_tea_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -2942,7 +2942,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tea = {
 			limit = { var:modeu5_us10_ui_tea_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_tea_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tea_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -2953,7 +2953,7 @@ modeu5_us10_ui_capture_market_produced_row_good_tea = {
 			}
 			set_variable = { name = modeu5_us10_ui_tea_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_tea_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -2974,9 +2974,9 @@ modeu5_us10_ui_capture_market_produced_row_good_cocoa = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -2988,7 +2988,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cocoa = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_cocoa_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3008,7 +3008,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cocoa = {
 			limit = { var:modeu5_us10_ui_cocoa_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_cocoa_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cocoa_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3019,7 +3019,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cocoa = {
 			}
 			set_variable = { name = modeu5_us10_ui_cocoa_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cocoa_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3040,9 +3040,9 @@ modeu5_us10_ui_capture_market_produced_row_good_coffee = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3054,7 +3054,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coffee = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_coffee_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3074,7 +3074,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coffee = {
 			limit = { var:modeu5_us10_ui_coffee_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_coffee_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_coffee_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3085,7 +3085,7 @@ modeu5_us10_ui_capture_market_produced_row_good_coffee = {
 			}
 			set_variable = { name = modeu5_us10_ui_coffee_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_coffee_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3106,9 +3106,9 @@ modeu5_us10_ui_capture_market_produced_row_good_fiber_crops = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3120,7 +3120,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fiber_crops = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_fiber_crops_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3140,7 +3140,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fiber_crops = {
 			limit = { var:modeu5_us10_ui_fiber_crops_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_fiber_crops_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fiber_crops_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3151,7 +3151,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fiber_crops = {
 			}
 			set_variable = { name = modeu5_us10_ui_fiber_crops_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fiber_crops_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3172,9 +3172,9 @@ modeu5_us10_ui_capture_market_produced_row_good_ivory = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3186,7 +3186,7 @@ modeu5_us10_ui_capture_market_produced_row_good_ivory = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_ivory_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3206,7 +3206,7 @@ modeu5_us10_ui_capture_market_produced_row_good_ivory = {
 			limit = { var:modeu5_us10_ui_ivory_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_ivory_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_ivory_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3217,7 +3217,7 @@ modeu5_us10_ui_capture_market_produced_row_good_ivory = {
 			}
 			set_variable = { name = modeu5_us10_ui_ivory_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_ivory_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3238,9 +3238,9 @@ modeu5_us10_ui_capture_market_produced_row_good_lumber = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3252,7 +3252,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lumber = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_lumber_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3272,7 +3272,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lumber = {
 			limit = { var:modeu5_us10_ui_lumber_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_lumber_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lumber_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3283,7 +3283,7 @@ modeu5_us10_ui_capture_market_produced_row_good_lumber = {
 			}
 			set_variable = { name = modeu5_us10_ui_lumber_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_lumber_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3304,9 +3304,9 @@ modeu5_us10_ui_capture_market_produced_row_good_salt = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3318,7 +3318,7 @@ modeu5_us10_ui_capture_market_produced_row_good_salt = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_salt_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3338,7 +3338,7 @@ modeu5_us10_ui_capture_market_produced_row_good_salt = {
 			limit = { var:modeu5_us10_ui_salt_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_salt_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_salt_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3349,7 +3349,7 @@ modeu5_us10_ui_capture_market_produced_row_good_salt = {
 			}
 			set_variable = { name = modeu5_us10_ui_salt_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_salt_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3370,9 +3370,9 @@ modeu5_us10_ui_capture_market_produced_row_good_medicaments = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3384,7 +3384,7 @@ modeu5_us10_ui_capture_market_produced_row_good_medicaments = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_medicaments_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3404,7 +3404,7 @@ modeu5_us10_ui_capture_market_produced_row_good_medicaments = {
 			limit = { var:modeu5_us10_ui_medicaments_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_medicaments_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_medicaments_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3415,7 +3415,7 @@ modeu5_us10_ui_capture_market_produced_row_good_medicaments = {
 			}
 			set_variable = { name = modeu5_us10_ui_medicaments_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_medicaments_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3436,9 +3436,9 @@ modeu5_us10_ui_capture_market_produced_row_good_gems = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3450,7 +3450,7 @@ modeu5_us10_ui_capture_market_produced_row_good_gems = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_gems_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3470,7 +3470,7 @@ modeu5_us10_ui_capture_market_produced_row_good_gems = {
 			limit = { var:modeu5_us10_ui_gems_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_gems_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_gems_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3481,7 +3481,7 @@ modeu5_us10_ui_capture_market_produced_row_good_gems = {
 			}
 			set_variable = { name = modeu5_us10_ui_gems_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_gems_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3502,9 +3502,9 @@ modeu5_us10_ui_capture_market_produced_row_good_pearls = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3516,7 +3516,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pearls = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_pearls_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3536,7 +3536,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pearls = {
 			limit = { var:modeu5_us10_ui_pearls_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_pearls_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pearls_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3547,7 +3547,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pearls = {
 			}
 			set_variable = { name = modeu5_us10_ui_pearls_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pearls_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3568,9 +3568,9 @@ modeu5_us10_ui_capture_market_produced_row_good_amber = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3582,7 +3582,7 @@ modeu5_us10_ui_capture_market_produced_row_good_amber = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_amber_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3602,7 +3602,7 @@ modeu5_us10_ui_capture_market_produced_row_good_amber = {
 			limit = { var:modeu5_us10_ui_amber_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_amber_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_amber_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3613,7 +3613,7 @@ modeu5_us10_ui_capture_market_produced_row_good_amber = {
 			}
 			set_variable = { name = modeu5_us10_ui_amber_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_amber_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3634,9 +3634,9 @@ modeu5_us10_ui_capture_market_produced_row_good_saltpeter = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3648,7 +3648,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saltpeter = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_saltpeter_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3668,7 +3668,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saltpeter = {
 			limit = { var:modeu5_us10_ui_saltpeter_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_saltpeter_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_saltpeter_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3679,7 +3679,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saltpeter = {
 			}
 			set_variable = { name = modeu5_us10_ui_saltpeter_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_saltpeter_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3700,9 +3700,9 @@ modeu5_us10_ui_capture_market_produced_row_good_alum = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3714,7 +3714,7 @@ modeu5_us10_ui_capture_market_produced_row_good_alum = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_alum_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3734,7 +3734,7 @@ modeu5_us10_ui_capture_market_produced_row_good_alum = {
 			limit = { var:modeu5_us10_ui_alum_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_alum_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_alum_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3745,7 +3745,7 @@ modeu5_us10_ui_capture_market_produced_row_good_alum = {
 			}
 			set_variable = { name = modeu5_us10_ui_alum_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_alum_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3766,9 +3766,9 @@ modeu5_us10_ui_capture_market_produced_row_good_wine = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3780,7 +3780,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wine = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_wine_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3800,7 +3800,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wine = {
 			limit = { var:modeu5_us10_ui_wine_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_wine_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wine_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3811,7 +3811,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wine = {
 			}
 			set_variable = { name = modeu5_us10_ui_wine_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wine_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3832,9 +3832,9 @@ modeu5_us10_ui_capture_market_produced_row_good_elephants = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3846,7 +3846,7 @@ modeu5_us10_ui_capture_market_produced_row_good_elephants = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_elephants_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3866,7 +3866,7 @@ modeu5_us10_ui_capture_market_produced_row_good_elephants = {
 			limit = { var:modeu5_us10_ui_elephants_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_elephants_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_elephants_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3877,7 +3877,7 @@ modeu5_us10_ui_capture_market_produced_row_good_elephants = {
 			}
 			set_variable = { name = modeu5_us10_ui_elephants_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_elephants_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3898,9 +3898,9 @@ modeu5_us10_ui_capture_market_produced_row_good_marble = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3912,7 +3912,7 @@ modeu5_us10_ui_capture_market_produced_row_good_marble = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_marble_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3932,7 +3932,7 @@ modeu5_us10_ui_capture_market_produced_row_good_marble = {
 			limit = { var:modeu5_us10_ui_marble_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_marble_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_marble_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -3943,7 +3943,7 @@ modeu5_us10_ui_capture_market_produced_row_good_marble = {
 			}
 			set_variable = { name = modeu5_us10_ui_marble_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_marble_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -3964,9 +3964,9 @@ modeu5_us10_ui_capture_market_produced_row_good_mercury = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -3978,7 +3978,7 @@ modeu5_us10_ui_capture_market_produced_row_good_mercury = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_mercury_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -3998,7 +3998,7 @@ modeu5_us10_ui_capture_market_produced_row_good_mercury = {
 			limit = { var:modeu5_us10_ui_mercury_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_mercury_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_mercury_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4009,7 +4009,7 @@ modeu5_us10_ui_capture_market_produced_row_good_mercury = {
 			}
 			set_variable = { name = modeu5_us10_ui_mercury_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_mercury_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4030,9 +4030,9 @@ modeu5_us10_ui_capture_market_produced_row_good_saffron = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4044,7 +4044,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saffron = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_saffron_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4064,7 +4064,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saffron = {
 			limit = { var:modeu5_us10_ui_saffron_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_saffron_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_saffron_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4075,7 +4075,7 @@ modeu5_us10_ui_capture_market_produced_row_good_saffron = {
 			}
 			set_variable = { name = modeu5_us10_ui_saffron_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_saffron_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4096,9 +4096,9 @@ modeu5_us10_ui_capture_market_produced_row_good_pepper = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4110,7 +4110,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pepper = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_pepper_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4130,7 +4130,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pepper = {
 			limit = { var:modeu5_us10_ui_pepper_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_pepper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pepper_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4141,7 +4141,7 @@ modeu5_us10_ui_capture_market_produced_row_good_pepper = {
 			}
 			set_variable = { name = modeu5_us10_ui_pepper_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_pepper_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4162,9 +4162,9 @@ modeu5_us10_ui_capture_market_produced_row_good_cloves = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4176,7 +4176,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloves = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_cloves_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4196,7 +4196,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloves = {
 			limit = { var:modeu5_us10_ui_cloves_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_cloves_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cloves_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4207,7 +4207,7 @@ modeu5_us10_ui_capture_market_produced_row_good_cloves = {
 			}
 			set_variable = { name = modeu5_us10_ui_cloves_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_cloves_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4228,9 +4228,9 @@ modeu5_us10_ui_capture_market_produced_row_good_chili = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4242,7 +4242,7 @@ modeu5_us10_ui_capture_market_produced_row_good_chili = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_chili_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4262,7 +4262,7 @@ modeu5_us10_ui_capture_market_produced_row_good_chili = {
 			limit = { var:modeu5_us10_ui_chili_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_chili_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_chili_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4273,7 +4273,7 @@ modeu5_us10_ui_capture_market_produced_row_good_chili = {
 			}
 			set_variable = { name = modeu5_us10_ui_chili_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_chili_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4294,9 +4294,9 @@ modeu5_us10_ui_capture_market_produced_row_good_wool = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4308,7 +4308,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wool = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_wool_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4328,7 +4328,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wool = {
 			limit = { var:modeu5_us10_ui_wool_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_wool_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wool_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4339,7 +4339,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wool = {
 			}
 			set_variable = { name = modeu5_us10_ui_wool_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wool_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4360,9 +4360,9 @@ modeu5_us10_ui_capture_market_produced_row_good_wild_game = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4374,7 +4374,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wild_game = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_wild_game_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4394,7 +4394,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wild_game = {
 			limit = { var:modeu5_us10_ui_wild_game_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_wild_game_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wild_game_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4405,7 +4405,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wild_game = {
 			}
 			set_variable = { name = modeu5_us10_ui_wild_game_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wild_game_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4426,9 +4426,9 @@ modeu5_us10_ui_capture_market_produced_row_good_fur = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4440,7 +4440,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fur = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_fur_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4460,7 +4460,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fur = {
 			limit = { var:modeu5_us10_ui_fur_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_fur_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fur_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4471,7 +4471,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fur = {
 			}
 			set_variable = { name = modeu5_us10_ui_fur_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fur_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4492,9 +4492,9 @@ modeu5_us10_ui_capture_market_produced_row_good_fish = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4506,7 +4506,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fish = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_fish_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4526,7 +4526,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fish = {
 			limit = { var:modeu5_us10_ui_fish_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_fish_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fish_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4537,7 +4537,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fish = {
 			}
 			set_variable = { name = modeu5_us10_ui_fish_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fish_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4558,9 +4558,9 @@ modeu5_us10_ui_capture_market_produced_row_good_wheat = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4572,7 +4572,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wheat = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_wheat_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4592,7 +4592,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wheat = {
 			limit = { var:modeu5_us10_ui_wheat_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_wheat_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wheat_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4603,7 +4603,7 @@ modeu5_us10_ui_capture_market_produced_row_good_wheat = {
 			}
 			set_variable = { name = modeu5_us10_ui_wheat_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_wheat_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4624,9 +4624,9 @@ modeu5_us10_ui_capture_market_produced_row_good_maize = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4638,7 +4638,7 @@ modeu5_us10_ui_capture_market_produced_row_good_maize = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_maize_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4658,7 +4658,7 @@ modeu5_us10_ui_capture_market_produced_row_good_maize = {
 			limit = { var:modeu5_us10_ui_maize_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_maize_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_maize_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4669,7 +4669,7 @@ modeu5_us10_ui_capture_market_produced_row_good_maize = {
 			}
 			set_variable = { name = modeu5_us10_ui_maize_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_maize_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4690,9 +4690,9 @@ modeu5_us10_ui_capture_market_produced_row_good_rice = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4704,7 +4704,7 @@ modeu5_us10_ui_capture_market_produced_row_good_rice = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_rice_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4724,7 +4724,7 @@ modeu5_us10_ui_capture_market_produced_row_good_rice = {
 			limit = { var:modeu5_us10_ui_rice_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_rice_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_rice_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4735,7 +4735,7 @@ modeu5_us10_ui_capture_market_produced_row_good_rice = {
 			}
 			set_variable = { name = modeu5_us10_ui_rice_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_rice_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4756,9 +4756,9 @@ modeu5_us10_ui_capture_market_produced_row_good_millet = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4770,7 +4770,7 @@ modeu5_us10_ui_capture_market_produced_row_good_millet = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_millet_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4790,7 +4790,7 @@ modeu5_us10_ui_capture_market_produced_row_good_millet = {
 			limit = { var:modeu5_us10_ui_millet_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_millet_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_millet_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4801,7 +4801,7 @@ modeu5_us10_ui_capture_market_produced_row_good_millet = {
 			}
 			set_variable = { name = modeu5_us10_ui_millet_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_millet_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4822,9 +4822,9 @@ modeu5_us10_ui_capture_market_produced_row_good_legumes = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4836,7 +4836,7 @@ modeu5_us10_ui_capture_market_produced_row_good_legumes = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_legumes_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4856,7 +4856,7 @@ modeu5_us10_ui_capture_market_produced_row_good_legumes = {
 			limit = { var:modeu5_us10_ui_legumes_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_legumes_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_legumes_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4867,7 +4867,7 @@ modeu5_us10_ui_capture_market_produced_row_good_legumes = {
 			}
 			set_variable = { name = modeu5_us10_ui_legumes_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_legumes_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4888,9 +4888,9 @@ modeu5_us10_ui_capture_market_produced_row_good_potato = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4902,7 +4902,7 @@ modeu5_us10_ui_capture_market_produced_row_good_potato = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_potato_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4922,7 +4922,7 @@ modeu5_us10_ui_capture_market_produced_row_good_potato = {
 			limit = { var:modeu5_us10_ui_potato_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_potato_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_potato_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4933,7 +4933,7 @@ modeu5_us10_ui_capture_market_produced_row_good_potato = {
 			}
 			set_variable = { name = modeu5_us10_ui_potato_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_potato_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -4954,9 +4954,9 @@ modeu5_us10_ui_capture_market_produced_row_good_livestock = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -4968,7 +4968,7 @@ modeu5_us10_ui_capture_market_produced_row_good_livestock = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_livestock_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -4988,7 +4988,7 @@ modeu5_us10_ui_capture_market_produced_row_good_livestock = {
 			limit = { var:modeu5_us10_ui_livestock_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_livestock_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_livestock_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -4999,7 +4999,7 @@ modeu5_us10_ui_capture_market_produced_row_good_livestock = {
 			}
 			set_variable = { name = modeu5_us10_ui_livestock_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_livestock_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -5020,9 +5020,9 @@ modeu5_us10_ui_capture_market_produced_row_good_olives = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -5034,7 +5034,7 @@ modeu5_us10_ui_capture_market_produced_row_good_olives = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_olives_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -5054,7 +5054,7 @@ modeu5_us10_ui_capture_market_produced_row_good_olives = {
 			limit = { var:modeu5_us10_ui_olives_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_olives_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_olives_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -5065,7 +5065,7 @@ modeu5_us10_ui_capture_market_produced_row_good_olives = {
 			}
 			set_variable = { name = modeu5_us10_ui_olives_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_olives_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -5086,9 +5086,9 @@ modeu5_us10_ui_capture_market_produced_row_good_fruit = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -5100,7 +5100,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fruit = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_fruit_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -5120,7 +5120,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fruit = {
 			limit = { var:modeu5_us10_ui_fruit_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_fruit_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fruit_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -5131,7 +5131,7 @@ modeu5_us10_ui_capture_market_produced_row_good_fruit = {
 			}
 			set_variable = { name = modeu5_us10_ui_fruit_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_fruit_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -5152,9 +5152,9 @@ modeu5_us10_ui_capture_market_produced_row_good_beeswax = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -5166,7 +5166,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beeswax = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_beeswax_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -5186,7 +5186,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beeswax = {
 			limit = { var:modeu5_us10_ui_beeswax_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_beeswax_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_beeswax_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -5197,7 +5197,7 @@ modeu5_us10_ui_capture_market_produced_row_good_beeswax = {
 			}
 			set_variable = { name = modeu5_us10_ui_beeswax_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_beeswax_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -5218,9 +5218,9 @@ modeu5_us10_ui_capture_market_produced_row_good_slaves_goods = {
 	}
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = modeu5_us10_ui_market_country
 
 			modeu5_read_void_economy_record = {
@@ -5232,7 +5232,7 @@ modeu5_us10_ui_capture_market_produced_row_good_slaves_goods = {
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
 					name = modeu5_us10_ui_slaves_goods_ledger_produced_by_market_accumulator
-					add = scope:modeu5_us00_produced
+					add = scope:cbp_us00_produced
 				}
 			}
 		}
@@ -5252,7 +5252,7 @@ modeu5_us10_ui_capture_market_produced_row_good_slaves_goods = {
 			limit = { var:modeu5_us10_ui_slaves_goods_is_produced_in_market > 0 }
 			set_variable = { name = modeu5_us10_ui_slaves_goods_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_slaves_goods_visibility_source value = 1 }
-			set_variable = { name = modeu5_us10_ui_produced_positive_rows value = { value = var:modeu5_us10_ui_produced_positive_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
@@ -5263,7 +5263,7 @@ modeu5_us10_ui_capture_market_produced_row_good_slaves_goods = {
 			}
 			set_variable = { name = modeu5_us10_ui_slaves_goods_visible value = 1 }
 			set_variable = { name = modeu5_us10_ui_slaves_goods_visibility_source value = 2 }
-			set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = { value = var:modeu5_us10_ui_stock_fallback_rows add = 1 } }
+			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
 }
@@ -5348,24 +5348,24 @@ modeu5_us10_ui_capture_all_market_produced_rows = {
 modeu5_us10_ui_capture_selected_market_produced_by_market = {
 	save_temporary_scope_as = modeu5_us10_ui_country
 	modeu5_us10_ui_clear_all_market_produced_rows = yes
-	set_variable = { name = modeu5_us10_ui_produced_positive_rows value = 0 }
-	set_variable = { name = modeu5_us10_ui_stock_fallback_rows value = 0 }
-	set_variable = { name = modeu5_us10_ui_countries_present_in_market_count value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_countries_present_in_market_count value = 0 }
 
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_selected_market }
+		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
 		every_in_global_list = {
-			variable = modeu5_us10_ui_selected_market
+			variable = gui_cbp_us10_ui_selected_market
 			save_temporary_scope_as = modeu5_us10_ui_selected_market_scope
 			scope:modeu5_us10_ui_selected_market_scope = { save_temporary_scope_as = modeu5_market_country_cache_market }
 			modeu5_rebuild_countries_present_in_market = yes
 
 			if = {
-				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
-					variable = modeu5_countries_present_in_market
+					variable = cbp_countries_present_in_market
 					scope:modeu5_us10_ui_country = {
-						set_variable = { name = modeu5_us10_ui_countries_present_in_market_count value = { value = var:modeu5_us10_ui_countries_present_in_market_count add = 1 } }
+						set_variable = { name = gui_cbp_us10_ui_countries_present_in_market_count value = { value = var:gui_cbp_us10_ui_countries_present_in_market_count add = 1 } }
 					}
 				}
 			}
@@ -5379,6 +5379,6 @@ modeu5_us10_ui_prepare_current_market_table_for_production_ui = {
 	modeu5_us10_ui_prepare_current_market_table = yes
 	modeu5_us10_ui_capture_selected_market_produced_by_market = yes
 	scope:modeu5_us10_ui_country = {
-		debug_log = "ModeU5 US-10-UI FILTER market_index=[THIS.GetVariable('modeu5_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('modeu5_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('modeu5_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('modeu5_us10_ui_countries_present_in_market_count').GetValue|0] vanilla_rows=[THIS.GetVariable('modeu5_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('modeu5_us10_ui_stock_fallback_rows').GetValue|0] wheat_flag=[THIS.GetVariable('modeu5_us10_ui_wheat_is_produced_in_market').GetValue|0] wheat_ledger=[THIS.GetVariable('modeu5_us10_ui_wheat_ledger_produced_by_market').GetValue|2] iron_flag=[THIS.GetVariable('modeu5_us10_ui_iron_is_produced_in_market').GetValue|0] iron_ledger=[THIS.GetVariable('modeu5_us10_ui_iron_ledger_produced_by_market').GetValue|2] cloth_flag=[THIS.GetVariable('modeu5_us10_ui_cloth_is_produced_in_market').GetValue|0] cloth_ledger=[THIS.GetVariable('modeu5_us10_ui_cloth_ledger_produced_by_market').GetValue|2]"
+		debug_log = "ModeU5 US-10-UI FILTER market_index=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('gui_cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('gui_cbp_us10_ui_countries_present_in_market_count').GetValue|0] vanilla_rows=[THIS.GetVariable('gui_cbp_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('gui_cbp_us10_ui_stock_fallback_rows').GetValue|0] wheat_flag=[THIS.GetVariable('gui_cbp_us10_ui_wheat_is_produced_in_market').GetValue|0] wheat_ledger=[THIS.GetVariable('gui_cbp_us10_ui_wheat_ledger_produced_by_market').GetValue|2] iron_flag=[THIS.GetVariable('gui_cbp_us10_ui_iron_is_produced_in_market').GetValue|0] iron_ledger=[THIS.GetVariable('gui_cbp_us10_ui_iron_ledger_produced_by_market').GetValue|2] cloth_flag=[THIS.GetVariable('gui_cbp_us10_ui_cloth_is_produced_in_market').GetValue|0] cloth_ledger=[THIS.GetVariable('gui_cbp_us10_ui_cloth_ledger_produced_by_market').GetValue|2]"
 	}
 }

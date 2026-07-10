@@ -38,15 +38,15 @@ modeu5_core03_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.core03_location_succession.pass
-		trigger = { has_global_variable = modeu5_test_core03_location_succession_passed }
+		trigger = { has_global_variable = test_cbp_core03_location_succession_passed }
 	}
 	option = {
 		name = modeu5_debug.test.core03_location_succession.fail
-		trigger = { has_global_variable = modeu5_test_core03_location_succession_failed }
+		trigger = { has_global_variable = test_cbp_core03_location_succession_failed }
 	}
 	option = {
 		name = modeu5_debug.test.core03_location_succession.blocked
-		trigger = { has_global_variable = modeu5_test_core03_location_succession_blocked }
+		trigger = { has_global_variable = test_cbp_core03_location_succession_blocked }
 	}
 	option = {
 		name = modeu5_debug.close

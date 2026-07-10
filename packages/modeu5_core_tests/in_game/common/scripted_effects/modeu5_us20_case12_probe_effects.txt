@@ -2,42 +2,42 @@
 # Deliberately not called by the full revalidation harness.
 
 modeu5_us20_case12_probe_clear = {
-	remove_global_variable = modeu5_test_us20_case12_probe_started
-	remove_global_variable = modeu5_test_us20_case12_probe_passed
-	remove_global_variable = modeu5_test_us20_case12_probe_failed
-	remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes
-	remove_global_variable = modeu5_us20_case_origin_promoted_destination_unpromoted_routes
-	remove_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes
-	remove_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes
-	remove_global_variable = modeu5_us20_market_level_remove_good_blocked_routes
-	remove_global_variable = modeu5_us20_market_goods_supply_loss_routes
-	remove_global_variable = modeu5_us20_goods_loss_routes
-	remove_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes
-	remove_global_variable = modeu5_us20_receiver_capacity_sort_blocked_routes
-	remove_global_variable = modeu5_us20_receiver_selected_explicit_routes
-	remove_global_variable = modeu5_us20_receiver_selected_trade_owner_routes
-	remove_global_variable = modeu5_us20_receiver_allocator_blocked_routes
-	remove_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes
+	remove_global_variable = test_cbp_us20_case12_probe_started
+	remove_global_variable = test_cbp_us20_case12_probe_passed
+	remove_global_variable = test_cbp_us20_case12_probe_failed
+	remove_global_variable = cbp_us20_case_origin_unpromoted_destination_unpromoted_routes
+	remove_global_variable = cbp_us20_case_origin_promoted_destination_unpromoted_routes
+	remove_global_variable = cbp_us20_case_origin_unpromoted_destination_promoted_routes
+	remove_global_variable = cbp_us20_case_origin_promoted_destination_promoted_routes
+	remove_global_variable = cbp_us20_market_level_remove_good_blocked_routes
+	remove_global_variable = cbp_us20_market_goods_supply_loss_routes
+	remove_global_variable = cbp_us20_goods_loss_routes
+	remove_global_variable = cbp_us20_goods_loss_target_selection_blocked_routes
+	remove_global_variable = cbp_us20_receiver_capacity_sort_blocked_routes
+	remove_global_variable = cbp_us20_receiver_selected_explicit_routes
+	remove_global_variable = cbp_us20_receiver_selected_trade_owner_routes
+	remove_global_variable = cbp_us20_receiver_allocator_blocked_routes
+	remove_global_variable = cbp_trade_efficiency_goods_delta_blocked_routes
 
-	set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_unpromoted_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_case_origin_unpromoted_destination_promoted_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_case_origin_promoted_destination_promoted_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_market_level_remove_good_blocked_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_market_goods_supply_loss_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_goods_loss_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_goods_loss_target_selection_blocked_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_receiver_capacity_sort_blocked_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_receiver_selected_explicit_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_receiver_selected_trade_owner_routes value = 0 }
-	set_global_variable = { name = modeu5_us20_receiver_allocator_blocked_routes value = 0 }
-	set_global_variable = { name = modeu5_trade_efficiency_goods_delta_blocked_routes value = 0 }
+	set_global_variable = { name = cbp_us20_case_origin_unpromoted_destination_unpromoted_routes value = 0 }
+	set_global_variable = { name = cbp_us20_case_origin_promoted_destination_unpromoted_routes value = 0 }
+	set_global_variable = { name = cbp_us20_case_origin_unpromoted_destination_promoted_routes value = 0 }
+	set_global_variable = { name = cbp_us20_case_origin_promoted_destination_promoted_routes value = 0 }
+	set_global_variable = { name = cbp_us20_market_level_remove_good_blocked_routes value = 0 }
+	set_global_variable = { name = cbp_us20_market_goods_supply_loss_routes value = 0 }
+	set_global_variable = { name = cbp_us20_goods_loss_routes value = 0 }
+	set_global_variable = { name = cbp_us20_goods_loss_target_selection_blocked_routes value = 0 }
+	set_global_variable = { name = cbp_us20_receiver_capacity_sort_blocked_routes value = 0 }
+	set_global_variable = { name = cbp_us20_receiver_selected_explicit_routes value = 0 }
+	set_global_variable = { name = cbp_us20_receiver_selected_trade_owner_routes value = 0 }
+	set_global_variable = { name = cbp_us20_receiver_allocator_blocked_routes value = 0 }
+	set_global_variable = { name = cbp_trade_efficiency_goods_delta_blocked_routes value = 0 }
 }
 
 modeu5_us20_case12_probe_note_failure = {
 	save_temporary_scope_value_as = {
-		name = modeu5_us20_case12_probe_failure_count
-		value = { value = scope:modeu5_us20_case12_probe_failure_count add = 1 }
+		name = test_cbp_us20_case12_probe_failure_count
+		value = { value = scope:test_cbp_us20_case12_probe_failure_count add = 1 }
 	}
 }
 
@@ -123,41 +123,41 @@ modeu5_us20_case12_probe_seed_without_explicit_receiver = {
 		save_temporary_scope_as = modeu5_trade_owner_target_market
 	}
 	goods:wheat = { save_temporary_scope_as = modeu5_trade_owner_good }
-	save_temporary_scope_value_as = { name = modeu5_trade_owner_quantity_matched value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_trade_owner_goods_quantity value = 100 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_quantity value = 100 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_sell_price value = 1.5 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buy_price value = 1.0 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_selling_efficiency value = 0.10 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_buying_efficiency value = 0.20 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_export_cost_modifier value = 0.00 }
-	save_temporary_scope_value_as = { name = modeu5_us20_trade_maintenance value = 0.70 }
-	save_temporary_scope_value_as = { name = modeu5_us20_goods_amount_sent value = 100 }
-	save_temporary_scope_value_as = { name = modeu5_us20_engine_goods_amount_received value = 100 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_apply_wheat_loss_available value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_trade_efficiency_income_application_available value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_actual_removed_quantity value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_owner_quantity_matched value = 1 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_owner_goods_quantity value = 100 }
+	save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 1 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = 100 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_sell_price value = 1.5 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_buy_price value = 1.0 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_selling_efficiency value = 0.10 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buying_efficiency value = 0.20 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_export_cost_modifier value = 0.00 }
+	save_temporary_scope_value_as = { name = gui_cbp_us20_trade_maintenance value = 0.70 }
+	save_temporary_scope_value_as = { name = gui_cbp_us20_goods_amount_sent value = 100 }
+	save_temporary_scope_value_as = { name = gui_cbp_us20_engine_goods_amount_received value = 100 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_origin_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_target_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_apply_wheat_loss_available value = 1 }
+	save_temporary_scope_value_as = { name = cbp_us20_test_trade_owner_present_in_target_market value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_income_application_available value = 0 }
+	save_temporary_scope_value_as = { name = cbp_actual_removed_quantity value = 0 }
 }
 
 modeu5_us20_case12_probe_run_one = {
 	modeu5_us17_us20_seed_reconciliation_fixture = yes
-	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = $target_promoted$ }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_origin_market_promoted value = $origin_promoted$ }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_target_market_promoted value = $target_promoted$ }
+	save_temporary_scope_value_as = { name = cbp_us20_test_trade_owner_present_in_target_market value = 0 }
 	modeu5_compute_us17_us20_route_formula_from_current_values = yes
 	if = {
-		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
+		limit = { scope:gui_cbp_us20_goods_reconciliation_delta < 0 }
 		save_temporary_scope_value_as = {
-			name = modeu5_us20_goods_loss_quantity
-			value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 }
+			name = gui_cbp_us20_goods_loss_quantity
+			value = { value = scope:gui_cbp_us20_goods_reconciliation_delta multiply = -1 }
 		}
 		modeu5_classify_us20_route_market_accounting_surfaces = yes
 		if = {
-			limit = { scope:modeu5_us20_target_market_is_promoted = 0 }
+			limit = { scope:cbp_us20_target_market_is_promoted = 0 }
 			modeu5_apply_us20_destination_market_loss_reconciliation = yes
 		}
 		else = {
@@ -172,15 +172,15 @@ modeu5_us20_case12_probe_run_one = {
 
 modeu5_us20_case12_probe_run_trade_owner_receiver = {
 	modeu5_us20_case12_probe_seed_without_explicit_receiver = yes
-	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 1 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_origin_market_promoted value = $origin_promoted$ }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_target_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = cbp_us20_test_trade_owner_present_in_target_market value = 1 }
 	modeu5_compute_us17_us20_route_formula_from_current_values = yes
 	if = {
-		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
+		limit = { scope:gui_cbp_us20_goods_reconciliation_delta < 0 }
 		save_temporary_scope_value_as = {
-			name = modeu5_us20_goods_loss_quantity
-			value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 }
+			name = gui_cbp_us20_goods_loss_quantity
+			value = { value = scope:gui_cbp_us20_goods_reconciliation_delta multiply = -1 }
 		}
 		modeu5_classify_us20_route_market_accounting_surfaces = yes
 		modeu5_apply_us20_promoted_destination_loss_reconciliation = yes
@@ -202,15 +202,15 @@ modeu5_us20_case12_probe_run_allocator_receiver = {
 		c:ENG = { save_temporary_scope_as = modeu5_us20_receiving_country }
 	}
 	modeu5_us20_case12_probe_poison_stored_receiver_capacity_fixture = yes
-	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_origin_market_promoted value = $origin_promoted$ }
+	save_temporary_scope_value_as = { name = test_cbp_us20_test_target_market_promoted value = 1 }
+	save_temporary_scope_value_as = { name = cbp_us20_test_trade_owner_present_in_target_market value = 0 }
 	modeu5_compute_us17_us20_route_formula_from_current_values = yes
 	if = {
-		limit = { scope:modeu5_us20_goods_reconciliation_delta < 0 }
+		limit = { scope:gui_cbp_us20_goods_reconciliation_delta < 0 }
 		save_temporary_scope_value_as = {
-			name = modeu5_us20_goods_loss_quantity
-			value = { value = scope:modeu5_us20_goods_reconciliation_delta multiply = -1 }
+			name = gui_cbp_us20_goods_loss_quantity
+			value = { value = scope:gui_cbp_us20_goods_reconciliation_delta multiply = -1 }
 		}
 		modeu5_classify_us20_route_market_accounting_surfaces = yes
 		modeu5_apply_us20_promoted_destination_loss_reconciliation = yes
@@ -224,8 +224,8 @@ modeu5_us20_case12_probe_run_allocator_receiver = {
 
 modeu5_debug_run_us20_case12_market_loss_probe = {
 	modeu5_us20_case12_probe_clear = yes
-	set_global_variable = modeu5_test_us20_case12_probe_started
-	save_temporary_scope_value_as = { name = modeu5_us20_case12_probe_failure_count value = 0 }
+	set_global_variable = test_cbp_us20_case12_probe_started
+	save_temporary_scope_value_as = { name = test_cbp_us20_case12_probe_failure_count value = 0 }
 	debug_log = "ModeU5 TEST ENTERED scenario=us20_case12_market_loss_probe"
 	debug_log = "ModeU5 US20 CASE12 AUDIT START expected=five_path_classification_market_loss_and_promoted_receivers"
 
@@ -270,26 +270,26 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes } NOT = { global_var:modeu5_us20_case_origin_unpromoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case1_classification_expected=1 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_unpromoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case2_classification_expected=1 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_unpromoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_unpromoted_destination_promoted_routes = 2 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case3_classification_expected=2 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:modeu5_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case4_classification_expected=1 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_market_goods_supply_loss_routes } NOT = { global_var:modeu5_us20_market_goods_supply_loss_routes = 5 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_loss_routes_expected=5 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_goods_loss_routes } NOT = { global_var:modeu5_us20_goods_loss_routes = 3 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=promoted_destination_country_loss_routes_expected=3 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_receiver_selected_explicit_routes } NOT = { global_var:modeu5_us20_receiver_selected_explicit_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=explicit_receiver_selected_expected=1 category=hard_failure" }
-		if = { limit = { OR = { NOT = { has_global_variable = modeu5_us20_receiver_selected_trade_owner_routes } NOT = { global_var:modeu5_us20_receiver_selected_trade_owner_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=trade_owner_receiver_selected_expected=1 category=hard_failure" }
-		if = { limit = { has_global_variable = modeu5_us20_market_level_remove_good_blocked_routes global_var:modeu5_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_should_not_block category=hard_failure" }
-		if = { limit = { has_global_variable = modeu5_trade_efficiency_goods_delta_blocked_routes global_var:modeu5_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=goods_delta_should_not_block category=hard_failure" }
-		if = { limit = { has_global_variable = modeu5_us20_goods_loss_target_selection_blocked_routes global_var:modeu5_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=receiver_selection_should_not_block_for_explicit_trade_owner_or_allocator_paths category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_case_origin_unpromoted_destination_unpromoted_routes } NOT = { global_var:cbp_us20_case_origin_unpromoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case1_classification_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_case_origin_promoted_destination_unpromoted_routes } NOT = { global_var:cbp_us20_case_origin_promoted_destination_unpromoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case2_classification_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_case_origin_unpromoted_destination_promoted_routes } NOT = { global_var:cbp_us20_case_origin_unpromoted_destination_promoted_routes = 2 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case3_classification_expected=2 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_case_origin_promoted_destination_promoted_routes } NOT = { global_var:cbp_us20_case_origin_promoted_destination_promoted_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=case4_classification_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_market_goods_supply_loss_routes } NOT = { global_var:cbp_us20_market_goods_supply_loss_routes = 5 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_loss_routes_expected=5 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_goods_loss_routes } NOT = { global_var:cbp_us20_goods_loss_routes = 3 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=promoted_destination_country_loss_routes_expected=3 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_receiver_selected_explicit_routes } NOT = { global_var:cbp_us20_receiver_selected_explicit_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=explicit_receiver_selected_expected=1 category=hard_failure" }
+		if = { limit = { OR = { NOT = { has_global_variable = cbp_us20_receiver_selected_trade_owner_routes } NOT = { global_var:cbp_us20_receiver_selected_trade_owner_routes = 1 } } } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=trade_owner_receiver_selected_expected=1 category=hard_failure" }
+		if = { limit = { has_global_variable = cbp_us20_market_level_remove_good_blocked_routes global_var:cbp_us20_market_level_remove_good_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=market_goods_supply_should_not_block category=hard_failure" }
+		if = { limit = { has_global_variable = cbp_trade_efficiency_goods_delta_blocked_routes global_var:cbp_trade_efficiency_goods_delta_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=goods_delta_should_not_block category=hard_failure" }
+		if = { limit = { has_global_variable = cbp_us20_goods_loss_target_selection_blocked_routes global_var:cbp_us20_goods_loss_target_selection_blocked_routes > 0 } modeu5_us20_case12_probe_note_failure = yes error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=receiver_selection_should_not_block_for_explicit_trade_owner_or_allocator_paths category=hard_failure" }
 	}
 
 	if = {
-		limit = { scope:modeu5_us20_case12_probe_failure_count = 0 }
-		set_global_variable = modeu5_test_us20_case12_probe_passed
+		limit = { scope:test_cbp_us20_case12_probe_failure_count = 0 }
+		set_global_variable = test_cbp_us20_case12_probe_passed
 		debug_log = "ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0 matrix=case1_case2_case3_case4_case5 receivers=explicit_plus_trade_owner_plus_allocator"
 	}
 	else = {
-		set_global_variable = modeu5_test_us20_case12_probe_failed
+		set_global_variable = test_cbp_us20_case12_probe_failed
 		debug_log = "ModeU5 TEST FAIL scenario=us20_case12_market_loss_probe outcome=HARD_FAILURE see_ASSERT_FAIL_entries"
 	}
 }

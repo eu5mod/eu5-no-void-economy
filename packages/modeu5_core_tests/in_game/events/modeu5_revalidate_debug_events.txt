@@ -23,7 +23,7 @@ modeu5_revalidate_debug.1 = {
 	option = {
 		name = modeu5_revalidate_debug.1.a
 		modeu5_revalidate_clear_results = yes
-		set_global_variable = modeu5_revalidation_started
+		set_global_variable = test_cbp_revalidation_started
 		# Step 1/13
 		modeu5_revalidate_run_us02_capacity = yes
 		trigger_event_non_silently = { id = modeu5_revalidate_debug.10 days = 0 }
@@ -240,15 +240,15 @@ modeu5_revalidate_debug.99 = {
 
 	option = {
 		name = modeu5_revalidate_debug.result.pass
-		trigger = { has_global_variable = modeu5_revalidation_passed }
+		trigger = { has_global_variable = test_cbp_revalidation_passed }
 	}
 	option = {
 		name = modeu5_revalidate_debug.result.blocked
-		trigger = { has_global_variable = modeu5_revalidation_blocked }
+		trigger = { has_global_variable = test_cbp_revalidation_blocked }
 	}
 	option = {
 		name = modeu5_revalidate_debug.result.fail
-		trigger = { has_global_variable = modeu5_revalidation_failed }
+		trigger = { has_global_variable = test_cbp_revalidation_failed }
 	}
 	option = {
 		name = modeu5_debug.close

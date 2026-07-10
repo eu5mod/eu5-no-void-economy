@@ -33,15 +33,15 @@ modeu5_perf02_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.perf02_native_iterator.pass
-		trigger = { has_global_variable = modeu5_test_perf02_native_market_iterator_passed }
+		trigger = { has_global_variable = test_cbp_perf02_native_market_iterator_passed }
 	}
 	option = {
 		name = modeu5_debug.test.perf02_native_iterator.blocked
-		trigger = { has_global_variable = modeu5_test_perf02_native_market_iterator_blocked }
+		trigger = { has_global_variable = test_cbp_perf02_native_market_iterator_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.perf02_native_iterator.fail
-		trigger = { has_global_variable = modeu5_test_perf02_native_market_iterator_failed }
+		trigger = { has_global_variable = test_cbp_perf02_native_market_iterator_failed }
 	}
 	option = {
 		name = modeu5_debug.close

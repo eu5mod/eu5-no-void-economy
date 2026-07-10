@@ -63,51 +63,51 @@ modeu5_q8_probe_debug.2 = {
 
 	option = {
 		name = modeu5_q8_probe_debug.result.all.pass
-		trigger = { has_global_variable = modeu5_test_q8_remaining_probes_passed }
+		trigger = { has_global_variable = test_cbp_q8_remaining_probes_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.all.fail_or_pending
-		trigger = { has_global_variable = modeu5_test_q8_remaining_probes_failed }
+		trigger = { has_global_variable = test_cbp_q8_remaining_probes_failed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q82.pass
-		trigger = { has_global_variable = modeu5_test_q8_2_us10_pending_gate_probe_passed }
+		trigger = { has_global_variable = test_cbp_q8_2_us10_pending_gate_probe_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q82.fail
-		trigger = { has_global_variable = modeu5_test_q8_2_us10_pending_gate_probe_failed }
+		trigger = { has_global_variable = test_cbp_q8_2_us10_pending_gate_probe_failed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q84.pass
-		trigger = { has_global_variable = modeu5_test_q8_4_helper_inventory_probe_passed }
+		trigger = { has_global_variable = test_cbp_q8_4_helper_inventory_probe_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q84.fail
-		trigger = { has_global_variable = modeu5_test_q8_4_helper_inventory_probe_failed }
+		trigger = { has_global_variable = test_cbp_q8_4_helper_inventory_probe_failed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q85.pass
-		trigger = { has_global_variable = modeu5_test_q8_5_dirty_cache_probe_passed }
+		trigger = { has_global_variable = test_cbp_q8_5_dirty_cache_probe_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q85.fail
-		trigger = { has_global_variable = modeu5_test_q8_5_dirty_cache_probe_failed }
+		trigger = { has_global_variable = test_cbp_q8_5_dirty_cache_probe_failed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q86.pass
-		trigger = { has_global_variable = modeu5_test_q8_6_market_slice_probe_passed }
+		trigger = { has_global_variable = test_cbp_q8_6_market_slice_probe_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q86.fail
-		trigger = { has_global_variable = modeu5_test_q8_6_market_slice_probe_failed }
+		trigger = { has_global_variable = test_cbp_q8_6_market_slice_probe_failed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q87.pass
-		trigger = { has_global_variable = modeu5_test_q8_7_global_market_probe_passed }
+		trigger = { has_global_variable = test_cbp_q8_7_global_market_probe_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q87.fail
-		trigger = { has_global_variable = modeu5_test_q8_7_global_market_probe_failed }
+		trigger = { has_global_variable = test_cbp_q8_7_global_market_probe_failed }
 	}
 	option = {
 		name = modeu5_debug.close

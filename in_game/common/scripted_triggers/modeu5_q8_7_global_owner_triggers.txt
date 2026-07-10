@@ -5,9 +5,9 @@
 # modeu5_q8_7_live_global_market_owner_disabled from a debug/fallback event.
 
 modeu5_q8_7_live_global_market_owner_enabled_trigger = {
-	NOT = { has_global_variable = modeu5_q8_7_live_global_market_owner_disabled }
+	NOT = { has_global_variable = cbp_q8_7_live_global_market_owner_disabled }
 }
 
 modeu5_q8_7_live_global_market_owner_disabled_trigger = {
-	has_global_variable = modeu5_q8_7_live_global_market_owner_disabled
+	has_global_variable = cbp_q8_7_live_global_market_owner_disabled
 }

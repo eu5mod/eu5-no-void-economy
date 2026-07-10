@@ -79,7 +79,7 @@ SCRIPT_OBJECT_OVERLAPS = {
 # Two distinct legacy US-10 test variables otherwise collapse to the same target.
 EXPLICIT_TARGET_NAMES = {
     "modeu5_test_us10_ui_visibility_blocked":
-        "test_cbp_us10_ui_visibility_result_blocked",
+        "gui_cbp_us10_ui_visibility_result_blocked",
 }
 
 # Variables intended for a future route-accounting GUI receive gui_cbp_ now,

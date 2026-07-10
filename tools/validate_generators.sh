@@ -184,7 +184,7 @@ modeu5_require_match 'produced_in_market:wheat' \
 modeu5_require_match 'modeu5_probe_us00_previous_record_activity_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the previous-record business gate'
-modeu5_require_match 'modeu5_consumption_wheat_pending_requested_by_market' \
+modeu5_require_match 'test_cbp_consumption_wheat_pending_requested_by_market' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-10 guard must preserve the pending-request map gate'
 modeu5_require_match 'modeu5_process_us00_monthly_market_good_wheat = yes' \
@@ -235,10 +235,10 @@ modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool_raw[[:spac
 modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool[[:space:]]*=' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must route the public country capacity-pool helper through the monthly stamp'
-modeu5_require_match 'modeu5_capacity_pool_monthly_stamp' \
+modeu5_require_match 'cbp_capacity_pool_monthly_stamp' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must stamp the reusable country capacity-pool facts by month'
-modeu5_require_match 'modeu5_capacity_pool_cached_location_rank_per_market' \
+modeu5_require_match 'cbp_capacity_pool_cached_location_rank_per_market' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must cache the reusable country-wide per-market capacity share'
 
@@ -246,7 +246,7 @@ tracked_market_country_cache="in_game/common/scripted_effects/modeu5_market_coun
 modeu5_require_match '^modeu5_repair_dirty_market_country_caches_if_needed[[:space:]]*=' \
 	"$tracked_market_country_cache" \
 	'Q8.5 must expose a guarded dirty market-country cache repair consumer'
-modeu5_require_match 'modeu5_market_country_cache_dirty_markets' \
+modeu5_require_match 'cbp_market_country_cache_dirty_markets' \
 	"$tracked_market_country_cache" \
 	'Q8.5 must keep dirty market scheduling in the market-country cache surface'
 
@@ -255,7 +255,7 @@ modeu5_require_file "$tracked_market_sliced_verifier"
 modeu5_require_match '^modeu5_run_market_sliced_verifier_candidates[[:space:]]*=' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 must expose the bounded market-sliced verifier runner'
-modeu5_require_match 'modeu5_market_sliced_verifier_candidate_markets' \
+modeu5_require_match 'cbp_market_sliced_verifier_candidate_markets' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 must use a bounded candidate market list'
 modeu5_require_match 'modeu5_market_sliced_verifier_allowed_trigger' \
@@ -272,7 +272,7 @@ modeu5_require_match '^modeu5_q8_probe_global_market_iterator_exposure[[:space:]
 modeu5_require_match 'every_market_in_world = \{' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must exercise the native global market iterator'
-modeu5_require_match 'modeu5_q8_7_global_market_seen_markets' \
+modeu5_require_match 'test_cbp_q8_7_global_market_seen_markets' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must deduplicate visited markets'
 modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
