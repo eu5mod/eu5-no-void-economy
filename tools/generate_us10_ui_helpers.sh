@@ -219,11 +219,11 @@ modeu5_us10_ui_clear_all_market_produced_rows = {
 TXT
 
 	for good in "${goods[@]}"; do
-		printf '\tremove_variable = modeu5_us10_ui_%s_produced_by_market\n' "$good"
-		printf '\tremove_variable = modeu5_us10_ui_%s_ledger_produced_by_market\n' "$good"
-		printf '\tremove_variable = modeu5_us10_ui_%s_is_produced_in_market\n' "$good"
-		printf '\tremove_variable = modeu5_us10_ui_%s_visible\n' "$good"
-		printf '\tremove_variable = modeu5_us10_ui_%s_visibility_source\n' "$good"
+		printf '\tremove_variable = gui_cbp_us10_ui_%s_produced_by_market\n' "$good"
+		printf '\tremove_variable = gui_cbp_us10_ui_%s_ledger_produced_by_market\n' "$good"
+		printf '\tremove_variable = gui_cbp_us10_ui_%s_is_produced_in_market\n' "$good"
+		printf '\tremove_variable = gui_cbp_us10_ui_%s_visible\n' "$good"
+		printf '\tremove_variable = gui_cbp_us10_ui_%s_visibility_source\n' "$good"
 	done
 
 	cat <<'TXT'
@@ -235,15 +235,15 @@ TXT
 		cat <<TXT
 modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 	scope:modeu5_us10_ui_country = {
-		set_local_variable = { name = modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator value = 0 }
-		set_variable = { name = modeu5_us10_ui_${good}_is_produced_in_market value = 0 }
+		set_local_variable = { name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_${good}_is_produced_in_market value = 0 }
 	}
 
 	scope:modeu5_us10_ui_selected_market_scope = {
 		if = {
 			limit = { is_produced_in_market = goods:${good} }
 			scope:modeu5_us10_ui_country = {
-				set_variable = { name = modeu5_us10_ui_${good}_is_produced_in_market value = 1 }
+				set_variable = { name = gui_cbp_us10_ui_${good}_is_produced_in_market value = 1 }
 			}
 		}
 	}
@@ -262,7 +262,7 @@ modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 
 			scope:modeu5_us10_ui_country = {
 				change_local_variable = {
-					name = modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator
+					name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator
 					add = scope:cbp_us00_produced
 				}
 			}
@@ -271,29 +271,29 @@ modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 
 	scope:modeu5_us10_ui_country = {
 		save_temporary_scope_value_as = {
-			name = modeu5_us10_ui_${good}_ledger_produced_by_market_value
-			value = local_var:modeu5_us10_ui_${good}_ledger_produced_by_market_accumulator
+			name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_value
+			value = local_var:gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator
 		}
-		set_variable = { name = modeu5_us10_ui_${good}_ledger_produced_by_market value = scope:modeu5_us10_ui_${good}_ledger_produced_by_market_value }
-		set_variable = { name = modeu5_us10_ui_${good}_produced_by_market value = var:modeu5_us10_ui_${good}_ledger_produced_by_market }
-		set_variable = { name = modeu5_us10_ui_${good}_visible value = 0 }
-		set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_${good}_ledger_produced_by_market value = scope:gui_cbp_us10_ui_${good}_ledger_produced_by_market_value }
+		set_variable = { name = gui_cbp_us10_ui_${good}_produced_by_market value = var:gui_cbp_us10_ui_${good}_ledger_produced_by_market }
+		set_variable = { name = gui_cbp_us10_ui_${good}_visible value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_${good}_visibility_source value = 0 }
 
 		if = {
-			limit = { var:modeu5_us10_ui_${good}_is_produced_in_market > 0 }
-			set_variable = { name = modeu5_us10_ui_${good}_visible value = 1 }
-			set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 1 }
+			limit = { var:gui_cbp_us10_ui_${good}_is_produced_in_market > 0 }
+			set_variable = { name = gui_cbp_us10_ui_${good}_visible value = 1 }
+			set_variable = { name = gui_cbp_us10_ui_${good}_visibility_source value = 1 }
 			set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = { value = var:gui_cbp_us10_ui_produced_positive_rows add = 1 } }
 		}
 		else_if = {
 			limit = {
 				OR = {
-					var:modeu5_us10_ui_${good}_market_stock > 0
-					var:modeu5_us10_ui_${good}_country_stock > 0
+					var:gui_cbp_us10_ui_${good}_market_stock > 0
+					var:gui_cbp_us10_ui_${good}_country_stock > 0
 				}
 			}
-			set_variable = { name = modeu5_us10_ui_${good}_visible value = 1 }
-			set_variable = { name = modeu5_us10_ui_${good}_visibility_source value = 2 }
+			set_variable = { name = gui_cbp_us10_ui_${good}_visible value = 1 }
+			set_variable = { name = gui_cbp_us10_ui_${good}_visibility_source value = 2 }
 			set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = { value = var:gui_cbp_us10_ui_stock_fallback_rows add = 1 } }
 		}
 	}
