@@ -2,105 +2,135 @@
 
 ## Purpose
 
-This test plan documents what must be validated for US-20 after the four-case origin/destination market-accounting correction.
+This plan validates the US-20 route-level MVP after implementation of BR-27
+through BR-30.
 
-US-20 has two separate responsibilities:
+US-20 has two distinct responsibilities:
 
 ```txt
-base goods movement:
-  add at destination, or transfer country-market to country-market
+base receipt:
+  - add goods at the destination country×market when the origin is non-promoted;
+  - transfer goods country×market to country×market when the origin is promoted.
 
 loss reconciliation:
-  remove the delivery loss at destination
+  - remove the delivery loss from the destination market stockpile;
+  - when the destination is promoted, mirror that loss into the selected
+    receiver country×market stock.
 ```
 
-The current PR implements the formula, classification, explicit/trade-owner receiver loss removal, market-level destination loss through `add_goods_supply`, generic route-good dispatch for promoted-destination country-stock loss, blocked diagnostics, status visibility, and deterministic E2E probe coverage for the four promoted/non-promoted origin/destination cases.
+## Runtime surfaces
 
-It still does **not** claim full generic production runtime completion for every receiver topology. The remaining gaps are the live receiver allocator, base receipt add/transfer operators, and TECH-01 trade-profit/country-income display-accounting API proof.
-
-## Public market-loss surface
-
-The EU5 Effect page documents `add_goods_supply` as a market-scope effect that adds goods to a market stockpile and accepts `goods` and `amount` parameters.
-
-US-20 uses that market-stockpile surface with a negative amount for delivery loss:
+Market loss:
 
 ```txt
-market_loss_delta = -goods_loss_quantity
-
 scope:target_market = {
   add_goods_supply = {
     goods = scope:route_good
-    amount = market_loss_delta
+    amount = -goods_loss_quantity
   }
 }
 ```
 
-The old `remove_good` probe is therefore replaced by a concrete market-loss path and a success counter:
+Promoted-destination base receipt:
 
 ```txt
-modeu5_us20_market_goods_supply_loss_routes
+origin non-promoted:
+  modeu5_add_stock(... capacity_policy = allow_over_capacity)
+
+origin promoted:
+  modeu5_transfer_stock(... target_capacity_policy = allow_over_capacity)
 ```
 
-For promoted destination markets, the market loss is mirrored into the receiver country×market stock through:
+Promoted-destination receiver loss:
 
 ```txt
 modeu5_apply_us20_promoted_destination_country_loss_by_route_good
 ```
 
-That dispatcher maps the saved route-good scope to the literal `modeu5_remove_stock` good token required by the central stock operator.
+The route-good dispatchers are generated from the canonical ModeU5 goods
+registry. The deterministic runtime fixture uses wheat; all-goods support is a
+static generator contract, not an assertion that every good has been exercised
+in-game.
 
-## Runtime validation snapshot — 2026-07-09
+## Business-path matrix
 
-Validation evidence captured from the installed PR branch before the latest generic-dispatcher patch:
+| Probe path | Origin | Destination | Receiver path | Expected base receipt | Expected loss |
+| --- | --- | --- | --- | --- | --- |
+| Case 1 | non-promoted | non-promoted | none | none in ModeU5 country stock | destination market only |
+| Case 2 | promoted | non-promoted | none | none in ModeU5 country stock | destination market only |
+| Case 3 | non-promoted | promoted | stored explicit receiver | add at destination | market + receiver country stock |
+| Case 4 | promoted | promoted | trade owner present in target market | country-market transfer | market + receiver country stock |
+| Case 5 | non-promoted | promoted | allocator after rejecting stored receiver | add at destination | market + receiver country stock |
+
+Case 5 is not a fifth origin/destination combination. It is a dedicated fallback
+path proving BR-29/BR-30 receiver allocation and capacity rejection.
+
+## Latest runtime evidence — 2026-07-10
+
+Stable baseline:
 
 ```txt
-Expected scenario set: full
-Entered: 19
-Passed:  18
-Failed:  0
-Blocked: 0
-Pending: 0
-Missing expected full-revalidation scenarios: 0
-
+ModeU5 TEST PASS scenario=main_revalidation_summary
 ModeU5 TEST PASS scenario=us17_us20_route_reconciliation expected_probe_blocked=yes hard_failures=0
-ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_fail...
 ```
 
-The pasted US20 PASS line is truncated after `hard_fail`, but the summarizer reports `Passed=18`, `Failed=0`, `Blocked=0`, and `Missing expected full-revalidation scenarios=0`. This is accepted as green evidence for the sizeable deterministic US20 E2E probe.
-
-Post-run implementation update:
+Standalone probe:
 
 ```txt
-The promoted-destination loss path is no longer wheat-only/test-only.
-It now calls a generic route-good -> literal-good dispatcher for receiver country-stock loss.
-The deterministic probe still needs to be rerun on this latest head to confirm no regression.
+ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0 matrix=case1_case2_case3_case4_case5 receivers=explicit_plus_trade_owner_plus_allocator
 ```
 
-## Current status snapshot
+Observed receiver decisions:
 
-| Area | Status | Notes |
+```txt
+selected=trade_owner reason=present_in_target_market
+rejected=stored_receiver reason=capacity_not_eligible
+selected=allocator_candidate reason=capacity_eligible_market_country_cache
+selected=stored_receiver reason=explicit_receiving_country
+```
+
+Observed base-receipt operations:
+
+```txt
+BASE_RECEIPT applied=country_market_transfer capacity_policy=allow_over_capacity
+BASE_RECEIPT applied=add_at_destination capacity_policy=allow_over_capacity
+```
+
+The first run before the fixture hardening showed an inherited stored receiver
+being accepted during the allocator path. That produced an extra explicit-
+receiver counter and a false assertion failure. The hardened fixture now:
+
+```txt
+- assigns a known stored receiver;
+- makes it capacity-ineligible in the target market;
+- verifies rejection;
+- verifies allocator fallback;
+- removes the poison stock after the path.
+```
+
+A repeated run then passed, and the latest clean run passed on its first
+execution.
+
+## Current status
+
+| Area | Status | Evidence boundary |
 | --- | --- | --- |
-| Q8.7 placement | Validated | Hook stays in `modeu5_run_monthly_country_trade_owner_cycle -> every_trade`; no second route-discovery loop. |
-| CMM trade-rework gate | Implemented | Route reconciliation is gated by `modeu5_trade_rework_enabled_trigger`; deterministic fixture checks dormant behavior when disabled. |
-| Money formula | Implemented / partial | Old price-side bonus removal and route delta are computed; #120 side remains placeholder until final #120 runtime model. |
-| Treasury money application | Validated | Signed route money delta is applied through `add_gold`; this proves treasury/cash mutation only. |
-| Vanilla income/profit application | Blocked TECH-01 | Probe matrix is documented/counted, but no speculative country-income or route-profit API calls are used. |
-| Goods received formula | Validated | Target received amount and loss quantity are computed from `trade_maintenance`. |
-| Market-level destination loss | Validated | Deterministic E2E probe reaches PASS with the negative `add_goods_supply` market-loss path. |
-| Four-case market accounting | Validated | The case12 E2E probe covers non-promoted/non-promoted, promoted/non-promoted, non-promoted/promoted, and promoted/promoted paths. |
-| Case 1: origin non-promoted / destination non-promoted | Validated | Destination market loss through `add_goods_supply`; no country-stock receiver required. |
-| Case 2: origin promoted / destination non-promoted | Validated | Destination market loss through `add_goods_supply`; no country-stock receiver required. |
-| Case 3: origin non-promoted / destination promoted | Implemented / previously validated for wheat | Market loss plus receiver country-stock loss through generic route-good dispatcher; rerun required on latest head. |
-| Case 4: origin promoted / destination promoted | Implemented / previously validated for wheat | Market loss plus receiver country-stock loss through explicit/trade-owner receiver path and generic route-good dispatcher; rerun required on latest head. |
-| Receiver selection | MVP validated / partial generic | Stored receiving country and trade-owner-present paths are covered; US-10-style receiver allocator remains follow-up. |
-| Generic good support | Implemented for US20 loss reconciliation | Market-level `add_goods_supply` uses saved route-good scope; promoted country-stock loss now dispatches route-good to literal `modeu5_remove_stock`. |
-| Base receipt add/transfer | Not implemented in #107 | The PR reconciles delivery loss; it does not yet model the full base receipt add/transfer. |
-| Static CI | Pending latest head | Re-check after latest implementation commit. |
-| EU5 runtime validation | Previously validated; rerun required | Green evidence exists before the generic dispatcher patch; latest head needs the same run repeated. |
+| Q8.7 placement | Validated | Existing country-owned `every_trade` loop. |
+| Trade-rework gate | Validated fixture | Disabled route stays dormant. |
+| Received-goods formula | Validated | Deterministic route inputs. |
+| Case 1 market loss | Validated | Negative `add_goods_supply`. |
+| Case 2 market loss | Validated | Negative `add_goods_supply`. |
+| BR-27 add-at-destination | Validated | Cases 3 and 5. |
+| BR-28 country-market transfer | Validated | Case 4. |
+| BR-29 receiver priority/fallback | Validated MVP | Stored receiver, trade owner, allocator. |
+| BR-30 capacity eligibility | Validated MVP | Stored receiver rejected above capacity; allocator selected. |
+| Receiver country-stock loss | Validated | Three promoted-destination paths. |
+| Generic route-good dispatch | Static coverage | Generated for canonical goods; wheat runtime fixture. |
+| Repeatability | Validated | Consecutive runs pass after full fixture cleanup. |
+| Localization-disabled assertion | Patched; rerun required | Launcher now defers work to hidden event `.10`. |
+| TECH-01 money display accounting | Out of US-20 scope | Remains explicit expected block under US-17. |
 
-## Static validation scenarios
-
-Run:
+## Static validation
 
 ```sh
 ./tools/generate_all.sh
@@ -112,84 +142,115 @@ python3 ./tools/validate_cmm_configuration.py
 git diff --check
 ```
 
-## In-game stable baseline scenario
+## Runtime protocol
 
-Run:
+Install the exact branch head and clear logs:
+
+```sh
+./tools/install_local_packages.sh
+./tools/clear_eu5_logs.sh
+```
+
+Run the stable baseline:
 
 ```txt
 event modeu5_revalidate_debug.1
 ```
 
-Expected summary:
-
-```txt
-Failed: 0
-Blocked: 0
-Pending: 0
-Missing expected full-revalidation scenarios: 0
-ModeU5 TEST PASS scenario=main_revalidation_summary
-ModeU5 TEST PASS scenario=us17_us20_route_reconciliation expected_probe_blocked=yes hard_failures=0
-```
-
-## Optional standalone US20 promoted-market E2E probe
-
-Run this after the stable baseline is green:
+Run the standalone probe:
 
 ```txt
 event modeu5_us20_probe.1
 ```
 
-Expected target:
+The console event only schedules a hidden continuation. The probe effect and its
+`debug_log` markers execute in that continuation so the first log line is not
+processed inside the console command's localization-disabled context.
+
+## Assertions
+
+The probe expects:
 
 ```txt
-ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0 matrix=case1_case2_case3_case4 receivers=explicit_plus_trade_owner
+case1 classification = 1
+case2 classification = 1
+case3 classification = 2
+case4 classification = 1
+market add_goods_supply loss routes = 5
+promoted destination country-loss routes = 3
+explicit receiver selected = 1
+trade-owner receiver selected = 1
+receiver selection blocked routes = 0
+market-loss blocked routes = 0
+goods-delta blocked routes = 0
+```
+
+The two case-3 classifications are the explicit-receiver and allocator paths.
+
+## Post-run grep
+
+```sh
+grep -R -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|US20 CASE12|BASE_RECEIPT|RECEIVER_SELECTION|rejected=stored_receiver|allocator_candidate|RECEIVER_CAPACITY_DISPATCH|BASE_RECEIPT_DISPATCH|COUNTRY_LOSS_DISPATCH|ASSERT FAIL|Failed to fetch variable for .modeu5_us20|global_var returned an unset scope|Tried to localize with localization disabled" \
+"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs" || true
+```
+
+Expected positive markers:
+
+```txt
+ModeU5 TEST PASS scenario=us20_case12_market_loss_probe hard_failures=0 matrix=case1_case2_case3_case4_case5 receivers=explicit_plus_trade_owner_plus_allocator
+ModeU5 US20 RECEIVER_SELECTION rejected=stored_receiver reason=capacity_not_eligible
+ModeU5 US20 RECEIVER_SELECTION selected=allocator_candidate
+ModeU5 US20 BASE_RECEIPT applied=add_at_destination
+ModeU5 US20 BASE_RECEIPT applied=country_market_transfer
 ```
 
 Expected absence:
 
 ```txt
 ASSERT FAIL
+RECEIVER_CAPACITY_DISPATCH blocked
+BASE_RECEIPT_DISPATCH blocked
+COUNTRY_LOSS_DISPATCH blocked
 Failed to fetch variable for 'modeu5_us20...
 global_var returned an unset scope
-COUNTRY_LOSS_DISPATCH blocked
+Tried to localize with localization disabled
 ```
 
-## Four-case E2E probe assertions
+## Probe-hygiene rules learned from this run
 
-The promoted/non-promoted matrix probe asserts:
+1. **Defer console-triggered logging.** A console launcher should schedule a
+   hidden event before running any effect that emits test logs.
+2. **Do not rely on scope absence.** Named temporary scopes can remain visible
+   through chained effects. Explicitly overwrite or invalidate higher-priority
+   candidates.
+3. **Force the fallback precondition.** To test an allocator, make the stored
+   receiver and trade-owner paths demonstrably ineligible; merely omitting setup
+   is not sufficient.
+4. **Use symmetric cleanup.** Remove market supply, receiver stock, poison stock,
+   global counters, and test markers after or before every run.
+5. **Order paths defensively.** Run allocator fallback before the explicit-
+   receiver case when the explicit case could leave a reusable receiver scope.
+6. **Separate old and current logs.** Clear logs for acceptance. Otherwise a
+   historical failure can appear beside a current pass and make the run look
+   inconsistent.
+7. **Separate static and runtime proof.** Generated all-goods dispatch is static
+   proof; a wheat fixture is runtime representative proof.
+8. **Keep real blocks visible.** TECH-01 and missing engine surfaces must remain
+   expected-blocked rather than being converted into artificial PASS markers.
+
+## Acceptance statement
+
+US-20 BR-27 through BR-30 are accepted for the route-level MVP when:
 
 ```txt
-case1 classification = 1
-case2 classification = 1
-case3 classification = 1
-case4 classification = 1
-market add_goods_supply loss routes = 4
-promoted destination country-loss routes = 2
-explicit receiver selected = 1
-trade-owner receiver selected = 1
-blocked goods-delta routes = 0
-blocked receiver selection routes = 0
+- static generator checks pass;
+- stable revalidation passes;
+- the five-path standalone probe passes with hard_failures=0;
+- the localization-disabled assertion is absent after the deferred-launch patch;
+- no blocked dispatcher or unset US-20 scope appears.
 ```
 
-## Remaining implementation steps after #107
-
-1. Rerun the full baseline and US20 probe on the latest generic-dispatcher head.
-2. Implement live receiver detection in the destination market, beyond the deterministic forced-present test path.
-3. Extend US-10 candidate machinery with a receiver-allocation mode.
-4. Implement base receipt operators separately from loss reconciliation:
-   - case 3: add at destination country-market;
-   - case 4: transfer country-market -> country-market.
-5. Replace blocked money-side probe counters only after TECH-01 confirms country-income / route-profit read-write APIs.
-
-## Merge caution
-
-This PR can now be described as a route-level US17/US20 MVP with generic-good destination-loss reconciliation for all four market-accounting cases.
-
-It should still not be described as full generic US-20 production completion until:
-
-```txt
-- latest generic dispatcher head is rerun in-game;
-- live receiver allocator is implemented;
-- base add/transfer receipt operators exist;
-- TECH-01 resolves country-income / route-profit read-write APIs.
-```
+This does not claim exhaustive live-world coverage across every country, market,
+route topology, and good. It does establish the implemented business rules,
+receiver fallbacks, capacity gate, receipt operations, loss operations, and
+repeatable deterministic fixture.
