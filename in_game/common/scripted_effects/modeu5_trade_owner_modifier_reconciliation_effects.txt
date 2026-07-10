@@ -3,9 +3,18 @@
 # Scope contract:
 # - modeu5_capture_trade_owner_country_modifier_inputs runs in country scope;
 # - that country must be scope:modeu5_trade_owner_country;
-# - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are
-#   country modifiers owned by the trade owner, never by the scheduler country,
-#   market-center owner, source market, or target market.
+# - import_efficiency, selling_efficiency, and merchant_maintenance_efficiency
+#   are country modifiers owned by the trade owner, never by the scheduler
+#   country, market-center owner, source market, or target market;
+# - US-17's semantic buying-efficiency input maps to EU5 import_efficiency.
+#
+# Base merchant maintenance is not a country modifier. It is calculated from the
+# route's trade_volume and the effective loaded define:
+#
+#   trade_volume * define:NCountry|MERCHANT_MAINTENANCE_COST
+#
+# NVE may override that define. Reading it here automatically uses the loaded
+# mod value and avoids duplicating it in scripted effects.
 #
 # The buying/selling average has only an upper bound of 1. Negative values are
 # preserved and therefore create a negative maintenance saving (an added cost).
@@ -20,8 +29,20 @@ modeu5_capture_trade_owner_country_modifier_inputs = {
 		value = modeu5_trade_owner_selling_efficiency
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_trade_efficiency_merchant_maintenance_cost
-		value = modeu5_trade_owner_merchant_maintenance_cost
+		name = modeu5_trade_efficiency_merchant_maintenance_efficiency
+		value = modeu5_trade_owner_merchant_maintenance_efficiency
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_base_maintenance_unit_cost
+		value = modeu5_trade_base_merchant_maintenance_cost
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_base_maintenance_amount
+		value = {
+			value = scope:modeu5_trade_owner_trade_volume
+			multiply = scope:modeu5_trade_efficiency_base_maintenance_unit_cost
+			min = 0
+		}
 	}
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_country_modifier_inputs_available
@@ -31,19 +52,30 @@ modeu5_capture_trade_owner_country_modifier_inputs = {
 
 # #105 maintenance-side route effect:
 #
+# base_maintenance_amount =
+#   trade_volume * define:NCountry|MERCHANT_MAINTENANCE_COST
+#
+# current_maintenance_factor =
+#   max(0, 1 - merchant_maintenance_efficiency)
+#
 # adjusted_base_maintenance =
-#   base_maintenance_amount * (1 + merchant_maintenance_cost)
+#   base_maintenance_amount * current_maintenance_factor
 #
 # maintenance_saving =
 #   adjusted_base_maintenance * capped_average_buying_selling_efficiency
 #
-# A negative average is intentionally retained, producing a negative saving.
+# A negative buying/selling average is intentionally retained, producing a
+# negative saving and therefore an added route cost.
 modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
 		name = modeu5_trade_efficiency_merchant_maintenance_factor
 		value = {
-			value = scope:modeu5_trade_efficiency_merchant_maintenance_cost
-			add = 1
+			value = 1
+			add = {
+				value = scope:modeu5_trade_efficiency_merchant_maintenance_efficiency
+				multiply = -1
+			}
+			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
