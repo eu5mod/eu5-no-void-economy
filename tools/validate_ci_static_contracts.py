@@ -180,15 +180,26 @@ def validate_us17_owner_modifier_contract(
     formula = block(owner_modifier_effects, "modeu5_compute_us17_us20_route_formula_from_owner_modifiers")
     live_wrapper = block(owner_modifier_effects, "modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers")
 
-    for modifier_name in ["buying_efficiency", "selling_efficiency", "merchant_maintenance_cost"]:
+    for semantic_name, modifier_name in [
+        ("buying/import efficiency", "import_efficiency"),
+        ("selling efficiency", "selling_efficiency"),
+        ("merchant maintenance efficiency", "merchant_maintenance_efficiency"),
+    ]:
         expect(
             f"value = modifier:{modifier_name}" in trade_values,
-            f"US17 must define a country-scoped script value for modifier:{modifier_name}",
+            f"US17 must define a country-scoped script value for {semantic_name} via modifier:{modifier_name}",
         )
 
-    expect("modeu5_trade_efficiency_buying_efficiency" in capture, "US17 owner capture must store buying efficiency")
+    expect(
+        "value = define:NCountry|MERCHANT_MAINTENANCE_COST" in trade_values,
+        "US17 must read the effective NCountry MERCHANT_MAINTENANCE_COST define",
+    )
+    expect("modeu5_trade_efficiency_buying_efficiency" in capture, "US17 owner capture must store semantic buying/import efficiency")
     expect("modeu5_trade_efficiency_selling_efficiency" in capture, "US17 owner capture must store selling efficiency")
-    expect("modeu5_trade_efficiency_merchant_maintenance_cost" in capture, "US17 owner capture must store merchant maintenance cost")
+    expect("modeu5_trade_efficiency_merchant_maintenance_efficiency" in capture, "US17 owner capture must store merchant maintenance efficiency")
+    expect("modeu5_trade_efficiency_base_maintenance_unit_cost" in capture, "US17 owner capture must store the effective maintenance define")
+    expect("modeu5_trade_efficiency_base_maintenance_amount" in capture, "US17 owner capture must derive route base maintenance")
+    expect("scope:modeu5_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
     expect("modeu5_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
 
     average_assignment = re.search(
@@ -201,8 +212,10 @@ def validate_us17_owner_modifier_contract(
     expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
     expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
 
-    expect("modeu5_trade_efficiency_merchant_maintenance_cost" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance cost")
-    expect("modeu5_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume the route base-maintenance amount")
+    expect("modeu5_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
+    expect("multiply = -1" in maintenance_formula, "US17 maintenance factor must subtract merchant maintenance efficiency")
+    expect("min = 0" in maintenance_formula, "US17 maintenance factor must not become negative")
+    expect("modeu5_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume define-derived route base maintenance")
     expect("modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes" in formula, "US17 formula must calculate maintenance saving from owner modifiers")
     expect("modeu5_trade_rework_enabled_trigger = yes" in live_wrapper, "US17 owner-modifier wrapper must defensively gate itself")
 
@@ -211,14 +224,17 @@ def validate_us17_owner_modifier_contract(
     expect("modeu5_debug_run_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 owner-modifier event must call the focused probe")
 
     for assertion in [
-        "buying_efficiency_source",
+        "import_efficiency_source",
         "selling_efficiency_source",
-        "merchant_maintenance_cost_source",
+        "merchant_maintenance_efficiency_source",
+        "base_maintenance_define_source",
+        "base_maintenance_amount",
         "negative_average_preserved",
         "positive_average_capped",
         "merchant_maintenance_factor",
         "maintenance_saving",
         "route_money_delta",
+        "base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST",
         "clamp=maximum_only",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")
