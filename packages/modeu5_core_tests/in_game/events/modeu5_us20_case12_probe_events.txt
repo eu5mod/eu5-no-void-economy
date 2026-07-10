@@ -3,6 +3,12 @@ namespace = modeu5_us20_probe
 # Experimental US-20 promoted-market probe.
 # This intentionally stays outside modeu5_revalidate_debug.1 so the stable
 # baseline summary remains available even if this larger E2E probe needs work.
+#
+# The console launcher must not execute the logging effect directly. EU5 disables
+# localization while processing a console game command, and a synchronous first
+# debug_log can therefore trigger "Tried to localize with localization disabled".
+# The launcher schedules a hidden continuation so probe logging starts in the
+# ordinary event context instead.
 
 modeu5_us20_probe.1 = {
 	type = country_event
@@ -17,12 +23,26 @@ modeu5_us20_probe.1 = {
 
 	option = {
 		name = modeu5_us20_probe.1.a
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_us20_case12_market_loss_probe = yes
-		trigger_event_non_silently = { id = modeu5_us20_probe.2 days = 0 }
+		trigger_event_non_silently = { id = modeu5_us20_probe.10 days = 0 }
 	}
 	option = {
 		name = modeu5_debug.close
+	}
+}
+
+modeu5_us20_probe.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_enter_test_audit_runtime_mode = yes
+		modeu5_debug_run_us20_case12_market_loss_probe = yes
+		trigger_event_non_silently = { id = modeu5_us20_probe.2 days = 0 }
 	}
 }
 
