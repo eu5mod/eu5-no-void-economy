@@ -184,7 +184,7 @@ modeu5_require_match 'produced_in_market:wheat' \
 modeu5_require_match 'modeu5_probe_us00_previous_record_activity_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the previous-record business gate'
-modeu5_require_match 'test_cbp_consumption_wheat_pending_requested_by_market' \
+modeu5_require_match 'cbp_consumption_wheat_pending_requested_by_market' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-10 guard must preserve the pending-request map gate'
 modeu5_require_match 'modeu5_process_us00_monthly_market_good_wheat = yes' \
