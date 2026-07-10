@@ -288,7 +288,7 @@ if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifier_localization";
 	exit 1
 fi
 
-require_match 'variable_map\(test_cbp_wheat_stock_by_market\|scope:modeu5_market\)' \
+require_match 'variable_map\(cbp_wheat_stock_by_market\|scope:modeu5_market\)' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must contain literal per-good map access'
 require_match 'modeu5_load_capacity_breakdown = yes' \
