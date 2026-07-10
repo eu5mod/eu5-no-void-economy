@@ -87,7 +87,7 @@ EXPLICIT_TARGET_NAMES = {
 FUTURE_GUI_PATTERNS = tuple(
     re.compile(pattern)
     for pattern in (
-        r"^trade_efficiency_(?:route_quantity|buying_efficiency|selling_efficiency|merchant_maintenance_efficiency|base_maintenance_unit_cost|base_maintenance_amount|merchant_maintenance_factor|adjusted_base_maintenance_amount|sell_side_bonus|buy_side_bonus|export_cost_factor|old_price_side_bonus|route_money_delta|money_delta_total|treasury_delta_total)$",
+        r"^trade_efficiency_(?:route_quantity|buying_efficiency|selling_efficiency|merchant_maintenance_efficiency|base_maintenance_unit_cost|base_maintenance_amount|merchant_maintenance_factor|adjusted_base_maintenance_amount|sell_side_bonus|buy_side_bonus|export_cost_factor|old_price_side_bonus|route_money_delta|money_delta_total|treasury_delta_total|sell_price|buy_price|export_cost_modifier)$",
         r"^buying_selling_efficiency_(?:clamped|delta)$",
         r"^trade_maintenance_efficiency_delta$",
         r"^us20_(?:trade_maintenance|trade_maintenance_loss_factor|goods_amount_sent|engine_goods_amount_received|goods_received_loss|goods_loss_quantity|goods_base_receipt_quantity|target_goods_amount_received|goods_reconciliation_delta|market_goods_supply_delta)$",
@@ -486,7 +486,7 @@ def run_apply() -> int:
         return 2
 
     object_overlap = names & objects
-    if object_overlap != SCRIPT_OBJECT_OVERLAPS:
+    if not object_overlap.issubset(SCRIPT_OBJECT_OVERLAPS):
         print(
             "CBP migration stopped: unexpected variable/script-object overlaps: "
             + ", ".join(sorted(object_overlap)),

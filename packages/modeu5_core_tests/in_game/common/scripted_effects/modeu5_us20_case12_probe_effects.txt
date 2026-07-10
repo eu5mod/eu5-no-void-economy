@@ -127,11 +127,11 @@ modeu5_us20_case12_probe_seed_without_explicit_receiver = {
 	save_temporary_scope_value_as = { name = test_cbp_trade_owner_goods_quantity value = 100 }
 	save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 1 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = 100 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_sell_price value = 1.5 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_buy_price value = 1.0 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_sell_price value = 1.5 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buy_price value = 1.0 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_selling_efficiency value = 0.10 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buying_efficiency value = 0.20 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_export_cost_modifier value = 0.00 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_export_cost_modifier value = 0.00 }
 	save_temporary_scope_value_as = { name = gui_cbp_us20_trade_maintenance value = 0.70 }
 	save_temporary_scope_value_as = { name = gui_cbp_us20_goods_amount_sent value = 100 }
 	save_temporary_scope_value_as = { name = gui_cbp_us20_engine_goods_amount_received value = 100 }

@@ -22,9 +22,9 @@ modeu5_us17_owner_modifiers_seed_common_formula_inputs = {
 	save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 1 }
 	save_temporary_scope_value_as = { name = cbp_trade_efficiency_country_modifier_inputs_available value = 1 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = 100 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_sell_price value = 1.5 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_buy_price value = 1.0 }
-	save_temporary_scope_value_as = { name = test_cbp_trade_efficiency_export_cost_modifier value = 0.0 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_sell_price value = 1.5 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buy_price value = 1.0 }
+	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_export_cost_modifier value = 0.0 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_base_maintenance_amount value = 20 }
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_merchant_maintenance_efficiency value = 0 }
 	save_temporary_scope_value_as = { name = gui_cbp_us20_trade_maintenance value = 0.70 }

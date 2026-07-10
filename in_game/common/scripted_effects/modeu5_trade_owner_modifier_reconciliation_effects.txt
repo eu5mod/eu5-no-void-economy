@@ -118,14 +118,14 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 		name = gui_cbp_trade_efficiency_sell_side_bonus
 		value = {
 			value = scope:gui_cbp_trade_efficiency_route_quantity
-			multiply = scope:test_cbp_trade_efficiency_sell_price
+			multiply = scope:gui_cbp_trade_efficiency_sell_price
 			multiply = scope:gui_cbp_trade_efficiency_selling_efficiency
 		}
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_export_cost_factor
 		value = {
-			value = scope:test_cbp_trade_efficiency_export_cost_modifier
+			value = scope:gui_cbp_trade_efficiency_export_cost_modifier
 			add = 1
 		}
 	}
@@ -133,7 +133,7 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 		name = gui_cbp_trade_efficiency_buy_side_bonus
 		value = {
 			value = scope:gui_cbp_trade_efficiency_route_quantity
-			multiply = scope:test_cbp_trade_efficiency_buy_price
+			multiply = scope:gui_cbp_trade_efficiency_buy_price
 			multiply = scope:gui_cbp_trade_efficiency_buying_efficiency
 			multiply = scope:gui_cbp_trade_efficiency_export_cost_factor
 		}
