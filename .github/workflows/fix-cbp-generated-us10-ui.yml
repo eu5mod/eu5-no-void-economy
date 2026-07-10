@@ -1,0 +1,70 @@
+name: Fix generated US10 GUI prefixes
+
+on:
+  pull_request:
+    branches:
+      - us-17-trade-reconciliation
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+concurrency:
+  group: fix-cbp-generated-us10-ui
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.head_ref == 'refactor/cbp-variable-prefixes'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stacked branch
+        uses: actions/checkout@v4
+        with:
+          ref: refactor/cbp-variable-prefixes
+          fetch-depth: 0
+
+      - name: Prefix generated US10 GUI variables
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          row = Path('tools/templates/modeu5_us10_stock_table_row.template.gui')
+          text = row.read_text(encoding='utf-8')
+          text = text.replace('modeu5_us10_ui___GOOD___', 'gui_cbp_us10_ui___GOOD___')
+          row.write_text(text, encoding='utf-8')
+
+          generator = Path('tools/generate_us10_ui_helpers.sh')
+          text = generator.read_text(encoding='utf-8')
+          text = text.replace('modeu5_us10_ui_%s_', 'gui_cbp_us10_ui_%s_')
+          text = text.replace('modeu5_us10_ui_${good}_', 'gui_cbp_us10_ui_${good}_')
+          generator.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Regenerate and validate
+        run: |
+          ./tools/generate_all.sh
+          python3 tools/cbp_variable_prefixes.py --check
+          ./tools/validate_generators.sh
+          ./tools/validate_module_packages.sh
+          ./tools/audit_modeu5_persistent_state.sh
+          python3 ./tools/validate_ci_static_contracts.py
+          git diff --check
+
+      - name: Commit targeted generator correction
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo 'No changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/templates/modeu5_us10_stock_table_row.template.gui \
+                  tools/generate_us10_ui_helpers.sh \
+                  in_game/gui/modeu5_us10_stock_table.gui \
+                  in_game/common/scripted_effects/modeu5_us10_ui_market_production_effects.txt
+          git commit -m 'Prefix generated US10 GUI variables'
+          git push origin HEAD:refactor/cbp-variable-prefixes
