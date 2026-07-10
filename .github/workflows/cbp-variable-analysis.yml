@@ -1,0 +1,33 @@
+name: CBP Variable Analysis
+
+on:
+  pull_request:
+    branches:
+      - us-17-trade-reconciliation
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    if: github.head_ref == 'refactor/cbp-variable-prefixes'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Analyze variable namespaces
+        run: |
+          mkdir -p cbp-analysis
+          python3 tools/analyze_cbp_variable_names.py > cbp-analysis/report.json
+          cat cbp-analysis/report.json
+
+      - name: Upload analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: cbp-variable-analysis
+          path: cbp-analysis/report.json
