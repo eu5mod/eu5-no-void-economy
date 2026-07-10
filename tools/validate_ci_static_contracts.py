@@ -176,6 +176,7 @@ def validate_us17_owner_modifier_contract(
     owner_modifier_probe_effects: str,
 ) -> None:
     capture = block(owner_modifier_effects, "modeu5_capture_trade_owner_country_modifier_inputs")
+    maintenance_formula = block(owner_modifier_effects, "modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers")
     formula = block(owner_modifier_effects, "modeu5_compute_us17_us20_route_formula_from_owner_modifiers")
     live_wrapper = block(owner_modifier_effects, "modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers")
 
@@ -200,8 +201,8 @@ def validate_us17_owner_modifier_contract(
     expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
     expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
 
-    expect("modeu5_trade_efficiency_merchant_maintenance_cost" in formula, "US17 formula must consume merchant maintenance cost")
-    expect("modeu5_trade_efficiency_base_maintenance_amount" in formula, "US17 formula must consume the route base-maintenance amount")
+    expect("modeu5_trade_efficiency_merchant_maintenance_cost" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance cost")
+    expect("modeu5_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume the route base-maintenance amount")
     expect("modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes" in formula, "US17 formula must calculate maintenance saving from owner modifiers")
     expect("modeu5_trade_rework_enabled_trigger = yes" in live_wrapper, "US17 owner-modifier wrapper must defensively gate itself")
 
