@@ -1,0 +1,218 @@
+# ModeU5 US-17 trade-owner country modifier inputs and formula path.
+#
+# Scope contract:
+# - modeu5_capture_trade_owner_country_modifier_inputs runs in country scope;
+# - that country must be scope:modeu5_trade_owner_country;
+# - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are
+#   country modifiers owned by the trade owner, never by the scheduler country,
+#   market-center owner, source market, or target market.
+#
+# The buying/selling average has only an upper bound of 1. Negative values are
+# preserved and therefore create a negative maintenance saving (an added cost).
+
+modeu5_capture_trade_owner_country_modifier_inputs = {
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_buying_efficiency
+		value = modeu5_trade_owner_buying_efficiency
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_selling_efficiency
+		value = modeu5_trade_owner_selling_efficiency
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_merchant_maintenance_cost
+		value = modeu5_trade_owner_merchant_maintenance_cost
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_country_modifier_inputs_available
+		value = 1
+	}
+}
+
+# #105 maintenance-side route effect:
+#
+# adjusted_base_maintenance =
+#   base_maintenance_amount * (1 + merchant_maintenance_cost)
+#
+# maintenance_saving =
+#   adjusted_base_maintenance * capped_average_buying_selling_efficiency
+#
+# A negative average is intentionally retained, producing a negative saving.
+modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_merchant_maintenance_factor
+		value = {
+			value = scope:modeu5_trade_efficiency_merchant_maintenance_cost
+			add = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_adjusted_base_maintenance_amount
+		value = {
+			value = scope:modeu5_trade_efficiency_base_maintenance_amount
+			multiply = scope:modeu5_trade_efficiency_merchant_maintenance_factor
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_maintenance_efficiency_delta
+		value = {
+			value = scope:modeu5_trade_efficiency_adjusted_base_maintenance_amount
+			multiply = scope:modeu5_buying_selling_efficiency_clamped
+		}
+	}
+}
+
+modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_route_quantity
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			min = 0
+		}
+	}
+
+	# Maximum-only cap: values below zero remain below zero.
+	save_temporary_scope_value_as = {
+		name = modeu5_buying_selling_efficiency_clamped
+		value = {
+			value = scope:modeu5_trade_efficiency_buying_efficiency
+			add = scope:modeu5_trade_efficiency_selling_efficiency
+			divide = 2
+			max = 1
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_sell_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			multiply = scope:modeu5_trade_efficiency_sell_price
+			multiply = scope:modeu5_trade_efficiency_selling_efficiency
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_export_cost_factor
+		value = {
+			value = scope:modeu5_trade_efficiency_export_cost_modifier
+			add = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_buy_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_route_quantity
+			multiply = scope:modeu5_trade_efficiency_buy_price
+			multiply = scope:modeu5_trade_efficiency_buying_efficiency
+			multiply = scope:modeu5_trade_efficiency_export_cost_factor
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_old_price_side_bonus
+		value = {
+			value = scope:modeu5_trade_efficiency_sell_side_bonus
+			add = scope:modeu5_trade_efficiency_buy_side_bonus
+		}
+	}
+
+	modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes
+	save_temporary_scope_value_as = {
+		name = modeu5_buying_selling_efficiency_delta
+		value = 0
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_trade_efficiency_route_money_delta
+		value = {
+			value = scope:modeu5_trade_efficiency_old_price_side_bonus
+			multiply = -1
+			add = scope:modeu5_trade_maintenance_efficiency_delta
+			add = scope:modeu5_buying_selling_efficiency_delta
+		}
+	}
+
+	# US-20 remains based on its separately preserved route maintenance input.
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_trade_maintenance_loss_factor
+		value = {
+			value = 1
+			add = {
+				value = scope:modeu5_us20_trade_maintenance
+				multiply = -1
+			}
+			min = 0
+			max = 1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_goods_received_loss
+		value = {
+			value = scope:modeu5_us20_trade_maintenance_loss_factor
+			multiply = 0.1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_target_goods_amount_received
+		value = {
+			value = scope:modeu5_us20_goods_amount_sent
+			add = {
+				value = scope:modeu5_us20_goods_received_loss
+				multiply = -1
+			}
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us20_goods_reconciliation_delta
+		value = {
+			value = scope:modeu5_us20_target_goods_amount_received
+			add = {
+				value = scope:modeu5_us20_engine_goods_amount_received
+				multiply = -1
+			}
+		}
+	}
+}
+
+modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = {
+	if = {
+		limit = {
+			scope:modeu5_trade_efficiency_formula_inputs_available > 0
+			scope:modeu5_trade_efficiency_country_modifier_inputs_available > 0
+		}
+		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
+	}
+	else = {
+		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
+		save_temporary_scope_value_as = { name = modeu5_trade_maintenance_efficiency_delta value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_old_price_side_bonus value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_buying_selling_efficiency_delta value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_trade_efficiency_route_money_delta value = 0 }
+	}
+}
+
+# Live owner-modifier route wrapper. It reuses the established US-17/US-20
+# accounting, stock, receiver, and diagnostics effects; only the owner-modifier
+# input and formula path differ from the historical deterministic scaffold.
+modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
+	if = {
+		limit = { modeu5_trade_rework_enabled_trigger = yes }
+		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
+		modeu5_note_trade_efficiency_route_seen = yes
+		modeu5_clear_trade_efficiency_route_values = yes
+		modeu5_prepare_trade_efficiency_route_quantity_input = yes
+		if = {
+			limit = {
+				scope:modeu5_trade_owner_quantity_matched > 0
+				scope:modeu5_trade_owner_goods_quantity > 0
+			}
+			modeu5_note_trade_efficiency_quantity_confirmed = yes
+			modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes
+			modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
+			modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
+			modeu5_compute_us20_goods_received_delta = yes
+			modeu5_apply_us20_goods_delta_to_target_market_good = yes
+		}
+		else = {
+			modeu5_note_trade_efficiency_quantity_blocked = yes
+		}
+	}
+}

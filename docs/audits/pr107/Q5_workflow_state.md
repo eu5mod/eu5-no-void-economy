@@ -2,13 +2,11 @@
 
 ## Purpose
 
-This document records the current PR #107 workflow for US-17 and US-20. It
-supersedes the earlier checkpoint that described the receiver allocator and base
-receipt operators as follow-up work.
+This document records the current PR #107 workflow for US-17 and US-20.
 
-The runtime evidence below was captured on 2026-07-10 from the installed PR
-branch. The standalone probe passed twice after the receiver fixture was made
-repeatable; the latest run passed on its first execution.
+The US-20 runtime evidence below was captured on 2026-07-10 from the installed PR
+branch. The new US-17 trade-owner modifier path was implemented afterward and has
+a dedicated focused probe that still requires an in-game rerun on the new head.
 
 ## Source mapping
 
@@ -20,9 +18,7 @@ US-17 = money-side route reconciliation
 US-20 = received-goods/base-receipt/loss reconciliation
 ```
 
-#105 and #120 are complementary. #120 does not replace #105.
-
-## Inherited Q8.7 placement
+## Global placement
 
 ```mermaid
 flowchart TD
@@ -33,36 +29,99 @@ flowchart TD
     E --> F[modeu5_run_monthly_country_trade_owner_cycle]
     F --> G[every_trade]
     G --> H[Save owner, source market, target market and good]
-    H --> I[Capture route quantity]
+    H --> I[Capture confirmed moved-goods quantity]
     I --> J{Trade rework enabled?}
     J -- no --> K[Reconciliation dormant]
-    J -- yes --> L[modeu5_run_us17_us20_route_reconciliation]
+    J -- yes --> L[Enter saved trade-owner country]
+    L --> M[Capture buying, selling and maintenance modifiers]
+    M --> N[Run US17 and US20 route reconciliation]
 ```
 
 PR #107 does not add a second route-discovery loop and does not run route
 reconciliation inside the market-local `every_market_in_world` body.
 
-## Current route workflow
+## US-17 owner-modifier workflow
 
 ```mermaid
 flowchart TD
-    A[Confirmed route quantity] --> B[Compute US-17 route money delta]
-    B --> C[Accumulate delta on saved trade owner]
-    C --> D[Apply confirmed cash mutation through add_gold]
-    D --> E[Record TECH-01 route-profit and country-income boundary]
-
-    A --> F[Compute US-20 target received quantity]
-    F --> G[Compute reconciliation loss]
-    G --> H[Classify origin and destination promotion state]
-    H --> I{Destination promoted?}
-    I -- no --> J[Apply destination market loss only]
-    I -- yes --> K[Select capacity-eligible receiver]
-    K --> L[Apply gross base receipt]
-    L --> M[Apply destination market loss]
-    M --> N[Apply receiver country-market stock loss]
+    A[Saved trade owner country] --> B[Read modifier:buying_efficiency]
+    A --> C[Read modifier:selling_efficiency]
+    A --> D[Read modifier:merchant_maintenance_cost]
+    B --> E[Average buying and selling efficiency]
+    C --> E
+    E --> F[Apply maximum cap of 1]
+    F --> G{Average below zero?}
+    G -- yes --> H[Preserve negative value]
+    G -- no --> I[Keep value]
+    D --> J[Maintenance factor = 1 + modifier]
+    H --> K[Maintenance-side formula]
+    I --> K
+    J --> K
 ```
 
-For a promoted destination, the operation order is deliberate:
+The buying/selling average now follows:
+
+```txt
+capped_average = min((buying_efficiency + selling_efficiency) / 2, 1)
+```
+
+There is no lower clamp. Negative efficiency remains negative and creates a
+negative maintenance saving, which means additional maintenance cost.
+
+The country maintenance modifier participates through:
+
+```txt
+maintenance_factor = 1 + merchant_maintenance_cost
+
+adjusted_base_maintenance =
+    base_maintenance_amount * maintenance_factor
+
+maintenance_saving =
+    adjusted_base_maintenance * capped_average
+```
+
+## US-17 route-money workflow
+
+```mermaid
+flowchart TD
+    A[Confirmed route quantity] --> B{All route-specific formula inputs available?}
+    B -- no --> C[Fail closed and emit blocked diagnostics]
+    B -- yes --> D[Compute old price-side buy and sell bonus]
+    D --> E[Compute owner-modifier maintenance saving]
+    E --> F[Compute route reconciliation delta]
+    F --> G[Accumulate delta on saved trade owner]
+    G --> H[Apply confirmed cash mutation through add_gold]
+    H --> I[Record TECH-01 route-profit and country-income boundary]
+```
+
+Country modifier inputs are no longer part of the fail-closed set. The remaining
+route-specific boundaries are:
+
+```txt
+sell price
+buy price
+export cost modifier
+base maintenance amount
+trade-route profit read/write surface
+country trade-income accounting surface
+```
+
+## US-20 route workflow
+
+```mermaid
+flowchart TD
+    A[Confirmed route quantity] --> B[Compute US20 target received quantity]
+    B --> C[Compute reconciliation loss]
+    C --> D[Classify origin and destination promotion state]
+    D --> E{Destination promoted?}
+    E -- no --> F[Apply destination market loss only]
+    E -- yes --> G[Select capacity-eligible receiver]
+    G --> H[Apply gross base receipt]
+    H --> I[Apply destination market loss]
+    I --> J[Apply receiver country-market stock loss]
+```
+
+For a promoted destination, the order remains:
 
 ```txt
 receiver selection
@@ -94,10 +153,8 @@ flowchart TD
     L --> O[Visible block if no eligible receiver]
 ```
 
-The allocator is now implemented. It uses the existing countries-present-in-
-market cache, deterministic list order, and per-good `current_stock < capacity`
-eligibility. It is not a scored US-10 bucket/tie-break optimiser; it is the
-implemented deterministic MVP allocator required by BR-29/BR-30.
+The allocator uses the existing countries-present-in-market cache, deterministic
+list order, and per-good `current_stock < capacity` eligibility.
 
 ## Base receipt workflow
 
@@ -112,28 +169,11 @@ flowchart TD
     F --> G
 ```
 
-The literal-good receipt/capacity dispatchers are generated for the canonical
-ModeU5 goods registry. The runtime probe exercises wheat; generator validation
-protects all-goods coverage statically.
+Literal-good receipt/capacity dispatchers are generated from the canonical ModeU5
+goods registry. Runtime evidence uses wheat; generator validation protects all-
+goods coverage statically.
 
-## Five-path deterministic probe
-
-The four origin/destination combinations remain the business matrix. The probe
-adds a fifth path to validate allocator fallback independently.
-
-```mermaid
-flowchart TD
-    A[US20 standalone probe] --> B[Case 4: promoted to promoted, trade-owner receiver]
-    B --> C[Case 1: non-promoted to non-promoted]
-    C --> D[Case 2: promoted to non-promoted]
-    D --> E[Case 5: promoted destination, reject stored receiver, use allocator]
-    E --> F[Case 3: non-promoted to promoted, explicit receiver]
-    F --> G{All counters and mutations match?}
-    G -- yes --> H[PASS hard_failures=0]
-    G -- no --> I[ASSERT FAIL]
-```
-
-Latest runtime evidence:
+## Existing runtime evidence — US-20 and route scaffold
 
 ```txt
 ModeU5 TEST PASS scenario=main_revalidation_summary
@@ -157,85 +197,102 @@ BASE_RECEIPT applied=country_market_transfer capacity_policy=allow_over_capacity
 BASE_RECEIPT applied=add_at_destination capacity_policy=allow_over_capacity
 ```
 
+## New focused US-17 owner-modifier probe
+
+Run:
+
+```txt
+event modeu5_us17_owner_modifiers.1
+```
+
+Expected PASS marker:
+
+```txt
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=buying_selling_merchant_maintenance clamp=maximum_only
+```
+
+The probe checks:
+
+```txt
+- buying efficiency comes from the trade-owner country modifier;
+- selling efficiency comes from the trade-owner country modifier;
+- merchant maintenance cost comes from the trade-owner country modifier;
+- a -0.30 average remains -0.30;
+- a 1.30 average is capped at 1;
+- merchant maintenance cost changes the maintenance factor;
+- the seeded combined formula produces the expected route delta.
+```
+
+This probe is implemented but not yet runtime-confirmed on the new branch head.
+
 ## Current implementation and validation state
 
 | Surface | Implementation | Runtime evidence | Interpretation |
 | --- | --- | --- | --- |
-| Q8.7 route placement | Complete | PASS | Existing country-owned `every_trade` loop; no duplicate route discovery. |
-| CMM trade-rework gate | Complete | PASS fixture | Reconciliation stays dormant when disabled. |
-| US-17 route formula orchestration | Complete scaffold | PASS deterministic fixture | Formula components and delta sequencing are exercised with seeded values. |
-| US-17 treasury application | Complete | PASS | Signed delta reaches saved trade owner through `add_gold`. |
-| US-17 live route-safe economic inputs | Fail-closed | Not production-proven | Script values remain zero until route-safe engine reads are confirmed. |
-| US-17 visible route profit/country trade income | TECH-01 blocked | Expected-blocked PASS | `add_gold` proves cash only, not the displayed accounting ledger. |
+| Q8.7 route placement | Complete | PASS | Existing country-owned `every_trade` loop; no duplicate discovery. |
+| CMM trade-rework gate | Complete | PASS fixture | Reconciliation remains dormant when disabled. |
+| Trade-owner buying modifier read | Complete | Focused rerun required | Read in saved trade-owner country scope. |
+| Trade-owner selling modifier read | Complete | Focused rerun required | Read in saved trade-owner country scope. |
+| Trade-owner maintenance modifier read | Complete | Focused rerun required | Uses `modifier:merchant_maintenance_cost`. |
+| Maximum-only average cap | Complete | Focused rerun required | `max = 1`; negative values preserved. |
+| US-17 formula orchestration | Complete scaffold | Existing fixture PASS; new probe pending | New owner-modifier formula is separate from the historical seeded fixture. |
+| US-17 treasury application | Complete | Existing fixture PASS | Signed delta reaches saved trade owner through `add_gold`. |
+| US-17 live route prices/base maintenance | Fail-closed | Not production-proven | Country modifiers are live; remaining route values are not. |
+| US-17 route profit/country trade income | TECH-01 blocked | Expected-blocked PASS | `add_gold` proves cash only, not displayed accounting. |
 | US-20 received-goods formula | Complete | PASS | Target received quantity and loss are calculated. |
-| Cases 1 and 2 market-only loss | Complete | PASS | Negative `add_goods_supply`; no country receiver required. |
-| BR-27 add-at-destination receipt | Complete | PASS | Explicit and allocator promoted-destination paths exercise `modeu5_add_stock`. |
+| Cases 1 and 2 market-only loss | Complete | PASS | Negative `add_goods_supply`; no receiver required. |
+| BR-27 add-at-destination receipt | Complete | PASS | Explicit and allocator paths exercise `modeu5_add_stock`. |
 | BR-28 country-market transfer receipt | Complete | PASS | Promoted-to-promoted path exercises `modeu5_transfer_stock`. |
-| BR-29 receiver fallback | Complete MVP | PASS | Stored receiver, trade owner and allocator candidate paths are exercised. |
-| BR-30 capacity eligibility | Complete MVP | PASS | Ineligible stored receiver is rejected; eligible allocator candidate is selected. |
-| Destination market loss | Complete | PASS | Five routes record market loss. |
-| Receiver country-stock loss | Complete | PASS | Three promoted-destination routes record country loss. |
-| Generic goods dispatch | Generated | Static validation required | Runtime probe is wheat; generator covers canonical goods. |
-| Standalone probe repeatability | Complete | PASS on repeated runs | Fixture explicitly poisons and cleans inherited receiver capacity state. |
-| Console localization assertion | Patched | Rerun required | Probe execution is deferred to a hidden event outside console command context. |
+| BR-29 receiver fallback | Complete MVP | PASS | Stored, trade-owner and allocator receiver paths. |
+| BR-30 capacity eligibility | Complete MVP | PASS | Ineligible stored receiver rejected; allocator selected. |
+| Console localization deferral | Implemented | Existing US20 rerun clean; new probe pending | Hidden continuation avoids console localization context. |
 
 ## Coverage conclusion
 
 ### US-20
 
-US-20 is covered for the route-level MVP business rules implemented by this PR:
-
-```txt
-four market-accounting combinations
-+ explicit receiver
-+ trade-owner receiver
-+ allocator fallback
-+ capacity rejection/eligibility
-+ add-at-destination receipt
-+ country-market transfer receipt
-+ market loss
-+ receiver country-stock loss
-```
-
-This is full deterministic coverage of BR-27 through BR-30 and the five probe
-paths. It is not proof of every live-world topology or every good at runtime;
-all-goods support is generator/static coverage with wheat as the runtime fixture.
+US-20 remains fully covered for the route-level MVP business rules implemented by
+this PR: BR-27 through BR-30, all four market combinations, the allocator path,
+base receipt, market loss, and receiver country-stock loss.
 
 ### US-17
 
-US-17 is not fully production-complete. The route placement, formula scaffold,
-deterministic calculation, accumulation, and treasury `add_gold` mutation are
-covered. Two boundaries remain:
+US-17 coverage is now more precise:
 
 ```txt
-1. live route-safe reads for the economic inputs still fail closed to zero;
-2. visible trade-route profit and country trade-income accounting remain TECH-01 expected-blocked.
+Implemented:
+  route placement
+  trade-owner attribution
+  live country modifier reads
+  maximum-only buying/selling cap
+  maintenance-factor arithmetic
+  formula scaffold
+  accumulation
+  add_gold test surface
+
+Still blocked or unconfirmed:
+  live route prices
+  live export cost
+  live base maintenance amount
+  visible route-profit mutation
+  visible country trade-income accounting
 ```
 
-Therefore PR #107 can close the tested US-17 route/cash scaffold, but it must not
-claim full visible-income accounting or fully live #105/#120 economics.
+The former statement that buying, selling, and maintenance modifiers fail closed
+to zero is no longer correct.
 
-## Probe-hygiene practices learned
+## Probe-hygiene practices
 
-1. A console launcher should schedule a hidden continuation before any verbose
-   test logging. Running the logging effect directly from the console-launched
-   option can trigger `Tried to localize with localization disabled`.
-2. Temporary named scopes may remain visible within or across chained test
-   effects. A test must not assume that the absence of a new assignment clears a
-   previous named scope.
-3. Fallback tests must make higher-priority candidates explicitly ineligible,
-   not merely omit their setup. The allocator fixture assigns a known stored
-   receiver and pushes its stock above capacity before testing fallback.
-4. Every destructive fixture needs symmetric cleanup, including deliberately
-   over-capacity poison stock.
-5. Run the fallback/allocator path before the explicit-receiver path when scope
-   leakage could otherwise satisfy the fallback accidentally.
-6. Clear logs before the final acceptance run. A grep across old runs can show an
-   earlier FAIL next to a later PASS and obscure the status of the tested commit.
-7. Separate static all-goods proof from runtime representative-good proof. Do not
-   describe generated dispatcher coverage as runtime coverage for every good.
-8. Keep expected TECH-01 blocks visible. A green probe must not hide an unresolved
-   engine-exposure boundary.
+1. Console launchers schedule hidden continuations before verbose logging.
+2. Temporary named scopes are treated as potentially persistent within chained
+   effects; fallback tests explicitly poison higher-priority candidates.
+3. Destructive fixtures use symmetric cleanup.
+4. Static all-goods proof is kept separate from representative runtime proof.
+5. Expected TECH-01 blocks remain visible rather than being hidden by green tests.
+6. Country-owned modifier inputs and route-owned economic inputs are tracked as
+   separate exposure classes; one must not block or impersonate the other.
+7. Formula clamps must state their intended direction explicitly. `max = 1` means
+   an upper cap; adding `min = 0` would change the business rule.
 
 ## Test protocol
 
@@ -258,34 +315,27 @@ Install and clear logs:
 ./tools/clear_eu5_logs.sh
 ```
 
-Run the stable baseline:
+Run:
 
 ```txt
 event modeu5_revalidate_debug.1
-```
-
-Run the standalone US-20 probe:
-
-```txt
 event modeu5_us20_probe.1
+event modeu5_us17_owner_modifiers.1
 ```
 
 Post-run grep:
 
 ```sh
-grep -R -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|US20 CASE12|BASE_RECEIPT|RECEIVER_SELECTION|rejected=stored_receiver|allocator_candidate|RECEIVER_CAPACITY_DISPATCH|BASE_RECEIPT_DISPATCH|COUNTRY_LOSS_DISPATCH|ASSERT FAIL|Failed to fetch variable for .modeu5_us20|global_var returned an unset scope|Tried to localize with localization disabled" \
+grep -R -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|us17_trade_owner_modifiers|US17 OWNER_MODIFIERS|BASE_RECEIPT|RECEIVER_SELECTION|ASSERT FAIL|Failed to fetch variable|Cannot read|Tried to localize with localization disabled" \
 "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs" || true
 ```
 
-Expected absence on the post-localization-fix rerun:
+Expected absence:
 
 ```txt
 ASSERT FAIL
-RECEIVER_CAPACITY_DISPATCH blocked
-BASE_RECEIPT_DISPATCH blocked
-COUNTRY_LOSS_DISPATCH blocked
-Failed to fetch variable for 'modeu5_us20...
-global_var returned an unset scope
+Failed to fetch variable
+Cannot read
 Tried to localize with localization disabled
 ```
 
@@ -296,9 +346,10 @@ flowchart TD
     A[Latest branch installed] --> B[Static CI green]
     B --> C[Stable revalidation PASS]
     C --> D[Standalone five-path US20 PASS]
-    D --> E{Localization assertion absent?}
-    E -- no --> F[Fix deferred test launch]
-    E -- yes --> G[US20 BR-27 to BR-30 accepted]
-    G --> H[US17 route/cash scaffold accepted]
-    H --> I[TECH-01 and live US17 inputs remain explicit follow-up]
+    D --> E[US17 owner-modifier probe PASS]
+    E --> F{Localization or parser errors absent?}
+    F -- no --> G[Fix focused probe/runtime syntax]
+    F -- yes --> H[Accept US20 BR-27 to BR-30]
+    H --> I[Accept US17 owner modifier and clamp layer]
+    I --> J[Keep route price/base-maintenance and visible-income boundaries explicit]
 ```
