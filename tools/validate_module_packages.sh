@@ -297,7 +297,7 @@ require_match 'modeu5_load_capacity_breakdown = yes' \
 require_match 'modeu5_us00_full_ledger_persistence_allowed_trigger = yes' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must gate full US-00 diagnostic ledger writes'
-require_match 'modeu5_wheat_us00_active_record_by_market' \
+require_match 'cbp_wheat_us00_active_record_by_market' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must preserve the PERF-15 / US-00 active-record marker'
 require_match 'modeu5_us10_ui_capture_market_produced_row = \{ good = wheat key = wheat \}' \
