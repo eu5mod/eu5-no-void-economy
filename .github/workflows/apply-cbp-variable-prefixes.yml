@@ -27,6 +27,20 @@ jobs:
           fetch-depth: 0
           ref: refactor/cbp-variable-prefixes
 
+      - name: Apply explicit GUI-precedence correction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/cbp_variable_prefixes.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '"test_cbp_us10_ui_visibility_result_blocked"',
+              '"gui_cbp_us10_ui_visibility_result_blocked"',
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+
       - name: Apply variable migration
         id: migrate
         shell: bash
