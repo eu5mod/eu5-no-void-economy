@@ -1273,7 +1273,7 @@ modeu5_debug_run_reconciliation_tests = {
 		}
 		set_variable = {
 			name = gui_cbp_debug_us11_ui_active_type
-			value = scope:modeu5_reconciliation_type
+			value = scope:cbp_reconciliation_type
 		}
 		set_variable = {
 			name = gui_cbp_debug_us11_ui_active_records_checked
@@ -1296,20 +1296,20 @@ modeu5_debug_run_reconciliation_tests = {
 			value = scope:modeu5_test_active_reconciled_market_stock
 		}
 		if = {
-			limit = { has_global_variable = test_cbp_market_owned_active_markets_processed_count }
+			limit = { has_global_variable = cbp_market_owned_active_markets_processed_count }
 			set_variable = {
 				name = gui_cbp_debug_us11_ui_market_owned_active_markets
-				value = global_var:test_cbp_market_owned_active_markets_processed_count
+				value = global_var:cbp_market_owned_active_markets_processed_count
 			}
 		}
 		else = {
 			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_active_markets value = 0 }
 		}
 		if = {
-			limit = { has_global_variable = test_cbp_market_owned_country_cache_rebuild_count }
+			limit = { has_global_variable = cbp_market_owned_country_cache_rebuild_count }
 			set_variable = {
 				name = gui_cbp_debug_us11_ui_market_owned_cache_rebuilds
-				value = global_var:test_cbp_market_owned_country_cache_rebuild_count
+				value = global_var:cbp_market_owned_country_cache_rebuild_count
 			}
 		}
 		else = {
@@ -1339,19 +1339,19 @@ modeu5_debug_run_reconciliation_tests = {
 		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
 		if = {
 			limit = {
-				scope:modeu5_reconciliation_type = 3
+				scope:cbp_reconciliation_type = 3
 				scope:cbp_reconciliation_records_checked_result = 1
 				scope:cbp_reconciliation_inconsistencies_found_result = 1
 				scope:cbp_reconciliation_rebuilds_called_result = 1
 				scope:cbp_reconciliation_failures_result = 0
 				scope:modeu5_test_active_reconciled_market_stock = 150
-				global_var:test_cbp_market_owned_active_markets_processed_count >= 1
-				global_var:test_cbp_market_owned_country_cache_rebuild_count >= 1
+				global_var:cbp_market_owned_active_markets_processed_count >= 1
+				global_var:cbp_market_owned_country_cache_rebuild_count >= 1
 				global_var:cbp_market_owned_active_goods_processed_count >= 1
-				has_global_variable_list = test_cbp_active_markets_any_good
+				has_global_variable_list = cbp_active_markets_any_good
 				has_global_variable_list = test_cbp_wheat_active_markets
 				is_target_in_global_variable_list = {
-					name = test_cbp_active_markets_any_good
+					name = cbp_active_markets_any_good
 					target = scope:modeu5_test_market
 				}
 				is_target_in_global_variable_list = {

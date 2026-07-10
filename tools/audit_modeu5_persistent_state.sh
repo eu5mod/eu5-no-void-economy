@@ -78,7 +78,7 @@ def is_state_like(name: str) -> bool:
     if "_by_market" in name:
         return True
     known_lists = {
-        "test_cbp_active_markets_any_good",
+        "cbp_active_markets_any_good",
         "cbp_countries_present_in_market",
         "cbp_core03_probe_seen_locations",
         "cbp_detailed_accounting_promoted_markets",
@@ -143,7 +143,7 @@ modeu5_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-
 modeu5_<good>_us10_sparse_suppliers	global list	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
 modeu5_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 modeu5_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
-test_cbp_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
+cbp_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
 cbp_base_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
 cbp_building_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
 modeu5_consumption_<good>_pending_requested_by_market	variable map	monthly input queue	country	explicit US-10 request enqueue	remove when processed by monthly pass	removed when US-10 monthly pass consumes it

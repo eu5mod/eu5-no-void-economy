@@ -64,10 +64,10 @@ modeu5_debug_run_perf10_13_active_repair_metrics_probe = {
 
 		if = {
 			limit = {
-				has_global_variable_list = test_cbp_active_markets_any_good
+				has_global_variable_list = cbp_active_markets_any_good
 				has_global_variable_list = test_cbp_wheat_active_markets
 				is_target_in_global_variable_list = {
-					name = test_cbp_active_markets_any_good
+					name = cbp_active_markets_any_good
 					target = scope:modeu5_perf10_13_test_market
 				}
 				is_target_in_global_variable_list = {

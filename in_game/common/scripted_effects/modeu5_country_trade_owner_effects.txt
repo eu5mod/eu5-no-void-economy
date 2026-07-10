@@ -101,7 +101,7 @@ modeu5_note_country_trade_owner_quantity_confirmed_trade = {
 	}
 	set_global_variable = {
 		name = cbp_country_trade_owner_confirmed_trade_quantity
-		value = { value = global_var:cbp_country_trade_owner_confirmed_trade_quantity add = scope:test_cbp_trade_owner_goods_quantity }
+		value = { value = global_var:cbp_country_trade_owner_confirmed_trade_quantity add = scope:cbp_trade_owner_goods_quantity }
 	}
 }
 
@@ -165,8 +165,8 @@ modeu5_capture_country_trade_owner_trade_quantity = {
 
 	if = {
 		limit = {
-			scope:test_cbp_trade_owner_quantity_matched > 0
-			scope:test_cbp_trade_owner_goods_quantity > 0
+			scope:cbp_trade_owner_quantity_matched > 0
+			scope:cbp_trade_owner_goods_quantity > 0
 		}
 		modeu5_note_country_trade_owner_quantity_confirmed_trade = yes
 	}

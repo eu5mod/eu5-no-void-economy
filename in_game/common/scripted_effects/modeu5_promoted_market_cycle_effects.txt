@@ -632,7 +632,7 @@ modeu5_note_promoted_market_live_us00_country_pass = {
 		name = cbp_promoted_market_live_us00_good_scans
 		value = {
 			value = global_var:cbp_promoted_market_live_us00_good_scans
-			add = scope:modeu5_generated_stock_good_count
+			add = scope:cbp_generated_stock_good_count
 		}
 	}
 }
@@ -650,7 +650,7 @@ modeu5_note_promoted_market_live_us10_country_pass = {
 		name = cbp_promoted_market_live_us10_good_scans
 		value = {
 			value = global_var:cbp_promoted_market_live_us10_good_scans
-			add = scope:modeu5_generated_stock_good_count
+			add = scope:cbp_generated_stock_good_count
 		}
 	}
 }

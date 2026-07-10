@@ -1522,7 +1522,7 @@ modeu5_reconciliation_finalize = {
 		scope:modeu5_reconciliation_controller = {
 			set_variable = {
 				name = cbp_debug_last_reconciliation_type
-				value = scope:modeu5_reconciliation_type
+				value = scope:cbp_reconciliation_type
 			}
 			set_variable = {
 				name = cbp_debug_last_reconciliation_records_checked

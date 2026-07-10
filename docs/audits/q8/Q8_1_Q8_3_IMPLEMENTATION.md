@@ -24,13 +24,13 @@ Stock mutation remains delegated to central stock operators.
 PR7.1 active-good / pending-request dispatch introduced useful validation counters:
 
 ```txt
-modeu5_pr71_us00_goods_considered
-modeu5_pr71_us00_goods_processed
-modeu5_pr71_us00_goods_produced_gate_hits
-modeu5_pr71_us00_goods_previous_state_hits
-modeu5_pr71_us10_goods_considered
-modeu5_pr71_us10_pending_request_hits
-modeu5_pr71_us10_requests_processed
+cbp_pr71_us00_goods_considered
+cbp_pr71_us00_goods_processed
+cbp_pr71_us00_goods_produced_gate_hits
+cbp_pr71_us00_goods_previous_state_hits
+cbp_pr71_us10_goods_considered
+cbp_pr71_us10_pending_request_hits
+cbp_pr71_us10_requests_processed
 ```
 
 Those counters are validation/profile state. They are not business state and should not be written unconditionally in normal gameplay.

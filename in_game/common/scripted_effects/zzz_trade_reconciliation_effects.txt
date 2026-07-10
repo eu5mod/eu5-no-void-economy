@@ -225,7 +225,7 @@ modeu5_compute_buying_selling_efficiency_delta = {
 modeu5_prepare_trade_efficiency_route_quantity_input = {
 	if = {
 		limit = { NOT = { scope:cbp_trade_efficiency_formula_inputs_available > 0 } }
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = scope:test_cbp_trade_owner_goods_quantity }
+		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = scope:cbp_trade_owner_goods_quantity }
 	}
 }
 
@@ -539,7 +539,7 @@ modeu5_run_us17_us20_route_reconciliation = {
 		modeu5_clear_trade_efficiency_route_values = yes
 		modeu5_prepare_trade_efficiency_route_quantity_input = yes
 		if = {
-			limit = { scope:test_cbp_trade_owner_quantity_matched > 0 scope:test_cbp_trade_owner_goods_quantity > 0 }
+			limit = { scope:cbp_trade_owner_quantity_matched > 0 scope:cbp_trade_owner_goods_quantity > 0 }
 			modeu5_note_trade_efficiency_quantity_confirmed = yes
 			modeu5_compute_trade_efficiency_route_money_delta = yes
 			modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes

@@ -233,8 +233,8 @@ modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
 		modeu5_prepare_trade_efficiency_route_quantity_input = yes
 		if = {
 			limit = {
-				scope:test_cbp_trade_owner_quantity_matched > 0
-				scope:test_cbp_trade_owner_goods_quantity > 0
+				scope:cbp_trade_owner_quantity_matched > 0
+				scope:cbp_trade_owner_goods_quantity > 0
 			}
 			modeu5_note_trade_efficiency_quantity_confirmed = yes
 			modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes
