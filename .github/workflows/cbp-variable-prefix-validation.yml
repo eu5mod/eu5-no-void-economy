@@ -16,6 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate repository outputs
+        run: ./tools/generate_all.sh
+
       - name: Validate CBP variable-prefix contract
         id: validate
         shell: bash
