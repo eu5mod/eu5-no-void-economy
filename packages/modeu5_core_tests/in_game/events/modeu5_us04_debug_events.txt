@@ -31,6 +31,10 @@ modeu5_us04_debug.1 = {
 		trigger_event_non_silently = { id = modeu5_us04_debug.40 days = 0 }
 	}
 	option = {
+		name = modeu5_us04_debug.1.e
+		trigger_event_non_silently = { id = modeu5_us04_debug.50 days = 0 }
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -127,5 +131,54 @@ modeu5_us04_debug.40 = {
 
 	immediate = {
 		modeu5_debug_run_us04_initialization_test = yes
+	}
+}
+
+# Focused positive-demand Q7/Q8 global probes plus downstream observed-current
+# target architecture. Phase 3 runs the architecture test after global probes.
+modeu5_us04_debug.50 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_begin = yes
+		if = {
+			limit = { NOT = { has_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked } }
+			trigger_event_non_silently = { id = modeu5_us04_debug.51 days = 2 }
+		}
+	}
+}
+
+modeu5_us04_debug.51 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = modeu5_us04_debug.52 days = 2 }
+	}
+}
+
+modeu5_us04_debug.52 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_finalize = yes
 	}
 }
