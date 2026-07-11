@@ -2,219 +2,206 @@
 
 ## Purpose
 
-This is the PR-specific living flow for PR #69. It evolves with the branch without modifying the canonical Q8 document:
+This PR-specific flow evolves with PR #69 without modifying the canonical Q8 document:
 
 ```txt
 docs/audits/q8/Q5_flux_logique_global.md
 ```
 
-## Current objective
-
-PR #69 targets the complete Pop-demand feedback loop:
+## Target loop
 
 ```txt
-vanilla Pop-demand coefficient
-  × initialized location × good ModeU5 coefficient
-  -> actual vanilla Pop requested demand
-  -> monthly satisfaction / shortage outcome
+vanilla Pop demand
+  × location × good ModeU5 coefficient
+  -> actual vanilla requested demand
+  -> monthly satisfied / shortage outcomes
   -> yearly coefficient adjustment
-  -> next year's actual vanilla Pop requested demand
+  -> next year's vanilla requested demand
 ```
-
-The annual adaptation layer has already passed runtime validation. Live vanilla consumption remains prototype-gated.
 
 ## State ownership
 
-ModeU5 owns one persistent value per:
+ModeU5 persists one value per:
 
 ```txt
 location × good
 ```
 
-Physical storage:
+Physical representation:
 
 ```txt
 location.variable_map(modeu5_pop_demand_multiplier|goods:<good>)
 ```
 
-The Pop is an evaluation scope, not an additional persistence dimension. All Pops in the same location read the same coefficient for a given good.
+The Pop is the evaluation scope used by vanilla `pop_demand`; it is not an additional persistence dimension.
 
 ## Fundamental invariant
 
 ```txt
-1.20 = explicit, one-time initialized ModeU5 state
-1.00 = every missing, disabled, uninitialized, or invalid-state fallback
+1.20 = explicit one-time initialized state
+1.00 = every disabled, missing, uninitialized, or invalid fallback
 ```
 
-The `1.20` baseline must never be synthesized by the live reader or yearly updater.
+The live reader and yearly updater must never synthesize `1.20` from missing state.
 
-Correct live formula:
+## Compatibility-first vanilla integration
+
+PR #69 no longer reads, copies, generates, or overrides Paradox's `pop_demands.txt`.
+
+The wheat prototype is a tiny tracked database injection:
 
 ```txt
-actual coefficient
-  = complete vanilla coefficient
-  × stored location × good coefficient
+packages/modeu5_economy_rebalance/in_game/common/goods_demand/
+zz_modeu5_us04_pop_demand_injection_probe.txt
 ```
-
-Incorrect formula — forbidden:
 
 ```txt
-vanilla coefficient
-  × 1.20 baseline
-  × stored coefficient already initialized to 1.20
+INJECT:pop_demand = {
+    wheat = {
+        multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+    }
+}
 ```
 
-The incorrect formula would start at `1.44`.
-
-## Static vanilla integration — wheat prototype
-
-The runtime contract is tested with wheat only before any all-good generalization.
+Intended loader result:
 
 ```txt
-./tools/generate_all.sh
-  -> tools/generate_us04_pop_demand_override.py --goods wheat
-     -> read installed vanilla goods_demand/pop_demands.txt
-     -> preserve the complete vanilla file
-     -> preserve every non-wheat coefficient unchanged
-     -> wrap only vanilla pop_demand.wheat
-     -> generate one Pop-scope wheat multiplier script value
+existing Paradox pop_demand.wheat formula
+  + ModeU5 multiply operator
 ```
 
-Generated local artifacts:
+No Paradox formula is represented in ModeU5 source. Consequently, a Paradox minor or major update can change wheat demand without requiring ModeU5 regeneration.
+
+The unresolved engine question is nested injection semantics. Runtime must distinguish:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
-packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_values_generated.txt
+A. wheat block merges into the existing wheat value      desired
+B. wheat block replaces the existing wheat value         reject
+C. duplicate-key/parser/database error                    reject
 ```
 
-Generalization to every good is forbidden until the wheat probe passes.
+All-good injection is deferred until case A is proven for wheat.
 
-## One-time campaign initialization
+## Production Pop-scope value
 
-The baseline is materialized once on a new campaign, after the existing one-day startup delay:
+Tracked file:
 
 ```txt
-on_game_start
-  -> delay 1 day
-  -> modeu5_start_game_stock_initialization_pulse
-     -> modeu5_initialize_pop_demand_multipliers_once
+packages/modeu5_economy_rebalance/in_game/common/script_values/
+modeu5_us04_pop_demand_injection_values.txt
 ```
 
-Initialization contract:
-
-```txt
-if modeu5_us04_multiplier_initialization_version is missing or < 1:
-    every_location
-      -> modeu5_initialize_pop_demand_multiplier_all_goods
-         -> for every supported good:
-              if location × good key is missing:
-                  write 1.20
-              else:
-                  preserve existing value
-
-    after the complete world pass:
-        set modeu5_us04_multiplier_initialization_version = 1
-```
-
-The delayed startup pulse may have an empty/root scope. It therefore performs no country-scoped CMM read. The initialization path uses only global state, the global location iterator, and location-scoped maps.
-
-The version gate is persistent saved state. It prevents:
-
-```txt
-second campaign-start application
-save reload application
-1.20 × 1.20 accidental double initialization
-recreation of a deleted/corrupt key during normal runtime
-```
-
-## Live Pop-scope read
-
-Generated wheat script value:
+Value:
 
 ```txt
 modeu5_us04_live_pop_demand_multiplier_wheat
 ```
 
-Evaluation contract:
+Contract:
 
 ```txt
 start result = 1
 
-only when all conditions are true:
-  live CMM integration marker exists
+only if all are true:
+  live CMM marker exists
   initialization version exists and >= 1
-  Pop.location has multiplier map
-  Pop.location has wheat key
+  Pop.location has the multiplier map
+  Pop.location has the wheat key
 
 then:
-  return stored location × wheat value
+  return stored location × wheat coefficient
 
 otherwise:
   return 1
 ```
 
-Therefore:
+## One-time campaign initialization
 
-| State | Live multiplier | Result |
-|---|---:|---|
-| integration disabled | `1` | vanilla |
-| initialization incomplete | `1` | vanilla |
-| location map missing | `1` | vanilla |
-| good key missing | `1` | vanilla |
-| valid initialized record | stored value | vanilla × ModeU5 |
-
-The country-scoped CMM setting is mirrored by country pulses/callbacks into:
+After the existing one-day startup delay:
 
 ```txt
-modeu5_pop_demand_live_integration_enabled
+on_game_start
+  -> modeu5_start_game_stock_initialization_pulse
+     -> modeu5_initialize_pop_demand_multipliers_once
 ```
+
+Initialization:
+
+```txt
+if modeu5_us04_multiplier_initialization_version is missing or < 1:
+    every_location
+      -> every supported good helper
+         -> missing key: write 1.20
+         -> existing key: preserve value
+
+    after the complete world pass:
+        set initialization version = 1
+```
+
+The saved version gate prevents reload and double application. A key deleted after initialization remains missing during normal runtime and therefore reads as multiplier `1`.
 
 ## Yearly adaptation
 
 ```txt
 yearly_country_pulse
-  -> refresh live CMM marker from country scope
+  -> refresh live CMM marker
   -> every owned location
-  -> generated location × good annual helper
+  -> per-good annual helper
 ```
 
-Per good:
+Per existing record:
 
 ```txt
-read annual satisfied months
-read annual unsatisfied months
-read existing multiplier
-
-if multiplier record exists:
-    12 satisfied / 0 shortage -> current × 1.01
-    0 satisfied / 12 shortage -> current × 0.99
-    mixed or no observation   -> no write
-else:
-    no write
-    no 1.20 recreation
-
-reset annual counters after read
+12 satisfied / 0 shortage -> current × 1.01
+0 satisfied / 12 shortage -> current × 0.99
+mixed / no observation    -> no write
+missing record             -> no write
 ```
 
-The yearly updater may only modify an existing initialized record. A missing record remains missing, and the live reader consequently returns vanilla multiplier `1`.
+Annual counters reset after the decision reads them.
 
-## Monthly economic flow
+## Obsolete artifact cleanup
+
+`generate_all.sh` removes the abandoned generator outputs if they remain in a local working tree:
 
 ```txt
-vanilla pop_demand.wheat
-  -> unchanged vanilla wheat coefficient
-  -> generated Pop-scope ModeU5 multiplier
-  -> actual vanilla requested wheat demand
-  -> US-10 stock resolution
-  -> US-10.3 location × good outcomes
-  -> yearly US-04 counters
+packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
+packages/modeu5_economy_rebalance/in_game/common/script_values/
+modeu5_us04_pop_demand_values_generated.txt
 ```
 
-The final handoff from vanilla requested Pop demand into the intended location × good US-10.3 counters remains a separate proof obligation.
+This prevents an old exact-path override or duplicate script value from being installed accidentally.
 
-## Runtime tests
+The former generator has been deleted:
 
-Run from a clean new campaign after at least one full day:
+```txt
+tools/generate_us04_pop_demand_override.py
+```
+
+## Static architecture guard
+
+```txt
+tools/validate_us04_pop_demand_architecture.py
+```
+
+It requires:
+
+```txt
+- injection into pop_demand;
+- exactly one injected wheat entry;
+- multiply-only injected content;
+- tracked production Pop-scope value;
+- no copied vanilla value formula;
+- no exact-path pop_demands.txt override;
+- no vanilla override generator;
+- multiplier-1 failback;
+- versioned one-time initialization;
+- yearly updates only on existing records.
+```
+
+## Runtime probes
+
+Use a clean new campaign and let at least one full in-game day pass:
 
 ```txt
 event modeu5_us04_debug.1
@@ -222,88 +209,81 @@ event modeu5_us04_debug.1
 
 ### 1. Initialization lifecycle
 
-Option:
-
 ```txt
 Probe new-campaign 1.20 multiplier initialization
 ```
 
-Scenario:
+Required:
 
 ```txt
-us04_pop_demand_initialization
-```
-
-Required evidence:
-
-```txt
-initialization version = 1
-capital wheat = 1.2000
-capital beer = 1.2000
-second initializer call leaves wheat = 1.2000
-deleted wheat key is not recreated
-missing read = 1.0000
+version = 1
+wheat = 1.2000
+beer = 1.2000
+second call remains 1.2000
+deleted key is not recreated
+missing fallback = 1.0000
 PASS
 ```
 
-### 2. Pop → location endpoint
-
-Option:
+### 2. Production Pop → location endpoint
 
 ```txt
 Probe live Pop-demand location multiplier endpoint
 ```
 
-Scenario:
+The test adapter delegates to the exact production value used by the injection.
+
+Required:
 
 ```txt
-us04_pop_demand_endpoint
-```
-
-Required evidence:
-
-```txt
-seeded       1.3700
-missing      1.0000
+seeded        1.3700
+missing       1.0000
 uninitialized 1.0000
-disabled     1.0000
+disabled      1.0000
 PASS
 ```
 
-This proves only the scope link and failback contract.
-
-### 3. Observable vanilla demand response
-
-Option:
+### 3. Nested injection behavior
 
 ```txt
 Probe vanilla Pop demand response (disposable save)
 ```
 
-Scenario:
-
-```txt
-us04_vanilla_pop_demand_integration
-```
-
-Probe sequence:
+Sequence:
 
 ```txt
 capital wheat coefficient = 1.0
-wait for vanilla recalculation
-read goods_demand_in_market(wheat)
+wait for recalculation
+capture wheat and beer market demand
 capital wheat coefficient = 4.0
-wait for vanilla recalculation
-read goods_demand_in_market(wheat)
-assert high demand > low demand
-restore original coefficient and gates
+wait for recalculation
+capture wheat and beer market demand
 ```
 
-Only this PASS confirms that vanilla `pop_demand.wheat` consumes the generated location coefficient.
+Acceptance:
 
-### 4. Annual adaptation
+```txt
+wheat demand at 1.0 > 0
+wheat demand at 4.0 > wheat demand at 1.0
+beer demand remains unchanged within tolerance
+no duplicate-key, parser, database, or invalid-value errors
+```
 
-Already validated on clean commit `87a1e29c1751adbc5955c3ac3be30267ee93f123`:
+Expected result marker:
+
+```txt
+ModeU5 US-04 VANILLA DEMAND RESULT injection_nested_merge_candidate PASS
+```
+
+This is practical evidence for nested merge behavior. It does not yet prove the separate live handoff into the intended US-10.3 location × good outcome counters.
+
+## Accepted annual fixture
+
+Previously validated on clean commit:
+
+```txt
+87a1e29c1751adbc5955c3ac3be30267ee93f123
+```
 
 ```txt
 baseline                         1.2000
@@ -315,95 +295,57 @@ annual counters after read      0
 PASS
 ```
 
-The annual test seeds its own explicit records. Its result remains valid, while the branch now prevents normal yearly runtime from creating missing records.
-
-## Static architecture guard
-
-```txt
-tools/validate_us04_pop_demand_architecture.py
-```
-
-It rejects:
-
-```txt
-1.20 getter fallback
-missing-record yearly recreation
-initialization gate written before the world pass
-missing version gate
-all-good live wrapper before wheat acceptance
-endpoint tests that do not expect vanilla multiplier 1
-```
-
-`generate_all.sh` runs this validator automatically.
+The result remains valid because the fixture explicitly seeds its records.
 
 ## Current status
 
 ```txt
 Annual arithmetic and counter reset:         CONFIRMED
-One-time initialization implementation:      IMPLEMENTED / RUNTIME PENDING
-Vanilla-safe missing-state fallback:          IMPLEMENTED / RUNTIME PENDING
-Wheat Pop-scope location lookup:              IMPLEMENTED / RUNTIME PENDING
-Wheat vanilla market-demand response:         IMPLEMENTED / RUNTIME PENDING
-All-good live integration:                    DEFERRED
+Versioned world initialization:              IMPLEMENTED / RUNTIME PENDING
+Multiplier-1 safe fallback:                  IMPLEMENTED / RUNTIME PENDING
+Production Pop.location value:               IMPLEMENTED / RUNTIME PENDING
+Nested wheat injection behavior:             IMPLEMENTED / RUNTIME PENDING
+Vanilla formula regeneration:                REMOVED
+All-good injection:                          DEFERRED
+Live US-10.3 outcome handoff:                 NOT_CONFIRMED
 TECH-01 #039:                                 NOT_CONFIRMED
 ```
 
-PR #69 must remain draft until the three new-campaign probes load and pass without parser, duplicate-key, empty-scope, location-link, or variable-map errors.
+PR #69 remains draft until the clean new-campaign probes pass.
 
 ## Mermaid flow
 
 ```mermaid
 flowchart TB
-    START["new campaign + 1 day"] --> GATE{"init version >= 1?"}
-    GATE -->|yes| KEEP["do nothing"]
-    GATE -->|no| LOCS["every_location"]
-    LOCS --> GOODS["every supported good helper"]
-    GOODS --> EXISTS{"key exists?"}
-    EXISTS -->|yes| PRESERVE["preserve value"]
-    EXISTS -->|no| SEED["write 1.20"]
-    PRESERVE --> VERSION["after full world pass: version = 1"]
-    SEED --> VERSION
+    PDX["Paradox pop_demand.wheat"] --> INJECT["INJECT multiply operator"]
+    INJECT --> POP["Pop-scope production multiplier"]
+    POP --> READY{"CMM + init + local key?"}
+    READY -->|no| VANILLA["return 1"]
+    READY -->|yes| LOCAL["read Pop.location × wheat"]
+    VANILLA --> DEMAND["vanilla wheat demand"]
+    LOCAL --> DEMAND
 
-    subgraph LIVE["vanilla wheat demand evaluation"]
-        POP["Pop scope"] --> SAFE["start multiplier = 1"]
-        SAFE --> READY{"CMM enabled + init complete + local key?"}
-        READY -->|no| VANILLA["return 1: vanilla"]
-        READY -->|yes| READ["read Pop.location wheat coefficient"]
-        READ --> APPLY["vanilla wheat coefficient × stored value"]
-    end
+    START["new campaign + 1 day"] --> VERSION{"init version >= 1?"}
+    VERSION -->|yes| KEEP["no initialization"]
+    VERSION -->|no| LOCATIONS["every_location × supported good"]
+    LOCATIONS --> SEED["missing key = 1.20"]
+    SEED --> SAVE["after complete pass: version = 1"]
 
-    subgraph YEARLY["yearly adaptation"]
-        COUNTERS["annual outcome counters"] --> RECORD{"multiplier exists?"}
-        RECORD -->|no| NOWRITE["no write; missing stays missing"]
-        RECORD -->|yes| CASE{"annual outcome"}
-        CASE -->|satisfied| UP["× 1.01"]
-        CASE -->|shortage| DOWN["× 0.99"]
-        CASE -->|mixed/none| SAME["no write"]
-        UP --> STORED["replace existing value"]
-        DOWN --> STORED
-        STORED --> POP
-    end
+    DEMAND --> OUTCOME["monthly outcome counters"]
+    OUTCOME --> YEAR["yearly 0.99 / 1 / 1.01"]
+    YEAR --> LOCAL
 ```
 
 ## Living update log
 
-### 2026-07-11 — Annual layer accepted
+### 2026-07-11 — Annual fixture accepted
 
-Focused and full-chain annual adaptation scenarios passed.
+Annual arithmetic and counter reset passed.
 
-### 2026-07-11 — Live wheat probe opened
+### 2026-07-11 — Explicit initialization and vanilla failback
 
-Added the exact-path wheat wrapper, Pop-scope endpoint probe, and market-demand response probe.
+Introduced the versioned `1.20` seed and multiplier-`1` failure paths.
 
-### 2026-07-11 — Initialization/fallback architecture corrected
+### 2026-07-11 — Injection-first compatibility architecture
 
-Replaced the former missing-key `1.20` fallback with vanilla multiplier `1` and introduced:
-
-```txt
-- versioned one-time world initialization;
-- explicit 1.20 location × good seed;
-- no yearly recreation of missing records;
-- wheat-only live prototype;
-- new-campaign initialization lifecycle probe;
-- static architecture validator.
-```
+Removed vanilla-file regeneration and replaced it with a tracked wheat-only `INJECT:pop_demand` probe, production script value, stale-artifact cleanup, and merge/replacement runtime controls.
