@@ -147,7 +147,8 @@ def main() -> int:
     expect("scenario=us04_observed_current_target_architecture" in q7_q8_test, "Observed-current architecture scenario marker missing")
     expect("modeu5_us04_q7_q8_finalize = yes" in debug_events, "Debug event must finalize focused Q7/Q8 probe")
     expect("modeu5_us04_debug.1.e" in debug_events and "modeu5_us04_debug.1.e" in localization, "Combined Q7/Q8 + target option must be present and localized")
-    expect("INJECTION CONTROL" in summarizer and 'expected_mode" != "none"' in summarizer, "Summarizer must include control lines and support --expected none")
+    expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
+    expect('expected_mode" != "none"' in summarizer and 'Expected scenario checking disabled.' in summarizer, "Summarizer must support --expected none")
 
     expect("generate_us04_pop_demand_override.py" not in generate_all, "US-04 generation pipeline must not regenerate vanilla pop_demand")
     expect("packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt" not in gitignore, "Obsolete exact-path vanilla pop_demands.txt must not remain ignored")
