@@ -24,7 +24,7 @@ This mod is born from the desire to fix :
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
     - incl : ✅ Economy 10% faster  (To compensate revenue loss - **Beta Value to be tested**)
     - incl : ⏳ Redesign the economic Base
-    - ✅ Pop consumption influenced by offer & demand
+    - incl : ⏳ Pop-demand multiplier adapts to offer and demand; live vanilla Pop-consumption application remains unconfirmed
 
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
