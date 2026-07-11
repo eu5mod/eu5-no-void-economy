@@ -2,3 +2,4 @@
  modeu5_us04_debug.1.b: "Probe live Pop-demand location multiplier endpoint"
  modeu5_us04_debug.1.c: "Run all additive Pop-demand injection syntax probes"
  modeu5_us04_debug.1.d: "Probe new-campaign 1.20 multiplier initialization"
+ modeu5_us04_debug.1.e: "Run Q7/Q8 globals + observed-current target"
