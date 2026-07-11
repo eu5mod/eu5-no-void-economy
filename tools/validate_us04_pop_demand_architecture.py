@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contracts for the US-04 Pop-demand multiplier lifecycle."""
+"""Static contracts for the US-04 Pop-demand multiplier lifecycle and injection probe."""
 
 from __future__ import annotations
 
@@ -65,18 +65,22 @@ def block(text: str, name: str) -> str:
 def main() -> int:
     template = read("tools/templates/modeu5_us04_pop_demand_good.template.txt")
     helper_generator = read("tools/generate_us04_pop_demand_helpers.sh")
-    override_generator = read("tools/generate_us04_pop_demand_override.py")
     integration = read("in_game/common/scripted_effects/modeu5_us04_pop_demand_live_integration_effects.txt")
     on_actions = read("in_game/common/on_action/modeu5_stock_on_actions.txt")
-    probe_value = read("packages/modeu5_core_tests/in_game/common/script_values/modeu5_us04_pop_demand_endpoint_probe_values.txt")
+    injection = read("packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_pop_demand_injection_probe.txt")
+    production_value = read("packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_injection_values.txt")
+    probe_adapter = read("packages/modeu5_core_tests/in_game/common/script_values/modeu5_us04_pop_demand_endpoint_probe_values.txt")
     endpoint_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_pop_demand_endpoint_test_effects.txt")
+    generate_all = read("tools/generate_all.sh")
+    gitignore = read(".gitignore")
 
     initializer = block(template, "modeu5_initialize_pop_demand_multiplier_good___GOOD__")
     getter = block(template, "modeu5_get_pop_demand_multiplier_good___GOOD__")
     annual = block(template, "modeu5_annual_adjust_location_pop_demand_good___GOOD__")
     init_world = block(integration, "modeu5_run_pop_demand_multiplier_initialization_v1")
     init_once = block(integration, "modeu5_initialize_pop_demand_multipliers_once")
-    probe = block(probe_value, "modeu5_us04_probe_live_pop_demand_multiplier_wheat")
+    live_value = block(production_value, "modeu5_us04_live_pop_demand_multiplier_wheat")
+    probe = block(probe_adapter, "modeu5_us04_probe_live_pop_demand_multiplier_wheat")
 
     expect('value = "modeu5_pop_demand_base_consumption_multiplier"' in initializer,
            "US-04 initializer must explicitly seed the 1.20 baseline")
@@ -110,21 +114,42 @@ def main() -> int:
     expect("modeu5_initialize_pop_demand_multipliers_once = yes" in on_actions,
            "US-04 initialization must run from the delayed new-campaign pulse")
 
-    expect('default=["wheat"]' in override_generator,
-           "US-04 live pop_demand integration must remain a wheat-only probe before runtime acceptance")
-    expect("selected_goods" in override_generator,
-           "US-04 override generator must wrap only explicitly selected probe goods")
-    expect("modeu5_pop_demand_base_consumption_multiplier" not in override_generator,
-           "US-04 live Pop-scope reader generator must not use 1.20 as a fallback")
-    expect("has_global_variable = modeu5_us04_multiplier_initialization_version" in override_generator,
-           "US-04 generated live reader must require completed initialization")
+    expect("INJECT:pop_demand = {" in injection,
+           "US-04 live probe must inject into the existing pop_demand object")
+    expect(injection.count("wheat = {") == 1,
+           "US-04 injection probe must contain exactly one wheat entry")
+    expect('multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"' in injection,
+           "US-04 wheat injection must reference the production multiplier value")
+    expect("value =" not in injection,
+           "US-04 injection probe must not copy or replace the vanilla wheat value formula")
+    expect("beer =" not in injection and "cloth =" not in injection,
+           "US-04 live injection must remain wheat-only before runtime acceptance")
 
-    expect("value = 1" in probe,
-           "US-04 endpoint probe must begin from vanilla multiplier 1")
-    expect("modeu5_pop_demand_base_consumption_multiplier" not in probe,
-           "US-04 endpoint probe must not use baseline 1.20 as a fallback")
-    expect("has_global_variable = modeu5_us04_multiplier_initialization_version" in probe,
-           "US-04 endpoint probe must test the initialization gate")
+    expect("value = 1" in live_value,
+           "US-04 production live value must start from vanilla multiplier 1")
+    expect("modeu5_pop_demand_base_consumption_multiplier" not in live_value,
+           "US-04 production live value must never use 1.20 as a fallback")
+    expect("has_global_variable = modeu5_us04_multiplier_initialization_version" in live_value,
+           "US-04 production live value must require completed initialization")
+    expect("location = {" in live_value and "variable_map(modeu5_pop_demand_multiplier|goods:wheat)" in live_value,
+           "US-04 production live value must read the Pop location × wheat coefficient")
+
+    expect('value = "modeu5_us04_live_pop_demand_multiplier_wheat"' in probe,
+           "US-04 endpoint probe must delegate to the exact production injection value")
+
+    expect("generate_us04_pop_demand_override.py" not in generate_all,
+           "US-04 generation pipeline must not regenerate the vanilla pop_demand file")
+    expect("MODEU5_ENABLE_US04_POP_DEMAND_OVERRIDE" not in generate_all,
+           "US-04 generation pipeline must not retain the former override switch")
+    expect("validate_us04_pop_demand_architecture.py" in generate_all,
+           "US-04 static architecture validator must remain in generate_all.sh")
+    expect("packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt" not in gitignore,
+           "The obsolete exact-path vanilla pop_demands.txt output must not remain ignored")
+
+    expect(not (ROOT / "tools/generate_us04_pop_demand_override.py").exists(),
+           "The obsolete vanilla Pop-demand override generator must remain deleted")
+    expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt").exists(),
+           "No exact-path vanilla pop_demands.txt override may be present")
 
     for marker in [
         "reason=missing_map_not_vanilla",
@@ -143,7 +168,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 Pop-demand architecture validation passed")
+    print("ModeU5 US-04 Pop-demand injection architecture validation passed")
     return 0
 
 
