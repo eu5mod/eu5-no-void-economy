@@ -77,19 +77,27 @@ modeu5_remove_stock(reason = consumption)
 ```
 
 This single call updates both country × market × good stock and the market ×
-good aggregate/cache, preserving the ModeU5 stock invariant.
+good aggregate/cache, preserving the ModeU5 stock invariant. The active US-04
+runtime also records country-stock and market-aggregate deltas so the debug
+fixture proves both levels were reduced without depending on a later audit or
+rebuild.
 
-## Charge proxy
+## Estate charge
 
-No confirmed estate-charge effect exists in the current implementation. US-04
-therefore records a proxy value rather than claiming a live estate payment:
+`add_gold_to_estate` is confirmed from country scope and the active US-04
+runtime uses it with a negative value:
 
 ```txt
-charge_proxy = actual_removed_quantity × market_price(goods:<good>)
+add_gold_to_estate = {
+    estate_type = estate_type:peasants_estate
+    value = -(actual_removed_quantity × market_price(goods:<good>))
+}
 ```
 
-The proxy is persisted on the location × good reconciliation record for
-debugging and future US-04-UI work.
+The positive charge amount is persisted on the location × good reconciliation
+record as `modeu5_us04_reconciliation_estate_charge`. The temporary target is
+`peasants_estate` because the current US-10.3 record is aggregated as
+`location × good`, not yet `location × estate × good`.
 
 ## Candidate future estate allocation rule
 
@@ -103,7 +111,7 @@ Pop = estate + culture + religion + location
 ```
 
 If EU5 exposes a script-safe Pop or estate-demand iterator, ModeU5 can distribute
-the monthly `charge_proxy` proportionally:
+the monthly estate charge proportionally:
 
 ```txt
 estate_share =
@@ -111,17 +119,17 @@ estate_share =
   / sum(all estate current good demand in location)
 
 estate_charge =
-  charge_proxy × estate_share
+  total_location_good_estate_charge × estate_share
 ```
 
-This must remain future work until both surfaces are confirmed:
+This must remain future work until the demand-allocation surface is confirmed:
 
 - read current requested demand by estate × location × good;
-- charge or account against the target estate through a documented effect or
-  accepted ModeU5 estate ledger.
+- split the current temporary `peasants_estate` charge into the exact consuming
+  estate targets.
 
-Until then, the implementation deliberately keeps one location × good proxy and
-does not claim live estate payment.
+Until then, the implementation deliberately keeps one location × good charge
+record and does not claim exact estate allocation.
 
 ## Consequence
 

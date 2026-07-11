@@ -127,7 +127,11 @@ def main() -> int:
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
     expect("modeu5_write_us04_reconciliation_coefficient_good___GOOD__" in annual, "US-04 annual adaptation must update the active reconciliation coefficient")
     expect("modeu5_remove_stock" in monthly_reconciliation and "reason = consumption" in monthly_reconciliation, "US-04 monthly reconciliation must consume stock through the centralized stock operator")
-    expect("modeu5_us04_reconciliation_charge_proxy" in monthly_reconciliation, "US-04 monthly reconciliation must record the charge proxy")
+    expect("modeu5_read_country_stock_record" in monthly_reconciliation, "US-04 monthly reconciliation must read stock before/after for two-level stock delta diagnostics")
+    expect("modeu5_us04_reconciliation_country_stock_delta" in monthly_reconciliation, "US-04 monthly reconciliation must record country stock delta")
+    expect("modeu5_us04_reconciliation_market_stock_delta" in monthly_reconciliation, "US-04 monthly reconciliation must record market aggregate stock delta")
+    expect("add_gold_to_estate" in monthly_reconciliation and "estate_type = estate_type:peasants_estate" in monthly_reconciliation, "US-04 monthly reconciliation must apply a temporary estate gold charge")
+    expect("modeu5_us04_reconciliation_estate_charge" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate charge amount")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
     expect("modeu5_initialize_us04_reconciliation_coefficient_all_goods" in helper_generator, "US-04 helper generator must emit the active reconciliation initializer")

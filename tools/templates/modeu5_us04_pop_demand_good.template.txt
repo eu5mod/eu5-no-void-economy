@@ -264,7 +264,9 @@ modeu5_us04_clear_monthly_reconciliation_record_good___GOOD__ = {
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_extra_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_removed_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity key = goods:__GOOD__ } }
-	if = { limit = { has_variable_map = modeu5_us04_reconciliation_charge_proxy is_key_in_variable_map = { name = modeu5_us04_reconciliation_charge_proxy target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_charge_proxy key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_country_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_market_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_charge key = goods:__GOOD__ } }
 }
 
 modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
@@ -302,11 +304,27 @@ modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
 		}
 	}
 	if = {
-		limit = { scope:modeu5_us04_reconciliation_charge_proxy_value > 0 }
+		limit = { scope:modeu5_us04_reconciliation_country_stock_delta > 0 }
 		add_to_variable_map = {
-			name = modeu5_us04_reconciliation_charge_proxy
+			name = modeu5_us04_reconciliation_country_stock_delta
 			key = goods:__GOOD__
-			value = scope:modeu5_us04_reconciliation_charge_proxy_value
+			value = scope:modeu5_us04_reconciliation_country_stock_delta
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_market_stock_delta > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_market_stock_delta
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_market_stock_delta
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_charge_value > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_charge
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_charge_value
 		}
 	}
 }
@@ -338,7 +356,13 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_us04_extra_reconciliation_quantity }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_good_price value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_charge_proxy_value value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_value value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_country_stock_before_reconciliation value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_country_stock_after_reconciliation value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_market_stock_before_reconciliation value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_market_stock_after_reconciliation value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_country_stock_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_market_stock_delta value = 0 }
 
 	if = {
 		limit = {
@@ -350,6 +374,13 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			# location-scoped helper runs. Do not read the CMM map from location scope.
 			modeu5_stock_runtime_ready_trigger = yes
 		}
+		modeu5_read_country_stock_record = {
+			country = scope:modeu5_us04_reconciliation_country
+			market = scope:modeu5_us04_reconciliation_market
+			good = __GOOD__
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_country_stock_before_reconciliation value = scope:modeu5_read_country_stock }
+		save_temporary_scope_value_as = { name = modeu5_us04_market_stock_before_reconciliation value = scope:modeu5_read_market_stock }
 		modeu5_remove_stock = {
 			country = scope:modeu5_us04_reconciliation_country
 			market = scope:modeu5_us04_reconciliation_market
@@ -359,6 +390,29 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 		}
 		save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = scope:modeu5_actual_removed_quantity }
 		save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_unsatisfied_quantity }
+		modeu5_read_country_stock_record = {
+			country = scope:modeu5_us04_reconciliation_country
+			market = scope:modeu5_us04_reconciliation_market
+			good = __GOOD__
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_country_stock_after_reconciliation value = scope:modeu5_read_country_stock }
+		save_temporary_scope_value_as = { name = modeu5_us04_market_stock_after_reconciliation value = scope:modeu5_read_market_stock }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_reconciliation_country_stock_delta
+			value = {
+				value = scope:modeu5_us04_country_stock_before_reconciliation
+				subtract = scope:modeu5_us04_country_stock_after_reconciliation
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_reconciliation_market_stock_delta
+			value = {
+				value = scope:modeu5_us04_market_stock_before_reconciliation
+				subtract = scope:modeu5_us04_market_stock_after_reconciliation
+				min = 0
+			}
+		}
 		scope:modeu5_us04_reconciliation_market = {
 			save_temporary_scope_value_as = {
 				name = modeu5_us04_reconciliation_good_price
@@ -369,11 +423,23 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_us04_reconciliation_charge_proxy_value
+			name = modeu5_us04_reconciliation_estate_charge_value
 			value = {
 				value = scope:modeu5_us04_actual_reconciled_quantity
 				multiply = scope:modeu5_us04_reconciliation_good_price
 				min = 0
+			}
+		}
+		if = {
+			limit = { scope:modeu5_us04_reconciliation_estate_charge_value > 0 }
+			scope:modeu5_us04_reconciliation_country = {
+				add_gold_to_estate = {
+					estate_type = estate_type:peasants_estate
+					value = {
+						value = scope:modeu5_us04_reconciliation_estate_charge_value
+						multiply = -1
+					}
+				}
 			}
 		}
 	}

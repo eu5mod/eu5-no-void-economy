@@ -100,9 +100,11 @@ def is_state_like(name: str) -> bool:
         "modeu5_pop_demand_satisfied_quantity",
         "modeu5_pop_demand_unsatisfied_months",
         "modeu5_pop_demand_unsatisfied_quantity",
-        "modeu5_us04_reconciliation_charge_proxy",
         "modeu5_us04_reconciliation_coefficient",
+        "modeu5_us04_reconciliation_country_stock_delta",
+        "modeu5_us04_reconciliation_estate_charge",
         "modeu5_us04_reconciliation_extra_quantity",
+        "modeu5_us04_reconciliation_market_stock_delta",
         "modeu5_us04_reconciliation_removed_quantity",
         "modeu5_us04_reconciliation_requested_quantity",
         "modeu5_us04_reconciliation_unsatisfied_quantity",
@@ -193,7 +195,9 @@ modeu5_us04_reconciliation_requested_quantity	variable map	monthly diagnostic	lo
 modeu5_us04_reconciliation_extra_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_unsatisfied_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
-modeu5_us04_reconciliation_charge_proxy	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_country_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_market_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_charge	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 

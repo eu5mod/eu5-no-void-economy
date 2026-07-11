@@ -32,7 +32,9 @@ modeu5_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
 modeu5_us04_reconciliation_extra_quantity[goods:<good>] = requested × max(0, coefficient - 1)
 modeu5_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
 modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
-modeu5_us04_reconciliation_charge_proxy[goods:<good>] = removed × market price
+modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock decrease
+modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock decrease
+modeu5_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
 ```
 
 `modeu5_pop_demand_multiplier` is retained as archived PR69 probe state.
@@ -120,17 +122,25 @@ The extra quantity is consumed through:
 modeu5_remove_stock(reason = consumption)
 ```
 
-This single centralized call updates both country × market × good stock and
-the market × good aggregate/cache.
+This single centralized call updates both country × market × good stock and the
+market × good aggregate/cache. The monthly reconciliation record stores both
+the country-stock delta and market-aggregate delta so tests can prove that US-04
+does not rely on a later audit/rebuild to keep the aggregate in sync.
 
-The charge side is currently a proxy only:
+The charge side uses the confirmed country-scope vanilla effect:
 
 ```txt
-charge_proxy = actual_removed_quantity × market_price(goods:<good>)
+add_gold_to_estate = {
+    estate_type = estate_type:peasants_estate
+    value = -(actual_removed_quantity × market_price(goods:<good>))
+}
 ```
 
-No confirmed estate-specific script effect exists yet, so the proxy is recorded
-for diagnostics and future US-04-UI work rather than charged to a live estate.
+Because the current US-10.3 Pop-demand record is still `location × good` rather
+than `location × estate × good`, US-04 uses `peasants_estate` as the temporary
+charge target and records the positive charged amount in
+`modeu5_us04_reconciliation_estate_charge`. Exact proportional distribution by
+consumer estate remains a follow-up exposure/fixture task.
 
 ## Compatibility cleanup
 
@@ -248,12 +258,13 @@ stock 200 -> 178.80
 - [x] PR69 injection/replacement probes archived as non-production evidence.
 - [x] Active reconciliation coefficient implemented.
 - [x] Monthly ModeU5 stock reconciliation implemented through centralized stock removal.
+- [x] Monthly reconciliation proves both country stock and market aggregate deltas.
+- [x] Country-scope estate gold charge endpoint is confirmed and used.
 - [x] Stale override cleanup implemented.
 - [x] Static architecture validator implemented.
 - [ ] New-campaign initialization probe passes.
 - [ ] Live US-10.3 location outcome handoff is confirmed.
-- [ ] Estate-specific charge endpoint is confirmed.
-- [ ] Exact live Pop/Estate requested demand per estate is confirmed.
+- [ ] Exact live Pop/Estate requested demand per estate is confirmed for proportional charge allocation.
 
 ## Current status
 
@@ -261,6 +272,7 @@ stock 200 -> 178.80
 Annual adaptation fixture:             PASS
 Temporary stock reconciliation:        IMPLEMENTED / RUNTIME PENDING
 Vanilla pop_demand mutation:           REJECTED FOR PRODUCTION
-Estate-specific charge:                NOT_CONFIRMED / proxy only
+Estate gold charge effect:             CONFIRMED / temporary peasants_estate target
+Exact estate allocation:               TO_TEST / requires location × estate × good demand
 TECH-01 #039:                          NOT_CONFIRMED
 ```
