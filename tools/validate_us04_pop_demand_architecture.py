@@ -116,8 +116,10 @@ def main() -> int:
 
     expect("INJECT:pop_demand = {" in injection,
            "US-04 live probe must inject into the existing pop_demand object")
-    expect(injection.count("wheat = {") == 1,
-           "US-04 injection probe must contain exactly one wheat entry")
+    expect(injection.count("INJECT:wheat = {") == 1,
+           "US-04 candidate 2 must contain exactly one nested INJECT:wheat entry")
+    expect("\n\twheat = {" not in injection,
+           "US-04 must not regress to the ineffective plain repeated wheat child")
     expect('multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"' in injection,
            "US-04 wheat injection must reference the production multiplier value")
     expect("value =" not in injection,
@@ -168,7 +170,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 Pop-demand injection architecture validation passed")
+    print("ModeU5 US-04 nested Pop-demand injection architecture validation passed")
     return 0
 
 
