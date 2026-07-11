@@ -52,6 +52,7 @@ package_ids=(
 	"modeu5_trade_rebalance"
 	"modeu5_war_rebalance"
 	"modeu5_core_tests"
+	"modeu5_core_tests_q9"
 )
 
 package_sources=(
@@ -60,6 +61,7 @@ package_sources=(
 	"$repo_root/packages/modeu5_trade_rebalance"
 	"$repo_root/packages/modeu5_war_rebalance"
 	"$repo_root/packages/modeu5_core_tests"
+	"$repo_root/packages/modeu5_core_tests_q9"
 )
 
 if [[ "$action" == "install" ]]; then
@@ -125,7 +127,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests)
+		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests|modeu5_core_tests_q9)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -244,7 +246,7 @@ fi
 mkdir -p "$target_root"
 install_core
 
-for index in 1 2 3 4; do
+for index in 1 2 3 4 5; do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"
@@ -258,4 +260,4 @@ if [[ -e "$target_root/eu5voideco" ]]; then
 	printf 'If the launcher shows two "No Void Economy" entries, disable the one backed by eu5voideco.\n'
 fi
 
-printf '\nRefresh the launcher, add the four campaign ModeU5 entries to one playset, and enable the test package only for deterministic validation sessions.\n'
+printf '\nRefresh the launcher, add the four campaign ModeU5 entries to one playset, enable the normal test package only for deterministic validation sessions, and enable the Q9 replacement probe package only for the dedicated destructive Q9 session.\n'

@@ -1,0 +1,21 @@
+{
+	"id": "modeu5_core_tests_q9",
+	"name": "NVE : Q9 destructive Pop-demand replacement probe (Optional)",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "TESTING ONLY. Destructive US-04 Q9 REPLACE:pop_demand probe. Enable only for the dedicated Q9 validation session.",
+	"tags": [
+		"Utilities",
+		"Trade and Economics"
+	],
+	"relationships": [
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core",
+			"display_name": "No Void Economy (NVE)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		}
+	],
+	"game_custom_data": {}
+}

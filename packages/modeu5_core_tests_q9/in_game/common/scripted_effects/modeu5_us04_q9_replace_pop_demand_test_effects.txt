@@ -1,0 +1,118 @@
+# US-04 Q9 destructive full pop_demand replacement probe.
+# No generator is used for this file.
+
+modeu5_us04_q9_clear_state = {
+	remove_global_variable = modeu5_test_us04_q9_replace_pop_demand_passed
+	remove_global_variable = modeu5_test_us04_q9_replace_pop_demand_failed
+	remove_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+	remove_global_variable = modeu5_us04_q9_replace_in_progress
+	remove_global_variable = modeu5_us04_q9_replace_global_books
+	remove_global_variable = modeu5_us04_q9_books_low
+	remove_global_variable = modeu5_us04_q9_books_high
+	remove_global_variable = modeu5_us04_q9_books_delta
+	remove_global_variable = modeu5_us04_q9_books_source_low
+	remove_global_variable = modeu5_us04_q9_books_source_high
+	remove_global_variable = modeu5_us04_q9_control_low
+	remove_global_variable = modeu5_us04_q9_control_high
+	remove_global_variable = modeu5_us04_q9_control_delta
+	remove_global_variable = modeu5_us04_q9_control_stable
+	clear_saved_scope = modeu5_us04_q9_market
+}
+
+modeu5_us04_q9_replace_begin = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q9_replace_pop_demand"
+	if = {
+		limit = { has_global_variable = modeu5_us04_q9_replace_in_progress }
+		set_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=probe_already_in_progress"
+	}
+	else = {
+		modeu5_us04_q9_clear_state = yes
+		set_global_variable = modeu5_us04_q9_replace_in_progress
+		capital.market = { save_scope_as = modeu5_us04_q9_market }
+		set_global_variable = { name = modeu5_us04_q9_replace_global_books value = 1.0 }
+		set_global_variable = { name = modeu5_us04_q9_books_source_low value = global_var:modeu5_us04_q9_replace_global_books }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace phase=begin source_low_books=1.0000"
+	}
+}
+
+modeu5_us04_q9_replace_capture_low_and_raise = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_q9_replace_in_progress } }
+		set_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=low_capture_without_in_progress"
+	}
+	else = {
+		scope:modeu5_us04_q9_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_q9_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q9_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_q9_books_low value = scope:modeu5_us04_q9_books_current }
+		set_global_variable = { name = modeu5_us04_q9_control_low value = scope:modeu5_us04_q9_control_current }
+		set_global_variable = { name = modeu5_us04_q9_replace_global_books value = 4.0 }
+		set_global_variable = { name = modeu5_us04_q9_books_source_high value = global_var:modeu5_us04_q9_replace_global_books }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace phase=low_captured high_source_written=1 wait=monthly_tick"
+	}
+}
+
+modeu5_us04_q9_replace_finalize = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_q9_replace_in_progress } }
+		set_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=finalize_without_in_progress"
+	}
+	else = {
+		scope:modeu5_us04_q9_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_q9_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q9_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_q9_books_high value = scope:modeu5_us04_q9_books_current }
+		set_global_variable = { name = modeu5_us04_q9_control_high value = scope:modeu5_us04_q9_control_current }
+
+		save_temporary_scope_value_as = { name = modeu5_us04_q9_control_delta value = { value = global_var:modeu5_us04_q9_control_high subtract = global_var:modeu5_us04_q9_control_low } }
+		set_global_variable = { name = modeu5_us04_q9_control_delta value = scope:modeu5_us04_q9_control_delta }
+		save_temporary_scope_value_as = { name = modeu5_us04_q9_control_min value = { value = global_var:modeu5_us04_q9_control_low subtract = 0.001 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_q9_control_max value = { value = global_var:modeu5_us04_q9_control_low add = 0.001 } }
+		if = { limit = { global_var:modeu5_us04_q9_control_high >= scope:modeu5_us04_q9_control_min global_var:modeu5_us04_q9_control_high <= scope:modeu5_us04_q9_control_max } set_global_variable = modeu5_us04_q9_control_stable }
+
+		save_temporary_scope_value_as = { name = modeu5_us04_q9_books_delta value = { value = global_var:modeu5_us04_q9_books_high subtract = global_var:modeu5_us04_q9_books_low } }
+		set_global_variable = { name = modeu5_us04_q9_books_delta value = scope:modeu5_us04_q9_books_delta }
+
+		set_variable = { name = modeu5_us04_q9_ui_control_low value = global_var:modeu5_us04_q9_control_low }
+		set_variable = { name = modeu5_us04_q9_ui_control_high value = global_var:modeu5_us04_q9_control_high }
+		set_variable = { name = modeu5_us04_q9_ui_control_delta value = global_var:modeu5_us04_q9_control_delta }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace control_good=wool low=[THIS.GetVariable('modeu5_us04_q9_ui_control_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_q9_ui_control_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_q9_ui_control_delta').GetValue|4]"
+
+		set_variable = { name = modeu5_us04_q9_ui_source_low value = global_var:modeu5_us04_q9_books_source_low }
+		set_variable = { name = modeu5_us04_q9_ui_source_high value = global_var:modeu5_us04_q9_books_source_high }
+		set_variable = { name = modeu5_us04_q9_ui_low value = global_var:modeu5_us04_q9_books_low }
+		set_variable = { name = modeu5_us04_q9_ui_high value = global_var:modeu5_us04_q9_books_high }
+		set_variable = { name = modeu5_us04_q9_ui_delta value = global_var:modeu5_us04_q9_books_delta }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace id=09 syntax=replace_pop_demand good=books source_low=[THIS.GetVariable('modeu5_us04_q9_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_q9_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_q9_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_q9_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_q9_ui_delta').GetValue|4]"
+
+		if = {
+			limit = { global_var:modeu5_us04_q9_books_low <= 0.0001 }
+			set_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books BLOCKED reason=baseline_demand_nonpositive"
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=books_baseline_demand_nonpositive"
+		}
+		else_if = {
+			limit = { NOT = { has_global_variable = modeu5_us04_q9_control_stable } }
+			set_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books BLOCKED reason=unstable_control"
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=unstable_control"
+		}
+		else_if = {
+			limit = { global_var:modeu5_us04_q9_books_high > global_var:modeu5_us04_q9_books_low }
+			set_global_variable = modeu5_test_us04_q9_replace_pop_demand_passed
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books PASS"
+			debug_log = "ModeU5 TEST PASS scenario=us04_q9_replace_pop_demand"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_q9_replace_pop_demand_failed
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books FAIL reason=no_target_response"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_q9_replace_pop_demand"
+		}
+		remove_global_variable = modeu5_us04_q9_replace_in_progress
+	}
+}

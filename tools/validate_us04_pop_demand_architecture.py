@@ -92,6 +92,9 @@ def main() -> int:
     endpoint_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_pop_demand_endpoint_test_effects.txt")
     matrix_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_injection_matrix_test_effects.txt")
     q7_q8_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_q7_q8_and_target_architecture_test_effects.txt")
+    q9_candidate = read("packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt")
+    q9_test = read("packages/modeu5_core_tests_q9/in_game/common/scripted_effects/modeu5_us04_q9_replace_pop_demand_test_effects.txt")
+    q9_debug_events = read("packages/modeu5_core_tests_q9/in_game/events/modeu5_us04_q9_debug_events.txt")
     debug_events = read("packages/modeu5_core_tests/in_game/events/modeu5_us04_debug_events.txt")
     localization = read("packages/modeu5_core_tests/in_game/localization/modeu5_us04_endpoint_probe_l_english.yml")
     summarizer = read("tools/summarize_modeu5_test_logs.sh")
@@ -141,7 +144,7 @@ def main() -> int:
             expect(f"id={candidate_id} syntax={syntax_name} good={good}" in q7_q8_test, f"US-04 focused Q7/Q8 test missing candidate {candidate_id}")
             expect(f"goods_demand_in_market(goods:{good})" in q7_q8_test, f"US-04 focused Q7/Q8 test must read {good} demand")
 
-    expect("REPLACE:" not in combined_candidates and "TRY_REPLACE:" not in combined_candidates, "US-04 probes must remain additive/non-destructive")
+    expect("REPLACE:" not in combined_candidates and "TRY_REPLACE:" not in combined_candidates, "US-04 probes 01-08 must remain additive/non-destructive")
     expect("generate_us04_injection_matrix_test.py" not in generate_all, "US-04 injection matrix must not be generated")
     expect(not (ROOT / "tools/generate_us04_injection_matrix_test.py").exists(), "US-04 injection matrix generator must remain deleted")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_pop_demand_injection_probe.txt").exists(), "Obsolete aggregate probe must remain deleted")
@@ -161,13 +164,30 @@ def main() -> int:
     expect("scenario=us04_observed_current_target_architecture" in q7_q8_test, "Observed-current architecture scenario marker missing")
     expect("modeu5_us04_q7_q8_finalize = yes" in debug_events, "Debug event must finalize focused Q7/Q8 probe")
     expect("modeu5_us04_debug.1.c" in debug_events and "modeu5_us04_debug.1.c" in localization, "Combined Q7/Q8 + target option must be present and localized")
+
+    expect("TEST PACKAGE ONLY / DESTRUCTIVE PROBE" in q9_candidate, "Q9 destructive candidate must be clearly marked test-only")
+    expect("REPLACE:pop_demand = {" in q9_candidate, "Q9 must use REPLACE:pop_demand")
+    expect("books = {" in q9_candidate and "global_var:modeu5_us04_q9_replace_global_books" in q9_candidate, "Q9 must replace books demand with a dynamic global source")
+    expect("scenario=us04_q9_replace_pop_demand" in q9_test, "Q9 scenario marker missing")
+    expect("goods_demand_in_market(goods:books)" in q9_test, "Q9 must read books demand")
+    expect("goods_demand_in_market(goods:wool)" in q9_test, "Q9 must keep a wool control")
+    expect("modeu5_us04_q9_replace_global_books value = 4.0" in q9_test, "Q9 must raise replacement source to 4.0")
+    expect("reason=no_target_response" in q9_test, "Q9 must classify no-response failures")
+    expect("namespace = modeu5_us04_q9_debug" in q9_debug_events, "Q9 must use an isolated debug namespace")
+    expect("modeu5_us04_q9_debug.1" in q9_debug_events and "modeu5_us04_q9_debug.3" in q9_debug_events, "Q9 isolated console event chain must be present")
+    expect("id = modeu5_us04_q9_debug.3 days = 35" in q9_debug_events, "Q9 must wait across a monthly tick before final capture")
+    expect("modeu5_us04_q9_replace" not in debug_events, "Normal core test launcher must not reference isolated Q9 effects")
+
     expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
+    expect("VANILLA DEMAND" in summarizer, "Summarizer must include US-04 vanilla-demand probe lines")
     expect('expected_mode" != "none"' in summarizer and 'Expected scenario checking disabled.' in summarizer, "Summarizer must support --expected none")
 
     expect("generate_us04_pop_demand_override.py" not in generate_all, "US-04 generation pipeline must not regenerate vanilla pop_demand")
     expect("packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt" not in gitignore, "Obsolete exact-path vanilla pop_demands.txt must not remain ignored")
     expect(not (ROOT / "tools/generate_us04_pop_demand_override.py").exists(), "Obsolete vanilla Pop-demand override generator must remain deleted")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt").exists(), "No exact-path vanilla pop_demands.txt override may be present")
+    expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the production economy package")
+    expect(not (ROOT / "packages/modeu5_core_tests/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the normal core test package")
 
     for marker in ["reason=missing_map_not_vanilla", "reason=missing_initialization_gate_not_vanilla", "reason=disabled_gate_not_vanilla"]:
         expect(marker in endpoint_test, f"Endpoint test must assert {marker}")
@@ -178,7 +198,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 explicit probes and observed-current target validation passed")
+    print("ModeU5 US-04 explicit probes, isolated Q9 replacement probe, and observed-current target validation passed")
     return 0
 
 
