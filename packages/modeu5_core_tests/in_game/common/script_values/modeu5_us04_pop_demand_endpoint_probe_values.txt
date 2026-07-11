@@ -1,0 +1,26 @@
+# Test-only mirror of the generated wheat Pop-demand multiplier.
+# Scope contract under test: Pop -> location -> location variable map keyed by goods.
+# Missing, disabled, or uninitialized ModeU5 state must leave vanilla unchanged.
+
+modeu5_us04_probe_live_pop_demand_multiplier_wheat = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:wheat)"
+			}
+		}
+	}
+}

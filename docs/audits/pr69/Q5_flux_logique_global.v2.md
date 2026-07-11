@@ -2,305 +2,408 @@
 
 ## Purpose
 
-This is the PR-specific living flow document for PR #69.
-
-It records the branch flow and validation state without modifying the canonical Q8 document:
+This is the PR-specific living flow for PR #69. It evolves with the branch without modifying the canonical Q8 document:
 
 ```txt
 docs/audits/q8/Q5_flux_logique_global.md
 ```
 
-## Current branch layers
+## Current objective
 
-PR #69 adds yearly US-04 Pop-demand adaptation on top of:
-
-```txt
-1. Q8.7 monthly market-local stock and demand flow
-2. country-owned monthly trade and PR #107 route reconciliation
-3. yearly location × good Pop-demand multiplier adaptation
-```
-
-## Monthly market-local flow
+PR #69 targets the complete Pop-demand feedback loop:
 
 ```txt
-monthly_country_pulse
-  -> modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-     -> runtime/configuration gates
-     -> performance and market-relevance preparation
-     -> country capacity and monthly registries
-     -> once-per-month Q8.7 global market pass
-          -> every_market_in_world
-          -> prepare market accounting mode
-          -> detailed market:
-               -> rebuild countries_present_in_market
-               -> refresh country-market capacity
-               -> US-00 production/admission
-               -> freeze US-00 facts
-               -> US-10 same-market demand resolution
-               -> record monthly demand outcomes
-          -> fallback/blocked market:
-               -> diagnostics only
-               -> no ModeU5 stock mutation
+vanilla Pop-demand coefficient
+  × initialized location × good ModeU5 coefficient
+  -> actual vanilla Pop requested demand
+  -> monthly satisfaction / shortage outcome
+  -> yearly coefficient adjustment
+  -> next year's actual vanilla Pop requested demand
 ```
 
-## Monthly country-owned trade flow
+The annual adaptation layer has already passed runtime validation. Live vanilla consumption remains prototype-gated.
 
-After the market-local pass, each country runs:
+## State ownership
+
+ModeU5 owns one persistent value per:
 
 ```txt
-modeu5_run_monthly_country_trade_owner_cycle
-  -> every_trade
-     -> capture trade.owner
-     -> capture source market, target market and good
-     -> capture route quantity
-     -> when trade rework is enabled:
-          -> capture owner-country modifier inputs
-          -> US-17 money-side route reconciliation
-          -> US-20 received-goods/destination-loss reconciliation
+location × good
 ```
 
-Route reconciliation and stock audit reconciliation are separate:
+Physical storage:
 
 ```txt
-US-17 / US-20 route reconciliation
-  = business correction for the current route
-
-modeu5_run_monthly_stock_reconciliation_once
-  = optional consistency validation/repair
+location.variable_map(modeu5_pop_demand_multiplier|goods:<good>)
 ```
 
-## Yearly US-04 flow
+The Pop is an evaluation scope, not an additional persistence dimension. All Pops in the same location read the same coefficient for a given good.
+
+## Fundamental invariant
+
+```txt
+1.20 = explicit, one-time initialized ModeU5 state
+1.00 = every missing, disabled, uninitialized, or invalid-state fallback
+```
+
+The `1.20` baseline must never be synthesized by the live reader or yearly updater.
+
+Correct live formula:
+
+```txt
+actual coefficient
+  = complete vanilla coefficient
+  × stored location × good coefficient
+```
+
+Incorrect formula — forbidden:
+
+```txt
+vanilla coefficient
+  × 1.20 baseline
+  × stored coefficient already initialized to 1.20
+```
+
+The incorrect formula would start at `1.44`.
+
+## Static vanilla integration — wheat prototype
+
+The runtime contract is tested with wheat only before any all-good generalization.
+
+```txt
+./tools/generate_all.sh
+  -> tools/generate_us04_pop_demand_override.py --goods wheat
+     -> read installed vanilla goods_demand/pop_demands.txt
+     -> preserve the complete vanilla file
+     -> preserve every non-wheat coefficient unchanged
+     -> wrap only vanilla pop_demand.wheat
+     -> generate one Pop-scope wheat multiplier script value
+```
+
+Generated local artifacts:
+
+```txt
+packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
+packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_values_generated.txt
+```
+
+Generalization to every good is forbidden until the wheat probe passes.
+
+## One-time campaign initialization
+
+The baseline is materialized once on a new campaign, after the existing one-day startup delay:
+
+```txt
+on_game_start
+  -> delay 1 day
+  -> modeu5_start_game_stock_initialization_pulse
+     -> modeu5_initialize_pop_demand_multipliers_once
+```
+
+Initialization contract:
+
+```txt
+if modeu5_us04_multiplier_initialization_version is missing or < 1:
+    every_location
+      -> modeu5_initialize_pop_demand_multiplier_all_goods
+         -> for every supported good:
+              if location × good key is missing:
+                  write 1.20
+              else:
+                  preserve existing value
+
+    after the complete world pass:
+        set modeu5_us04_multiplier_initialization_version = 1
+```
+
+The delayed startup pulse may have an empty/root scope. It therefore performs no country-scoped CMM read. The initialization path uses only global state, the global location iterator, and location-scoped maps.
+
+The version gate is persistent saved state. It prevents:
+
+```txt
+second campaign-start application
+save reload application
+1.20 × 1.20 accidental double initialization
+recreation of a deleted/corrupt key during normal runtime
+```
+
+## Live Pop-scope read
+
+Generated wheat script value:
+
+```txt
+modeu5_us04_live_pop_demand_multiplier_wheat
+```
+
+Evaluation contract:
+
+```txt
+start result = 1
+
+only when all conditions are true:
+  live CMM integration marker exists
+  initialization version exists and >= 1
+  Pop.location has multiplier map
+  Pop.location has wheat key
+
+then:
+  return stored location × wheat value
+
+otherwise:
+  return 1
+```
+
+Therefore:
+
+| State | Live multiplier | Result |
+|---|---:|---|
+| integration disabled | `1` | vanilla |
+| initialization incomplete | `1` | vanilla |
+| location map missing | `1` | vanilla |
+| good key missing | `1` | vanilla |
+| valid initialized record | stored value | vanilla × ModeU5 |
+
+The country-scoped CMM setting is mirrored by country pulses/callbacks into:
+
+```txt
+modeu5_pop_demand_live_integration_enabled
+```
+
+## Yearly adaptation
 
 ```txt
 yearly_country_pulse
-  -> modeu5_yearly_pop_demand_adaptation_pulse
-     -> modeu5_run_yearly_pop_demand_adaptation_for_current_country
-     -> runtime/configuration gates
-     -> every_owned_location
-     -> generated location × good helpers
-          -> read annual satisfied_months
-          -> read annual unsatisfied_months
-          -> read persisted multiplier, fallback 1.20
-          -> 12 satisfied / 0 unsatisfied: × 1.01
-          -> 0 satisfied / 12 unsatisfied: × 0.99
-          -> mixed or no observation: unchanged
-          -> persist multiplier
-          -> reset annual counters after reading them
+  -> refresh live CMM marker from country scope
+  -> every owned location
+  -> generated location × good annual helper
 ```
 
-## Stock dependency clarification
-
-The yearly US-04 arithmetic does not directly read:
+Per good:
 
 ```txt
-country × market × good stock
-market × good aggregate stock
-country-market capacity
-market promotion state
+read annual satisfied months
+read annual unsatisfied months
+read existing multiplier
+
+if multiplier record exists:
+    12 satisfied / 0 shortage -> current × 1.01
+    0 satisfied / 12 shortage -> current × 0.99
+    mixed or no observation   -> no write
+else:
+    no write
+    no 1.20 recreation
+
+reset annual counters after read
 ```
 
-Its direct dependencies are:
+The yearly updater may only modify an existing initialized record. A missing record remains missing, and the live reader consequently returns vanilla multiplier `1`.
+
+## Monthly economic flow
 
 ```txt
-location × good annual outcome counters
-+
-location × good persisted multiplier
+vanilla pop_demand.wheat
+  -> unchanged vanilla wheat coefficient
+  -> generated Pop-scope ModeU5 multiplier
+  -> actual vanilla requested wheat demand
+  -> US-10 stock resolution
+  -> US-10.3 location × good outcomes
+  -> yearly US-04 counters
 ```
 
-Therefore, existence of a positive country × market stock record is not itself required for yearly adaptation.
+The final handoff from vanilla requested Pop demand into the intended location × good US-10.3 counters remains a separate proof obligation.
 
-The current gate:
+## Runtime tests
+
+Run from a clean new campaign after at least one full day:
 
 ```txt
-modeu5_stock_runtime_ready_trigger = yes
+event modeu5_us04_debug.1
 ```
 
-only proves initialization and schema readiness. It does not prove that a particular country × market × good stock entry exists.
+### 1. Initialization lifecycle
 
-The indirect upstream relationship remains:
+Option:
 
 ```txt
-Pop or explicit demand request
-  -> US-10 attempts stock removal
-  -> removed quantity = satisfied quantity
-  -> remainder = unsatisfied quantity
-  -> US-10.3 writes location × good outcome counters
-  -> US-04 reads those counters yearly
+Probe new-campaign 1.20 multiplier initialization
 ```
 
-So:
+Scenario:
 
 ```txt
-US-04 yearly adaptation itself
-  does not require country × market stock records
-
-but
-
-the monthly producer of meaningful outcome counters
-  may depend on ModeU5 stock resolution
+us04_pop_demand_initialization
 ```
 
-Missing counters are no observation, not automatic satisfaction or shortage.
-
-## Validated PR #69 behavior
-
-Runtime validation from clean installed commit:
+Required evidence:
 
 ```txt
-87a1e29c1751adbc5955c3ac3be30267ee93f123
-source_dirty=no
+initialization version = 1
+capital wheat = 1.2000
+capital beer = 1.2000
+second initializer call leaves wheat = 1.2000
+deleted wheat key is not recreated
+missing read = 1.0000
+PASS
 ```
 
-proved both the focused fixture and its inclusion in the full revalidation chain:
+### 2. Pop → location endpoint
+
+Option:
 
 ```txt
-baseline:                         1.2000
-12 satisfied months:             1.2120
-12 unsatisfied months:           1.1880
-mixed year:                      1.2000
-zero-observation year:           1.2000
-annual counters after read:      0
-focused scenario:                PASS
-full-chain US-04 scenario:       PASS
+Probe live Pop-demand location multiplier endpoint
 ```
 
-Expected and observed markers:
+Scenario:
 
 ```txt
-ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 ...
-ModeU5 US-04 RESULT pop_demand_adaptation PASS
-ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+us04_pop_demand_endpoint
 ```
 
-The full repository revalidation did not emit `main_revalidation_summary` because the trace stopped after entering `us17_us20_route_reconciliation`. This does not invalidate US-04, whose PASS marker occurred earlier. The unresolved tail is tracked separately in `runtime_validation_2026-07-11.md`.
-
-## Current engine boundary
-
-PR #69 proves:
+Required evidence:
 
 ```txt
-annual counters
-  -> yearly branch decision
-  -> persisted modeu5_pop_demand_multiplier[good]
-  -> annual counter reset
+seeded       1.3700
+missing      1.0000
+uninitialized 1.0000
+disabled     1.0000
+PASS
 ```
 
-PR #69 does not prove or wire:
+This proves only the scope link and failback contract.
+
+### 3. Observable vanilla demand response
+
+Option:
 
 ```txt
-persisted modeu5_pop_demand_multiplier[good]
-  -> vanilla location × good Pop-demand calculation
-  -> additional live Pop requested consumption
+Probe vanilla Pop demand response (disposable save)
 ```
 
-TECH-01 #039 remains:
+Scenario:
 
 ```txt
-Apply a local demand modifier to vanilla demand: NOT_CONFIRMED
-Fallback: persist ModeU5 multiplier only
+us04_vanilla_pop_demand_integration
 ```
 
-The baseline `1.20` is a validated persisted ModeU5 multiplier. It must not yet be described as proven 20% additional live Pop consumption.
+Probe sequence:
 
-## Ordering and ownership invariants
+```txt
+capital wheat coefficient = 1.0
+wait for vanilla recalculation
+read goods_demand_in_market(wheat)
+capital wheat coefficient = 4.0
+wait for vanilla recalculation
+read goods_demand_in_market(wheat)
+assert high demand > low demand
+restore original coefficient and gates
+```
 
-1. Capacity is prepared before US-00 stock admission.
-2. US-00 facts are frozen before US-10 same-market consumption.
-3. Same-market consumption is local non-trade work.
-4. Inter-market trade remains country-owned through `every_trade`.
-5. US-17/US-20 runs after route scopes and quantity are captured.
-6. Route reconciliation is separate from optional stock audit reconciliation.
-7. US-04 runs yearly from location × good outcome counters.
-8. Annual counters reset only after the yearly decision reads them.
-9. Persisting the multiplier is not equivalent to applying it to vanilla Pop demand.
-10. The global market pass runs once monthly, while each country-owned trade pass still runs.
-11. Performance relevance remains market-level.
-12. Stock mutation remains centralized.
+Only this PASS confirms that vanilla `pop_demand.wheat` consumes the generated location coefficient.
 
-## Mermaid flow — current PR #69
+### 4. Annual adaptation
+
+Already validated on clean commit `87a1e29c1751adbc5955c3ac3be30267ee93f123`:
+
+```txt
+baseline                         1.2000
+12 satisfied months             1.2120
+12 unsatisfied months           1.1880
+mixed year                      1.2000
+zero-observation year           1.2000
+annual counters after read      0
+PASS
+```
+
+The annual test seeds its own explicit records. Its result remains valid, while the branch now prevents normal yearly runtime from creating missing records.
+
+## Static architecture guard
+
+```txt
+tools/validate_us04_pop_demand_architecture.py
+```
+
+It rejects:
+
+```txt
+1.20 getter fallback
+missing-record yearly recreation
+initialization gate written before the world pass
+missing version gate
+all-good live wrapper before wheat acceptance
+endpoint tests that do not expect vanilla multiplier 1
+```
+
+`generate_all.sh` runs this validator automatically.
+
+## Current status
+
+```txt
+Annual arithmetic and counter reset:         CONFIRMED
+One-time initialization implementation:      IMPLEMENTED / RUNTIME PENDING
+Vanilla-safe missing-state fallback:          IMPLEMENTED / RUNTIME PENDING
+Wheat Pop-scope location lookup:              IMPLEMENTED / RUNTIME PENDING
+Wheat vanilla market-demand response:         IMPLEMENTED / RUNTIME PENDING
+All-good live integration:                    DEFERRED
+TECH-01 #039:                                 NOT_CONFIRMED
+```
+
+PR #69 must remain draft until the three new-campaign probes load and pass without parser, duplicate-key, empty-scope, location-link, or variable-map errors.
+
+## Mermaid flow
 
 ```mermaid
 flowchart TB
-    subgraph MONTHLY["Monthly flow"]
-        A["monthly_country_pulse"] --> B["Q8.7 owner switch"]
-        B --> READY{"runtime ready?"}
-        READY -->|no| CLOSED["fail closed / diagnostics"]
-        READY -->|yes| PREP["relevance, capacity, registries"]
-        PREP --> ONCE{"global market pass already run?"}
-        ONCE -->|no| WORLD["every_market_in_world"]
-        ONCE -->|yes| TRADE0["country-owned trade pass"]
+    START["new campaign + 1 day"] --> GATE{"init version >= 1?"}
+    GATE -->|yes| KEEP["do nothing"]
+    GATE -->|no| LOCS["every_location"]
+    LOCS --> GOODS["every supported good helper"]
+    GOODS --> EXISTS{"key exists?"}
+    EXISTS -->|yes| PRESERVE["preserve value"]
+    EXISTS -->|no| SEED["write 1.20"]
+    PRESERVE --> VERSION["after full world pass: version = 1"]
+    SEED --> VERSION
 
-        WORLD --> MODE["prepare market accounting mode"]
-        MODE --> KIND{"detailed / fallback / blocked"}
-        KIND -->|fallback or blocked| DIAG["diagnostics; no stock mutation"]
-        KIND -->|detailed| CACHE["countries-present cache"]
-        CACHE --> CAP["country-market capacity"]
-        CAP --> US00["US-00 admission"]
-        US00 --> FREEZE["freeze US-00 facts"]
-        FREEZE --> US10["US-10 same-market demand"]
-        US10 --> OUTCOME["monthly outcome records"]
-        OUTCOME --> TRADE0
-        DIAG --> TRADE0
-
-        TRADE0 --> T1["every_trade"]
-        T1 --> T2["capture owner, markets, good, quantity"]
-        T2 --> TGATE{"trade rework enabled?"}
-        TGATE -->|yes| REC["US-17 / US-20 route reconciliation"]
-        TGATE -->|no| TEND["finish route"]
-        REC --> MONEY["money-side correction"]
-        MONEY --> GOODS["received-goods/loss correction"]
-        GOODS --> TEND
-        TEND --> AUDIT{"stock audit enabled?"}
-        AUDIT -->|yes| STOCKREC["optional stock validation/repair"]
-        AUDIT -->|no| MEND["end monthly cycle"]
-        STOCKREC --> MEND
+    subgraph LIVE["vanilla wheat demand evaluation"]
+        POP["Pop scope"] --> SAFE["start multiplier = 1"]
+        SAFE --> READY{"CMM enabled + init complete + local key?"}
+        READY -->|no| VANILLA["return 1: vanilla"]
+        READY -->|yes| READ["read Pop.location wheat coefficient"]
+        READ --> APPLY["vanilla wheat coefficient × stored value"]
     end
 
-    subgraph YEARLY["Yearly US-04 flow"]
-        Y0["yearly_country_pulse"] --> Y1["US-04 yearly country effect"]
-        Y1 --> YGATE{"runtime + package/CMM enabled?"}
-        YGATE -->|no| YSKIP["skip"]
-        YGATE -->|yes| YLOC["every_owned_location"]
-        YLOC --> YGOOD["generated good helpers"]
-        YGOOD --> YREAD["read annual counters"]
-        YREAD --> YMULT["read multiplier, fallback 1.20"]
-        YMULT --> YCASE{"annual result"}
-        YCASE -->|12 satisfied| YUP["× 1.01"]
-        YCASE -->|12 shortage| YDOWN["× 0.99"]
-        YCASE -->|mixed/no observation| YSAME["unchanged"]
-        YUP --> YWRITE["persist multiplier"]
-        YDOWN --> YWRITE
-        YSAME --> YWRITE
-        YWRITE --> YRESET["reset annual counters"]
-        YWRITE -. unconfirmed integration .-> YAPPLY["apply to live Pop demand<br/>NOT_CONFIRMED"]
+    subgraph YEARLY["yearly adaptation"]
+        COUNTERS["annual outcome counters"] --> RECORD{"multiplier exists?"}
+        RECORD -->|no| NOWRITE["no write; missing stays missing"]
+        RECORD -->|yes| CASE{"annual outcome"}
+        CASE -->|satisfied| UP["× 1.01"]
+        CASE -->|shortage| DOWN["× 0.99"]
+        CASE -->|mixed/none| SAME["no write"]
+        UP --> STORED["replace existing value"]
+        DOWN --> STORED
+        STORED --> POP
     end
 ```
 
 ## Living update log
 
-### 2026-07-11 — Initial v2
+### 2026-07-11 — Annual layer accepted
 
-Recorded the Q8.7 market owner, PR #107 trade reconciliation, yearly US-04 branch, stock-dependency distinction and live-demand boundary.
+Focused and full-chain annual adaptation scenarios passed.
 
-### 2026-07-11 — Runtime acceptance
+### 2026-07-11 — Live wheat probe opened
 
-Recorded clean static/install provenance and two successful US-04 executions:
+Added the exact-path wheat wrapper, Pop-scope endpoint probe, and market-demand response probe.
 
-```txt
-focused US-04 scenario:       PASS
-full-chain US-04 scenario:    PASS
-annual arithmetic:            PASS
-annual counter reset:         PASS
-live vanilla application:     NOT_CONFIRMED
-```
+### 2026-07-11 — Initialization/fallback architecture corrected
 
-### Pending living updates
+Replaced the former missing-key `1.20` fallback with vanilla multiplier `1` and introduced:
 
 ```txt
-- exact live producer of location × good Pop outcome counters;
-- exact live consumer of modeu5_pop_demand_multiplier[good];
-- decision on replacing the broad stock-runtime gate with narrower counter readiness;
-- closure of the separate US-17/US-20 full-revalidation tail;
-- changes to route placement or formulas.
+- versioned one-time world initialization;
+- explicit 1.20 location × good seed;
+- no yearly recreation of missing records;
+- wheat-only live prototype;
+- new-campaign initialization lifecycle probe;
+- static architecture validator.
 ```

@@ -1,6 +1,6 @@
 # PR #69 runtime validation — 2026-07-11
 
-## Accepted tested provenance
+## Accepted annual-layer provenance
 
 ```txt
 branch: 22-us-04-annual-local-pop-demand-adjustment
@@ -10,27 +10,11 @@ source_dirty: no
 installed_at_utc: 2026-07-11T10:18:34Z to 2026-07-11T10:18:36Z
 ```
 
-All five installed packages reported the same branch, commit and clean source state.
+All installed ModeU5 packages reported the same clean source commit.
 
-## Static and installation result
+## Static and load result at the accepted commit
 
-The complete requested pre-runtime sequence passed:
-
-```txt
-./tools/generate_all.sh
-python3 tools/validate_ci_static_contracts.py
-./tools/validate_module_packages.sh
-./tools/normalize_cmm_value_links.sh --check
-./tools/audit_modeu5_persistent_state.sh
-./tools/validate_generators.sh
-./tools/validate_modeu5_script_safety.sh
-python3 tools/validate_cmm_configuration.py
-git diff --check
-./tools/install_local_packages.sh
-./tools/install_local_packages.sh --check
-```
-
-Observed results included:
+The requested static/install sequence passed:
 
 ```txt
 ModeU5 CI static contract validation passed
@@ -41,25 +25,21 @@ Direct stock-map write candidates outside generated adapter template: 0
 Ownership/rebuild/reset policy gaps: 0
 ModeU5 generator and validator convention checks passed
 ModeU5 script-safety validation passed
-source_dirty=no for all installed packages
+source_dirty=no
 ```
 
-## Load-level result
-
-The previous direct US-04 parser/load failures were absent:
+The previous US-04 parser/load defects were absent:
 
 ```txt
-Duplicated key modeu5_reset_pop_demand_annual_counters_good_<good>
-Cannot read [modeu5_pop_demand_base_consumption_multiplier] as a script value
-Failed to read 'min' for add_to_variable_map
-Failed to find a valid event target link for the US-04 value block
+no generated reset-helper collision
+no invalid named script-value read
+no nested add_to_variable_map arithmetic failure
+no invalid event-target link for the annual value block
 ```
 
-This validates the generated-helper symbol rename, quoted named script-value read and scalar variable-map write pattern.
+## Accepted annual runtime result
 
-## Focused US-04 runtime result
-
-The focused event completed successfully at `12:22:27`:
+Focused and full-chain execution both produced:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
@@ -68,114 +48,146 @@ ModeU5 US-04 RESULT pop_demand_adaptation PASS
 ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
 ```
 
-The deterministic fixture therefore proves:
+Validated annual fixture behavior:
 
 ```txt
-baseline multiplier:                 1.2000
-12 satisfied months:                1.2000 × 1.01 = 1.2120
-12 unsatisfied months:              1.2000 × 0.99 = 1.1880
-mixed year:                         unchanged at 1.2000
-zero-observation year:              unchanged at 1.2000
-annual counters after adaptation:   reset to 0
+baseline                         1.2000
+12 satisfied months             1.2120
+12 unsatisfied months           1.1880
+mixed year                      1.2000
+zero-observation year           1.2000
+annual counters after read      0
 ```
 
-## Full-revalidation inclusion result
+The fixture explicitly seeds its test records. This annual result remains valid after the later lifecycle redesign.
 
-The full chain ran the US-04 scenario again at `12:22:35` and produced the same dump and PASS markers:
+## Architecture correction after annual acceptance
+
+The branch subsequently adopted the stricter lifecycle:
 
 ```txt
-ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-ModeU5 US-04 RESULT pop_demand_adaptation PASS
-ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+1.20 = explicit one-time initialized saved state
+1.00 = disabled / missing / uninitialized / invalid fallback
 ```
 
-This proves the US-04 scenario is correctly integrated into the main revalidation sequence, not only into its focused launcher.
-
-## Full-chain tail caveat
-
-The overall summarizer reported:
+Changes after commit `87a1e29` include:
 
 ```txt
-Entered: 16
-Passed: 14
-Failed: 0
-Blocked: 0
-Pending: 0
-Missing expected full-revalidation scenarios: 1
-missing: main_revalidation_summary
+- versioned new-campaign world initialization;
+- every location × supported good seeded once at 1.20;
+- initialization version written only after the world pass;
+- live reader starts at multiplier 1;
+- live reader requires both integration and initialization gates;
+- yearly adaptation modifies existing records only;
+- missing records are never recreated by normal yearly runtime;
+- live vanilla integration narrowed to a wheat-only probe;
+- new initialization, endpoint and vanilla-demand tests;
+- static US-04 architecture validator.
 ```
 
-The scenario trace reaches:
+Therefore the earlier statement `PR #69 runtime acceptance: PASS` now applies only to the annual fixture layer, not to the revised complete PR.
+
+## New runtime validation required
+
+Use a clean new campaign, unpause for at least one full day, then run:
 
 ```txt
-ModeU5 TEST ENTERED scenario=us17_us20_route_reconciliation
+event modeu5_us04_debug.1
 ```
 
-but contains no terminal US-17/US-20 PASS/FAIL/BLOCKED marker and no `main_revalidation_summary` marker afterward.
-
-Therefore:
+### Scenario 1 — versioned initialization
 
 ```txt
-PR #69 / US-04 runtime acceptance: PASS
-entire repository full-revalidation closure: NOT COMPLETE
-unresolved tail begins at: us17_us20_route_reconciliation
+us04_pop_demand_initialization
 ```
 
-The missing final summary is not evidence of a US-04 failure. The US-04 scenario already produced both focused and full-chain PASS markers before the chain reached the US-17/US-20 tail.
-
-A separate US-17/US-20 log investigation should inspect:
-
-```sh
-grep -E "us17_us20_route_reconciliation|US17/US20|ASSERT FAIL|Tried to localize with localization disabled|main_revalidation_summary" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/debug.log" || true
-```
-
-## Scope of what is proven
-
-This runtime validation proves:
+Required markers:
 
 ```txt
-location × good multiplier persistence
-annual satisfied/unsatisfied branch arithmetic
-mixed/no-observation no-change behavior
-annual counter reset ordering
-CMM disabled/enabled fixture behavior
-focused-event launcher behavior
-main-revalidation inclusion
+ModeU5 TEST ENTERED scenario=us04_pop_demand_initialization
+ModeU5 US-04 INITIALIZATION DUMP version=1 wheat=1.2000 beer=1.2000 missing_fallback=1.0000
+ModeU5 US-04 INITIALIZATION RESULT versioned_seed PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_initialization
 ```
 
-It does not prove:
+This must prove:
 
 ```txt
-vanilla live Pop requested consumption reads modeu5_pop_demand_multiplier[good]
-Pops actually consume 20% more goods at baseline
-monthly live Pop outcome counters are produced from a confirmed vanilla Pop-demand endpoint
+initial seed = 1.20
+second initialization call is idempotent
+deleted key is not recreated while version = 1
+missing key reads as multiplier 1
 ```
 
-TECH-01 #039 therefore remains `NOT_CONFIRMED` for direct application to vanilla local Pop demand.
-
-## Separate generator observation
-
-The command sequence reported different US-09 building override counts in successive generation paths:
+### Scenario 2 — Pop-scope location endpoint
 
 ```txt
-first explicit generate_all.sh:            25 building override files
-install-triggered subsequent generation:   26 building override files
+us04_pop_demand_endpoint
 ```
 
-This is not a PR #69/US-04 acceptance failure, but it remains a separate idempotence/order-dependency observation for US-09 generation.
-
-## Final PR #69 status
+Required markers:
 
 ```txt
-Static validation:                          PASS
-Installation provenance:                   PASS — clean commit 87a1e29
-US-04 generated parser/load surface:        PASS
-US-04 focused deterministic fixture:        PASS
-US-04 main-revalidation scenario:           PASS
-US-04 annual arithmetic and counter reset:  PASS
-PR #69 runtime acceptance:                 PASS
-Live vanilla Pop-demand application:        NOT_CONFIRMED
-Repository-wide final summary:              INCOMPLETE — unrelated US-17/US-20 tail
+ModeU5 TEST ENTERED scenario=us04_pop_demand_endpoint
+ModeU5 US-04 ENDPOINT DUMP seeded=1.3700 missing=1.0000 uninitialized=1.0000 disabled=1.0000
+ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_endpoint
+```
+
+### Scenario 3 — vanilla wheat demand response
+
+```txt
+us04_vanilla_pop_demand_integration
+```
+
+Required markers:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_vanilla_pop_demand_integration
+ModeU5 US-04 VANILLA DEMAND DUMP wheat_low_multiplier=1.0000 ... wheat_high_multiplier=4.0000 ... delta=<positive>
+ModeU5 US-04 VANILLA DEMAND RESULT integrated_pop_demand PASS
+ModeU5 TEST PASS scenario=us04_vanilla_pop_demand_integration
+```
+
+Only this result can confirm that vanilla `pop_demand.wheat` consumes the location coefficient.
+
+## TECH-01 boundary
+
+Still not proven:
+
+```txt
+vanilla live Pop requested consumption reads the ModeU5 location coefficient
+monthly vanilla Pop demand feeds the intended location × good US-10.3 counters
+all-good integration is safe
+```
+
+TECH-01 #039 remains `NOT_CONFIRMED`.
+
+## Separate full-revalidation tail
+
+The earlier repository-wide chain entered:
+
+```txt
+us17_us20_route_reconciliation
+```
+
+without emitting its terminal marker or `main_revalidation_summary`. This remains separate from the accepted annual US-04 fixture and from the new US-04 runtime probes.
+
+## Separate US-09 observation
+
+The earlier command sequence generated 25 US-09 building overrides on the first pass and 26 on an install-triggered pass. This remains a separate generation-order observation.
+
+## Current PR #69 status
+
+```txt
+Annual fixture arithmetic:                  PASS
+Annual fixture counter reset:               PASS
+Versioned world initialization:             IMPLEMENTED / RUNTIME PENDING
+Missing-state vanilla fallback:             IMPLEMENTED / RUNTIME PENDING
+Wheat Pop.location endpoint:                IMPLEMENTED / RUNTIME PENDING
+Vanilla wheat market-demand response:       IMPLEMENTED / RUNTIME PENDING
+Live US-10.3 location outcome handoff:       NOT_CONFIRMED
+All-good live integration:                  DEFERRED
+TECH-01 #039:                               NOT_CONFIRMED
+PR #69 complete runtime acceptance:         PENDING
 ```

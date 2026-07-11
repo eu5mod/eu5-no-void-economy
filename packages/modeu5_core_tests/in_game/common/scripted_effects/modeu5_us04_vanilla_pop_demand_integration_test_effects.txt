@@ -1,0 +1,206 @@
+# Destructive disposable-save probe for the second live-integration obligation:
+# the wheat-only exact-path pop_demand probe must make vanilla market Pop demand
+# react to a location × wheat ModeU5 multiplier.
+
+modeu5_us04_live_clear_probe_state = {
+	remove_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_passed
+	remove_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_failed
+	remove_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_blocked
+	remove_global_variable = modeu5_us04_live_original_marker_present
+	remove_global_variable = modeu5_us04_live_original_multiplier_present
+	remove_global_variable = modeu5_us04_live_original_multiplier
+	remove_global_variable = modeu5_us04_live_original_init_version_present
+	remove_global_variable = modeu5_us04_live_original_init_version
+	remove_global_variable = modeu5_us04_live_low_demand
+	remove_global_variable = modeu5_us04_live_high_demand
+	clear_saved_scope = modeu5_us04_live_test_location
+	clear_saved_scope = modeu5_us04_live_test_market
+}
+
+modeu5_us04_live_capture_original_state = {
+	if = {
+		limit = { has_global_variable = modeu5_pop_demand_live_integration_enabled }
+		set_global_variable = modeu5_us04_live_original_marker_present
+	}
+	if = {
+		limit = { has_global_variable = modeu5_us04_multiplier_initialization_version }
+		set_global_variable = modeu5_us04_live_original_init_version_present
+		set_global_variable = {
+			name = modeu5_us04_live_original_init_version
+			value = global_var:modeu5_us04_multiplier_initialization_version
+		}
+	}
+
+	capital = { save_scope_as = modeu5_us04_live_test_location }
+	capital.market = { save_scope_as = modeu5_us04_live_test_market }
+
+	scope:modeu5_us04_live_test_location = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+			set_global_variable = modeu5_us04_live_original_multiplier_present
+			save_temporary_scope_value_as = {
+				name = modeu5_us04_live_original_multiplier_value
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:wheat)"
+			}
+			set_global_variable = {
+				name = modeu5_us04_live_original_multiplier
+				value = scope:modeu5_us04_live_original_multiplier_value
+			}
+		}
+	}
+}
+
+modeu5_us04_live_write_wheat_multiplier = {
+	scope:modeu5_us04_live_test_location = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+			remove_from_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				key = goods:wheat
+			}
+		}
+		add_to_variable_map = {
+			name = modeu5_pop_demand_multiplier
+			key = goods:wheat
+			value = $value$
+		}
+	}
+}
+
+modeu5_us04_live_restore_probe_state = {
+	scope:modeu5_us04_live_test_location = {
+		if = {
+			limit = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+			remove_from_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				key = goods:wheat
+			}
+		}
+		if = {
+			limit = { has_global_variable = modeu5_us04_live_original_multiplier_present }
+			add_to_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				key = goods:wheat
+				value = global_var:modeu5_us04_live_original_multiplier
+			}
+		}
+	}
+
+	remove_global_variable = modeu5_pop_demand_live_integration_enabled
+	if = {
+		limit = { has_global_variable = modeu5_us04_live_original_marker_present }
+		set_global_variable = modeu5_pop_demand_live_integration_enabled
+	}
+
+	remove_global_variable = modeu5_us04_multiplier_initialization_version
+	if = {
+		limit = { has_global_variable = modeu5_us04_live_original_init_version_present }
+		set_global_variable = {
+			name = modeu5_us04_multiplier_initialization_version
+			value = global_var:modeu5_us04_live_original_init_version
+		}
+	}
+	clear_saved_scope = modeu5_us04_live_test_location
+	clear_saved_scope = modeu5_us04_live_test_market
+}
+
+modeu5_us04_live_begin_vanilla_integration_probe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_vanilla_pop_demand_integration"
+	modeu5_us04_live_clear_probe_state = yes
+
+	if = {
+		limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+		set_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_vanilla_pop_demand_integration reason=economy_package_not_loaded"
+	}
+	else = {
+		modeu5_us04_live_capture_original_state = yes
+		set_global_variable = modeu5_pop_demand_live_integration_enabled
+		set_global_variable = {
+			name = modeu5_us04_multiplier_initialization_version
+			value = 1
+		}
+		modeu5_us04_live_write_wheat_multiplier = { value = 1.0 }
+	}
+}
+
+modeu5_us04_live_capture_low_demand_and_raise_multiplier = {
+	scope:modeu5_us04_live_test_market = {
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_live_current_market_demand
+			value = "goods_demand_in_market(goods:wheat)"
+		}
+	}
+	set_global_variable = {
+		name = modeu5_us04_live_low_demand
+		value = scope:modeu5_us04_live_current_market_demand
+	}
+	modeu5_us04_live_write_wheat_multiplier = { value = 4.0 }
+}
+
+modeu5_us04_live_finalize_vanilla_integration_probe = {
+	scope:modeu5_us04_live_test_market = {
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_live_current_market_demand
+			value = "goods_demand_in_market(goods:wheat)"
+		}
+	}
+	set_global_variable = {
+		name = modeu5_us04_live_high_demand
+		value = scope:modeu5_us04_live_current_market_demand
+	}
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_minimum_expected_high
+		value = {
+			value = global_var:modeu5_us04_live_low_demand
+			add = 0.0001
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_demand_delta
+		value = {
+			value = global_var:modeu5_us04_live_high_demand
+			subtract = global_var:modeu5_us04_live_low_demand
+		}
+	}
+	set_variable = { name = modeu5_us04_live_ui_low value = global_var:modeu5_us04_live_low_demand }
+	set_variable = { name = modeu5_us04_live_ui_high value = global_var:modeu5_us04_live_high_demand }
+	set_variable = { name = modeu5_us04_live_ui_delta value = scope:modeu5_us04_live_demand_delta }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP wheat_low_multiplier=1.0000 demand_low=[THIS.GetVariable('modeu5_us04_live_ui_low').GetValue|4] wheat_high_multiplier=4.0000 demand_high=[THIS.GetVariable('modeu5_us04_live_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_live_ui_delta').GetValue|4]"
+
+	if = {
+		limit = {
+			global_var:modeu5_us04_live_high_demand > scope:modeu5_us04_live_minimum_expected_high
+		}
+		set_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_passed
+		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT integrated_pop_demand PASS"
+		debug_log = "ModeU5 TEST PASS scenario=us04_vanilla_pop_demand_integration"
+	}
+	else = {
+		set_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_failed
+		debug_log = "ModeU5 US-04 VANILLA DEMAND FAIL_REASON reason=market_demand_did_not_increase_after_local_multiplier"
+		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT integrated_pop_demand FAIL"
+		debug_log = "ModeU5 TEST FAIL scenario=us04_vanilla_pop_demand_integration"
+	}
+
+	modeu5_us04_live_restore_probe_state = yes
+}

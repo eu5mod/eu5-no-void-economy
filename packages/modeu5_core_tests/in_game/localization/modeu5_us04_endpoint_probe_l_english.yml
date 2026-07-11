@@ -1,0 +1,4 @@
+﻿l_english:
+ modeu5_us04_debug.1.b: "Probe live Pop-demand location multiplier endpoint"
+ modeu5_us04_debug.1.c: "Probe vanilla Pop demand response (disposable save)"
+ modeu5_us04_debug.1.d: "Probe new-campaign 1.20 multiplier initialization"

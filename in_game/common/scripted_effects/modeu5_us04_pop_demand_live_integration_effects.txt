@@ -1,0 +1,52 @@
+# US-04 live vanilla Pop-demand integration support.
+#
+# The vanilla pop_demand coefficients are evaluated from Pop scope. The CMM map
+# is refreshed from country scope into one global marker. The actual multiplier
+# state is initialized once per new campaign for every location × supported good.
+
+modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = {
+	remove_global_variable = modeu5_pop_demand_live_integration_enabled
+	if = {
+		limit = {
+			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+		}
+		set_global_variable = modeu5_pop_demand_live_integration_enabled
+	}
+}
+
+# Versioned saved-state initialization. The version is written only after the
+# complete world-location pass. A missing/older gate causes one initialization
+# attempt on a new campaign; normal yearly runtime never recreates missing keys.
+modeu5_run_pop_demand_multiplier_initialization_v1 = {
+	every_location = {
+		modeu5_initialize_pop_demand_multiplier_all_goods = yes
+	}
+	set_global_variable = {
+		name = modeu5_us04_multiplier_initialization_version
+		value = 1
+	}
+}
+
+modeu5_initialize_pop_demand_multipliers_once = {
+	if = {
+		limit = {
+			modeu5_economy_rebalance_loaded_trigger = yes
+			NOT = { has_global_variable = modeu5_us04_multiplier_initialization_version }
+		}
+		modeu5_run_pop_demand_multiplier_initialization_v1 = yes
+	}
+	else_if = {
+		limit = {
+			modeu5_economy_rebalance_loaded_trigger = yes
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version < 1
+		}
+		modeu5_run_pop_demand_multiplier_initialization_v1 = yes
+	}
+}
+
+# Generated CMM setting callback. Configuration is campaign-fixed, but keeping
+# the marker synchronized also supports deterministic test toggles.
+no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings_on_changed = {
+	modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
+}

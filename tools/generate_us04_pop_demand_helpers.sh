@@ -86,6 +86,15 @@ for good in goods:
 
 lines.extend(
     [
+        "modeu5_initialize_pop_demand_multiplier_all_goods = {",
+    ]
+)
+for good in goods:
+    lines.append(f"\tmodeu5_initialize_pop_demand_multiplier_good_{good} = yes")
+lines.extend(["}", ""])
+
+lines.extend(
+    [
         "modeu5_annual_adjust_location_pop_demand_all_goods = {",
     ]
 )
