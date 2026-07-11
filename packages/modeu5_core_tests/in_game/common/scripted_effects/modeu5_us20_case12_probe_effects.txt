@@ -83,6 +83,36 @@ modeu5_us20_case12_probe_cleanup_country_stock_fixture = {
 	}
 }
 
+modeu5_us20_case12_probe_poison_stored_receiver_capacity_fixture = {
+	# First-run logs showed the allocator case could be stained by an inherited
+	# explicit receiver that was still capacity-eligible in FRA's market. Force the
+	# deliberate stored receiver above capacity so the selector must reject it and
+	# fall through to the allocator candidate path.
+	if = {
+		limit = { country_exists = c:ENG }
+		modeu5_add_stock = {
+			country = c:ENG
+			market = c:FRA.capital.market
+			good = wheat
+			quantity = 1000000
+			capacity_policy = allow_over_capacity
+		}
+	}
+}
+
+modeu5_us20_case12_probe_cleanup_poisoned_receiver_fixture = {
+	if = {
+		limit = { country_exists = c:ENG }
+		modeu5_remove_stock = {
+			country = c:ENG
+			market = c:FRA.capital.market
+			good = wheat
+			quantity = 1000000
+			reason = debug_test
+		}
+	}
+}
+
 modeu5_us20_case12_probe_seed_without_explicit_receiver = {
 	c:FRA = {
 		save_temporary_scope_as = modeu5_trade_owner_controller_country
@@ -163,6 +193,15 @@ modeu5_us20_case12_probe_run_trade_owner_receiver = {
 
 modeu5_us20_case12_probe_run_allocator_receiver = {
 	modeu5_us20_case12_probe_seed_without_explicit_receiver = yes
+	# EU5 temporary receiver scopes can remain visible after a previous route/test.
+	# For allocator proof, deliberately override any inherited explicit receiver with
+	# c:ENG, then make c:ENG capacity-ineligible in the target market. This keeps the
+	# probe deterministic even when previous runs left a capacity-eligible receiver.
+	if = {
+		limit = { country_exists = c:ENG }
+		c:ENG = { save_temporary_scope_as = modeu5_us20_receiving_country }
+	}
+	modeu5_us20_case12_probe_poison_stored_receiver_capacity_fixture = yes
 	save_temporary_scope_value_as = { name = modeu5_us20_test_origin_market_promoted value = $origin_promoted$ }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_target_market_promoted value = 1 }
 	save_temporary_scope_value_as = { name = modeu5_us20_test_trade_owner_present_in_target_market value = 0 }
@@ -180,6 +219,7 @@ modeu5_us20_case12_probe_run_allocator_receiver = {
 		modeu5_us20_case12_probe_note_failure = yes
 		error_log = "ModeU5 US20 CASE12 ASSERT FAIL assertion=allocator_receiver_expected_negative_goods_delta category=hard_failure"
 	}
+	modeu5_us20_case12_probe_cleanup_poisoned_receiver_fixture = yes
 }
 
 modeu5_debug_run_us20_case12_market_loss_probe = {
@@ -214,17 +254,19 @@ modeu5_debug_run_us20_case12_market_loss_probe = {
 		modeu5_us20_case12_probe_run_one = { origin_promoted = 1 target_promoted = 0 }
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 
-		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case3_explicit_receiver origin_promoted=0 destination_promoted=1 expected=explicit_receiver_plus_country_loss"
-		modeu5_us20_case12_probe_add_supply_fixture = yes
-		modeu5_us20_case12_probe_add_country_stock_fixture = yes
-		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 target_promoted = 1 }
-		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
-		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
-
+		# Keep allocator before the explicit-receiver case: temporary receiver scopes can
+		# remain visible inside the same scripted-effect chain after case3.
 		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case5_allocator_receiver origin_promoted=0 destination_promoted=1 expected=allocator_receiver_plus_country_loss"
 		modeu5_us20_case12_probe_add_supply_fixture = yes
 		modeu5_us20_case12_probe_add_country_stock_fixture = yes
 		modeu5_us20_case12_probe_run_allocator_receiver = { origin_promoted = 0 }
+		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
+		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
+
+		debug_log = "ModeU5 US20 CASE12 AUDIT CHECK phase=case3_explicit_receiver origin_promoted=0 destination_promoted=1 expected=explicit_receiver_plus_country_loss"
+		modeu5_us20_case12_probe_add_supply_fixture = yes
+		modeu5_us20_case12_probe_add_country_stock_fixture = yes
+		modeu5_us20_case12_probe_run_one = { origin_promoted = 0 target_promoted = 1 }
 		modeu5_us20_case12_probe_cleanup_country_stock_fixture = yes
 		modeu5_us20_case12_probe_cleanup_supply_fixture = yes
 

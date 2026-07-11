@@ -12,6 +12,7 @@ usage() {
 	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
 	printf '\n'
 	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
+	printf 'Install mode removes each existing ModeU5 package directory before copying.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
 
@@ -118,10 +119,31 @@ normalize_eu5_text_encoding() {
 	)
 }
 
+reset_destination() {
+	local destination="$1"
+	local package_name
+
+	package_name="$(basename "$destination")"
+	case "$package_name" in
+		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests)
+			;;
+		*)
+			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
+			exit 1
+			;;
+	esac
+
+	# Removing the whole package root is intentional. rsync --delete only cleans
+	# within copied subdirectories and otherwise leaves stale files from previous
+	# layouts, generated adapters, or packages, causing duplicate database keys.
+	rm -rf -- "$destination"
+	mkdir -p "$destination"
+}
+
 install_core() {
 	local destination="$target_root/modeu5_core"
 
-	mkdir -p "$destination"
+	reset_destination "$destination"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/.metadata/" "$destination/.metadata/"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/in_game/" "$destination/in_game/"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/main_menu/" "$destination/main_menu/"
@@ -134,7 +156,7 @@ install_companion() {
 	local source="$1"
 	local destination="$2"
 
-	mkdir -p "$destination"
+	reset_destination "$destination"
 	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"

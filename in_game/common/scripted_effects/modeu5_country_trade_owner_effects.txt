@@ -31,6 +31,12 @@
 # This preserves the #161 Q8.7 boundary: no market-scope every_trade loop is
 # introduced. The hook is dormant unless the CMM trade-rework setting enables
 # modeu5_trade_rework_enabled_trigger.
+#
+# US-17 owner-modifier rule:
+# - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are read
+#   from the saved trade owner country;
+# - the scheduler country and market-center owner are never used as substitutes;
+# - unresolved route prices/base-maintenance/income surfaces remain fail-closed.
 
 modeu5_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = modeu5_country_trade_owner_pass_runs
@@ -197,7 +203,12 @@ modeu5_run_monthly_country_trade_owner_cycle = {
 			scope:modeu5_trade_owner_country = {
 				if = {
 					limit = { modeu5_trade_rework_enabled_trigger = yes }
-					modeu5_run_us17_us20_route_reconciliation = yes
+					# Country modifier inputs are live and confirmed here. Route prices,
+					# export cost, base maintenance and visible income/profit remain
+					# explicit fail-closed inputs until their route surfaces are proven.
+					modeu5_capture_trade_owner_country_modifier_inputs = yes
+					save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 0 }
+					modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
 				}
 			}
 		}

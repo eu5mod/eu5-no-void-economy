@@ -9,7 +9,8 @@ dry_run="no"
 usage() {
 	printf 'Usage: %s [--dry-run] [--logs-dir PATH]\n' "$0"
 	printf '\n'
-	printf 'Truncates only error.log and game.log in the EU5 logs directory.\n'
+	printf 'Truncates error.log, game.log, and debug.log in the EU5 logs directory.\n'
+	printf 'Rotated historical logs are left untouched; probe greps should target current files only.\n'
 	printf 'Close Europa Universalis V before running this command.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
@@ -48,6 +49,7 @@ fi
 log_names=(
 	"error.log"
 	"game.log"
+	"debug.log"
 )
 
 for log_name in "${log_names[@]}"; do
