@@ -1,0 +1,8 @@
+# US-04 injection syntax matrix — candidate 05.
+# TRY_INJECT on pop_demand, nested INJECT on the existing fish child.
+
+TRY_INJECT:pop_demand = {
+	INJECT:fish = {
+		multiply = "modeu5_us04_live_pop_demand_multiplier_fish"
+	}
+}

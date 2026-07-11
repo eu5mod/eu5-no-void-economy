@@ -63,6 +63,8 @@ modeu5_us04_debug.20 = {
 	}
 }
 
+# One menu action executes the complete additive injection syntax matrix.
+# Phase 1: force all candidate goods to neutral multiplier 1.0.
 modeu5_us04_debug.30 = {
 	type = country_event
 	outcome = neutral
@@ -73,16 +75,17 @@ modeu5_us04_debug.30 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_live_begin_vanilla_integration_probe = yes
+		modeu5_us04_matrix_begin = yes
 		if = {
 			limit = {
-				NOT = { has_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_blocked }
+				NOT = { has_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked }
 			}
 			trigger_event_non_silently = { id = modeu5_us04_debug.31 days = 2 }
 		}
 	}
 }
 
+# Phase 2: capture all low values, then force every candidate multiplier to 4.0.
 modeu5_us04_debug.31 = {
 	type = country_event
 	outcome = neutral
@@ -93,11 +96,12 @@ modeu5_us04_debug.31 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_live_capture_low_demand_and_raise_multiplier = yes
+		modeu5_us04_matrix_capture_low_and_raise = yes
 		trigger_event_non_silently = { id = modeu5_us04_debug.32 days = 2 }
 	}
 }
 
+# Phase 3: capture high values, classify each syntax, summarize, and restore state.
 modeu5_us04_debug.32 = {
 	type = country_event
 	outcome = neutral
@@ -108,7 +112,7 @@ modeu5_us04_debug.32 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_live_finalize_vanilla_integration_probe = yes
+		modeu5_us04_matrix_finalize = yes
 	}
 }
 

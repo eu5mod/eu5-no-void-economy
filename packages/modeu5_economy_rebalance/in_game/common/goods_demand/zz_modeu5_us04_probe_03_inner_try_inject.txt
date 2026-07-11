@@ -1,0 +1,8 @@
+# US-04 injection syntax matrix — candidate 03.
+# Outer INJECT on pop_demand, nested TRY_INJECT on the existing cloth child.
+
+INJECT:pop_demand = {
+	TRY_INJECT:cloth = {
+		multiply = "modeu5_us04_live_pop_demand_multiplier_cloth"
+	}
+}

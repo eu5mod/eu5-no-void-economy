@@ -10,7 +10,7 @@ expected_mode="${MODEU5_EXPECTED_SCENARIOS:-full}"
 usage() {
 	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|none]\n' "$0"
 	printf '\n'
-	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 adaptation/initialization/endpoint diagnostics, and CORE-04 topology diagnostics.\n'
+	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
 	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
@@ -107,7 +107,7 @@ grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us10ui_file" || true
 
-grep -hE 'ModeU5 US-04 (DUMP|FAIL_REASON|RESULT|INITIALIZATION (DUMP|FAIL_REASON|RESULT)|ENDPOINT (DUMP|FAIL_REASON|RESULT)|VANILLA DEMAND (DUMP|FAIL_REASON|RESULT))' "$all_lines_file" \
+grep -hE 'ModeU5 US-04 (DUMP|FAIL_REASON|RESULT|INITIALIZATION (DUMP|FAIL_REASON|RESULT)|ENDPOINT (DUMP|FAIL_REASON|RESULT)|VANILLA DEMAND (DUMP|FAIL_REASON|RESULT)|INJECTION (CANDIDATE|RESULT|MATRIX|MATRIX SUMMARY))' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us04_file" || true
 
