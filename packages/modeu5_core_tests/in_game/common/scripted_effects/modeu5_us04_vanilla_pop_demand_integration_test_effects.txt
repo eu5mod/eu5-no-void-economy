@@ -1,6 +1,7 @@
-# Destructive disposable-save probe for the second live-integration obligation:
-# the wheat-only exact-path pop_demand probe must make vanilla market Pop demand
-# react to a location × wheat ModeU5 multiplier.
+# Destructive disposable-save probe for the injection-only wheat integration.
+# The probe distinguishes a useful nested merge from obvious rejection/replacement
+# symptoms: wheat demand must remain positive, respond to the local multiplier,
+# and an uninjected control good (beer) must remain stable.
 
 modeu5_us04_live_clear_probe_state = {
 	remove_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_passed
@@ -13,8 +14,20 @@ modeu5_us04_live_clear_probe_state = {
 	remove_global_variable = modeu5_us04_live_original_init_version
 	remove_global_variable = modeu5_us04_live_low_demand
 	remove_global_variable = modeu5_us04_live_high_demand
+	remove_global_variable = modeu5_us04_live_beer_low_demand
+	remove_global_variable = modeu5_us04_live_beer_high_demand
 	clear_saved_scope = modeu5_us04_live_test_location
 	clear_saved_scope = modeu5_us04_live_test_market
+}
+
+modeu5_us04_live_note_failure = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_failure_count
+		value = {
+			value = scope:modeu5_us04_live_failure_count
+			add = 1
+		}
+	}
 }
 
 modeu5_us04_live_capture_original_state = {
@@ -145,27 +158,44 @@ modeu5_us04_live_begin_vanilla_integration_probe = {
 modeu5_us04_live_capture_low_demand_and_raise_multiplier = {
 	scope:modeu5_us04_live_test_market = {
 		save_temporary_scope_value_as = {
-			name = modeu5_us04_live_current_market_demand
+			name = modeu5_us04_live_current_wheat_demand
 			value = "goods_demand_in_market(goods:wheat)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_live_current_beer_demand
+			value = "goods_demand_in_market(goods:beer)"
 		}
 	}
 	set_global_variable = {
 		name = modeu5_us04_live_low_demand
-		value = scope:modeu5_us04_live_current_market_demand
+		value = scope:modeu5_us04_live_current_wheat_demand
+	}
+	set_global_variable = {
+		name = modeu5_us04_live_beer_low_demand
+		value = scope:modeu5_us04_live_current_beer_demand
 	}
 	modeu5_us04_live_write_wheat_multiplier = { value = 4.0 }
 }
 
 modeu5_us04_live_finalize_vanilla_integration_probe = {
+	save_temporary_scope_value_as = { name = modeu5_us04_live_failure_count value = 0 }
 	scope:modeu5_us04_live_test_market = {
 		save_temporary_scope_value_as = {
-			name = modeu5_us04_live_current_market_demand
+			name = modeu5_us04_live_current_wheat_demand
 			value = "goods_demand_in_market(goods:wheat)"
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_live_current_beer_demand
+			value = "goods_demand_in_market(goods:beer)"
 		}
 	}
 	set_global_variable = {
 		name = modeu5_us04_live_high_demand
-		value = scope:modeu5_us04_live_current_market_demand
+		value = scope:modeu5_us04_live_current_wheat_demand
+	}
+	set_global_variable = {
+		name = modeu5_us04_live_beer_high_demand
+		value = scope:modeu5_us04_live_current_beer_demand
 	}
 
 	save_temporary_scope_value_as = {
@@ -176,29 +206,72 @@ modeu5_us04_live_finalize_vanilla_integration_probe = {
 		}
 	}
 	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_beer_minimum_expected
+		value = {
+			value = global_var:modeu5_us04_live_beer_low_demand
+			subtract = 0.0001
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_beer_maximum_expected
+		value = {
+			value = global_var:modeu5_us04_live_beer_low_demand
+			add = 0.0001
+		}
+	}
+	save_temporary_scope_value_as = {
 		name = modeu5_us04_live_demand_delta
 		value = {
 			value = global_var:modeu5_us04_live_high_demand
 			subtract = global_var:modeu5_us04_live_low_demand
 		}
 	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_live_beer_delta
+		value = {
+			value = global_var:modeu5_us04_live_beer_high_demand
+			subtract = global_var:modeu5_us04_live_beer_low_demand
+		}
+	}
+
+	if = {
+		limit = { global_var:modeu5_us04_live_low_demand <= 0.0001 }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND FAIL_REASON reason=wheat_baseline_nonpositive_possible_nested_replacement"
+		modeu5_us04_live_note_failure = yes
+	}
+	if = {
+		limit = { global_var:modeu5_us04_live_high_demand <= scope:modeu5_us04_live_minimum_expected_high }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND FAIL_REASON reason=wheat_demand_did_not_increase_after_local_multiplier"
+		modeu5_us04_live_note_failure = yes
+	}
+	if = {
+		limit = {
+			OR = {
+				global_var:modeu5_us04_live_beer_high_demand < scope:modeu5_us04_live_beer_minimum_expected
+				global_var:modeu5_us04_live_beer_high_demand > scope:modeu5_us04_live_beer_maximum_expected
+			}
+		}
+		debug_log = "ModeU5 US-04 VANILLA DEMAND FAIL_REASON reason=uninjected_beer_control_changed"
+		modeu5_us04_live_note_failure = yes
+	}
+
 	set_variable = { name = modeu5_us04_live_ui_low value = global_var:modeu5_us04_live_low_demand }
 	set_variable = { name = modeu5_us04_live_ui_high value = global_var:modeu5_us04_live_high_demand }
 	set_variable = { name = modeu5_us04_live_ui_delta value = scope:modeu5_us04_live_demand_delta }
-	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP wheat_low_multiplier=1.0000 demand_low=[THIS.GetVariable('modeu5_us04_live_ui_low').GetValue|4] wheat_high_multiplier=4.0000 demand_high=[THIS.GetVariable('modeu5_us04_live_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_live_ui_delta').GetValue|4]"
+	set_variable = { name = modeu5_us04_live_ui_beer_low value = global_var:modeu5_us04_live_beer_low_demand }
+	set_variable = { name = modeu5_us04_live_ui_beer_high value = global_var:modeu5_us04_live_beer_high_demand }
+	set_variable = { name = modeu5_us04_live_ui_beer_delta value = scope:modeu5_us04_live_beer_delta }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP injection_mode=INJECT wheat_low_multiplier=1.0000 wheat_low=[THIS.GetVariable('modeu5_us04_live_ui_low').GetValue|4] wheat_high_multiplier=4.0000 wheat_high=[THIS.GetVariable('modeu5_us04_live_ui_high').GetValue|4] wheat_delta=[THIS.GetVariable('modeu5_us04_live_ui_delta').GetValue|4] beer_low=[THIS.GetVariable('modeu5_us04_live_ui_beer_low').GetValue|4] beer_high=[THIS.GetVariable('modeu5_us04_live_ui_beer_high').GetValue|4] beer_delta=[THIS.GetVariable('modeu5_us04_live_ui_beer_delta').GetValue|4]"
 
 	if = {
-		limit = {
-			global_var:modeu5_us04_live_high_demand > scope:modeu5_us04_live_minimum_expected_high
-		}
+		limit = { scope:modeu5_us04_live_failure_count = 0 }
 		set_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_passed
-		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT integrated_pop_demand PASS"
+		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT injection_nested_merge_candidate PASS"
 		debug_log = "ModeU5 TEST PASS scenario=us04_vanilla_pop_demand_integration"
 	}
 	else = {
 		set_global_variable = modeu5_test_us04_vanilla_pop_demand_integration_failed
-		debug_log = "ModeU5 US-04 VANILLA DEMAND FAIL_REASON reason=market_demand_did_not_increase_after_local_multiplier"
-		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT integrated_pop_demand FAIL"
+		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT injection_nested_merge_candidate FAIL"
 		debug_log = "ModeU5 TEST FAIL scenario=us04_vanilla_pop_demand_integration"
 	}
 
