@@ -91,6 +91,17 @@ lines.extend(
 )
 for good in goods:
     lines.append(f"\tmodeu5_initialize_pop_demand_multiplier_good_{good} = yes")
+for good in goods:
+    lines.append(f"\tmodeu5_initialize_us04_reconciliation_coefficient_good_{good} = yes")
+lines.extend(["}", ""])
+
+lines.extend(
+    [
+        "modeu5_initialize_us04_reconciliation_coefficient_all_goods = {",
+    ]
+)
+for good in goods:
+    lines.append(f"\tmodeu5_initialize_us04_reconciliation_coefficient_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
@@ -100,6 +111,15 @@ lines.extend(
 )
 for good in goods:
     lines.append(f"\tmodeu5_annual_adjust_location_pop_demand_good_{good} = yes")
+lines.extend(["}", ""])
+
+lines.extend(
+    [
+        "modeu5_monthly_reconcile_location_pop_demand_all_goods = {",
+    ]
+)
+for good in goods:
+    lines.append(f"\tmodeu5_monthly_reconcile_location_pop_demand_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(

@@ -1,4 +1,7 @@
 modeu5_initialize_pop_demand_multiplier_good___GOOD__ = {
+	# Legacy PR69 vanilla-injection coefficient. EU5 1.2+ runtime probes showed
+	# that scripts cannot update engine pop_demand x good reliably, but the
+	# versioned seed remains as archived experimental state.
 	if = {
 		limit = {
 			NOT = {
@@ -19,10 +22,31 @@ modeu5_initialize_pop_demand_multiplier_good___GOOD__ = {
 	}
 }
 
+modeu5_initialize_us04_reconciliation_coefficient_good___GOOD__ = {
+	if = {
+		limit = {
+			NOT = {
+				AND = {
+					has_variable_map = modeu5_us04_reconciliation_coefficient
+					is_key_in_variable_map = {
+						name = modeu5_us04_reconciliation_coefficient
+						target = goods:__GOOD__
+					}
+				}
+			}
+		}
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_coefficient
+			key = goods:__GOOD__
+			value = "modeu5_pop_demand_base_consumption_multiplier"
+		}
+	}
+}
+
 modeu5_get_pop_demand_multiplier_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_multiplier_present value = 0 }
-	# Missing or invalid ModeU5 state must fall back to multiplier 1, which leaves
-	# the complete vanilla Pop-demand coefficient unchanged.
+	# Missing or invalid legacy state must fall back to multiplier 1, which
+	# leaves the complete vanilla Pop-demand coefficient unchanged.
 	save_temporary_scope_value_as = { name = modeu5_us04_old_multiplier value = 1 }
 	if = {
 		limit = {
@@ -37,6 +61,28 @@ modeu5_get_pop_demand_multiplier_good___GOOD__ = {
 			name = modeu5_us04_old_multiplier
 			value = {
 				value = "variable_map(modeu5_pop_demand_multiplier|goods:__GOOD__)"
+				min = 0.0001
+			}
+		}
+	}
+}
+
+modeu5_get_us04_reconciliation_coefficient_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_coefficient_present value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_coefficient_value value = 1 }
+	if = {
+		limit = {
+			has_variable_map = modeu5_us04_reconciliation_coefficient
+			is_key_in_variable_map = {
+				name = modeu5_us04_reconciliation_coefficient
+				target = goods:__GOOD__
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_coefficient_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_reconciliation_coefficient_value
+			value = {
+				value = "variable_map(modeu5_us04_reconciliation_coefficient|goods:__GOOD__)"
 				min = 0.0001
 			}
 		}
@@ -74,6 +120,26 @@ modeu5_read_pop_demand_annual_counters_good___GOOD__ = {
 	}
 }
 
+modeu5_read_us04_monthly_pop_requested_quantity_good___GOOD__ = {
+	save_temporary_scope_value_as = { name = modeu5_us04_monthly_requested_quantity value = 0 }
+	if = {
+		limit = {
+			has_variable_map = modeu5_pop_demand_requested_quantity
+			is_key_in_variable_map = {
+				name = modeu5_pop_demand_requested_quantity
+				target = goods:__GOOD__
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_monthly_requested_quantity
+			value = {
+				value = "variable_map(modeu5_pop_demand_requested_quantity|goods:__GOOD__)"
+				min = 0
+			}
+		}
+	}
+}
+
 modeu5_write_pop_demand_multiplier_good___GOOD__ = {
 	save_temporary_scope_value_as = {
 		name = modeu5_us04_multiplier_to_write
@@ -99,6 +165,34 @@ modeu5_write_pop_demand_multiplier_good___GOOD__ = {
 		name = modeu5_pop_demand_multiplier
 		key = goods:__GOOD__
 		value = scope:modeu5_us04_multiplier_to_write
+	}
+}
+
+modeu5_write_us04_reconciliation_coefficient_good___GOOD__ = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_reconciliation_coefficient_to_write
+		value = {
+			value = $value$
+			min = 0.0001
+		}
+	}
+	if = {
+		limit = {
+			has_variable_map = modeu5_us04_reconciliation_coefficient
+			is_key_in_variable_map = {
+				name = modeu5_us04_reconciliation_coefficient
+				target = goods:__GOOD__
+			}
+		}
+		remove_from_variable_map = {
+			name = modeu5_us04_reconciliation_coefficient
+			key = goods:__GOOD__
+		}
+	}
+	add_to_variable_map = {
+		name = modeu5_us04_reconciliation_coefficient
+		key = goods:__GOOD__
+		value = scope:modeu5_us04_reconciliation_coefficient_to_write
 	}
 }
 
@@ -165,16 +259,139 @@ modeu5_set_pop_demand_annual_counters_good___GOOD__ = {
 	}
 }
 
+modeu5_us04_clear_monthly_reconciliation_record_good___GOOD__ = {
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_requested_quantity key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_extra_quantity key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_removed_quantity key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_charge_proxy is_key_in_variable_map = { name = modeu5_us04_reconciliation_charge_proxy target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_charge_proxy key = goods:__GOOD__ } }
+}
+
+modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
+	modeu5_us04_clear_monthly_reconciliation_record_good___GOOD__ = yes
+	if = {
+		limit = { scope:modeu5_us04_monthly_requested_quantity > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_requested_quantity
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_monthly_requested_quantity
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_extra_reconciliation_quantity > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_extra_quantity
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_extra_reconciliation_quantity
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_actual_reconciled_quantity > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_removed_quantity
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_actual_reconciled_quantity
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_unsatisfied_reconciliation_quantity > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_unsatisfied_quantity
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_unsatisfied_reconciliation_quantity
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_charge_proxy_value > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_charge_proxy
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_charge_proxy_value
+		}
+	}
+}
+
+modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
+	save_temporary_scope_as = modeu5_us04_reconciliation_location
+	owner ?= { save_temporary_scope_as = modeu5_us04_reconciliation_country }
+	market = { save_temporary_scope_as = modeu5_us04_reconciliation_market }
+
+	modeu5_get_us04_reconciliation_coefficient_good___GOOD__ = yes
+	modeu5_read_us04_monthly_pop_requested_quantity_good___GOOD__ = yes
+
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_reconciliation_delta_ratio
+		value = {
+			value = scope:modeu5_us04_reconciliation_coefficient_value
+			subtract = 1
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_extra_reconciliation_quantity
+		value = {
+			value = scope:modeu5_us04_monthly_requested_quantity
+			multiply = scope:modeu5_us04_reconciliation_delta_ratio
+			min = 0
+		}
+	}
+	save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_us04_extra_reconciliation_quantity }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_good_price value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_charge_proxy_value value = 0 }
+
+	if = {
+		limit = {
+			scope:modeu5_us04_reconciliation_coefficient_present > 0
+			scope:modeu5_us04_extra_reconciliation_quantity > 0
+			exists = scope:modeu5_us04_reconciliation_country
+			exists = scope:modeu5_us04_reconciliation_market
+			# The CMM gate is checked by the country-scoped wrapper before this
+			# location-scoped helper runs. Do not read the CMM map from location scope.
+			modeu5_stock_runtime_ready_trigger = yes
+		}
+		modeu5_remove_stock = {
+			country = scope:modeu5_us04_reconciliation_country
+			market = scope:modeu5_us04_reconciliation_market
+			good = __GOOD__
+			quantity = scope:modeu5_us04_extra_reconciliation_quantity
+			reason = consumption
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = scope:modeu5_actual_removed_quantity }
+		save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_unsatisfied_quantity }
+		scope:modeu5_us04_reconciliation_market = {
+			save_temporary_scope_value_as = {
+				name = modeu5_us04_reconciliation_good_price
+				value = {
+					value = "market_price(goods:__GOOD__)"
+					min = 0
+				}
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_reconciliation_charge_proxy_value
+			value = {
+				value = scope:modeu5_us04_actual_reconciled_quantity
+				multiply = scope:modeu5_us04_reconciliation_good_price
+				min = 0
+			}
+		}
+	}
+
+	modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = yes
+}
+
 modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
 	modeu5_get_pop_demand_multiplier_good___GOOD__ = yes
+	modeu5_get_us04_reconciliation_coefficient_good___GOOD__ = yes
 	modeu5_read_pop_demand_annual_counters_good___GOOD__ = yes
 
-	# Annual adaptation is allowed only for a record created by the one-time
-	# campaign initialization. A missing record is never recreated here; the live
-	# consumer consequently falls back to vanilla multiplier 1.
 	if = {
-		limit = { scope:modeu5_us04_multiplier_present > 0 }
-		save_temporary_scope_value_as = { name = modeu5_us04_new_multiplier value = scope:modeu5_us04_old_multiplier }
+		limit = { scope:modeu5_us04_reconciliation_coefficient_present > 0 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_new_reconciliation_coefficient
+			value = scope:modeu5_us04_reconciliation_coefficient_value
+		}
 		save_temporary_scope_value_as = { name = modeu5_us04_adjustment_applied value = 0 }
 
 		if = {
@@ -183,9 +400,9 @@ modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
 				scope:modeu5_us04_unsatisfied_months = 0
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_us04_new_multiplier
+				name = modeu5_us04_new_reconciliation_coefficient
 				value = {
-					value = scope:modeu5_us04_old_multiplier
+					value = scope:modeu5_us04_reconciliation_coefficient_value
 					multiply = 1.01
 					min = 0.0001
 				}
@@ -198,9 +415,9 @@ modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
 				scope:modeu5_us04_unsatisfied_months >= 12
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_us04_new_multiplier
+				name = modeu5_us04_new_reconciliation_coefficient
 				value = {
-					value = scope:modeu5_us04_old_multiplier
+					value = scope:modeu5_us04_reconciliation_coefficient_value
 					multiply = 0.99
 					min = 0.0001
 				}
@@ -210,8 +427,14 @@ modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
 
 		if = {
 			limit = { scope:modeu5_us04_adjustment_applied > 0 }
-			modeu5_write_pop_demand_multiplier_good___GOOD__ = {
-				value = scope:modeu5_us04_new_multiplier
+			modeu5_write_us04_reconciliation_coefficient_good___GOOD__ = {
+				value = scope:modeu5_us04_new_reconciliation_coefficient
+			}
+			if = {
+				limit = { scope:modeu5_us04_multiplier_present > 0 }
+				modeu5_write_pop_demand_multiplier_good___GOOD__ = {
+					value = scope:modeu5_us04_new_reconciliation_coefficient
+				}
 			}
 		}
 	}

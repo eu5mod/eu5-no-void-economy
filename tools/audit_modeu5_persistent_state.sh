@@ -93,7 +93,26 @@ def is_state_like(name: str) -> bool:
         "modeu5_<good>_dirty_markets",
         "modeu5_<good>_us10_sparse_suppliers",
     }
-    return name in known_lists or name in known_good_lists or name == "modeu5_<good>_market_stock"
+    known_location_good_maps = {
+        "modeu5_pop_demand_multiplier",
+        "modeu5_pop_demand_requested_quantity",
+        "modeu5_pop_demand_satisfied_months",
+        "modeu5_pop_demand_satisfied_quantity",
+        "modeu5_pop_demand_unsatisfied_months",
+        "modeu5_pop_demand_unsatisfied_quantity",
+        "modeu5_us04_reconciliation_charge_proxy",
+        "modeu5_us04_reconciliation_coefficient",
+        "modeu5_us04_reconciliation_extra_quantity",
+        "modeu5_us04_reconciliation_removed_quantity",
+        "modeu5_us04_reconciliation_requested_quantity",
+        "modeu5_us04_reconciliation_unsatisfied_quantity",
+    }
+    return (
+        name in known_lists
+        or name in known_good_lists
+        or name in known_location_good_maps
+        or name == "modeu5_<good>_market_stock"
+    )
 
 for path in files:
     text = path.read_text(encoding="utf-8")
@@ -163,6 +182,18 @@ modeu5_stock_cap_by_market	variable map	capacity source	country	capacity refresh
 modeu5_trade_<good>_requested_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 modeu5_trade_<good>_transferred_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 modeu5_trade_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
+modeu5_pop_demand_multiplier	variable map	archived probe state	location	US-04 initialization / annual debug compatibility	legacy/debug only; not active gameplay source	PR69 vanilla-demand injection probe state
+modeu5_pop_demand_requested_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_satisfied_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_unsatisfied_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_satisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly satisfaction accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
+modeu5_pop_demand_unsatisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly shortage accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
+modeu5_us04_reconciliation_coefficient	variable map	gameplay carryover	location	US-04 initialization and annual adaptation	replace when annual US-04 adaptation runs	durable location-good coefficient
+modeu5_us04_reconciliation_requested_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_extra_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_unsatisfied_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_charge_proxy	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 

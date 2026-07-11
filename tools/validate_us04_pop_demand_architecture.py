@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contracts for US-04 lifecycle, probes, and observed-current target architecture."""
+"""Static contracts for US-04 lifecycle, archived probes, and reconciliation fallback."""
 
 from __future__ import annotations
 
@@ -104,6 +104,9 @@ def main() -> int:
     initializer = block(template, "modeu5_initialize_pop_demand_multiplier_good___GOOD__")
     getter = block(template, "modeu5_get_pop_demand_multiplier_good___GOOD__")
     annual = block(template, "modeu5_annual_adjust_location_pop_demand_good___GOOD__")
+    reconciliation_getter = block(template, "modeu5_get_us04_reconciliation_coefficient_good___GOOD__")
+    reconciliation_initializer = block(template, "modeu5_initialize_us04_reconciliation_coefficient_good___GOOD__")
+    monthly_reconciliation = block(template, "modeu5_monthly_reconcile_location_pop_demand_good___GOOD__")
     init_root = block(integration, "modeu5_run_pop_demand_multiplier_initialization_v1")
     init_country = block(integration, "modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1")
     init_once = block(integration, "modeu5_initialize_pop_demand_multipliers_once")
@@ -112,13 +115,23 @@ def main() -> int:
     endpoint_probe = block(endpoint_adapter, "modeu5_us04_probe_live_pop_demand_multiplier_wheat")
 
     expect('value = "modeu5_pop_demand_base_consumption_multiplier"' in initializer, "US-04 initializer must explicitly seed the 1.20 baseline")
+    expect('value = "modeu5_pop_demand_base_consumption_multiplier"' in reconciliation_initializer, "US-04 reconciliation coefficient initializer must seed the 1.20 baseline")
     expect("NOT =" in initializer and "is_key_in_variable_map" in initializer, "US-04 initializer must not overwrite an existing location × good coefficient")
+    expect("NOT =" in reconciliation_initializer and "is_key_in_variable_map" in reconciliation_initializer, "US-04 reconciliation initializer must not overwrite an existing location × good coefficient")
     expect("name = modeu5_us04_old_multiplier value = 1" in getter, "US-04 missing multiplier read must fall back to 1")
     expect("modeu5_pop_demand_base_consumption_multiplier" not in getter, "US-04 getter must not synthesize 1.20 fallback")
+    expect("name = modeu5_us04_reconciliation_coefficient_value value = 1" in reconciliation_getter, "US-04 missing reconciliation coefficient must fall back to 1")
+    expect("modeu5_pop_demand_base_consumption_multiplier" not in reconciliation_getter, "US-04 reconciliation getter must not synthesize 1.20 fallback")
     expect("scope:modeu5_us04_multiplier_present > 0" in annual, "US-04 annual adaptation must require an initialized record")
+    expect("scope:modeu5_us04_reconciliation_coefficient_present > 0" in annual, "US-04 annual adaptation must require an initialized reconciliation coefficient")
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
+    expect("modeu5_write_us04_reconciliation_coefficient_good___GOOD__" in annual, "US-04 annual adaptation must update the active reconciliation coefficient")
+    expect("modeu5_remove_stock" in monthly_reconciliation and "reason = consumption" in monthly_reconciliation, "US-04 monthly reconciliation must consume stock through the centralized stock operator")
+    expect("modeu5_us04_reconciliation_charge_proxy" in monthly_reconciliation, "US-04 monthly reconciliation must record the charge proxy")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
+    expect("modeu5_initialize_us04_reconciliation_coefficient_all_goods" in helper_generator, "US-04 helper generator must emit the active reconciliation initializer")
+    expect("modeu5_monthly_reconcile_location_pop_demand_all_goods" in helper_generator, "US-04 helper generator must emit monthly reconciliation dispatch")
     expect(not has_executable_every_location(integration), "US-04 must not use invalid executable every_location effect")
     expect("set_global_variable" in init_root and "modeu5_us04_multiplier_initialization_version" in init_root, "US-04 root initializer must only mark global version")
     expect("every_owned_location = {" in init_country and "modeu5_initialize_pop_demand_multiplier_all_goods = yes" in init_country, "US-04 country initializer must traverse owned locations and seed all goods")
@@ -128,6 +141,7 @@ def main() -> int:
     expect("NOT = { has_variable = modeu5_us04_country_multiplier_initialization_version }" in init_country_once, "US-04 country initializer must have missing country-version gate")
     expect("modeu5_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 root marker must run from delayed new-campaign pulse")
     expect(on_actions.count("modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes") >= 2, "US-04 country initialization must run from monthly and yearly country pulses")
+    expect("modeu5_run_monthly_us04_reconciliation_for_current_country = yes" in on_actions, "US-04 monthly reconciliation must be wired after monthly stock cycle")
 
     combined_candidates = ""
     for candidate_id, syntax_name, good, path, outer, inner, value_ref in CANDIDATES:
@@ -198,7 +212,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 explicit probes, isolated Q9 replacement probe, and observed-current target validation passed")
+    print("ModeU5 US-04 archived probes and reconciliation fallback validation passed")
     return 0
 
 

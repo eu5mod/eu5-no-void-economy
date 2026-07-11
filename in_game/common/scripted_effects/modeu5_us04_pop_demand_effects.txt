@@ -1,8 +1,13 @@
-# US-04 annual local Pop demand adaptation.
+# US-04 annual local Pop demand adaptation and temporary stock reconciliation.
 #
 # Runtime scope: country. The yearly pulse iterates owned locations and applies
 # generated location x good helpers. The generated helpers read US-10.3 annual
 # counters, adjust sparse multipliers, then clear the counters.
+#
+# EU5 1.2+ runtime probes showed that scripted updates do not reach engine
+# pop_demand x good. The monthly reconciliation therefore consumes the extra
+# ModeU5 demand implied by the location x good reconciliation coefficient from
+# ModeU5 stock, using US-10.3 requested Pop demand as the fail-closed source.
 
 modeu5_run_yearly_pop_demand_adaptation_for_current_country = {
 	if = {
@@ -12,6 +17,31 @@ modeu5_run_yearly_pop_demand_adaptation_for_current_country = {
 		}
 		every_owned_location = {
 			modeu5_annual_adjust_location_pop_demand_all_goods = yes
+		}
+	}
+}
+
+modeu5_run_monthly_us04_reconciliation_for_current_country = {
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+		}
+		every_owned_location = {
+			modeu5_monthly_reconcile_location_pop_demand_all_goods = yes
+		}
+	}
+}
+
+modeu5_run_monthly_us04_reconciliation_for_location = {
+	$location$ = { save_temporary_scope_as = modeu5_us04_reconciliation_target_location }
+	if = {
+		limit = {
+			modeu5_stock_runtime_ready_trigger = yes
+			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+		}
+		scope:modeu5_us04_reconciliation_target_location = {
+			modeu5_monthly_reconcile_location_pop_demand_all_goods = yes
 		}
 	}
 }

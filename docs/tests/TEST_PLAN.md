@@ -1603,10 +1603,18 @@ capital location, then writes:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 ...
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 wheat_reconciliation_coefficient=1.2120 beer_multiplier=1.1880 beer_reconciliation_coefficient=1.1880 cloth_multiplier=1.2000 cloth_reconciliation_coefficient=1.2000 tools_multiplier=1.2000 tools_reconciliation_coefficient=1.2000 wheat_reconciliation_requested=100.00 wheat_reconciliation_extra=21.20 wheat_reconciliation_removed=21.20 wheat_reconciliation_unsatisfied=0.00 wheat_reconciliation_charge_proxy=...
 ModeU5 US-04 RESULT pop_demand_adaptation PASS
 ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
 ```
+
+The `*_multiplier` values are the archived PR69 vanilla-demand injection probe
+state. EU5 1.2+ rejects that path as a reliable runtime mutation, so the active
+gameplay fallback is the `modeu5_us04_reconciliation_coefficient` family.
+Monthly reconciliation reads the US-10.3 requested Pop demand for the
+location/good, removes the extra `requested * max(0, coefficient - 1)` quantity
+through `modeu5_remove_stock`, and records a proxy charge. Direct estate
+charging is not claimed until a runtime-safe hook is confirmed.
 
 The full revalidation chain also includes this scenario:
 

@@ -58,6 +58,7 @@ modeu5_monthly_stock_cycle_pulse = {
 		modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes
 		modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		modeu5_run_monthly_stock_cycle_q8_7_owner_switch = yes
+		modeu5_run_monthly_us04_reconciliation_for_current_country = yes
 		modeu5_core04_refresh_current_country_location_market_memory = yes
 	}
 }
