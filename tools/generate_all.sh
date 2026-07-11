@@ -8,6 +8,16 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repo_root/tools/modeu5_tool_lib.sh"
 modeu5_load_local_config
 
+# Remove artifacts produced by the abandoned exact-path vanilla Pop-demand
+# generator. Leaving either file in a working tree would reintroduce an override
+# or duplicate the tracked injection script value during local installation.
+obsolete_us04_override="$repo_root/packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt"
+obsolete_us04_values="$repo_root/packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_values_generated.txt"
+if [[ -f "$obsolete_us04_override" || -f "$obsolete_us04_values" ]]; then
+	rm -f "$obsolete_us04_override" "$obsolete_us04_values"
+	printf '%s\n' 'Removed obsolete generated US-04 Pop-demand override artifacts.'
+fi
+
 bash "$repo_root/tools/generate_local_runtime_config.sh"
 "$repo_root/tools/generate_stock_good_helpers.sh"
 python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
