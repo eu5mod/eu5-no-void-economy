@@ -8,8 +8,9 @@ on_game_start = {
 modeu5_start_game_stock_initialization_pulse = {
 	effect = {
 		# This delayed on-action may run from an empty/root scope. Keep country-scoped
-		# CMM reads out of this pulse; the initializer itself uses only global state
-		# and the global every_location iterator.
+		# CMM reads and location traversal out of this pulse; it only writes the
+		# global US-04 initialization version marker. Country-owned locations are
+		# initialized lazily from monthly/yearly country pulses.
 		modeu5_initialize_pop_demand_multipliers_once = yes
 		modeu5_start_game_stock_initialization_dispatcher = yes
 		modeu5_core04_refresh_all_location_market_memory = yes
@@ -54,6 +55,7 @@ modeu5_capacity_capital_moved_pulse = {
 
 modeu5_monthly_stock_cycle_pulse = {
 	effect = {
+		modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes
 		modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		modeu5_run_monthly_stock_cycle_q8_7_owner_switch = yes
 		modeu5_core04_refresh_current_country_location_market_memory = yes
@@ -68,6 +70,7 @@ modeu5_monthly_stock_reconciliation_pulse = {
 
 modeu5_yearly_pop_demand_adaptation_pulse = {
 	effect = {
+		modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes
 		modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		modeu5_run_yearly_pop_demand_adaptation_for_current_country = yes
 	}
