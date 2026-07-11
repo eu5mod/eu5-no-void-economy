@@ -107,7 +107,7 @@ grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us10ui_file" || true
 
-grep -hE 'ModeU5 US-04 (DUMP|FAIL_REASON|RESULT|INITIALIZATION (DUMP|FAIL_REASON|RESULT)|ENDPOINT (DUMP|FAIL_REASON|RESULT)|VANILLA DEMAND (DUMP|FAIL_REASON|RESULT)|INJECTION (CANDIDATE|RESULT|MATRIX|MATRIX SUMMARY))' "$all_lines_file" \
+grep -hE 'ModeU5 US-04 (DUMP|FAIL_REASON|RESULT|INITIALIZATION (DUMP|FAIL_REASON|RESULT)|ENDPOINT (DUMP|FAIL_REASON|RESULT)|VANILLA DEMAND (DUMP|FAIL_REASON|RESULT)|INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX|MATRIX SUMMARY))' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us04_file" || true
 
@@ -162,16 +162,17 @@ case "$expected_mode" in
 		expected_scenarios=(pr126_monthly_dispatcher_compare)
 		;;
 	none)
-		expected_scenarios=()
 		;;
 esac
 
 missing_scenarios=()
-for scenario in "${expected_scenarios[@]}"; do
-	if ! grep -q "scenario=${scenario}\b" "$scenario_file"; then
-		missing_scenarios+=("$scenario")
-	fi
-done
+if [[ "$expected_mode" != "none" ]]; then
+	for scenario in "${expected_scenarios[@]}"; do
+		if ! grep -q "scenario=${scenario}\b" "$scenario_file"; then
+			missing_scenarios+=("$scenario")
+		fi
+	done
+fi
 
 printf 'ModeU5 revalidation summary\n'
 printf 'Logs directory: %s\n' "$logs_dir"
@@ -222,7 +223,7 @@ if [[ -s "$scenario_file" ]]; then
 	cat "$scenario_file"
 fi
 
-if ((${#missing_scenarios[@]} > 0)); then
+if [[ "$expected_mode" != "none" && ${#missing_scenarios[@]} -gt 0 ]]; then
 	printf '\n'
 	case "$expected_mode" in
 		full) printf 'Missing expected full-revalidation scenario markers:\n' ;;
