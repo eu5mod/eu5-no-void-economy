@@ -162,6 +162,22 @@ nve__register_cmf_mod = {
 		setting_id = nve_economic_balance_design_sliders_adjustments_settings
 	}
 
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_design_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+	}
+
 	## Economic Balance (nve_economic_balance_balance_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy

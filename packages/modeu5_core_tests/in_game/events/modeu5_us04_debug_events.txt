@@ -1,0 +1,38 @@
+namespace = modeu5_us04_debug
+
+# The visible console launcher schedules a hidden continuation so debug_log runs
+# outside the console command's localization-disabled context.
+
+modeu5_us04_debug.1 = {
+	type = country_event
+	title = modeu5_us04_debug.1.title
+	desc = modeu5_us04_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us04_debug.1.a
+		trigger_event_non_silently = { id = modeu5_us04_debug.10 days = 0 }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us04_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_pop_demand_adaptation_test = yes
+	}
+}
