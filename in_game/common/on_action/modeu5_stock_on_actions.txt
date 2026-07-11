@@ -18,6 +18,12 @@ monthly_country_pulse = {
 	}
 }
 
+yearly_country_pulse = {
+	on_actions = {
+		modeu5_yearly_pop_demand_adaptation_pulse
+	}
+}
+
 on_location_changed_rank = {
 	on_actions = {
 		modeu5_capacity_location_rank_changed_pulse
@@ -52,6 +58,12 @@ modeu5_monthly_stock_cycle_pulse = {
 modeu5_monthly_stock_reconciliation_pulse = {
 	effect = {
 		modeu5_run_monthly_stock_reconciliation_once = yes
+	}
+}
+
+modeu5_yearly_pop_demand_adaptation_pulse = {
+	effect = {
+		modeu5_run_yearly_pop_demand_adaptation_for_current_country = yes
 	}
 }
 

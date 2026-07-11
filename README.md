@@ -22,7 +22,7 @@ This mod is born from the desire to fix :
 4. ✅ **Countries have own stocks**  - Country have own stocks
     - incl : ✅ **Only good that are sold generate an income**; Thus reflecting the real economy
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
-    - incl : ⏳ Economy 5% faster  - To compensate revenue loss
+    - incl : ✅ Economy 5% faster  - To compensate revenue loss
     - incl : ⏳ Redesign the economic Base
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
@@ -30,7 +30,7 @@ This mod is born from the desire to fix :
 
 #### Design
  - ⏳ Monthly goods decay (1%)
- - ⏳ Supply Influence Pop
+ - ✅ Pop consumption influenced by offer & demand
 
 #### Balance
  - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion

@@ -22,19 +22,20 @@ This mod is born from the desire to fix :
 4. ✅ **Countries have own stocks**  - Country have own stocks
     - incl : ✅ **Only good that are sold generate an income**; Thus reflecting the real economy
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
-    - incl : ⏳ Economy 5% faster  - To compensate revenue loss
+    - incl : ✅ Economy 10% faster  (To compensate revenue loss - **Beta Value to be tested**)
     - incl : ⏳ Redesign the economic Base
+    - ✅ Pop consumption influenced by offer & demand
+
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
 ### Economics Design & Balance ###
 
 #### Design
  - ⏳ Monthly goods decay (1%)
- - ⏳ Supply Influence Pop
 
 #### Balance
- - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
- - ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
+ - ⏳ Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
+ - ⏳ MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
  - Remove Average Control Penalty on research seed - ( ❌ Introduced in 1.3 without modding endpoint )
  - RGO prices don't scale with Good's Market Price - ( ❌ Introduced in 1.2 without modding endpoint )
  - Maintenance price don't increase with time - ( ❌ Introduced in 1.3 without modding endpoint )
@@ -50,7 +51,7 @@ This mod is born from the desire to fix :
  - ⏳ Rebel threshold adjusted
  - ⏳ Shorter war
 
-⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
+⚠️: We need support to see modding endpoint implemented : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)
