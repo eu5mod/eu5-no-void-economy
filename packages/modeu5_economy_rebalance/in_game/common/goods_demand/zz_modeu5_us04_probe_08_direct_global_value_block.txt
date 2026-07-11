@@ -1,11 +1,11 @@
 # US-04 injection syntax matrix — candidate 08.
-# Outer INJECT on pop_demand, nested INJECT on coffee, direct global variable
+# Outer INJECT on pop_demand, nested INJECT on furniture, direct global variable
 # wrapped in a script-value block.
 
 INJECT:pop_demand = {
-	INJECT:coffee = {
+	INJECT:furniture = {
 		multiply = {
-			value = global_var:modeu5_us04_matrix_global_coffee
+			value = global_var:modeu5_us04_matrix_global_furniture
 		}
 	}
 }
