@@ -3,12 +3,14 @@
 #
 # Candidates 01-06 test additive database entry-mode shapes.
 # Candidates 07-08 test direct global/current-value expression shapes.
+# Detailed output logs low/high demand, delta, and actual low/high source values.
 # The 4.0 multiplier is diagnostic only and is restored at the end.
 
 modeu5_us04_matrix_clear_state = {
 	remove_global_variable = modeu5_test_us04_pop_demand_injection_matrix_passed
 	remove_global_variable = modeu5_test_us04_pop_demand_injection_matrix_failed
 	remove_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked
+	remove_global_variable = modeu5_us04_matrix_in_progress
 	remove_global_variable = modeu5_us04_matrix_original_live_marker_present
 	remove_global_variable = modeu5_us04_matrix_original_init_version_present
 	remove_global_variable = modeu5_us04_matrix_original_init_version
@@ -17,37 +19,66 @@ modeu5_us04_matrix_clear_state = {
 	remove_global_variable = modeu5_us04_matrix_blocked_count
 	remove_global_variable = modeu5_us04_matrix_control_low
 	remove_global_variable = modeu5_us04_matrix_control_high
+	remove_global_variable = modeu5_us04_matrix_control_delta
 	remove_global_variable = modeu5_us04_matrix_control_stable
 	remove_global_variable = modeu5_us04_matrix_global_tea
 	remove_global_variable = modeu5_us04_matrix_global_coffee
 	remove_global_variable = modeu5_us04_matrix_wheat_low
 	remove_global_variable = modeu5_us04_matrix_wheat_high
-	remove_global_variable = modeu5_us04_matrix_beer_low
-	remove_global_variable = modeu5_us04_matrix_beer_high
-	remove_global_variable = modeu5_us04_matrix_cloth_low
-	remove_global_variable = modeu5_us04_matrix_cloth_high
-	remove_global_variable = modeu5_us04_matrix_tools_low
-	remove_global_variable = modeu5_us04_matrix_tools_high
-	remove_global_variable = modeu5_us04_matrix_fish_low
-	remove_global_variable = modeu5_us04_matrix_fish_high
-	remove_global_variable = modeu5_us04_matrix_wine_low
-	remove_global_variable = modeu5_us04_matrix_wine_high
-	remove_global_variable = modeu5_us04_matrix_tea_low
-	remove_global_variable = modeu5_us04_matrix_tea_high
-	remove_global_variable = modeu5_us04_matrix_coffee_low
-	remove_global_variable = modeu5_us04_matrix_coffee_high
+	remove_global_variable = modeu5_us04_matrix_wheat_delta
+	remove_global_variable = modeu5_us04_matrix_wheat_source_low
+	remove_global_variable = modeu5_us04_matrix_wheat_source_high
 	remove_global_variable = modeu5_us04_matrix_wheat_original_present
 	remove_global_variable = modeu5_us04_matrix_wheat_original
+	remove_global_variable = modeu5_us04_matrix_beer_low
+	remove_global_variable = modeu5_us04_matrix_beer_high
+	remove_global_variable = modeu5_us04_matrix_beer_delta
+	remove_global_variable = modeu5_us04_matrix_beer_source_low
+	remove_global_variable = modeu5_us04_matrix_beer_source_high
 	remove_global_variable = modeu5_us04_matrix_beer_original_present
 	remove_global_variable = modeu5_us04_matrix_beer_original
+	remove_global_variable = modeu5_us04_matrix_cloth_low
+	remove_global_variable = modeu5_us04_matrix_cloth_high
+	remove_global_variable = modeu5_us04_matrix_cloth_delta
+	remove_global_variable = modeu5_us04_matrix_cloth_source_low
+	remove_global_variable = modeu5_us04_matrix_cloth_source_high
 	remove_global_variable = modeu5_us04_matrix_cloth_original_present
 	remove_global_variable = modeu5_us04_matrix_cloth_original
+	remove_global_variable = modeu5_us04_matrix_tools_low
+	remove_global_variable = modeu5_us04_matrix_tools_high
+	remove_global_variable = modeu5_us04_matrix_tools_delta
+	remove_global_variable = modeu5_us04_matrix_tools_source_low
+	remove_global_variable = modeu5_us04_matrix_tools_source_high
 	remove_global_variable = modeu5_us04_matrix_tools_original_present
 	remove_global_variable = modeu5_us04_matrix_tools_original
+	remove_global_variable = modeu5_us04_matrix_fish_low
+	remove_global_variable = modeu5_us04_matrix_fish_high
+	remove_global_variable = modeu5_us04_matrix_fish_delta
+	remove_global_variable = modeu5_us04_matrix_fish_source_low
+	remove_global_variable = modeu5_us04_matrix_fish_source_high
 	remove_global_variable = modeu5_us04_matrix_fish_original_present
 	remove_global_variable = modeu5_us04_matrix_fish_original
+	remove_global_variable = modeu5_us04_matrix_wine_low
+	remove_global_variable = modeu5_us04_matrix_wine_high
+	remove_global_variable = modeu5_us04_matrix_wine_delta
+	remove_global_variable = modeu5_us04_matrix_wine_source_low
+	remove_global_variable = modeu5_us04_matrix_wine_source_high
 	remove_global_variable = modeu5_us04_matrix_wine_original_present
 	remove_global_variable = modeu5_us04_matrix_wine_original
+	remove_global_variable = modeu5_us04_matrix_tea_low
+	remove_global_variable = modeu5_us04_matrix_tea_high
+	remove_global_variable = modeu5_us04_matrix_tea_delta
+	remove_global_variable = modeu5_us04_matrix_tea_source_low
+	remove_global_variable = modeu5_us04_matrix_tea_source_high
+	remove_global_variable = modeu5_us04_matrix_tea_original_present
+	remove_global_variable = modeu5_us04_matrix_tea_original
+	remove_global_variable = modeu5_us04_matrix_coffee_low
+	remove_global_variable = modeu5_us04_matrix_coffee_high
+	remove_global_variable = modeu5_us04_matrix_coffee_delta
+	remove_global_variable = modeu5_us04_matrix_coffee_source_low
+	remove_global_variable = modeu5_us04_matrix_coffee_source_high
+	remove_global_variable = modeu5_us04_matrix_coffee_original_present
+	remove_global_variable = modeu5_us04_matrix_coffee_original
 	clear_saved_scope = modeu5_us04_matrix_test_location
 	clear_saved_scope = modeu5_us04_matrix_test_market
 }
@@ -87,6 +118,44 @@ modeu5_us04_matrix_capture_original_state = {
 	}
 }
 
+modeu5_us04_matrix_capture_source_low = {
+	scope:modeu5_us04_matrix_test_location = {
+		modeu5_get_pop_demand_multiplier_good_wheat = yes
+		set_global_variable = { name = modeu5_us04_matrix_wheat_source_low value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_beer = yes
+		set_global_variable = { name = modeu5_us04_matrix_beer_source_low value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_cloth = yes
+		set_global_variable = { name = modeu5_us04_matrix_cloth_source_low value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_tools = yes
+		set_global_variable = { name = modeu5_us04_matrix_tools_source_low value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_fish = yes
+		set_global_variable = { name = modeu5_us04_matrix_fish_source_low value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_wine = yes
+		set_global_variable = { name = modeu5_us04_matrix_wine_source_low value = scope:modeu5_us04_old_multiplier }
+	}
+	set_global_variable = { name = modeu5_us04_matrix_tea_source_low value = global_var:modeu5_us04_matrix_global_tea }
+	set_global_variable = { name = modeu5_us04_matrix_coffee_source_low value = global_var:modeu5_us04_matrix_global_coffee }
+}
+
+modeu5_us04_matrix_capture_source_high = {
+	scope:modeu5_us04_matrix_test_location = {
+		modeu5_get_pop_demand_multiplier_good_wheat = yes
+		set_global_variable = { name = modeu5_us04_matrix_wheat_source_high value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_beer = yes
+		set_global_variable = { name = modeu5_us04_matrix_beer_source_high value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_cloth = yes
+		set_global_variable = { name = modeu5_us04_matrix_cloth_source_high value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_tools = yes
+		set_global_variable = { name = modeu5_us04_matrix_tools_source_high value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_fish = yes
+		set_global_variable = { name = modeu5_us04_matrix_fish_source_high value = scope:modeu5_us04_old_multiplier }
+		modeu5_get_pop_demand_multiplier_good_wine = yes
+		set_global_variable = { name = modeu5_us04_matrix_wine_source_high value = scope:modeu5_us04_old_multiplier }
+	}
+	set_global_variable = { name = modeu5_us04_matrix_tea_source_high value = global_var:modeu5_us04_matrix_global_tea }
+	set_global_variable = { name = modeu5_us04_matrix_coffee_source_high value = global_var:modeu5_us04_matrix_global_coffee }
+}
+
 modeu5_us04_matrix_write_neutral = {
 	scope:modeu5_us04_matrix_test_location = {
 		modeu5_write_pop_demand_multiplier_good_wheat = { value = 1.0 }
@@ -98,6 +167,7 @@ modeu5_us04_matrix_write_neutral = {
 	}
 	set_global_variable = { name = modeu5_us04_matrix_global_tea value = 1.0 }
 	set_global_variable = { name = modeu5_us04_matrix_global_coffee value = 1.0 }
+	modeu5_us04_matrix_capture_source_low = yes
 }
 
 modeu5_us04_matrix_write_high = {
@@ -111,16 +181,23 @@ modeu5_us04_matrix_write_high = {
 	}
 	set_global_variable = { name = modeu5_us04_matrix_global_tea value = 4.0 }
 	set_global_variable = { name = modeu5_us04_matrix_global_coffee value = 4.0 }
+	modeu5_us04_matrix_capture_source_high = yes
 }
 
 modeu5_us04_matrix_restore_state = {
 	scope:modeu5_us04_matrix_test_location = {
-		modeu5_write_pop_demand_multiplier_good_wheat = { value = 1.2 }
-		modeu5_write_pop_demand_multiplier_good_beer = { value = 1.2 }
-		modeu5_write_pop_demand_multiplier_good_cloth = { value = 1.2 }
-		modeu5_write_pop_demand_multiplier_good_tools = { value = 1.2 }
-		modeu5_write_pop_demand_multiplier_good_fish = { value = 1.2 }
-		modeu5_write_pop_demand_multiplier_good_wine = { value = 1.2 }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:wheat } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wheat } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_wheat_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wheat value = global_var:modeu5_us04_matrix_wheat_original } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:beer } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:beer } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_beer_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:beer value = global_var:modeu5_us04_matrix_beer_original } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:cloth } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:cloth } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_cloth_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:cloth value = global_var:modeu5_us04_matrix_cloth_original } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:tools } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:tools } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_tools_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:tools value = global_var:modeu5_us04_matrix_tools_original } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:fish } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:fish } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_fish_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:fish value = global_var:modeu5_us04_matrix_fish_original } }
+		if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:wine } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wine } }
+		if = { limit = { has_global_variable = modeu5_us04_matrix_wine_original_present } add_to_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wine value = global_var:modeu5_us04_matrix_wine_original } }
 	}
 	remove_global_variable = modeu5_us04_matrix_global_tea
 	remove_global_variable = modeu5_us04_matrix_global_coffee
@@ -128,130 +205,248 @@ modeu5_us04_matrix_restore_state = {
 	if = { limit = { has_global_variable = modeu5_us04_matrix_original_live_marker_present } set_global_variable = modeu5_pop_demand_live_integration_enabled }
 	remove_global_variable = modeu5_us04_multiplier_initialization_version
 	if = { limit = { has_global_variable = modeu5_us04_matrix_original_init_version_present } set_global_variable = { name = modeu5_us04_multiplier_initialization_version value = global_var:modeu5_us04_matrix_original_init_version } }
+	remove_global_variable = modeu5_us04_matrix_in_progress
 	clear_saved_scope = modeu5_us04_matrix_test_location
 	clear_saved_scope = modeu5_us04_matrix_test_market
 }
 
 modeu5_us04_matrix_begin = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_injection_matrix"
-	modeu5_us04_matrix_clear_state = yes
-	set_global_variable = { name = modeu5_us04_matrix_pass_count value = 0 }
-	set_global_variable = { name = modeu5_us04_matrix_fail_count value = 0 }
-	set_global_variable = { name = modeu5_us04_matrix_blocked_count value = 0 }
 	if = {
-		limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+		limit = { has_global_variable = modeu5_us04_matrix_in_progress }
 		set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked
-		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=economy_package_not_loaded"
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=matrix_already_in_progress"
 	}
 	else = {
-		modeu5_us04_matrix_capture_original_state = yes
-		set_global_variable = modeu5_pop_demand_live_integration_enabled
-		set_global_variable = { name = modeu5_us04_multiplier_initialization_version value = 1 }
-		modeu5_us04_matrix_write_neutral = yes
+		modeu5_us04_matrix_clear_state = yes
+		set_global_variable = { name = modeu5_us04_matrix_pass_count value = 0 }
+		set_global_variable = { name = modeu5_us04_matrix_fail_count value = 0 }
+		set_global_variable = { name = modeu5_us04_matrix_blocked_count value = 0 }
+		if = {
+			limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+			set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=economy_package_not_loaded"
+		}
+		else = {
+			set_global_variable = modeu5_us04_matrix_in_progress
+			modeu5_us04_matrix_capture_original_state = yes
+			set_global_variable = modeu5_pop_demand_live_integration_enabled
+			set_global_variable = { name = modeu5_us04_multiplier_initialization_version value = 1 }
+			modeu5_us04_matrix_write_neutral = yes
+			debug_log = "ModeU5 US-04 INJECTION MATRIX PHASE begin neutral_sources_written=1 scheduled_low_capture=1"
+		}
 	}
 }
 
 modeu5_us04_matrix_capture_low_and_raise = {
-	scope:modeu5_us04_matrix_test_market = {
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wheat value = "goods_demand_in_market(goods:wheat)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_beer value = "goods_demand_in_market(goods:beer)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_cloth value = "goods_demand_in_market(goods:cloth)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tools value = "goods_demand_in_market(goods:tools)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_fish value = "goods_demand_in_market(goods:fish)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wine value = "goods_demand_in_market(goods:wine)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tea value = "goods_demand_in_market(goods:tea)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_coffee value = "goods_demand_in_market(goods:coffee)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_control value = "goods_demand_in_market(goods:wool)" }
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_matrix_in_progress } }
+		set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=low_capture_without_in_progress"
 	}
-	set_global_variable = { name = modeu5_us04_matrix_wheat_low value = scope:modeu5_us04_matrix_current_wheat }
-	set_global_variable = { name = modeu5_us04_matrix_beer_low value = scope:modeu5_us04_matrix_current_beer }
-	set_global_variable = { name = modeu5_us04_matrix_cloth_low value = scope:modeu5_us04_matrix_current_cloth }
-	set_global_variable = { name = modeu5_us04_matrix_tools_low value = scope:modeu5_us04_matrix_current_tools }
-	set_global_variable = { name = modeu5_us04_matrix_fish_low value = scope:modeu5_us04_matrix_current_fish }
-	set_global_variable = { name = modeu5_us04_matrix_wine_low value = scope:modeu5_us04_matrix_current_wine }
-	set_global_variable = { name = modeu5_us04_matrix_tea_low value = scope:modeu5_us04_matrix_current_tea }
-	set_global_variable = { name = modeu5_us04_matrix_coffee_low value = scope:modeu5_us04_matrix_current_coffee }
-	set_global_variable = { name = modeu5_us04_matrix_control_low value = scope:modeu5_us04_matrix_current_control }
-	modeu5_us04_matrix_write_high = yes
+	else = {
+		scope:modeu5_us04_matrix_test_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wheat value = "goods_demand_in_market(goods:wheat)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_beer value = "goods_demand_in_market(goods:beer)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_cloth value = "goods_demand_in_market(goods:cloth)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tools value = "goods_demand_in_market(goods:tools)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_fish value = "goods_demand_in_market(goods:fish)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wine value = "goods_demand_in_market(goods:wine)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tea value = "goods_demand_in_market(goods:tea)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_coffee value = "goods_demand_in_market(goods:coffee)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_control value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_matrix_wheat_low value = scope:modeu5_us04_matrix_current_wheat }
+		set_global_variable = { name = modeu5_us04_matrix_beer_low value = scope:modeu5_us04_matrix_current_beer }
+		set_global_variable = { name = modeu5_us04_matrix_cloth_low value = scope:modeu5_us04_matrix_current_cloth }
+		set_global_variable = { name = modeu5_us04_matrix_tools_low value = scope:modeu5_us04_matrix_current_tools }
+		set_global_variable = { name = modeu5_us04_matrix_fish_low value = scope:modeu5_us04_matrix_current_fish }
+		set_global_variable = { name = modeu5_us04_matrix_wine_low value = scope:modeu5_us04_matrix_current_wine }
+		set_global_variable = { name = modeu5_us04_matrix_tea_low value = scope:modeu5_us04_matrix_current_tea }
+		set_global_variable = { name = modeu5_us04_matrix_coffee_low value = scope:modeu5_us04_matrix_current_coffee }
+		set_global_variable = { name = modeu5_us04_matrix_control_low value = scope:modeu5_us04_matrix_current_control }
+		debug_log = "ModeU5 US-04 INJECTION MATRIX PHASE low_captured high_sources_written=1 scheduled_high_capture=1"
+		modeu5_us04_matrix_write_high = yes
+	}
 }
 
 modeu5_us04_matrix_evaluate_01_wheat = {
-	save_temporary_scope_value_as = { name = modeu5_us04_matrix_delta value = { value = global_var:modeu5_us04_matrix_wheat_high subtract = global_var:modeu5_us04_matrix_wheat_low } }
-	set_variable = { name = modeu5_us04_matrix_ui_delta value = scope:modeu5_us04_matrix_delta }
-	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=01 syntax=plain_child good=wheat delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
-	if = { limit = { global_var:modeu5_us04_matrix_wheat_high > global_var:modeu5_us04_matrix_wheat_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=01 syntax=plain_child good=wheat PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_wheat_delta value = { value = global_var:modeu5_us04_matrix_wheat_high subtract = global_var:modeu5_us04_matrix_wheat_low } }
+	set_global_variable = { name = modeu5_us04_matrix_wheat_delta value = scope:modeu5_us04_matrix_wheat_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_wheat_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_wheat_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_wheat_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_wheat_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_wheat_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=01 syntax=plain_child good=wheat source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_wheat_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=01 syntax=plain_child good=wheat BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=01 syntax=plain_child good=wheat BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_wheat_high > global_var:modeu5_us04_matrix_wheat_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=01 syntax=plain_child good=wheat PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=01 syntax=plain_child good=wheat FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_02_beer = {
-	if = { limit = { global_var:modeu5_us04_matrix_beer_high > global_var:modeu5_us04_matrix_beer_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=02 syntax=inner_inject good=beer PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_beer_delta value = { value = global_var:modeu5_us04_matrix_beer_high subtract = global_var:modeu5_us04_matrix_beer_low } }
+	set_global_variable = { name = modeu5_us04_matrix_beer_delta value = scope:modeu5_us04_matrix_beer_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_beer_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_beer_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_beer_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_beer_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_beer_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=02 syntax=inner_inject good=beer source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_beer_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=02 syntax=inner_inject good=beer BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=02 syntax=inner_inject good=beer BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_beer_high > global_var:modeu5_us04_matrix_beer_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=02 syntax=inner_inject good=beer PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=02 syntax=inner_inject good=beer FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_03_cloth = {
-	if = { limit = { global_var:modeu5_us04_matrix_cloth_high > global_var:modeu5_us04_matrix_cloth_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=03 syntax=inner_try_inject good=cloth PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_cloth_delta value = { value = global_var:modeu5_us04_matrix_cloth_high subtract = global_var:modeu5_us04_matrix_cloth_low } }
+	set_global_variable = { name = modeu5_us04_matrix_cloth_delta value = scope:modeu5_us04_matrix_cloth_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_cloth_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_cloth_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_cloth_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_cloth_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_cloth_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=03 syntax=inner_try_inject good=cloth source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_cloth_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=03 syntax=inner_try_inject good=cloth BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=03 syntax=inner_try_inject good=cloth BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_cloth_high > global_var:modeu5_us04_matrix_cloth_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=03 syntax=inner_try_inject good=cloth PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=03 syntax=inner_try_inject good=cloth FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_04_tools = {
-	if = { limit = { global_var:modeu5_us04_matrix_tools_high > global_var:modeu5_us04_matrix_tools_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=04 syntax=inner_inject_or_create good=tools PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_tools_delta value = { value = global_var:modeu5_us04_matrix_tools_high subtract = global_var:modeu5_us04_matrix_tools_low } }
+	set_global_variable = { name = modeu5_us04_matrix_tools_delta value = scope:modeu5_us04_matrix_tools_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_tools_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_tools_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_tools_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_tools_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_tools_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=04 syntax=inner_inject_or_create good=tools source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_tools_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=04 syntax=inner_inject_or_create good=tools BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=04 syntax=inner_inject_or_create good=tools BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_tools_high > global_var:modeu5_us04_matrix_tools_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=04 syntax=inner_inject_or_create good=tools PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=04 syntax=inner_inject_or_create good=tools FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_05_fish = {
-	if = { limit = { global_var:modeu5_us04_matrix_fish_high > global_var:modeu5_us04_matrix_fish_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=05 syntax=outer_try_inject good=fish PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_fish_delta value = { value = global_var:modeu5_us04_matrix_fish_high subtract = global_var:modeu5_us04_matrix_fish_low } }
+	set_global_variable = { name = modeu5_us04_matrix_fish_delta value = scope:modeu5_us04_matrix_fish_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_fish_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_fish_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_fish_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_fish_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_fish_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=05 syntax=outer_try_inject good=fish source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_fish_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=05 syntax=outer_try_inject good=fish BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=05 syntax=outer_try_inject good=fish BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_fish_high > global_var:modeu5_us04_matrix_fish_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=05 syntax=outer_try_inject good=fish PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=05 syntax=outer_try_inject good=fish FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_06_wine = {
-	if = { limit = { global_var:modeu5_us04_matrix_wine_high > global_var:modeu5_us04_matrix_wine_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=06 syntax=outer_inject_or_create good=wine PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_wine_delta value = { value = global_var:modeu5_us04_matrix_wine_high subtract = global_var:modeu5_us04_matrix_wine_low } }
+	set_global_variable = { name = modeu5_us04_matrix_wine_delta value = scope:modeu5_us04_matrix_wine_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_wine_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_wine_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_wine_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_wine_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_wine_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=06 syntax=outer_inject_or_create good=wine source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_wine_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=06 syntax=outer_inject_or_create good=wine BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=06 syntax=outer_inject_or_create good=wine BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_wine_high > global_var:modeu5_us04_matrix_wine_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=06 syntax=outer_inject_or_create good=wine PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=06 syntax=outer_inject_or_create good=wine FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_07_tea = {
-	if = { limit = { global_var:modeu5_us04_matrix_tea_high > global_var:modeu5_us04_matrix_tea_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=tea PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_tea_delta value = { value = global_var:modeu5_us04_matrix_tea_high subtract = global_var:modeu5_us04_matrix_tea_low } }
+	set_global_variable = { name = modeu5_us04_matrix_tea_delta value = scope:modeu5_us04_matrix_tea_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_tea_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_tea_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_tea_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_tea_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_tea_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=07 syntax=direct_global good=tea source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_tea_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=tea BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=tea BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_tea_high > global_var:modeu5_us04_matrix_tea_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=tea PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=tea FAIL reason=no_target_response" }
 }
+
 modeu5_us04_matrix_evaluate_08_coffee = {
-	if = { limit = { global_var:modeu5_us04_matrix_coffee_high > global_var:modeu5_us04_matrix_coffee_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=coffee PASS" }
+	save_temporary_scope_value_as = { name = modeu5_us04_matrix_coffee_delta value = { value = global_var:modeu5_us04_matrix_coffee_high subtract = global_var:modeu5_us04_matrix_coffee_low } }
+	set_global_variable = { name = modeu5_us04_matrix_coffee_delta value = scope:modeu5_us04_matrix_coffee_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_low value = global_var:modeu5_us04_matrix_coffee_low }
+	set_variable = { name = modeu5_us04_matrix_ui_high value = global_var:modeu5_us04_matrix_coffee_high }
+	set_variable = { name = modeu5_us04_matrix_ui_delta value = global_var:modeu5_us04_matrix_coffee_delta }
+	set_variable = { name = modeu5_us04_matrix_ui_source_low value = global_var:modeu5_us04_matrix_coffee_source_low }
+	set_variable = { name = modeu5_us04_matrix_ui_source_high value = global_var:modeu5_us04_matrix_coffee_source_high }
+	debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=08 syntax=direct_global_value_block good=coffee source_low=[THIS.GetVariable('modeu5_us04_matrix_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_matrix_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_matrix_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_delta').GetValue|4]"
+	if = { limit = { global_var:modeu5_us04_matrix_coffee_low <= 0.0001 } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=coffee BLOCKED reason=baseline_demand_nonpositive" }
+	else_if = { limit = { NOT = { has_global_variable = modeu5_us04_matrix_control_stable } } modeu5_us04_matrix_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=coffee BLOCKED reason=unstable_control" }
+	else_if = { limit = { global_var:modeu5_us04_matrix_coffee_high > global_var:modeu5_us04_matrix_coffee_low } modeu5_us04_matrix_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=coffee PASS" }
 	else = { modeu5_us04_matrix_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=coffee FAIL reason=no_target_response" }
 }
 
 modeu5_us04_matrix_finalize = {
-	scope:modeu5_us04_matrix_test_market = {
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wheat value = "goods_demand_in_market(goods:wheat)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_beer value = "goods_demand_in_market(goods:beer)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_cloth value = "goods_demand_in_market(goods:cloth)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tools value = "goods_demand_in_market(goods:tools)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_fish value = "goods_demand_in_market(goods:fish)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wine value = "goods_demand_in_market(goods:wine)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tea value = "goods_demand_in_market(goods:tea)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_coffee value = "goods_demand_in_market(goods:coffee)" }
-		save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_control value = "goods_demand_in_market(goods:wool)" }
-	}
-	set_global_variable = { name = modeu5_us04_matrix_wheat_high value = scope:modeu5_us04_matrix_current_wheat }
-	set_global_variable = { name = modeu5_us04_matrix_beer_high value = scope:modeu5_us04_matrix_current_beer }
-	set_global_variable = { name = modeu5_us04_matrix_cloth_high value = scope:modeu5_us04_matrix_current_cloth }
-	set_global_variable = { name = modeu5_us04_matrix_tools_high value = scope:modeu5_us04_matrix_current_tools }
-	set_global_variable = { name = modeu5_us04_matrix_fish_high value = scope:modeu5_us04_matrix_current_fish }
-	set_global_variable = { name = modeu5_us04_matrix_wine_high value = scope:modeu5_us04_matrix_current_wine }
-	set_global_variable = { name = modeu5_us04_matrix_tea_high value = scope:modeu5_us04_matrix_current_tea }
-	set_global_variable = { name = modeu5_us04_matrix_coffee_high value = scope:modeu5_us04_matrix_current_coffee }
-	set_global_variable = { name = modeu5_us04_matrix_control_high value = scope:modeu5_us04_matrix_current_control }
-	set_global_variable = modeu5_us04_matrix_control_stable
-	modeu5_us04_matrix_evaluate_01_wheat = yes
-	modeu5_us04_matrix_evaluate_02_beer = yes
-	modeu5_us04_matrix_evaluate_03_cloth = yes
-	modeu5_us04_matrix_evaluate_04_tools = yes
-	modeu5_us04_matrix_evaluate_05_fish = yes
-	modeu5_us04_matrix_evaluate_06_wine = yes
-	modeu5_us04_matrix_evaluate_07_tea = yes
-	modeu5_us04_matrix_evaluate_08_coffee = yes
-	set_variable = { name = modeu5_us04_matrix_ui_pass value = global_var:modeu5_us04_matrix_pass_count }
-	set_variable = { name = modeu5_us04_matrix_ui_fail value = global_var:modeu5_us04_matrix_fail_count }
-	debug_log = "ModeU5 US-04 INJECTION MATRIX SUMMARY pass=[THIS.GetVariable('modeu5_us04_matrix_ui_pass').GetValue|0] fail=[THIS.GetVariable('modeu5_us04_matrix_ui_fail').GetValue|0]"
 	if = {
-		limit = { global_var:modeu5_us04_matrix_pass_count > 0 }
-		set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_passed
-		debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_injection_matrix"
+		limit = { NOT = { has_global_variable = modeu5_us04_matrix_in_progress } }
+		set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=finalize_without_in_progress"
 	}
 	else = {
-		set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_failed
-		debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_injection_matrix"
+		scope:modeu5_us04_matrix_test_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wheat value = "goods_demand_in_market(goods:wheat)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_beer value = "goods_demand_in_market(goods:beer)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_cloth value = "goods_demand_in_market(goods:cloth)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tools value = "goods_demand_in_market(goods:tools)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_fish value = "goods_demand_in_market(goods:fish)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_wine value = "goods_demand_in_market(goods:wine)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_tea value = "goods_demand_in_market(goods:tea)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_coffee value = "goods_demand_in_market(goods:coffee)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_matrix_current_control value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_matrix_wheat_high value = scope:modeu5_us04_matrix_current_wheat }
+		set_global_variable = { name = modeu5_us04_matrix_beer_high value = scope:modeu5_us04_matrix_current_beer }
+		set_global_variable = { name = modeu5_us04_matrix_cloth_high value = scope:modeu5_us04_matrix_current_cloth }
+		set_global_variable = { name = modeu5_us04_matrix_tools_high value = scope:modeu5_us04_matrix_current_tools }
+		set_global_variable = { name = modeu5_us04_matrix_fish_high value = scope:modeu5_us04_matrix_current_fish }
+		set_global_variable = { name = modeu5_us04_matrix_wine_high value = scope:modeu5_us04_matrix_current_wine }
+		set_global_variable = { name = modeu5_us04_matrix_tea_high value = scope:modeu5_us04_matrix_current_tea }
+		set_global_variable = { name = modeu5_us04_matrix_coffee_high value = scope:modeu5_us04_matrix_current_coffee }
+		set_global_variable = { name = modeu5_us04_matrix_control_high value = scope:modeu5_us04_matrix_current_control }
+		save_temporary_scope_value_as = { name = modeu5_us04_matrix_control_delta value = { value = global_var:modeu5_us04_matrix_control_high subtract = global_var:modeu5_us04_matrix_control_low } }
+		set_global_variable = { name = modeu5_us04_matrix_control_delta value = scope:modeu5_us04_matrix_control_delta }
+		save_temporary_scope_value_as = { name = modeu5_us04_matrix_control_min value = { value = global_var:modeu5_us04_matrix_control_low subtract = 0.001 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_matrix_control_max value = { value = global_var:modeu5_us04_matrix_control_low add = 0.001 } }
+		if = { limit = { global_var:modeu5_us04_matrix_control_high >= scope:modeu5_us04_matrix_control_min global_var:modeu5_us04_matrix_control_high <= scope:modeu5_us04_matrix_control_max } set_global_variable = modeu5_us04_matrix_control_stable }
+		set_variable = { name = modeu5_us04_matrix_ui_control_low value = global_var:modeu5_us04_matrix_control_low }
+		set_variable = { name = modeu5_us04_matrix_ui_control_high value = global_var:modeu5_us04_matrix_control_high }
+		set_variable = { name = modeu5_us04_matrix_ui_control_delta value = global_var:modeu5_us04_matrix_control_delta }
+		debug_log = "ModeU5 US-04 INJECTION CONTROL good=wool low=[THIS.GetVariable('modeu5_us04_matrix_ui_control_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_matrix_ui_control_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_matrix_ui_control_delta').GetValue|4]"
+		modeu5_us04_matrix_evaluate_01_wheat = yes
+		modeu5_us04_matrix_evaluate_02_beer = yes
+		modeu5_us04_matrix_evaluate_03_cloth = yes
+		modeu5_us04_matrix_evaluate_04_tools = yes
+		modeu5_us04_matrix_evaluate_05_fish = yes
+		modeu5_us04_matrix_evaluate_06_wine = yes
+		modeu5_us04_matrix_evaluate_07_tea = yes
+		modeu5_us04_matrix_evaluate_08_coffee = yes
+		set_variable = { name = modeu5_us04_matrix_ui_pass value = global_var:modeu5_us04_matrix_pass_count }
+		set_variable = { name = modeu5_us04_matrix_ui_fail value = global_var:modeu5_us04_matrix_fail_count }
+		set_variable = { name = modeu5_us04_matrix_ui_blocked value = global_var:modeu5_us04_matrix_blocked_count }
+		debug_log = "ModeU5 US-04 INJECTION MATRIX SUMMARY pass=[THIS.GetVariable('modeu5_us04_matrix_ui_pass').GetValue|0] fail=[THIS.GetVariable('modeu5_us04_matrix_ui_fail').GetValue|0] blocked=[THIS.GetVariable('modeu5_us04_matrix_ui_blocked').GetValue|0]"
+		if = {
+			limit = { global_var:modeu5_us04_matrix_pass_count > 0 }
+			set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_passed
+			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_injection_matrix"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_pop_demand_injection_matrix_failed
+			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_injection_matrix"
+		}
+		modeu5_us04_matrix_restore_state = yes
 	}
-	modeu5_us04_matrix_restore_state = yes
 }
