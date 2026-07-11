@@ -1,0 +1,187 @@
+namespace = modeu5_us04_q10c_debug
+
+# Daily cache/lifecycle diagnostic for full REPLACE:pop_demand.
+# Enable only modeu5_core_tests_q9 and run:
+#   event modeu5_us04_q10c_debug.1
+
+modeu5_us04_q10c_debug.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_begin = yes
+		if = {
+			limit = { NOT = { has_global_variable = modeu5_test_us04_q10c_daily_099_blocked } }
+			trigger_event_non_silently = { id = modeu5_us04_q10c_debug.2 days = 1 }
+		}
+	}
+}
+
+modeu5_us04_q10c_debug.2 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_baseline_set_099 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.3 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.3 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_01 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.4 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.4 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_02 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.5 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.5 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_03 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.6 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.6 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_04 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.7 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.7 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_05 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.8 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.8 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_06 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.9 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.9 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_07 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.10 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_08 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.11 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.11 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_capture_day_09 = yes
+		trigger_event_non_silently = { id = modeu5_us04_q10c_debug.12 days = 1 }
+	}
+}
+
+modeu5_us04_q10c_debug.12 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q10c_finalize_day_10 = yes
+	}
+}
