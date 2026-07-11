@@ -17,18 +17,6 @@ python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
 	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
 "$repo_root/tools/generate_us04_pop_demand_helpers.sh"
-
-if [[ "${MODEU5_ENABLE_US04_POP_DEMAND_OVERRIDE:-true}" == "false" || "${MODEU5_ENABLE_US04_POP_DEMAND_OVERRIDE:-true}" == "0" ]]; then
-	printf '%s\n' 'Skipping US-04 vanilla Pop-demand probe; MODEU5_ENABLE_US04_POP_DEMAND_OVERRIDE=false.'
-elif [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
-	python3 "$repo_root/tools/generate_us04_pop_demand_override.py" \
-		--common-dir "$EU5_GAME_COMMON_DIR" \
-		--package-common-dir "$repo_root/packages/modeu5_economy_rebalance/in_game/common" \
-		--goods wheat
-else
-	printf '%s\n' 'Skipping US-04 vanilla Pop-demand probe; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
-fi
-
 python3 "$repo_root/tools/validate_us04_pop_demand_architecture.py"
 
 "$repo_root/tools/generate_good_transport_helpers.sh"
