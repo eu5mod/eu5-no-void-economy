@@ -61,10 +61,10 @@ modeu5_us04_restore_original_cmm_setting = {
 }
 
 modeu5_us04_clear_fixture_goods = {
-	modeu5_reset_pop_demand_annual_counters_good_wheat = yes
-	modeu5_reset_pop_demand_annual_counters_good_beer = yes
-	modeu5_reset_pop_demand_annual_counters_good_cloth = yes
-	modeu5_reset_pop_demand_annual_counters_good_tools = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_wheat = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_beer = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_cloth = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_tools = yes
 
 	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:wheat } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wheat } }
 	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:beer } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:beer } }
@@ -74,10 +74,10 @@ modeu5_us04_clear_fixture_goods = {
 
 modeu5_us04_seed_fixture_goods = {
 	modeu5_us04_clear_fixture_goods = yes
-	modeu5_write_pop_demand_multiplier_good_wheat = { value = modeu5_pop_demand_base_consumption_multiplier }
-	modeu5_write_pop_demand_multiplier_good_beer = { value = modeu5_pop_demand_base_consumption_multiplier }
-	modeu5_write_pop_demand_multiplier_good_cloth = { value = modeu5_pop_demand_base_consumption_multiplier }
-	modeu5_write_pop_demand_multiplier_good_tools = { value = modeu5_pop_demand_base_consumption_multiplier }
+	modeu5_write_pop_demand_multiplier_good_wheat = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_beer = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_cloth = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_tools = { value = "modeu5_pop_demand_base_consumption_multiplier" }
 	modeu5_set_pop_demand_annual_counters_good_wheat = { satisfied_months = 12 unsatisfied_months = 0 }
 	modeu5_set_pop_demand_annual_counters_good_beer = { satisfied_months = 0 unsatisfied_months = 12 }
 	modeu5_set_pop_demand_annual_counters_good_cloth = { satisfied_months = 8 unsatisfied_months = 4 }
@@ -121,7 +121,7 @@ modeu5_us04_note_assertion_failure = {
 }
 
 modeu5_us04_export_fixture_debug_values = {
-	set_variable = { name = modeu5_us04_ui_base_multiplier value = modeu5_pop_demand_base_consumption_multiplier }
+	set_variable = { name = modeu5_us04_ui_base_multiplier value = "modeu5_pop_demand_base_consumption_multiplier" }
 	set_variable = { name = modeu5_us04_ui_wheat_multiplier value = scope:modeu5_us04_wheat_multiplier }
 	set_variable = { name = modeu5_us04_ui_beer_multiplier value = scope:modeu5_us04_beer_multiplier }
 	set_variable = { name = modeu5_us04_ui_cloth_multiplier value = scope:modeu5_us04_cloth_multiplier }
