@@ -1,0 +1,218 @@
+# Deterministic US-04 annual Pop demand adaptation probe.
+#
+# Run through event modeu5_us04_debug.1 or the broad revalidation chain.
+# The fixture uses the current country's capital location and a small set of
+# representative goods. It temporarily toggles the CMM setting and restores it.
+
+modeu5_us04_capture_original_cmm_setting = {
+	save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_present value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_value value = 0 }
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_original_cmm_value
+			value = "variable_map(cmm|flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)"
+		}
+	}
+}
+
+modeu5_us04_remove_cmm_setting_for_test = {
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			}
+		}
+		remove_from_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		}
+	}
+}
+
+modeu5_us04_set_cmm_setting_for_test = {
+	modeu5_us04_remove_cmm_setting_for_test = yes
+	add_to_variable_map = {
+		name = cmm
+		key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		value = $value$
+	}
+}
+
+modeu5_us04_restore_original_cmm_setting = {
+	modeu5_us04_remove_cmm_setting_for_test = yes
+	if = {
+		limit = { scope:modeu5_us04_original_cmm_present > 0 }
+		add_to_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			value = scope:modeu5_us04_original_cmm_value
+		}
+	}
+}
+
+modeu5_us04_clear_fixture_goods = {
+	modeu5_us04_reset_pop_demand_annual_counters_good_wheat = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_beer = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_cloth = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_tools = yes
+
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:wheat } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wheat } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:beer } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:beer } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:cloth } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:cloth } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:tools } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:tools } }
+}
+
+modeu5_us04_seed_fixture_goods = {
+	modeu5_us04_clear_fixture_goods = yes
+	modeu5_write_pop_demand_multiplier_good_wheat = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_beer = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_cloth = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_tools = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_set_pop_demand_annual_counters_good_wheat = { satisfied_months = 12 unsatisfied_months = 0 }
+	modeu5_set_pop_demand_annual_counters_good_beer = { satisfied_months = 0 unsatisfied_months = 12 }
+	modeu5_set_pop_demand_annual_counters_good_cloth = { satisfied_months = 8 unsatisfied_months = 4 }
+	modeu5_set_pop_demand_annual_counters_good_tools = { satisfied_months = 0 unsatisfied_months = 0 }
+}
+
+modeu5_us04_read_fixture_goods = {
+	modeu5_get_pop_demand_multiplier_good_wheat = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_read_pop_demand_annual_counters_good_wheat = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_beer = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_read_pop_demand_annual_counters_good_beer = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_cloth = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_read_pop_demand_annual_counters_good_cloth = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_tools = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_read_pop_demand_annual_counters_good_tools = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+}
+
+modeu5_us04_note_assertion_failure = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_assertion_failure_count
+		value = {
+			value = scope:modeu5_us04_assertion_failure_count
+			add = 1
+		}
+	}
+}
+
+modeu5_us04_export_fixture_debug_values = {
+	set_variable = { name = modeu5_us04_ui_base_multiplier value = "modeu5_pop_demand_base_consumption_multiplier" }
+	set_variable = { name = modeu5_us04_ui_wheat_multiplier value = scope:modeu5_us04_wheat_multiplier }
+	set_variable = { name = modeu5_us04_ui_beer_multiplier value = scope:modeu5_us04_beer_multiplier }
+	set_variable = { name = modeu5_us04_ui_cloth_multiplier value = scope:modeu5_us04_cloth_multiplier }
+	set_variable = { name = modeu5_us04_ui_tools_multiplier value = scope:modeu5_us04_tools_multiplier }
+	set_variable = { name = modeu5_us04_ui_wheat_satisfied_months value = scope:modeu5_us04_wheat_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_wheat_unsatisfied_months value = scope:modeu5_us04_wheat_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_beer_satisfied_months value = scope:modeu5_us04_beer_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_beer_unsatisfied_months value = scope:modeu5_us04_beer_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_cloth_satisfied_months value = scope:modeu5_us04_cloth_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_cloth_unsatisfied_months value = scope:modeu5_us04_cloth_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_tools_satisfied_months value = scope:modeu5_us04_tools_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_tools_unsatisfied_months value = scope:modeu5_us04_tools_unsatisfied_months }
+}
+
+modeu5_us04_log_fixture_dump = {
+	modeu5_us04_export_fixture_debug_values = yes
+	debug_log = "ModeU5 US-04 DUMP base_multiplier=[THIS.GetVariable('modeu5_us04_ui_base_multiplier').GetValue|4] wheat_multiplier=[THIS.GetVariable('modeu5_us04_ui_wheat_multiplier').GetValue|4] beer_multiplier=[THIS.GetVariable('modeu5_us04_ui_beer_multiplier').GetValue|4] cloth_multiplier=[THIS.GetVariable('modeu5_us04_ui_cloth_multiplier').GetValue|4] tools_multiplier=[THIS.GetVariable('modeu5_us04_ui_tools_multiplier').GetValue|4] wheat_sat=[THIS.GetVariable('modeu5_us04_ui_wheat_satisfied_months').GetValue|0] wheat_unsat=[THIS.GetVariable('modeu5_us04_ui_wheat_unsatisfied_months').GetValue|0] beer_sat=[THIS.GetVariable('modeu5_us04_ui_beer_satisfied_months').GetValue|0] beer_unsat=[THIS.GetVariable('modeu5_us04_ui_beer_unsatisfied_months').GetValue|0] cloth_sat=[THIS.GetVariable('modeu5_us04_ui_cloth_satisfied_months').GetValue|0] cloth_unsat=[THIS.GetVariable('modeu5_us04_ui_cloth_unsatisfied_months').GetValue|0] tools_sat=[THIS.GetVariable('modeu5_us04_ui_tools_satisfied_months').GetValue|0] tools_unsat=[THIS.GetVariable('modeu5_us04_ui_tools_unsatisfied_months').GetValue|0]"
+}
+
+modeu5_debug_run_us04_pop_demand_adaptation_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation"
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_passed
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+
+	save_temporary_scope_value_as = { name = modeu5_us04_assertion_failure_count value = 0 }
+	modeu5_us04_capture_original_cmm_setting = yes
+
+	if = {
+		limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+		set_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because Rebalance Economy is not loaded."
+	}
+	else_if = {
+		limit = { NOT = { modeu5_stock_runtime_ready_trigger = yes } }
+		set_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because stock runtime is not ready."
+	}
+	else = {
+		capital = { save_temporary_scope_as = modeu5_us04_test_location }
+
+		scope:modeu5_us04_test_location = {
+			modeu5_us04_seed_fixture_goods = yes
+		}
+
+		modeu5_us04_set_cmm_setting_for_test = { value = 0 }
+		modeu5_run_pop_demand_adaptation_for_location = { location = scope:modeu5_us04_test_location }
+		scope:modeu5_us04_test_location = {
+			modeu5_get_pop_demand_multiplier_good_wheat = yes
+			modeu5_read_pop_demand_annual_counters_good_wheat = yes
+		}
+		if = {
+			limit = {
+				OR = {
+					scope:modeu5_us04_old_multiplier < 1.199
+					scope:modeu5_us04_old_multiplier > 1.201
+					NOT = { scope:modeu5_us04_satisfied_months = 12 }
+					NOT = { scope:modeu5_us04_unsatisfied_months = 0 }
+				}
+			}
+			debug_log = "ModeU5 US-04 FAIL_REASON reason=cmm_disabled_gate_mutated_fixture"
+			modeu5_us04_note_assertion_failure = yes
+		}
+
+		modeu5_us04_set_cmm_setting_for_test = { value = 1 }
+		modeu5_run_pop_demand_adaptation_for_location = { location = scope:modeu5_us04_test_location }
+		scope:modeu5_us04_test_location = {
+			modeu5_us04_read_fixture_goods = yes
+		}
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_multiplier < 1.211 scope:modeu5_us04_wheat_multiplier > 1.213 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=wheat_full_satisfaction_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_multiplier < 1.187 scope:modeu5_us04_beer_multiplier > 1.189 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=beer_full_shortage_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_cloth_multiplier < 1.199 scope:modeu5_us04_cloth_multiplier > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=mixed_year_changed_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_tools_multiplier < 1.199 scope:modeu5_us04_tools_multiplier > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=zero_demand_changed_multiplier" modeu5_us04_note_assertion_failure = yes }
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_satisfied_months > 0 scope:modeu5_us04_wheat_unsatisfied_months > 0 scope:modeu5_us04_beer_satisfied_months > 0 scope:modeu5_us04_beer_unsatisfied_months > 0 scope:modeu5_us04_cloth_satisfied_months > 0 scope:modeu5_us04_cloth_unsatisfied_months > 0 scope:modeu5_us04_tools_satisfied_months > 0 scope:modeu5_us04_tools_unsatisfied_months > 0 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=annual_counters_not_reset" modeu5_us04_note_assertion_failure = yes }
+
+		modeu5_us04_log_fixture_dump = yes
+
+		if = {
+			limit = { scope:modeu5_us04_assertion_failure_count = 0 }
+			set_global_variable = modeu5_test_us04_pop_demand_adaptation_passed
+			debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation PASS"
+			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_adaptation"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
+			debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_adaptation"
+		}
+	}
+
+	modeu5_us04_restore_original_cmm_setting = yes
+}

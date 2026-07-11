@@ -1591,6 +1591,30 @@ transferred_quantity recorded for diagnostics = 35
 
 ## US-04 demand adaptation tests
 
+Console entry:
+
+```txt
+event modeu5_us04_debug.1
+```
+
+The debug fixture temporarily enables the CMM setting
+`Pop consumption influenced by offer & demand`, uses the current country's
+capital location, then writes:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 ...
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+```
+
+The full revalidation chain also includes this scenario:
+
+```txt
+event modeu5_revalidate_debug.1
+./tools/summarize_modeu5_test_logs.sh
+```
+
 ### Test 19 — Local demand grows after full-year satisfaction
 
 Setup:
