@@ -81,7 +81,7 @@ modeu5_refresh_nve_main_mode_from_cmm_country_scope = {
 			NOT = {
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_no_void_economy_main
+					target = flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 				}
 			}
 		}
@@ -89,13 +89,13 @@ modeu5_refresh_nve_main_mode_from_cmm_country_scope = {
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 2
+			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
 		}
 		modeu5_enter_nve_normal_mode = yes
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" = 3
+			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 3
 		}
 		modeu5_enter_nve_deactivated_mode = yes
 	}
@@ -395,9 +395,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
+				target = flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 3
+			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings)" = 3
 		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -410,9 +410,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_messages
+				target = flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_messages)" = 2
+			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings)" = 2
 		}
 		modeu5_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -433,9 +433,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_monthly_stock_check
+				target = flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_monthly_stock_check)" = 2
+			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings)" = 2
 		}
 		if = {
 			limit = { modeu5_debug_enabled_trigger = yes }
@@ -451,9 +451,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_save_mode
+				target = flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 3
+			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings)" = 3
 		}
 		modeu5_enter_strict_accounting_persistence = yes
 	}
@@ -462,9 +462,9 @@ modeu5_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_save_mode
+				target = flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_save_mode)" = 2
+			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings)" = 2
 		}
 		modeu5_enter_human_relevant_accounting_persistence = yes
 	}

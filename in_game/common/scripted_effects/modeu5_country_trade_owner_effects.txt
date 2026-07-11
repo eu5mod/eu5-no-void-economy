@@ -25,6 +25,18 @@
 # stock-affecting generated per-good dispatch is deliberately deferred; stock
 # consequences continue to go through explicit ModeU5 requests, existing US-10
 # inter-market handlers, and central stock operators.
+#
+# #107 extension: US-17/#105, #120, and US-20/#118 route reconciliation is wired
+# into the existing every_trade body after route scopes and quantity are captured.
+# This preserves the #161 Q8.7 boundary: no market-scope every_trade loop is
+# introduced. The hook is dormant unless the CMM trade-rework setting enables
+# modeu5_trade_rework_enabled_trigger.
+#
+# US-17 owner-modifier rule:
+# - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are read
+#   from the saved trade owner country;
+# - the scheduler country and market-center owner are never used as substitutes;
+# - unresolved route prices/base-maintenance/income surfaces remain fail-closed.
 
 modeu5_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = modeu5_country_trade_owner_pass_runs
@@ -171,6 +183,11 @@ modeu5_capture_country_trade_owner_trade_quantity = {
 modeu5_run_monthly_country_trade_owner_cycle = {
 	save_temporary_scope_as = modeu5_trade_owner_controller_country
 	modeu5_note_country_trade_owner_pass_run = yes
+	if = {
+		limit = { modeu5_trade_rework_enabled_trigger = yes }
+		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
+		modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
+	}
 
 	every_trade = {
 		save_temporary_scope_as = modeu5_trade_owner_trade
@@ -181,6 +198,20 @@ modeu5_run_monthly_country_trade_owner_cycle = {
 		to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
 		traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
 		modeu5_capture_country_trade_owner_trade_quantity = yes
+		if = {
+			limit = { exists = scope:modeu5_trade_owner_country }
+			scope:modeu5_trade_owner_country = {
+				if = {
+					limit = { modeu5_trade_rework_enabled_trigger = yes }
+					# Country modifier inputs are live and confirmed here. Route prices,
+					# export cost, base maintenance and visible income/profit remain
+					# explicit fail-closed inputs until their route surfaces are proven.
+					modeu5_capture_trade_owner_country_modifier_inputs = yes
+					save_temporary_scope_value_as = { name = modeu5_trade_efficiency_formula_inputs_available value = 0 }
+					modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
+				}
+			}
+		}
 
 		if = {
 			limit = {
