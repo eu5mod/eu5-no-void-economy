@@ -1,0 +1,236 @@
+# Explicit US-04 Q7/Q8 positive-demand probes and observed-current target test.
+# No generator is used for this file.
+
+modeu5_us04_q7_q8_clear_state = {
+	remove_global_variable = modeu5_test_us04_q7_q8_positive_globals_passed
+	remove_global_variable = modeu5_test_us04_q7_q8_positive_globals_failed
+	remove_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked
+	remove_global_variable = modeu5_us04_q7_q8_in_progress
+	remove_global_variable = modeu5_us04_matrix_global_books
+	remove_global_variable = modeu5_us04_matrix_global_furniture
+	remove_global_variable = modeu5_us04_q7_books_low
+	remove_global_variable = modeu5_us04_q7_books_high
+	remove_global_variable = modeu5_us04_q7_books_delta
+	remove_global_variable = modeu5_us04_q7_books_source_low
+	remove_global_variable = modeu5_us04_q7_books_source_high
+	remove_global_variable = modeu5_us04_q8_furniture_low
+	remove_global_variable = modeu5_us04_q8_furniture_high
+	remove_global_variable = modeu5_us04_q8_furniture_delta
+	remove_global_variable = modeu5_us04_q8_furniture_source_low
+	remove_global_variable = modeu5_us04_q8_furniture_source_high
+	remove_global_variable = modeu5_us04_q7_q8_control_low
+	remove_global_variable = modeu5_us04_q7_q8_control_high
+	remove_global_variable = modeu5_us04_q7_q8_control_delta
+	remove_global_variable = modeu5_us04_q7_q8_control_stable
+	remove_global_variable = modeu5_us04_q7_q8_pass_count
+	remove_global_variable = modeu5_us04_q7_q8_fail_count
+	remove_global_variable = modeu5_us04_q7_q8_blocked_count
+	clear_saved_scope = modeu5_us04_q7_q8_market
+}
+
+modeu5_us04_q7_q8_increment_pass = { change_global_variable = { name = modeu5_us04_q7_q8_pass_count add = 1 } }
+modeu5_us04_q7_q8_increment_fail = { change_global_variable = { name = modeu5_us04_q7_q8_fail_count add = 1 } }
+modeu5_us04_q7_q8_increment_blocked = { change_global_variable = { name = modeu5_us04_q7_q8_blocked_count add = 1 } }
+
+modeu5_us04_q7_q8_begin = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q7_q8_positive_globals"
+	if = {
+		limit = { has_global_variable = modeu5_us04_q7_q8_in_progress }
+		set_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=probe_already_in_progress"
+	}
+	else = {
+		modeu5_us04_q7_q8_clear_state = yes
+		set_global_variable = modeu5_us04_q7_q8_in_progress
+		set_global_variable = { name = modeu5_us04_q7_q8_pass_count value = 0 }
+		set_global_variable = { name = modeu5_us04_q7_q8_fail_count value = 0 }
+		set_global_variable = { name = modeu5_us04_q7_q8_blocked_count value = 0 }
+		capital.market = { save_scope_as = modeu5_us04_q7_q8_market }
+		set_global_variable = { name = modeu5_us04_matrix_global_books value = 1.0 }
+		set_global_variable = { name = modeu5_us04_matrix_global_furniture value = 1.0 }
+		set_global_variable = { name = modeu5_us04_q7_books_source_low value = global_var:modeu5_us04_matrix_global_books }
+		set_global_variable = { name = modeu5_us04_q8_furniture_source_low value = global_var:modeu5_us04_matrix_global_furniture }
+		debug_log = "ModeU5 US-04 INJECTION MATRIX PHASE q7_q8_positive begin source_low_books=1.0000 source_low_furniture=1.0000"
+	}
+}
+
+modeu5_us04_q7_q8_capture_low_and_raise = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_q7_q8_in_progress } }
+		set_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=low_capture_without_in_progress"
+	}
+	else = {
+		scope:modeu5_us04_q7_q8_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_q7_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q8_furniture_current value = "goods_demand_in_market(goods:furniture)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q7_q8_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_q7_books_low value = scope:modeu5_us04_q7_books_current }
+		set_global_variable = { name = modeu5_us04_q8_furniture_low value = scope:modeu5_us04_q8_furniture_current }
+		set_global_variable = { name = modeu5_us04_q7_q8_control_low value = scope:modeu5_us04_q7_q8_control_current }
+		set_global_variable = { name = modeu5_us04_matrix_global_books value = 4.0 }
+		set_global_variable = { name = modeu5_us04_matrix_global_furniture value = 4.0 }
+		set_global_variable = { name = modeu5_us04_q7_books_source_high value = global_var:modeu5_us04_matrix_global_books }
+		set_global_variable = { name = modeu5_us04_q8_furniture_source_high value = global_var:modeu5_us04_matrix_global_furniture }
+		debug_log = "ModeU5 US-04 INJECTION MATRIX PHASE q7_q8_positive low_captured high_sources_written=1"
+	}
+}
+
+modeu5_us04_q7_q8_finalize = {
+	if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_q7_q8_in_progress } }
+		set_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=finalize_without_in_progress"
+	}
+	else = {
+		scope:modeu5_us04_q7_q8_market = {
+			save_temporary_scope_value_as = { name = modeu5_us04_q7_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q8_furniture_current value = "goods_demand_in_market(goods:furniture)" }
+			save_temporary_scope_value_as = { name = modeu5_us04_q7_q8_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = modeu5_us04_q7_books_high value = scope:modeu5_us04_q7_books_current }
+		set_global_variable = { name = modeu5_us04_q8_furniture_high value = scope:modeu5_us04_q8_furniture_current }
+		set_global_variable = { name = modeu5_us04_q7_q8_control_high value = scope:modeu5_us04_q7_q8_control_current }
+		save_temporary_scope_value_as = { name = modeu5_us04_q7_q8_control_delta value = { value = global_var:modeu5_us04_q7_q8_control_high subtract = global_var:modeu5_us04_q7_q8_control_low } }
+		set_global_variable = { name = modeu5_us04_q7_q8_control_delta value = scope:modeu5_us04_q7_q8_control_delta }
+		save_temporary_scope_value_as = { name = modeu5_us04_q7_q8_control_min value = { value = global_var:modeu5_us04_q7_q8_control_low subtract = 0.001 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_q7_q8_control_max value = { value = global_var:modeu5_us04_q7_q8_control_low add = 0.001 } }
+		if = { limit = { global_var:modeu5_us04_q7_q8_control_high >= scope:modeu5_us04_q7_q8_control_min global_var:modeu5_us04_q7_q8_control_high <= scope:modeu5_us04_q7_q8_control_max } set_global_variable = modeu5_us04_q7_q8_control_stable }
+		set_variable = { name = modeu5_us04_q7_q8_ui_control_low value = global_var:modeu5_us04_q7_q8_control_low }
+		set_variable = { name = modeu5_us04_q7_q8_ui_control_high value = global_var:modeu5_us04_q7_q8_control_high }
+		set_variable = { name = modeu5_us04_q7_q8_ui_control_delta value = global_var:modeu5_us04_q7_q8_control_delta }
+		debug_log = "ModeU5 US-04 INJECTION CONTROL good=wool low=[THIS.GetVariable('modeu5_us04_q7_q8_ui_control_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_q7_q8_ui_control_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_q7_q8_ui_control_delta').GetValue|4]"
+
+		save_temporary_scope_value_as = { name = modeu5_us04_q7_books_delta value = { value = global_var:modeu5_us04_q7_books_high subtract = global_var:modeu5_us04_q7_books_low } }
+		set_global_variable = { name = modeu5_us04_q7_books_delta value = scope:modeu5_us04_q7_books_delta }
+		set_variable = { name = modeu5_us04_q7_q8_ui_low value = global_var:modeu5_us04_q7_books_low }
+		set_variable = { name = modeu5_us04_q7_q8_ui_high value = global_var:modeu5_us04_q7_books_high }
+		set_variable = { name = modeu5_us04_q7_q8_ui_delta value = global_var:modeu5_us04_q7_books_delta }
+		set_variable = { name = modeu5_us04_q7_q8_ui_source_low value = global_var:modeu5_us04_q7_books_source_low }
+		set_variable = { name = modeu5_us04_q7_q8_ui_source_high value = global_var:modeu5_us04_q7_books_source_high }
+		debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=07 syntax=direct_global good=books source_low=[THIS.GetVariable('modeu5_us04_q7_q8_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_q7_q8_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_q7_q8_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_q7_q8_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_q7_q8_ui_delta').GetValue|4]"
+		if = { limit = { global_var:modeu5_us04_q7_books_low <= 0.0001 } modeu5_us04_q7_q8_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=books BLOCKED reason=baseline_demand_nonpositive" }
+		else_if = { limit = { NOT = { has_global_variable = modeu5_us04_q7_q8_control_stable } } modeu5_us04_q7_q8_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=books BLOCKED reason=unstable_control" }
+		else_if = { limit = { global_var:modeu5_us04_q7_books_high > global_var:modeu5_us04_q7_books_low } modeu5_us04_q7_q8_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=books PASS" }
+		else = { modeu5_us04_q7_q8_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=07 syntax=direct_global good=books FAIL reason=no_target_response" }
+
+		save_temporary_scope_value_as = { name = modeu5_us04_q8_furniture_delta value = { value = global_var:modeu5_us04_q8_furniture_high subtract = global_var:modeu5_us04_q8_furniture_low } }
+		set_global_variable = { name = modeu5_us04_q8_furniture_delta value = scope:modeu5_us04_q8_furniture_delta }
+		set_variable = { name = modeu5_us04_q7_q8_ui_low value = global_var:modeu5_us04_q8_furniture_low }
+		set_variable = { name = modeu5_us04_q7_q8_ui_high value = global_var:modeu5_us04_q8_furniture_high }
+		set_variable = { name = modeu5_us04_q7_q8_ui_delta value = global_var:modeu5_us04_q8_furniture_delta }
+		set_variable = { name = modeu5_us04_q7_q8_ui_source_low value = global_var:modeu5_us04_q8_furniture_source_low }
+		set_variable = { name = modeu5_us04_q7_q8_ui_source_high value = global_var:modeu5_us04_q8_furniture_source_high }
+		debug_log = "ModeU5 US-04 INJECTION CANDIDATE id=08 syntax=direct_global_value_block good=furniture source_low=[THIS.GetVariable('modeu5_us04_q7_q8_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('modeu5_us04_q7_q8_ui_source_high').GetValue|4] low=[THIS.GetVariable('modeu5_us04_q7_q8_ui_low').GetValue|4] high=[THIS.GetVariable('modeu5_us04_q7_q8_ui_high').GetValue|4] delta=[THIS.GetVariable('modeu5_us04_q7_q8_ui_delta').GetValue|4]"
+		if = { limit = { global_var:modeu5_us04_q8_furniture_low <= 0.0001 } modeu5_us04_q7_q8_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=furniture BLOCKED reason=baseline_demand_nonpositive" }
+		else_if = { limit = { NOT = { has_global_variable = modeu5_us04_q7_q8_control_stable } } modeu5_us04_q7_q8_increment_blocked = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=furniture BLOCKED reason=unstable_control" }
+		else_if = { limit = { global_var:modeu5_us04_q8_furniture_high > global_var:modeu5_us04_q8_furniture_low } modeu5_us04_q7_q8_increment_pass = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=furniture PASS" }
+		else = { modeu5_us04_q7_q8_increment_fail = yes debug_log = "ModeU5 US-04 INJECTION RESULT id=08 syntax=direct_global_value_block good=furniture FAIL reason=no_target_response" }
+
+		set_variable = { name = modeu5_us04_q7_q8_ui_pass value = global_var:modeu5_us04_q7_q8_pass_count }
+		set_variable = { name = modeu5_us04_q7_q8_ui_fail value = global_var:modeu5_us04_q7_q8_fail_count }
+		set_variable = { name = modeu5_us04_q7_q8_ui_blocked value = global_var:modeu5_us04_q7_q8_blocked_count }
+		debug_log = "ModeU5 US-04 INJECTION MATRIX SUMMARY q7_q8_positive pass=[THIS.GetVariable('modeu5_us04_q7_q8_ui_pass').GetValue|0] fail=[THIS.GetVariable('modeu5_us04_q7_q8_ui_fail').GetValue|0] blocked=[THIS.GetVariable('modeu5_us04_q7_q8_ui_blocked').GetValue|0]"
+		if = {
+			limit = { global_var:modeu5_us04_q7_q8_pass_count > 0 }
+			set_global_variable = modeu5_test_us04_q7_q8_positive_globals_passed
+			debug_log = "ModeU5 TEST PASS scenario=us04_q7_q8_positive_globals"
+		}
+		else_if = {
+			limit = { global_var:modeu5_us04_q7_q8_blocked_count > 0 global_var:modeu5_us04_q7_q8_fail_count = 0 }
+			set_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=all_positive_global_candidates_blocked"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_q7_q8_positive_globals_failed
+			debug_log = "ModeU5 TEST FAIL scenario=us04_q7_q8_positive_globals"
+		}
+		remove_global_variable = modeu5_us04_matrix_global_books
+		remove_global_variable = modeu5_us04_matrix_global_furniture
+		remove_global_variable = modeu5_us04_q7_q8_in_progress
+		modeu5_debug_run_us04_observed_current_target_architecture_test = yes
+	}
+}
+
+modeu5_us04_clear_books_stock_in_market = {
+	$market$ = {
+		save_temporary_scope_as = modeu5_us04_clear_market
+		save_temporary_scope_as = modeu5_market_country_cache_market
+	}
+	modeu5_rebuild_countries_present_in_market = yes
+	if = {
+		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		every_in_global_list = {
+			variable = modeu5_countries_present_in_market
+			save_temporary_scope_as = modeu5_us04_clear_country
+			modeu5_remove_stock = { country = scope:modeu5_us04_clear_country market = scope:modeu5_us04_clear_market good = books quantity = 1000000 reason = debug_test }
+		}
+	}
+}
+
+modeu5_debug_run_us04_observed_current_target_architecture_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_observed_current_target_architecture"
+	remove_global_variable = modeu5_test_us04_observed_current_target_passed
+	remove_global_variable = modeu5_test_us04_observed_current_target_failed
+	remove_global_variable = modeu5_test_us04_observed_current_target_blocked
+	c:FRA.capital.market = { save_scope_as = modeu5_us04_observed_target_market }
+
+	scope:modeu5_us04_observed_target_market = {
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_observed_books value = "goods_demand_in_market(goods:books)" }
+	}
+	if = {
+		limit = { scope:modeu5_us04_arch_observed_books <= 0.0001 }
+		set_global_variable = modeu5_test_us04_observed_current_target_blocked
+		set_variable = { name = modeu5_us04_arch_ui_observed value = scope:modeu5_us04_arch_observed_books }
+		debug_log = "ModeU5 US-04 DUMP observed_current_target good=books observed=[THIS.GetVariable('modeu5_us04_arch_ui_observed').GetValue|4] result=BLOCKED reason=baseline_demand_nonpositive"
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_observed_current_target_architecture reason=books_baseline_demand_nonpositive"
+	}
+	else = {
+		modeu5_us04_initialize_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market baseline_multiplier = 1.20 }
+		modeu5_us04_read_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market }
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_target_initial value = scope:modeu5_us04_current_consumption_target }
+
+		modeu5_us04_transition_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market factor = 1.01 }
+		modeu5_us04_read_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market }
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_target_satisfied value = scope:modeu5_us04_current_consumption_target }
+
+		modeu5_us04_set_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market value = scope:modeu5_us04_arch_target_initial }
+		modeu5_us04_transition_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market factor = 0.99 }
+		modeu5_us04_read_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market }
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_target_shortage value = scope:modeu5_us04_current_consumption_target }
+
+		modeu5_us04_set_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market value = scope:modeu5_us04_arch_target_initial }
+		modeu5_us04_clear_books_stock_in_market = { market = scope:modeu5_us04_observed_target_market }
+		modeu5_add_stock = { country = c:FRA market = scope:modeu5_us04_observed_target_market good = books quantity = scope:modeu5_us04_arch_target_initial capacity_policy = allow_over_capacity }
+		modeu5_us04_resolve_current_consumption_target_books = { country = c:FRA market = scope:modeu5_us04_observed_target_market }
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_consumed_satisfied value = scope:modeu5_satisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_us04_arch_consumed_unsatisfied value = scope:modeu5_unsatisfied_quantity }
+
+		set_variable = { name = modeu5_us04_arch_ui_observed value = scope:modeu5_us04_arch_observed_books }
+		set_variable = { name = modeu5_us04_arch_ui_initial value = scope:modeu5_us04_arch_target_initial }
+		set_variable = { name = modeu5_us04_arch_ui_satisfied value = scope:modeu5_us04_arch_target_satisfied }
+		set_variable = { name = modeu5_us04_arch_ui_shortage value = scope:modeu5_us04_arch_target_shortage }
+		set_variable = { name = modeu5_us04_arch_ui_consumed_satisfied value = scope:modeu5_us04_arch_consumed_satisfied }
+		set_variable = { name = modeu5_us04_arch_ui_consumed_unsatisfied value = scope:modeu5_us04_arch_consumed_unsatisfied }
+		debug_log = "ModeU5 US-04 DUMP observed_current_target good=books observed=[THIS.GetVariable('modeu5_us04_arch_ui_observed').GetValue|4] initial=[THIS.GetVariable('modeu5_us04_arch_ui_initial').GetValue|4] satisfied_target=[THIS.GetVariable('modeu5_us04_arch_ui_satisfied').GetValue|4] shortage_target=[THIS.GetVariable('modeu5_us04_arch_ui_shortage').GetValue|4] consumed_satisfied=[THIS.GetVariable('modeu5_us04_arch_ui_consumed_satisfied').GetValue|4] consumed_unsatisfied=[THIS.GetVariable('modeu5_us04_arch_ui_consumed_unsatisfied').GetValue|4]"
+
+		if = {
+			limit = {
+				scope:modeu5_us04_arch_target_initial > scope:modeu5_us04_arch_observed_books
+				scope:modeu5_us04_arch_target_satisfied > scope:modeu5_us04_arch_target_initial
+				scope:modeu5_us04_arch_target_shortage < scope:modeu5_us04_arch_target_initial
+				scope:modeu5_us04_arch_consumed_satisfied > 0
+				scope:modeu5_us04_arch_consumed_unsatisfied <= 0.0001
+			}
+			set_global_variable = modeu5_test_us04_observed_current_target_passed
+			debug_log = "ModeU5 US-04 RESULT observed_current_target PASS"
+			debug_log = "ModeU5 TEST PASS scenario=us04_observed_current_target_architecture"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_observed_current_target_failed
+			debug_log = "ModeU5 US-04 RESULT observed_current_target FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_observed_current_target_architecture"
+		}
+	}
+}
