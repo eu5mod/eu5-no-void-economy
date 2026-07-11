@@ -52,108 +52,102 @@ ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map PASS
 
 Conclusion: the location coefficient reader and safe multiplier-1 fallback are confirmed.
 
-## Injection matrix result
+## Additive candidates 01–06
 
-The matrix was started twice before the first delayed run finalized:
+Detailed rerun confirmed that candidates 01–06 had valid positive baselines and valid source changes from `1.0000` to `4.0000`, but no demand response:
 
 ```txt
-15:59:26 ENTERED scenario=us04_pop_demand_injection_matrix
-15:59:47 ENTERED scenario=us04_pop_demand_injection_matrix
+id=01 plain_child wheat                 source 1 -> 4, low=56.1723 high=56.1723 delta=0.0000
+id=02 inner_inject beer                 source 1 -> 4, low=9.2194  high=9.2194  delta=0.0000
+id=03 inner_try_inject cloth            source 1 -> 4, low=15.6373 high=15.6373 delta=0.0000
+id=04 inner_inject_or_create tools      source 1 -> 4, low=7.6701  high=7.6701  delta=0.0000
+id=05 outer_try_inject fish             source 1 -> 4, low=24.0997 high=24.0997 delta=0.0000
+id=06 outer_inject_or_create wine       source 1 -> 4, low=12.2536 high=12.2536 delta=0.0000
 ```
 
-Therefore the first finalization reported:
+Control:
 
 ```txt
-pass=0 fail=8
+wool low=15.8076 high=15.8076 delta=0.0000
 ```
 
-and the overlapping second finalization accumulated on top of it:
+Conclusion:
 
 ```txt
-pass=0 fail=16
+Candidates 01–06 are rejected as no-target-response.
 ```
 
-The doubled count is a test-protocol artifact, not 16 independent candidates.
+## Direct-global candidates 07–08
 
-## Candidate classification
-
-All eight explicit static/additive candidates failed with no target response:
+The original tea/coffee run was inconclusive because both goods had zero baseline demand:
 
 ```txt
-id=01 syntax=plain_child good=wheat                    FAIL reason=no_target_response
-id=02 syntax=inner_inject good=beer                    FAIL reason=no_target_response
-id=03 syntax=inner_try_inject good=cloth               FAIL reason=no_target_response
-id=04 syntax=inner_inject_or_create good=tools         FAIL reason=no_target_response
-id=05 syntax=outer_try_inject good=fish                FAIL reason=no_target_response
-id=06 syntax=outer_inject_or_create good=wine          FAIL reason=no_target_response
-id=07 syntax=direct_global good=tea                    FAIL reason=no_target_response
-id=08 syntax=direct_global_value_block good=coffee     FAIL reason=no_target_response
+id=07 direct_global tea                 source 1 -> 4, low=0 high=0 BLOCKED
+id=08 direct_global_value_block coffee  source 1 -> 4, low=0 high=0 BLOCKED
 ```
 
-Candidate 01 additionally logged:
+Conclusion:
 
 ```txt
-wheat delta=0.0000
+The global variables changed correctly, but the goods were invalid probes.
+Direct-global syntax was not disproven by that run.
 ```
 
-## Interpretation
+## Follow-up implemented
+
+Candidates 07–08 were retargeted to positive-demand candidates:
 
 ```txt
-- The candidate files loaded sufficiently for the test session to run.
-- No tested additive/static database-entry-mode shape affected vanilla pop_demand output.
-- Direct global variable expressions did not help.
-- Static additive mutation of pop_demand should be treated as rejected for this PR.
+id=07 direct_global              good=books
+id=08 direct_global_value_block  good=furniture
 ```
 
-This does not invalidate:
+A focused combined launcher now runs:
 
 ```txt
-- the annual 1.20 / 1.01 / 0.99 business rule;
-- the Pop -> location coefficient reader;
-- the observed-current demand target architecture.
+Q7/Q8 positive-demand global probes
+then
+observed-current target architecture test
 ```
 
 ## Architectural decision
 
-The PR should pivot away from upstream vanilla `pop_demand` mutation and toward the observed-current demand target architecture:
+Continue away from upstream vanilla `pop_demand` mutation unless the retargeted Q7/Q8 probe proves otherwise.
+
+Target architecture now implemented as explicit helpers:
 
 ```txt
 observe current engine demand
   -> initialize ModeU5 current consumption target = observed × 1.20
   -> yearly target transition = current target × 0.99 / 1.00 / 1.01
-  -> feed ModeU5 stock consumption from that target
+  -> feed ModeU5 stock consumption from the target
 ```
 
-Known feasible reader:
+The first integrated test uses `books` and logs:
 
 ```txt
-goods_demand_in_market(goods:<good>)
+observed
+initial target
+satisfied-year target
+shortage-year target
+consumed_satisfied
+consumed_unsatisfied
 ```
 
-Open design choice:
+## Next runtime command
 
 ```txt
-market × good
+event modeu5_us04_debug.1
 ```
 
-versus:
+Choose:
 
 ```txt
-country × market × good using a distribution rule
+Run Q7/Q8 globals + observed-current target
 ```
 
-## Follow-up test hygiene
+Then advance four in-game days and run:
 
-The matrix launcher should either:
-
-```txt
-- be run once only and allowed to finish four in-game days later;
+```sh
+./tools/summarize_modeu5_test_logs.sh --expected none
 ```
-
-or:
-
-```txt
-- gain an in-progress guard to prevent overlapping delayed runs.
-```
-
-Because the static mutation path is rejected, the guard is lower priority than the observed-current implementation.
