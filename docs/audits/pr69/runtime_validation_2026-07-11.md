@@ -1,17 +1,20 @@
 # PR #69 runtime validation — 2026-07-11
 
-## First tested provenance
+## Accepted tested provenance
 
 ```txt
 branch: 22-us-04-annual-local-pop-demand-adjustment
-commit: 56b102dd843314f2f50eb12f4f7e15e19e6c2d5d
+commit: 87a1e29c1751adbc5955c3ac3be30267ee93f123
 runtime mode: debug
-source_dirty: yes
+source_dirty: no
+installed_at_utc: 2026-07-11T10:18:34Z to 2026-07-11T10:18:36Z
 ```
 
-## First static and installation result
+All five installed packages reported the same branch, commit and clean source state.
 
-The following completed successfully:
+## Static and installation result
+
+The complete requested pre-runtime sequence passed:
 
 ```txt
 ./tools/generate_all.sh
@@ -27,146 +30,152 @@ git diff --check
 ./tools/install_local_packages.sh --check
 ```
 
-## First load-level result
-
-The three previous US-04 generated-script failures were not observed in this rerun:
-
-```txt
-Duplicated key modeu5_reset_pop_demand_annual_counters_good_<good>
-Cannot read [modeu5_pop_demand_base_consumption_multiplier] as a script value
-Failed to read 'min' for add_to_variable_map
-```
-
-This is evidence that the generated helper collision, named script-value read and variable-map write fixes loaded successfully.
-
-## First focused runtime result
-
-The focused scenario was launched and reached its first marker, but it did not complete:
-
-```txt
-ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-```
-
-EU5 raised:
-
-```txt
-Tried to localize with localization disabled
-```
-
-No US-04 dump, PASS or FAIL marker followed. Therefore the business assertions were not evaluated to completion.
-
-## First-run root cause
-
-The visible console event called the logging test effect directly from its option. The first `debug_log` therefore executed inside the console command's localization-disabled context.
-
-The passing US-17 focused probe already uses the correct pattern:
-
-```txt
-visible console event
-  -> hidden days=0 continuation
-  -> logging test effect in hidden event immediate
-```
-
-## Launcher fix
-
-Commit:
-
-```txt
-0c7cf94a6d5c434267a6dd62204e0424b41d87b7
-```
-
-changes `modeu5_us04_debug.1` so the visible option schedules hidden event `modeu5_us04_debug.10`, which then runs the US-04 test effect outside the localization-disabled context.
-
-## Clean pre-runtime rerun after launcher fix
-
-The installation and static suite were rerun from:
-
-```txt
-branch: 22-us-04-annual-local-pop-demand-adjustment
-commit: 87a1e29c1751adbc5955c3ac3be30267ee93f123
-runtime mode: debug
-source_dirty: no
-installed_at_utc: 2026-07-11T10:18:34Z to 2026-07-11T10:18:36Z
-```
-
-All requested pre-runtime checks passed:
+Observed results included:
 
 ```txt
 ModeU5 CI static contract validation passed
 ModeU5 module package validation passed
 ModeU5 CMM value-link validation passed
-ModeU5 persistent state audit passed with:
-  unclassified persistent maps/lists = 0
-  direct stock-map write candidates outside adapter = 0
-  ownership/rebuild/reset policy gaps = 0
+Unclassified persistent maps/lists: 0
+Direct stock-map write candidates outside generated adapter template: 0
+Ownership/rebuild/reset policy gaps: 0
 ModeU5 generator and validator convention checks passed
 ModeU5 script-safety validation passed
-ModeU5 CMM configuration validation passed
-git diff --check passed
-install_local_packages.sh passed
-install_local_packages.sh --check passed
+source_dirty=no for all installed packages
 ```
 
-All five installed packages reported the exact same clean provenance:
+## Load-level result
+
+The previous direct US-04 parser/load failures were absent:
 
 ```txt
-source_branch=22-us-04-annual-local-pop-demand-adjustment
-source_commit=87a1e29c1751adbc5955c3ac3be30267ee93f123
-source_dirty=no
+Duplicated key modeu5_reset_pop_demand_annual_counters_good_<good>
+Cannot read [modeu5_pop_demand_base_consumption_multiplier] as a script value
+Failed to read 'min' for add_to_variable_map
+Failed to find a valid event target link for the US-04 value block
 ```
 
-This removes the provenance weakness from the first run. It proves that the launcher fix and current PR #69 source package cleanly and pass all available static/install-time contracts.
+This validates the generated-helper symbol rename, quoted named script-value read and scalar variable-map write pattern.
 
-It does not yet prove the US-04 multiplier business assertions, because no post-`event modeu5_us04_debug.1` debug/error log was included with this clean rerun.
+## Focused US-04 runtime result
 
-### Separate generator observation
+The focused event completed successfully at `12:22:27`:
 
-Within the same command sequence, generation reported:
+```txt
+ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 wheat_sat=0 wheat_unsat=0 beer_sat=0 beer_unsat=0 cloth_sat=0 cloth_unsat=0 tools_sat=0 tools_unsat=0
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+```
+
+The deterministic fixture therefore proves:
+
+```txt
+baseline multiplier:                 1.2000
+12 satisfied months:                1.2000 × 1.01 = 1.2120
+12 unsatisfied months:              1.2000 × 0.99 = 1.1880
+mixed year:                         unchanged at 1.2000
+zero-observation year:              unchanged at 1.2000
+annual counters after adaptation:   reset to 0
+```
+
+## Full-revalidation inclusion result
+
+The full chain ran the US-04 scenario again at `12:22:35` and produced the same dump and PASS markers:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+```
+
+This proves the US-04 scenario is correctly integrated into the main revalidation sequence, not only into its focused launcher.
+
+## Full-chain tail caveat
+
+The overall summarizer reported:
+
+```txt
+Entered: 16
+Passed: 14
+Failed: 0
+Blocked: 0
+Pending: 0
+Missing expected full-revalidation scenarios: 1
+missing: main_revalidation_summary
+```
+
+The scenario trace reaches:
+
+```txt
+ModeU5 TEST ENTERED scenario=us17_us20_route_reconciliation
+```
+
+but contains no terminal US-17/US-20 PASS/FAIL/BLOCKED marker and no `main_revalidation_summary` marker afterward.
+
+Therefore:
+
+```txt
+PR #69 / US-04 runtime acceptance: PASS
+entire repository full-revalidation closure: NOT COMPLETE
+unresolved tail begins at: us17_us20_route_reconciliation
+```
+
+The missing final summary is not evidence of a US-04 failure. The US-04 scenario already produced both focused and full-chain PASS markers before the chain reached the US-17/US-20 tail.
+
+A separate US-17/US-20 log investigation should inspect:
+
+```sh
+grep -E "us17_us20_route_reconciliation|US17/US20|ASSERT FAIL|Tried to localize with localization disabled|main_revalidation_summary" \
+"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
+"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/debug.log" || true
+```
+
+## Scope of what is proven
+
+This runtime validation proves:
+
+```txt
+location × good multiplier persistence
+annual satisfied/unsatisfied branch arithmetic
+mixed/no-observation no-change behavior
+annual counter reset ordering
+CMM disabled/enabled fixture behavior
+focused-event launcher behavior
+main-revalidation inclusion
+```
+
+It does not prove:
+
+```txt
+vanilla live Pop requested consumption reads modeu5_pop_demand_multiplier[good]
+Pops actually consume 20% more goods at baseline
+monthly live Pop outcome counters are produced from a confirmed vanilla Pop-demand endpoint
+```
+
+TECH-01 #039 therefore remains `NOT_CONFIRMED` for direct application to vanilla local Pop demand.
+
+## Separate generator observation
+
+The command sequence reported different US-09 building override counts in successive generation paths:
 
 ```txt
 first explicit generate_all.sh:            25 building override files
 install-triggered subsequent generation:   26 building override files
 ```
 
-This indicates a potentially non-idempotent or order-dependent US-09 building-override generation surface. It is not a direct PR #69/US-04 failure, but it should be investigated separately because two consecutive generation passes should normally produce the same artifact count from unchanged tracked source.
+This is not a PR #69/US-04 acceptance failure, but it remains a separate idempotence/order-dependency observation for US-09 generation.
 
-## Current status
-
-```txt
-Static validation at 87a1e29:              PASS
-Installation provenance:                   CONFIRMED, source_dirty=no
-Package consistency check:                 PASS
-Previous US-04 generated-parser blockers:  ABSENT IN PRIOR LOAD RERUN
-Focused launcher fix:                      COMMITTED AND CLEANLY INSTALLED
-Focused test business assertions:          PENDING POST-EVENT LOG
-Focused runtime acceptance:                PENDING
-Live vanilla Pop-demand integration:       NOT_CONFIRMED
-Separate US-09 generator idempotence:       REVIEW RECOMMENDED
-```
-
-## Required focused runtime step
-
-In EU5:
+## Final PR #69 status
 
 ```txt
-event modeu5_us04_debug.1
-```
-
-Expected markers:
-
-```txt
-ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
-ModeU5 US-04 DUMP ...
-ModeU5 US-04 RESULT pop_demand_adaptation PASS
-ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
-```
-
-Inspect with:
-
-```sh
-./tools/summarize_modeu5_test_logs.sh
-
-grep -E "us04_pop_demand_adaptation|ModeU5 US-04|Tried to localize with localization disabled|modeu5_pop_demand_base_consumption_multiplier|Failed to read 'min'|Duplicated key modeu5_.*pop_demand" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/debug.log" || true
+Static validation:                          PASS
+Installation provenance:                   PASS — clean commit 87a1e29
+US-04 generated parser/load surface:        PASS
+US-04 focused deterministic fixture:        PASS
+US-04 main-revalidation scenario:           PASS
+US-04 annual arithmetic and counter reset:  PASS
+PR #69 runtime acceptance:                 PASS
+Live vanilla Pop-demand application:        NOT_CONFIRMED
+Repository-wide final summary:              INCOMPLETE — unrelated US-17/US-20 tail
 ```
