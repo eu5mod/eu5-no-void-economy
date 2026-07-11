@@ -4,24 +4,20 @@
 
 This is the PR-specific living flow document for PR #69.
 
-It records the current branch flow without modifying the canonical Q8 document:
+It records the branch flow and validation state without modifying the canonical Q8 document:
 
 ```txt
 docs/audits/q8/Q5_flux_logique_global.md
 ```
 
-This file should be updated as PR #69 changes, tests run, or assumptions are corrected.
+## Current branch layers
 
-## Current branch context
-
-PR #69 adds yearly US-04 Pop-demand adaptation on top of the existing Q8.7 monthly flow and the already-merged PR #107 trade reconciliation.
-
-The branch therefore has three relevant layers:
+PR #69 adds yearly US-04 Pop-demand adaptation on top of:
 
 ```txt
-1. Monthly market-local stock and demand flow
-2. Monthly country-owned trade and route reconciliation flow
-3. Yearly location × good Pop-demand adaptation flow
+1. Q8.7 monthly market-local stock and demand flow
+2. country-owned monthly trade and PR #107 route reconciliation
+3. yearly location × good Pop-demand multiplier adaptation
 ```
 
 ## Monthly market-local flow
@@ -29,51 +25,48 @@ The branch therefore has three relevant layers:
 ```txt
 monthly_country_pulse
   -> modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-     -> runtime readiness and configuration gates
-     -> performance/relevance preparation
-     -> current-country capacity refresh
-     -> monthly market registries
-     -> Q8.7 global market-local cycle, once per month
+     -> runtime/configuration gates
+     -> performance and market-relevance preparation
+     -> country capacity and monthly registries
+     -> once-per-month Q8.7 global market pass
           -> every_market_in_world
-          -> prepare market runtime accounting mode
+          -> prepare market accounting mode
           -> detailed market:
                -> rebuild countries_present_in_market
                -> refresh country-market capacity
-               -> US-00 active-good production/admission pass
+               -> US-00 production/admission
                -> freeze US-00 facts
-               -> US-10 pending-demand/same-market consumption pass
+               -> US-10 same-market demand resolution
                -> record monthly demand outcomes
-          -> vanilla-fallback or blocked market:
+          -> fallback/blocked market:
                -> diagnostics only
                -> no ModeU5 stock mutation
 ```
 
 ## Monthly country-owned trade flow
 
-After market-local work, each country runs its own trade-owner pass:
+After the market-local pass, each country runs:
 
 ```txt
 modeu5_run_monthly_country_trade_owner_cycle
   -> every_trade
      -> capture trade.owner
-     -> capture from_market
-     -> capture to_market
-     -> capture traded_goods
+     -> capture source market, target market and good
      -> capture route quantity
      -> when trade rework is enabled:
           -> capture owner-country modifier inputs
           -> US-17 money-side route reconciliation
-          -> US-20 received-goods and destination-loss reconciliation
+          -> US-20 received-goods/destination-loss reconciliation
 ```
 
-The route reconciliation is distinct from the later optional stock audit reconciliation.
+Route reconciliation and stock audit reconciliation are separate:
 
 ```txt
 US-17 / US-20 route reconciliation
-  = business correction for the current trade route
+  = business correction for the current route
 
 modeu5_run_monthly_stock_reconciliation_once
-  = optional stock consistency validation/repair
+  = optional consistency validation/repair
 ```
 
 ## Yearly US-04 flow
@@ -87,18 +80,17 @@ yearly_country_pulse
      -> generated location × good helpers
           -> read annual satisfied_months
           -> read annual unsatisfied_months
-          -> read current persisted multiplier
-          -> missing multiplier fallback = 1.20
-          -> 12 satisfied and 0 unsatisfied: multiplier × 1.01
-          -> 0 satisfied and 12 unsatisfied: multiplier × 0.99
-          -> mixed or zero-demand year: unchanged
+          -> read persisted multiplier, fallback 1.20
+          -> 12 satisfied / 0 unsatisfied: × 1.01
+          -> 0 satisfied / 12 unsatisfied: × 0.99
+          -> mixed or no observation: unchanged
           -> persist multiplier
           -> reset annual counters after reading them
 ```
 
-## Dependency clarification — stock records
+## Stock dependency clarification
 
-The yearly US-04 calculation does not directly read:
+The yearly US-04 arithmetic does not directly read:
 
 ```txt
 country × market × good stock
@@ -107,15 +99,15 @@ country-market capacity
 market promotion state
 ```
 
-Its direct data dependency is:
+Its direct dependencies are:
 
 ```txt
 location × good annual outcome counters
 +
-location × good persisted demand multiplier
+location × good persisted multiplier
 ```
 
-Therefore, a positive or existing country × market stock record is not itself required for the yearly arithmetic to run.
+Therefore, existence of a positive country × market stock record is not itself required for yearly adaptation.
 
 The current gate:
 
@@ -123,32 +115,20 @@ The current gate:
 modeu5_stock_runtime_ready_trigger = yes
 ```
 
-means only:
+only proves initialization and schema readiness. It does not prove that a particular country × market × good stock entry exists.
 
-```txt
-initialization complete
-+
-stock schema version exists
-+
-stock schema version matches the current version
-```
-
-It does not prove that a particular country × market × good stock entry exists.
-
-### Indirect upstream dependency
-
-The intended monthly producer of truthful satisfaction outcomes may depend on stock resolution:
+The indirect upstream relationship remains:
 
 ```txt
 Pop or explicit demand request
   -> US-10 attempts stock removal
-  -> actual removed quantity = satisfied quantity
+  -> removed quantity = satisfied quantity
   -> remainder = unsatisfied quantity
   -> US-10.3 writes location × good outcome counters
   -> US-04 reads those counters yearly
 ```
 
-So the correct distinction is:
+So:
 
 ```txt
 US-04 yearly adaptation itself
@@ -156,23 +136,57 @@ US-04 yearly adaptation itself
 
 but
 
-the monthly producer of meaningful satisfied/unsatisfied counters
+the monthly producer of meaningful outcome counters
   may depend on ModeU5 stock resolution
 ```
 
-Missing annual counters should be treated as no observation, not automatically as satisfaction or shortage.
+Missing counters are no observation, not automatic satisfaction or shortage.
+
+## Validated PR #69 behavior
+
+Runtime validation from clean installed commit:
+
+```txt
+87a1e29c1751adbc5955c3ac3be30267ee93f123
+source_dirty=no
+```
+
+proved both the focused fixture and its inclusion in the full revalidation chain:
+
+```txt
+baseline:                         1.2000
+12 satisfied months:             1.2120
+12 unsatisfied months:           1.1880
+mixed year:                      1.2000
+zero-observation year:           1.2000
+annual counters after read:      0
+focused scenario:                PASS
+full-chain US-04 scenario:       PASS
+```
+
+Expected and observed markers:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 beer_multiplier=1.1880 cloth_multiplier=1.2000 tools_multiplier=1.2000 ...
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+```
+
+The full repository revalidation did not emit `main_revalidation_summary` because the trace stopped after entering `us17_us20_route_reconciliation`. This does not invalidate US-04, whose PASS marker occurred earlier. The unresolved tail is tracked separately in `runtime_validation_2026-07-11.md`.
 
 ## Current engine boundary
 
-PR #69 currently implements:
+PR #69 proves:
 
 ```txt
 annual counters
-  -> yearly adaptation
+  -> yearly branch decision
   -> persisted modeu5_pop_demand_multiplier[good]
+  -> annual counter reset
 ```
 
-PR #69 does not yet prove or wire:
+PR #69 does not prove or wire:
 
 ```txt
 persisted modeu5_pop_demand_multiplier[good]
@@ -180,28 +194,28 @@ persisted modeu5_pop_demand_multiplier[good]
   -> additional live Pop requested consumption
 ```
 
-TECH-01 #039 therefore remains:
+TECH-01 #039 remains:
 
 ```txt
 Apply a local demand modifier to vanilla demand: NOT_CONFIRMED
 Fallback: persist ModeU5 multiplier only
 ```
 
-The configured baseline `1.20` must currently be described as a persisted ModeU5 multiplier, not as proven 20% extra live Pop consumption.
+The baseline `1.20` is a validated persisted ModeU5 multiplier. It must not yet be described as proven 20% additional live Pop consumption.
 
 ## Ordering and ownership invariants
 
 1. Capacity is prepared before US-00 stock admission.
-2. US-00 admission facts are frozen before US-10 same-market consumption.
-3. Same-market US-10 consumption is local non-trade work.
-4. Vanilla trade remains inter-market and country-owned through `every_trade`.
-5. US-17/US-20 reconciliation runs inside the current trade iteration after route scopes and quantity are captured.
-6. Route business reconciliation is separate from optional stock audit reconciliation.
-7. US-04 is yearly and consumes annual location × good counters.
-8. Annual counters reset only after US-04 reads them.
-9. Persisting a multiplier is not equivalent to applying it to vanilla Pop demand.
-10. The Q8.7 global market pass runs once per month, while each country-owned trade pass still runs from its country pulse.
-11. Performance Mode relevance remains market-level.
+2. US-00 facts are frozen before US-10 same-market consumption.
+3. Same-market consumption is local non-trade work.
+4. Inter-market trade remains country-owned through `every_trade`.
+5. US-17/US-20 runs after route scopes and quantity are captured.
+6. Route reconciliation is separate from optional stock audit reconciliation.
+7. US-04 runs yearly from location × good outcome counters.
+8. Annual counters reset only after the yearly decision reads them.
+9. Persisting the multiplier is not equivalent to applying it to vanilla Pop demand.
+10. The global market pass runs once monthly, while each country-owned trade pass still runs.
+11. Performance relevance remains market-level.
 12. Stock mutation remains centralized.
 
 ## Mermaid flow — current PR #69
@@ -209,100 +223,84 @@ The configured baseline `1.20` must currently be described as a persisted ModeU5
 ```mermaid
 flowchart TB
     subgraph MONTHLY["Monthly flow"]
-        direction TB
-        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle_q8_7_owner_switch"]
+        A["monthly_country_pulse"] --> B["Q8.7 owner switch"]
         B --> READY{"runtime ready?"}
-        READY -->|no| CLOSED["fail closed / diagnostics only"]
-        READY -->|yes| PREP["performance, relevance, capacity and monthly registries"]
-        PREP --> OWNER{"Q8.7 global owner enabled?"}
-        OWNER -->|no, temporary rollback| LEGACY["every_market_center_in_country"]
-        OWNER -->|yes| ONCE{"global market pass already run this month?"}
-        ONCE -->|yes| SKIP["skip global market pass for this country pulse"]
+        READY -->|no| CLOSED["fail closed / diagnostics"]
+        READY -->|yes| PREP["relevance, capacity, registries"]
+        PREP --> ONCE{"global market pass already run?"}
         ONCE -->|no| WORLD["every_market_in_world"]
+        ONCE -->|yes| TRADE0["country-owned trade pass"]
 
-        subgraph MARKET["Current market iteration"]
-            direction TB
-            WORLD --> MODE["prepare market runtime accounting mode"]
-            MODE --> KIND{"detailed / vanilla fallback / blocked"}
-            KIND -->|fallback or blocked| DIAG["diagnostics only; no ModeU5 stock mutation"]
-            KIND -->|detailed| CACHE["rebuild countries_present_in_market"]
-            CACHE --> CAP["refresh country-market capacity"]
-            CAP --> US00["US-00 active-good admission"]
-            US00 --> FREEZE["freeze US-00 facts"]
-            FREEZE --> US10["US-10 pending demand / same-market consumption"]
-            US10 --> OUTCOME["record monthly demand outcomes"]
-            OUTCOME --> MDONE["finish market iteration"]
-            DIAG --> MDONE
-        end
+        WORLD --> MODE["prepare market accounting mode"]
+        MODE --> KIND{"detailed / fallback / blocked"}
+        KIND -->|fallback or blocked| DIAG["diagnostics; no stock mutation"]
+        KIND -->|detailed| CACHE["countries-present cache"]
+        CACHE --> CAP["country-market capacity"]
+        CAP --> US00["US-00 admission"]
+        US00 --> FREEZE["freeze US-00 facts"]
+        FREEZE --> US10["US-10 same-market demand"]
+        US10 --> OUTCOME["monthly outcome records"]
+        OUTCOME --> TRADE0
+        DIAG --> TRADE0
 
-        MDONE --> WORLD_DONE["global market pass exhausted"]
-        LEGACY --> TRADE0["modeu5_run_monthly_country_trade_owner_cycle"]
-        SKIP --> TRADE0
-        WORLD_DONE --> TRADE0
-
-        subgraph TRADE["Country-owned every_trade loop"]
-            direction TB
-            TRADE0 --> T1["every_trade"]
-            T1 --> T2["capture trade.owner, markets and traded good"]
-            T2 --> T3["capture route quantity"]
-            T3 --> TGATE{"trade rework enabled?"}
-            TGATE -->|no| TEND["record normal trade-owner metrics"]
-            TGATE -->|yes| INPUTS["capture modifier inputs from saved trade.owner"]
-            INPUTS --> REC["US-17 / US-20 route reconciliation"]
-            REC --> MONEY["US-17 money-side correction"]
-            MONEY --> GOODS["US-20 received-goods / destination-loss correction"]
-            GOODS --> TEND
-        end
-
-        TEND --> AUDIT{"audit enabled?"}
-        AUDIT -->|yes| STOCKREC["optional stock validation/reconciliation"]
-        AUDIT -->|no| MEND["end monthly country cycle"]
+        TRADE0 --> T1["every_trade"]
+        T1 --> T2["capture owner, markets, good, quantity"]
+        T2 --> TGATE{"trade rework enabled?"}
+        TGATE -->|yes| REC["US-17 / US-20 route reconciliation"]
+        TGATE -->|no| TEND["finish route"]
+        REC --> MONEY["money-side correction"]
+        MONEY --> GOODS["received-goods/loss correction"]
+        GOODS --> TEND
+        TEND --> AUDIT{"stock audit enabled?"}
+        AUDIT -->|yes| STOCKREC["optional stock validation/repair"]
+        AUDIT -->|no| MEND["end monthly cycle"]
         STOCKREC --> MEND
     end
 
     subgraph YEARLY["Yearly US-04 flow"]
-        direction TB
-        Y0["yearly_country_pulse"] --> Y1["modeu5_run_yearly_pop_demand_adaptation_for_current_country"]
-        Y1 --> YGATE{"runtime ready + package/CMM enabled?"}
-        YGATE -->|no| YSKIP["skip US-04 adaptation"]
+        Y0["yearly_country_pulse"] --> Y1["US-04 yearly country effect"]
+        Y1 --> YGATE{"runtime + package/CMM enabled?"}
+        YGATE -->|no| YSKIP["skip"]
         YGATE -->|yes| YLOC["every_owned_location"]
-        YLOC --> YGOOD["generated all-goods US-04 helpers"]
-        YGOOD --> YREAD["read annual satisfied / unsatisfied counters"]
-        YREAD --> YMULT["read persisted multiplier; fallback 1.20"]
+        YLOC --> YGOOD["generated good helpers"]
+        YGOOD --> YREAD["read annual counters"]
+        YREAD --> YMULT["read multiplier, fallback 1.20"]
         YMULT --> YCASE{"annual result"}
-        YCASE -->|12 satisfied, 0 shortage| YUP["multiplier × 1.01"]
-        YCASE -->|0 satisfied, 12 shortage| YDOWN["multiplier × 0.99"]
-        YCASE -->|mixed or no observation| YSAME["unchanged"]
-        YUP --> YWRITE["persist location × good multiplier"]
+        YCASE -->|12 satisfied| YUP["× 1.01"]
+        YCASE -->|12 shortage| YDOWN["× 0.99"]
+        YCASE -->|mixed/no observation| YSAME["unchanged"]
+        YUP --> YWRITE["persist multiplier"]
         YDOWN --> YWRITE
         YSAME --> YWRITE
-        YWRITE --> YRESET["reset annual counters after read"]
-        YWRITE -. future confirmed integration .-> YAPPLY["apply multiplier to live Pop demand<br/>NOT_CONFIRMED / not wired"]
+        YWRITE --> YRESET["reset annual counters"]
+        YWRITE -. unconfirmed integration .-> YAPPLY["apply to live Pop demand<br/>NOT_CONFIRMED"]
     end
 ```
 
 ## Living update log
 
-### 2026-07-11 — Initial v2 creation
+### 2026-07-11 — Initial v2
 
-Recorded:
+Recorded the Q8.7 market owner, PR #107 trade reconciliation, yearly US-04 branch, stock-dependency distinction and live-demand boundary.
 
-- current Q8.7 monthly market-local owner;
-- merged PR #107 US-17/US-20 route reconciliation inside `every_trade`;
-- PR #69 yearly US-04 adaptation;
-- distinction between route reconciliation and stock audit reconciliation;
-- distinction between stock-runtime readiness and existence of stock records;
-- explicit `NOT_CONFIRMED` boundary for live vanilla Pop-demand application.
+### 2026-07-11 — Runtime acceptance
 
-### Pending updates
-
-This file should be updated when any of the following becomes proven or changes:
+Recorded clean static/install provenance and two successful US-04 executions:
 
 ```txt
-- focused US-04 runtime test result;
-- full revalidation result;
+focused US-04 scenario:       PASS
+full-chain US-04 scenario:    PASS
+annual arithmetic:            PASS
+annual counter reset:         PASS
+live vanilla application:     NOT_CONFIRMED
+```
+
+### Pending living updates
+
+```txt
 - exact live producer of location × good Pop outcome counters;
 - exact live consumer of modeu5_pop_demand_multiplier[good];
-- decision to replace the broad stock-runtime gate with a narrower counter/readiness gate;
-- changes to the trade reconciliation route placement or formulas.
+- decision on replacing the broad stock-runtime gate with narrower counter readiness;
+- closure of the separate US-17/US-20 full-revalidation tail;
+- changes to route placement or formulas.
 ```
