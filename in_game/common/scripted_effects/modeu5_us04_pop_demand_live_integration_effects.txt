@@ -2,7 +2,8 @@
 #
 # The vanilla pop_demand coefficients are evaluated from Pop scope. The CMM map
 # is refreshed from country scope into one global marker. The actual multiplier
-# state is initialized once per new campaign for every location × supported good.
+# state is initialized lazily for the current country's owned locations because
+# EU5 does not expose a root-scope every_location effect.
 
 modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = {
 	remove_global_variable = modeu5_pop_demand_live_integration_enabled
@@ -14,12 +15,24 @@ modeu5_refresh_pop_demand_live_integration_from_cmm_country_scope = {
 	}
 }
 
-# Versioned saved-state initialization. The version is written only after the
-# complete world-location pass. A missing/older gate causes one initialization
-# attempt on a new campaign; normal yearly runtime never recreates missing keys.
+# Root-safe version marker. This intentionally performs no location traversal:
+# runtime proved that `every_location` is not a valid root-scope effect.
 modeu5_run_pop_demand_multiplier_initialization_v1 = {
-	every_location = {
+	set_global_variable = {
+		name = modeu5_us04_multiplier_initialization_version
+		value = 1
+	}
+}
+
+# Country-scoped lazy initializer. Monthly/yearly country pulses call this before
+# readers/adaptation so normal gameplay gets 1.20 records for owned locations.
+modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1 = {
+	every_owned_location = {
 		modeu5_initialize_pop_demand_multiplier_all_goods = yes
+	}
+	set_variable = {
+		name = modeu5_us04_country_multiplier_initialization_version
+		value = 1
 	}
 	set_global_variable = {
 		name = modeu5_us04_multiplier_initialization_version
@@ -42,6 +55,24 @@ modeu5_initialize_pop_demand_multipliers_once = {
 			global_var:modeu5_us04_multiplier_initialization_version < 1
 		}
 		modeu5_run_pop_demand_multiplier_initialization_v1 = yes
+	}
+}
+
+modeu5_initialize_pop_demand_multipliers_for_current_country_once = {
+	if = {
+		limit = {
+			modeu5_economy_rebalance_loaded_trigger = yes
+			NOT = { has_variable = modeu5_us04_country_multiplier_initialization_version }
+		}
+		modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1 = yes
+	}
+	else_if = {
+		limit = {
+			modeu5_economy_rebalance_loaded_trigger = yes
+			has_variable = modeu5_us04_country_multiplier_initialization_version
+			var:modeu5_us04_country_multiplier_initialization_version < 1
+		}
+		modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1 = yes
 	}
 }
 
