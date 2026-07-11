@@ -92,8 +92,10 @@ def main() -> int:
     initializer = block(template, "modeu5_initialize_pop_demand_multiplier_good___GOOD__")
     getter = block(template, "modeu5_get_pop_demand_multiplier_good___GOOD__")
     annual = block(template, "modeu5_annual_adjust_location_pop_demand_good___GOOD__")
-    init_world = block(integration, "modeu5_run_pop_demand_multiplier_initialization_v1")
+    init_root = block(integration, "modeu5_run_pop_demand_multiplier_initialization_v1")
+    init_country = block(integration, "modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1")
     init_once = block(integration, "modeu5_initialize_pop_demand_multipliers_once")
+    init_country_once = block(integration, "modeu5_initialize_pop_demand_multipliers_for_current_country_once")
     live_wheat = block(production_values, "modeu5_us04_live_pop_demand_multiplier_wheat")
     endpoint_probe = block(endpoint_adapter, "modeu5_us04_probe_live_pop_demand_multiplier_wheat")
 
@@ -105,10 +107,15 @@ def main() -> int:
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
-    expect("every_location = {" in init_world and "modeu5_initialize_pop_demand_multiplier_all_goods = yes" in init_world, "US-04 v1 initialization must traverse locations and seed all goods")
-    expect("NOT = { has_global_variable = modeu5_us04_multiplier_initialization_version }" in init_once, "US-04 initializer must have missing-version gate")
-    expect("global_var:modeu5_us04_multiplier_initialization_version < 1" in init_once, "US-04 initializer must support version upgrades")
-    expect("modeu5_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 initialization must run from delayed new-campaign pulse")
+    expect("every_location" not in integration, "US-04 must not use invalid root-scope every_location")
+    expect("set_global_variable" in init_root and "modeu5_us04_multiplier_initialization_version" in init_root, "US-04 root initializer must only mark global version")
+    expect("every_owned_location = {" in init_country and "modeu5_initialize_pop_demand_multiplier_all_goods = yes" in init_country, "US-04 country initializer must traverse owned locations and seed all goods")
+    expect("modeu5_us04_country_multiplier_initialization_version" in init_country, "US-04 country initializer must stamp country version")
+    expect("NOT = { has_global_variable = modeu5_us04_multiplier_initialization_version }" in init_once, "US-04 root initializer must have missing-version gate")
+    expect("global_var:modeu5_us04_multiplier_initialization_version < 1" in init_once, "US-04 root initializer must support version upgrades")
+    expect("NOT = { has_variable = modeu5_us04_country_multiplier_initialization_version }" in init_country_once, "US-04 country initializer must have missing country-version gate")
+    expect("modeu5_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 root marker must run from delayed new-campaign pulse")
+    expect(on_actions.count("modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes") >= 2, "US-04 country initialization must run from monthly and yearly country pulses")
 
     combined_candidates = ""
     for candidate_id, syntax_name, good, path, outer, inner, value_ref in CANDIDATES:
@@ -119,8 +126,6 @@ def main() -> int:
         expect(value_ref in candidate, f"US-04 candidate {candidate_id} missing value reference")
         if candidate_id not in {"07", "08"}:
             expect(value_ref in production_values, f"US-04 production values missing {value_ref}")
-        # The broad matrix still covers candidates 01-06; the focused positive
-        # Q7/Q8 scenario covers retargeted candidates 07-08.
         if candidate_id in {"01", "02", "03", "04", "05", "06"}:
             expect(f"id={candidate_id} syntax={syntax_name}" in matrix_test, f"US-04 matrix test missing candidate {candidate_id}")
         else:
