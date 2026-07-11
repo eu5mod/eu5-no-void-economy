@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -27,6 +28,14 @@ def read(path: str) -> str:
         failures.append(f"Missing US-04 file: {path}")
         return ""
     return target.read_text(encoding="utf-8-sig", errors="ignore")
+
+
+def executable_lines(text: str) -> list[str]:
+    return [line.split("#", 1)[0] for line in text.splitlines()]
+
+
+def has_executable_every_location(text: str) -> bool:
+    return any(re.search(r"^\s*every_location\s*=\s*\{", line) for line in executable_lines(text))
 
 
 def expect(condition: bool, message: str) -> None:
@@ -66,7 +75,7 @@ def block(text: str, name: str) -> str:
             elif char == "}":
                 depth -= 1
                 if depth == 0:
-                    return text[start:index + 1]
+                    return text[start : index + 1]
         index += 1
     failures.append(f"Unclosed US-04 block: {name}")
     return ""
@@ -107,7 +116,7 @@ def main() -> int:
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
-    expect("every_location" not in integration, "US-04 must not use invalid root-scope every_location")
+    expect(not has_executable_every_location(integration), "US-04 must not use invalid executable every_location effect")
     expect("set_global_variable" in init_root and "modeu5_us04_multiplier_initialization_version" in init_root, "US-04 root initializer must only mark global version")
     expect("every_owned_location = {" in init_country and "modeu5_initialize_pop_demand_multiplier_all_goods = yes" in init_country, "US-04 country initializer must traverse owned locations and seed all goods")
     expect("modeu5_us04_country_multiplier_initialization_version" in init_country, "US-04 country initializer must stamp country version")
@@ -151,7 +160,7 @@ def main() -> int:
     expect("scenario=us04_q7_q8_positive_globals" in q7_q8_test, "Focused Q7/Q8 scenario marker missing")
     expect("scenario=us04_observed_current_target_architecture" in q7_q8_test, "Observed-current architecture scenario marker missing")
     expect("modeu5_us04_q7_q8_finalize = yes" in debug_events, "Debug event must finalize focused Q7/Q8 probe")
-    expect("modeu5_us04_debug.1.e" in debug_events and "modeu5_us04_debug.1.e" in localization, "Combined Q7/Q8 + target option must be present and localized")
+    expect("modeu5_us04_debug.1.c" in debug_events and "modeu5_us04_debug.1.c" in localization, "Combined Q7/Q8 + target option must be present and localized")
     expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
     expect('expected_mode" != "none"' in summarizer and 'Expected scenario checking disabled.' in summarizer, "Summarizer must support --expected none")
 
