@@ -27,6 +27,7 @@ python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
 	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
 "$repo_root/tools/generate_us04_pop_demand_helpers.sh"
+bash "$repo_root/tools/generate_us04_local_pop_demand_modifiers.sh"
 python3 "$repo_root/tools/validate_us04_pop_demand_architecture.py"
 
 "$repo_root/tools/generate_good_transport_helpers.sh"
