@@ -33,8 +33,14 @@ jobs:
           fixture_common="$RUNNER_TEMP/us09_common"
           fixture_package="$RUNNER_TEMP/us09_package/in_game/common"
 
-          mkdir -p "$fixture_common/building_types" "$fixture_common/prices"
-          mkdir -p "$fixture_package/building_types" "$fixture_package/prices"
+          mkdir -p \
+            "$fixture_common/building_types" \
+            "$fixture_common/prices" \
+            "$fixture_common/pop_types"
+          mkdir -p \
+            "$fixture_package/building_types" \
+            "$fixture_package/prices" \
+            "$fixture_package/pop_types"
 
           cat > "$fixture_common/building_types/00_test_production.txt" <<'EOF'
           test_production = {
@@ -56,13 +62,32 @@ jobs:
           expand_rgo_forestry = { gold = 100 }
           EOF
 
+          cat > "$fixture_common/pop_types/00_pop_types.txt" <<'EOF'
+          burghers = {
+              promotion_speed = 0.5
+              migration_speed = 0.5
+          }
+
+          laborers = {
+              promotion_speed = 1.5
+              migration_speed = 0.1
+          }
+
+          peasants = {
+              promotion_speed = 0.5
+          }
+          EOF
+
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
             --common-dir "$fixture_common" \
             --package-common-dir "$fixture_package"
 
           test -f "$fixture_package/building_types/00_test_production.txt"
           test -f "$fixture_package/prices/00_hardcoded.txt"
+          test -f "$fixture_package/pop_types/00_pop_types.txt"
           test ! -f "$fixture_package/building_types/zzzz_modeu5_us09_00_test_production.txt"
           test ! -f "$fixture_package/prices/zzzz_modeu5_us09_expand_rgo_prices.txt"
           test ! -f "$fixture_package/prices/expand_rgo_prices.txt"
@@ -71,6 +96,9 @@ jobs:
           grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'peasants' "$fixture_package/pop_types/00_pop_types.txt"
 
           cat > "$fixture_common/building_types/trade_buildings.txt" <<'EOF'
           marketplace = {
@@ -85,6 +113,8 @@ jobs:
 
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
             --common-dir "$fixture_common" \
             --package-common-dir "$fixture_package"
 
@@ -93,6 +123,8 @@ jobs:
           grep -q 'local_merchant_capacity = 1.1' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'local_merchant_power = 1' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
 
       - name: Validate package structure and generated adapters
         run: |
