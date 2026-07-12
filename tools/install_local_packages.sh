@@ -219,9 +219,10 @@ check_payload_mirror() {
 	normalize_eu5_text_encoding "$expected"
 
 	# Ignore provenance because installed_at_utc is intentionally deployment-specific.
+	# Compare content, type, links, and permissions, but not modification times:
+	# BOM normalization recreates files through temporary files on every pass.
 	drift="$(
-		rsync -ainrc --delete \
-			--no-times --omit-dir-times \
+		rsync -rlpnic --delete \
 			--exclude '.DS_Store' \
 			--exclude 'MODEU5_SOURCE.txt' \
 			"$expected/" "$destination/"
