@@ -47,6 +47,15 @@ jobs:
       - name: Validate CMM value-link quoting
         run: /bin/bash ./tools/normalize_cmm_value_links.sh --check
 
+      - name: Validate generator conventions
+        run: /bin/bash ./tools/validate_generators.sh
+
+      - name: Validate ModeU5 script safety
+        run: /bin/bash ./tools/validate_modeu5_script_safety.sh
+
+      - name: Validate CMM configuration
+        run: python3 ./tools/validate_cmm_configuration.py
+
       - name: Validate CI static contracts
         run: |
           set +e
@@ -61,6 +70,9 @@ jobs:
         with:
           name: validate-ci-static-contracts-log
           path: validate_ci_static_contracts.log
+
+      - name: Validate whitespace and patch hygiene
+        run: git diff --check
 
       - name: Ensure generated outputs stay untracked
         run: |
