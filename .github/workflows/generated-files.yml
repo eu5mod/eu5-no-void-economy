@@ -110,7 +110,7 @@ jobs:
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$({ git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$'; git ls-files | grep -E '^packages/modeu5_economy_rebalance/in_game/common/(building_types/.*\.txt|prices/00_default\.txt)$'; } || true)"
+          tracked_generated="$({ git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$'; git ls-files | grep -E '^packages/modeu5_economy_rebalance/in_game/common/(building_types/.*\.txt|prices/00_hardcoded\.txt\.txt)$'; } || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"
