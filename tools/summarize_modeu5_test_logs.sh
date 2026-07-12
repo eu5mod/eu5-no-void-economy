@@ -8,11 +8,12 @@ since_time="${MODEU5_LOG_SINCE:-}"
 expected_mode="${MODEU5_EXPECTED_SCENARIOS:-full}"
 
 usage() {
-	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|none]\n' "$0"
+	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|us04|none]\n' "$0"
 	printf '\n'
-	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, and CORE-04 topology diagnostics.\n'
+	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
 	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
+	printf 'Use --expected us04 after running only event modeu5_us04_debug.1 option A.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -40,8 +41,8 @@ if [[ -n "$since_time" && ! "$since_time" =~ ^[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; th
 fi
 
 case "$expected_mode" in
-	full|pr126|none) ;;
-	*) printf 'Invalid --expected mode: %s. Expected full, pr126, or none.\n' "$expected_mode" >&2; exit 2 ;;
+	full|pr126|us04|none) ;;
+	*) printf 'Invalid --expected mode: %s. Expected full, pr126, us04, or none.\n' "$expected_mode" >&2; exit 2 ;;
 esac
 
 if [[ ! -d "$logs_dir" ]]; then
@@ -71,6 +72,7 @@ debug_level_file="$tmp_dir/debug_level_lines"
 main_mode_file="$tmp_dir/main_mode_lines"
 perf14_file="$tmp_dir/perf14_lines"
 us10ui_file="$tmp_dir/us10_ui_lines"
+us04_file="$tmp_dir/us04_lines"
 core04_file="$tmp_dir/core04_lines"
 localization_only_file="$tmp_dir/localization_only_modeu5_lines"
 
@@ -106,11 +108,15 @@ grep -hE 'ModeU5 US-10(-UI)? (DUMP|CANDIDATE TRACE|MUTATION TRACE|SUMMARY|TABLE|
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$us10ui_file" || true
 
+grep -hE 'ModeU5 US-04 (DUMP|FAIL_REASON|RESULT|INITIALIZATION (DUMP|FAIL_REASON|RESULT)|ENDPOINT (DUMP|FAIL_REASON|RESULT)|VANILLA DEMAND (DUMP|FAIL_REASON|RESULT)|INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX|MATRIX SUMMARY))' "$all_lines_file" \
+	| grep -v 'Tried to localize with localization disabled' \
+	>"$us04_file" || true
+
 grep -hE 'ModeU5 CORE-04 (MARKET_ENTRY|DUMP|FAIL_REASON|RESULT)' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$core04_file" || true
 
-grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14|US-10|CORE-04)' "$all_lines_file" \
+grep -hE 'Tried to localize with localization disabled.*ModeU5 (TEST|DEBUG_LEVEL|PERF-14|US-10|US-04|CORE-04)' "$all_lines_file" \
 	>"$localization_only_file" || true
 
 count_marker() {
@@ -127,6 +133,7 @@ debug_level_count="$(grep -c 'ModeU5 DEBUG_LEVEL ' "$debug_level_file" || true)"
 main_mode_count="$(grep -c 'ModeU5 PERF-14 ' "$main_mode_file" || true)"
 perf14_count="$(grep -c 'ModeU5 PERF-14 ' "$perf14_file" || true)"
 us10ui_count="$(grep -c 'ModeU5 US-10' "$us10ui_file" || true)"
+us04_count="$(grep -c 'ModeU5 US-04 ' "$us04_file" || true)"
 core04_count="$(grep -c 'ModeU5 CORE-04 ' "$core04_file" || true)"
 localization_only_count="$(grep -c 'ModeU5 ' "$localization_only_file" || true)"
 
@@ -145,6 +152,7 @@ case "$expected_mode" in
 			us10_demand_resolution
 			us10_issue109_fast_path_pruning
 			us10_ui_visibility
+			us04_pop_demand_adaptation
 			perf10_13_active_repair_metrics
 			core04_market_entry
 			us17_us20_route_reconciliation
@@ -154,17 +162,21 @@ case "$expected_mode" in
 	pr126)
 		expected_scenarios=(pr126_monthly_dispatcher_compare)
 		;;
+	us04)
+		expected_scenarios=(us04_pop_demand_adaptation)
+		;;
 	none)
-		expected_scenarios=()
 		;;
 esac
 
 missing_scenarios=()
-for scenario in "${expected_scenarios[@]}"; do
-	if ! grep -q "scenario=${scenario}\b" "$scenario_file"; then
-		missing_scenarios+=("$scenario")
-	fi
-done
+if [[ "$expected_mode" != "none" ]]; then
+	for scenario in "${expected_scenarios[@]}"; do
+		if ! grep -q "scenario=${scenario}\b" "$scenario_file"; then
+			missing_scenarios+=("$scenario")
+		fi
+	done
+fi
 
 printf 'ModeU5 revalidation summary\n'
 printf 'Logs directory: %s\n' "$logs_dir"
@@ -180,11 +192,13 @@ printf 'Debug level markers: %s\n' "$debug_level_count"
 printf 'Main mode traces: %s\n' "$main_mode_count"
 printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
 printf 'US-10 visibility diagnostics: %s\n' "$us10ui_count"
+printf 'US-04 diagnostics: %s\n' "$us04_count"
 printf 'CORE-04 topology diagnostics: %s\n' "$core04_count"
 printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_count"
 case "$expected_mode" in
 	full) printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	pr126) printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}" ;;
+	us04) printf 'Missing expected US-04 focused scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	none) printf 'Expected scenario checking disabled.\n' ;;
 esac
 printf '\n'
@@ -195,6 +209,7 @@ if [[ ! -s "$scenario_file" ]]; then
 		printf 'Only localization-disabled copies of ModeU5 markers were found; inspect debug.log/game.log or enable Debug/Audit output before treating this run as PASS.\n'
 	fi
 	printf 'Run: event modeu5_revalidate_debug.1\n'
+	printf 'For US-04 architecture probes: event modeu5_us04_debug.1\n'
 	printf 'For PR126 dispatcher only: event modeu5_pr126_profile_debug.1; event modeu5_pr126_profile_debug.2; event modeu5_pr126_debug.1\n'
 	printf 'For PERF-14 only: event modeu5_perf14_debug.1\n'
 	printf 'For CORE-04 only: event modeu5_core04_debug.1\n'
@@ -205,6 +220,7 @@ if [[ -s "$debug_level_file" ]]; then printf 'Debug level lines:\n'; cat "$debug
 if [[ -s "$main_mode_file" ]]; then printf 'Main mode trace lines:\n'; printf 'Mode map: main_mode=1 Active Performance; main_mode=2 Active Normal; main_mode=3 Deactivated.\n'; cat "$main_mode_file"; printf '\n'; else printf 'No ModeU5 PERF-14 main-mode trace lines found.\n\n'; fi
 if [[ -s "$perf14_file" ]]; then printf 'PERF-14 diagnostic lines:\n'; cat "$perf14_file"; printf '\n'; else printf 'No non-localization PERF-14 diagnostic lines found.\n\n'; fi
 if [[ -s "$us10ui_file" ]]; then printf 'US-10 visibility diagnostic lines:\n'; cat "$us10ui_file"; printf '\n'; else printf 'No non-localization US-10 visibility diagnostic lines found.\n\n'; fi
+if [[ -s "$us04_file" ]]; then printf 'US-04 diagnostic lines:\n'; cat "$us04_file"; printf '\n'; else printf 'No non-localization US-04 diagnostic lines found.\n\n'; fi
 if [[ -s "$core04_file" ]]; then printf 'CORE-04 topology diagnostic lines:\n'; cat "$core04_file"; printf '\n'; else printf 'No non-localization CORE-04 topology diagnostic lines found.\n\n'; fi
 
 if [[ -s "$scenario_file" ]]; then
@@ -212,11 +228,12 @@ if [[ -s "$scenario_file" ]]; then
 	cat "$scenario_file"
 fi
 
-if ((${#missing_scenarios[@]} > 0)); then
+if [[ "$expected_mode" != "none" && ${#missing_scenarios[@]} -gt 0 ]]; then
 	printf '\n'
 	case "$expected_mode" in
 		full) printf 'Missing expected full-revalidation scenario markers:\n' ;;
 		pr126) printf 'Missing expected PR126 dispatcher scenario markers:\n' ;;
+		us04) printf 'Missing expected US-04 focused scenario markers:\n' ;;
 		none) printf 'Missing expected scenario markers:\n' ;;
 	esac
 	printf '%s\n' "${missing_scenarios[@]}"

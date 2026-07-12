@@ -1,0 +1,7 @@
+# Test adapter for the exact production script value referenced by the
+# injection-only wheat pop_demand probe. Keeping the adapter separate lets test
+# names remain stable while ensuring the test exercises production behavior.
+
+modeu5_us04_probe_live_pop_demand_multiplier_wheat = {
+	value = "modeu5_us04_live_pop_demand_multiplier_wheat"
+}
