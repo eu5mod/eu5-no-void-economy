@@ -117,7 +117,7 @@ def main() -> int:
         errors,
     )
     require(
-        r"else\s*=\s*\{.*?"
+        r"else\s*=\s*\{[\s\S]*?"
         r"name\s*=\s*cbp_country_wealth_unresolved_location_count\s*"
         r"add\s*=\s*1",
         monthly_effect,
