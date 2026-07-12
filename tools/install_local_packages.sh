@@ -53,6 +53,7 @@ package_ids=(
 	"modeu5_war_rebalance"
 	"modeu5_core_tests"
 	"modeu5_core_tests_q9"
+	"modeu5_core_tests_q11"
 )
 
 package_sources=(
@@ -62,6 +63,7 @@ package_sources=(
 	"$repo_root/packages/modeu5_war_rebalance"
 	"$repo_root/packages/modeu5_core_tests"
 	"$repo_root/packages/modeu5_core_tests_q9"
+	"$repo_root/packages/modeu5_core_tests_q11"
 )
 
 if [[ "$action" == "install" ]]; then
@@ -127,7 +129,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests|modeu5_core_tests_q9)
+		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests|modeu5_core_tests_q9|modeu5_core_tests_q11)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -246,7 +248,7 @@ fi
 mkdir -p "$target_root"
 install_core
 
-for index in 1 2 3 4 5; do
+for index in 1 2 3 4 5 6; do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"
@@ -259,5 +261,3 @@ if [[ -e "$target_root/eu5voideco" ]]; then
 	printf '\nOlder single-package path detected: %s\n' "$target_root/eu5voideco"
 	printf 'If the launcher shows two "No Void Economy" entries, disable the one backed by eu5voideco.\n'
 fi
-
-printf '\nRefresh the launcher, add the four campaign ModeU5 entries to one playset, enable the normal test package only for deterministic validation sessions, and enable the US-04 Pop-demand engine probe package only for dedicated archived probe sessions.\n'
