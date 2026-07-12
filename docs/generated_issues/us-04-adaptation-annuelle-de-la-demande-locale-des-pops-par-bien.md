@@ -132,8 +132,9 @@ US-10. It is a pre-US-10 additional-demand preparation pass:
 monthly country pulse
   -> current country
   -> every_market_present_in_country as target market
-  -> every_owned_location limited to location.market = target market
   -> generated per-good US-04 demand-preparation adapter
+  -> for each good demanded by Pops in the target market
+  -> every_owned_location limited to location.market = target market
 ```
 
 If the promoted-market dispatcher owns the local monthly branch later, the
@@ -144,8 +145,9 @@ promoted market shell
   -> target promoted market
   -> rebuild countries_present_in_market
   -> each present country
-  -> that country's owned locations in the target market
   -> generated per-good US-04 demand-preparation adapter
+  -> for each good demanded by Pops in the target market
+  -> that country's owned locations in the target market
 ```
 
 The documented cheap gate is market-scoped:
@@ -160,6 +162,10 @@ It can become the first fast skip before owned-location and `every_pop` scans,
 but it must not replace the required TECH-01 147 direct Pop-demand read. It
 answers whether the market has Pop demand for the good; it does not provide
 quantity or estate split.
+
+This fallback rule is global. If the detailed US-04 path cannot enter, the game
+keeps vanilla/no ModeU5 additional demand regardless of Normal, Debug, Audit, or
+Performance accounting mode. Performance Mode only changes accounting sparsity.
 
 For each confirmed `country × market × location × good`, US-04 should calculate:
 
@@ -247,11 +253,11 @@ The target runtime shape is:
 
 ```txt
 for each relevant country × market:
-  for each owned location in market:
-    for each good:
-      if target market does not demand goods:<good> by Pops:
-        skip this market × good before scanning locations
+  for each good:
+    if target market does not demand goods:<good> by Pops:
+      skip this market × good before scanning locations
 
+    for each owned location in market:
       every_pop:
         read pop estate_type
         read pop demand for goods:<good>   # TECH-01 pending

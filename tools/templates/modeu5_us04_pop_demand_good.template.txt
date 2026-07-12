@@ -433,6 +433,22 @@ modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
 	}
 }
 
+modeu5_monthly_reconcile_country_market_pop_demand_good___GOOD__ = {
+	save_temporary_scope_as = modeu5_us04_reconciliation_market
+	if = {
+		limit = {
+			exists = scope:modeu5_us04_reconciliation_country
+			demands_goods_by_pops = goods:__GOOD__
+		}
+		scope:modeu5_us04_reconciliation_country = {
+			every_owned_location = {
+				limit = { market = scope:modeu5_us04_reconciliation_market }
+				modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = yes
+			}
+		}
+	}
+}
+
 modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_as = modeu5_us04_reconciliation_location
 	owner ?= { save_temporary_scope_as = modeu5_us04_reconciliation_country }

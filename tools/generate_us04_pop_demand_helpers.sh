@@ -115,6 +115,15 @@ lines.extend(["}", ""])
 
 lines.extend(
     [
+        "modeu5_monthly_reconcile_country_market_pop_demand_all_goods = {",
+    ]
+)
+for good in goods:
+    lines.append(f"\tmodeu5_monthly_reconcile_country_market_pop_demand_good_{good} = yes")
+lines.extend(["}", ""])
+
+lines.extend(
+    [
         "modeu5_monthly_reconcile_location_pop_demand_all_goods = {",
     ]
 )

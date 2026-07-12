@@ -110,8 +110,9 @@ The intended traversal is country-owned and market-scoped:
 monthly country pulse
   -> current country
   -> every_market_present_in_country as target market
-  -> every_owned_location limited to location.market = target market
   -> generated per-good demand-preparation adapter
+  -> for each good demanded by Pops in the target market
+  -> every_owned_location limited to location.market = target market
 ```
 
 If a later promoted-market dispatcher owns the monthly local branch, the
@@ -122,12 +123,15 @@ promoted market shell
   -> target promoted market
   -> rebuild countries_present_in_market
   -> each present country
-  -> that country's owned locations in the target market
   -> generated per-good demand-preparation adapter
+  -> for each good demanded by Pops in the target market
+  -> that country's owned locations in the target market
 ```
 
-Do not use a global `every_location` scan. In Performance Mode, markets that are
-not human-relevant remain vanilla fallback/no ModeU5 additional demand.
+Do not use a global `every_location` scan. When the US-04 detailed preparation
+path cannot enter, the result is vanilla fallback/no ModeU5 additional demand
+for every runtime mode. Performance Mode only changes accounting sparsity; it
+does not change the US-04 business gate.
 
 The documented cheap gate is market-scoped:
 
@@ -145,14 +149,14 @@ from TECH-01 147.
 The target request-preparation logic is:
 
 ```txt
-for each relevant country x market:
-    for each owned location in market:
-        for each good:
+for each country x market reached by the monthly country-owned traversal:
+    for each good:
+        if target market does not demand goods:<good> by Pops:
+            skip this market x good before scanning locations
+
+        for each owned location in market:
             reset estate requested totals
             reset estate extra-demand totals
-
-            if target market does not demand goods:<good> by Pops:
-                skip this market x good before scanning locations
 
             every_pop in location:
                 read estate_type
