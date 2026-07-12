@@ -1,0 +1,106 @@
+name: Generate README
+
+on:
+  # Regenerate README for any PR that touches the templates or workflow
+  pull_request:
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
+      - .github/workflows/readme-generator.yml
+  # Regenerate README whenever `main` is updated (e.g. after merge)
+  push:
+    branches:
+      - main
+    paths:
+      - README.template.md
+      - .modeu5.local.env.template
+
+permissions:
+  contents: write
+
+jobs:
+  generate-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate README.md from template
+        run: |
+          python3 <<'PY'
+          from decimal import Decimal
+          from pathlib import Path
+          import shlex
+          import sys
+
+          template_path = Path("README.template.md")
+          env_path = Path(".modeu5.local.env.template")
+          output_path = Path("README.md")
+
+          def format_decimal(value: Decimal) -> str:
+              text = format(value, "f")
+              if "." in text:
+                  text = text.rstrip("0").rstrip(".")
+              return text
+
+          def as_direct_percent(value: str) -> str:
+              return f"{format_decimal(Decimal(value))}%"
+
+          def as_ratio_percent(value: str) -> str:
+              return f"{format_decimal(Decimal(value) * Decimal(100))}%"
+
+          def as_plain_value(value: str) -> str:
+              return value
+
+          formatters = {
+              "MODEU5_US09_BONUS_PERCENT": as_direct_percent,
+              "MODEU5_US15_BONUS_PERCENT": as_ratio_percent,
+              "MODEU5_US16_CASSUS_BELLI_VALIDITY": as_plain_value,
+          }
+
+          env_values = {}
+          for line in env_path.read_text(encoding="utf-8").splitlines():
+              line = line.strip()
+              if not line or line.startswith("#") or "=" not in line:
+                  continue
+              key, raw_value = line.split("=", 1)
+              lexer = shlex.shlex(raw_value, posix=True)
+              lexer.whitespace_split = True
+              lexer.commenters = "#"
+              parts = list(lexer)
+              env_values[key.strip()] = parts[0] if parts else ""
+
+          missing = [variable for variable in formatters if variable not in env_values or env_values[variable] is None]
+          if missing:
+              print(f"Missing variables in {env_path}:")
+              for variable in missing:
+                  print(f" - {variable}")
+              sys.exit(1)
+
+          readme = template_path.read_text(encoding="utf-8")
+          for variable, formatter in formatters.items():
+              readme = readme.replace(f"<{variable}>", formatter(env_values[variable]))
+
+          output_path.write_text(readme, encoding="utf-8")
+          PY
+
+      - name: Commit README updates if changed
+        run: |
+          if ! git diff --quiet README.md; then
+            echo "README changed; committing update"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: regenerate README from template"
+            # For PRs, push back to the source branch
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              # For pushes to main, push directly back to main
+              git push origin HEAD
+            fi
+          else
+            echo "README is up to date; no commit needed"
+          fi

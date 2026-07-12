@@ -44,9 +44,15 @@ modeu5_debug.1 = {
 	option = {
 		name = modeu5_debug.1.f
 		modeu5_debug_clear_stock_test_results = yes
-		set_global_variable = modeu5_test_core02_initialization_started
+		modeu5_debug_run_reconciliation_cadence_tests = yes
+		trigger_event_non_silently = modeu5_debug.2
+	}
+	option = {
+		name = modeu5_debug.1.g
+		modeu5_debug_clear_stock_test_results = yes
+		set_global_variable = test_cbp_core02_initialization_started
 		modeu5_debug_run_core02_initialization_tests = yes
-		set_global_variable = modeu5_test_core02_initialization_finished
+		set_global_variable = test_cbp_core02_initialization_finished
 		trigger_event_non_silently = modeu5_debug.2
 	}
 	option = {
@@ -66,115 +72,135 @@ modeu5_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.add_allow.pass
-		trigger = { has_global_variable = modeu5_test_add_allow_over_capacity_passed }
+		trigger = { has_global_variable = test_cbp_add_allow_over_capacity_passed }
 	}
 	option = {
 		name = modeu5_debug.test.add_allow.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_add_allow_over_capacity_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_add_allow_over_capacity_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.add_enforce.pass
-		trigger = { has_global_variable = modeu5_test_add_enforce_passed }
+		trigger = { has_global_variable = test_cbp_add_enforce_passed }
 	}
 	option = {
 		name = modeu5_debug.test.add_enforce.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_add_enforce_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_add_enforce_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.remove.pass
-		trigger = { has_global_variable = modeu5_test_remove_passed }
+		trigger = { has_global_variable = test_cbp_remove_passed }
 	}
 	option = {
 		name = modeu5_debug.test.remove.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_remove_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_remove_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.decay.pass
-		trigger = { has_global_variable = modeu5_test_decay_passed }
+		trigger = { has_global_variable = test_cbp_decay_passed }
 	}
 	option = {
 		name = modeu5_debug.test.decay.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_decay_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_decay_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.same_market.pass
-		trigger = { has_global_variable = modeu5_test_same_market_transfer_passed }
+		trigger = { has_global_variable = test_cbp_same_market_transfer_passed }
 	}
 	option = {
 		name = modeu5_debug.test.same_market.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_same_market_transfer_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_same_market_transfer_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.invalid_same_record.pass
-		trigger = { has_global_variable = modeu5_test_invalid_same_record_passed }
+		trigger = { has_global_variable = test_cbp_invalid_same_record_passed }
 	}
 	option = {
 		name = modeu5_debug.test.invalid_same_record.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_invalid_same_record_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_invalid_same_record_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.inter_market.pass
-		trigger = { has_global_variable = modeu5_test_inter_market_transfer_passed }
+		trigger = { has_global_variable = test_cbp_inter_market_transfer_passed }
 	}
 	option = {
 		name = modeu5_debug.test.inter_market.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_inter_market_transfer_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_inter_market_transfer_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.rebuild.pass
-		trigger = { has_global_variable = modeu5_test_rebuild_passed }
+		trigger = { has_global_variable = test_cbp_rebuild_passed }
 	}
 	option = {
 		name = modeu5_debug.test.rebuild.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_rebuild_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_rebuild_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.validation_repair.pass
-		trigger = { has_global_variable = modeu5_test_validation_repair_passed }
+		trigger = { has_global_variable = test_cbp_validation_repair_passed }
 	}
 	option = {
 		name = modeu5_debug.test.validation_repair.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_validation_repair_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_validation_repair_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.validation_noop.pass
-		trigger = { has_global_variable = modeu5_test_validation_noop_passed }
+		trigger = { has_global_variable = test_cbp_validation_noop_passed }
 	}
 	option = {
 		name = modeu5_debug.test.validation_noop.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_validation_noop_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_validation_noop_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.reconciliation_dirty.pass
-		trigger = { has_global_variable = modeu5_test_reconciliation_dirty_passed }
+		trigger = { has_global_variable = test_cbp_reconciliation_dirty_passed }
 	}
 	option = {
 		name = modeu5_debug.test.reconciliation_dirty.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_dirty_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_reconciliation_dirty_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_active.pass
+		trigger = { has_global_variable = test_cbp_reconciliation_active_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_active.fail
+		trigger = { NOT = { has_global_variable = test_cbp_reconciliation_active_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.reconciliation_empty.pass
-		trigger = { has_global_variable = modeu5_test_reconciliation_empty_passed }
+		trigger = { has_global_variable = test_cbp_reconciliation_empty_passed }
 	}
 	option = {
 		name = modeu5_debug.test.reconciliation_empty.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_reconciliation_empty_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_reconciliation_empty_passed } }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.pass
+		trigger = { has_global_variable = test_cbp_reconciliation_cadence_passed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.fail
+		trigger = { has_global_variable = test_cbp_reconciliation_cadence_failed }
+	}
+	option = {
+		name = modeu5_debug.test.reconciliation_cadence.blocked
+		trigger = { has_global_variable = test_cbp_reconciliation_cadence_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.core02_proportional.pass
-		trigger = { has_global_variable = modeu5_test_core02_proportional_passed }
+		trigger = { has_global_variable = test_cbp_core02_proportional_passed }
 	}
 	option = {
 		name = modeu5_debug.test.core02_proportional.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_core02_proportional_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_core02_proportional_passed } }
 	}
 	option = {
 		name = modeu5_debug.test.core02_over_capacity.pass
-		trigger = { has_global_variable = modeu5_test_core02_over_capacity_passed }
+		trigger = { has_global_variable = test_cbp_core02_over_capacity_passed }
 	}
 	option = {
 		name = modeu5_debug.test.core02_over_capacity.fail
-		trigger = { NOT = { has_global_variable = modeu5_test_core02_over_capacity_passed } }
+		trigger = { NOT = { has_global_variable = test_cbp_core02_over_capacity_passed } }
 	}
 	option = {
 		name = modeu5_debug.close

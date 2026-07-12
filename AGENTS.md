@@ -49,7 +49,7 @@ Package selection occurs before campaign load. Adding or removing a package mid-
 
 The default supported playset enables Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing together. Optional means removable before campaign start, not disabled by default. Core must never synthesize a companion package marker when that package is absent.
 
-ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level` use EU5's built-in Game Rules screen and are fixed when the campaign starts. Do not create an in-game configuration panel.
+ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level`, audit mode, and save mode use the Community Mod Manager and are fixed when the campaign starts. Do not create an in-game configuration panel or custom ModeU5 game rules.
 
 ## Variable-map storage rule
 
@@ -97,6 +97,31 @@ variables in the tested build. Store the logical `market × good` cache in a
 global per-good map keyed by market scope. Generated per-good adapters must
 contain complete literal map identifiers; scripted-effect parameters may select
 an adapter but must never carry a map name.
+
+US-02 storage capacity is the explicit exception to per-good record storage:
+capacity is identical for every good in one country-market relation, so persist
+it once in country-scoped `modeu5_stock_cap_by_market` and related breakdown
+maps keyed by market. Generated per-good adapters read that shared capacity and
+must not recreate `modeu5_<good>_stock_cap_by_market`.
+
+US-02 capacity is derived from one country-level location pool plus the current
+market's own trade capacity. Sum the country's owned-location rank contribution
+once, divide that location pool by the number of markets where the country is
+present, then add the target market's merchant-capacity contribution. The
+persisted country-market capacity record is:
+
+```txt
+country_market_capacity
+= target_market_trade_capacity
+  + country_location_pool / count(markets present in country)
+```
+
+The monthly capacity refresh must not scan owned locations once per market or
+once per good. The country location pool is rebuilt at campaign
+initialization, after permanent location owner changes, after location-rank
+changes, and after capital moves. Ordinary monthly refreshes read the cached
+country location pool and rewrite market shares with current market trade
+capacity.
 
 ## Non-negotiable stock rule
 
@@ -152,282 +177,106 @@ or rebuild stock.
 A yearly economic cycle must validate/rebuild stock aggregates, read annual satisfaction counters, apply US-04 demand adaptation only when the Rebalance Economy package is loaded, reset annual counters, and run diagnostics if enabled.
 
 The monthly and yearly stock cycles must not mutate ModeU5 stock until CORE-02 has set the current schema version and marked initialization complete. A missing, failed, older unsupported, or newer incompatible initialization state fails closed and remains diagnostic-only.
+## Target monthly orchestration architecture
 
+The target monthly stock orchestration is ownership-driven. New monthly stock work should converge toward three execution surfaces, not one monolithic pulse:
+
+```txt
+1. on_monthly_pulse(country) — country -> markets preparation
+   - refresh country-owned prerequisites and work caches
+   - discover/register promoted-market candidates
+   - do not execute the full market-local branch for every country present
+
+2. promoted-market dispatcher / owner-guarded shell — market-local branch
+   - process each promoted market once per month
+   - rebuild countries_present_in_market once for that market
+   - run local US-00, same-market US-10, and scoped validation from that once-per-market owner surface
+
+3. on_monthly_pulse(country) — country trade-owner pass
+   - run country-scoped every_trade only from country scope
+   - process trades owned by the current country once
+   - delegate stock effects to the existing stock handlers
+```
+
+```mermaid
+flowchart TD
+    A[Monthly stock framework] --> B{Runtime ready ?}
+    B -->|No| Z[Diagnostic only / fail closed]
+    B -->|Yes| C[1. Country prep from monthly pulse]
+
+    subgraph PREP[1. Country -> markets preparation]
+        C --> D[Refresh capacity prerequisites]
+        D --> E[Discover current-country markets]
+        E --> F[Register promoted-market candidates]
+    end
+
+    F --> G[2. Promoted-market dispatcher / owner-guarded shell]
+
+    subgraph LOCAL[2. Once-per-promoted-market local branch]
+        G --> H{Processing owner for this market?}
+        H -->|No| HN[Skip market-local mutation]
+        H -->|Yes| I[Rebuild countries_present_in_market once]
+        I --> J[B: capacity/cache helper]
+        J --> K[C: generated-good scoped adapter bridge]
+        K --> L[D: same-market consumption branch]
+        L --> M[Validate scoped market-good consistency]
+    end
+
+    A --> N[3. Country trade-owner pass]
+
+    subgraph TRADE[3. Country-owned trade branch]
+        N --> O[country-scoped every_trade]
+        O --> P[Only trades owned by current country]
+        P --> Q[Handlers decide same-market vs inter-market transfer]
+    end
+
+    M --> T[Monthly decay / US-00 finalization / package follow-ups]
+    Q --> T
+    T --> U[Final validation / reconciliation if enabled]
+    U --> V[Reset monthly counters after readers]
+```
+
+### Architecture contract
+
+- `country_market_good_stock` remains the source of truth.
+- `market_good_stock` remains a derived aggregate/cache.
+- `countries_present_in_market` is a rebuilt work cache, not durable stock truth.
+- Candidate discovery may happen from country pulse, but market-local stock mutation must be once per promoted market.
+- If the promoted-market shell is launched from country pulse, a deterministic processing-owner guard or equivalent test-only restriction must prevent every country present from mutating the same market-local branch.
+- Same-market consumption and inter-market trade are separate ownership phases.
+- Same-market consumption must not create trade income, transport cost, trade capacity usage, or trade profit.
+- Inter-market transfer must go through `modeu5_resolve_inter_market_stock_transfer` and `modeu5_transfer_stock`.
+- `every_trade` is confirmed only as a country-scope iterator; do not call it from market scope or treat it as the promoted-market iterator.
+- The country trade-owner pass should consider trades owned by the current country once and delegate stock consequences to handlers.
+- The new promoted-market dispatcher must remain test-only or feature-gated until comparative Normal / Performance / Audit / Debug probes pass.
+
+### Anti-spaghetti rule
+
+Do not add new monthly broad scans as a shortcut.
+
+Before adding a monthly loop, identify which target layer owns it:
+
+```txt
+A. readiness / fail-closed guard
+B. country -> markets preparation
+C. promoted-market candidate registration
+D. once-per-promoted-market local branch
+E. same-market consumption
+F. country trade-owner pass
+G. validation / reconciliation
+H. debug / audit capture
+I. monthly reset after all readers
+```
+
+If the new code does not clearly belong to one of these layers, stop and update the architecture documentation before implementing it.
 ## Stock succession rule
 
 After initialization, permanent location ownership changes conserve stock and reassign the capacity-proportional share:
 
 ```txt
-transferred_stock
-= loser_stock_before
-   * transferred_location_storage_capacity
-   / loser_storage_capacity_before
+old_owner / old_market stock decreases
+new_owner / new_market stock increases
+market aggregate is rebuilt/validated from country stocks
 ```
 
-Use the same US-02 location-capacity helper for the numerator and capacity totals. Apply the quantity through `modeu5_transfer_stock` in the same market. The loser retains the formula's complementary share and `market_good_stock` remains unchanged.
-
-Sequential location transfers must produce the same result as one aggregate split. New-country/release hooks validate and finalize; they must not duplicate location-level transfers. Annexation finalizers transfer any residual stock of the disappearing country to its successor.
-
-CORE-02 initialization and CORE-03 succession use capacity as a proportional allocation key, not as an admission cap. They must use the centralized operators' explicit `allow_over_capacity` policy and allocate or transfer the full formula-derived quantity. Any resulting over-cap stock is valid state to report; neither lifecycle operation truncates, rejects, or erases it.
-
-Ordinary production and inter-market trade continue to use the default `enforce` policy. No other caller may bypass capacity without an explicit approved business rule.
-
-## Documentation-first rule
-
-Before implementing any script that depends on vanilla data, verify exposure through:
-
-```txt
-https://eu5.paradoxwikis.com/Scope_link
-https://eu5.paradoxwikis.com/Variable
-https://eu5.paradoxwikis.com/Trigger
-https://eu5.paradoxwikis.com/Effect
-https://eu5.paradoxwikis.com/Modifier_types
-https://eu5.paradoxwikis.com/Building_modding
-https://eu5.paradoxwikis.com/Goods_modding
-local vanilla files
-local script_docs output
-error.log after a local test
-```
-
-Do not assume a scope link, iterator, trigger, value, modifier, effect, or static field exists.
-
-When exposure is checked, update:
-
-```txt
-docs/technical/TECH-01_engine_exposure_matrix.md
-```
-
-Allowed statuses:
-
-```txt
-TO_TEST
-CONFIRMED
-NOT_CONFIRMED
-FALLBACK_ACCEPTED
-OUT_OF_SCOPE
-```
-
-No gameplay implementation may depend on `TO_TEST` or `NOT_CONFIRMED` exposure unless one fallback is explicitly accepted.
-
-## Implementation order
-
-Follow this delivery order, even though it is not the runtime order:
-
-```txt
-0. CORE-00 module packaging contract and engine-exposure spike.
-1. Bootstrap Core and optional-package structures and documentation.
-2. CORE-01.1 through CORE-01.4 stock mutation effects.
-3. CORE-01.5 / CORE-01.6 rebuild and validation, then US-11 orchestration.
-4. Debug conventions and deterministic test events.
-5. US-01 country × market × good stock.
-6. US-02 stock capacity.
-7. CORE-02 delayed, versioned start-game initialization.
-8. CORE-03 country and territory stock succession.
-9. Monthly and yearly on_actions.
-10. US-03 monthly decay.
-11. US-00.1 / US-00.2 / US-00.4 void economy measurement.
-12. US-00.3 production penalty.
-13. US-10.0 / US-10.1 / US-10.2 / US-10.3 demand resolution.
-14. Rebalance Economy: US-04 local Pop demand adaptation.
-15. Rebalance Economy: US-05 direct Economic Base formula.
-16. Rebalance Economy and Rebalance Estate Power: US-07 / US-08 / US-09 static balance changes.
-17. Rebalance Early Blobbing: US-13 only after exposure is confirmed.
-18. UI/debug polish.
-```
-
-## Current canonical US-00
-
-US-00 is not a direct monthly Estate income penalty.
-
-US-00 is a pipeline:
-
-```txt
-production vanilla
-→ modeu5_add_stock
-→ actual_added_quantity / rejected_quantity
-→ US-00.1 monthly production rejection ledger
-→ US-00.2 overproduction ratio and stability buffer
-→ US-00.4 void wealth valuation
-→ US-00.3 production penalty for N+1
-→ debug / UI
-```
-
-US-00 tracks values at:
-
-```txt
-country × market × good
-```
-
-Required counters or maps:
-
-```txt
-modeu5_<good>_produced_by_market[market]
-modeu5_<good>_added_by_market[market]
-modeu5_<good>_rejected_by_market[market]
-modeu5_<good>_overproduction_ratio_by_market[market]
-modeu5_<good>_effective_overproduction_ratio_by_market[market]
-modeu5_<good>_void_wealth_by_market[market]
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
-modeu5_<good>_production_penalty_by_market[market]
-```
-
-These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a global `modeu5_<good>_market_stock` map keyed by market because controlled runtime testing confirmed that Market scope does not support variables. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
-
-All ledger writes must go through:
-
-```txt
-modeu5_update_production_rejection_ledger
-```
-
-The overproduction buffer affects the production penalty, not the fact that rejected value is tracked.
-
-Estate taxable income may be used only as a proxy for sizing/debug. It is not the main monthly punishment.
-
-## Current canonical US-10
-
-US-10 resolves demand from stock. It does not own the stock and never mutates stock directly.
-
-US-10 uses:
-
-```txt
-modeu5_resolve_stock_demand
-```
-
-US-10.1 handles consumption within one market. This is a stock-availability resolution, not intra-market trade.
-
-Within one market, ModeU5 must not create:
-
-```txt
-trade income
-transport cost
-trade capacity usage
-trade profit
-trade-income reconciliation
-```
-
-US-10.2 handles inter-market stock transfers only when:
-
-```txt
-source_market != target_market
-```
-
-US-10.2 records `requested_quantity`, `transferred_quantity`, and `unsatisfied_quantity` separately for US-10.3 and diagnostics.
-
-## Current canonical US-05
-
-US-05 concerns only:
-
-```txt
-Stability Investment
-Cost of the Court / Government Power when it produces Legitimacy
-```
-
-Target base:
-
-```txt
-modeu5_slider_cost_base = Wealth + Trade Income
-```
-
-US-05 uses direct formula replacement only. Monthly gold adjustments, modifiers that emulate a cost difference, and slider reconciliation are outside the selected design. If the Wealth value or the Stability/Court formula hook is unavailable, keep US-05 blocked rather than introducing a second implementation path.
-
-## Debug requirement
-
-Every feature must expose enough debug values to validate:
-
-```txt
-scope used
-inputs read
-quantity requested
-quantity actual
-quantity rejected or unsatisfied
-mutation effect called
-stock before
-stock after
-market stock difference
-fallback used
-economic adjustment applied
-```
-
-US-00 debug must show produced, added, rejected, ratios, buffer, penalty, good price source, void wealth, and aggregation.
-
-US-10 debug must show ordered candidates, scores, exclusions, quantities used, satisfied quantity, and unsatisfied quantity.
-
-When the Rebalance Economy package is loaded, US-05 debug must show the Wealth input, Trade Income input, resulting Economic Base, affected calculation, and whether direct replacement is active.
-
-## Testing rule
-
-Every PR body must include:
-
-```txt
-manual test scenario
-expected result
-debug output to inspect
-known limitation
-TECH-01 entries updated
-```
-
-Actual test results must be added as PR comments, not edited into the PR body.
-Each validation comment must name the tested commit, installed package
-provenance, commands/scenario run, actual result, relevant log dump lines,
-`error.log` / `game.log` / `system.log` review, known tolerated assertions, and
-the PASS / PENDING / FAIL decision. Add a new validation comment for each retest
-after a new commit.
-
-A PR is not complete if it only adds scripts without a test scenario and a
-commit-specific validation comment.
-
-## Git rule
-
-Use small PRs. One PR should implement one testable layer, not necessarily one full user story.
-
-Preferred branch names:
-
-```txt
-spike/engine-exposure
-feature/core-stock-effects
-feature/stock-validation
-feature/monthly-stock-cycle
-feature/void-economy-ledger
-feature/void-production-penalty
-feature/storage-capacity
-feature/stock-demand-resolver
-feature/consumption-resolution
-feature/inter-market-transfer
-feature/local-pop-demand-adaptation
-feature/economic-base
-balance/static-overrides
-config/game-rules
-```
-
-## Do not widen MVP
-
-Do not implement the following unless explicitly requested:
-
-```txt
-full building-level profit reconstruction
-RGO-level profit reconstruction
-complete custom GUI stock ledger
-advanced AI economic planner
-detailed logistics routes
-transport queues
-full replacement of vanilla markets
-intra-market trade profit simulation
-trade capacity consumption for same-market stock resolution
-multiple competing fallback systems for one missing exposure
-```
-
-## When blocked
-
-If a vanilla value is not exposed:
-
-```txt
-1. Do not invent it.
-2. Search the wiki.
-3. Search local script_docs.
-4. Search vanilla files.
-5. Record the result in TECH-01.
-6. Propose one fallback.
-7. Do not implement multiple fallback paths without approval.
-```
-
-If no reliable fallback exists, implement debug-only tracking or mark the item `OUT_OF_SCOPE`.
+Topology changes must never invent stock. Stock is transferred through an allowed successor, decayed through a documented loss rule, or left under its previous owner/market until a confirmed migration hook exists.

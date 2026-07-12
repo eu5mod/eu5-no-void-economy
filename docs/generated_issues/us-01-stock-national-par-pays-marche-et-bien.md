@@ -28,7 +28,7 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 |---|---|---|---|---|
 | Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
 | Market aggregate | market × good | logical `market_good_stock`; physical global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
-| Capacity and available capacity | country × market × good record | logical `capacity` field; physical `modeu5_<good>_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
+| Capacity and available capacity | country × market shared record plus country × market × good stock | logical shared `capacity` field; physical `modeu5_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
 | Read-only record access | explicit country, market, and good | `modeu5_read_country_stock_record` plus generated literal per-good adapter | CONFIRMED | internal |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 

@@ -1,21 +1,21 @@
 modeu5_initialization_complete_trigger = {
-	has_global_variable = modeu5_stock_schema_version
-	has_global_variable = modeu5_initialization_state
-	global_var:modeu5_stock_schema_version = modeu5_current_stock_schema_version
-	global_var:modeu5_initialization_state = 2
+	has_global_variable = cbp_stock_schema_version
+	has_global_variable = cbp_initialization_state
+	global_var:cbp_stock_schema_version = modeu5_current_stock_schema_version
+	global_var:cbp_initialization_state = 2
 }
 
 modeu5_initialization_not_started_trigger = {
-	NOT = { has_global_variable = modeu5_stock_schema_version }
-	NOT = { has_global_variable = modeu5_initialization_state }
+	NOT = { has_global_variable = cbp_stock_schema_version }
+	NOT = { has_global_variable = cbp_initialization_state }
 }
 
 modeu5_initialization_failed_trigger = {
-	has_global_variable = modeu5_initialization_state
-	global_var:modeu5_initialization_state = -1
+	has_global_variable = cbp_initialization_state
+	global_var:cbp_initialization_state = -1
 }
 
 modeu5_initialization_in_progress_trigger = {
-	has_global_variable = modeu5_initialization_state
-	global_var:modeu5_initialization_state = 1
+	has_global_variable = cbp_initialization_state
+	global_var:cbp_initialization_state = 1
 }

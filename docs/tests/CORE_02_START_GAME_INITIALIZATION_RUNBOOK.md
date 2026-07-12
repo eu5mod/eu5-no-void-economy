@@ -59,6 +59,14 @@ PASS - CORE-02 proportional opening allocation
 PASS - CORE-02 over-capacity opening allocation
 ```
 
+`debug.log` must contain:
+
+```txt
+ModeU5 CORE-02 RESULT proportional PASS
+ModeU5 CORE-02 RESULT over_capacity PASS
+ModeU5 CORE-02 RESULT initialization PASS
+```
+
 The result event should also expose a visible dump for each deterministic
 scenario, following `DEBUG_CONVENTIONS.md`:
 
@@ -141,12 +149,13 @@ Passing deterministic tests should show the CORE-02 PASS lines in the result
 event and set `modeu5_test_core02_initialization_started`,
 `modeu5_test_core02_initialization_finished`,
 `modeu5_test_core02_proportional_passed`, and
-`modeu5_test_core02_over_capacity_passed`. Console-driven tests intentionally
-avoid `test_log` and `debug_log` until a safe dynamic log dump channel is
-confirmed. Logs remain the source of truth for validation: `error.log` should
-not gain ModeU5 script errors, and any numeric evidence available only in the
-result event must be treated as a temporary test limitation rather than fully
-log-auditable proof.
+`modeu5_test_core02_over_capacity_passed`. Console-driven tests may use static
+`debug_log` result markers such as `ModeU5 CORE-02 RESULT initialization PASS`.
+They still avoid dynamic numeric `debug_log` dumps unless the affected runbook
+explicitly documents the known localization assertion. Logs remain the source
+of truth for validation: `error.log` should not gain ModeU5 script errors, and
+any numeric evidence available only in the result event must be treated as a
+temporary test limitation rather than fully log-auditable proof.
 
 The delayed startup path may run from an on-action/root scope that does not
 support ordinary variables. Reconciliation therefore selects a real country as

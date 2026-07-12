@@ -12,6 +12,7 @@ usage() {
 	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
 	printf '\n'
 	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
+	printf 'Install mode removes each existing ModeU5 package directory before copying.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
 
@@ -84,24 +85,81 @@ write_provenance() {
 	} > "$destination/MODEU5_SOURCE.txt"
 }
 
+ensure_utf8_bom_file() {
+	local file="$1"
+	local prefix
+	local tmp
+
+	prefix="$(LC_ALL=C head -c 3 "$file" | od -An -tx1 | tr -d ' \n')"
+	if [[ "$prefix" == "efbbbf" ]]; then
+		return 0
+	fi
+
+	tmp="$(mktemp)"
+	printf '\357\273\277' > "$tmp"
+	cat "$file" >> "$tmp"
+	mv "$tmp" "$file"
+}
+
+normalize_eu5_text_encoding() {
+	local destination="$1"
+	local file
+
+	while IFS= read -r -d '' file; do
+		case "$file" in
+			*/.metadata/*|*/MODEU5_SOURCE.txt|*/descriptor.mod)
+				continue
+				;;
+		esac
+		ensure_utf8_bom_file "$file"
+	done < <(
+		find "$destination" -type f \
+			\( -name '*.txt' -o -name '*.yml' -o -name '*.gui' \) \
+			-print0
+	)
+}
+
+reset_destination() {
+	local destination="$1"
+	local package_name
+
+	package_name="$(basename "$destination")"
+	case "$package_name" in
+		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests)
+			;;
+		*)
+			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
+			exit 1
+			;;
+	esac
+
+	# Removing the whole package root is intentional. rsync --delete only cleans
+	# within copied subdirectories and otherwise leaves stale files from previous
+	# layouts, generated adapters, or packages, causing duplicate database keys.
+	rm -rf -- "$destination"
+	mkdir -p "$destination"
+}
+
 install_core() {
 	local destination="$target_root/modeu5_core"
 
-	mkdir -p "$destination"
+	reset_destination "$destination"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/.metadata/" "$destination/.metadata/"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/in_game/" "$destination/in_game/"
 	rsync -a --delete --exclude '.DS_Store' "$repo_root/main_menu/" "$destination/main_menu/"
 	cp "$repo_root/descriptor.mod" "$destination/descriptor.mod"
 	write_provenance "$destination"
+	normalize_eu5_text_encoding "$destination"
 }
 
 install_companion() {
 	local source="$1"
 	local destination="$2"
 
-	mkdir -p "$destination"
+	reset_destination "$destination"
 	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
 	write_provenance "$destination"
+	normalize_eu5_text_encoding "$destination"
 }
 
 check_packages() {
@@ -122,13 +180,53 @@ check_packages() {
 		package_name="$(sed -n 's/^name="\(.*\)"$/\1/p' "$destination/descriptor.mod")"
 		printf 'OK       %-32s %s\n' "$package_id" "$package_name"
 
+		local metadata_file="$destination/.metadata/metadata.json"
+		if [[ ! -f "$metadata_file" ]]; then
+			printf '         metadata missing: %s\n' "$metadata_file"
+			failed=1
+		elif ! grep -Eq '"id"[[:space:]]*:' "$metadata_file"; then
+			printf '         metadata missing id: %s\n' "$metadata_file"
+			failed=1
+		fi
+
 		if [[ -f "$destination/MODEU5_SOURCE.txt" ]]; then
 			sed 's/^/         /' "$destination/MODEU5_SOURCE.txt"
 		else
 			printf '         source provenance missing\n'
 			failed=1
 		fi
+
+		if [[ "$package_id" == "modeu5_core" ]]; then
+			local pr71_generated="$destination/in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
+			if [[ -f "$pr71_generated" ]] && grep -Eq '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
+				printf '         stale PR7.1 generated dispatch defines duplicate live effect: %s\n' "$pr71_generated"
+				printf '         run ./tools/generate_all.sh and ./tools/install_local_packages.sh before testing.\n'
+				failed=1
+			fi
+		fi
+
+		while IFS= read -r -d '' file; do
+			if [[ "$(LC_ALL=C head -c 3 "$file" | od -An -tx1 | tr -d ' \n')" != "efbbbf" ]]; then
+				printf '         missing UTF-8 BOM in installed EU5 text file: %s\n' "$file"
+				failed=1
+			fi
+		done < <(
+			find "$destination" -type f \
+				\( -name '*.txt' -o -name '*.yml' -o -name '*.gui' \) \
+				! -path '*/.metadata/*' \
+				! -name 'MODEU5_SOURCE.txt' \
+				-print0
+		)
 	done
+
+	while IFS= read -r -d '' metadata_file; do
+		if grep -q 'ModeU5 Country Stocks Within Markets' "$metadata_file" && \
+			! grep -Eq '"id"[[:space:]]*:' "$metadata_file"; then
+			printf 'STALE    ModeU5 metadata without id may still be visible to the launcher: %s\n' \
+				"$metadata_file"
+			failed=1
+		fi
+	done < <(find "$target_root" -maxdepth 4 -path '*/.metadata/metadata.json' -type f -print0 2>/dev/null)
 
 	return "$failed"
 }

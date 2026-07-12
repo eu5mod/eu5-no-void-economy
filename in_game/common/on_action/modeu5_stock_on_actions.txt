@@ -8,6 +8,7 @@ on_game_start = {
 modeu5_start_game_stock_initialization_pulse = {
 	effect = {
 		modeu5_start_game_stock_initialization_dispatcher = yes
+		modeu5_core04_refresh_all_location_market_memory = yes
 	}
 }
 
@@ -17,9 +18,34 @@ monthly_country_pulse = {
 	}
 }
 
+on_location_changed_rank = {
+	on_actions = {
+		modeu5_capacity_location_rank_changed_pulse
+	}
+}
+
+modeu5_capacity_location_rank_changed_pulse = {
+	effect = {
+		modeu5_handle_location_capacity_changed = yes
+	}
+}
+
+on_capital_moved = {
+	on_actions = {
+		modeu5_capacity_capital_moved_pulse
+	}
+}
+
+modeu5_capacity_capital_moved_pulse = {
+	effect = {
+		modeu5_handle_capital_moved_capacity = yes
+	}
+}
+
 modeu5_monthly_stock_cycle_pulse = {
 	effect = {
-		modeu5_run_monthly_stock_cycle = yes
+		modeu5_run_monthly_stock_cycle_q8_7_owner_switch = yes
+		modeu5_core04_refresh_current_country_location_market_memory = yes
 	}
 }
 
@@ -29,14 +55,14 @@ modeu5_monthly_stock_reconciliation_pulse = {
 	}
 }
 
-yearly_country_pulse = {
+four_yearly_country_pulse = {
 	on_actions = {
-		modeu5_yearly_stock_reconciliation_pulse
+		modeu5_four_yearly_stock_reconciliation_pulse
 	}
 }
 
-modeu5_yearly_stock_reconciliation_pulse = {
+modeu5_four_yearly_stock_reconciliation_pulse = {
 	effect = {
-		modeu5_run_yearly_stock_reconciliation_once = yes
+		modeu5_run_four_yearly_stock_reconciliation_once = yes
 	}
 }

@@ -1,0 +1,1 @@
+		if = { limit = { scope:cbp_us20_receipt_good_matched = 0 scope:modeu5_trade_owner_good = goods:__GOOD__ } modeu5_apply_us20_promoted_destination_base_receipt_literal_good = { good = __GOOD__ } }

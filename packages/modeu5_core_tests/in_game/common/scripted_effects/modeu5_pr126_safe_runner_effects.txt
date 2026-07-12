@@ -1,0 +1,54 @@
+modeu5_pr126_run_shell_normal_case_without_var_snapshot = {
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
+	modeu5_run_monthly_promoted_market_cycle = yes
+	modeu5_pr126_snapshot_shell_normal_globals = yes
+}
+
+modeu5_pr126_run_shell_performance_case_without_var_snapshot = {
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	modeu5_clear_performance_relevant_markets = yes
+	capital.market = {
+		save_temporary_scope_as = modeu5_performance_relevant_market
+	}
+	modeu5_mark_performance_relevant_market = yes
+	modeu5_run_monthly_promoted_market_cycle = yes
+	modeu5_pr126_snapshot_shell_performance_globals = yes
+}
+
+modeu5_pr126_assert_shell_metrics_without_var_snapshot = {
+	debug_log = "ModeU5 PR126 PROMOTED_MARKET_SHELL normal_candidates=[THIS.GetVariable('modeu5_pr126_ui_shell_candidates_normal').GetValue|0] normal_promoted=[THIS.GetVariable('modeu5_pr126_ui_shell_promoted_normal').GetValue|0] normal_rejected=[THIS.GetVariable('modeu5_pr126_ui_shell_rejected_normal').GetValue|0] normal_iterations=[THIS.GetVariable('modeu5_pr126_ui_shell_iterations_normal').GetValue|0] performance_candidates=[THIS.GetVariable('modeu5_pr126_ui_shell_candidates_performance').GetValue|0] performance_promoted=[THIS.GetVariable('modeu5_pr126_ui_shell_promoted_performance').GetValue|0] performance_rejected=[THIS.GetVariable('modeu5_pr126_ui_shell_rejected_performance').GetValue|0] performance_iterations=[THIS.GetVariable('modeu5_pr126_ui_shell_iterations_performance').GetValue|0] snapshot=globals"
+	if = {
+		limit = {
+			NOT = { has_global_variable = test_cbp_pr126_promoted_market_shell_blocked }
+			scope:test_cbp_pr126_shell_candidates_normal = scope:test_cbp_pr126_shell_promoted_normal
+			scope:test_cbp_pr126_shell_iterations_normal = scope:test_cbp_pr126_shell_promoted_normal
+			scope:test_cbp_pr126_shell_promoted_performance = 1
+			scope:test_cbp_pr126_shell_iterations_performance = scope:test_cbp_pr126_shell_promoted_performance
+			scope:test_cbp_pr126_shell_promoted_normal > scope:test_cbp_pr126_shell_promoted_performance
+			scope:test_cbp_pr126_shell_rejected_performance > 0
+		}
+		set_global_variable = test_cbp_pr126_promoted_market_shell_passed
+		debug_log = "ModeU5 TEST PASS scenario=pr126_promoted_market_shell"
+	}
+	else_if = {
+		limit = { NOT = { has_global_variable = test_cbp_pr126_promoted_market_shell_blocked } }
+		set_global_variable = test_cbp_pr126_promoted_market_shell_failed
+		debug_log = "ModeU5 TEST FAIL scenario=pr126_promoted_market_shell"
+	}
+}
+
+modeu5_debug_run_pr126_promoted_market_shell_test_without_var_snapshot = {
+	modeu5_pr126_setup_promoted_market_shell_test = yes
+	modeu5_pr126_seed_shell_scope_values = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=pr126_promoted_market_shell"
+	modeu5_pr126_run_shell_normal_case_without_var_snapshot = yes
+	if = {
+		limit = { scope:test_cbp_pr126_shell_promoted_normal < 2 }
+		set_global_variable = test_cbp_pr126_promoted_market_shell_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_promoted_market_shell reason=not_enough_current_country_markets"
+	}
+	else = { modeu5_pr126_run_shell_performance_case_without_var_snapshot = yes }
+	modeu5_pr126_assert_shell_metrics_without_var_snapshot = yes
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_perf14_restore_cmm_main_mode_after_test = yes
+}

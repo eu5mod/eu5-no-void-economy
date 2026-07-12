@@ -56,6 +56,44 @@ Recommended variable:
 modeu5_debug_level
 ```
 
+## Runtime diagnostic modes
+
+The startup configuration effect derives explicit runtime-mode flags from the
+pre-campaign debug rule:
+
+```txt
+modeu5_runtime_mode_normal
+modeu5_runtime_mode_debug
+modeu5_runtime_mode_audit
+```
+
+Contract:
+
+```txt
+normal = no persistent debug captures during ordinary gameplay
+debug = targeted debug captures are allowed
+audit = automatic reconciliation/validation cadence is allowed
+test audit = deterministic test fixtures may enable both debug and audit
+```
+
+`modeu5_runtime_mode_audit` no longer implies `modeu5_runtime_mode_debug`.
+Debug, verbose debug, and audit are separate pre-campaign choices. Deterministic
+test events must enter `modeu5_enter_test_audit_runtime_mode` before running
+their fixtures so test dumps remain available even when the campaign's normal
+gameplay setting is debug-off.
+
+Automatic stock reconciliation runs only through dedicated audit mode on the
+monthly cadence, through explicit debug/test events, or through the four-year
+country pulse. Startup, normal monthly runtime, debug, verbose debug, yearly
+pulse, and CORE-03 lifecycle hooks must not run automatic reconciliation.
+Full stock validation across all markets and goods remains manual/debug/audit
+tooling, not a frequent automatic runtime path.
+
+Persistent variable-map records must not store zero as data. Writers should
+remove an existing key, then re-add it only when the replacement value is
+strictly positive. Missing numeric map entries are interpreted as zero by their
+read helpers.
+
 ## Mandatory package diagnostics
 
 At startup and in the general diagnostic event, expose:
@@ -82,7 +120,7 @@ that EU5 is loading the intended branch and commit.
 
 ## Pre-campaign debug configuration
 
-`modeu5_debug_level` is selected through EU5's built-in Game Rules screen before the campaign starts:
+`modeu5_debug_level` is selected through the Community Mod Manager before the campaign starts:
 
 ```txt
 Off = 0
@@ -90,9 +128,9 @@ Basic = 1
 Verbose = 2
 ```
 
-The startup configuration effect copies the selected rule to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
+The startup configuration effect copies the selected CMM setting to the global debug-level variable. Package state remains owned by the launcher/mod playset and startup package markers.
 
-There is no custom in-game configuration panel. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
+There is no custom in-game configuration panel and no ModeU5 debug game rule. Diagnostics, rebuilds, and validation are invoked only through their dedicated debug/test flows and must never reseed stocks implicitly.
 
 ## Log-first deterministic test dumps
 
@@ -413,7 +451,7 @@ diagnostic severity; every nonzero difference is rebuilt.
 Each reconciliation pass exposes one aggregate snapshot on its controller:
 
 ```txt
-reconciliation_type = 1 (dirty) | 2 (exhaustive)
+reconciliation_type = 1 (dirty) | 2 (exhaustive) | 3 (active)
 records_checked
 inconsistencies_found
 rebuilds_called
@@ -422,14 +460,18 @@ calendar_cycle_stamp
 initialization_gate_passed = 0 | 1
 ```
 
-Automatic monthly reconciliation uses `year * 12 + month` as its cycle stamp;
-yearly reconciliation uses the current year. A direct deterministic test uses
-cycle stamp `0` and initialization-gate value `0`.
+Automatic monthly audit reconciliation uses `year * 12 + month` as its cycle
+stamp; four-year reconciliation uses the current year. A direct deterministic
+test uses cycle stamp `0` and initialization-gate value `0`.
 
 The latest CORE-01.6 snapshot remains the per-record detail. Any
 `failures_after_rebuild > 0` result is blocking and must be written to
-`error.log`. A monthly pass with no dirty market/good records is a valid no-op
-with every counter equal to zero.
+`error.log`. `reconciliation_type = 3` iterates
+`modeu5_active_markets_any_good`, rebuilds the current-market country work cache
+once for that market, then checks per-good active-market membership inside that
+market scope. Active validation is a maintenance/audit optimization, not the
+strict exhaustive audit. A monthly pass with no dirty market/good records is a
+valid no-op with every counter equal to zero.
 
 Numeric precision is not yet characterized. Preserve raw operands and signed
 differences without rounding them for debug. When a small residual or an
@@ -456,8 +498,10 @@ effective_overproduction_ratio
 production_efficiency_penalty_coefficient
 max_production_efficiency_penalty
 production_efficiency_penalty
+previous_production_efficiency_penalty_if_applicable
 modifier_application_mode
 affected_locations_count
+positive_locations_count
 fallback_used
 theoretical_only_if_applicable
 good_price
@@ -482,6 +526,17 @@ local_production_efficiency_modifier
 theoretical_only
 ```
 
+Runtime US-00 validation must also write a deterministic dump line when a
+feature PR asks the tester to validate monthly production ingestion:
+
+```txt
+ModeU5 US-00 DUMP monthly_runtime country=<tag> good=<good> produced=... added=... rejected=... previous_penalty=... new_penalty=... affected_locations=... positive_locations=... good_price=... modifier_mode=...
+```
+
+The dump is the source of truth for reviewing tests. UI localization assertions
+are tolerated only when the matching dump/result lines are present and no
+ModeU5 script-system error appears.
+
 ## Mandatory debug for US-04
 
 For each `location × good`, expose:
@@ -493,8 +548,11 @@ base_location_pop_good_demand
 location_good_demand_multiplier
 mod_location_pop_good_demand
 requested_quantity
+requested_quantity_by_estate
 satisfied_quantity
 unsatisfied_quantity
+estate_charge_total
+estate_charge_by_estate
 satisfaction_ratio
 satisfaction_threshold
 months_satisfied_current_year
@@ -616,7 +674,7 @@ vanilla tooltip if safely overridable
 This applies to:
 
 ```txt
-US-00 theoretical-only production penalties
+US-00 production penalties and any theoretical-only fallback status
 US-04 simulated-demand fallback
 US-05 direct formula replacement status
 ```
@@ -678,22 +736,47 @@ Use `NOT = { has_global_variable = ... }` for FAIL / NOT RUN. Do not compare an
 unset marker numerically; the engine reports missing-variable and invalid
 comparison errors.
 
+For numeric deterministic assertions, do not compare `var:` values directly in
+`limit` blocks. A persistent/current variable can be unset on the current scope,
+and EU5 can reject `var:<name>` as an invalid comparison left side. Snapshot the
+inputs into initialized temporary `scope:` values first, then compare those
+temporary values:
+
+```txt
+save_temporary_scope_value_as = { name = modeu5_test_actual value = var:modeu5_some_metric }
+save_temporary_scope_value_as = { name = modeu5_test_expected value = 1 }
+
+if = {
+	limit = { scope:modeu5_test_actual = scope:modeu5_test_expected }
+	...
+}
+```
+
+The repository validation blocks direct `var:` against `var:` comparisons. If a
+rare direct variable-to-variable comparison is intentionally proven safe, it
+must carry an explicit same-line `modeu5-allow-var-comparison` marker and a
+documented justification.
+
 Expected business outcomes, including an intentionally rejected same-record
 transfer, belong in debug snapshots and result rows. Reserve `error_log` for a
 failed assertion, an unexpected invariant violation, or another blocking
 diagnostic. A console-triggered result event that is called by another event
 must not be declared `orphan = yes`.
 
-Do not use `debug_log` or `test_log` in console-triggered deterministic tests.
+Do not use `test_log` in console-triggered deterministic tests. Static
+`debug_log` result markers are allowed when they use a literal `ModeU5 ... RESULT ...`
+string and are whitelisted by `tools/validate_module_packages.sh`.
 Controlled US-01/US-02 testing on June 16, 2026 showed that wrapper-event
-`debug_log`, scripted-effect `debug_log`, and `test_log` can all trip
-`Tried to localize with localization disabled` during a console launch.
-For these tests, rely on:
+dynamic `debug_log`, scripted-effect dynamic `debug_log`, and `test_log` can all
+trip `Tried to localize with localization disabled` during a console launch. For
+these tests, rely on:
 
 - result-marker presence;
 - result-event rows;
 - debug snapshot variables saved on the relevant scope;
 - `error_log` only for actual failure or blocked prerequisites.
+- static `ModeU5 ... RESULT ... PASS/FAIL/BLOCKED` lines where the runbook
+  names them.
 
 This is a fallback, not the target end-state. Logs remain the authoritative
 debug artifact; if a PR needs numeric dump review and the values are only

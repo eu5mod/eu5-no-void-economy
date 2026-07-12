@@ -1,0 +1,9 @@
+﻿l_english:
+ modeu5_us17_owner_modifiers.1.title: "ModeU5 US-17 Owner Modifier Probe"
+ modeu5_us17_owner_modifiers.1.desc: "Validate that buying efficiency, selling efficiency, and trade maintenance cost are read from the trade-owner country, and that the buying/selling average is capped only above 1."
+ modeu5_us17_owner_modifiers.1.a: "Run owner modifier probe"
+ modeu5_us17_owner_modifiers.2.title: "ModeU5 US-17 Owner Modifier Result"
+ modeu5_us17_owner_modifiers.2.desc: "Review the deterministic result below and inspect debug.log for the detailed audit markers."
+ modeu5_us17_owner_modifiers.pass: "PASS — owner modifiers and maximum-only cap"
+ modeu5_us17_owner_modifiers.fail: "FAIL — inspect ASSERT FAIL entries"
+ modeu5_us17_owner_modifiers.blocked: "BLOCKED — required fixture country unavailable"

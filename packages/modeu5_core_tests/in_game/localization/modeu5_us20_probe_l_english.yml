@@ -1,0 +1,8 @@
+﻿l_english:
+ modeu5_us20_probe.1.title: "ModeU5 US-20 Probe"
+ modeu5_us20_probe.1.desc: "Run the standalone US-20 five-path market-loss, base-receipt, and promoted-receiver probe. Results are written to the logs and summarized by tools/summarize_modeu5_test_logs.sh."
+ modeu5_us20_probe.1.a: "Run US-20 five-path probe"
+ modeu5_us20_probe.2.title: "ModeU5 US-20 Probe Result"
+ modeu5_us20_probe.2.desc: "The US-20 standalone probe finished. Review the logs for CASE12, BASE_RECEIPT, and RECEIVER_SELECTION diagnostics."
+ modeu5_us20_probe.case12.pass: "PASS - US-20 five-path probe"
+ modeu5_us20_probe.case12.fail: "FAIL - US-20 five-path probe"

@@ -1,0 +1,169 @@
+# Q8.7 performance-mode relevant-market shadow comparison.
+# Test package only: no live dispatcher switch and no stock mutation.
+
+modeu5_q8_7_increment_perf_relevant_cache_rebuild_count = {
+	if = {
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count }
+		set_global_variable = {
+			name = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_cache_rebuild_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_cache_rebuild_count value = 1 } }
+}
+
+modeu5_q8_7_increment_perf_relevant_cache_failure_count = {
+	if = {
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count }
+		set_global_variable = {
+			name = test_cbp_q8_7_perf_relevant_cache_failure_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_cache_failure_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_cache_failure_count value = 1 } }
+}
+
+modeu5_q8_7_increment_perf_relevant_country_count = {
+	if = {
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_country_count }
+		set_global_variable = {
+			name = test_cbp_q8_7_perf_relevant_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_country_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_country_count value = 1 } }
+}
+
+modeu5_q8_7_increment_perf_relevant_human_country_count = {
+	if = {
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_human_country_count }
+		set_global_variable = {
+			name = test_cbp_q8_7_perf_relevant_human_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_human_country_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_human_country_count value = 1 } }
+}
+
+modeu5_q8_7_increment_perf_relevant_ai_country_count = {
+	if = {
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_ai_country_count }
+		set_global_variable = {
+			name = test_cbp_q8_7_perf_relevant_ai_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_ai_country_count add = 1 }
+		}
+	}
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_ai_country_count value = 1 } }
+}
+
+modeu5_q8_7_clear_performance_relevant_shadow_state = {
+	modeu5_q8_7_clear_shadow_comparison_state = yes
+	remove_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_human_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_ai_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_shadow_passed
+	remove_global_variable = test_cbp_q8_7_perf_relevant_shadow_failed
+}
+
+modeu5_q8_7_note_country_present_in_perf_relevant_market = {
+	modeu5_q8_7_increment_perf_relevant_country_count = yes
+	scope:modeu5_q8_7_perf_relevant_country = {
+		if = {
+			limit = { is_ai = no }
+			modeu5_q8_7_increment_perf_relevant_human_country_count = yes
+		}
+		else = { modeu5_q8_7_increment_perf_relevant_ai_country_count = yes }
+	}
+}
+
+modeu5_q8_7_probe_performance_relevant_global_shadow_compare = {
+	debug_log = "ModeU5 TEST ENTERED scenario=q87_performance_relevant_global_shadow_compare"
+	modeu5_q8_7_clear_performance_relevant_shadow_state = yes
+
+	# Performance Mode is the tested mode here. The event wrapper saves the previous
+	# CMM main mode so the shared PERF-14 restore helper can put it back afterwards.
+	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	modeu5_clear_performance_relevant_markets = yes
+	modeu5_rebuild_human_relevant_markets = yes
+
+	# Expected set: markets currently classified as human-relevant by PERF-14.
+	if = {
+		limit = { has_global_variable_list = cbp_performance_relevant_markets }
+		every_in_global_list = {
+			variable = cbp_performance_relevant_markets
+			save_temporary_scope_as = modeu5_q8_7_shadow_comparison_market
+			modeu5_q8_7_note_market_center_shadow_comparison_market = yes
+		}
+	}
+
+	# Candidate Q8.7 shape: native global market pass filtered to human-relevant
+	# markets. For each matching market, rebuild the present-country work cache and
+	# count all countries in that market, including AI countries. This is the spec
+	# boundary: detailed mutation eligibility is market-level, not human-country-only.
+	every_market_in_world = {
+		save_temporary_scope_as = modeu5_q8_7_shadow_comparison_market
+		if = {
+			limit = {
+				has_global_variable_list = cbp_performance_relevant_markets
+				is_target_in_global_variable_list = {
+					name = cbp_performance_relevant_markets
+					target = scope:modeu5_q8_7_shadow_comparison_market
+				}
+			}
+			modeu5_q8_7_note_global_shadow_comparison_market = yes
+			save_temporary_scope_as = modeu5_market_country_cache_market
+			remove_global_variable = cbp_market_country_cache_last_rebuild_failed
+			modeu5_rebuild_countries_present_in_market = yes
+			modeu5_q8_7_increment_perf_relevant_cache_rebuild_count = yes
+			if = {
+				limit = { has_global_variable = cbp_market_country_cache_last_rebuild_failed }
+				modeu5_q8_7_increment_perf_relevant_cache_failure_count = yes
+			}
+			if = {
+				limit = { has_global_variable_list = cbp_countries_present_in_market }
+				every_in_global_list = {
+					variable = cbp_countries_present_in_market
+					save_temporary_scope_as = modeu5_q8_7_perf_relevant_country
+					modeu5_q8_7_note_country_present_in_perf_relevant_market = yes
+				}
+			}
+		}
+	}
+
+	modeu5_q8_7_compare_shadow_market_sets = yes
+
+	debug_log = "ModeU5 Q8.7 PERF_RELEVANT_SHADOW expected_seen=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_center_seen_count').GetValue|0] expected_unique=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_center_unique_count').GetValue|0] global_seen=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_global_seen_count').GetValue|0] global_unique=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_global_unique_count').GetValue|0] missing_from_global=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_extra_count').GetValue|0] extra_global=[GetGlobalVariable('modeu5_test_q8_7_shadow_comparison_missing_count').GetValue|0] cache_rebuilds=[GetGlobalVariable('modeu5_test_q8_7_perf_relevant_cache_rebuild_count').GetValue|0] country_seen=[GetGlobalVariable('modeu5_test_q8_7_perf_relevant_country_count').GetValue|0] human_country_seen=[GetGlobalVariable('modeu5_test_q8_7_perf_relevant_human_country_count').GetValue|0] ai_country_seen=[GetGlobalVariable('modeu5_test_q8_7_perf_relevant_ai_country_count').GetValue|0] mode=performance no_stock_mutation=1"
+
+	if = {
+		limit = {
+			has_global_variable = test_cbp_q8_7_shadow_comparison_global_unique_count
+			has_global_variable = test_cbp_q8_7_shadow_comparison_center_unique_count
+			global_var:test_cbp_q8_7_shadow_comparison_global_unique_count > 0
+			global_var:test_cbp_q8_7_shadow_comparison_center_unique_count > 0
+			global_var:test_cbp_q8_7_shadow_comparison_global_unique_count = global_var:test_cbp_q8_7_shadow_comparison_center_unique_count
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_global_duplicate_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_center_duplicate_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_missing_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_extra_count }
+			has_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+			global_var:test_cbp_q8_7_perf_relevant_cache_rebuild_count > 0
+			NOT = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count }
+			has_global_variable = test_cbp_q8_7_perf_relevant_country_count
+			global_var:test_cbp_q8_7_perf_relevant_country_count > 0
+			has_global_variable = test_cbp_q8_7_perf_relevant_human_country_count
+			global_var:test_cbp_q8_7_perf_relevant_human_country_count > 0
+		}
+		set_global_variable = test_cbp_q8_7_perf_relevant_shadow_passed
+		debug_log = "ModeU5 Q8.7 PROBE performance_relevant_global_shadow_compare PASS"
+		debug_log = "ModeU5 TEST PASS scenario=q87_performance_relevant_global_shadow_compare"
+	}
+	else = {
+		set_global_variable = test_cbp_q8_7_perf_relevant_shadow_failed
+		error_log = "ModeU5 Q8.7 PROBE performance_relevant_global_shadow_compare FAIL"
+		error_log = "ModeU5 TEST FAIL scenario=q87_performance_relevant_global_shadow_compare"
+	}
+
+	modeu5_perf14_restore_cmm_main_mode_after_test = yes
+}
