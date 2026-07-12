@@ -1,0 +1,19 @@
+# ModeU5 read-only wealth endpoints.
+#
+# Vanilla exposes location tax_base and local_control, with:
+#
+#   location_tax_base = location_wealth * local_control
+#
+# The inverse is exact only while control is strictly positive. Zero-control
+# locations cannot be reconstructed from tax base and therefore return zero;
+# the country aggregator records how many locations were unresolved.
+
+modeu5_location_wealth_endpoint = {
+	value = 0
+	if = {
+		limit = { local_control > 0 }
+		value = tax_base
+		divide = local_control
+		min = 0
+	}
+}
