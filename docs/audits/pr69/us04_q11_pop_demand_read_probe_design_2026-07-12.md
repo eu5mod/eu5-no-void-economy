@@ -2,61 +2,50 @@
 
 ## Purpose
 
-Clarify whether any script value/accessor can read an already-computed vanilla Pop demand value for a specific good.
+Q11 tests whether any candidate syntax can read an already-computed vanilla Pop × good demand value.
 
-Target question:
+This probe is read-only. It does not inject into or replace `pop_demand`.
 
-```txt
-Can the mod read vanilla Pop × good demand directly?
-```
+## Context
 
-Examples of desired-but-unconfirmed accessors:
+External references used when designing the probe:
 
 ```txt
-pop_demand(goods:wheat)
-scope:some_pop.pop_demand(goods:wheat)
-demand:pop_demand(goods:wheat)
-pop_demand:wheat
+https://forum.paradoxplaza.com/forum/threads/modding-request-to-restore-script_value-support-for-pop_demands-multipliers-changed-in-1-2.1921104/#post-31410489
+https://eu5.paradoxwikis.com/Goods_modding#Pop_demands
 ```
 
-## Rationale
-
-The wiki documents `pop_demand` as a hardcoded good-demand object in `common/goods_demand` and describes Pop demands as the special good-demand case where script values were accepted.
-
-However, the linked Paradox forum discussion says the wiki is stale for 1.2 behavior and that script-value support in Pop-demand multipliers changed. Therefore Q11 does not assume that scripting `pop_demand` works; it only checks whether read access exists.
+The wiki may be stale for EU5 1.2, especially around script-value support inside `pop_demand`. Q11 therefore does not assume Pop-demand scripting works. It tests read access only.
 
 ## Package
-
-Q11 is isolated in its own optional package:
 
 ```txt
 packages/modeu5_core_tests_q11
 ```
 
-This avoids enabling Q9's destructive `REPLACE:pop_demand` candidate while checking read access.
-
-## Console command
+Console event:
 
 ```txt
 event modeu5_us04_q11_debug.1
 ```
 
-## Probe families
-
-Q11 includes these read candidates:
+## Candidate syntaxes
 
 ```txt
 pop_demand(goods:books)
 pop_demand(goods:wheat)
+
 demand:pop_demand(goods:books)
 demand:pop_demand(goods:wheat)
+
 pop_demand:books
 pop_demand:wheat
-scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:books)
-scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:wheat)
+
+scope:saved_pop.pop_demand(goods:books)
+scope:saved_pop.pop_demand(goods:wheat)
 ```
 
-It evaluates those candidates from several scopes where possible:
+## Scope contexts
 
 ```txt
 country scope
@@ -67,53 +56,35 @@ candidate random_pop scope under capital
 saved-pop dot-chain scope
 ```
 
-Known-good control:
+## Control
+
+The probe also logs the known-good market-level demand values:
 
 ```txt
 goods_demand_in_market(goods:books)
 goods_demand_in_market(goods:wheat)
 ```
 
-The control remains market × good only; it is not Pop × good.
+These are controls only and do not satisfy Pop × good read access.
 
-## Interpretation
-
-### Positive evidence
-
-A useful positive result would look like:
+## Interpretation rules
 
 ```txt
-ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=... value=<positive numeric value>
+Parser/value error => negative evidence for that syntax.
+Positive non-zero value from a real Pop scope => candidate positive evidence.
+Market control positive but Pop candidates rejected => no tested Pop-demand read accessor.
 ```
 
-The value must be attached to a Pop-scope candidate or an accessor clearly documented/validated as Pop × good.
+## Runtime result
 
-### Negative evidence
-
-Useful negative evidence includes:
+Recorded separately in:
 
 ```txt
-- parser errors for a candidate syntax
-- unknown effect/scope errors for every_pop/random_pop
-- zero/null/static values for all Pop-demand candidates while the market control is positive
+docs/audits/pr69/us04_q11_pop_demand_read_runtime_2026-07-12.md
 ```
 
-### Ambiguous evidence
-
-A positive value from a country/location/market scope is not enough by itself unless it can be proven to represent Pop × good demand rather than aggregate market demand or a constant.
-
-## Expected next step after runtime logs
-
-After running Q11, add a runtime evidence file:
+Outcome:
 
 ```txt
-docs/audits/pr69/us04_q11_pop_demand_read_probe_runtime_YYYY-MM-DD.md
-```
-
-Then update PR #69 status with one of:
-
-```txt
-Pop × good vanilla demand read: CONFIRMED
-Pop × good vanilla demand read: REJECTED for tested syntax
-Pop × good vanilla demand read: AMBIGUOUS
+No tested Q11 syntax can read an already-computed vanilla Pop × good demand value.
 ```
