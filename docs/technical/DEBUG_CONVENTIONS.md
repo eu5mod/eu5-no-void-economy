@@ -548,8 +548,11 @@ base_location_pop_good_demand
 location_good_demand_multiplier
 mod_location_pop_good_demand
 requested_quantity
+requested_quantity_by_estate
 satisfied_quantity
 unsatisfied_quantity
+estate_charge_total
+estate_charge_by_estate
 satisfaction_ratio
 satisfaction_threshold
 months_satisfied_current_year
