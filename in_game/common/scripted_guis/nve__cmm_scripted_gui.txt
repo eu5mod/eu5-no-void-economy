@@ -1,4 +1,4 @@
-# General Gameplay  (nve_general_gameplay_tab) Tab
+﻿# General Gameplay  (nve_general_gameplay_tab) Tab
 ## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings_on_changed = {
 	scope = country
@@ -33,7 +33,7 @@ no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings_on_chan
 	scope = country
 
 	is_shown = {
-		always = yes
+		always = no
 	}
 
 	is_valid = {
@@ -70,7 +70,7 @@ no_void_economy__nve_economic_balance_design_sliders_adjustments_settings_on_cha
 	effect = { }
 }
 
-## Economic Balance (nve_economic_balance_balance_group) Group
+## Mandatory Base (nve_economic_balance_mandatorybase_group) Group
 no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
 	scope = country
 
@@ -89,6 +89,33 @@ no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reductio
 
 	is_valid = {
 		always = no
+	}
+	effect = { }
+}
+
+no_void_economy___on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy___on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy___on_changed = {
+	scope = country
+
+	is_valid = {
+		always = No
 	}
 	effect = { }
 }
@@ -155,6 +182,12 @@ no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_setting
 }
 
 # Debug & Audit (nve_debug_audit_tab) Tab
+## Misc (nve_debug_audit_misc_group) Group
+no_void_economy__nve_debug_audit_misc_review_pop_settings_on_changed = {
+	scope = country
+	effect = { }
+}
+
 ## Debug & Audit (nve_debug_audit_debug_audit_group) Group
 no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = {
 	scope = country
@@ -176,11 +209,5 @@ no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	is_shown = {
 		has_global_variable = gui_cbp_cmm_nve_main_enabled
 	}
-	effect = { }
-}
-
-## Misc (nve_debug_audit_misc_group) Group
-no_void_economy__nve_debug_audit_misc_review_pop_settings_on_changed = {
-	scope = country
 	effect = { }
 }

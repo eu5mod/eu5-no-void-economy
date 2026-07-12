@@ -1,19 +1,5 @@
-# Root scope: country.
+﻿# Root scope: country.
 nve__register_cmf_mod = {
-	# Debug & Audit (nve_debug_audit_tab) Tab
-	## Misc (nve_debug_audit_misc_group) Group
-	cmm_register_bool_setting = {
-		mod_id = no_void_economy
-		setting_id = nve_debug_audit_misc_review_pop_settings
-		tab_id = nve_debug_audit_tab
-		group_id = nve_debug_audit_misc_group
-		default_value = 1
-	}
-	cmm_add_scripted_gui = {
-		mod_id = no_void_economy
-		setting_id = nve_debug_audit_misc_review_pop_settings
-	}
-
 	# General Gameplay  (nve_general_gameplay_tab) Tab
 	## Strategic Gameplay (nve_general_gameplay_gameplay_group) Group
 	cmm_register_global_bool_setting = {
@@ -47,6 +33,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -56,6 +46,10 @@ nve__register_cmf_mod = {
 		default_value = 0
 	}
 	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
 	}
@@ -123,7 +117,7 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
 	}
-	cmm_set_requires_unrestricted_tools_enabled = {
+	cmm_set_no_reset = {
 		mod_id = no_void_economy
 		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
 	}
@@ -145,6 +139,10 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_design_activate_goods_decay_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_design_activate_goods_decay_settings
+	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -161,24 +159,41 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_design_sliders_adjustments_settings
 	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = nve_economic_balance_design_sliders_adjustments_settings
+	}
 
 	## Economic Balance (nve_economic_balance_balance_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = 
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_balance_group
+		default_value = 0
+	}
+
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = 
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_balance_group
+		default_value = 0
+	}
+
+	## Mandatory Base (nve_economic_balance_mandatorybase_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
 		tab_id = nve_economic_balance_tab
-		group_id = nve_economic_balance_balance_group
-		default_value = 0
+		group_id = nve_economic_balance_mandatorybase_group
+		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
 	}
 	cmm_set_no_reset = {
-		mod_id = no_void_economy
-		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
-	}
-	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
 	}
@@ -187,8 +202,8 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
 		tab_id = nve_economic_balance_tab
-		group_id = nve_economic_balance_balance_group
-		default_value = 0
+		group_id = nve_economic_balance_mandatorybase_group
+		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
@@ -198,9 +213,53 @@ nve__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
 	}
-	cmm_set_requires_unrestricted_tools_enabled = {
+
+	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
+		setting_id = 
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_mandatorybase_group
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = 
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = 
+	}
+
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = 
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_mandatorybase_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = 
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = 
+	}
+
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = 
+		tab_id = nve_economic_balance_tab
+		group_id = nve_economic_balance_mandatorybase_group
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = 
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = 
 	}
 
 	# War & Subjects Balance (nve_war_subjects_balance_tab) Tab
@@ -308,6 +367,19 @@ nve__register_cmf_mod = {
 	}
 
 	# Debug & Audit (nve_debug_audit_tab) Tab
+	## Misc (nve_debug_audit_misc_group) Group
+	cmm_register_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = nve_debug_audit_misc_review_pop_settings
+		tab_id = nve_debug_audit_tab
+		group_id = nve_debug_audit_misc_group
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = nve_debug_audit_misc_review_pop_settings
+	}
+
 	## Debug & Audit (nve_debug_audit_debug_audit_group) Group
 	cmm_register_dropdown_setting = {
 		mod_id = no_void_economy
