@@ -1,0 +1,21 @@
+# War Exhaustion political-pressure script values
+#
+# These values expose how much Stability, Legitimacy and Rebel Threshold
+# pressure is applied per point of War Exhaustion. They multiply the country's
+# current `war_exhaustion` value by configurable defines so the pressure scales
+# automatically as War Exhaustion rises and falls.
+
+modeu5_war_exhaustion_stability_pressure = {
+    value = war_exhaustion
+    multiply = define:NCountry|WAR_EXHAUSTION_STABILITY_MODIFIER
+}
+
+modeu5_war_exhaustion_legitimacy_pressure = {
+    value = war_exhaustion
+    multiply = define:NCountry|WAR_EXHAUSTION_LEGITIMACY_MODIFIER
+}
+
+modeu5_war_exhaustion_rebel_threshold_pressure = {
+    value = war_exhaustion
+    multiply = define:NCountry|WAR_EXHAUSTION_REBEL_THRESHOLD_MODIFIER
+}

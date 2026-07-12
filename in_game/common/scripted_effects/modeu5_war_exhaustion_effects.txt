@@ -1,0 +1,57 @@
+# US-06 War Exhaustion political-pressure effects.
+#
+# Vanilla `war_exhaustion` remains the source of truth. This effect computes the
+# monthly pressure transaction-locally, applies the visible political pressure,
+# and writes a debug line for validation. Files live in Core and are activated
+# through the CMF / Core toggle gate.
+
+modeu5_apply_war_exhaustion_pressure = {
+    if = {
+        limit = {
+            modeu5_war_exhaustion_rework_enabled = yes
+            modeu5_has_war_exhaustion_pressure_input = yes
+        }
+
+        set_variable = {
+            name = modeu5_current_war_exhaustion_stability_pressure
+            value = script_value:modeu5_war_exhaustion_stability_pressure
+        }
+        set_variable = {
+            name = modeu5_current_war_exhaustion_legitimacy_pressure
+            value = script_value:modeu5_war_exhaustion_legitimacy_pressure
+        }
+        set_variable = {
+            name = modeu5_current_war_exhaustion_rebel_threshold_pressure
+            value = script_value:modeu5_war_exhaustion_rebel_threshold_pressure
+        }
+
+        clamp_variable = {
+            name = modeu5_current_war_exhaustion_stability_pressure
+            min = define:NCountry|WAR_EXHAUSTION_STABILITY_PRESSURE_MIN
+            max = define:NCountry|WAR_EXHAUSTION_STABILITY_PRESSURE_MAX
+        }
+        clamp_variable = {
+            name = modeu5_current_war_exhaustion_legitimacy_pressure
+            min = define:NCountry|WAR_EXHAUSTION_LEGITIMACY_PRESSURE_MIN
+            max = define:NCountry|WAR_EXHAUSTION_LEGITIMACY_PRESSURE_MAX
+        }
+        clamp_variable = {
+            name = modeu5_current_war_exhaustion_rebel_threshold_pressure
+            min = define:NCountry|WAR_EXHAUSTION_REBEL_THRESHOLD_PRESSURE_MIN
+            max = define:NCountry|WAR_EXHAUSTION_REBEL_THRESHOLD_PRESSURE_MAX
+        }
+
+        # Endpoint exposure is tracked in TECH-01. If any endpoint fails local
+        # script_docs or error.log validation, record it before shipping a
+        # fallback. These calls stay centralized here.
+        add_stability = var:modeu5_current_war_exhaustion_stability_pressure
+        add_legitimacy = var:modeu5_current_war_exhaustion_legitimacy_pressure
+        add_rebel_threshold = var:modeu5_current_war_exhaustion_rebel_threshold_pressure
+
+        error_log = "MODEU5_WE_REWORK current_war_exhaustion=<war_exhaustion> stability_pressure=<modeu5_current_war_exhaustion_stability_pressure> legitimacy_pressure=<modeu5_current_war_exhaustion_legitimacy_pressure> rebel_threshold_pressure=<modeu5_current_war_exhaustion_rebel_threshold_pressure> endpoint_mode=monthly_reconciliation vanilla_war_exhaustion_impact_neutralized=yes"
+
+        clr_variable = modeu5_current_war_exhaustion_stability_pressure
+        clr_variable = modeu5_current_war_exhaustion_legitimacy_pressure
+        clr_variable = modeu5_current_war_exhaustion_rebel_threshold_pressure
+    }
+}

@@ -1,0 +1,14 @@
+# US-06 War Exhaustion activation gates.
+#
+# Files are loaded in Core. Gameplay effects must therefore check the CMF / Core
+# activation flag before doing anything. The current branch uses the existing
+# `modeu5_war_rebalance_loaded` marker as the integration point; replace or map
+# it to the final CMF toggle variable when CMF wiring is implemented.
+
+modeu5_war_exhaustion_rework_enabled = {
+    has_global_variable = modeu5_war_rebalance_loaded
+}
+
+modeu5_has_war_exhaustion_pressure_input = {
+    war_exhaustion > 0
+}

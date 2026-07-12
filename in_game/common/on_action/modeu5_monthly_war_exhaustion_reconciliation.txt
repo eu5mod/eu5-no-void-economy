@@ -1,0 +1,16 @@
+# US-06 monthly War Exhaustion reconciliation.
+#
+# Files are loaded in Core. The scripted effect performs the CMF/Core activation
+# gate, so this on_action is safe while the feature is disabled.
+
+monthly_country_pulse = {
+    on_actions = {
+        modeu5_monthly_war_exhaustion_reconciliation_pulse
+    }
+}
+
+modeu5_monthly_war_exhaustion_reconciliation_pulse = {
+    effect = {
+        modeu5_apply_war_exhaustion_pressure = yes
+    }
+}
