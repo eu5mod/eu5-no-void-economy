@@ -21,7 +21,7 @@ Package: Rebalance Estate Power
 Activation: optional companion package
 Behavior when absent:
   install no US-07-specific tooltip/localization override
-  do not present vanilla buildings as rebalanced
+  do not present vanilla buildings as rebalanced unless the visible field is the US-07 fragment composed into the US-09 Rebalance Economy override
 ```
 
 ## Runtime position
@@ -63,6 +63,7 @@ Related US: US-02-UI
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Display only confirmed, applied changes.
 - Keep tooltip values synchronized with static overrides/configuration.
+- Treat the `trade_buildings.txt` `local_burghers_estate_power x 0.5` field as applied by Rebalance Economy's US-09 generator when that package is loaded.
 - Do not hide storage or operating-cost effects.
 
 ## US-specific boundary checks

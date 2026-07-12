@@ -12,7 +12,9 @@ As a player, I want a global +5% Production Efficiency compensation for ModeU5's
 
 ## Functional objective
 
-Restore a target `+X%` effective production compensation for the Rebalance Economy package while preserving the stock-aware production chain. The generator-backed static override path is currently probe-only until EU5 static replacement semantics are confirmed.
+Restore a target `+X%` effective production compensation for the Rebalance Economy package while preserving the stock-aware production chain. The generator-backed static override path is package-shipped only when generated files preserve the exact vanilla relative file path, so EU5 replaces the vanilla definitions instead of loading duplicate keys.
+
+Because US-09 and US-07 both need to edit the vanilla `common/building_types/trade_buildings.txt` static file, the US-09 generated Economy override composes the overlapping US-07 `local_burghers_estate_power` reduction directly into that exact-path file. This avoids competing package overrides for the same static definitions.
 
 ## Module / availability
 
@@ -41,6 +43,8 @@ Feeds counters to: vanilla production read at step 4
 | Monthly invocation at runtime step 3 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
 | Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions; loaded duplicate-key override path | NOT_CONFIRMED | 118 |
+| Static trade-capacity fields | local vanilla `common/building_types` | `local_trades_per_burgher`, `local_merchant_capacity`, `merchant_capacity_from_building`; exact-path package override path | TO_TEST | 118 |
+| Composed US-07 trade-building estate-power field | local vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; exact-path package override path | TO_TEST | 083 |
 | Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry`; loaded duplicate-key override path | NOT_CONFIRMED | 119 |
 
 ## Probe implementation path
@@ -48,17 +52,19 @@ Feeds counters to: vanilla production read at step 4
 Probe solution:
 
 ```txt
-Scaffold candidate override files from vanilla `.../game/in_game/common/building_types`
-Increase each eligible `output =` value by a configurable `X%`
-Scaffold candidate `common/prices/00_hardcoded.txt` overrides for the five `expand_rgo_*` entries
+Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
+Increase each eligible `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by a configurable `X%`
+Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
+Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
 Override each targeted RGO expansion gold value by `gold x (1 / (1 + X))`
 ```
 
 Rationale:
 
 ```txt
-This path would change source output directly if a valid package replacement surface is confirmed.
-It would therefore scale correctly with downstream national or technological production modifiers.
+This path changes source output and trade-capacity-like static fields directly when the Economy package is loaded.
+It also carries the approved US-07 marketplace estate-power reduction for the same exact-path trade-building file.
+It therefore scales correctly with downstream national or technological production modifiers.
 It matches the intended compensation logic better than a flat additive `global_production_efficiency = +5%`, but it is not currently runtime-safe.
 ```
 
@@ -67,15 +73,15 @@ Constraints:
 ```txt
 Do not edit installed vanilla files in place.
 Use vanilla files only as scaffolding input.
-Keep scaffolded files outside the loaded ModeU5 Economy package until clean duplicate-key-free loading is confirmed.
+Generated override files that are shipped in the loaded ModeU5 Economy package must keep the exact vanilla relative path and filename.
 Keep the compensation rate configurable in the generator, not hand-edited across overrides.
 ```
 
 ### Option matrix
 
-1. Preferred: scaffold `common/building_types` output overrides with configurable `X%` plus scaffold `common/prices/00_hardcoded.txt` overrides for `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` with the matching `gold x (1 / (1 + X))` formula.
+1. Preferred: generate exact-path `common/building_types` output/trade-capacity overrides with configurable `X%`, compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5` reduction, plus exact-path `common/prices/00_hardcoded.txt` overrides for `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` with the matching `gold x (1 / (1 + X))` formula.
 
-   Status: probe-only. Runtime loading of generated duplicate-key package files produced errors, so the files are no longer shipped in the loaded Economy package.
+   Status: implemented as package-shipped exact-path overrides. Non-vanilla filenames such as `expand_rgo_prices.txt` or `zzzz_modeu5_us09_*` are rejected because they load duplicate keys instead of replacing vanilla definitions.
 
 2. Country-level additive-modifier path: read current `global_production_efficiency` and `global_<good>_production_modifier`, then increase them by `5%`.
 
@@ -132,7 +138,7 @@ Related US: US-00.3, stock-aware production pipeline
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not load or retain these overrides when the Rebalance Economy package is absent.
 - Treat the scaffolded static-override path as a probe until a future branch confirms a clean replacement mechanism.
 - Do not edit files under the installed vanilla game directory; read them only as scaffolding input.
-- Generated candidate overrides must stay outside the loaded package unless a branch is explicitly probing static replacement behavior.
+- Generated candidate overrides that are loaded by the package must use the same relative file path as the vanilla source file.
 - Keep the compensation percentage configurable in one generation path; do not hand-edit hundreds of output values.
 - Do not switch to the additive-modifier options unless their read semantics are confirmed and documented in TECH-01.
 - Apply the compensation before monthly production is read.
@@ -148,10 +154,11 @@ Related US: US-00.3, stock-aware production pipeline
 
 ## Acceptance criteria
 
-- [ ] Generated probe files increase every targeted `output =` value by the configured `X%`.
-- [ ] Generated probe files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
-- [ ] The generator is idempotent and keeps candidate overrides outside the loaded Economy package by default.
-- [ ] A clean runtime replacement mechanism is confirmed before generated static candidates are shipped.
+- [ ] Generated package files increase every targeted `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by the configured `X%`.
+- [ ] The generated exact-path `trade_buildings.txt` file composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
+- [ ] Generated package files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
+- [ ] The generator is idempotent and removes stale non-vanilla override filenames that would create duplicate keys.
+- [ ] Runtime logs show no duplicate-key errors for the generated exact-path static overrides.
 - [ ] No installed vanilla file is edited in place.
 
 ## Manual test scenario
@@ -174,13 +181,14 @@ The additive-modifier alternatives remain visible but unselected
 
 ## Known limitations
 
-The current implementation keeps the paired static scaffold path as an offline probe only.
-The generated building candidate surface may include event-only or uncommon production files whenever they use the same `output =` production field.
-Runtime load tests showed duplicate-key package-local scaffolds are rejected or noisy, so US-09 gameplay compensation remains unimplemented until the correct replacement endpoint is confirmed.
+The current implementation ships paired static overrides in the Economy package using exact vanilla relative file paths.
+The generated building candidate surface may include event-only or uncommon production files whenever they use the same `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, or `merchant_capacity_from_building` fields.
+The US-07 composition is intentionally limited to `trade_buildings.txt` `local_burghers_estate_power`; `local_merchant_power` remains vanilla until a concrete US-07 target value is approved.
+Runtime load tests showed non-vanilla package-local filenames are rejected or noisy because they create duplicate keys, so stale names such as `common/prices/expand_rgo_prices.txt` must remain absent.
 The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.
 
 # Edit : Additional RGO size fixe
-Scaffold a 10% increase of the Max RGO Size base formula component without using additive percentage modifiers.
+Apply a first 10% Max RGO Size base formula component without using additive percentage modifiers.
 
 ## User Story
 
@@ -220,7 +228,18 @@ Technical Strategy
 
 The implementation should use scaffolding wherever possible.
 
-The scaffold should generate flat local_max_rgo_size modifiers for the variable parts of the formula:
+Current implemented layer:
+
+```txt
+modeu5_us09_base_rgo_size_10_percent_bonus
+  local_max_rgo_size = 0.2
+```
+
+The Economy package applies this static location modifier once at campaign start through `modeu5_apply_us09_base_rgo_size_bonus`. This covers the fixed `10% * base = 0.2` part without using the additive percentage modifier bucket.
+
+Deferred scaffold layer:
+
+The scaffold should later generate flat `local_max_rgo_size` modifiers for the variable parts of the formula:
 
 population * 0.0000025
 development * 0.01
@@ -232,11 +251,40 @@ The base component is a special case:
 base = 2
 10% * base = 0.2
 
-If the base Max RGO Size value cannot be changed directly through scaffolding or defines, then a fallback script must apply a flat local_max_rgo_size = 0.2 modifier to every eligible location at game start.
+Since the base Max RGO Size value is not changed directly through defines, the current fallback script applies a flat `local_max_rgo_size = 0.2` modifier to every location at game start.
 
 ## Implementation Requirements
 
-### 1. Scaffold generated location modifiers
+### 1. Current base modifier
+
+Implemented:
+
+```txt
+modeu5_us09_base_rgo_size_10_percent_bonus = {
+    game_data = {
+        category = location
+    }
+
+    local_max_rgo_size = 0.2
+}
+```
+
+### 2. Current base application
+
+Implemented:
+
+```txt
+every_location_in_the_world = {
+    add_location_modifier = {
+        modifier = modeu5_us09_base_rgo_size_10_percent_bonus
+        days = -1
+        mode = replace
+        recalculate_immediately = yes
+    }
+}
+```
+
+### 3. Deferred generated location modifiers
 
 For each eligible location, generate a static flat modifier representing:
 
@@ -257,7 +305,7 @@ nve_location_123_rgo_size_scaffold_bonus = {
     local_max_rgo_size = 0.1375
 }
 
-### 2. Apply scaffolded modifiers to locations
+### 4. Deferred scaffolded modifier application
 
 Each generated modifier must be applied to its matching location through generated setup script.
 
@@ -266,31 +314,6 @@ Example:
 123 = {
     add_location_modifier = {
         modifier = nve_location_123_rgo_size_scaffold_bonus
-        days = -1
-        mode = replace
-        recalculate_immediately = yes
-    }
-}
-
-### 3. Add fallback base modifier
-
-Create a generic static modifier for the fixed base component:
-
-nve_rgo_base_size_10_percent_bonus = {
-    game_data = {
-        category = location
-    }
-
-    local_max_rgo_size = 0.2
-}
-
-4. Apply base modifier at game start
-
-If the base RGO size cannot be changed directly through defines or generated location setup, apply the base modifier to all eligible locations at game start:
-
-every_location = {
-    add_location_modifier = {
-        modifier = nve_rgo_base_size_10_percent_bonus
         days = -1
         mode = replace
         recalculate_immediately = yes
@@ -309,19 +332,21 @@ The implementation does not use global_max_rgo_size_modifier = 0.10 as the main 
 
 The implementation does not rely on additive percentage Max RGO Size modifiers.
 
-The scaffold generates flat local_max_rgo_size values for population and development contributions.
+The current PR applies the fixed base contribution through a flat `local_max_rgo_size = 0.2` location modifier.
+
+The population and development scaffold remains deferred until a deterministic location setup data source is wired into the generator.
 
 The fixed base contribution adds exactly 0.2 Max RGO Size per eligible location.
 
 If the base value cannot be changed through scaffolding or defines, the 0.2 base contribution is applied once at game start.
 
-Generated modifiers are deterministic and reproducible.
+The base modifier and application effect are deterministic and reproducible.
 
 Generated files do not require manual editing.
 
-The generated output is compatible with the existing mod generation pipeline.
+The generated/static output is compatible with the existing package installation pipeline.
 
-The implementation can be validated on at least one rural and one non-rural location.
+The implementation can be validated by checking that the Economy package applies `modeu5_us09_base_rgo_size_10_percent_bonus` through `every_location_in_the_world` at campaign start and that runtime logs do not report an invalid modifier or effect.
 
 ## Validation Scenario
 
