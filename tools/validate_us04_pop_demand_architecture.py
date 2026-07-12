@@ -11,14 +11,14 @@ ROOT = Path(__file__).resolve().parents[1]
 failures: list[str] = []
 
 CANDIDATES = [
-    ("01", "plain_child", "wheat", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_01_plain_child.txt", "INJECT:pop_demand = {", "wheat = {", "modeu5_us04_live_pop_demand_multiplier_wheat"),
-    ("02", "inner_inject", "beer", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_02_inner_inject.txt", "INJECT:pop_demand = {", "INJECT:beer = {", "modeu5_us04_live_pop_demand_multiplier_beer"),
-    ("03", "inner_try_inject", "cloth", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_03_inner_try_inject.txt", "INJECT:pop_demand = {", "TRY_INJECT:cloth = {", "modeu5_us04_live_pop_demand_multiplier_cloth"),
-    ("04", "inner_inject_or_create", "tools", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "modeu5_us04_live_pop_demand_multiplier_tools"),
-    ("05", "outer_try_inject", "fish", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "modeu5_us04_live_pop_demand_multiplier_fish"),
-    ("06", "outer_inject_or_create", "wine", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "modeu5_us04_live_pop_demand_multiplier_wine"),
-    ("07", "direct_global", "books", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:modeu5_us04_matrix_global_books"),
-    ("08", "direct_global_value_block", "furniture", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:modeu5_us04_matrix_global_furniture"),
+    ("01", "plain_child", "wheat", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_01_plain_child.txt", "INJECT:pop_demand = {", "wheat = {", "modeu5_us04_live_pop_demand_multiplier_wheat"),
+    ("02", "inner_inject", "beer", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_02_inner_inject.txt", "INJECT:pop_demand = {", "INJECT:beer = {", "modeu5_us04_live_pop_demand_multiplier_beer"),
+    ("03", "inner_try_inject", "cloth", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_03_inner_try_inject.txt", "INJECT:pop_demand = {", "TRY_INJECT:cloth = {", "modeu5_us04_live_pop_demand_multiplier_cloth"),
+    ("04", "inner_inject_or_create", "tools", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "modeu5_us04_live_pop_demand_multiplier_tools"),
+    ("05", "outer_try_inject", "fish", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "modeu5_us04_live_pop_demand_multiplier_fish"),
+    ("06", "outer_inject_or_create", "wine", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "modeu5_us04_live_pop_demand_multiplier_wine"),
+    ("07", "direct_global", "books", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:modeu5_us04_matrix_global_books"),
+    ("08", "direct_global_value_block", "furniture", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:modeu5_us04_matrix_global_furniture"),
 ]
 
 
@@ -94,7 +94,7 @@ def main() -> int:
     debug_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_test_effects.txt")
     matrix_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_injection_matrix_test_effects.txt")
     q7_q8_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_q7_q8_and_target_architecture_test_effects.txt")
-    q9_candidate = read("packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt")
+    q9_candidate = read("docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt")
     q9_test = read("packages/modeu5_core_tests_q9/in_game/common/scripted_effects/modeu5_us04_q9_replace_pop_demand_test_effects.txt")
     q9_debug_events = read("packages/modeu5_core_tests_q9/in_game/events/modeu5_us04_q9_debug_events.txt")
     debug_events = read("packages/modeu5_core_tests/in_game/events/modeu5_us04_debug_events.txt")
@@ -133,6 +133,8 @@ def main() -> int:
     expect("modeu5_remove_stock" not in monthly_reconciliation, "US-04 monthly reconciliation must not remove stock until direct Pop-demand-by-good read is confirmed")
     expect("add_gold_to_estate" not in monthly_reconciliation, "US-04 monthly reconciliation must not charge estates until direct Pop-demand-by-good read is confirmed")
     expect("reason=direct_pop_demand_read_not_confirmed" in monthly_reconciliation, "US-04 monthly reconciliation must log and block while direct Pop-demand-by-good read is unconfirmed")
+    expect('error_log = "ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed' not in monthly_reconciliation, "Expected US-04 fail-closed blocks must not pollute error.log")
+    expect('debug_log = "ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed' in monthly_reconciliation, "Expected US-04 fail-closed blocks must remain visible in debug logs")
     expect("Legacy location x good records" not in monthly_reconciliation, "US-04 monthly reconciliation must not use a legacy no-estate fallback")
     expect("modeu5_read_country_stock_record" not in monthly_reconciliation, "US-04 monthly reconciliation must not read/mutate stock while direct Pop-demand-by-good read is unconfirmed")
     expect("modeu5_us04_reconciliation_country_stock_delta value = 0" in monthly_reconciliation, "US-04 monthly reconciliation must keep country stock delta at zero while blocked")
@@ -229,6 +231,7 @@ def main() -> int:
     expect(not (ROOT / "tools/generate_us04_pop_demand_override.py").exists(), "Obsolete vanilla Pop-demand override generator must remain deleted")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt").exists(), "No exact-path vanilla pop_demands.txt override may be present")
     expect(not any((ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand").glob("zz_modeu5_us04_probe_*.txt")), "Archived US-04 pop_demand probes must not live in the campaign economy package")
+    expect(not any((ROOT / "packages/modeu5_core_tests_q9/in_game/common/goods_demand").glob("zz_modeu5_us04_probe_*.txt")), "Archived invalid-syntax US-04 pop_demand probes must not live in a loadable test package")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_injection_values.txt").exists(), "Archived US-04 injection script values must not live in the campaign economy package")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the production economy package")
     expect(not (ROOT / "packages/modeu5_core_tests/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the normal core test package")

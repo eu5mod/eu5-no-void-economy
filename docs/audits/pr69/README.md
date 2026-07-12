@@ -36,8 +36,9 @@ archives/us04_observed_current_demand_alternative.md
 archives/us04_final_probe_lessons_and_reconciliation_pivot_2026-07-11.md
 ```
 
-Archived runtime probe definitions are isolated from campaign packages:
+Archived invalid-syntax `goods_demand` probe definitions are preserved outside
+all loadable packages:
 
 ```txt
-packages/modeu5_core_tests_q9/in_game/common/goods_demand/
+docs/audits/pr69/archives/goods_demand_invalid_syntax/
 ```

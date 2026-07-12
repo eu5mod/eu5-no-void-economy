@@ -263,11 +263,13 @@ flowchart TD
 | `archives/us04_observed_current_demand_alternative.md` | Archived alternative design. Useful if US-04 is re-scoped away from exact Pop x estate demand. |
 | `archives/us04_final_probe_lessons_and_reconciliation_pivot_2026-07-11.md` | Short pivot note; this Q5 v3 supersedes it for the current source of truth. |
 
-The rejected/static `pop_demand` engine probes are isolated in the optional test
-probe package, not the campaign economy package:
+The rejected/static `pop_demand` engine probes are archived outside every
+loadable package. They must not live under `in_game/common/goods_demand`,
+including in optional test packages, because EU5 parses those files at load time
+and logs the intentionally invalid probe syntax as errors:
 
 ```txt
-packages/modeu5_core_tests_q9/in_game/common/goods_demand/
+docs/audits/pr69/archives/goods_demand_invalid_syntax/
 ```
 
 ## Test Procedure

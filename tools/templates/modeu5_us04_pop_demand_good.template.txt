@@ -497,7 +497,6 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			exists = scope:modeu5_us04_reconciliation_market
 			modeu5_stock_runtime_ready_trigger = yes
 		}
-		error_log = "ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed good=__GOOD__ action=no_stock_removed_no_estate_charged"
 		debug_log = "ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed good=__GOOD__ action=no_stock_removed_no_estate_charged"
 	}
 
