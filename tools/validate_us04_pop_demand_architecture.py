@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contracts for US-04 lifecycle, archived probes, and reconciliation fallback."""
+"""Static contracts for US-04 lifecycle, archived probes, and fail-closed reconciliation."""
 
 from __future__ import annotations
 
@@ -11,14 +11,14 @@ ROOT = Path(__file__).resolve().parents[1]
 failures: list[str] = []
 
 CANDIDATES = [
-    ("01", "plain_child", "wheat", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_01_plain_child.txt", "INJECT:pop_demand = {", "wheat = {", "modeu5_us04_live_pop_demand_multiplier_wheat"),
-    ("02", "inner_inject", "beer", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_02_inner_inject.txt", "INJECT:pop_demand = {", "INJECT:beer = {", "modeu5_us04_live_pop_demand_multiplier_beer"),
-    ("03", "inner_try_inject", "cloth", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_03_inner_try_inject.txt", "INJECT:pop_demand = {", "TRY_INJECT:cloth = {", "modeu5_us04_live_pop_demand_multiplier_cloth"),
-    ("04", "inner_inject_or_create", "tools", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "modeu5_us04_live_pop_demand_multiplier_tools"),
-    ("05", "outer_try_inject", "fish", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "modeu5_us04_live_pop_demand_multiplier_fish"),
-    ("06", "outer_inject_or_create", "wine", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "modeu5_us04_live_pop_demand_multiplier_wine"),
-    ("07", "direct_global", "books", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:modeu5_us04_matrix_global_books"),
-    ("08", "direct_global_value_block", "furniture", "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:modeu5_us04_matrix_global_furniture"),
+    ("01", "plain_child", "wheat", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_01_plain_child.txt", "INJECT:pop_demand = {", "wheat = {", "modeu5_us04_live_pop_demand_multiplier_wheat"),
+    ("02", "inner_inject", "beer", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_02_inner_inject.txt", "INJECT:pop_demand = {", "INJECT:beer = {", "modeu5_us04_live_pop_demand_multiplier_beer"),
+    ("03", "inner_try_inject", "cloth", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_03_inner_try_inject.txt", "INJECT:pop_demand = {", "TRY_INJECT:cloth = {", "modeu5_us04_live_pop_demand_multiplier_cloth"),
+    ("04", "inner_inject_or_create", "tools", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "modeu5_us04_live_pop_demand_multiplier_tools"),
+    ("05", "outer_try_inject", "fish", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "modeu5_us04_live_pop_demand_multiplier_fish"),
+    ("06", "outer_inject_or_create", "wine", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "modeu5_us04_live_pop_demand_multiplier_wine"),
+    ("07", "direct_global", "books", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:modeu5_us04_matrix_global_books"),
+    ("08", "direct_global_value_block", "furniture", "packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:modeu5_us04_matrix_global_furniture"),
 ]
 
 
@@ -87,9 +87,10 @@ def main() -> int:
     integration = read("in_game/common/scripted_effects/modeu5_us04_pop_demand_live_integration_effects.txt")
     observed_target = read("in_game/common/scripted_effects/modeu5_us04_observed_current_target_effects.txt")
     on_actions = read("in_game/common/on_action/modeu5_stock_on_actions.txt")
-    production_values = read("packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_injection_values.txt")
+    probe_values = read("packages/modeu5_core_tests/in_game/common/script_values/modeu5_us04_pop_demand_injection_values.txt")
     endpoint_adapter = read("packages/modeu5_core_tests/in_game/common/script_values/modeu5_us04_pop_demand_endpoint_probe_values.txt")
     endpoint_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_pop_demand_endpoint_test_effects.txt")
+    debug_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_test_effects.txt")
     matrix_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_injection_matrix_test_effects.txt")
     q7_q8_test = read("packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_q7_q8_and_target_architecture_test_effects.txt")
     q9_candidate = read("packages/modeu5_core_tests_q9/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt")
@@ -111,7 +112,7 @@ def main() -> int:
     init_country = block(integration, "modeu5_run_pop_demand_multiplier_initialization_for_current_country_v1")
     init_once = block(integration, "modeu5_initialize_pop_demand_multipliers_once")
     init_country_once = block(integration, "modeu5_initialize_pop_demand_multipliers_for_current_country_once")
-    live_wheat = block(production_values, "modeu5_us04_live_pop_demand_multiplier_wheat")
+    live_wheat = block(probe_values, "modeu5_us04_live_pop_demand_multiplier_wheat")
     endpoint_probe = block(endpoint_adapter, "modeu5_us04_probe_live_pop_demand_multiplier_wheat")
 
     expect('value = "modeu5_pop_demand_base_consumption_multiplier"' in initializer, "US-04 initializer must explicitly seed the 1.20 baseline")
@@ -126,11 +127,21 @@ def main() -> int:
     expect("scope:modeu5_us04_reconciliation_coefficient_present > 0" in annual, "US-04 annual adaptation must require an initialized reconciliation coefficient")
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
     expect("modeu5_write_us04_reconciliation_coefficient_good___GOOD__" in annual, "US-04 annual adaptation must update the active reconciliation coefficient")
-    expect("modeu5_remove_stock" in monthly_reconciliation and "reason = consumption" in monthly_reconciliation, "US-04 monthly reconciliation must consume stock through the centralized stock operator")
-    expect("modeu5_read_country_stock_record" in monthly_reconciliation, "US-04 monthly reconciliation must read stock before/after for two-level stock delta diagnostics")
-    expect("modeu5_us04_reconciliation_country_stock_delta" in monthly_reconciliation, "US-04 monthly reconciliation must record country stock delta")
-    expect("modeu5_us04_reconciliation_market_stock_delta" in monthly_reconciliation, "US-04 monthly reconciliation must record market aggregate stock delta")
-    expect("add_gold_to_estate" in monthly_reconciliation and "estate_type = estate_type:peasants_estate" in monthly_reconciliation, "US-04 monthly reconciliation must apply a temporary estate gold charge")
+    expect("modeu5_remove_stock" not in monthly_reconciliation, "US-04 monthly reconciliation must not remove stock until direct Pop-demand-by-good read is confirmed")
+    expect("add_gold_to_estate" not in monthly_reconciliation, "US-04 monthly reconciliation must not charge estates until direct Pop-demand-by-good read is confirmed")
+    expect("reason=direct_pop_demand_read_not_confirmed" in monthly_reconciliation, "US-04 monthly reconciliation must log and block while direct Pop-demand-by-good read is unconfirmed")
+    expect("Legacy location x good records" not in monthly_reconciliation, "US-04 monthly reconciliation must not use a legacy no-estate fallback")
+    expect("modeu5_read_country_stock_record" not in monthly_reconciliation, "US-04 monthly reconciliation must not read/mutate stock while direct Pop-demand-by-good read is unconfirmed")
+    expect("modeu5_us04_reconciliation_country_stock_delta value = 0" in monthly_reconciliation, "US-04 monthly reconciliation must keep country stock delta at zero while blocked")
+    expect("modeu5_us04_reconciliation_market_stock_delta value = 0" in monthly_reconciliation, "US-04 monthly reconciliation must keep market stock delta at zero while blocked")
+    expect("modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__" in template, "US-04 must read estate-specific requested-demand records")
+    expect("modeu5_pop_demand_requested_quantity_peasants_estate" in template, "US-04 must support peasants estate requested-demand records")
+    expect("modeu5_pop_demand_requested_quantity_burghers_estate" in template, "US-04 must support burghers estate requested-demand records")
+    expect("modeu5_pop_demand_requested_quantity_nobles_estate" in template, "US-04 must support nobles estate requested-demand records")
+    expect("modeu5_pop_demand_requested_quantity_clergy_estate" in template, "US-04 must support clergy estate requested-demand records")
+    for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
+        expect(f"modeu5_us04_reconciliation_estate_charge_{estate}" in template, f"US-04 monthly reconciliation must record {estate} charge diagnostics")
+    expect("modeu5_us04_monthly_requested_quantity_estate_total" in template, "US-04 must keep estate requested total diagnostics available")
     expect("modeu5_us04_reconciliation_estate_charge" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate charge amount")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
@@ -146,6 +157,9 @@ def main() -> int:
     expect("modeu5_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 root marker must run from delayed new-campaign pulse")
     expect(on_actions.count("modeu5_initialize_pop_demand_multipliers_for_current_country_once = yes") >= 2, "US-04 country initialization must run from monthly and yearly country pulses")
     expect("modeu5_run_monthly_us04_reconciliation_for_current_country = yes" in on_actions, "US-04 monthly reconciliation must be wired after monthly stock cycle")
+    expect("direct_pop_demand_read_not_confirmed" in debug_test, "US-04 debug test must classify full reconciliation as blocked until direct Pop-demand read is confirmed")
+    expect("blocked_reconciliation_removed_stock" in debug_test, "US-04 debug test must assert that blocked reconciliation removes no stock")
+    expect("blocked_reconciliation_estate_charge" in debug_test, "US-04 debug test must assert that blocked reconciliation charges no estate")
 
     combined_candidates = ""
     for candidate_id, syntax_name, good, path, outer, inner, value_ref in CANDIDATES:
@@ -155,7 +169,7 @@ def main() -> int:
         expect(inner in candidate, f"US-04 candidate {candidate_id} missing inner syntax")
         expect(value_ref in candidate, f"US-04 candidate {candidate_id} missing value reference")
         if candidate_id not in {"07", "08"}:
-            expect(value_ref in production_values, f"US-04 production values missing {value_ref}")
+            expect(value_ref in probe_values, f"US-04 archived probe values missing {value_ref}")
         if candidate_id in {"01", "02", "03", "04", "05", "06"}:
             expect(f"id={candidate_id} syntax={syntax_name}" in matrix_test, f"US-04 matrix test missing candidate {candidate_id}")
         else:
@@ -167,10 +181,10 @@ def main() -> int:
     expect(not (ROOT / "tools/generate_us04_injection_matrix_test.py").exists(), "US-04 injection matrix generator must remain deleted")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_pop_demand_injection_probe.txt").exists(), "Obsolete aggregate probe must remain deleted")
 
-    expect("modeu5_pop_demand_base_consumption_multiplier" not in production_values, "Live injection values must never use 1.20 as fallback")
-    expect("value = 1" in live_wheat, "Live injection values must start from multiplier 1")
-    expect("has_global_variable = modeu5_us04_multiplier_initialization_version" in production_values, "Live injection values must require completed initialization")
-    expect('value = "modeu5_us04_live_pop_demand_multiplier_wheat"' in endpoint_probe, "Endpoint probe must delegate to production wheat value")
+    expect("modeu5_pop_demand_base_consumption_multiplier" not in probe_values, "Archived injection values must never use 1.20 as fallback")
+    expect("value = 1" in live_wheat, "Archived injection values must start from multiplier 1")
+    expect("has_global_variable = modeu5_us04_multiplier_initialization_version" in probe_values, "Archived injection values must require completed initialization")
+    expect('value = "modeu5_us04_live_pop_demand_multiplier_wheat"' in endpoint_probe, "Endpoint probe must delegate to the shared test wheat value")
 
     expect("modeu5_us04_current_pop_consumption_target_books_by_market" in observed_target, "Observed-current architecture must persist books target by market")
     expect("goods_demand_in_market(goods:books)" in observed_target, "Observed-current architecture must observe current books demand")
@@ -204,6 +218,8 @@ def main() -> int:
     expect("packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt" not in gitignore, "Obsolete exact-path vanilla pop_demands.txt must not remain ignored")
     expect(not (ROOT / "tools/generate_us04_pop_demand_override.py").exists(), "Obsolete vanilla Pop-demand override generator must remain deleted")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt").exists(), "No exact-path vanilla pop_demands.txt override may be present")
+    expect(not any((ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand").glob("zz_modeu5_us04_probe_*.txt")), "Archived US-04 pop_demand probes must not live in the campaign economy package")
+    expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/script_values/modeu5_us04_pop_demand_injection_values.txt").exists(), "Archived US-04 injection script values must not live in the campaign economy package")
     expect(not (ROOT / "packages/modeu5_economy_rebalance/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the production economy package")
     expect(not (ROOT / "packages/modeu5_core_tests/in_game/common/goods_demand/zz_modeu5_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the normal core test package")
 
@@ -216,7 +232,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 archived probes and reconciliation fallback validation passed")
+    print("ModeU5 US-04 archived probes and fail-closed reconciliation validation passed")
     return 0
 
 

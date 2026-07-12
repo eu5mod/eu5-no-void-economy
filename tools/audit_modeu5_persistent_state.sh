@@ -103,11 +103,20 @@ def is_state_like(name: str) -> bool:
         "modeu5_us04_reconciliation_coefficient",
         "modeu5_us04_reconciliation_country_stock_delta",
         "modeu5_us04_reconciliation_estate_charge",
+        "modeu5_us04_reconciliation_estate_charge_burghers_estate",
+        "modeu5_us04_reconciliation_estate_charge_clergy_estate",
+        "modeu5_us04_reconciliation_estate_charge_nobles_estate",
+        "modeu5_us04_reconciliation_estate_charge_peasants_estate",
+        "modeu5_us04_reconciliation_estate_requested_total",
         "modeu5_us04_reconciliation_extra_quantity",
         "modeu5_us04_reconciliation_market_stock_delta",
         "modeu5_us04_reconciliation_removed_quantity",
         "modeu5_us04_reconciliation_requested_quantity",
         "modeu5_us04_reconciliation_unsatisfied_quantity",
+        "modeu5_pop_demand_requested_quantity_burghers_estate",
+        "modeu5_pop_demand_requested_quantity_clergy_estate",
+        "modeu5_pop_demand_requested_quantity_nobles_estate",
+        "modeu5_pop_demand_requested_quantity_peasants_estate",
     }
     return (
         name in known_lists
@@ -186,6 +195,10 @@ modeu5_trade_<good>_transferred_by_market	variable map	monthly ledger	country	US
 modeu5_trade_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 modeu5_pop_demand_multiplier	variable map	archived probe state	location	US-04 initialization / annual debug compatibility	legacy/debug only; not active gameplay source	PR69 vanilla-demand injection probe state
 modeu5_pop_demand_requested_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_requested_quantity_burghers_estate	variable map	monthly location-estate-good ledger	location	US-10.3/US-04 estate-aware Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_requested_quantity_clergy_estate	variable map	monthly location-estate-good ledger	location	US-10.3/US-04 estate-aware Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_requested_quantity_nobles_estate	variable map	monthly location-estate-good ledger	location	US-10.3/US-04 estate-aware Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
+modeu5_pop_demand_requested_quantity_peasants_estate	variable map	monthly location-estate-good ledger	location	US-10.3/US-04 estate-aware Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
 modeu5_pop_demand_satisfied_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
 modeu5_pop_demand_unsatisfied_quantity	variable map	monthly location-good ledger	location	US-10.3 Pop demand outcome capture	monthly after US-04/UI readers	current month until readers reset
 modeu5_pop_demand_satisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly satisfaction accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
@@ -198,6 +211,11 @@ modeu5_us04_reconciliation_unsatisfied_quantity	variable map	monthly diagnostic	
 modeu5_us04_reconciliation_country_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_market_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_estate_charge	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_requested_total	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_charge_peasants_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_charge_burghers_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_charge_nobles_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_charge_clergy_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 

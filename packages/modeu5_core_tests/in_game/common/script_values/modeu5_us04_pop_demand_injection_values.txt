@@ -1,5 +1,6 @@
-# US-04 production Pop-demand multipliers used by the injection syntax matrix.
-# Evaluated from Pop scope by the existing vanilla pop_demand database object.
+# US-04 test-only Pop-demand multipliers used by archived injection probes.
+# Evaluated from Pop scope only when the isolated probe package supplies the
+# experimental vanilla pop_demand database object.
 # Missing, disabled, uninitialized, or invalid ModeU5 state returns 1 (vanilla).
 
 modeu5_us04_live_pop_demand_multiplier_wheat = {

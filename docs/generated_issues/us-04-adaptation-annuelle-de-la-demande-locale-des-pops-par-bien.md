@@ -35,6 +35,9 @@ modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not
 modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock decrease
 modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock decrease
 modeu5_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
+modeu5_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
+modeu5_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
+modeu5_us04_reconciliation_estate_charge_<estate>[goods:<good>] = positive charge amount per estate
 ```
 
 `modeu5_pop_demand_multiplier` is retained as archived PR69 probe state.
@@ -101,6 +104,14 @@ Historical injection and replacement probes remain archived under:
 
 ```txt
 docs/audits/pr69/
+docs/audits/pr69/archives/
+packages/modeu5_core_tests_q9/
+```
+
+Current PR #69 source of truth:
+
+```txt
+docs/audits/pr69/Q5_flux_logique_global.v3.md
 ```
 
 The old experimental coefficient remains initialized and updated, but US-04
@@ -108,39 +119,89 @@ must not claim that the engine consumes it.
 
 ## Temporary reconciliation strategy
 
-Until a dynamic local Pop-demand endpoint exists, US-04 reconciles the ModeU5
-extra demand after US-10.3 has recorded Pop requested quantities.
+Until a dynamic local Pop-demand endpoint exists, US-04 must not reconcile extra
+ModeU5 demand into stock or estate gold. A plain `location × good` aggregate is
+not sufficient because it cannot identify which estate should pay for the extra
+consumption, and a fixed estate-list bridge is not a safe production substitute
+for real Pop demand.
 
 ```txt
 requested_quantity = modeu5_pop_demand_requested_quantity[goods:<good>]
 extra_quantity = requested_quantity × max(0, modeu5_us04_reconciliation_coefficient - 1)
 ```
 
-The extra quantity is consumed through:
+Once TECH-01 147 is confirmed, the extra quantity should be consumed through:
 
 ```txt
 modeu5_remove_stock(reason = consumption)
 ```
 
-This single centralized call updates both country × market × good stock and the
-market × good aggregate/cache. The monthly reconciliation record stores both
-the country-stock delta and market-aggregate delta so tests can prove that US-04
-does not rely on a later audit/rebuild to keep the aggregate in sync.
+That future centralized call will update both country × market × good stock and
+the market × good aggregate/cache. It is blocked until exact Pop demand by good
+is confirmed. The monthly reconciliation record currently stores requested and
+extra quantities, but removed quantity, stock deltas, and estate charges remain
+zero while TECH-01 147 is unconfirmed.
 
-The charge side uses the confirmed country-scope vanilla effect:
+The future charge side uses the confirmed country-scope vanilla effect:
 
 ```txt
-add_gold_to_estate = {
-    estate_type = estate_type:peasants_estate
-    value = -(actual_removed_quantity × market_price(goods:<good>))
-}
+add_gold_to_estate = { estate_type = estate_type:<estate> value = -estate_charge }
 ```
 
-Because the current US-10.3 Pop-demand record is still `location × good` rather
-than `location × estate × good`, US-04 uses `peasants_estate` as the temporary
-charge target and records the positive charged amount in
-`modeu5_us04_reconciliation_estate_charge`. Exact proportional distribution by
-consumer estate remains a follow-up exposure/fixture task.
+When a future Pop-demand reader records exact estate-specific requested
+quantities, US-04 should split the charge proportionally:
+
+```txt
+estate_share =
+  modeu5_pop_demand_requested_quantity_<estate>[goods:<good>]
+  / sum(all estate-specific requested quantities for the location and good)
+
+estate_charge =
+  actual_removed_quantity × market_price(goods:<good>) × estate_share
+```
+
+The current bridge maps remain diagnostic/test-only:
+
+```txt
+modeu5_pop_demand_requested_quantity_peasants_estate
+modeu5_pop_demand_requested_quantity_burghers_estate
+modeu5_pop_demand_requested_quantity_nobles_estate
+modeu5_pop_demand_requested_quantity_clergy_estate
+```
+
+These maps are not the final business surface. They are a deterministic bridge
+for current tests and documentation of the required per-estate accounting shape.
+They do not authorize production stock or estate mutation. While the direct Pop
+demand read is unconfirmed, US-04 must fail closed:
+
+```txt
+ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed
+```
+
+In that case US-04 does not remove stock, does not charge any estate, and stores
+the requested/extra quantities as unsatisfied reconciliation diagnostics.
+
+PR #69 proved Pop-to-location ModeU5 endpoint access and market-level observed
+demand paths. It did not promote a direct vanilla `pop -> pop_demand × good`
+read/write expression in TECH-01. Full production reconciliation remains blocked
+until a controlled `every_pop -> pop_demand × good` read proves exact current
+Pop demand by good.
+
+The target runtime shape is:
+
+```txt
+for each location in country × market:
+  every_pop:
+    read pop estate_type
+    read pop demand for goods:<good>   # TECH-01 pending
+    accumulate requested quantity by estate
+
+  after the Pop loop:
+    consume stock once through modeu5_remove_stock
+    charge each estate proportionally to its requested quantity
+```
+
+Do not use `pop_size` as a proxy and do not fallback to `peasants_estate`.
 
 ## Compatibility cleanup
 
@@ -179,9 +240,15 @@ cloth_reconciliation_coefficient=1.2000
 tools_reconciliation_coefficient=1.2000
 wheat_reconciliation_requested=100.00
 wheat_reconciliation_extra=21.20
-wheat_reconciliation_removed=21.20
-wheat_stock_after_reconciliation=178.80
-PASS
+wheat_reconciliation_removed=0.00
+wheat_reconciliation_unsatisfied=21.20
+wheat_stock_after_reconciliation=200.00
+wheat_reconciliation_estate_requested_total=100.00
+wheat_estate_charge_peasants=0.00
+wheat_estate_charge_burghers=0.00
+wheat_estate_charge_nobles=0.00
+wheat_estate_charge_clergy=0.00
+BLOCKED reason=direct_pop_demand_read_not_confirmed
 ```
 
 ### Initialization lifecycle
@@ -238,7 +305,7 @@ mixed and zero-observation unchanged
 annual counters reset
 ```
 
-## Accepted temporary reconciliation fixture
+## Accepted blocked reconciliation fixture
 
 Validated by the deterministic probe:
 
@@ -246,7 +313,10 @@ Validated by the deterministic probe:
 requested=100
 coefficient=1.212
 extra=21.20
-stock 200 -> 178.80
+removed=0
+unsatisfied=21.20
+stock 200 -> 200
+reason=direct_pop_demand_read_not_confirmed
 ```
 
 ## Acceptance criteria
@@ -257,22 +327,23 @@ stock 200 -> 178.80
 - [x] Exact-path vanilla regeneration removed.
 - [x] PR69 injection/replacement probes archived as non-production evidence.
 - [x] Active reconciliation coefficient implemented.
-- [x] Monthly ModeU5 stock reconciliation implemented through centralized stock removal.
-- [x] Monthly reconciliation proves both country stock and market aggregate deltas.
-- [x] Country-scope estate gold charge endpoint is confirmed and used.
+- [x] Monthly ModeU5 reconciliation fails closed until live Pop demand by good is confirmed.
+- [x] Blocked monthly reconciliation proves no country stock, market aggregate, or estate gold mutation occurs.
+- [x] Country-scope estate gold charge endpoint is confirmed for future use.
+- [x] US-04 records diagnostic estate split maps, but does not treat them as production authorization.
 - [x] Stale override cleanup implemented.
 - [x] Static architecture validator implemented.
 - [ ] New-campaign initialization probe passes.
 - [ ] Live US-10.3 location outcome handoff is confirmed.
-- [ ] Exact live Pop/Estate requested demand per estate is confirmed for proportional charge allocation.
+- [ ] Exact live vanilla Pop/Estate requested demand per estate is confirmed as a direct runtime read.
 
 ## Current status
 
 ```txt
 Annual adaptation fixture:             PASS
-Temporary stock reconciliation:        IMPLEMENTED / RUNTIME PENDING
+Temporary stock reconciliation:        BLOCKED pending TECH-01 147
 Vanilla pop_demand mutation:           REJECTED FOR PRODUCTION
-Estate gold charge effect:             CONFIRMED / temporary peasants_estate target
-Exact estate allocation:               TO_TEST / requires location × estate × good demand
+Estate gold charge effect:             CONFIRMED / not used until TECH-01 147
+Exact vanilla estate demand read:       NOT_CONFIRMED / blocks stock reconciliation
 TECH-01 #039:                          NOT_CONFIRMED
 ```

@@ -1,5 +1,13 @@
 # PR #69 runtime validation — 2026-07-11
 
+Historical note:
+
+```txt
+This file records the early annual-layer and injection-candidate validation
+state. It is no longer the current PR #69 source of truth. Read
+docs/audits/pr69/Q5_flux_logique_global.v3.md first.
+```
+
 ## Accepted annual-layer provenance
 
 ```txt

@@ -3,5 +3,5 @@ tags={
 	"Utilities"
 	"Trade and Economics"
 }
-name="No Void Economy Q9 Replace Probe"
+name="No Void Economy US-04 Pop-demand Engine Probes"
 supported_version="*"

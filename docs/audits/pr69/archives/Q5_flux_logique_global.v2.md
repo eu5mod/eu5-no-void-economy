@@ -1,5 +1,12 @@
 # Q5 — PR #69 global logical flow (living v2)
 
+Superseded:
+
+```txt
+Read docs/audits/pr69/Q5_flux_logique_global.v3.md for the current PR #69
+source of truth. This v2 file is preserved as historical design evidence.
+```
+
 ## Purpose
 
 This PR-specific flow evolves with PR #69 without modifying the canonical Q8 document:
