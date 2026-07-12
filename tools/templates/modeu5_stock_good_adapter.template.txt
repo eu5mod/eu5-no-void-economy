@@ -3783,20 +3783,41 @@ modeu5_record_pop_demand_outcome_good___GOOD__ = {
 			remove_from_variable_map = { name = modeu5_pop_demand_unsatisfied_months key = scope:modeu5_good }
 		}
 		else = { save_temporary_scope_value_as = { name = modeu5_pop_unsatisfied_months_before value = 0 } }
+		save_temporary_scope_value_as = {
+			name = modeu5_pop_requested_computed_value
+			value = {
+				value = scope:modeu5_pop_requested_before
+				add = scope:modeu5_outcome_requested_quantity
+			}
+		}
 		add_to_variable_map = {
 			name = modeu5_pop_demand_requested_quantity
 			key = scope:modeu5_good
-			value = { value = scope:modeu5_pop_requested_before add = scope:modeu5_outcome_requested_quantity }
+			value = scope:modeu5_pop_requested_computed_value
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_pop_satisfied_computed_value
+			value = {
+				value = scope:modeu5_pop_satisfied_before
+				add = scope:modeu5_outcome_satisfied_quantity
+			}
 		}
 		add_to_variable_map = {
 			name = modeu5_pop_demand_satisfied_quantity
 			key = scope:modeu5_good
-			value = { value = scope:modeu5_pop_satisfied_before add = scope:modeu5_outcome_satisfied_quantity }
+			value = scope:modeu5_pop_satisfied_computed_value
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_pop_unsatisfied_computed_value
+			value = {
+				value = scope:modeu5_pop_unsatisfied_before
+				add = scope:modeu5_outcome_unsatisfied_quantity
+			}
 		}
 		add_to_variable_map = {
 			name = modeu5_pop_demand_unsatisfied_quantity
 			key = scope:modeu5_good
-			value = { value = scope:modeu5_pop_unsatisfied_before add = scope:modeu5_outcome_unsatisfied_quantity }
+			value = scope:modeu5_pop_unsatisfied_computed_value
 		}
 		if = {
 			limit = { scope:modeu5_outcome_unsatisfied_quantity > 0 }

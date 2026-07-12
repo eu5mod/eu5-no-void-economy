@@ -8,11 +8,12 @@ since_time="${MODEU5_LOG_SINCE:-}"
 expected_mode="${MODEU5_EXPECTED_SCENARIOS:-full}"
 
 usage() {
-	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|none]\n' "$0"
+	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|us04|none]\n' "$0"
 	printf '\n'
 	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
 	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
+	printf 'Use --expected us04 after running only event modeu5_us04_debug.1 option A.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -40,8 +41,8 @@ if [[ -n "$since_time" && ! "$since_time" =~ ^[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; th
 fi
 
 case "$expected_mode" in
-	full|pr126|none) ;;
-	*) printf 'Invalid --expected mode: %s. Expected full, pr126, or none.\n' "$expected_mode" >&2; exit 2 ;;
+	full|pr126|us04|none) ;;
+	*) printf 'Invalid --expected mode: %s. Expected full, pr126, us04, or none.\n' "$expected_mode" >&2; exit 2 ;;
 esac
 
 if [[ ! -d "$logs_dir" ]]; then
@@ -161,6 +162,9 @@ case "$expected_mode" in
 	pr126)
 		expected_scenarios=(pr126_monthly_dispatcher_compare)
 		;;
+	us04)
+		expected_scenarios=(us04_pop_demand_adaptation)
+		;;
 	none)
 		;;
 esac
@@ -194,6 +198,7 @@ printf 'Localization-disabled-only ModeU5 markers: %s\n' "$localization_only_cou
 case "$expected_mode" in
 	full) printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	pr126) printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}" ;;
+	us04) printf 'Missing expected US-04 focused scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	none) printf 'Expected scenario checking disabled.\n' ;;
 esac
 printf '\n'
@@ -228,6 +233,7 @@ if [[ "$expected_mode" != "none" && ${#missing_scenarios[@]} -gt 0 ]]; then
 	case "$expected_mode" in
 		full) printf 'Missing expected full-revalidation scenario markers:\n' ;;
 		pr126) printf 'Missing expected PR126 dispatcher scenario markers:\n' ;;
+		us04) printf 'Missing expected US-04 focused scenario markers:\n' ;;
 		none) printf 'Missing expected scenario markers:\n' ;;
 	esac
 	printf '%s\n' "${missing_scenarios[@]}"

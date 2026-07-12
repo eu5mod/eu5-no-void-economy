@@ -667,6 +667,8 @@ modeu5_record_pop_demand_outcome_peasants_estate = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
 	if = {
 		limit = { scope:modeu5_outcome_requested_quantity > 0 }
 		scope:modeu5_demand_location = {
@@ -679,10 +681,17 @@ modeu5_record_pop_demand_outcome_peasants_estate = {
 				remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_peasants_estate key = scope:modeu5_good }
 			}
 			else = { save_temporary_scope_value_as = { name = modeu5_pop_estate_requested_before value = 0 } }
+			save_temporary_scope_value_as = {
+				name = modeu5_pop_estate_requested_computed_value
+				value = {
+					value = scope:modeu5_pop_estate_requested_before
+					add = scope:modeu5_outcome_requested_quantity
+				}
+			}
 			add_to_variable_map = {
 				name = modeu5_pop_demand_requested_quantity_peasants_estate
 				key = scope:modeu5_good
-				value = { value = scope:modeu5_pop_estate_requested_before add = scope:modeu5_outcome_requested_quantity }
+				value = scope:modeu5_pop_estate_requested_computed_value
 			}
 		}
 	}
@@ -692,6 +701,8 @@ modeu5_record_pop_demand_outcome_burghers_estate = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
 	if = {
 		limit = { scope:modeu5_outcome_requested_quantity > 0 }
 		scope:modeu5_demand_location = {
@@ -704,10 +715,17 @@ modeu5_record_pop_demand_outcome_burghers_estate = {
 				remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_burghers_estate key = scope:modeu5_good }
 			}
 			else = { save_temporary_scope_value_as = { name = modeu5_pop_estate_requested_before value = 0 } }
+			save_temporary_scope_value_as = {
+				name = modeu5_pop_estate_requested_computed_value
+				value = {
+					value = scope:modeu5_pop_estate_requested_before
+					add = scope:modeu5_outcome_requested_quantity
+				}
+			}
 			add_to_variable_map = {
 				name = modeu5_pop_demand_requested_quantity_burghers_estate
 				key = scope:modeu5_good
-				value = { value = scope:modeu5_pop_estate_requested_before add = scope:modeu5_outcome_requested_quantity }
+				value = scope:modeu5_pop_estate_requested_computed_value
 			}
 		}
 	}
@@ -717,6 +735,8 @@ modeu5_record_pop_demand_outcome_nobles_estate = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
 	if = {
 		limit = { scope:modeu5_outcome_requested_quantity > 0 }
 		scope:modeu5_demand_location = {
@@ -729,10 +749,17 @@ modeu5_record_pop_demand_outcome_nobles_estate = {
 				remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_nobles_estate key = scope:modeu5_good }
 			}
 			else = { save_temporary_scope_value_as = { name = modeu5_pop_estate_requested_before value = 0 } }
+			save_temporary_scope_value_as = {
+				name = modeu5_pop_estate_requested_computed_value
+				value = {
+					value = scope:modeu5_pop_estate_requested_before
+					add = scope:modeu5_outcome_requested_quantity
+				}
+			}
 			add_to_variable_map = {
 				name = modeu5_pop_demand_requested_quantity_nobles_estate
 				key = scope:modeu5_good
-				value = { value = scope:modeu5_pop_estate_requested_before add = scope:modeu5_outcome_requested_quantity }
+				value = scope:modeu5_pop_estate_requested_computed_value
 			}
 		}
 	}
@@ -742,6 +769,8 @@ modeu5_record_pop_demand_outcome_clergy_estate = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
 	save_temporary_scope_value_as = { name = modeu5_outcome_requested_quantity value = { value = $requested_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_satisfied_quantity value = { value = $satisfied_quantity$ min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_outcome_unsatisfied_quantity value = { value = $unsatisfied_quantity$ min = 0 } }
 	if = {
 		limit = { scope:modeu5_outcome_requested_quantity > 0 }
 		scope:modeu5_demand_location = {
@@ -754,10 +783,17 @@ modeu5_record_pop_demand_outcome_clergy_estate = {
 				remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_clergy_estate key = scope:modeu5_good }
 			}
 			else = { save_temporary_scope_value_as = { name = modeu5_pop_estate_requested_before value = 0 } }
+			save_temporary_scope_value_as = {
+				name = modeu5_pop_estate_requested_computed_value
+				value = {
+					value = scope:modeu5_pop_estate_requested_before
+					add = scope:modeu5_outcome_requested_quantity
+				}
+			}
 			add_to_variable_map = {
 				name = modeu5_pop_demand_requested_quantity_clergy_estate
 				key = scope:modeu5_good
-				value = { value = scope:modeu5_pop_estate_requested_before add = scope:modeu5_outcome_requested_quantity }
+				value = scope:modeu5_pop_estate_requested_computed_value
 			}
 		}
 	}

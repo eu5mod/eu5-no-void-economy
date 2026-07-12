@@ -74,6 +74,7 @@ modeu5_us04_debug.20 = {
 modeu5_us04_debug.30 = {
 	type = country_event
 	outcome = neutral
+	orphan = yes
 	title = empty_text
 	desc = empty_text
 	hidden = yes

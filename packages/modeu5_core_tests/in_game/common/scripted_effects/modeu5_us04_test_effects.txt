@@ -321,6 +321,13 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 					quantity = 200
 					capacity_policy = allow_over_capacity
 				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = wheat
+				}
+				save_temporary_scope_value_as = { name = modeu5_us04_wheat_stock_before_reconciliation value = scope:modeu5_read_country_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_before_reconciliation value = scope:modeu5_read_market_stock }
 				modeu5_reset_pop_demand_outcome = {
 					location = scope:modeu5_us04_test_location
 					good = wheat
@@ -356,6 +363,10 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 			}
 			save_temporary_scope_value_as = { name = modeu5_us04_wheat_stock_after_reconciliation value = scope:modeu5_read_country_stock }
 			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_after_reconciliation value = scope:modeu5_read_market_stock }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_country_stock_delta_after_reconciliation_a value = { value = scope:modeu5_us04_wheat_stock_after_reconciliation subtract = scope:modeu5_us04_wheat_stock_before_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_country_stock_delta_after_reconciliation_b value = { value = scope:modeu5_us04_wheat_stock_before_reconciliation subtract = scope:modeu5_us04_wheat_stock_after_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_delta_after_reconciliation_a value = { value = scope:modeu5_us04_wheat_market_stock_after_reconciliation subtract = scope:modeu5_us04_wheat_market_stock_before_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_delta_after_reconciliation_b value = { value = scope:modeu5_us04_wheat_market_stock_before_reconciliation subtract = scope:modeu5_us04_wheat_market_stock_after_reconciliation min = 0 } }
 				scope:modeu5_us04_test_location = {
 					modeu5_us04_read_wheat_reconciliation_record = yes
 				}
@@ -393,8 +404,8 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 				if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_charge_split_delta_a > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_split_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_estate_charge_split_total" modeu5_us04_note_assertion_failure = yes }
 				if = { limit = { scope:modeu5_us04_wheat_reconciliation_estate_charge_weighting_delta > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_estate_charge_weighting" modeu5_us04_note_assertion_failure = yes }
 				if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_charge_nobles > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_clergy > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_unseeded_estate_charge" modeu5_us04_note_assertion_failure = yes }
-					if = { limit = { OR = { scope:modeu5_us04_wheat_stock_after_reconciliation < 199.99 scope:modeu5_us04_wheat_stock_after_reconciliation > 200.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_country_stock_changed_with_split" modeu5_us04_note_assertion_failure = yes }
-					if = { limit = { OR = { scope:modeu5_us04_wheat_market_stock_after_reconciliation < 199.99 scope:modeu5_us04_wheat_market_stock_after_reconciliation > 200.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_market_stock_changed_with_split" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_country_stock_delta_after_reconciliation_a > 0.01 scope:modeu5_us04_wheat_country_stock_delta_after_reconciliation_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_country_stock_changed_with_split" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_market_stock_delta_after_reconciliation_a > 0.01 scope:modeu5_us04_wheat_market_stock_delta_after_reconciliation_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_market_stock_changed_with_split" modeu5_us04_note_assertion_failure = yes }
 
 				modeu5_remove_stock = {
 					country = scope:modeu5_us04_test_country
@@ -410,6 +421,13 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 					quantity = 200
 					capacity_policy = allow_over_capacity
 				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = beer
+				}
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_before value = scope:modeu5_read_country_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_before value = scope:modeu5_read_market_stock }
 				modeu5_reset_pop_demand_outcome = {
 					location = scope:modeu5_us04_test_location
 					good = beer
@@ -431,6 +449,10 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 				}
 				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_after value = scope:modeu5_read_country_stock }
 				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_after value = scope:modeu5_read_market_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_delta_a value = { value = scope:modeu5_us04_beer_blocked_stock_after subtract = scope:modeu5_us04_beer_blocked_stock_before min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_delta_b value = { value = scope:modeu5_us04_beer_blocked_stock_before subtract = scope:modeu5_us04_beer_blocked_stock_after min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_delta_a value = { value = scope:modeu5_us04_beer_blocked_market_stock_after subtract = scope:modeu5_us04_beer_blocked_market_stock_before min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_delta_b value = { value = scope:modeu5_us04_beer_blocked_market_stock_before subtract = scope:modeu5_us04_beer_blocked_market_stock_after min = 0 } }
 				scope:modeu5_us04_test_location = {
 					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_extra value = 0 }
 					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_removed value = 0 }
@@ -452,8 +474,8 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_unsatisfied < 18.79 scope:modeu5_us04_beer_blocked_unsatisfied > 18.81 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_unsatisfied_quantity" modeu5_us04_note_assertion_failure = yes }
 				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_country_delta > 0.01 scope:modeu5_us04_beer_blocked_market_delta > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_stock_delta" modeu5_us04_note_assertion_failure = yes }
 				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_estate_total > 0.01 scope:modeu5_us04_beer_blocked_estate_charge > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_estate_charge" modeu5_us04_note_assertion_failure = yes }
-				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_stock_after < 199.99 scope:modeu5_us04_beer_blocked_stock_after > 200.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_country_stock_changed" modeu5_us04_note_assertion_failure = yes }
-				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_market_stock_after < 199.99 scope:modeu5_us04_beer_blocked_market_stock_after > 200.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_market_stock_changed" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_stock_delta_a > 0.01 scope:modeu5_us04_beer_blocked_stock_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_country_stock_changed" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_market_stock_delta_a > 0.01 scope:modeu5_us04_beer_blocked_market_stock_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_market_stock_changed" modeu5_us04_note_assertion_failure = yes }
 			}
 			else = {
 				debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_missing_location_owner_or_market"
