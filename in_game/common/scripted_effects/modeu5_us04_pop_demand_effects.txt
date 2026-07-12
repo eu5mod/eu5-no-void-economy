@@ -5,9 +5,10 @@
 # counters, adjust sparse multipliers, then clear the counters.
 #
 # EU5 1.2+ runtime probes showed that scripted updates do not reach engine
-# pop_demand x good. The monthly reconciliation therefore consumes the extra
-# ModeU5 demand implied by the location x good reconciliation coefficient from
-# ModeU5 stock, using US-10.3 requested Pop demand as the fail-closed source.
+# pop_demand x good. The monthly reconciliation path remains fail-closed until
+# a direct live every_pop -> pop demand by good read is confirmed. The target
+# production design is a pre-US-10 additional-demand preparation pass, followed
+# by central stock removal and estate charging only for satisfied quantity.
 
 modeu5_run_yearly_pop_demand_adaptation_for_current_country = {
 	if = {

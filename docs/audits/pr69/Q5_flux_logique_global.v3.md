@@ -100,33 +100,121 @@ does not authorize production mutation.
 ## Target Future Flow
 
 Only after TECH-01 147 confirms a direct live Pop requested-demand-by-good read,
-the production flow can become:
+the production flow can become a pre-US-10 additional-demand preparation pass.
+This should run before US-10 consumption resolution, not as a competing
+post-US-10 reconciliation pass.
+
+The intended traversal is country-owned and market-scoped:
 
 ```txt
-for each relevant country x market x location:
-    for each good:
-        reset estate request totals
+monthly country pulse
+  -> current country
+  -> every_market_present_in_country as target market
+  -> every_owned_location limited to location.market = target market
+  -> generated per-good demand-preparation adapter
+```
 
-        every_pop in location:
-            read estate_type
-            read current requested quantity for goods:<good>
-            add requested quantity to that estate total
+If a later promoted-market dispatcher owns the monthly local branch, the
+equivalent shape is:
 
-        if total requested quantity > 0:
-            extra_quantity =
-              total_requested_quantity
-              x max(0, modeu5_us04_reconciliation_coefficient - 1)
+```txt
+promoted market shell
+  -> target promoted market
+  -> rebuild countries_present_in_market
+  -> each present country
+  -> that country's owned locations in the target market
+  -> generated per-good demand-preparation adapter
+```
 
-            remove extra_quantity once through modeu5_remove_stock
+Do not use a global `every_location` scan. In Performance Mode, markets that are
+not human-relevant remain vanilla fallback/no ModeU5 additional demand.
+
+The documented cheap gate is market-scoped:
+
+```txt
+target market = {
+    demands_goods_by_pops = goods:<good>
+}
+```
+
+It can skip a whole market x good before the owned-location and `every_pop`
+loops. It is a presence/boolean gate, not a quantity source and not an estate
+split. The required correctness gate is still the exact direct Pop-demand read
+from TECH-01 147.
+
+The target request-preparation logic is:
+
+```txt
+for each relevant country x market:
+    for each owned location in market:
+        for each good:
+            reset estate requested totals
+            reset estate extra-demand totals
+
+            if target market does not demand goods:<good> by Pops:
+                skip this market x good before scanning locations
+
+            every_pop in location:
+                read estate_type
+                read current requested quantity for goods:<good>
+                if requested quantity > 0:
+                    add requested quantity to that estate total
+
+            total_requested_quantity = sum estate requested totals
+            if total_requested_quantity <= 0:
+                skip this location x good
+
+            coefficient_extra =
+              max(0, modeu5_us04_reconciliation_coefficient - 1)
 
             for each estate with requested quantity:
-                estate_share = estate_requested / total_requested
-                estate_charge =
-                  actual_removed_quantity
-                  x market_price(goods:<good>)
-                  x estate_share
-                add_gold_to_estate = negative estate_charge
+                estate_extra_quantity =
+                  estate_requested_quantity x coefficient_extra
+
+            total_extra_quantity = sum estate_extra_quantity
+            if total_extra_quantity <= 0:
+                skip this location x good
+
+            register one US-10 additional-demand request:
+                country = current country
+                market = target market
+                location = current location
+                good = current good
+                requested quantity = total_extra_quantity
+                estate split = estate_extra_quantity by estate
 ```
+
+Then US-10, or a US-10-compatible central demand resolver, applies the request:
+
+```txt
+actual_removed_quantity =
+  modeu5_remove_stock(country, market, good, total_extra_quantity)
+
+vanilla_supply_delta =
+  -actual_removed_quantity
+  through the confirmed add_goods_supply surface, if that path is accepted
+
+for each estate with estate_extra_quantity:
+    estate_actual_quantity =
+      actual_removed_quantity
+      x estate_extra_quantity
+      / total_extra_quantity
+
+    estate_charge =
+      estate_actual_quantity
+      x market_price(goods:<good>)
+
+    add_gold_to_estate = negative estate_charge
+
+unsatisfied_extra_quantity =
+  total_extra_quantity - actual_removed_quantity
+```
+
+Important accounting rule: charge estates and remove vanilla market supply only
+for `actual_removed_quantity`, not for theoretical `total_extra_quantity`, unless
+a future design explicitly decides that unsatisfied US-04 demand should also
+affect vanilla supply. That keeps ModeU5 stock, vanilla supply adjustment, and
+estate payment aligned.
 
 The central stock invariant still applies:
 
@@ -147,14 +235,15 @@ flowchart TD
     B --> C{Existing coefficient record?}
     C -->|No| D[No write]
     C -->|Yes| E[Update ModeU5 coefficient]
-    E --> F[Monthly reconciliation helper]
+    E --> F[Pre-US-10 additional-demand preparation]
     F --> G{TECH-01 147 confirmed?}
     G -->|No| H[BLOCKED: diagnostic only]
     H --> I[No stock removal]
     H --> J[No estate charge]
     G -->|Yes, future| K[Every Pop read demand by estate]
-    K --> L[Remove stock centrally]
-    L --> M[Charge exact estates proportionally]
+    K --> L[Register US-10 additional demand]
+    L --> M[US-10 removes satisfied quantity centrally]
+    M --> N[Charge exact estates and adjust vanilla supply for satisfied quantity]
 ```
 
 ## Evidence Map

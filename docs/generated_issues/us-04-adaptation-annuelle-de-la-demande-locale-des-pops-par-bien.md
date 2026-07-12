@@ -125,20 +125,66 @@ not sufficient because it cannot identify which estate should pay for the extra
 consumption, and a fixed estate-list bridge is not a safe production substitute
 for real Pop demand.
 
+The target production shape is not a post-US-10 reconciliation competing with
+US-10. It is a pre-US-10 additional-demand preparation pass:
+
 ```txt
-requested_quantity = modeu5_pop_demand_requested_quantity[goods:<good>]
-extra_quantity = requested_quantity × max(0, modeu5_us04_reconciliation_coefficient - 1)
+monthly country pulse
+  -> current country
+  -> every_market_present_in_country as target market
+  -> every_owned_location limited to location.market = target market
+  -> generated per-good US-04 demand-preparation adapter
 ```
 
-Once TECH-01 147 is confirmed, the extra quantity should be consumed through:
+If the promoted-market dispatcher owns the local monthly branch later, the
+equivalent target shape is:
+
+```txt
+promoted market shell
+  -> target promoted market
+  -> rebuild countries_present_in_market
+  -> each present country
+  -> that country's owned locations in the target market
+  -> generated per-good US-04 demand-preparation adapter
+```
+
+The documented cheap gate is market-scoped:
+
+```txt
+target market = {
+  demands_goods_by_pops = goods:<good>
+}
+```
+
+It can become the first fast skip before owned-location and `every_pop` scans,
+but it must not replace the required TECH-01 147 direct Pop-demand read. It
+answers whether the market has Pop demand for the good; it does not provide
+quantity or estate split.
+
+For each confirmed `country × market × location × good`, US-04 should calculate:
+
+```txt
+estate_requested_quantity =
+  sum(current Pop requested quantity for goods:<good> by estate_type)
+
+estate_extra_quantity =
+  estate_requested_quantity
+  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+
+total_extra_quantity =
+  sum(estate_extra_quantity for all estates)
+```
+
+Then US-10, or a US-10-compatible central demand resolver, should consume the
+request through:
 
 ```txt
 modeu5_remove_stock(reason = consumption)
 ```
 
-That future centralized call will update both country × market × good stock and
-the market × good aggregate/cache. It is blocked until exact Pop demand by good
-is confirmed. The monthly reconciliation record currently stores requested and
+That centralized call updates both country × market × good stock and the market
+× good aggregate/cache. It remains blocked until exact Pop demand by good is
+confirmed. The monthly reconciliation record currently stores requested and
 extra quantities, but removed quantity, stock deltas, and estate charges remain
 zero while TECH-01 147 is unconfirmed.
 
@@ -148,17 +194,27 @@ The future charge side uses the confirmed country-scope vanilla effect:
 add_gold_to_estate = { estate_type = estate_type:<estate> value = -estate_charge }
 ```
 
-When a future Pop-demand reader records exact estate-specific requested
-quantities, US-04 should split the charge proportionally:
+When a future Pop-demand reader records exact estate-specific extra quantities,
+US-04 should split the charge by each estate's share of the additional demand
+that was actually satisfied:
 
 ```txt
-estate_share =
-  modeu5_pop_demand_requested_quantity_<estate>[goods:<good>]
-  / sum(all estate-specific requested quantities for the location and good)
+actual_removed_quantity =
+  satisfied quantity returned by the central stock removal path
+
+estate_actual_quantity =
+  actual_removed_quantity
+  × estate_extra_quantity
+  / total_extra_quantity
 
 estate_charge =
-  actual_removed_quantity × market_price(goods:<good>) × estate_share
+  estate_actual_quantity × market_price(goods:<good>)
 ```
+
+If US-04 also removes vanilla market supply through `add_goods_supply`, it should
+remove the same `actual_removed_quantity`, not the theoretical requested
+`total_extra_quantity`, unless a future design explicitly decides that unsatisfied
+additional demand should also reduce vanilla supply.
 
 The current bridge maps remain diagnostic/test-only:
 
@@ -190,15 +246,21 @@ Pop demand by good.
 The target runtime shape is:
 
 ```txt
-for each location in country × market:
-  every_pop:
-    read pop estate_type
-    read pop demand for goods:<good>   # TECH-01 pending
-    accumulate requested quantity by estate
+for each relevant country × market:
+  for each owned location in market:
+    for each good:
+      if target market does not demand goods:<good> by Pops:
+        skip this market × good before scanning locations
 
-  after the Pop loop:
-    consume stock once through modeu5_remove_stock
-    charge each estate proportionally to its requested quantity
+      every_pop:
+        read pop estate_type
+        read pop demand for goods:<good>   # TECH-01 pending
+        accumulate requested quantity by estate
+
+      after the Pop loop:
+        create one additional US-10 demand request from the estate extra quantities
+        consume satisfied quantity through modeu5_remove_stock
+        adjust vanilla supply and charge estates only for satisfied quantity
 ```
 
 Do not use `pop_size` as a proxy and do not fallback to `peasants_estate`.
