@@ -156,7 +156,7 @@ modeu5_us17_us20_log_fixture_values = {
 	set_variable = { name = modeu5_us17_us20_debug_goods_target value = scope:modeu5_us20_target_goods_amount_received }
 	set_variable = { name = modeu5_us17_us20_debug_goods_delta value = scope:modeu5_us20_goods_reconciliation_delta }
 	set_variable = { name = modeu5_us17_us20_debug_goods_loss_removed value = scope:modeu5_us17_us20_loss_removed_quantity }
-	set_variable = { name = modeu5_us17_us20_debug_income_application_blocked value = scope:modeu5_trade_efficiency_income_application_blocked }
+	set_variable = { name = modeu5_us17_us20_debug_income_application_blocked value = var:modeu5_trade_efficiency_income_application_blocked }
 	debug_log = "ModeU5 US17_US20 ROUTE_RECONCILIATION old_price_side_bonus=[THIS.GetVariable('modeu5_us17_us20_debug_old_price_side_bonus').GetValue|2] clamped_average=[THIS.GetVariable('modeu5_us17_us20_debug_clamped_average_efficiency').GetValue|2] money_delta=[THIS.GetVariable('modeu5_us17_us20_debug_money_delta').GetValue|2] goods_target=[THIS.GetVariable('modeu5_us17_us20_debug_goods_target').GetValue|2] goods_delta=[THIS.GetVariable('modeu5_us17_us20_debug_goods_delta').GetValue|2] goods_loss_removed=[THIS.GetVariable('modeu5_us17_us20_debug_goods_loss_removed').GetValue|2] income_application_blocked=[THIS.GetVariable('modeu5_us17_us20_debug_income_application_blocked').GetValue|0]"
 }
 
