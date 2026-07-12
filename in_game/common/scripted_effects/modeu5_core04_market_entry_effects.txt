@@ -144,10 +144,15 @@ modeu5_core04_prepare_market_entry_transfer_share = {
 	}
 }
 
+# The monthly country-owned location pass is already required by CORE-04 market
+# memory. Keep the wealth endpoint inside this same traversal so downstream
+# systems gain a country wealth snapshot without adding another location scan.
 modeu5_core04_refresh_current_country_location_market_memory = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_as = modeu5_core04_memory_country
+		set_local_variable = { name = cbp_country_wealth_endpoint_accumulator value = 0 }
+		set_local_variable = { name = cbp_country_wealth_unresolved_location_count value = 0 }
 		save_temporary_scope_value_as = {
 			name = cbp_core04_market_memory_stamp
 			value = {
@@ -164,6 +169,52 @@ modeu5_core04_refresh_current_country_location_market_memory = {
 			}
 			set_variable = {
 				name = cbp_core04_last_known_market_stamp
+				value = scope:cbp_core04_market_memory_stamp
+			}
+
+			save_temporary_scope_value_as = {
+				name = cbp_location_wealth_endpoint_value
+				value = modeu5_location_wealth_endpoint
+			}
+			set_variable = {
+				name = cbp_location_wealth_endpoint
+				value = scope:cbp_location_wealth_endpoint_value
+			}
+			set_variable = {
+				name = cbp_location_wealth_endpoint_stamp
+				value = scope:cbp_core04_market_memory_stamp
+			}
+
+			if = {
+				limit = { local_control > 0 }
+				scope:modeu5_core04_memory_country = {
+					change_local_variable = {
+						name = cbp_country_wealth_endpoint_accumulator
+						add = scope:cbp_location_wealth_endpoint_value
+					}
+				}
+			}
+			else = {
+				scope:modeu5_core04_memory_country = {
+					change_local_variable = {
+						name = cbp_country_wealth_unresolved_location_count
+						add = 1
+					}
+				}
+			}
+		}
+
+		scope:modeu5_core04_memory_country = {
+			set_variable = {
+				name = cbp_country_wealth_endpoint
+				value = local_var:cbp_country_wealth_endpoint_accumulator
+			}
+			set_variable = {
+				name = cbp_country_wealth_unresolved_location_count
+				value = local_var:cbp_country_wealth_unresolved_location_count
+			}
+			set_variable = {
+				name = cbp_country_wealth_endpoint_stamp
 				value = scope:cbp_core04_market_memory_stamp
 			}
 		}
