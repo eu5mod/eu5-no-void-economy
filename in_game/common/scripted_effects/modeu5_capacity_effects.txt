@@ -48,7 +48,7 @@ modeu5_run_monthly_capacity_refresh_for_current_country = {
 	modeu5_recalculate_saved_country_storage_capacities = yes
 
 	save_temporary_scope_value_as = {
-		name = modeu5_monthly_capacity_refresh_stamp
+		name = cbp_monthly_capacity_refresh_stamp
 		value = {
 			value = current_year
 			multiply = 12
@@ -56,46 +56,46 @@ modeu5_run_monthly_capacity_refresh_for_current_country = {
 		}
 	}
 	set_variable = {
-		name = modeu5_debug_last_monthly_capacity_refresh_stamp
-		value = scope:modeu5_monthly_capacity_refresh_stamp
+		name = cbp_debug_last_monthly_capacity_refresh_stamp
+		value = scope:cbp_monthly_capacity_refresh_stamp
 	}
 	set_variable = {
-		name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+		name = cbp_debug_last_monthly_capacity_refresh_gate_passed
 		value = 1
 	}
 }
 
 modeu5_calculate_location_rank_storage_capacity = {
 	save_temporary_scope_value_as = {
-		name = modeu5_capacity_current_location_rank_contribution
+		name = cbp_capacity_current_location_rank_contribution
 		value = modeu5_storage_capacity_rural_settlement
 	}
 
 	if = {
 		limit = { is_capital = yes }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_location_rank_contribution
+			name = cbp_capacity_current_location_rank_contribution
 			value = modeu5_storage_capacity_capital
 		}
 	}
 	else_if = {
 		limit = { location_rank = location_rank:megalopolis }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_location_rank_contribution
+			name = cbp_capacity_current_location_rank_contribution
 			value = modeu5_storage_capacity_megalopolis
 		}
 	}
 	else_if = {
 		limit = { location_rank = location_rank:city }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_location_rank_contribution
+			name = cbp_capacity_current_location_rank_contribution
 			value = modeu5_storage_capacity_city
 		}
 	}
 	else_if = {
 		limit = { location_rank = location_rank:town }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_location_rank_contribution
+			name = cbp_capacity_current_location_rank_contribution
 			value = modeu5_storage_capacity_town
 		}
 	}
@@ -109,26 +109,26 @@ modeu5_calculate_location_storage_capacity = {
 	$location$ = { save_temporary_scope_as = modeu5_capacity_location }
 
 	scope:modeu5_capacity_country = {
-		set_local_variable = { name = modeu5_location_capacity_base_accumulator value = 0 }
+		set_local_variable = { name = cbp_location_capacity_base_accumulator value = 0 }
 	}
 
 	scope:modeu5_capacity_location = {
 		modeu5_calculate_location_rank_storage_capacity = yes
 		scope:modeu5_capacity_country = {
 			change_local_variable = {
-				name = modeu5_location_capacity_base_accumulator
-				add = scope:modeu5_capacity_current_location_rank_contribution
+				name = cbp_location_capacity_base_accumulator
+				add = scope:cbp_capacity_current_location_rank_contribution
 			}
 		}
 	}
 
 	scope:modeu5_capacity_country = {
 		save_temporary_scope_value_as = {
-			name = modeu5_location_capacity_base
+			name = cbp_location_capacity_base
 			value = local_var:modeu5_location_capacity_base_accumulator
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_location_capacity_total
+			name = cbp_location_capacity_total
 			value = local_var:modeu5_location_capacity_base_accumulator
 		}
 	}
@@ -136,42 +136,42 @@ modeu5_calculate_location_storage_capacity = {
 
 modeu5_clear_country_storage_capacity_pool_cache = {
 	scope:modeu5_country = {
-		remove_variable = modeu5_capacity_pool_monthly_stamp
-		remove_variable = modeu5_capacity_pool_cached_location_rank_capacity
-		remove_variable = modeu5_capacity_pool_cached_location_count
-		remove_variable = modeu5_capacity_pool_cached_market_count
-		remove_variable = modeu5_capacity_pool_cached_base
-		remove_variable = modeu5_capacity_pool_cached_total
-		remove_variable = modeu5_capacity_pool_cached_location_rank_per_market
+		remove_variable = cbp_capacity_pool_monthly_stamp
+		remove_variable = cbp_capacity_pool_cached_location_rank_capacity
+		remove_variable = cbp_capacity_pool_cached_location_count
+		remove_variable = cbp_capacity_pool_cached_market_count
+		remove_variable = cbp_capacity_pool_cached_base
+		remove_variable = cbp_capacity_pool_cached_total
+		remove_variable = cbp_capacity_pool_cached_location_rank_per_market
 	}
 }
 
 modeu5_rebuild_country_location_capacity_pool = {
 	scope:modeu5_country = {
 		modeu5_clear_country_storage_capacity_pool_cache = yes
-		set_local_variable = { name = modeu5_capacity_pool_location_rank_accumulator value = 0 }
-		set_local_variable = { name = modeu5_capacity_pool_owned_location_count value = 0 }
+		set_local_variable = { name = cbp_capacity_pool_location_rank_accumulator value = 0 }
+		set_local_variable = { name = cbp_capacity_pool_owned_location_count value = 0 }
 
 		every_owned_location = {
 			modeu5_calculate_location_rank_storage_capacity = yes
 			scope:modeu5_country = {
 				change_local_variable = {
-					name = modeu5_capacity_pool_location_rank_accumulator
-					add = scope:modeu5_capacity_current_location_rank_contribution
+					name = cbp_capacity_pool_location_rank_accumulator
+					add = scope:cbp_capacity_current_location_rank_contribution
 				}
 				change_local_variable = {
-					name = modeu5_capacity_pool_owned_location_count
+					name = cbp_capacity_pool_owned_location_count
 					add = 1
 				}
 			}
 		}
 
 		set_variable = {
-			name = modeu5_location_capacity_pool_total
+			name = cbp_location_capacity_pool_total
 			value = local_var:modeu5_capacity_pool_location_rank_accumulator
 		}
 		set_variable = {
-			name = modeu5_location_capacity_pool_location_count
+			name = cbp_location_capacity_pool_location_count
 			value = local_var:modeu5_capacity_pool_owned_location_count
 		}
 	}
@@ -179,54 +179,54 @@ modeu5_rebuild_country_location_capacity_pool = {
 
 modeu5_calculate_country_storage_capacity_pool_raw = {
 	scope:modeu5_country = {
-		set_local_variable = { name = modeu5_capacity_pool_market_count value = 0 }
+		set_local_variable = { name = cbp_capacity_pool_market_count value = 0 }
 
 		every_market_present_in_country = {
 			scope:modeu5_country = {
-				change_local_variable = { name = modeu5_capacity_pool_market_count add = 1 }
+				change_local_variable = { name = cbp_capacity_pool_market_count add = 1 }
 			}
 		}
 
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_capacity value = 0 }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_rank_capacity value = 0 }
 		if = {
-			limit = { has_variable = modeu5_location_capacity_pool_total }
+			limit = { has_variable = cbp_location_capacity_pool_total }
 			save_temporary_scope_value_as = {
-				name = modeu5_capacity_pool_location_rank_capacity
-				value = var:modeu5_location_capacity_pool_total
+				name = cbp_capacity_pool_location_rank_capacity
+				value = var:cbp_location_capacity_pool_total
 			}
 		}
 
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_count value = 0 }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_count value = 0 }
 		if = {
-			limit = { has_variable = modeu5_location_capacity_pool_location_count }
+			limit = { has_variable = cbp_location_capacity_pool_location_count }
 			save_temporary_scope_value_as = {
-				name = modeu5_capacity_pool_location_count
-				value = var:modeu5_location_capacity_pool_location_count
+				name = cbp_capacity_pool_location_count
+				value = var:cbp_location_capacity_pool_location_count
 			}
 		}
 
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_pool_market_count
+			name = cbp_capacity_pool_market_count
 			value = local_var:modeu5_capacity_pool_market_count
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_pool_base
-			value = scope:modeu5_capacity_pool_location_rank_capacity
+			name = cbp_capacity_pool_base
+			value = scope:cbp_capacity_pool_location_rank_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_pool_total
-			value = scope:modeu5_capacity_pool_location_rank_capacity
+			name = cbp_capacity_pool_total
+			value = scope:cbp_capacity_pool_location_rank_capacity
 		}
 
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_per_market value = 0 }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_rank_per_market value = 0 }
 
 		if = {
-			limit = { scope:modeu5_capacity_pool_market_count > 0 }
+			limit = { scope:cbp_capacity_pool_market_count > 0 }
 			save_temporary_scope_value_as = {
-				name = modeu5_capacity_pool_location_rank_per_market
+				name = cbp_capacity_pool_location_rank_per_market
 				value = {
-					value = scope:modeu5_capacity_pool_location_rank_capacity
-					divide = scope:modeu5_capacity_pool_market_count
+					value = scope:cbp_capacity_pool_location_rank_capacity
+					divide = scope:cbp_capacity_pool_market_count
 				}
 			}
 		}
@@ -235,31 +235,31 @@ modeu5_calculate_country_storage_capacity_pool_raw = {
 
 modeu5_store_country_storage_capacity_pool_cache = {
 	scope:modeu5_country = {
-		set_variable = { name = modeu5_capacity_pool_monthly_stamp value = scope:modeu5_capacity_pool_current_month_stamp }
-		set_variable = { name = modeu5_capacity_pool_cached_location_rank_capacity value = scope:modeu5_capacity_pool_location_rank_capacity }
-		set_variable = { name = modeu5_capacity_pool_cached_location_count value = scope:modeu5_capacity_pool_location_count }
-		set_variable = { name = modeu5_capacity_pool_cached_market_count value = scope:modeu5_capacity_pool_market_count }
-		set_variable = { name = modeu5_capacity_pool_cached_base value = scope:modeu5_capacity_pool_base }
-		set_variable = { name = modeu5_capacity_pool_cached_total value = scope:modeu5_capacity_pool_total }
-		set_variable = { name = modeu5_capacity_pool_cached_location_rank_per_market value = scope:modeu5_capacity_pool_location_rank_per_market }
+		set_variable = { name = cbp_capacity_pool_monthly_stamp value = scope:cbp_capacity_pool_current_month_stamp }
+		set_variable = { name = cbp_capacity_pool_cached_location_rank_capacity value = scope:cbp_capacity_pool_location_rank_capacity }
+		set_variable = { name = cbp_capacity_pool_cached_location_count value = scope:cbp_capacity_pool_location_count }
+		set_variable = { name = cbp_capacity_pool_cached_market_count value = scope:cbp_capacity_pool_market_count }
+		set_variable = { name = cbp_capacity_pool_cached_base value = scope:cbp_capacity_pool_base }
+		set_variable = { name = cbp_capacity_pool_cached_total value = scope:cbp_capacity_pool_total }
+		set_variable = { name = cbp_capacity_pool_cached_location_rank_per_market value = scope:cbp_capacity_pool_location_rank_per_market }
 	}
 }
 
 modeu5_load_country_storage_capacity_pool_cache = {
 	scope:modeu5_country = {
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_capacity value = var:modeu5_capacity_pool_cached_location_rank_capacity }
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_count value = var:modeu5_capacity_pool_cached_location_count }
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_market_count value = var:modeu5_capacity_pool_cached_market_count }
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_base value = var:modeu5_capacity_pool_cached_base }
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_total value = var:modeu5_capacity_pool_cached_total }
-		save_temporary_scope_value_as = { name = modeu5_capacity_pool_location_rank_per_market value = var:modeu5_capacity_pool_cached_location_rank_per_market }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_rank_capacity value = var:cbp_capacity_pool_cached_location_rank_capacity }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_count value = var:cbp_capacity_pool_cached_location_count }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_market_count value = var:cbp_capacity_pool_cached_market_count }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_base value = var:cbp_capacity_pool_cached_base }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_total value = var:cbp_capacity_pool_cached_total }
+		save_temporary_scope_value_as = { name = cbp_capacity_pool_location_rank_per_market value = var:cbp_capacity_pool_cached_location_rank_per_market }
 	}
 }
 
 modeu5_calculate_country_storage_capacity_pool = {
 	scope:modeu5_country = {
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_pool_current_month_stamp
+			name = cbp_capacity_pool_current_month_stamp
 			value = {
 				value = current_year
 				multiply = 12
@@ -270,9 +270,9 @@ modeu5_calculate_country_storage_capacity_pool = {
 		if = {
 			limit = {
 				OR = {
-					NOT = { has_variable = modeu5_capacity_pool_monthly_stamp }
-					var:modeu5_capacity_pool_monthly_stamp != scope:modeu5_capacity_pool_current_month_stamp
-					NOT = { has_variable = modeu5_capacity_pool_cached_location_rank_per_market }
+					NOT = { has_variable = cbp_capacity_pool_monthly_stamp }
+					var:cbp_capacity_pool_monthly_stamp != scope:cbp_capacity_pool_current_month_stamp
+					NOT = { has_variable = cbp_capacity_pool_cached_location_rank_per_market }
 				}
 			}
 			modeu5_calculate_country_storage_capacity_pool_raw = yes
@@ -291,7 +291,7 @@ modeu5_prepare_country_storage_capacity_pool_once_per_month = {
 modeu5_apply_country_storage_capacity_pool_to_current_market = {
 	scope:modeu5_country = {
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_current_market_trade_contribution
+			name = cbp_capacity_current_market_trade_contribution
 			value = {
 				value = "scope:modeu5_market.merchant_capacity(scope:modeu5_country)"
 				multiply = modeu5_storage_capacity_per_trade_capacity
@@ -299,46 +299,46 @@ modeu5_apply_country_storage_capacity_pool_to_current_market = {
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_base
+			name = cbp_capacity_base
 			value = {
-				value = scope:modeu5_capacity_current_market_trade_contribution
-				add = scope:modeu5_capacity_pool_location_rank_per_market
+				value = scope:cbp_capacity_current_market_trade_contribution
+				add = scope:cbp_capacity_pool_location_rank_per_market
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_building
+			name = cbp_capacity_building
 			value = 0
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_foreign
+			name = cbp_capacity_foreign
 			value = 0
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_trade_capacity
-			value = scope:modeu5_capacity_current_market_trade_contribution
+			name = cbp_capacity_trade_capacity
+			value = scope:cbp_capacity_current_market_trade_contribution
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_location_rank_capacity
-			value = scope:modeu5_capacity_pool_location_rank_per_market
+			name = cbp_capacity_location_rank_capacity
+			value = scope:cbp_capacity_pool_location_rank_per_market
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_total
+			name = cbp_capacity_total
 			value = {
-				value = scope:modeu5_capacity_current_market_trade_contribution
-				add = scope:modeu5_capacity_pool_location_rank_per_market
+				value = scope:cbp_capacity_current_market_trade_contribution
+				add = scope:cbp_capacity_pool_location_rank_per_market
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_location_count
-			value = scope:modeu5_capacity_pool_location_count
+			name = cbp_capacity_location_count
+			value = scope:cbp_capacity_pool_location_count
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_market_count
-			value = scope:modeu5_capacity_pool_market_count
+			name = cbp_capacity_market_count
+			value = scope:cbp_capacity_pool_market_count
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_country_pool_total
-			value = scope:modeu5_capacity_pool_total
+			name = cbp_capacity_country_pool_total
+			value = scope:cbp_capacity_pool_total
 		}
 	}
 }
@@ -353,67 +353,67 @@ modeu5_load_capacity_breakdown = {
 	scope:modeu5_country = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_stock_cap_by_market
+				has_variable_map = cbp_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = modeu5_stock_cap_by_market
+					name = cbp_stock_cap_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_country_stock_cap_raw
-				value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_market)"
+				name = cbp_country_stock_cap_raw
+				value = "variable_map(cbp_stock_cap_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
-			save_temporary_scope_value_as = { name = modeu5_country_stock_cap_raw value = 0 }
+			save_temporary_scope_value_as = { name = cbp_country_stock_cap_raw value = 0 }
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_base_capacity_by_market
+				has_variable_map = cbp_base_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_base_capacity_by_market
+					name = cbp_base_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_country_base_capacity_raw
-				value = "variable_map(modeu5_base_capacity_by_market|scope:modeu5_market)"
+				name = cbp_country_base_capacity_raw
+				value = "variable_map(cbp_base_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
-			save_temporary_scope_value_as = { name = modeu5_country_base_capacity_raw value = 0 }
+			save_temporary_scope_value_as = { name = cbp_country_base_capacity_raw value = 0 }
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_building_capacity_by_market
+				has_variable_map = cbp_building_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_building_capacity_by_market
+					name = cbp_building_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_country_building_capacity_raw
-				value = "variable_map(modeu5_building_capacity_by_market|scope:modeu5_market)"
+				name = cbp_country_building_capacity_raw
+				value = "variable_map(cbp_building_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
-			save_temporary_scope_value_as = { name = modeu5_country_building_capacity_raw value = 0 }
+			save_temporary_scope_value_as = { name = cbp_country_building_capacity_raw value = 0 }
 		}
 		if = {
 			limit = {
-				has_variable_map = modeu5_foreign_capacity_by_market
+				has_variable_map = cbp_foreign_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_foreign_capacity_by_market
+					name = cbp_foreign_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_country_foreign_capacity_raw
-				value = "variable_map(modeu5_foreign_capacity_by_market|scope:modeu5_market)"
+				name = cbp_country_foreign_capacity_raw
+				value = "variable_map(cbp_foreign_capacity_by_market|scope:modeu5_market)"
 			}
 		}
 		else = {
-			save_temporary_scope_value_as = { name = modeu5_country_foreign_capacity_raw value = 0 }
+			save_temporary_scope_value_as = { name = cbp_country_foreign_capacity_raw value = 0 }
 		}
 	}
 }
@@ -422,96 +422,96 @@ modeu5_store_capacity_record = {
 	scope:modeu5_country = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_stock_cap_by_market
+				has_variable_map = cbp_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = modeu5_stock_cap_by_market
+					name = cbp_stock_cap_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_stock_cap_by_market
+				name = cbp_stock_cap_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
-			limit = { scope:modeu5_capacity_total > 0 }
+			limit = { scope:cbp_capacity_total > 0 }
 			add_to_variable_map = {
-				name = modeu5_stock_cap_by_market
+				name = cbp_stock_cap_by_market
 				key = scope:modeu5_market
-				value = scope:modeu5_capacity_total
+				value = scope:cbp_capacity_total
 			}
 		}
 
 		if = {
 			limit = {
-				has_variable_map = modeu5_base_capacity_by_market
+				has_variable_map = cbp_base_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_base_capacity_by_market
+					name = cbp_base_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_base_capacity_by_market
+				name = cbp_base_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
-			limit = { scope:modeu5_capacity_base > 0 }
+			limit = { scope:cbp_capacity_base > 0 }
 			add_to_variable_map = {
-				name = modeu5_base_capacity_by_market
+				name = cbp_base_capacity_by_market
 				key = scope:modeu5_market
-				value = scope:modeu5_capacity_base
+				value = scope:cbp_capacity_base
 			}
 		}
 
 		if = {
 			limit = {
-				has_variable_map = modeu5_building_capacity_by_market
+				has_variable_map = cbp_building_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_building_capacity_by_market
+					name = cbp_building_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_building_capacity_by_market
+				name = cbp_building_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
-			limit = { scope:modeu5_capacity_building > 0 }
+			limit = { scope:cbp_capacity_building > 0 }
 			add_to_variable_map = {
-				name = modeu5_building_capacity_by_market
+				name = cbp_building_capacity_by_market
 				key = scope:modeu5_market
-				value = scope:modeu5_capacity_building
+				value = scope:cbp_capacity_building
 			}
 		}
 
 		if = {
 			limit = {
-				has_variable_map = modeu5_foreign_capacity_by_market
+				has_variable_map = cbp_foreign_capacity_by_market
 				is_key_in_variable_map = {
-					name = modeu5_foreign_capacity_by_market
+					name = cbp_foreign_capacity_by_market
 					target = scope:modeu5_market
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_foreign_capacity_by_market
+				name = cbp_foreign_capacity_by_market
 				key = scope:modeu5_market
 			}
 		}
 		if = {
-			limit = { scope:modeu5_capacity_foreign > 0 }
+			limit = { scope:cbp_capacity_foreign > 0 }
 			add_to_variable_map = {
-				name = modeu5_foreign_capacity_by_market
+				name = cbp_foreign_capacity_by_market
 				key = scope:modeu5_market
-				value = scope:modeu5_capacity_foreign
+				value = scope:cbp_capacity_foreign
 			}
 		}
 	}
 }
 
 modeu5_prepare_neutral_capacity_stock_context = {
-	save_temporary_scope_value_as = { name = modeu5_country_stock_before_raw value = 0 }
+	save_temporary_scope_value_as = { name = cbp_country_stock_before_raw value = 0 }
 }
 
 modeu5_recalculate_country_market_capacity_shared = {
@@ -556,25 +556,25 @@ modeu5_handle_capital_moved_capacity = {
 
 modeu5_finalize_country_market_capacity = {
 	save_temporary_scope_value_as = {
-		name = modeu5_capacity_stock
+		name = cbp_capacity_stock
 		value = {
-			value = scope:modeu5_country_stock_before_raw
+			value = scope:cbp_country_stock_before_raw
 			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_capacity_available
+		name = cbp_capacity_available
 		value = {
-			value = scope:modeu5_capacity_total
-			subtract = scope:modeu5_capacity_stock
+			value = scope:cbp_capacity_total
+			subtract = scope:cbp_capacity_stock
 			min = 0
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_capacity_over_cap
+		name = cbp_capacity_over_cap
 		value = {
-			value = scope:modeu5_capacity_stock
-			subtract = scope:modeu5_capacity_total
+			value = scope:cbp_capacity_stock
+			subtract = scope:cbp_capacity_total
 			min = 0
 		}
 	}

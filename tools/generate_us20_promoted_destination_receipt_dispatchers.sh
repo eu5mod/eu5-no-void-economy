@@ -32,21 +32,21 @@ modeu5_probe_us20_receiver_capacity_literal_good = {
 		market = scope:modeu5_trade_owner_target_market
 		good = $good$
 	}
-	save_temporary_scope_value_as = { name = modeu5_us20_route_good_matched value = 1 }
+	save_temporary_scope_value_as = { name = cbp_us20_route_good_matched value = 1 }
 	if = {
-		limit = { scope:modeu5_read_country_stock < scope:modeu5_read_country_stock_cap }
-		save_temporary_scope_value_as = { name = modeu5_us20_receiver_capacity_eligible value = 1 }
+		limit = { scope:cbp_read_country_stock < scope:cbp_read_country_stock_cap }
+		save_temporary_scope_value_as = { name = cbp_us20_receiver_capacity_eligible value = 1 }
 	}
 }
 
 modeu5_apply_us20_promoted_destination_base_receipt_literal_good = {
 	if = {
-		limit = { scope:modeu5_us20_origin_market_is_promoted = 0 }
+		limit = { scope:cbp_us20_origin_market_is_promoted = 0 }
 		modeu5_add_stock = {
 			country = scope:modeu5_us20_goods_loss_target_country
 			market = scope:modeu5_trade_owner_target_market
 			good = $good$
-			quantity = scope:modeu5_us20_goods_base_receipt_quantity
+			quantity = scope:gui_cbp_us20_goods_base_receipt_quantity
 			capacity_policy = allow_over_capacity
 		}
 		debug_log = "ModeU5 US20 BASE_RECEIPT applied=add_at_destination capacity_policy=allow_over_capacity"
@@ -58,17 +58,17 @@ modeu5_apply_us20_promoted_destination_base_receipt_literal_good = {
 			source_market = scope:modeu5_trade_owner_source_market
 			target_market = scope:modeu5_trade_owner_target_market
 			good = $good$
-			quantity = scope:modeu5_us20_goods_base_receipt_quantity
+			quantity = scope:gui_cbp_us20_goods_base_receipt_quantity
 			target_capacity_policy = allow_over_capacity
 		}
 		debug_log = "ModeU5 US20 BASE_RECEIPT applied=country_market_transfer capacity_policy=allow_over_capacity"
 	}
-	save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 1 }
+	save_temporary_scope_value_as = { name = cbp_us20_receipt_good_matched value = 1 }
 }
 
 modeu5_probe_us20_receiver_capacity_by_route_good = {
-	save_temporary_scope_value_as = { name = modeu5_us20_receiver_capacity_eligible value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_us20_route_good_matched value = 0 }
+	save_temporary_scope_value_as = { name = cbp_us20_receiver_capacity_eligible value = 0 }
+	save_temporary_scope_value_as = { name = cbp_us20_route_good_matched value = 0 }
 	if = {
 		limit = { exists = scope:modeu5_us20_receiver_capacity_probe_country exists = scope:modeu5_trade_owner_target_market exists = scope:modeu5_trade_owner_good }
 TXT
@@ -79,13 +79,13 @@ TXT
 
 	cat <<'TXT'
 	}
-	if = { limit = { scope:modeu5_us20_route_good_matched = 0 } debug_log = "ModeU5 US20 RECEIVER_CAPACITY_DISPATCH blocked reason=unsupported_route_good current_scope=all_goods_dispatcher" }
+	if = { limit = { scope:cbp_us20_route_good_matched = 0 } debug_log = "ModeU5 US20 RECEIVER_CAPACITY_DISPATCH blocked reason=unsupported_route_good current_scope=all_goods_dispatcher" }
 }
 
 modeu5_apply_us20_promoted_destination_base_receipt_by_route_good = {
-	save_temporary_scope_value_as = { name = modeu5_us20_receipt_good_matched value = 0 }
+	save_temporary_scope_value_as = { name = cbp_us20_receipt_good_matched value = 0 }
 	if = {
-		limit = { exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market exists = scope:modeu5_trade_owner_good scope:modeu5_us20_goods_base_receipt_quantity > 0 }
+		limit = { exists = scope:modeu5_us20_goods_loss_target_country exists = scope:modeu5_trade_owner_target_market exists = scope:modeu5_trade_owner_good scope:gui_cbp_us20_goods_base_receipt_quantity > 0 }
 TXT
 
 	for good in "${goods[@]}"; do
@@ -94,7 +94,7 @@ TXT
 
 	cat <<'TXT'
 	}
-	if = { limit = { scope:modeu5_us20_receipt_good_matched = 0 } modeu5_note_trade_efficiency_goods_delta_blocked_route = yes debug_log = "ModeU5 US20 BASE_RECEIPT_DISPATCH blocked reason=unsupported_route_good_or_missing_scope current_scope=all_goods_dispatcher" }
+	if = { limit = { scope:cbp_us20_receipt_good_matched = 0 } modeu5_note_trade_efficiency_goods_delta_blocked_route = yes debug_log = "ModeU5 US20 BASE_RECEIPT_DISPATCH blocked reason=unsupported_route_good_or_missing_scope current_scope=all_goods_dispatcher" }
 }
 TXT
 } > "$output"

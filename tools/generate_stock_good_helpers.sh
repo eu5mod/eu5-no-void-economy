@@ -105,41 +105,41 @@ def stub_future_effect_blocks(source: str) -> str:
 text = stub_future_effect_blocks(text)
 
 # CORE-01.3's transfer primitive exposes the single-operation result through
-# modeu5_transferred_quantity. US-10.2 also needs a multi-candidate aggregate.
+# cbp_transferred_quantity. US-10.2 also needs a multi-candidate aggregate.
 # Keep those two concepts separate in generated adapters, otherwise a single
 # 70-unit transfer becomes 140 in resolver outputs after the primitive writes
 # the same temporary name that the bucket loop is about to increment.
 text = re.sub(
-    r"save_temporary_scope_value_as = \{ name = modeu5_transferred_quantity value = 0 \}",
-    "save_temporary_scope_value_as = { name = modeu5_us10_total_transferred_quantity value = 0 }",
+    r"save_temporary_scope_value_as = \{ name = cbp_transferred_quantity value = 0 \}",
+    "save_temporary_scope_value_as = { name = cbp_us10_total_transferred_quantity value = 0 }",
     text,
 )
 transfer_accumulator_pattern = re.compile(
     r"(?P<indent>\t+)save_temporary_scope_value_as = \{\n"
-    r"(?P=indent)\tname = modeu5_transferred_quantity\n"
+    r"(?P=indent)\tname = cbp_transferred_quantity\n"
     r"(?P=indent)\tvalue = \{\n"
-    r"(?P=indent)\t\tvalue = scope:modeu5_transferred_quantity\n"
-    r"(?P=indent)\t\tadd = scope:modeu5_actual_transferred_quantity\n"
+    r"(?P=indent)\t\tvalue = scope:cbp_transferred_quantity\n"
+    r"(?P=indent)\t\tadd = scope:cbp_actual_transferred_quantity\n"
     r"(?P=indent)\t}\n"
     r"(?P=indent)\}",
 )
 text = transfer_accumulator_pattern.sub(
     lambda match: (
         f"{match.group('indent')}save_temporary_scope_value_as = {{\n"
-        f"{match.group('indent')}\tname = modeu5_us10_total_transferred_quantity\n"
+        f"{match.group('indent')}\tname = cbp_us10_total_transferred_quantity\n"
         f"{match.group('indent')}\tvalue = {{\n"
-        f"{match.group('indent')}\t\tvalue = scope:modeu5_us10_total_transferred_quantity\n"
-        f"{match.group('indent')}\t\tadd = scope:modeu5_actual_transferred_quantity\n"
+        f"{match.group('indent')}\t\tvalue = scope:cbp_us10_total_transferred_quantity\n"
+        f"{match.group('indent')}\t\tadd = scope:cbp_actual_transferred_quantity\n"
         f"{match.group('indent')}\t}}\n"
         f"{match.group('indent')}}}"
     ),
     text,
 )
 text = re.sub(
-    r"(?P<indent>\t+)save_temporary_scope_value_as = \{ name = modeu5_satisfied_quantity value = scope:modeu5_transferred_quantity \}",
+    r"(?P<indent>\t+)save_temporary_scope_value_as = \{ name = cbp_satisfied_quantity value = scope:cbp_transferred_quantity \}",
     lambda match: (
-        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = modeu5_transferred_quantity value = scope:modeu5_us10_total_transferred_quantity }}\n"
-        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = modeu5_satisfied_quantity value = scope:modeu5_transferred_quantity }}"
+        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = cbp_transferred_quantity value = scope:cbp_us10_total_transferred_quantity }}\n"
+        f"{match.group('indent')}save_temporary_scope_value_as = {{ name = cbp_satisfied_quantity value = scope:cbp_transferred_quantity }}"
     ),
     text,
 )
@@ -186,7 +186,7 @@ for forbidden in (
     if forbidden in text:
         raise SystemExit(f"ModeU5 generator emitted unwired target reference: {forbidden}")
 
-if "name = modeu5_transferred_quantity\n\t\t\t\t\tvalue = {\n\t\t\t\t\t\tvalue = scope:modeu5_transferred_quantity\n\t\t\t\t\t\tadd = scope:modeu5_actual_transferred_quantity" in text:
+if "name = cbp_transferred_quantity\n\t\t\t\t\tvalue = {\n\t\t\t\t\t\tvalue = scope:cbp_transferred_quantity\n\t\t\t\t\t\tadd = scope:cbp_actual_transferred_quantity" in text:
     raise SystemExit("ModeU5 generator emitted US-10 transfer accumulator using primitive output name")
 
 path.write_text(text)
@@ -201,17 +201,17 @@ PY
 
 TXT
 	printf 'modeu5_capture_generated_stock_good_count = {\n'
-	printf '\tsave_temporary_scope_value_as = { name = modeu5_generated_stock_good_count value = %d }\n' "${#goods[@]}"
+	printf '\tsave_temporary_scope_value_as = { name = cbp_generated_stock_good_count value = %d }\n' "${#goods[@]}"
 	printf '}\n\n'
 	cat <<'TXT'
 
 modeu5_mark_active_market_any_good = {
 	if = {
 		limit = {
-			NOT = { has_global_variable_list = modeu5_active_markets_any_good }
+			NOT = { has_global_variable_list = cbp_active_markets_any_good }
 		}
 		add_to_global_variable_list = {
-			name = modeu5_active_markets_any_good
+			name = cbp_active_markets_any_good
 			target = scope:modeu5_active_market
 		}
 	}
@@ -219,13 +219,13 @@ modeu5_mark_active_market_any_good = {
 		limit = {
 			NOT = {
 				is_target_in_global_variable_list = {
-					name = modeu5_active_markets_any_good
+					name = cbp_active_markets_any_good
 					target = scope:modeu5_active_market
 				}
 			}
 		}
 		add_to_global_variable_list = {
-			name = modeu5_active_markets_any_good
+			name = cbp_active_markets_any_good
 			target = scope:modeu5_active_market
 		}
 	}
@@ -233,8 +233,8 @@ modeu5_mark_active_market_any_good = {
 
 modeu5_clear_active_markets_any_good = {
 	if = {
-		limit = { has_global_variable_list = modeu5_active_markets_any_good }
-		clear_global_variable_list = modeu5_active_markets_any_good
+		limit = { has_global_variable_list = cbp_active_markets_any_good }
+		clear_global_variable_list = cbp_active_markets_any_good
 	}
 }
 
@@ -243,7 +243,7 @@ modeu5_validate_dirty_stock_consistency = {
 	if = {
 		limit = { exists = scope:modeu5_reconciliation_controller }
 		scope:modeu5_reconciliation_controller = {
-			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 1 }
+			save_temporary_scope_value_as = { name = cbp_reconciliation_type value = 1 }
 			modeu5_reconciliation_prepare = yes
 TXT
 	for good in "${goods[@]}"; do
@@ -271,33 +271,33 @@ modeu5_validate_active_stock_consistency = {
 	if = {
 		limit = { exists = scope:modeu5_reconciliation_controller }
 		scope:modeu5_reconciliation_controller = {
-			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 3 }
+			save_temporary_scope_value_as = { name = cbp_reconciliation_type value = 3 }
 			modeu5_reconciliation_prepare = yes
-			remove_global_variable = modeu5_market_owned_active_markets_processed_count
-			remove_global_variable = modeu5_market_owned_country_cache_rebuild_count
-			remove_global_variable = modeu5_market_owned_active_goods_processed_count
-			set_global_variable = { name = modeu5_market_owned_active_markets_processed_count value = 0 }
-			set_global_variable = { name = modeu5_market_owned_country_cache_rebuild_count value = 0 }
-			set_global_variable = { name = modeu5_market_owned_active_goods_processed_count value = 0 }
+			remove_global_variable = cbp_market_owned_active_markets_processed_count
+			remove_global_variable = cbp_market_owned_country_cache_rebuild_count
+			remove_global_variable = cbp_market_owned_active_goods_processed_count
+			set_global_variable = { name = cbp_market_owned_active_markets_processed_count value = 0 }
+			set_global_variable = { name = cbp_market_owned_country_cache_rebuild_count value = 0 }
+			set_global_variable = { name = cbp_market_owned_active_goods_processed_count value = 0 }
 			modeu5_repair_dirty_market_country_caches = yes
 			if = {
-				limit = { has_global_variable_list = modeu5_active_markets_any_good }
+				limit = { has_global_variable_list = cbp_active_markets_any_good }
 				every_in_global_list = {
-					variable = modeu5_active_markets_any_good
+					variable = cbp_active_markets_any_good
 					save_temporary_scope_as = modeu5_reconciliation_market
 					save_temporary_scope_as = modeu5_market_country_cache_market
 					modeu5_rebuild_countries_present_in_market = yes
 					set_global_variable = {
-						name = modeu5_market_owned_active_markets_processed_count
+						name = cbp_market_owned_active_markets_processed_count
 						value = {
-							value = global_var:modeu5_market_owned_active_markets_processed_count
+							value = global_var:cbp_market_owned_active_markets_processed_count
 							add = 1
 						}
 					}
 					set_global_variable = {
-						name = modeu5_market_owned_country_cache_rebuild_count
+						name = cbp_market_owned_country_cache_rebuild_count
 						value = {
-							value = global_var:modeu5_market_owned_country_cache_rebuild_count
+							value = global_var:cbp_market_owned_country_cache_rebuild_count
 							add = 1
 						}
 					}
@@ -317,7 +317,7 @@ modeu5_validate_all_stock_consistency = {
 	if = {
 		limit = { exists = scope:modeu5_reconciliation_controller }
 		scope:modeu5_reconciliation_controller = {
-			save_temporary_scope_value_as = { name = modeu5_reconciliation_type value = 2 }
+			save_temporary_scope_value_as = { name = cbp_reconciliation_type value = 2 }
 			modeu5_reconciliation_prepare = yes
 TXT
 	for good in "${goods[@]}"; do
@@ -366,9 +366,9 @@ modeu5_initialize_storage_capacities = {
 		modeu5_rebuild_country_location_capacity_pool = yes
 		modeu5_recalculate_saved_country_storage_capacities = yes
 		set_global_variable = {
-			name = modeu5_initialization_capacity_country_scans
+			name = cbp_initialization_capacity_country_scans
 			value = {
-				value = global_var:modeu5_initialization_capacity_country_scans
+				value = global_var:cbp_initialization_capacity_country_scans
 				add = 1
 			}
 		}
@@ -454,9 +454,9 @@ modeu5_run_us10_monthly_stock_resolution_all_goods = {
 			limit = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
 			modeu5_rebuild_countries_present_in_market = yes
 			if = {
-				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
-					variable = modeu5_countries_present_in_market
+					variable = cbp_countries_present_in_market
 					save_temporary_scope_as = modeu5_country
 					modeu5_process_us10_monthly_market_all_goods = yes
 				}
@@ -505,9 +505,9 @@ modeu5_run_us00_monthly_pipeline_all_goods = {
 			limit = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
 			modeu5_rebuild_countries_present_in_market = yes
 			if = {
-				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
-					variable = modeu5_countries_present_in_market
+					variable = cbp_countries_present_in_market
 					save_temporary_scope_as = modeu5_country
 					modeu5_process_us00_monthly_market_all_goods = yes
 				}
@@ -531,26 +531,26 @@ TXT
 			printf '\n'
 		fi
 		first=0
-		transport_cost="$(modeu5_good_transport_cost "$good")"
-		transport_cost_defaulted="$(modeu5_good_transport_cost_defaulted "$good")"
+		transport_cost="$(cbp_good_transport_cost "$good")"
+		transport_cost_defaulted="$(cbp_good_transport_cost_defaulted "$good")"
 		modeu5_render_template_to_stdout "$template" \
 			"GOOD=$good" \
-			"STOCK_MAP=modeu5_${good}_stock_by_market" \
-			"MARKET_MAP=modeu5_${good}_market_stock" \
-			"DIRTY_LIST=modeu5_${good}_dirty_markets" \
-			"ACTIVE_LIST=modeu5_${good}_active_markets" \
-			"SPARSE_SUPPLIER_LIST=modeu5_${good}_us10_sparse_suppliers" \
-			"PRODUCED_MAP=modeu5_${good}_produced_by_market" \
-			"ADDED_MAP=modeu5_${good}_added_by_market" \
-			"REJECTED_MAP=modeu5_${good}_rejected_by_market" \
-			"OVERPRODUCTION_RATIO_MAP=modeu5_${good}_overproduction_ratio_by_market" \
-			"EFFECTIVE_OVERPRODUCTION_RATIO_MAP=modeu5_${good}_effective_overproduction_ratio_by_market" \
-			"VOID_WEALTH_MAP=modeu5_${good}_void_wealth_by_market" \
-			"VOID_TAXABLE_PROXY_MAP=modeu5_${good}_void_taxable_income_proxy_by_market" \
-			"PRODUCTION_PENALTY_MAP=modeu5_${good}_production_penalty_by_market" \
-			"US00_ACTIVE_MAP=modeu5_${good}_us00_active_record_by_market" \
-			"UI_MONTHLY_SURPLUS_MAP=modeu5_${good}_ui_monthly_surplus_by_market" \
-			"UI_MONTHLY_CONSUMPTION_MAP=modeu5_${good}_ui_monthly_consumption_by_market" \
+			"STOCK_MAP=cbp_${good}_stock_by_market" \
+			"MARKET_MAP=cbp_${good}_market_stock" \
+			"DIRTY_LIST=cbp_${good}_dirty_markets" \
+			"ACTIVE_LIST=cbp_${good}_active_markets" \
+			"SPARSE_SUPPLIER_LIST=cbp_${good}_us10_sparse_suppliers" \
+			"PRODUCED_MAP=cbp_${good}_produced_by_market" \
+			"ADDED_MAP=cbp_${good}_added_by_market" \
+			"REJECTED_MAP=cbp_${good}_rejected_by_market" \
+			"OVERPRODUCTION_RATIO_MAP=cbp_${good}_overproduction_ratio_by_market" \
+			"EFFECTIVE_OVERPRODUCTION_RATIO_MAP=cbp_${good}_effective_overproduction_ratio_by_market" \
+			"VOID_WEALTH_MAP=cbp_${good}_void_wealth_by_market" \
+			"VOID_TAXABLE_PROXY_MAP=cbp_${good}_void_taxable_income_proxy_by_market" \
+			"PRODUCTION_PENALTY_MAP=cbp_${good}_production_penalty_by_market" \
+			"US00_ACTIVE_MAP=cbp_${good}_us00_active_record_by_market" \
+			"UI_MONTHLY_SURPLUS_MAP=gui_cbp_${good}_ui_monthly_surplus_by_market" \
+			"UI_MONTHLY_CONSUMPTION_MAP=gui_cbp_${good}_ui_monthly_consumption_by_market" \
 			"TRANSPORT_COST=$transport_cost" \
 			"TRANSPORT_COST_DEFAULTED=$transport_cost_defaulted"
 	done

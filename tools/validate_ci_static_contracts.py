@@ -194,16 +194,16 @@ def validate_us17_owner_modifier_contract(
         "value = define:NCountry|MERCHANT_MAINTENANCE_COST" in trade_values,
         "US17 must read the effective NCountry MERCHANT_MAINTENANCE_COST define",
     )
-    expect("modeu5_trade_efficiency_buying_efficiency" in capture, "US17 owner capture must store semantic buying/import efficiency")
-    expect("modeu5_trade_efficiency_selling_efficiency" in capture, "US17 owner capture must store selling efficiency")
-    expect("modeu5_trade_efficiency_merchant_maintenance_efficiency" in capture, "US17 owner capture must store merchant maintenance efficiency")
-    expect("modeu5_trade_efficiency_base_maintenance_unit_cost" in capture, "US17 owner capture must store the effective maintenance define")
-    expect("modeu5_trade_efficiency_base_maintenance_amount" in capture, "US17 owner capture must derive route base maintenance")
-    expect("scope:modeu5_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
-    expect("modeu5_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
+    expect("gui_cbp_trade_efficiency_buying_efficiency" in capture, "US17 owner capture must store semantic buying/import efficiency")
+    expect("gui_cbp_trade_efficiency_selling_efficiency" in capture, "US17 owner capture must store selling efficiency")
+    expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in capture, "US17 owner capture must store merchant maintenance efficiency")
+    expect("gui_cbp_trade_efficiency_base_maintenance_unit_cost" in capture, "US17 owner capture must store the effective maintenance define")
+    expect("gui_cbp_trade_efficiency_base_maintenance_amount" in capture, "US17 owner capture must derive route base maintenance")
+    expect("scope:cbp_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
+    expect("cbp_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
 
     average_assignment = re.search(
-        r"name\s*=\s*modeu5_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
+        r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
         formula,
         re.DOTALL,
     )
@@ -212,10 +212,10 @@ def validate_us17_owner_modifier_contract(
     expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
     expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
 
-    expect("modeu5_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
+    expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
     expect("multiply = -1" in maintenance_formula, "US17 maintenance factor must subtract merchant maintenance efficiency")
     expect("min = 0" in maintenance_formula, "US17 maintenance factor must not become negative")
-    expect("modeu5_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume define-derived route base maintenance")
+    expect("gui_cbp_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume define-derived route base maintenance")
     expect("modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes" in formula, "US17 formula must calculate maintenance saving from owner modifiers")
     expect("modeu5_trade_rework_enabled_trigger = yes" in live_wrapper, "US17 owner-modifier wrapper must defensively gate itself")
 
@@ -278,11 +278,11 @@ def validate_us17_us20_static_contract(
         unsafe_global_counter.search(trade_reconciliation_effects + owner_modifier_effects) is None,
         "US17/US20 counters must not use set_global_variable value={ value=global_var:X add=1 }; use if-unset/set-1 else change_global_variable",
     )
-    expect("change_global_variable = { name = modeu5_trade_efficiency_routes_seen add = 1 }" in trade_reconciliation_effects, "Route-seen counter must use change_global_variable after first set")
-    expect("change_global_variable = { name = modeu5_us20_market_goods_supply_loss_routes add = 1 }" in trade_reconciliation_effects, "US20 market-loss counter must use change_global_variable after first set")
+    expect("change_global_variable = { name = cbp_trade_efficiency_routes_seen add = 1 }" in trade_reconciliation_effects, "Route-seen counter must use change_global_variable after first set")
+    expect("change_global_variable = { name = cbp_us20_market_goods_supply_loss_routes add = 1 }" in trade_reconciliation_effects, "US20 market-loss counter must use change_global_variable after first set")
 
     expect("goods = scope:modeu5_trade_owner_good" in trade_reconciliation_effects, "US20 market loss must use the saved route good scope")
-    expect("amount = scope:modeu5_us20_market_goods_supply_delta" in trade_reconciliation_effects, "US20 market loss must use the computed negative market goods delta")
+    expect("amount = scope:gui_cbp_us20_market_goods_supply_delta" in trade_reconciliation_effects, "US20 market loss must use the computed negative market goods delta")
     expect("modeu5_select_us20_goods_receiver_country_for_promoted_market = yes" in trade_reconciliation_effects, "Promoted-destination loss must select a receiver before country-stock loss")
 
     expect(e2e_probe_call not in revalidate_events, "Experimental US20 E2E probe must stay outside stable full revalidation")

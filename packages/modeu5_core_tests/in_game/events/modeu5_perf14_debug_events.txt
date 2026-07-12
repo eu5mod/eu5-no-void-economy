@@ -30,15 +30,15 @@ modeu5_perf14_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.perf14_performance_mode_cmm.pass
-		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_passed }
+		trigger = { has_global_variable = test_cbp_perf14_performance_mode_cmm_passed }
 	}
 	option = {
 		name = modeu5_debug.test.perf14_performance_mode_cmm.blocked
-		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked }
+		trigger = { has_global_variable = test_cbp_perf14_performance_mode_cmm_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.perf14_performance_mode_cmm.fail
-		trigger = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_failed }
+		trigger = { has_global_variable = test_cbp_perf14_performance_mode_cmm_failed }
 	}
 	option = { name = modeu5_debug.close }
 }

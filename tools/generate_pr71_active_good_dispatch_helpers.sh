@@ -47,22 +47,22 @@ mkdir -p "$(dirname "$output")"
 modeu5_pr71_reset_active_good_metrics = {
 	if = {
 		limit = { modeu5_pr71_metrics_enabled_trigger = yes }
-		remove_global_variable = modeu5_pr71_active_good_metrics_stamp
-		remove_global_variable = modeu5_pr71_us00_goods_considered
-		remove_global_variable = modeu5_pr71_us00_goods_processed
-		remove_global_variable = modeu5_pr71_us00_goods_produced_gate_hits
-		remove_global_variable = modeu5_pr71_us00_goods_previous_state_hits
-		remove_global_variable = modeu5_pr71_us10_goods_considered
-		remove_global_variable = modeu5_pr71_us10_requests_processed
-		remove_global_variable = modeu5_pr71_us10_pending_request_hits
+		remove_global_variable = cbp_pr71_active_good_metrics_stamp
+		remove_global_variable = cbp_pr71_us00_goods_considered
+		remove_global_variable = cbp_pr71_us00_goods_processed
+		remove_global_variable = cbp_pr71_us00_goods_produced_gate_hits
+		remove_global_variable = cbp_pr71_us00_goods_previous_state_hits
+		remove_global_variable = cbp_pr71_us10_goods_considered
+		remove_global_variable = cbp_pr71_us10_requests_processed
+		remove_global_variable = cbp_pr71_us10_pending_request_hits
 
-		set_global_variable = { name = modeu5_pr71_us00_goods_considered value = 0 }
-		set_global_variable = { name = modeu5_pr71_us00_goods_processed value = 0 }
-		set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = 0 }
-		set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = 0 }
-		set_global_variable = { name = modeu5_pr71_us10_goods_considered value = 0 }
-		set_global_variable = { name = modeu5_pr71_us10_requests_processed value = 0 }
-		set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = 0 }
+		set_global_variable = { name = cbp_pr71_us00_goods_considered value = 0 }
+		set_global_variable = { name = cbp_pr71_us00_goods_processed value = 0 }
+		set_global_variable = { name = cbp_pr71_us00_goods_produced_gate_hits value = 0 }
+		set_global_variable = { name = cbp_pr71_us00_goods_previous_state_hits value = 0 }
+		set_global_variable = { name = cbp_pr71_us10_goods_considered value = 0 }
+		set_global_variable = { name = cbp_pr71_us10_requests_processed value = 0 }
+		set_global_variable = { name = cbp_pr71_us10_pending_request_hits value = 0 }
 	}
 }
 
@@ -70,7 +70,7 @@ modeu5_pr71_prepare_active_good_metrics = {
 	if = {
 		limit = { modeu5_pr71_metrics_enabled_trigger = yes }
 		save_temporary_scope_value_as = {
-			name = modeu5_pr71_active_good_metrics_stamp
+			name = cbp_pr71_active_good_metrics_stamp
 			value = {
 				value = current_year
 				multiply = 12
@@ -81,47 +81,47 @@ modeu5_pr71_prepare_active_good_metrics = {
 		if = {
 			limit = {
 				OR = {
-					NOT = { has_global_variable = modeu5_pr71_active_good_metrics_stamp }
-					global_var:modeu5_pr71_active_good_metrics_stamp != scope:modeu5_pr71_active_good_metrics_stamp
+					NOT = { has_global_variable = cbp_pr71_active_good_metrics_stamp }
+					global_var:cbp_pr71_active_good_metrics_stamp != scope:cbp_pr71_active_good_metrics_stamp
 				}
 			}
 			modeu5_pr71_reset_active_good_metrics = yes
-			set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
+			set_global_variable = { name = cbp_pr71_active_good_metrics_stamp value = scope:cbp_pr71_active_good_metrics_stamp }
 		}
 		else_if = {
-			limit = { NOT = { has_global_variable = modeu5_pr71_us00_goods_considered } }
+			limit = { NOT = { has_global_variable = cbp_pr71_us00_goods_considered } }
 			modeu5_pr71_reset_active_good_metrics = yes
-			set_global_variable = { name = modeu5_pr71_active_good_metrics_stamp value = scope:modeu5_pr71_active_good_metrics_stamp }
+			set_global_variable = { name = cbp_pr71_active_good_metrics_stamp value = scope:cbp_pr71_active_good_metrics_stamp }
 		}
 	}
 }
 
 modeu5_pr71_note_us00_goods_considered = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_considered value = { value = global_var:modeu5_pr71_us00_goods_considered add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us00_goods_considered value = { value = global_var:cbp_pr71_us00_goods_considered add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_processed = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_processed value = { value = global_var:modeu5_pr71_us00_goods_processed add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us00_goods_processed value = { value = global_var:cbp_pr71_us00_goods_processed add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_produced_gate_hit = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_produced_gate_hits value = { value = global_var:modeu5_pr71_us00_goods_produced_gate_hits add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us00_goods_produced_gate_hits value = { value = global_var:cbp_pr71_us00_goods_produced_gate_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us00_goods_previous_state_hit = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us00_goods_previous_state_hits value = { value = global_var:modeu5_pr71_us00_goods_previous_state_hits add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us00_goods_previous_state_hits value = { value = global_var:cbp_pr71_us00_goods_previous_state_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us10_goods_considered = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_goods_considered value = { value = global_var:modeu5_pr71_us10_goods_considered add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us10_goods_considered value = { value = global_var:cbp_pr71_us10_goods_considered add = 1 } } }
 }
 
 modeu5_pr71_note_us10_pending_request_hit = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_pending_request_hits value = { value = global_var:modeu5_pr71_us10_pending_request_hits add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us10_pending_request_hits value = { value = global_var:cbp_pr71_us10_pending_request_hits add = 1 } } }
 }
 
 modeu5_pr71_note_us10_request_processed = {
-	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = modeu5_pr71_us10_requests_processed value = { value = global_var:modeu5_pr71_us10_requests_processed add = 1 } } }
+	if = { limit = { modeu5_pr71_metrics_enabled_trigger = yes } set_global_variable = { name = cbp_pr71_us10_requests_processed value = { value = global_var:cbp_pr71_us10_requests_processed add = 1 } } }
 }
 
 TXT

@@ -77,13 +77,13 @@ nve_cmf_activate_good_decay = {
 #   value 2       -> visible
 #   value 3       -> hidden
 modeu5_refresh_nve_main_cmm_visibility = {
-	remove_global_variable = modeu5_cmm_nve_main_enabled
+	remove_global_variable = gui_cbp_cmm_nve_main_enabled
 
 	if = {
 		limit = {
 			NOT = { has_variable_map = cmm }
 		}
-		set_global_variable = modeu5_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_nve_main_enabled
 	}
 	else_if = {
 		limit = {
@@ -94,19 +94,19 @@ modeu5_refresh_nve_main_cmm_visibility = {
 				}
 			}
 		}
-		set_global_variable = modeu5_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_nve_main_enabled
 	}
 	else_if = {
 		limit = {
 			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 1
 		}
-		set_global_variable = modeu5_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_nve_main_enabled
 	}
 	else_if = {
 		limit = {
 			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
 		}
-		set_global_variable = modeu5_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_nve_main_enabled
 	}
 }
 

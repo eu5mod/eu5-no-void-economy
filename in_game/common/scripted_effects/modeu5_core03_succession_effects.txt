@@ -23,7 +23,7 @@ modeu5_core03_handle_location_changed_owner = {
 		}
 		modeu5_mark_market_country_cache_dirty = yes
 
-		set_global_variable = modeu5_core03_last_location_transfer_attempted
+		set_global_variable = cbp_core03_last_location_transfer_attempted
 		modeu5_core03_transfer_location_all_goods = yes
 		scope:modeu5_core03_loser = {
 			modeu5_rebuild_and_refresh_country_storage_capacities = yes
@@ -37,7 +37,7 @@ modeu5_core03_handle_location_changed_owner = {
 		}
 	}
 	else = {
-		set_global_variable = modeu5_core03_last_location_transfer_skipped
+		set_global_variable = cbp_core03_last_location_transfer_skipped
 	}
 }
 
@@ -45,14 +45,14 @@ modeu5_core03_handle_new_country_finalizer = {
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
 		save_temporary_scope_as = modeu5_core03_new_country
-		set_global_variable = modeu5_core03_last_country_finalizer_attempted
+		set_global_variable = cbp_core03_last_country_finalizer_attempted
 		modeu5_rebuild_and_refresh_country_storage_capacities = yes
 		modeu5_mark_human_relevant_markets_for_country = {
 			country = scope:modeu5_core03_new_country
 		}
 	}
 	else = {
-		set_global_variable = modeu5_core03_last_country_finalizer_skipped
+		set_global_variable = cbp_core03_last_country_finalizer_skipped
 	}
 }
 
@@ -66,12 +66,12 @@ modeu5_core03_handle_annexation_finalizer = {
 		save_temporary_scope_as = modeu5_core03_annex_successor
 		scope:target = { save_temporary_scope_as = modeu5_core03_annex_target }
 
-		set_global_variable = modeu5_core03_last_annexation_finalizer_attempted
+		set_global_variable = cbp_core03_last_annexation_finalizer_attempted
 		modeu5_core03_transfer_residual_all_goods = yes
 		modeu5_rebuild_and_refresh_country_storage_capacities = yes
 	}
 	else = {
-		set_global_variable = modeu5_core03_last_annexation_finalizer_skipped
+		set_global_variable = cbp_core03_last_annexation_finalizer_skipped
 	}
 }
 
@@ -90,45 +90,45 @@ modeu5_core03_prepare_location_good_transfer = {
 
 	scope:modeu5_core03_loser = {
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_transferred_location_capacity
-			value = scope:modeu5_location_capacity_total
+			name = cbp_core03_transferred_location_capacity
+			value = scope:cbp_location_capacity_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_requested_transfer_quantity
+			name = cbp_core03_requested_transfer_quantity
 			value = 0
 		}
 		if = {
 			limit = {
-				scope:modeu5_core03_loser_stock_before > 0
-				scope:modeu5_core03_loser_capacity_before > 0
-				scope:modeu5_core03_transferred_location_capacity > 0
+				scope:cbp_core03_loser_stock_before > 0
+				scope:cbp_core03_loser_capacity_before > 0
+				scope:cbp_core03_transferred_location_capacity > 0
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_core03_requested_transfer_quantity
+				name = cbp_core03_requested_transfer_quantity
 				value = {
-					value = scope:modeu5_core03_loser_stock_before
-					multiply = scope:modeu5_core03_transferred_location_capacity
-					divide = scope:modeu5_core03_loser_capacity_before
+					value = scope:cbp_core03_loser_stock_before
+					multiply = scope:cbp_core03_transferred_location_capacity
+					divide = scope:cbp_core03_loser_capacity_before
 					min = 0
 				}
 			}
 		}
 
 		set_global_variable = {
-			name = modeu5_debug_last_core03_loser_stock_before
-			value = scope:modeu5_core03_loser_stock_before
+			name = cbp_debug_last_core03_loser_stock_before
+			value = scope:cbp_core03_loser_stock_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_last_core03_loser_capacity_before
-			value = scope:modeu5_core03_loser_capacity_before
+			name = cbp_debug_last_core03_loser_capacity_before
+			value = scope:cbp_core03_loser_capacity_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_last_core03_transferred_location_capacity
-			value = scope:modeu5_core03_transferred_location_capacity
+			name = cbp_debug_last_core03_transferred_location_capacity
+			value = scope:cbp_core03_transferred_location_capacity
 		}
 		set_global_variable = {
-			name = modeu5_debug_last_core03_requested_transfer_quantity
-			value = scope:modeu5_core03_requested_transfer_quantity
+			name = cbp_debug_last_core03_requested_transfer_quantity
+			value = scope:cbp_core03_requested_transfer_quantity
 		}
 	}
 }

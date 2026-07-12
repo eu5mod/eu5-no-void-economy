@@ -6,12 +6,12 @@
 
 modeu5_debug_write_core03_before_dump_variables = {
 	scope:modeu5_core03_test_controller = {
-		set_variable = { name = modeu5_debug_core03_ui_cas_before value = scope:modeu5_core03_test_cas_before }
-		set_variable = { name = modeu5_debug_core03_ui_por_before value = scope:modeu5_core03_test_por_before }
-		set_variable = { name = modeu5_debug_core03_ui_market_before value = scope:modeu5_core03_test_market_before }
-		set_variable = { name = modeu5_debug_core03_ui_loser_capacity value = scope:modeu5_core03_test_loser_capacity_before }
-		set_variable = { name = modeu5_debug_core03_ui_location_capacity value = scope:modeu5_core03_test_location_capacity }
-		set_variable = { name = modeu5_debug_core03_ui_expected_transfer value = scope:modeu5_core03_test_expected_transfer }
+		set_variable = { name = gui_cbp_debug_core03_ui_cas_before value = scope:test_cbp_core03_test_cas_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_por_before value = scope:test_cbp_core03_test_por_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_market_before value = scope:test_cbp_core03_test_market_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_loser_capacity value = scope:test_cbp_core03_test_loser_capacity_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_location_capacity value = scope:test_cbp_core03_test_location_capacity }
+		set_variable = { name = gui_cbp_debug_core03_ui_expected_transfer value = scope:test_cbp_core03_test_expected_transfer }
 	}
 }
 
@@ -23,17 +23,17 @@ modeu5_debug_log_core03_before_dump = {
 
 modeu5_debug_write_core03_after_dump_variables = {
 	scope:modeu5_core03_test_controller = {
-		set_variable = { name = modeu5_debug_core03_ui_cas_before value = global_var:modeu5_debug_core03_cas_before }
-		set_variable = { name = modeu5_debug_core03_ui_por_before value = global_var:modeu5_debug_core03_por_before }
-		set_variable = { name = modeu5_debug_core03_ui_market_before value = global_var:modeu5_debug_core03_market_before }
-		set_variable = { name = modeu5_debug_core03_ui_loser_capacity value = global_var:modeu5_debug_core03_loser_capacity_before }
-		set_variable = { name = modeu5_debug_core03_ui_location_capacity value = global_var:modeu5_debug_core03_location_capacity }
-		set_variable = { name = modeu5_debug_core03_ui_expected_transfer value = global_var:modeu5_debug_core03_expected_transfer }
-		set_variable = { name = modeu5_debug_core03_ui_cas_after value = scope:modeu5_core03_test_cas_after }
-		set_variable = { name = modeu5_debug_core03_ui_por_after value = scope:modeu5_core03_test_por_after }
-		set_variable = { name = modeu5_debug_core03_ui_market_after value = scope:modeu5_core03_test_market_after }
-		set_variable = { name = modeu5_debug_core03_ui_actual_transfer value = scope:modeu5_core03_test_actual_transfer }
-		set_variable = { name = modeu5_debug_core03_ui_market_delta value = scope:modeu5_core03_test_market_delta }
+		set_variable = { name = gui_cbp_debug_core03_ui_cas_before value = global_var:test_cbp_debug_core03_cas_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_por_before value = global_var:test_cbp_debug_core03_por_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_market_before value = global_var:test_cbp_debug_core03_market_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_loser_capacity value = global_var:test_cbp_debug_core03_loser_capacity_before }
+		set_variable = { name = gui_cbp_debug_core03_ui_location_capacity value = global_var:test_cbp_debug_core03_location_capacity }
+		set_variable = { name = gui_cbp_debug_core03_ui_expected_transfer value = global_var:test_cbp_debug_core03_expected_transfer }
+		set_variable = { name = gui_cbp_debug_core03_ui_cas_after value = scope:test_cbp_core03_test_cas_after }
+		set_variable = { name = gui_cbp_debug_core03_ui_por_after value = scope:test_cbp_core03_test_por_after }
+		set_variable = { name = gui_cbp_debug_core03_ui_market_after value = scope:test_cbp_core03_test_market_after }
+		set_variable = { name = gui_cbp_debug_core03_ui_actual_transfer value = scope:test_cbp_core03_test_actual_transfer }
+		set_variable = { name = gui_cbp_debug_core03_ui_market_delta value = scope:test_cbp_core03_test_market_delta }
 	}
 }
 
@@ -97,16 +97,16 @@ modeu5_debug_run_core03_location_succession_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_cas_before
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_core03_test_cas_before
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_loser_capacity_before
-			value = scope:modeu5_read_country_stock_cap
+			name = test_cbp_core03_test_loser_capacity_before
+			value = scope:cbp_read_country_stock_cap
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_market_before
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_core03_test_market_before
+			value = scope:cbp_read_market_stock
 		}
 
 		modeu5_read_country_stock_record = {
@@ -115,8 +115,8 @@ modeu5_debug_run_core03_location_succession_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_por_before
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_core03_test_por_before
+			value = scope:cbp_read_country_stock
 		}
 
 		modeu5_calculate_location_storage_capacity = {
@@ -124,54 +124,54 @@ modeu5_debug_run_core03_location_succession_test = {
 			location = location:cadiz
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_location_capacity
-			value = scope:modeu5_location_capacity_total
+			name = test_cbp_core03_test_location_capacity
+			value = scope:cbp_location_capacity_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_expected_transfer
+			name = test_cbp_core03_test_expected_transfer
 			value = 0
 		}
 		if = {
 			limit = {
-				scope:modeu5_core03_test_cas_before > 0
-				scope:modeu5_core03_test_loser_capacity_before > 0
-				scope:modeu5_core03_test_location_capacity > 0
+				scope:test_cbp_core03_test_cas_before > 0
+				scope:test_cbp_core03_test_loser_capacity_before > 0
+				scope:test_cbp_core03_test_location_capacity > 0
 			}
 			save_temporary_scope_value_as = {
-				name = modeu5_core03_test_expected_transfer
+				name = test_cbp_core03_test_expected_transfer
 				value = {
-					value = scope:modeu5_core03_test_cas_before
-					multiply = scope:modeu5_core03_test_location_capacity
-					divide = scope:modeu5_core03_test_loser_capacity_before
+					value = scope:test_cbp_core03_test_cas_before
+					multiply = scope:test_cbp_core03_test_location_capacity
+					divide = scope:test_cbp_core03_test_loser_capacity_before
 					min = 0
 				}
 			}
 		}
 
-		set_global_variable = modeu5_test_core03_location_succession_started
+		set_global_variable = test_cbp_core03_location_succession_started
 		set_global_variable = {
-			name = modeu5_debug_core03_cas_before
-			value = scope:modeu5_core03_test_cas_before
+			name = test_cbp_debug_core03_cas_before
+			value = scope:test_cbp_core03_test_cas_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_por_before
-			value = scope:modeu5_core03_test_por_before
+			name = test_cbp_debug_core03_por_before
+			value = scope:test_cbp_core03_test_por_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_market_before
-			value = scope:modeu5_core03_test_market_before
+			name = test_cbp_debug_core03_market_before
+			value = scope:test_cbp_core03_test_market_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_loser_capacity_before
-			value = scope:modeu5_core03_test_loser_capacity_before
+			name = test_cbp_debug_core03_loser_capacity_before
+			value = scope:test_cbp_core03_test_loser_capacity_before
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_location_capacity
-			value = scope:modeu5_core03_test_location_capacity
+			name = test_cbp_debug_core03_location_capacity
+			value = scope:test_cbp_core03_test_location_capacity
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_expected_transfer
-			value = scope:modeu5_core03_test_expected_transfer
+			name = test_cbp_debug_core03_expected_transfer
+			value = scope:test_cbp_core03_test_expected_transfer
 		}
 
 		modeu5_debug_write_core03_before_dump_variables = yes
@@ -183,7 +183,7 @@ modeu5_debug_run_core03_location_succession_test = {
 		debug_log = "ModeU5 CORE-03 RESULT location_succession STAGED wait_one_day"
 	}
 	else = {
-		set_global_variable = modeu5_test_core03_location_succession_blocked
+		set_global_variable = test_cbp_core03_location_succession_blocked
 		debug_log = "ModeU5 CORE-03 RESULT location_succession BLOCKED prerequisites"
 		error_log = "ModeU5 deterministic CORE-03 location-succession test requires initialized stock, CAS, POR, and Castilian-owned Cadiz."
 	}
@@ -194,7 +194,7 @@ modeu5_debug_finish_core03_location_succession_test = {
 
 	if = {
 		limit = {
-			has_global_variable = modeu5_test_core03_location_succession_started
+			has_global_variable = test_cbp_core03_location_succession_started
 			country_exists = c:CAS
 			country_exists = c:POR
 		}
@@ -206,12 +206,12 @@ modeu5_debug_finish_core03_location_succession_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_cas_after
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_core03_test_cas_after
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_market_after
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_core03_test_market_after
+			value = scope:cbp_read_market_stock
 		}
 
 		modeu5_read_country_stock_record = {
@@ -220,59 +220,59 @@ modeu5_debug_finish_core03_location_succession_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_por_after
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_core03_test_por_after
+			value = scope:cbp_read_country_stock
 		}
 
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_expected_cas_after
+			name = test_cbp_core03_test_expected_cas_after
 			value = {
-				value = global_var:modeu5_debug_core03_cas_before
-				subtract = global_var:modeu5_debug_core03_expected_transfer
+				value = global_var:test_cbp_debug_core03_cas_before
+				subtract = global_var:test_cbp_debug_core03_expected_transfer
 				min = 0
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_expected_por_after
+			name = test_cbp_core03_test_expected_por_after
 			value = {
-				value = global_var:modeu5_debug_core03_por_before
-				add = global_var:modeu5_debug_core03_expected_transfer
+				value = global_var:test_cbp_debug_core03_por_before
+				add = global_var:test_cbp_debug_core03_expected_transfer
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_actual_transfer
+			name = test_cbp_core03_test_actual_transfer
 			value = {
-				value = scope:modeu5_core03_test_por_after
-				subtract = global_var:modeu5_debug_core03_por_before
+				value = scope:test_cbp_core03_test_por_after
+				subtract = global_var:test_cbp_debug_core03_por_before
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_core03_test_market_delta
+			name = test_cbp_core03_test_market_delta
 			value = {
-				value = scope:modeu5_core03_test_market_after
-				subtract = global_var:modeu5_debug_core03_market_before
+				value = scope:test_cbp_core03_test_market_after
+				subtract = global_var:test_cbp_debug_core03_market_before
 			}
 		}
 
 		set_global_variable = {
-			name = modeu5_debug_core03_cas_after
-			value = scope:modeu5_core03_test_cas_after
+			name = test_cbp_debug_core03_cas_after
+			value = scope:test_cbp_core03_test_cas_after
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_por_after
-			value = scope:modeu5_core03_test_por_after
+			name = test_cbp_debug_core03_por_after
+			value = scope:test_cbp_core03_test_por_after
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_market_after
-			value = scope:modeu5_core03_test_market_after
+			name = test_cbp_debug_core03_market_after
+			value = scope:test_cbp_core03_test_market_after
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_actual_transfer
-			value = scope:modeu5_core03_test_actual_transfer
+			name = test_cbp_debug_core03_actual_transfer
+			value = scope:test_cbp_core03_test_actual_transfer
 		}
 		set_global_variable = {
-			name = modeu5_debug_core03_market_delta
-			value = scope:modeu5_core03_test_market_delta
+			name = test_cbp_debug_core03_market_delta
+			value = scope:test_cbp_core03_test_market_delta
 		}
 
 		modeu5_debug_write_core03_after_dump_variables = yes
@@ -281,23 +281,23 @@ modeu5_debug_finish_core03_location_succession_test = {
 		if = {
 			limit = {
 				location:cadiz = { owner ?= c:POR }
-				has_global_variable = modeu5_core03_last_location_transfer_attempted
-				has_global_variable = modeu5_core03_probe_location_hook_observed
-				scope:modeu5_core03_test_cas_after = scope:modeu5_core03_test_expected_cas_after
-				scope:modeu5_core03_test_por_after = scope:modeu5_core03_test_expected_por_after
-				scope:modeu5_core03_test_market_after = global_var:modeu5_debug_core03_market_before
+				has_global_variable = cbp_core03_last_location_transfer_attempted
+				has_global_variable = cbp_core03_probe_location_hook_observed
+				scope:test_cbp_core03_test_cas_after = scope:test_cbp_core03_test_expected_cas_after
+				scope:test_cbp_core03_test_por_after = scope:test_cbp_core03_test_expected_por_after
+				scope:test_cbp_core03_test_market_after = global_var:test_cbp_debug_core03_market_before
 			}
-			set_global_variable = modeu5_test_core03_location_succession_passed
+			set_global_variable = test_cbp_core03_location_succession_passed
 			debug_log = "ModeU5 CORE-03 RESULT location_succession PASS"
 		}
 		else = {
-			set_global_variable = modeu5_test_core03_location_succession_failed
+			set_global_variable = test_cbp_core03_location_succession_failed
 			debug_log = "ModeU5 CORE-03 RESULT location_succession FAIL"
 			error_log = "ModeU5 deterministic CORE-03 location-succession stock survivability test failed."
 		}
 	}
 	else = {
-		set_global_variable = modeu5_test_core03_location_succession_blocked
+		set_global_variable = test_cbp_core03_location_succession_blocked
 		debug_log = "ModeU5 CORE-03 RESULT location_succession BLOCKED missing_started_probe"
 		error_log = "ModeU5 deterministic CORE-03 location-succession test was not staged before finish."
 	}

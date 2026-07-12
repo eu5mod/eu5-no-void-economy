@@ -14,10 +14,10 @@ import sys
 from pathlib import Path
 
 GUARDED_GLOBALS = {
-    "modeu5_perf14_promotion_market_total_capacity",
-    "modeu5_perf14_promotion_market_eligible_country_count",
-    "modeu5_perf14_promotion_market_allocated_quantity",
-    "modeu5_perf14_promotion_market_negative_capacity_failure",
+    "cbp_perf14_promotion_market_total_capacity",
+    "cbp_perf14_promotion_market_eligible_country_count",
+    "cbp_perf14_promotion_market_allocated_quantity",
+    "cbp_perf14_promotion_market_negative_capacity_failure",
 }
 
 BLOCK_START_RE = re.compile(

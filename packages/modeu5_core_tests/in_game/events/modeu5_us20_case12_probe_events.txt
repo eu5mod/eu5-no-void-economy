@@ -58,11 +58,11 @@ modeu5_us20_probe.2 = {
 
 	option = {
 		name = modeu5_us20_probe.case12.pass
-		trigger = { has_global_variable = modeu5_test_us20_case12_probe_passed }
+		trigger = { has_global_variable = test_cbp_us20_case12_probe_passed }
 	}
 	option = {
 		name = modeu5_us20_probe.case12.fail
-		trigger = { has_global_variable = modeu5_test_us20_case12_probe_failed }
+		trigger = { has_global_variable = test_cbp_us20_case12_probe_failed }
 	}
 	option = {
 		name = modeu5_debug.close

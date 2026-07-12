@@ -4,14 +4,14 @@
 # candidate cheap market-scope gates are safe before runtime code uses them.
 
 modeu5_perf12_clear_test_results = {
-	remove_global_variable = modeu5_test_perf12_market_value_probe_passed
-	remove_global_variable = modeu5_test_perf12_market_value_probe_failed
+	remove_global_variable = test_cbp_perf12_market_value_probe_passed
+	remove_global_variable = test_cbp_perf12_market_value_probe_failed
 }
 
 modeu5_perf12_write_market_value_dump_variables = {
-	set_variable = { name = modeu5_perf12_ui_produced_wheat value = scope:modeu5_perf12_produced_wheat }
-	set_variable = { name = modeu5_perf12_ui_stockpile_wheat value = scope:modeu5_perf12_stockpile_wheat }
-	set_variable = { name = modeu5_perf12_ui_traded_wheat value = scope:modeu5_perf12_traded_wheat }
+	set_variable = { name = gui_cbp_perf12_ui_produced_wheat value = scope:test_cbp_perf12_produced_wheat }
+	set_variable = { name = gui_cbp_perf12_ui_stockpile_wheat value = scope:test_cbp_perf12_stockpile_wheat }
+	set_variable = { name = gui_cbp_perf12_ui_traded_wheat value = scope:test_cbp_perf12_traded_wheat }
 }
 
 modeu5_perf12_log_market_value_dump = {
@@ -25,15 +25,15 @@ modeu5_debug_run_perf12_market_value_probe = {
 	capital.market = {
 		save_temporary_scope_as = modeu5_perf12_market
 		save_temporary_scope_value_as = {
-			name = modeu5_perf12_produced_wheat
+			name = test_cbp_perf12_produced_wheat
 			value = produced_in_market:wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_perf12_stockpile_wheat
+			name = test_cbp_perf12_stockpile_wheat
 			value = "stockpile_in_market(goods:wheat)"
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_perf12_traded_wheat
+			name = test_cbp_perf12_traded_wheat
 			value = traded_in_market:wheat
 		}
 	}
@@ -43,15 +43,15 @@ modeu5_debug_run_perf12_market_value_probe = {
 
 	if = {
 		limit = {
-			scope:modeu5_perf12_produced_wheat >= 0
-			scope:modeu5_perf12_stockpile_wheat >= 0
-			scope:modeu5_perf12_traded_wheat >= 0
+			scope:test_cbp_perf12_produced_wheat >= 0
+			scope:test_cbp_perf12_stockpile_wheat >= 0
+			scope:test_cbp_perf12_traded_wheat >= 0
 		}
-		set_global_variable = modeu5_test_perf12_market_value_probe_passed
+		set_global_variable = test_cbp_perf12_market_value_probe_passed
 		debug_log = "ModeU5 PERF-12 RESULT market_values PASS"
 	}
 	else = {
-		set_global_variable = modeu5_test_perf12_market_value_probe_failed
+		set_global_variable = test_cbp_perf12_market_value_probe_failed
 		debug_log = "ModeU5 PERF-12 RESULT market_values FAIL"
 		error_log = "ModeU5 PERF-12 market-scope value probe failed."
 	}

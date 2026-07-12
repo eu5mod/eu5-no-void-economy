@@ -44,22 +44,22 @@ require_match '^modeu5_debug_run_q8_remaining_candidate_probes[[:space:]]*=' "$p
 require_match '^modeu5_q8_probe_debug\.1[[:space:]]*=' "$probe_events" 'Q8 probe event menu exists'
 
 require_match '^modeu5_q8_probe_us10_pending_gate[[:space:]]*=' "$probe_effects" 'Q8.2 runtime probe exists'
-require_match 'modeu5_consumption_wheat_pending_requested_by_market' "$probe_effects" 'Q8.2 probe reads the canonical pending-request map safely'
-require_match 'modeu5_test_q8_2_us10_pending_gate_probe_passed' "$probe_effects" 'Q8.2 probe reports PASS flag'
+require_match 'test_cbp_consumption_wheat_pending_requested_by_market' "$probe_effects" 'Q8.2 probe reads the canonical pending-request map safely'
+require_match 'test_cbp_q8_2_us10_pending_gate_probe_passed' "$probe_effects" 'Q8.2 probe reports PASS flag'
 
 require_match '^modeu5_q8_probe_helper_inventory[[:space:]]*=' "$probe_effects" 'Q8.4 runtime/static bridge probe exists'
-require_match 'modeu5_test_q8_4_helper_inventory_probe_passed' "$probe_effects" 'Q8.4 probe reports PASS flag'
+require_match 'test_cbp_q8_4_helper_inventory_probe_passed' "$probe_effects" 'Q8.4 probe reports PASS flag'
 
 require_match '^modeu5_q8_probe_dirty_cache_lifecycle[[:space:]]*=' "$probe_effects" 'Q8.5 dirty-cache lifecycle probe exists'
 require_match 'modeu5_mark_market_country_cache_dirty' "$probe_effects" 'Q8.5 probe marks a market dirty'
 require_match 'modeu5_repair_dirty_market_country_caches' "$probe_effects" 'Q8.5 probe repairs dirty market-country cache'
 
 require_match '^modeu5_q8_probe_market_sliced_verifier_candidate[[:space:]]*=' "$probe_effects" 'Q8.6 market-slice candidate probe exists'
-require_match 'modeu5_q8_probe_market_slice_candidates' "$probe_effects" 'Q8.6 probe uses a candidate-market list'
+require_match 'test_cbp_q8_probe_market_slice_candidates' "$probe_effects" 'Q8.6 probe uses a candidate-market list'
 
 require_match '^modeu5_q8_probe_global_market_iterator_exposure[[:space:]]*=' "$probe_effects" 'Q8.7 global-market exposure probe exists'
 require_match 'every_market_in_world' "$probe_effects" 'Q8.7 exposure probe contains the unconfirmed iterator in the test package'
-require_match 'modeu5_test_q8_7_global_market_probe_passed' "$probe_effects" 'Q8.7 probe reports PASS flag'
+require_match 'test_cbp_q8_7_global_market_probe_passed' "$probe_effects" 'Q8.7 probe reports PASS flag'
 
 pending 'Runtime logs are still required to decide implementation of Q8.2/Q8.4/Q8.5/Q8.6/Q8.7.'
 

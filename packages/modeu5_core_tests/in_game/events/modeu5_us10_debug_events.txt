@@ -29,8 +29,8 @@ modeu5_us10_debug.1 = {
 		# Parser hygiene: this fixture has no runtime blocked branch. Set/remove the
 		# impossible marker locally so Jomini does not report the cleanup reference as
 		# "used but never set" while preserving the runtime result contract.
-		set_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
-		remove_global_variable = modeu5_test_us10_trade_capacity_conversion_blocked
+		set_global_variable = test_cbp_us10_trade_capacity_conversion_blocked
+		remove_global_variable = test_cbp_us10_trade_capacity_conversion_blocked
 		modeu5_debug_run_us10_trade_capacity_conversion_tests = yes
 		trigger_event_non_silently = modeu5_us10_debug.2
 	}
@@ -40,10 +40,10 @@ modeu5_us10_debug.1 = {
 		# Parser hygiene: this probe is intentionally blocked-only. Set/remove the
 		# impossible pass/fail markers locally so the shared clear helper remains
 		# harmless without advertising these states as reachable outcomes.
-		set_global_variable = modeu5_test_us10_direct_trade_formula_passed
-		remove_global_variable = modeu5_test_us10_direct_trade_formula_passed
-		set_global_variable = modeu5_test_us10_direct_trade_formula_failed
-		remove_global_variable = modeu5_test_us10_direct_trade_formula_failed
+		set_global_variable = test_cbp_us10_direct_trade_formula_passed
+		remove_global_variable = test_cbp_us10_direct_trade_formula_passed
+		set_global_variable = test_cbp_us10_direct_trade_formula_failed
+		remove_global_variable = test_cbp_us10_direct_trade_formula_failed
 		modeu5_debug_probe_us10_direct_trade_quantity_formula = yes
 		trigger_event_non_silently = modeu5_us10_debug.2
 	}
@@ -78,11 +78,11 @@ modeu5_us10_debug.2 = {
 		name = modeu5_us10_debug.result.pass
 		trigger = {
 			OR = {
-				has_global_variable = modeu5_test_us10_demand_resolution_passed
-				has_global_variable = modeu5_test_us10_monthly_runtime_passed
-				has_global_variable = modeu5_test_us10_trade_capacity_conversion_passed
-				has_global_variable = modeu5_test_us10_issue109_passed
-				has_global_variable = modeu5_test_us10_ui_visibility_passed
+				has_global_variable = test_cbp_us10_demand_resolution_passed
+				has_global_variable = test_cbp_us10_monthly_runtime_passed
+				has_global_variable = test_cbp_us10_trade_capacity_conversion_passed
+				has_global_variable = test_cbp_us10_issue109_passed
+				has_global_variable = gui_cbp_test_us10_ui_visibility_passed
 			}
 		}
 	}
@@ -90,11 +90,11 @@ modeu5_us10_debug.2 = {
 		name = modeu5_us10_debug.result.blocked
 		trigger = {
 			OR = {
-				has_global_variable = modeu5_test_us10_demand_resolution_blocked
-				has_global_variable = modeu5_test_us10_monthly_runtime_blocked
-				has_global_variable = modeu5_test_us10_issue109_blocked
-				has_global_variable = modeu5_test_us10_ui_visibility_blocked
-				has_global_variable = modeu5_test_us10_direct_trade_formula_blocked
+				has_global_variable = test_cbp_us10_demand_resolution_blocked
+				has_global_variable = test_cbp_us10_monthly_runtime_blocked
+				has_global_variable = test_cbp_us10_issue109_blocked
+				has_global_variable = gui_cbp_us10_ui_visibility_result_blocked
+				has_global_variable = test_cbp_us10_direct_trade_formula_blocked
 			}
 		}
 	}
@@ -102,11 +102,11 @@ modeu5_us10_debug.2 = {
 		name = modeu5_us10_debug.result.fail
 		trigger = {
 			OR = {
-				has_global_variable = modeu5_test_us10_demand_resolution_failed
-				has_global_variable = modeu5_test_us10_monthly_runtime_failed
-				has_global_variable = modeu5_test_us10_trade_capacity_conversion_failed
-				has_global_variable = modeu5_test_us10_issue109_failed
-				has_global_variable = modeu5_test_us10_ui_visibility_failed
+				has_global_variable = test_cbp_us10_demand_resolution_failed
+				has_global_variable = test_cbp_us10_monthly_runtime_failed
+				has_global_variable = test_cbp_us10_trade_capacity_conversion_failed
+				has_global_variable = test_cbp_us10_issue109_failed
+				has_global_variable = gui_cbp_test_us10_ui_visibility_failed
 			}
 		}
 	}

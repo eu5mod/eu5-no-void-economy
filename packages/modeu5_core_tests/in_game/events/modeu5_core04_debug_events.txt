@@ -34,15 +34,15 @@ modeu5_core04_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.core04_market_entry.pass
-		trigger = { has_global_variable = modeu5_test_core04_market_entry_passed }
+		trigger = { has_global_variable = test_cbp_core04_market_entry_passed }
 	}
 	option = {
 		name = modeu5_debug.test.core04_market_entry.blocked
-		trigger = { has_global_variable = modeu5_test_core04_market_entry_blocked }
+		trigger = { has_global_variable = test_cbp_core04_market_entry_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.core04_market_entry.fail
-		trigger = { has_global_variable = modeu5_test_core04_market_entry_failed }
+		trigger = { has_global_variable = test_cbp_core04_market_entry_failed }
 	}
 	option = {
 		name = modeu5_debug.close

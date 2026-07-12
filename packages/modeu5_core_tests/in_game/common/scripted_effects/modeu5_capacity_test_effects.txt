@@ -3,16 +3,16 @@
 
 modeu5_debug_write_us02_capacity_dump_variables = {
 	scope:modeu5_capacity_test_controller = {
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_stock value = scope:modeu5_capacity_test_wheat_stock_after }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_capacity value = scope:modeu5_capacity_test_wheat_total }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_available value = scope:modeu5_capacity_test_wheat_read_available }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_over_cap value = scope:modeu5_capacity_test_wheat_read_over_cap }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_trade_capacity value = scope:modeu5_capacity_test_wheat_trade }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_location_rank_capacity value = scope:modeu5_capacity_test_wheat_location_rank }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_location_count value = scope:modeu5_capacity_test_wheat_location_count }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_market_count value = scope:modeu5_capacity_test_wheat_market_count }
-		set_variable = { name = modeu5_debug_us02_ui_fra_wheat_country_pool_total value = scope:modeu5_capacity_test_wheat_country_pool_total }
-		set_variable = { name = modeu5_debug_us02_ui_fra_iron_capacity value = scope:modeu5_capacity_test_wrapped_iron_total }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_stock value = scope:test_cbp_capacity_test_wheat_stock_after }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_capacity value = scope:test_cbp_capacity_test_wheat_total }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_available value = scope:test_cbp_capacity_test_wheat_read_available }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_over_cap value = scope:test_cbp_capacity_test_wheat_read_over_cap }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_trade_capacity value = scope:test_cbp_capacity_test_wheat_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_location_rank_capacity value = scope:test_cbp_capacity_test_wheat_location_rank }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_location_count value = scope:test_cbp_capacity_test_wheat_location_count }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_market_count value = scope:test_cbp_capacity_test_wheat_market_count }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_country_pool_total value = scope:test_cbp_capacity_test_wheat_country_pool_total }
+		set_variable = { name = gui_cbp_debug_us02_ui_fra_iron_capacity value = scope:test_cbp_capacity_test_wrapped_iron_total }
 	}
 }
 
@@ -24,16 +24,16 @@ modeu5_debug_log_us02_capacity_dump = {
 
 modeu5_debug_write_us02_timing_probe_variables = {
 	scope:modeu5_capacity_test_controller = {
-		set_variable = { name = modeu5_debug_us02_ui_probe_before_capacity value = scope:modeu5_capacity_probe_before_capacity }
-		set_variable = { name = modeu5_debug_us02_ui_probe_after_build_capacity value = scope:modeu5_capacity_probe_after_build_capacity }
-		set_variable = { name = modeu5_debug_us02_ui_probe_after_month_capacity value = scope:modeu5_capacity_probe_after_month_capacity }
-		set_variable = { name = modeu5_debug_us02_ui_probe_delta_immediate_capacity value = scope:modeu5_capacity_probe_delta_immediate_capacity }
-		set_variable = { name = modeu5_debug_us02_ui_probe_delta_month_capacity value = scope:modeu5_capacity_probe_delta_month_capacity }
-		set_variable = { name = modeu5_debug_us02_ui_probe_before_trade value = scope:modeu5_capacity_probe_before_trade }
-		set_variable = { name = modeu5_debug_us02_ui_probe_after_build_trade value = scope:modeu5_capacity_probe_after_build_trade }
-		set_variable = { name = modeu5_debug_us02_ui_probe_after_month_trade value = scope:modeu5_capacity_probe_after_month_trade }
-		set_variable = { name = modeu5_debug_us02_ui_probe_delta_immediate_trade value = scope:modeu5_capacity_probe_delta_immediate_trade }
-		set_variable = { name = modeu5_debug_us02_ui_probe_delta_month_trade value = scope:modeu5_capacity_probe_delta_month_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_before_capacity value = scope:test_cbp_capacity_probe_before_capacity }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_build_capacity value = scope:test_cbp_capacity_probe_after_build_capacity }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_month_capacity value = scope:test_cbp_capacity_probe_after_month_capacity }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_delta_immediate_capacity value = scope:test_cbp_capacity_probe_delta_immediate_capacity }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_delta_month_capacity value = scope:test_cbp_capacity_probe_delta_month_capacity }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_before_trade value = scope:test_cbp_capacity_probe_before_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_build_trade value = scope:test_cbp_capacity_probe_after_build_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_month_trade value = scope:test_cbp_capacity_probe_after_month_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_delta_immediate_trade value = scope:test_cbp_capacity_probe_delta_immediate_trade }
+		set_variable = { name = gui_cbp_debug_us02_ui_probe_delta_month_trade value = scope:test_cbp_capacity_probe_delta_month_trade }
 	}
 }
 
@@ -56,8 +56,8 @@ modeu5_debug_run_storage_capacity_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_stock_before
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_capacity_test_wheat_stock_before
+			value = scope:cbp_read_country_stock
 		}
 
 		modeu5_recalculate_country_storage_capacities = {
@@ -70,8 +70,8 @@ modeu5_debug_run_storage_capacity_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wrapped_wheat_total
-			value = scope:modeu5_read_country_stock_cap
+			name = test_cbp_capacity_test_wrapped_wheat_total
+			value = scope:cbp_read_country_stock_cap
 		}
 
 		modeu5_read_country_stock_record = {
@@ -80,8 +80,8 @@ modeu5_debug_run_storage_capacity_test = {
 			good = iron
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wrapped_iron_total
-			value = scope:modeu5_read_country_stock_cap
+			name = test_cbp_capacity_test_wrapped_iron_total
+			value = scope:cbp_read_country_stock_cap
 		}
 
 		modeu5_recalculate_country_market_capacity = {
@@ -90,54 +90,54 @@ modeu5_debug_run_storage_capacity_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_total
-			value = scope:modeu5_capacity_total
+			name = test_cbp_capacity_test_wheat_total
+			value = scope:cbp_capacity_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_base
-			value = scope:modeu5_capacity_base
+			name = test_cbp_capacity_test_wheat_base
+			value = scope:cbp_capacity_base
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_trade
-			value = scope:modeu5_capacity_trade_capacity
+			name = test_cbp_capacity_test_wheat_trade
+			value = scope:cbp_capacity_trade_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_location_rank
-			value = scope:modeu5_capacity_location_rank_capacity
+			name = test_cbp_capacity_test_wheat_location_rank
+			value = scope:cbp_capacity_location_rank_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_location_count
-			value = scope:modeu5_capacity_location_count
+			name = test_cbp_capacity_test_wheat_location_count
+			value = scope:cbp_capacity_location_count
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_market_count
-			value = scope:modeu5_capacity_market_count
+			name = test_cbp_capacity_test_wheat_market_count
+			value = scope:cbp_capacity_market_count
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_country_pool_total
-			value = scope:modeu5_capacity_country_pool_total
+			name = test_cbp_capacity_test_wheat_country_pool_total
+			value = scope:cbp_capacity_country_pool_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_building
-			value = scope:modeu5_capacity_building
+			name = test_cbp_capacity_test_wheat_building
+			value = scope:cbp_capacity_building
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_foreign
-			value = scope:modeu5_capacity_foreign
+			name = test_cbp_capacity_test_wheat_foreign
+			value = scope:cbp_capacity_foreign
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_expected_available
+			name = test_cbp_capacity_test_expected_available
 			value = {
-				value = scope:modeu5_capacity_total
-				subtract = scope:modeu5_capacity_test_wheat_stock_before
+				value = scope:cbp_capacity_total
+				subtract = scope:test_cbp_capacity_test_wheat_stock_before
 				min = 0
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_expected_over_cap
+			name = test_cbp_capacity_test_expected_over_cap
 			value = {
-				value = scope:modeu5_capacity_test_wheat_stock_before
-				subtract = scope:modeu5_capacity_total
+				value = scope:test_cbp_capacity_test_wheat_stock_before
+				subtract = scope:cbp_capacity_total
 				min = 0
 			}
 		}
@@ -148,135 +148,135 @@ modeu5_debug_run_storage_capacity_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_stock_after
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_capacity_test_wheat_stock_after
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_total
-			value = scope:modeu5_read_country_stock_cap
+			name = test_cbp_capacity_test_wheat_read_total
+			value = scope:cbp_read_country_stock_cap
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_base
-			value = scope:modeu5_read_country_base_capacity
+			name = test_cbp_capacity_test_wheat_read_base
+			value = scope:cbp_read_country_base_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_building
-			value = scope:modeu5_read_country_building_capacity
+			name = test_cbp_capacity_test_wheat_read_building
+			value = scope:cbp_read_country_building_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_foreign
-			value = scope:modeu5_read_country_foreign_capacity
+			name = test_cbp_capacity_test_wheat_read_foreign
+			value = scope:cbp_read_country_foreign_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_available
-			value = scope:modeu5_read_available_capacity
+			name = test_cbp_capacity_test_wheat_read_available
+			value = scope:cbp_read_available_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_wheat_read_over_cap
-			value = scope:modeu5_read_over_capacity
+			name = test_cbp_capacity_test_wheat_read_over_cap
+			value = scope:cbp_read_over_capacity
 		}
 
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_reconciled_total
+			name = test_cbp_capacity_test_reconciled_total
 			value = {
-				value = scope:modeu5_capacity_test_wheat_base
-				add = scope:modeu5_capacity_test_wheat_building
-				add = scope:modeu5_capacity_test_wheat_foreign
+				value = scope:test_cbp_capacity_test_wheat_base
+				add = scope:test_cbp_capacity_test_wheat_building
+				add = scope:test_cbp_capacity_test_wheat_foreign
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_test_reconciled_base
+			name = test_cbp_capacity_test_reconciled_base
 			value = {
-				value = scope:modeu5_capacity_test_wheat_trade
-				add = scope:modeu5_capacity_test_wheat_location_rank
+				value = scope:test_cbp_capacity_test_wheat_trade
+				add = scope:test_cbp_capacity_test_wheat_location_rank
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_capacity_test_expected_pooled_market_total value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_test_expected_pooled_market_total value = 0 }
 		if = {
-			limit = { scope:modeu5_capacity_test_wheat_market_count > 0 }
+			limit = { scope:test_cbp_capacity_test_wheat_market_count > 0 }
 			save_temporary_scope_value_as = {
-				name = modeu5_capacity_test_expected_pooled_market_total
+				name = test_cbp_capacity_test_expected_pooled_market_total
 				value = {
-					value = scope:modeu5_capacity_test_wheat_country_pool_total
-					divide = scope:modeu5_capacity_test_wheat_market_count
-					add = scope:modeu5_capacity_test_wheat_trade
+					value = scope:test_cbp_capacity_test_wheat_country_pool_total
+					divide = scope:test_cbp_capacity_test_wheat_market_count
+					add = scope:test_cbp_capacity_test_wheat_trade
 				}
 			}
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_stock
-			value = scope:modeu5_capacity_test_wheat_stock_after
+			name = test_cbp_debug_us02_dump_fra_wheat_stock
+			value = scope:test_cbp_capacity_test_wheat_stock_after
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_capacity
-			value = scope:modeu5_capacity_test_wheat_total
+			name = test_cbp_debug_us02_dump_fra_wheat_capacity
+			value = scope:test_cbp_capacity_test_wheat_total
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_available
-			value = scope:modeu5_capacity_test_wheat_read_available
+			name = test_cbp_debug_us02_dump_fra_wheat_available
+			value = scope:test_cbp_capacity_test_wheat_read_available
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_over_cap
-			value = scope:modeu5_capacity_test_wheat_read_over_cap
+			name = test_cbp_debug_us02_dump_fra_wheat_over_cap
+			value = scope:test_cbp_capacity_test_wheat_read_over_cap
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_trade_capacity
-			value = scope:modeu5_capacity_test_wheat_trade
+			name = test_cbp_debug_us02_dump_fra_wheat_trade_capacity
+			value = scope:test_cbp_capacity_test_wheat_trade
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
-			value = scope:modeu5_capacity_test_wheat_location_rank
+			name = test_cbp_debug_us02_dump_fra_wheat_location_rank_capacity
+			value = scope:test_cbp_capacity_test_wheat_location_rank
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_location_count
-			value = scope:modeu5_capacity_test_wheat_location_count
+			name = test_cbp_debug_us02_dump_fra_wheat_location_count
+			value = scope:test_cbp_capacity_test_wheat_location_count
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_market_count
-			value = scope:modeu5_capacity_test_wheat_market_count
+			name = test_cbp_debug_us02_dump_fra_wheat_market_count
+			value = scope:test_cbp_capacity_test_wheat_market_count
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_wheat_country_pool_total
-			value = scope:modeu5_capacity_test_wheat_country_pool_total
+			name = test_cbp_debug_us02_dump_fra_wheat_country_pool_total
+			value = scope:test_cbp_capacity_test_wheat_country_pool_total
 		}
 		set_global_variable = {
-			name = modeu5_debug_us02_dump_fra_iron_capacity
-			value = scope:modeu5_capacity_test_wrapped_iron_total
+			name = test_cbp_debug_us02_dump_fra_iron_capacity
+			value = scope:test_cbp_capacity_test_wrapped_iron_total
 		}
 		modeu5_debug_write_us02_capacity_dump_variables = yes
 		modeu5_debug_log_us02_capacity_dump = yes
 
 		if = {
 			limit = {
-				scope:modeu5_capacity_test_wheat_total > 0
-				scope:modeu5_capacity_test_wheat_location_rank > 0
-				scope:modeu5_capacity_test_wheat_location_count > 0
-				scope:modeu5_capacity_test_wheat_market_count > 0
-				scope:modeu5_capacity_test_wheat_country_pool_total > 0
-				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_expected_pooled_market_total
-				scope:modeu5_capacity_test_wheat_total = scope:modeu5_capacity_test_reconciled_total
-				scope:modeu5_capacity_test_wheat_base = scope:modeu5_capacity_test_reconciled_base
-				scope:modeu5_capacity_test_wrapped_wheat_total = scope:modeu5_capacity_test_wheat_total
-				scope:modeu5_capacity_test_wrapped_iron_total = scope:modeu5_capacity_test_wheat_total
-				scope:modeu5_capacity_test_wheat_read_total = scope:modeu5_capacity_test_wheat_total
-				scope:modeu5_capacity_test_wheat_read_base = scope:modeu5_capacity_test_wheat_base
-				scope:modeu5_capacity_test_wheat_read_building = scope:modeu5_capacity_test_wheat_building
-				scope:modeu5_capacity_test_wheat_read_foreign = scope:modeu5_capacity_test_wheat_foreign
-				scope:modeu5_capacity_test_wheat_stock_after = scope:modeu5_capacity_test_wheat_stock_before
-				scope:modeu5_capacity_test_wheat_read_available = scope:modeu5_capacity_test_expected_available
-				scope:modeu5_capacity_test_wheat_read_over_cap = scope:modeu5_capacity_test_expected_over_cap
+				scope:test_cbp_capacity_test_wheat_total > 0
+				scope:test_cbp_capacity_test_wheat_location_rank > 0
+				scope:test_cbp_capacity_test_wheat_location_count > 0
+				scope:test_cbp_capacity_test_wheat_market_count > 0
+				scope:test_cbp_capacity_test_wheat_country_pool_total > 0
+				scope:test_cbp_capacity_test_wheat_total = scope:test_cbp_capacity_test_expected_pooled_market_total
+				scope:test_cbp_capacity_test_wheat_total = scope:test_cbp_capacity_test_reconciled_total
+				scope:test_cbp_capacity_test_wheat_base = scope:test_cbp_capacity_test_reconciled_base
+				scope:test_cbp_capacity_test_wrapped_wheat_total = scope:test_cbp_capacity_test_wheat_total
+				scope:test_cbp_capacity_test_wrapped_iron_total = scope:test_cbp_capacity_test_wheat_total
+				scope:test_cbp_capacity_test_wheat_read_total = scope:test_cbp_capacity_test_wheat_total
+				scope:test_cbp_capacity_test_wheat_read_base = scope:test_cbp_capacity_test_wheat_base
+				scope:test_cbp_capacity_test_wheat_read_building = scope:test_cbp_capacity_test_wheat_building
+				scope:test_cbp_capacity_test_wheat_read_foreign = scope:test_cbp_capacity_test_wheat_foreign
+				scope:test_cbp_capacity_test_wheat_stock_after = scope:test_cbp_capacity_test_wheat_stock_before
+				scope:test_cbp_capacity_test_wheat_read_available = scope:test_cbp_capacity_test_expected_available
+				scope:test_cbp_capacity_test_wheat_read_over_cap = scope:test_cbp_capacity_test_expected_over_cap
 			}
-			set_global_variable = modeu5_test_storage_capacity_passed
+			set_global_variable = test_cbp_storage_capacity_passed
 			debug_log = "ModeU5 US-02 RESULT capacity PASS"
 		}
 		else = {
-			remove_global_variable = modeu5_test_storage_capacity_passed
+			remove_global_variable = test_cbp_storage_capacity_passed
 			debug_log = "ModeU5 US-02 RESULT capacity FAIL"
 			error_log = "ModeU5 deterministic US-02 storage-capacity test failed."
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_storage_capacity_passed
+		remove_global_variable = test_cbp_storage_capacity_passed
 		debug_log = "ModeU5 US-02 RESULT capacity BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-02 storage-capacity test requires FRA."
 	}
@@ -285,10 +285,10 @@ modeu5_debug_run_storage_capacity_test = {
 modeu5_debug_run_storage_capacity_timing_probe = {
 	save_temporary_scope_as = modeu5_capacity_test_controller
 
-	remove_global_variable = modeu5_test_storage_capacity_timing_immediate_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_pending
-	remove_global_variable = modeu5_test_storage_capacity_timing_failed
+	remove_global_variable = test_cbp_storage_capacity_timing_immediate_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_monthly_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_pending
+	remove_global_variable = test_cbp_storage_capacity_timing_failed
 
 	if = {
 		limit = { country_exists = c:FRA }
@@ -300,12 +300,12 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_before_capacity
-			value = scope:modeu5_capacity_total
+			name = test_cbp_capacity_probe_before_capacity
+			value = scope:cbp_capacity_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_before_trade
-			value = scope:modeu5_capacity_trade_capacity
+			name = test_cbp_capacity_probe_before_trade
+			value = scope:cbp_capacity_trade_capacity
 		}
 
 		c:FRA.capital = {
@@ -321,74 +321,74 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_after_build_capacity
-			value = scope:modeu5_capacity_total
+			name = test_cbp_capacity_probe_after_build_capacity
+			value = scope:cbp_capacity_total
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_after_build_trade
-			value = scope:modeu5_capacity_trade_capacity
+			name = test_cbp_capacity_probe_after_build_trade
+			value = scope:cbp_capacity_trade_capacity
 		}
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_trade value = 0 }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_delta_immediate_capacity
+			name = test_cbp_capacity_probe_delta_immediate_capacity
 			value = {
-				value = scope:modeu5_capacity_probe_after_build_capacity
-				subtract = scope:modeu5_capacity_probe_before_capacity
+				value = scope:test_cbp_capacity_probe_after_build_capacity
+				subtract = scope:test_cbp_capacity_probe_before_capacity
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_delta_immediate_trade
+			name = test_cbp_capacity_probe_delta_immediate_trade
 			value = {
-				value = scope:modeu5_capacity_probe_after_build_trade
-				subtract = scope:modeu5_capacity_probe_before_trade
+				value = scope:test_cbp_capacity_probe_after_build_trade
+				subtract = scope:test_cbp_capacity_probe_before_trade
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_trade value = 0 }
 
-		set_global_variable = modeu5_debug_us02_probe_started
-		set_global_variable = { name = modeu5_debug_us02_probe_before_capacity value = scope:modeu5_capacity_probe_before_capacity }
-		set_global_variable = { name = modeu5_debug_us02_probe_before_trade value = scope:modeu5_capacity_probe_before_trade }
-		set_global_variable = { name = modeu5_debug_us02_probe_after_build_capacity value = scope:modeu5_capacity_probe_after_build_capacity }
-		set_global_variable = { name = modeu5_debug_us02_probe_after_build_trade value = scope:modeu5_capacity_probe_after_build_trade }
-		set_global_variable = { name = modeu5_debug_us02_probe_after_month_capacity value = 0 }
-		set_global_variable = { name = modeu5_debug_us02_probe_after_month_trade value = 0 }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_immediate_capacity value = scope:modeu5_capacity_probe_delta_immediate_capacity }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_immediate_trade value = scope:modeu5_capacity_probe_delta_immediate_trade }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_capacity value = 0 }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_trade value = 0 }
+		set_global_variable = test_cbp_debug_us02_probe_started
+		set_global_variable = { name = test_cbp_debug_us02_probe_before_capacity value = scope:test_cbp_capacity_probe_before_capacity }
+		set_global_variable = { name = test_cbp_debug_us02_probe_before_trade value = scope:test_cbp_capacity_probe_before_trade }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_build_capacity value = scope:test_cbp_capacity_probe_after_build_capacity }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_build_trade value = scope:test_cbp_capacity_probe_after_build_trade }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_month_capacity value = 0 }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_month_trade value = 0 }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_immediate_capacity value = scope:test_cbp_capacity_probe_delta_immediate_capacity }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_immediate_trade value = scope:test_cbp_capacity_probe_delta_immediate_trade }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_capacity value = 0 }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
 		modeu5_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
-				scope:modeu5_capacity_probe_delta_immediate_capacity > 0
-				scope:modeu5_capacity_probe_delta_immediate_trade > 0
+				scope:test_cbp_capacity_probe_delta_immediate_capacity > 0
+				scope:test_cbp_capacity_probe_delta_immediate_trade > 0
 			}
-			set_global_variable = modeu5_test_storage_capacity_timing_immediate_passed
+			set_global_variable = test_cbp_storage_capacity_timing_immediate_passed
 			debug_log = "ModeU5 US-02 RESULT timing IMMEDIATE_PASS"
 		}
 		else = {
-			set_global_variable = modeu5_test_storage_capacity_timing_pending
+			set_global_variable = test_cbp_storage_capacity_timing_pending
 			debug_log = "ModeU5 US-02 RESULT timing PENDING"
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_debug_us02_probe_started
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_trade value = 0 }
+		remove_global_variable = test_cbp_debug_us02_probe_started
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
 		modeu5_debug_log_us02_timing_probe_dump = yes
-		set_global_variable = modeu5_test_storage_capacity_timing_failed
+		set_global_variable = test_cbp_storage_capacity_timing_failed
 		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe requires FRA."
 	}
@@ -397,15 +397,15 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 modeu5_debug_finish_storage_capacity_timing_probe = {
 	save_temporary_scope_as = modeu5_capacity_test_controller
 
-	remove_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_failed
+	remove_global_variable = test_cbp_storage_capacity_timing_monthly_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_failed
 
 	if = {
 		limit = {
 			country_exists = c:FRA
-			has_global_variable = modeu5_debug_us02_probe_started
-			has_global_variable = modeu5_debug_us02_probe_before_capacity
-			has_global_variable = modeu5_debug_us02_probe_before_trade
+			has_global_variable = test_cbp_debug_us02_probe_started
+			has_global_variable = test_cbp_debug_us02_probe_before_capacity
+			has_global_variable = test_cbp_debug_us02_probe_before_trade
 		}
 		c:FRA.capital.market = { save_temporary_scope_as = modeu5_capacity_probe_market }
 
@@ -414,72 +414,72 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 			market = scope:modeu5_capacity_probe_market
 			good = wheat
 		}
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_capacity value = global_var:modeu5_debug_us02_probe_before_capacity }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_trade value = global_var:modeu5_debug_us02_probe_before_trade }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_capacity value = global_var:modeu5_debug_us02_probe_after_build_capacity }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_trade value = global_var:modeu5_debug_us02_probe_after_build_trade }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_capacity value = scope:modeu5_read_country_stock_cap }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_capacity value = global_var:test_cbp_debug_us02_probe_before_capacity }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_trade value = global_var:test_cbp_debug_us02_probe_before_trade }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_capacity value = global_var:test_cbp_debug_us02_probe_after_build_capacity }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_trade value = global_var:test_cbp_debug_us02_probe_after_build_trade }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_capacity value = scope:cbp_read_country_stock_cap }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_after_month_trade
+			name = test_cbp_capacity_probe_after_month_trade
 			value = {
 				value = "scope:modeu5_capacity_probe_market.merchant_capacity(scope:modeu5_country)"
 				multiply = modeu5_storage_capacity_per_trade_capacity
 				min = 0
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_capacity value = global_var:modeu5_debug_us02_probe_delta_immediate_capacity }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_trade value = global_var:modeu5_debug_us02_probe_delta_immediate_trade }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_capacity value = global_var:test_cbp_debug_us02_probe_delta_immediate_capacity }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_trade value = global_var:test_cbp_debug_us02_probe_delta_immediate_trade }
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_delta_month_capacity
+			name = test_cbp_capacity_probe_delta_month_capacity
 			value = {
-				value = scope:modeu5_capacity_probe_after_month_capacity
-				subtract = scope:modeu5_capacity_probe_before_capacity
+				value = scope:test_cbp_capacity_probe_after_month_capacity
+				subtract = scope:test_cbp_capacity_probe_before_capacity
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_capacity_probe_delta_month_trade
+			name = test_cbp_capacity_probe_delta_month_trade
 			value = {
-				value = scope:modeu5_capacity_probe_after_month_trade
-				subtract = scope:modeu5_capacity_probe_before_trade
+				value = scope:test_cbp_capacity_probe_after_month_trade
+				subtract = scope:test_cbp_capacity_probe_before_trade
 			}
 		}
 
-		set_global_variable = { name = modeu5_debug_us02_probe_after_month_capacity value = scope:modeu5_capacity_probe_after_month_capacity }
-		set_global_variable = { name = modeu5_debug_us02_probe_after_month_trade value = scope:modeu5_capacity_probe_after_month_trade }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_capacity value = scope:modeu5_capacity_probe_delta_month_capacity }
-		set_global_variable = { name = modeu5_debug_us02_probe_delta_month_trade value = scope:modeu5_capacity_probe_delta_month_trade }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_month_capacity value = scope:test_cbp_capacity_probe_after_month_capacity }
+		set_global_variable = { name = test_cbp_debug_us02_probe_after_month_trade value = scope:test_cbp_capacity_probe_after_month_trade }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_capacity value = scope:test_cbp_capacity_probe_delta_month_capacity }
+		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_trade value = scope:test_cbp_capacity_probe_delta_month_trade }
 		modeu5_debug_write_us02_timing_probe_variables = yes
 		modeu5_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
-				scope:modeu5_capacity_probe_delta_month_capacity > 0
+				scope:test_cbp_capacity_probe_delta_month_capacity > 0
 			}
-			remove_global_variable = modeu5_test_storage_capacity_timing_pending
-			set_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
+			remove_global_variable = test_cbp_storage_capacity_timing_pending
+			set_global_variable = test_cbp_storage_capacity_timing_monthly_passed
 			debug_log = "ModeU5 US-02 RESULT timing MONTHLY_PASS"
 		}
 		else = {
-			remove_global_variable = modeu5_test_storage_capacity_timing_pending
-			set_global_variable = modeu5_test_storage_capacity_timing_failed
+			remove_global_variable = test_cbp_storage_capacity_timing_pending
+			set_global_variable = test_cbp_storage_capacity_timing_failed
 			debug_log = "ModeU5 US-02 RESULT timing FAIL"
 			error_log = "ModeU5 deterministic US-02 storage-capacity timing probe failed after monthly tick."
 		}
 	}
 	else = {
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_capacity value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_before_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_build_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_after_month_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_immediate_trade value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_capacity_probe_delta_month_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_capacity value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_build_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_trade value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_trade value = 0 }
 		modeu5_debug_write_us02_timing_probe_variables = yes
 		modeu5_debug_log_us02_timing_probe_dump = yes
-		set_global_variable = modeu5_test_storage_capacity_timing_failed
+		set_global_variable = test_cbp_storage_capacity_timing_failed
 		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_started_probe"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe was finished without a started probe."
 	}
