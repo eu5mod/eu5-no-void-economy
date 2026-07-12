@@ -7,3 +7,6 @@ modeu5_*_generated.txt
 
 modeu5_*_generated_l_english.yml
 tools/generated/
+
+# Full vanilla file copied and patched locally by the defines generator.
+/loading_screen/common/defines/00_defines.txt
