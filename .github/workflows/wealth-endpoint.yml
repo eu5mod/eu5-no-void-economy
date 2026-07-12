@@ -1,0 +1,18 @@
+name: Wealth Endpoint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-wealth-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate wealth endpoint contract
+        run: python3 ./tools/validate_wealth_endpoint.py
+
+      - name: Validate whitespace and patch hygiene
+        run: git diff --check
