@@ -128,7 +128,7 @@ Related US: every optional module story
 - [ ] Core has no supported disabled state.
 - [ ] The default/recommended playset selects all four packages.
 - [ ] Rebalance Economy absence leaves US-04/05/08/09 inactive.
-- [ ] Rebalance Estate Power absence leaves vanilla US-07 building values untouched.
+- [ ] Rebalance Estate Power absence installs no standalone US-07 override; vanilla US-07 trade-building values remain untouched only when Rebalance Economy is also absent.
 - [ ] Rebalance Early Blobbing absence leaves vanilla conquest behavior untouched.
 - [ ] Missing, inactive, or mismatched Core produces a launcher/playset dependency issue.
 - [ ] Enabling any companion automatically enables compatible Core.
@@ -179,7 +179,8 @@ Test the default playset, then four reduced clean campaigns:
 All documented modules are active in the default full-suite campaign
 Core stock/void-economy behavior exists in all five campaigns
 US-04/05/08/09 behavior exists in campaigns 1 and 3
-US-07 behavior exists in campaigns 1 and 4
+The US-07 `local_burghers_estate_power` trade-building fragment composed into US-09 exists in campaigns 1 and 3
+Standalone US-07 behavior exists in campaigns 1 and 4
 US-13 behavior exists in campaigns 1 and 5
 Startup debug reports the exact package set
 No missing-dependency or stale optional effect is present
@@ -190,4 +191,4 @@ No custom in-game configuration panel is present
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-08 and for any non-overlapping US-07 static surface. The overlapping US-07 `trade_buildings.txt` estate-power field is intentionally composed into the US-09 Economy exact-path override to avoid duplicate static definitions. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.

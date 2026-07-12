@@ -19,22 +19,22 @@ This mod is born from the desire to fix :
 1. ⏳ [Imperial Hurbis](https://github.com/eu5mod/eu5-no-void-economy/issues/112) - Implement Empire Military Difficulties
 2. ⏳ [War Exhaustion a Political Pressure](https://github.com/eu5mod/eu5-no-void-economy/issues/68) - Implement War Impact on a country stability & a governement Legitimacy 
 3. ⏳ [Trade can't be profitable both way](https://github.com/eu5mod/eu5-no-void-economy/issues/118) - Trade profit is de difference of price between market minus logitic cost
-4. ✅ **Countries have own stocks**  - Country have own stocks
+4. ✅ **Countries have own stocks** - Country have own stocks
     - incl : ✅ **Only good that are sold generate an income**; Thus reflecting the real economy
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
-    - incl : ⏳ Economy 5% faster  - To compensate revenue loss
+    - incl : ✅ Economy 10% faster - To compensate revenue losses
+    - incl : ✅ MarketPlaces gives `5%` Local Burgher Power instead of `10%`
     - incl : ⏳ Redesign the economic Base
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
 ### Economics Design & Balance ###
 
 #### Design
+ - ❌ Supply Influence Pop [BLOCKED NO MODDING ENDPOINT](https://github.com/eu5mod/eu5-no-void-economy/pull/69)
  - ⏳ Monthly goods decay (1%)
- - ⏳ Supply Influence Pop
 
 #### Balance
  - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
- - ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
  - Remove Average Control Penalty on research seed - ( ❌ Introduced in 1.3 without modding endpoint )
  - RGO prices don't scale with Good's Market Price - ( ❌ Introduced in 1.2 without modding endpoint )
  - Maintenance price don't increase with time - ( ❌ Introduced in 1.3 without modding endpoint )
