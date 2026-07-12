@@ -239,7 +239,35 @@ modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
 			modeu5_note_trade_efficiency_quantity_confirmed = yes
 			modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes
 			modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
+
+			# Preserve the gross route reconciliation, then apply only the country
+			# treasury share after Crown-power and trade-income allocation.
+			save_temporary_scope_value_as = {
+				name = gui_cbp_trade_efficiency_gross_route_money_delta
+				value = scope:gui_cbp_trade_efficiency_route_money_delta
+			}
+			save_temporary_scope_value_as = {
+				name = gui_cbp_trade_efficiency_crown_power_share
+				value = "estate_power(estate_type:crown_estate)"
+			}
+			save_temporary_scope_value_as = {
+				name = gui_cbp_trade_efficiency_trade_income_modifier
+				value = modifier:trade_income
+			}
+			save_temporary_scope_value_as = {
+				name = gui_cbp_trade_efficiency_route_money_delta
+				value = {
+					value = scope:gui_cbp_trade_efficiency_gross_route_money_delta
+					multiply = scope:gui_cbp_trade_efficiency_crown_power_share
+					multiply = scope:gui_cbp_trade_efficiency_trade_income_modifier
+				}
+			}
 			modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
+			save_temporary_scope_value_as = {
+				name = gui_cbp_trade_efficiency_route_money_delta
+				value = scope:gui_cbp_trade_efficiency_gross_route_money_delta
+			}
+
 			modeu5_compute_us20_goods_received_delta = yes
 			modeu5_apply_us20_goods_delta_to_target_market_good = yes
 		}
