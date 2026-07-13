@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  # Mod
  no_void_economy_name: "Community Balance Patch"
  no_void_economy_desc: "A modular balance package for EU5 focused on stock-aware economics, less punitive balancing, and clearer optional gameplay improvements."
@@ -45,10 +45,22 @@ l_english:
  no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings_desc: "Pop consumption starts 20% above vanilla, then the consumption of each good increases or decreases yearly depending on whether supply is met, reflecting population tendencies to adapt consumption habits to supply."
  ## Economic Balance (nve_economic_balance_balance_group) Group
  no_void_economy__nve_economic_balance_tab__nve_economic_balance_balance_group_name: "Economic Balance"
+ no_void_economy___name: "Remove Control Penalty on research (BLOCKED BY PARADOX)"
+ no_void_economy___desc: ""
+ no_void_economy___name: ""
+ no_void_economy___desc: ""
+ ## Mandatory Base (nve_economic_balance_mandatorybase_group) Group
+ no_void_economy__nve_economic_balance_tab__nve_economic_balance_mandatorybase_group_name: "Mandatory Base"
  no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_name: "Reward Local Specialisation"
  no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_desc: "Increases the value of focused local production by raising the production bonus per building level from the vanilla target toward 1.5%, making specialized locations feel more distinct."
  no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings_name: "Balance Marketplace Power"
  no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings_desc: "Reduces marketplace Burgher power from the vanilla target toward 5% so trade buildings no longer create a perverse loop where building more marketplaces can reduce trade revenue."
+ no_void_economy___name: "RGO prices don't scale with Good's Market Price"
+ no_void_economy___desc: ""
+ no_void_economy___name: "Maintenance price stabilisation (BLOCKED BY PARADOX)"
+ no_void_economy___desc: ""
+ no_void_economy___name: "Economy 10% Faster "
+ no_void_economy___desc: ""
 
  # War & Subjects Balance (nve_war_subjects_balance_tab) Tab
  no_void_economy__nve_war_subjects_balance_tab_name: "War & Subjects Balance"
@@ -73,6 +85,10 @@ l_english:
 
  # Debug & Audit (nve_debug_audit_tab) Tab
  no_void_economy__nve_debug_audit_tab_name: "Debug & Audit"
+ ## Misc (nve_debug_audit_misc_group) Group
+ no_void_economy__nve_debug_audit_tab__nve_debug_audit_misc_group_name: "Misc"
+ no_void_economy__nve_debug_audit_misc_review_pop_settings_name: "Review Popup"
+ no_void_economy__nve_debug_audit_misc_review_pop_settings_desc: "Shows one optional, historical-fun-fact reminder asking for a comment or review after 20 February 1524. The popup disables this setting after either answer."
  ## Debug & Audit (nve_debug_audit_debug_audit_group) Group
  no_void_economy__nve_debug_audit_tab__nve_debug_audit_debug_audit_group_name: "Debug & Audit"
  no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_name: "Debug Messages"
@@ -97,10 +113,6 @@ l_english:
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_2_desc: "Keeps more economic detail for markets connected to human-played countries, while limiting saved data elsewhere. Good balance between economic tracking and game smoothness."
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_3_name: "Complete Save - Slow"
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_option_3_desc: "Warning: keeps all monthly economic details for every market. Useful for testing, comparison, or diagnostics, but can strongly reduce smoothness during monthly ticks."
- ## Misc (nve_debug_audit_misc_group) Group
- no_void_economy__nve_debug_audit_tab__nve_debug_audit_misc_group_name: "Misc"
- no_void_economy__nve_debug_audit_misc_review_pop_settings_name: "Review Popup"
- no_void_economy__nve_debug_audit_misc_review_pop_settings_desc: "Shows one optional, historical-fun-fact reminder asking for a comment or review after 20 February 1524. The popup disables this setting after either answer."
 
  # Optional: self-referencing flag keys to suppress IDE warnings (safe to remove if you want)
  no_void_economy: "no_void_economy"
@@ -113,11 +125,12 @@ l_english:
  no_void_economy__nve_general_gameplay_tab__nve_general_gameplay_other_group: "no_void_economy__nve_general_gameplay_tab__nve_general_gameplay_other_group"
  no_void_economy__nve_economic_balance_tab__nve_economic_balance_design_group: "no_void_economy__nve_economic_balance_tab__nve_economic_balance_design_group"
  no_void_economy__nve_economic_balance_tab__nve_economic_balance_balance_group: "no_void_economy__nve_economic_balance_tab__nve_economic_balance_balance_group"
+ no_void_economy__nve_economic_balance_tab__nve_economic_balance_mandatorybase_group: "no_void_economy__nve_economic_balance_tab__nve_economic_balance_mandatorybase_group"
  no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_general_group: "no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_general_group"
  no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_design_group: "no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_design_group"
  no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_balance_group: "no_void_economy__nve_war_subjects_balance_tab__nve_war_subjects_balance_balance_group"
- no_void_economy__nve_debug_audit_tab__nve_debug_audit_debug_audit_group: "no_void_economy__nve_debug_audit_tab__nve_debug_audit_debug_audit_group"
  no_void_economy__nve_debug_audit_tab__nve_debug_audit_misc_group: "no_void_economy__nve_debug_audit_tab__nve_debug_audit_misc_group"
+ no_void_economy__nve_debug_audit_tab__nve_debug_audit_debug_audit_group: "no_void_economy__nve_debug_audit_tab__nve_debug_audit_debug_audit_group"
  no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings: "no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings"
  no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings: "no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings"
  no_void_economy__nve_general_gameplay_gameplay_empire_military_difficulties_settings: "no_void_economy__nve_general_gameplay_gameplay_empire_military_difficulties_settings"
@@ -130,12 +143,15 @@ l_english:
  no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings: "no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings"
  no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings: "no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings"
  no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings: "no_void_economy__nve_economic_balance_balance_marketplace_burgher_power_reduction_settings"
+ no_void_economy__: "no_void_economy__"
+ no_void_economy__: "no_void_economy__"
+ no_void_economy__: "no_void_economy__"
  no_void_economy__nve_war_subjects_balance_general_difficulty_settings: "no_void_economy__nve_war_subjects_balance_general_difficulty_settings"
  no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings: "no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings"
  no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings: "no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings"
  no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings: "no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings"
  no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings: "no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings"
+ no_void_economy__nve_debug_audit_misc_review_pop_settings: "no_void_economy__nve_debug_audit_misc_review_pop_settings"
  no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings: "no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings"
  no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings: "no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings"
  no_void_economy__nve_debug_audit_debug_audit_save_mode_settings: "no_void_economy__nve_debug_audit_debug_audit_save_mode_settings"
- no_void_economy__nve_debug_audit_misc_review_pop_settings: "no_void_economy__nve_debug_audit_misc_review_pop_settings"
