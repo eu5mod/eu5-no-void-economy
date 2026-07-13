@@ -12,5 +12,6 @@ modeu5_economy_rebalance_package_on_game_start = {
 			name = cbp_economy_package_version
 			value = 100
 		}
+		modeu5_apply_us09_base_rgo_size_bonus = yes
 	}
 }

@@ -13,6 +13,7 @@ usage() {
 	printf '\n'
 	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
 	printf 'Install mode removes each existing ModeU5 package directory before copying.\n'
+	printf 'The root gameplay mod is mirrored wholesale, excluding repository-only content.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
 
@@ -61,6 +62,30 @@ package_sources=(
 	"$repo_root/packages/modeu5_war_rebalance"
 	"$repo_root/packages/modeu5_core_tests"
 )
+
+# The root checkout is the future single gameplay mod. Mirror it by default so
+# engine roots such as loading_screen/ cannot be silently forgotten when they
+# are added. Only repository/development content is excluded from publication.
+core_publish_excludes=(
+	"/.git/"
+	"/.github/"
+	"/docs/"
+	"/packages/"
+	"/tools/"
+	"/.modeu5.local.env"
+	"/.modeu5.local.env.template"
+	"/.gitignore"
+	"/AGENTS.md"
+	"/CLAUDE.md"
+	"/README.md"
+	"/README.template.md"
+	"/TEST_PLAN.md"
+)
+
+if ! command -v rsync >/dev/null 2>&1; then
+	printf 'rsync is required to install or check the local package set.\n' >&2
+	exit 1
+fi
 
 if [[ "$action" == "install" ]]; then
 	"$generator"
@@ -133,21 +158,37 @@ reset_destination() {
 			;;
 	esac
 
-	# Removing the whole package root is intentional. rsync --delete only cleans
-	# within copied subdirectories and otherwise leaves stale files from previous
-	# layouts, generated adapters, or packages, causing duplicate database keys.
+	# Removing the whole package root is intentional. It guarantees that renamed
+	# or deleted source files cannot survive in the deployment.
 	rm -rf -- "$destination"
 	mkdir -p "$destination"
+}
+
+rsync_core_payload() {
+	local destination="$1"
+	local -a rsync_args
+	local exclude
+
+	rsync_args=(-a --delete --exclude '.DS_Store')
+	for exclude in "${core_publish_excludes[@]}"; do
+		rsync_args+=(--exclude "$exclude")
+	done
+
+	rsync "${rsync_args[@]}" "$repo_root/" "$destination/"
+}
+
+rsync_companion_payload() {
+	local source="$1"
+	local destination="$2"
+
+	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
 }
 
 install_core() {
 	local destination="$target_root/modeu5_core"
 
 	reset_destination "$destination"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/.metadata/" "$destination/.metadata/"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/in_game/" "$destination/in_game/"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/main_menu/" "$destination/main_menu/"
-	cp "$repo_root/descriptor.mod" "$destination/descriptor.mod"
+	rsync_core_payload "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
 }
@@ -157,9 +198,43 @@ install_companion() {
 	local destination="$2"
 
 	reset_destination "$destination"
-	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
+	rsync_companion_payload "$source" "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
+}
+
+check_payload_mirror() {
+	local package_id="$1"
+	local source="$2"
+	local destination="$3"
+	local expected
+	local drift
+
+	expected="$(mktemp -d)"
+	if [[ "$package_id" == "modeu5_core" ]]; then
+		rsync_core_payload "$expected"
+	else
+		rsync_companion_payload "$source" "$expected"
+	fi
+	normalize_eu5_text_encoding "$expected"
+
+	# Ignore provenance because installed_at_utc is intentionally deployment-specific.
+	drift="$(
+		rsync -ainrc --delete \
+			--no-times --omit-dir-times \
+			--exclude '.DS_Store' \
+			--exclude 'MODEU5_SOURCE.txt' \
+			"$expected/" "$destination/"
+	)"
+	rm -rf -- "$expected"
+
+	if [[ -n "$drift" ]]; then
+		printf 'DRIFT    %s does not mirror its source payload:\n' "$package_id"
+		printf '%s\n' "$drift" | sed 's/^/         /'
+		return 1
+	fi
+
+	return 0
 }
 
 check_packages() {
@@ -168,6 +243,7 @@ check_packages() {
 
 	for index in "${!package_ids[@]}"; do
 		local package_id="${package_ids[$index]}"
+		local source="${package_sources[$index]}"
 		local destination="$target_root/$package_id"
 
 		if [[ ! -f "$destination/descriptor.mod" ]]; then
@@ -217,6 +293,10 @@ check_packages() {
 				! -name 'MODEU5_SOURCE.txt' \
 				-print0
 		)
+
+		if ! check_payload_mirror "$package_id" "$source" "$destination"; then
+			failed=1
+		fi
 	done
 
 	while IFS= read -r -d '' metadata_file; do
@@ -234,11 +314,6 @@ check_packages() {
 if [[ "$action" == "check" ]]; then
 	check_packages
 	exit $?
-fi
-
-if ! command -v rsync >/dev/null 2>&1; then
-	printf 'rsync is required to install the local package set.\n' >&2
-	exit 1
 fi
 
 mkdir -p "$target_root"

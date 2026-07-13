@@ -18,39 +18,41 @@ This mod is born from the desire to fix :
 
 1. ⏳ [Imperial Hurbis](https://github.com/eu5mod/eu5-no-void-economy/issues/112) - Implement Empire Military Difficulties
 2. ⏳ [War Exhaustion a Political Pressure](https://github.com/eu5mod/eu5-no-void-economy/issues/68) - Implement War Impact on a country stability & a governement Legitimacy 
-3. ⏳ [Trade can't be profitable both way](https://github.com/eu5mod/eu5-no-void-economy/issues/118) - Trade profit is de difference of price between market minus logitic cost
-4. ✅ **Countries have own stocks**  - Country have own stocks
+3. ✅ - **Trade Loop Fix** : The trade profit is de difference of price between market minus logitic cost
+4. ✅ **Countries have own stocks** - Country have own stocks
     - incl : ✅ **Only good that are sold generate an income**; Thus reflecting the real economy
     - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)
-    - incl : ⏳ Economy 5% faster  - To compensate revenue loss
-    - incl : ⏳ Redesign the economic Base
 <!-- 5. ❌ (Analysis Needed) Resource persistance, when you annex a subject you inherit Ducat, Debt,  Army & Navy -->
 
 ### Economics Design & Balance ###
 
-#### Design
- - ⏳ Monthly goods decay (1%)
- - ⏳ Supply Influence Pop
+#### Mandatory
+ - ✅ Economy 10% faster
+ - ✅ MarketPlaces gives `5%` Local Burgher Power instead of `10%`
+ - ✅ Production bonus per building level is 1.5% instead of 1% - Further local spécialisation
 
-#### Balance
- - ⏳Production bonus per building level is 1.5% instead of 1% - Further local spécialisqtion
- - ⏳MarketPlaces gives a 5% Local Burgher Power instead of 10% - Fix a perverse effect where the more you build marketplace, the less you have trade revenue
+#### Optional Design Improvements
+ - ❌ Supply Influence Pop [BLOCKED NO MODDING ENDPOINT](https://github.com/eu5mod/eu5-no-void-economy/pull/69)
+ - ⏳ Monthly goods decay (1%)
+ - ⏳ Redesign of The economic Base
+
+#### Optional Balance Improvements
  - Remove Average Control Penalty on research seed - ( ❌ Introduced in 1.3 without modding endpoint )
  - RGO prices don't scale with Good's Market Price - ( ❌ Introduced in 1.2 without modding endpoint )
  - Maintenance price don't increase with time - ( ❌ Introduced in 1.3 without modding endpoint )
 
 ### War & Rebel Design & Balance ###
 
-#### Design
+#### Optional Design Improvements
  - ⏳ Independantist don't start the war Initial Owner get a CB for 12  year
  - ⏳ New "Autonomous Province" type of subject, can be granted to Rebel under specific condition.  
 
-#### Balance
+#### Optional Balance Improvements
  - ⏳ Mercenaty nerf TBD (Maintenance cost or Prestige cost & Gathering speed )
  - ⏳ Rebel threshold adjusted
  - ⏳ Shorter war
 
-⚠️: Want to see option 200, 300 & 301 implemented as well as future balance patches : [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
+⚠️: Want to help us ? [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)

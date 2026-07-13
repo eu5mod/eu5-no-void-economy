@@ -198,6 +198,56 @@ require_match 'name = cbp_war_package_version' \
 	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt \
 	'War package version missing'
 
+us09_prices_file="packages/modeu5_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
+us09_trade_buildings_file="packages/modeu5_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
+us09_rgo_static_modifier_file="packages/modeu5_economy_rebalance/main_menu/common/static_modifiers/modeu5_us09_rgo_static_modifiers.txt"
+us09_rgo_size_effects_file="packages/modeu5_economy_rebalance/in_game/common/scripted_effects/modeu5_us09_rgo_size_effects.txt"
+require_file "$us09_prices_file"
+require_file "$us09_trade_buildings_file"
+require_file "$us09_rgo_static_modifier_file"
+require_file "$us09_rgo_size_effects_file"
+require_match '^# Source: <EU5_GAME_COMMON_DIR>/prices/00_hardcoded\.txt$' \
+	"$us09_prices_file" \
+	'US-09 RGO price override must preserve the vanilla prices file path'
+require_match '^expand_rgo_gathering = \{$' \
+	"$us09_prices_file" \
+	'US-09 RGO price override must contain the vanilla expand_rgo_gathering key'
+require_match '^# US-07 composed trade-building estate-power multiplier: 0\.5$' \
+	"$us09_trade_buildings_file" \
+	'US-09 trade-building override must document the composed US-07 multiplier'
+require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
+	"$us09_trade_buildings_file" \
+	'US-09 trade-building override must compose the approved US-07 local_burghers_estate_power reduction'
+require_match '^[[:space:]]+local_trades_per_burgher = 1\.1$' \
+	"$us09_trade_buildings_file" \
+	'US-09 trade-building override must apply the +10% local_trades_per_burgher compensation'
+require_match '^[[:space:]]+local_merchant_capacity = 1\.1$' \
+	"$us09_trade_buildings_file" \
+	'US-09 trade-building override must apply the +10% local_merchant_capacity compensation'
+require_match '^[[:space:]]+local_max_rgo_size = 0\.2$' \
+	"$us09_rgo_static_modifier_file" \
+	'US-09 base RGO size static modifier must add the flat +0.2 base contribution'
+require_match 'modeu5_apply_us09_base_rgo_size_bonus = yes' \
+	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
+	'US-09 base RGO size bonus must be applied by the Economy package on game start'
+require_match 'every_location_in_the_world = \{' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size effect must iterate every world location through the confirmed iterator'
+require_match '^[[:space:]]*modifier = modeu5_us09_base_rgo_size_10_percent_bonus$' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size effect must apply the generated static modifier'
+
+stale_us09_override_files="$(
+	{
+		find packages/modeu5_economy_rebalance/in_game/common/building_types -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' 2>/dev/null
+		find packages/modeu5_economy_rebalance/in_game/common/prices -maxdepth 1 \( -name 'zzzz_modeu5_us09_expand_rgo_prices.txt' -o -name 'expand_rgo_prices.txt' \) 2>/dev/null
+	} | sort -u
+)"
+if [[ -n "$stale_us09_override_files" ]]; then
+	printf 'US-09 static overrides must preserve vanilla file paths; remove stale duplicate-key files:\n%s\n' "$stale_us09_override_files" >&2
+	exit 1
+fi
+
 generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
 generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
 generated_us00_modifier_localization="main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml"
