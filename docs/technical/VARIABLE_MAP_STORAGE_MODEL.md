@@ -303,6 +303,10 @@ shape:
 ```txt
 modeu5_pop_demand_multiplier                  # archived PR69 probe state
 modeu5_us04_reconciliation_coefficient        # active gameplay coefficient
+modeu5_us04_proxy_estate_size_peasants_estate # active monthly proxy input
+modeu5_us04_proxy_estate_size_burghers_estate
+modeu5_us04_proxy_estate_size_nobles_estate
+modeu5_us04_proxy_estate_size_clergy_estate
 modeu5_us04_reconciliation_requested_quantity
 modeu5_us04_reconciliation_extra_quantity
 modeu5_us04_reconciliation_removed_quantity
@@ -322,10 +326,17 @@ Runtime gameplay reads `modeu5_us04_reconciliation_coefficient`; the vanilla
 `pop_demand x good` injection path is not treated as a reliable source.
 The estate-specific request maps are a diagnostic refinement of the same
 location × good record. They document the desired allocation shape but do not
-authorize production stock or estate mutation while live Pop demand by good is
-unconfirmed. After the PR #167 Estate-level redesign, US-04 fails closed for
-that location/good and logs `location_estate_demand_exposure_not_confirmed`.
-It must not fallback to `peasants_estate` or any other synthetic estate target.
+serve as the production business surface. The active PR #167 production bridge
+is the explicit `modeu5_us04_proxy_estate_size_<estate>` map family, interpreted
+as the Estate-size term in:
+
+```txt
+modeu5_us04_reconciliation_coefficient(location, good)
+× proxy_estate_size_at_location
+```
+
+US-04 must not fallback to `peasants_estate` or any other synthetic estate
+target.
 
 ### Country x market aggregate across goods
 

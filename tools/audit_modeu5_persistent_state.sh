@@ -113,6 +113,10 @@ def is_state_like(name: str) -> bool:
         "modeu5_us04_reconciliation_removed_quantity",
         "modeu5_us04_reconciliation_requested_quantity",
         "modeu5_us04_reconciliation_unsatisfied_quantity",
+        "modeu5_us04_proxy_estate_size_burghers_estate",
+        "modeu5_us04_proxy_estate_size_clergy_estate",
+        "modeu5_us04_proxy_estate_size_nobles_estate",
+        "modeu5_us04_proxy_estate_size_peasants_estate",
         "modeu5_pop_demand_requested_quantity_burghers_estate",
         "modeu5_pop_demand_requested_quantity_clergy_estate",
         "modeu5_pop_demand_requested_quantity_nobles_estate",
@@ -204,6 +208,10 @@ modeu5_pop_demand_unsatisfied_quantity	variable map	monthly location-good ledger
 modeu5_pop_demand_satisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly satisfaction accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
 modeu5_pop_demand_unsatisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly shortage accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
 modeu5_us04_reconciliation_coefficient	variable map	gameplay carryover	location	US-04 initialization and annual adaptation	replace when annual US-04 adaptation runs	durable location-good coefficient
+modeu5_us04_proxy_estate_size_peasants_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_burghers_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_nobles_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_clergy_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
 modeu5_us04_reconciliation_requested_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_extra_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic

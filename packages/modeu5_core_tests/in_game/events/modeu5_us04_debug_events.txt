@@ -69,8 +69,7 @@ modeu5_us04_debug.20 = {
 	}
 }
 
-# PR #167 focused Estate-level accounting probe. This stays blocked until a
-# live location x good x estate demand exposure is confirmed.
+# PR #167 focused Estate-level accounting probe for the active ModeU5 proxy.
 modeu5_us04_debug.60 = {
 	type = country_event
 	outcome = neutral

@@ -11,9 +11,10 @@ deciding what US-04 currently does and what remains blocked.
 Annual adaptation coefficient:         IMPLEMENTED / deterministic fixture PASS
 ModeU5-owned reconciliation coefficient: IMPLEMENTED
 Vanilla pop_demand runtime mutation:    REJECTED FOR PRODUCTION
-Monthly stock reconciliation:           BLOCKED pending TECH-01 149/150
-Estate gold charge:                     CONFIRMED endpoint / not used yet
+Monthly stock reconciliation:           IMPLEMENTED through TECH-01 150 ModeU5 proxy
+Estate gold charge:                     IMPLEMENTED through confirmed country-scope endpoint
 Live location Estate demand by good:    NOT_CONFIRMED
+ModeU5 local Estate proxy:              ACCEPTED / active production bridge
 Peasants fallback:                      REJECTED
 ```
 
@@ -23,9 +24,9 @@ US-04 now has two separate layers:
 1. A yearly ModeU5 coefficient layer.
    This is implemented and safe.
 
-2. A future monthly stock/estate reconciliation layer.
-   This is deliberately fail-closed until exact live location x estate x good
-   demand or a confirmed equivalent can be read.
+2. A monthly stock/estate reconciliation layer.
+   This uses the accepted ModeU5-owned local proxy and stays independent from
+   unconfirmed direct vanilla Estate-demand exposure.
 ```
 
 ## Probe Conclusions
@@ -38,7 +39,8 @@ US-04 now has two separate layers:
 | Observed-current market demand target | PASS as architecture probe | Useful alternative idea, but not exact US-04 Pop x estate demand. |
 | Q9 full `REPLACE:pop_demand` | AMBIGUOUS HISTORICAL RESULT | Not accepted as proof after Q10/Q10b/Q10c failed to reproduce safe runtime responsiveness. |
 | Q10/Q10b/Q10c replacement lifecycle | REJECTED | Runtime replacement is not a viable production path. |
-| `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Blocks stock removal and estate charge. |
+| `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Archived; no longer required for the proxy implementation. |
+| `modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for stock removal and estate charge. |
 
 ## Implemented Coefficient Layer
 
@@ -76,34 +78,35 @@ recreate the `1.20` baseline outside the versioned initialization path.
 
 ## Current Monthly Behavior
 
-The monthly reconciliation helper computes diagnostics, then fails closed:
+The monthly reconciliation helper reads ModeU5-owned local Estate proxy inputs:
 
 ```txt
-requested_quantity = known explicit/test requested quantity
-extra_quantity = requested_quantity x max(0, reconciliation_coefficient - 1)
+estate_requested_quantity =
+  modeu5_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
 
-if TECH-01 149/150 location Estate exposure/proxy is not confirmed:
-    log location_estate_demand_exposure_not_confirmed
-    removed_quantity = 0
-    country_stock_delta = 0
-    market_stock_delta = 0
-    estate_charge = 0
-    do not call modeu5_remove_stock
-    do not call add_gold_to_estate
+estate_extra_quantity =
+  proxy_estate_size_at_location
+  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+
+total_extra_quantity = sum(estate_extra_quantity)
+
+if total_extra_quantity > 0 and stock runtime is ready:
+    call modeu5_remove_stock(reason = consumption)
+    charge known estates through add_gold_to_estate
+    persist requested / extra / removed / unsatisfied / stock-delta diagnostics
 ```
 
-This is intentional. A location x good aggregate cannot tell which estate should
-pay. A fixed `peasants_estate` fallback is rejected because it would be wrong as
-a business rule. A bounded static estate-map bridge is diagnostic/test-only and
-does not authorize production mutation.
+A location x good aggregate alone still cannot tell which estate should pay. A
+fixed `peasants_estate` fallback remains rejected because it would be wrong as a
+business rule. The production bridge is the explicit local Estate-size proxy,
+not a hard-coded fallback Estate.
 
-## Target Future Flow
+## Runtime Flow
 
-Only after TECH-01 149, or the TECH-01 150 proxy, confirms an exact live
-location-level Estate requested-demand-by-good read, the production flow can
-become a pre-US-10 additional-demand preparation pass. This should run before
-US-10 consumption resolution, not as a competing post-US-10 reconciliation
-pass.
+The proxy production flow is a pre-US-10 additional-demand preparation pass. It
+should run before US-10 consumption resolution, not as a competing post-US-10
+reconciliation pass.
 
 The intended traversal is country-owned and market-scoped:
 
@@ -144,8 +147,8 @@ target market = {
 
 It can skip a whole market x good before the owned-location and location-estate
 work. It is a presence/boolean gate, not a quantity source and not an estate
-split. The required correctness gate is still TECH-01 149 direct location
-Estate demand or TECH-01 150 confirmed local proxy calculation.
+split. The active quantity/split bridge is TECH-01 150; TECH-01 149 direct
+location Estate demand remains a future replacement candidate.
 
 The target request-preparation logic is:
 
@@ -159,10 +162,10 @@ for each country x market reached by the monthly country-owned traversal:
             reset estate requested totals
             reset estate extra-demand totals
 
-            preferred #167 path:
+            future preferred path if TECH-01 149 is confirmed:
                 read exact location x good x estate requested quantities
 
-            fallback candidate, only if confirmed:
+            current TECH-01 150 proxy path:
                 modeu5_us04_reconciliation_coefficient(location, good)
                 x proxy_estate_size_at_location
 
@@ -299,44 +302,41 @@ Runtime validation:
 2. Start a fresh disposable campaign.
 3. Let at least one full in-game day pass.
 4. Run: event modeu5_us04_debug.1
-5. Run: ./tools/summarize_modeu5_test_logs.sh --expected none
+5. Run: ./tools/summarize_modeu5_test_logs.sh --expected us04
 6. Review error.log, game.log, debug.log, and system.log.
 ```
 
-Expected US-04 outcome while TECH-01 149/150 is unconfirmed:
+Expected US-04 outcome with the TECH-01 150 proxy path:
 
 ```txt
-ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed
-ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=location_estate_demand_exposure_not_confirmed
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
 ```
 
-Expected blocked reconciliation diagnostics:
+Expected proxy reconciliation diagnostics:
 
 ```txt
 requested > 0
 extra_quantity > 0
-removed_quantity = 0
-unsatisfied_quantity = extra_quantity
-country_stock_delta = 0
-market_stock_delta = 0
-estate_charge = 0
+removed_quantity > 0
+country_stock_delta > 0
+market_stock_delta > 0
+estate_charge > 0
 ```
 
 No parser/database errors related to US-04 are acceptable. Vanilla noise should
 be classified separately from ModeU5 errors.
 
-## Gate For Unblocking
+## Confirmed Proxy Boundary
 
-US-04 stock/estate reconciliation can only move out of blocked status when a
-controlled probe proves all of the following:
+US-04 stock/estate reconciliation is unblocked through the ModeU5 proxy because
+the implementation owns all inputs in the formula:
 
 ```txt
-exact location x good x estate requested quantities can be read, or a confirmed
-  local-consumption proxy can calculate
-  modeu5_us04_reconciliation_coefficient x proxy_estate_size_at_location
-the demand value is exact enough to drive stock removal
-the read is stable in a fresh campaign, after a monthly tick, and after reload
+modeu5_us04_reconciliation_coefficient(location, good)
+× proxy_estate_size_at_location
 ```
 
-Until then, any PR that removes stock or charges estates for US-04 is out of
-scope, even if the annual coefficient fixture passes.
+This does not confirm direct vanilla `location × estate × good` demand exposure.
+That remains future/optional and must not be used in loaded runtime scripts until
+a controlled probe proves it.

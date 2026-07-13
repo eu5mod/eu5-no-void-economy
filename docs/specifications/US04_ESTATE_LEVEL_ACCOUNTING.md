@@ -2,13 +2,22 @@
 
 ## Status
 
-Design specification for a PR stacked on PR #69.
+Design specification for the PR #167 pivot stacked on PR #69.
 
-This branch does not claim that the required EU5 Estate demand exposure is already confirmed. Gameplay implementation remains blocked until the engine-exposure probe defined below succeeds.
+The active MVP no longer depends on a direct vanilla `location × estate × good`
+demand endpoint. US-04 uses a ModeU5-owned local proxy:
+
+```txt
+modeu5_us04_reconciliation_coefficient(location, good)
+× proxy_estate_size_at_location
+```
+
+Direct engine exposure remains a preferred future improvement, but it is no
+longer the merge blocker for the proxy implementation.
 
 ## Objective
 
-Replace the Pop-level accounting dependency in US-04 with an Estate-level accounting contract wherever EU5 exposes actual Estate consumption or requested demand by good.
+Replace the rejected Pop-level write path in US-04 with an Estate-level accounting contract. The current implementation uses ModeU5-owned proxy inputs; a future implementation may replace those inputs with an exact engine exposure if one is confirmed.
 
 The business requirement is not intrinsically:
 
@@ -25,7 +34,7 @@ satisfied quantity
 payment amount
 ```
 
-A direct Estate-level endpoint is preferred over iterating Pops because the Estate is the final payer and because it avoids an expensive `every_pop` aggregation.
+A direct Estate-level endpoint remains preferred over iterating Pops because the Estate is the final payer and because it avoids an expensive `every_pop` aggregation. The current proxy path is intentionally independent from that unconfirmed endpoint.
 
 ## Required granularity
 
@@ -108,11 +117,11 @@ sum(estate_satisfied[e]) = actual stock removed
 
 subject only to documented numeric precision behavior.
 
-## Local Consumption Proxy Candidate
+## Active Local Consumption Proxy
 
-If EU5 does not expose direct Estate requested quantity by good, the next
-candidate is not to allocate a market-level demand downward. It is to estimate
-location-level Estate consumption directly from local consumption pressure:
+Because EU5 does not currently expose a confirmed direct Estate requested
+quantity by good, US-04 estimates location-level Estate consumption directly
+from local consumption pressure:
 
 ```txt
 location_estate_good_consumption =
@@ -129,15 +138,19 @@ country_market_estate_good_requested =
 
 This is a dynamic local-consumption proxy, not a static Estate split. It is
 better than assigning everything to one fallback Estate because it uses the
-location's actual Estate composition and local consumption pressure. It must
-remain blocked for stock or gold mutation until probes confirm:
+location's actual Estate composition and local consumption pressure.
+
+The implemented runtime stores one proxy-size input per supported Estate and
+good on the location. For each Estate:
 
 ```txt
-the ModeU5 coefficient remains `modeu5_us04_reconciliation_coefficient`,
-  seeded at 1.20 and updated yearly by 1.01 / 1.00 / 0.99
-how to derive proxy_estate_size_at_location safely
-the units/scaling between coefficient × size and requested quantity
-stable aggregation across locations in the market
+estate_requested_quantity =
+  modeu5_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
+
+estate_extra_quantity =
+  proxy_estate_size_at_location
+  × max(0, modeu5_us04_reconciliation_coefficient - 1)
 ```
 
 `proxy_estate_size_at_location` may be derived from summed Pops of the matching
@@ -159,11 +172,15 @@ The preferred Estate design applies the multiplier at the narrowest confirmed Es
 estate × country × market × good
 ```
 
-If EU5 exposes Estate demand as read-only but does not permit direct modification, this PR may implement Estate-level stock accounting and payment while leaving vanilla demand adjustment blocked. It must not falsely claim completion of the full original US-04 demand-feedback requirement.
+The proxy path implements Estate-level stock accounting and payment while
+leaving direct vanilla demand modification blocked. It must not falsely claim
+that engine `pop_demand × good` is dynamically modified.
 
 ## Engine-exposure probe
 
-The first implementation phase is a controlled probe, not production gameplay.
+Direct engine exposure probes are archived/historical. They remain useful if we
+later replace the proxy with a live vanilla endpoint, but they are no longer the
+active implementation path.
 
 Candidate surfaces must be tested for at least two goods and at least two Estate types in one market with known demand composition.
 
@@ -184,7 +201,8 @@ Each candidate must be recorded as:
 syntax | probe scenario | observed result | decision
 ```
 
-No candidate may enter production code until the result is causally confirmed.
+No direct vanilla candidate may replace the proxy until the result is causally
+confirmed.
 
 ## Preferred runtime flow
 
@@ -193,7 +211,7 @@ monthly country accounting owner
   -> every relevant market for country
     -> every active good
       -> every owned location in that market
-        -> read location Estate requested quantities
+        -> read ModeU5 location Estate proxy quantities
         -> aggregate to country × market × good × Estate
     -> calculate total request
     -> call centralized stock removal once
@@ -205,7 +223,7 @@ monthly country accounting owner
 The implementation must not add:
 
 ```txt
-every_pop
+every_pop in the monthly US-04 path
 every_location followed by every_pop
 one stock mutation per Estate
 duplicate country-market-good stock removals
@@ -347,7 +365,7 @@ After exposure confirmation:
 
 ## Acceptance criteria
 
-### Exposure phase
+### Future direct-exposure phase
 
 - [ ] At least one Estate-demand-by-good read syntax is causally confirmed.
 - [ ] Country attribution inside a shared market is confirmed.
@@ -355,7 +373,7 @@ After exposure confirmation:
 - [ ] Requested quantity reconciles with an observable vanilla aggregate.
 - [ ] TECH-01 is updated with evidence.
 
-### Accounting phase
+### Proxy accounting phase
 
 - [ ] No `every_pop` dependency remains in the production accounting path.
 - [ ] One centralized stock removal occurs per country-market-good cell.
@@ -365,10 +383,10 @@ After exposure confirmation:
 - [ ] Persistent diagnostics are not used as stock sources of truth.
 - [ ] Static and runtime validation pass.
 
-### Full US-04 completion
+### Full vanilla-demand completion
 
 - [ ] An Estate-level write/multiplier surface causally affects live demand; or
-- [ ] the PR explicitly declares that only accounting/payment was completed and the demand-feedback requirement remains blocked.
+- [ ] the PR explicitly declares that proxy accounting/payment was completed and direct vanilla-demand mutation remains blocked.
 
 ## Non-goals
 

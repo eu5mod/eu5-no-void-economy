@@ -85,6 +85,7 @@ def main() -> int:
     template = read("tools/templates/modeu5_us04_pop_demand_good.template.txt")
     helper_generator = read("tools/generate_us04_pop_demand_helpers.sh")
     pop_demand_effects = read("in_game/common/scripted_effects/modeu5_us04_pop_demand_effects.txt")
+    demand_resolver = read("in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt")
     integration = read("in_game/common/scripted_effects/modeu5_us04_pop_demand_live_integration_effects.txt")
     observed_target = read("in_game/common/scripted_effects/modeu5_us04_observed_current_target_effects.txt")
     on_actions = read("in_game/common/on_action/modeu5_stock_on_actions.txt")
@@ -131,17 +132,20 @@ def main() -> int:
     expect("scope:modeu5_us04_reconciliation_coefficient_present > 0" in annual, "US-04 annual adaptation must require an initialized reconciliation coefficient")
     expect("scope:modeu5_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
     expect("modeu5_write_us04_reconciliation_coefficient_good___GOOD__" in annual, "US-04 annual adaptation must update the active reconciliation coefficient")
-    expect("modeu5_remove_stock" not in monthly_reconciliation, "US-04 monthly reconciliation must not remove stock until location Estate demand or proxy calculation is confirmed")
-    expect("add_gold_to_estate" not in monthly_reconciliation, "US-04 monthly reconciliation must not charge estates until location Estate demand or proxy calculation is confirmed")
-    expect("reason=location_estate_demand_exposure_not_confirmed" in monthly_reconciliation, "US-04 monthly reconciliation must log and block while location Estate demand exposure is unconfirmed")
-    expect('error_log = "ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed' not in monthly_reconciliation, "Expected US-04 fail-closed blocks must not pollute error.log")
-    expect('debug_log = "ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed' in monthly_reconciliation, "Expected US-04 fail-closed blocks must remain visible in debug logs")
+    expect("modeu5_read_us04_monthly_location_proxy_estate_quantities_good___GOOD__" in monthly_reconciliation, "US-04 monthly reconciliation must read ModeU5-owned location Estate proxy inputs")
+    expect("modeu5_us04_proxy_estate_source_present" in monthly_reconciliation, "US-04 monthly reconciliation must distinguish active proxy input from legacy diagnostics")
+    expect("scope:modeu5_us04_proxy_estate_source_present > 0" in monthly_reconciliation, "US-04 stock/estate mutation must require an active proxy source")
+    expect("modeu5_us04_proxy_estate_size_total" in monthly_reconciliation, "US-04 monthly reconciliation must compute the local proxy Estate-size total")
+    expect("modeu5_remove_stock" in monthly_reconciliation, "US-04 monthly reconciliation must remove satisfied proxy demand through the central stock operator")
+    expect("add_gold_to_estate" in monthly_reconciliation, "US-04 monthly reconciliation must charge known Estates through the confirmed country-scope effect")
+    expect("reason=location_estate_demand_exposure_not_confirmed" not in monthly_reconciliation, "US-04 proxy reconciliation must not stay blocked on direct location Estate demand exposure")
     expect("Legacy location x good records" not in monthly_reconciliation, "US-04 monthly reconciliation must not use a legacy no-estate fallback")
-    expect("modeu5_read_country_stock_record" not in monthly_reconciliation, "US-04 monthly reconciliation must not read/mutate stock while location Estate demand exposure is unconfirmed")
-    expect("modeu5_us04_reconciliation_country_stock_delta value = 0" in monthly_reconciliation, "US-04 monthly reconciliation must keep country stock delta at zero while blocked")
-    expect("modeu5_us04_reconciliation_market_stock_delta value = 0" in monthly_reconciliation, "US-04 monthly reconciliation must keep market stock delta at zero while blocked")
+    expect("modeu5_read_country_stock_record" in monthly_reconciliation, "US-04 monthly reconciliation must prove country and market stock deltas after central removal")
     expect("modeu5_read_us04_monthly_location_estate_requested_quantities_good___GOOD__" in template, "US-04 must expose location-level estate requested-demand reads")
     expect("modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__" in template, "US-04 must retain legacy estate requested-demand read alias")
+    for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
+        expect(f"modeu5_us04_proxy_estate_size_{estate}" in template, f"US-04 template must read {estate} proxy size")
+        expect(f"modeu5_record_us04_location_estate_proxy_{estate}" in demand_resolver, f"US-04 resolver must expose {estate} proxy writer")
     expect("demands_goods_by_pops = goods:__GOOD__" in market_monthly_reconciliation, "US-04 market monthly dispatcher must gate each good with documented market Pop-demand presence")
     expect("every_owned_location = {" in market_monthly_reconciliation and "limit = { market = scope:modeu5_us04_reconciliation_market }" in market_monthly_reconciliation, "US-04 market monthly dispatcher must scan only owned locations in the target market after the good gate")
     expect("modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = yes" in market_monthly_reconciliation, "US-04 market monthly dispatcher must delegate to the location-level blocked reconciliation helper")
@@ -176,13 +180,14 @@ def main() -> int:
     expect("every_market_present_in_country = {" in monthly_country_runtime, "US-04 current-country monthly runtime must iterate country markets before goods and locations")
     expect("modeu5_monthly_assess_country_market_estate_consumption_all_goods = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must call the Estate-level market/good-first dispatcher")
     expect("modeu5_monthly_reconcile_location_pop_demand_all_goods = yes" not in monthly_country_runtime, "US-04 current-country monthly runtime must not scan every owned location before the market/good gate")
-    expect("location_estate_demand_exposure_not_confirmed" in debug_test, "US-04 debug test must classify full reconciliation as blocked until location Estate demand exposure is confirmed")
+    expect("active_proxy" in debug_test, "US-04 debug test must classify Estate-level accounting as active proxy reconciliation")
     expect("scenario=us04_estate_level_accounting" in debug_test, "US-04 debug test must include the PR #167 Estate-level accounting probe")
     estate_spec = read("docs/specifications/US04_ESTATE_LEVEL_ACCOUNTING.md")
     expect("modeu5_us04_reconciliation_coefficient(location, good)" in estate_spec, "US-04 Estate spec must document the ModeU5 coefficient-based local consumption proxy")
     expect("proxy_estate_size_at_location" in estate_spec, "US-04 Estate spec must document the Estate size term for the local proxy")
-    expect("blocked_reconciliation_removed_stock" in debug_test, "US-04 debug test must assert that blocked reconciliation removes no stock")
-    expect("blocked_reconciliation_estate_charge" in debug_test, "US-04 debug test must assert that blocked reconciliation charges no estate")
+    expect("reconciliation_removed_stock_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation removes stock")
+    expect("reconciliation_estate_charge_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation charges estates")
+    expect("ModeU5 TEST PASS scenario=us04_estate_level_accounting" in debug_test, "US-04 Estate-level accounting probe must now pass when proxy inputs are present")
 
     combined_candidates = ""
     for candidate_id, syntax_name, good, path, outer, inner, value_ref in CANDIDATES:
@@ -257,7 +262,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("ModeU5 US-04 archived probes and fail-closed reconciliation validation passed")
+    print("ModeU5 US-04 archived probes and proxy reconciliation validation passed")
     return 0
 
 
