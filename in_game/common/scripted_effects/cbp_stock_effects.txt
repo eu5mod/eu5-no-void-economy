@@ -1140,8 +1140,11 @@ cbp_validate_stock_consistency_finalize = {
 # CORE-02
 
 cbp_initialization_clear_last_result = {
-	remove_global_variable = cbp_initialization_failure_detected
-	remove_global_variable = cbp_initialization_failure_code
+	if = {
+		limit = { NOT = { cbp_initialization_failed_trigger = yes } }
+		remove_global_variable = cbp_initialization_failure_detected
+		remove_global_variable = cbp_initialization_failure_code
+	}
 	remove_global_variable = cbp_initialization_market_goods_checked
 	remove_global_variable = cbp_initialization_market_goods_seeded
 	remove_global_variable = cbp_initialization_opening_source_total
@@ -1430,6 +1433,24 @@ cbp_repair_current_schema_runtime_marker = {
 			value = 5
 		}
 		debug_log = "ModeU5 CORE-02 repaired legacy current-schema initialization failure code 21."
+	}
+	else_if = {
+		limit = {
+			has_global_variable = cbp_stock_schema_version
+			global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
+			cbp_initialization_failed_trigger = yes
+			NOT = { has_global_variable = cbp_initialization_failure_detected }
+			NOT = { has_global_variable = cbp_initialization_failure_code }
+		}
+		set_global_variable = {
+			name = cbp_initialization_state
+			value = 2
+		}
+		set_global_variable = {
+			name = cbp_initialization_last_mode
+			value = 6
+		}
+		debug_log = "ModeU5 CORE-02 repaired erased legacy current-schema initialization failure marker."
 	}
 }
 

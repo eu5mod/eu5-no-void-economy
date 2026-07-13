@@ -487,8 +487,11 @@ def validate_game_load_lifecycle_contract(
         "global_var:cbp_initialization_failure_code = 21",
         "remove_global_variable = cbp_initialization_failure_detected",
         "remove_global_variable = cbp_initialization_failure_code",
+        "NOT = { has_global_variable = cbp_initialization_failure_detected }",
+        "NOT = { has_global_variable = cbp_initialization_failure_code }",
         "name = cbp_initialization_state",
         "value = 2",
+        "value = 6",
     ]:
         expect(token in current_schema_repair, f"Current-schema load repair must maintain {token}")
     expect(
