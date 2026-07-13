@@ -23,8 +23,8 @@ install paths.
 the EU5 engine `--debug_mode` launch argument:
 
 ```txt
-false = generated local runtime config enters modeu5_runtime_mode_normal
-true  = generated local runtime config enters modeu5_runtime_mode_debug
+false = generated local runtime config enters cbp_runtime_mode_normal
+true  = generated local runtime config enters cbp_runtime_mode_debug
 ```
 
 Use `false` when comparing performance with normal users. Use `true` only when
@@ -42,8 +42,8 @@ docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md
 
 Short version:
 
-- `tools/modeu5_goods.sh` is the single good registry.
-- per-good generators load it through `tools/modeu5_tool_lib.sh`;
+- `tools/cbp_goods.sh` is the single good registry.
+- per-good generators load it through `tools/cbp_tool_lib.sh`;
 - repeated generated blocks should live in `tools/templates/`;
 - `tools/validate_generators.sh` enforces the convention and is called by
   `tools/validate_module_packages.sh`.
@@ -66,14 +66,14 @@ vanilla source path is configured.
 Generated local runtime config is written to:
 
 ```txt
-in_game/common/scripted_effects/modeu5_local_runtime_config_generated.txt
+in_game/common/scripted_effects/cbp_local_runtime_config_generated.txt
 ```
 
 It is ignored by Git and generated from `.modeu5.local.env`. Do not edit it
 manually.
 
-Any new generated text artifact should follow the `modeu5_*_generated.txt` or
-`modeu5_*_generated_l_english.yml` naming convention so it is ignored by Git and
+Any new generated text artifact should follow the `cbp_*_generated.txt` or
+`cbp_*_generated_l_english.yml` naming convention so it is ignored by Git and
 caught by the generated-file validation guard.
 
 Regenerate only the local runtime config:
@@ -89,9 +89,9 @@ Regenerate only the stock adapters:
 ```
 
 The shell only expands
-`tools/templates/modeu5_stock_good_adapter.template.txt`. Map access remains EU5
+`tools/templates/cbp_stock_good_adapter.template.txt`. Map access remains EU5
 script in that template; shared validation and arithmetic remain in
-`modeu5_stock_effects.txt`.
+`cbp_stock_effects.txt`.
 
 The generated adapters also contain the literal per-good US-11 dirty-list
 names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
@@ -109,14 +109,14 @@ Generate static good transport-cost helpers:
 reads `common/goods/*` and emits one helper per good into:
 
 ```txt
-in_game/common/scripted_effects/modeu5_transport_cost_generated.txt
+in_game/common/scripted_effects/cbp_transport_cost_generated.txt
 ```
 
 The helpers convert a known trade-capacity-like volume into an estimated goods
 quantity:
 
 ```txt
-modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+cbp_computed_goods_quantity = capacity_volume / static transport_cost
 ```
 
 This is a diagnostic capacity-to-quantity conversion, not exact vanilla trade
@@ -125,10 +125,10 @@ generated with `transport_cost = 1` so runtime references fail closed instead
 of calling missing effects.
 
 Do not edit
-`in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
+`in_game/common/scripted_effects/cbp_stock_goods_generated.txt` manually.
 The generated output is ignored by Git and must not be committed. The same rule
-applies to `modeu5_transport_cost_generated.txt` and
-`modeu5_local_runtime_config_generated.txt`. After changing the template,
+applies to `cbp_transport_cost_generated.txt` and
+`cbp_local_runtime_config_generated.txt`. After changing the template,
 goods registry, local-runtime generator, or transport-cost generator, run
 `./tools/generate_all.sh` and then `./tools/validate_module_packages.sh`;
 generation must be idempotent and no physical map identifier may retain `$`.
@@ -136,7 +136,7 @@ generation must be idempotent and no physical map identifier may retain `$`.
 Audit the intentional generated per-good loops:
 
 ```bash
-./tools/audit_modeu5_per_good_loops.sh
+./tools/audit_cbp_per_good_loops.sh
 ```
 
 This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
@@ -147,7 +147,7 @@ inside the generated US-10 monthly trade-signal guard.
 Audit the structured persistent state surface:
 
 ```bash
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ```
 
 This audit classifies ModeU5 persistent variable maps and variable lists. It
@@ -176,7 +176,7 @@ expression. The generated-file workflow runs the check mode in CI.
 Validate scripted-test assertion safety:
 
 ```bash
-./tools/validate_modeu5_script_safety.sh
+./tools/validate_cbp_script_safety.sh
 ```
 
 This check fails on direct variable-to-variable comparisons such as
@@ -190,8 +190,8 @@ The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 
 ```txt
-main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
-main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml
+main_menu/common/static_modifiers/cbp_us00_modifiers_generated.txt
+main_menu/localization/english/cbp_us00_static_modifiers_generated_l_english.yml
 ```
 
 Those static modifiers are unit-sized location modifiers. Runtime code applies
@@ -237,7 +237,7 @@ For a local probe only, you can deliberately target the loaded package:
 MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES=1 ./tools/generate_all.sh
 ```
 
-Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
+Do not edit generated `zzzz_cbp_us09_*.txt` files manually. Do not edit
 installed vanilla files in place.
 
 If no percentage is passed and the shell is interactive, the generator prompts
@@ -264,7 +264,7 @@ When you want to refresh the local mod install before testing:
 After running the broad in-game revalidation event:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 choose:

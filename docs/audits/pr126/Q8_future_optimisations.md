@@ -22,7 +22,7 @@ The items below are follow-up candidates for a later stable branch or dedicated 
 
 ### Finding
 
-`modeu5_prepare_promoted_country_market_capacity` refreshes a selected country-market capacity record from the country capacity pool and the selected market's trade-capacity contribution.
+`cbp_prepare_promoted_country_market_capacity` refreshes a selected country-market capacity record from the country capacity pool and the selected market's trade-capacity contribution.
 
 The current promoted-market path calls this helper once per present country in the promoted market. The helper recalculates the country storage capacity pool before applying it to the current market. That keeps correctness local, but it can repeat country-wide preparation work when the same country appears in multiple promoted markets during the same monthly cycle.
 
@@ -143,13 +143,13 @@ PR7.1 generated wrapper guard
 Keep the public legacy helper as a safe guarded entry point, but extract a body helper that assumes the PR7.1 guard has already passed:
 
 ```txt
-modeu5_process_us00_monthly_market_good_wheat
+cbp_process_us00_monthly_market_good_wheat
   -> legacy guarded entry
 
-modeu5_process_us00_monthly_market_good_wheat_body
+cbp_process_us00_monthly_market_good_wheat_body
   -> heavy body; assumes production / previous-state gate already passed
 
-modeu5_pr71_process_us00_monthly_market_good_wheat
+cbp_pr71_process_us00_monthly_market_good_wheat
   -> PR7.1 guard
   -> body helper
 ```
@@ -221,8 +221,8 @@ PR144 / PR146 currently routes market-local work through a country pulse and use
 
 ```txt
 monthly_country_pulse(country)
-  -> modeu5_run_monthly_stock_cycle
-      -> modeu5_run_monthly_promoted_market_local_cycle
+  -> cbp_run_monthly_stock_cycle
+      -> cbp_run_monthly_promoted_market_local_cycle
           -> every_market_center_in_country
               -> run market-local work for markets whose center is owned by this country
 ```
@@ -392,8 +392,8 @@ A global market pass should allow a later PR to simplify or remove caches whose 
 Potentially simplified:
 
 ```txt
-modeu5_prepare_monthly_market_seen_registry
-modeu5_mark_monthly_market_seen
+cbp_prepare_monthly_market_seen_registry
+cbp_mark_monthly_market_seen
 market-center local-branch owner/seen diagnostics
 anti-duplicate local-market processing guards
 some PR144 dispatcher comparison counters tied to ownership proof
@@ -671,7 +671,7 @@ market-center owner guard micro-optimisations
 monthly market-seen registry tuning
 anti-duplicate caches whose only purpose is country-pulse market ownership
 complex improvements to the current nested diagram shape
-large refactors inside modeu5_run_monthly_promoted_market_local_cycle before the owner is settled
+large refactors inside cbp_run_monthly_promoted_market_local_cycle before the owner is settled
 ```
 
 Those may become throwaway work if the global market pass replaces the market-center branch.

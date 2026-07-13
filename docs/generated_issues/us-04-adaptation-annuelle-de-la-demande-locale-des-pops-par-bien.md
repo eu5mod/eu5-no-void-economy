@@ -26,27 +26,27 @@ location
 Persistent key/value:
 
 ```txt
-modeu5_pop_demand_multiplier[goods:<good>] = coefficient
-modeu5_us04_reconciliation_coefficient[goods:<good>] = active ModeU5 coefficient
-modeu5_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
-modeu5_us04_reconciliation_extra_quantity[goods:<good>] = proxy base × max(0, coefficient - 1)
-modeu5_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
-modeu5_us04_reconciliation_goods_supply_removed_quantity[goods:<good>] = actual extra quantity mirrored to vanilla market supply
-modeu5_us04_reconciliation_restored_quantity[goods:<good>] = stock actually restored for coefficients below 1
-modeu5_us04_reconciliation_goods_supply_added_quantity[goods:<good>] = actual restored quantity mirrored to vanilla market supply
-modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
-modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock change magnitude
-modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock change magnitude
-modeu5_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
-modeu5_us04_reconciliation_estate_refund[goods:<good>] = positive estate refund amount
-modeu5_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
-modeu5_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
-modeu5_us04_reconciliation_estate_charge_<estate>[goods:<good>] = positive charge amount per estate
-modeu5_us04_reconciliation_estate_refund_<estate>[goods:<good>] = positive refund amount per estate
+cbp_pop_demand_multiplier[goods:<good>] = coefficient
+cbp_us04_reconciliation_coefficient[goods:<good>] = active ModeU5 coefficient
+cbp_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
+cbp_us04_reconciliation_extra_quantity[goods:<good>] = proxy base × max(0, coefficient - 1)
+cbp_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
+cbp_us04_reconciliation_goods_supply_removed_quantity[goods:<good>] = actual extra quantity mirrored to vanilla market supply
+cbp_us04_reconciliation_restored_quantity[goods:<good>] = stock actually restored for coefficients below 1
+cbp_us04_reconciliation_goods_supply_added_quantity[goods:<good>] = actual restored quantity mirrored to vanilla market supply
+cbp_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
+cbp_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock change magnitude
+cbp_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock change magnitude
+cbp_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
+cbp_us04_reconciliation_estate_refund[goods:<good>] = positive estate refund amount
+cbp_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
+cbp_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
+cbp_us04_reconciliation_estate_charge_<estate>[goods:<good>] = positive charge amount per estate
+cbp_us04_reconciliation_estate_refund_<estate>[goods:<good>] = positive refund amount per estate
 ```
 
-`modeu5_pop_demand_multiplier` is retained as archived PR69 probe state.
-Runtime gameplay uses `modeu5_us04_reconciliation_coefficient`.
+`cbp_pop_demand_multiplier` is retained as archived PR69 probe state.
+Runtime gameplay uses `cbp_us04_reconciliation_coefficient`.
 
 ## Safety invariant
 
@@ -66,11 +66,11 @@ probes showed that a root-scope `every_location` initializer is not safe enough
 to be the production path.
 
 ```txt
-if global modeu5_us04_multiplier_initialization_version is missing or < 1:
+if global cbp_us04_multiplier_initialization_version is missing or < 1:
     mark initialization version = 1
 
 on country monthly/yearly preparation:
-    if country modeu5_us04_country_multiplier_initialization_version is missing or < 1:
+    if country cbp_us04_country_multiplier_initialization_version is missing or < 1:
         every_owned_location
           -> every supported good helper
              -> missing key: write 1.20
@@ -110,7 +110,7 @@ Historical injection and replacement probes remain archived under:
 ```txt
 docs/audits/pr69/
 docs/audits/pr69/archives/
-packages/modeu5_core_tests_q9/
+packages/cbp_core_tests_q9/
 ```
 
 Current PR #69 source of truth:
@@ -182,16 +182,16 @@ estate_requested_quantity =
 
 current TECH-01 150 proxy path:
 estate_requested_quantity =
-  modeu5_us04_reconciliation_coefficient(location, good)
+  cbp_us04_reconciliation_coefficient(location, good)
   × proxy_estate_size_at_location
 
 estate_extra_quantity =
   proxy_estate_size_at_location
-  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+  × max(0, cbp_us04_reconciliation_coefficient - 1)
 
 estate_restored_quantity =
   proxy_estate_size_at_location
-  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+  × max(0, 1 - cbp_us04_reconciliation_coefficient)
 
 total_extra_quantity =
   sum(estate_extra_quantity for all estates)
@@ -204,9 +204,9 @@ The current monthly hook runs after the monthly stock cycle. Therefore US-04 is
 a signed monthly reconciliation delta, not a second full consumption pass:
 
 ```txt
-coefficient = 1.20 -> remove the additional 20% through modeu5_remove_stock
+coefficient = 1.20 -> remove the additional 20% through cbp_remove_stock
 coefficient = 1.00 -> no stock or vanilla supply correction
-coefficient = 0.99 -> restore 1% through modeu5_add_stock
+coefficient = 0.99 -> restore 1% through cbp_add_stock
 ```
 
 Both central stock calls update country × market × good stock and the market ×
@@ -274,10 +274,10 @@ consumption.
 The legacy bridge maps remain diagnostic/test-only:
 
 ```txt
-modeu5_pop_demand_requested_quantity_peasants_estate
-modeu5_pop_demand_requested_quantity_burghers_estate
-modeu5_pop_demand_requested_quantity_nobles_estate
-modeu5_pop_demand_requested_quantity_clergy_estate
+cbp_pop_demand_requested_quantity_peasants_estate
+cbp_pop_demand_requested_quantity_burghers_estate
+cbp_pop_demand_requested_quantity_nobles_estate
+cbp_pop_demand_requested_quantity_clergy_estate
 ```
 
 These maps are not the production business surface. They are a deterministic
@@ -287,10 +287,10 @@ shape.
 The active production proxy maps are:
 
 ```txt
-modeu5_us04_proxy_estate_size_peasants_estate
-modeu5_us04_proxy_estate_size_burghers_estate
-modeu5_us04_proxy_estate_size_nobles_estate
-modeu5_us04_proxy_estate_size_clergy_estate
+cbp_us04_proxy_estate_size_peasants_estate
+cbp_us04_proxy_estate_size_burghers_estate
+cbp_us04_proxy_estate_size_nobles_estate
+cbp_us04_proxy_estate_size_clergy_estate
 ```
 
 When no proxy or estate-specific source exists for a location/good, US-04 does
@@ -314,23 +314,23 @@ for each relevant country × market:
         read location x estate x good requested quantity
 
       proxy candidate:
-        modeu5_us04_reconciliation_coefficient(location, good)
+        cbp_us04_reconciliation_coefficient(location, good)
         x proxy_estate_size_at_location
 
       after the location-estate calculation:
         if coefficient > 1:
-          consume only the extra satisfied quantity through modeu5_remove_stock
+          consume only the extra satisfied quantity through cbp_remove_stock
           subtract that actual extra delta from vanilla supply
           charge estates only for the satisfied extra quantity
         if coefficient < 1:
-          restore only the below-baseline delta through modeu5_add_stock
+          restore only the below-baseline delta through cbp_add_stock
           add that actual restored delta back to vanilla supply
           refund estates for the restored quantity using the same proxy split
 ```
 
 Do not use raw `pop_size` as a demand proxy and do not fallback to
 `peasants_estate`. `proxy_estate_size_at_location` is only acceptable as the
-size term of the confirmed `modeu5_us04_reconciliation_coefficient × size`
+size term of the confirmed `cbp_us04_reconciliation_coefficient × size`
 formula.
 
 ## Compatibility cleanup
@@ -339,9 +339,9 @@ formula.
 vanilla generator:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
-packages/modeu5_economy_rebalance/in_game/common/script_values/
-modeu5_us04_pop_demand_values_generated.txt
+packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
+packages/cbp_economy_rebalance/in_game/common/script_values/
+cbp_us04_pop_demand_values_generated.txt
 ```
 
 This prevents a stale exact-path override or duplicate production value from
@@ -354,7 +354,7 @@ Use a clean new campaign and let at least one full in-game day pass.
 Run:
 
 ```txt
-event modeu5_us04_debug.1
+event cbp_us04_debug.1
 ```
 
 ### Adaptation and reconciliation fixture
@@ -401,8 +401,8 @@ PASS
 The following probe families are retained as historical evidence only:
 
 ```txt
-event modeu5_us04_debug.1
-event modeu5_us04_q9_debug.1
+event cbp_us04_debug.1
+event cbp_us04_q9_debug.1
 ```
 
 They must not be used as acceptance criteria for production integration.

@@ -12,7 +12,7 @@ As a ModeU5 feature author, I want one atomic transfer operation so ownership or
 
 ## Functional objective
 
-Implement `modeu5_transfer_stock` as one pre-calculated transaction always bounded by seller stock and normally bounded by buyer capacity. It must support an explicit `allow_over_capacity` target policy for CORE-03 succession, same-market ownership transfers, and capacity-enforced inter-market transfers for US-10.2 without implicit loss or trade-economic side effects.
+Implement `cbp_transfer_stock` as one pre-calculated transaction always bounded by seller stock and normally bounded by buyer capacity. It must support an explicit `allow_over_capacity` target policy for CORE-03 succession, same-market ownership transfers, and capacity-enforced inter-market transfers for US-10.2 without implicit loss or trade-economic side effects.
 
 ## Runtime position
 
@@ -28,11 +28,11 @@ Feeds counters to: US-10.2, US-10.3, debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Seller and buyer stock fields | country x market x good | country-scoped per-good stock maps keyed by market | CONFIRMED | 007, 015 |
-| Buyer capacity field | buyer x target market | country-scoped `modeu5_stock_cap_by_market` keyed by target market and shared by all goods | CONFIRMED | 007, 017-018 |
-| Source and target aggregates | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Buyer capacity field | buyer x target market | country-scoped `cbp_stock_cap_by_market` keyed by target market and shared by all goods | CONFIRMED | 007, 017-018 |
+| Source and target aggregates | market x good | global per-good `cbp_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved seller, buyer, source market, target market, and good scopes | CONFIRMED | 008 |
 | Bounded transfer arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
-| Inter-market transfer operation | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
+| Inter-market transfer operation | ModeU5 | `cbp_transfer_stock` | CONFIRMED | 076 |
 | Target capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
 
 ## Persistent storage / variable-map contract
@@ -43,22 +43,22 @@ logical record and fields read/written: seller stock, buyer stock; buyer capacit
 owner scope: seller country and buyer country
 tuple/key: market x good logical tuple; market scope physical key
 confirmed physical map family:
-  modeu5_<good>_stock_by_market
-  modeu5_stock_cap_by_market
+  cbp_<good>_stock_by_market
+  cbp_stock_cap_by_market
 physical value type: numeric
 default value: 0
-write owner: modeu5_transfer_stock for transfer mutations
+write owner: cbp_transfer_stock for transfer mutations
 readers: US-01/UI, US-10.2, US-11
 reset/rebuild lifecycle: durable; affected market caches rebuilt by CORE-01.5
 ```
 
-The source and target market aggregates use `modeu5_<good>_market_stock[market]`. All requested, transferred, unsatisfied, capacity, before/after, and transfer-mode values are transaction-local except for debug or explicitly owned downstream counters.
+The source and target market aggregates use `cbp_<good>_market_stock[market]`. All requested, transferred, unsatisfied, capacity, before/after, and transfer-mode values are transaction-local except for debug or explicitly owned downstream counters.
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
 in_game/events/
 main_menu/localization/english/
 docs/tests/TEST_PLAN.md

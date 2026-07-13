@@ -118,7 +118,7 @@ The monthly runtime rule is:
 1. Identify human-relevant markets.
 2. monthly_country_pulse
    -> every_market_center_in_country
-   -> modeu5_prepare_market_runtime_accounting_mode(market)
+   -> cbp_prepare_market_runtime_accounting_mode(market)
 3. If the market is human-relevant and promoted:
    -> run the normal ModeU5 detailed runtime for that market
    -> use centralized stock operators such as add/remove/transfer/decay through
@@ -155,11 +155,11 @@ Target behavior:
 
 - Prepare per-good meaningful supplier lists for the current market before US-10
   candidate scans. This first safe layer is rebuilt on demand from the existing
-  `modeu5_countries_present_in_market` cache, so it cannot become stale across
+  `cbp_countries_present_in_market` cache, so it cannot become stale across
   market/country movement.
 - Include only countries with meaningful stock or production/balance state for that market/good.
 - Exclude countries that have no stock and no relevant monthly added/requested signal before relation/scoring work.
-- Preserve the all-country `modeu5_countries_present_in_market` scan as a fallback/debug path.
+- Preserve the all-country `cbp_countries_present_in_market` scan as a fallback/debug path.
 - Keep durable invalidation/repair out of this layer unless a later PR introduces
   persisted market x good supplier caches. On-demand rebuild is the safety
   mechanism for now.
@@ -192,28 +192,28 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 
 - Add parser-safe helpers for reading the `nve_no_void_economy_main` CMM setting.
 - Define temporary flags:
-  - `modeu5_nve_main_mode`
-  - `modeu5_performance_mode_enabled`
-  - `modeu5_detailed_country_market_accounting_enabled`
-  - `modeu5_market_level_fallback_required`
+  - `cbp_nve_main_mode`
+  - `cbp_performance_mode_enabled`
+  - `cbp_detailed_country_market_accounting_enabled`
+  - `cbp_market_level_fallback_required`
 - Add debug capture for the resolved mode and accounting decision.
 - Update localization/tooltips so Performance Mode explicitly says it tracks human-relevant market detail only.
 
 Implementation note for the first stacked PR:
 
-- `modeu5_refresh_nve_main_mode_from_cmm_country_scope` derives script-safe
+- `cbp_refresh_nve_main_mode_from_cmm_country_scope` derives script-safe
   `performance`, `normal`, and `deactivated` runtime flags from CMM.
-- Performance Mode refresh rebuilds `modeu5_performance_relevant_markets` from
+- Performance Mode refresh rebuilds `cbp_performance_relevant_markets` from
   human countries with `every_market_present_in_country`.
 - The rebuild is monthly-stamped so `monthly_country_pulse` does not rebuild the
   global human-relevant list once per country.
-- `modeu5_prepare_country_market_accounting_decision` can mark a human-present
+- `cbp_prepare_country_market_accounting_decision` can mark a human-present
   market as human-relevant on demand when it was not yet in the list.
 - CORE-03 owner-change and new-country finalizer hooks opportunistically mark
   new human-relevant markets without waiting for the next monthly rebuild.
-- `modeu5_prepare_country_market_accounting_decision` computes the read-only
+- `cbp_prepare_country_market_accounting_decision` computes the read-only
   country-market decision used by the later mutation and vanilla-fallback gates.
-- `event modeu5_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
+- `event cbp_perf14_debug.1` validates CMM values `1/2/3`, the rebuilt
   human-relevant market list, the non-detailed -> detailed eligibility edge case,
   the positive human market-presence Performance Mode decision, and negative
   Performance Mode decisions for AI countries and human countries in markets not
@@ -231,7 +231,7 @@ other stock-affecting path through the Performance Mode accounting gate, the
 target market must have completed the dedicated promotion initializer:
 
 ```txt
-modeu5_promote_market_to_detailed_accounting = {
+cbp_promote_market_to_detailed_accounting = {
   market = <market>
 
   # no-op if the market is already promoted for the current schema/version
@@ -255,20 +255,20 @@ Promotion requirements:
 
 Implemented boundary:
 
-- `modeu5_detailed_country_market_accounting_enabled` means read-only
+- `cbp_detailed_country_market_accounting_enabled` means read-only
   eligibility only.
-- `modeu5_market_detailed_accounting_promoted_trigger` proves that a market has
+- `cbp_market_detailed_accounting_promoted_trigger` proves that a market has
   completed detailed-accounting promotion in Performance Mode.
-- `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is the
+- `cbp_detailed_country_market_stock_mutation_allowed_trigger` is the
   stricter gate for later stock-affecting paths. In Normal Mode it remains true
   for detailed accounting; in Performance Mode it also requires the promotion
   marker.
-- `modeu5_promote_market_to_detailed_accounting` is idempotent, rebuilds the
+- `cbp_promote_market_to_detailed_accounting` is idempotent, rebuilds the
   market countries-present cache, refreshes country x market capacity for
   present countries, materializes aggregate-only stock into country records by
   capacity share, preserves the market aggregate, and marks affected market-good
   records dirty for later validation.
-- `event modeu5_perf14_debug.1` covers positive aggregate-only promotion,
+- `event cbp_perf14_debug.1` covers positive aggregate-only promotion,
   idempotent re-run, partial-state promotion where some country stock already
   exists, and a negative non-human-relevant market path.
 
@@ -281,34 +281,34 @@ Implemented boundary:
   fallback.
 - Add audit logs for fallback usage without mutating ModeU5 stock maps.
 - Block detailed stock-affecting country x market routing unless
-  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is true, and
+  `cbp_detailed_country_market_stock_mutation_allowed_trigger` is true, and
   select vanilla fallback otherwise.
 
 Second stacked PR boundary:
 
-- `modeu5_prepare_stock_mutation_accounting_mode` is the shared pre-mutation
+- `cbp_prepare_stock_mutation_accounting_mode` is the shared pre-mutation
   gate for future stock-affecting callers.
-- The gate first reuses `modeu5_prepare_country_market_accounting_decision`.
+- The gate first reuses `cbp_prepare_country_market_accounting_decision`.
 - In Normal Mode, it allows detailed country x market mutation immediately.
 - In Performance Mode, the stock-affecting decision is market-level: if the
   target market is human-relevant but has not been promoted, it attempts
-  `modeu5_promote_market_to_detailed_accounting`.
+  `cbp_promote_market_to_detailed_accounting`.
 - If the market is promoted, the gate sets
-  `modeu5_stock_mutation_use_detailed_accounting`.
+  `cbp_stock_mutation_use_detailed_accounting`.
 - If the market is not human-relevant or promotion fails, the gate sets
-  `modeu5_stock_mutation_use_market_level_fallback`. In this master PR, that
+  `cbp_stock_mutation_use_market_level_fallback`. In this master PR, that
   means vanilla fallback, not an aggregate-only ModeU5 mutation operator.
 - If No Void Economy is deactivated, the gate sets
-  `modeu5_stock_mutation_blocked`.
+  `cbp_stock_mutation_blocked`.
 - Once a market is promoted, all country x market stock mutations inside that
   market must use the detailed path, including AI countries, so the market
   aggregate remains a cache of the detailed country records.
-- `modeu5_prepare_market_runtime_accounting_mode` applies the same market-level
+- `cbp_prepare_market_runtime_accounting_mode` applies the same market-level
   rule at monthly dispatch time: promoted human-relevant markets enter ModeU5
   detailed runtime; non-human-relevant or failed-promotion markets use vanilla
   fallback; deactivated mode blocks ModeU5 runtime.
 - US-00 monthly production ingestion and US-10 monthly demand resolution are
-  gated by `modeu5_prepare_market_runtime_accounting_mode`.
+  gated by `cbp_prepare_market_runtime_accounting_mode`.
 - This PR does not yet route US-03, US-17, or US-20 through the gate. Those
   callers must be wired in later stacked PRs and must not use the weaker
   read-only eligibility trigger as mutation permission.
@@ -331,9 +331,9 @@ Second stacked PR boundary:
 
 Implemented boundary for the #119 stack:
 
-- `event modeu5_us10_debug.1` includes `Run US-10 UI visibility summary`.
-- `event modeu5_revalidate_debug.1` includes `scenario=us10_ui_visibility`.
-- `tools/summarize_modeu5_test_logs.sh` prints `ModeU5 US-10-UI ...` lines
+- `event cbp_us10_debug.1` includes `Run US-10 UI visibility summary`.
+- `event cbp_revalidate_debug.1` includes `scenario=us10_ui_visibility`.
+- `tools/summarize_cbp_test_logs.sh` prints `ModeU5 US-10-UI ...` lines
   and bounded US-10 candidate / mutation traces.
 - The visibility layer is read-only and reuses existing stock, capacity,
   outcome, resolver-debug, sparse-supplier, and Performance Mode fallback
@@ -367,7 +367,7 @@ Static/generation:
 ```txt
 ./tools/generate_all.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/normalize_cmm_value_links.sh --check
 python3 ./tools/validate_cmm_configuration.py
 git diff --check
@@ -376,9 +376,9 @@ git diff --check
 Runtime/debug:
 
 ```txt
-event modeu5_us10_debug.1
-event modeu5_revalidate_debug.1
-./tools/summarize_modeu5_test_logs.sh
+event cbp_us10_debug.1
+event cbp_revalidate_debug.1
+./tools/summarize_cbp_test_logs.sh
 ```
 
 New targeted scenarios:

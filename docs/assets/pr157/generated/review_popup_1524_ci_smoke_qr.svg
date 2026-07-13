@@ -55,7 +55,7 @@
   <text x="800" y="840" text-anchor="middle" font-size="36" fill="#38271b" font-family="serif" font-weight="700">CI source-folder smoke SVG</text>
 
 
-  <g id="modeu5_support_qr_overlay" transform="translate(1060 50)">
+  <g id="cbp_support_qr_overlay" transform="translate(1060 50)">
     <rect x="8" y="10" width="430" height="475" rx="14" fill="#3f2b1d" opacity="0.32"/>
     <rect x="0" y="0" width="430" height="475" rx="14" fill="#ead9b8" stroke="#38271b" stroke-width="5"/>
     <rect x="12" y="12" width="406" height="451" rx="10" fill="none" stroke="#7a5433" stroke-width="2" opacity="0.75"/>

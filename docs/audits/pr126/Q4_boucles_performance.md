@@ -14,8 +14,8 @@ There is no separate Target E in the recommended design. Earlier generic market/
 
 | Loop / flow | Trigger | Frequency | Traversed scope | Cache used | Performance risk | Target optimization |
 |---|---|---|---|---|---|---|
-| Country-market capacity refresh | Monthly cycle + capacity hooks | Monthly / event | Countries, present markets | `modeu5_stock_cap_by_market`, country location pool | Medium | Read the country location pool; do not rescan per market/good |
-| Promoted-market candidate registration | Monthly country prep | Monthly | Country → markets present in country | `modeu5_promoted_markets_this_cycle` / candidate work list | Medium if repeated without ownership rules | Candidate discovery may happen per country, but stock-affecting local work must be once per promoted market |
+| Country-market capacity refresh | Monthly cycle + capacity hooks | Monthly / event | Countries, present markets | `cbp_stock_cap_by_market`, country location pool | Medium | Read the country location pool; do not rescan per market/good |
+| Promoted-market candidate registration | Monthly country prep | Monthly | Country → markets present in country | `cbp_promoted_markets_this_cycle` / candidate work list | Medium if repeated without ownership rules | Candidate discovery may happen per country, but stock-affecting local work must be once per promoted market |
 | US-00 production | Promoted-market local branch | Monthly | Promoted market → present countries → active goods | per-good/market ledgers | High if all-good/all-location global | Wire under once-per-promoted-market owner surface and active-good filters |
 | Stock admission | After production | Monthly | Produced country×market×good records | stock/cap maps | Medium | Keep per-good batch through generated adapters |
 | US-10.1 consumption resolution | Monthly cycle or demand | Monthly | Requested country/market/good | stock maps + consumption ledgers | Medium | Same-market consumption only |

@@ -25,7 +25,7 @@ Q8.7 — global market-local dispatcher replacement
 Rejected live shape for now:
 
 ```txt
-modeu5_pr71_process_us10_monthly_market_pending_goods
+cbp_pr71_process_us10_monthly_market_pending_goods
   -> scan all supported goods to determine whether any pending request exists
   -> if any pending exists:
        run the existing generated per-good US-10 dispatcher
@@ -64,32 +64,32 @@ The existing dirty market-country cache writer/consumer surface is promoted from
 Existing producer:
 
 ```txt
-modeu5_mark_market_country_cache_dirty
+cbp_mark_market_country_cache_dirty
 ```
 
 Existing consumer:
 
 ```txt
-modeu5_repair_dirty_market_country_caches
+cbp_repair_dirty_market_country_caches
 ```
 
 New guarded consumer:
 
 ```txt
-modeu5_repair_dirty_market_country_caches_if_needed
+cbp_repair_dirty_market_country_caches_if_needed
 ```
 
 The dirty list remains:
 
 ```txt
-modeu5_market_country_cache_dirty_markets
+cbp_market_country_cache_dirty_markets
 ```
 
 Boundary:
 
 ```txt
-modeu5_countries_present_in_market remains a rebuilt current-market work cache.
-modeu5_market_country_cache_dirty_markets remains scheduling state only.
+cbp_countries_present_in_market remains a rebuilt current-market work cache.
+cbp_market_country_cache_dirty_markets remains scheduling state only.
 No durable per-market country-list cache is introduced.
 TECH-01 row 126 therefore remains NOT_CONFIRMED unless a later PR proves durable keyed storage.
 ```
@@ -101,7 +101,7 @@ Runtime / generator / validation:
 ```txt
 tools/generate_pr71_active_good_dispatch_helpers.sh
 tools/validate_generators.sh
-in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt
+in_game/common/scripted_effects/cbp_market_country_cache_effects.txt
 ```
 
 Q8-owned standards updated after implementation:
@@ -135,16 +135,16 @@ Static validation to run before merge:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 
 Runtime smoke suggested after static checks:
 
 ```txt
-event modeu5_pr126_debug.1
-event modeu5_us10_debug.1
-event modeu5_q8_probe_debug.1
+event cbp_pr126_debug.1
+event cbp_us10_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 Expected interpretation:

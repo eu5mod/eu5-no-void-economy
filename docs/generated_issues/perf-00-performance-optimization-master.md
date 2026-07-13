@@ -90,10 +90,10 @@ Never loop all goods when one good is already known.
 Add and maintain:
 
 ```txt
-modeu5_monthly_markets_seen_this_cycle
-modeu5_monthly_markets_seen_new_count
-modeu5_monthly_markets_seen_duplicate_count
-modeu5_monthly_market_seen_stamp
+cbp_monthly_markets_seen_this_cycle
+cbp_monthly_markets_seen_new_count
+cbp_monthly_markets_seen_duplicate_count
+cbp_monthly_market_seen_stamp
 ```
 
 The registry is reset once per calendar month and populated during the monthly
@@ -133,12 +133,12 @@ failure by itself.
 | PERF-07 - Market-owned runtime pass boundary | Active validation rebuilds the current-market country work cache once per active market, then validates active goods from that prepared cache. | Implemented; validate with the PERF-07 market-owned runtime dump in the US-11 deterministic reconciliation test. |
 | PERF-08 - Shared storage capacity cache | US-02 capacity is persisted once per country-market and read by all generated per-good adapters instead of being recomputed and stored once per good. | Implemented by the shared-capacity PR; validate with US-02 and CORE-01 capacity-enforcement tests. |
 | PERF-09 - Good-neutral US-02 capacity refresh | Shared capacity refresh is hand-authored as a good-neutral effect and no longer routes through `good_wheat` generated helpers. | Implemented by issue #89 follow-up; validate with US-02, CORE-01, CORE-02, and main revalidation tests. |
-| PERF-10 - Per-good loop audit and preservation | `tools/audit_modeu5_per_good_loops.sh` documents and guards the remaining legitimate generated per-good loops while blocking shared-capacity regression. | Implemented; validate with `./tools/validate_module_packages.sh`. |
+| PERF-10 - Per-good loop audit and preservation | `tools/audit_cbp_per_good_loops.sh` documents and guards the remaining legitimate generated per-good loops while blocking shared-capacity regression. | Implemented; validate with `./tools/validate_module_packages.sh`. |
 | PERF-11 - Active-list semantics and repair | Generated active-list repair rebuilds active market-good scheduling lists from stock, aggregate, ledger, and dirty state while ignoring capacity-only maps. | Implemented as debug/maintenance repair; validate through main revalidation's `perf10_13_active_repair_metrics` scenario. |
 | PERF-12 - Market-scope value/link probes | `produced_in_market:<good>`, `stockpile_in_market(goods:<good>)`, and `traded_in_market:<good>` have controlled runtime probes. | Implemented; TECH-01 135 confirms the traded-in-market value syntax and scope, but runtime use belongs to a separate feature PR. |
 | PERF-13 - Batch and metrics layer | Active-list repair emits focused debug metrics only when explicitly invoked by test/debug code. | Implemented for the current bottleneck; metrics remain disabled in normal runtime. |
 | PERF-15 - Narrow US-00 monthly good dispatch | US-00 monthly helpers read the production gate before full record load, use a country-scoped active-record marker for previous-state detection, and avoid loading the same record twice during monthly clear. | Implemented in the PERF-15 PR; validate with main revalidation and US-00 monthly runtime dumps. |
-| PERF-16 - Persistent-state audit | `docs/technical/PERSISTENT_STATE_AUDIT.md` and `tools/audit_modeu5_persistent_state.sh` classify the structured persistent map/list surface before minimal-persistence work starts. | Implemented as static guardrail; validate with `./tools/audit_modeu5_persistent_state.sh` and `./tools/validate_module_packages.sh`. |
+| PERF-16 - Persistent-state audit | `docs/technical/PERSISTENT_STATE_AUDIT.md` and `tools/audit_cbp_persistent_state.sh` classify the structured persistent map/list surface before minimal-persistence work starts. | Implemented as static guardrail; validate with `./tools/audit_cbp_persistent_state.sh` and `./tools/validate_module_packages.sh`. |
 | PERF-17 - Minimal US-00 carryover record | Normal runtime keeps US-00 production penalty and active marker while writing full diagnostic ledger maps only in strict/debug/audit mode. | Implemented as opt-in strict fallback plus minimal default; needs runtime strict/minimal comparison before release validation. |
 | PERF-18 - UI-bound monthly summary counters | Generated per-good UI counters persist current-month surplus and consumption only for human country UI scope, without creating stock/capacity shadow maps. | Implemented as UI counter surface; consumption remains unavailable until US-10 writes a real counter. |
 | PERF-19 - Human-relevant full-ledger policy | Accounting persistence now supports Minimal, Human-Relevant Full Ledger, and Strict Full Ledger; human-relevant mode gates full US-00 diagnostic ledger writes to markets in the human-relevant list. | Implemented as opt-in policy; validate with the CMM save-mode setting and main revalidation. |
@@ -217,7 +217,7 @@ Add `ai-review:ok` only when:
 current country -> every_market_present_in_country -> generated goods
 ```
 
-- `modeu5_monthly_markets_seen_this_cycle` is reset once per month and records
+- `cbp_monthly_markets_seen_this_cycle` is reset once per month and records
   markets encountered by country pulses.
 - Duplicate market encounters are counted but do not suppress country-owned
   processing.
@@ -245,7 +245,7 @@ Runtime:
 Start a disposable campaign.
 Wait until CORE-02 initialization completes.
 Wait at least one monthly tick.
-Run event modeu5_debug.1.
+Run event cbp_debug.1.
 Choose "Test US-11 dirty-record reconciliation".
 ```
 
@@ -261,8 +261,8 @@ ModeU5 US-11 RESULT reconciliation PASS
 Also inspect, when available:
 
 ```txt
-modeu5_monthly_markets_seen_new_count
-modeu5_monthly_markets_seen_duplicate_count
+cbp_monthly_markets_seen_new_count
+cbp_monthly_markets_seen_duplicate_count
 ```
 
 ## Known Limitations

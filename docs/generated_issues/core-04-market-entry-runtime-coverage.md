@@ -29,9 +29,9 @@ The missing runtime coverage is:
 
 This branch implements the explicit runtime migration layer:
 
-- `modeu5_prepare_core04_market_entry_stock_migration` accepts an explicit
+- `cbp_prepare_core04_market_entry_stock_migration` accepts an explicit
   `country`, `source_market`, `target_market`, and `location`;
-- generated per-good helpers move stock through `modeu5_transfer_stock`;
+- generated per-good helpers move stock through `cbp_transfer_stock`;
 - Normal Mode migrates directly;
 - Performance Mode calls the stock-mutation gate and promotes human-relevant
   markets before mutation;
@@ -200,19 +200,19 @@ Safe gate distinction:
 
 ```txt
 read-only eligibility:
-modeu5_detailed_country_market_accounting_enabled_trigger
+cbp_detailed_country_market_accounting_enabled_trigger
 
 stock-affecting mutation permission:
-modeu5_detailed_country_market_stock_mutation_allowed_trigger
+cbp_detailed_country_market_stock_mutation_allowed_trigger
 ```
 
 Relevant existing gates/helpers:
 
 ```txt
-modeu5_prepare_stock_mutation_accounting_mode
-modeu5_detailed_country_market_stock_mutation_allowed_trigger
-modeu5_market_detailed_accounting_promoted_trigger
-modeu5_promote_market_to_detailed_accounting
+cbp_prepare_stock_mutation_accounting_mode
+cbp_detailed_country_market_stock_mutation_allowed_trigger
+cbp_market_detailed_accounting_promoted_trigger
+cbp_promote_market_to_detailed_accounting
 ```
 
 ### Deactivated
@@ -234,17 +234,17 @@ Expected:
 Reuse existing helpers where possible:
 
 ```txt
-modeu5_rebuild_countries_present_in_market
-modeu5_rebuild_and_refresh_country_storage_capacities
-modeu5_recalculate_saved_country_storage_capacities
-modeu5_recalculate_country_market_capacity_shared
-modeu5_calculate_location_storage_capacity
-modeu5_transfer_stock
-modeu5_validate_stock_consistency
-modeu5_promote_market_to_detailed_accounting
-modeu5_prepare_stock_mutation_accounting_mode
-modeu5_detailed_country_market_stock_mutation_allowed_trigger
-modeu5_market_detailed_accounting_promoted_trigger
+cbp_rebuild_countries_present_in_market
+cbp_rebuild_and_refresh_country_storage_capacities
+cbp_recalculate_saved_country_storage_capacities
+cbp_recalculate_country_market_capacity_shared
+cbp_calculate_location_storage_capacity
+cbp_transfer_stock
+cbp_validate_stock_consistency
+cbp_promote_market_to_detailed_accounting
+cbp_prepare_stock_mutation_accounting_mode
+cbp_detailed_country_market_stock_mutation_allowed_trigger
+cbp_market_detailed_accounting_promoted_trigger
 ```
 
 Do not duplicate capacity or allocation formulas. If a reusable storage-share
@@ -254,24 +254,24 @@ than creating a second formula.
 Suggested new helper contracts:
 
 ```txt
-modeu5_country_market_known_trigger = {
+cbp_country_market_known_trigger = {
   country = <country>
   market = <market>
 }
 
-modeu5_mark_country_market_known = {
+cbp_mark_country_market_known = {
   country = <country>
   market = <market>
 }
 
-modeu5_prepare_core04_market_entry_stock_migration = {
+cbp_prepare_core04_market_entry_stock_migration = {
   country = <country>
   source_market = <old market>
   target_market = <new market>
   location = <location>
 }
 
-modeu5_move_country_market_stock_by_storage_share = {
+cbp_move_country_market_stock_by_storage_share = {
   country = <country>
   source_market = <old market>
   target_market = <new market>
@@ -296,7 +296,7 @@ ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=missing_old_new_market_scope
 ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=nve_deactivated
 ```
 
-Update `./tools/summarize_modeu5_test_logs.sh` to include:
+Update `./tools/summarize_cbp_test_logs.sh` to include:
 
 ```txt
 CORE-04 topology diagnostics: <n>
@@ -369,19 +369,19 @@ Add or extend debug event coverage so the following scenarios are explicit:
 ```txt
 ./tools/generate_all.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/normalize_cmm_value_links.sh --check
 python3 ./tools/validate_cmm_configuration.py
-./tools/audit_modeu5_per_good_loops.sh
+./tools/audit_cbp_per_good_loops.sh
 git diff --check
 ```
 
 ## Runtime validation target
 
 ```txt
-event modeu5_core04_debug.1
-event modeu5_perf14_debug.1
-./tools/summarize_modeu5_test_logs.sh
+event cbp_core04_debug.1
+event cbp_perf14_debug.1
+./tools/summarize_cbp_test_logs.sh
 ```
 
 Expected runtime summary should include:

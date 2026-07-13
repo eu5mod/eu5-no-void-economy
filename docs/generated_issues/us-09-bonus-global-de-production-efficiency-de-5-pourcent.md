@@ -81,7 +81,7 @@ Keep the compensation rate configurable in the generator, not hand-edited across
 
 1. Preferred: generate exact-path `common/building_types` output/trade-capacity overrides with configurable `X%`, compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5` reduction, plus exact-path `common/prices/00_hardcoded.txt` overrides for `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` with the matching `gold x (1 / (1 + X))` formula.
 
-   Status: implemented as package-shipped exact-path overrides. Non-vanilla filenames such as `expand_rgo_prices.txt` or `zzzz_modeu5_us09_*` are rejected because they load duplicate keys instead of replacing vanilla definitions.
+   Status: implemented as package-shipped exact-path overrides. Non-vanilla filenames such as `expand_rgo_prices.txt` or `zzzz_cbp_us09_*` are rejected because they load duplicate keys instead of replacing vanilla definitions.
 
 2. Country-level additive-modifier path: read current `global_production_efficiency` and `global_<good>_production_modifier`, then increase them by `5%`.
 
@@ -231,11 +231,11 @@ The implementation should use scaffolding wherever possible.
 Current implemented layer:
 
 ```txt
-modeu5_us09_base_rgo_size_10_percent_bonus
+cbp_us09_base_rgo_size_10_percent_bonus
   local_max_rgo_size = 0.2
 ```
 
-The Economy package applies this static location modifier once at campaign start through `modeu5_apply_us09_base_rgo_size_bonus`. This covers the fixed `10% * base = 0.2` part without using the additive percentage modifier bucket.
+The Economy package applies this static location modifier once at campaign start through `cbp_apply_us09_base_rgo_size_bonus`. This covers the fixed `10% * base = 0.2` part without using the additive percentage modifier bucket.
 
 Deferred scaffold layer:
 
@@ -260,7 +260,7 @@ Since the base Max RGO Size value is not changed directly through defines, the c
 Implemented:
 
 ```txt
-modeu5_us09_base_rgo_size_10_percent_bonus = {
+cbp_us09_base_rgo_size_10_percent_bonus = {
     game_data = {
         category = location
     }
@@ -276,7 +276,7 @@ Implemented:
 ```txt
 every_location_in_the_world = {
     add_location_modifier = {
-        modifier = modeu5_us09_base_rgo_size_10_percent_bonus
+        modifier = cbp_us09_base_rgo_size_10_percent_bonus
         days = -1
         mode = replace
         recalculate_immediately = yes
@@ -346,7 +346,7 @@ Generated files do not require manual editing.
 
 The generated/static output is compatible with the existing package installation pipeline.
 
-The implementation can be validated by checking that the Economy package applies `modeu5_us09_base_rgo_size_10_percent_bonus` through `every_location_in_the_world` at campaign start and that runtime logs do not report an invalid modifier or effect.
+The implementation can be validated by checking that the Economy package applies `cbp_us09_base_rgo_size_10_percent_bonus` through `every_location_in_the_world` at campaign start and that runtime logs do not report an invalid modifier or effect.
 
 ## Validation Scenario
 

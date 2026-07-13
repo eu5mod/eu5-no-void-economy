@@ -11,7 +11,7 @@ template production_view_subtabs {
 		# Hide the vanilla display/employment/automation strip while ModeU5 is active.
 		# This improves vertical coverage without a full production_lateralview override.
 		hbox = {
-			visible = "[Not(GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
+			visible = "[Not(GetVariableSystem.Exists('cbp_us10_stock_tab'))]"
 			layoutpolicy_horizontal = expanding
 			margin = { 2 0 }
 			margin_bottom = 2
@@ -31,7 +31,7 @@ template production_view_subtabs {
 						blockoverride "header_button_full_content"{}
 						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
 						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_LISTS" } } }
-						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 						onclick = "[ProductionView.Vars.Set( 'display', 'lists' )]"
 						down = "[ProductionView.Vars.NotExistOrHasValue( 'display', 'lists' )]"
 						icon = { size = {70% 70%} parentanchor = center texture = "gfx/interface/icons/flat_icons/menu_icon.dds" }
@@ -44,7 +44,7 @@ template production_view_subtabs {
 						blockoverride "header_button_full_content"{}
 						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
 						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_CARDS" } } }
-						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 						onclick = "[ProductionView.Vars.Set( 'display', 'cards' )]"
 						down = "[ProductionView.Vars.HasValue( 'display', 'cards' )]"
 						icon = { size = {70% 70%} parentanchor = center texture = "gfx/interface/icons/flat_icons/menu_icon_square.dds" }
@@ -57,7 +57,7 @@ template production_view_subtabs {
 						blockoverride "header_button_full_content"{}
 						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
 						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_FOREIGN" } } }
-						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 						onclick = "[ProductionView.Vars.Set( 'display', 'foreign' )]"
 						down = "[ProductionView.Vars.HasValue( 'display', 'foreign' )]"
 						icon = { size = {70% 70%} parentanchor = center texture = "[GetConceptTexture('foreign')]" }
@@ -70,7 +70,7 @@ template production_view_subtabs {
 						blockoverride "header_button_full_content"{}
 						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
 						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_ESTATE" } } }
-						onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 						onclick = "[ProductionView.Vars.Set( 'display', 'estate' )]"
 						down = "[ProductionView.Vars.HasValue( 'display', 'estate' )]"
 						icon = {
@@ -88,16 +88,16 @@ template production_view_subtabs {
 						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
 						blockoverride "header_button_full_content"{}
 						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
-						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "modeu5_us10_ui.tab" } } }
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "cbp_us10_ui.tab" } } }
 						onclick = "[ProductionView.Vars.Set( 'display', 'lists' )]"
-						onclick = "[GetVariableSystem.Set('modeu5_us10_stock_tab', 'yes')]"
-						onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
-						down = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+						onclick = "[GetVariableSystem.Set('cbp_us10_stock_tab', 'yes')]"
+						onclick = "[GetScriptedGui('cbp_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('cbp_us10_ui_clicked_market', Market.MakeScope).End)]"
+						down = "[GetVariableSystem.Exists('cbp_us10_stock_tab')]"
 						icon = {
 							size = {70% 70%}
 							parentanchor = center
 							texture = "gfx/interface/icons/flat_icons/menu_icon_square.dds"
-							modify_texture = { visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]" using = color_gold_texture alpha = 0.4 }
+							modify_texture = { visible = "[GetVariableSystem.Exists('cbp_us10_stock_tab')]" using = color_gold_texture alpha = 0.4 }
 						}
 					}
 				}
@@ -172,7 +172,7 @@ template production_view_subtabs {
 			}
 		}
 
-		widget = { using = modeu5_us10_stock_panel }
+		widget = { using = cbp_us10_stock_panel }
 	}
 }
 
@@ -181,7 +181,7 @@ template production_view_poptypes {
 		layoutpolicy_horizontal = expanding
 		spacing = 2
 		margin = { 2 5 }
-		visible = "[And4(Not(GetVariableSystem.Exists('modeu5_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), ProductionView.IsLocationFilterEnabled)]"
+		visible = "[And4(Not(GetVariableSystem.Exists('cbp_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), ProductionView.IsLocationFilterEnabled)]"
 		datamodel = "[GetPopTypes]"
 		datacontext = "[ProductionView.GetSelectedLocation]"
 		item = {
@@ -210,7 +210,7 @@ template production_view_poptypes {
 		layoutpolicy_horizontal = expanding
 		spacing = 2
 		margin = { 2 5 }
-		visible = "[And4(Not(GetVariableSystem.Exists('modeu5_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), Not(ProductionView.IsLocationFilterEnabled))]"
+		visible = "[And4(Not(GetVariableSystem.Exists('cbp_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), Not(ProductionView.IsLocationFilterEnabled))]"
 		datamodel = "[GetPopTypes]"
 		datacontext = "[ProductionView.GetSelectedLocation]"
 		item = {

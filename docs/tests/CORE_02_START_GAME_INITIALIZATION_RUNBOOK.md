@@ -25,7 +25,7 @@ CORE-02 startup/integration tests are delayed by at least one in-game day.
 The implementation is wired as:
 
 ```txt
-on_game_start -> delay = { days = 1 } -> modeu5_start_game_stock_initialization_dispatcher
+on_game_start -> delay = { days = 1 } -> cbp_start_game_stock_initialization_dispatcher
 ```
 
 Do not inspect startup state, run the startup probe, or judge the startup logs
@@ -41,7 +41,7 @@ console tests or reviewing `error.log` and `game.log`.
 4. Open the console and run:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 5. Select:
@@ -86,7 +86,7 @@ Do not treat the boolean PASS markers alone as sufficient evidence if the dump
 is missing or unreadable.
 
 The test fixture injects wheat capacity for FRA and ENG in FRA's capital
-market, seeds a controlled opening quantity through `modeu5_seed_opening_market_good`,
+market, seeds a controlled opening quantity through `cbp_seed_opening_market_good`,
 and verifies:
 
 ```txt
@@ -107,12 +107,12 @@ ENG stock = 90
 Market stock = 150
 ```
 
-Both scenarios must leave `modeu5_initialization_failure_detected` absent and
-must use `modeu5_add_stock` with `capacity_policy = allow_over_capacity`.
+Both scenarios must leave `cbp_initialization_failure_detected` absent and
+must use `cbp_add_stock` with `capacity_policy = allow_over_capacity`.
 
 ## Full startup check
 
-The full `on_game_start -> delay 1 day -> modeu5_start_game_stock_initialization_dispatcher`
+The full `on_game_start -> delay 1 day -> cbp_start_game_stock_initialization_dispatcher`
 path now runs the US-02 country-level capacity pass before opening-stock
 allocation. A clean campaign with positive vanilla opening stock and zero ModeU5
 capacity after that pass is expected to fail closed rather than invent a
@@ -121,9 +121,9 @@ fallback allocation.
 Expected fail-closed markers in that case:
 
 ```txt
-modeu5_initialization_state = -1
-modeu5_initialization_failure_detected = yes
-modeu5_initialization_zero_capacity_failures > 0
+cbp_initialization_state = -1
+cbp_initialization_failure_detected = yes
+cbp_initialization_zero_capacity_failures > 0
 ```
 
 This is not a CORE-02 allocation failure. It means the lifecycle guard is doing
@@ -133,7 +133,7 @@ no eligible recipient.
 Useful startup marker:
 
 ```txt
-modeu5_initialization_capacity_country_scans > 0
+cbp_initialization_capacity_country_scans > 0
 ```
 
 ## Log review
@@ -146,10 +146,10 @@ system.log
 ```
 
 Passing deterministic tests should show the CORE-02 PASS lines in the result
-event and set `modeu5_test_core02_initialization_started`,
-`modeu5_test_core02_initialization_finished`,
-`modeu5_test_core02_proportional_passed`, and
-`modeu5_test_core02_over_capacity_passed`. Console-driven tests may use static
+event and set `cbp_test_core02_initialization_started`,
+`cbp_test_core02_initialization_finished`,
+`cbp_test_core02_proportional_passed`, and
+`cbp_test_core02_over_capacity_passed`. Console-driven tests may use static
 `debug_log` result markers such as `ModeU5 CORE-02 RESULT initialization PASS`.
 They still avoid dynamic numeric `debug_log` dumps unless the affected runbook
 explicitly documents the known localization assertion. Logs remain the source
@@ -159,19 +159,19 @@ temporary test limitation rather than fully log-auditable proof.
 
 The delayed startup path may run from an on-action/root scope that does not
 support ordinary variables. Reconciliation therefore selects a real country as
-`modeu5_reconciliation_controller` before writing debug counters. If `error.log`
+`cbp_reconciliation_controller` before writing debug counters. If `error.log`
 contains `This scope doesn't support variables. Scope: empty` or
 `This scope doesn't support variables. Scope: Market ...` from
-`modeu5_debug_effects.txt` or reconciliation finalization, the controller
+`cbp_debug_effects.txt` or reconciliation finalization, the controller
 selection failed or validation captured a non-variable market scope. The test is
 not clean until the debug counters are written through the country controller.
 
 Failure evidence includes:
 
 ```txt
-Unknown effect modeu5_seed_opening_market_good_<good>
+Unknown effect cbp_seed_opening_market_good_<good>
 Unknown ordered iterator for the residue recipient
-Failed to fetch modeu5_initialization_controller
+Failed to fetch cbp_initialization_controller
 ModeU5 deterministic CORE-02 proportional initialization allocation test failed
 ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed
 ```

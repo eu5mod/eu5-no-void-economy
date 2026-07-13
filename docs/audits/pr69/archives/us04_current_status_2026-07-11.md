@@ -30,7 +30,7 @@ Q8 direct_global_value_block  -> furniture
 Implemented explicit helpers:
 
 ```txt
-in_game/common/scripted_effects/modeu5_us04_observed_current_target_effects.txt
+in_game/common/scripted_effects/cbp_us04_observed_current_target_effects.txt
 ```
 
 Flow:
@@ -40,7 +40,7 @@ observe current engine demand
   -> persist ModeU5 current consumption target by country × market × good
   -> initialize target = observed × 1.20
   -> yearly transition target × 1.01 / 1.00 / 0.99
-  -> feed target into modeu5_resolve_stock_consumption
+  -> feed target into cbp_resolve_stock_consumption
 ```
 
 ### Combined runtime probe
@@ -48,7 +48,7 @@ observe current engine demand
 Implemented explicit test:
 
 ```txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_us04_q7_q8_and_target_architecture_test_effects.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q7_q8_and_target_architecture_test_effects.txt
 ```
 
 Debug option:
@@ -81,7 +81,7 @@ ModeU5 US-04 RESULT observed_current_target PASS|FAIL|BLOCKED
 ## Next runtime command
 
 ```txt
-event modeu5_us04_debug.1
+event cbp_us04_debug.1
 ```
 
 Choose:
@@ -93,5 +93,5 @@ Run Q7/Q8 globals + observed-current target
 Advance four in-game days, then:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh --expected none
+./tools/summarize_cbp_test_logs.sh --expected none
 ```

@@ -68,10 +68,10 @@ cannot accidentally promise unsupported mid-campaign activation.
 The source repository stores the companions under:
 
 ```txt
-packages/modeu5_economy_rebalance/
-packages/modeu5_trade_rebalance/
-packages/modeu5_war_rebalance/
-packages/modeu5_core_tests/
+packages/cbp_economy_rebalance/
+packages/cbp_trade_rebalance/
+packages/cbp_war_rebalance/
+packages/cbp_core_tests/
 ```
 
 EU5 discovers local packages as sibling mod directories, not as selectable
@@ -87,7 +87,7 @@ Each optional companion declares this metadata relationship:
 ```json
 {
   "rel_type": "dependency",
-  "id": "modeu5_core",
+  "id": "cbp_core",
   "display_name": "No Void Economy (NVE)",
   "resource_type": "mod",
   "version": "0.1.*"
@@ -220,7 +220,7 @@ Monthly Stock Check = Off / On
 Save mode = Light / Balanced / Complete
 ```
 
-The selected settings initialize `modeu5_debug_level`, audit mode, and accounting persistence when the campaign starts. They are not in-game toggles.
+The selected settings initialize `cbp_debug_level`, audit mode, and accounting persistence when the campaign starts. They are not in-game toggles.
 
 Do not create a custom in-game configuration panel. In particular, no configuration surface may:
 
@@ -249,20 +249,20 @@ Package presence markers are package-owned:
 
 ```txt
 Core:
-  modeu5_core_package_loaded
-  modeu5_core_package_version
+  cbp_core_package_loaded
+  cbp_core_package_version
 
 Economy companion:
-  modeu5_economy_rebalance_loaded
-  modeu5_economy_package_version
+  cbp_economy_rebalance_loaded
+  cbp_economy_package_version
 
 Trade companion:
-  modeu5_trade_rebalance_loaded
-  modeu5_trade_package_version
+  cbp_trade_rebalance_loaded
+  cbp_trade_package_version
 
 War companion:
-  modeu5_war_rebalance_loaded
-  modeu5_war_package_version
+  cbp_war_rebalance_loaded
+  cbp_war_package_version
 ```
 
 Package version variables are numeric runtime compatibility codes. Release

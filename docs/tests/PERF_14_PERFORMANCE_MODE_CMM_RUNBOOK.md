@@ -81,7 +81,7 @@ It restores the original CMM value before finishing.
 ## Console Command
 
 ```txt
-event modeu5_perf14_debug.1
+event cbp_perf14_debug.1
 ```
 
 Choose:
@@ -241,7 +241,7 @@ Deactivated / nve_no_void_economy_main=3
 After running the event, use:
 
 ```txt
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_test_logs.sh
 ```
 
 The helper now prints separate counts and sections for:
@@ -297,9 +297,9 @@ git diff --check
   US-17, US-20, or other runtime stock mutations through the same gate.
 - Performance Mode fallback is vanilla fallback. It deliberately does not
   implement a market-level aggregate-only ModeU5 mutation operator.
-- This PR implements `modeu5_promote_market_to_detailed_accounting`, but later
+- This PR implements `cbp_promote_market_to_detailed_accounting`, but later
   stock-affecting PRs must still call/check
-  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` before using
+  `cbp_detailed_country_market_stock_mutation_allowed_trigger` before using
   detailed country-market mutation in Performance Mode.
 - The sparse supplier stacked layer emits:
   `ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=<n> sparse=<n> candidates=<n> used=1 fallback=0`.

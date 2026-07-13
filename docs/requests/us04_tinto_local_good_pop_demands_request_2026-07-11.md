@@ -33,7 +33,7 @@ local_furniture_pop_demands = 0.20
 or, for dynamic use through a unit modifier:
 
 ```txt
-modeu5_books_pop_demand_modifier = {
+cbp_books_pop_demand_modifier = {
     local_books_pop_demands = 1
 }
 ```
@@ -42,7 +42,7 @@ then at runtime:
 
 ```txt
 add_location_modifier = {
-    modifier = modeu5_books_pop_demand_modifier
+    modifier = cbp_books_pop_demand_modifier
     size = scope:my_dynamic_books_demand_delta
 }
 ```
@@ -154,7 +154,7 @@ local_horses_pop_demands
 A modifier should be considered sufficient if this works:
 
 ```txt
-modeu5_books_pop_demand_modifier = {
+cbp_books_pop_demand_modifier = {
     local_books_pop_demands = 1
 }
 ```
@@ -163,7 +163,7 @@ and this runtime effect changes only books demand in the target location:
 
 ```txt
 add_location_modifier = {
-    modifier = modeu5_books_pop_demand_modifier
+    modifier = cbp_books_pop_demand_modifier
     size = 0.10
 }
 ```

@@ -5,7 +5,7 @@
 Implemented in PR #160 as a test-package proof only.
 
 ```txt
-event modeu5_q8_probe_debug.9
+event cbp_q8_probe_debug.9
 ```
 
 Scenario marker:
@@ -21,8 +21,8 @@ This is the next Q8.7/F7 step after the Performance Mode relevant-market global 
 The previous proof showed that:
 
 ```txt
-modeu5_performance_relevant_markets
-  == every_market_in_world filtered to modeu5_performance_relevant_markets
+cbp_performance_relevant_markets
+  == every_market_in_world filtered to cbp_performance_relevant_markets
 ```
 
 This proof compares the current live owner shape against the candidate owner shape at the work-shape level:
@@ -31,13 +31,13 @@ This proof compares the current live owner shape against the candidate owner sha
 current owner shape:
   every_country
     -> every_market_center_in_country
-       -> filter market in modeu5_performance_relevant_markets
+       -> filter market in cbp_performance_relevant_markets
        -> rebuild countries_present_in_market
        -> count present-country passes
 
 candidate Q8.7 owner shape:
   every_market_in_world
-    -> filter market in modeu5_performance_relevant_markets
+    -> filter market in cbp_performance_relevant_markets
     -> rebuild countries_present_in_market
     -> count present-country passes
 ```
@@ -93,7 +93,7 @@ A pass still does not authorise a live dispatcher switch. The next step after th
 Runtime:
 
 ```txt
-event modeu5_q8_probe_debug.9
+event cbp_q8_probe_debug.9
 ```
 
 Expected log markers:

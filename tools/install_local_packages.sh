@@ -48,23 +48,23 @@ while (($# > 0)); do
 done
 
 package_ids=(
-	"modeu5_core"
-	"modeu5_economy_rebalance"
-	"modeu5_trade_rebalance"
-	"modeu5_war_rebalance"
-	"modeu5_core_tests"
-	"modeu5_core_tests_q9"
-	"modeu5_core_tests_q11"
+	"cbp_core"
+	"cbp_economy_rebalance"
+	"cbp_trade_rebalance"
+	"cbp_war_rebalance"
+	"cbp_core_tests"
+	"cbp_core_tests_q9"
+	"cbp_core_tests_q11"
 )
 
 package_sources=(
 	"$repo_root"
-	"$repo_root/packages/modeu5_economy_rebalance"
-	"$repo_root/packages/modeu5_trade_rebalance"
-	"$repo_root/packages/modeu5_war_rebalance"
-	"$repo_root/packages/modeu5_core_tests"
-	"$repo_root/packages/modeu5_core_tests_q9"
-	"$repo_root/packages/modeu5_core_tests_q11"
+	"$repo_root/packages/cbp_economy_rebalance"
+	"$repo_root/packages/cbp_trade_rebalance"
+	"$repo_root/packages/cbp_war_rebalance"
+	"$repo_root/packages/cbp_core_tests"
+	"$repo_root/packages/cbp_core_tests_q9"
+	"$repo_root/packages/cbp_core_tests_q11"
 )
 
 # The root checkout is the future single gameplay mod. Mirror it by default so
@@ -154,7 +154,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests|modeu5_core_tests_q9|modeu5_core_tests_q11)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests_q9|cbp_core_tests_q11)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -189,7 +189,7 @@ rsync_companion_payload() {
 }
 
 install_core() {
-	local destination="$target_root/modeu5_core"
+	local destination="$target_root/cbp_core"
 
 	reset_destination "$destination"
 	rsync_core_payload "$destination"
@@ -215,7 +215,7 @@ check_payload_mirror() {
 	local drift
 
 	expected="$(mktemp -d)"
-	if [[ "$package_id" == "modeu5_core" ]]; then
+	if [[ "$package_id" == "cbp_core" ]]; then
 		rsync_core_payload "$expected"
 	else
 		rsync_companion_payload "$source" "$expected"
@@ -277,9 +277,9 @@ check_packages() {
 			failed=1
 		fi
 
-		if [[ "$package_id" == "modeu5_core" ]]; then
-			local pr71_generated="$destination/in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
-			if [[ -f "$pr71_generated" ]] && grep -Eq '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
+		if [[ "$package_id" == "cbp_core" ]]; then
+			local pr71_generated="$destination/in_game/common/scripted_effects/cbp_zz_pr71_active_good_dispatch_generated.txt"
+			if [[ -f "$pr71_generated" ]] && grep -Eq '^cbp_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
 				printf '         stale PR7.1 generated dispatch defines duplicate live effect: %s\n' "$pr71_generated"
 				printf '         run ./tools/generate_all.sh and ./tools/install_local_packages.sh before testing.\n'
 				failed=1

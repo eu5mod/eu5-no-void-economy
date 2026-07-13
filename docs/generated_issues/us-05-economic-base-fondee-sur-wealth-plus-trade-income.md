@@ -12,7 +12,7 @@ As a player, I want Stability and legitimacy-producing Court/Government Power co
 
 ## Functional objective
 
-Replace the Economic Base formula used by Stability Investment and legitimacy-producing Court/Government Power with `modeu5_slider_cost_base = Wealth + Trade Income`. Do not implement monthly reconciliation as an alternative path.
+Replace the Economic Base formula used by Stability Investment and legitimacy-producing Court/Government Power with `cbp_slider_cost_base = Wealth + Trade Income`. Do not implement monthly reconciliation as an alternative path.
 
 ## Module / availability
 
@@ -38,7 +38,7 @@ Feeds counters to: US-05-UI
 | Vanilla slider cost | country/slider | not required by direct formula replacement | OUT_OF_SCOPE | 041 |
 | Monthly trade income | country | `monthly_trade_income` | CONFIRMED | 042 |
 | Country wealth | country | script equivalent to GUI `Country.GetTotalWealth`, or confirmed aggregate | TO_TEST | 043 |
-| Economic Base replacement hook | economy/slider formula context | controlled call site using `modeu5_slider_cost_base = Wealth + monthly_trade_income` | TO_TEST | 044 |
+| Economic Base replacement hook | economy/slider formula context | controlled call site using `cbp_slider_cost_base = Wealth + monthly_trade_income` | TO_TEST | 044 |
 | Visible reconciliation | country/UI | not used by direct formula replacement | OUT_OF_SCOPE | 045 |
 
 ## Files expected to change
@@ -67,7 +67,7 @@ Related US: US-00.4
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not replace the formula when the Rebalance Economy package is absent.
 - Affect only Stability Investment and legitimacy-producing Court/Government Power.
-- Replace the confirmed Economic Base formula/call site with `modeu5_slider_cost_base`.
+- Replace the confirmed Economic Base formula/call site with `cbp_slider_cost_base`.
 - Do not read the final vanilla slider cost merely to reverse-engineer or reconcile it.
 - Do not create a monthly gold/modifier reconciliation path.
 - Do not modify other expected expenses in MVP.

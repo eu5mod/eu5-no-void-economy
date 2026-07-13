@@ -12,9 +12,9 @@ usage() {
 	printf '\n'
 	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
-	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
-	printf 'Use --expected us04 after running only event modeu5_us04_debug.1 option A.\n'
-	printf 'Use --expected us04-estate after running only event modeu5_us04_debug.1 option C.\n'
+	printf 'Use --expected pr126 after running only event cbp_pr126_profile_debug.1 / .2 / cbp_pr126_debug.1.\n'
+	printf 'Use --expected us04 after running only event cbp_us04_debug.1 option A.\n'
+	printf 'Use --expected us04-estate after running only event cbp_us04_debug.1 option C.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -75,7 +75,7 @@ perf14_file="$tmp_dir/perf14_lines"
 us10ui_file="$tmp_dir/us10_ui_lines"
 us04_file="$tmp_dir/us04_lines"
 core04_file="$tmp_dir/core04_lines"
-localization_only_file="$tmp_dir/localization_only_modeu5_lines"
+localization_only_file="$tmp_dir/localization_only_cbp_lines"
 
 cat "${log_files[@]}" > "$all_lines_file"
 
@@ -213,11 +213,11 @@ if [[ ! -s "$scenario_file" ]]; then
 	if [[ -s "$localization_only_file" ]]; then
 		printf 'Only localization-disabled copies of ModeU5 markers were found; inspect debug.log/game.log or enable Debug/Audit output before treating this run as PASS.\n'
 	fi
-	printf 'Run: event modeu5_revalidate_debug.1\n'
-	printf 'For US-04 architecture probes: event modeu5_us04_debug.1\n'
-	printf 'For PR126 dispatcher only: event modeu5_pr126_profile_debug.1; event modeu5_pr126_profile_debug.2; event modeu5_pr126_debug.1\n'
-	printf 'For PERF-14 only: event modeu5_perf14_debug.1\n'
-	printf 'For CORE-04 only: event modeu5_core04_debug.1\n'
+	printf 'Run: event cbp_revalidate_debug.1\n'
+	printf 'For US-04 architecture probes: event cbp_us04_debug.1\n'
+	printf 'For PR126 dispatcher only: event cbp_pr126_profile_debug.1; event cbp_pr126_profile_debug.2; event cbp_pr126_debug.1\n'
+	printf 'For PERF-14 only: event cbp_perf14_debug.1\n'
+	printf 'For CORE-04 only: event cbp_core04_debug.1\n'
 	printf '\n'
 fi
 

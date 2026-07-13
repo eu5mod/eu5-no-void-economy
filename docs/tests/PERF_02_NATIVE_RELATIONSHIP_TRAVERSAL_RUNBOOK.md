@@ -30,7 +30,7 @@ Run from the repository root:
 Expected:
 
 ```txt
-Generated adapters contain modeu5_recalculate_saved_country_market_storage_capacities.
+Generated adapters contain cbp_recalculate_saved_country_market_storage_capacities.
 The shared country storage-capacity wrapper uses every_market_present_in_country
 as the outer loop and goods as the inner generated calls.
 validate_module_packages.sh passes.
@@ -44,7 +44,7 @@ Setup:
 Start a disposable campaign as a country with at least one market.
 Run:
 
-event modeu5_perf02_debug.1
+event cbp_perf02_debug.1
 ```
 
 Expected:
@@ -80,7 +80,7 @@ Run the same probe from a human-controlled country.
 Expected:
 
 ```txt
-modeu5_performance_relevant_markets is populated through native market traversal
+cbp_performance_relevant_markets is populated through native market traversal
 for the current country.
 The list is deduplicated.
 The list is not used as a stock source.

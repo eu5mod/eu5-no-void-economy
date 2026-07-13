@@ -37,7 +37,7 @@ location × good
 Physical representation:
 
 ```txt
-location.variable_map(modeu5_pop_demand_multiplier|goods:<good>)
+location.variable_map(cbp_pop_demand_multiplier|goods:<good>)
 ```
 
 The Pop is the evaluation scope used by vanilla `pop_demand`; it is not an additional persistence dimension.
@@ -58,14 +58,14 @@ PR #69 no longer reads, copies, generates, or overrides Paradox's `pop_demands.t
 The wheat prototype is a tiny tracked database injection:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/goods_demand/
-zz_modeu5_us04_pop_demand_injection_probe.txt
+packages/cbp_economy_rebalance/in_game/common/goods_demand/
+zz_cbp_us04_pop_demand_injection_probe.txt
 ```
 
 ```txt
 INJECT:pop_demand = {
     wheat = {
-        multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+        multiply = "cbp_us04_live_pop_demand_multiplier_wheat"
     }
 }
 ```
@@ -94,14 +94,14 @@ All-good injection is deferred until case A is proven for wheat.
 Tracked file:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/script_values/
-modeu5_us04_pop_demand_injection_values.txt
+packages/cbp_economy_rebalance/in_game/common/script_values/
+cbp_us04_pop_demand_injection_values.txt
 ```
 
 Value:
 
 ```txt
-modeu5_us04_live_pop_demand_multiplier_wheat
+cbp_us04_live_pop_demand_multiplier_wheat
 ```
 
 Contract:
@@ -128,14 +128,14 @@ After the existing one-day startup delay:
 
 ```txt
 on_game_start
-  -> modeu5_start_game_stock_initialization_pulse
-     -> modeu5_initialize_pop_demand_multipliers_once
+  -> cbp_start_game_stock_initialization_pulse
+     -> cbp_initialize_pop_demand_multipliers_once
 ```
 
 Initialization:
 
 ```txt
-if modeu5_us04_multiplier_initialization_version is missing or < 1:
+if cbp_us04_multiplier_initialization_version is missing or < 1:
     every_location
       -> every supported good helper
          -> missing key: write 1.20
@@ -172,9 +172,9 @@ Annual counters reset after the decision reads them.
 `generate_all.sh` removes the abandoned generator outputs if they remain in a local working tree:
 
 ```txt
-packages/modeu5_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
-packages/modeu5_economy_rebalance/in_game/common/script_values/
-modeu5_us04_pop_demand_values_generated.txt
+packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
+packages/cbp_economy_rebalance/in_game/common/script_values/
+cbp_us04_pop_demand_values_generated.txt
 ```
 
 This prevents an old exact-path override or duplicate script value from being installed accidentally.
@@ -211,7 +211,7 @@ It requires:
 Use a clean new campaign and let at least one full in-game day pass:
 
 ```txt
-event modeu5_us04_debug.1
+event cbp_us04_debug.1
 ```
 
 ### 1. Initialization lifecycle

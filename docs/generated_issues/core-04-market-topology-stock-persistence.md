@@ -123,16 +123,16 @@ Do not duplicate capacity or allocation formulas. Reuse existing helpers whereve
 possible:
 
 ```txt
-modeu5_rebuild_countries_present_in_market
-modeu5_rebuild_and_refresh_country_storage_capacities
-modeu5_recalculate_saved_country_storage_capacities
-modeu5_recalculate_country_market_capacity_shared
-modeu5_calculate_location_storage_capacity
-modeu5_transfer_stock
-modeu5_validate_stock_consistency
-modeu5_promote_market_to_detailed_accounting
-modeu5_detailed_country_market_stock_mutation_allowed_trigger
-modeu5_market_detailed_accounting_promoted_trigger
+cbp_rebuild_countries_present_in_market
+cbp_rebuild_and_refresh_country_storage_capacities
+cbp_recalculate_saved_country_storage_capacities
+cbp_recalculate_country_market_capacity_shared
+cbp_calculate_location_storage_capacity
+cbp_transfer_stock
+cbp_validate_stock_consistency
+cbp_promote_market_to_detailed_accounting
+cbp_detailed_country_market_stock_mutation_allowed_trigger
+cbp_market_detailed_accounting_promoted_trigger
 ```
 
 PR #120 now owns Performance Mode aggregate promotion. CORE-04 must not add a
@@ -141,32 +141,32 @@ implementation needs another capacity-share allocator for topology migration,
 extract a reusable helper rather than duplicating the PERF-14 or CORE-02 policy.
 
 Stock-affecting CORE-04 runtime code must not treat
-`modeu5_detailed_country_market_accounting_enabled_trigger` as permission to
+`cbp_detailed_country_market_accounting_enabled_trigger` as permission to
 mutate detailed country x market stock. In Performance Mode, mutation is allowed
-only after `modeu5_detailed_country_market_stock_mutation_allowed_trigger` is
+only after `cbp_detailed_country_market_stock_mutation_allowed_trigger` is
 true.
 
 Suggested helper contracts:
 
 ```txt
-modeu5_country_market_known_trigger = {
+cbp_country_market_known_trigger = {
   country = <country>
   market = <market>
   # true if the country has ever had persisted presence in this market
 }
 
-modeu5_mark_country_market_known = {
+cbp_mark_country_market_known = {
   country = <country>
   market = <market>
 }
 
-modeu5_promote_market_to_detailed_accounting = {
+cbp_promote_market_to_detailed_accounting = {
   market = <market>
   # provided by PERF-14 / PR #120
   # aggregate -> country-record materialization, idempotent
 }
 
-modeu5_move_country_market_stock_by_storage_share = {
+cbp_move_country_market_stock_by_storage_share = {
   country = <country>
   source_market = <old market>
   target_market = <new market>
@@ -239,13 +239,13 @@ allocation policy, but it should not create a separate location stock store.
 For any later stock-affecting CORE-04 implementation, the safe gate is:
 
 ```txt
-modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes
+cbp_detailed_country_market_stock_mutation_allowed_trigger = yes
 ```
 
 The weaker read-only gate is not enough:
 
 ```txt
-modeu5_detailed_country_market_accounting_enabled_trigger = yes
+cbp_detailed_country_market_accounting_enabled_trigger = yes
 ```
 
 ## Persistence invariants
@@ -304,8 +304,8 @@ Additional invariants:
 - Any missing old/new market engine exposure is treated as a blocker, not as a
   guessed stock migration.
 - Performance Mode stock-affecting paths require
-  `modeu5_detailed_country_market_stock_mutation_allowed_trigger`, not only
-  `modeu5_detailed_country_market_accounting_enabled_trigger`.
+  `cbp_detailed_country_market_stock_mutation_allowed_trigger`, not only
+  `cbp_detailed_country_market_accounting_enabled_trigger`.
 
 ## Open exposure questions
 

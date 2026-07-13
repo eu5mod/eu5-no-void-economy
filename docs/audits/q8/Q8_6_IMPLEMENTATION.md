@@ -11,39 +11,39 @@ It does not implement stock repair and does not mutate stock.
 New runtime verifier file:
 
 ```txt
-in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt
+in_game/common/scripted_effects/cbp_market_sliced_verifier_effects.txt
 ```
 
 New configuration trigger:
 
 ```txt
-modeu5_market_sliced_verifier_allowed_trigger
+cbp_market_sliced_verifier_allowed_trigger
   -> debug runtime OR audit runtime
 ```
 
 Entry point:
 
 ```txt
-modeu5_run_market_sliced_verifier_candidates
+cbp_run_market_sliced_verifier_candidates
 ```
 
 Candidate list:
 
 ```txt
-modeu5_market_sliced_verifier_candidate_markets
+cbp_market_sliced_verifier_candidate_markets
 ```
 
 Candidate sources:
 
 ```txt
-modeu5_market_country_cache_dirty_markets
-modeu5_promoted_markets_this_cycle
+cbp_market_country_cache_dirty_markets
+cbp_promoted_markets_this_cycle
 ```
 
 Verifier action per candidate market:
 
 ```txt
-modeu5_rebuild_countries_present_in_market
+cbp_rebuild_countries_present_in_market
 ```
 
 This verifies the current-market country work-cache path for selected markets only.
@@ -51,14 +51,14 @@ This verifies the current-market country work-cache path for selected markets on
 ## Counters
 
 ```txt
-modeu5_market_sliced_verifier_candidates_built
-modeu5_market_sliced_verifier_candidates_checked
-modeu5_market_sliced_verifier_candidates_passed
-modeu5_market_sliced_verifier_candidates_failed
-modeu5_market_sliced_verifier_last_run_skipped
-modeu5_market_sliced_verifier_last_run_empty
-modeu5_market_sliced_verifier_last_run_failed
-modeu5_market_sliced_verifier_last_run_passed
+cbp_market_sliced_verifier_candidates_built
+cbp_market_sliced_verifier_candidates_checked
+cbp_market_sliced_verifier_candidates_passed
+cbp_market_sliced_verifier_candidates_failed
+cbp_market_sliced_verifier_last_run_skipped
+cbp_market_sliced_verifier_last_run_empty
+cbp_market_sliced_verifier_last_run_failed
+cbp_market_sliced_verifier_last_run_passed
 ```
 
 These counters are diagnostic state only.
@@ -83,20 +83,20 @@ Static validation to run before merge:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 
 Runtime smoke suggested after static checks:
 
 ```txt
-event modeu5_q8_probe_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 Debug/audit runtime validation should also call:
 
 ```txt
-modeu5_run_market_sliced_verifier_candidates = yes
+cbp_run_market_sliced_verifier_candidates = yes
 ```
 
 Expected interpretation:

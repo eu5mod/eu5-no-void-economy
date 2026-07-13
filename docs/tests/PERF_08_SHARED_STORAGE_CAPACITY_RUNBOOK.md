@@ -77,10 +77,10 @@ No Void Economy Tests
 The optional rebalance packages may remain enabled, but no older duplicate
 ModeU5 package should be enabled.
 
-If `debug.log` shows `Running console command: modeu5_us02_debug.1` followed by
+If `debug.log` shows `Running console command: cbp_us02_debug.1` followed by
 `Unknown command`, the event ID was entered without the required console
-`event` command. Rerun it as `event modeu5_us02_debug.1`. If the exact command
-`event modeu5_us02_debug.1` reports `not a valid ID`, the `No Void Economy
+`event` command. Rerun it as `event cbp_us02_debug.1`. If the exact command
+`event cbp_us02_debug.1` reports `not a valid ID`, the `No Void Economy
 Tests` package is not loaded or EU5 was not restarted after changing the
 playset.
 
@@ -104,7 +104,7 @@ specific runbook says, then rerun that scenario.
 Instead of running scenarios A-D manually, run:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 Select:
@@ -141,7 +141,7 @@ ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
 After closing EU5, run:
 
 ```bash
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_test_logs.sh
 ```
 
 The script prints entered/pass/fail/blocked counts and the exact scenario lines.
@@ -159,7 +159,7 @@ ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
 Run:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 Select:
@@ -202,7 +202,7 @@ location pool plus current target-market trade capacity.
 Run:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Select:
@@ -229,7 +229,7 @@ ModeU5 CORE-01 RESULT single_record PASS
 Then run:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Select:
@@ -254,7 +254,7 @@ ModeU5 CORE-01 RESULT same_market_transfer PASS
 Then run:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Select:
@@ -275,7 +275,7 @@ Expected `debug.log` line:
 ModeU5 CORE-01 RESULT inter_market_transfer PASS
 ```
 
-These scenarios prove `modeu5_add_stock` and `modeu5_transfer_stock` still read
+These scenarios prove `cbp_add_stock` and `cbp_transfer_stock` still read
 capacity correctly after the per-good capacity maps were removed.
 
 ## Scenario C - CORE-02 Allocation Uses Shared Capacity
@@ -283,7 +283,7 @@ capacity correctly after the per-good capacity maps were removed.
 Run:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Select:
@@ -322,7 +322,7 @@ allocation weight.
 Run:
 
 ```txt
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 ```
 
 Select:
@@ -341,7 +341,7 @@ ModeU5 US-00 RESULT controlled_e2e PASS
 Then wait at least two in-game days and run:
 
 ```txt
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 ```
 
 Select:
@@ -367,7 +367,7 @@ Use only in a disposable save.
 Run:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 Select:
@@ -379,7 +379,7 @@ Probe +10 marketplaces - step 1
 If result is `PENDING`, wait at least one monthly tick, then run:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 Select:
@@ -423,8 +423,8 @@ ModeU5 deterministic CORE-02 proportional initialization allocation test failed
 ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed
 ModeU5 deterministic US-00 controlled pipeline test failed
 ModeU5 deterministic US-00 monthly runtime smoke test failed
-Failed to fetch variable for 'modeu5_<good>_stock_cap_by_market'
-Unknown effect modeu5_recalculate_saved_country_market_storage_capacities_good_wheat
+Failed to fetch variable for 'cbp_<good>_stock_cap_by_market'
+Unknown effect cbp_recalculate_saved_country_market_storage_capacities_good_wheat
 ```
 
 Known tolerated noise:
@@ -445,10 +445,10 @@ Post actual results as a PR comment, not in the PR body:
 Validation for <commit SHA>
 
 Installed provenance:
-- modeu5_core source_branch=perf/storage-capacity-shared-cache
-- modeu5_core source_commit=<commit SHA>
-- modeu5_core source_dirty=no
-- modeu5_core_tests source_commit=<commit SHA>
+- cbp_core source_branch=perf/storage-capacity-shared-cache
+- cbp_core source_commit=<commit SHA>
+- cbp_core source_dirty=no
+- cbp_core_tests source_commit=<commit SHA>
 
 Scenario:
 - Started disposable 1337 campaign as <country>

@@ -33,7 +33,7 @@ Feeds counters to: US-00.3, US-10-UI
 | Monthly produced/rejected ledger outputs | country × market × good | US-00.1 accumulated transaction totals | CONFIRMED | 024, internal |
 | Read keyed ledger entries | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
 | Overproduction record fields | country × market × good | one logical record with `overproduction_ratio` and `effective_overproduction_ratio` fields | CONFIRMED | 025-026, internal |
-| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_overproduction_ratio_by_market` and `modeu5_<good>_effective_overproduction_ratio_by_market` | CONFIRMED | 007, 025 |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `cbp_<good>_overproduction_ratio_by_market` and `cbp_<good>_effective_overproduction_ratio_by_market` | CONFIRMED | 007, 025 |
 | Safe division and clamp | scripted value/effect | `change_variable` with `divide`, `min`, and `max` | CONFIRMED | 026 |
 | Configurable buffer | ModeU5 | scripted/config value | CONFIRMED | internal |
 

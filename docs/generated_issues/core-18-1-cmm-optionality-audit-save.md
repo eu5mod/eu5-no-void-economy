@@ -100,10 +100,10 @@ Feeds counters / gates to:
 | Expose scripted GUI callbacks   | country                               | `cmm_add_scripted_gui` plus `*_on_changed` handlers                                                                                               | TO_TEST   | CMF        |
 | Read CMM setting values         | country-owned CMM map access          | quoted value links such as `"variable_map(cmm|flag:<setting>)"`                                                                                   | TO_TEST   | CMF        |
 | Main NVE service flag           | CMM setting map                       | `no_void_economy__nve_no_void_economy_main` plus alias sync for `activate_no_void_economy`                                                        | TO_TEST   | CMF        |
-| Debug mode                      | global runtime flags                  | `modeu5_enter_normal_runtime_mode`, `modeu5_enter_debug_runtime_mode`, `modeu5_debug_level`                                                       | CONFIRMED | internal   |
-| Audit mode                      | global runtime flags                  | `modeu5_enter_audit_runtime_mode`, `modeu5_audit_enabled_trigger`, `modeu5_full_validation_allowed_trigger`                                       | CONFIRMED | internal   |
-| Accounting persistence policy   | global runtime flags                  | `modeu5_enter_minimal_accounting_persistence`, `modeu5_enter_human_relevant_accounting_persistence`, `modeu5_enter_strict_accounting_persistence` | CONFIRMED | internal   |
-| Human-relevant full ledger gate | global variable list / market scope   | `modeu5_performance_relevant_markets`, `modeu5_human_relevant_full_ledger_market_trigger`                                                         | CONFIRMED | internal   |
+| Debug mode                      | global runtime flags                  | `cbp_enter_normal_runtime_mode`, `cbp_enter_debug_runtime_mode`, `cbp_debug_level`                                                       | CONFIRMED | internal   |
+| Audit mode                      | global runtime flags                  | `cbp_enter_audit_runtime_mode`, `cbp_audit_enabled_trigger`, `cbp_full_validation_allowed_trigger`                                       | CONFIRMED | internal   |
+| Accounting persistence policy   | global runtime flags                  | `cbp_enter_minimal_accounting_persistence`, `cbp_enter_human_relevant_accounting_persistence`, `cbp_enter_strict_accounting_persistence` | CONFIRMED | internal   |
+| Human-relevant full ledger gate | global variable list / market scope   | `cbp_performance_relevant_markets`, `cbp_human_relevant_full_ledger_market_trigger`                                                         | CONFIRMED | internal   |
 | Slow-mode player warnings       | country event                         | `nve_cmm_warning.*` events for slow audit/save settings                                                                                           | TO_TEST   | CMF        |
 
 ## Persistent storage / variable-map contract
@@ -127,15 +127,15 @@ logical record and fields:
     selected value
 
   runtime mode:
-    modeu5_runtime_mode_normal
-    modeu5_runtime_mode_debug
-    modeu5_runtime_mode_audit
-    modeu5_debug_level
+    cbp_runtime_mode_normal
+    cbp_runtime_mode_debug
+    cbp_runtime_mode_audit
+    cbp_debug_level
 
   accounting persistence:
-    modeu5_accounting_persistence_minimal
-    modeu5_accounting_persistence_human_relevant
-    modeu5_accounting_persistence_strict
+    cbp_accounting_persistence_minimal
+    cbp_accounting_persistence_human_relevant
+    cbp_accounting_persistence_strict
 
 owner scope:
   CMF/CMM owns setting variable maps
@@ -199,13 +199,13 @@ docs/generated_issues/us-18-cmf-cmm-a-la-carte-services-log-saving-audit.md
 in_game/common/on_action/nve__cmm_on_actions.txt
 in_game/common/scripted_effects/nve__cmm_effects.txt
 in_game/common/scripted_guis/nve__cmm_scripted_gui.txt
-in_game/common/scripted_effects/modeu5_configuration_effects.txt
-in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
-in_game/common/scripted_effects/modeu5_performance_effects.txt
+in_game/common/scripted_effects/cbp_configuration_effects.txt
+in_game/common/scripted_triggers/cbp_configuration_triggers.txt
+in_game/common/scripted_effects/cbp_performance_effects.txt
 main_menu/localization/english/nve__cmm_l_english.yml
 docs/technical/MODULE_OPTION_MODEL.md
 docs/technical/PERSISTENT_STATE_AUDIT.md
-tools/audit_modeu5_persistent_state.sh
+tools/audit_cbp_persistent_state.sh
 tools/validate_module_packages.sh
 ```
 
@@ -276,8 +276,8 @@ Related US:
 * [ ] NVE callback handling routes recognized CMM setting changes to explicit handlers.
 * [ ] Unknown or unsupported callbacks do not mutate ModeU5 gameplay state.
 * [ ] Default CMM values produce safe defaults: debug off, audit off, minimal/light persistence, planned services disabled/no-op.
-* [ ] Debug Messages = Basic enables basic debug state and `modeu5_debug_level = 1`.
-* [ ] Debug Messages = Detailed enables verbose debug state and `modeu5_debug_level = 2`.
+* [ ] Debug Messages = Basic enables basic debug state and `cbp_debug_level = 1`.
+* [ ] Debug Messages = Detailed enables verbose debug state and `cbp_debug_level = 2`.
 * [ ] Monthly Stock Check = On enables audit/full-validation gates and shows a slow-mode warning.
 * [ ] Save mode = Light selects minimal accounting persistence.
 * [ ] Save mode = Balanced selects human-relevant full-ledger persistence.
@@ -322,7 +322,7 @@ Relevant CMF/CMM parameters:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check

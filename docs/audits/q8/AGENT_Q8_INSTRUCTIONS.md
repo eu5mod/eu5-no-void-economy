@@ -42,7 +42,7 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 7. Do not use `every_trade` outside confirmed country scope.
 8. Do not rely on market-scope variables unless TECH-01 confirms support.
 9. Do not fuse US-10 into the US-00 pass if that breaks the all-present-countries US-00 before any US-10 invariant.
-10. Every new persistent map/list family must be documented and accepted by `tools/audit_modeu5_persistent_state.sh`.
+10. Every new persistent map/list family must be documented and accepted by `tools/audit_cbp_persistent_state.sh`.
 11. Every stacked PR must update the relevant Q8-owned Q-docs in `docs/audits/q8/Q1...Q5...md` when it affects file ownership, cache ownership, redundancy, loop shape, or global flow. If a Q-doc is not affected, state that in the PR body.
 ```
 
@@ -102,7 +102,7 @@ Commands:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 

@@ -3,7 +3,7 @@
 # Custom lateralviews are not registered through OpenLateralView. This file only
 # adds a top-level ModeU5 entry that opens the existing Production lateralview
 # and sets ModeU5 UI state. The actual body is mounted by
-# zz_modeu5_us10_production_subtabs.gui inside Production's internal content flow.
+# zz_cbp_us10_production_subtabs.gui inside Production's internal content flow.
 
 template production_main_tabs {
 	button_main_tab_alt = {
@@ -16,12 +16,12 @@ template production_main_tabs {
 			size = { 100% 100% }
 			name = "tab_buildings"
 		}
-		down = "[And(IsLateralViewOpened('production'), Not(GetVariableSystem.Exists('modeu5_us10_stock_tab')))]"
+		down = "[And(IsLateralViewOpened('production'), Not(GetVariableSystem.Exists('cbp_us10_stock_tab')))]"
 		datacontext = "[GetAutomatedSystemItem4('buildings', 'productionmethods', 'closebuildings', 'subsidizebuildings')]"
 		using = multi_automated_tab
 
 		blockoverride "on_action_left" {
-			on_action = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+			on_action = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 			on_action = "[OpenLateralView('production')]"
 		}
 		blockoverride "on_action_right_title" { title = "TOGGLE_PRODUCTION_AUTOMATION" }
@@ -39,7 +39,7 @@ template production_main_tabs {
 		using = automated_tab
 
 		blockoverride "on_action_left" {
-			on_action = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+			on_action = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 			on_action = "[OpenLateralView('goods_production')]"
 		}
 		blockoverride "text" { text = "EXPAND_RAW_GOODS_TEXT" }
@@ -50,7 +50,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "FOOD_PRODUCTION_TEXT"
 		}
-		onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+		onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 		onclick = "[OpenLateralView('food_production')]"
 		down = "[IsLateralViewOpened('food_production')]"
 		tooltipwidget = {
@@ -63,7 +63,7 @@ template production_main_tabs {
 		blockoverride "tab_text" {
 			text = "game_concept_locations"
 		}
-		onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+		onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 		onclick = "[OpenLateralView('town_rights')]"
 		down = "[IsLateralViewOpened('town_rights')]"
 		tooltipwidget = {
@@ -74,16 +74,16 @@ template production_main_tabs {
 	button_main_tab_alt = {
 		using = layoutpolicy_expanding
 		blockoverride "tab_text" {
-			text = "modeu5_us10_ui.tab"
+			text = "cbp_us10_ui.tab"
 		}
 		# Keep ModeU5 as a sub-mode of the existing production lateralview.
 		# Opening from the top tab cannot access ProductionView.GetSelectedMarket,
 		# so this only refreshes/validates the existing ModeU5 selected market.
 		# The inline Sync button uses the actual Production selected market context.
 		onclick = "[OpenLateralView('production')]"
-		onclick = "[GetVariableSystem.Set('modeu5_us10_stock_tab', 'yes')]"
-		onclick = "[GetScriptedGui('modeu5_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
-		down = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('modeu5_us10_stock_tab'))]"
+		onclick = "[GetVariableSystem.Set('cbp_us10_stock_tab', 'yes')]"
+		onclick = "[GetScriptedGui('cbp_us10_ui_refresh_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
+		down = "[And(IsLateralViewOpened('production'), GetVariableSystem.Exists('cbp_us10_stock_tab'))]"
 		tooltipwidget = {
 			BasicFunctionalTooltip = {}
 		}

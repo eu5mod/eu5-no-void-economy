@@ -40,7 +40,7 @@ grep -hE \
 
 printf '\nRelevant loader/parser errors:\n'
 grep -hEi \
-	'zz_modeu5_us04_probe_|INJECT:pop_demand|TRY_INJECT:pop_demand|INJECT_OR_CREATE:pop_demand|duplicate|duplicated key|database entry|parse error|failed to read' \
+	'zz_cbp_us04_probe_|INJECT:pop_demand|TRY_INJECT:pop_demand|INJECT_OR_CREATE:pop_demand|duplicate|duplicated key|database entry|parse error|failed to read' \
 	"${log_files[@]}" \
 	| grep -v 'Tried to localize with localization disabled' \
 	|| true

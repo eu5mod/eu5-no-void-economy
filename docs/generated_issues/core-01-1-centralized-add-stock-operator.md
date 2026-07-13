@@ -12,7 +12,7 @@ As a ModeU5 feature author, I want one policy-aware add operation so normal prod
 
 ## Functional objective
 
-Implement `modeu5_add_stock` as the only operation that adds goods to stock. It must default to capacity enforcement for production, support an explicit `allow_over_capacity` policy for CORE-02 initialization, calculate outputs before mutation, and update the country source stock and market aggregate by the same actual quantity.
+Implement `cbp_add_stock` as the only operation that adds goods to stock. It must default to capacity enforcement for production, support an explicit `allow_over_capacity` policy for CORE-02 initialization, calculate outputs before mutation, and update the country source stock and market aggregate by the same actual quantity.
 
 ## Runtime position
 
@@ -27,12 +27,12 @@ Feeds counters to: US-00.1, debug, CORE-01.6
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
-| Country capacity field | country x market | country-scoped `modeu5_stock_cap_by_market` keyed by market and shared by all goods | CONFIRMED | 007, 017 |
+| Country stock field | country x market x good | country-scoped `cbp_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
+| Country capacity field | country x market | country-scoped `cbp_stock_cap_by_market` keyed by market and shared by all goods | CONFIRMED | 007, 017 |
 | Available capacity | transaction | `max(0, stock_cap - stock)` | CONFIRMED | 018, 026 |
-| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Market aggregate | market x good | global per-good `cbp_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
-| Add/reject outputs | transaction | `modeu5_actual_added_quantity`, `modeu5_rejected_quantity` | CONFIRMED | 022-023 |
+| Add/reject outputs | transaction | `cbp_actual_added_quantity`, `cbp_rejected_quantity` | CONFIRMED | 022-023 |
 | Capacity policy | transaction | `enforce` or explicitly authorized `allow_over_capacity` | CONFIRMED | 099 |
 
 ## Persistent storage / variable-map contract
@@ -44,23 +44,23 @@ logical record field written: stock
 owner scope: country
 tuple/key: market x good logical tuple; market scope physical key
 confirmed physical map family:
-  modeu5_<good>_stock_by_market
-  modeu5_stock_cap_by_market
+  cbp_<good>_stock_by_market
+  cbp_stock_cap_by_market
 physical value type: numeric
 default value: 0
-write owner: modeu5_add_stock for additions; other CORE operators for their mutations
+write owner: cbp_add_stock for additions; other CORE operators for their mutations
 readers: US-00.1, US-01/UI, US-03, US-10, US-11
 reset/rebuild lifecycle: stock is durable and never reset; market cache is rebuilt by CORE-01.5
 ```
 
-The market aggregate is stored separately in the global `modeu5_<good>_market_stock[market]` map because Market scope does not support variables. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
+The market aggregate is stored separately in the global `cbp_<good>_market_stock[market]` map because Market scope does not support variables. Requested, actual, rejected, before/after, and saved scopes remain transaction-local except for configured debug snapshots.
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/script_values/modeu5_stock_values.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/script_values/cbp_stock_values.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
 in_game/events/
 main_menu/localization/english/
 docs/tests/TEST_PLAN.md
@@ -145,7 +145,7 @@ rejected_quantity = 30
 country stock after = 100
 market stock after = 100
 stock difference after = 0
-mutation_effect_called = modeu5_add_stock
+mutation_effect_called = cbp_add_stock
 ```
 
 ### Authorized initialization policy

@@ -38,7 +38,7 @@ TOOL_ROOT = ROOT / "tools"
 EU5_SUFFIXES = {".txt", ".gui"}
 TOOL_SUFFIXES = {".py", ".sh"}
 TARGET_PREFIXES = ("gui_cbp_", "test_cbp_", "cbp_")
-LEGACY_PREFIXES = ("modeu5_", "nve_")
+LEGACY_PREFIXES = ("cbp_", "nve_")
 IDENT = r"[A-Za-z_][A-Za-z0-9_$]*"
 
 # External framework, vanilla, and generator-placeholder variables are not
@@ -70,15 +70,15 @@ EXTERNAL_VARIABLE_NAMES = {
 # names. EU5 context replacement renames only the variable form. Generic tool
 # replacement excludes them so script-value references remain unchanged.
 SCRIPT_OBJECT_OVERLAPS = {
-    "modeu5_buying_selling_efficiency_clamped",
-    "modeu5_trade_efficiency_old_price_side_bonus",
-    "modeu5_trade_efficiency_route_money_delta",
-    "modeu5_trade_efficiency_route_quantity",
+    "cbp_buying_selling_efficiency_clamped",
+    "cbp_trade_efficiency_old_price_side_bonus",
+    "cbp_trade_efficiency_route_money_delta",
+    "cbp_trade_efficiency_route_quantity",
 }
 
 # Two distinct legacy US-10 test variables otherwise collapse to the same target.
 EXPLICIT_TARGET_NAMES = {
-    "modeu5_test_us10_ui_visibility_blocked":
+    "cbp_test_us10_ui_visibility_blocked":
         "gui_cbp_us10_ui_visibility_result_blocked",
 }
 
@@ -260,7 +260,7 @@ def is_gui_path(path: Path) -> bool:
 
 def is_test_path(path: Path) -> bool:
     relative = path.relative_to(ROOT).as_posix().lower()
-    return relative.startswith("packages/modeu5_core_tests/")
+    return relative.startswith("packages/cbp_core_tests/")
 
 
 def is_future_gui(name: str) -> bool:

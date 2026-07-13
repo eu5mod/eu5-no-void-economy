@@ -44,9 +44,9 @@ location_cache[location] = {
 This is also not acceptable:
 
 ```txt
-modeu5_location_owner_$location_id$
-modeu5_location_market_$location_id$
-modeu5_location_capacity_$location_id$
+cbp_location_owner_$location_id$
+cbp_location_market_$location_id$
+cbp_location_capacity_$location_id$
 ```
 
 Those forms either rely on nested/structured values or runtime-built map names.
@@ -56,15 +56,15 @@ Those forms either rely on nested/structured values or runtime-built map names.
 A per-location cache is only compatible if represented as a fixed map family:
 
 ```txt
-global map: modeu5_location_cached_owner_by_location
+global map: cbp_location_cached_owner_by_location
   key:   location scope
   value: country scope
 
-global map: modeu5_location_cached_market_by_location
+global map: cbp_location_cached_market_by_location
   key:   location scope
   value: market scope
 
-global map: modeu5_location_cached_capacity_by_location
+global map: cbp_location_cached_capacity_by_location
   key:   location scope
   value: number
 ```
@@ -139,7 +139,7 @@ There are two possible strategies:
 
 ```txt
 Option A — cached-market comparison
-  store modeu5_location_cached_market_by_location
+  store cbp_location_cached_market_by_location
   daily rolling verifier compares current location.market to cached market
   if changed, dirty old market and new market
 

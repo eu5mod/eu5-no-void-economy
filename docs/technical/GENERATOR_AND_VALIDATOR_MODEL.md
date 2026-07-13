@@ -9,19 +9,19 @@ delivery mechanism, not a place to hide business rules.
 The canonical ModeU5 good registry is:
 
 ```txt
-tools/modeu5_goods.sh
+tools/cbp_goods.sh
 ```
 
 Per-good generators must load that registry through:
 
 ```bash
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_goods_registry
-goods=("${modeu5_goods[@]}")
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_goods_registry
+goods=("${cbp_goods[@]}")
 ```
 
 Generators must not carry their own literal good arrays. If the ModeU5 good
-surface changes, update `tools/modeu5_goods.sh` once and regenerate.
+surface changes, update `tools/cbp_goods.sh` once and regenerate.
 
 Static good metadata may be read from vanilla files when a local
 `EU5_GAME_COMMON_DIR` is configured. If a vanilla source is unavailable,
@@ -44,10 +44,10 @@ but the generated script shape should be reviewable as a template.
 Current template surface:
 
 ```txt
-tools/templates/modeu5_stock_good_adapter.template.txt
-tools/templates/modeu5_good_transport_helper.template.txt
-tools/templates/modeu5_us10_stock_table_row.template.gui
-tools/templates/modeu5_us10_market_production_good.template.txt
+tools/templates/cbp_stock_good_adapter.template.txt
+tools/templates/cbp_good_transport_helper.template.txt
+tools/templates/cbp_us10_stock_table_row.template.gui
+tools/templates/cbp_us10_market_production_good.template.txt
 ```
 
 Templates use static placeholders:
@@ -61,7 +61,7 @@ __TRANSPORT_COST__
 Render templates through:
 
 ```bash
-modeu5_render_template_to_stdout "$template" "GOOD=$good"
+cbp_render_template_to_stdout "$template" "GOOD=$good"
 ```
 
 The shared renderer fails if an unresolved `__TOKEN__` remains. This keeps
@@ -72,7 +72,7 @@ broken generated identifiers from silently reaching runtime.
 Common generator and validator helpers live in:
 
 ```txt
-tools/modeu5_tool_lib.sh
+tools/cbp_tool_lib.sh
 ```
 
 This file owns:
@@ -103,8 +103,8 @@ The main package validator runs:
 That validator enforces:
 
 - required templates exist;
-- main generators use `tools/modeu5_tool_lib.sh`;
-- per-good generators load `tools/modeu5_goods.sh`;
+- main generators use `tools/cbp_tool_lib.sh`;
+- per-good generators load `tools/cbp_goods.sh`;
 - no generator carries a private literal good list.
 
 `./tools/validate_module_packages.sh` then regenerates temporary artifacts and

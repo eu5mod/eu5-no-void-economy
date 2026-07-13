@@ -1,5 +1,5 @@
 {
-	"id": "modeu5_war_rebalance",
+	"id": "cbp_war_rebalance",
 	"name": "NVE : Early Blobbing balance patch (Optional)",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
@@ -12,7 +12,7 @@
 	"relationships": [
 		{
 			"rel_type": "dependency",
-			"id": "modeu5_core",
+			"id": "cbp_core",
 			"display_name": "No Void Economy (NVE)",
 			"resource_type": "mod",
 			"version": "0.1.*"

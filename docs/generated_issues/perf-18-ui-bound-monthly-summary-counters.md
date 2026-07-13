@@ -12,8 +12,8 @@ values.
 
 Issue #94 selects a minimal normal-runtime UI surface:
 
-- `modeu5_<good>_ui_monthly_surplus_by_market`
-- `modeu5_<good>_ui_monthly_consumption_by_market`
+- `cbp_<good>_ui_monthly_surplus_by_market`
+- `cbp_<good>_ui_monthly_consumption_by_market`
 
 The latest US-10-UI reference is:
 
@@ -50,9 +50,9 @@ or stock-over-capacity values.
 ## Acceptance Criteria
 
 - [ ] Generated adapters include
-      `modeu5_<good>_ui_monthly_surplus_by_market`.
+      `cbp_<good>_ui_monthly_surplus_by_market`.
 - [ ] Generated adapters include
-      `modeu5_<good>_ui_monthly_consumption_by_market`.
+      `cbp_<good>_ui_monthly_consumption_by_market`.
 - [ ] UI counters are country-scoped and market-keyed.
 - [ ] UI counters are written only for human country scope when an explicit
       US-10/debug writer provides current-month values.
@@ -68,7 +68,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check
@@ -77,7 +77,7 @@ git diff --check
 Runtime smoke:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 Select "Revalidate main operations"
 ```
 

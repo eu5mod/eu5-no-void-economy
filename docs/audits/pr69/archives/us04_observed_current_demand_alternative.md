@@ -73,14 +73,14 @@ country × market × good
 store:
 
 ```txt
-modeu5_current_pop_consumption_target[good]
+cbp_current_pop_consumption_target[good]
 ```
 
 Initialization:
 
 ```txt
 observed_engine_demand = goods_demand_in_market(goods:<good>)
-modeu5_current_pop_consumption_target[good] = observed_engine_demand × 1.20
+cbp_current_pop_consumption_target[good] = observed_engine_demand × 1.20
 ```
 
 Yearly update:

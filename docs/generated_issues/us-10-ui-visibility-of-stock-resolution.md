@@ -55,7 +55,7 @@ player-facing ModeU5 stock tab in the production interface.
 Implemented player-facing surface:
 
 - the production tab set gains a `ModeU5 Stocks` tab opening the custom
-  lateralview alias `zz_modeu5_us10_stock` derived from the GUI file name;
+  lateralview alias `zz_cbp_us10_stock` derived from the GUI file name;
 - the tab has the required columns:
   `Good`, `Country Stocks`, `Market Stocks`, `Overproduction`,
   `Production Efficiency`;
@@ -74,7 +74,7 @@ Implemented player-facing surface:
 
 Implemented read-model support:
 
-- `modeu5_us10_ui_prepare_current_market_table` populates country-owned UI
+- `cbp_us10_ui_prepare_current_market_table` populates country-owned UI
   display variables from canonical ModeU5 records;
 - market selection is backed by a non-authoritative work list built through
   `every_market_present_in_country`;
@@ -82,9 +82,9 @@ Implemented read-model support:
 
 Implemented debug support:
 
-- `event modeu5_us10_debug.1` -> `Run US-10 UI visibility summary`;
-- `event modeu5_revalidate_debug.1` includes `scenario=us10_ui_visibility`;
-- `tools/summarize_modeu5_test_logs.sh` prints the dedicated
+- `event cbp_us10_debug.1` -> `Run US-10 UI visibility summary`;
+- `event cbp_revalidate_debug.1` includes `scenario=us10_ui_visibility`;
+- `tools/summarize_cbp_test_logs.sh` prints the dedicated
   `ModeU5 US-10-UI ...` lines, including `ModeU5 US-10-UI TABLE`;
 - audit logs expose bounded candidate and mutation traces, including bucket,
   score, stock, selected/actual quantity, remaining quantity, exclusion reason
@@ -108,11 +108,11 @@ in_game/localization/
 in_game/common/scripted_effects/
 in_game/common/scripted_guis/
 in_game/gui/
-packages/modeu5_core_tests/in_game/
+packages/cbp_core_tests/in_game/
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
-tools/summarize_modeu5_test_logs.sh
+tools/summarize_cbp_test_logs.sh
 ```
 
 ## Dependencies

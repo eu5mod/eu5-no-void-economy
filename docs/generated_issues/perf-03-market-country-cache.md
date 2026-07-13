@@ -53,13 +53,13 @@ economic relationship.
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt
-in_game/common/scripted_effects/modeu5_core03_succession_effects.txt
-in_game/common/scripted_effects/modeu5_performance_effects.txt
-tools/templates/modeu5_stock_good_adapter.template.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf03_test_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_perf03_debug_events.txt
-main_menu/localization/english/modeu5_stock_l_english.yml
+in_game/common/scripted_effects/cbp_market_country_cache_effects.txt
+in_game/common/scripted_effects/cbp_core03_succession_effects.txt
+in_game/common/scripted_effects/cbp_performance_effects.txt
+tools/templates/cbp_stock_good_adapter.template.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf03_test_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_perf03_debug_events.txt
+main_menu/localization/english/cbp_stock_l_english.yml
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/TEST_PLAN.md
 docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
@@ -88,15 +88,15 @@ docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
 
 ## Acceptance criteria
 
-- `modeu5_rebuild_countries_present_in_market` builds a deduplicated country
+- `cbp_rebuild_countries_present_in_market` builds a deduplicated country
   list for the saved target market using `every_location_in_market`.
 - CORE-01.5/CORE-01.6 source scans use `every_in_global_list =
-  modeu5_countries_present_in_market` instead of `every_country`.
+  cbp_countries_present_in_market` instead of `every_country`.
 - CORE-02 opening allocation eligibility and allocation use the cached country
   list instead of `every_country` / `ordered_country`.
 - CORE-03 location ownership changes mark the affected market-country cache
   dirty.
-- `modeu5_repair_dirty_market_country_caches` can rebuild all dirty markets and
+- `cbp_repair_dirty_market_country_caches` can rebuild all dirty markets and
   clear the dirty list.
 - A focused PERF-03 debug event emits dump lines and an explicit
   PASS/BLOCKED/FAIL result.
@@ -116,7 +116,7 @@ Run:
 Then in a disposable campaign as a country with a capital market, run:
 
 ```txt
-event modeu5_perf03_debug.1
+event cbp_perf03_debug.1
 ```
 
 Review the logs for:

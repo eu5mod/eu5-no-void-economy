@@ -5,6 +5,6 @@
 
 INJECT:pop_demand = {
 	INJECT:books = {
-		multiply = global_var:modeu5_us04_matrix_global_books
+		multiply = global_var:cbp_us04_matrix_global_books
 	}
 }

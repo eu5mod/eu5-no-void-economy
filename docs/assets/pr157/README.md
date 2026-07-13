@@ -18,7 +18,7 @@ outputs:
 production event output:
   docs/assets/pr157/review_popup_1524_event_source.svg
   docs/assets/pr157/review_popup_1524_event_source.dds
-  in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+  in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Raw SVGs in `source/` are inputs only. The DDS generator skips that folder so it does not create unprocessed DDS files from raw candidates.
@@ -47,7 +47,7 @@ source/review_popup_1524_event_choice_situation_wide_source.svg
   -> generated/review_popup_1524_event_choice_situation_wide_source_qr.svg
   -> review_popup_1524_event_source.svg
   -> review_popup_1524_event_source.dds
-  -> in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+  -> in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Any raw SVG added under `source/` is also processed:
@@ -91,7 +91,7 @@ generated/*_qr.dds
 The event-format image is also packaged for EU5 event use:
 
 ```txt
-in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Those `.dds` files are generated artifacts, but they are committed so pull requests carry both the editable source images and the generated texture previews.
@@ -177,7 +177,7 @@ List generated files in zsh-safe form:
 find docs/assets/pr157/generated -maxdepth 1 -name '*.svg' -print
 find docs/assets/pr157/generated -maxdepth 1 -name '*.dds' -print
 find docs/assets/pr157 -maxdepth 1 -name '*.dds' -print
-find in_game/gfx/interface/illustrations/modeu5_review -maxdepth 1 -name '*.dds' -print
+find in_game/gfx/interface/illustrations/cbp_review -maxdepth 1 -name '*.dds' -print
 ```
 
 Avoid bare unmatched zsh globs such as `docs/assets/pr157/*.dds` before the files exist; zsh raises `no matches found` instead of passing the literal glob through.

@@ -3,18 +3,18 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_us04_pop_demand_generated.txt}"
-template="$repo_root/tools/templates/modeu5_us04_pop_demand_good.template.txt"
-stock_generated="$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
+output="${1:-$repo_root/in_game/common/scripted_effects/cbp_us04_pop_demand_generated.txt}"
+template="$repo_root/tools/templates/cbp_us04_pop_demand_good.template.txt"
+stock_generated="$repo_root/in_game/common/scripted_effects/cbp_stock_goods_generated.txt"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_goods_registry
-modeu5_require_file "$template"
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_goods_registry
+cbp_require_file "$template"
 
 mkdir -p "$(dirname "$output")"
 
-python3 - "$output" "$template" "$stock_generated" "${modeu5_goods[@]}" <<'PY'
+python3 - "$output" "$template" "$stock_generated" "${cbp_goods[@]}" <<'PY'
 from collections import Counter
 from pathlib import Path
 import re
@@ -86,76 +86,76 @@ for good in goods:
 
 lines.extend(
     [
-        "modeu5_initialize_pop_demand_multiplier_all_goods = {",
+        "cbp_initialize_pop_demand_multiplier_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_initialize_pop_demand_multiplier_good_{good} = yes")
+    lines.append(f"\tcbp_initialize_pop_demand_multiplier_good_{good} = yes")
 for good in goods:
-    lines.append(f"\tmodeu5_initialize_us04_reconciliation_coefficient_good_{good} = yes")
+    lines.append(f"\tcbp_initialize_us04_reconciliation_coefficient_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_initialize_us04_reconciliation_coefficient_all_goods = {",
+        "cbp_initialize_us04_reconciliation_coefficient_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_initialize_us04_reconciliation_coefficient_good_{good} = yes")
+    lines.append(f"\tcbp_initialize_us04_reconciliation_coefficient_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_annual_adjust_location_pop_demand_all_goods = {",
+        "cbp_annual_adjust_location_pop_demand_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_annual_adjust_location_pop_demand_good_{good} = yes")
+    lines.append(f"\tcbp_annual_adjust_location_pop_demand_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_monthly_reconcile_country_market_pop_demand_all_goods = {",
+        "cbp_monthly_reconcile_country_market_pop_demand_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_monthly_reconcile_country_market_pop_demand_good_{good} = yes")
+    lines.append(f"\tcbp_monthly_reconcile_country_market_pop_demand_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_monthly_assess_country_market_estate_consumption_all_goods = {",
+        "cbp_monthly_assess_country_market_estate_consumption_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_monthly_assess_country_market_estate_consumption_good_{good} = yes")
+    lines.append(f"\tcbp_monthly_assess_country_market_estate_consumption_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_monthly_reconcile_location_pop_demand_all_goods = {",
+        "cbp_monthly_reconcile_location_pop_demand_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_monthly_reconcile_location_pop_demand_good_{good} = yes")
+    lines.append(f"\tcbp_monthly_reconcile_location_pop_demand_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_monthly_assess_location_estate_consumption_all_goods = {",
+        "cbp_monthly_assess_location_estate_consumption_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_monthly_assess_location_estate_consumption_good_{good} = yes")
+    lines.append(f"\tcbp_monthly_assess_location_estate_consumption_good_{good} = yes")
 lines.extend(["}", ""])
 
 lines.extend(
     [
-        "modeu5_reset_pop_demand_annual_counters_all_goods = {",
+        "cbp_reset_pop_demand_annual_counters_all_goods = {",
     ]
 )
 for good in goods:
-    lines.append(f"\tmodeu5_us04_reset_pop_demand_annual_counters_good_{good} = yes")
+    lines.append(f"\tcbp_us04_reset_pop_demand_annual_counters_good_{good} = yes")
 lines.extend(["}", ""])
 
 generated = "\n".join(lines)

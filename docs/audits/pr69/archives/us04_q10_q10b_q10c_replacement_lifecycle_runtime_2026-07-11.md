@@ -7,7 +7,7 @@ After Q9 initially appeared to pass, Q10/Q10b/Q10c were added to distinguish cau
 The active package was the isolated destructive replacement package:
 
 ```txt
-packages/modeu5_core_tests_q9
+packages/cbp_core_tests_q9
 ```
 
 The replacement under test remained:
@@ -15,7 +15,7 @@ The replacement under test remained:
 ```txt
 REPLACE:pop_demand = {
     books = {
-        multiply = global_var:modeu5_us04_q9_replace_global_books
+        multiply = global_var:cbp_us04_q9_replace_global_books
     }
 }
 ```
@@ -117,7 +117,7 @@ books source_low=1.0000 source_high=4.0000 low=0.6440 high=1.0270 delta=0.3830
 PASS
 ```
 
-Given Q10/Q10b/Q10c, that Q9 result should no longer be treated as causal proof that changing `global_var:modeu5_us04_q9_replace_global_books` at runtime updates `pop_demand`.
+Given Q10/Q10b/Q10c, that Q9 result should no longer be treated as causal proof that changing `global_var:cbp_us04_q9_replace_global_books` at runtime updates `pop_demand`.
 
 More conservative interpretation:
 

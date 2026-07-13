@@ -137,7 +137,7 @@ consumed_unsatisfied
 ## Next runtime command
 
 ```txt
-event modeu5_us04_debug.1
+event cbp_us04_debug.1
 ```
 
 Choose:
@@ -149,5 +149,5 @@ Run Q7/Q8 globals + observed-current target
 Then advance four in-game days and run:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh --expected none
+./tools/summarize_cbp_test_logs.sh --expected none
 ```

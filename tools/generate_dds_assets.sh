@@ -62,7 +62,7 @@ append_output_targets() {
 
 	case "$source" in
 		docs/assets/pr157/review_popup_1524_event_source.*)
-			printf '%s\n' "in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds" >> "$targets_file"
+			printf '%s\n' "in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds" >> "$targets_file"
 			;;
 	esac
 }

@@ -17,17 +17,17 @@ The current live runtime still uses the market-center ownership workaround. This
 The test-package probe is:
 
 ```txt
-modeu5_q8_probe_global_market_iterator_exposure
+cbp_q8_probe_global_market_iterator_exposure
 ```
 
 It proves the following shape:
 
 ```txt
 every_market_in_world
-  -> save current market as modeu5_q8_7_global_market_candidate
-  -> deduplicate the market in modeu5_q8_7_global_market_seen_markets
-  -> save current market as modeu5_market_country_cache_market
-  -> call modeu5_rebuild_countries_present_in_market
+  -> save current market as cbp_q8_7_global_market_candidate
+  -> deduplicate the market in cbp_q8_7_global_market_seen_markets
+  -> save current market as cbp_market_country_cache_market
+  -> call cbp_rebuild_countries_present_in_market
   -> record rebuild/failure counters
 ```
 
@@ -36,11 +36,11 @@ This is stronger than the earlier raw iterator probe. It proves that market scop
 ## Counters
 
 ```txt
-modeu5_test_q8_7_global_market_count
-modeu5_test_q8_7_global_market_unique_count
-modeu5_test_q8_7_global_market_duplicate_count
-modeu5_test_q8_7_market_country_cache_rebuild_count
-modeu5_test_q8_7_market_country_cache_failed_count
+cbp_test_q8_7_global_market_count
+cbp_test_q8_7_global_market_unique_count
+cbp_test_q8_7_global_market_duplicate_count
+cbp_test_q8_7_market_country_cache_rebuild_count
+cbp_test_q8_7_market_country_cache_failed_count
 ```
 
 ## Runtime scenario marker
@@ -63,7 +63,7 @@ These markers avoid dynamic localization and are easier to summarize from logs.
 - No live monthly dispatcher replacement.
 - No `every_trade` call from market scope.
 - No new persistent source-of-truth cache.
-- `modeu5_countries_present_in_market` remains a rebuilt work cache.
+- `cbp_countries_present_in_market` remains a rebuilt work cache.
 ```
 
 ## Exit interpretation

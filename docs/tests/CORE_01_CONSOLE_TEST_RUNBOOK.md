@@ -16,14 +16,14 @@ Close EU5, then run these commands from the repository:
 
 Confirm that every installed `MODEU5_SOURCE.txt` points to this repository,
 branch, and commit. Remove or disable any older real directory or launcher entry
-that can shadow `modeu5_core`; a stale duplicate can load different scripts
+that can shadow `cbp_core`; a stale duplicate can load different scripts
 even when the development checkout is correct.
 
 In the launcher:
 
 ```txt
-Enable: No Void Economy / modeu5_core
-Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
+Enable: No Void Economy / cbp_core
+Enable for this validation run only: No Void Economy Tests / cbp_core_tests
 Do not simultaneously enable the older eu5voideco alias.
 The three optional gameplay ModeU5 packages may remain enabled.
 ```
@@ -35,25 +35,25 @@ Start a clean 1337 campaign. FRA and ENG must exist for the transfer tests.
 This is the only test command to enter in the EU5 console:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Do not enter any of the following:
 
 ```txt
-modeu5_test_*_passed
-trigger "var:modeu5_test_*_passed = 1"
-trigger "global_var:modeu5_test_*_passed = 1"
+cbp_test_*_passed
+trigger "var:cbp_test_*_passed = 1"
+trigger "global_var:cbp_test_*_passed = 1"
 ```
 
-The `modeu5_test_*` names are internal result markers, not console commands.
+The `cbp_test_*` names are internal result markers, not console commands.
 
 ## Test A: add, remove, and decay
 
 1. Enter:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 2. Select:
@@ -86,7 +86,7 @@ action clears previous markers and does not execute transfer tests.
 2. Enter again:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 3. Select:
@@ -120,7 +120,7 @@ The invalid transfer is reported through the debug snapshot. It must not add an
 2. Enter again:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 3. Select:
@@ -153,7 +153,7 @@ differ.
 2. Enter again:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 3. Select:
@@ -181,7 +181,7 @@ remain unchanged.
 2. Enter again:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 3. Select:
@@ -215,7 +215,7 @@ market aggregate = 150
 2. Enter again:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 3. Select:
@@ -272,7 +272,7 @@ Documents/Paradox Interactive/Europa Universalis V/logs/system.log
 Search for logged ModeU5 diagnostics and test-log lines:
 
 ```bash
-rg -n 'ModeU5|modeu5|malformed|Script system error|modeu5_core_01' \
+rg -n 'ModeU5|modeu5|malformed|Script system error|cbp_core_01' \
   "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
   "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/game.log"
 ```

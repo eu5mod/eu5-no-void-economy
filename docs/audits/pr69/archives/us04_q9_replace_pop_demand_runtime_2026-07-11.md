@@ -7,7 +7,7 @@ branch: 22-us-04-annual-local-pop-demand-adjustment
 installed commit: d914cc12dd83828c13fd02ed74c0c16c06089f60
 source_dirty: no
 runtime mode: debug
-package: modeu5_core_tests_q9 enabled
+package: cbp_core_tests_q9 enabled
 ```
 
 ## Important test isolation note
@@ -17,7 +17,7 @@ The Q9 package contains a destructive static replacement:
 ```txt
 REPLACE:pop_demand = {
     books = {
-        multiply = global_var:modeu5_us04_q9_replace_global_books
+        multiply = global_var:cbp_us04_q9_replace_global_books
     }
 }
 ```

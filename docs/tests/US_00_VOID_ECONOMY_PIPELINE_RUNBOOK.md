@@ -16,7 +16,7 @@ previous-month production penalty application to producing locations
 
 The controlled pipeline test remains the deterministic arithmetic fixture. The
 monthly runtime smoke test proves that the live path reads location
-`goods_output`, calls `modeu5_add_stock`, writes the US-00 record, calculates the
+`goods_output`, calls `cbp_add_stock`, writes the US-00 record, calculates the
 replacement penalty, and applies the previous penalty with generated
 per-good location modifiers.
 
@@ -34,7 +34,7 @@ The generated US-00 production-penalty objects are EU5 static modifiers. They
 must be generated under:
 
 ```txt
-main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
+main_menu/common/static_modifiers/cbp_us00_modifiers_generated.txt
 ```
 
 Each generated object uses `game_data.category = location` and a unit
@@ -61,7 +61,7 @@ Setup:
 Start a disposable campaign as a country with at least one market.
 Run:
 
-event modeu5_perf02_debug.1
+event cbp_perf02_debug.1
 ```
 
 Expected:
@@ -81,7 +81,7 @@ Setup:
 ```txt
 Run:
 
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 
 Choose "Run PROBE-021 location output probe".
 ```
@@ -117,14 +117,14 @@ Setup:
 ```txt
 Run:
 
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 
 Choose "Run US-00 controlled pipeline test".
 ```
 
 The test uses FRA's capital market and wheat. It clears the controlled wheat
 fixture, sets wheat capacity to 40, attempts to add 100 wheat through
-`modeu5_add_stock` with enforced capacity, records the returned add/reject
+`cbp_add_stock` with enforced capacity, records the returned add/reject
 outputs, then calculates the US-00 ratios, void wealth, taxable proxy, and
 stored next-cycle production penalty.
 
@@ -170,7 +170,7 @@ FRA must exist in the campaign.
 
 Run:
 
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 
 Choose "Run US-00 monthly runtime smoke test".
 ```
@@ -202,7 +202,7 @@ ModeU5 US-00 RESULT monthly_runtime PASS
 ```
 
 If `error.log` or `game.log` contains `Invalid database object
-'modeu5_<good>_production_penalty_modifier'`, the generated static modifier was
+'cbp_<good>_production_penalty_modifier'`, the generated static modifier was
 not loaded and the runtime smoke result is invalid even if the event printed
 `PASS`.
 

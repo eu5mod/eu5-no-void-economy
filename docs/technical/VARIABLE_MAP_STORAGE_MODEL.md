@@ -69,7 +69,7 @@ additional rules:
   and market-aggregate map identifiers.
 - Shared scripted effects own validation, arithmetic, outputs, and diagnostics.
   The generator only expands the versioned adapter template.
-- `in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` is generated
+- `in_game/common/scripted_effects/cbp_stock_goods_generated.txt` is generated
   output and must not be edited manually.
 - The goods registry used by the generator must stay synchronized with the
   supported vanilla goods set and generation must be idempotent.
@@ -132,7 +132,7 @@ Confirmed physical model:
 record owner: country
 tuple:        market × good
 shared key:   market scope
-map family:   modeu5_<good>_<field>_by_market
+map family:   cbp_<good>_<field>_by_market
 map value:    one numeric field
 default:      field-specific, normally 0
 ```
@@ -200,10 +200,10 @@ record owner: country
 tuple:        market
 shared key:   market scope
 map family:
-  modeu5_stock_cap_by_market
-  modeu5_base_capacity_by_market
-  modeu5_building_capacity_by_market
-  modeu5_foreign_capacity_by_market
+  cbp_stock_cap_by_market
+  cbp_base_capacity_by_market
+  cbp_building_capacity_by_market
+  cbp_foreign_capacity_by_market
 map value:    one numeric field
 default:      0
 ```
@@ -246,7 +246,7 @@ Physical model:
 
 ```txt
 owner:    global variable system
-map name: modeu5_<good>_market_stock
+map name: cbp_<good>_market_stock
 key:      market scope
 value:    numeric
 default:  0
@@ -286,39 +286,39 @@ This map family represents one logical location × good demand record shared by
 US-04 and US-10.3. US-10.3 writes the observed monthly demand outcome fields:
 
 ```txt
-modeu5_pop_demand_requested_quantity
-modeu5_pop_demand_requested_quantity_peasants_estate
-modeu5_pop_demand_requested_quantity_burghers_estate
-modeu5_pop_demand_requested_quantity_nobles_estate
-modeu5_pop_demand_requested_quantity_clergy_estate
-modeu5_pop_demand_satisfied_quantity
-modeu5_pop_demand_unsatisfied_quantity
-modeu5_pop_demand_satisfied_months
-modeu5_pop_demand_unsatisfied_months
+cbp_pop_demand_requested_quantity
+cbp_pop_demand_requested_quantity_peasants_estate
+cbp_pop_demand_requested_quantity_burghers_estate
+cbp_pop_demand_requested_quantity_nobles_estate
+cbp_pop_demand_requested_quantity_clergy_estate
+cbp_pop_demand_satisfied_quantity
+cbp_pop_demand_unsatisfied_quantity
+cbp_pop_demand_satisfied_months
+cbp_pop_demand_unsatisfied_months
 ```
 
 US-04 owns the adaptation/reconciliation fields on the same location x good
 shape:
 
 ```txt
-modeu5_pop_demand_multiplier                  # archived PR69 probe state
-modeu5_us04_reconciliation_coefficient        # active gameplay coefficient
-modeu5_us04_reconciliation_requested_quantity
-modeu5_us04_reconciliation_extra_quantity
-modeu5_us04_reconciliation_removed_quantity
-modeu5_us04_reconciliation_unsatisfied_quantity
-modeu5_us04_reconciliation_country_stock_delta
-modeu5_us04_reconciliation_market_stock_delta
-modeu5_us04_reconciliation_estate_charge
-modeu5_us04_reconciliation_estate_requested_total
-modeu5_us04_reconciliation_estate_charge_peasants_estate
-modeu5_us04_reconciliation_estate_charge_burghers_estate
-modeu5_us04_reconciliation_estate_charge_nobles_estate
-modeu5_us04_reconciliation_estate_charge_clergy_estate
+cbp_pop_demand_multiplier                  # archived PR69 probe state
+cbp_us04_reconciliation_coefficient        # active gameplay coefficient
+cbp_us04_reconciliation_requested_quantity
+cbp_us04_reconciliation_extra_quantity
+cbp_us04_reconciliation_removed_quantity
+cbp_us04_reconciliation_unsatisfied_quantity
+cbp_us04_reconciliation_country_stock_delta
+cbp_us04_reconciliation_market_stock_delta
+cbp_us04_reconciliation_estate_charge
+cbp_us04_reconciliation_estate_requested_total
+cbp_us04_reconciliation_estate_charge_peasants_estate
+cbp_us04_reconciliation_estate_charge_burghers_estate
+cbp_us04_reconciliation_estate_charge_nobles_estate
+cbp_us04_reconciliation_estate_charge_clergy_estate
 ```
 
-`modeu5_pop_demand_multiplier` is retained so PR69 lessons remain inspectable.
-Runtime gameplay reads `modeu5_us04_reconciliation_coefficient`; the vanilla
+`cbp_pop_demand_multiplier` is retained so PR69 lessons remain inspectable.
+Runtime gameplay reads `cbp_us04_reconciliation_coefficient`; the vanilla
 `pop_demand x good` injection path is not treated as a reliable source.
 The estate-specific request maps are a diagnostic refinement of the same
 location × good record. They document the desired allocation shape but do not
@@ -388,7 +388,7 @@ US-10.3, debug, or stock-consistency orchestration.
 | US-01-UI | Reads maps | Read US-01/US-02 maps directly and remain non-mutating. |
 | US-02 | Owns capacity fields | Treat total and optional contribution breakdowns as one shared country x market record, not as duplicated per-good fields. |
 | US-02-UI | Reads maps | Read the capacity maps directly; do not recalculate a second UI capacity. |
-| US-03 | Inherits US-01 maps | Iterate and mutate stock only through `modeu5_decay_stock`; no separate persistent decay-state map. |
+| US-03 | Inherits US-01 maps | Iterate and mutate stock only through `cbp_decay_stock`; no separate persistent decay-state map. |
 | US-03-UI | Reads transaction output | Keep operation diagnostics temporary unless a monthly aggregate is explicitly required. |
 | US-04 | Owns location demand-record fields | Use one logical location x good record backed by maps keyed by goods. |
 | US-04-UI | Reads maps | Read US-04 and US-10.3 location maps directly. |

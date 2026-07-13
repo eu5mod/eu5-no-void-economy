@@ -40,14 +40,14 @@ It classifies Q8.4 / F4 as `PROBE_FIRST`: split guarded helpers from body helper
 PR #150 adds a test-package Q8.4 marker probe:
 
 ```txt
-modeu5_q8_probe_helper_inventory
+cbp_q8_probe_helper_inventory
 ```
 
 This runtime marker is paired with the static audit script, which checks that the generated PR7.1 wrappers still call the existing heavy helpers:
 
 ```txt
-modeu5_process_us00_monthly_market_good_wheat = yes
-modeu5_process_us10_monthly_market_good_wheat = yes
+cbp_process_us00_monthly_market_good_wheat = yes
+cbp_process_us10_monthly_market_good_wheat = yes
 ```
 
 Q8.4 remains blocked from implementation until a full caller inventory classifies all calls as safe guarded wrappers, explicit tests, or unsafe/unknown.
@@ -59,10 +59,10 @@ Q8.2 is deferred.
 The rejected generated-wrapper idea was:
 
 ```txt
-modeu5_pr71_process_us10_monthly_market_pending_goods
-  -> modeu5_pr71_prepare_us10_pending_request_gate
+cbp_pr71_process_us10_monthly_market_pending_goods
+  -> cbp_pr71_prepare_us10_pending_request_gate
   -> if country-market has any pending request:
-       modeu5_pr71_process_us10_monthly_market_good_<good>
+       cbp_pr71_process_us10_monthly_market_good_<good>
 ```
 
 This is not live because it adds an all-goods pre-scan. If most country-market pairs have at least one pending request, the pre-scan duplicates rather than removes work.
@@ -70,34 +70,34 @@ This is not live because it adds an all-goods pre-scan. If most country-market p
 The existing per-good wrapper helpers and heavy helpers are preserved:
 
 ```txt
-modeu5_pr71_process_us10_monthly_market_good_<good>
-modeu5_process_us10_monthly_market_good_<good>
+cbp_pr71_process_us10_monthly_market_good_<good>
+cbp_process_us10_monthly_market_good_<good>
 ```
 
 Q8.5 adds a guarded dirty repair consumer but no parallel cache family:
 
 ```txt
-modeu5_repair_dirty_market_country_caches_if_needed
+cbp_repair_dirty_market_country_caches_if_needed
 ```
 
-This is intentionally not a body-helper split, not a durable per-market list, and not a replacement for `modeu5_rebuild_countries_present_in_market`.
+This is intentionally not a body-helper split, not a durable per-market list, and not a replacement for `cbp_rebuild_countries_present_in_market`.
 
 ## Q8.6 implementation update
 
 Q8.6 adds a separate verifier helper family rather than changing the stock operators or generated goods helpers:
 
 ```txt
-modeu5_clear_market_sliced_verifier_state
-modeu5_add_market_to_market_sliced_verifier_candidates
-modeu5_prepare_market_sliced_verifier_candidates
-modeu5_verify_market_sliced_verifier_candidate
-modeu5_run_market_sliced_verifier_candidates
+cbp_clear_market_sliced_verifier_state
+cbp_add_market_to_market_sliced_verifier_candidates
+cbp_prepare_market_sliced_verifier_candidates
+cbp_verify_market_sliced_verifier_candidate
+cbp_run_market_sliced_verifier_candidates
 ```
 
 The verifier reuses the existing market-country work-cache rebuild helper only for candidate markets:
 
 ```txt
-modeu5_rebuild_countries_present_in_market
+cbp_rebuild_countries_present_in_market
 ```
 
 Boundary:
@@ -134,19 +134,19 @@ The Q8.7 redundancy evidence is now split into four proof surfaces:
 
 ```txt
 Normal Mode:
-  modeu5_q8_7_probe_global_market_center_shadow_compare
+  cbp_q8_7_probe_global_market_center_shadow_compare
   compares every_market_in_world with every_country -> every_market_center_in_country
 
 Performance Mode relevant-market set:
-  modeu5_q8_7_probe_performance_relevant_global_shadow_compare
-  compares modeu5_performance_relevant_markets with every_market_in_world filtered to that same list
+  cbp_q8_7_probe_performance_relevant_global_shadow_compare
+  compares cbp_performance_relevant_markets with every_market_in_world filtered to that same list
 
 Performance Mode owner workshape:
-  modeu5_q8_7_probe_performance_market_owner_workshape_shadow
+  cbp_q8_7_probe_performance_market_owner_workshape_shadow
   compares current market-center ownership shape with candidate global market-local shape without US-00, US-10, trade-owner work, validation, or stock mutation
 
 Performance Mode no-op dispatcher shadow:
-  modeu5_q8_7_probe_performance_noop_dispatcher_shadow
+  cbp_q8_7_probe_performance_noop_dispatcher_shadow
   compares pass counters for current and candidate market-local dispatcher shapes without executing mutating work
 ```
 

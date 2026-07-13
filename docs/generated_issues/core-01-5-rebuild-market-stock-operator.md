@@ -12,7 +12,7 @@ As a ModeU5 maintainer, I want one rebuild operation so a market-good cache can 
 
 ## Functional objective
 
-Implement `modeu5_rebuild_market_stock_from_country_stocks` for one market and good. It must sum the matching country stock entries, replace only the market aggregate, and expose the previous value, expected value, and correction.
+Implement `cbp_rebuild_market_stock_from_country_stocks` for one market and good. It must sum the matching country stock entries, replace only the market aggregate, and expose the previous value, expected value, and correction.
 
 ## Runtime position
 
@@ -29,10 +29,10 @@ Feeds counters to: CORE-01.6, US-11 diagnostics
 |---|---|---|---|---|
 | Iterate countries | none/effect | `every_country` | CONFIRMED | 001 |
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by saved market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by saved market | FALLBACK_ACCEPTED | 007, 016 |
+| Market aggregate | market x good | global per-good `cbp_<good>_market_stock` keyed by saved market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes across country iteration | CONFIRMED | 008 |
 | Transaction-local accumulator | country controller | `set_local_variable`, `change_local_variable`, `local_var:<name>` | CONFIRMED | 109 |
-| Rebuild operation | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
+| Rebuild operation | ModeU5 | `cbp_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 
 ## Persistent storage / variable-map contract
 
@@ -42,25 +42,25 @@ logical record and fields read: every country record's stock field
 logical record field written: market aggregate stock
 owner scope: global variable system
 tuple/key: market scope in one static map per good
-confirmed physical map family: modeu5_<good>_market_stock
+confirmed physical map family: cbp_<good>_market_stock
 physical value type: numeric
 default value: 0
-write owner: modeu5_rebuild_market_stock_from_country_stocks for rebuild correction
+write owner: cbp_rebuild_market_stock_from_country_stocks for rebuild correction
 readers: stock operations, US-01/UI, US-10, US-11
 reset/rebuild lifecycle: replace on initialization, exceptional recovery, validation failure, or four-year safety pass
 ```
 
-The country source maps remain country-scoped `modeu5_<good>_stock_by_market[market]`. Sum, previous aggregate, correction, and anomaly details remain transaction-local except for debug snapshots.
+The country source maps remain country-scoped `cbp_<good>_stock_by_market[market]`. Sum, previous aggregate, correction, and anomaly details remain transaction-local except for debug snapshots.
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_test_effects.txt
 in_game/events/
 in_game/localization/
-tools/templates/modeu5_stock_good_adapter.template.txt
+tools/templates/cbp_stock_good_adapter.template.txt
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -82,7 +82,7 @@ Related US: US-01, US-11
 - Iterate every country, not only countries currently owning a location in the
   market; durable country stock can survive territorial loss.
 - Sum the country stock source fields; do not derive the value from production, capacity, ledger, or the previous market aggregate.
-- Replace only `modeu5_<good>_market_stock[market]` for the selected market.
+- Replace only `cbp_<good>_market_stock[market]` for the selected market.
 - Never modify, proportionally rescale, or infer any country stock from the aggregate.
 - Use read, remove, and re-add to replace the market aggregate key.
 - Do not create consumption, loss, transfer, wealth, or income.

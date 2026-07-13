@@ -8,7 +8,7 @@ The active MVP no longer depends on a direct vanilla `location × estate × good
 demand endpoint. US-04 uses a ModeU5-owned local proxy:
 
 ```txt
-modeu5_us04_reconciliation_coefficient(location, good)
+cbp_us04_reconciliation_coefficient(location, good)
 × proxy_estate_size_at_location
 ```
 
@@ -89,7 +89,7 @@ estate_satisfied[e] = satisfied_total × estate_share[e]
 The stock mutation remains centralized:
 
 ```txt
-modeu5_remove_stock(
+cbp_remove_stock(
     country,
     market,
     good,
@@ -125,7 +125,7 @@ from local consumption pressure:
 
 ```txt
 location_estate_good_consumption =
-  modeu5_us04_reconciliation_coefficient(location, good)
+  cbp_us04_reconciliation_coefficient(location, good)
   × proxy_estate_size_at_location
 ```
 
@@ -145,16 +145,16 @@ good on the location. For each Estate:
 
 ```txt
 estate_requested_quantity =
-  modeu5_us04_reconciliation_coefficient(location, good)
+  cbp_us04_reconciliation_coefficient(location, good)
   × proxy_estate_size_at_location
 
 estate_extra_quantity =
   proxy_estate_size_at_location
-  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+  × max(0, cbp_us04_reconciliation_coefficient - 1)
 
 estate_restored_quantity =
   proxy_estate_size_at_location
-  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+  × max(0, 1 - cbp_us04_reconciliation_coefficient)
 ```
 
 The positive path removes only the additional satisfied delta from ModeU5 stock
@@ -246,10 +246,10 @@ ModeU5 may persist diagnostic and adjustment state using literal generated per-g
 Conceptual state:
 
 ```txt
-country.modeu5_country_market[market].estate_demand_multiplier_<good>_<estate>
-country.modeu5_country_market[market].estate_requested_<good>_<estate>
-country.modeu5_country_market[market].estate_satisfied_<good>_<estate>
-country.modeu5_country_market[market].estate_payment_<good>_<estate>
+country.cbp_country_market[market].estate_demand_multiplier_<good>_<estate>
+country.cbp_country_market[market].estate_requested_<good>_<estate>
+country.cbp_country_market[market].estate_satisfied_<good>_<estate>
+country.cbp_country_market[market].estate_payment_<good>_<estate>
 ```
 
 Exact storage shape must follow the repository's confirmed variable-map and generated-adapter contracts. Parameterized map identifiers are prohibited.
@@ -346,7 +346,7 @@ no Estate payment for unsatisfied quantity
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 python3 ./tools/validate_ci_static_contracts.py
 git diff --check
 ```

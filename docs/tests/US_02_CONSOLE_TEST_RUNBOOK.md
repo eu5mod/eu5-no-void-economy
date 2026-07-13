@@ -23,24 +23,24 @@ branch, and commit.
 In the launcher:
 
 ```txt
-Enable: No Void Economy / modeu5_core
-Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
+Enable: No Void Economy / cbp_core
+Enable for this validation run only: No Void Economy Tests / cbp_core_tests
 Do not simultaneously enable the older eu5voideco alias.
 The three optional gameplay ModeU5 packages may remain enabled.
 ```
 
 Start a clean campaign with No Void Economy enabled. FRA must exist.
 
-If `event modeu5_us02_debug.1` reports `not a valid ID`, the test package is
+If `event cbp_us02_debug.1` reports `not a valid ID`, the test package is
 not loaded in the active playset or the game was not restarted after changing
 the playset.
 
-If `debug.log` shows `Running console command: modeu5_us02_debug.1` followed by
+If `debug.log` shows `Running console command: cbp_us02_debug.1` followed by
 `Unknown command`, the event ID was entered without the console `event` command.
 Rerun the command exactly as:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 ## Console procedure
@@ -49,7 +49,7 @@ event modeu5_us02_debug.1
 2. Run:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 3. Select `Run US-02 storage-capacity test`.
@@ -59,7 +59,7 @@ event modeu5_us02_debug.1
 PASS - Storage capacity reconciles without mutating stock
 ```
 
-The `modeu5_test_storage_capacity_passed` text is a result marker, not a
+The `cbp_test_storage_capacity_passed` text is a result marker, not a
 console command.
 
 The result event currently displays a compact fallback dump for FRA's capital
@@ -89,7 +89,7 @@ immediately or only after a monthly tick.
 Run step 1:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 Select:
@@ -108,7 +108,7 @@ PENDING - No immediate increase; wait at least one monthly tick and run step 2
 If the result is `PENDING`, advance at least one monthly tick, then run:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 ```
 
 Select:
@@ -139,7 +139,7 @@ Trade-capacity immediate and monthly deltas
 
 ## Debug values to inspect
 
-On FRA, inspect the latest `modeu5_debug_last_capacity_*` variables:
+On FRA, inspect the latest `cbp_debug_last_capacity_*` variables:
 
 ```txt
 country
@@ -161,8 +161,8 @@ location_count
 For timing probes, also inspect:
 
 ```txt
-modeu5_debug_last_monthly_capacity_refresh_stamp
-modeu5_debug_last_monthly_capacity_refresh_gate_passed
+cbp_debug_last_monthly_capacity_refresh_stamp
+cbp_debug_last_monthly_capacity_refresh_gate_passed
 ```
 
 Expected arithmetic:
@@ -187,24 +187,24 @@ CORE-02 startup. It does not add, remove, transfer, decay, or rebuild stock.
 The test also writes a compact numeric dump to global variables:
 
 ```txt
-modeu5_debug_us02_dump_fra_wheat_stock
-modeu5_debug_us02_dump_fra_wheat_capacity
-modeu5_debug_us02_dump_fra_wheat_available
-modeu5_debug_us02_dump_fra_wheat_over_cap
-modeu5_debug_us02_dump_fra_wheat_trade_capacity
-modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
-modeu5_debug_us02_dump_fra_wheat_location_count
-modeu5_debug_us02_dump_fra_iron_capacity
-modeu5_debug_us02_probe_before_capacity
-modeu5_debug_us02_probe_after_build_capacity
-modeu5_debug_us02_probe_after_month_capacity
-modeu5_debug_us02_probe_delta_immediate_capacity
-modeu5_debug_us02_probe_delta_month_capacity
-modeu5_debug_us02_probe_before_trade
-modeu5_debug_us02_probe_after_build_trade
-modeu5_debug_us02_probe_after_month_trade
-modeu5_debug_us02_probe_delta_immediate_trade
-modeu5_debug_us02_probe_delta_month_trade
+cbp_debug_us02_dump_fra_wheat_stock
+cbp_debug_us02_dump_fra_wheat_capacity
+cbp_debug_us02_dump_fra_wheat_available
+cbp_debug_us02_dump_fra_wheat_over_cap
+cbp_debug_us02_dump_fra_wheat_trade_capacity
+cbp_debug_us02_dump_fra_wheat_location_rank_capacity
+cbp_debug_us02_dump_fra_wheat_location_count
+cbp_debug_us02_dump_fra_iron_capacity
+cbp_debug_us02_probe_before_capacity
+cbp_debug_us02_probe_after_build_capacity
+cbp_debug_us02_probe_after_month_capacity
+cbp_debug_us02_probe_delta_immediate_capacity
+cbp_debug_us02_probe_delta_month_capacity
+cbp_debug_us02_probe_before_trade
+cbp_debug_us02_probe_after_build_trade
+cbp_debug_us02_probe_after_month_trade
+cbp_debug_us02_probe_delta_immediate_trade
+cbp_debug_us02_probe_delta_month_trade
 ```
 
 These variables are meant to prove that the pass result is backed by non-zero

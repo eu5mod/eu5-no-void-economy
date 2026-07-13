@@ -45,7 +45,7 @@ require_match() {
 	fi
 }
 
-tracked_generated_files="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
+tracked_generated_files="$(git ls-files | grep -E '(^|/)cbp_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
 if [[ -n "$tracked_generated_files" ]]; then
 	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
 	printf 'Keep them ignored and generated on demand with tools/generate_all.sh.\n' >&2
@@ -72,18 +72,18 @@ fi
 
 descriptors=(
 	"descriptor.mod"
-	"packages/modeu5_economy_rebalance/descriptor.mod"
-	"packages/modeu5_trade_rebalance/descriptor.mod"
-	"packages/modeu5_war_rebalance/descriptor.mod"
-	"packages/modeu5_core_tests/descriptor.mod"
+	"packages/cbp_economy_rebalance/descriptor.mod"
+	"packages/cbp_trade_rebalance/descriptor.mod"
+	"packages/cbp_war_rebalance/descriptor.mod"
+	"packages/cbp_core_tests/descriptor.mod"
 )
 
 metadata_files=(
 	".metadata/metadata.json"
-	"packages/modeu5_economy_rebalance/.metadata/metadata.json"
-	"packages/modeu5_trade_rebalance/.metadata/metadata.json"
-	"packages/modeu5_war_rebalance/.metadata/metadata.json"
-	"packages/modeu5_core_tests/.metadata/metadata.json"
+	"packages/cbp_economy_rebalance/.metadata/metadata.json"
+	"packages/cbp_trade_rebalance/.metadata/metadata.json"
+	"packages/cbp_war_rebalance/.metadata/metadata.json"
+	"packages/cbp_core_tests/.metadata/metadata.json"
 )
 
 expected_descriptor_names=(
@@ -103,11 +103,11 @@ expected_metadata_names=(
 )
 
 expected_ids=(
-	"modeu5_core"
-	"modeu5_economy_rebalance"
-	"modeu5_trade_rebalance"
-	"modeu5_war_rebalance"
-	"modeu5_core_tests"
+	"cbp_core"
+	"cbp_economy_rebalance"
+	"cbp_trade_rebalance"
+	"cbp_war_rebalance"
+	"cbp_core_tests"
 )
 
 expected_description_prefixes=(
@@ -160,7 +160,7 @@ if command -v jq >/dev/null 2>&1; then
 		jq -e '
 			any(.relationships[]?;
 				.rel_type == "dependency" and
-				.id == "modeu5_core" and
+				.id == "cbp_core" and
 				.display_name == "No Void Economy (NVE)" and
 				.resource_type == "mod" and
 				.version == "0.1.*"
@@ -171,37 +171,37 @@ else
 	printf 'WARNING: jq is unavailable; JSON syntax was not checked.\n' >&2
 fi
 
-if search_lines 'set_global_variable = modeu5_(economy|trade|war)_rebalance_loaded' in_game; then
+if search_lines 'set_global_variable = cbp_(economy|trade|war)_rebalance_loaded' in_game; then
 	printf 'Core must not manufacture companion package markers.\n' >&2
 	exit 1
 fi
 
 require_match 'set_global_variable = cbp_economy_rebalance_loaded' \
-	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
 	'Economy companion package marker missing'
 require_match 'set_global_variable = cbp_trade_rebalance_loaded' \
-	packages/modeu5_trade_rebalance/in_game/common/on_action/modeu5_trade_package_on_actions.txt \
+	packages/cbp_trade_rebalance/in_game/common/on_action/cbp_trade_package_on_actions.txt \
 	'Trade companion package marker missing'
 require_match 'set_global_variable = cbp_war_rebalance_loaded' \
-	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt \
+	packages/cbp_war_rebalance/in_game/common/on_action/cbp_war_package_on_actions.txt \
 	'War companion package marker missing'
 require_match 'name = cbp_core_package_version' \
-	in_game/common/scripted_effects/modeu5_configuration_effects.txt \
+	in_game/common/scripted_effects/cbp_configuration_effects.txt \
 	'Core package version marker missing'
 require_match 'name = cbp_economy_package_version' \
-	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
 	'Economy package version missing'
 require_match 'name = cbp_trade_package_version' \
-	packages/modeu5_trade_rebalance/in_game/common/on_action/modeu5_trade_package_on_actions.txt \
+	packages/cbp_trade_rebalance/in_game/common/on_action/cbp_trade_package_on_actions.txt \
 	'Trade package version missing'
 require_match 'name = cbp_war_package_version' \
-	packages/modeu5_war_rebalance/in_game/common/on_action/modeu5_war_package_on_actions.txt \
+	packages/cbp_war_rebalance/in_game/common/on_action/cbp_war_package_on_actions.txt \
 	'War package version missing'
 
-us09_prices_file="packages/modeu5_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
-us09_trade_buildings_file="packages/modeu5_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
-us09_rgo_static_modifier_file="packages/modeu5_economy_rebalance/main_menu/common/static_modifiers/modeu5_us09_rgo_static_modifiers.txt"
-us09_rgo_size_effects_file="packages/modeu5_economy_rebalance/in_game/common/scripted_effects/modeu5_us09_rgo_size_effects.txt"
+us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
+us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
+us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
+us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
 require_file "$us09_rgo_static_modifier_file"
@@ -227,20 +227,20 @@ require_match '^[[:space:]]+local_merchant_capacity = 1\.1$' \
 require_match '^[[:space:]]+local_max_rgo_size = 0\.2$' \
 	"$us09_rgo_static_modifier_file" \
 	'US-09 base RGO size static modifier must add the flat +0.2 base contribution'
-require_match 'modeu5_apply_us09_base_rgo_size_bonus = yes' \
-	packages/modeu5_economy_rebalance/in_game/common/on_action/modeu5_economy_package_on_actions.txt \
+require_match 'cbp_apply_us09_base_rgo_size_bonus = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
 	'US-09 base RGO size bonus must be applied by the Economy package on game start'
 require_match 'every_location_in_the_world = \{' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must iterate every world location through the confirmed iterator'
-require_match '^[[:space:]]*modifier = modeu5_us09_base_rgo_size_10_percent_bonus$' \
+require_match '^[[:space:]]*modifier = cbp_us09_base_rgo_size_10_percent_bonus$' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must apply the generated static modifier'
 
 stale_us09_override_files="$(
 	{
-		find packages/modeu5_economy_rebalance/in_game/common/building_types -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' 2>/dev/null
-		find packages/modeu5_economy_rebalance/in_game/common/prices -maxdepth 1 \( -name 'zzzz_modeu5_us09_expand_rgo_prices.txt' -o -name 'expand_rgo_prices.txt' \) 2>/dev/null
+		find packages/cbp_economy_rebalance/in_game/common/building_types -maxdepth 1 -type f -name 'zzzz_cbp_us09_*.txt' 2>/dev/null
+		find packages/cbp_economy_rebalance/in_game/common/prices -maxdepth 1 \( -name 'zzzz_cbp_us09_expand_rgo_prices.txt' -o -name 'expand_rgo_prices.txt' \) 2>/dev/null
 	} | sort -u
 )"
 if [[ -n "$stale_us09_override_files" ]]; then
@@ -248,20 +248,20 @@ if [[ -n "$stale_us09_override_files" ]]; then
 	exit 1
 fi
 
-generated_stock_helpers="in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
-generated_us00_modifiers="main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt"
-generated_us00_modifier_localization="main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml"
-generated_us10_table="in_game/gui/modeu5_us10_stock_table.gui"
-generated_us10_market_production="in_game/common/scripted_effects/modeu5_us10_ui_market_production_effects.txt"
-stock_adapter_template="tools/templates/modeu5_stock_good_adapter.template.txt"
+generated_stock_helpers="in_game/common/scripted_effects/cbp_stock_goods_generated.txt"
+generated_us00_modifiers="main_menu/common/static_modifiers/cbp_us00_modifiers_generated.txt"
+generated_us00_modifier_localization="main_menu/localization/english/cbp_us00_static_modifiers_generated_l_english.yml"
+generated_us10_table="in_game/gui/cbp_us10_stock_table.gui"
+generated_us10_market_production="in_game/common/scripted_effects/cbp_us10_ui_market_production_effects.txt"
+stock_adapter_template="tools/templates/cbp_stock_good_adapter.template.txt"
 stock_generator="tools/generate_stock_good_helpers.sh"
 us10_ui_generator="tools/generate_us10_ui_helpers.sh"
 stock_postprocessor="tools/postprocess_perf14_promotion_guards.py"
 stock_overmaterialized_repair_postprocessor="tools/postprocess_perf14_overmaterialized_repair.py"
-perf14_guarded_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_guarded_test_effects.txt"
-perf14_test_effects="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
+perf14_guarded_test_effects="packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt"
+perf14_test_effects="packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt"
 generator_validator="tools/validate_generators.sh"
-script_safety_validator="tools/validate_modeu5_script_safety.sh"
+script_safety_validator="tools/validate_cbp_script_safety.sh"
 generated_stock_helpers_tmp="$(mktemp)"
 generated_us00_modifiers_tmp="$(mktemp)"
 generated_us00_modifier_localization_tmp="$(mktemp)"
@@ -338,19 +338,19 @@ if search_lines '\$[^$]+\$|__[A-Z_]+__' "$generated_us00_modifier_localization";
 	exit 1
 fi
 
-require_match 'variable_map\(cbp_wheat_stock_by_market\|scope:modeu5_market\)' \
+require_match 'variable_map\(cbp_wheat_stock_by_market\|scope:cbp_market\)' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must contain literal per-good map access'
-require_match 'modeu5_load_capacity_breakdown = yes' \
+require_match 'cbp_load_capacity_breakdown = yes' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must read shared US-02 capacity through the shared helper'
-require_match 'modeu5_us00_full_ledger_persistence_allowed_trigger = yes' \
+require_match 'cbp_us00_full_ledger_persistence_allowed_trigger = yes' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must gate full US-00 diagnostic ledger writes'
 require_match 'cbp_wheat_us00_active_record_by_market' \
 	"$generated_stock_helpers" \
 	'Generated stock adapters must preserve the PERF-15 / US-00 active-record marker'
-require_match 'modeu5_us10_ui_capture_market_produced_row = \{ good = wheat key = wheat \}' \
+require_match 'cbp_us10_ui_capture_market_produced_row = \{ good = wheat key = wheat \}' \
 	"$generated_us10_market_production" \
 	'Generated US-10 UI helpers must contain literal per-good produced-by-market capture'
 require_match "gui_cbp_us10_ui_wheat_visible" \

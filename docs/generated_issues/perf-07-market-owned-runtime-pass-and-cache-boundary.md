@@ -51,9 +51,9 @@ market-owned maintenance or dirty cache repair runs.
 
 | Need | Scope | Method | Status | TECH-01 |
 |---|---|---|---|---|
-| Active market scheduling | global -> market | `modeu5_active_markets_any_good` | CONFIRMED | 129 |
-| Current-market country work cache | global -> country | `modeu5_countries_present_in_market` rebuilt from `every_location_in_market` | CONFIRMED | 123, 125 |
-| Active-good membership in a market | global -> market | generated `modeu5_<good>_active_markets` | CONFIRMED | 129 |
+| Active market scheduling | global -> market | `cbp_active_markets_any_good` | CONFIRMED | 129 |
+| Current-market country work cache | global -> country | `cbp_countries_present_in_market` rebuilt from `every_location_in_market` | CONFIRMED | 123, 125 |
+| Active-good membership in a market | global -> market | generated `cbp_<good>_active_markets` | CONFIRMED | 129 |
 | Prepared-cache active validation | active market -> cached countries -> active goods | generated prepared-cache validators | CONFIRMED | 132 |
 | Durable per-market cache | market/global keyed country list | persistent per-market variable list or dynamic list name | NOT_CONFIRMED | 126 |
 | Dedicated market-change hook | location/market event | `on_location_changed_market` or equivalent | NOT_CONFIRMED | 127 |
@@ -62,8 +62,8 @@ market-owned maintenance or dirty cache repair runs.
 
 ```txt
 tools/generate_stock_good_helpers.sh
-tools/templates/modeu5_stock_good_adapter.template.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+tools/templates/cbp_stock_good_adapter.template.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt
 docs/generated_issues/perf-00-performance-optimization-master.md
 docs/generated_issues/perf-05-reduce-global-market-scans.md
 docs/generated_issues/perf-07-market-owned-runtime-pass-and-cache-boundary.md
@@ -87,7 +87,7 @@ docs/tests/TEST_PLAN.md
 - Do not implement a fake market-change hook while TECH-01 127 remains
   `NOT_CONFIRMED`.
 - Do not skip country-owned monthly work based on market-owned caches.
-- Treat `modeu5_countries_present_in_market` as a current-market work cache only.
+- Treat `cbp_countries_present_in_market` as a current-market work cache only.
 - Active validation may rebuild the current-market country cache once per active
   market, then reuse it for every active good in that market.
 - Dirty validation remains good-specific and may still rebuild the cache for the
@@ -96,7 +96,7 @@ docs/tests/TEST_PLAN.md
 
 ## Acceptance criteria
 
-- Active validation rebuilds `modeu5_countries_present_in_market` once per active
+- Active validation rebuilds `cbp_countries_present_in_market` once per active
   market before calling generated active-good validators.
 - Generated active-good validators use a prepared-cache scan and do not rebuild
   the country cache per good.
@@ -125,7 +125,7 @@ Run:
 Then in a disposable campaign:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 choose "Test US-11 dirty-record reconciliation"
 ```
 
@@ -140,7 +140,7 @@ ModeU5 US-11 RESULT reconciliation PASS
 ## Known limitations
 
 The PR does not implement a durable per-market country-list cache. The current
-global `modeu5_countries_present_in_market` list is rebuilt for one market at a
+global `cbp_countries_present_in_market` list is rebuilt for one market at a
 time, then consumed immediately.
 
 The PR does not add a dedicated market-change on_action. Ownership changes keep

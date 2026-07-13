@@ -21,24 +21,24 @@ whether an economic adjustment was applied
 Use the prefix:
 
 ```txt
-modeu5_debug_
+cbp_debug_
 ```
 
 Examples:
 
 ```txt
-modeu5_debug_last_country
-modeu5_debug_last_market
-modeu5_debug_last_good
-modeu5_debug_last_quantity_added
-modeu5_debug_last_quantity_removed
-modeu5_debug_last_rejected_quantity
-modeu5_debug_last_unsatisfied_quantity
-modeu5_debug_last_transferred_quantity
-modeu5_debug_last_stock_difference
-modeu5_debug_last_inconsistency_detected
-modeu5_debug_last_fallback_used
-modeu5_debug_last_economic_base
+cbp_debug_last_country
+cbp_debug_last_market
+cbp_debug_last_good
+cbp_debug_last_quantity_added
+cbp_debug_last_quantity_removed
+cbp_debug_last_rejected_quantity
+cbp_debug_last_unsatisfied_quantity
+cbp_debug_last_transferred_quantity
+cbp_debug_last_stock_difference
+cbp_debug_last_inconsistency_detected
+cbp_debug_last_fallback_used
+cbp_debug_last_economic_base
 ```
 
 ## Debug output levels
@@ -53,7 +53,7 @@ modeu5_debug_last_economic_base
 Recommended variable:
 
 ```txt
-modeu5_debug_level
+cbp_debug_level
 ```
 
 ## Runtime diagnostic modes
@@ -62,9 +62,9 @@ The startup configuration effect derives explicit runtime-mode flags from the
 pre-campaign debug rule:
 
 ```txt
-modeu5_runtime_mode_normal
-modeu5_runtime_mode_debug
-modeu5_runtime_mode_audit
+cbp_runtime_mode_normal
+cbp_runtime_mode_debug
+cbp_runtime_mode_audit
 ```
 
 Contract:
@@ -76,9 +76,9 @@ audit = automatic reconciliation/validation cadence is allowed
 test audit = deterministic test fixtures may enable both debug and audit
 ```
 
-`modeu5_runtime_mode_audit` no longer implies `modeu5_runtime_mode_debug`.
+`cbp_runtime_mode_audit` no longer implies `cbp_runtime_mode_debug`.
 Debug, verbose debug, and audit are separate pre-campaign choices. Deterministic
-test events must enter `modeu5_enter_test_audit_runtime_mode` before running
+test events must enter `cbp_enter_test_audit_runtime_mode` before running
 their fixtures so test dumps remain available even when the campaign's normal
 gameplay setting is debug-off.
 
@@ -99,14 +99,14 @@ read helpers.
 At startup and in the general diagnostic event, expose:
 
 ```txt
-modeu5_core_package_loaded = yes
-modeu5_core_package_version
-modeu5_economy_rebalance_loaded
-modeu5_economy_package_version_if_loaded
-modeu5_trade_rebalance_loaded
-modeu5_trade_package_version_if_loaded
-modeu5_war_rebalance_loaded
-modeu5_war_package_version_if_loaded
+cbp_core_package_loaded = yes
+cbp_core_package_version
+cbp_economy_rebalance_loaded
+cbp_economy_package_version_if_loaded
+cbp_trade_rebalance_loaded
+cbp_trade_package_version_if_loaded
+cbp_war_rebalance_loaded
+cbp_war_package_version_if_loaded
 package_version_mismatch
 missing_required_core
 package_selection_changed_since_save_if_detectable
@@ -120,7 +120,7 @@ that EU5 is loading the intended branch and commit.
 
 ## Pre-campaign debug configuration
 
-`modeu5_debug_level` is selected through the Community Mod Manager before the campaign starts:
+`cbp_debug_level` is selected through the Community Mod Manager before the campaign starts:
 
 ```txt
 Off = 0
@@ -194,8 +194,8 @@ US-02 capacity recalculation is the first implemented monthly stock-cycle step.
 It must expose:
 
 ```txt
-modeu5_debug_last_monthly_capacity_refresh_stamp
-modeu5_debug_last_monthly_capacity_refresh_gate_passed
+cbp_debug_last_monthly_capacity_refresh_stamp
+cbp_debug_last_monthly_capacity_refresh_gate_passed
 ```
 
 Focused timing tests must read persisted capacity after the monthly tick. They
@@ -227,7 +227,7 @@ market
 good
 opening_quantity_source
 opening_source_quantity
-total_modeu5_capacity
+total_cbp_capacity
 opening_target_quantity
 eligible_country_count
 allocated_quantity
@@ -258,7 +258,7 @@ over_capacity_after
 over_capacity_created
 stock_before
 stock_after
-mutation_effect_called = modeu5_add_stock
+mutation_effect_called = cbp_add_stock
 ```
 
 Startup must allocate the full opening source. Over-cap quantities must be labeled separately from `rejected_quantity` and `void_wealth`. A positive source with zero total capacity is a blocking `zero_total_capacity` allocation error, not truncation.
@@ -291,7 +291,7 @@ winner_stock_after
 market_stock_before
 market_stock_after
 stock_difference_after
-mutation_effect_called = modeu5_transfer_stock
+mutation_effect_called = cbp_transfer_stock
 duplicate_transfer_prevented
 ```
 
@@ -347,7 +347,7 @@ mutation_effect_called
 ```
 
 CORE-01 stores the latest transaction on the primary country through
-`modeu5_debug_last_*` variables. Numeric codes are:
+`cbp_debug_last_*` variables. Numeric codes are:
 
 ```txt
 operation / mutation effect:
@@ -370,7 +370,7 @@ remove reason:
   99 = debug_test
 ```
 
-`modeu5_debug_last_stock_difference` is the atomic transaction-delta
+`cbp_debug_last_stock_difference` is the atomic transaction-delta
 difference: market-cache delta minus country-source delta. Full
 `market_good_stock - sum(country stocks)` validation remains owned by
 CORE-01.6.
@@ -379,14 +379,14 @@ If an operation detects a negative source or an aggregate underflow risk, it
 sets:
 
 ```txt
-modeu5_debug_last_consistency_validation_required = 1
+cbp_debug_last_consistency_validation_required = 1
 ```
 
 An aggregate-underflow transaction fails closed instead of independently
 clamping the market cache. The caller or US-11 orchestration must then invoke
 CORE-01.6, which delegates every cache correction to CORE-01.5.
 
-For `modeu5_transfer_stock`, debug must also expose:
+For `cbp_transfer_stock`, debug must also expose:
 
 ```txt
 seller_country
@@ -408,7 +408,7 @@ same_market_transfer
 inter_market_transfer
 ```
 
-For `modeu5_rebuild_market_stock_from_country_stocks`, debug must expose:
+For `cbp_rebuild_market_stock_from_country_stocks`, debug must expose:
 
 ```txt
 operation = rebuild_market_stock
@@ -423,7 +423,7 @@ negative_country_source_detected
 country_stocks_modified = no
 ```
 
-For `modeu5_validate_stock_consistency`, debug must expose:
+For `cbp_validate_stock_consistency`, debug must expose:
 
 ```txt
 operation = validate_stock_consistency
@@ -443,7 +443,7 @@ over_cap_is_accounting_inconsistency = no
 ```
 
 Validation severity uses
-`modeu5_stock_consistency_prominent_threshold`. The threshold changes only the
+`cbp_stock_consistency_prominent_threshold`. The threshold changes only the
 diagnostic severity; every nonzero difference is rebuilt.
 
 ## Mandatory debug for US-11 reconciliation
@@ -467,7 +467,7 @@ test uses cycle stamp `0` and initialization-gate value `0`.
 The latest CORE-01.6 snapshot remains the per-record detail. Any
 `failures_after_rebuild > 0` result is blocking and must be written to
 `error.log`. `reconciliation_type = 3` iterates
-`modeu5_active_markets_any_good`, rebuilds the current-market country work cache
+`cbp_active_markets_any_good`, rebuilds the current-market country work cache
 once for that market, then checks per-good active-market membership inside that
 market scope. Active validation is a maintenance/audit optimization, not the
 strict exhaustive audit. A monthly pass with no dirty market/good records is a
@@ -514,8 +514,8 @@ void_taxable_income_proxy
 Aggregates:
 
 ```txt
-modeu5_void_wealth_by_market[market]
-modeu5_total_void_wealth
+cbp_void_wealth_by_market[market]
+cbp_total_void_wealth
 ```
 
 Allowed `modifier_application_mode` values:
@@ -572,7 +572,7 @@ slider_name
 wealth_input
 wealth_source
 monthly_trade_income
-modeu5_slider_cost_base
+cbp_slider_cost_base
 formula_replacement_active
 affected_formula_call_site
 ui_display_mode
@@ -588,7 +588,7 @@ no_unconfirmed_formula_hook
 
 ## Mandatory debug for US-10
 
-For every call to `modeu5_resolve_stock_demand`, expose:
+For every call to `cbp_resolve_stock_demand`, expose:
 
 ```txt
 demand_type
@@ -713,23 +713,23 @@ If a modifier or effect is unconfirmed:
 The CORE-01 console entry point is:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Focused user-story tests should use their dedicated entry points instead of
 being added to the CORE event:
 
 ```txt
-event modeu5_us01_debug.1
-event modeu5_us02_debug.1
+event cbp_us01_debug.1
+event cbp_us02_debug.1
 ```
 
-`modeu5_test_*_passed` values are result markers, not console commands.
+`cbp_test_*_passed` values are result markers, not console commands.
 
 Use persistent global marker presence for PASS state:
 
 ```txt
-has_global_variable = modeu5_test_<case>_passed
+has_global_variable = cbp_test_<case>_passed
 ```
 
 Use `NOT = { has_global_variable = ... }` for FAIL / NOT RUN. Do not compare an
@@ -743,11 +743,11 @@ inputs into initialized temporary `scope:` values first, then compare those
 temporary values:
 
 ```txt
-save_temporary_scope_value_as = { name = modeu5_test_actual value = var:modeu5_some_metric }
-save_temporary_scope_value_as = { name = modeu5_test_expected value = 1 }
+save_temporary_scope_value_as = { name = cbp_test_actual value = var:cbp_some_metric }
+save_temporary_scope_value_as = { name = cbp_test_expected value = 1 }
 
 if = {
-	limit = { scope:modeu5_test_actual = scope:modeu5_test_expected }
+	limit = { scope:cbp_test_actual = scope:cbp_test_expected }
 	...
 }
 ```

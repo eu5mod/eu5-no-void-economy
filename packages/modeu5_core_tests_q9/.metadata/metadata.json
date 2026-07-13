@@ -1,5 +1,5 @@
 {
-	"id": "modeu5_core_tests_q9",
+	"id": "cbp_core_tests_q9",
 	"name": "NVE : US-04 Pop-demand engine probes (Optional)",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
@@ -11,14 +11,14 @@
 	"relationships": [
 		{
 			"rel_type": "dependency",
-			"id": "modeu5_core",
+			"id": "cbp_core",
 			"display_name": "No Void Economy (NVE)",
 			"resource_type": "mod",
 			"version": "0.1.*"
 		},
 		{
 			"rel_type": "dependency",
-			"id": "modeu5_core_tests",
+			"id": "cbp_core_tests",
 			"display_name": "NVE : Core deterministic tests (Optional)",
 			"resource_type": "mod",
 			"version": "0.1.*"

@@ -47,7 +47,7 @@ Current vanilla integration candidate:
 ```txt
 INJECT:pop_demand = {
     wheat = {
-        multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+        multiply = "cbp_us04_live_pop_demand_multiplier_wheat"
     }
 }
 ```
@@ -88,7 +88,7 @@ Implemented:
 Run the normal static/install sequence, then start a clean campaign and let at least one full in-game day pass.
 
 ```txt
-event modeu5_us04_debug.1
+event cbp_us04_debug.1
 ```
 
 ### Scenario 1 — initialization
@@ -169,7 +169,7 @@ grep -E \
 The standard summarizer also displays all US-04 diagnostic families:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh --expected none
+./tools/summarize_cbp_test_logs.sh --expected none
 ```
 
 ## Current status

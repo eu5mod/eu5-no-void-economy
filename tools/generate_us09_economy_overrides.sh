@@ -33,7 +33,7 @@ Examples:
   EXTRA_BURGHER_PROMOTION_SPEED=10 EXTRA_LABORER_PROMOTION_SPEED=10 ./tools/generate_us09_economy_overrides.sh 10
 
 By default, this writes offline probe output under tools/generated/us09_economy_overrides.
-Pass --package-common-dir packages/modeu5_economy_rebalance/in_game/common only
+Pass --package-common-dir packages/cbp_economy_rebalance/in_game/common only
 when regenerating the package overrides. Generated static overrides must keep
 the same relative file path as the vanilla source file so EU5 replaces the
 vanilla definition instead of loading a second definition with duplicate keys.
@@ -213,9 +213,9 @@ while IFS= read -r -d '' generated_file; do
 		rm -f "$generated_file"
 	fi
 done < <(find "$building_types_output_dir" -maxdepth 1 -type f -name '*.txt' -print0)
-find "$building_types_output_dir" -maxdepth 1 -type f -name 'zzzz_modeu5_us09_*.txt' -delete
+find "$building_types_output_dir" -maxdepth 1 -type f -name 'zzzz_cbp_us09_*.txt' -delete
 rm -f \
-	"$prices_output_dir/zzzz_modeu5_us09_expand_rgo_prices.txt" \
+	"$prices_output_dir/zzzz_cbp_us09_expand_rgo_prices.txt" \
 	"$prices_output_dir/expand_rgo_prices.txt"
 
 if [[ -d "$pop_types_output_dir" ]]; then

@@ -5,9 +5,9 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_goods_registry
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_goods_registry
 
 tmp_discovered="$(mktemp)"
 tmp_expected_names="$(mktemp)"
@@ -21,25 +21,25 @@ trap 'rm -f "$tmp_discovered" "$tmp_expected_names" "$tmp_inventory" "$tmp_uncla
 scan_files=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
-	"tools/templates/modeu5_stock_good_adapter.template.txt"
-	"in_game/common/scripted_effects/modeu5_capacity_effects.txt"
-	"in_game/common/scripted_effects/modeu5_void_economy_effects.txt"
-	"in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
-	"in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt"
-	"in_game/common/scripted_effects/modeu5_performance_effects.txt"
-	"in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt"
-	"in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt"
-	"in_game/common/scripted_effects/modeu5_stock_effects.txt"
-	"in_game/common/scripted_effects/modeu5_core03_exposure_effects.txt"
-	"in_game/common/scripted_effects/modeu5_core04_market_entry_effects.txt"
-	"in_game/common/scripted_effects/modeu5_us10_ui_effects.txt"
+	"tools/templates/cbp_stock_good_adapter.template.txt"
+	"in_game/common/scripted_effects/cbp_capacity_effects.txt"
+	"in_game/common/scripted_effects/cbp_void_economy_effects.txt"
+	"in_game/common/scripted_effects/cbp_market_country_cache_effects.txt"
+	"in_game/common/scripted_effects/cbp_market_sliced_verifier_effects.txt"
+	"in_game/common/scripted_effects/cbp_performance_effects.txt"
+	"in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt"
+	"in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt"
+	"in_game/common/scripted_effects/cbp_stock_effects.txt"
+	"in_game/common/scripted_effects/cbp_core03_exposure_effects.txt"
+	"in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt"
+	"in_game/common/scripted_effects/cbp_us10_ui_effects.txt"
 )
 
 for file in "${scan_files[@]}"; do
-	modeu5_require_file "$file"
+	cbp_require_file "$file"
 done
 
-python3 - "$tmp_discovered" "${modeu5_goods[*]}" "${scan_files[@]}" <<'PY'
+python3 - "$tmp_discovered" "${cbp_goods[*]}" "${scan_files[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
@@ -152,7 +152,7 @@ cbp_consumption_<good>_requested_by_market	variable map	monthly ledger	country	U
 cbp_consumption_<good>_satisfied_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
 cbp_consumption_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
 cbp_core03_probe_seen_locations	global list	debug-only	global	CORE-03 explicit debug probe	clear before probe	explicit CORE-03 probe only
-cbp_countries_present_in_market	global list	work cache	global	modeu5_rebuild_countries_present_in_market	clear before each target/promoted-market rebuild	rebuilt per target/promoted market
+cbp_countries_present_in_market	global list	work cache	global	cbp_rebuild_countries_present_in_market	clear before each target/promoted-market rebuild	rebuilt per target/promoted market
 cbp_detailed_accounting_promoted_markets	global list	work cache	global	PERF-14 successful promotion	clear on explicit promoted-market rebuild/reset	rebuilt/marked by PERF-14 promotion
 cbp_foreign_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
 cbp_market_country_cache_dirty_markets	global list	work cache	global	ownership/cache repair marks affected markets	clear during cache repair	dirty until repair
@@ -177,15 +177,15 @@ import sys
 
 roots = [Path("in_game"), Path("packages"), Path("tools/templates")]
 excluded = {
-    Path("in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"),
-    Path("in_game/common/scripted_effects/modeu5_transport_cost_generated.txt"),
+    Path("in_game/common/scripted_effects/cbp_stock_goods_generated.txt"),
+    Path("in_game/common/scripted_effects/cbp_transport_cost_generated.txt"),
 }
 allowed_stock_write_files = {
-    Path("tools/templates/modeu5_stock_good_adapter.template.txt"),
+    Path("tools/templates/cbp_stock_good_adapter.template.txt"),
 }
 
 block_start = re.compile(r"\b(?:add_to_variable_map|remove_from_variable_map)\s*=\s*\{")
-stock_name = re.compile(r"\bname\s*=\s*(?:__STOCK_MAP__|modeu5_[A-Za-z0-9_]+_stock_by_market)\b")
+stock_name = re.compile(r"\bname\s*=\s*(?:__STOCK_MAP__|cbp_[A-Za-z0-9_]+_stock_by_market)\b")
 findings: list[str] = []
 
 for root in roots:
@@ -219,9 +219,9 @@ files = [Path(p) for p in sys.argv[3:]]
 
 debug_names: set[str] = set()
 work_names: set[str] = set()
-debug_pattern = re.compile(r"\bmodeu5_debug(?:_last)?_[A-Za-z0-9_]+\b")
+debug_pattern = re.compile(r"\bcbp_debug(?:_last)?_[A-Za-z0-9_]+\b")
 work_pattern = re.compile(
-    r"\bmodeu5_(?:perf\d+|performance|human_relevant|monthly|reconciliation|active_repair|us10_ui)_[A-Za-z0-9_]+\b"
+    r"\bcbp_(?:perf\d+|performance|human_relevant|monthly|reconciliation|active_repair|us10_ui)_[A-Za-z0-9_]+\b"
 )
 
 for path in files:
@@ -235,8 +235,8 @@ PY
 
 ui_shadow_count="$(
 	(
-		(grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" || true) |
-			grep -Ev 'modeu5_<good>_ui_monthly_(surplus|consumption)_by_market|__UI_MONTHLY_(SURPLUS|CONSUMPTION)_MAP__' || true
+		(grep -E 'cbp_.*_ui_|__UI_' "$tmp_discovered" || true) |
+			grep -Ev 'cbp_<good>_ui_monthly_(surplus|consumption)_by_market|__UI_MONTHLY_(SURPLUS|CONSUMPTION)_MAP__' || true
 	) | wc -l | tr -d ' '
 )"
 
@@ -275,7 +275,7 @@ printf 'Ownership/rebuild/reset policy gaps: %s\n' "$policy_gap_count"
 
 if [[ "$ui_shadow_count" != "0" ]]; then
 	printf 'Unexpected UI shadow map/list families were found:\n' >&2
-	grep -E 'modeu5_.*_ui_|__UI_' "$tmp_discovered" >&2
+	grep -E 'cbp_.*_ui_|__UI_' "$tmp_discovered" >&2
 	exit 1
 fi
 

@@ -52,8 +52,8 @@ overinclusive, but capacity-only state must not mark a market-good active.
 This PR adds a generated repair pass:
 
 ```txt
-modeu5_repair_all_active_stock_markets
-modeu5_repair_active_markets_good_<good>
+cbp_repair_all_active_stock_markets
+cbp_repair_active_markets_good_<good>
 ```
 
 The repair rebuilds active market lists from confirmed ModeU5 state:
@@ -99,11 +99,11 @@ Normal runtime does not capture these metrics.
 
 ## Acceptance Criteria
 
-- [ ] `tools/audit_modeu5_per_good_loops.sh` passes.
+- [ ] `tools/audit_cbp_per_good_loops.sh` passes.
 - [ ] `tools/validate_module_packages.sh` runs the audit.
 - [ ] Main revalidation includes the PERF-10/11/13 active-list repair metrics probe.
 - [ ] The compact log summary expects `perf10_13_active_repair_metrics`.
-- [ ] PERF-12 is available through `event modeu5_perf12_debug.1` but is not part of normal runtime or main revalidation.
+- [ ] PERF-12 is available through `event cbp_perf12_debug.1` but is not part of normal runtime or main revalidation.
 - [ ] TECH-01 records `traded_in_market:<good>` as `CONFIRMED`.
 
 ## Manual Test Scenario
@@ -122,7 +122,7 @@ git diff --check
 Run broad revalidation:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 Select "Revalidate main operations"
 Wait for the final result event.
 ```
@@ -130,7 +130,7 @@ Wait for the final result event.
 Then summarize:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_test_logs.sh
 ```
 
 Expected compact result:
@@ -145,7 +145,7 @@ ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
 Focused PERF-12 exposure probe:
 
 ```txt
-event modeu5_perf12_debug.1
+event cbp_perf12_debug.1
 Select "Run market-scope value probe"
 ```
 

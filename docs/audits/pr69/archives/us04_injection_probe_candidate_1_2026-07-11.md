@@ -7,7 +7,7 @@ Tested candidate:
 ```txt
 INJECT:pop_demand = {
     wheat = {
-        multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+        multiply = "cbp_us04_live_pop_demand_multiplier_wheat"
     }
 }
 ```
@@ -97,7 +97,7 @@ This is not a failure. The test was invoked before the delayed day-1 initializat
 ```txt
 INJECT:pop_demand = {
     INJECT:wheat = {
-        multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+        multiply = "cbp_us04_live_pop_demand_multiplier_wheat"
     }
 }
 ```

@@ -20,13 +20,13 @@ The wiki may be stale for EU5 1.2, especially around script-value support inside
 ## Package
 
 ```txt
-packages/modeu5_core_tests_q11
+packages/cbp_core_tests_q11
 ```
 
 Console event:
 
 ```txt
-event modeu5_us04_q11_debug.1
+event cbp_us04_q11_debug.1
 ```
 
 ## Candidate syntaxes

@@ -1,5 +1,5 @@
 {
-	"id": "modeu5_core_tests",
+	"id": "cbp_core_tests",
 	"name": "NVE : Core deterministic tests (Optional)",
 	"version": "0.1.0",
 	"supported_game_version": "1.*.*",
@@ -11,7 +11,7 @@
 	"relationships": [
 		{
 			"rel_type": "dependency",
-			"id": "modeu5_core",
+			"id": "cbp_core",
 			"display_name": "No Void Economy (NVE)",
 			"resource_type": "mod",
 			"version": "0.1.*"

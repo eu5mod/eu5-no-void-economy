@@ -40,7 +40,7 @@ US-04 now has two separate layers:
 | Q9 full `REPLACE:pop_demand` | AMBIGUOUS HISTORICAL RESULT | Not accepted as proof after Q10/Q10b/Q10c failed to reproduce safe runtime responsiveness. |
 | Q10/Q10b/Q10c replacement lifecycle | REJECTED | Runtime replacement is not a viable production path. |
 | `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Archived; no longer required for the proxy implementation. |
-| `modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for signed stock/supply delta, estate charge, and estate refund. |
+| `cbp_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for signed stock/supply delta, estate charge, and estate refund. |
 
 ## Implemented Coefficient Layer
 
@@ -53,15 +53,15 @@ location
 Persistent state:
 
 ```txt
-modeu5_pop_demand_multiplier[goods:<good>]
-modeu5_us04_reconciliation_coefficient[goods:<good>]
+cbp_pop_demand_multiplier[goods:<good>]
+cbp_us04_reconciliation_coefficient[goods:<good>]
 ```
 
-`modeu5_pop_demand_multiplier` is archived PR69 probe state. It is still
+`cbp_pop_demand_multiplier` is archived PR69 probe state. It is still
 initialized and updated so old probes remain interpretable, but no production
 rule may assume that the vanilla engine consumes it.
 
-`modeu5_us04_reconciliation_coefficient` is the active ModeU5-owned coefficient.
+`cbp_us04_reconciliation_coefficient` is the active ModeU5-owned coefficient.
 It starts at `1.20` through explicit one-time initialization and receives the
 yearly update:
 
@@ -82,27 +82,27 @@ The monthly reconciliation helper reads ModeU5-owned local Estate proxy inputs:
 
 ```txt
 estate_requested_quantity =
-  modeu5_us04_reconciliation_coefficient(location, good)
+  cbp_us04_reconciliation_coefficient(location, good)
   × proxy_estate_size_at_location
 
 estate_extra_quantity =
   proxy_estate_size_at_location
-  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+  × max(0, cbp_us04_reconciliation_coefficient - 1)
 
 estate_restored_quantity =
   proxy_estate_size_at_location
-  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+  × max(0, 1 - cbp_us04_reconciliation_coefficient)
 
 total_extra_quantity = sum(estate_extra_quantity)
 total_restored_quantity = sum(estate_restored_quantity)
 
 if total_extra_quantity > 0 and stock runtime is ready:
-    call modeu5_remove_stock(reason = consumption)
+    call cbp_remove_stock(reason = consumption)
     charge known estates through add_gold_to_estate
     persist requested / extra / removed / unsatisfied / stock-delta diagnostics
 
 if total_restored_quantity > 0 and stock runtime is ready:
-    call modeu5_add_stock(capacity_policy = allow_over_capacity)
+    call cbp_add_stock(capacity_policy = allow_over_capacity)
     persist requested / restored / stock-delta diagnostics
 ```
 
@@ -185,7 +185,7 @@ for each country x market reached by the monthly country-owned traversal:
                 read exact location x good x estate requested quantities
 
             current TECH-01 150 proxy path:
-                modeu5_us04_reconciliation_coefficient(location, good)
+                cbp_us04_reconciliation_coefficient(location, good)
                 x proxy_estate_size_at_location
 
             total_requested_quantity = sum estate requested totals
@@ -193,10 +193,10 @@ for each country x market reached by the monthly country-owned traversal:
                 skip this location x good
 
             coefficient_extra =
-              max(0, modeu5_us04_reconciliation_coefficient - 1)
+              max(0, cbp_us04_reconciliation_coefficient - 1)
 
             coefficient_restore =
-              max(0, 1 - modeu5_us04_reconciliation_coefficient)
+              max(0, 1 - cbp_us04_reconciliation_coefficient)
 
             for each estate with requested quantity:
                 estate_extra_quantity =
@@ -222,10 +222,10 @@ through central stock operators:
 
 ```txt
 actual_removed_quantity =
-  modeu5_remove_stock(country, market, good, total_extra_quantity)
+  cbp_remove_stock(country, market, good, total_extra_quantity)
 
 actual_restored_quantity =
-  modeu5_add_stock(country, market, good, total_restored_quantity)
+  cbp_add_stock(country, market, good, total_restored_quantity)
 
 vanilla_supply_delta =
   -actual_removed_quantity
@@ -326,8 +326,8 @@ Static/local validation:
 ./tools/generate_all.sh
 python3 tools/validate_us04_pop_demand_architecture.py
 ./tools/validate_module_packages.sh
-./tools/validate_modeu5_script_safety.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/validate_cbp_script_safety.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/normalize_cmm_value_links.sh --check
 python3 tools/validate_ci_static_contracts.py
 python3 tools/validate_cmm_configuration.py
@@ -342,8 +342,8 @@ Runtime validation:
 1. Install the local packages.
 2. Start a fresh disposable campaign.
 3. Let at least one full in-game day pass.
-4. Run: event modeu5_us04_debug.1
-5. Run: ./tools/summarize_modeu5_test_logs.sh --expected us04
+4. Run: event cbp_us04_debug.1
+5. Run: ./tools/summarize_cbp_test_logs.sh --expected us04
 6. Review error.log, game.log, debug.log, and system.log.
 ```
 
@@ -388,7 +388,7 @@ US-04 stock/estate reconciliation is unblocked through the ModeU5 proxy because
 the implementation owns all inputs in the formula:
 
 ```txt
-modeu5_us04_reconciliation_coefficient(location, good)
+cbp_us04_reconciliation_coefficient(location, good)
 × proxy_estate_size_at_location
 ```
 

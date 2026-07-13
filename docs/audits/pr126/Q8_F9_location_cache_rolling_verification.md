@@ -164,41 +164,41 @@ The design must avoid runtime-built map names and runtime-built helper names.
 Do not do this:
 
 ```txt
-modeu5_location_cache_day_$day$
-modeu5_location_owner_$location_id$
-modeu5_location_market_$location_id$
+cbp_location_cache_day_$day$
+cbp_location_owner_$location_id$
+cbp_location_market_$location_id$
 ```
 
 Use fixed canonical maps and generated fixed helper surfaces instead:
 
 ```txt
-modeu5_location_cached_owner
-modeu5_location_cached_market
-modeu5_location_cached_capacity_contribution
-modeu5_location_cache_dirty_countries
-modeu5_location_cache_dirty_markets
-modeu5_location_cache_dirty_country_markets
+cbp_location_cached_owner
+cbp_location_cached_market
+cbp_location_cached_capacity_contribution
+cbp_location_cache_dirty_countries
+cbp_location_cache_dirty_markets
+cbp_location_cache_dirty_country_markets
 ```
 
 Generate fixed day-slice helpers:
 
 ```txt
-modeu5_location_cache_verify_day_01
-modeu5_location_cache_verify_day_02
+cbp_location_cache_verify_day_01
+cbp_location_cache_verify_day_02
 ...
-modeu5_location_cache_verify_day_30
+cbp_location_cache_verify_day_30
 ```
 
 The dispatcher can be a generated fixed if-chain:
 
 ```txt
 if current day = 1:
-  modeu5_location_cache_verify_day_01 = yes
+  cbp_location_cache_verify_day_01 = yes
 if current day = 2:
-  modeu5_location_cache_verify_day_02 = yes
+  cbp_location_cache_verify_day_02 = yes
 ...
 if current day = 30:
-  modeu5_location_cache_verify_day_30 = yes
+  cbp_location_cache_verify_day_30 = yes
 ```
 
 This preserves the existing generator rule: helper names and map names must remain literal script identifiers.
@@ -210,10 +210,10 @@ This preserves the existing generator rule: helper names and map names must rema
 If the engine supports stable ordered location iteration with `position`, `min`, or `max`, generate daily slices over the ordered world-location list:
 
 ```txt
-modeu5_location_cache_verify_day_01:
+cbp_location_cache_verify_day_01:
   ordered_location_in_the_world position/min/max range for first 1/30
 
-modeu5_location_cache_verify_day_02:
+cbp_location_cache_verify_day_02:
   ordered_location_in_the_world position/min/max range for second 1/30
 ```
 
@@ -224,12 +224,12 @@ The key requirement is deterministic coverage. The same location should not be p
 If ordered slicing cannot select stable ranges, generate explicit location buckets at build time if the location list is available to the generator:
 
 ```txt
-modeu5_location_cache_verify_day_01:
+cbp_location_cache_verify_day_01:
   verify literal location A
   verify literal location B
   ...
 
-modeu5_location_cache_verify_day_02:
+cbp_location_cache_verify_day_02:
   verify literal location C
   verify literal location D
   ...

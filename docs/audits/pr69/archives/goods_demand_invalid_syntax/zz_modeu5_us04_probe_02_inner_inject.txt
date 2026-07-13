@@ -3,6 +3,6 @@
 
 INJECT:pop_demand = {
 	INJECT:beer = {
-		multiply = "modeu5_us04_live_pop_demand_multiplier_beer"
+		multiply = "cbp_us04_live_pop_demand_multiplier_beer"
 	}
 }

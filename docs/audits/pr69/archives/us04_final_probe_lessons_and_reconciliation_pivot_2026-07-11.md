@@ -49,7 +49,7 @@ docs/audits/pr69/Q5_flux_logique_global.v3.md
 US-04 keeps two coefficients on location × good:
 
 ```txt
-modeu5_pop_demand_multiplier[goods:<good>]
+cbp_pop_demand_multiplier[goods:<good>]
 ```
 
 Legacy archived coefficient used by the failed vanilla-injection path. It is
@@ -57,7 +57,7 @@ still initialized and updated so old probes remain interpretable, but gameplay
 must not depend on the engine reading it.
 
 ```txt
-modeu5_us04_reconciliation_coefficient[goods:<good>]
+cbp_us04_reconciliation_coefficient[goods:<good>]
 ```
 
 Active ModeU5 reconciliation coefficient. It starts at `1.20` and receives the
@@ -86,9 +86,9 @@ estate_charge =
 ```
 
 The positive charge amount can then be persisted on the location × good
-reconciliation record as `modeu5_us04_reconciliation_estate_charge`.
+reconciliation record as `cbp_us04_reconciliation_estate_charge`.
 Per-estate diagnostics can be persisted as
-`modeu5_us04_reconciliation_estate_charge_<estate>`.
+`cbp_us04_reconciliation_estate_charge_<estate>`.
 
 Until a direct live `every_pop -> pop_demand × good` read is confirmed, US-04
 must not invent an estate target or rely on a fixed estate-map bridge as a
