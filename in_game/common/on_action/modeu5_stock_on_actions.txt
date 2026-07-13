@@ -46,6 +46,7 @@ modeu5_monthly_stock_cycle_pulse = {
 	effect = {
 		modeu5_run_monthly_stock_cycle_q8_7_owner_switch = yes
 		modeu5_core04_refresh_current_country_location_market_memory = yes
+		modeu5_us05_refresh_safe_slider_cost_reconciliation = yes
 	}
 }
 

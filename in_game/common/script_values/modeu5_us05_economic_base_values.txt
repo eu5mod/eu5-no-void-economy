@@ -1,0 +1,82 @@
+# US-05 per-expense reconciliation values.
+#
+# Each expense family owns its target base and reconciliation modifier:
+#
+#   modifier = (target base / vanilla denominator) - 1
+#
+# Court and Diplomatic currently share the same target base:
+#
+#   Wealth + Trade Income
+#
+# They remain separate endpoints so later tuning can diverge independently.
+
+modeu5_us05_vanilla_economic_base = {
+	value = tax_base
+	add = monthly_trade_income
+	min = 0
+}
+
+modeu5_us05_wealth_plus_trade_income_base = {
+	value = 0
+	if = {
+		limit = { has_variable = cbp_country_wealth_endpoint }
+		value = var:cbp_country_wealth_endpoint
+		add = monthly_trade_income
+		min = 0
+	}
+}
+
+# Court spending target base.
+modeu5_us05_court_target_base = {
+	value = modeu5_us05_wealth_plus_trade_income_base
+}
+
+modeu5_us05_court_cost_modifier = {
+	value = 0
+	if = {
+		limit = {
+			has_variable = cbp_country_wealth_endpoint
+			modeu5_us05_vanilla_economic_base > 0
+		}
+		value = modeu5_us05_court_target_base
+		divide = modeu5_us05_vanilla_economic_base
+		subtract = 1
+	}
+}
+
+# Diplomatic upkeep target base.
+modeu5_us05_diplomatic_target_base = {
+	value = modeu5_us05_wealth_plus_trade_income_base
+}
+
+modeu5_us05_diplomatic_cost_modifier = {
+	value = 0
+	if = {
+		limit = {
+			has_variable = cbp_country_wealth_endpoint
+			modeu5_us05_vanilla_economic_base > 0
+		}
+		value = modeu5_us05_diplomatic_target_base
+		divide = modeu5_us05_vanilla_economic_base
+		subtract = 1
+	}
+}
+
+# Shared diagnostic components.
+modeu5_slider_cost_base_wealth_component = {
+	value = 0
+	if = {
+		limit = { has_variable = cbp_country_wealth_endpoint }
+		value = var:cbp_country_wealth_endpoint
+		min = 0
+	}
+}
+
+modeu5_slider_cost_base_tax_component = {
+	value = tax_base
+	min = 0
+}
+
+modeu5_slider_cost_base_trade_income_component = {
+	value = monthly_trade_income
+}

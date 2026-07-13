@@ -1,0 +1,21 @@
+name: US-05 Economic Base
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-us05-economic-base:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate US-05 endpoint contract
+        run: python3 ./tools/validate_us05_economic_base.py
+
+      - name: Validate wealth dependency
+        run: python3 ./tools/validate_wealth_endpoint.py
+
+      - name: Validate whitespace and patch hygiene
+        run: git diff --check

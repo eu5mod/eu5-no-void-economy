@@ -1,0 +1,24 @@
+# US-05 per-expense reconciliation modifiers.
+#
+# Each modifier is unit-scaled and receives its own runtime size:
+#
+#   size = (expense target base / vanilla denominator) - 1
+#
+# Court and Diplomatic use separate modifiers even while their target bases are
+# currently identical. This preserves independent tuning for future expenses.
+
+modeu5_us05_court_cost_reconciliation = {
+	game_data = {
+		category = country
+	}
+
+	court_spending_cost_modifier = 1
+}
+
+modeu5_us05_diplomatic_cost_reconciliation = {
+	game_data = {
+		category = country
+	}
+
+	diplomatic_upkeep_modifier = 1
+}
