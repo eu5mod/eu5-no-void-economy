@@ -38,7 +38,7 @@ TOOL_ROOT = ROOT / "tools"
 EU5_SUFFIXES = {".txt", ".gui"}
 TOOL_SUFFIXES = {".py", ".sh"}
 TARGET_PREFIXES = ("gui_cbp_", "test_cbp_", "cbp_")
-LEGACY_PREFIXES = ("modeu5_", "cbp_")
+LEGACY_PREFIXES = ("modeu5_", "nve_")
 IDENT = r"[A-Za-z_][A-Za-z0-9_$]*"
 
 # External framework, vanilla, and generator-placeholder variables are not
@@ -64,6 +64,47 @@ EXTERNAL_VARIABLE_NAMES = {
     "__US00_ACTIVE_MAP__",
     "__VOID_TAXABLE_PROXY_MAP__",
     "__VOID_WEALTH_MAP__",
+    "academy_of_sciences",
+    "free_economic_society",
+    "greek_latin_academy",
+    "imperial_academy_of_arts",
+    "institute_of_noble_maidens",
+    "kremlin",
+    "moscow_artillery_yard",
+    "moscow_orphanage",
+    "novodevichy_convent",
+    "royal_academy_of_arts",
+    "royal_society",
+    "stroganov_school_of_iconic_art",
+    "sukharev_tower",
+    "ankara_variable",
+    "building_trade_hq",
+    "bursa_variable",
+    "council_of_the_north",
+    "enable_ablaq_palace_variable",
+    "has_unlocked_quirinal_palace",
+    "has_unlocked_walls_of_ston",
+    "izmit_variable",
+    "kayseri_variable",
+    "konya_variable",
+    "ori_double_elephant_hunting_ground_level_flag",
+    "sivas_variable",
+    "smyrna_variable",
+    "son_trans_saharan_trade_building_variable",
+    "stannary_law",
+    "trade_company_home_region",
+    "trade_company_regions",
+    "trade_company_subjects",
+    "unlocked_ambras_castle",
+    "unlocked_bibliotheca_corviniana",
+    "unlocked_camara_de_comptos",
+    "unlocked_husuni_kubwa_variable",
+    "unlocked_piazza_san_marco",
+    "unlocked_teatro_san_cassiano",
+    "unlocked_the_doges_palace",
+    "won_fate_of_the_phoenix_disaster_variable",
+    "__ACTIVE_LIST__",
+    # ...
 }
 
 # These four identifiers are both script-value object names and runtime variable
@@ -485,7 +526,7 @@ def run_apply() -> int:
         )
         return 2
 
-    object_overlap = names & objects
+    object_overlap = (names - EXTERNAL_VARIABLE_NAMES) & objects
     if not object_overlap.issubset(SCRIPT_OBJECT_OVERLAPS):
         print(
             "CBP migration stopped: unexpected variable/script-object overlaps: "

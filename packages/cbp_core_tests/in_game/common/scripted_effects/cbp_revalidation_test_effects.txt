@@ -125,7 +125,7 @@ cbp_revalidate_run_us10_issue109_fast_path_pruning = {
 
 cbp_revalidate_run_us10_ui_visibility = {
 	cbp_debug_run_us10_ui_visibility_tests = yes
-	if = { limit = { has_global_variable = gui_test_cbp_us10_ui_visibility_passed } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed }
+	if = { limit = { has_global_variable = gui_cbp_us10_ui_visibility_passed } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed }
 	else_if = { limit = { has_global_variable = gui_cbp_us10_ui_visibility_result_blocked } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_blocked }
 	else = { set_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed }
 }

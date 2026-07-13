@@ -17,8 +17,8 @@ CANDIDATES = [
     ("04", "inner_inject_or_create", "tools", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "cbp_us04_live_pop_demand_multiplier_tools"),
     ("05", "outer_try_inject", "fish", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "cbp_us04_live_pop_demand_multiplier_fish"),
     ("06", "outer_inject_or_create", "wine", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "cbp_us04_live_pop_demand_multiplier_wine"),
-    ("07", "direct_global", "books", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:cbp_us04_matrix_global_books"),
-    ("08", "direct_global_value_block", "furniture", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:cbp_us04_matrix_global_furniture"),
+    ("07", "direct_global", "books", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:test_cbp_us04_matrix_global_books"),
+    ("08", "direct_global_value_block", "furniture", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:test_cbp_us04_matrix_global_furniture"),
 ]
 
 
@@ -243,11 +243,11 @@ def main() -> int:
 
     expect("TEST PACKAGE ONLY / DESTRUCTIVE PROBE" in q9_candidate, "Q9 destructive candidate must be clearly marked test-only")
     expect("REPLACE:pop_demand = {" in q9_candidate, "Q9 must use REPLACE:pop_demand")
-    expect("books = {" in q9_candidate and "global_var:cbp_us04_q9_replace_global_books" in q9_candidate, "Q9 must replace books demand with a dynamic global source")
+    expect("books = {" in q9_candidate and "global_var:test_cbp_us04_q9_replace_global_books" in q9_candidate, "Q9 must replace books demand with a dynamic global source")
     expect("scenario=us04_q9_replace_pop_demand" in q9_test, "Q9 scenario marker missing")
     expect("goods_demand_in_market(goods:books)" in q9_test, "Q9 must read books demand")
     expect("goods_demand_in_market(goods:wool)" in q9_test, "Q9 must keep a wool control")
-    expect("cbp_us04_q9_replace_global_books value = 4.0" in q9_test, "Q9 must raise replacement source to 4.0")
+    expect("test_cbp_us04_q9_replace_global_books value = 4.0" in q9_test, "Q9 must raise replacement source to 4.0")
     expect("reason=no_target_response" in q9_test, "Q9 must classify no-response failures")
     expect("namespace = cbp_us04_q9_debug" in q9_debug_events, "Q9 must use an isolated debug namespace")
     expect("cbp_us04_q9_debug.1" in q9_debug_events and "cbp_us04_q9_debug.3" in q9_debug_events, "Q9 isolated console event chain must be present")

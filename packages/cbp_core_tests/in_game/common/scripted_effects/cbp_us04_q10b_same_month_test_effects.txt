@@ -7,129 +7,129 @@
 cbp_us04_q10b_clear_state = {
 	remove_global_variable = test_cbp_us04_q10b_same_month_passed
 	remove_global_variable = test_cbp_us04_q10b_same_month_blocked
-	remove_global_variable = cbp_us04_q10b_same_month_in_progress
-	remove_global_variable = cbp_us04_q10b_books_100
-	remove_global_variable = cbp_us04_q10b_books_099
-	remove_global_variable = cbp_us04_q10b_books_101
-	remove_global_variable = cbp_us04_q10b_books_120
-	remove_global_variable = cbp_us04_q10b_books_400
-	remove_global_variable = cbp_us04_q10b_control_100
-	remove_global_variable = cbp_us04_q10b_control_099
-	remove_global_variable = cbp_us04_q10b_control_101
-	remove_global_variable = cbp_us04_q10b_control_120
-	remove_global_variable = cbp_us04_q10b_control_400
-	remove_global_variable = cbp_us04_q10b_delta_099_vs_100
-	remove_global_variable = cbp_us04_q10b_delta_101_vs_100
-	remove_global_variable = cbp_us04_q10b_delta_120_vs_100
-	remove_global_variable = cbp_us04_q10b_delta_400_vs_100
+	remove_global_variable = test_cbp_us04_q10b_same_month_in_progress
+	remove_global_variable = test_cbp_us04_q10b_books_100
+	remove_global_variable = test_cbp_us04_q10b_books_099
+	remove_global_variable = test_cbp_us04_q10b_books_101
+	remove_global_variable = test_cbp_us04_q10b_books_120
+	remove_global_variable = test_cbp_us04_q10b_books_400
+	remove_global_variable = test_cbp_us04_q10b_control_100
+	remove_global_variable = test_cbp_us04_q10b_control_099
+	remove_global_variable = test_cbp_us04_q10b_control_101
+	remove_global_variable = test_cbp_us04_q10b_control_120
+	remove_global_variable = test_cbp_us04_q10b_control_400
+	remove_global_variable = test_cbp_us04_q10b_delta_099_vs_100
+	remove_global_variable = test_cbp_us04_q10b_delta_101_vs_100
+	remove_global_variable = test_cbp_us04_q10b_delta_120_vs_100
+	remove_global_variable = test_cbp_us04_q10b_delta_400_vs_100
 	clear_saved_scope = cbp_us04_q10b_market
 }
 
 cbp_us04_q10b_begin = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_q10b_replace_pop_demand_same_month"
 	if = {
-		limit = { has_global_variable = cbp_us04_q10b_same_month_in_progress }
+		limit = { has_global_variable = test_cbp_us04_q10b_same_month_in_progress }
 		set_global_variable = test_cbp_us04_q10b_same_month_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10b_replace_pop_demand_same_month reason=probe_already_in_progress"
 	}
 	else = {
 		cbp_us04_q10b_clear_state = yes
-		set_global_variable = cbp_us04_q10b_same_month_in_progress
+		set_global_variable = test_cbp_us04_q10b_same_month_in_progress
 		capital.market = { save_scope_as = cbp_us04_q10b_market }
-		set_global_variable = { name = cbp_us04_q9_replace_global_books value = 1.0 }
+		set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.0 }
 		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month phase=begin source=1.0000 wait=one_day"
 	}
 }
 
 cbp_us04_q10b_capture_100_set_099 = {
 	scope:cbp_us04_q10b_market = {
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
 	}
-	set_global_variable = { name = cbp_us04_q10b_books_100 value = scope:cbp_us04_q10b_books_current }
-	set_global_variable = { name = cbp_us04_q10b_control_100 value = scope:cbp_us04_q10b_control_current }
-	set_variable = { name = cbp_us04_q10b_ui_books value = global_var:cbp_us04_q10b_books_100 }
-	set_variable = { name = cbp_us04_q10b_ui_control value = global_var:cbp_us04_q10b_control_100 }
+	set_global_variable = { name = test_cbp_us04_q10b_books_100 value = scope:test_cbp_us04_q10b_books_current }
+	set_global_variable = { name = test_cbp_us04_q10b_control_100 value = scope:test_cbp_us04_q10b_control_current }
+	set_variable = { name = gui_cbp_us04_q10b_ui_books value = global_var:test_cbp_us04_q10b_books_100 }
+	set_variable = { name = gui_cbp_us04_q10b_ui_control value = global_var:test_cbp_us04_q10b_control_100 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month point=100 source=1.0000 books=[THIS.GetVariable('cbp_us04_q10b_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10b_ui_control').GetValue|4]"
-	set_global_variable = { name = cbp_us04_q9_replace_global_books value = 0.99 }
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 0.99 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month next_source=0.9900 wait=one_day"
 }
 
 cbp_us04_q10b_capture_099_set_101 = {
 	scope:cbp_us04_q10b_market = {
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
 	}
-	set_global_variable = { name = cbp_us04_q10b_books_099 value = scope:cbp_us04_q10b_books_current }
-	set_global_variable = { name = cbp_us04_q10b_control_099 value = scope:cbp_us04_q10b_control_current }
-	set_variable = { name = cbp_us04_q10b_ui_books value = global_var:cbp_us04_q10b_books_099 }
-	set_variable = { name = cbp_us04_q10b_ui_control value = global_var:cbp_us04_q10b_control_099 }
+	set_global_variable = { name = test_cbp_us04_q10b_books_099 value = scope:test_cbp_us04_q10b_books_current }
+	set_global_variable = { name = test_cbp_us04_q10b_control_099 value = scope:test_cbp_us04_q10b_control_current }
+	set_variable = { name = gui_cbp_us04_q10b_ui_books value = global_var:test_cbp_us04_q10b_books_099 }
+	set_variable = { name = gui_cbp_us04_q10b_ui_control value = global_var:test_cbp_us04_q10b_control_099 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month point=099 source=0.9900 books=[THIS.GetVariable('cbp_us04_q10b_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10b_ui_control').GetValue|4]"
-	set_global_variable = { name = cbp_us04_q9_replace_global_books value = 1.01 }
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.01 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month next_source=1.0100 wait=one_day"
 }
 
 cbp_us04_q10b_capture_101_set_120 = {
 	scope:cbp_us04_q10b_market = {
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
 	}
-	set_global_variable = { name = cbp_us04_q10b_books_101 value = scope:cbp_us04_q10b_books_current }
-	set_global_variable = { name = cbp_us04_q10b_control_101 value = scope:cbp_us04_q10b_control_current }
-	set_variable = { name = cbp_us04_q10b_ui_books value = global_var:cbp_us04_q10b_books_101 }
-	set_variable = { name = cbp_us04_q10b_ui_control value = global_var:cbp_us04_q10b_control_101 }
+	set_global_variable = { name = test_cbp_us04_q10b_books_101 value = scope:test_cbp_us04_q10b_books_current }
+	set_global_variable = { name = test_cbp_us04_q10b_control_101 value = scope:test_cbp_us04_q10b_control_current }
+	set_variable = { name = gui_cbp_us04_q10b_ui_books value = global_var:test_cbp_us04_q10b_books_101 }
+	set_variable = { name = gui_cbp_us04_q10b_ui_control value = global_var:test_cbp_us04_q10b_control_101 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month point=101 source=1.0100 books=[THIS.GetVariable('cbp_us04_q10b_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10b_ui_control').GetValue|4]"
-	set_global_variable = { name = cbp_us04_q9_replace_global_books value = 1.2 }
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.2 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month next_source=1.2000 wait=one_day"
 }
 
 cbp_us04_q10b_capture_120_set_400 = {
 	scope:cbp_us04_q10b_market = {
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
 	}
-	set_global_variable = { name = cbp_us04_q10b_books_120 value = scope:cbp_us04_q10b_books_current }
-	set_global_variable = { name = cbp_us04_q10b_control_120 value = scope:cbp_us04_q10b_control_current }
-	set_variable = { name = cbp_us04_q10b_ui_books value = global_var:cbp_us04_q10b_books_120 }
-	set_variable = { name = cbp_us04_q10b_ui_control value = global_var:cbp_us04_q10b_control_120 }
+	set_global_variable = { name = test_cbp_us04_q10b_books_120 value = scope:test_cbp_us04_q10b_books_current }
+	set_global_variable = { name = test_cbp_us04_q10b_control_120 value = scope:test_cbp_us04_q10b_control_current }
+	set_variable = { name = gui_cbp_us04_q10b_ui_books value = global_var:test_cbp_us04_q10b_books_120 }
+	set_variable = { name = gui_cbp_us04_q10b_ui_control value = global_var:test_cbp_us04_q10b_control_120 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month point=120 source=1.2000 books=[THIS.GetVariable('cbp_us04_q10b_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10b_ui_control').GetValue|4]"
-	set_global_variable = { name = cbp_us04_q9_replace_global_books value = 4.0 }
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 4.0 }
 	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month next_source=4.0000 wait=one_day"
 }
 
 cbp_us04_q10b_finalize = {
 	if = {
-		limit = { NOT = { has_global_variable = cbp_us04_q10b_same_month_in_progress } }
+		limit = { NOT = { has_global_variable = test_cbp_us04_q10b_same_month_in_progress } }
 		set_global_variable = test_cbp_us04_q10b_same_month_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10b_replace_pop_demand_same_month reason=finalize_without_in_progress"
 	}
 	else = {
 		scope:cbp_us04_q10b_market = {
-			save_temporary_scope_value_as = { name = cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
-			save_temporary_scope_value_as = { name = cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
+			save_temporary_scope_value_as = { name = test_cbp_us04_q10b_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = test_cbp_us04_q10b_control_current value = "goods_demand_in_market(goods:wool)" }
 		}
-		set_global_variable = { name = cbp_us04_q10b_books_400 value = scope:cbp_us04_q10b_books_current }
-		set_global_variable = { name = cbp_us04_q10b_control_400 value = scope:cbp_us04_q10b_control_current }
-		set_variable = { name = cbp_us04_q10b_ui_books value = global_var:cbp_us04_q10b_books_400 }
-		set_variable = { name = cbp_us04_q10b_ui_control value = global_var:cbp_us04_q10b_control_400 }
+		set_global_variable = { name = test_cbp_us04_q10b_books_400 value = scope:test_cbp_us04_q10b_books_current }
+		set_global_variable = { name = test_cbp_us04_q10b_control_400 value = scope:test_cbp_us04_q10b_control_current }
+		set_variable = { name = gui_cbp_us04_q10b_ui_books value = global_var:test_cbp_us04_q10b_books_400 }
+		set_variable = { name = gui_cbp_us04_q10b_ui_control value = global_var:test_cbp_us04_q10b_control_400 }
 		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10b_same_month point=400 source=4.0000 books=[THIS.GetVariable('cbp_us04_q10b_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10b_ui_control').GetValue|4]"
 
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_delta_099_vs_100 value = { value = global_var:cbp_us04_q10b_books_099 subtract = global_var:cbp_us04_q10b_books_100 } }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_delta_101_vs_100 value = { value = global_var:cbp_us04_q10b_books_101 subtract = global_var:cbp_us04_q10b_books_100 } }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_delta_120_vs_100 value = { value = global_var:cbp_us04_q10b_books_120 subtract = global_var:cbp_us04_q10b_books_100 } }
-		save_temporary_scope_value_as = { name = cbp_us04_q10b_delta_400_vs_100 value = { value = global_var:cbp_us04_q10b_books_400 subtract = global_var:cbp_us04_q10b_books_100 } }
-		set_global_variable = { name = cbp_us04_q10b_delta_099_vs_100 value = scope:cbp_us04_q10b_delta_099_vs_100 }
-		set_global_variable = { name = cbp_us04_q10b_delta_101_vs_100 value = scope:cbp_us04_q10b_delta_101_vs_100 }
-		set_global_variable = { name = cbp_us04_q10b_delta_120_vs_100 value = scope:cbp_us04_q10b_delta_120_vs_100 }
-		set_global_variable = { name = cbp_us04_q10b_delta_400_vs_100 value = scope:cbp_us04_q10b_delta_400_vs_100 }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_delta_099_vs_100 value = { value = global_var:test_cbp_us04_q10b_books_099 subtract = global_var:test_cbp_us04_q10b_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_delta_101_vs_100 value = { value = global_var:test_cbp_us04_q10b_books_101 subtract = global_var:test_cbp_us04_q10b_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_delta_120_vs_100 value = { value = global_var:test_cbp_us04_q10b_books_120 subtract = global_var:test_cbp_us04_q10b_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10b_delta_400_vs_100 value = { value = global_var:test_cbp_us04_q10b_books_400 subtract = global_var:test_cbp_us04_q10b_books_100 } }
+		set_global_variable = { name = test_cbp_us04_q10b_delta_099_vs_100 value = scope:test_cbp_us04_q10b_delta_099_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10b_delta_101_vs_100 value = scope:test_cbp_us04_q10b_delta_101_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10b_delta_120_vs_100 value = scope:test_cbp_us04_q10b_delta_120_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10b_delta_400_vs_100 value = scope:test_cbp_us04_q10b_delta_400_vs_100 }
 
-		set_variable = { name = cbp_us04_q10b_ui_delta_099 value = global_var:cbp_us04_q10b_delta_099_vs_100 }
-		set_variable = { name = cbp_us04_q10b_ui_delta_101 value = global_var:cbp_us04_q10b_delta_101_vs_100 }
-		set_variable = { name = cbp_us04_q10b_ui_delta_120 value = global_var:cbp_us04_q10b_delta_120_vs_100 }
-		set_variable = { name = cbp_us04_q10b_ui_delta_400 value = global_var:cbp_us04_q10b_delta_400_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10b_ui_delta_099 value = global_var:test_cbp_us04_q10b_delta_099_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10b_ui_delta_101 value = global_var:test_cbp_us04_q10b_delta_101_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10b_ui_delta_120 value = global_var:test_cbp_us04_q10b_delta_120_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10b_ui_delta_400 value = global_var:test_cbp_us04_q10b_delta_400_vs_100 }
 		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q10b_same_month COMPLETE delta099_vs100=[THIS.GetVariable('cbp_us04_q10b_ui_delta_099').GetValue|4] delta101_vs100=[THIS.GetVariable('cbp_us04_q10b_ui_delta_101').GetValue|4] delta120_vs100=[THIS.GetVariable('cbp_us04_q10b_ui_delta_120').GetValue|4] delta400_vs100=[THIS.GetVariable('cbp_us04_q10b_ui_delta_400').GetValue|4]"
 		set_global_variable = test_cbp_us04_q10b_same_month_passed
 		debug_log = "ModeU5 TEST PASS scenario=us04_q10b_replace_pop_demand_same_month"
-		remove_global_variable = cbp_us04_q10b_same_month_in_progress
+		remove_global_variable = test_cbp_us04_q10b_same_month_in_progress
 	}
 }
