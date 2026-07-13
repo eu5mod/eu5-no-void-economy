@@ -1,18 +1,11 @@
-# Snapshot package presence and ensure the permanent US-09 R.G.O. capacity modifier is applied.
-# The load hook also supports saves created before this location modifier was introduced.
+# Snapshot package presence for a new campaign. Existing-save package changes are unsupported.
 on_game_start = {
 	on_actions = {
-		modeu5_economy_rebalance_package_initialize
+		modeu5_economy_rebalance_package_on_game_start
 	}
 }
 
-on_game_load = {
-	on_actions = {
-		modeu5_economy_rebalance_package_initialize
-	}
-}
-
-modeu5_economy_rebalance_package_initialize = {
+modeu5_economy_rebalance_package_on_game_start = {
 	effect = {
 		set_global_variable = cbp_economy_rebalance_loaded
 		set_global_variable = {
