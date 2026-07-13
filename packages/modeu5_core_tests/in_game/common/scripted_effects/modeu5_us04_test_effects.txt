@@ -1,0 +1,782 @@
+# Deterministic US-04 annual Pop demand adaptation probe.
+#
+# Run through event modeu5_us04_debug.1 or the broad revalidation chain.
+# The fixture uses the current country's capital location and a small set of
+# representative goods. It temporarily toggles the CMM setting and restores it.
+
+modeu5_us04_capture_original_cmm_setting = {
+	save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_present value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_value value = 0 }
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			}
+		}
+		save_temporary_scope_value_as = { name = modeu5_us04_original_cmm_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_original_cmm_value
+			value = "variable_map(cmm|flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)"
+		}
+	}
+}
+
+modeu5_us04_remove_cmm_setting_for_test = {
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			}
+		}
+		remove_from_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		}
+	}
+}
+
+modeu5_us04_set_cmm_setting_for_test = {
+	modeu5_us04_remove_cmm_setting_for_test = yes
+	add_to_variable_map = {
+		name = cmm
+		key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		value = $value$
+	}
+}
+
+modeu5_us04_restore_original_cmm_setting = {
+	modeu5_us04_remove_cmm_setting_for_test = yes
+	if = {
+		limit = { scope:modeu5_us04_original_cmm_present > 0 }
+		add_to_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			value = scope:modeu5_us04_original_cmm_value
+		}
+	}
+}
+
+modeu5_us04_clear_fixture_goods = {
+	modeu5_us04_reset_pop_demand_annual_counters_good_wheat = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_beer = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_cloth = yes
+	modeu5_us04_reset_pop_demand_annual_counters_good_tools = yes
+	modeu5_us04_clear_monthly_reconciliation_record_good_wheat = yes
+	modeu5_us04_clear_monthly_reconciliation_record_good_beer = yes
+	modeu5_us04_clear_monthly_reconciliation_record_good_cloth = yes
+	modeu5_us04_clear_monthly_reconciliation_record_good_tools = yes
+
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:wheat } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:wheat } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:beer } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:beer } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:cloth } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:cloth } }
+	if = { limit = { has_variable_map = modeu5_pop_demand_multiplier is_key_in_variable_map = { name = modeu5_pop_demand_multiplier target = goods:tools } } remove_from_variable_map = { name = modeu5_pop_demand_multiplier key = goods:tools } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_coefficient is_key_in_variable_map = { name = modeu5_us04_reconciliation_coefficient target = goods:wheat } } remove_from_variable_map = { name = modeu5_us04_reconciliation_coefficient key = goods:wheat } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_coefficient is_key_in_variable_map = { name = modeu5_us04_reconciliation_coefficient target = goods:beer } } remove_from_variable_map = { name = modeu5_us04_reconciliation_coefficient key = goods:beer } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_coefficient is_key_in_variable_map = { name = modeu5_us04_reconciliation_coefficient target = goods:cloth } } remove_from_variable_map = { name = modeu5_us04_reconciliation_coefficient key = goods:cloth } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_coefficient is_key_in_variable_map = { name = modeu5_us04_reconciliation_coefficient target = goods:tools } } remove_from_variable_map = { name = modeu5_us04_reconciliation_coefficient key = goods:tools } }
+}
+
+modeu5_us04_seed_fixture_goods = {
+	modeu5_us04_clear_fixture_goods = yes
+	modeu5_write_pop_demand_multiplier_good_wheat = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_beer = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_cloth = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_pop_demand_multiplier_good_tools = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_us04_reconciliation_coefficient_good_wheat = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_us04_reconciliation_coefficient_good_beer = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_us04_reconciliation_coefficient_good_cloth = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_write_us04_reconciliation_coefficient_good_tools = { value = "modeu5_pop_demand_base_consumption_multiplier" }
+	modeu5_set_pop_demand_annual_counters_good_wheat = { satisfied_months = 12 unsatisfied_months = 0 }
+	modeu5_set_pop_demand_annual_counters_good_beer = { satisfied_months = 0 unsatisfied_months = 12 }
+	modeu5_set_pop_demand_annual_counters_good_cloth = { satisfied_months = 8 unsatisfied_months = 4 }
+	modeu5_set_pop_demand_annual_counters_good_tools = { satisfied_months = 0 unsatisfied_months = 0 }
+}
+
+modeu5_us04_read_fixture_goods = {
+	modeu5_get_pop_demand_multiplier_good_wheat = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_get_us04_reconciliation_coefficient_good_wheat = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_coefficient value = scope:modeu5_us04_reconciliation_coefficient_value }
+	modeu5_read_pop_demand_annual_counters_good_wheat = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_beer = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_get_us04_reconciliation_coefficient_good_beer = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_coefficient value = scope:modeu5_us04_reconciliation_coefficient_value }
+	modeu5_read_pop_demand_annual_counters_good_beer = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_cloth = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_get_us04_reconciliation_coefficient_good_cloth = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_reconciliation_coefficient value = scope:modeu5_us04_reconciliation_coefficient_value }
+	modeu5_read_pop_demand_annual_counters_good_cloth = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_cloth_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+
+	modeu5_get_pop_demand_multiplier_good_tools = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_multiplier value = scope:modeu5_us04_old_multiplier }
+	modeu5_get_us04_reconciliation_coefficient_good_tools = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_reconciliation_coefficient value = scope:modeu5_us04_reconciliation_coefficient_value }
+	modeu5_read_pop_demand_annual_counters_good_tools = yes
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_satisfied_months value = scope:modeu5_us04_satisfied_months }
+	save_temporary_scope_value_as = { name = modeu5_us04_tools_unsatisfied_months value = scope:modeu5_us04_unsatisfied_months }
+}
+
+modeu5_us04_read_wheat_reconciliation_record = {
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_requested value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_extra value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_restored value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_added value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_unsatisfied value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_country_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_market_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_requested_total value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_peasants value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_burghers value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_nobles value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_clergy value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_parts_total value = 0 }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_requested value = "variable_map(modeu5_us04_reconciliation_requested_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_extra value = "variable_map(modeu5_us04_reconciliation_extra_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_removed value = "variable_map(modeu5_us04_reconciliation_removed_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_goods_supply_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_goods_supply_removed_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_removed value = "variable_map(modeu5_us04_reconciliation_goods_supply_removed_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_restored_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_restored_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_restored value = "variable_map(modeu5_us04_reconciliation_restored_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_goods_supply_added_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_goods_supply_added_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_added value = "variable_map(modeu5_us04_reconciliation_goods_supply_added_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_unsatisfied value = "variable_map(modeu5_us04_reconciliation_unsatisfied_quantity|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_country_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_country_delta value = "variable_map(modeu5_us04_reconciliation_country_stock_delta|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_market_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_market_delta value = "variable_map(modeu5_us04_reconciliation_market_stock_delta|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge value = "variable_map(modeu5_us04_reconciliation_estate_charge|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_requested_total is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_requested_total target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_requested_total value = "variable_map(modeu5_us04_reconciliation_estate_requested_total|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_peasants_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_peasants_estate target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_peasants value = "variable_map(modeu5_us04_reconciliation_estate_charge_peasants_estate|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_burghers_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_burghers_estate target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_burghers value = "variable_map(modeu5_us04_reconciliation_estate_charge_burghers_estate|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_nobles_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_nobles_estate target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_nobles value = "variable_map(modeu5_us04_reconciliation_estate_charge_nobles_estate|goods:wheat)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_clergy_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_clergy_estate target = goods:wheat } } save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_clergy value = "variable_map(modeu5_us04_reconciliation_estate_charge_clergy_estate|goods:wheat)" } }
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_wheat_reconciliation_estate_charge_parts_total
+		value = {
+			value = scope:modeu5_us04_wheat_reconciliation_estate_charge_peasants
+			add = scope:modeu5_us04_wheat_reconciliation_estate_charge_burghers
+			add = scope:modeu5_us04_wheat_reconciliation_estate_charge_nobles
+			add = scope:modeu5_us04_wheat_reconciliation_estate_charge_clergy
+			min = 0
+		}
+	}
+}
+
+modeu5_us04_note_assertion_failure = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_assertion_failure_count
+		value = {
+			value = scope:modeu5_us04_assertion_failure_count
+			add = 1
+		}
+	}
+}
+
+modeu5_us04_read_beer_reconciliation_record = {
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_requested value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_extra value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_restored value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_added value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_peasants value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_burghers value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_nobles value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_clergy value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_unsatisfied value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_country_delta value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_market_delta value = 0 }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_requested value = "variable_map(modeu5_us04_reconciliation_requested_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_extra value = "variable_map(modeu5_us04_reconciliation_extra_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_removed value = "variable_map(modeu5_us04_reconciliation_removed_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_goods_supply_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_goods_supply_removed_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_removed value = "variable_map(modeu5_us04_reconciliation_goods_supply_removed_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_restored_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_restored_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_restored value = "variable_map(modeu5_us04_reconciliation_restored_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_goods_supply_added_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_goods_supply_added_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_added value = "variable_map(modeu5_us04_reconciliation_goods_supply_added_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund value = "variable_map(modeu5_us04_reconciliation_estate_refund|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_peasants_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_peasants_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_peasants value = "variable_map(modeu5_us04_reconciliation_estate_refund_peasants_estate|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_burghers_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_burghers_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_burghers value = "variable_map(modeu5_us04_reconciliation_estate_refund_burghers_estate|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_nobles_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_nobles_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_nobles value = "variable_map(modeu5_us04_reconciliation_estate_refund_nobles_estate|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_clergy_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_clergy_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_estate_refund_clergy value = "variable_map(modeu5_us04_reconciliation_estate_refund_clergy_estate|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_unsatisfied value = "variable_map(modeu5_us04_reconciliation_unsatisfied_quantity|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_country_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_country_delta value = "variable_map(modeu5_us04_reconciliation_country_stock_delta|goods:beer)" } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_market_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_market_delta value = "variable_map(modeu5_us04_reconciliation_market_stock_delta|goods:beer)" } }
+}
+
+modeu5_us04_export_fixture_debug_values = {
+	set_variable = { name = modeu5_us04_ui_base_multiplier value = "modeu5_pop_demand_base_consumption_multiplier" }
+	set_variable = { name = modeu5_us04_ui_wheat_multiplier value = scope:modeu5_us04_wheat_multiplier }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_coefficient value = scope:modeu5_us04_wheat_reconciliation_coefficient }
+	set_variable = { name = modeu5_us04_ui_beer_multiplier value = scope:modeu5_us04_beer_multiplier }
+	set_variable = { name = modeu5_us04_ui_beer_reconciliation_coefficient value = scope:modeu5_us04_beer_reconciliation_coefficient }
+	set_variable = { name = modeu5_us04_ui_cloth_multiplier value = scope:modeu5_us04_cloth_multiplier }
+	set_variable = { name = modeu5_us04_ui_cloth_reconciliation_coefficient value = scope:modeu5_us04_cloth_reconciliation_coefficient }
+	set_variable = { name = modeu5_us04_ui_tools_multiplier value = scope:modeu5_us04_tools_multiplier }
+	set_variable = { name = modeu5_us04_ui_tools_reconciliation_coefficient value = scope:modeu5_us04_tools_reconciliation_coefficient }
+	set_variable = { name = modeu5_us04_ui_wheat_satisfied_months value = scope:modeu5_us04_wheat_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_wheat_unsatisfied_months value = scope:modeu5_us04_wheat_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_beer_satisfied_months value = scope:modeu5_us04_beer_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_beer_unsatisfied_months value = scope:modeu5_us04_beer_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_cloth_satisfied_months value = scope:modeu5_us04_cloth_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_cloth_unsatisfied_months value = scope:modeu5_us04_cloth_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_tools_satisfied_months value = scope:modeu5_us04_tools_satisfied_months }
+	set_variable = { name = modeu5_us04_ui_tools_unsatisfied_months value = scope:modeu5_us04_tools_unsatisfied_months }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_requested value = scope:modeu5_us04_wheat_reconciliation_requested }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_extra value = scope:modeu5_us04_wheat_reconciliation_extra }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_removed value = scope:modeu5_us04_wheat_reconciliation_removed }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_goods_supply_removed value = scope:modeu5_us04_wheat_reconciliation_goods_supply_removed }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_unsatisfied value = scope:modeu5_us04_wheat_reconciliation_unsatisfied }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_country_delta value = scope:modeu5_us04_wheat_reconciliation_country_delta }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_market_delta value = scope:modeu5_us04_wheat_reconciliation_market_delta }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_charge value = scope:modeu5_us04_wheat_reconciliation_estate_charge }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_requested_total value = scope:modeu5_us04_wheat_reconciliation_estate_requested_total }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_charge_peasants value = scope:modeu5_us04_wheat_reconciliation_estate_charge_peasants }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_charge_burghers value = scope:modeu5_us04_wheat_reconciliation_estate_charge_burghers }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_charge_nobles value = scope:modeu5_us04_wheat_reconciliation_estate_charge_nobles }
+	set_variable = { name = modeu5_us04_ui_wheat_reconciliation_estate_charge_clergy value = scope:modeu5_us04_wheat_reconciliation_estate_charge_clergy }
+	set_variable = { name = modeu5_us04_ui_wheat_stock_after_reconciliation value = scope:modeu5_us04_wheat_stock_after_reconciliation }
+	set_variable = { name = modeu5_us04_ui_wheat_market_stock_after_reconciliation value = scope:modeu5_us04_wheat_market_stock_after_reconciliation }
+}
+
+modeu5_us04_log_fixture_dump = {
+	modeu5_us04_export_fixture_debug_values = yes
+	debug_log = "ModeU5 US-04 DUMP base_multiplier=[THIS.GetVariable('modeu5_us04_ui_base_multiplier').GetValue|4] wheat_multiplier=[THIS.GetVariable('modeu5_us04_ui_wheat_multiplier').GetValue|4] wheat_reconciliation_coefficient=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_coefficient').GetValue|4] beer_multiplier=[THIS.GetVariable('modeu5_us04_ui_beer_multiplier').GetValue|4] beer_reconciliation_coefficient=[THIS.GetVariable('modeu5_us04_ui_beer_reconciliation_coefficient').GetValue|4] cloth_multiplier=[THIS.GetVariable('modeu5_us04_ui_cloth_multiplier').GetValue|4] cloth_reconciliation_coefficient=[THIS.GetVariable('modeu5_us04_ui_cloth_reconciliation_coefficient').GetValue|4] tools_multiplier=[THIS.GetVariable('modeu5_us04_ui_tools_multiplier').GetValue|4] tools_reconciliation_coefficient=[THIS.GetVariable('modeu5_us04_ui_tools_reconciliation_coefficient').GetValue|4] wheat_reconciliation_requested=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_requested').GetValue|2] wheat_reconciliation_extra=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_extra').GetValue|2] wheat_reconciliation_removed=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_removed').GetValue|2] wheat_reconciliation_goods_supply_removed=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_goods_supply_removed').GetValue|2] wheat_reconciliation_unsatisfied=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_unsatisfied').GetValue|2] wheat_reconciliation_country_delta=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_country_delta').GetValue|2] wheat_reconciliation_market_delta=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_market_delta').GetValue|2] wheat_reconciliation_estate_charge=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_charge').GetValue|2] wheat_reconciliation_estate_requested_total=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_requested_total').GetValue|2] wheat_estate_charge_peasants=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_charge_peasants').GetValue|2] wheat_estate_charge_burghers=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_charge_burghers').GetValue|2] wheat_estate_charge_nobles=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_charge_nobles').GetValue|2] wheat_estate_charge_clergy=[THIS.GetVariable('modeu5_us04_ui_wheat_reconciliation_estate_charge_clergy').GetValue|2] wheat_stock_after_reconciliation=[THIS.GetVariable('modeu5_us04_ui_wheat_stock_after_reconciliation').GetValue|2] wheat_market_stock_after_reconciliation=[THIS.GetVariable('modeu5_us04_ui_wheat_market_stock_after_reconciliation').GetValue|2] wheat_sat=[THIS.GetVariable('modeu5_us04_ui_wheat_satisfied_months').GetValue|0] wheat_unsat=[THIS.GetVariable('modeu5_us04_ui_wheat_unsatisfied_months').GetValue|0] beer_sat=[THIS.GetVariable('modeu5_us04_ui_beer_satisfied_months').GetValue|0] beer_unsat=[THIS.GetVariable('modeu5_us04_ui_beer_unsatisfied_months').GetValue|0] cloth_sat=[THIS.GetVariable('modeu5_us04_ui_cloth_satisfied_months').GetValue|0] cloth_unsat=[THIS.GetVariable('modeu5_us04_ui_cloth_unsatisfied_months').GetValue|0] tools_sat=[THIS.GetVariable('modeu5_us04_ui_tools_satisfied_months').GetValue|0] tools_unsat=[THIS.GetVariable('modeu5_us04_ui_tools_unsatisfied_months').GetValue|0]"
+}
+
+modeu5_debug_run_us04_pop_demand_adaptation_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation"
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_passed
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
+	remove_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+
+	save_temporary_scope_value_as = { name = modeu5_us04_assertion_failure_count value = 0 }
+	modeu5_us04_capture_original_cmm_setting = yes
+
+	if = {
+		limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+		set_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because Rebalance Economy is not loaded."
+	}
+	else_if = {
+		limit = { NOT = { modeu5_stock_runtime_ready_trigger = yes } }
+		set_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because stock runtime is not ready."
+	}
+	else = {
+		capital = { save_temporary_scope_as = modeu5_us04_test_location }
+
+		scope:modeu5_us04_test_location = {
+			modeu5_us04_seed_fixture_goods = yes
+		}
+
+		modeu5_us04_set_cmm_setting_for_test = { value = 0 }
+		modeu5_run_pop_demand_adaptation_for_location = { location = scope:modeu5_us04_test_location }
+		scope:modeu5_us04_test_location = {
+			modeu5_get_pop_demand_multiplier_good_wheat = yes
+			modeu5_get_us04_reconciliation_coefficient_good_wheat = yes
+			modeu5_read_pop_demand_annual_counters_good_wheat = yes
+		}
+		if = {
+			limit = {
+				OR = {
+					scope:modeu5_us04_old_multiplier < 1.199
+					scope:modeu5_us04_old_multiplier > 1.201
+					scope:modeu5_us04_reconciliation_coefficient_value < 1.199
+					scope:modeu5_us04_reconciliation_coefficient_value > 1.201
+					NOT = { scope:modeu5_us04_satisfied_months = 12 }
+					NOT = { scope:modeu5_us04_unsatisfied_months = 0 }
+				}
+			}
+			debug_log = "ModeU5 US-04 FAIL_REASON reason=cmm_disabled_gate_mutated_fixture"
+			modeu5_us04_note_assertion_failure = yes
+		}
+
+		modeu5_us04_set_cmm_setting_for_test = { value = 1 }
+		modeu5_run_pop_demand_adaptation_for_location = { location = scope:modeu5_us04_test_location }
+		scope:modeu5_us04_test_location = {
+			modeu5_us04_read_fixture_goods = yes
+		}
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_multiplier < 1.211 scope:modeu5_us04_wheat_multiplier > 1.213 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=wheat_full_satisfaction_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_multiplier < 1.187 scope:modeu5_us04_beer_multiplier > 1.189 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=beer_full_shortage_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_cloth_multiplier < 1.199 scope:modeu5_us04_cloth_multiplier > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=mixed_year_changed_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_tools_multiplier < 1.199 scope:modeu5_us04_tools_multiplier > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=zero_demand_changed_multiplier" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_coefficient < 1.211 scope:modeu5_us04_wheat_reconciliation_coefficient > 1.213 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=wheat_reconciliation_coefficient" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_coefficient < 1.187 scope:modeu5_us04_beer_reconciliation_coefficient > 1.189 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=beer_reconciliation_coefficient" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_cloth_reconciliation_coefficient < 1.199 scope:modeu5_us04_cloth_reconciliation_coefficient > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=cloth_reconciliation_coefficient" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_tools_reconciliation_coefficient < 1.199 scope:modeu5_us04_tools_reconciliation_coefficient > 1.201 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=tools_reconciliation_coefficient" modeu5_us04_note_assertion_failure = yes }
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_satisfied_months > 0 scope:modeu5_us04_wheat_unsatisfied_months > 0 scope:modeu5_us04_beer_satisfied_months > 0 scope:modeu5_us04_beer_unsatisfied_months > 0 scope:modeu5_us04_cloth_satisfied_months > 0 scope:modeu5_us04_cloth_unsatisfied_months > 0 scope:modeu5_us04_tools_satisfied_months > 0 scope:modeu5_us04_tools_unsatisfied_months > 0 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=annual_counters_not_reset" modeu5_us04_note_assertion_failure = yes }
+
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_requested value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_extra value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_removed value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_removed value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_restored value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_added value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_unsatisfied value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_requested value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_extra value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_removed value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_removed value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_restored value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_goods_supply_added value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_unsatisfied value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_country_delta value = 0 }
+		save_temporary_scope_value_as = { name = modeu5_us04_beer_reconciliation_market_delta value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_country_delta value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_market_delta value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_requested_total value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_peasants value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_burghers value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_nobles value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_clergy value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_parts_total value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_stock_after_reconciliation value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_after_reconciliation value = 0 }
+
+		scope:modeu5_us04_test_location = {
+			owner ?= { save_temporary_scope_as = modeu5_us04_test_country }
+			market = { save_temporary_scope_as = modeu5_us04_test_market }
+		}
+		if = {
+			limit = {
+				exists = scope:modeu5_us04_test_country
+				exists = scope:modeu5_us04_test_market
+			}
+			modeu5_remove_stock = {
+				country = scope:modeu5_us04_test_country
+				market = scope:modeu5_us04_test_market
+				good = wheat
+				quantity = 99999
+				reason = debug_test
+			}
+			modeu5_add_stock = {
+				country = scope:modeu5_us04_test_country
+				market = scope:modeu5_us04_test_market
+				good = wheat
+					quantity = 200
+					capacity_policy = allow_over_capacity
+				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = wheat
+				}
+				save_temporary_scope_value_as = { name = modeu5_us04_wheat_stock_before_reconciliation value = scope:modeu5_read_country_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_before_reconciliation value = scope:modeu5_read_market_stock }
+				modeu5_reset_pop_demand_outcome = {
+					location = scope:modeu5_us04_test_location
+					good = wheat
+				}
+					modeu5_record_us04_location_estate_proxy_peasants_estate = {
+						location = scope:modeu5_us04_test_location
+						good = wheat
+						proxy_estate_size = 70
+					}
+					modeu5_record_us04_location_estate_proxy_burghers_estate = {
+						location = scope:modeu5_us04_test_location
+						good = wheat
+						proxy_estate_size = 30
+					}
+					modeu5_run_monthly_us04_reconciliation_for_location = {
+						location = scope:modeu5_us04_test_location
+					}
+			modeu5_read_country_stock_record = {
+				country = scope:modeu5_us04_test_country
+				market = scope:modeu5_us04_test_market
+				good = wheat
+			}
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_stock_after_reconciliation value = scope:modeu5_read_country_stock }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_after_reconciliation value = scope:modeu5_read_market_stock }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_country_stock_delta_after_reconciliation_a value = { value = scope:modeu5_us04_wheat_stock_after_reconciliation subtract = scope:modeu5_us04_wheat_stock_before_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_country_stock_delta_after_reconciliation_b value = { value = scope:modeu5_us04_wheat_stock_before_reconciliation subtract = scope:modeu5_us04_wheat_stock_after_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_delta_after_reconciliation_a value = { value = scope:modeu5_us04_wheat_market_stock_after_reconciliation subtract = scope:modeu5_us04_wheat_market_stock_before_reconciliation min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_wheat_market_stock_delta_after_reconciliation_b value = { value = scope:modeu5_us04_wheat_market_stock_before_reconciliation subtract = scope:modeu5_us04_wheat_market_stock_after_reconciliation min = 0 } }
+				scope:modeu5_us04_test_location = {
+					modeu5_us04_read_wheat_reconciliation_record = yes
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us04_wheat_reconciliation_estate_charge_split_delta_a
+					value = {
+						value = scope:modeu5_us04_wheat_reconciliation_estate_charge
+						subtract = scope:modeu5_us04_wheat_reconciliation_estate_charge_parts_total
+						min = 0
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us04_wheat_reconciliation_estate_charge_split_delta_b
+					value = {
+						value = scope:modeu5_us04_wheat_reconciliation_estate_charge_parts_total
+						subtract = scope:modeu5_us04_wheat_reconciliation_estate_charge
+						min = 0
+					}
+				}
+				save_temporary_scope_value_as = {
+					name = modeu5_us04_wheat_reconciliation_estate_charge_weighting_delta
+					value = {
+						value = scope:modeu5_us04_wheat_reconciliation_estate_charge_burghers
+						subtract = scope:modeu5_us04_wheat_reconciliation_estate_charge_peasants
+						min = 0
+					}
+				}
+					if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_requested < 121.19 scope:modeu5_us04_wheat_reconciliation_requested > 121.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_extra < 21.19 scope:modeu5_us04_wheat_reconciliation_extra > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+						if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_removed < 21.19 scope:modeu5_us04_wheat_reconciliation_removed > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_removed_stock_with_proxy" modeu5_us04_note_assertion_failure = yes }
+						if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_goods_supply_removed < 21.19 scope:modeu5_us04_wheat_reconciliation_goods_supply_removed > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_goods_supply_removed_with_proxy" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { scope:modeu5_us04_wheat_reconciliation_unsatisfied > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_unsatisfied_quantity_with_proxy" modeu5_us04_note_assertion_failure = yes }
+						if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_country_delta < 21.19 scope:modeu5_us04_wheat_reconciliation_country_delta > 21.21 scope:modeu5_us04_wheat_reconciliation_market_delta < 21.19 scope:modeu5_us04_wheat_reconciliation_market_delta > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_stock_delta_with_proxy" modeu5_us04_note_assertion_failure = yes }
+						if = { limit = { scope:modeu5_us04_wheat_reconciliation_estate_charge < 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_estate_charge_with_proxy" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_requested_total < 121.19 scope:modeu5_us04_wheat_reconciliation_estate_requested_total > 121.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_estate_requested_total" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_charge_split_delta_a > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_split_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_estate_charge_split_total" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { scope:modeu5_us04_wheat_reconciliation_estate_charge_weighting_delta > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_estate_charge_weighting" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_charge_nobles > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_clergy > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_unseeded_estate_charge" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_country_stock_delta_after_reconciliation_a > 0.01 scope:modeu5_us04_wheat_country_stock_delta_after_reconciliation_b < 21.19 scope:modeu5_us04_wheat_country_stock_delta_after_reconciliation_b > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_country_stock_changed_with_proxy" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_wheat_market_stock_delta_after_reconciliation_a > 0.01 scope:modeu5_us04_wheat_market_stock_delta_after_reconciliation_b < 21.19 scope:modeu5_us04_wheat_market_stock_delta_after_reconciliation_b > 21.21 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=reconciliation_market_stock_changed_with_proxy" modeu5_us04_note_assertion_failure = yes }
+
+					scope:modeu5_us04_test_location = {
+						modeu5_us04_clear_monthly_reconciliation_record_good_beer = yes
+						modeu5_write_us04_reconciliation_coefficient_good_beer = { value = 0.99 }
+					}
+					modeu5_remove_stock = {
+						country = scope:modeu5_us04_test_country
+						market = scope:modeu5_us04_test_market
+						good = beer
+						quantity = 99999
+						reason = debug_test
+					}
+					modeu5_add_stock = {
+						country = scope:modeu5_us04_test_country
+						market = scope:modeu5_us04_test_market
+						good = beer
+						quantity = 200
+						capacity_policy = allow_over_capacity
+					}
+					modeu5_read_country_stock_record = {
+						country = scope:modeu5_us04_test_country
+						market = scope:modeu5_us04_test_market
+						good = beer
+					}
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_stock_before value = scope:modeu5_read_country_stock }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_market_stock_before value = scope:modeu5_read_market_stock }
+					modeu5_reset_us04_location_estate_proxy = {
+						location = scope:modeu5_us04_test_location
+						good = beer
+					}
+					modeu5_record_us04_location_estate_proxy_peasants_estate = {
+						location = scope:modeu5_us04_test_location
+						good = beer
+						proxy_estate_size = 60
+					}
+					modeu5_record_us04_location_estate_proxy_burghers_estate = {
+						location = scope:modeu5_us04_test_location
+						good = beer
+						proxy_estate_size = 40
+					}
+					scope:modeu5_us04_test_location = {
+						modeu5_monthly_reconcile_location_pop_demand_good_beer = yes
+						modeu5_us04_read_beer_reconciliation_record = yes
+					}
+					modeu5_read_country_stock_record = {
+						country = scope:modeu5_us04_test_country
+						market = scope:modeu5_us04_test_market
+						good = beer
+					}
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_stock_after value = scope:modeu5_read_country_stock }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_market_stock_after value = scope:modeu5_read_market_stock }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_stock_delta value = { value = scope:modeu5_us04_beer_restore_stock_after subtract = scope:modeu5_us04_beer_restore_stock_before min = 0 } }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_restore_market_stock_delta value = { value = scope:modeu5_us04_beer_restore_market_stock_after subtract = scope:modeu5_us04_beer_restore_market_stock_before min = 0 } }
+					if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_requested < 98.99 scope:modeu5_us04_beer_reconciliation_requested > 99.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { scope:modeu5_us04_beer_reconciliation_extra > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { scope:modeu5_us04_beer_reconciliation_removed > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_removed_quantity" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { scope:modeu5_us04_beer_reconciliation_goods_supply_removed > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_goods_supply_removed" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_restored < 0.99 scope:modeu5_us04_beer_reconciliation_restored > 1.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_restored_quantity" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_goods_supply_added < 0.99 scope:modeu5_us04_beer_reconciliation_goods_supply_added > 1.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_goods_supply_added" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { scope:modeu5_us04_beer_reconciliation_estate_refund < 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_estate_refund" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_estate_refund_peasants < 0.01 scope:modeu5_us04_beer_reconciliation_estate_refund_burghers < 0.01 scope:modeu5_us04_beer_reconciliation_estate_refund_nobles > 0.01 scope:modeu5_us04_beer_reconciliation_estate_refund_clergy > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_estate_refund_split" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_beer_restore_stock_delta < 0.99 scope:modeu5_us04_beer_restore_stock_delta > 1.01 scope:modeu5_us04_beer_restore_market_stock_delta < 0.99 scope:modeu5_us04_beer_restore_market_stock_delta > 1.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_stock_restoration" modeu5_us04_note_assertion_failure = yes }
+					if = { limit = { OR = { scope:modeu5_us04_beer_reconciliation_country_delta < 0.99 scope:modeu5_us04_beer_reconciliation_country_delta > 1.01 scope:modeu5_us04_beer_reconciliation_market_delta < 0.99 scope:modeu5_us04_beer_reconciliation_market_delta > 1.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=coefficient_below_one_delta_record" modeu5_us04_note_assertion_failure = yes }
+					modeu5_reset_us04_location_estate_proxy = {
+						location = scope:modeu5_us04_test_location
+						good = beer
+					}
+					scope:modeu5_us04_test_location = {
+						modeu5_us04_clear_monthly_reconciliation_record_good_beer = yes
+						modeu5_write_us04_reconciliation_coefficient_good_beer = { value = 1.188 }
+					}
+
+					modeu5_remove_stock = {
+						country = scope:modeu5_us04_test_country
+						market = scope:modeu5_us04_test_market
+					good = beer
+					quantity = 99999
+					reason = debug_test
+				}
+				modeu5_add_stock = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = beer
+					quantity = 200
+					capacity_policy = allow_over_capacity
+				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = beer
+				}
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_before value = scope:modeu5_read_country_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_before value = scope:modeu5_read_market_stock }
+				modeu5_reset_pop_demand_outcome = {
+					location = scope:modeu5_us04_test_location
+					good = beer
+				}
+				modeu5_record_pop_demand_outcome = {
+					location = scope:modeu5_us04_test_location
+					good = beer
+					requested_quantity = 100
+					satisfied_quantity = 100
+					unsatisfied_quantity = 0
+				}
+				scope:modeu5_us04_test_location = {
+					modeu5_monthly_reconcile_location_pop_demand_good_beer = yes
+				}
+				modeu5_read_country_stock_record = {
+					country = scope:modeu5_us04_test_country
+					market = scope:modeu5_us04_test_market
+					good = beer
+				}
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_after value = scope:modeu5_read_country_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_after value = scope:modeu5_read_market_stock }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_delta_a value = { value = scope:modeu5_us04_beer_blocked_stock_after subtract = scope:modeu5_us04_beer_blocked_stock_before min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_stock_delta_b value = { value = scope:modeu5_us04_beer_blocked_stock_before subtract = scope:modeu5_us04_beer_blocked_stock_after min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_delta_a value = { value = scope:modeu5_us04_beer_blocked_market_stock_after subtract = scope:modeu5_us04_beer_blocked_market_stock_before min = 0 } }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_stock_delta_b value = { value = scope:modeu5_us04_beer_blocked_market_stock_before subtract = scope:modeu5_us04_beer_blocked_market_stock_after min = 0 } }
+				scope:modeu5_us04_test_location = {
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_extra value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_removed value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_unsatisfied value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_country_delta value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_delta value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_estate_total value = 0 }
+					save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_estate_charge value = 0 }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_extra value = "variable_map(modeu5_us04_reconciliation_extra_quantity|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_removed value = "variable_map(modeu5_us04_reconciliation_removed_quantity|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_unsatisfied value = "variable_map(modeu5_us04_reconciliation_unsatisfied_quantity|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_country_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_country_delta value = "variable_map(modeu5_us04_reconciliation_country_stock_delta|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_market_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_market_delta value = "variable_map(modeu5_us04_reconciliation_market_stock_delta|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_requested_total is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_requested_total target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_estate_total value = "variable_map(modeu5_us04_reconciliation_estate_requested_total|goods:beer)" } }
+					if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_blocked_estate_charge value = "variable_map(modeu5_us04_reconciliation_estate_charge|goods:beer)" } }
+				}
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_extra < 18.79 scope:modeu5_us04_beer_blocked_extra > 18.81 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { scope:modeu5_us04_beer_blocked_removed > 0.01 } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_removed_stock" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_unsatisfied < 18.79 scope:modeu5_us04_beer_blocked_unsatisfied > 18.81 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_unsatisfied_quantity" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_country_delta > 0.01 scope:modeu5_us04_beer_blocked_market_delta > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_stock_delta" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_estate_total > 0.01 scope:modeu5_us04_beer_blocked_estate_charge > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_estate_charge" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_stock_delta_a > 0.01 scope:modeu5_us04_beer_blocked_stock_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_country_stock_changed" modeu5_us04_note_assertion_failure = yes }
+				if = { limit = { OR = { scope:modeu5_us04_beer_blocked_market_stock_delta_a > 0.01 scope:modeu5_us04_beer_blocked_market_stock_delta_b > 0.01 } } debug_log = "ModeU5 US-04 FAIL_REASON reason=blocked_reconciliation_market_stock_changed" modeu5_us04_note_assertion_failure = yes }
+			}
+			else = {
+				debug_log = "ModeU5 US-04 FAIL_REASON reason=monthly_reconciliation_missing_location_owner_or_market"
+				modeu5_us04_note_assertion_failure = yes
+		}
+
+		modeu5_us04_log_fixture_dump = yes
+
+			if = {
+				limit = { scope:modeu5_us04_assertion_failure_count = 0 }
+					set_global_variable = modeu5_test_us04_pop_demand_adaptation_passed
+					debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation PASS"
+					debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_adaptation"
+			}
+		else = {
+			set_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
+			debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_adaptation"
+		}
+	}
+
+	modeu5_us04_restore_original_cmm_setting = yes
+}
+
+modeu5_debug_run_us04_estate_level_accounting_probe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_estate_level_accounting"
+	remove_global_variable = modeu5_test_us04_estate_level_accounting_blocked
+	remove_global_variable = modeu5_test_us04_estate_level_accounting_failed
+	remove_global_variable = modeu5_test_us04_estate_level_accounting_passed
+
+	save_temporary_scope_value_as = { name = modeu5_us04_assertion_failure_count value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_requested value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_extra value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_goods_supply_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_unsatisfied value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_requested_total value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_peasants value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_burghers value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_nobles value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_wheat_reconciliation_estate_charge_clergy value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_requested value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_extra value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_removed value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_unsatisfied value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_total value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_charge value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_nobles value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_clergy value = 0 }
+	capital = { save_temporary_scope_as = modeu5_us04_estate_probe_location }
+
+	if = {
+		limit = { NOT = { exists = scope:modeu5_us04_estate_probe_location } }
+		debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=missing_capital_location"
+		modeu5_us04_note_assertion_failure = yes
+	}
+	else = {
+		scope:modeu5_us04_estate_probe_location = {
+			owner ?= { save_temporary_scope_as = modeu5_us04_estate_probe_country }
+			market = { save_temporary_scope_as = modeu5_us04_estate_probe_market }
+			modeu5_us04_clear_monthly_reconciliation_record_good_wheat = yes
+			modeu5_us04_clear_monthly_reconciliation_record_good_beer = yes
+			modeu5_write_us04_reconciliation_coefficient_good_wheat = { value = 1.2 }
+			modeu5_write_us04_reconciliation_coefficient_good_beer = { value = 1.2 }
+		}
+		if = {
+			limit = {
+				exists = scope:modeu5_us04_estate_probe_country
+				exists = scope:modeu5_us04_estate_probe_market
+			}
+			modeu5_remove_stock = {
+				country = scope:modeu5_us04_estate_probe_country
+				market = scope:modeu5_us04_estate_probe_market
+				good = wheat
+				quantity = 99999
+				reason = debug_test
+			}
+			modeu5_remove_stock = {
+				country = scope:modeu5_us04_estate_probe_country
+				market = scope:modeu5_us04_estate_probe_market
+				good = beer
+				quantity = 99999
+				reason = debug_test
+			}
+			modeu5_add_stock = {
+				country = scope:modeu5_us04_estate_probe_country
+				market = scope:modeu5_us04_estate_probe_market
+				good = wheat
+				quantity = 200
+				capacity_policy = allow_over_capacity
+			}
+			modeu5_add_stock = {
+				country = scope:modeu5_us04_estate_probe_country
+				market = scope:modeu5_us04_estate_probe_market
+				good = beer
+				quantity = 200
+				capacity_policy = allow_over_capacity
+			}
+			modeu5_reset_pop_demand_outcome = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = wheat
+			}
+			modeu5_reset_pop_demand_outcome = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = beer
+			}
+			modeu5_record_us04_location_estate_proxy_peasants_estate = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = wheat
+				proxy_estate_size = 70
+			}
+			modeu5_record_us04_location_estate_proxy_burghers_estate = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = wheat
+				proxy_estate_size = 30
+			}
+			modeu5_record_us04_location_estate_proxy_nobles_estate = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = beer
+				proxy_estate_size = 40
+			}
+			modeu5_record_us04_location_estate_proxy_clergy_estate = {
+				location = scope:modeu5_us04_estate_probe_location
+				good = beer
+				proxy_estate_size = 60
+			}
+			scope:modeu5_us04_estate_probe_location = {
+				modeu5_monthly_assess_location_estate_consumption_good_wheat = yes
+				modeu5_monthly_assess_location_estate_consumption_good_beer = yes
+				modeu5_us04_read_wheat_reconciliation_record = yes
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_requested value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_extra value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_removed value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_unsatisfied value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_total value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_charge value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_nobles value = 0 }
+				save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_clergy value = 0 }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_requested value = "variable_map(modeu5_us04_reconciliation_requested_quantity|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_extra value = "variable_map(modeu5_us04_reconciliation_extra_quantity|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_removed value = "variable_map(modeu5_us04_reconciliation_removed_quantity|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_unsatisfied value = "variable_map(modeu5_us04_reconciliation_unsatisfied_quantity|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_requested_total is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_requested_total target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_total value = "variable_map(modeu5_us04_reconciliation_estate_requested_total|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_charge value = "variable_map(modeu5_us04_reconciliation_estate_charge|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_nobles_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_nobles_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_nobles value = "variable_map(modeu5_us04_reconciliation_estate_charge_nobles_estate|goods:beer)" } }
+				if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_clergy_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_clergy_estate target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_charge_clergy value = "variable_map(modeu5_us04_reconciliation_estate_charge_clergy_estate|goods:beer)" } }
+			}
+		}
+		else = {
+			debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=missing_owner_or_market"
+			modeu5_us04_note_assertion_failure = yes
+		}
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_requested < 119.99 scope:modeu5_us04_wheat_reconciliation_requested > 120.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_location_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_requested_total < 119.99 scope:modeu5_us04_wheat_reconciliation_estate_requested_total > 120.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_location_estate_total" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_extra < 19.99 scope:modeu5_us04_wheat_reconciliation_extra > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_removed < 19.99 scope:modeu5_us04_wheat_reconciliation_removed > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_removed_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_goods_supply_removed < 19.99 scope:modeu5_us04_wheat_reconciliation_goods_supply_removed > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_goods_supply_removed_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { scope:modeu5_us04_wheat_reconciliation_unsatisfied > 0.01 } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_unsatisfied_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { scope:modeu5_us04_wheat_reconciliation_estate_charge < 0.01 } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_estate_charge_missing" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_charge_peasants < 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_burghers < 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_nobles > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge_clergy > 0.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_estate_charge_split" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_requested < 119.99 scope:modeu5_us04_beer_estate_probe_requested > 120.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_location_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_estate_total < 119.99 scope:modeu5_us04_beer_estate_probe_estate_total > 120.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_location_estate_total" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_extra < 19.99 scope:modeu5_us04_beer_estate_probe_extra > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_removed < 19.99 scope:modeu5_us04_beer_estate_probe_removed > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_removed_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { scope:modeu5_us04_beer_estate_probe_unsatisfied > 0.01 } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_unsatisfied_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_estate_charge < 0.01 scope:modeu5_us04_beer_estate_probe_charge_nobles < 0.01 scope:modeu5_us04_beer_estate_probe_charge_clergy < 0.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_estate_charge_split" modeu5_us04_note_assertion_failure = yes }
+
+		set_variable = { name = modeu5_us04_estate_probe_wheat_requested value = scope:modeu5_us04_wheat_reconciliation_requested }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_extra value = scope:modeu5_us04_wheat_reconciliation_extra }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_removed value = scope:modeu5_us04_wheat_reconciliation_removed }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_goods_supply_removed value = scope:modeu5_us04_wheat_reconciliation_goods_supply_removed }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_estate_total value = scope:modeu5_us04_wheat_reconciliation_estate_requested_total }
+		set_variable = { name = modeu5_us04_estate_probe_beer_requested value = scope:modeu5_us04_beer_estate_probe_requested }
+		set_variable = { name = modeu5_us04_estate_probe_beer_extra value = scope:modeu5_us04_beer_estate_probe_extra }
+		set_variable = { name = modeu5_us04_estate_probe_beer_removed value = scope:modeu5_us04_beer_estate_probe_removed }
+		set_variable = { name = modeu5_us04_estate_probe_beer_estate_total value = scope:modeu5_us04_beer_estate_probe_estate_total }
+		debug_log = "ModeU5 US-04 ESTATE ACCOUNTING location_level=1 goods=2 estates=4 wheat_requested=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_requested').GetValue|2] wheat_extra=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_extra').GetValue|2] wheat_removed=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_removed').GetValue|2] wheat_goods_supply_removed=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_goods_supply_removed').GetValue|2] wheat_estate_total=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_estate_total').GetValue|2] beer_requested=[THIS.GetVariable('modeu5_us04_estate_probe_beer_requested').GetValue|2] beer_extra=[THIS.GetVariable('modeu5_us04_estate_probe_beer_extra').GetValue|2] beer_removed=[THIS.GetVariable('modeu5_us04_estate_probe_beer_removed').GetValue|2] beer_estate_total=[THIS.GetVariable('modeu5_us04_estate_probe_beer_estate_total').GetValue|2] result=active_proxy"
+	}
+
+	if = {
+		limit = { scope:modeu5_us04_assertion_failure_count = 0 }
+		set_global_variable = modeu5_test_us04_estate_level_accounting_passed
+		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting PASS"
+		debug_log = "ModeU5 TEST PASS scenario=us04_estate_level_accounting"
+	}
+	else = {
+		set_global_variable = modeu5_test_us04_estate_level_accounting_failed
+		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting FAIL"
+		debug_log = "ModeU5 TEST FAIL scenario=us04_estate_level_accounting"
+	}
+}

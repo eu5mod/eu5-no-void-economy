@@ -49,13 +49,13 @@ def replace_map_add(match: re.Match[str]) -> str:
 
 text = map_add_pattern.sub(replace_map_add, text)
 
-# These generated effects are future US-04/UI integration points. They are kept
-# in the generated symbol surface as literal no-op placeholders, but their full
-# draft bodies are not emitted yet because the current PR stack has no live
-# caller that sets modeu5_demand_location / monthly UI values. The full draft
-# implementation remains in tools/templates/modeu5_stock_good_adapter.template.txt.
+# This generated effect is a future UI integration point. It is kept in the
+# generated symbol surface as a literal no-op placeholder, but its full draft
+# body is not emitted yet because the current PR stack has no live caller that
+# sets the monthly UI context. US-04/US-10.3 Pop-demand outcome helpers are live
+# runtime/test paths and must be emitted from the template.
 FUTURE_EFFECT_RE = re.compile(
-    r"^(modeu5_(?:record_pop_demand_outcome|reset_pop_demand_outcome|reset_pop_demand_annual_counters|store_us10_ui_monthly_counters)_good_[a-z0-9_]+) = \{\n",
+    r"^(modeu5_store_us10_ui_monthly_counters_good_[a-z0-9_]+) = \{\n",
     re.M,
 )
 
@@ -95,7 +95,7 @@ def stub_future_effect_blocks(source: str) -> str:
 
         result.append(
             f"{effect_name} = {{\n"
-            "\t# Future US-04/UI adapter placeholder. Do not emit the draft body until live callers are wired.\n"
+            "\t# Future US-10 UI adapter placeholder. Do not emit the draft body until live callers are wired.\n"
             "}\n\n"
         )
         position = end
@@ -179,7 +179,6 @@ if bad_map_value_blocks:
     )
 
 for forbidden in (
-    "scope:modeu5_demand_location",
     "scope:modeu5_ui_monthly_surplus",
     "scope:modeu5_ui_monthly_consumption",
 ):

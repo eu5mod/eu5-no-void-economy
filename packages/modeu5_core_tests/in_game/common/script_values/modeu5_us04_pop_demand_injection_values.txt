@@ -1,0 +1,142 @@
+# US-04 test-only Pop-demand multipliers used by archived injection probes.
+# Evaluated from Pop scope only when the isolated probe package supplies the
+# experimental vanilla pop_demand database object.
+# Missing, disabled, uninitialized, or invalid ModeU5 state returns 1 (vanilla).
+
+modeu5_us04_live_pop_demand_multiplier_wheat = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:wheat)"
+			}
+		}
+	}
+}
+
+modeu5_us04_live_pop_demand_multiplier_beer = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:beer
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:beer)"
+			}
+		}
+	}
+}
+
+modeu5_us04_live_pop_demand_multiplier_cloth = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:cloth
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:cloth)"
+			}
+		}
+	}
+}
+
+modeu5_us04_live_pop_demand_multiplier_tools = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:tools
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:tools)"
+			}
+		}
+	}
+}
+
+modeu5_us04_live_pop_demand_multiplier_fish = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:fish
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:fish)"
+			}
+		}
+	}
+}
+
+modeu5_us04_live_pop_demand_multiplier_wine = {
+	value = 1
+	if = {
+		limit = {
+			has_global_variable = modeu5_pop_demand_live_integration_enabled
+			has_global_variable = modeu5_us04_multiplier_initialization_version
+			global_var:modeu5_us04_multiplier_initialization_version >= 1
+			location = {
+				has_variable_map = modeu5_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = modeu5_pop_demand_multiplier
+					target = goods:wine
+				}
+			}
+		}
+		value = {
+			location = {
+				value = "variable_map(modeu5_pop_demand_multiplier|goods:wine)"
+			}
+		}
+	}
+}

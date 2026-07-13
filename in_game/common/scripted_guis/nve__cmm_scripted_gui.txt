@@ -70,6 +70,15 @@ no_void_economy__nve_economic_balance_design_sliders_adjustments_settings_on_cha
 	effect = { }
 }
 
+no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings_on_changed = {
+	scope = country
+
+	is_shown = {
+		has_global_variable = modeu5_cmm_nve_main_enabled
+	}
+	effect = { }
+}
+
 ## Economic Balance (nve_economic_balance_balance_group) Group
 no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
 	scope = country

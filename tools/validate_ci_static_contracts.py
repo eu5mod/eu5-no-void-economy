@@ -32,6 +32,7 @@ CMM_SETTINGS: dict[str, tuple[str, str, bool]] = {
     "nve_general_gameplay_other_extra_revenue_to_ai_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_other_group", True),
     "nve_economic_balance_design_activate_goods_decay_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
     "nve_economic_balance_design_sliders_adjustments_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
+    "nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
     "nve_economic_balance_balance_increased_location_specialisation_settings": ("nve_economic_balance_tab", "nve_economic_balance_balance_group", True),
     "nve_economic_balance_balance_marketplace_burgher_power_reduction_settings": ("nve_economic_balance_tab", "nve_economic_balance_balance_group", True),
     "nve_war_subjects_balance_general_difficulty_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_general_group", True),
