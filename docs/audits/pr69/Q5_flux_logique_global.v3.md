@@ -201,7 +201,7 @@ actual_removed_quantity =
 
 vanilla_supply_delta =
   -actual_removed_quantity
-  through the confirmed add_goods_supply surface, if that path is accepted
+  through the confirmed add_goods_supply surface
 
 for each estate with estate_extra_quantity:
     estate_actual_quantity =
@@ -220,10 +220,9 @@ unsatisfied_extra_quantity =
 ```
 
 Important accounting rule: charge estates and remove vanilla market supply only
-for `actual_removed_quantity`, not for theoretical `total_extra_quantity`, unless
-a future design explicitly decides that unsatisfied US-04 demand should also
-affect vanilla supply. That keeps ModeU5 stock, vanilla supply adjustment, and
-estate payment aligned.
+for `actual_removed_quantity`, not for theoretical `total_extra_quantity` or
+full requested consumption. This keeps ModeU5 stock, vanilla supply adjustment,
+and estate payment aligned, and avoids double imputation.
 
 The central stock invariant still applies:
 
@@ -319,6 +318,7 @@ Expected proxy reconciliation diagnostics:
 requested > 0
 extra_quantity > 0
 removed_quantity > 0
+goods_supply_removed_quantity = removed_quantity
 country_stock_delta > 0
 market_stock_delta > 0
 estate_charge > 0

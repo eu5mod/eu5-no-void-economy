@@ -49,6 +49,7 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_us04_proxy_estate_size_<estate>` | location | goods | current month input | US-04 | ModeU5-owned local Estate-size term for the active proxy reconciliation | clear/rewrite before US-04 monthly read |
 | `modeu5_us04_reconciliation_requested_quantity` | location | goods | current month diagnostic | US-04 debug/audit | monthly input quantity used by temporary reconciliation | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_extra_quantity` | location | goods | current month diagnostic | US-04 debug/audit | requested extra quantity implied by coefficient - 1 | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_goods_supply_removed_quantity` | location | goods | current month diagnostic | US-04 debug/audit | actual extra quantity mirrored to vanilla market supply through negative `add_goods_supply` | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_removed_quantity` | location | goods | current month diagnostic | US-04 debug/audit | stock quantity actually removed through central stock operator | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_unsatisfied_quantity` | location | goods | current month diagnostic | US-04 debug/audit | extra reconciliation demand not covered by stock | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_country_stock_delta` | location | goods | current month diagnostic | US-04 debug/audit | proof that country-market stock fell by the reconciled amount | overwrite/clear on monthly reconciliation |
@@ -127,6 +128,7 @@ this section before moving a reader or deleting a cache.
 | `modeu5_us04_proxy_estate_size_<estate>` | monthly location-estate-good proxy input | location | US-04 local Estate proxy reconciliation | clear before each monthly proxy write |
 | `modeu5_us04_reconciliation_requested_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_extra_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_goods_supply_removed_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_removed_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_unsatisfied_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_country_stock_delta` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |

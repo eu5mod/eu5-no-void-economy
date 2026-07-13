@@ -397,6 +397,7 @@ modeu5_us04_clear_monthly_reconciliation_record_good___GOOD__ = {
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_requested_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_extra_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_removed_quantity key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_goods_supply_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_goods_supply_removed_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_goods_supply_removed_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_country_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_country_stock_delta key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_market_stock_delta is_key_in_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_market_stock_delta key = goods:__GOOD__ } }
@@ -432,6 +433,14 @@ modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
 			name = modeu5_us04_reconciliation_removed_quantity
 			key = goods:__GOOD__
 			value = scope:modeu5_us04_actual_reconciled_quantity
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_goods_supply_removed_quantity > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_goods_supply_removed_quantity
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_goods_supply_removed_quantity
 		}
 	}
 	if = {
@@ -574,7 +583,9 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 		save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_clergy_estate value = { value = scope:modeu5_us04_proxy_estate_size_clergy_estate multiply = scope:modeu5_us04_reconciliation_delta_ratio min = 0 } }
 	}
 	save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_goods_supply_removed_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_us04_extra_reconciliation_quantity }
+	save_temporary_scope_value_as = { name = modeu5_us04_goods_supply_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_good_price value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_value value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_country_stock_before_reconciliation value = 0 }
@@ -614,6 +625,17 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 		}
 		save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = scope:modeu5_actual_removed_quantity }
 		save_temporary_scope_value_as = { name = modeu5_us04_unsatisfied_reconciliation_quantity value = scope:modeu5_unsatisfied_quantity }
+		save_temporary_scope_value_as = { name = modeu5_us04_goods_supply_removed_quantity value = scope:modeu5_us04_actual_reconciled_quantity }
+		save_temporary_scope_value_as = { name = modeu5_us04_goods_supply_delta value = { value = scope:modeu5_us04_goods_supply_removed_quantity multiply = -1 } }
+		if = {
+			limit = { scope:modeu5_us04_goods_supply_removed_quantity > 0 }
+			scope:modeu5_us04_reconciliation_market = {
+				add_goods_supply = {
+					goods = goods:__GOOD__
+					amount = scope:modeu5_us04_goods_supply_delta
+				}
+			}
+		}
 
 		modeu5_read_country_stock_record = {
 			country = scope:modeu5_us04_reconciliation_country
@@ -664,8 +686,9 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			set_variable = { name = modeu5_debug_us04_last_requested_quantity value = scope:modeu5_us04_monthly_requested_quantity }
 			set_variable = { name = modeu5_debug_us04_last_extra_quantity value = scope:modeu5_us04_extra_reconciliation_quantity }
 			set_variable = { name = modeu5_debug_us04_last_removed_quantity value = scope:modeu5_us04_actual_reconciled_quantity }
+			set_variable = { name = modeu5_debug_us04_last_goods_supply_removed value = scope:modeu5_us04_goods_supply_removed_quantity }
 			set_variable = { name = modeu5_debug_us04_last_estate_charge value = scope:modeu5_us04_reconciliation_estate_charge_value }
-			debug_log = "ModeU5 US-04 RECONCILED good=__GOOD__ requested=[THIS.GetVariable('modeu5_debug_us04_last_requested_quantity').GetValue|2] extra=[THIS.GetVariable('modeu5_debug_us04_last_extra_quantity').GetValue|2] removed=[THIS.GetVariable('modeu5_debug_us04_last_removed_quantity').GetValue|2] estate_charge=[THIS.GetVariable('modeu5_debug_us04_last_estate_charge').GetValue|2]"
+			debug_log = "ModeU5 US-04 RECONCILED good=__GOOD__ requested=[THIS.GetVariable('modeu5_debug_us04_last_requested_quantity').GetValue|2] extra=[THIS.GetVariable('modeu5_debug_us04_last_extra_quantity').GetValue|2] removed=[THIS.GetVariable('modeu5_debug_us04_last_removed_quantity').GetValue|2] goods_supply_removed=[THIS.GetVariable('modeu5_debug_us04_last_goods_supply_removed').GetValue|2] estate_charge=[THIS.GetVariable('modeu5_debug_us04_last_estate_charge').GetValue|2]"
 		}
 	}
 

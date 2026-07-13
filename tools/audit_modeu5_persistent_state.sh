@@ -109,6 +109,7 @@ def is_state_like(name: str) -> bool:
         "modeu5_us04_reconciliation_estate_charge_peasants_estate",
         "modeu5_us04_reconciliation_estate_requested_total",
         "modeu5_us04_reconciliation_extra_quantity",
+        "modeu5_us04_reconciliation_goods_supply_removed_quantity",
         "modeu5_us04_reconciliation_market_stock_delta",
         "modeu5_us04_reconciliation_removed_quantity",
         "modeu5_us04_reconciliation_requested_quantity",
@@ -214,6 +215,7 @@ modeu5_us04_proxy_estate_size_nobles_estate	variable map	monthly location-estate
 modeu5_us04_proxy_estate_size_clergy_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
 modeu5_us04_reconciliation_requested_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_extra_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_goods_supply_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	actual extra quantity mirrored to vanilla market supply through negative add_goods_supply
 modeu5_us04_reconciliation_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_unsatisfied_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_country_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic

@@ -31,6 +31,7 @@ modeu5_us04_reconciliation_coefficient[goods:<good>] = active ModeU5 coefficient
 modeu5_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
 modeu5_us04_reconciliation_extra_quantity[goods:<good>] = requested × max(0, coefficient - 1)
 modeu5_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
+modeu5_us04_reconciliation_goods_supply_removed_quantity[goods:<good>] = actual extra quantity mirrored to vanilla market supply
 modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
 modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock decrease
 modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock decrease
@@ -220,10 +221,10 @@ estate_charge =
   estate_actual_quantity × market_price(goods:<good>)
 ```
 
-If US-04 also removes vanilla market supply through `add_goods_supply`, it should
-remove the same `actual_removed_quantity`, not the theoretical requested
-`total_extra_quantity`, unless a future design explicitly decides that unsatisfied
-additional demand should also reduce vanilla supply.
+US-04 also removes vanilla market supply through `add_goods_supply` with a
+negative amount equal to the same `actual_removed_quantity`, not the theoretical
+requested `total_extra_quantity`. This avoids double imputation: only the
+additional satisfied consumption delta is mirrored to vanilla supply.
 
 The legacy bridge maps remain diagnostic/test-only:
 
@@ -320,6 +321,7 @@ tools_reconciliation_coefficient=1.2000
 wheat_reconciliation_requested=121.20
 wheat_reconciliation_extra=21.20
 wheat_reconciliation_removed=21.20
+wheat_reconciliation_goods_supply_removed=21.20
 wheat_reconciliation_unsatisfied=0.00
 wheat_stock_after_reconciliation=178.80
 wheat_reconciliation_estate_requested_total=121.20
