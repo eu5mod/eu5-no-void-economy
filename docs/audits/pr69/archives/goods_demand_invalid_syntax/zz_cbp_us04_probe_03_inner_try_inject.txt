@@ -3,6 +3,6 @@
 
 INJECT:pop_demand = {
 	TRY_INJECT:cloth = {
-		multiply = "cbp_us04_live_pop_demand_multiplier_cloth"
+		multiply = "test_cbp_us04_live_pop_demand_multiplier_cloth"
 	}
 }

@@ -3,6 +3,6 @@
 
 INJECT:pop_demand = {
 	INJECT_OR_CREATE:tools = {
-		multiply = "cbp_us04_live_pop_demand_multiplier_tools"
+		multiply = "test_cbp_us04_live_pop_demand_multiplier_tools"
 	}
 }

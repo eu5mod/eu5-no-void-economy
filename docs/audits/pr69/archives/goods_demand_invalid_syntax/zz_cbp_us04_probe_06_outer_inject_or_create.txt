@@ -3,6 +3,6 @@
 
 INJECT_OR_CREATE:pop_demand = {
 	INJECT:wine = {
-		multiply = "cbp_us04_live_pop_demand_multiplier_wine"
+		multiply = "test_cbp_us04_live_pop_demand_multiplier_wine"
 	}
 }

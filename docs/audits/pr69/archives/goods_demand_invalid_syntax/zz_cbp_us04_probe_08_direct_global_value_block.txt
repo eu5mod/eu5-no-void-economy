@@ -5,7 +5,7 @@
 INJECT:pop_demand = {
 	INJECT:furniture = {
 		multiply = {
-			value = global_var:cbp_us04_matrix_global_furniture
+			value = global_var:test_cbp_us04_matrix_global_furniture
 		}
 	}
 }

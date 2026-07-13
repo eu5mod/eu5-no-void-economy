@@ -3,6 +3,6 @@
 
 INJECT:pop_demand = {
 	wheat = {
-		multiply = "cbp_us04_live_pop_demand_multiplier_wheat"
+		multiply = "test_cbp_us04_live_pop_demand_multiplier_wheat"
 	}
 }
