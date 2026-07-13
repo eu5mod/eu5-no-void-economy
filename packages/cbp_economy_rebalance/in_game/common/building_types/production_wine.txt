@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_wine.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 winery = {
 	is_foreign = no
@@ -29,7 +30,6 @@ winery = {
 
 			produced = wine
 			output = 1.1
-
 			category = guild_input
 
 			debug_max_profit = 0.2
@@ -42,7 +42,6 @@ winery = {
 
 			produced = wine
 			output = 1.1
-
 			category = guild_input
 
 			debug_max_profit = 0.2
@@ -55,7 +54,6 @@ winery = {
 
 			produced = wine
 			output = 1.1
-
 
 			category = guild_input
 
@@ -92,7 +90,6 @@ winery_manufactory = {
 
 			produced = wine
 			output = 2.2
-
 			category = guild_input
 
 			debug_max_profit = 0.4
@@ -105,7 +102,6 @@ winery_manufactory = {
 
 			produced = wine
 			output = 2.2
-
 			category = manufactory_input
 
 			debug_max_profit = 0.4
@@ -118,7 +114,6 @@ winery_manufactory = {
 
 			produced = wine
 			output = 2.2
-
 
 			category = manufactory_input
 

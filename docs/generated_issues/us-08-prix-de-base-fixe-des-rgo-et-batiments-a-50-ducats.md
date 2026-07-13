@@ -104,3 +104,17 @@ No 1.2 dynamic variation remains for in-scope entries
 ## Known limitations
 
 Building pricing fields and age-based fallback rules are documented. RGO pricing rules remain `NOT_CONFIRMED`; the exact in-scope vanilla building/RGO entry list remains `TO_TEST`. `default_market_price` from TECH-01 064 is a goods market-price field and must not be treated as a construction-price field.
+
+## Implemented adjacent maintenance scope
+
+Issue #171 / US-05.3 implements the separate Economy-package maintenance-cost
+change:
+
+```txt
+building maintenance goods quantity = vanilla quantity * 0.5
+```
+
+That maintenance change is generated from vanilla `common/building_types` and
+composed into the same exact-path building override files as US-07 and US-09.
+It does not implement the original US-08 fixed building/RGO construction-price
+objective above.

@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/unique_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 pounamou_carver = {
 	is_special = yes
@@ -38,7 +39,6 @@ pounamou_carver = {
 			gems = 0.2
 			produced = jewelry
 			output = 0.22
-
 
 			category = guild_input
 		}
@@ -115,7 +115,6 @@ hanseatic_kontor = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.1
 		merchant_capacity_from_building = 0.275
-
 	}
 
 	possible_production_methods = {
@@ -250,7 +249,6 @@ fondaco = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.025
 		merchant_capacity_from_building = 0.22
-
 		#Italian merchants settle in the new location
 		local_migration_attraction = 0.025
 	}
@@ -297,10 +295,10 @@ venetian_arsenal = {
 
 	unique_production_methods = {
 		venetian_arsenal_maintenance = {
-			tar = 0.5
-			naval_supplies = 1.0
-			tools = 0.2
-			lumber = 1.0
+			tar = 0.25
+			naval_supplies = 0.5
+			tools = 0.1
+			lumber = 0.5
 			category = building_maintenance
 		}
 	}
@@ -358,9 +356,9 @@ kurultai = {
 
 	unique_production_methods = {
 		kurultai_maintenance = {
-			horses = 0.2
-			leather = 0.05
-			weaponry = 0.02
+			horses = 0.1
+			leather = 0.025
+			weaponry = 0.01
 			category = building_maintenance
 		}
 	}
@@ -576,9 +574,9 @@ banking_office = {
 
 	unique_production_methods = {
 		bank_maintenance = {
-			paper = 0.1
-			goods_gold = 0.01
-			silver = 0.01
+			paper = 0.05
+			goods_gold = 0.005
+			silver = 0.005
 			category = building_maintenance
 		}
 	}
@@ -618,8 +616,8 @@ tribes_of_galway = {
 
 	unique_production_methods = {
 		tribes_of_galway_maintenance = {
-			leather = 0.01
-			cloth = 0.01
+			leather = 0.005
+			cloth = 0.005
 
 			category = building_maintenance
 		}
@@ -663,10 +661,10 @@ copenhagen_dockyard = {
 
 	unique_production_methods = {
 		copenhagen_dockyard_maintenance = {
-			tar = 0.4
-			naval_supplies = 0.8
-			tools = 0.2
-			lumber = 1.0
+			tar = 0.2
+			naval_supplies = 0.4
+			tools = 0.1
+			lumber = 0.5
 			category = building_maintenance
 		}
 	}
@@ -714,14 +712,13 @@ caravanserai = {
 	modifier = {
 		local_merchant_power = 0.5
 		local_merchant_capacity = 1.1
-
 	}
 
 	construction_demand = caravanserai_building_construction
 	unique_production_methods = {
 		caravanserai_maintenance = {
-			jewelry = 0.01
-			cloth = 0.01
+			jewelry = 0.005
+			cloth = 0.005
 
 			category = building_maintenance
 		}
@@ -768,14 +765,13 @@ caravan_stop = {
 	modifier = {
 		local_merchant_power = 0.5
 		local_merchant_capacity = 1.1
-
 	}
 
 	construction_demand = caravan_stop_building_construction
 	unique_production_methods = {
 		caravan_stop_maintenance = {
-			goods_gold = 0.01
-			salt = 0.01
+			goods_gold = 0.005
+			salt = 0.005
 			category = building_maintenance
 		}
 	}
@@ -864,10 +860,9 @@ eng_royal_forest = {
 		eng_royal_forest_maintenance = {
 			produced = wild_game
 			output = 1.1
-
-			weaponry = 0.1
-			wine = 0.1
-			horses = 0.1
+			weaponry = 0.05
+			wine = 0.05
+			horses = 0.05
 			category = building_maintenance
 		}
 	}
@@ -977,10 +972,10 @@ north_sea_shipyards = {
 
 	unique_production_methods = {
 		north_sea_shipyards_maintenance = {
-			tar = 0.4
-			naval_supplies = 0.8
-			tools = 0.2
-			lumber = 1.0
+			tar = 0.2
+			naval_supplies = 0.4
+			tools = 0.1
+			lumber = 0.5
 			category = building_maintenance
 		}
 	}
@@ -1223,14 +1218,14 @@ lieutenancy = {
 
 	unique_production_methods = {
 		lieutenancy_maintenance = {
-			tools = 1
-			masonry = 1
-			weaponry = 0.5
-			paper = 2
-			books = 0.5
-			goods_gold = 1
-			furniture = 1
-			fine_cloth = 0.5
+			tools = 0.5
+			masonry = 0.5
+			weaponry = 0.25
+			paper = 1.0
+			books = 0.25
+			goods_gold = 0.5
+			furniture = 0.5
+			fine_cloth = 0.25
 
 			category = building_maintenance
 		}
@@ -1276,11 +1271,11 @@ barcelona_royal_shipyard = {
 
 	unique_production_methods = {
 		barcelona_royal_shipyard = {
-			tar = 0.4
-			naval_supplies = 1.0
-			tools = 0.25
-			lumber = 0.4
-			stone = 0.2
+			tar = 0.2
+			naval_supplies = 0.5
+			tools = 0.125
+			lumber = 0.2
+			stone = 0.1
 			category = building_maintenance
 		}
 	}
@@ -1352,11 +1347,11 @@ ostrog = {
 
 	unique_production_methods = {
 		ostrog_maintenance = {
-			lumber = 0.2
-			tools = 0.1
-			firearms = 0.2
-			weaponry = 0.2
-			tar = 0.1
+			lumber = 0.1
+			tools = 0.05
+			firearms = 0.1
+			weaponry = 0.1
+			tar = 0.05
 			category = building_maintenance
 		}
 
@@ -1405,8 +1400,8 @@ pomor_outpost = {
 
 	unique_production_methods = {
 		pomor_outpost_maintenance = {
-			lumber = 0.1
-			tools = 0.025
+			lumber = 0.05
+			tools = 0.0125
 
 
 			category = building_maintenance
@@ -1417,7 +1412,6 @@ pomor_outpost = {
 
 	modifier = {
 		local_merchant_capacity = 0.275
-
 		local_raw_material_output = 0.33
 		local_peasants_estate_power = 0.25		#25% higher here.
 	}
@@ -1472,10 +1466,10 @@ brethren_marsh = {
 
 	unique_production_methods = {
 		brethren_marsh_maintenance = {
-			tar = 0.1
-			naval_supplies = 0.25
-			tools = 0.1
-			lumber = 0.1
+			tar = 0.05
+			naval_supplies = 0.125
+			tools = 0.05
+			lumber = 0.05
 			category = building_maintenance
 		}
 
@@ -1588,12 +1582,12 @@ kings_manor = {
 
 	unique_production_methods = {
 		kings_manor_maintenance = {
-			tools = 0.1
-			masonry = 0.2
-			weaponry = 0.1
-			paper = 0.5
-			furniture = 0.25
-			fine_cloth = 0.25
+			tools = 0.05
+			masonry = 0.1
+			weaponry = 0.05
+			paper = 0.25
+			furniture = 0.125
+			fine_cloth = 0.125
 
 			category = building_maintenance
 		}
@@ -1644,8 +1638,8 @@ polders = {
 
 	unique_production_methods = {
 		polders_maintenance = {
-			clay = 0.5
-			tools = 0.05
+			clay = 0.25
+			tools = 0.025
 
 			category = building_maintenance
 		}
@@ -1800,8 +1794,8 @@ pukara_building = {
 
 	unique_production_methods = {
 		pukara_maintenance = {
-			weaponry = 0.05
-			stone = 0.2
+			weaponry = 0.025
+			stone = 0.1
 			category = building_maintenance
 		}
 
@@ -1845,7 +1839,7 @@ terraces = {
 
 	unique_production_methods = {
 		terraces_maintenance = {
-			salt = 0.1
+			salt = 0.05
 			category = building_maintenance
 		}
 	}
@@ -1880,8 +1874,8 @@ tambo = {
 
 	unique_production_methods = {
 		tambo_maintenance = {
-			wool = 0.1
-			maize = 0.05
+			wool = 0.05
+			maize = 0.025
 			category = building_maintenance
 		}
 	}
@@ -1966,12 +1960,12 @@ royal_society = {
 
 	unique_production_methods = {
 		royal_society_maintenance = {
-			paper = 1
-			books = 0.5
-			marble = 0.2
-			goods_gold = 0.1
-			fine_cloth = 0.2
-			furniture = 0.2
+			paper = 0.5
+			books = 0.25
+			marble = 0.1
+			goods_gold = 0.05
+			fine_cloth = 0.1
+			furniture = 0.1
 			category = building_maintenance
 		}
 
@@ -2075,9 +2069,9 @@ peel_towers = {
 
 	unique_production_methods = {
 		peel_towers_maintenance = {
-			stone = 0.2
-			weaponry = 0.2
-			tar = 0.1
+			stone = 0.1
+			weaponry = 0.1
+			tar = 0.05
 			category = building_maintenance
 		}
 
@@ -2192,7 +2186,6 @@ kokufu = {
 		gold_to_building_owner = 0.3
 		merchant_power_from_building = 0.3
 		merchant_capacity_from_building = 0.33
-
 	}
 
 	possible_production_methods = {
@@ -2461,7 +2454,6 @@ shoen = {
 		gold_to_building_owner = 0.1
 		merchant_power_from_building = 0.1
 		merchant_capacity_from_building = 0.11
-
 		manpower_to_building_owner = 0.001
 	}
 
@@ -2469,40 +2461,35 @@ shoen = {
 		shoen_quarries_maintenance = {
 			produced = stone
 			output = 0.55
-
-			tools = 0.13
+			tools = 0.065
 			category = building_maintenance
 		}
 		shoen_lumbermills_maintenance = {
 			produced = lumber
 			output = 0.66
-
-			tools = 0.14
-			fiber_crops = 0.15
+			tools = 0.07
+			fiber_crops = 0.075
 			category = building_maintenance
 		}
 		shoen_fiber_crops_farm_maintenance = {
 			produced = fiber_crops
 			output = 0.55
-
-			lumber = 0.25
-			tools = 0.14
+			lumber = 0.125
+			tools = 0.07
 			category = building_maintenance
 		}
 		shoen_ironsand_maintenance = {
 			produced = iron
 			output = 0.33
-
-			sand = 0.50
-			tools = 0.15
+			sand = 0.25
+			tools = 0.075
 			category = building_maintenance
 		}
 		shoen_masonry_maintenance = {
 			produced = masonry
 			output = 0.88
-
-			lumber = 0.3
-			tools = 0.07
+			lumber = 0.15
+			tools = 0.035
 			category = building_maintenance
 		}
 	}
@@ -2555,14 +2542,12 @@ tatara = {
 		tamagahane_blacksmith = {
 			produced = tools
 			output = 0.55
-
 			iron = 0.4
 			category = guild_input
 		}
 		tamagahane_bladesmith = {
 			produced = weaponry
 			output = 0.22
-
 			iron = 0.17
 			category = guild_input
 		}
@@ -2875,11 +2860,11 @@ venetian_palaces = {
 
 	unique_production_methods = {
 		venetian_palaces_maintenance = {
-			cloth = 0.2
-			jewelry = 0.05
-			paper = 0.25
-			marble = 0.1
-			fine_cloth = 0.1
+			cloth = 0.1
+			jewelry = 0.025
+			paper = 0.125
+			marble = 0.05
+			fine_cloth = 0.05
 
 			category = building_maintenance
 		}
@@ -2917,7 +2902,6 @@ venetian_quarter = {
 	build_time = trade_post_build_time
 	modifier = {
 		merchant_capacity_from_building = 1.1
-
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -2959,7 +2943,6 @@ galata = {
 	build_time = trade_post_build_time
 	modifier = {
 		merchant_capacity_from_building = 1.1
-
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -3061,11 +3044,11 @@ moscow_artillery_yard = {
 
 	unique_production_methods = {
 		moscow_artillery_yard_maintenance = {
-			leather = 2.0
-			paper = 1.0
-			tools = 0.5
-			cannons = 2.0
-			horses = 1.0
+			leather = 1.0
+			paper = 0.5
+			tools = 0.25
+			cannons = 1.0
+			horses = 0.5
 
 			category = building_maintenance
 		}
@@ -3106,7 +3089,7 @@ bund = {
 
 	unique_production_methods = {
 		bund_maintenance = {
-			tools = 0.1
+			tools = 0.05
 			category = building_maintenance
 		}
 	}
@@ -3167,9 +3150,9 @@ ibadat_khana = {
 
 	unique_production_methods = {
 		ibadat_khana_maintenance = {
-			paper = 0.5
-			books = 1.0
-			furniture = 0.2
+			paper = 0.25
+			books = 0.5
+			furniture = 0.1
 			category = building_maintenance
 		}
 	}
@@ -3758,11 +3741,11 @@ royal_atarazanas_seville = {
 
 	unique_production_methods = {
 		royal_atarazanas_seville_maintenance = {
-			tar = 0.5
-			naval_supplies = 1.0
-			tools = 0.2
-			lumber = 0.4
-			stone = 0.24
+			tar = 0.25
+			naval_supplies = 0.5
+			tools = 0.1
+			lumber = 0.2
+			stone = 0.12
 			category = building_maintenance
 		}
 	}
@@ -3909,10 +3892,10 @@ bey_fortress = {
 
 	unique_production_methods = {
 		bey_fortress_maintenance = {
-			stone = 0.1
-			tools = 0.1
-			weaponry = 0.2
-			tar = 0.1
+			stone = 0.05
+			tools = 0.05
+			weaponry = 0.1
+			tar = 0.05
 			category = building_maintenance
 		}
 	}
@@ -4019,10 +4002,10 @@ mamluk_barracks = {
 
 	unique_production_methods = {
 		mamluk_barracks_maintenance  = {
-			leather = 0.15
-			cloth = 0.1
-			weaponry = 0.1
-			slaves_goods = 0.05
+			leather = 0.075
+			cloth = 0.05
+			weaponry = 0.05
+			slaves_goods = 0.025
 			category = building_maintenance
 		}
 	}
@@ -4228,13 +4211,12 @@ trans_saharan_trade_outposts = {
 	build_time = trade_post_build_time
 	modifier = {
 		merchant_capacity_from_building = 1.1
-
 		merchant_power_from_building = 2
 	}
 
 	unique_production_methods = {
 		trans_saharan_trade_outposts_maintenance = {
-			lumber = 0.5
+			lumber = 0.25
 			category = building_maintenance
 		}
 	}
@@ -4303,11 +4285,11 @@ bajang_ratu = {
 	unique_production_methods = {
 
 		bajang_ratu_maintenance = {
-			stone = 0.1
-			goods_gold = 0.05
-			gems = 0.1
-			tools = 0.1
-			weaponry = 0.2
+			stone = 0.05
+			goods_gold = 0.025
+			gems = 0.05
+			tools = 0.05
+			weaponry = 0.1
 			category = building_maintenance
 		}
 
@@ -4342,7 +4324,7 @@ bubu_building = {
 
 	unique_production_methods = {
 		bubu_building_maintenance = {
-			tools = 0.03
+			tools = 0.015
 			category = building_maintenance
 		}
 	}
@@ -4500,9 +4482,9 @@ eghabho_nore_mansion = {
 
 	unique_production_methods = {
 		eghabho_nore_mansion_maintenance = {
-			lumber = 0.2
-			masonry = 0.5
-			paper = 0.05
+			lumber = 0.1
+			masonry = 0.25
+			paper = 0.025
 			category = building_maintenance
 		}
 
@@ -4539,9 +4521,9 @@ ribat = {
 	unique_production_methods = {
 
 		ribat_maintenance = {
-			masonry = 0.1
-			weaponry = 0.02
-			tar = 0.02
+			masonry = 0.05
+			weaponry = 0.01
+			tar = 0.01
 			category = building_maintenance
 		}
 	}
@@ -4585,8 +4567,8 @@ por_feitoria = {
 
 	unique_production_methods = {
 		feitoria_maintenance = {
-			masonry = 0.5
-			naval_supplies = 0.5
+			masonry = 0.25
+			naval_supplies = 0.25
 			category = building_maintenance
 		}
 	}
@@ -4596,7 +4578,6 @@ por_feitoria = {
 	modifier = {
 		building_owner_maritime_presence = 0.025
 		merchant_capacity_from_building = 0.275
-
 		merchant_power_from_building = 1
 	}
 }
@@ -4640,7 +4621,6 @@ gurgaddi = {
 		gold_to_building_owner = 0.05
 		merchant_power_from_building = 0.1
 		merchant_capacity_from_building = 0.11
-
 	}
 }
 
@@ -4746,10 +4726,10 @@ zhixian = {
 
 	unique_production_methods = {
 		zhixian_maintenance = {
-			paper = 0.25
-			weaponry = 0.1
-			tools = 0.05
-			fine_cloth = 0.05
+			paper = 0.125
+			weaponry = 0.05
+			tools = 0.025
+			fine_cloth = 0.025
 			category = building_maintenance
 		}
 	}
@@ -4832,10 +4812,10 @@ seljuk_mint = {
 
 	unique_production_methods = {
 		seljuk_mint_maintenance  = {
-			paper = 0.1
-			books = 0.25
-			silver = 0.1
-			copper = 0.1
+			paper = 0.05
+			books = 0.125
+			silver = 0.05
+			copper = 0.05
 			category = building_maintenance
 		}
 	}
@@ -4892,9 +4872,9 @@ tur_kodjabashi_office = {
 
 	unique_production_methods = {
 		tur_kodjabashi_office_maintenance = {
-			paper = 1.0
-			weaponry = 0.2
-			masonry = 0.2
+			paper = 0.5
+			weaponry = 0.1
+			masonry = 0.1
 			category = building_maintenance
 		}
 	}

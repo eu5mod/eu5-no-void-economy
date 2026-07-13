@@ -200,22 +200,37 @@ static file must define `game_data.category = location` and must not hard-code a
 fixed penalty value. The matching generated localization prevents EU5 from
 printing placeholder `STATIC MODIFIER NAME ...` lines in `error.log`.
 
-## US-09 economy override probe
+## US-09 / US-08 composed Economy static overrides
 
-Generate the US-09 static-override probe output:
+Generate the Economy package static overrides:
 
 ```bash
 ./tools/generate_us09_economy_overrides.sh 5
 ```
 
 The generator reads vanilla `game/in_game/common/building_types` and
-`game/in_game/common/prices/00_hardcoded.txt`, then writes offline probe
+`game/in_game/common/prices/00_hardcoded.txt`, then writes composed generated
 output under:
 
 ```txt
 tools/generated/us09_economy_overrides/common/building_types/
 tools/generated/us09_economy_overrides/common/prices/
 ```
+
+When run through `./tools/generate_all.sh`, the same generator writes the loaded
+Rebalance Economy package exact-path overrides under:
+
+```txt
+packages/cbp_economy_rebalance/in_game/common/building_types/
+packages/cbp_economy_rebalance/in_game/common/prices/
+```
+
+The building override generator composes the approved static changes that share
+the same vanilla files:
+
+- US-09 output and trade-capacity compensation;
+- US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5`;
+- US-08/US-05.3 building maintenance quantities multiplied by `0.5`.
 
 Pass the desired compensation percentage explicitly. Example:
 
@@ -226,19 +241,10 @@ Pass the desired compensation percentage explicitly. Example:
 If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
 needed.
 
-Do not copy these files into the loaded Economy package as an implementation
-until duplicate-key static override loading has a clean runtime proof. The
-current engine log showed package-local duplicate `building_types` and `prices`
-entries are not applied cleanly and create load noise.
-
-For a local probe only, you can deliberately target the loaded package:
-
-```bash
-MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES=1 ./tools/generate_all.sh
-```
-
-Do not edit generated `zzzz_cbp_us09_*.txt` files manually. Do not edit
-installed vanilla files in place.
+Do not reintroduce generated `zzzz_cbp_us09_*.txt` or other non-vanilla
+filenames for loaded static overrides. They create duplicate keys instead of
+replacing vanilla definitions. Do not edit generated package building files
+manually, and do not edit installed vanilla files in place.
 
 If no percentage is passed and the shell is interactive, the generator prompts
 for one.
@@ -246,6 +252,15 @@ for one.
 Generated US-09 files record only placeholder source labels such as
 `<EU5_GAME_COMMON_DIR>/building_types/production_tools.txt`; never commit a
 personal install path from the local machine.
+
+When `EU5_GAME_COMMON_DIR` is configured, validate the maintenance composition
+against the local vanilla source:
+
+```bash
+python3 tools/validate_us08_building_maintenance_overrides.py \
+  --common-dir "$EU5_GAME_COMMON_DIR" \
+  --package-common-dir packages/cbp_economy_rebalance/in_game/common
+```
 
 ## Recommended local deployment pipeline
 

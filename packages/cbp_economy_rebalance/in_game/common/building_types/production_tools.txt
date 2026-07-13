@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_tools.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 # Age of Traditions
 
@@ -29,7 +30,6 @@ tools_guild = {
 			produced = tools
 			output = 1.1
 
-
 			debug_max_profit = 0.4
 			category = guild_input
 		}
@@ -37,7 +37,6 @@ tools_guild = {
 			stone = 0.70
 			produced = tools
 			output = 0.275
-
 			debug_max_profit = 0.1
 
 			category = guild_input
@@ -48,7 +47,6 @@ tools_guild = {
 			tin = 0.04
 			produced = tools
 			output = 0.66
-
 			debug_max_profit = 0.2
 
 			category = guild_input
@@ -58,7 +56,6 @@ tools_guild = {
 			copper = 0.5
 			produced = tools
 			output = 0.605
-
 			debug_max_profit = 0.15
 
 			category = guild_input
@@ -92,7 +89,6 @@ tools_workshop = {
 			iron = 0.8
 			produced = tools
 			output = 1.21
-
 			debug_max_profit = 0.5
 			category = workshop_input
 		}
@@ -132,7 +128,6 @@ iron_foundry = {
 			produced = tools
 			output = 2.2
 
-
 			debug_max_profit = 0.75
 		}
 	}
@@ -169,7 +164,6 @@ iron_mill = {
 			produced = tools
 			output = 4.4
 
-
 			debug_max_profit = 1.0
 		}
 
@@ -179,7 +173,6 @@ iron_mill = {
 			category = mills_input
 			produced = tools
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 		}

@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/common_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 irrigation_systems = {
 	is_foreign = no
@@ -29,7 +30,7 @@ irrigation_systems = {
 
 	unique_production_methods = {
 		irrigation_maintenance = {
-			tools = 0.1
+			tools = 0.05
 			category = building_maintenance
 		}
 	}
@@ -135,14 +136,12 @@ mason = {
 			stone = 0.4
 			produced = masonry
 			output = 0.55
-
 			category = guild_input
 		}
 		clay_bricks = {
 			clay = 0.8
 			produced = masonry
 			output = 0.55
-
 			category = guild_input
 		}
 
@@ -175,7 +174,7 @@ mercury_patio = {
 
 	unique_production_methods = {
 		mercury_patio_maintenance = {
-			mercury = 1.0
+			mercury = 0.5
 			category = building_maintenance
 		}
 	}
@@ -215,7 +214,6 @@ tar_kiln = {
 		tar_kiln_maintenance = {
 			produced = tar
 			output = 1.1
-
 			lumber = 1.0
 			category = guild_input
 
@@ -261,9 +259,8 @@ horse_breeders = {
 		horse_breeders_maintenance = {
 			produced = horses
 			output = 1.1
-
-			wheat = 1.5
-			horses = 0.3
+			wheat = 0.75
+			horses = 0.15
 			category = building_maintenance
 		}
 	}
@@ -301,23 +298,21 @@ stone_quarry = {
 	unique_production_methods = {
 
 		stone_quarry_maintenance = {
-			tools = 0.1
-			lumber = 0.12
-			leather = 0.1
+			tools = 0.05
+			lumber = 0.06
+			leather = 0.05
 
 			produced = stone
 			output = 1.1
-
 
 			category = building_maintenance
 		}
 
 		crude_quarry_maintenance = {
-			lumber = 0.28
+			lumber = 0.14
 
 			produced = stone
 			output = 0.55
-
 
 			category = building_maintenance
 		}
@@ -362,8 +357,7 @@ lumber_mill = {
 			produced = lumber
 			output = 1.1
 
-
-			tools = 0.4
+			tools = 0.2
 
 			category = building_maintenance
 		}
@@ -397,14 +391,13 @@ fiber_crops_farm = {
 
 	unique_production_methods = {
 		fiber_crops_farm_maintenance = {
-			livestock = 0.5
-			lumber = 0.2
-			tools = 0.1
+			livestock = 0.25
+			lumber = 0.1
+			tools = 0.05
 			category = building_maintenance
 
 			produced = fiber_crops
 			output = 0.88
-
 
 		}
 	}
@@ -436,13 +429,12 @@ sand_pit = {
 
 	unique_production_methods = {
 		sand_pit_maintenance = {
-			tools = 0.06
-			lumber = 0.15
+			tools = 0.03
+			lumber = 0.075
 			category = building_maintenance
 
 			produced = sand
 			output = 1.1
-
 
 		}
 	}
@@ -479,8 +471,7 @@ bog_iron_smelter = {
 		bog_iron_maintenance = {
 			produced = iron
 			output = 0.33
-
-			coal = 0.40
+			coal = 0.2
 			debug_max_profit = 0.2
 			category = building_maintenance
 		}
@@ -519,8 +510,7 @@ clay_pit = {
 		clay_pit_maintenance = {
 			produced = clay
 			output = 1.1
-
-			lumber = 0.28
+			lumber = 0.14
 			category = building_maintenance
 		}
 	}
@@ -557,8 +547,7 @@ salt_collector = {
 			produced = salt
 			output = 0.33
 
-
-			clay  = 2.0
+			clay  = 1.0
 			category = building_maintenance
 		}
 	}
@@ -600,8 +589,7 @@ fruit_orchard = {
 			produced = fruit
 			output = 0.33
 
-
-			lumber = 0.17
+			lumber = 0.085
 			category = building_maintenance
 		}
 	}

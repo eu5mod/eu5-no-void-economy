@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_lacquerware.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 lacquerware_guild = {
 	is_foreign = no
@@ -30,7 +31,6 @@ lacquerware_guild = {
 
 			produced = lacquerware
 			output = 1.1
-
 
 			category = guild_input
 			debug_max_profit = 0.35
@@ -68,7 +68,6 @@ lacquerware_manufactory = {
 
 			produced = lacquerware
 			output = 2.2
-
 
 
 			debug_max_profit = 0.6

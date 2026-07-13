@@ -14,7 +14,10 @@ As a player, I want a global +5% Production Efficiency compensation for ModeU5's
 
 Restore a target `+X%` effective production compensation for the Rebalance Economy package while preserving the stock-aware production chain. The generator-backed static override path is package-shipped only when generated files preserve the exact vanilla relative file path, so EU5 replaces the vanilla definitions instead of loading duplicate keys.
 
-Because US-09 and US-07 both need to edit the vanilla `common/building_types/trade_buildings.txt` static file, the US-09 generated Economy override composes the overlapping US-07 `local_burghers_estate_power` reduction directly into that exact-path file. This avoids competing package overrides for the same static definitions.
+Because US-09, US-07, and US-08/US-05.3 can all edit vanilla
+`common/building_types` static files, the US-09 generated Economy override
+composes the overlapping changes directly into the exact-path generated files.
+This avoids competing package overrides for the same static definitions.
 
 ## Module / availability
 
@@ -45,6 +48,7 @@ Feeds counters to: vanilla production read at step 4
 | Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions; loaded duplicate-key override path | NOT_CONFIRMED | 118 |
 | Static trade-capacity fields | local vanilla `common/building_types` | `local_trades_per_burgher`, `local_merchant_capacity`, `merchant_capacity_from_building`; exact-path package override path | TO_TEST | 118 |
 | Composed US-07 trade-building estate-power field | local vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; exact-path package override path | TO_TEST | 083 |
+| Composed US-08/US-05.3 building maintenance quantities | local vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by `0.5`; exact-path package override path | CONFIRMED | 153 |
 | Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry`; loaded duplicate-key override path | NOT_CONFIRMED | 119 |
 
 ## Probe implementation path
@@ -55,6 +59,7 @@ Probe solution:
 Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
 Increase each eligible `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by a configurable `X%`
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
+Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
 Override each targeted RGO expansion gold value by `gold x (1 / (1 + X))`
 ```
@@ -136,14 +141,14 @@ Related US: US-00.3, stock-aware production pipeline
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not load or retain these overrides when the Rebalance Economy package is absent.
-- Treat the scaffolded static-override path as a probe until a future branch confirms a clean replacement mechanism.
+- Treat exact-path generated package overrides as the only approved loaded static-override shape; non-vanilla filenames remain rejected because they create duplicate keys.
 - Do not edit files under the installed vanilla game directory; read them only as scaffolding input.
 - Generated candidate overrides that are loaded by the package must use the same relative file path as the vanilla source file.
 - Keep the compensation percentage configurable in one generation path; do not hand-edit hundreds of output values.
 - Do not switch to the additive-modifier options unless their read semantics are confirmed and documented in TECH-01.
 - Apply the compensation before monthly production is read.
 - Keep it distinct from national/technology bonuses.
-- Do not use this issue to redesign transformation formulas beyond compatibility; the probe path is limited to paired static candidates for `building_types` `output =` values and the five `expand_rgo_*` entries in `common/prices/00_hardcoded.txt`.
+- Do not use this issue to redesign transformation formulas beyond compatibility; the generated path is limited to approved composed static candidates for `building_types` output/trade fields, building-maintenance quantities, and the five `expand_rgo_*` entries in `common/prices/00_hardcoded.txt`.
 - Use the confirmed shared `monthly_country_pulse` dispatcher; do not register a second monthly mechanism.
 
 ## US-specific boundary checks
@@ -156,6 +161,7 @@ Related US: US-00.3, stock-aware production pipeline
 
 - [ ] Generated package files increase every targeted `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by the configured `X%`.
 - [ ] The generated exact-path `trade_buildings.txt` file composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
+- [ ] Generated package files divide every building-maintenance good quantity by exactly `2`.
 - [ ] Generated package files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
 - [ ] The generator is idempotent and removes stale non-vanilla override filenames that would create duplicate keys.
 - [ ] Runtime logs show no duplicate-key errors for the generated exact-path static overrides.
@@ -182,8 +188,9 @@ The additive-modifier alternatives remain visible but unselected
 ## Known limitations
 
 The current implementation ships paired static overrides in the Economy package using exact vanilla relative file paths.
-The generated building candidate surface may include event-only or uncommon production files whenever they use the same `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, or `merchant_capacity_from_building` fields.
+The generated building candidate surface includes files that use the approved US-09 fields or contain building-maintenance methods.
 The US-07 composition is intentionally limited to `trade_buildings.txt` `local_burghers_estate_power`; `local_merchant_power` remains vanilla until a concrete US-07 target value is approved.
+The US-08/US-05.3 maintenance composition is intentionally limited to goods inside explicit `category = building_maintenance` blocks.
 Runtime load tests showed non-vanilla package-local filenames are rejected or noisy because they create duplicate keys, so stale names such as `common/prices/expand_rgo_prices.txt` must remain absent.
 The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.
 

@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_fine_cloth.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 fine_cloth_guild = {
 	is_foreign = no
@@ -26,7 +27,6 @@ fine_cloth_guild = {
 			produced = fine_cloth
 			output = 0.55
 
-
 			category = guild_input
 		}
 
@@ -36,7 +36,6 @@ fine_cloth_guild = {
 			produced = fine_cloth
 			output = 0.55
 
-
 			category = guild_input
 		}
 
@@ -45,7 +44,6 @@ fine_cloth_guild = {
 
 			produced = fine_cloth
 			output = 0.77
-
 
 			category = guild_input
 			debug_max_profit = 0.35	# its ok to be a bit better..
@@ -63,7 +61,6 @@ fine_cloth_guild = {
 			produced = fine_cloth
 			output = 0.55
 
-
 			category = guild_input
 			debug_max_profit = 0.5
 		}
@@ -74,7 +71,6 @@ fine_cloth_guild = {
 			produced = fine_cloth
 			dyes = 0.14
 			output = 0.11
-
 
 			category = guild_input
 
@@ -87,7 +83,6 @@ fine_cloth_guild = {
 			produced = fine_cloth
 			output = 0.22
 
-
 			category = guild_input
 		}
 
@@ -95,7 +90,6 @@ fine_cloth_guild = {
 			fur = 0.5
 			produced = fine_cloth
 			output = 0.22
-
 
 			debug_max_profit = 0.2
 			category = guild_input
@@ -131,7 +125,6 @@ fine_cloth_workshop = {
 			produced = fine_cloth
 			output = 0.66
 
-
 			category = workshop_input
 
 			debug_max_profit = 0.6
@@ -143,7 +136,6 @@ fine_cloth_workshop = {
 			produced = fine_cloth
 			output = 0.66
 
-
 			category = workshop_input
 			debug_max_profit = 0.6
 		}
@@ -153,7 +145,6 @@ fine_cloth_workshop = {
 
 			produced = fine_cloth
 			output = 0.88
-
 
 			category = workshop_input
 
@@ -173,7 +164,6 @@ fine_cloth_workshop = {
 			produced = fine_cloth
 			output = 0.66
 
-
 			debug_max_profit = 0.8
 
 			category = workshop_input
@@ -186,7 +176,6 @@ fine_cloth_workshop = {
 			dyes = 0.14
 			output = 0.132
 
-
 			category = workshop_input
 		}
 
@@ -196,7 +185,6 @@ fine_cloth_workshop = {
 			produced = fine_cloth
 			output = 0.275
 
-
 			category = workshop_input
 		}
 
@@ -204,7 +192,6 @@ fine_cloth_workshop = {
 			fur = 0.6
 			produced = fine_cloth
 			output = 0.275
-
 
 			debug_max_profit = 0.25
 			category = workshop_input
@@ -246,7 +233,6 @@ fine_cloth_manufactory = {
 			produced = fine_cloth
 			output = 2.2
 
-
 			category = manufactory_input
 			debug_max_profit = 0.7
 		}
@@ -257,7 +243,6 @@ fine_cloth_manufactory = {
 
 
 			output = 2.2
-
 			debug_max_profit = 0.7
 
 			category = manufactory_input
@@ -273,7 +258,6 @@ fine_cloth_manufactory = {
 			produced = fine_cloth
 			output = 0.22
 
-
 			category = guild_input
 			debug_max_profit = 0.2
 		}
@@ -281,7 +265,6 @@ fine_cloth_manufactory = {
 		alum_fine_cloth_manufactory_maintenance = {
 			produced = fine_cloth
 			output = 0.44
-
 			dyes = 0.4
 			alum = 0.1
 
@@ -321,7 +304,6 @@ fine_cloth_mill = {
 			produced = fine_cloth
 			output = 4.4
 
-
 			debug_max_profit = 1.0
 
 			category = mills_input
@@ -333,7 +315,6 @@ fine_cloth_mill = {
 
 			produced = fine_cloth
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 

@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/pure_one_level_productions.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 apothecary = {
 	is_foreign = no
@@ -29,7 +30,6 @@ apothecary = {
 			produced = medicaments
 			output = 0.55
 
-
 			debug_max_profit = 0.15
 			category = guild_input
 		}
@@ -39,7 +39,6 @@ apothecary = {
 
 			produced = medicaments
 			output = 0.55
-
 
 			debug_max_profit = 0.15
 			category = guild_input
@@ -74,7 +73,6 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			produced = jewelry
 			output = 1.1
 
-
 			category = guild_input
 		}
 		silver_base = {
@@ -82,7 +80,6 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 
 			produced = jewelry
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -92,7 +89,6 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 
 			produced = jewelry
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -108,14 +104,12 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			produced = jewelry
 			output = 0.11
 
-
 			category = guild_input
 		}
 		amber_enhancement = {
 			amber = 0.1
 			produced = jewelry
 			output = 0.11
-
 
 			category = guild_input
 		}
@@ -124,14 +118,12 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			produced = jewelry
 			output = 0.11
 
-
 			category = guild_input
 		}
 		pearls_enhancement = {
 			pearls = 0.1
 			produced = jewelry
 			output = 0.11
-
 
 			category = guild_input
 		}
@@ -165,7 +157,6 @@ steel_mill = {
 			coal = 2.0
 			produced = steel
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 			category = mills_input
@@ -201,7 +192,6 @@ perfumery = {
 
 			produced = incense
 			output = 1.1
-
 
 			debug_max_profit = 0.6
 

@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/plantation_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 sugar_plantation = {
 	is_foreign = no
@@ -38,11 +39,10 @@ sugar_plantation = {
 			produced = sugar
 			output = 1.1
 
-
-			slaves_goods = 0.1
-			leather = 0.05
-			tools = 0.05
-			lumber = 0.05
+			slaves_goods = 0.05
+			leather = 0.025
+			tools = 0.025
+			lumber = 0.025
 			debug_max_profit = -1
 			category = building_maintenance
 		}
@@ -91,11 +91,10 @@ cotton_plantation = {
 			produced = cotton
 			output = 1.1
 
-
-			slaves_goods = 0.1
-			leather = 0.05
-			tools = 0.05
-			lumber = 0.05
+			slaves_goods = 0.05
+			leather = 0.025
+			tools = 0.025
+			lumber = 0.025
 			debug_max_profit = -1
 			category = building_maintenance
 		}
@@ -145,11 +144,10 @@ tobacco_plantation = {
 			produced = tobacco
 			output = 1.1
 
-
-			slaves_goods = 0.1
-			leather = 0.05
-			tools = 0.05
-			lumber = 0.05
+			slaves_goods = 0.05
+			leather = 0.025
+			tools = 0.025
+			lumber = 0.025
 			debug_max_profit = -1
 			category = building_maintenance
 		}

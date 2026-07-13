@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_leather.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 tannery = {
 	is_foreign = no
@@ -33,7 +34,6 @@ tannery = {
 			produced = leather
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -45,7 +45,6 @@ tannery = {
 
 			produced = leather
 			output = 1.1
-
 
 			debug_max_profit = 0.31
 
@@ -87,7 +86,6 @@ tanning_workshop = {
 			produced = leather
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -101,7 +99,6 @@ tanning_workshop = {
 
 			produced = leather
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -146,7 +143,6 @@ tannery_manufactory = {
 
 			produced = leather
 			output = 2.2
-
 			debug_max_profit = 0.75
 
 			category = manufactory_input
@@ -160,7 +156,6 @@ tannery_manufactory = {
 
 			produced = leather
 			output = 2.2
-
 			debug_max_profit = 0.75
 			category = manufactory_input
 		}
@@ -203,7 +198,6 @@ tannery_mill = {
 
 			produced = leather
 			output = 4.4
-
 			debug_max_profit = 1.0
 
 			category = mills_input
@@ -217,7 +211,6 @@ tannery_mill = {
 
 			produced = leather
 			output = 4.4
-
 			debug_max_profit = 1.0
 			category = mills_input
 		}

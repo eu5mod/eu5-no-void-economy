@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/event_only_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.5
 
 cantonments = {
 	is_special = yes
@@ -116,8 +117,8 @@ great_madrasa = {
 
 	unique_production_methods = {
 		great_madrasa_maintenance = {
-			paper = 0.5
-			cloth = 0.4
+			paper = 0.25
+			cloth = 0.2
 
 			category = building_maintenance
 		}
@@ -383,9 +384,9 @@ grand_apartment = {
 
 	unique_production_methods = {
 		grand_apartment_maintenance = {
-			furniture = 0.1
-			books = 0.1
-			marble = 0.05
+			furniture = 0.05
+			books = 0.05
+			marble = 0.025
 
 			category = building_maintenance
 		}
@@ -549,12 +550,12 @@ enderun_academy = {
 
 	unique_production_methods = {
 		endrun_academy_maintenance = {
-			firearms = 0.5
-			leather = 0.5
-			cloth = 0.25
-			paper = 0.5
-			weaponry = 0.5
-			fine_cloth = 0.5
+			firearms = 0.25
+			leather = 0.25
+			cloth = 0.125
+			paper = 0.25
+			weaponry = 0.25
+			fine_cloth = 0.25
 
 			category = building_maintenance
 		}
@@ -601,11 +602,11 @@ imperial_halic_shipyards = {
 
 	unique_production_methods = {
 		imperial_halic_shipyards_maintenance = {
-			tar = 0.5
-			naval_supplies = 1.0
-			tools = 0.2
-			lumber = 0.4
-			stone = 0.24
+			tar = 0.25
+			naval_supplies = 0.5
+			tools = 0.1
+			lumber = 0.2
+			stone = 0.12
 			category = building_maintenance
 		}
 	}
@@ -840,11 +841,11 @@ globe_theatre = {
 
 	unique_production_methods = {
 		globe_theater_maintenance = {
-			cloth = 0.2
-			furniture = 0.1
-			wine = 0.3
-			paper = 0.5
-			fine_cloth = 0.4
+			cloth = 0.1
+			furniture = 0.05
+			wine = 0.15
+			paper = 0.25
+			fine_cloth = 0.2
 
 			category = building_maintenance
 		}
@@ -883,15 +884,14 @@ schwaz_mine = {
 
 	unique_production_methods = {
 		schwaz_mine_maintenance = {
-			tools = 0.25
-			leather = 0.3
-			lumber = 0.5
-			stone = 0.5
-			liquor = 0.1
+			tools = 0.125
+			leather = 0.15
+			lumber = 0.25
+			stone = 0.25
+			liquor = 0.05
 
 			produced = silver
 			output = 1.1
-
 
 			debug_max_profit = 1		#unique building only 1 level, acceptable to have a high profit.
 
@@ -999,11 +999,11 @@ ribeira_das_naus = {
 
 	unique_production_methods = {
 		ribeira_das_naus_maintenance = {
-			tar = 0.25
-			naval_supplies = 0.8
-			tools = 0.15
-			lumber = 0.2
-			stone = 0.1
+			tar = 0.125
+			naval_supplies = 0.4
+			tools = 0.075
+			lumber = 0.1
+			stone = 0.05
 			category = building_maintenance
 		}
 	}
@@ -1164,9 +1164,9 @@ wisselbank = {
 
 	unique_production_methods = {
 		wissel_bank_maintenance = {
-			paper = 0.5
-			goods_gold = 0.5
-			silver = 0.5
+			paper = 0.25
+			goods_gold = 0.25
+			silver = 0.25
 			category = building_maintenance
 		}
 	}
@@ -1219,12 +1219,12 @@ bolshoi_theater = {
 
 	unique_production_methods = {
 		bolshoi_theater_maintenance = {
-			cloth = 0.1
-			furniture = 0.1
-			liquor = 0.5
-			paper = 0.5
-			fine_cloth = 0.4
-			fur = 0.1
+			cloth = 0.05
+			furniture = 0.05
+			liquor = 0.25
+			paper = 0.25
+			fine_cloth = 0.2
+			fur = 0.05
 
 			category = building_maintenance
 		}
@@ -1269,9 +1269,7 @@ archive_of_the_indies = {
 	modifier = {
 		local_merchant_power = 0.1
 		local_trades_per_burgher = 0.11
-
 		local_merchant_capacity = 1.1
-
 
 	}
 
@@ -1438,10 +1436,8 @@ chi_macau_port = {
 
 	modifier = {
 		merchant_capacity_from_building = 0.22
-
 		building_owner_maritime_presence = 0.025
 		local_merchant_capacity = 1.1
-
 		# gold_to_location_owner = 20 CAESAR-25168
 	}
 }
@@ -1538,9 +1534,9 @@ college_of_poets = {
 
 	unique_production_methods = {
 		college_of_poets_maintenance = {
-			paper = 1
-			books = 0.5
-			glass = 0.5
+			paper = 0.5
+			books = 0.25
+			glass = 0.25
 			category = building_maintenance
 		}
 	}
@@ -1571,9 +1567,9 @@ bibliotheca_corviniana = {
 
 	unique_production_methods = {
 		bibliotheca_corviniana_maintenance = {
-			paper = 0.2
-			books = 1.0
-			furniture = 0.1
+			paper = 0.1
+			books = 0.5
+			furniture = 0.05
 			category = building_maintenance
 		}
 	}
@@ -1725,7 +1721,6 @@ oma_nizwa_fort = {
 		local_garrison_size = 0.4
 		local_defensive = 0.1
 		local_trades_per_burgher = 0.11
-
 	}
 
 }
@@ -1753,14 +1748,13 @@ dutch_trade_outpost = {
 	build_time = trade_post_build_time
 	modifier = {
 		merchant_capacity_from_building = 1.1
-
 		building_owner_maritime_presence = 0.025
 	}
 
 	unique_production_methods = {
 		dutch_trade_outpost_maintenance = {
-			lumber = 0.25
-			tools = 0.05
+			lumber = 0.125
+			tools = 0.025
 
 			category = building_maintenance
 		}
@@ -2358,9 +2352,9 @@ swi_collegium_helveticum = {
 	}
 	unique_production_methods = {
 		swi_collegium_helveticum_maintenance = {
-			paper = 0.5
-			books = 0.25
-			glass = 0.25
+			paper = 0.25
+			books = 0.125
+			glass = 0.125
 			category = building_maintenance
 		}
 	}
@@ -2466,7 +2460,6 @@ husuni_kubwa = {
 
 	capital_modifier = {
 		local_merchant_capacity = 5.5
-
 		local_merchant_power = 0.15
 	}
 
@@ -2767,10 +2760,10 @@ lighthouse_of_alexandria = {
 
 	unique_production_methods = {
 		lighthouse_of_alexandria_maintenance = {
-			masonry = 0.5
-			weaponry = 0.2
-			naval_supplies = 0.5
-			tar = 0.1
+			masonry = 0.25
+			weaponry = 0.1
+			naval_supplies = 0.25
+			tar = 0.05
 			category = building_maintenance
 		}
 	}
@@ -2783,7 +2776,6 @@ lighthouse_of_alexandria = {
 		local_defensive = 0.1
 		hostile_fleet_attrition = 0.5
 		local_trades_per_burgher = 0.22
-
 	}
 
 }
@@ -3164,9 +3156,9 @@ guich_garrison = {
 	unique_production_methods = {
 
 		guich_garrison_maintenance = {
-			masonry = 0.1
-			weaponry = 0.02
-			tar = 0.02
+			masonry = 0.05
+			weaponry = 0.01
+			tar = 0.01
 			category = building_maintenance
 		}
 	}
@@ -3285,11 +3277,11 @@ herrenchiemsee_abbey = {
 
 	unique_production_methods = {
 		herrenchiemsee_abbey_maintenance = {
-			glass = 0.4
-			paper = 0.4
-			cloth = 0.4
-			beer = 0.4
-			beeswax = 0.2
+			glass = 0.2
+			paper = 0.2
+			cloth = 0.2
+			beer = 0.2
+			beeswax = 0.1
 
 			category = building_maintenance
 		}
@@ -3646,10 +3638,10 @@ usa_academy_of_arts_and_sciences = {
 
 	unique_production_methods = {
 		usa_academy_of_arts_and_sciences_maintenance = {
-			paper = 1
-			books = 0.25
-			glass = 0.25
-			beeswax = 0.05
+			paper = 0.5
+			books = 0.125
+			glass = 0.125
+			beeswax = 0.025
 			category = building_maintenance
 		}
 	}
@@ -3699,10 +3691,10 @@ usa_philosophical_society = {
 
 	unique_production_methods = {
 		usa_philosophical_society_maintenance = {
-			paper = 1.5
-			books = 0.5
-			glass = 0.5
-			beeswax = 0.1
+			paper = 0.75
+			books = 0.25
+			glass = 0.25
+			beeswax = 0.05
 			category = building_maintenance
 		}
 	}
@@ -3743,8 +3735,8 @@ usa_national_bank = {
 
 	unique_production_methods = {
 		usa_national_bank_maintenance = {
-			paper = 1.0
-			goods_gold = 1.0
+			paper = 0.5
+			goods_gold = 0.5
 			category = building_maintenance
 		}
 	}
@@ -3786,9 +3778,9 @@ usa_national_mint = {
 
 	unique_production_methods = {
 		usa_national_mint_maintenance = {
-			paper = 1.0
-			goods_gold = 1.0
-			silver = 1.0
+			paper = 0.5
+			goods_gold = 0.5
+			silver = 0.5
 			category = building_maintenance
 		}
 	}
@@ -3852,16 +3844,14 @@ phanariot_district = {
 	modifier = {
 		local_burghers_estate_power = 0.2
 		local_merchant_capacity = 5.5
-
 		local_trades_per_burgher = 2.2
-
 	}
 
 	unique_production_methods = {
 		phanariot_district_maintenance = {
-			masonry = 0.2
-			lumber = 0.2
-			sand = 0.2
+			masonry = 0.1
+			lumber = 0.1
+			sand = 0.1
 			category = building_maintenance
 		}
 	}
@@ -3987,11 +3977,11 @@ jewish_district = {
 
 	unique_production_methods = {
 		jewish_district_maintenance = {
-			masonry = 0.5
-			tools = 0.1
-			glass = 0.2
-			furniture = 0.1
-			lumber = 0.25
+			masonry = 0.25
+			tools = 0.05
+			glass = 0.1
+			furniture = 0.05
+			lumber = 0.125
 			category = building_maintenance
 		}
 	}
@@ -4072,8 +4062,8 @@ woodhenge_of_cahokia = {
 
 	unique_production_methods = {
 		cahokia_woodhenge_production_method = {
-			clay = 1
-			lumber = 1
+			clay = 0.5
+			lumber = 0.5
 			category = building_maintenance
 		}
 	}
