@@ -13,7 +13,7 @@ PERF-17 introduced a minimal default and strict full-ledger mode. Issue #94 also
 allows a middle policy: full ledger for human-relevant markets, minimal
 carryover elsewhere.
 
-The existing PERF-02 helper already builds `modeu5_performance_relevant_markets`
+The existing PERF-02 helper already builds `cbp_performance_relevant_markets`
 through confirmed `human country -> every_market_present_in_country` traversal.
 
 ## Selected Design
@@ -43,7 +43,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check
@@ -54,7 +54,7 @@ Runtime smoke:
 ```txt
 Start a disposable campaign with NVE : Accounting Persistence = Human-Relevant Full Ledger.
 Wait one month.
-Run event modeu5_revalidate_debug.1 and select Revalidate main operations.
+Run event cbp_revalidate_debug.1 and select Revalidate main operations.
 ```
 
 Expected:

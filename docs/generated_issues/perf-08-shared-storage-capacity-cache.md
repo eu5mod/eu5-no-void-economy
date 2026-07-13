@@ -30,7 +30,7 @@ country_market_capacity
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country-scoped capacity maps keyed by market | country x market | `modeu5_stock_cap_by_market` and breakdown maps | CONFIRMED | 007, 017 |
+| Country-scoped capacity maps keyed by market | country x market | `cbp_stock_cap_by_market` and breakdown maps | CONFIRMED | 007, 017 |
 | Per-good stock adapters read shared capacity | generated adapter | literal shared map names inside generated helpers | CONFIRMED | 104 |
 | Country-market scan | country -> market | `every_market_present_in_country` | CONFIRMED | 117 |
 | Country market count | country -> market | `every_market_present_in_country` counter | CONFIRMED | 117 |
@@ -39,12 +39,12 @@ country_market_capacity
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_capacity_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/common/script_values/modeu5_stock_values.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/
+in_game/common/scripted_effects/cbp_capacity_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/common/script_values/cbp_stock_values.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/
 tools/generate_stock_good_helpers.sh
-tools/templates/modeu5_stock_good_adapter.template.txt
+tools/templates/cbp_stock_good_adapter.template.txt
 tools/validate_module_packages.sh
 docs/technical/
 docs/tests/
@@ -59,9 +59,9 @@ Related issue: #60 performance optimization track
 
 ## Implementation rules
 
-- Store capacity once in `modeu5_stock_cap_by_market`.
-- Store diagnostic breakdowns once in `modeu5_base_capacity_by_market`, `modeu5_building_capacity_by_market`, and `modeu5_foreign_capacity_by_market`.
-- Do not recreate `modeu5_<good>_stock_cap_by_market` or other per-good capacity maps.
+- Store capacity once in `cbp_stock_cap_by_market`.
+- Store diagnostic breakdowns once in `cbp_base_capacity_by_market`, `cbp_building_capacity_by_market`, and `cbp_foreign_capacity_by_market`.
+- Do not recreate `cbp_<good>_stock_cap_by_market` or other per-good capacity maps.
 - Keep per-good stock and market-stock maps unchanged.
 - Keep generated per-good adapters as the only place that reads/writes persistent map identifiers.
 - Recalculate country storage capacity once through shared good-neutral capacity effects; do not loop all goods or select a sentinel good for identical capacity.
@@ -74,8 +74,8 @@ Related issue: #60 performance optimization track
 
 ## Acceptance criteria
 
-- [ ] Generated helpers read `modeu5_stock_cap_by_market` for every good.
-- [ ] Generated helpers do not contain `modeu5_<good>_stock_cap_by_market`.
+- [ ] Generated helpers read `cbp_stock_cap_by_market` for every good.
+- [ ] Generated helpers do not contain `cbp_<good>_stock_cap_by_market`.
 - [ ] The country-level capacity refresh no longer dispatches one recalculation per good.
 - [ ] The country-level capacity refresh does not call `goods:wheat` or any other sentinel good.
 - [ ] Capacity-only writes do not mark any per-good active-market list.

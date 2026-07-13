@@ -51,7 +51,7 @@ Castile / CAS is suitable when available.
 ```
 
 The event temporarily changes the current country's CMM
-`nve_no_void_economy_main` value to:
+`cbp_no_void_economy_main` value to:
 
 ```txt
 1 = Active Performance Mode
@@ -62,16 +62,16 @@ The event temporarily changes the current country's CMM
 For audit review, use the following map consistently:
 
 ```txt
-nve_no_void_economy_main=1 -> Active Performance
+cbp_no_void_economy_main=1 -> Active Performance
   performance=1 normal=0 deactivated=0
   Performance sparsity applies: human-relevant/promoted markets use detailed ModeU5 runtime;
   non-human-relevant markets use vanilla fallback.
 
-nve_no_void_economy_main=2 -> Active Normal
+cbp_no_void_economy_main=2 -> Active Normal
   performance=0 normal=1 deactivated=0
   Sparsity is disabled: detailed ModeU5 runtime is allowed without promotion.
 
-nve_no_void_economy_main=3 -> Deactivated
+cbp_no_void_economy_main=3 -> Deactivated
   performance=0 normal=0 deactivated=1
   ModeU5 stock-affecting runtime is blocked.
 ```
@@ -81,7 +81,7 @@ It restores the original CMM value before finishing.
 ## Console Command
 
 ```txt
-event modeu5_perf14_debug.1
+event cbp_perf14_debug.1
 ```
 
 Choose:
@@ -105,9 +105,9 @@ ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_pro
 ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm
 ModeU5 PERF-14 DUMP main_mode=...
 ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=1 fallback=0 blocked=0 promotion_attempted=1 promotion_succeeded=1 result=1
-# Active Performance / nve_no_void_economy_main=1 / human-relevant market -> detailed ModeU5 monthly runtime
+# Active Performance / cbp_no_void_economy_main=1 / human-relevant market -> detailed ModeU5 monthly runtime
 ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=1 vanilla_fallback=0 blocked=0 human_relevant=1 promotion_attempted=1 promotion_succeeded=1 result=1
-# Active Performance / nve_no_void_economy_main=1 / non-human-relevant market -> vanilla fallback
+# Active Performance / cbp_no_void_economy_main=1 / non-human-relevant market -> vanilla fallback
 ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=0 vanilla_fallback=1 blocked=0 human_relevant=0 promotion_attempted=0 promotion_succeeded=0 result=2
 ModeU5 PERF-14 PROMOTION positive aggregate=120 ...
 ModeU5 PERF-14 PROMOTION idempotent ...
@@ -196,40 +196,40 @@ distinct non-present market fixture, the probe returns BLOCKED instead of PASS.
 The same event now also validates the stock-affecting decision gate:
 
 ```txt
-Active Performance / nve_no_void_economy_main=1 + human-present unpromoted market
+Active Performance / cbp_no_void_economy_main=1 + human-present unpromoted market
   -> promotion attempted
   -> promotion succeeds
   -> detailed stock mutation path allowed
 
-Active Performance / nve_no_void_economy_main=1 + AI market that is not human-relevant
+Active Performance / cbp_no_void_economy_main=1 + AI market that is not human-relevant
   -> detailed mutation disabled
   -> vanilla fallback selected
 
-Active Performance / nve_no_void_economy_main=1 + AI country inside a human-relevant market
+Active Performance / cbp_no_void_economy_main=1 + AI country inside a human-relevant market
   -> promotion attempted
   -> promotion succeeds
   -> detailed stock mutation path allowed
 
-Active Performance / nve_no_void_economy_main=1 + human country in non-present market
+Active Performance / cbp_no_void_economy_main=1 + human country in non-present market
   -> detailed mutation disabled
   -> vanilla fallback selected
   -> promotion not attempted by the stock gate
 
-Active Performance monthly market runtime gate / nve_no_void_economy_main=1 + human-relevant unpromoted market
+Active Performance monthly market runtime gate / cbp_no_void_economy_main=1 + human-relevant unpromoted market
   -> promotion attempted
   -> promotion succeeds
   -> detailed ModeU5 runtime selected
 
-Active Performance monthly market runtime gate / nve_no_void_economy_main=1 + market absent from the human-relevant list
+Active Performance monthly market runtime gate / cbp_no_void_economy_main=1 + market absent from the human-relevant list
   -> detailed ModeU5 runtime disabled
   -> vanilla fallback selected
   -> promotion not attempted
 
-Active Normal / nve_no_void_economy_main=2
+Active Normal / cbp_no_void_economy_main=2
   -> detailed stock mutation path allowed without promotion
   -> detailed monthly runtime allowed without Performance Mode promotion
 
-Deactivated / nve_no_void_economy_main=3
+Deactivated / cbp_no_void_economy_main=3
   -> detailed mutation disabled
   -> fallback disabled
   -> mutation blocked
@@ -241,7 +241,7 @@ Deactivated / nve_no_void_economy_main=3
 After running the event, use:
 
 ```txt
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 The helper now prints separate counts and sections for:
@@ -297,9 +297,9 @@ git diff --check
   US-17, US-20, or other runtime stock mutations through the same gate.
 - Performance Mode fallback is vanilla fallback. It deliberately does not
   implement a market-level aggregate-only ModeU5 mutation operator.
-- This PR implements `modeu5_promote_market_to_detailed_accounting`, but later
+- This PR implements `cbp_promote_market_to_detailed_accounting`, but later
   stock-affecting PRs must still call/check
-  `modeu5_detailed_country_market_stock_mutation_allowed_trigger` before using
+  `cbp_detailed_country_market_stock_mutation_allowed_trigger` before using
   detailed country-market mutation in Performance Mode.
 - The sparse supplier stacked layer emits:
   `ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=<n> sparse=<n> candidates=<n> used=1 fallback=0`.

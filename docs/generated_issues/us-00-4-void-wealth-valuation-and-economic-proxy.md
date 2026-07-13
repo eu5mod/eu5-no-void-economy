@@ -36,8 +36,8 @@ Feeds counters to: US-10-UI and balancing diagnostics
 | Estate tax-base proxy | country or estate | `estate_tax_base` | CONFIRMED | 031 |
 | Estate tax-percentage proxy | country | `estate_tax_percentage` | CONFIRMED | 032 |
 | Detailed valuation record fields | country × market × good | logical `void_wealth` and optional `void_taxable_income_proxy` fields | CONFIRMED | 025-026, internal |
-| Confirmed physical detailed storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_void_wealth_by_market` and optional `modeu5_<good>_void_taxable_income_proxy_by_market` | CONFIRMED | 007, 025-026 |
-| Market/country aggregation | country × market, then country | `modeu5_void_wealth_by_market` map keyed by market plus `modeu5_total_void_wealth` scalar | CONFIRMED | 007, 025-026 |
+| Confirmed physical detailed storage | country-scoped synchronized map family keyed by market | `cbp_<good>_void_wealth_by_market` and optional `cbp_<good>_void_taxable_income_proxy_by_market` | CONFIRMED | 007, 025-026 |
+| Market/country aggregation | country × market, then country | `cbp_void_wealth_by_market` map keyed by market plus `cbp_total_void_wealth` scalar | CONFIRMED | 007, 025-026 |
 
 ## Files expected to change
 
@@ -68,8 +68,8 @@ Related US: US-00.3, US-10-UI
 - Preserve the detailed level while also aggregating by market and country.
 - Add detailed valuation values as fields of the shared country × market × good record.
 - Physically store those fields in synchronized country-scoped per-good maps keyed by market.
-- Store the all-goods market total in one country-scoped `modeu5_void_wealth_by_market` map keyed by market.
-- Keep `modeu5_total_void_wealth` as a country scalar; do not create a one-entry map.
+- Store the all-goods market total in one country-scoped `cbp_void_wealth_by_market` map keyed by market.
+- Keep `cbp_total_void_wealth` as a country scalar; do not create a one-entry map.
 - Rebuild market and country totals from the detailed void-wealth maps, never the reverse.
 - Use Estate values only as optional sizing/debug proxies.
 - Do not directly change stocks or Estate income.
@@ -77,7 +77,7 @@ Related US: US-00.3, US-10-UI
 ## US-specific boundary checks
 
 - [ ] Void wealth is tracked even when the overproduction buffer suppresses a penalty.
-- [ ] `modeu5_total_void_wealth` is an aggregate, not a replacement for detailed records.
+- [ ] `cbp_total_void_wealth` is an aggregate, not a replacement for detailed records.
 - [ ] Proxy data is not treated as the primary punishment.
 
 ## Acceptance criteria

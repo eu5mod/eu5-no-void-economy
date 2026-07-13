@@ -70,7 +70,7 @@ python3 tools/cbp_variable_prefixes.py --check
 The validator derives classification from executable EU5 sources and fails when:
 
 ```txt
-a CBP-owned variable retains modeu5_ or nve_
+a CBP-owned variable retains cbp_ or cbp_
 an owned variable has no CBP prefix
 a prefix disagrees with GUI/test/runtime classification
 a variable conflicts with a saved scope alias

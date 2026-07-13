@@ -1,0 +1,243 @@
+# Deterministic probe for the first live-integration proof obligation:
+# a named script value evaluated from Pop scope must resolve the Pop's location
+# and read the location × wheat ModeU5 multiplier.
+#
+# Safety contract: missing, uninitialized, or disabled ModeU5 state returns 1,
+# which leaves the complete vanilla Pop-demand coefficient unchanged.
+
+cbp_us04_endpoint_clear_results = {
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_passed
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_failed
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
+}
+
+cbp_us04_endpoint_note_failure = {
+	save_temporary_scope_value_as = {
+		name = test_cbp_us04_endpoint_failure_count
+		value = {
+			value = scope:test_cbp_us04_endpoint_failure_count
+			add = 1
+		}
+	}
+}
+
+cbp_us04_endpoint_restore_fixture = {
+	scope:cbp_us04_endpoint_test_location = {
+		if = {
+			limit = {
+				has_variable_map = cbp_pop_demand_multiplier
+				is_key_in_variable_map = {
+					name = cbp_pop_demand_multiplier
+					target = goods:wheat
+				}
+			}
+			remove_from_variable_map = {
+				name = cbp_pop_demand_multiplier
+				key = goods:wheat
+			}
+		}
+		if = {
+			limit = { scope:test_cbp_us04_endpoint_original_multiplier_present > 0 }
+			add_to_variable_map = {
+				name = cbp_pop_demand_multiplier
+				key = goods:wheat
+				value = scope:test_cbp_us04_endpoint_original_multiplier
+			}
+		}
+	}
+
+	remove_global_variable = cbp_pop_demand_live_integration_enabled
+	if = {
+		limit = { scope:test_cbp_us04_endpoint_original_live_marker_present > 0 }
+		set_global_variable = cbp_pop_demand_live_integration_enabled
+	}
+
+	remove_global_variable = cbp_us04_multiplier_initialization_version
+	if = {
+		limit = { scope:test_cbp_us04_endpoint_original_init_version_present > 0 }
+		set_global_variable = {
+			name = cbp_us04_multiplier_initialization_version
+			value = scope:test_cbp_us04_endpoint_original_init_version
+		}
+	}
+}
+
+cbp_us04_endpoint_export_debug_values = {
+	set_variable = { name = gui_cbp_us04_endpoint_ui_seeded value = scope:test_cbp_us04_endpoint_seeded_result }
+	set_variable = { name = gui_cbp_us04_endpoint_ui_missing value = scope:test_cbp_us04_endpoint_missing_result }
+	set_variable = { name = gui_cbp_us04_endpoint_ui_uninitialized value = scope:test_cbp_us04_endpoint_uninitialized_result }
+	set_variable = { name = gui_cbp_us04_endpoint_ui_disabled value = scope:test_cbp_us04_endpoint_disabled_result }
+	debug_log = "ModeU5 US-04 ENDPOINT DUMP seeded=[THIS.GetVariable('cbp_us04_endpoint_ui_seeded').GetValue|4] missing=[THIS.GetVariable('cbp_us04_endpoint_ui_missing').GetValue|4] uninitialized=[THIS.GetVariable('cbp_us04_endpoint_ui_uninitialized').GetValue|4] disabled=[THIS.GetVariable('cbp_us04_endpoint_ui_disabled').GetValue|4]"
+}
+
+cbp_debug_run_us04_pop_demand_endpoint_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_endpoint"
+	cbp_us04_endpoint_clear_results = yes
+	save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_failure_count value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_live_marker_present value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_init_version_present value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_init_version value = 0 }
+	if = {
+		limit = { has_global_variable = cbp_pop_demand_live_integration_enabled }
+		save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_live_marker_present value = 1 }
+	}
+	if = {
+		limit = { has_global_variable = cbp_us04_multiplier_initialization_version }
+		save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_init_version_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = test_cbp_us04_endpoint_original_init_version
+			value = global_var:cbp_us04_multiplier_initialization_version
+		}
+	}
+
+	if = {
+		limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
+		set_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_endpoint reason=economy_package_not_loaded"
+	}
+	else = {
+		capital = { save_temporary_scope_as = cbp_us04_endpoint_test_location }
+		save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_multiplier_present value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_multiplier value = 0 }
+
+		scope:cbp_us04_endpoint_test_location = {
+			if = {
+				limit = {
+					has_variable_map = cbp_pop_demand_multiplier
+					is_key_in_variable_map = {
+						name = cbp_pop_demand_multiplier
+						target = goods:wheat
+					}
+				}
+				save_temporary_scope_value_as = { name = test_cbp_us04_endpoint_original_multiplier_present value = 1 }
+				save_temporary_scope_value_as = {
+					name = test_cbp_us04_endpoint_original_multiplier
+					value = "variable_map(cbp_pop_demand_multiplier|goods:wheat)"
+				}
+				remove_from_variable_map = {
+					name = cbp_pop_demand_multiplier
+					key = goods:wheat
+				}
+			}
+			add_to_variable_map = {
+				name = cbp_pop_demand_multiplier
+				key = goods:wheat
+				value = 1.37
+			}
+			ordered_pop = {
+				order_by = pop_size
+				position = 1
+				check_range_bounds = no
+				save_temporary_scope_as = cbp_us04_endpoint_test_pop
+			}
+		}
+
+		if = {
+			limit = { NOT = { exists = scope:cbp_us04_endpoint_test_pop } }
+			set_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_endpoint reason=no_pop_in_capital_location"
+		}
+		else = {
+			set_global_variable = cbp_pop_demand_live_integration_enabled
+			set_global_variable = {
+				name = cbp_us04_multiplier_initialization_version
+				value = 1
+			}
+			scope:cbp_us04_endpoint_test_pop = {
+				save_temporary_scope_value_as = {
+					name = test_cbp_us04_endpoint_seeded_result
+					value = "cbp_us04_probe_live_pop_demand_multiplier_wheat"
+				}
+			}
+
+			scope:cbp_us04_endpoint_test_location = {
+				remove_from_variable_map = {
+					name = cbp_pop_demand_multiplier
+					key = goods:wheat
+				}
+			}
+			scope:cbp_us04_endpoint_test_pop = {
+				save_temporary_scope_value_as = {
+					name = test_cbp_us04_endpoint_missing_result
+					value = "cbp_us04_probe_live_pop_demand_multiplier_wheat"
+				}
+			}
+
+			remove_global_variable = cbp_us04_multiplier_initialization_version
+			scope:cbp_us04_endpoint_test_pop = {
+				save_temporary_scope_value_as = {
+					name = test_cbp_us04_endpoint_uninitialized_result
+					value = "cbp_us04_probe_live_pop_demand_multiplier_wheat"
+				}
+			}
+
+			set_global_variable = {
+				name = cbp_us04_multiplier_initialization_version
+				value = 1
+			}
+			remove_global_variable = cbp_pop_demand_live_integration_enabled
+			scope:cbp_us04_endpoint_test_pop = {
+				save_temporary_scope_value_as = {
+					name = test_cbp_us04_endpoint_disabled_result
+					value = "cbp_us04_probe_live_pop_demand_multiplier_wheat"
+				}
+			}
+
+			if = {
+				limit = {
+					OR = {
+						scope:test_cbp_us04_endpoint_seeded_result < 1.369
+						scope:test_cbp_us04_endpoint_seeded_result > 1.371
+					}
+				}
+				debug_log = "ModeU5 US-04 ENDPOINT FAIL_REASON reason=pop_scope_location_map_read"
+				cbp_us04_endpoint_note_failure = yes
+			}
+			if = {
+				limit = {
+					OR = {
+						scope:test_cbp_us04_endpoint_missing_result < 0.999
+						scope:test_cbp_us04_endpoint_missing_result > 1.001
+					}
+				}
+				debug_log = "ModeU5 US-04 ENDPOINT FAIL_REASON reason=missing_map_not_vanilla"
+				cbp_us04_endpoint_note_failure = yes
+			}
+			if = {
+				limit = {
+					OR = {
+						scope:test_cbp_us04_endpoint_uninitialized_result < 0.999
+						scope:test_cbp_us04_endpoint_uninitialized_result > 1.001
+					}
+				}
+				debug_log = "ModeU5 US-04 ENDPOINT FAIL_REASON reason=missing_initialization_gate_not_vanilla"
+				cbp_us04_endpoint_note_failure = yes
+			}
+			if = {
+				limit = {
+					OR = {
+						scope:test_cbp_us04_endpoint_disabled_result < 0.999
+						scope:test_cbp_us04_endpoint_disabled_result > 1.001
+					}
+				}
+				debug_log = "ModeU5 US-04 ENDPOINT FAIL_REASON reason=disabled_gate_not_vanilla"
+				cbp_us04_endpoint_note_failure = yes
+			}
+
+			cbp_us04_endpoint_export_debug_values = yes
+			if = {
+				limit = { scope:test_cbp_us04_endpoint_failure_count = 0 }
+				set_global_variable = test_cbp_us04_pop_demand_endpoint_passed
+				debug_log = "ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map PASS"
+				debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_endpoint"
+			}
+			else = {
+				set_global_variable = test_cbp_us04_pop_demand_endpoint_failed
+				debug_log = "ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map FAIL"
+				debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_endpoint"
+			}
+		}
+
+		cbp_us04_endpoint_restore_fixture = yes
+	}
+}

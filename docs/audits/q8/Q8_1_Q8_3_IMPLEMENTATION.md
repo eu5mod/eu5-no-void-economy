@@ -40,15 +40,15 @@ Those counters are validation/profile state. They are not business state and sho
 Adds:
 
 ```txt
-modeu5_pr71_metrics_enabled_trigger
+cbp_pr71_metrics_enabled_trigger
 ```
 
 The trigger is true only when debug capture or audit mode is enabled:
 
 ```txt
-modeu5_debug_capture_enabled_trigger
+cbp_debug_capture_enabled_trigger
 OR
-modeu5_audit_enabled_trigger
+cbp_audit_enabled_trigger
 ```
 
 The PR7.1 generator now gates the reset, preparation, and note helpers behind this trigger.
@@ -63,7 +63,7 @@ US-00:
   OR previous US-00 state active
 
 US-10:
-  modeu5_consumption_<good>_pending_requested_by_market[market] > 0
+  cbp_consumption_<good>_pending_requested_by_market[market] > 0
 ```
 
 Only metric writes are gated. The heavy helper calls remain controlled by the existing business gates.
@@ -77,7 +77,7 @@ The promoted-market local branch refreshes country-market capacity for every pre
 The market-specific part must remain per country-market:
 
 ```txt
-scope:modeu5_market.merchant_capacity(scope:modeu5_country)
+scope:cbp_market.merchant_capacity(scope:cbp_country)
 ```
 
 But the country-wide pool facts can be reused during the same month unless location/rank/capital lifecycle hooks invalidate them.
@@ -87,25 +87,25 @@ But the country-wide pool facts can be reused during the same month unless locat
 The public helper now has a stamped wrapper:
 
 ```txt
-modeu5_calculate_country_storage_capacity_pool
+cbp_calculate_country_storage_capacity_pool
 ```
 
 It delegates to a raw calculator only when needed:
 
 ```txt
-modeu5_calculate_country_storage_capacity_pool_raw
+cbp_calculate_country_storage_capacity_pool_raw
 ```
 
 Cached scalar facts:
 
 ```txt
-modeu5_capacity_pool_monthly_stamp
-modeu5_capacity_pool_cached_location_rank_capacity
-modeu5_capacity_pool_cached_location_count
-modeu5_capacity_pool_cached_market_count
-modeu5_capacity_pool_cached_base
-modeu5_capacity_pool_cached_total
-modeu5_capacity_pool_cached_location_rank_per_market
+cbp_capacity_pool_monthly_stamp
+cbp_capacity_pool_cached_location_rank_capacity
+cbp_capacity_pool_cached_location_count
+cbp_capacity_pool_cached_market_count
+cbp_capacity_pool_cached_base
+cbp_capacity_pool_cached_total
+cbp_capacity_pool_cached_location_rank_per_market
 ```
 
 Owner:
@@ -125,8 +125,8 @@ Lifecycle:
 Invalidation surface:
 
 ```txt
-modeu5_rebuild_country_location_capacity_pool
-  -> modeu5_clear_country_storage_capacity_pool_cache
+cbp_rebuild_country_location_capacity_pool
+  -> cbp_clear_country_storage_capacity_pool_cache
 ```
 
 This covers the existing capacity lifecycle path:
@@ -142,7 +142,7 @@ explicit country storage capacity rebuilds
 The market-specific capacity record still runs per country-market:
 
 ```txt
-modeu5_apply_country_storage_capacity_pool_to_current_market
+cbp_apply_country_storage_capacity_pool_to_current_market
   -> reads current market merchant capacity
   -> writes country-market capacity maps
 ```
@@ -152,8 +152,8 @@ The existing promoted-market helper keeps calling the public capacity-pool helpe
 ## Files changed
 
 ```txt
-in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
-in_game/common/scripted_effects/modeu5_capacity_effects.txt
+in_game/common/scripted_triggers/cbp_configuration_triggers.txt
+in_game/common/scripted_effects/cbp_capacity_effects.txt
 tools/generate_pr71_active_good_dispatch_helpers.sh
 tools/validate_generators.sh
 docs/audits/q8/Q8_1_Q8_3_IMPLEMENTATION.md
@@ -167,14 +167,14 @@ Static validation:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 
 Runtime smoke suggested after static checks:
 
 ```txt
-event modeu5_pr126_debug.1
+event cbp_pr126_debug.1
 ```
 
 Optional profile/audit validation:

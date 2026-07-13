@@ -40,7 +40,7 @@ country pulse -> market/good work -> every_country controller selection
 Add a cycle-scoped registry:
 
 ```txt
-modeu5_monthly_markets_seen_this_cycle
+cbp_monthly_markets_seen_this_cycle
 ```
 
 The registry is populated while the country-owned monthly pass runs:
@@ -63,14 +63,14 @@ country-market-good records.
 |---|---|---|---|---|
 | Monthly country pulse scope | none -> country | `monthly_country_pulse` | CONFIRMED | 011 |
 | Country-to-market traversal | country -> market | `every_market_present_in_country` | CONFIRMED | 117 |
-| One-per-month reconciliation guard | global variable system | `modeu5_last_monthly_reconciliation_stamp` | CONFIRMED | 112 |
+| One-per-month reconciliation guard | global variable system | `cbp_last_monthly_reconciliation_stamp` | CONFIRMED | 112 |
 | Reconciliation controller scope | country | preselected current pulse country; fallback `every_country` only outside country scope | CONFIRMED | 001, 011 |
-| Monthly seen-market registry | country -> market; global -> market | `modeu5_monthly_markets_seen_this_cycle` with `add_to_global_variable_list`, `is_target_in_global_variable_list`, `clear_global_variable_list` | CONFIRMED | 130 |
+| Monthly seen-market registry | country -> market; global -> market | `cbp_monthly_markets_seen_this_cycle` with `add_to_global_variable_list`, `is_target_in_global_variable_list`, `clear_global_variable_list` | CONFIRMED | 130 |
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
 tools/generate_stock_good_helpers.sh
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/generated_issues/us-11-reconciliation-et-coherence-de-la-double-comptabilite.md
@@ -96,8 +96,8 @@ docs/tests/PERF_05_REDUCE_GLOBAL_MARKET_SCANS_RUNBOOK.md
 - Do not remove the global controller fallback required by initialization,
   audit, and debug entry points that may not already be in country scope.
 - When reconciliation is called from the monthly country pulse, save the current
-  scope as `modeu5_reconciliation_controller` before invoking validation.
-- `modeu5_prepare_reconciliation_controller` must preserve a preselected
+  scope as `cbp_reconciliation_controller` before invoking validation.
+- `cbp_prepare_reconciliation_controller` must preserve a preselected
   controller and only use `every_country` when no controller exists.
 - Documentation must describe `monthly_country_pulse` as the outer country loop.
 - The seen-market registry is a scheduling/diagnostic index, not a stock source.
@@ -107,7 +107,7 @@ docs/tests/PERF_05_REDUCE_GLOBAL_MARKET_SCANS_RUNBOOK.md
 
 - Monthly stock reconciliation preselects the current pulse country before dirty
   validation.
-- `modeu5_prepare_reconciliation_controller` no longer scans `every_country`
+- `cbp_prepare_reconciliation_controller` no longer scans `every_country`
   when a controller was already provided.
 - Fallback controller discovery still works for initialization/manual audit
   contexts where no country scope was preselected.
@@ -116,8 +116,8 @@ docs/tests/PERF_05_REDUCE_GLOBAL_MARKET_SCANS_RUNBOOK.md
 - PERF-05 documentation no longer implies that monthly runtime starts from a
   global market loop.
 - The generated monthly all-goods dispatcher marks each reached market through
-  `modeu5_mark_monthly_market_seen` before processing goods.
-- `modeu5_monthly_markets_seen_this_cycle` resets once per calendar month.
+  `cbp_mark_monthly_market_seen` before processing goods.
+- `cbp_monthly_markets_seen_this_cycle` resets once per calendar month.
 - Duplicate market encounters increment diagnostics but do not suppress
   country-owned processing.
 
@@ -138,7 +138,7 @@ Then in a disposable campaign as any country:
 ```txt
 wait until CORE-02 initialization has completed
 wait one monthly tick
-event modeu5_debug.1
+event cbp_debug.1
 choose "Test US-11 dirty-record reconciliation"
 ```
 
@@ -155,8 +155,8 @@ For a monthly runtime smoke test, inspect these diagnostic variables when debug
 capture is available:
 
 ```txt
-modeu5_monthly_markets_seen_new_count
-modeu5_monthly_markets_seen_duplicate_count
+cbp_monthly_markets_seen_new_count
+cbp_monthly_markets_seen_duplicate_count
 ```
 
 ## Known limitations

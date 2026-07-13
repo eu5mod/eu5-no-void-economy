@@ -33,7 +33,7 @@ Start a disposable campaign with the Core and Core Tests packages enabled.
 Open the console as a country with a capital market and run:
 
 ```txt
-event modeu5_perf03_debug.1
+event cbp_perf03_debug.1
 ```
 
 Choose:

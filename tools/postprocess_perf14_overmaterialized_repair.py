@@ -2,7 +2,7 @@
 """Temporarily disable PERF-14 overmaterialized generated-code repair.
 
 Stability boundary:
-- `modeu5_stock_goods_generated.txt` is generated locally and is not a tracked
+- `cbp_stock_goods_generated.txt` is generated locally and is not a tracked
   repository file.
 - During the PR #107 stability pass, this postprocessor must not inject custom
   generated script into the stock-good adapter.
@@ -21,7 +21,7 @@ import sys
 def main() -> int:
     if len(sys.argv) not in {2, 3, 4}:
         print(
-            "usage: postprocess_perf14_overmaterialized_repair.py <modeu5_stock_goods_generated.txt> [legacy_perf14_guarded_test_effects.txt] [legacy_perf14_test_effects.txt]",
+            "usage: postprocess_perf14_overmaterialized_repair.py <cbp_stock_goods_generated.txt> [legacy_perf14_guarded_test_effects.txt] [legacy_perf14_test_effects.txt]",
             file=sys.stderr,
         )
         return 2

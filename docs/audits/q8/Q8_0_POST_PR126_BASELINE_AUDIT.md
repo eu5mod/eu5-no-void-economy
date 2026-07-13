@@ -24,16 +24,16 @@ The audit must identify exactly where repeated work remains after PR126.
 ## Files to inspect first
 
 ```txt
-in_game/common/on_action/modeu5_stock_on_actions.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt
-in_game/common/scripted_effects/modeu5_performance_effects.txt
-in_game/common/scripted_effects/modeu5_capacity_effects.txt
-in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt
+in_game/common/on_action/cbp_stock_on_actions.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt
+in_game/common/scripted_effects/cbp_performance_effects.txt
+in_game/common/scripted_effects/cbp_capacity_effects.txt
+in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt
 tools/generate_stock_good_helpers.sh
 tools/generate_pr71_active_good_dispatch_helpers.sh
 tools/validate_generators.sh
-tools/audit_modeu5_persistent_state.sh
+tools/audit_cbp_persistent_state.sh
 ```
 
 ## Audit questions
@@ -123,7 +123,7 @@ It must also record:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 

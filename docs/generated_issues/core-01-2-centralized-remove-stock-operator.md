@@ -12,7 +12,7 @@ As a ModeU5 feature author, I want one bounded remove operation so consumption a
 
 ## Functional objective
 
-Implement `modeu5_remove_stock` to remove at most the available country stock, decrease the matching market aggregate by the same quantity, and expose the actual removed and unsatisfied quantities without introducing trade economics.
+Implement `cbp_remove_stock` to remove at most the available country stock, decrease the matching market aggregate by the same quantity, and expose the actual removed and unsatisfied quantities without introducing trade economics.
 
 ## Runtime position
 
@@ -27,11 +27,11 @@ Feeds counters to: US-10.1, US-10.3, debug, CORE-01.6
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country stock field | country x market x good | country-scoped `modeu5_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Country stock field | country x market x good | country-scoped `cbp_<good>_stock_by_market` keyed by market | CONFIRMED | 007, 015 |
+| Market aggregate | market x good | global per-good `cbp_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Bounded arithmetic | transaction | `min`, `max`, subtract | CONFIRMED | 026 |
 | Scope passing | scripted effect | explicit parameters plus saved country, market, and good scopes | CONFIRMED | 008 |
-| Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
+| Consumption removal | ModeU5 | `cbp_remove_stock` | CONFIRMED | 075 |
 
 ## Persistent storage / variable-map contract
 
@@ -40,21 +40,21 @@ logical dimensions: country x market x good
 logical record and fields read/written: stock
 owner scope: country
 tuple/key: market x good logical tuple; market scope physical key
-confirmed physical map family: modeu5_<good>_stock_by_market
+confirmed physical map family: cbp_<good>_stock_by_market
 physical value type: numeric
 default value: 0
-write owner: modeu5_remove_stock for removals
+write owner: cbp_remove_stock for removals
 readers: US-01/UI, US-03, US-10, US-11
 reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ```
 
-The market aggregate is the global `modeu5_<good>_market_stock[market]` cache. Requested, actual removed, unsatisfied, reason, and before/after values remain transaction-local except for debug snapshots.
+The market aggregate is the global `cbp_<good>_market_stock[market]` cache. Requested, actual removed, unsatisfied, reason, and before/after values remain transaction-local except for debug snapshots.
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
 in_game/events/
 main_menu/localization/english/
 docs/tests/TEST_PLAN.md

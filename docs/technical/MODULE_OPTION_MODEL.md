@@ -15,8 +15,8 @@ The package matrix is:
 | Package | Availability | User stories |
 |---|---|---|
 | No Void Economy | Required | CORE-00, CORE-01.1 through CORE-01.6, CORE-02, CORE-03, EPIC US-00, US-00.1 through US-00.4, US-01, US-01-UI, US-02, US-02-UI, US-03, US-03-UI, EPIC US-10, US-10.0 through US-10.3, US-10-UI including folded US-00 visibility, US-11 |
-| Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI |
-| Rebalance Estate Power | Optional; included in the recommended playset | US-07, US-07-UI |
+| Rebalance Economy | Optional; included in the recommended playset | US-04, US-04-UI, US-05, US-05-UI, US-08, US-08-UI, US-09, US-09-UI, plus the US-07 trade-building fields that must be composed into the same exact-path static override |
+| Rebalance Estate Power | Optional; included in the recommended playset | US-07 surfaces that do not need to compete with Economy exact-path static overrides, US-07-UI |
 | Rebalance Early Blobbing | Optional; included in the recommended playset | US-13 |
 | No Void Economy Tests | Optional; testing-only, excluded from normal campaign playsets | Deterministic CORE-01 debug events, stock-operator helpers, and controlled Core engine-exposure probes such as TECH-01 `091` |
 
@@ -68,10 +68,10 @@ cannot accidentally promise unsupported mid-campaign activation.
 The source repository stores the companions under:
 
 ```txt
-packages/modeu5_economy_rebalance/
-packages/modeu5_trade_rebalance/
-packages/modeu5_war_rebalance/
-packages/modeu5_core_tests/
+packages/cbp_economy_rebalance/
+packages/cbp_trade_rebalance/
+packages/cbp_war_rebalance/
+packages/cbp_core_tests/
 ```
 
 EU5 discovers local packages as sibling mod directories, not as selectable
@@ -87,7 +87,7 @@ Each optional companion declares this metadata relationship:
 ```json
 {
   "rel_type": "dependency",
-  "id": "modeu5_core",
+  "id": "cbp_core",
   "display_name": "No Void Economy (NVE)",
   "resource_type": "mod",
   "version": "0.1.*"
@@ -176,6 +176,7 @@ When absent:
 - US-05 leaves the vanilla Economic Base formula untouched;
 - US-08 installs no building or RGO price override;
 - US-09 applies no `+5%` Production Efficiency compensation;
+- the composed US-07 trade-building estate-power reduction carried by the US-09 exact-path `trade_buildings.txt` override is also absent;
 - their UI/debug stories must report the module as absent or remain hidden;
 - Core demand-outcome counters may still exist because US-10.3 owns them.
 
@@ -183,8 +184,9 @@ When absent:
 
 When absent:
 
-- US-07 installs no trade-building balance override;
-- vanilla trade-building values remain unchanged;
+- no standalone US-07 trade-building override is installed by this companion;
+- vanilla trade-building values remain unchanged only when Rebalance Economy is also absent;
+- when Rebalance Economy is present, the overlapping US-07 `local_burghers_estate_power` trade-building reduction is intentionally composed into the US-09 exact-path Economy override to avoid duplicate static definitions;
 - US-02 remains part of Core and still owns ModeU5 storage-capacity calculations;
 - no US-07-UI tooltip or localization may claim rebalanced values.
 
@@ -218,7 +220,7 @@ Monthly Stock Check = Off / On
 Save mode = Light / Balanced / Complete
 ```
 
-The selected settings initialize `modeu5_debug_level`, audit mode, and accounting persistence when the campaign starts. They are not in-game toggles.
+The selected settings initialize `cbp_debug_level`, audit mode, and accounting persistence when the campaign starts. They are not in-game toggles.
 
 Do not create a custom in-game configuration panel. In particular, no configuration surface may:
 
@@ -247,20 +249,20 @@ Package presence markers are package-owned:
 
 ```txt
 Core:
-  modeu5_core_package_loaded
-  modeu5_core_package_version
+  cbp_core_package_loaded
+  cbp_core_package_version
 
 Economy companion:
-  modeu5_economy_rebalance_loaded
-  modeu5_economy_package_version
+  cbp_economy_rebalance_loaded
+  cbp_economy_package_version
 
 Trade companion:
-  modeu5_trade_rebalance_loaded
-  modeu5_trade_package_version
+  cbp_trade_rebalance_loaded
+  cbp_trade_package_version
 
 War companion:
-  modeu5_war_rebalance_loaded
-  modeu5_war_package_version
+  cbp_war_rebalance_loaded
+  cbp_war_package_version
 ```
 
 Package version variables are numeric runtime compatibility codes. Release

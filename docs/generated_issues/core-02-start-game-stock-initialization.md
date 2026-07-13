@@ -17,7 +17,7 @@ Add one delayed, versioned, idempotent `on_game_start` pipeline that:
 1. establishes global ModeU5 initialization variables;
 2. calculates all country x market x good storage capacities through US-02;
 3. reads an opening quantity for each market x good;
-4. allocates the full opening quantity to countries proportionally to their capacity through `modeu5_add_stock`;
+4. allocates the full opening quantity to countries proportionally to their capacity through `cbp_add_stock`;
 5. permits the resulting country stocks to exceed capacity;
 6. resolves fixed-point residue without truncating the opening quantity;
 7. rebuilds every market aggregate from country stocks;
@@ -26,7 +26,7 @@ Add one delayed, versioned, idempotent `on_game_start` pipeline that:
 ## Runtime position
 
 ```txt
-Start-game step: on_game_start -> delay 1 day -> modeu5_start_game_dispatcher
+Start-game step: on_game_start -> delay 1 day -> cbp_start_game_dispatcher
 Monthly step: the monthly dispatcher must skip stock gameplay until initialization_state = complete
 Yearly step: none
 Depends on: CORE-00, CORE-01.1, CORE-01.5, US-01, US-02
@@ -38,14 +38,14 @@ Feeds: all stock-owning and stock-consuming features
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Delayed start-game hook | none | extend `on_game_start` with a unique ModeU5 on-action after `delay = { days = 1 }` | CONFIRMED | 089 |
-| Persistent initialization/version guard | none | `global_var:modeu5_stock_schema_version`, `modeu5_initialization_state`, global-variable effects/triggers | CONFIRMED | 090 |
+| Persistent initialization/version guard | none | `global_var:cbp_stock_schema_version`, `cbp_initialization_state`, global-variable effects/triggers | CONFIRMED | 090 |
 | Iterate countries, markets, and goods | none | `every_country`, `every_market_in_world`, `every_goods` | CONFIRMED | 001-002, 006 |
 | Country capacity by market | country x market | US-02 authoritative shared capacity map | CONFIRMED | 007, 017, 033-035 |
 | Opening vanilla market stock | market x good | `"stockpile_in_market(goods:<good>)"` on market scope after the delayed start hook | CONFIRMED | 091 |
 | Proportional allocation arithmetic | market x good x country | local variables with multiply/divide/min/max | CONFIRMED | 026 |
 | Deterministic residue recipient | temporary list or typed country iterator with positive allocation weight | `ordered_in_list` or typed `ordered_country` with `order_by = country_capacity` | CONFIRMED | 074, 093 |
-| Stock addition | country x market x good | `modeu5_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
-| Aggregate rebuild | market x good | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
+| Stock addition | country x market x good | `cbp_add_stock` with `capacity_policy = allow_over_capacity` | CONFIRMED | 015-018, 022-023, 099 |
+| Aggregate rebuild | market x good | `cbp_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
 | Post-start reconciliation cadence | stock runtime | debug events, monthly audit mode, and `four_yearly_country_pulse` | CONFIRMED | 020, 131 |
 
 ## Persistent storage / variable-map contract
@@ -53,16 +53,16 @@ Feeds: all stock-owning and stock-consuming features
 Global scalar state:
 
 ```txt
-modeu5_stock_schema_version
-modeu5_initialization_state
+cbp_stock_schema_version
+cbp_initialization_state
 ```
 
 Static/scripted configuration:
 
 ```txt
-modeu5_current_stock_schema_version
-modeu5_initialization_rounding_epsilon
-modeu5_debug_level, read-only here and initialized by CORE-18 from the selected CMM setting
+cbp_current_stock_schema_version
+cbp_initialization_rounding_epsilon
+cbp_debug_level, read-only here and initialized by CORE-18 from the selected CMM setting
 ```
 
 Physical numeric initialization states:
@@ -84,14 +84,14 @@ logical capacity fields: capacity and optional capacity breakdown
 owner scope: country
 tuple/key: market x good logical tuple for stock; market physical key for stock and capacity
 confirmed physical map family:
-  modeu5_<good>_stock_by_market
-  modeu5_stock_cap_by_market
+  cbp_<good>_stock_by_market
+  cbp_stock_cap_by_market
   optional US-02 capacity-breakdown maps
 physical value type: numeric
 default value: 0
 write owner:
   US-02 capacity helper for capacity fields
-  modeu5_add_stock for initial stock
+  cbp_add_stock for initial stock
 readers: every stock feature
 reset/rebuild lifecycle:
   capacity is recalculated before stock seeding
@@ -103,7 +103,7 @@ Market aggregate:
 
 ```txt
 owner scope: global variable system
-map: modeu5_<good>_market_stock
+map: cbp_<good>_market_stock
 key: market scope
 default: 0
 write owner during startup: CORE-01.1 additions and CORE-01.5 rebuild
@@ -123,12 +123,12 @@ Storage remains sparse:
 ```txt
 on_game_start
 -> delay one day
--> modeu5_start_game_dispatcher
+-> cbp_start_game_dispatcher
 ```
 
 - Extend the hardcoded on-action only through an `on_actions` block with a unique ModeU5 name.
 - Run the ordered pipeline inside one custom on-action effect. Do not rely on an event and effect fired concurrently for sequencing.
-- Select the startup mode first. Set `modeu5_initialization_state = in_progress` before fresh initialization, migration, or recovery writes; do not downgrade an already complete current-schema state merely to validate it.
+- Select the startup mode first. Set `cbp_initialization_state = in_progress` before fresh initialization, migration, or recovery writes; do not downgrade an already complete current-schema state merely to validate it.
 - Do not start monthly ModeU5 economic mutations until state is `complete`.
 
 ### Phase 1 - Select startup mode
@@ -175,7 +175,7 @@ Recommended source:
 
 ```txt
 opening_source_quantity = max(0, vanilla stockpile_in_market for the good)
-total_modeu5_capacity = sum(country capacity for market and good)
+total_cbp_capacity = sum(country capacity for market and good)
 opening_target_quantity = opening_source_quantity
 ```
 
@@ -183,7 +183,7 @@ CORE-02 does not truncate the opening source to total capacity. If the opening q
 
 There is no synthetic fill-ratio fallback. If TECH-01 `091` cannot read the current vanilla market stock reliably, fresh initialization remains blocked and no ModeU5 opening stock is created. A successfully read vanilla value of zero is a valid empty opening stockpile.
 
-If `opening_source_quantity > 0` while `total_modeu5_capacity = 0`, no proportional basis exists. Do not erase, invent, or arbitrarily assign the stock. Mark initialization failed for that market-good, log `zero_total_capacity`, and keep monthly ModeU5 stock gameplay disabled until capacity data or an approved migration rule resolves it.
+If `opening_source_quantity > 0` while `total_cbp_capacity = 0`, no proportional basis exists. Do not erase, invent, or arbitrarily assign the stock. Mark initialization failed for that market-good, log `zero_total_capacity`, and keep monthly ModeU5 stock gameplay disabled until capacity data or an approved migration rule resolves it.
 
 ### Phase 4 - Allocate proportionally
 
@@ -193,13 +193,13 @@ For each country with positive capacity in the selected market:
 country_initial_share =
   opening_target_quantity
   * country_market_capacity shared across goods
-  / total_modeu5_capacity
+  / total_cbp_capacity
 ```
 
 Then call:
 
 ```txt
-modeu5_add_stock(
+cbp_add_stock(
   country
   market
   good
@@ -238,11 +238,11 @@ remaining_initial_quantity =
 
 For every initialized market x good:
 
-1. call `modeu5_rebuild_market_stock_from_country_stocks`;
+1. call `cbp_rebuild_market_stock_from_country_stocks`;
 2. confirm country stocks are non-negative and report any over-cap amount without correcting it;
 3. confirm allocated quantity matches the full opening source within epsilon.
 
-Set `modeu5_stock_schema_version` and `modeu5_initialization_state = complete` only after the global pass succeeds.
+Set `cbp_stock_schema_version` and `cbp_initialization_state = complete` only after the global pass succeeds.
 
 CORE-02 does not run US-11 reconciliation automatically after initialization.
 Later consistency checks are owned by explicit debug events, monthly audit mode,
@@ -259,21 +259,21 @@ If a blocking check fails:
 ## Files expected to change
 
 ```txt
-in_game/common/on_action/modeu5_stock_on_actions.txt
-in_game/common/script_values/modeu5_stock_values.txt
-in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
-in_game/common/scripted_triggers/modeu5_stock_triggers.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_stock_goods_generated.txt
-main_menu/localization/english/modeu5_stock_l_english.yml
+in_game/common/on_action/cbp_stock_on_actions.txt
+in_game/common/script_values/cbp_stock_values.txt
+in_game/common/scripted_triggers/cbp_configuration_triggers.txt
+in_game/common/scripted_triggers/cbp_stock_triggers.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_stock_goods_generated.txt
+main_menu/localization/english/cbp_stock_l_english.yml
 tools/generate_stock_good_helpers.sh
-tools/templates/modeu5_stock_good_adapter.template.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt
-packages/modeu5_core_tests/in_game/common/on_action/modeu5_core02_exposure_on_actions.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_core02_exposure_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_core02_exposure_events.txt
-packages/modeu5_core_tests/main_menu/localization/
+tools/templates/cbp_stock_good_adapter.template.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_debug_events.txt
+packages/cbp_core_tests/in_game/common/on_action/cbp_core02_exposure_on_actions.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_core02_exposure_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_core02_exposure_events.txt
+packages/cbp_core_tests/main_menu/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/tests/CORE_02_OPENING_STOCK_EXPOSURE_RUNBOOK.md
@@ -300,7 +300,7 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - Never use the market aggregate as a source of truth or distribute it back to countries.
 - Recalculate all startup capacities before calculating any opening allocation.
 - Use the current vanilla market stock as the only opening-stock source.
-- Use `modeu5_add_stock` with `capacity_policy = allow_over_capacity` for every positive country allocation.
+- Use `cbp_add_stock` with `capacity_policy = allow_over_capacity` for every positive country allocation.
 - Use CORE-01.5 for aggregate repair during initialization. Do not invoke
   CORE-01.6/US-11 validation automatically at startup.
 - Treat opening over-cap stock as a valid initialized state, not rejected production, void wealth, or a production penalty.
@@ -320,7 +320,7 @@ Related US: US-01, US-02, US-03, US-04, US-11
 - [ ] A zero-capacity country receives zero stock when other countries provide a positive total allocation weight.
 - [ ] A positive opening source with zero total capacity fails closed without erasing or arbitrarily assigning stock.
 - [ ] Vanilla quantity above total capacity is fully allocated and logged as over-cap stock.
-- [ ] Rounding residue uses `modeu5_add_stock`.
+- [ ] Rounding residue uses `cbp_add_stock`.
 - [ ] Startup never initializes monthly ledgers, penalties, or demand outcomes with fabricated activity.
 - [ ] A failed initialization prevents monthly stock mutations.
 - [ ] New-country formation, ownership changes, market splits/merges, and capacity loss after startup remain runtime lifecycle behavior, not reasons to rerun fresh initialization.

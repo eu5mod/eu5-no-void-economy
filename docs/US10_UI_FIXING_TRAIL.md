@@ -32,10 +32,10 @@ The first production-filter patch was intentionally limited to a compact hand-wr
 
 Current direction:
 
-- `tools/modeu5_goods.sh` remains the canonical list of 74 ModeU5 stock goods.
+- `tools/cbp_goods.sh` remains the canonical list of 74 ModeU5 stock goods.
 - `tools/generate_us10_ui_helpers.sh` now scaffolds the US-10 GUI table rows and `produced_by_market` read-model helpers from that list.
 - `tools/generate_all.sh` calls the US-10 generator through `bash tools/generate_us10_ui_helpers.sh`.
-- New resources added to `modeu5_goods` should be picked up by regeneration instead of requiring manual GUI/scripted-effect edits.
+- New resources added to `cbp_goods` should be picked up by regeneration instead of requiring manual GUI/scripted-effect edits.
 
 ## Current working problem
 
@@ -57,7 +57,7 @@ Target UX:
 
 | Topic | Current conclusion |
 |---|---|
-| Custom `OpenLateralView('modeu5_*')` | Rejected. Runtime reports `Invalid ViewName`; custom lateralview IDs appear hardcoded / not mod-registered. |
+| Custom `OpenLateralView('cbp_*')` | Rejected. Runtime reports `Invalid ViewName`; custom lateralview IDs appear hardcoded / not mod-registered. |
 | Full override of `production_lateralview.gui` | Worked in-game, but held as Plan B because maintaining a 5,500-line vanilla file manually is patch-fragile. Plan B must be generated/scripted. |
 | `scripted_widgets` standalone widget | Rejected. The widget can be loaded/validated, but it is not automatically instantiated into the UI tree. |
 | `GetVariableSystem` | Valid as UI state (`Toggle`, `Set`, `Clear`, `Exists`), but it does not provide an injection point by itself. |
@@ -78,7 +78,7 @@ OpenLateralView('food_production')
 OpenLateralView('town_rights')
 ```
 
-This supports the current architecture: do not call `OpenLateralView('modeu5_*')`. ModeU5 calls `OpenLateralView('production')` and sets internal UI state.
+This supports the current architecture: do not call `OpenLateralView('cbp_*')`. ModeU5 calls `OpenLateralView('production')` and sets internal UI state.
 
 ### `production_view_subtabs`
 
@@ -92,7 +92,7 @@ Vanilla market selection is tied to a parent filtered list and `ProductionView.G
 
 V1 selector-hook result:
 
-- `zz_modeu5_us10_production_select_market.gui` attempted to override the selector and add a ModeU5 refresh after `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
+- `zz_cbp_us10_production_select_market.gui` attempted to override the selector and add a ModeU5 refresh after `ProductionSelectMarket.Parent.FilterByMarket(Market.Self)`.
 - Runtime result: the table still refreshed only through hover or explicit Sync; no selector-file GUI error was logged.
 - Conclusion: the separate selector file is not a reliable Plan A hook. It either did not override the active selector instance, or the active click path is not the path copied into the standalone file.
 - Decision: remove the selector hook and keep Plan A to table + hover-sync + explicit Sync. True click-time selector sync belongs in Plan B, where the original selector can be patched inside the full generated `production_lateralview.gui`.
@@ -117,7 +117,7 @@ For the compact ModeU5 V0 table, the first column is an icon column, not a text-
 
 | Step | Change / hypothesis | Result | Decision |
 |---|---|---|---|
-| 1 | Custom ModeU5 lateralview via `OpenLateralView('modeu5_*')`. | Fails with `Invalid ViewName`. | Rejected. |
+| 1 | Custom ModeU5 lateralview via `OpenLateralView('cbp_*')`. | Fails with `Invalid ViewName`. | Rejected. |
 | 2 | Full `production_lateralview.gui` override. | Worked visually. | Held as Plan B due maintenance risk. |
 | 3 | `scripted_widgets` standalone widget. | Loaded but did not instantiate globally. | Rejected. |
 | 4 | Override `production_main_tabs`. | Top ModeU5 tab appears. | Keep only as selector/state entry. |
@@ -129,31 +129,31 @@ For the compact ModeU5 V0 table, the first column is an icon column, not a text-
 | 10 | Taller panel + best-effort auto-sync. | Works through hover; not true selector-click sync. | Keep for Plan A. |
 | 11 | V1 standalone market selector hook. | No visible automatic click-sync effect. | Removed. |
 | 12 | Increase panel height to `940` and move hover-sync to whole ModeU5 body. | Works visually; panel covers enough for V0, but not a true replacement of search/selector. | Keep. |
-| 13 | All-goods generated table filtered by `modeu5_us10_ui_<good>_produced`. | Runtime showed an empty table because the country-level US-00 produced ledger was not a reliable vanilla-production presence signal. | Rejected. |
+| 13 | All-goods generated table filtered by `cbp_us10_ui_<good>_produced`. | Runtime showed an empty table because the country-level US-00 produced ledger was not a reliable vanilla-production presence signal. | Rejected. |
 | 14 | Stock-bearing visibility: country stock > 0 OR market stock > 0 OR overproduction > 0. | Rows reappeared. Later screenshots showed the visible-good list stayed suspiciously similar across markets. | Reclassed as temporary debug workaround only. |
 | 15 | All-goods hardcoded table. | Suspected to make `Loading Game resources` heavier. | Rejected as a manual approach; generator is the maintainable route. |
 | 16 | Right-align value columns and remove `the Good`. | UI still displayed `the Good`; log showed file was loaded and `text` localization was being parsed. | Header issue likely caused by localization/key handling; use direct `raw_text = "Good"` and icon first column. |
 | 17 | Fixed row height using only `size = { -1 26 }`. | Visual row height did not materially change; rows still distributed across the scroll area. | Use `minimumsize`/`maximumsize` and `set_parent_dimension_to_minimum = height`. |
 | 18 | Overproduction values used `text = "[...|2]%"`. | Runtime emitted `Unlocalized text '[...overproduction_percent...]%'` warnings. | Use `raw_text` for dynamic literal formatted values. |
 | 19 | Compact icon rows. | In-game screenshots show major improvement, but columns overflowed/escaped the panel. | Fix with fixed-width compact columns. |
-| 20 | Production-based row visibility. | User observed same-good rows across Lisboa and Burgos; stock presence is not the right Production-table filter. | Use `modeu5_us10_ui_<good>_produced_by_market > 0`, aggregated across countries present in the selected market. |
-| 21 | Hand-written compact goods set for `produced_by_market`. | Not maintainable and not aligned to the 74-good registry. | Replace with `tools/generate_us10_ui_helpers.sh` scaffolded from `tools/modeu5_goods.sh`. |
+| 20 | Production-based row visibility. | User observed same-good rows across Lisboa and Burgos; stock presence is not the right Production-table filter. | Use `cbp_us10_ui_<good>_produced_by_market > 0`, aggregated across countries present in the selected market. |
+| 21 | Hand-written compact goods set for `produced_by_market`. | Not maintainable and not aligned to the 74-good registry. | Replace with `tools/generate_us10_ui_helpers.sh` scaffolded from `tools/cbp_goods.sh`. |
 
 ## Current implementation notes
 
-- `modeu5_us10_stock_table.gui` contains reusable table templates and should be generated by `tools/generate_us10_ui_helpers.sh`.
+- `cbp_us10_stock_table.gui` contains reusable table templates and should be generated by `tools/generate_us10_ui_helpers.sh`.
 - The table still follows the US-10 spec columns, but headers are compact labels to fit the Production panel: `Good`, `Country`, `Market`, `Overprod.`, `Eff.`.
 - Value columns are fixed width and right-aligned to prevent overflow into the map.
 - The first column is an icon column using `gfx/interface/icons/trade_goods/icon_goods_<good>.dds`.
-- Rows should be emitted for all 74 ModeU5 goods from `tools/modeu5_goods.sh`.
-- Rows are hidden unless `modeu5_us10_ui_<good>_produced_by_market > 0`.
-- `modeu5_us10_ui_<good>_produced_by_market` is a selected-market aggregate computed from the ModeU5 US-00 produced ledger across countries present in the market.
+- Rows should be emitted for all 74 ModeU5 goods from `tools/cbp_goods.sh`.
+- Rows are hidden unless `cbp_us10_ui_<good>_produced_by_market > 0`.
+- `cbp_us10_ui_<good>_produced_by_market` is a selected-market aggregate computed from the ModeU5 US-00 produced ledger across countries present in the market.
 - Stock presence alone is not a Production-row visibility gate; stock-bearing visibility was only a temporary debugging workaround.
 - Country and market stocks are displayed as `current/capacity`.
 - `Production Efficiency` remains `n/a`, per the spec instruction not to guess when modifier exposure is incomplete.
-- `modeu5_us10_stock_lateralview.gui` is a reusable panel shell.
-- `zz_modeu5_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
-- `zz_modeu5_us10_production_tabs.gui` opens vanilla Production, sets `modeu5_us10_stock_tab`, and refreshes the read-model.
+- `cbp_us10_stock_lateralview.gui` is a reusable panel shell.
+- `zz_cbp_us10_production_subtabs.gui` hides the vanilla display/employment/automation strip when ModeU5 is active.
+- `zz_cbp_us10_production_tabs.gui` opens vanilla Production, sets `cbp_us10_stock_tab`, and refreshes the read-model.
 - Hover auto-sync is still best-effort; explicit `Sync` remains the reliable fallback.
 
 ## Important runtime log learnings
@@ -171,9 +171,9 @@ pdxinput_context.cpp:2896 Could not push the provided stack context. ID: 0
 Actionable logs:
 
 ```txt
-Invalid ViewName: 'modeu5_*'
-Duplicated key modeu5_us10_ui_*
-Could not find widget 'modeu5_us10_stock'
+Invalid ViewName: 'cbp_*'
+Duplicated key cbp_us10_ui_*
+Could not find widget 'cbp_us10_stock'
 Property 'ignoreinvisible' not handled
 Unsupported property: size with a percentage on widgets that are a child of a vbox/hbox
 Unsupported property: position on widgets that are a child of a hbox/vbox
@@ -187,7 +187,7 @@ Unlocalized text '[Player.MakeScope.GetVariable(...overproduction_percent...).Ge
 - Inline ModeU5 panel exists inside Production.
 - Table/panel are separated for reuse.
 - US-10 UI rows and selected-market production helper are now scaffolded from the canonical goods list.
-- Top tab / Sync / hover-sync refresh through `modeu5_us10_ui_prepare_current_market_table_for_production_ui`.
+- Top tab / Sync / hover-sync refresh through `cbp_us10_ui_prepare_current_market_table_for_production_ui`.
 - No standalone selector override remains.
 
 ## Current validation checklist

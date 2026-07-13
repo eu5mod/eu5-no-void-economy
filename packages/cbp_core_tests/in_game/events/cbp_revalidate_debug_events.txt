@@ -1,0 +1,256 @@
+namespace = cbp_revalidate_debug
+
+# Revalidation execution contract:
+# - Revalidation is a manual/debug console event chain only; never call it from
+#   monthly/yearly on_actions or any runtime tick.
+# - A full revalidation run is split into small scenario steps. The final
+#   summary event is not a scenario step and must not run additional tests.
+# - Continuations use days = 0 except where an existing delayed probe needs a day.
+# - Experimental specialist probes must stay in separate manual entry events so
+#   a heavy/incomplete probe cannot hide the stable baseline summary.
+
+cbp_revalidate_debug.1 = {
+	type = country_event
+	title = cbp_revalidate_debug.1.title
+	desc = cbp_revalidate_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = cbp_revalidate_debug.1.a
+		cbp_revalidate_clear_results = yes
+		set_global_variable = test_cbp_revalidation_started
+			# Step 1/13
+		cbp_revalidate_run_us02_capacity = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.10 days = 0 }
+	}
+	option = {
+		name = cbp_debug.close
+	}
+}
+
+cbp_revalidate_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 2/13
+		cbp_revalidate_run_core01_single_record = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.20 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.20 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 3/13
+		cbp_revalidate_run_core01_same_market_transfer = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.30 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.30 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 4/13
+		cbp_revalidate_run_core01_inter_market_transfer = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.40 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.40 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 5/13
+		cbp_revalidate_run_core02_initialization = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.50 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.50 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 6/13
+		cbp_revalidate_run_us00_controlled_pipeline = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.60 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.60 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 7/13
+		cbp_revalidate_run_us00_monthly_runtime = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.70 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.70 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 8/13
+		cbp_revalidate_run_us10_demand_resolution = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.75 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.75 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 9/13
+		cbp_revalidate_run_us10_issue109_fast_path_pruning = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.77 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.77 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 10/13
+		cbp_revalidate_run_us10_ui_visibility = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.80 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.80 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 11/13
+		cbp_revalidate_run_perf10_13_active_repair_metrics = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.90 days = 2 }
+	}
+}
+
+cbp_revalidate_debug.90 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 12/13
+		cbp_revalidate_run_core04_market_entry = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.95 days = 1 }
+	}
+}
+
+cbp_revalidate_debug.95 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+			# Step 13/13
+		cbp_revalidate_run_us17_us20_reconciliation = yes
+		trigger_event_non_silently = { id = cbp_revalidate_debug.99 days = 0 }
+	}
+}
+
+cbp_revalidate_debug.99 = {
+	type = country_event
+	title = cbp_revalidate_debug.99.title
+	desc = cbp_revalidate_debug.99.desc
+	outcome = neutral
+
+	trigger = { always = yes }
+
+	immediate = {
+		# Summary only; do not add scenario work here.
+		cbp_revalidate_finalize = yes
+	}
+
+	option = {
+		name = cbp_revalidate_debug.result.pass
+		trigger = { has_global_variable = test_cbp_revalidation_passed }
+	}
+	option = {
+		name = cbp_revalidate_debug.result.blocked
+		trigger = { has_global_variable = test_cbp_revalidation_blocked }
+	}
+	option = {
+		name = cbp_revalidate_debug.result.fail
+		trigger = { has_global_variable = test_cbp_revalidation_failed }
+	}
+	option = {
+		name = cbp_debug.close
+	}
+}

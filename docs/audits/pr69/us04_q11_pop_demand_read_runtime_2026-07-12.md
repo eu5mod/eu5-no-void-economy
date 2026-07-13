@@ -70,12 +70,12 @@ The saved-Pop dot-chain form was rejected:
 
 ```txt
 Failed to find a valid event target link 'pop_demand(goods:books)'
-Cannot read [scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:books)] as a script value
-Badly read script value scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:books)
+Cannot read [scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:books)] as a script value
+Badly read script value scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:books)
 
 Failed to find a valid event target link 'pop_demand(goods:wheat)'
-Cannot read [scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:wheat)] as a script value
-Badly read script value scope:modeu5_us04_q11_saved_every_pop.pop_demand(goods:wheat)
+Cannot read [scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:wheat)] as a script value
+Badly read script value scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:wheat)
 ```
 
 ## Positive side finding: Pop scope acquisition works

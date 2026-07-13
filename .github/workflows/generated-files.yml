@@ -26,6 +26,170 @@ jobs:
           name: generate-all-log
           path: generate_all.log
 
+      - name: Validate US-09 generator with fixture common dir
+        run: |
+          set -euo pipefail
+
+          fixture_common="$RUNNER_TEMP/us09_common"
+          fixture_package="$RUNNER_TEMP/us09_package/in_game/common"
+
+          mkdir -p \
+            "$fixture_common/building_types" \
+            "$fixture_common/prices" \
+            "$fixture_common/pop_types"
+          mkdir -p \
+            "$fixture_package/building_types" \
+            "$fixture_package/prices" \
+            "$fixture_package/pop_types"
+
+          cat > "$fixture_common/building_types/00_test_production.txt" <<'EOF'
+          test_production = {
+              output = 10
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 1
+                  local_merchant_capacity = 2
+                  merchant_capacity_from_building = 3
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/prices/00_hardcoded.txt" <<'EOF'
+          expand_rgo_mining = { gold = 100 }
+          expand_rgo_farming = { gold = 100 }
+          expand_rgo_hunting = { gold = 100 }
+          expand_rgo_gathering = { gold = 100 }
+          expand_rgo_forestry = { gold = 100 }
+          EOF
+
+          cat > "$fixture_common/pop_types/00_pop_types.txt" <<'EOF'
+          burghers = {
+              promotion_speed = 0.5
+              migration_speed = 0.5
+          }
+
+          laborers = {
+              promotion_speed = 1.5
+              migration_speed = 0.1
+          }
+
+          peasants = {
+              promotion_speed = 0.5
+          }
+          EOF
+
+          ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package"
+
+          test -f "$fixture_package/building_types/00_test_production.txt"
+          test -f "$fixture_package/prices/00_hardcoded.txt"
+          test -f "$fixture_package/pop_types/00_pop_types.txt"
+          test ! -f "$fixture_package/building_types/zzzz_cbp_us09_00_test_production.txt"
+          test ! -f "$fixture_package/prices/zzzz_cbp_us09_expand_rgo_prices.txt"
+          test ! -f "$fixture_package/prices/expand_rgo_prices.txt"
+          grep -q 'output = 11.0' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'peasants' "$fixture_package/pop_types/00_pop_types.txt"
+
+          cat > "$fixture_common/building_types/trade_buildings.txt" <<'EOF'
+          marketplace = {
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 1
+                  local_merchant_capacity = 1
+                  local_merchant_power = 1
+              }
+          }
+          EOF
+
+          ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package"
+
+          grep -q 'local_burghers_estate_power = 0.05' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_capacity = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_power = 1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+
+      - name: Validate complete vanilla defines generator
+        run: |
+          set -euo pipefail
+
+          fixture_defines="$RUNNER_TEMP/eu5_game/loading_screen/common/defines/00_defines.txt"
+          generated_defines="$RUNNER_TEMP/modeu5/loading_screen/common/defines/00_defines.txt"
+          mkdir -p "$(dirname "$fixture_defines")" "$(dirname "$generated_defines")"
+
+          cat > "$fixture_defines" <<'EOF'
+          NGraphics = {
+              DX12_DEVICE_RECOVERY = yes
+              ANTI_ALIASING_QUALITY = 4
+          }
+
+          NEconomy = {
+              PRODUCTION_EFFIENCY_BONUS_PER_LEVEL = 0.01 # vanilla
+              PRICE_SCALE_FROM_ECO_BASE = 0.1
+              GOODS_RGO_BASE_COST = 0.5
+              GOODS_RGO_PRICE_SCALE = 0.25
+          }
+
+          NUnrelated = {
+              KEEP_ME = 42
+          }
+          EOF
+
+          bash ./tools/generate_cbp_defines_override.sh \
+            --source-file "$fixture_defines" \
+            --output-file "$generated_defines" \
+            --production-efficiency-bonus-per-level 0.015 \
+            --price-scale-from-eco-base 0 \
+            --goods-rgo-base-cost 1 \
+            --goods-rgo-price-scale 0
+
+          grep -q '^# Generated by tools/generate_cbp_defines_override.sh.$' "$generated_defines"
+          grep -q 'DX12_DEVICE_RECOVERY = yes' "$generated_defines"
+          grep -q 'ANTI_ALIASING_QUALITY = 4' "$generated_defines"
+          grep -q 'KEEP_ME = 42' "$generated_defines"
+          grep -q 'PRODUCTION_EFFIENCY_BONUS_PER_LEVEL = 0.015 # vanilla' "$generated_defines"
+          grep -q 'PRICE_SCALE_FROM_ECO_BASE = 0$' "$generated_defines"
+          grep -q 'GOODS_RGO_BASE_COST = 1$' "$generated_defines"
+          grep -q 'GOODS_RGO_PRICE_SCALE = 0$' "$generated_defines"
+          test "$(grep -c 'DX12_DEVICE_RECOVERY = yes' "$generated_defines")" -eq 1
+          test "$(grep -c 'PRODUCTION_EFFIENCY_BONUS_PER_LEVEL' "$generated_defines")" -eq 2
+          test "$(LC_ALL=C head -c 3 "$generated_defines" | od -An -tx1 | tr -d ' \n')" != 'efbbbf'
+
+          bash ./tools/generate_cbp_defines_override.sh \
+            --source-file "$fixture_defines" \
+            --output-file "$generated_defines" \
+            --production-efficiency-bonus-per-level 0.015 \
+            --price-scale-from-eco-base 0 \
+            --goods-rgo-base-cost 1 \
+            --goods-rgo-price-scale 0 \
+            --check
+
+          printf '\nPRODUCTION_EFFIENCY_BONUS_PER_LEVEL = 0.02\n' >> "$fixture_defines"
+          if bash ./tools/generate_cbp_defines_override.sh \
+            --source-file "$fixture_defines" \
+            --output-file "$generated_defines" >/dev/null 2>&1
+          then
+            echo 'Defines generator must reject duplicate target keys.' >&2
+            exit 1
+          fi
+
       - name: Validate package structure and generated adapters
         run: |
           set +e
@@ -42,7 +206,7 @@ jobs:
           path: validate_module_packages.log
 
       - name: Audit persistent state surface
-        run: /bin/bash ./tools/audit_modeu5_persistent_state.sh
+        run: /bin/bash ./tools/audit_cbp_persistent_state.sh
 
       - name: Validate CMM value-link quoting
         run: /bin/bash ./tools/normalize_cmm_value_links.sh --check
@@ -51,7 +215,7 @@ jobs:
         run: /bin/bash ./tools/validate_generators.sh
 
       - name: Validate ModeU5 script safety
-        run: /bin/bash ./tools/validate_modeu5_script_safety.sh
+        run: /bin/bash ./tools/validate_cbp_script_safety.sh
 
       - name: Validate CMM configuration
         run: python3 ./tools/validate_cmm_configuration.py
@@ -76,7 +240,7 @@ jobs:
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
+          tracked_generated="$(git ls-files | grep -E '(^|/)cbp_[^/]*_generated\.txt$|^loading_screen/common/defines/00_defines\.txt$' || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"

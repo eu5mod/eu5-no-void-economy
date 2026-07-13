@@ -2,13 +2,13 @@
 
 ## Purpose
 
-`event modeu5_revalidate_debug.1` is the broad deterministic regression harness for the test-only package. It is intended for explicit manual/debug validation, not normal runtime.
+`event cbp_revalidate_debug.1` is the broad deterministic regression harness for the test-only package. It is intended for explicit manual/debug validation, not normal runtime.
 
 ## Execution contract
 
 | Rule | Requirement |
 |---|---|
-| Entry point | Run manually from the console with `event modeu5_revalidate_debug.1`. |
+| Entry point | Run manually from the console with `event cbp_revalidate_debug.1`. |
 | Runtime cadence | Never call revalidation from monthly/yearly on-actions or runtime ticks. |
 | Step cap | A single revalidation chain must never contain more than 10 scenario steps. |
 | Summary event | The summary/finalize event is allowed after the 10 steps, but it must not run additional scenario work. |
@@ -43,7 +43,7 @@ The result event only finalizes and displays pass/blocked/fail state.
 When adding new coverage:
 
 1. Keep the existing suite at 10 scenario steps or fewer.
-2. Put any additional scenario into a new manual suite, for example `modeu5_revalidate_debug.200`.
+2. Put any additional scenario into a new manual suite, for example `cbp_revalidate_debug.200`.
 3. Do not schedule revalidation from monthly pulses.
 4. Keep continuation delays at `days = 0` unless there is a documented test reason to observe a date transition; such tests should live outside the broad revalidation suite.
 5. Update this runbook whenever the scenario list changes.

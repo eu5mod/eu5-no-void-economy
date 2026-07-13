@@ -35,7 +35,7 @@ Setup:
 Start a disposable campaign where FRA and ENG exist.
 Run:
 
-event modeu5_debug.1
+event cbp_debug.1
 
 Choose "Test US-11 dirty-record reconciliation".
 ```

@@ -69,7 +69,7 @@ Close EU5, then run:
 Run:
 
 ```txt
-event modeu5_core03_debug.1
+event cbp_core03_debug.1
 ```
 
 Choose:
@@ -84,7 +84,7 @@ The test:
 1. clears prior deterministic test markers
 2. recalculates CAS/POR wheat capacity in Cadiz's market
 3. clears CAS/POR wheat stock in that market through CORE-01 operators
-4. adds 100 wheat to CAS through modeu5_add_stock
+4. adds 100 wheat to CAS through cbp_add_stock
 5. records the expected capacity-share transfer
 6. transfers Cadiz to POR with change_location_owner
 7. waits one day
@@ -147,10 +147,10 @@ No Void Economy Tests was not loaded
 checking the before/after dumps, then inspect:
 
 ```txt
-modeu5_core03_handle_location_changed_owner
-modeu5_core03_prepare_location_good_transfer
-modeu5_transfer_stock
-modeu5_validate_dirty_stock_consistency
+cbp_core03_handle_location_changed_owner
+cbp_core03_prepare_location_good_transfer
+cbp_transfer_stock
+cbp_validate_dirty_stock_consistency
 ```
 
 Known localization-disabled assertions are tolerated only when the expected

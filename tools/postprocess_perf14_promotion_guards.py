@@ -308,7 +308,7 @@ def assert_no_unguarded_generated_reads(text: str) -> None:
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("usage: postprocess_perf14_promotion_guards.py <modeu5_stock_goods_generated.txt>", file=sys.stderr)
+        print("usage: postprocess_perf14_promotion_guards.py <cbp_stock_goods_generated.txt>", file=sys.stderr)
         return 2
 
     path = Path(sys.argv[1])

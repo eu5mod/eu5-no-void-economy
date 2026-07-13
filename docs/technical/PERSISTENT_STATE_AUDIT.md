@@ -17,7 +17,7 @@ Persist only state that is one of:
 - debug, audit, migration, or probe state that is explicitly scoped as such.
 
 Any new ModeU5 variable map or variable list must be classified here and must be
-accepted by `tools/audit_modeu5_persistent_state.sh`.
+accepted by `tools/audit_cbp_persistent_state.sh`.
 
 ## Map Families
 
@@ -104,7 +104,7 @@ this section before moving a reader or deleting a cache.
 | `cbp_<good>_active_markets` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `cbp_<good>_us10_sparse_suppliers` | work cache | global | US-10 sparse supplier preparation | clear before each market/good rebuild |
 | `cbp_active_markets_any_good` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
-| `cbp_countries_present_in_market` | work cache | global | `modeu5_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
+| `cbp_countries_present_in_market` | work cache | global | `cbp_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
 | `cbp_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |
 | `cbp_market_sliced_verifier_candidate_markets` | work cache | global | Q8.6 verifier candidate preparation | clear before each verifier run |
 | `cbp_monthly_markets_seen_this_cycle` | work cache | global | monthly seen-market preparation | reset once per month |
@@ -127,11 +127,11 @@ otherwise look like hidden business state.
 
 | Family | Class | Owner | Lifecycle | Rule |
 | --- | --- | --- | --- | --- |
-| `modeu5_debug_last_*` | debug-only scalar | current debug/probe scope | overwritten by the next capture/probe | never drive business logic |
-| `modeu5_debug_us10_*_trace_*` | audit/debug trace scalar | current US-10 resolver scope | overwritten during bounded audit trace | diagnostics only |
-| `modeu5_perf13_*`, `modeu5_perf14_*` | work/metric scalar | global | reset by owning probe/helper before measurement | metrics only, not business source |
-| `modeu5_performance_*_count` / fallback counters | work/metric scalar | global | reset by owning performance helper | counters only, not stock source |
-| `modeu5_market_sliced_verifier_*` | debug/audit verifier scalar | global | reset by Q8.6 verifier runner | diagnostics only, not business source |
+| `cbp_debug_last_*` | debug-only scalar | current debug/probe scope | overwritten by the next capture/probe | never drive business logic |
+| `cbp_debug_us10_*_trace_*` | audit/debug trace scalar | current US-10 resolver scope | overwritten during bounded audit trace | diagnostics only |
+| `cbp_perf13_*`, `cbp_perf14_*` | work/metric scalar | global | reset by owning probe/helper before measurement | metrics only, not business source |
+| `cbp_performance_*_count` / fallback counters | work/metric scalar | global | reset by owning performance helper | counters only, not stock source |
+| `cbp_market_sliced_verifier_*` | debug/audit verifier scalar | global | reset by Q8.6 verifier runner | diagnostics only, not business source |
 
 Adding a scalar debug/work family does not require a map row, but it must remain
 diagnostic or metric-only. If a scalar starts controlling business behaviour,
@@ -163,7 +163,7 @@ Ownership/rebuild/reset policy gaps: 0
 
 ## Executable Audit Contract
 
-`tools/audit_modeu5_persistent_state.sh` is the machine-checkable form of this
+`tools/audit_cbp_persistent_state.sh` is the machine-checkable form of this
 document. It must fail when:
 
 - a new ModeU5 persistent map/list family is discovered but not classified;

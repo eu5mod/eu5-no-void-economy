@@ -56,7 +56,7 @@ route-safe script surfaces are a separate TECH-01 boundary.
 
 ## Clean install and run
 
-The installer now removes each existing `modeu5_*` package directory before
+The installer now removes each existing `cbp_*` package directory before
 copying. Pull the branch and install it:
 
 ```sh
@@ -72,7 +72,7 @@ python3 ./tools/validate_ci_static_contracts.py
 Then start EU5 and run:
 
 ```txt
-event modeu5_us17_owner_modifiers.1
+event cbp_us17_owner_modifiers.1
 ```
 
 Choose:

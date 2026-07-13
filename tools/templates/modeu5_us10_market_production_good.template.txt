@@ -1,1 +1,0 @@
-	modeu5_us10_ui_capture_market_produced_row_good___GOOD__ = yes

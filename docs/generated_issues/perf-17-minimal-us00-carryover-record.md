@@ -33,8 +33,8 @@ diagnostic/full-ledger state.
 - Keep `Strict Full Ledger` available for validation and exact diagnostics.
 - Allow full ledger persistence when strict, debug, or audit mode is active.
 - In normal minimal runtime, remove stale diagnostic maps and persist only:
-  - `modeu5_<good>_production_penalty_by_market`;
-  - `modeu5_<good>_us00_active_record_by_market`.
+  - `cbp_<good>_production_penalty_by_market`;
+  - `cbp_<good>_us00_active_record_by_market`.
 - Keep monthly US-00 arithmetic transaction-local so produced/added/rejected,
   ratios, void wealth, and penalty are calculated in one pass before persistence
   policy is applied.
@@ -58,7 +58,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check
@@ -67,14 +67,14 @@ git diff --check
 Runtime strict/debug smoke:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 Select "Revalidate main operations"
 ```
 
 Expected summary after closing EU5:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 ```txt

@@ -10,55 +10,55 @@ The previous diagram was useful to discuss the **expected business process**, bu
 
 The TECH-01 consequence is important for the target design: `every_trade` is confirmed as a country-scope iterator, not as a market-scope iterator. The consequence is **not** to filter the trade loop down to the current promoted market. The safer target is one country-level trade pass that visits all trades for which the current country is the ModeU5 trade owner, so each trade is processed once and only once. Stock movement remains owned by the add/remove/transfer handlers; the trade pass is an orchestration surface, not a direct stock writer. The promoted-market local branch has a separate anti-duplication requirement: each promoted market must be locally processed once per month, either by a real promoted-market dispatcher or by a deterministic country owner guard if the implementation is still launched from country pulse. `every_market_center_in_country` is confirmed for market-center-owned scheduling, but Q5's current PR4/PR5 shell still builds the work list from `every_market_present_in_country`.
 
-The concerning point is real: in the audited current wiring, `modeu5_run_monthly_stock_cycle` starts from the current country, launches a few global preparations, then calls broad pipelines (`modeu5_run_us00_monthly_pipeline_all_goods`, `modeu5_run_monthly_stock_demand_resolution`). The market/trade loop is not the explicit container for B/C/D. This makes scope auditing difficult and encourages File/Cache redundancy.
+The concerning point is real: in the audited current wiring, `cbp_run_monthly_stock_cycle` starts from the current country, launches a few global preparations, then calls broad pipelines (`cbp_run_us00_monthly_pipeline_all_goods`, `cbp_run_monthly_stock_demand_resolution`). The market/trade loop is not the explicit container for B/C/D. This makes scope auditing difficult and encourages File/Cache redundancy.
 
 ## 2. Mermaid diagram — current state corrected as observable callgraph
 
 ```mermaid
 flowchart TD
-    A[monthly_country_pulse] --> B[modeu5_run_monthly_stock_cycle]
-    B --> C{modeu5_stock_runtime_ready_trigger ?}
+    A[monthly_country_pulse] --> B[cbp_run_monthly_stock_cycle]
+    B --> C{cbp_stock_runtime_ready_trigger ?}
     C -->|no| D[Skip mutations<br/>debug gate failed]
-    C -->|yes| E1[modeu5_prepare_performance_mode_human_relevant_markets]
-    E1 --> E2[modeu5_run_monthly_capacity_refresh_for_current_country]
-    E2 --> E3[modeu5_prepare_monthly_market_seen_registry]
-    E3 --> E4[modeu5_prepare_human_relevant_full_ledger_markets]
-    E4 --> E5[save_temporary_scope_as = modeu5_country]
-    E5 --> E6[modeu5_run_us00_monthly_pipeline_all_goods]
-    E6 --> E7[modeu5_run_monthly_stock_demand_resolution]
-    E7 --> E8{modeu5_audit_enabled_trigger ?}
-    E8 -->|yes| E9[modeu5_run_monthly_stock_reconciliation_once]
+    C -->|yes| E1[cbp_prepare_performance_mode_human_relevant_markets]
+    E1 --> E2[cbp_run_monthly_capacity_refresh_for_current_country]
+    E2 --> E3[cbp_prepare_monthly_market_seen_registry]
+    E3 --> E4[cbp_prepare_human_relevant_full_ledger_markets]
+    E4 --> E5[save_temporary_scope_as = cbp_country]
+    E5 --> E6[cbp_run_us00_monthly_pipeline_all_goods]
+    E6 --> E7[cbp_run_monthly_stock_demand_resolution]
+    E7 --> E8{cbp_audit_enabled_trigger ?}
+    E8 -->|yes| E9[cbp_run_monthly_stock_reconciliation_once]
     E8 -->|no| E10[End country monthly cycle]
     E9 --> E10
 
     subgraph CAP[Capacity internal loop]
-        E2 --> CAP1[modeu5_recalculate_country_storage_capacities]
+        E2 --> CAP1[cbp_recalculate_country_storage_capacities]
         CAP1 --> CAP2[every_market_present_in_country]
-        CAP2 --> CAP3[modeu5_recalculate_country_market_capacity_shared]
-        CAP3 --> CAP4[modeu5_store_capacity_record]
+        CAP2 --> CAP3[cbp_recalculate_country_market_capacity_shared]
+        CAP3 --> CAP4[cbp_store_capacity_record]
     end
 
     subgraph US00[US-00 broad goods pipeline]
         E6 --> U1[generated good adapters]
-        U1 --> U2[modeu5_add_stock]
-        U2 --> U3[modeu5_update_production_rejection_ledger]
-        U3 --> U4[modeu5_run_us00_record_calculations]
+        U1 --> U2[cbp_add_stock]
+        U2 --> U3[cbp_update_production_rejection_ledger]
+        U3 --> U4[cbp_run_us00_record_calculations]
     end
 
     subgraph US10[US-10 demand resolver]
-        E7 --> R1[modeu5_resolve_stock_consumption]
-        E7 --> R2[modeu5_resolve_inter_market_stock_transfer]
-        R2 --> R3[modeu5_resolve_stock_demand]
-        R3 --> R4[modeu5_resolve_stock_demand_good_GOOD generated adapter]
-        R4 --> R5[modeu5_prepare_current_stock_candidate_relations]
-        R5 --> R6[modeu5_calculate_current_stock_candidate_score]
+        E7 --> R1[cbp_resolve_stock_consumption]
+        E7 --> R2[cbp_resolve_inter_market_stock_transfer]
+        R2 --> R3[cbp_resolve_stock_demand]
+        R3 --> R4[cbp_resolve_stock_demand_good_GOOD generated adapter]
+        R4 --> R5[cbp_prepare_current_stock_candidate_relations]
+        R5 --> R6[cbp_calculate_current_stock_candidate_score]
     end
 
     subgraph RECON[Validation / reconciliation]
-        E9 --> V1[modeu5_run_allowed_stock_consistency_validation]
-        V1 --> V2[modeu5_validate_stock_consistency]
+        E9 --> V1[cbp_run_allowed_stock_consistency_validation]
+        V1 --> V2[cbp_validate_stock_consistency]
         V2 --> V3{divergence ?}
-        V3 -->|yes| V4[modeu5_rebuild_market_stock_from_country_stocks]
+        V3 -->|yes| V4[cbp_rebuild_market_stock_from_country_stocks]
         V3 -->|no| V5[no rebuild]
         V4 --> V5
     end
@@ -102,14 +102,14 @@ This is closest to your second option. The only caveat is implementation: `every
 
 ```mermaid
 flowchart TD
-    A[monthly tick / country pulse framework] --> B{modeu5_stock_runtime_ready_trigger ?}
+    A[monthly tick / country pulse framework] --> B{cbp_stock_runtime_ready_trigger ?}
     B -->|no| Z[Fail closed / diagnostic only]
     B -->|yes| C[1. on_monthly_pulse country prep]
 
     subgraph PREP[1. Country -> markets preparation]
         C --> C1[Scan current country markets<br/>every_market_present_in_country]
         C1 --> C2[Build/update country-owned work caches]
-        C2 --> C3{Performance Mode ?<br/>modeu5_performance_mode_enabled_trigger}
+        C2 --> C3{Performance Mode ?<br/>cbp_performance_mode_enabled_trigger}
         C3 -->|yes| C4[Register performance-relevant promoted-market candidates]
         C3 -->|no| C5[Register all current-country market candidates]
         C4 --> C6[Promoted-market work list / candidates]
@@ -123,8 +123,8 @@ flowchart TD
         O -->|no| S[Skip local mutation for this country]
         O -->|yes| M1[2.1 rebuild countries_present_in_market once]
         M1 --> M2[2.2 capacity/cache for countries present]
-        M2 --> M3[2.3 US-00 scoped market-good<br/>modeu5_add_stock<br/>modeu5_update_production_rejection_ledger]
-        M3 --> M4[2.4 Local non-trade consumption<br/>modeu5_resolve_stock_consumption]
+        M2 --> M3[2.3 US-00 scoped market-good<br/>cbp_add_stock<br/>cbp_update_production_rejection_ledger]
+        M3 --> M4[2.4 Local non-trade consumption<br/>cbp_resolve_stock_consumption]
         M4 --> M5[2.5 Validate market-local result]
     end
 
@@ -140,7 +140,7 @@ flowchart TD
     M5 --> V[Monthly validation / reconciliation]
     T3 --> V
     V --> R{Divergence ?}
-    R -->|yes| RB[modeu5_rebuild_market_stock_from_country_stocks]
+    R -->|yes| RB[cbp_rebuild_market_stock_from_country_stocks]
     R -->|no| N[Next monthly stage]
     RB --> N
     N --> END[Reset counters after readers]
@@ -199,8 +199,8 @@ monthly country pulse
 I therefore recommend naming the two executable surfaces separately:
 
 ```txt
-modeu5_run_monthly_promoted_market_cycle
-modeu5_run_monthly_country_trade_owner_cycle
+cbp_run_monthly_promoted_market_cycle
+cbp_run_monthly_country_trade_owner_cycle
 ```
 
 This names the two different mechanisms: promoted-market local work is driven by a once-per-market ModeU5 work list, while trade work is driven by a country-scoped ownership pass over all owned trades.
@@ -234,19 +234,19 @@ The order remains File/Cache first, because the promoted-market cycle and the co
 ## 8. PR3 helper extraction contract
 
 PR3 introduces the helper names needed by the future promoted-market shell while
-leaving `modeu5_run_monthly_stock_cycle` semantically unchanged. These helpers
+leaving `cbp_run_monthly_stock_cycle` semantically unchanged. These helpers
 are delegation points only:
 
 | Block | Helper | Delegates to | Notes |
 |---|---|---|---|
-| B | `modeu5_prepare_promoted_market_country_cache` | `modeu5_rebuild_countries_present_in_market` | Rebuilds the current target market's country work list; not durable storage and not stock proof. |
-| B | `modeu5_prepare_promoted_country_market_capacity` | `modeu5_recalculate_country_market_capacity_from_prepared_pool_shared` | Refreshes one country-market capacity record from the cached country location pool and current market trade capacity. |
-| B | `modeu5_prepare_promoted_market_capacity_cache` | B country cache + B country-market capacity helper | Convenience wrapper for every country present in one promoted market; must be called from a once-per-market owner surface when it becomes stock-affecting. |
-| C | `modeu5_run_scoped_us00_market_good` | generated `modeu5_process_us00_monthly_market_good_<good>` | Future local branch entry point; not called by the current dispatcher in PR3. |
-| C | `modeu5_probe_scoped_us00_market_good_bridge` | generated `modeu5_probe_us00_previous_record_activity_good_<good>` | Non-mutating probe surface for tests. |
-| C/D | `modeu5_run_scoped_us10_monthly_market_good` | generated `modeu5_process_us10_monthly_market_good_<good>` | Processes one scoped queued same-market consumption request. |
-| D | `modeu5_resolve_scoped_same_market_consumption` | `modeu5_resolve_stock_consumption` | Same-market consumption remains non-trade and delegates stock removal to central operators. |
-| D | `modeu5_handoff_scoped_inter_market_transfer` | `modeu5_resolve_inter_market_stock_transfer` | The canonical resolver still owns the `source_market == target_market` guard and central transfer call. |
+| B | `cbp_prepare_promoted_market_country_cache` | `cbp_rebuild_countries_present_in_market` | Rebuilds the current target market's country work list; not durable storage and not stock proof. |
+| B | `cbp_prepare_promoted_country_market_capacity` | `cbp_recalculate_country_market_capacity_from_prepared_pool_shared` | Refreshes one country-market capacity record from the cached country location pool and current market trade capacity. |
+| B | `cbp_prepare_promoted_market_capacity_cache` | B country cache + B country-market capacity helper | Convenience wrapper for every country present in one promoted market; must be called from a once-per-market owner surface when it becomes stock-affecting. |
+| C | `cbp_run_scoped_us00_market_good` | generated `cbp_process_us00_monthly_market_good_<good>` | Future local branch entry point; not called by the current dispatcher in PR3. |
+| C | `cbp_probe_scoped_us00_market_good_bridge` | generated `cbp_probe_us00_previous_record_activity_good_<good>` | Non-mutating probe surface for tests. |
+| C/D | `cbp_run_scoped_us10_monthly_market_good` | generated `cbp_process_us10_monthly_market_good_<good>` | Processes one scoped queued same-market consumption request. |
+| D | `cbp_resolve_scoped_same_market_consumption` | `cbp_resolve_stock_consumption` | Same-market consumption remains non-trade and delegates stock removal to central operators. |
+| D | `cbp_handoff_scoped_inter_market_transfer` | `cbp_resolve_inter_market_stock_transfer` | The canonical resolver still owns the `source_market == target_market` guard and central transfer call. |
 
 The PR3 helpers must not be interpreted as an activated promoted-market
 dispatcher. PR4 remains responsible for creating the disabled/test-only
@@ -260,14 +260,14 @@ name and the live monthly dispatcher remains unchanged in this PR.
 
 | Layer | Helper / state | Role | Notes |
 |---|---|---|---|
-| Shell prep | `modeu5_prepare_promoted_market_work_list_for_current_country` | Builds candidate promoted-market entries from `every_market_present_in_country`. | Normal mode promotes all current-country markets; Performance mode keeps only markets in `modeu5_performance_relevant_markets`. Candidate registration may happen per country. |
-| Work list | `modeu5_promoted_markets_this_cycle` | Current-cycle market targets for the future promoted-market dispatcher. | Rebuilt work cache only; not durable storage and not proof of stock/capacity readiness. |
-| Processing owner | `modeu5_promoted_market_processing_owner` / equivalent guard | Ensures one country-owned launch cannot make every country present execute the same market-local branch. | Required before local market mutation is generalized beyond controlled probes. |
-| Shell loop | `modeu5_run_monthly_promoted_market_cycle` | Iterates promoted-market work and records shell iteration metrics. | Test-only in PR4; B/C/D business work is wired by later PR126 layers. |
-| Observability | `modeu5_promoted_market_*` counters | Candidate, promoted, rejected, owner-skip, and shell-iteration counts. | Debug metrics only; they must not drive stock mutation. |
+| Shell prep | `cbp_prepare_promoted_market_work_list_for_current_country` | Builds candidate promoted-market entries from `every_market_present_in_country`. | Normal mode promotes all current-country markets; Performance mode keeps only markets in `cbp_performance_relevant_markets`. Candidate registration may happen per country. |
+| Work list | `cbp_promoted_markets_this_cycle` | Current-cycle market targets for the future promoted-market dispatcher. | Rebuilt work cache only; not durable storage and not proof of stock/capacity readiness. |
+| Processing owner | `cbp_promoted_market_processing_owner` / equivalent guard | Ensures one country-owned launch cannot make every country present execute the same market-local branch. | Required before local market mutation is generalized beyond controlled probes. |
+| Shell loop | `cbp_run_monthly_promoted_market_cycle` | Iterates promoted-market work and records shell iteration metrics. | Test-only in PR4; B/C/D business work is wired by later PR126 layers. |
+| Observability | `cbp_promoted_market_*` counters | Candidate, promoted, rejected, owner-skip, and shell-iteration counts. | Debug metrics only; they must not drive stock mutation. |
 
-PR4 deliberately keeps `modeu5_promoted_markets_this_cycle` separate from
-`modeu5_detailed_accounting_promoted_markets`. The former answers "which
+PR4 deliberately keeps `cbp_promoted_markets_this_cycle` separate from
+`cbp_detailed_accounting_promoted_markets`. The former answers "which
 markets should this cycle consider?", while the latter answers "has this market
 completed detailed-accounting promotion?". Stock-affecting PRs must still check
 promotion readiness before using detailed country-market records.
@@ -275,14 +275,14 @@ promotion readiness before using detailed country-market records.
 ## 10. PR5 promoted-market local branch contract
 
 PR5 wires a controlled local branch under the promoted-market shell. It still
-does not replace `modeu5_run_monthly_stock_cycle`; it proves that the shell can
+does not replace `cbp_run_monthly_stock_cycle`; it proves that the shell can
 drive one promoted market-good through the intended local order:
 
 ```txt
-modeu5_run_monthly_promoted_market_cycle
-  -> modeu5_promoted_markets_this_cycle
+cbp_run_monthly_promoted_market_cycle
+  -> cbp_promoted_markets_this_cycle
   -> processing-owner guard for the promoted market
-  -> modeu5_run_promoted_market_local_branch_market_good
+  -> cbp_run_promoted_market_local_branch_market_good
       -> B rebuild countries_present_in_market once for the promoted market
       -> B refresh country-market capacities for countries present in that market
       -> C run scoped US-00 generated-good bridge
@@ -306,12 +306,12 @@ The probe validates the observable order with metrics:
 
 | Metric | Expected in PR5 probe | Meaning |
 |---|---:|---|
-| `modeu5_promoted_market_local_branch_country_cache_rebuilds` | 1 | The local branch prepared the market-country cache once. |
-| `modeu5_promoted_market_local_branch_capacity_country_count` | `> 0` | At least one country-market capacity record was refreshed. |
-| `modeu5_promoted_market_local_branch_us00_calls` | 1 | The scoped US-00 generated-good bridge ran before consumption. |
-| `modeu5_promoted_market_local_branch_us10_calls` | 1 | The scoped same-market US-10 bridge ran after US-00. |
-| `modeu5_promoted_market_local_branch_validation_calls` | 1 | The market-good consistency check ran after US-10. |
-| `modeu5_promoted_market_local_branch_validation_failures` | 0 | The market aggregate remained reconcilable from country stocks. |
+| `cbp_promoted_market_local_branch_country_cache_rebuilds` | 1 | The local branch prepared the market-country cache once. |
+| `cbp_promoted_market_local_branch_capacity_country_count` | `> 0` | At least one country-market capacity record was refreshed. |
+| `cbp_promoted_market_local_branch_us00_calls` | 1 | The scoped US-00 generated-good bridge ran before consumption. |
+| `cbp_promoted_market_local_branch_us10_calls` | 1 | The scoped same-market US-10 bridge ran after US-00. |
+| `cbp_promoted_market_local_branch_validation_calls` | 1 | The market-good consistency check ran after US-10. |
+| `cbp_promoted_market_local_branch_validation_failures` | 0 | The market aggregate remained reconcilable from country stocks. |
 
 Known PR5 boundary:
 
@@ -325,26 +325,26 @@ Known PR5 boundary:
 
 ## 11. PR7 live monthly dispatcher contract
 
-PR7 switches `modeu5_run_monthly_stock_cycle` from the older separated
+PR7 switches `cbp_run_monthly_stock_cycle` from the older separated
 US-00-all-markets / US-10-all-markets calls to one promoted-market local
 dispatcher plus one country-owned trade pass:
 
 ```txt
 monthly_country_pulse
-  -> modeu5_run_monthly_stock_cycle
+  -> cbp_run_monthly_stock_cycle
       -> runtime ready gate
       -> performance human-relevant market refresh
       -> current-country capacity refresh
       -> monthly market seen registry
-      -> modeu5_run_monthly_promoted_market_local_cycle
+      -> cbp_run_monthly_promoted_market_local_cycle
           -> every_market_center_in_country
-          -> modeu5_prepare_market_runtime_accounting_mode
+          -> cbp_prepare_market_runtime_accounting_mode
           -> detailed: rebuild current market country cache once
           -> detailed: refresh capacities for countries present in the market
           -> detailed: run US-00 for all present countries and all goods
           -> detailed: run US-10 same-market monthly requests for all present countries and all goods
           -> fallback: leave the market to vanilla behavior
-      -> modeu5_run_monthly_country_trade_owner_cycle
+      -> cbp_run_monthly_country_trade_owner_cycle
       -> monthly audit reconciliation when audit mode is enabled
 ```
 
@@ -366,17 +366,17 @@ current-month production has been admitted.
 
 The country-owned trade pass remains separate from the promoted-market local
 branch. `every_trade` is confirmed as a country-scope iterator, so PR7 calls
-`modeu5_run_monthly_country_trade_owner_cycle` once from the current country
+`cbp_run_monthly_country_trade_owner_cycle` once from the current country
 after local market work. It must not be filtered to the currently promoted
 market, and it must not write stock directly.
 
-The PR7 comparison probe (`event modeu5_pr126_debug.1` -> monthly dispatcher
+The PR7 comparison probe (`event cbp_pr126_debug.1` -> monthly dispatcher
 comparison) records:
 
 | Metric family | Purpose |
 |---|---|
-| `modeu5_promoted_market_live_markets_detailed/fallback/blocked` | Compare Normal and Performance market routing. |
-| `modeu5_promoted_market_live_country_cache_rebuilds` | Confirm the local branch rebuilds the market country cache once per detailed market. |
-| `modeu5_promoted_market_live_us00_good_scans` / `modeu5_promoted_market_live_us10_good_scans` | Confirm Performance reduces detailed per-good work. |
-| `modeu5_promoted_market_live_trade_owner_passes` | Confirm the country trade-owner pass still runs in both modes. |
+| `cbp_promoted_market_live_markets_detailed/fallback/blocked` | Compare Normal and Performance market routing. |
+| `cbp_promoted_market_live_country_cache_rebuilds` | Confirm the local branch rebuilds the market country cache once per detailed market. |
+| `cbp_promoted_market_live_us00_good_scans` / `cbp_promoted_market_live_us10_good_scans` | Confirm Performance reduces detailed per-good work. |
+| `cbp_promoted_market_live_trade_owner_passes` | Confirm the country trade-owner pass still runs in both modes. |
 | wheat consumption outcome in Normal and Performance | Confirm controlled stock behavior remains comparable while scan counts differ. |

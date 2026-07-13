@@ -1,0 +1,248 @@
+# US-04 Q9/Q10 destructive full pop_demand replacement probes.
+# No generator is used for this file.
+
+cbp_us04_q9_clear_state = {
+	remove_global_variable = test_cbp_us04_q9_replace_pop_demand_passed
+	remove_global_variable = test_cbp_us04_q9_replace_pop_demand_failed
+	remove_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+	remove_global_variable = test_cbp_us04_q9_replace_in_progress
+	remove_global_variable = test_cbp_us04_q9_replace_global_books
+	remove_global_variable = test_cbp_us04_q9_books_low
+	remove_global_variable = test_cbp_us04_q9_books_high
+	remove_global_variable = test_cbp_us04_q9_books_delta
+	remove_global_variable = test_cbp_us04_q9_books_source_low
+	remove_global_variable = test_cbp_us04_q9_books_source_high
+	remove_global_variable = test_cbp_us04_q9_control_low
+	remove_global_variable = test_cbp_us04_q9_control_high
+	remove_global_variable = test_cbp_us04_q9_control_delta
+	remove_global_variable = test_cbp_us04_q9_control_stable
+	clear_saved_scope = cbp_us04_q9_market
+}
+
+cbp_us04_q9_replace_begin = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q9_replace_pop_demand"
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q9_replace_in_progress }
+		set_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=probe_already_in_progress"
+	}
+	else = {
+		cbp_us04_q9_clear_state = yes
+		set_global_variable = test_cbp_us04_q9_replace_in_progress
+		capital.market = { save_scope_as = cbp_us04_q9_market }
+		set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.0 }
+		set_global_variable = { name = test_cbp_us04_q9_books_source_low value = global_var:test_cbp_us04_q9_replace_global_books }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace phase=begin source_low_books=1.0000"
+	}
+}
+
+cbp_us04_q9_replace_capture_low_and_raise = {
+	if = {
+		limit = { NOT = { has_global_variable = test_cbp_us04_q9_replace_in_progress } }
+		set_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=low_capture_without_in_progress"
+	}
+	else = {
+		scope:cbp_us04_q9_market = {
+			save_temporary_scope_value_as = { name = test_cbp_us04_q9_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = test_cbp_us04_q9_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = test_cbp_us04_q9_books_low value = scope:test_cbp_us04_q9_books_current }
+		set_global_variable = { name = test_cbp_us04_q9_control_low value = scope:test_cbp_us04_q9_control_current }
+		set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 4.0 }
+		set_global_variable = { name = test_cbp_us04_q9_books_source_high value = global_var:test_cbp_us04_q9_replace_global_books }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace phase=low_captured high_source_written=1 wait=monthly_tick"
+	}
+}
+
+cbp_us04_q9_replace_finalize = {
+	if = {
+		limit = { NOT = { has_global_variable = test_cbp_us04_q9_replace_in_progress } }
+		set_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=finalize_without_in_progress"
+	}
+	else = {
+		scope:cbp_us04_q9_market = {
+			save_temporary_scope_value_as = { name = test_cbp_us04_q9_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = test_cbp_us04_q9_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = test_cbp_us04_q9_books_high value = scope:test_cbp_us04_q9_books_current }
+		set_global_variable = { name = test_cbp_us04_q9_control_high value = scope:test_cbp_us04_q9_control_current }
+
+		save_temporary_scope_value_as = { name = test_cbp_us04_q9_control_delta value = { value = global_var:test_cbp_us04_q9_control_high subtract = global_var:test_cbp_us04_q9_control_low } }
+		set_global_variable = { name = test_cbp_us04_q9_control_delta value = scope:test_cbp_us04_q9_control_delta }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q9_control_min value = { value = global_var:test_cbp_us04_q9_control_low subtract = 0.001 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q9_control_max value = { value = global_var:test_cbp_us04_q9_control_low add = 0.001 } }
+		if = { limit = { global_var:test_cbp_us04_q9_control_high >= scope:test_cbp_us04_q9_control_min global_var:test_cbp_us04_q9_control_high <= scope:test_cbp_us04_q9_control_max } set_global_variable = test_cbp_us04_q9_control_stable }
+
+		save_temporary_scope_value_as = { name = test_cbp_us04_q9_books_delta value = { value = global_var:test_cbp_us04_q9_books_high subtract = global_var:test_cbp_us04_q9_books_low } }
+		set_global_variable = { name = test_cbp_us04_q9_books_delta value = scope:test_cbp_us04_q9_books_delta }
+
+		set_variable = { name = gui_cbp_us04_q9_ui_control_low value = global_var:test_cbp_us04_q9_control_low }
+		set_variable = { name = gui_cbp_us04_q9_ui_control_high value = global_var:test_cbp_us04_q9_control_high }
+		set_variable = { name = gui_cbp_us04_q9_ui_control_delta value = global_var:test_cbp_us04_q9_control_delta }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace control_good=wool low=[THIS.GetVariable('cbp_us04_q9_ui_control_low').GetValue|4] high=[THIS.GetVariable('cbp_us04_q9_ui_control_high').GetValue|4] delta=[THIS.GetVariable('cbp_us04_q9_ui_control_delta').GetValue|4]"
+
+		set_variable = { name = gui_cbp_us04_q9_ui_source_low value = global_var:test_cbp_us04_q9_books_source_low }
+		set_variable = { name = gui_cbp_us04_q9_ui_source_high value = global_var:test_cbp_us04_q9_books_source_high }
+		set_variable = { name = gui_cbp_us04_q9_ui_low value = global_var:test_cbp_us04_q9_books_low }
+		set_variable = { name = gui_cbp_us04_q9_ui_high value = global_var:test_cbp_us04_q9_books_high }
+		set_variable = { name = gui_cbp_us04_q9_ui_delta value = global_var:test_cbp_us04_q9_books_delta }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q9_replace id=09 syntax=replace_pop_demand good=books source_low=[THIS.GetVariable('cbp_us04_q9_ui_source_low').GetValue|4] source_high=[THIS.GetVariable('cbp_us04_q9_ui_source_high').GetValue|4] low=[THIS.GetVariable('cbp_us04_q9_ui_low').GetValue|4] high=[THIS.GetVariable('cbp_us04_q9_ui_high').GetValue|4] delta=[THIS.GetVariable('cbp_us04_q9_ui_delta').GetValue|4]"
+
+		if = {
+			limit = { global_var:test_cbp_us04_q9_books_low <= 0.0001 }
+			set_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books BLOCKED reason=baseline_demand_nonpositive"
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=books_baseline_demand_nonpositive"
+		}
+		else_if = {
+			limit = { NOT = { has_global_variable = test_cbp_us04_q9_control_stable } }
+			set_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books BLOCKED reason=unstable_control"
+			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q9_replace_pop_demand reason=unstable_control"
+		}
+		else_if = {
+			limit = { global_var:test_cbp_us04_q9_books_high > global_var:test_cbp_us04_q9_books_low }
+			set_global_variable = test_cbp_us04_q9_replace_pop_demand_passed
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books PASS"
+			debug_log = "ModeU5 TEST PASS scenario=us04_q9_replace_pop_demand"
+		}
+		else = {
+			set_global_variable = test_cbp_us04_q9_replace_pop_demand_failed
+			debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q9_replace id=09 syntax=replace_pop_demand good=books FAIL reason=no_target_response"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_q9_replace_pop_demand"
+		}
+		remove_global_variable = test_cbp_us04_q9_replace_in_progress
+	}
+}
+
+cbp_us04_q10_clear_state = {
+	remove_global_variable = test_cbp_us04_q10_replace_curve_passed
+	remove_global_variable = test_cbp_us04_q10_replace_curve_blocked
+	remove_global_variable = test_cbp_us04_q10_replace_curve_in_progress
+	remove_global_variable = test_cbp_us04_q10_books_100
+	remove_global_variable = test_cbp_us04_q10_books_099
+	remove_global_variable = test_cbp_us04_q10_books_101
+	remove_global_variable = test_cbp_us04_q10_books_120
+	remove_global_variable = test_cbp_us04_q10_books_400
+	remove_global_variable = test_cbp_us04_q10_control_100
+	remove_global_variable = test_cbp_us04_q10_control_099
+	remove_global_variable = test_cbp_us04_q10_control_101
+	remove_global_variable = test_cbp_us04_q10_control_120
+	remove_global_variable = test_cbp_us04_q10_control_400
+	remove_global_variable = test_cbp_us04_q10_delta_099_vs_100
+	remove_global_variable = test_cbp_us04_q10_delta_101_vs_100
+	remove_global_variable = test_cbp_us04_q10_delta_120_vs_100
+	remove_global_variable = test_cbp_us04_q10_delta_400_vs_100
+	clear_saved_scope = cbp_us04_q10_market
+}
+
+cbp_us04_q10_begin = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q10_replace_pop_demand_curve"
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q10_replace_curve_in_progress }
+		set_global_variable = test_cbp_us04_q10_replace_curve_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10_replace_pop_demand_curve reason=probe_already_in_progress"
+	}
+	else = {
+		cbp_us04_q10_clear_state = yes
+		set_global_variable = test_cbp_us04_q10_replace_curve_in_progress
+		capital.market = { save_scope_as = cbp_us04_q10_market }
+		set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.0 }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve phase=begin source=1.0000 wait=monthly_tick"
+	}
+}
+
+cbp_us04_q10_capture_100_set_099 = {
+	scope:cbp_us04_q10_market = {
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_control_current value = "goods_demand_in_market(goods:wool)" }
+	}
+	set_global_variable = { name = test_cbp_us04_q10_books_100 value = scope:test_cbp_us04_q10_books_current }
+	set_global_variable = { name = test_cbp_us04_q10_control_100 value = scope:test_cbp_us04_q10_control_current }
+	set_variable = { name = gui_cbp_us04_q10_ui_books value = global_var:test_cbp_us04_q10_books_100 }
+	set_variable = { name = gui_cbp_us04_q10_ui_control value = global_var:test_cbp_us04_q10_control_100 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve point=100 source=1.0000 books=[THIS.GetVariable('cbp_us04_q10_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10_ui_control').GetValue|4]"
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 0.99 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve next_source=0.9900 wait=monthly_tick"
+}
+
+cbp_us04_q10_capture_099_set_101 = {
+	scope:cbp_us04_q10_market = {
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_control_current value = "goods_demand_in_market(goods:wool)" }
+	}
+	set_global_variable = { name = test_cbp_us04_q10_books_099 value = scope:test_cbp_us04_q10_books_current }
+	set_global_variable = { name = test_cbp_us04_q10_control_099 value = scope:test_cbp_us04_q10_control_current }
+	set_variable = { name = gui_cbp_us04_q10_ui_books value = global_var:test_cbp_us04_q10_books_099 }
+	set_variable = { name = gui_cbp_us04_q10_ui_control value = global_var:test_cbp_us04_q10_control_099 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve point=099 source=0.9900 books=[THIS.GetVariable('cbp_us04_q10_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10_ui_control').GetValue|4]"
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.01 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve next_source=1.0100 wait=monthly_tick"
+}
+
+cbp_us04_q10_capture_101_set_120 = {
+	scope:cbp_us04_q10_market = {
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_control_current value = "goods_demand_in_market(goods:wool)" }
+	}
+	set_global_variable = { name = test_cbp_us04_q10_books_101 value = scope:test_cbp_us04_q10_books_current }
+	set_global_variable = { name = test_cbp_us04_q10_control_101 value = scope:test_cbp_us04_q10_control_current }
+	set_variable = { name = gui_cbp_us04_q10_ui_books value = global_var:test_cbp_us04_q10_books_101 }
+	set_variable = { name = gui_cbp_us04_q10_ui_control value = global_var:test_cbp_us04_q10_control_101 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve point=101 source=1.0100 books=[THIS.GetVariable('cbp_us04_q10_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10_ui_control').GetValue|4]"
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 1.2 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve next_source=1.2000 wait=monthly_tick"
+}
+
+cbp_us04_q10_capture_120_set_400 = {
+	scope:cbp_us04_q10_market = {
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_books_current value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_control_current value = "goods_demand_in_market(goods:wool)" }
+	}
+	set_global_variable = { name = test_cbp_us04_q10_books_120 value = scope:test_cbp_us04_q10_books_current }
+	set_global_variable = { name = test_cbp_us04_q10_control_120 value = scope:test_cbp_us04_q10_control_current }
+	set_variable = { name = gui_cbp_us04_q10_ui_books value = global_var:test_cbp_us04_q10_books_120 }
+	set_variable = { name = gui_cbp_us04_q10_ui_control value = global_var:test_cbp_us04_q10_control_120 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve point=120 source=1.2000 books=[THIS.GetVariable('cbp_us04_q10_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10_ui_control').GetValue|4]"
+	set_global_variable = { name = test_cbp_us04_q9_replace_global_books value = 4.0 }
+	debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve next_source=4.0000 wait=monthly_tick"
+}
+
+cbp_us04_q10_finalize = {
+	if = {
+		limit = { NOT = { has_global_variable = test_cbp_us04_q10_replace_curve_in_progress } }
+		set_global_variable = test_cbp_us04_q10_replace_curve_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10_replace_pop_demand_curve reason=finalize_without_in_progress"
+	}
+	else = {
+		scope:cbp_us04_q10_market = {
+			save_temporary_scope_value_as = { name = test_cbp_us04_q10_books_current value = "goods_demand_in_market(goods:books)" }
+			save_temporary_scope_value_as = { name = test_cbp_us04_q10_control_current value = "goods_demand_in_market(goods:wool)" }
+		}
+		set_global_variable = { name = test_cbp_us04_q10_books_400 value = scope:test_cbp_us04_q10_books_current }
+		set_global_variable = { name = test_cbp_us04_q10_control_400 value = scope:test_cbp_us04_q10_control_current }
+		set_variable = { name = gui_cbp_us04_q10_ui_books value = global_var:test_cbp_us04_q10_books_400 }
+		set_variable = { name = gui_cbp_us04_q10_ui_control value = global_var:test_cbp_us04_q10_control_400 }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10_curve point=400 source=4.0000 books=[THIS.GetVariable('cbp_us04_q10_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10_ui_control').GetValue|4]"
+
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_delta_099_vs_100 value = { value = global_var:test_cbp_us04_q10_books_099 subtract = global_var:test_cbp_us04_q10_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_delta_101_vs_100 value = { value = global_var:test_cbp_us04_q10_books_101 subtract = global_var:test_cbp_us04_q10_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_delta_120_vs_100 value = { value = global_var:test_cbp_us04_q10_books_120 subtract = global_var:test_cbp_us04_q10_books_100 } }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q10_delta_400_vs_100 value = { value = global_var:test_cbp_us04_q10_books_400 subtract = global_var:test_cbp_us04_q10_books_100 } }
+		set_global_variable = { name = test_cbp_us04_q10_delta_099_vs_100 value = scope:test_cbp_us04_q10_delta_099_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10_delta_101_vs_100 value = scope:test_cbp_us04_q10_delta_101_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10_delta_120_vs_100 value = scope:test_cbp_us04_q10_delta_120_vs_100 }
+		set_global_variable = { name = test_cbp_us04_q10_delta_400_vs_100 value = scope:test_cbp_us04_q10_delta_400_vs_100 }
+
+		set_variable = { name = gui_cbp_us04_q10_ui_delta_099 value = global_var:test_cbp_us04_q10_delta_099_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10_ui_delta_101 value = global_var:test_cbp_us04_q10_delta_101_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10_ui_delta_120 value = global_var:test_cbp_us04_q10_delta_120_vs_100 }
+		set_variable = { name = gui_cbp_us04_q10_ui_delta_400 value = global_var:test_cbp_us04_q10_delta_400_vs_100 }
+		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q10_curve COMPLETE delta099_vs100=[THIS.GetVariable('cbp_us04_q10_ui_delta_099').GetValue|4] delta101_vs100=[THIS.GetVariable('cbp_us04_q10_ui_delta_101').GetValue|4] delta120_vs100=[THIS.GetVariable('cbp_us04_q10_ui_delta_120').GetValue|4] delta400_vs100=[THIS.GetVariable('cbp_us04_q10_ui_delta_400').GetValue|4]"
+		set_global_variable = test_cbp_us04_q10_replace_curve_passed
+		debug_log = "ModeU5 TEST PASS scenario=us04_q10_replace_pop_demand_curve"
+		remove_global_variable = test_cbp_us04_q10_replace_curve_in_progress
+	}
+}

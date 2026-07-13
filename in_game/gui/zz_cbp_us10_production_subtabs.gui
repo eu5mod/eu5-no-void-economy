@@ -1,0 +1,224 @@
+# US-10 internal Production subtab injection.
+#
+# Plan A: keep the host lateralview as vanilla Production, add ModeU5 as an
+# internal state/body, and keep the ModeU5 body/table reusable for Plan B.
+
+template production_view_subtabs {
+	vbox = {
+		layoutpolicy_horizontal = expanding
+		spacing = 5
+
+		# Hide the vanilla display/employment/automation strip while ModeU5 is active.
+		# This improves vertical coverage without a full production_lateralview override.
+		hbox = {
+			visible = "[Not(GetVariableSystem.Exists('cbp_us10_stock_tab'))]"
+			layoutpolicy_horizontal = expanding
+			margin = { 2 0 }
+			margin_bottom = 2
+			spacing = 5
+
+			# DISPLAYS
+			hbox = {
+				layoutpolicy_vertical = expanding
+
+				hbox = {
+					layoutpolicy_vertical = expanding
+					spacing = 5
+					button = {
+						size = {30 30}
+						using = header_button_template
+						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
+						blockoverride "header_button_full_content"{}
+						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_LISTS" } } }
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
+						onclick = "[ProductionView.Vars.Set( 'display', 'lists' )]"
+						down = "[ProductionView.Vars.NotExistOrHasValue( 'display', 'lists' )]"
+						icon = { size = {70% 70%} parentanchor = center texture = "gfx/interface/icons/flat_icons/menu_icon.dds" }
+					}
+
+					button = {
+						size = {30 30}
+						using = header_button_template
+						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
+						blockoverride "header_button_full_content"{}
+						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_CARDS" } } }
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
+						onclick = "[ProductionView.Vars.Set( 'display', 'cards' )]"
+						down = "[ProductionView.Vars.HasValue( 'display', 'cards' )]"
+						icon = { size = {70% 70%} parentanchor = center texture = "gfx/interface/icons/flat_icons/menu_icon_square.dds" }
+					}
+
+					button = {
+						size = {30 30}
+						using = header_button_template
+						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
+						blockoverride "header_button_full_content"{}
+						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_FOREIGN" } } }
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
+						onclick = "[ProductionView.Vars.Set( 'display', 'foreign' )]"
+						down = "[ProductionView.Vars.HasValue( 'display', 'foreign' )]"
+						icon = { size = {70% 70%} parentanchor = center texture = "[GetConceptTexture('foreign')]" }
+					}
+
+					button = {
+						size = {30 30}
+						using = header_button_template
+						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
+						blockoverride "header_button_full_content"{}
+						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "DISPLAY_ESTATE" } } }
+						onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
+						onclick = "[ProductionView.Vars.Set( 'display', 'estate' )]"
+						down = "[ProductionView.Vars.HasValue( 'display', 'estate' )]"
+						icon = {
+							size = {70% 70%}
+							parentanchor = center
+							texture = "[GetConceptTexture('estate')]"
+							modify_texture = { visible = "[ProductionView.Vars.HasValue( 'display', 'estate' )]" using = color_gold_texture alpha = 0.4 }
+						}
+					}
+
+					button = {
+						datacontext = "[ProductionView.GetSelectedMarket]"
+						size = {30 30}
+						using = header_button_template
+						blockoverride "header_button_template_push_properties"{using = button_tab_toggle_properties_template}
+						blockoverride "header_button_full_content"{}
+						blockoverride "header_button_template_texture"{using = pressed_button_texture_light}
+						tooltipwidget = { LeftClickButtonTooltip = { blockoverride "onclick_text" { text = "cbp_us10_ui.tab" } } }
+						onclick = "[ProductionView.Vars.Set( 'display', 'lists' )]"
+						onclick = "[GetVariableSystem.Set('cbp_us10_stock_tab', 'yes')]"
+						onclick = "[GetScriptedGui('cbp_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('cbp_us10_ui_clicked_market', Market.MakeScope).End)]"
+						down = "[GetVariableSystem.Exists('cbp_us10_stock_tab')]"
+						icon = {
+							size = {70% 70%}
+							parentanchor = center
+							texture = "gfx/interface/icons/flat_icons/menu_icon_square.dds"
+							modify_texture = { visible = "[GetVariableSystem.Exists('cbp_us10_stock_tab')]" using = color_gold_texture alpha = 0.4 }
+						}
+					}
+				}
+			}
+
+			# EMPLOYMENT
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				spacing = 5
+				tooltipmeta = { texture = "gfx/interface/icons/location_icons/new/employment.dds" game_concept = "[employment_system|E]" }
+				action_button_regular = {
+					layoutpolicy_horizontal = expanding
+					size = {-1 35}
+					title = "change_employment_system"
+					actor = "[Player]"
+					left_action = { action_name = "change_employment_system" }
+					hbox = {
+						margin = { 5 4 }
+						icon = { size = {25 25} texture = "gfx/interface/icons/location_icons/new/employment.dds" }
+						vbox = {
+							spacing = 1
+							layoutpolicy_horizontal = expanding
+							text_single = { layoutpolicy_horizontal = expanding size = { -1 13 } autoresize = no align = left|nobaseline text = "game_concept_employment_system" fontsize = 12 }
+							text_single = { layoutpolicy_horizontal = expanding size = { -1 13 } autoresize = no align = left|nobaseline text = "[Player.GetEmploymentSystem.GetName]" fontsize = 12 }
+						}
+					}
+				}
+			}
+
+			# AUTOMATIONS
+			hbox = {
+				spacing = 5
+				card_header_button_04 = {
+					allow_outside = yes
+					size = { 31 31 }
+					using = bg_card_header_01
+					blockoverride "header_pattern" { texture = "gfx/interface/cards/headers/header_pattern_04.dds" alpha = 0.1 }
+					action_tooltip = { click_type = left click_mode = single on_action = "[OpenLateralViewWithFilter('production', 'can_build_any_building')]" title = "SHOW_BUILDABLE_BUILDINGS" }
+					tooltipwidget = { BasicFunctionalTooltip = {} }
+					icon = { parentanchor = center size = { 22 22 } texture = "gfx/interface/icons/flat_icons/building_panel/build_visible.dds" }
+				}
+
+				hbox = {
+					margin = { 7 7 }
+					spacing = 5
+					using = bg_square_wood_tile
+					using = bg_cabinet_card_frame
+					icon = { size = { 22 22 } texture = "gfx/interface/icons/outliner/categories/buildings.dds" }
+					button_checkbox_auto = {
+						size = { 22 22 }
+						checked = "[IsPlayerAIEnabled('buildings')]"
+						onclick = "[TogglePlayerAI('buildings')]"
+						onrightclick = "[ToggleLateralView('automation')]"
+						tooltipwidget = { LeftRightClickButtonTooltip = { blockoverride "onclick_text" { text = "[GetPlayerAITooltip('buildings')]" } blockoverride "onrightclick_text" { text = "OPEN_AUTOMATION" } } }
+					}
+				}
+
+				hbox = {
+					margin = { 7 7 }
+					spacing = 5
+					using = bg_square_wood_tile
+					using = bg_cabinet_card_frame
+					icon = { size = { 22 22 } texture = "gfx/interface/icons/production_methods/_default.dds" }
+					button_checkbox_auto = {
+						size = { 22 22 }
+						checked = "[IsPlayerAIEnabled('productionmethods')]"
+						onclick = "[TogglePlayerAI('productionmethods')]"
+						onrightclick = "[ToggleLateralView('automation')]"
+						tooltipwidget = { LeftRightClickButtonTooltip = { blockoverride "onclick_text" { text = "[GetPlayerAITooltip('productionmethods')]" } blockoverride "onrightclick_text" { text = "OPEN_AUTOMATION" } } }
+					}
+				}
+			}
+		}
+
+		widget = { using = cbp_us10_stock_panel }
+	}
+}
+
+template production_view_poptypes {
+	hbox = {
+		layoutpolicy_horizontal = expanding
+		spacing = 2
+		margin = { 2 5 }
+		visible = "[And4(Not(GetVariableSystem.Exists('cbp_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), ProductionView.IsLocationFilterEnabled)]"
+		datamodel = "[GetPopTypes]"
+		datacontext = "[ProductionView.GetSelectedLocation]"
+		item = {
+			estates_filter_button = {
+				visible = "[ShowBuildingCardForLocation(Location.Self, PopType.Self)]"
+				blockoverride "building_color" { color = "[PopType.GetColor]" alpha = 0.8 blend_mode = overlay }
+				blockoverride "estates_filter_button_action" {
+					action_tooltip = {
+						click_type = left
+						click_mode = single
+						on_action = "[GetScriptedGui('mnt_force_show_rgo_category_off').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
+						on_action = "[GetScriptedGui('mnt_force_show_non_rgo_category_off').Execute(GuiScope.SetRoot(Player.MakeScope).End)]"
+						on_action = "[OpenLateralViewWithFilter('production', PopType.GetKey)]"
+						on_action = "[OpenLateralViewWithFilterNoClear('production', 'hide_estate_only_buildings')]"
+						on_action = "[ShowProductionViewWithLocation(Location.GetId, '(bool)no')]"
+						datacontext = "[PopType]"
+						title = "TOGGLE_BUILDINGS_POP_TYPE"
+					}
+				}
+				blockoverride "estates_filter_button_texture" { texture = "[GetGraphicalCultureTextureForCountryPopType(PopType.Self, Location.GetOwner.Self)]" }
+			}
+		}
+	}
+
+	hbox = {
+		layoutpolicy_horizontal = expanding
+		spacing = 2
+		margin = { 2 5 }
+		visible = "[And4(Not(GetVariableSystem.Exists('cbp_us10_stock_tab')), Not(ProductionView.Vars.HasValue( 'display', 'foreign' )), Not(ProductionView.Vars.HasValue( 'display', 'estate' )), Not(ProductionView.IsLocationFilterEnabled))]"
+		datamodel = "[GetPopTypes]"
+		datacontext = "[ProductionView.GetSelectedLocation]"
+		item = {
+			estates_filter_button = {
+				blockoverride "building_color" { color = "[PopType.GetColor]" alpha = 0.8 blend_mode = overlay }
+				blockoverride "estates_filter_button_inner_content"{}
+				blockoverride "estates_filter_button_tooltip"{ tooltipwidget = { using = pop_filter_button_tt } }
+			}
+		}
+	}
+}

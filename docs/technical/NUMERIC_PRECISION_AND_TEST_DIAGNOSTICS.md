@@ -46,21 +46,21 @@ exact.
 
 ### Deterministic assertions
 
-`modeu5_stock_test_effects.txt` uses exact equality for expected values.
+`cbp_stock_test_effects.txt` uses exact equality for expected values.
 Fractional results can produce a false negative even when the economic result
 is acceptable.
 
 Start with these values when only the decay test fails:
 
 ```txt
-modeu5_decay_rate_raw
-modeu5_decay_rate
-modeu5_country_stock_before
-modeu5_decayed_quantity
-modeu5_country_stock_after
-modeu5_market_stock_before
-modeu5_market_stock_after
-modeu5_stock_difference_after
+cbp_decay_rate_raw
+cbp_decay_rate
+cbp_country_stock_before
+cbp_decayed_quantity
+cbp_country_stock_after
+cbp_market_stock_before
+cbp_market_stock_after
+cbp_stock_difference_after
 ```
 
 ### Validation and rebuild
@@ -77,12 +77,12 @@ an iterator accumulator retains different precision from a persisted map
 Start with:
 
 ```txt
-modeu5_validation_expected_market_stock
-modeu5_validation_actual_market_stock_before
-modeu5_validation_difference_before
-modeu5_validation_actual_market_stock_after
-modeu5_validation_difference_after
-modeu5_rebuild_correction_applied
+cbp_validation_expected_market_stock
+cbp_validation_actual_market_stock_before
+cbp_validation_difference_before
+cbp_validation_actual_market_stock_after
+cbp_validation_difference_after
+cbp_rebuild_correction_applied
 ```
 
 If a rebuild succeeds but `difference_after` remains a very small nonzero

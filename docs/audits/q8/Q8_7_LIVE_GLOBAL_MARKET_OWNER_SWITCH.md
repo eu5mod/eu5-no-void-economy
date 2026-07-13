@@ -23,20 +23,20 @@ new live owner:
 The old owner is not deleted yet. It remains available behind a temporary transition/rollback switch:
 
 ```txt
-modeu5_q8_7_live_global_market_owner_disabled
+cbp_q8_7_live_global_market_owner_disabled
 ```
 
-When that global variable is present, the monthly wrapper falls back to the old `modeu5_run_monthly_promoted_market_local_cycle` path. This is not the target architecture; it is a rollback/comparison branch that should be pruned after Q8.7 same-save validation proves the new global owner stable.
+When that global variable is present, the monthly wrapper falls back to the old `cbp_run_monthly_promoted_market_local_cycle` path. This is not the target architecture; it is a rollback/comparison branch that should be pruned after Q8.7 same-save validation proves the new global owner stable.
 
 ## Runtime entry point
 
 The monthly on-action now calls:
 
 ```txt
-modeu5_run_monthly_stock_cycle_q8_7_owner_switch
+cbp_run_monthly_stock_cycle_q8_7_owner_switch
 ```
 
-instead of calling `modeu5_run_monthly_stock_cycle` directly.
+instead of calling `cbp_run_monthly_stock_cycle` directly.
 
 That wrapper preserves the existing monthly ordering:
 
@@ -58,10 +58,10 @@ Only step 6 changes owner shape.
 The new owner is:
 
 ```txt
-modeu5_run_monthly_q8_7_global_market_local_cycle_once
+cbp_run_monthly_q8_7_global_market_local_cycle_once
   -> monthly stamp guard
   -> every_market_in_world
-     -> modeu5_prepare_market_runtime_accounting_mode
+     -> cbp_prepare_market_runtime_accounting_mode
      -> existing market-local branch for detailed markets
      -> vanilla fallback accounting for fallback markets
      -> blocked accounting for blocked markets
@@ -74,7 +74,7 @@ The monthly stamp guard prevents the mutating market-local pass from running onc
 The mutating market-local branch is still the existing helper:
 
 ```txt
-modeu5_run_promoted_market_live_local_branch_market_all_goods
+cbp_run_promoted_market_live_local_branch_market_all_goods
 ```
 
 This means the PR does not rewrite generated-good internals. It preserves the existing Q4.1/PR7.1 live branch shape:
@@ -102,7 +102,7 @@ Q8.7 does not move trade.
 The country trade-owner pass remains after the market-local branch:
 
 ```txt
-modeu5_run_monthly_country_trade_owner_cycle
+cbp_run_monthly_country_trade_owner_cycle
 ```
 
 There is still no `every_trade` call from market scope.
@@ -123,31 +123,31 @@ Once a market is relevant, the market-local work surface remains all countries p
 The PR adds Q8.7 live-owner counters:
 
 ```txt
-modeu5_q8_7_live_global_owner_runs
-modeu5_q8_7_live_global_owner_skip_runs
-modeu5_q8_7_live_global_owner_markets_seen
-modeu5_q8_7_live_global_owner_markets_detailed
-modeu5_q8_7_live_global_owner_markets_fallback
-modeu5_q8_7_live_global_owner_markets_blocked
-modeu5_q8_7_live_global_owner_us00_before_us10_guard
-modeu5_q8_7_live_global_owner_no_market_scope_trade_guard
+cbp_q8_7_live_global_owner_runs
+cbp_q8_7_live_global_owner_skip_runs
+cbp_q8_7_live_global_owner_markets_seen
+cbp_q8_7_live_global_owner_markets_detailed
+cbp_q8_7_live_global_owner_markets_fallback
+cbp_q8_7_live_global_owner_markets_blocked
+cbp_q8_7_live_global_owner_us00_before_us10_guard
+cbp_q8_7_live_global_owner_no_market_scope_trade_guard
 ```
 
 The existing live dispatcher counters are still populated:
 
 ```txt
-modeu5_promoted_market_live_dispatcher_runs
-modeu5_promoted_market_live_markets_detailed
-modeu5_promoted_market_live_markets_fallback
-modeu5_promoted_market_live_markets_blocked
-modeu5_promoted_market_live_country_cache_rebuilds
-modeu5_promoted_market_live_capacity_country_count
-modeu5_promoted_market_live_us00_country_passes
-modeu5_promoted_market_live_us10_country_passes
-modeu5_promoted_market_live_us00_good_scans
-modeu5_promoted_market_live_us10_good_scans
-modeu5_promoted_market_live_local_markets_processed
-modeu5_promoted_market_live_trade_owner_passes
+cbp_promoted_market_live_dispatcher_runs
+cbp_promoted_market_live_markets_detailed
+cbp_promoted_market_live_markets_fallback
+cbp_promoted_market_live_markets_blocked
+cbp_promoted_market_live_country_cache_rebuilds
+cbp_promoted_market_live_capacity_country_count
+cbp_promoted_market_live_us00_country_passes
+cbp_promoted_market_live_us10_country_passes
+cbp_promoted_market_live_us00_good_scans
+cbp_promoted_market_live_us10_good_scans
+cbp_promoted_market_live_local_markets_processed
+cbp_promoted_market_live_trade_owner_passes
 ```
 
 ## Required validation
@@ -158,7 +158,7 @@ Static:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 
@@ -171,7 +171,7 @@ Run full revalidation with default Q8.7 global owner enabled.
 Runtime, temporary rollback owner:
 
 ```txt
-Set modeu5_q8_7_live_global_market_owner_disabled.
+Set cbp_q8_7_live_global_market_owner_disabled.
 Run the same save and full revalidation again.
 ```
 
@@ -193,22 +193,22 @@ If the same-save validation shows equivalent economic results and clean stock va
 Prune:
 
 ```txt
-modeu5_q8_7_live_global_market_owner_disabled
-modeu5_enable_q8_7_live_global_market_owner
-modeu5_disable_q8_7_live_global_market_owner
-modeu5_q8_7_live_global_market_owner_enabled_trigger
-modeu5_q8_7_live_global_market_owner_disabled_trigger
-owner-selection else branch -> modeu5_run_monthly_promoted_market_local_cycle
+cbp_q8_7_live_global_market_owner_disabled
+cbp_enable_q8_7_live_global_market_owner
+cbp_disable_q8_7_live_global_market_owner
+cbp_q8_7_live_global_market_owner_enabled_trigger
+cbp_q8_7_live_global_market_owner_disabled_trigger
+owner-selection else branch -> cbp_run_monthly_promoted_market_local_cycle
 rollback-only documentation references
 ```
 
 Keep:
 
 ```txt
-modeu5_run_monthly_q8_7_global_market_local_cycle_once
+cbp_run_monthly_q8_7_global_market_local_cycle_once
   -> every_market_in_world
   -> per-market detailed / vanilla fallback / blocked runtime paths
-modeu5_run_monthly_country_trade_owner_cycle
+cbp_run_monthly_country_trade_owner_cycle
 ```
 
 The cleanup PR should not remove per-market vanilla fallback. It should only remove the old owner-selection rollback branch.

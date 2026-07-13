@@ -1,0 +1,426 @@
+# ModeU5 US-10-UI market table read-model helpers.
+#
+# These helpers feed the player-facing ModeU5 stock tab and deterministic
+# debug probes. They read canonical country x market x good records and expose
+# a generated per-good UI row for every ModeU5 stock good. Rows with no selected
+# market production stay hidden in the GUI.
+
+cbp_us10_ui_clear_selected_market_work_list = {
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
+		clear_global_variable_list = gui_cbp_us10_ui_selected_market
+	}
+}
+
+cbp_us10_ui_clear_next_selected_market_work_list = {
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_next_selected_market }
+		clear_global_variable_list = gui_cbp_us10_ui_next_selected_market
+	}
+}
+
+cbp_us10_ui_clear_market_selector_work_list = {
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets }
+		clear_global_variable_list = gui_cbp_us10_ui_market_selector_markets
+	}
+}
+
+cbp_us10_ui_clear_good_row = {
+	remove_variable = gui_cbp_us10_ui_$key$_country_stock
+	remove_variable = gui_cbp_us10_ui_$key$_country_capacity
+	remove_variable = gui_cbp_us10_ui_$key$_market_stock
+	remove_variable = gui_cbp_us10_ui_$key$_market_capacity
+	remove_variable = gui_cbp_us10_ui_$key$_overproduction_percent
+	remove_variable = gui_cbp_us10_ui_$key$_overproduction_warning
+	remove_variable = gui_cbp_us10_ui_$key$_country_over_cap
+	remove_variable = gui_cbp_us10_ui_$key$_market_over_cap
+	remove_variable = gui_cbp_us10_ui_$key$_produced
+	remove_variable = gui_cbp_us10_ui_$key$_added
+	remove_variable = gui_cbp_us10_ui_$key$_rejected
+	remove_variable = gui_cbp_us10_ui_$key$_production_penalty_percent
+}
+
+cbp_us10_ui_clear_table_variables = {
+	remove_variable = gui_cbp_us10_ui_selected_market_available
+	remove_variable = gui_cbp_us10_ui_market_count
+	remove_variable = gui_cbp_us10_ui_selected_market_index
+	remove_variable = gui_cbp_us10_ui_selected_market_capacity
+	cbp_us10_ui_clear_good_row = { key = cotton }
+	cbp_us10_ui_clear_good_row = { key = sugar }
+	cbp_us10_ui_clear_good_row = { key = tobacco }
+	cbp_us10_ui_clear_good_row = { key = tar }
+	cbp_us10_ui_clear_good_row = { key = porcelain }
+	cbp_us10_ui_clear_good_row = { key = naval_supplies }
+	cbp_us10_ui_clear_good_row = { key = firearms }
+	cbp_us10_ui_clear_good_row = { key = cannons }
+	cbp_us10_ui_clear_good_row = { key = weaponry }
+	cbp_us10_ui_clear_good_row = { key = glass }
+	cbp_us10_ui_clear_good_row = { key = steel }
+	cbp_us10_ui_clear_good_row = { key = cloth }
+	cbp_us10_ui_clear_good_row = { key = fine_cloth }
+	cbp_us10_ui_clear_good_row = { key = liquor }
+	cbp_us10_ui_clear_good_row = { key = beer }
+	cbp_us10_ui_clear_good_row = { key = paper }
+	cbp_us10_ui_clear_good_row = { key = books }
+	cbp_us10_ui_clear_good_row = { key = jewelry }
+	cbp_us10_ui_clear_good_row = { key = leather }
+	cbp_us10_ui_clear_good_row = { key = tools }
+	cbp_us10_ui_clear_good_row = { key = masonry }
+	cbp_us10_ui_clear_good_row = { key = lacquerware }
+	cbp_us10_ui_clear_good_row = { key = pottery }
+	cbp_us10_ui_clear_good_row = { key = furniture }
+	cbp_us10_ui_clear_good_row = { key = horses }
+	cbp_us10_ui_clear_good_row = { key = clay }
+	cbp_us10_ui_clear_good_row = { key = sand }
+	cbp_us10_ui_clear_good_row = { key = coal }
+	cbp_us10_ui_clear_good_row = { key = iron }
+	cbp_us10_ui_clear_good_row = { key = copper }
+	cbp_us10_ui_clear_good_row = { key = goods_gold }
+	cbp_us10_ui_clear_good_row = { key = silver }
+	cbp_us10_ui_clear_good_row = { key = stone }
+	cbp_us10_ui_clear_good_row = { key = tin }
+	cbp_us10_ui_clear_good_row = { key = lead }
+	cbp_us10_ui_clear_good_row = { key = silk }
+	cbp_us10_ui_clear_good_row = { key = dyes }
+	cbp_us10_ui_clear_good_row = { key = incense }
+	cbp_us10_ui_clear_good_row = { key = tea }
+	cbp_us10_ui_clear_good_row = { key = cocoa }
+	cbp_us10_ui_clear_good_row = { key = coffee }
+	cbp_us10_ui_clear_good_row = { key = fiber_crops }
+	cbp_us10_ui_clear_good_row = { key = ivory }
+	cbp_us10_ui_clear_good_row = { key = lumber }
+	cbp_us10_ui_clear_good_row = { key = salt }
+	cbp_us10_ui_clear_good_row = { key = medicaments }
+	cbp_us10_ui_clear_good_row = { key = gems }
+	cbp_us10_ui_clear_good_row = { key = pearls }
+	cbp_us10_ui_clear_good_row = { key = amber }
+	cbp_us10_ui_clear_good_row = { key = saltpeter }
+	cbp_us10_ui_clear_good_row = { key = alum }
+	cbp_us10_ui_clear_good_row = { key = wine }
+	cbp_us10_ui_clear_good_row = { key = elephants }
+	cbp_us10_ui_clear_good_row = { key = marble }
+	cbp_us10_ui_clear_good_row = { key = mercury }
+	cbp_us10_ui_clear_good_row = { key = saffron }
+	cbp_us10_ui_clear_good_row = { key = pepper }
+	cbp_us10_ui_clear_good_row = { key = cloves }
+	cbp_us10_ui_clear_good_row = { key = chili }
+	cbp_us10_ui_clear_good_row = { key = wool }
+	cbp_us10_ui_clear_good_row = { key = wild_game }
+	cbp_us10_ui_clear_good_row = { key = fur }
+	cbp_us10_ui_clear_good_row = { key = fish }
+	cbp_us10_ui_clear_good_row = { key = wheat }
+	cbp_us10_ui_clear_good_row = { key = maize }
+	cbp_us10_ui_clear_good_row = { key = rice }
+	cbp_us10_ui_clear_good_row = { key = millet }
+	cbp_us10_ui_clear_good_row = { key = legumes }
+	cbp_us10_ui_clear_good_row = { key = potato }
+	cbp_us10_ui_clear_good_row = { key = livestock }
+	cbp_us10_ui_clear_good_row = { key = olives }
+	cbp_us10_ui_clear_good_row = { key = fruit }
+	cbp_us10_ui_clear_good_row = { key = beeswax }
+	cbp_us10_ui_clear_good_row = { key = slaves_goods }
+}
+
+cbp_us10_ui_rebuild_country_market_selector = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_clear_market_selector_work_list = yes
+
+	set_variable = { name = gui_cbp_us10_ui_market_count value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+
+	every_market_present_in_country = {
+		save_temporary_scope_as = cbp_us10_ui_candidate_market
+		scope:cbp_us10_ui_country = {
+			set_variable = {
+				name = gui_cbp_us10_ui_market_count
+				value = { value = var:gui_cbp_us10_ui_market_count add = 1 }
+			}
+		}
+		if = {
+			limit = { NOT = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets } }
+			add_to_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:cbp_us10_ui_candidate_market }
+		}
+		else_if = {
+			limit = {
+				NOT = {
+					is_target_in_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:cbp_us10_ui_candidate_market }
+				}
+			}
+			add_to_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:cbp_us10_ui_candidate_market }
+		}
+	}
+}
+
+cbp_us10_ui_set_selected_market = {
+	$market$ = { save_temporary_scope_as = cbp_us10_ui_candidate_market }
+	cbp_us10_ui_clear_selected_market_work_list = yes
+	add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:cbp_us10_ui_candidate_market }
+}
+
+cbp_us10_ui_select_first_market_from_selector = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_clear_selected_market_work_list = yes
+	set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_index value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets }
+		every_in_global_list = {
+			variable = gui_cbp_us10_ui_market_selector_markets
+			save_temporary_scope_as = cbp_us10_ui_candidate_market
+			scope:cbp_us10_ui_country = {
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
+			}
+			if = {
+				limit = { scope:cbp_us10_ui_country = { var:gui_cbp_us10_ui_selected_market_found = 0 } }
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:cbp_us10_ui_candidate_market }
+				scope:cbp_us10_ui_country = {
+					set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
+				}
+			}
+		}
+	}
+}
+
+cbp_us10_ui_validate_or_select_market = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_rebuild_country_market_selector = yes
+	set_variable = { name = gui_cbp_us10_ui_selected_market_valid value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_index value = 0 }
+
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets has_global_variable_list = gui_cbp_us10_ui_selected_market }
+		every_in_global_list = {
+			variable = gui_cbp_us10_ui_market_selector_markets
+			save_temporary_scope_as = cbp_us10_ui_candidate_market
+			scope:cbp_us10_ui_country = {
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
+			}
+			if = {
+				limit = { is_target_in_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:cbp_us10_ui_candidate_market } }
+				scope:cbp_us10_ui_country = {
+					set_variable = { name = gui_cbp_us10_ui_selected_market_valid value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
+				}
+			}
+		}
+	}
+
+	if = {
+		limit = { var:gui_cbp_us10_ui_selected_market_valid = 0 }
+		cbp_us10_ui_select_first_market_from_selector = yes
+	}
+}
+
+cbp_us10_ui_select_next_market = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_rebuild_country_market_selector = yes
+	cbp_us10_ui_clear_next_selected_market_work_list = yes
+
+	if = {
+		limit = { OR = { NOT = { has_global_variable_list = gui_cbp_us10_ui_selected_market } NOT = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets } } }
+		cbp_us10_ui_select_first_market_from_selector = yes
+	}
+	else = {
+		set_variable = { name = gui_cbp_us10_ui_seen_current_market value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+
+		every_in_global_list = {
+			variable = gui_cbp_us10_ui_market_selector_markets
+			save_temporary_scope_as = cbp_us10_ui_candidate_market
+			scope:cbp_us10_ui_country = {
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
+			}
+			if = {
+				limit = { scope:cbp_us10_ui_country = { var:gui_cbp_us10_ui_seen_current_market = 1 var:gui_cbp_us10_ui_selected_market_found = 0 } }
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_next_selected_market target = scope:cbp_us10_ui_candidate_market }
+				scope:cbp_us10_ui_country = {
+					set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
+				}
+			}
+			if = {
+				limit = { is_target_in_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:cbp_us10_ui_candidate_market } }
+				scope:cbp_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_seen_current_market value = 1 } }
+			}
+		}
+
+		if = {
+			limit = { var:gui_cbp_us10_ui_selected_market_found = 0 }
+			cbp_us10_ui_select_first_market_from_selector = yes
+		}
+		else = {
+			cbp_us10_ui_clear_selected_market_work_list = yes
+			every_in_global_list = {
+				variable = gui_cbp_us10_ui_next_selected_market
+				save_temporary_scope_as = cbp_us10_ui_candidate_market
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:cbp_us10_ui_candidate_market }
+			}
+		}
+	}
+}
+
+cbp_us10_ui_compute_selected_market_capacity = {
+	scope:cbp_us10_ui_country = { set_local_variable = { name = gui_cbp_us10_ui_market_capacity_accumulator value = 0 } }
+	scope:cbp_us10_ui_selected_market_scope = { save_temporary_scope_as = cbp_market_country_cache_market }
+	cbp_rebuild_countries_present_in_market = yes
+
+	if = {
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
+		every_in_global_list = {
+			variable = cbp_countries_present_in_market
+			if = {
+				limit = { has_variable_map = cbp_stock_cap_by_market is_key_in_variable_map = { name = cbp_stock_cap_by_market target = scope:cbp_us10_ui_selected_market_scope } }
+				save_temporary_scope_value_as = { name = gui_cbp_us10_ui_country_market_capacity value = { value = "variable_map(cbp_stock_cap_by_market|scope:cbp_us10_ui_selected_market_scope)" min = 0 } }
+				scope:cbp_us10_ui_country = { change_local_variable = { name = gui_cbp_us10_ui_market_capacity_accumulator add = scope:gui_cbp_us10_ui_country_market_capacity } }
+			}
+		}
+	}
+
+	scope:cbp_us10_ui_country = {
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_selected_market_capacity_value value = local_var:cbp_us10_ui_market_capacity_accumulator }
+		set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
+	}
+}
+
+cbp_us10_ui_capture_good_row = {
+	cbp_read_country_stock_record = {
+		country = scope:cbp_us10_ui_country
+		market = scope:cbp_us10_ui_selected_market_scope
+		good = $good$
+	}
+	cbp_read_void_economy_record = {
+		country = scope:cbp_us10_ui_country
+		market = scope:cbp_us10_ui_selected_market_scope
+		good = $good$
+	}
+	scope:cbp_us10_ui_country = {
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_row_market_capacity value = var:gui_cbp_us10_ui_selected_market_capacity }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = scope:cbp_read_country_stock }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = scope:cbp_read_country_stock_cap }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = scope:cbp_read_market_stock }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = scope:gui_cbp_us10_ui_row_market_capacity }
+		set_variable = { name = gui_cbp_us10_ui_$key$_produced value = scope:cbp_us00_produced }
+		set_variable = { name = gui_cbp_us10_ui_$key$_added value = scope:cbp_us00_added }
+		set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = scope:cbp_us00_rejected }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = scope:cbp_read_over_capacity }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = scope:gui_cbp_us10_ui_row_market_capacity min = 0 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = scope:gui_cbp_us10_ui_$key$_market_over_cap_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_overproduction_percent_value value = { value = scope:cbp_us00_read_overproduction_ratio multiply = 100 min = 0 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = scope:gui_cbp_us10_ui_$key$_overproduction_percent_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_production_penalty_percent_value value = { value = scope:cbp_us00_read_production_penalty multiply = 100 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_production_penalty_percent value = scope:gui_cbp_us10_ui_$key$_production_penalty_percent_value }
+		if = {
+			limit = { scope:cbp_us00_read_overproduction_ratio > 0.05 }
+			set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 1 }
+		}
+		else = { set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 0 } }
+	}
+}
+
+cbp_us10_ui_capture_all_good_rows = {
+	cbp_us10_ui_capture_good_row = { good = cotton key = cotton }
+	cbp_us10_ui_capture_good_row = { good = sugar key = sugar }
+	cbp_us10_ui_capture_good_row = { good = tobacco key = tobacco }
+	cbp_us10_ui_capture_good_row = { good = tar key = tar }
+	cbp_us10_ui_capture_good_row = { good = porcelain key = porcelain }
+	cbp_us10_ui_capture_good_row = { good = naval_supplies key = naval_supplies }
+	cbp_us10_ui_capture_good_row = { good = firearms key = firearms }
+	cbp_us10_ui_capture_good_row = { good = cannons key = cannons }
+	cbp_us10_ui_capture_good_row = { good = weaponry key = weaponry }
+	cbp_us10_ui_capture_good_row = { good = glass key = glass }
+	cbp_us10_ui_capture_good_row = { good = steel key = steel }
+	cbp_us10_ui_capture_good_row = { good = cloth key = cloth }
+	cbp_us10_ui_capture_good_row = { good = fine_cloth key = fine_cloth }
+	cbp_us10_ui_capture_good_row = { good = liquor key = liquor }
+	cbp_us10_ui_capture_good_row = { good = beer key = beer }
+	cbp_us10_ui_capture_good_row = { good = paper key = paper }
+	cbp_us10_ui_capture_good_row = { good = books key = books }
+	cbp_us10_ui_capture_good_row = { good = jewelry key = jewelry }
+	cbp_us10_ui_capture_good_row = { good = leather key = leather }
+	cbp_us10_ui_capture_good_row = { good = tools key = tools }
+	cbp_us10_ui_capture_good_row = { good = masonry key = masonry }
+	cbp_us10_ui_capture_good_row = { good = lacquerware key = lacquerware }
+	cbp_us10_ui_capture_good_row = { good = pottery key = pottery }
+	cbp_us10_ui_capture_good_row = { good = furniture key = furniture }
+	cbp_us10_ui_capture_good_row = { good = horses key = horses }
+	cbp_us10_ui_capture_good_row = { good = clay key = clay }
+	cbp_us10_ui_capture_good_row = { good = sand key = sand }
+	cbp_us10_ui_capture_good_row = { good = coal key = coal }
+	cbp_us10_ui_capture_good_row = { good = iron key = iron }
+	cbp_us10_ui_capture_good_row = { good = copper key = copper }
+	cbp_us10_ui_capture_good_row = { good = goods_gold key = goods_gold }
+	cbp_us10_ui_capture_good_row = { good = silver key = silver }
+	cbp_us10_ui_capture_good_row = { good = stone key = stone }
+	cbp_us10_ui_capture_good_row = { good = tin key = tin }
+	cbp_us10_ui_capture_good_row = { good = lead key = lead }
+	cbp_us10_ui_capture_good_row = { good = silk key = silk }
+	cbp_us10_ui_capture_good_row = { good = dyes key = dyes }
+	cbp_us10_ui_capture_good_row = { good = incense key = incense }
+	cbp_us10_ui_capture_good_row = { good = tea key = tea }
+	cbp_us10_ui_capture_good_row = { good = cocoa key = cocoa }
+	cbp_us10_ui_capture_good_row = { good = coffee key = coffee }
+	cbp_us10_ui_capture_good_row = { good = fiber_crops key = fiber_crops }
+	cbp_us10_ui_capture_good_row = { good = ivory key = ivory }
+	cbp_us10_ui_capture_good_row = { good = lumber key = lumber }
+	cbp_us10_ui_capture_good_row = { good = salt key = salt }
+	cbp_us10_ui_capture_good_row = { good = medicaments key = medicaments }
+	cbp_us10_ui_capture_good_row = { good = gems key = gems }
+	cbp_us10_ui_capture_good_row = { good = pearls key = pearls }
+	cbp_us10_ui_capture_good_row = { good = amber key = amber }
+	cbp_us10_ui_capture_good_row = { good = saltpeter key = saltpeter }
+	cbp_us10_ui_capture_good_row = { good = alum key = alum }
+	cbp_us10_ui_capture_good_row = { good = wine key = wine }
+	cbp_us10_ui_capture_good_row = { good = elephants key = elephants }
+	cbp_us10_ui_capture_good_row = { good = marble key = marble }
+	cbp_us10_ui_capture_good_row = { good = mercury key = mercury }
+	cbp_us10_ui_capture_good_row = { good = saffron key = saffron }
+	cbp_us10_ui_capture_good_row = { good = pepper key = pepper }
+	cbp_us10_ui_capture_good_row = { good = cloves key = cloves }
+	cbp_us10_ui_capture_good_row = { good = chili key = chili }
+	cbp_us10_ui_capture_good_row = { good = wool key = wool }
+	cbp_us10_ui_capture_good_row = { good = wild_game key = wild_game }
+	cbp_us10_ui_capture_good_row = { good = fur key = fur }
+	cbp_us10_ui_capture_good_row = { good = fish key = fish }
+	cbp_us10_ui_capture_good_row = { good = wheat key = wheat }
+	cbp_us10_ui_capture_good_row = { good = maize key = maize }
+	cbp_us10_ui_capture_good_row = { good = rice key = rice }
+	cbp_us10_ui_capture_good_row = { good = millet key = millet }
+	cbp_us10_ui_capture_good_row = { good = legumes key = legumes }
+	cbp_us10_ui_capture_good_row = { good = potato key = potato }
+	cbp_us10_ui_capture_good_row = { good = livestock key = livestock }
+	cbp_us10_ui_capture_good_row = { good = olives key = olives }
+	cbp_us10_ui_capture_good_row = { good = fruit key = fruit }
+	cbp_us10_ui_capture_good_row = { good = beeswax key = beeswax }
+	cbp_us10_ui_capture_good_row = { good = slaves_goods key = slaves_goods }
+}
+
+cbp_us10_ui_prepare_current_market_table = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_clear_table_variables = yes
+	cbp_us10_ui_validate_or_select_market = yes
+
+	if = {
+		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
+		every_in_global_list = {
+			variable = gui_cbp_us10_ui_selected_market
+			save_temporary_scope_as = cbp_us10_ui_selected_market_scope
+			scope:cbp_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 1 } }
+			cbp_us10_ui_compute_selected_market_capacity = yes
+			cbp_us10_ui_capture_all_good_rows = yes
+			cbp_us10_ui_log_table = yes
+		}
+	}
+	else = { set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 0 } }
+}
+
+cbp_us10_ui_log_table = {
+	scope:cbp_us10_ui_country = {
+		debug_log = "ModeU5 US-10-UI TABLE market_index=[THIS.GetVariable('cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('cbp_us10_ui_selected_market_available').GetValue|0]"
+	}
+}

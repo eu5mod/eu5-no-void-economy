@@ -12,7 +12,7 @@ As a modder, I want a shared stock-demand resolver so consumption and inter-mark
 
 ## Functional objective
 
-Implement `modeu5_resolve_stock_demand` as a non-mutating resolver that accepts demand context, builds eligible candidates, scores and orders them, and returns candidate/exclusion diagnostics.
+Implement `cbp_resolve_stock_demand` as a non-mutating resolver that accepts demand context, builds eligible candidates, scores and orders them, and returns candidate/exclusion diagnostics.
 
 ## Current implementation slice
 

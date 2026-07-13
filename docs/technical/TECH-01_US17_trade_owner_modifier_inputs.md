@@ -13,7 +13,7 @@ matrix-wide maintenance pass.
 The modifier owner is the country saved from the trade-scope `owner` link:
 
 ```txt
-scope:modeu5_trade_owner_country
+scope:cbp_trade_owner_country
 ```
 
 The monthly route loop enters that saved country scope before reading any
@@ -25,11 +25,11 @@ them independently resolves to the saved trade owner.
 
 | Need | Required scope | Exposure | Type | Status | Runtime use |
 |---|---|---|---|---|---|
-| Semantic buying efficiency | saved trade-owner country | `modifier:import_efficiency` | country modifier value | CONFIRMED | Captured into `modeu5_trade_efficiency_buying_efficiency` |
-| Selling efficiency | saved trade-owner country | `modifier:selling_efficiency` | country modifier value | CONFIRMED | Captured into `modeu5_trade_efficiency_selling_efficiency` |
-| Merchant maintenance efficiency | saved trade-owner country | `modifier:merchant_maintenance_efficiency` | country modifier value | CONFIRMED | Captured into `modeu5_trade_efficiency_merchant_maintenance_efficiency` |
-| Base merchant maintenance unit cost | script value | `define:NCountry|MERCHANT_MAINTENANCE_COST` | define value | CONFIRMED | Captured into `modeu5_trade_efficiency_base_maintenance_unit_cost` |
-| Base route maintenance | route trade context | `trade_volume × define:NCountry|MERCHANT_MAINTENANCE_COST` | derived value | CONFIRMED for controlled probe and live capture | Captured into `modeu5_trade_efficiency_base_maintenance_amount` |
+| Semantic buying efficiency | saved trade-owner country | `modifier:import_efficiency` | country modifier value | CONFIRMED | Captured into `cbp_trade_efficiency_buying_efficiency` |
+| Selling efficiency | saved trade-owner country | `modifier:selling_efficiency` | country modifier value | CONFIRMED | Captured into `cbp_trade_efficiency_selling_efficiency` |
+| Merchant maintenance efficiency | saved trade-owner country | `modifier:merchant_maintenance_efficiency` | country modifier value | CONFIRMED | Captured into `cbp_trade_efficiency_merchant_maintenance_efficiency` |
+| Base merchant maintenance unit cost | script value | `define:NCountry|MERCHANT_MAINTENANCE_COST` | define value | CONFIRMED | Captured into `cbp_trade_efficiency_base_maintenance_unit_cost` |
+| Base route maintenance | route trade context | `trade_volume × define:NCountry|MERCHANT_MAINTENANCE_COST` | derived value | CONFIRMED for controlled probe and live capture | Captured into `cbp_trade_efficiency_base_maintenance_amount` |
 | Cap average efficiency above one | transaction-local numeric value | `max = 1` | script-value upper bound | CONFIRMED | No lower clamp; negative values remain negative |
 
 The tested EU5 build rejects these former candidate names:
@@ -47,7 +47,7 @@ value errors. They must not appear in executable script.
 The base cost is not duplicated in a scripted constant:
 
 ```txt
-modeu5_trade_base_merchant_maintenance_cost = {
+cbp_trade_base_merchant_maintenance_cost = {
   value = define:NCountry|MERCHANT_MAINTENANCE_COST
   min = 0
 }
@@ -131,7 +131,7 @@ route-input block from the confirmed owner-modifier and maintenance-define layer
 ## Runtime probe
 
 ```txt
-event modeu5_us17_owner_modifiers.1
+event cbp_us17_owner_modifiers.1
 ```
 
 Expected marker:

@@ -17,9 +17,9 @@ authoritative in minimal mode.
 
 ## Selected Design
 
-- Generate `modeu5_clear_retired_us00_diagnostic_fields_good_<good>`.
-- Generate `modeu5_clear_retired_us00_diagnostic_fields_all_goods`.
-- Generate `modeu5_migrate_current_country_us00_minimal_persistence`.
+- Generate `cbp_clear_retired_us00_diagnostic_fields_good_<good>`.
+- Generate `cbp_clear_retired_us00_diagnostic_fields_all_goods`.
+- Generate `cbp_migrate_current_country_us00_minimal_persistence`.
 - The migration clears:
   - produced;
   - added;
@@ -53,7 +53,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check
@@ -65,8 +65,8 @@ Runtime migration smoke:
 Start with NVE : Accounting Persistence = Strict Full Ledger.
 Run one US-00 monthly runtime scenario so diagnostic ledger maps exist.
 Switch to a test save or debug setup where minimal migration can be invoked.
-Run modeu5_migrate_current_country_us00_minimal_persistence for the current country.
-Run event modeu5_revalidate_debug.1 and select Revalidate main operations.
+Run cbp_migrate_current_country_us00_minimal_persistence for the current country.
+Run event cbp_revalidate_debug.1 and select Revalidate main operations.
 ```
 
 Expected:

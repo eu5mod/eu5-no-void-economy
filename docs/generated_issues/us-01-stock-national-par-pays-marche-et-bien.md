@@ -26,10 +26,10 @@ Feeds counters to: US-00, US-02, US-03, US-10, US-11
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `modeu5_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market × good | logical `market_good_stock`; physical global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
-| Capacity and available capacity | country × market shared record plus country × market × good stock | logical shared `capacity` field; physical `modeu5_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
-| Read-only record access | explicit country, market, and good | `modeu5_read_country_stock_record` plus generated literal per-good adapter | CONFIRMED | internal |
+| Country stock record field | country × market × good | logical record field `stock`; physical country-scoped `cbp_<good>_stock_by_market` map keyed by market | CONFIRMED | 007, 015 |
+| Market aggregate | market × good | logical `market_good_stock`; physical global per-good `cbp_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Capacity and available capacity | country × market shared record plus country × market × good stock | logical shared `capacity` field; physical `cbp_stock_cap_by_market`; scripted capacity minus stock | CONFIRMED | 007, 017-018 |
+| Read-only record access | explicit country, market, and good | `cbp_read_country_stock_record` plus generated literal per-good adapter | CONFIRMED | internal |
 | Market/good iteration and scope passing | none/effect → market/goods | `every_market_in_world`, `every_goods`, saved scopes | CONFIRMED | 002, 006, 008 |
 
 ## Variable-map storage pattern
@@ -56,7 +56,7 @@ Confirmed physical stock field:
 
 ```txt
 owner scope: country
-map name:    modeu5_<good>_stock_by_market
+map name:    cbp_<good>_stock_by_market
 key:         market scope
 value:       numeric stock
 default:     0
@@ -67,7 +67,7 @@ Market aggregate/cache:
 
 ```txt
 owner scope: global variable system
-map name:    modeu5_<good>_market_stock
+map name:    cbp_<good>_market_stock
 key:         market scope
 value:       numeric aggregate stock
 default:     0
@@ -77,13 +77,13 @@ rebuild:     sum country source records' stock fields
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_stock_goods_generated.txt
-in_game/common/scripted_effects/modeu5_stock_test_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/events/modeu5_debug_events.txt
-main_menu/localization/english/modeu5_stock_l_english.yml
-tools/templates/modeu5_stock_good_adapter.template.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_stock_goods_generated.txt
+in_game/common/scripted_effects/cbp_stock_test_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/events/cbp_debug_events.txt
+main_menu/localization/english/cbp_stock_l_english.yml
+tools/templates/cbp_stock_good_adapter.template.txt
 tools/validate_module_packages.sh
 docs/tests/US_01_CONSOLE_TEST_RUNBOOK.md
 docs/tests/TEST_PLAN.md
@@ -112,13 +112,13 @@ Related US: US-01-UI, CORE-02, CORE-03
 - Replace existing entries by remove/re-add inside their owning centralized effect.
 - Do not construct per-good map names dynamically; use generated per-good helpers.
 - Treat the physical map family as an implementation of one logical record, not as unrelated variables.
-- Use `modeu5_read_country_stock_record` for read-only stock, capacity,
+- Use `cbp_read_country_stock_record` for read-only stock, capacity,
   available-capacity, over-cap, and market-aggregate diagnostics.
 - Log requested, actual, rejected/unsatisfied, before/after, and invariant difference.
 
 ## US-specific boundary checks
 
-- [ ] Production enters country stock through `modeu5_add_stock`.
+- [ ] Production enters country stock through `cbp_add_stock`.
 - [ ] Production attribution is consistent between the stock destination and US-00.1 ledger.
 - [ ] Rejected production does not create effective ModeU5 wealth.
 - [ ] The data model distinguishes the same good in different markets.
@@ -146,7 +146,7 @@ Related US: US-01-UI, CORE-02, CORE-03
 ```txt
 Country A; Markets M1/M2; Good iron
 M1 stock 80/cap 100; M2 stock 10/cap 50
-Add 50 to M1 and 20 to M2 through modeu5_add_stock
+Add 50 to M1 and 20 to M2 through cbp_add_stock
 ```
 
 ### Expected result

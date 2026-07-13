@@ -49,7 +49,7 @@ Package selection occurs before campaign load. Adding or removing a package mid-
 
 The default supported playset enables Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing together. Optional means removable before campaign start, not disabled by default. Core must never synthesize a companion package marker when that package is absent.
 
-ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level`, audit mode, and save mode use the Community Mod Manager and are fixed when the campaign starts. Do not create an in-game configuration panel or custom ModeU5 game rules.
+ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `cbp_debug_level`, audit mode, and save mode use the Community Mod Manager and are fixed when the campaign starts. Do not create an in-game configuration panel or custom ModeU5 game rules.
 
 ## Variable-map storage rule
 
@@ -100,9 +100,9 @@ an adapter but must never carry a map name.
 
 US-02 storage capacity is the explicit exception to per-good record storage:
 capacity is identical for every good in one country-market relation, so persist
-it once in country-scoped `modeu5_stock_cap_by_market` and related breakdown
+it once in country-scoped `cbp_stock_cap_by_market` and related breakdown
 maps keyed by market. Generated per-good adapters read that shared capacity and
-must not recreate `modeu5_<good>_stock_cap_by_market`.
+must not recreate `cbp_<good>_stock_cap_by_market`.
 
 US-02 capacity is derived from one country-level location pool plus the current
 market's own trade capacity. Sum the country's owned-location rank contribution
@@ -130,12 +130,12 @@ No user story may directly mutate stock variables.
 All stock mutations must go through centralized scripted effects:
 
 ```txt
-modeu5_add_stock
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_decay_stock
-modeu5_rebuild_market_stock_from_country_stocks
-modeu5_validate_stock_consistency
+cbp_add_stock
+cbp_remove_stock
+cbp_transfer_stock
+cbp_decay_stock
+cbp_rebuild_market_stock_from_country_stocks
+cbp_validate_stock_consistency
 ```
 
 If an implementation writes directly to `country_market_good_stock` or `market_good_stock` outside these effects, stop and refactor.
@@ -152,19 +152,19 @@ A monthly economic cycle must follow this logical sequence:
 3. If the Rebalance Economy package is loaded, apply its global ModeU5 modifiers, including the +5% Production Efficiency compensation.
 4. Read or estimate vanilla production.
 5. Calculate ModeU5-recognized production.
-6. Add stockable production through modeu5_add_stock.
+6. Add stockable production through cbp_add_stock.
 7. Update market stock through the centralized operation.
 8. Update US-00.1 production / added / rejected ledger.
 9. Resolve Pop and Estate consumption through US-10.1.
 10. Track satisfied and unsatisfied quantities through US-10.3.
 11. Resolve inter-market transfers through US-10.2 when applicable.
-12. Apply monthly decay through modeu5_decay_stock.
+12. Apply monthly decay through cbp_decay_stock.
 13. Calculate US-00.2 overproduction ratios.
 14. Calculate US-00.4 void wealth.
 15. Calculate US-00.3 next-month production penalties.
 16. If the Rebalance Economy package is loaded, calculate the US-05 Economic Base.
 17. If the Rebalance Economy package is loaded, display the US-05 formula inputs and result when exposure permits.
-18. Validate stock consistency through modeu5_validate_stock_consistency.
+18. Validate stock consistency through cbp_validate_stock_consistency.
 19. Reset monthly counters only after every consumer has read them.
 ```
 
@@ -245,7 +245,7 @@ flowchart TD
 - If the promoted-market shell is launched from country pulse, a deterministic processing-owner guard or equivalent test-only restriction must prevent every country present from mutating the same market-local branch.
 - Same-market consumption and inter-market trade are separate ownership phases.
 - Same-market consumption must not create trade income, transport cost, trade capacity usage, or trade profit.
-- Inter-market transfer must go through `modeu5_resolve_inter_market_stock_transfer` and `modeu5_transfer_stock`.
+- Inter-market transfer must go through `cbp_resolve_inter_market_stock_transfer` and `cbp_transfer_stock`.
 - `every_trade` is confirmed only as a country-scope iterator; do not call it from market scope or treat it as the promoted-market iterator.
 - The country trade-owner pass should consider trades owned by the current country once and delegate stock consequences to handlers.
 - The new promoted-market dispatcher must remain test-only or feature-gated until comparative Normal / Performance / Audit / Debug probes pass.

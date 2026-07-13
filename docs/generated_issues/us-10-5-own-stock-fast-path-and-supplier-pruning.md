@@ -14,15 +14,15 @@ Implement the follow-up requested by issue #109 for US-10 demand resolution:
 
 For same-market consumption, own stock is always the first candidate. If it fully
 satisfies the request, US-10 does not scan other countries unless
-`modeu5_us10_debug_force_full_candidate_scan` is enabled for a debug probe.
+`cbp_us10_debug_force_full_candidate_scan` is enabled for a debug probe.
 
 External suppliers are pruned before expensive relation or score reads when:
 
 - they have no usable stock;
 - their stock is below the minimum stock threshold;
-- their stock is below `capacity * modeu5_us10_supplier_min_stock_ratio`;
+- their stock is below `capacity * cbp_us10_supplier_min_stock_ratio`;
 - their monthly ModeU5 net balance is negative and their stock is below
-  `capacity * modeu5_us10_supplier_negative_balance_reserve_ratio`.
+  `capacity * cbp_us10_supplier_negative_balance_reserve_ratio`.
 
 Own-country consumption is exempt from the supplier reserve floor. The reserve
 floor is a supplier-protection rule, not a block on a country's own consumption.
@@ -61,7 +61,7 @@ ModeU5 US-10 DUMP issue109 aggregate_prefilter ...
 Run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -79,8 +79,8 @@ ModeU5 TEST PASS scenario=us10_issue109_fast_path_pruning
 Then run:
 
 ```txt
-event modeu5_revalidate_debug.1
-./tools/summarize_modeu5_test_logs.sh
+event cbp_revalidate_debug.1
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected broad result:

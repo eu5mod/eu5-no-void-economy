@@ -46,18 +46,18 @@ Not a runtime feature:
 - [ ] `./tools/generate_all.sh` was run when a generator input changed.
 - [ ] Generated output is ignored by Git, idempotent, and was not hand-edited.
 - [ ] Generated output was not committed; CI regenerates it before validation.
-- [ ] New generated text artifacts use the `modeu5_*_generated.txt` naming convention.
+- [ ] New generated text artifacts use the `cbp_*_generated.txt` naming convention.
 - [ ] Every physical map identifier is literal and contains no remaining `$`.
 - [ ] Stock arithmetic and business rules remain in shared scripted effects, not the shell generator.
 
 ## Stock mutation rule
 
 - [ ] No direct stock variable mutation outside centralized stock effects.
-- [ ] `modeu5_add_stock` used where relevant.
-- [ ] `modeu5_remove_stock` used where relevant.
-- [ ] `modeu5_transfer_stock` used where relevant.
-- [ ] `modeu5_decay_stock` used where relevant.
-- [ ] `modeu5_validate_stock_consistency` or rebuild path used where relevant.
+- [ ] `cbp_add_stock` used where relevant.
+- [ ] `cbp_remove_stock` used where relevant.
+- [ ] `cbp_transfer_stock` used where relevant.
+- [ ] `cbp_decay_stock` used where relevant.
+- [ ] `cbp_validate_stock_consistency` or rebuild path used where relevant.
 
 ## Runtime boundary checks
 

@@ -33,12 +33,12 @@ The PR126 monthly target is ownership-split: country pulse prepares country-owne
 
 | Priority | Issue | Release impact | Affected files | Recommended action | Effort |
 |---|---|---|---|---|---|
-| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `modeu5_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
-| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `modeu5_stock_effects.txt`, `modeu5_void_economy_effects.txt`, `modeu5_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
-| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `modeu5_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
-| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `modeu5_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
-| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
-| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/modeu5_core_tests/...` | Factor dump conventions, not business scenarios | M |
+| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `cbp_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
+| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `cbp_stock_effects.txt`, `cbp_void_economy_effects.txt`, `cbp_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
+| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `cbp_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
+| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `cbp_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
+| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `cbp_configuration_effects.txt`, `cbp_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
+| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/cbp_core_tests/...` | Factor dump conventions, not business scenarios | M |
 | P2 | Historical optional package names are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
 
 ## Non-negotiable contracts for the PR126 stack

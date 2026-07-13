@@ -14,7 +14,7 @@ names and map names are literal identifiers. The safe optimization target is
 therefore not removing generated helpers entirely. The safe target is narrowing
 what each helper does after it is dispatched.
 
-Before PERF-15, `modeu5_process_us00_monthly_market_good_<good>` loaded the full
+Before PERF-15, `cbp_process_us00_monthly_market_good_<good>` loaded the full
 US-00 record before it knew whether the good had current production or previous
 ModeU5 state. For zero-production goods with no prior record, this meant several
 map checks and value reads that could not change gameplay.
@@ -30,13 +30,13 @@ For each generated good:
   repaired records;
 - only load the full US-00 record when current production exists or previous
   ModeU5 state is detected;
-- split `modeu5_clear_loaded_void_economy_record_good_<good>` from the public
+- split `cbp_clear_loaded_void_economy_record_good_<good>` from the public
   clear wrapper so the monthly path does not load the same record twice.
 
 The active marker is stored as:
 
 ```txt
-modeu5_<good>_us00_active_record_by_market[market] = 1
+cbp_<good>_us00_active_record_by_market[market] = 1
 ```
 
 It is a country-scoped helper index for US-00 monthly dispatch. It is not a
@@ -55,10 +55,10 @@ stock source, not a market aggregate, and not an active-list replacement.
 ## Acceptance Criteria
 
 - [ ] Generated adapters include
-      `modeu5_probe_us00_previous_record_activity_good_<good>`.
+      `cbp_probe_us00_previous_record_activity_good_<good>`.
 - [ ] Generated adapters include
-      `modeu5_clear_loaded_void_economy_record_good_<good>`.
-- [ ] `modeu5_process_us00_monthly_market_good_<good>` reads
+      `cbp_clear_loaded_void_economy_record_good_<good>`.
+- [ ] `cbp_process_us00_monthly_market_good_<good>` reads
       `produced_in_market:<good>` before full US-00 record loading.
 - [ ] The monthly path does not call the public clear wrapper after it already
       loaded the record; it calls the loaded-clear helper.
@@ -71,7 +71,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_per_good_loops.sh
+./tools/audit_cbp_per_good_loops.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check
@@ -80,14 +80,14 @@ git diff --check
 Runtime smoke:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 Select "Revalidate main operations"
 ```
 
 After closing EU5:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected summary:

@@ -14,14 +14,16 @@ As a player, I want trade buildings rebalanced to fit ModeU5 storage and logisti
 
 Review confirmed vanilla trade-building fields, reduce marketplace trading/estate power as specified, and reassess only explicitly approved costs, capacities, or modifiers.
 
+Current static-packaging constraint: the approved `trade_buildings.txt` `local_burghers_estate_power` reduction is composed into the US-09 Rebalance Economy exact-path building override because US-09 also edits the same vanilla file for trade-capacity compensation. This avoids two companion packages shipping competing versions of the same static definitions.
+
 ## Module / availability
 
 ```txt
 Package: Rebalance Estate Power
 Activation: optional companion package
 Behavior when absent:
-  install no US-07 static building override
-  preserve vanilla trade-building values
+  install no standalone US-07 static building override
+  preserve vanilla trade-building values only if Rebalance Economy is also absent
   keep Core US-02 storage-capacity behavior independent
 ```
 
@@ -64,6 +66,7 @@ Related US: US-02, US-08
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Keep US-07 static overrides physically outside the Core package; a runtime toggle cannot restore overwritten vanilla definitions.
+- When a US-07 static field overlaps a US-09 exact-path generated file, compose the field in the US-09 generator instead of shipping two competing static overrides.
 - Verify exact building files and field names before override.
 - Keep changes limited to explicitly reviewed trade buildings.
 - Do not infer unexposed modifiers.
@@ -79,6 +82,7 @@ Related US: US-02, US-08
 
 - [ ] Every changed building and field is documented.
 - [ ] Marketplace power is reduced from its verified vanilla value as approved.
+- [ ] The currently approved overlap is `trade_buildings.txt` `local_burghers_estate_power x 0.5`; `local_merchant_power` remains unchanged until a concrete target value is approved.
 - [ ] Unrelated buildings remain unchanged.
 - [ ] Tooltips/localization match the changed effects.
 - [ ] Static files load without new blocking errors.
@@ -102,4 +106,4 @@ No unrelated building behavior changes
 
 ## Known limitations
 
-Building modifier and pricing fields, including both marketplace-power modifier names, are documented. Exact vanilla trade-building keys, source values, and capacity fields still require local vanilla-file confirmation before any override.
+Building modifier and pricing fields, including both marketplace-power modifier names, are documented. The current package composition covers only the approved `local_burghers_estate_power` reduction in the US-09 exact-path trade-building override; `local_merchant_power` is intentionally left unchanged.

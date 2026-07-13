@@ -6,7 +6,7 @@ Validate explicit old-market to new-market stock persistence for a country that
 enters a market without an existing country-market stock/capacity record.
 
 CORE-04 does not create trade, transport, price, or location-level stock records.
-It moves stock through `modeu5_transfer_stock` from:
+It moves stock through `cbp_transfer_stock` from:
 
 ```txt
 country x old_market x good
@@ -21,19 +21,19 @@ using the CORE-03 storage-share principle.
 Run on a disposable campaign after CORE-02 initialization has completed:
 
 ```txt
-event modeu5_core04_debug.1
+event cbp_core04_debug.1
 ```
 
 The main revalidation chain also runs this scenario:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 After closing EU5, summarize the logs:
 
 ```txt
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 ## Expected Summary Markers
@@ -52,7 +52,7 @@ Expected CORE-04 branch diagnostics include:
 ModeU5 CORE-04 MARKET_ENTRY mode=normal result=migrated ...
 ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation ...
 ModeU5 CORE-04 MARKET_ENTRY mode=performance result=promoted_and_migrated ...
-ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=nve_deactivated
+ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=cbp_deactivated
 ```
 
 ## What The Probe Covers

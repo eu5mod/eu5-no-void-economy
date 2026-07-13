@@ -33,14 +33,14 @@ The MVP must **not** implement the gameplay effects of those options yet. It onl
 Add:
 
 ```txt
-main_menu/common/game_rules/modeu5_optionality_rules.txt
-main_menu/localization/english/modeu5_optionality_rules_l_english.yml
+main_menu/common/game_rules/cbp_optionality_rules.txt
+main_menu/localization/english/cbp_optionality_rules_l_english.yml
 ```
 
 The game-rule file must define one rule per option. For this MVP, each rule has only one available setting:
 
 ```txt
-modeu5_option_<id>_off
+cbp_option_<id>_off
 ```
 
 The localisation must make clear that the setting is:
@@ -80,13 +80,13 @@ This story also does not introduce a custom in-game configuration panel. The con
 - These options must not mutate stock variables.
 - These options must not apply static overrides.
 - These options must not change gameplay until a dedicated implementation story is approved.
-- Future stories may attach behaviour to the stable `modeu5_option_<id>` identifiers.
+- Future stories may attach behaviour to the stable `cbp_option_<id>` identifiers.
 - If an option later requires static overrides, the package/module boundary must remain the source of truth.
 
 ## Acceptance criteria
 
-- [ ] `modeu5_optionality_rules.txt` exists under `main_menu/common/game_rules/`.
-- [ ] `modeu5_optionality_rules_l_english.yml` exists under `main_menu/localization/english/`.
+- [ ] `cbp_optionality_rules.txt` exists under `main_menu/common/game_rules/`.
+- [ ] `cbp_optionality_rules_l_english.yml` exists under `main_menu/localization/english/`.
 - [ ] Options 100, 101, 200, 300, 301, 400, 401, 402, 500, 501 and 502 are represented.
 - [ ] Each option defaults to `off`.
 - [ ] Each option has only an off/roadmap setting in this MVP.

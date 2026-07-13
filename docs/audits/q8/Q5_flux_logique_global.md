@@ -12,7 +12,7 @@ Q8.7 moves the live market-local owner from the market-center workaround to a on
 
 ```txt
 monthly_country_pulse
-  -> modeu5_run_monthly_stock_cycle_q8_7_owner_switch
+  -> cbp_run_monthly_stock_cycle_q8_7_owner_switch
      -> readiness / runtime-mode gates
      -> performance and relevance preparation
      -> current-country capacity refresh
@@ -35,13 +35,13 @@ monthly_country_pulse
 The old market-center owner remains available as a **temporary legacy rollback owner**, not as the normal market-runtime fallback path:
 
 ```txt
-modeu5_q8_7_live_global_market_owner_disabled
+cbp_q8_7_live_global_market_owner_disabled
 ```
 
 When this variable is present, the wrapper disables the Q8.7 global owner and invokes the legacy owner:
 
 ```txt
-modeu5_run_monthly_promoted_market_local_cycle
+cbp_run_monthly_promoted_market_local_cycle
   -> every_market_center_in_country
 ```
 
@@ -57,10 +57,10 @@ Pruning guardrail:
 ```txt
 The legacy rollback owner should be pruned after Q8.7 same-save validation proves the global owner is stable.
 Prune target:
-  - modeu5_q8_7_live_global_market_owner_disabled
-  - modeu5_enable_q8_7_live_global_market_owner / modeu5_disable_q8_7_live_global_market_owner
-  - modeu5_q8_7_live_global_market_owner_enabled_trigger / disabled_trigger
-  - the owner-selection else branch that calls modeu5_run_monthly_promoted_market_local_cycle
+  - cbp_q8_7_live_global_market_owner_disabled
+  - cbp_enable_q8_7_live_global_market_owner / cbp_disable_q8_7_live_global_market_owner
+  - cbp_q8_7_live_global_market_owner_enabled_trigger / disabled_trigger
+  - the owner-selection else branch that calls cbp_run_monthly_promoted_market_local_cycle
 Keep:
   - per-market vanilla fallback/blocked runtime paths inside the global owner
   - country-owned trade pass after market-local work
@@ -83,15 +83,15 @@ Keep:
 
 | Phase | Owner | Current surface | Q8 rule |
 |---|---|---|---|
-| Runtime readiness | country pulse | `modeu5_run_monthly_stock_cycle_q8_7_owner_switch` / `modeu5_run_monthly_stock_cycle` | fail closed when runtime not ready. |
+| Runtime readiness | country pulse | `cbp_run_monthly_stock_cycle_q8_7_owner_switch` / `cbp_run_monthly_stock_cycle` | fail closed when runtime not ready. |
 | Country prep | country | capacity/relevance/monthly registries | may prepare caches, not repeat market-local mutation for each country. |
-| Runtime mode / accounting gate | central configuration surface | `modeu5_prepare_market_runtime_accounting_mode`, `modeu5_promote_market_to_detailed_accounting` | centralise Normal/Performance/Deactivated policy and promotion readiness. |
-| Promoted-market local | Q8.7 global market owner | `modeu5_run_monthly_q8_7_global_market_local_cycle_once` -> `every_market_in_world` | process each market-local mutation surface once per month. |
-| Temporary legacy rollback local owner | market-center country | `modeu5_run_monthly_promoted_market_local_cycle` -> `every_market_center_in_country` | transition/rollback/comparison only; prune after Q8.7 equivalence is proven. |
-| Per-market vanilla fallback | selected owner loop | `modeu5_market_runtime_use_vanilla_fallback_trigger` | remain inside the current owner iteration, but do not mutate ModeU5 stock for that market. |
+| Runtime mode / accounting gate | central configuration surface | `cbp_prepare_market_runtime_accounting_mode`, `cbp_promote_market_to_detailed_accounting` | centralise Normal/Performance/Deactivated policy and promotion readiness. |
+| Promoted-market local | Q8.7 global market owner | `cbp_run_monthly_q8_7_global_market_local_cycle_once` -> `every_market_in_world` | process each market-local mutation surface once per month. |
+| Temporary legacy rollback local owner | market-center country | `cbp_run_monthly_promoted_market_local_cycle` -> `every_market_center_in_country` | transition/rollback/comparison only; prune after Q8.7 equivalence is proven. |
+| Per-market vanilla fallback | selected owner loop | `cbp_market_runtime_use_vanilla_fallback_trigger` | remain inside the current owner iteration, but do not mutate ModeU5 stock for that market. |
 | US-00 | present country inside detailed market | PR7.1 active-good dispatch | run before US-10 for all present-country admission facts. |
 | US-10 local | present country inside detailed market | PR7.1 pending-request dispatch | same-market consumption only; keep after US-00. Q8.2 sparse pending index remains deferred. |
-| Q8.6 verifier | debug/audit verifier surface | `modeu5_run_market_sliced_verifier_candidates` | bounded candidate-market verification only; no stock mutation or repair. |
+| Q8.6 verifier | debug/audit verifier surface | `cbp_run_market_sliced_verifier_candidates` | bounded candidate-market verification only; no stock mutation or repair. |
 | Trade | country | country-owned trade pass | inter-market only; owner-gated; no direct stock writes. |
 | Validation | audit/debug/reconciliation surface | optional monthly/audit helpers | bounded, diagnostic, or repair after divergence. |
 
@@ -102,67 +102,67 @@ flowchart TB
     %% Q8-owned Q5 flow after the live Q8.7 owner switch.
     %% Loop nesting is semantic: it defines who owns mutation.
     %% The detailed market-local branch is inside the every_market_in_world loop body.
-    %% modeu5_prepare_human_relevant_full_ledger_markets never skips the market loop;
+    %% cbp_prepare_human_relevant_full_ledger_markets never skips the market loop;
     %% the skip path belongs only to the Q8.7 once-per-month stamp guard.
     %% Do not confuse the temporary legacy rollback owner with per-market vanilla fallback.
     %% The legacy rollback branch is a transition branch to prune after Q8.7 equivalence is proven.
 
     subgraph COUNTRY["Loop: monthly_country_pulse / current country"]
         direction TB
-        A["monthly_country_pulse"] --> B["modeu5_run_monthly_stock_cycle_q8_7_owner_switch"]
-        B --> READY{"modeu5_stock_runtime_ready_trigger?"}
+        A["monthly_country_pulse"] --> B["cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+        B --> READY{"cbp_stock_runtime_ready_trigger?"}
         READY -->|no| CLOSED["runtime not ready<br/>fail closed / diagnostics only"]
-        READY -->|yes| P0["modeu5_prepare_performance_mode_human_relevant_markets"]
-        P0 --> P1["modeu5_run_monthly_capacity_refresh_for_current_country"]
+        READY -->|yes| P0["cbp_prepare_performance_mode_human_relevant_markets"]
+        P0 --> P1["cbp_run_monthly_capacity_refresh_for_current_country"]
 
         subgraph COUNTRY_PREP["Country-owned preparation before market-local owner"]
             direction TB
             P1 --> CP0["every_market_present_in_country"]
-            CP0 --> CP1["modeu5_recalculate_country_market_capacity_from_prepared_pool_shared"]
+            CP0 --> CP1["cbp_recalculate_country_market_capacity_from_prepared_pool_shared"]
             CP1 --> CP2["store country-market capacity/cache records"]
         end
 
-        CP2 --> P2["modeu5_prepare_monthly_market_seen_registry"]
-        P2 --> P3["modeu5_prepare_human_relevant_full_ledger_markets"]
+        CP2 --> P2["cbp_prepare_monthly_market_seen_registry"]
+        P2 --> P3["cbp_prepare_human_relevant_full_ledger_markets"]
         P3 --> OWNER_SELECT["owner selection after full-ledger preparation<br/>(no skip branch here)"]
-        OWNER_SELECT --> SW{"temporary Q8.7 rollback switch:<br/>modeu5_q8_7_live_global_market_owner_enabled_trigger?"}
-        SW -->|no: transition rollback branch<br/>prune after equivalence| OLD["temporary legacy rollback owner:<br/>modeu5_run_monthly_promoted_market_local_cycle"]
-        SW -->|yes: default Q8.7 owner| G0["modeu5_run_monthly_q8_7_global_market_local_cycle_once(country)"]
+        OWNER_SELECT --> SW{"temporary Q8.7 rollback switch:<br/>cbp_q8_7_live_global_market_owner_enabled_trigger?"}
+        SW -->|no: transition rollback branch<br/>prune after equivalence| OLD["temporary legacy rollback owner:<br/>cbp_run_monthly_promoted_market_local_cycle"]
+        SW -->|yes: default Q8.7 owner| G0["cbp_run_monthly_q8_7_global_market_local_cycle_once(country)"]
 
         OLD --> OLD_LOOP["every_market_center_in_country<br/>temporary rollback/comparison path<br/>prune after Q8.7 validation"]
 
         subgraph GLOBAL_CYCLE["Q8.7 global market-local owner"]
             direction TB
-            G0 --> STAMP{"once-per-month guard:<br/>has modeu5_q8_7_live_global_owner_month_stamp already run?"}
-            STAMP -->|yes, later country pulse| SKIP["skip every_market_in_world for this country pulse only<br/>modeu5_note_q8_7_live_global_owner_skip_run"]
-            STAMP -->|no, first country pulse this month| GM0["modeu5_reset_q8_7_live_global_owner_metrics"]
-            GM0 --> GM1["modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics"]
-            GM1 --> GM2["modeu5_note_q8_7_live_global_owner_run"]
+            G0 --> STAMP{"once-per-month guard:<br/>has cbp_q8_7_live_global_owner_month_stamp already run?"}
+            STAMP -->|yes, later country pulse| SKIP["skip every_market_in_world for this country pulse only<br/>cbp_note_q8_7_live_global_owner_skip_run"]
+            STAMP -->|no, first country pulse this month| GM0["cbp_reset_q8_7_live_global_owner_metrics"]
+            GM0 --> GM1["cbp_prepare_monthly_promoted_market_live_dispatcher_metrics"]
+            GM1 --> GM2["cbp_note_q8_7_live_global_owner_run"]
             GM2 --> WORLD_ENTRY["start loop:<br/>every_market_in_world"]
 
             subgraph WORLD_LOOP["Loop body: every_market_in_world"]
                 direction TB
-                WORLD_ENTRY --> W0["save_temporary_scope_as:<br/>modeu5_market + modeu5_market_country_cache_market"]
-                W0 --> W1["modeu5_q8_7_run_global_market_local_owner_market(country, market)"]
-                W1 --> W2["modeu5_mark_monthly_market_seen"]
-                W2 --> W3["modeu5_prepare_market_runtime_accounting_mode(market)"]
+                WORLD_ENTRY --> W0["save_temporary_scope_as:<br/>cbp_market + cbp_market_country_cache_market"]
+                W0 --> W1["cbp_q8_7_run_global_market_local_owner_market(country, market)"]
+                W1 --> W2["cbp_mark_monthly_market_seen"]
+                W2 --> W3["cbp_prepare_market_runtime_accounting_mode(market)"]
                 W3 --> W4{"market runtime trigger"}
-                W4 -->|modeu5_market_runtime_use_detailed_accounting_trigger| LOCAL["modeu5_run_promoted_market_live_local_branch_market_all_goods(country, market)"]
-                W4 -->|modeu5_market_runtime_use_vanilla_fallback_trigger| MF["per-market vanilla fallback:<br/>modeu5_note_us00/us10_vanilla_fallback_market<br/>no ModeU5 stock mutation"]
-                W4 -->|modeu5_market_runtime_blocked_trigger| MB["modeu5_note_runtime_blocked_market"]
+                W4 -->|cbp_market_runtime_use_detailed_accounting_trigger| LOCAL["cbp_run_promoted_market_live_local_branch_market_all_goods(country, market)"]
+                W4 -->|cbp_market_runtime_use_vanilla_fallback_trigger| MF["per-market vanilla fallback:<br/>cbp_note_us00/us10_vanilla_fallback_market<br/>no ModeU5 stock mutation"]
+                W4 -->|cbp_market_runtime_blocked_trigger| MB["cbp_note_runtime_blocked_market"]
 
                 subgraph LOCAL_DETAIL["Detailed market-local branch — still inside this market iteration"]
                     direction TB
-                    LOCAL --> L0["modeu5_pr71_prepare_active_good_metrics"]
-                    L0 --> L1["modeu5_prepare_promoted_market_country_cache(market)"]
-                    L1 --> L2["modeu5_rebuild_countries_present_in_market"]
-                    L2 --> L3["every_in_global_list(modeu5_countries_present_in_market)<br/>capacity + US-00 pass"]
-                    L3 --> L4["modeu5_prepare_promoted_country_market_capacity"]
-                    L4 --> L5["modeu5_pr71_process_us00_monthly_market_active_goods"]
+                    LOCAL --> L0["cbp_pr71_prepare_active_good_metrics"]
+                    L0 --> L1["cbp_prepare_promoted_market_country_cache(market)"]
+                    L1 --> L2["cbp_rebuild_countries_present_in_market"]
+                    L2 --> L3["every_in_global_list(cbp_countries_present_in_market)<br/>capacity + US-00 pass"]
+                    L3 --> L4["cbp_prepare_promoted_country_market_capacity"]
+                    L4 --> L5["cbp_pr71_process_us00_monthly_market_active_goods"]
                     L5 --> L6["US-00 facts frozen for all present countries"]
-                    L6 --> L7["every_in_global_list(modeu5_countries_present_in_market)<br/>US-10 pass"]
-                    L7 --> L8["modeu5_pr71_process_us10_monthly_market_pending_goods"]
-                    L8 --> L9["modeu5_note_promoted_market_live_local_market_processed"]
+                    L6 --> L7["every_in_global_list(cbp_countries_present_in_market)<br/>US-10 pass"]
+                    L7 --> L8["cbp_pr71_process_us10_monthly_market_pending_goods"]
+                    L8 --> L9["cbp_note_promoted_market_live_local_market_processed"]
                 end
 
                 L9 --> WORLD_DONE["finish current market iteration"]
@@ -173,7 +173,7 @@ flowchart TB
             WORLD_DONE --> GM_DONE["every_market_in_world exhausted"]
         end
 
-        OLD_LOOP --> TRADE0["modeu5_run_monthly_country_trade_owner_cycle"]
+        OLD_LOOP --> TRADE0["cbp_run_monthly_country_trade_owner_cycle"]
         SKIP --> TRADE0
         GM_DONE --> TRADE0
 
@@ -184,24 +184,24 @@ flowchart TB
             T2 --> T3["delegate effects to stock handlers"]
         end
 
-        T3 --> AUDIT{"modeu5_audit_enabled_trigger?"}
-        AUDIT -->|yes| R1["modeu5_run_monthly_stock_reconciliation_once"]
+        T3 --> AUDIT{"cbp_audit_enabled_trigger?"}
+        AUDIT -->|yes| R1["cbp_run_monthly_stock_reconciliation_once"]
         AUDIT -->|no| END["end country monthly cycle"]
         R1 --> END
     end
 ```
 
-Important reading rule: `modeu5_prepare_human_relevant_full_ledger_markets` has no scenario that skips market iteration. It prepares relevant full-ledger state, then the owner-selection branch chooses the Q8.7 global owner or the legacy rollback owner. The only skip of `every_market_in_world` is inside `modeu5_run_monthly_q8_7_global_market_local_cycle_once`, where the month-stamp guard prevents the global market pass from running once for every country pulse.
+Important reading rule: `cbp_prepare_human_relevant_full_ledger_markets` has no scenario that skips market iteration. It prepares relevant full-ledger state, then the owner-selection branch chooses the Q8.7 global owner or the legacy rollback owner. The only skip of `every_market_in_world` is inside `cbp_run_monthly_q8_7_global_market_local_cycle_once`, where the month-stamp guard prevents the global market pass from running once for every country pulse.
 
-Second reading rule: `modeu5_run_monthly_promoted_market_local_cycle` is not a fallback inside the `every_market_in_world` loop. It is the old owner shape used only when the Q8.7 global owner is disabled. By contrast, `modeu5_market_runtime_use_vanilla_fallback_trigger` is the per-market fallback path that exists inside the selected owner loop.
+Second reading rule: `cbp_run_monthly_promoted_market_local_cycle` is not a fallback inside the `every_market_in_world` loop. It is the old owner shape used only when the Q8.7 global owner is disabled. By contrast, `cbp_market_runtime_use_vanilla_fallback_trigger` is the per-market fallback path that exists inside the selected owner loop.
 
-Third reading rule: the owner-selection `no` branch is a **transition branch to prune**, not a new target architecture. Once the Q8.7 global owner has passed same-save validation and no rollback is needed, remove the disable variable/trigger and the call back to `modeu5_run_monthly_promoted_market_local_cycle`. Do not remove per-market vanilla fallback.
+Third reading rule: the owner-selection `no` branch is a **transition branch to prune**, not a new target architecture. Once the Q8.7 global owner has passed same-save validation and no rollback is needed, remove the disable variable/trigger and the call back to `cbp_run_monthly_promoted_market_local_cycle`. Do not remove per-market vanilla fallback.
 
 ## What to do next
 
 1. Run the same-save validation twice:
    - default Q8.7 global owner enabled;
-   - legacy rollback owner enabled by setting `modeu5_q8_7_live_global_market_owner_disabled`.
+   - legacy rollback owner enabled by setting `cbp_q8_7_live_global_market_owner_disabled`.
 2. Compare economic outputs and work-shape counters:
    - market-local mutation once per month;
    - same relevant-market surface;
@@ -210,13 +210,13 @@ Third reading rule: the owner-selection `no` branch is a **transition branch to 
    - stock validation clean.
 3. If equivalent, open the cleanup/pruning PR:
    - remove the Q8.7 disable/enable helpers and triggers;
-   - remove the owner-selection `else` branch to `modeu5_run_monthly_promoted_market_local_cycle`;
+   - remove the owner-selection `else` branch to `cbp_run_monthly_promoted_market_local_cycle`;
    - remove rollback-only metrics/docs references;
    - keep the per-market vanilla fallback and blocked paths inside `every_market_in_world`.
 4. After pruning, the only live market-local owner should be:
 
 ```txt
-modeu5_run_monthly_q8_7_global_market_local_cycle_once
+cbp_run_monthly_q8_7_global_market_local_cycle_once
   -> every_market_in_world
 ```
 
@@ -294,14 +294,14 @@ country-owned trade / validation / reconciliation
 The refined capacity step is:
 
 ```txt
-modeu5_calculate_country_storage_capacity_pool
+cbp_calculate_country_storage_capacity_pool
   -> if country/month stamp missing or stale:
-       modeu5_calculate_country_storage_capacity_pool_raw
-       modeu5_store_country_storage_capacity_pool_cache
+       cbp_calculate_country_storage_capacity_pool_raw
+       cbp_store_country_storage_capacity_pool_cache
   -> else:
-       modeu5_load_country_storage_capacity_pool_cache
+       cbp_load_country_storage_capacity_pool_cache
 
-modeu5_apply_country_storage_capacity_pool_to_current_market
+cbp_apply_country_storage_capacity_pool_to_current_market
   -> still reads current market merchant capacity
   -> still writes country-market capacity maps
 ```
@@ -336,10 +336,10 @@ Q8.5 preserves the same flow position for market-country work-cache rebuilds:
 
 ```txt
 confirmed topology/lifecycle producer
-  -> modeu5_mark_market_country_cache_dirty
-  -> modeu5_market_country_cache_dirty_markets scheduling list
-  -> modeu5_repair_dirty_market_country_caches_if_needed
-  -> modeu5_rebuild_countries_present_in_market for dirty markets only
+  -> cbp_mark_market_country_cache_dirty
+  -> cbp_market_country_cache_dirty_markets scheduling list
+  -> cbp_repair_dirty_market_country_caches_if_needed
+  -> cbp_rebuild_countries_present_in_market for dirty markets only
 ```
 
 The dirty repair path is scheduling/repair flow only. It does not authorize a durable `market -> countries_present_in_market` cache and does not change stock mutation order.
@@ -349,12 +349,12 @@ The dirty repair path is scheduling/repair flow only. It does not authorize a du
 Q8.6 adds a debug/audit-only verifier flow:
 
 ```txt
-modeu5_run_market_sliced_verifier_candidates
-  -> modeu5_prepare_market_sliced_verifier_candidates
-     -> copy dirty markets from modeu5_market_country_cache_dirty_markets
-     -> copy promoted markets from modeu5_promoted_markets_this_cycle
+cbp_run_market_sliced_verifier_candidates
+  -> cbp_prepare_market_sliced_verifier_candidates
+     -> copy dirty markets from cbp_market_country_cache_dirty_markets
+     -> copy promoted markets from cbp_promoted_markets_this_cycle
   -> for each candidate market only:
-       modeu5_rebuild_countries_present_in_market
+       cbp_rebuild_countries_present_in_market
        record pass/fail counters
 ```
 
@@ -372,10 +372,10 @@ Boundary:
 Q8.7 is no longer proof-only in this PR. The live market-local owner is now:
 
 ```txt
-modeu5_run_monthly_q8_7_global_market_local_cycle_once
+cbp_run_monthly_q8_7_global_market_local_cycle_once
   -> monthly stamp guard
   -> every_market_in_world
-  -> modeu5_prepare_market_runtime_accounting_mode
+  -> cbp_prepare_market_runtime_accounting_mode
   -> detailed markets run the existing market-local branch
   -> fallback/blocked markets record diagnostics only
 ```
@@ -404,13 +404,13 @@ AI countries inside a human-relevant market remain part of the market-local surf
 
 | Area | Before Q8.7 live switch | HEAD after Q8.7 |
 |---|---|---|
-| Market-local owner | `every_market_center_in_country` workaround. | `every_market_in_world` once per month behind `modeu5_run_monthly_q8_7_global_market_local_cycle_once`. |
-| Temporary legacy rollback owner | N/A for Q8.7. | Old market-center owner retained behind `modeu5_q8_7_live_global_market_owner_disabled`; prune after equivalence validation. |
+| Market-local owner | `every_market_center_in_country` workaround. | `every_market_in_world` once per month behind `cbp_run_monthly_q8_7_global_market_local_cycle_once`. |
+| Temporary legacy rollback owner | N/A for Q8.7. | Old market-center owner retained behind `cbp_q8_7_live_global_market_owner_disabled`; prune after equivalence validation. |
 | Per-market vanilla fallback | Runtime accounting fallback inside selected owner loop. | Still inside whichever owner loop is selected; it records fallback diagnostics and does not mutate ModeU5 stock for that market. |
 | US-10 no-request country-market | Enters generated per-good US-10 wrapper surface; Q8.2 aggregate pre-gate deferred. | Unchanged. |
 | US-10 positive request country-market | Per-good wrappers check pending maps and call heavy helper only for requested goods. | Unchanged. |
 | US-00 ordering | Runs before any US-10 pass. | Unchanged. |
-| Dirty market-country cache | Guarded `modeu5_repair_dirty_market_country_caches_if_needed` exists. | Unchanged; Q8.6 copies dirty candidates but does not clear the dirty list. |
+| Dirty market-country cache | Guarded `cbp_repair_dirty_market_country_caches_if_needed` exists. | Unchanged; Q8.6 copies dirty candidates but does not clear the dirty list. |
 | Market-sliced verifier | Debug/audit runtime verifier slice exists, bounded to dirty/promoted candidate markets. | Unchanged. |
 | Performance Mode relevant-market boundary | Human-relevant market is the boundary; AI-controlled countries inside such markets remain in market-local scope. | Unchanged and now consumed by the live global market-local owner. |
 | Promotion mismatch repair | Conservative promotion failure when country sum exceeds market aggregate. | Market aggregate is source/cap; non-zero differing country ledger is rebuilt to the aggregate, logged as blocked/migration repair, then promotion proceeds only after validation. |

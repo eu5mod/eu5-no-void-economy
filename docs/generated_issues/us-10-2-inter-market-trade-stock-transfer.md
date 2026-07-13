@@ -12,14 +12,14 @@ As a player, I want inter-market trade to move actual goods from source stocks i
 
 ## Functional objective
 
-When `source_market != target_market`, select source-market sellers through US-10.0 and transfer only the minimum of seller stock, buyer target capacity, and remaining demand through `modeu5_transfer_stock`.
+When `source_market != target_market`, select source-market sellers through US-10.0 and transfer only the minimum of seller stock, buyer target capacity, and remaining demand through `cbp_transfer_stock`.
 
 ## Current implementation slice
 
 This PR implements the explicit-request MVP for US-10.2 on top of the US-10.0
 resolver core:
 
-- callers use `modeu5_resolve_inter_market_stock_transfer` with
+- callers use `cbp_resolve_inter_market_stock_transfer` with
   `buyer_country`, `source_market`, `target_market`, `good`, and
   `requested_quantity`;
 - the generated per-good adapter rebuilds the source-market country cache,
@@ -30,7 +30,7 @@ resolver core:
 - zero/below-threshold stock, at-war candidates, embargoed candidates, and
   disallowed subject/market-owner/foreign buckets are excluded before mutation;
 - the implementation fails closed for same-market requests;
-- successful inter-market movement calls `modeu5_transfer_stock` only;
+- successful inter-market movement calls `cbp_transfer_stock` only;
 - buyer target capacity is enforced through the central transfer operator;
 - requested, transferred, and unsatisfied quantities are exposed to US-10.3.
 
@@ -58,7 +58,7 @@ Feeds counters to: US-10.3 and debug/UI
 | Explicit ModeU5 request context | ModeU5 | source market, target market, good, requested quantity | CONFIRMED | internal |
 | Ordered source sellers | source market | confirmed US-10.0 output | CONFIRMED | 067-074 |
 | Buyer target capacity | ModeU5 | US-02/US-01 values | CONFIRMED | 017-018 |
-| Central transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
+| Central transfer | ModeU5 | `cbp_transfer_stock` | CONFIRMED | 076 |
 | Transaction state | current effect/event chain | local requested/remaining/transferred/unsatisfied values and saved trade scopes | CONFIRMED | 008, internal |
 
 
@@ -77,7 +77,7 @@ docs/tests/
 ## Dependencies
 
 ```txt
-Depends on: US-10.0, US-01, US-02, modeu5_transfer_stock, TECH-01
+Depends on: US-10.0, US-01, US-02, cbp_transfer_stock, TECH-01
 Blocks: complete inter-market stock resolution
 Related US: US-10.3, US-10-UI
 ```
@@ -88,7 +88,7 @@ Related US: US-10.3, US-10-UI
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Execute only when source and target markets differ.
 - Search sellers only in the source market.
-- Transfer through `modeu5_transfer_stock` only.
+- Transfer through `cbp_transfer_stock` only.
 - Respect seller stock and buyer target capacity.
 - Expose requested, actual transferred, and unsatisfied quantities.
 - Keep one transfer's arithmetic and candidate state local; persist outcomes only through US-10.3.
@@ -106,7 +106,7 @@ Related US: US-10.3, US-10-UI
 - [ ] Seller/source stocks decrease and buyer/target stocks increase consistently.
 - [ ] Buyer capacity is never exceeded.
 - [ ] Unsatisfied quantity equals request minus actual transfer.
-- [ ] All mutations use `modeu5_transfer_stock`.
+- [ ] All mutations use `cbp_transfer_stock`.
 - [x] Audit debug shows bounded per-candidate sellers, buckets, scores, quantities, and exclusions.
 
 ## Manual test scenario

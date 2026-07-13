@@ -1,0 +1,8 @@
+# US-04 injection syntax matrix — candidate 06.
+# INJECT_OR_CREATE on pop_demand, nested INJECT on the existing wine child.
+
+INJECT_OR_CREATE:pop_demand = {
+	INJECT:wine = {
+		multiply = "cbp_us04_live_pop_demand_multiplier_wine"
+	}
+}
