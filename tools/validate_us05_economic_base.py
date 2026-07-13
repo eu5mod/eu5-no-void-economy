@@ -9,6 +9,7 @@ VALUE_FILE = ROOT / "in_game/common/script_values/modeu5_us05_economic_base_valu
 EFFECT_FILE = ROOT / "in_game/common/scripted_effects/modeu5_us05_economic_base_effects.txt"
 ON_ACTION_FILE = ROOT / "in_game/common/on_action/modeu5_stock_on_actions.txt"
 MODIFIER_FILE = ROOT / "main_menu/common/static_modifiers/modeu5_us05_slider_cost_modifiers.txt"
+COVERAGE_FILE = ROOT / "docs/technical/US05_SLIDER_MODIFIER_COVERAGE.md"
 
 
 def read_required(path: Path, errors: list[str]) -> str:
@@ -29,6 +30,7 @@ def main() -> int:
     effects = read_required(EFFECT_FILE, errors)
     on_actions = read_required(ON_ACTION_FILE, errors)
     modifiers = read_required(MODIFIER_FILE, errors)
+    coverage = read_required(COVERAGE_FILE, errors)
 
     value_contract = {
         r"^modeu5_slider_cost_target_base\s*=\s*\{": "missing target base",
@@ -69,6 +71,20 @@ def main() -> int:
         "US-05 refresh must run after the monthly wealth refresh",
         errors,
     )
+
+    for required_coverage in (
+        "stability_cost",
+        "diplomatic_spending_cost",
+        "Culture investment",
+        "Prestige investment",
+        "Military spending",
+        "Fort spending",
+        "Subsidies",
+        "Minting",
+        "Food spending",
+    ):
+        if required_coverage not in coverage:
+            errors.append(f"coverage document is missing: {required_coverage}")
 
     combined = "\n".join((values, effects, modifiers))
     forbidden_tokens = (
