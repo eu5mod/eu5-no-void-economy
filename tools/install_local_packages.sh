@@ -229,7 +229,8 @@ check_payload_mirror() {
 		rsync -rlpnic --delete \
 			--exclude '.DS_Store' \
 			--exclude 'MODEU5_SOURCE.txt' \
-			"$expected/" "$destination/"
+			"$expected/" "$destination/" |
+			awk '$1 == ".f..T...." || $1 == ".f..t...." { next } { print }'
 	)"
 	rm -rf -- "$expected"
 
