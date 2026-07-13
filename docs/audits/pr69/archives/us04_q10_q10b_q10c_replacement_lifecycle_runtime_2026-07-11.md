@@ -7,7 +7,7 @@ After Q9 initially appeared to pass, Q10/Q10b/Q10c were added to distinguish cau
 The active package was the isolated destructive replacement package:
 
 ```txt
-packages/cbp_core_tests_q9
+packages/cbp_core_tests
 ```
 
 The replacement under test remained:

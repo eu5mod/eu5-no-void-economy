@@ -7,7 +7,7 @@ branch: 22-us-04-annual-local-pop-demand-adjustment
 installed commit: d914cc12dd83828c13fd02ed74c0c16c06089f60
 source_dirty: no
 runtime mode: debug
-package: cbp_core_tests_q9 enabled
+package: cbp_core_tests enabled
 ```
 
 ## Important test isolation note

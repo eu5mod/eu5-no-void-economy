@@ -110,7 +110,7 @@ Historical injection and replacement probes remain archived under:
 ```txt
 docs/audits/pr69/
 docs/audits/pr69/archives/
-packages/cbp_core_tests_q9/
+packages/cbp_core_tests/
 ```
 
 Current PR #69 source of truth:

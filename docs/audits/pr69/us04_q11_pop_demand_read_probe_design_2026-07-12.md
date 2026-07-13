@@ -20,7 +20,7 @@ The wiki may be stale for EU5 1.2, especially around script-value support inside
 ## Package
 
 ```txt
-packages/cbp_core_tests_q11
+packages/cbp_core_tests
 ```
 
 Console event:

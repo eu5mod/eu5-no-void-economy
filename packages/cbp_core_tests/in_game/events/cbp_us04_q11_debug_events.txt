@@ -1,7 +1,7 @@
 namespace = cbp_us04_q11_debug
 
 # Read-only Pop-demand accessor probes.
-# Enable only cbp_core_tests_q11 and run:
+# Enable only cbp_core_tests and run:
 #   event cbp_us04_q11_debug.1
 
 cbp_us04_q11_debug.1 = {

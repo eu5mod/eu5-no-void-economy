@@ -53,8 +53,8 @@ package_ids=(
 	"cbp_trade_rebalance"
 	"cbp_war_rebalance"
 	"cbp_core_tests"
-	"cbp_core_tests_q9"
-	"cbp_core_tests_q11"
+	"cbp_core_tests"
+	"cbp_core_tests"
 )
 
 package_sources=(
@@ -63,8 +63,8 @@ package_sources=(
 	"$repo_root/packages/cbp_trade_rebalance"
 	"$repo_root/packages/cbp_war_rebalance"
 	"$repo_root/packages/cbp_core_tests"
-	"$repo_root/packages/cbp_core_tests_q9"
-	"$repo_root/packages/cbp_core_tests_q11"
+	"$repo_root/packages/cbp_core_tests"
+	"$repo_root/packages/cbp_core_tests"
 )
 
 # The root checkout is the future single gameplay mod. Mirror it by default so
@@ -154,7 +154,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests_q9|cbp_core_tests_q11)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests|cbp_core_tests)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2

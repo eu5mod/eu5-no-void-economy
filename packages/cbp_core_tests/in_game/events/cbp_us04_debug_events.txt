@@ -6,7 +6,7 @@ namespace = cbp_us04_debug
 # Keep the visible menu to four business options plus Close. The EU5 event UI on
 # some resolutions did not expose the fifth business option reliably.
 # The full additive syntax matrix is historical. It requires the isolated
-# cbp_core_tests_q9 package and remains available directly via:
+# cbp_core_tests package and remains available directly via:
 #   event cbp_us04_debug.30
 
 cbp_us04_debug.1 = {
