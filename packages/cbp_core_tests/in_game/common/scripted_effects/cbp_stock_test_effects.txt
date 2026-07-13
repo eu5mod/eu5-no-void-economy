@@ -1210,7 +1210,7 @@ cbp_debug_run_reconciliation_tests = {
 			name = gui_cbp_debug_us11_ui_dirty_market_stock
 			value = scope:test_cbp_reconciled_market_stock
 		}
-		debug_log = "ModeU5 US-11 DUMP dirty_reconciliation records_checked=[THIS.GetVariable('cbp_debug_us11_ui_dirty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('cbp_debug_us11_ui_dirty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('cbp_debug_us11_ui_dirty_rebuilds').GetValue|0] failures=[THIS.GetVariable('cbp_debug_us11_ui_dirty_failures').GetValue|0] market_stock=[THIS.GetVariable('cbp_debug_us11_ui_dirty_market_stock').GetValue|2]"
+		debug_log = "ModeU5 US-11 DUMP dirty_reconciliation records_checked=[THIS.GetVariable('gui_cbp_debug_us11_ui_dirty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('gui_cbp_debug_us11_ui_dirty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('gui_cbp_debug_us11_ui_dirty_rebuilds').GetValue|0] failures=[THIS.GetVariable('gui_cbp_debug_us11_ui_dirty_failures').GetValue|0] market_stock=[THIS.GetVariable('gui_cbp_debug_us11_ui_dirty_market_stock').GetValue|2]"
 		if = {
 			limit = {
 				scope:cbp_reconciliation_records_checked_result = 1
@@ -1246,7 +1246,7 @@ cbp_debug_run_reconciliation_tests = {
 			name = gui_cbp_debug_us11_ui_empty_failures
 			value = scope:cbp_reconciliation_failures_result
 		}
-		debug_log = "ModeU5 US-11 DUMP empty_reconciliation records_checked=[THIS.GetVariable('cbp_debug_us11_ui_empty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('cbp_debug_us11_ui_empty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('cbp_debug_us11_ui_empty_rebuilds').GetValue|0] failures=[THIS.GetVariable('cbp_debug_us11_ui_empty_failures').GetValue|0]"
+		debug_log = "ModeU5 US-11 DUMP empty_reconciliation records_checked=[THIS.GetVariable('gui_cbp_debug_us11_ui_empty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('gui_cbp_debug_us11_ui_empty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('gui_cbp_debug_us11_ui_empty_rebuilds').GetValue|0] failures=[THIS.GetVariable('gui_cbp_debug_us11_ui_empty_failures').GetValue|0]"
 		if = {
 			limit = {
 				scope:cbp_reconciliation_records_checked_result = 0
@@ -1335,8 +1335,8 @@ cbp_debug_run_reconciliation_tests = {
 		else = {
 			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_dirty_repairs value = 0 }
 		}
-		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('cbp_debug_us11_ui_active_type').GetValue|0] records_checked=[THIS.GetVariable('cbp_debug_us11_ui_active_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('cbp_debug_us11_ui_active_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('cbp_debug_us11_ui_active_rebuilds').GetValue|0] failures=[THIS.GetVariable('cbp_debug_us11_ui_active_failures').GetValue|0] market_stock=[THIS.GetVariable('cbp_debug_us11_ui_active_market_stock').GetValue|2]"
-		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('cbp_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('cbp_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('cbp_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('cbp_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
+		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_type').GetValue|0] records_checked=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_rebuilds').GetValue|0] failures=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_failures').GetValue|0] market_stock=[THIS.GetVariable('gui_cbp_debug_us11_ui_active_market_stock').GetValue|2]"
+		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('gui_cbp_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('gui_cbp_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('gui_cbp_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('gui_cbp_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
 		if = {
 			limit = {
 				scope:cbp_reconciliation_type = 3
@@ -1349,13 +1349,13 @@ cbp_debug_run_reconciliation_tests = {
 				global_var:cbp_market_owned_country_cache_rebuild_count >= 1
 				global_var:cbp_market_owned_active_goods_processed_count >= 1
 				has_global_variable_list = cbp_active_markets_any_good
-				has_global_variable_list = test_cbp_wheat_active_markets
+				has_global_variable_list = cbp_wheat_active_markets
 				is_target_in_global_variable_list = {
 					name = cbp_active_markets_any_good
 					target = scope:test_cbp_market
 				}
 				is_target_in_global_variable_list = {
-					name = test_cbp_wheat_active_markets
+					name = cbp_wheat_active_markets
 					target = scope:test_cbp_market
 				}
 			}
@@ -1448,7 +1448,7 @@ cbp_debug_run_reconciliation_cadence_tests = {
 			name = gui_cbp_debug_us11_ui_cadence_four_yearly_stamp
 			value = scope:test_cbp_cadence_four_yearly_stamp
 		}
-		debug_log = "ModeU5 US-11 DUMP cadence normal_monthly_stamp=[THIS.GetVariable('cbp_debug_us11_ui_cadence_normal_monthly_stamp').GetValue|0] debug_monthly_stamp=[THIS.GetVariable('cbp_debug_us11_ui_cadence_debug_monthly_stamp').GetValue|0] audit_monthly_stamp=[THIS.GetVariable('cbp_debug_us11_ui_cadence_audit_monthly_stamp').GetValue|0] four_yearly_stamp=[THIS.GetVariable('cbp_debug_us11_ui_cadence_four_yearly_stamp').GetValue|0]"
+		debug_log = "ModeU5 US-11 DUMP cadence normal_monthly_stamp=[THIS.GetVariable('gui_cbp_debug_us11_ui_cadence_normal_monthly_stamp').GetValue|0] debug_monthly_stamp=[THIS.GetVariable('gui_cbp_debug_us11_ui_cadence_debug_monthly_stamp').GetValue|0] audit_monthly_stamp=[THIS.GetVariable('gui_cbp_debug_us11_ui_cadence_audit_monthly_stamp').GetValue|0] four_yearly_stamp=[THIS.GetVariable('gui_cbp_debug_us11_ui_cadence_four_yearly_stamp').GetValue|0]"
 
 		if = {
 			limit = {
