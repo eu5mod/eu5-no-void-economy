@@ -224,18 +224,33 @@ require_match '^[[:space:]]+local_trades_per_burgher = 1\.1$' \
 require_match '^[[:space:]]+local_merchant_capacity = 1\.1$' \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must apply the +10% local_merchant_capacity compensation'
-require_match '^[[:space:]]+local_max_rgo_size = 0\.2$' \
+require_match '^[[:space:]]+local_max_rgo_size = 1$' \
 	"$us09_rgo_static_modifier_file" \
-	'US-09 base RGO size static modifier must add the flat +0.2 base contribution'
+	'US-09 base RGO size static modifier must be scalable through add_location_modifier size'
 require_match 'cbp_apply_us09_base_rgo_size_bonus = yes' \
 	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
-	'US-09 base RGO size bonus must be applied by the Economy package on game start'
+	'US-09 base RGO size bonus must be applied by the Economy package on game start/load'
+require_match 'cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
+	'US-09 base RGO size bonus must be refreshed by the Economy package monthly country pulse'
 require_match 'every_location_in_the_world = \{' \
 	"$us09_rgo_size_effects_file" \
-	'US-09 base RGO size effect must iterate every world location through the confirmed iterator'
+	'US-09 base RGO size initial effect must iterate every world location through the confirmed iterator'
+require_match 'every_owned_location = \{' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size monthly refresh must iterate owned locations from country scope'
 require_match '^[[:space:]]*modifier = cbp_us09_base_rgo_size_10_percent_bonus$' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must apply the generated static modifier'
+require_match '^[[:space:]]*size = scope:cbp_us09_base_rgo_size_bonus_modifier_size$' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size effect must apply the monthly computed modifier size'
+require_match '^[[:space:]]*multiply = 0\.000025$' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size effect must include the 10% population component'
+require_match '^[[:space:]]*multiply = 0\.025$' \
+	"$us09_rgo_size_effects_file" \
+	'US-09 base RGO size effect must document the display-equivalent population formula'
 
 stale_us09_override_files="$(
 	{
