@@ -1,5 +1,5 @@
 .DS_Store
-.modeu5.local.env
+.cbp.local.env
 __pycache__
 # Generated ModeU5 script adapters.
 # Regenerate locally with ./tools/generate_all.sh; do not commit the output.
