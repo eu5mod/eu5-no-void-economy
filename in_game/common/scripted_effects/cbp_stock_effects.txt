@@ -1392,7 +1392,30 @@ cbp_fail_initialization = {
 	error_log = "ModeU5 CORE-02 opening stock initialization failed; inspect cbp_initialization_* globals."
 }
 
+cbp_repair_current_schema_runtime_marker = {
+	if = {
+		limit = {
+			has_global_variable = cbp_stock_schema_version
+			global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
+			NOT = { cbp_initialization_complete_trigger = yes }
+			NOT = { cbp_initialization_in_progress_trigger = yes }
+			NOT = { cbp_initialization_failed_trigger = yes }
+		}
+		set_global_variable = {
+			name = cbp_initialization_state
+			value = 2
+		}
+		set_global_variable = {
+			name = cbp_initialization_last_mode
+			value = 4
+		}
+		debug_log = "ModeU5 CORE-02 repaired missing initialization_state for current stock schema."
+	}
+}
+
 cbp_start_game_stock_initialization_dispatcher = {
+	cbp_repair_current_schema_runtime_marker = yes
+
 	if = {
 		limit = { cbp_stock_runtime_ready_trigger = yes }
 		set_global_variable = {
@@ -1444,6 +1467,7 @@ cbp_start_game_stock_initialization_dispatcher = {
 
 cbp_repair_stock_lifecycle_on_game_load = {
 	cbp_initialize_pop_demand_multipliers_once = yes
+	cbp_repair_current_schema_runtime_marker = yes
 
 	if = {
 		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }

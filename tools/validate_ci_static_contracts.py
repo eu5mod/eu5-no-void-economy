@@ -476,8 +476,25 @@ def validate_game_load_lifecycle_contract(
     )
 
     stock_repair = block(stock_effects, "cbp_repair_stock_lifecycle_on_game_load")
+    current_schema_repair = block(stock_effects, "cbp_repair_current_schema_runtime_marker")
+    stock_dispatcher = block(stock_effects, "cbp_start_game_stock_initialization_dispatcher")
+    for token in [
+        "has_global_variable = cbp_stock_schema_version",
+        "global_var:cbp_stock_schema_version = cbp_current_stock_schema_version",
+        "NOT = { cbp_initialization_complete_trigger = yes }",
+        "NOT = { cbp_initialization_in_progress_trigger = yes }",
+        "NOT = { cbp_initialization_failed_trigger = yes }",
+        "name = cbp_initialization_state",
+        "value = 2",
+    ]:
+        expect(token in current_schema_repair, f"Current-schema load repair must maintain {token}")
+    expect(
+        "cbp_repair_current_schema_runtime_marker = yes" in stock_dispatcher,
+        "Stock initialization dispatcher must repair legacy current-schema readiness markers before fail-closed checks",
+    )
     for token in [
         "cbp_initialize_pop_demand_multipliers_once = yes",
+        "cbp_repair_current_schema_runtime_marker = yes",
         "cbp_stock_runtime_ready_trigger = yes",
         "cbp_start_game_stock_initialization_dispatcher = yes",
         "cbp_core04_refresh_all_location_market_memory = yes",

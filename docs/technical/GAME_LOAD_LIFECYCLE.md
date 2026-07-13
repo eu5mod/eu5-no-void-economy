@@ -21,6 +21,8 @@ The repair path is deliberately conservative: it makes the same loaded package s
 - fill missing package/configuration markers;
 - fill missing runtime/debug/default-mode markers;
 - initialize stock only when the stock schema has not started;
+- repair legacy/current-schema saves where `cbp_stock_schema_version` is current
+  but `cbp_initialization_state` is missing or non-standard;
 - leave ready stock state untouched;
 - leave failed or incompatible stock state fail-closed;
 - refresh CORE-04 location market memory only after stock runtime readiness;
@@ -53,8 +55,11 @@ The repair path is deliberately conservative: it makes the same loaded package s
 2. Load repair must be idempotent.
 3. Load repair may set missing defaults, but must not overwrite a valid player/runtime state.
 4. Stock load repair delegates to `cbp_start_game_stock_initialization_dispatcher`; it must not call fresh opening-stock initialization directly.
-5. CORE-04 location market memory is refreshed only when `cbp_stock_runtime_ready_trigger = yes`.
-6. Optional package load hooks repair package presence/version markers only for packages actually loaded in the current playset.
+5. If `cbp_stock_schema_version` already matches the current schema and the
+   state is neither failed nor in-progress, load repair may restore
+   `cbp_initialization_state = 2` without touching stock maps.
+6. CORE-04 location market memory is refreshed only when `cbp_stock_runtime_ready_trigger = yes`.
+7. Optional package load hooks repair package presence/version markers only for packages actually loaded in the current playset.
 
 ## Unsupported Case
 
