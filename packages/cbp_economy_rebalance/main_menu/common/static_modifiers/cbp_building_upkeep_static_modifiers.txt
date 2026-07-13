@@ -1,0 +1,9 @@
+# Vanilla applies this modifier with a size equal to years since game start.
+# Keep the crown building-upkeep share from growing over time.
+REPLACE:years_since_game_start = {
+	game_data = {
+		category = country
+	}
+
+	building_upkeep_multiplier = 0
+}
