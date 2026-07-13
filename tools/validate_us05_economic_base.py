@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the US-05 slider-cost reconciliation contract."""
+"""Validate the US-05 per-expense slider reconciliation contract."""
 
 from pathlib import Path
 import re
@@ -33,33 +33,40 @@ def main() -> int:
     coverage = read_required(COVERAGE_FILE, errors)
 
     value_contract = {
-        r"^modeu5_slider_cost_target_base\s*=\s*\{": "missing target base",
-        r"^modeu5_slider_cost_vanilla_base\s*=\s*\{": "missing vanilla comparison base",
-        r"^modeu5_slider_cost_reconciliation_modifier\s*=\s*\{": "missing reconciliation modifier",
+        r"^modeu5_us05_vanilla_economic_base\s*=\s*\{": "missing vanilla denominator",
+        r"^modeu5_us05_wealth_plus_trade_income_base\s*=\s*\{": "missing shared Wealth + Trade Income base",
+        r"^modeu5_us05_court_target_base\s*=\s*\{": "missing Court target base",
+        r"^modeu5_us05_court_cost_modifier\s*=\s*\{": "missing Court reconciliation modifier",
+        r"^modeu5_us05_diplomatic_target_base\s*=\s*\{": "missing Diplomatic target base",
+        r"^modeu5_us05_diplomatic_cost_modifier\s*=\s*\{": "missing Diplomatic reconciliation modifier",
         r"value\s*=\s*var:cbp_country_wealth_endpoint": "wealth endpoint is not used",
         r"value\s*=\s*tax_base": "Tax Base denominator component is not used",
         r"add\s*=\s*monthly_trade_income": "monthly_trade_income is not included",
-        r"divide\s*=\s*modeu5_slider_cost_vanilla_base": "target is not divided by vanilla base",
+        r"divide\s*=\s*modeu5_us05_vanilla_economic_base": "expense modifier does not divide by the vanilla denominator",
         r"subtract\s*=\s*1": "ratio is not converted to an additive modifier",
-        r"modeu5_slider_cost_vanilla_base\s*>\s*0": "zero-denominator guard is missing",
+        r"modeu5_us05_vanilla_economic_base\s*>\s*0": "zero-denominator guard is missing",
     }
     for pattern, message in value_contract.items():
         require(pattern, values, message, errors)
 
     modifier_contract = {
-        r"^modeu5_us05_economic_base_slider_cost_reconciliation\s*=\s*\{": "missing static reconciliation modifier",
-        r"court_spending_cost_modifier\s*=\s*1": "court spending modifier is not implemented",
-        r"diplomatic_upkeep_modifier\s*=\s*1": "diplomatic upkeep modifier is not implemented",
+        r"^modeu5_us05_court_cost_reconciliation\s*=\s*\{": "missing Court static modifier",
+        r"^modeu5_us05_diplomatic_cost_reconciliation\s*=\s*\{": "missing Diplomatic static modifier",
+        r"court_spending_cost_modifier\s*=\s*1": "Court spending modifier is not implemented",
+        r"diplomatic_upkeep_modifier\s*=\s*1": "Diplomatic upkeep modifier is not implemented",
     }
     for pattern, message in modifier_contract.items():
         require(pattern, modifiers, message, errors)
 
     effect_contract = {
         r"^modeu5_us05_refresh_safe_slider_cost_reconciliation\s*=\s*\{": "missing monthly refresh effect",
-        r"remove_country_modifier\s*=\s*modeu5_us05_economic_base_slider_cost_reconciliation": "old reconciliation modifier is not removed",
-        r"modifier\s*=\s*modeu5_us05_economic_base_slider_cost_reconciliation": "reconciliation modifier is not added",
-        r"size\s*=\s*modeu5_slider_cost_reconciliation_modifier": "runtime modifier does not use the calculated ratio",
-        r"mode\s*=\s*replace": "runtime modifier is not replaced deterministically",
+        r"remove_country_modifier\s*=\s*modeu5_us05_court_cost_reconciliation": "old Court modifier is not removed",
+        r"remove_country_modifier\s*=\s*modeu5_us05_diplomatic_cost_reconciliation": "old Diplomatic modifier is not removed",
+        r"modifier\s*=\s*modeu5_us05_court_cost_reconciliation": "Court modifier is not added",
+        r"modifier\s*=\s*modeu5_us05_diplomatic_cost_reconciliation": "Diplomatic modifier is not added",
+        r"size\s*=\s*modeu5_us05_court_cost_modifier": "Court runtime modifier does not use its own ratio",
+        r"size\s*=\s*modeu5_us05_diplomatic_cost_modifier": "Diplomatic runtime modifier does not use its own ratio",
+        r"mode\s*=\s*replace": "runtime modifiers are not replaced deterministically",
     }
     for pattern, message in effect_contract.items():
         require(pattern, effects, message, errors)
@@ -82,9 +89,18 @@ def main() -> int:
         "Subsidies",
         "Minting",
         "Food spending",
+        "population / 1000",
     ):
         if required_coverage not in coverage:
             errors.append(f"coverage document is missing: {required_coverage}")
+
+    forbidden_shared_runtime = (
+        "modeu5_us05_economic_base_slider_cost_reconciliation",
+        "modeu5_slider_cost_reconciliation_modifier",
+    )
+    for token in forbidden_shared_runtime:
+        if token in "\n".join((effects, modifiers)):
+            errors.append(f"legacy shared runtime modifier remains present: {token}")
 
     combined = "\n".join((values, effects, modifiers))
     forbidden_tokens = (
@@ -100,12 +116,12 @@ def main() -> int:
             errors.append(f"forbidden outcome/gold reconciliation token present: {token}")
 
     if errors:
-        print("US-05 slider reconciliation contract failed:")
+        print("US-05 per-expense reconciliation contract failed:")
         for error in errors:
             print(f"- {error}")
         return 1
 
-    print("US-05 slider reconciliation contract passed.")
+    print("US-05 per-expense reconciliation contract passed.")
     return 0
 
 
