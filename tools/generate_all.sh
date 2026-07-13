@@ -62,11 +62,11 @@ else
 		fi
 	fi
 
-	if [[ -n "${EU5_GAME_DEFINES_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" || -n "${EU5_INSTALL_DIR:-}" ]]; then
-		bash "$repo_root/tools/generate_cbp_defines_override.sh" \
-			--output-file "$defines_output"
-	else
-		printf '%s\n' 'Skipping complete defines generation; configure EU5_GAME_DEFINES_FILE, EU5_GAME_COMMON_DIR, or EU5_INSTALL_DIR.'
-		remove_generated_defines_override
-	fi
+	# if [[ -n "${EU5_GAME_DEFINES_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" || -n "${EU5_INSTALL_DIR:-}" ]]; then
+	# 	bash "$repo_root/tools/generate_cbp_defines_override.sh" \
+	# 		--output-file "$defines_output"
+	# else
+	# 	printf '%s\n' 'Skipping complete defines generation; configure EU5_GAME_DEFINES_FILE, EU5_GAME_COMMON_DIR, or EU5_INSTALL_DIR.'
+	# 	remove_generated_defines_override
+	# fi
 fi
