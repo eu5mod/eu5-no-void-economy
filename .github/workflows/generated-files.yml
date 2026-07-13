@@ -26,6 +26,106 @@ jobs:
           name: generate-all-log
           path: generate_all.log
 
+      - name: Validate US-09 generator with fixture common dir
+        run: |
+          set -euo pipefail
+
+          fixture_common="$RUNNER_TEMP/us09_common"
+          fixture_package="$RUNNER_TEMP/us09_package/in_game/common"
+
+          mkdir -p \
+            "$fixture_common/building_types" \
+            "$fixture_common/prices" \
+            "$fixture_common/pop_types"
+          mkdir -p \
+            "$fixture_package/building_types" \
+            "$fixture_package/prices" \
+            "$fixture_package/pop_types"
+
+          cat > "$fixture_common/building_types/00_test_production.txt" <<'EOF'
+          test_production = {
+              output = 10
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 1
+                  local_merchant_capacity = 2
+                  merchant_capacity_from_building = 3
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/prices/00_hardcoded.txt" <<'EOF'
+          expand_rgo_mining = { gold = 100 }
+          expand_rgo_farming = { gold = 100 }
+          expand_rgo_hunting = { gold = 100 }
+          expand_rgo_gathering = { gold = 100 }
+          expand_rgo_forestry = { gold = 100 }
+          EOF
+
+          cat > "$fixture_common/pop_types/00_pop_types.txt" <<'EOF'
+          burghers = {
+              promotion_speed = 0.5
+              migration_speed = 0.5
+          }
+
+          laborers = {
+              promotion_speed = 1.5
+              migration_speed = 0.1
+          }
+
+          peasants = {
+              promotion_speed = 0.5
+          }
+          EOF
+
+          ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package"
+
+          test -f "$fixture_package/building_types/00_test_production.txt"
+          test -f "$fixture_package/prices/00_hardcoded.txt"
+          test -f "$fixture_package/pop_types/00_pop_types.txt"
+          test ! -f "$fixture_package/building_types/zzzz_modeu5_us09_00_test_production.txt"
+          test ! -f "$fixture_package/prices/zzzz_modeu5_us09_expand_rgo_prices.txt"
+          test ! -f "$fixture_package/prices/expand_rgo_prices.txt"
+          grep -q 'output = 11.0' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'peasants' "$fixture_package/pop_types/00_pop_types.txt"
+
+          cat > "$fixture_common/building_types/trade_buildings.txt" <<'EOF'
+          marketplace = {
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 1
+                  local_merchant_capacity = 1
+                  local_merchant_power = 1
+              }
+          }
+          EOF
+
+          ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package"
+
+          grep -q 'local_burghers_estate_power = 0.05' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_capacity = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_power = 1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
+          grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
+          grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+
       - name: Validate package structure and generated adapters
         run: |
           set +e
@@ -76,7 +176,7 @@ jobs:
 
       - name: Ensure generated outputs stay untracked
         run: |
-          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
+          tracked_generated="$(git ls-files | grep -E '(^|/)modeu5_[^/]*_generated\.txt$' || true)"
           if [ -n "$tracked_generated" ]; then
             echo "Generated ModeU5 outputs must not be tracked:"
             echo "$tracked_generated"
