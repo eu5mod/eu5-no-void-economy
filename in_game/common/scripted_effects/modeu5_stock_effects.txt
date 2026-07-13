@@ -11,7 +11,8 @@
 # }
 #
 # Supported capacity policies are enforce and allow_over_capacity. The latter is
-# reserved for CORE-02, CORE-03, and separately approved migrations.
+# reserved for CORE-02, CORE-03, separately approved migrations, and explicit
+# reconciliation/restoration offsets such as US-04 below-baseline consumption.
 
 modeu5_select_capacity_policy_enforce = {
 	save_temporary_scope_value_as = {

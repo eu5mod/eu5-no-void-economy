@@ -11,9 +11,10 @@ deciding what US-04 currently does and what remains blocked.
 Annual adaptation coefficient:         IMPLEMENTED / deterministic fixture PASS
 ModeU5-owned reconciliation coefficient: IMPLEMENTED
 Vanilla pop_demand runtime mutation:    REJECTED FOR PRODUCTION
-Monthly stock reconciliation:           BLOCKED pending TECH-01 147
-Estate gold charge:                     CONFIRMED endpoint / not used yet
-Live Pop demand by estate and good:     NOT_CONFIRMED
+Monthly stock reconciliation:           IMPLEMENTED through TECH-01 150 ModeU5 proxy
+Estate gold charge:                     IMPLEMENTED through confirmed country-scope endpoint
+Live location Estate demand by good:    NOT_CONFIRMED
+ModeU5 local Estate proxy:              ACCEPTED / active production bridge
 Peasants fallback:                      REJECTED
 ```
 
@@ -23,9 +24,9 @@ US-04 now has two separate layers:
 1. A yearly ModeU5 coefficient layer.
    This is implemented and safe.
 
-2. A future monthly stock/estate reconciliation layer.
-   This is deliberately fail-closed until exact live Pop demand by good can be
-   read from Pop scope.
+2. A monthly stock/estate reconciliation layer.
+   This uses the accepted ModeU5-owned local proxy and stays independent from
+   unconfirmed direct vanilla Estate-demand exposure.
 ```
 
 ## Probe Conclusions
@@ -38,7 +39,8 @@ US-04 now has two separate layers:
 | Observed-current market demand target | PASS as architecture probe | Useful alternative idea, but not exact US-04 Pop x estate demand. |
 | Q9 full `REPLACE:pop_demand` | AMBIGUOUS HISTORICAL RESULT | Not accepted as proof after Q10/Q10b/Q10c failed to reproduce safe runtime responsiveness. |
 | Q10/Q10b/Q10c replacement lifecycle | REJECTED | Runtime replacement is not a viable production path. |
-| `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Blocks stock removal and estate charge. |
+| `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Archived; no longer required for the proxy implementation. |
+| `modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for signed stock/supply delta, estate charge, and estate refund. |
 
 ## Implemented Coefficient Layer
 
@@ -76,33 +78,54 @@ recreate the `1.20` baseline outside the versioned initialization path.
 
 ## Current Monthly Behavior
 
-The monthly reconciliation helper computes diagnostics, then fails closed:
+The monthly reconciliation helper reads ModeU5-owned local Estate proxy inputs:
 
 ```txt
-requested_quantity = known explicit/test requested quantity
-extra_quantity = requested_quantity x max(0, reconciliation_coefficient - 1)
+estate_requested_quantity =
+  modeu5_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
 
-if TECH-01 147 is not confirmed:
-    log direct_pop_demand_read_not_confirmed
-    removed_quantity = 0
-    country_stock_delta = 0
-    market_stock_delta = 0
-    estate_charge = 0
-    do not call modeu5_remove_stock
-    do not call add_gold_to_estate
+estate_extra_quantity =
+  proxy_estate_size_at_location
+  × max(0, modeu5_us04_reconciliation_coefficient - 1)
+
+estate_restored_quantity =
+  proxy_estate_size_at_location
+  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+
+total_extra_quantity = sum(estate_extra_quantity)
+total_restored_quantity = sum(estate_restored_quantity)
+
+if total_extra_quantity > 0 and stock runtime is ready:
+    call modeu5_remove_stock(reason = consumption)
+    charge known estates through add_gold_to_estate
+    persist requested / extra / removed / unsatisfied / stock-delta diagnostics
+
+if total_restored_quantity > 0 and stock runtime is ready:
+    call modeu5_add_stock(capacity_policy = allow_over_capacity)
+    persist requested / restored / stock-delta diagnostics
 ```
 
-This is intentional. A location x good aggregate cannot tell which estate should
-pay. A fixed `peasants_estate` fallback is rejected because it would be wrong as
-a business rule. A bounded static estate-map bridge is diagnostic/test-only and
-does not authorize production mutation.
+A location x good aggregate alone still cannot tell which estate should pay. A
+fixed `peasants_estate` fallback remains rejected because it would be wrong as a
+business rule. The production bridge is the explicit local Estate-size proxy,
+not a hard-coded fallback Estate.
 
-## Target Future Flow
+## Runtime Flow
 
-Only after TECH-01 147 confirms a direct live Pop requested-demand-by-good read,
-the production flow can become a pre-US-10 additional-demand preparation pass.
-This should run before US-10 consumption resolution, not as a competing
-post-US-10 reconciliation pass.
+The desired target architecture remains a US-10-compatible demand request, but
+the current branch wires US-04 from the monthly country pulse after the monthly
+stock cycle. Therefore the implemented production flow is a signed monthly
+reconciliation delta:
+
+```txt
+coefficient = 1.20 -> remove the additional 20%
+coefficient = 1.00 -> no stock/supply correction
+coefficient = 0.99 -> restore/add 1%
+```
+
+US-10 owns full consumption resolution. US-04 must not remove the whole
+consumption again; it only applies the coefficient delta.
 
 The intended traversal is country-owned and market-scoped:
 
@@ -141,10 +164,10 @@ target market = {
 }
 ```
 
-It can skip a whole market x good before the owned-location and `every_pop`
-loops. It is a presence/boolean gate, not a quantity source and not an estate
-split. The required correctness gate is still the exact direct Pop-demand read
-from TECH-01 147.
+It can skip a whole market x good before the owned-location and location-estate
+work. It is a presence/boolean gate, not a quantity source and not an estate
+split. The active quantity/split bridge is TECH-01 150; TECH-01 149 direct
+location Estate demand remains a future replacement candidate.
 
 The target request-preparation logic is:
 
@@ -158,11 +181,12 @@ for each country x market reached by the monthly country-owned traversal:
             reset estate requested totals
             reset estate extra-demand totals
 
-            every_pop in location:
-                read estate_type
-                read current requested quantity for goods:<good>
-                if requested quantity > 0:
-                    add requested quantity to that estate total
+            future preferred path if TECH-01 149 is confirmed:
+                read exact location x good x estate requested quantities
+
+            current TECH-01 150 proxy path:
+                modeu5_us04_reconciliation_coefficient(location, good)
+                x proxy_estate_size_at_location
 
             total_requested_quantity = sum estate requested totals
             if total_requested_quantity <= 0:
@@ -171,32 +195,42 @@ for each country x market reached by the monthly country-owned traversal:
             coefficient_extra =
               max(0, modeu5_us04_reconciliation_coefficient - 1)
 
+            coefficient_restore =
+              max(0, 1 - modeu5_us04_reconciliation_coefficient)
+
             for each estate with requested quantity:
                 estate_extra_quantity =
                   estate_requested_quantity x coefficient_extra
+                estate_restored_quantity =
+                  estate_requested_quantity x coefficient_restore
 
             total_extra_quantity = sum estate_extra_quantity
-            if total_extra_quantity <= 0:
-                skip this location x good
+            total_restored_quantity = sum estate_restored_quantity
 
-            register one US-10 additional-demand request:
+            apply signed reconciliation delta:
                 country = current country
                 market = target market
                 location = current location
                 good = current good
-                requested quantity = total_extra_quantity
+                extra quantity = total_extra_quantity
+                restored quantity = total_restored_quantity
                 estate split = estate_extra_quantity by estate
 ```
 
-Then US-10, or a US-10-compatible central demand resolver, applies the request:
+The current reconciliation implementation applies the signed delta directly
+through central stock operators:
 
 ```txt
 actual_removed_quantity =
   modeu5_remove_stock(country, market, good, total_extra_quantity)
 
+actual_restored_quantity =
+  modeu5_add_stock(country, market, good, total_restored_quantity)
+
 vanilla_supply_delta =
   -actual_removed_quantity
-  through the confirmed add_goods_supply surface, if that path is accepted
+  +actual_restored_quantity
+  through the confirmed add_goods_supply surface
 
 for each estate with estate_extra_quantity:
     estate_actual_quantity =
@@ -210,15 +244,28 @@ for each estate with estate_extra_quantity:
 
     add_gold_to_estate = negative estate_charge
 
+for each estate with estate_restored_quantity:
+    estate_actual_restored_quantity =
+      actual_restored_quantity
+      x estate_restored_quantity
+      / total_restored_quantity
+
+    estate_refund =
+      estate_actual_restored_quantity
+      x market_price(goods:<good>)
+
+    add_gold_to_estate = positive estate_refund
+
 unsatisfied_extra_quantity =
   total_extra_quantity - actual_removed_quantity
 ```
 
-Important accounting rule: charge estates and remove vanilla market supply only
-for `actual_removed_quantity`, not for theoretical `total_extra_quantity`, unless
-a future design explicitly decides that unsatisfied US-04 demand should also
-affect vanilla supply. That keeps ModeU5 stock, vanilla supply adjustment, and
-estate payment aligned.
+Important accounting rule: mutate stock and vanilla market supply only for the
+actual delta applied by the central operators, not for theoretical totals or full
+requested consumption. Positive deltas charge estates and subtract vanilla
+supply. Negative deltas restore stock and add vanilla supply back. This keeps
+ModeU5 stock, vanilla supply adjustment, and estate payment aligned, and avoids
+double imputation.
 
 The central stock invariant still applies:
 
@@ -239,15 +286,14 @@ flowchart TD
     B --> C{Existing coefficient record?}
     C -->|No| D[No write]
     C -->|Yes| E[Update ModeU5 coefficient]
-    E --> F[Pre-US-10 additional-demand preparation]
-    F --> G{TECH-01 147 confirmed?}
-    G -->|No| H[BLOCKED: diagnostic only]
-    H --> I[No stock removal]
-    H --> J[No estate charge]
-    G -->|Yes, future| K[Every Pop read demand by estate]
-    K --> L[Register US-10 additional demand]
-    L --> M[US-10 removes satisfied quantity centrally]
-    M --> N[Charge exact estates and adjust vanilla supply for satisfied quantity]
+    E --> F[Monthly signed delta reconciliation]
+    F --> G[Read ModeU5 location Estate-size proxy]
+    G --> H{Coefficient above, equal, or below 1?}
+    H -->|Above 1| I[Remove actual extra stock and subtract vanilla supply]
+    I --> J[Charge estates for satisfied extra quantity]
+    H -->|Equal 1| K[No stock or supply delta]
+    H -->|Below 1| L[Restore stock and add vanilla supply]
+    G --> M[Future direct exposure can replace proxy input]
 ```
 
 ## Evidence Map
@@ -297,44 +343,55 @@ Runtime validation:
 2. Start a fresh disposable campaign.
 3. Let at least one full in-game day pass.
 4. Run: event modeu5_us04_debug.1
-5. Run: ./tools/summarize_modeu5_test_logs.sh --expected none
+5. Run: ./tools/summarize_modeu5_test_logs.sh --expected us04
 6. Review error.log, game.log, debug.log, and system.log.
 ```
 
-Expected US-04 outcome while TECH-01 147 is unconfirmed:
+Expected US-04 outcome with the TECH-01 150 proxy path:
 
 ```txt
-ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed
-ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=direct_pop_demand_read_not_confirmed
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
 ```
 
-Expected blocked reconciliation diagnostics:
+Expected proxy reconciliation diagnostics:
 
 ```txt
 requested > 0
 extra_quantity > 0
+removed_quantity > 0
+goods_supply_removed_quantity = removed_quantity
+country_stock_delta > 0
+market_stock_delta > 0
+estate_charge > 0
+```
+
+Expected below-baseline diagnostics:
+
+```txt
+coefficient = 0.99
+restored_quantity > 0
+goods_supply_added_quantity = restored_quantity
+country_stock_delta > 0
+market_stock_delta > 0
+estate_refund > 0
 removed_quantity = 0
-unsatisfied_quantity = extra_quantity
-country_stock_delta = 0
-market_stock_delta = 0
-estate_charge = 0
+goods_supply_removed_quantity = 0
 ```
 
 No parser/database errors related to US-04 are acceptable. Vanilla noise should
 be classified separately from ModeU5 errors.
 
-## Gate For Unblocking
+## Confirmed Proxy Boundary
 
-US-04 stock/estate reconciliation can only move out of blocked status when a
-controlled probe proves all of the following:
+US-04 stock/estate reconciliation is unblocked through the ModeU5 proxy because
+the implementation owns all inputs in the formula:
 
 ```txt
-every_pop can run from the intended location scope
-the Pop estate_type can be read
-the current requested demand for goods:<good> can be read from that Pop
-the demand value is exact enough to drive stock removal
-the read is stable in a fresh campaign, after a monthly tick, and after reload
+modeu5_us04_reconciliation_coefficient(location, good)
+× proxy_estate_size_at_location
 ```
 
-Until then, any PR that removes stock or charges estates for US-04 is out of
-scope, even if the annual coefficient fixture passes.
+This does not confirm direct vanilla `location × estate × good` demand exposure.
+That remains future/optional and must not be used in loaded runtime scripts until
+a controlled probe proves it.

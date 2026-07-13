@@ -46,15 +46,21 @@ accepted by `tools/audit_modeu5_persistent_state.sh`.
 | `modeu5_pop_demand_unsatisfied_months` | location | goods | yearly counter | US-04 | annual unsatisfied-month counter for demand adaptation | reset after annual US-04 read |
 | `modeu5_pop_demand_multiplier` | location | goods | archived probe state | US-04 debug/audit | PR69 vanilla-demand injection coefficient retained for lesson tracking | legacy/debug only; not active gameplay source |
 | `modeu5_us04_reconciliation_coefficient` | location | goods | durable gameplay coefficient | US-04 | active ModeU5 demand reconciliation coefficient, baseline 1.2 | update annually |
+| `modeu5_us04_proxy_estate_size_<estate>` | location | goods | current month input | US-04 | ModeU5-owned local Estate-size term for the active proxy reconciliation | clear/rewrite before US-04 monthly read |
 | `modeu5_us04_reconciliation_requested_quantity` | location | goods | current month diagnostic | US-04 debug/audit | monthly input quantity used by temporary reconciliation | overwrite/clear on monthly reconciliation |
-| `modeu5_us04_reconciliation_extra_quantity` | location | goods | current month diagnostic | US-04 debug/audit | requested extra quantity implied by coefficient - 1 | overwrite/clear on monthly reconciliation |
-| `modeu5_us04_reconciliation_removed_quantity` | location | goods | current month diagnostic | US-04 debug/audit | stock quantity actually removed through central stock operator; currently zero while TECH-01 147 is blocked | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_extra_quantity` | location | goods | current month diagnostic | US-04 debug/audit | positive extra quantity implied by `max(0, coefficient - 1)` | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_goods_supply_removed_quantity` | location | goods | current month diagnostic | US-04 debug/audit | actual extra quantity mirrored to vanilla market supply through negative `add_goods_supply` | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_restored_quantity` | location | goods | current month diagnostic | US-04 debug/audit | actual below-baseline quantity restored to country and market stock through central stock operator | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_goods_supply_added_quantity` | location | goods | current month diagnostic | US-04 debug/audit | actual below-baseline quantity mirrored to vanilla market supply through positive `add_goods_supply` | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_removed_quantity` | location | goods | current month diagnostic | US-04 debug/audit | stock quantity actually removed through central stock operator | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_unsatisfied_quantity` | location | goods | current month diagnostic | US-04 debug/audit | extra reconciliation demand not covered by stock | overwrite/clear on monthly reconciliation |
-| `modeu5_us04_reconciliation_country_stock_delta` | location | goods | current month diagnostic | US-04 debug/audit | proof that country-market stock fell by the reconciled amount | overwrite/clear on monthly reconciliation |
-| `modeu5_us04_reconciliation_market_stock_delta` | location | goods | current month diagnostic | US-04 debug/audit | proof that market aggregate stock fell by the reconciled amount | overwrite/clear on monthly reconciliation |
-| `modeu5_us04_reconciliation_estate_charge` | location | goods | current month diagnostic | US-04 debug/audit | positive value charged to known estates through `add_gold_to_estate`; currently zero while TECH-01 147 is blocked | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_country_stock_delta` | location | goods | current month diagnostic | US-04 debug/audit | proof that country-market stock changed by the reconciled/restored amount | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_market_stock_delta` | location | goods | current month diagnostic | US-04 debug/audit | proof that market aggregate stock changed by the reconciled/restored amount | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_estate_charge` | location | goods | current month diagnostic | US-04 debug/audit | positive value charged to known estates through `add_gold_to_estate` | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_estate_requested_total` | location | goods | current month diagnostic | US-04 debug/audit | total estate-specific requested demand used for proportional charge allocation | overwrite/clear on monthly reconciliation |
 | `modeu5_us04_reconciliation_estate_charge_<estate>` | location | goods | current month diagnostic | US-04 debug/audit | positive value charged to a specific estate through `add_gold_to_estate` | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_estate_refund` | location | goods | current month diagnostic | US-04 debug/audit | positive value refunded to known estates through `add_gold_to_estate` for below-baseline restoration | overwrite/clear on monthly reconciliation |
+| `modeu5_us04_reconciliation_estate_refund_<estate>` | location | goods | current month diagnostic | US-04 debug/audit | positive value refunded to a specific estate through `add_gold_to_estate` | overwrite/clear on monthly reconciliation |
 | `modeu5_<good>_ui_monthly_surplus_by_market` | human country | market | current month | US-10-UI / debug | current monthly overproduction display counter | keep only for human UI scope |
 | `modeu5_<good>_ui_monthly_consumption_by_market` | human country | market | current month | US-10-UI / debug | current monthly denominator/display counter | keep only for human UI scope |
 | `modeu5_<good>_produced_by_market` | country | market | diagnostic ledger | US-00 tests, strict/debug/audit | full production ledger | strict/debug/audit or human-relevant full ledger only |
@@ -123,8 +129,12 @@ this section before moving a reader or deleting a cache.
 | `modeu5_pop_demand_unsatisfied_months` | yearly location-good counter | location | US-10.3/US-04 monthly shortage accumulation | reset after annual US-04 adaptation reads it |
 | `modeu5_pop_demand_multiplier` | archived probe state | location | US-04 initialization/annual debug compatibility | legacy/debug only; not active gameplay source |
 | `modeu5_us04_reconciliation_coefficient` | gameplay carryover | location | US-04 initialization and annual adaptation | replace when annual US-04 adaptation runs |
+| `modeu5_us04_proxy_estate_size_<estate>` | monthly location-estate-good proxy input | location | US-04 local Estate proxy reconciliation | clear before each monthly proxy write |
 | `modeu5_us04_reconciliation_requested_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_extra_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_goods_supply_removed_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_restored_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_goods_supply_added_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_removed_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_unsatisfied_quantity` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_country_stock_delta` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
@@ -132,6 +142,8 @@ this section before moving a reader or deleting a cache.
 | `modeu5_us04_reconciliation_estate_charge` | monthly diagnostic | location | US-04 temporary monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_estate_requested_total` | monthly diagnostic | location | US-04 estate-aware monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_us04_reconciliation_estate_charge_<estate>` | monthly diagnostic | location | US-04 estate-aware monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_estate_refund` | monthly diagnostic | location | US-04 estate-aware monthly reconciliation | clear before each monthly reconciliation write |
+| `modeu5_us04_reconciliation_estate_refund_<estate>` | monthly diagnostic | location | US-04 estate-aware monthly reconciliation | clear before each monthly reconciliation write |
 | `modeu5_<good>_ui_monthly_surplus_by_market` | UI monthly counter | human country | US-00/UI current-month capture | monthly after UI/readers |
 | `modeu5_<good>_ui_monthly_consumption_by_market` | UI monthly counter | human country | US-10/UI current-month capture | monthly after UI/readers |
 | `modeu5_<good>_dirty_markets` | work cache | global | central stock mutation marks dirty | clear after reconciliation/explicit reset |

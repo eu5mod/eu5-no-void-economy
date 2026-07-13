@@ -799,6 +799,105 @@ modeu5_record_pop_demand_outcome_clergy_estate = {
 	}
 }
 
+# PR #167 estate-accounting proxy inputs. These maps are ModeU5-owned and
+# represent the local size term in:
+#   modeu5_us04_reconciliation_coefficient(location, good) x proxy_estate_size
+# They intentionally avoid any unconfirmed vanilla location x estate x good
+# demand read.
+modeu5_reset_us04_location_estate_proxy = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate key = scope:modeu5_good } }
+	}
+}
+
+modeu5_record_us04_location_estate_proxy_peasants_estate = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate key = scope:modeu5_good } }
+		if = { limit = { scope:modeu5_us04_proxy_estate_size > 0 } add_to_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate key = scope:modeu5_good value = scope:modeu5_us04_proxy_estate_size } }
+	}
+}
+
+modeu5_record_us04_location_estate_proxy_burghers_estate = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate key = scope:modeu5_good } }
+		if = { limit = { scope:modeu5_us04_proxy_estate_size > 0 } add_to_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate key = scope:modeu5_good value = scope:modeu5_us04_proxy_estate_size } }
+	}
+}
+
+modeu5_record_us04_location_estate_proxy_nobles_estate = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate key = scope:modeu5_good } }
+		if = { limit = { scope:modeu5_us04_proxy_estate_size > 0 } add_to_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate key = scope:modeu5_good value = scope:modeu5_us04_proxy_estate_size } }
+	}
+}
+
+modeu5_record_us04_location_estate_proxy_clergy_estate = {
+	$location$ = { save_temporary_scope_as = modeu5_demand_location }
+	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	save_temporary_scope_value_as = { name = modeu5_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
+	scope:modeu5_demand_location = {
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate key = scope:modeu5_good } }
+		if = { limit = { scope:modeu5_us04_proxy_estate_size > 0 } add_to_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate key = scope:modeu5_good value = scope:modeu5_us04_proxy_estate_size } }
+	}
+}
+
+# Compatibility aliases. These write the existing ModeU5-owned location x good x
+# estate diagnostic ledger and remain useful for deterministic tests; production
+# US-04 now prefers the proxy-size input above.
+modeu5_record_location_estate_consumption_request_peasants_estate = {
+	modeu5_record_pop_demand_outcome_peasants_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_burghers_estate = {
+	modeu5_record_pop_demand_outcome_burghers_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_nobles_estate = {
+	modeu5_record_pop_demand_outcome_nobles_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_clergy_estate = {
+	modeu5_record_pop_demand_outcome_clergy_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
 modeu5_reset_pop_demand_outcome = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }
@@ -808,6 +907,10 @@ modeu5_reset_pop_demand_outcome = {
 		if = { limit = { has_variable_map = modeu5_pop_demand_requested_quantity_burghers_estate is_key_in_variable_map = { name = modeu5_pop_demand_requested_quantity_burghers_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_burghers_estate key = scope:modeu5_good } }
 		if = { limit = { has_variable_map = modeu5_pop_demand_requested_quantity_nobles_estate is_key_in_variable_map = { name = modeu5_pop_demand_requested_quantity_nobles_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_nobles_estate key = scope:modeu5_good } }
 		if = { limit = { has_variable_map = modeu5_pop_demand_requested_quantity_clergy_estate is_key_in_variable_map = { name = modeu5_pop_demand_requested_quantity_clergy_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_pop_demand_requested_quantity_clergy_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_peasants_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_burghers_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_nobles_estate key = scope:modeu5_good } }
+		if = { limit = { has_variable_map = modeu5_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate target = scope:modeu5_good } } remove_from_variable_map = { name = modeu5_us04_proxy_estate_size_clergy_estate key = scope:modeu5_good } }
 	}
 }
 

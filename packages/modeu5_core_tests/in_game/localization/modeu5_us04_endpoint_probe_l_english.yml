@@ -1,5 +1,5 @@
 ﻿l_english:
  modeu5_us04_debug.1.b: "Probe live Pop-demand endpoint"
- modeu5_us04_debug.1.c: "Archived Q7/Q8 + target probe"
+ modeu5_us04_debug.1.c: "Probe Estate-level location accounting"
  modeu5_us04_debug.1.d: "Probe startup multiplier init"
  modeu5_us04_debug.1.e: "Run full additive Pop-demand injection matrix"

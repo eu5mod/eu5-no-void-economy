@@ -107,12 +107,24 @@ def is_state_like(name: str) -> bool:
         "modeu5_us04_reconciliation_estate_charge_clergy_estate",
         "modeu5_us04_reconciliation_estate_charge_nobles_estate",
         "modeu5_us04_reconciliation_estate_charge_peasants_estate",
+        "modeu5_us04_reconciliation_estate_refund",
+        "modeu5_us04_reconciliation_estate_refund_burghers_estate",
+        "modeu5_us04_reconciliation_estate_refund_clergy_estate",
+        "modeu5_us04_reconciliation_estate_refund_nobles_estate",
+        "modeu5_us04_reconciliation_estate_refund_peasants_estate",
         "modeu5_us04_reconciliation_estate_requested_total",
         "modeu5_us04_reconciliation_extra_quantity",
+        "modeu5_us04_reconciliation_goods_supply_added_quantity",
+        "modeu5_us04_reconciliation_goods_supply_removed_quantity",
         "modeu5_us04_reconciliation_market_stock_delta",
         "modeu5_us04_reconciliation_removed_quantity",
+        "modeu5_us04_reconciliation_restored_quantity",
         "modeu5_us04_reconciliation_requested_quantity",
         "modeu5_us04_reconciliation_unsatisfied_quantity",
+        "modeu5_us04_proxy_estate_size_burghers_estate",
+        "modeu5_us04_proxy_estate_size_clergy_estate",
+        "modeu5_us04_proxy_estate_size_nobles_estate",
+        "modeu5_us04_proxy_estate_size_peasants_estate",
         "modeu5_pop_demand_requested_quantity_burghers_estate",
         "modeu5_pop_demand_requested_quantity_clergy_estate",
         "modeu5_pop_demand_requested_quantity_nobles_estate",
@@ -204,8 +216,15 @@ modeu5_pop_demand_unsatisfied_quantity	variable map	monthly location-good ledger
 modeu5_pop_demand_satisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly satisfaction accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
 modeu5_pop_demand_unsatisfied_months	variable map	yearly location-good counter	location	US-10.3/US-04 monthly shortage accumulation	reset after annual US-04 adaptation reads it	current year until annual reset
 modeu5_us04_reconciliation_coefficient	variable map	gameplay carryover	location	US-04 initialization and annual adaptation	replace when annual US-04 adaptation runs	durable location-good coefficient
+modeu5_us04_proxy_estate_size_peasants_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_burghers_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_nobles_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
+modeu5_us04_proxy_estate_size_clergy_estate	variable map	monthly location-estate-good proxy input	location	US-04 local Estate proxy reconciliation	clear before each monthly proxy write	current month until US-04 reads it
 modeu5_us04_reconciliation_requested_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_extra_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_goods_supply_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	actual extra quantity mirrored to vanilla market supply through negative add_goods_supply
+modeu5_us04_reconciliation_restored_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	actual below-baseline quantity restored to country and market stock
+modeu5_us04_reconciliation_goods_supply_added_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	actual below-baseline quantity mirrored to vanilla market supply through positive add_goods_supply
 modeu5_us04_reconciliation_removed_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_unsatisfied_quantity	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_country_stock_delta	variable map	monthly diagnostic	location	US-04 temporary monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
@@ -216,6 +235,11 @@ modeu5_us04_reconciliation_estate_charge_peasants_estate	variable map	monthly di
 modeu5_us04_reconciliation_estate_charge_burghers_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_estate_charge_nobles_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_estate_charge_clergy_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	positive value refunded to known estates for below-baseline restoration
+modeu5_us04_reconciliation_estate_refund_peasants_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_burghers_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_nobles_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_clergy_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 

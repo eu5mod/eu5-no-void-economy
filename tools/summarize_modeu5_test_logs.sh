@@ -8,12 +8,13 @@ since_time="${MODEU5_LOG_SINCE:-}"
 expected_mode="${MODEU5_EXPECTED_SCENARIOS:-full}"
 
 usage() {
-	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|us04|none]\n' "$0"
+	printf 'Usage: %s [--logs-dir PATH] [--since HH:MM:SS] [--expected full|pr126|us04|us04-estate|none]\n' "$0"
 	printf '\n'
 	printf 'Prints a compact summary of ModeU5 revalidation scenario markers, debug level markers, main-mode traces, PERF-14 diagnostics, US-10 visibility traces, US-04 diagnostics, and CORE-04 topology diagnostics.\n'
 	printf 'Use --since to focus on a fresh validation window, for example --since 16:15:00.\n'
 	printf 'Use --expected pr126 after running only event modeu5_pr126_profile_debug.1 / .2 / modeu5_pr126_debug.1.\n'
 	printf 'Use --expected us04 after running only event modeu5_us04_debug.1 option A.\n'
+	printf 'Use --expected us04-estate after running only event modeu5_us04_debug.1 option C.\n'
 	printf 'Default logs directory: %s\n' "$default_logs_dir"
 }
 
@@ -41,8 +42,8 @@ if [[ -n "$since_time" && ! "$since_time" =~ ^[0-9]{2}:[0-9]{2}:[0-9]{2}$ ]]; th
 fi
 
 case "$expected_mode" in
-	full|pr126|us04|none) ;;
-	*) printf 'Invalid --expected mode: %s. Expected full, pr126, us04, or none.\n' "$expected_mode" >&2; exit 2 ;;
+	full|pr126|us04|us04-estate|none) ;;
+	*) printf 'Invalid --expected mode: %s. Expected full, pr126, us04, us04-estate, or none.\n' "$expected_mode" >&2; exit 2 ;;
 esac
 
 if [[ ! -d "$logs_dir" ]]; then
@@ -165,6 +166,9 @@ case "$expected_mode" in
 	us04)
 		expected_scenarios=(us04_pop_demand_adaptation)
 		;;
+	us04-estate)
+		expected_scenarios=(us04_estate_level_accounting)
+		;;
 	none)
 		;;
 esac
@@ -199,6 +203,7 @@ case "$expected_mode" in
 	full) printf 'Missing expected full-revalidation scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	pr126) printf 'Missing expected PR126 dispatcher scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	us04) printf 'Missing expected US-04 focused scenarios: %s\n' "${#missing_scenarios[@]}" ;;
+	us04-estate) printf 'Missing expected US-04 Estate focused scenarios: %s\n' "${#missing_scenarios[@]}" ;;
 	none) printf 'Expected scenario checking disabled.\n' ;;
 esac
 printf '\n'
@@ -234,6 +239,7 @@ if [[ "$expected_mode" != "none" && ${#missing_scenarios[@]} -gt 0 ]]; then
 		full) printf 'Missing expected full-revalidation scenario markers:\n' ;;
 		pr126) printf 'Missing expected PR126 dispatcher scenario markers:\n' ;;
 		us04) printf 'Missing expected US-04 focused scenario markers:\n' ;;
+		us04-estate) printf 'Missing expected US-04 Estate focused scenario markers:\n' ;;
 		none) printf 'Missing expected scenario markers:\n' ;;
 	esac
 	printf '%s\n' "${missing_scenarios[@]}"
