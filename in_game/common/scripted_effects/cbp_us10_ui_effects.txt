@@ -283,7 +283,7 @@ cbp_us10_ui_compute_selected_market_capacity = {
 	}
 
 	scope:cbp_us10_ui_country = {
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_selected_market_capacity_value value = local_var:cbp_us10_ui_market_capacity_accumulator }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_selected_market_capacity_value value = local_var:gui_cbp_us10_ui_market_capacity_accumulator }
 		set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
 	}
 }

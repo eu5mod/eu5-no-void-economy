@@ -62,7 +62,7 @@ cbp_pr126_trade_owner_select_two_markets = {
 		if = {
 			limit = {
 				scope:cbp_pr126_trade_owner_test_country = {
-					local_var:cbp_pr126_trade_owner_market_index = 0
+					local_var:test_cbp_pr126_trade_owner_market_index = 0
 				}
 			}
 			save_temporary_scope_as = cbp_pr126_trade_owner_source_market
@@ -73,7 +73,7 @@ cbp_pr126_trade_owner_select_two_markets = {
 		else_if = {
 			limit = {
 				scope:cbp_pr126_trade_owner_test_country = {
-					local_var:cbp_pr126_trade_owner_market_index = 1
+					local_var:test_cbp_pr126_trade_owner_market_index = 1
 				}
 			}
 			save_temporary_scope_as = cbp_pr126_trade_owner_target_market

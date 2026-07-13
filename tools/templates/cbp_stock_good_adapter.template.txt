@@ -3783,28 +3783,51 @@ cbp_record_pop_demand_outcome_good___GOOD__ = {
 			remove_from_variable_map = { name = cbp_pop_demand_unsatisfied_months key = scope:cbp_good }
 		}
 		else = { save_temporary_scope_value_as = { name = cbp_pop_unsatisfied_months_before value = 0 } }
-		add_to_variable_map = {
-			name = cbp_pop_demand_requested_quantity
-			key = scope:cbp_good
-			value = { value = scope:cbp_pop_requested_before add = scope:cbp_outcome_requested_quantity }
+		save_temporary_scope_value_as = {
+			name = cbp_pop_demand_requested_quantity_computed_value
+			value = {
+				value = scope:cbp_pop_requested_before
+				add = scope:cbp_outcome_requested_quantity
+			}
 		}
-		add_to_variable_map = {
-			name = cbp_pop_demand_satisfied_quantity
-			key = scope:cbp_good
-			value = { value = scope:cbp_pop_satisfied_before add = scope:cbp_outcome_satisfied_quantity }
+		add_to_variable_map = { name = cbp_pop_demand_requested_quantity key = scope:cbp_good value = scope:cbp_pop_demand_requested_quantity_computed_value }
+		save_temporary_scope_value_as = {
+			name = cbp_pop_demand_satisfied_quantity_computed_value
+			value = {
+				value = scope:cbp_pop_satisfied_before
+				add = scope:cbp_outcome_satisfied_quantity
+			}
 		}
-		add_to_variable_map = {
-			name = cbp_pop_demand_unsatisfied_quantity
-			key = scope:cbp_good
-			value = { value = scope:cbp_pop_unsatisfied_before add = scope:cbp_outcome_unsatisfied_quantity }
+		add_to_variable_map = { name = cbp_pop_demand_satisfied_quantity key = scope:cbp_good value = scope:cbp_pop_demand_satisfied_quantity_computed_value }
+		save_temporary_scope_value_as = {
+			name = cbp_pop_demand_unsatisfied_quantity_computed_value
+			value = {
+				value = scope:cbp_pop_unsatisfied_before
+				add = scope:cbp_outcome_unsatisfied_quantity
+			}
 		}
+		add_to_variable_map = { name = cbp_pop_demand_unsatisfied_quantity key = scope:cbp_good value = scope:cbp_pop_demand_unsatisfied_quantity_computed_value }
 		if = {
 			limit = { scope:cbp_outcome_unsatisfied_quantity > 0 }
-			add_to_variable_map = { name = cbp_pop_demand_unsatisfied_months key = scope:cbp_good value = { value = scope:cbp_pop_unsatisfied_months_before add = 1 } }
+			save_temporary_scope_value_as = {
+				name = cbp_pop_demand_unsatisfied_months_computed_value
+				value = {
+					value = scope:cbp_pop_unsatisfied_months_before
+					add = 1
+				}
+			}
+			add_to_variable_map = { name = cbp_pop_demand_unsatisfied_months key = scope:cbp_good value = scope:cbp_pop_demand_unsatisfied_months_computed_value }
 			add_to_variable_map = { name = cbp_pop_demand_satisfied_months key = scope:cbp_good value = scope:cbp_pop_satisfied_months_before }
 		}
 		else = {
-			add_to_variable_map = { name = cbp_pop_demand_satisfied_months key = scope:cbp_good value = { value = scope:cbp_pop_satisfied_months_before add = 1 } }
+			save_temporary_scope_value_as = {
+				name = cbp_pop_demand_satisfied_months_computed_value
+				value = {
+					value = scope:cbp_pop_satisfied_months_before
+					add = 1
+				}
+			}
+			add_to_variable_map = { name = cbp_pop_demand_satisfied_months key = scope:cbp_good value = scope:cbp_pop_demand_satisfied_months_computed_value }
 			add_to_variable_map = { name = cbp_pop_demand_unsatisfied_months key = scope:cbp_good value = scope:cbp_pop_unsatisfied_months_before }
 		}
 	}
@@ -3882,15 +3905,57 @@ cbp_load_trade_outcome_maps_good___GOOD__ = {
 }
 
 cbp_store_consumption_outcome_maps_good___GOOD__ = {
-	add_to_variable_map = { name = cbp_consumption___GOOD___requested_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_requested_before add = scope:cbp_outcome_requested_quantity } }
-	add_to_variable_map = { name = cbp_consumption___GOOD___satisfied_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_satisfied_before add = scope:cbp_outcome_satisfied_quantity } }
-	add_to_variable_map = { name = cbp_consumption___GOOD___unsatisfied_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_unsatisfied_before add = scope:cbp_outcome_unsatisfied_quantity } }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_requested_computed_value
+		value = {
+			value = scope:cbp_us10_requested_before
+			add = scope:cbp_outcome_requested_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_consumption___GOOD___requested_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_requested_computed_value }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_satisfied_computed_value
+		value = {
+			value = scope:cbp_us10_satisfied_before
+			add = scope:cbp_outcome_satisfied_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_consumption___GOOD___satisfied_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_satisfied_computed_value }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_unsatisfied_computed_value
+		value = {
+			value = scope:cbp_us10_unsatisfied_before
+			add = scope:cbp_outcome_unsatisfied_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_consumption___GOOD___unsatisfied_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_unsatisfied_computed_value }
 }
 
 cbp_store_trade_outcome_maps_good___GOOD__ = {
-	add_to_variable_map = { name = cbp_trade___GOOD___requested_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_requested_before add = scope:cbp_outcome_requested_quantity } }
-	add_to_variable_map = { name = cbp_trade___GOOD___transferred_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_satisfied_before add = scope:cbp_outcome_satisfied_quantity } }
-	add_to_variable_map = { name = cbp_trade___GOOD___unsatisfied_by_market key = scope:cbp_us10_outcome_market value = { value = scope:cbp_us10_unsatisfied_before add = scope:cbp_outcome_unsatisfied_quantity } }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_requested_computed_value
+		value = {
+			value = scope:cbp_us10_requested_before
+			add = scope:cbp_outcome_requested_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_trade___GOOD___requested_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_requested_computed_value }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_satisfied_computed_value
+		value = {
+			value = scope:cbp_us10_satisfied_before
+			add = scope:cbp_outcome_satisfied_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_trade___GOOD___transferred_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_satisfied_computed_value }
+	save_temporary_scope_value_as = {
+		name = cbp_us10_outcome_unsatisfied_computed_value
+		value = {
+			value = scope:cbp_us10_unsatisfied_before
+			add = scope:cbp_outcome_unsatisfied_quantity
+		}
+	}
+	add_to_variable_map = { name = cbp_trade___GOOD___unsatisfied_by_market key = scope:cbp_us10_outcome_market value = scope:cbp_us10_outcome_unsatisfied_computed_value }
 }
 
 cbp_reset_consumption_outcome_good___GOOD__ = {

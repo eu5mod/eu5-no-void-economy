@@ -107,7 +107,7 @@ cbp_core04_test_select_fixture_markets = {
 	}
 	save_temporary_scope_value_as = {
 		name = test_cbp_core04_test_target_found
-		value = local_var:cbp_core04_test_target_found
+		value = local_var:test_cbp_core04_test_target_found
 	}
 }
 

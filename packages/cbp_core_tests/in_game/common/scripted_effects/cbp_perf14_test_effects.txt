@@ -115,7 +115,7 @@ cbp_perf14_check_country_market_present = {
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_country_market_present
-			value = local_var:cbp_perf14_country_market_present
+			value = local_var:test_cbp_perf14_country_market_present
 		}
 	}
 }
