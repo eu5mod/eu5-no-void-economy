@@ -487,8 +487,8 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 			if = {
 				limit = { scope:modeu5_us04_assertion_failure_count = 0 }
 				set_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
-				debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation BLOCKED reason=direct_pop_demand_read_not_confirmed"
-				debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=direct_pop_demand_read_not_confirmed"
+				debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation BLOCKED reason=location_estate_demand_exposure_not_confirmed"
+				debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=location_estate_demand_exposure_not_confirmed"
 			}
 		else = {
 			set_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
@@ -498,4 +498,115 @@ modeu5_debug_run_us04_pop_demand_adaptation_test = {
 	}
 
 	modeu5_us04_restore_original_cmm_setting = yes
+}
+
+modeu5_debug_run_us04_estate_level_accounting_probe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_estate_level_accounting"
+	remove_global_variable = modeu5_test_us04_estate_level_accounting_blocked
+	remove_global_variable = modeu5_test_us04_estate_level_accounting_failed
+
+	save_temporary_scope_value_as = { name = modeu5_us04_assertion_failure_count value = 0 }
+	capital = { save_temporary_scope_as = modeu5_us04_estate_probe_location }
+
+	if = {
+		limit = { NOT = { exists = scope:modeu5_us04_estate_probe_location } }
+		debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=missing_capital_location"
+		modeu5_us04_note_assertion_failure = yes
+	}
+	else = {
+		scope:modeu5_us04_estate_probe_location = {
+			modeu5_us04_clear_monthly_reconciliation_record_good_wheat = yes
+			modeu5_us04_clear_monthly_reconciliation_record_good_beer = yes
+			modeu5_write_us04_reconciliation_coefficient_good_wheat = { value = 1.2 }
+			modeu5_write_us04_reconciliation_coefficient_good_beer = { value = 1.2 }
+		}
+		modeu5_reset_pop_demand_outcome = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = wheat
+		}
+		modeu5_reset_pop_demand_outcome = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = beer
+		}
+		modeu5_record_pop_demand_outcome = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = wheat
+			requested_quantity = 100
+			satisfied_quantity = 0
+			unsatisfied_quantity = 0
+		}
+		modeu5_record_location_estate_consumption_request_peasants_estate = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = wheat
+			requested_quantity = 70
+		}
+		modeu5_record_location_estate_consumption_request_burghers_estate = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = wheat
+			requested_quantity = 30
+		}
+		modeu5_record_pop_demand_outcome = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = beer
+			requested_quantity = 100
+			satisfied_quantity = 0
+			unsatisfied_quantity = 0
+		}
+		modeu5_record_location_estate_consumption_request_nobles_estate = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = beer
+			requested_quantity = 40
+		}
+		modeu5_record_location_estate_consumption_request_clergy_estate = {
+			location = scope:modeu5_us04_estate_probe_location
+			good = beer
+			requested_quantity = 60
+		}
+		scope:modeu5_us04_estate_probe_location = {
+			modeu5_monthly_assess_location_estate_consumption_good_wheat = yes
+			modeu5_monthly_assess_location_estate_consumption_good_beer = yes
+			modeu5_us04_read_wheat_reconciliation_record = yes
+			save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_requested value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_extra value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_removed value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_unsatisfied value = 0 }
+			save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_total value = 0 }
+			if = { limit = { has_variable_map = modeu5_us04_reconciliation_requested_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_requested_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_requested value = "variable_map(modeu5_us04_reconciliation_requested_quantity|goods:beer)" } }
+			if = { limit = { has_variable_map = modeu5_us04_reconciliation_extra_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_extra_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_extra value = "variable_map(modeu5_us04_reconciliation_extra_quantity|goods:beer)" } }
+			if = { limit = { has_variable_map = modeu5_us04_reconciliation_removed_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_removed_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_removed value = "variable_map(modeu5_us04_reconciliation_removed_quantity|goods:beer)" } }
+			if = { limit = { has_variable_map = modeu5_us04_reconciliation_unsatisfied_quantity is_key_in_variable_map = { name = modeu5_us04_reconciliation_unsatisfied_quantity target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_unsatisfied value = "variable_map(modeu5_us04_reconciliation_unsatisfied_quantity|goods:beer)" } }
+			if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_requested_total is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_requested_total target = goods:beer } } save_temporary_scope_value_as = { name = modeu5_us04_beer_estate_probe_estate_total value = "variable_map(modeu5_us04_reconciliation_estate_requested_total|goods:beer)" } }
+		}
+
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_requested < 99.99 scope:modeu5_us04_wheat_reconciliation_requested > 100.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_location_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_estate_requested_total < 99.99 scope:modeu5_us04_wheat_reconciliation_estate_requested_total > 100.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_location_estate_total" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_extra < 19.99 scope:modeu5_us04_wheat_reconciliation_extra > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_wheat_reconciliation_removed > 0.01 scope:modeu5_us04_wheat_reconciliation_estate_charge > 0.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=wheat_blocked_mutation" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_requested < 99.99 scope:modeu5_us04_beer_estate_probe_requested > 100.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_location_requested_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_estate_total < 99.99 scope:modeu5_us04_beer_estate_probe_estate_total > 100.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_location_estate_total" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { OR = { scope:modeu5_us04_beer_estate_probe_extra < 19.99 scope:modeu5_us04_beer_estate_probe_extra > 20.01 } } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_extra_quantity" modeu5_us04_note_assertion_failure = yes }
+		if = { limit = { scope:modeu5_us04_beer_estate_probe_removed > 0.01 } debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=beer_blocked_mutation" modeu5_us04_note_assertion_failure = yes }
+
+		set_variable = { name = modeu5_us04_estate_probe_wheat_requested value = scope:modeu5_us04_wheat_reconciliation_requested }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_extra value = scope:modeu5_us04_wheat_reconciliation_extra }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_removed value = scope:modeu5_us04_wheat_reconciliation_removed }
+		set_variable = { name = modeu5_us04_estate_probe_wheat_estate_total value = scope:modeu5_us04_wheat_reconciliation_estate_requested_total }
+		set_variable = { name = modeu5_us04_estate_probe_beer_requested value = scope:modeu5_us04_beer_estate_probe_requested }
+		set_variable = { name = modeu5_us04_estate_probe_beer_extra value = scope:modeu5_us04_beer_estate_probe_extra }
+		set_variable = { name = modeu5_us04_estate_probe_beer_removed value = scope:modeu5_us04_beer_estate_probe_removed }
+		set_variable = { name = modeu5_us04_estate_probe_beer_estate_total value = scope:modeu5_us04_beer_estate_probe_estate_total }
+		debug_log = "ModeU5 US-04 ESTATE ACCOUNTING location_level=1 goods=2 estates=4 wheat_requested=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_requested').GetValue|2] wheat_extra=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_extra').GetValue|2] wheat_removed=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_removed').GetValue|2] wheat_estate_total=[THIS.GetVariable('modeu5_us04_estate_probe_wheat_estate_total').GetValue|2] beer_requested=[THIS.GetVariable('modeu5_us04_estate_probe_beer_requested').GetValue|2] beer_extra=[THIS.GetVariable('modeu5_us04_estate_probe_beer_extra').GetValue|2] beer_removed=[THIS.GetVariable('modeu5_us04_estate_probe_beer_removed').GetValue|2] beer_estate_total=[THIS.GetVariable('modeu5_us04_estate_probe_beer_estate_total').GetValue|2] result=blocked reason=location_estate_demand_exposure_not_confirmed"
+	}
+
+	if = {
+		limit = { scope:modeu5_us04_assertion_failure_count = 0 }
+		set_global_variable = modeu5_test_us04_estate_level_accounting_blocked
+		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting BLOCKED reason=location_estate_demand_exposure_not_confirmed"
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_estate_level_accounting reason=location_estate_demand_exposure_not_confirmed"
+	}
+	else = {
+		set_global_variable = modeu5_test_us04_estate_level_accounting_failed
+		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting FAIL"
+		debug_log = "ModeU5 TEST FAIL scenario=us04_estate_level_accounting"
+	}
 }

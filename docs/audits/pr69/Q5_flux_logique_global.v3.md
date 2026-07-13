@@ -11,9 +11,9 @@ deciding what US-04 currently does and what remains blocked.
 Annual adaptation coefficient:         IMPLEMENTED / deterministic fixture PASS
 ModeU5-owned reconciliation coefficient: IMPLEMENTED
 Vanilla pop_demand runtime mutation:    REJECTED FOR PRODUCTION
-Monthly stock reconciliation:           BLOCKED pending TECH-01 147
+Monthly stock reconciliation:           BLOCKED pending TECH-01 149/150
 Estate gold charge:                     CONFIRMED endpoint / not used yet
-Live Pop demand by estate and good:     NOT_CONFIRMED
+Live location Estate demand by good:    NOT_CONFIRMED
 Peasants fallback:                      REJECTED
 ```
 
@@ -24,8 +24,8 @@ US-04 now has two separate layers:
    This is implemented and safe.
 
 2. A future monthly stock/estate reconciliation layer.
-   This is deliberately fail-closed until exact live Pop demand by good can be
-   read from Pop scope.
+   This is deliberately fail-closed until exact live location x estate x good
+   demand or a confirmed equivalent can be read.
 ```
 
 ## Probe Conclusions
@@ -82,8 +82,8 @@ The monthly reconciliation helper computes diagnostics, then fails closed:
 requested_quantity = known explicit/test requested quantity
 extra_quantity = requested_quantity x max(0, reconciliation_coefficient - 1)
 
-if TECH-01 147 is not confirmed:
-    log direct_pop_demand_read_not_confirmed
+if TECH-01 149/150 location Estate exposure/proxy is not confirmed:
+    log location_estate_demand_exposure_not_confirmed
     removed_quantity = 0
     country_stock_delta = 0
     market_stock_delta = 0
@@ -99,10 +99,11 @@ does not authorize production mutation.
 
 ## Target Future Flow
 
-Only after TECH-01 147 confirms a direct live Pop requested-demand-by-good read,
-the production flow can become a pre-US-10 additional-demand preparation pass.
-This should run before US-10 consumption resolution, not as a competing
-post-US-10 reconciliation pass.
+Only after TECH-01 149, or the TECH-01 150 proxy, confirms an exact live
+location-level Estate requested-demand-by-good read, the production flow can
+become a pre-US-10 additional-demand preparation pass. This should run before
+US-10 consumption resolution, not as a competing post-US-10 reconciliation
+pass.
 
 The intended traversal is country-owned and market-scoped:
 
@@ -141,10 +142,10 @@ target market = {
 }
 ```
 
-It can skip a whole market x good before the owned-location and `every_pop`
-loops. It is a presence/boolean gate, not a quantity source and not an estate
-split. The required correctness gate is still the exact direct Pop-demand read
-from TECH-01 147.
+It can skip a whole market x good before the owned-location and location-estate
+work. It is a presence/boolean gate, not a quantity source and not an estate
+split. The required correctness gate is still TECH-01 149 direct location
+Estate demand or TECH-01 150 confirmed local proxy calculation.
 
 The target request-preparation logic is:
 
@@ -158,11 +159,12 @@ for each country x market reached by the monthly country-owned traversal:
             reset estate requested totals
             reset estate extra-demand totals
 
-            every_pop in location:
-                read estate_type
-                read current requested quantity for goods:<good>
-                if requested quantity > 0:
-                    add requested quantity to that estate total
+            preferred #167 path:
+                read exact location x good x estate requested quantities
+
+            fallback candidate, only if confirmed:
+                modeu5_us04_reconciliation_coefficient(location, good)
+                x proxy_estate_size_at_location
 
             total_requested_quantity = sum estate requested totals
             if total_requested_quantity <= 0:
@@ -240,11 +242,11 @@ flowchart TD
     C -->|No| D[No write]
     C -->|Yes| E[Update ModeU5 coefficient]
     E --> F[Pre-US-10 additional-demand preparation]
-    F --> G{TECH-01 147 confirmed?}
+    F --> G{Location Estate demand exposure confirmed?}
     G -->|No| H[BLOCKED: diagnostic only]
     H --> I[No stock removal]
     H --> J[No estate charge]
-    G -->|Yes, future| K[Every Pop read demand by estate]
+    G -->|Yes, future| K[Read location Estate demand by good]
     K --> L[Register US-10 additional demand]
     L --> M[US-10 removes satisfied quantity centrally]
     M --> N[Charge exact estates and adjust vanilla supply for satisfied quantity]
@@ -301,11 +303,11 @@ Runtime validation:
 6. Review error.log, game.log, debug.log, and system.log.
 ```
 
-Expected US-04 outcome while TECH-01 147 is unconfirmed:
+Expected US-04 outcome while TECH-01 149/150 is unconfirmed:
 
 ```txt
-ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed
-ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=direct_pop_demand_read_not_confirmed
+ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed
+ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=location_estate_demand_exposure_not_confirmed
 ```
 
 Expected blocked reconciliation diagnostics:
@@ -329,9 +331,9 @@ US-04 stock/estate reconciliation can only move out of blocked status when a
 controlled probe proves all of the following:
 
 ```txt
-every_pop can run from the intended location scope
-the Pop estate_type can be read
-the current requested demand for goods:<good> can be read from that Pop
+exact location x good x estate requested quantities can be read, or a confirmed
+  local-consumption proxy can calculate
+  modeu5_us04_reconciliation_coefficient x proxy_estate_size_at_location
 the demand value is exact enough to drive stock removal
 the read is stable in a fresh campaign, after a monthly tick, and after reload
 ```

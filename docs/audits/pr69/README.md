@@ -14,8 +14,8 @@ US-04:
 ```txt
 Annual coefficient layer:       implemented
 Vanilla pop_demand mutation:    rejected for production
-Monthly stock reconciliation:   blocked pending TECH-01 147
-Estate charge:                  confirmed endpoint, not used until exact Pop demand is confirmed
+Monthly stock reconciliation:   blocked pending TECH-01 149/150
+Estate charge:                  confirmed endpoint, not used until exact location Estate demand is confirmed
 ```
 
 ## Historical Evidence

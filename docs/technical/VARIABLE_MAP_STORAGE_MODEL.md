@@ -323,9 +323,9 @@ Runtime gameplay reads `modeu5_us04_reconciliation_coefficient`; the vanilla
 The estate-specific request maps are a diagnostic refinement of the same
 location × good record. They document the desired allocation shape but do not
 authorize production stock or estate mutation while live Pop demand by good is
-unconfirmed. US-04 fails closed for that location/good and logs
-`direct_pop_demand_read_not_confirmed`. It must not fallback to
-`peasants_estate` or any other synthetic estate target.
+unconfirmed. After the PR #167 Estate-level redesign, US-04 fails closed for
+that location/good and logs `location_estate_demand_exposure_not_confirmed`.
+It must not fallback to `peasants_estate` or any other synthetic estate target.
 
 ### Country x market aggregate across goods
 

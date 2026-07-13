@@ -32,16 +32,20 @@ A direct Estate-level endpoint is preferred over iterating Pops because the Esta
 Preferred engine exposure:
 
 ```txt
-country × market × good × estate_type
+location × good × estate_type
 ```
 
 Acceptable alternatives:
 
 ```txt
+country × market × good × estate_type
 Estate × market × good
 Estate × country × market × good
-location × good × estate_type, aggregated to country × market
 ```
+
+The first probe must assess the location-level surface explicitly. Pops are
+located, consumption is resolved at location level, and any country-market
+accounting result is an aggregation of location facts.
 
 The exposure must represent an actual requested or consumed quantity for a specific good. The following are not sufficient substitutes:
 
@@ -104,6 +108,43 @@ sum(estate_satisfied[e]) = actual stock removed
 
 subject only to documented numeric precision behavior.
 
+## Local Consumption Proxy Candidate
+
+If EU5 does not expose direct Estate requested quantity by good, the next
+candidate is not to allocate a market-level demand downward. It is to estimate
+location-level Estate consumption directly from local consumption pressure:
+
+```txt
+location_estate_good_consumption =
+  modeu5_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
+```
+
+Then the estimated request is summed before reconciliation:
+
+```txt
+country_market_estate_good_requested =
+  sum(location_estate_good_consumption for owned locations in market)
+```
+
+This is a dynamic local-consumption proxy, not a static Estate split. It is
+better than assigning everything to one fallback Estate because it uses the
+location's actual Estate composition and local consumption pressure. It must
+remain blocked for stock or gold mutation until probes confirm:
+
+```txt
+the ModeU5 coefficient remains `modeu5_us04_reconciliation_coefficient`,
+  seeded at 1.20 and updated yearly by 1.01 / 1.00 / 0.99
+how to derive proxy_estate_size_at_location safely
+the units/scaling between coefficient × size and requested quantity
+stable aggregation across locations in the market
+```
+
+`proxy_estate_size_at_location` may be derived from summed Pops of the matching
+Estate only if the relevant Pop-size read is confirmed. Pop size is not accepted
+as a demand proxy by itself; here it is only the size term in the ModeU5
+coefficient formula.
+
 ## Annual demand adjustment
 
 The existing US-04 annual adjustment remains a multiplier owned by ModeU5:
@@ -151,12 +192,14 @@ No candidate may enter production code until the result is causally confirmed.
 monthly country accounting owner
   -> every relevant market for country
     -> every active good
-      -> read Estate requested quantities
-      -> calculate total request
-      -> call centralized stock removal once
-      -> allocate actual removal across Estates
-      -> charge Estates for satisfied shares
-      -> persist diagnostic result
+      -> every owned location in that market
+        -> read location Estate requested quantities
+        -> aggregate to country × market × good × Estate
+    -> calculate total request
+    -> call centralized stock removal once
+    -> allocate actual removal across Estates
+    -> charge Estates for satisfied shares
+    -> persist diagnostic result
 ```
 
 The implementation must not add:
@@ -245,7 +288,9 @@ For one selected `country × market × good` cell, emit:
 ModeU5 US-04 ESTATE ACCOUNTING
 country=<...>
 market=<...>
+location=<...>
 good=<...>
+location_requested_total=<...>
 requested_total=<...>
 stock_before=<...>
 stock_removed=<...>

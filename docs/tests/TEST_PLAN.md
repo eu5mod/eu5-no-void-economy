@@ -1604,8 +1604,8 @@ capital location, then writes:
 ```txt
 ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
 ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 wheat_reconciliation_coefficient=1.2120 beer_multiplier=1.1880 beer_reconciliation_coefficient=1.1880 cloth_multiplier=1.2000 cloth_reconciliation_coefficient=1.2000 tools_multiplier=1.2000 tools_reconciliation_coefficient=1.2000 wheat_reconciliation_requested=100.00 wheat_reconciliation_extra=21.20 wheat_reconciliation_removed=0.00 wheat_reconciliation_unsatisfied=21.20 wheat_reconciliation_country_delta=0.00 wheat_reconciliation_market_delta=0.00 wheat_reconciliation_estate_charge=0.00
-ModeU5 US-04 RESULT pop_demand_adaptation BLOCKED reason=direct_pop_demand_read_not_confirmed
-ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=direct_pop_demand_read_not_confirmed
+ModeU5 US-04 RESULT pop_demand_adaptation BLOCKED reason=location_estate_demand_exposure_not_confirmed
+ModeU5 TEST BLOCKED scenario=us04_pop_demand_adaptation reason=location_estate_demand_exposure_not_confirmed
 ```
 
 The `*_multiplier` values are the archived PR69 vanilla-demand injection probe
@@ -1613,11 +1613,28 @@ state. EU5 1.2+ rejects that path as a reliable runtime mutation, so the active
 ModeU5 state is the `modeu5_us04_reconciliation_coefficient` family.
 The current monthly reconciliation fixture computes the extra
 `requested * max(0, coefficient - 1)` diagnostic quantity, but stock and estate
-mutation are blocked until TECH-01 147 confirms a direct live
-`every_pop -> pop_demand × good` read. The intended future production path is a
+mutation are blocked until TECH-01 149 confirms a direct live
+`location × estate × good` demand read or TECH-01 150 confirms the local
+`modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location`
+calculation. The intended future production path is a
 pre-US-10 additional-demand preparation pass, not a post-US-10 correction.
-Current tests expect `direct_pop_demand_read_not_confirmed`, no stock removal,
-no market delta, and no estate charge. There is no `peasants_estate` fallback.
+Current tests expect `location_estate_demand_exposure_not_confirmed`, no stock
+removal, no market delta, and no estate charge. There is no `peasants_estate`
+fallback.
+
+Option C runs the PR #167 Estate/location probe:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_estate_level_accounting
+ModeU5 US-04 ESTATE ACCOUNTING location_level=1 goods=2 estates=4 ... result=blocked reason=location_estate_demand_exposure_not_confirmed
+ModeU5 TEST BLOCKED scenario=us04_estate_level_accounting reason=location_estate_demand_exposure_not_confirmed
+```
+
+Use:
+
+```txt
+./tools/summarize_modeu5_test_logs.sh --expected us04-estate
+```
 
 The full revalidation chain also includes this scenario:
 

@@ -799,6 +799,49 @@ modeu5_record_pop_demand_outcome_clergy_estate = {
 	}
 }
 
+# PR #167 estate-accounting aliases. These write the existing ModeU5-owned
+# location x good x estate diagnostic ledger; they do not prove or replace a
+# live vanilla Estate-demand exposure.
+modeu5_record_location_estate_consumption_request_peasants_estate = {
+	modeu5_record_pop_demand_outcome_peasants_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_burghers_estate = {
+	modeu5_record_pop_demand_outcome_burghers_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_nobles_estate = {
+	modeu5_record_pop_demand_outcome_nobles_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
+modeu5_record_location_estate_consumption_request_clergy_estate = {
+	modeu5_record_pop_demand_outcome_clergy_estate = {
+		location = $location$
+		good = $good$
+		requested_quantity = $requested_quantity$
+		satisfied_quantity = 0
+		unsatisfied_quantity = 0
+	}
+}
+
 modeu5_reset_pop_demand_outcome = {
 	$location$ = { save_temporary_scope_as = modeu5_demand_location }
 	goods:$good$ = { save_temporary_scope_as = modeu5_good }

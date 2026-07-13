@@ -158,8 +158,8 @@ target market = {
 }
 ```
 
-It can become the first fast skip before owned-location and `every_pop` scans,
-but it must not replace the required TECH-01 147 direct Pop-demand read. It
+It can become the first fast skip before owned-location and local-estate scans,
+but it must not replace the required TECH-01 149/150 location-level exposure. It
 answers whether the market has Pop demand for the good; it does not provide
 quantity or estate split.
 
@@ -167,11 +167,17 @@ This fallback rule is global. If the detailed US-04 path cannot enter, the game
 keeps vanilla/no ModeU5 additional demand regardless of Normal, Debug, Audit, or
 Performance accounting mode. Performance Mode only changes accounting sparsity.
 
-For each confirmed `country × market × location × good`, US-04 should calculate:
+For each confirmed `country × market × location × estate × good`, US-04 should calculate:
 
 ```txt
 estate_requested_quantity =
-  sum(current Pop requested quantity for goods:<good> by estate_type)
+  direct location Estate requested quantity for goods:<good>
+
+or, if the proxy path is confirmed:
+
+estate_requested_quantity =
+  modeu5_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
 
 estate_extra_quantity =
   estate_requested_quantity
@@ -189,10 +195,10 @@ modeu5_remove_stock(reason = consumption)
 ```
 
 That centralized call updates both country × market × good stock and the market
-× good aggregate/cache. It remains blocked until exact Pop demand by good is
-confirmed. The monthly reconciliation record currently stores requested and
+× good aggregate/cache. It remains blocked until exact location Estate demand by
+good is confirmed or the #167 local consumption proxy inputs are confirmed. The monthly reconciliation record currently stores requested and
 extra quantities, but removed quantity, stock deltas, and estate charges remain
-zero while TECH-01 147 is unconfirmed.
+zero while TECH-01 149/150 is unconfirmed.
 
 The future charge side uses the confirmed country-scope vanilla effect:
 
@@ -200,7 +206,7 @@ The future charge side uses the confirmed country-scope vanilla effect:
 add_gold_to_estate = { estate_type = estate_type:<estate> value = -estate_charge }
 ```
 
-When a future Pop-demand reader records exact estate-specific extra quantities,
+When a future location-level Estate-demand reader or confirmed proxy records exact estate-specific extra quantities,
 US-04 should split the charge by each estate's share of the additional demand
 that was actually satisfied:
 
@@ -233,11 +239,11 @@ modeu5_pop_demand_requested_quantity_clergy_estate
 
 These maps are not the final business surface. They are a deterministic bridge
 for current tests and documentation of the required per-estate accounting shape.
-They do not authorize production stock or estate mutation. While the direct Pop
-demand read is unconfirmed, US-04 must fail closed:
+They do not authorize production stock or estate mutation. While the location
+Estate demand exposure is unconfirmed, US-04 must fail closed:
 
 ```txt
-ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed
+ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed
 ```
 
 In that case US-04 does not remove stock, does not charge any estate, and stores
@@ -246,8 +252,8 @@ the requested/extra quantities as unsatisfied reconciliation diagnostics.
 PR #69 proved Pop-to-location ModeU5 endpoint access and market-level observed
 demand paths. It did not promote a direct vanilla `pop -> pop_demand × good`
 read/write expression in TECH-01. Full production reconciliation remains blocked
-until a controlled `every_pop -> pop_demand × good` read proves exact current
-Pop demand by good.
+until a controlled location Estate demand read or the #167 local-consumption
+proxy proves exact enough current Estate demand by good.
 
 The target runtime shape is:
 
@@ -258,18 +264,23 @@ for each relevant country × market:
       skip this market × good before scanning locations
 
     for each owned location in market:
-      every_pop:
-        read pop estate_type
-        read pop demand for goods:<good>   # TECH-01 pending
-        accumulate requested quantity by estate
+      preferred:
+        read location x estate x good requested quantity
 
-      after the Pop loop:
+      proxy candidate:
+        modeu5_us04_reconciliation_coefficient(location, good)
+        x proxy_estate_size_at_location
+
+      after the location-estate calculation:
         create one additional US-10 demand request from the estate extra quantities
         consume satisfied quantity through modeu5_remove_stock
         adjust vanilla supply and charge estates only for satisfied quantity
 ```
 
-Do not use `pop_size` as a proxy and do not fallback to `peasants_estate`.
+Do not use raw `pop_size` as a demand proxy and do not fallback to
+`peasants_estate`. `proxy_estate_size_at_location` is only acceptable as the
+size term of the confirmed `modeu5_us04_reconciliation_coefficient × size`
+formula.
 
 ## Compatibility cleanup
 
@@ -316,7 +327,7 @@ wheat_estate_charge_peasants=0.00
 wheat_estate_charge_burghers=0.00
 wheat_estate_charge_nobles=0.00
 wheat_estate_charge_clergy=0.00
-BLOCKED reason=direct_pop_demand_read_not_confirmed
+BLOCKED reason=location_estate_demand_exposure_not_confirmed
 ```
 
 ### Initialization lifecycle
@@ -384,7 +395,7 @@ extra=21.20
 removed=0
 unsatisfied=21.20
 stock 200 -> 200
-reason=direct_pop_demand_read_not_confirmed
+reason=location_estate_demand_exposure_not_confirmed
 ```
 
 ## Acceptance criteria
@@ -395,7 +406,7 @@ reason=direct_pop_demand_read_not_confirmed
 - [x] Exact-path vanilla regeneration removed.
 - [x] PR69 injection/replacement probes archived as non-production evidence.
 - [x] Active reconciliation coefficient implemented.
-- [x] Monthly ModeU5 reconciliation fails closed until live Pop demand by good is confirmed.
+- [x] Monthly ModeU5 reconciliation fails closed until location Estate demand by good, or the #167 local-consumption proxy, is confirmed.
 - [x] Blocked monthly reconciliation proves no country stock, market aggregate, or estate gold mutation occurs.
 - [x] Country-scope estate gold charge endpoint is confirmed for future use.
 - [x] US-04 records diagnostic estate split maps, but does not treat them as production authorization.
@@ -403,15 +414,15 @@ reason=direct_pop_demand_read_not_confirmed
 - [x] Static architecture validator implemented.
 - [ ] New-campaign initialization probe passes.
 - [ ] Live US-10.3 location outcome handoff is confirmed.
-- [ ] Exact live vanilla Pop/Estate requested demand per estate is confirmed as a direct runtime read.
+- [ ] Exact live vanilla Pop/Estate requested demand per estate, or the #167 local-consumption proxy, is confirmed as a runtime read/calculation.
 
 ## Current status
 
 ```txt
 Annual adaptation fixture:             PASS
-Temporary stock reconciliation:        BLOCKED pending TECH-01 147
+Temporary stock reconciliation:        BLOCKED pending TECH-01 149/150
 Vanilla pop_demand mutation:           REJECTED FOR PRODUCTION
-Estate gold charge effect:             CONFIRMED / not used until TECH-01 147
+Estate gold charge effect:             CONFIRMED / not used until TECH-01 149/150
 Exact vanilla estate demand read:       NOT_CONFIRMED / blocks stock reconciliation
 TECH-01 #039:                          NOT_CONFIRMED
 ```

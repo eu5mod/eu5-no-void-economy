@@ -30,7 +30,7 @@ modeu5_us04_debug.1 = {
 	}
 	option = {
 		name = modeu5_us04_debug.1.c
-		trigger_event_non_silently = { id = modeu5_us04_debug.50 days = 0 }
+		trigger_event_non_silently = { id = modeu5_us04_debug.60 days = 0 }
 	}
 	option = {
 		name = modeu5_us04_debug.1.d
@@ -66,6 +66,22 @@ modeu5_us04_debug.20 = {
 
 	immediate = {
 		modeu5_debug_run_us04_pop_demand_endpoint_test = yes
+	}
+}
+
+# PR #167 focused Estate-level accounting probe. This stays blocked until a
+# live location x good x estate demand exposure is confirmed.
+modeu5_us04_debug.60 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_estate_level_accounting_probe = yes
 	}
 }
 

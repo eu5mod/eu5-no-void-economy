@@ -140,7 +140,7 @@ modeu5_read_us04_monthly_pop_requested_quantity_good___GOOD__ = {
 	}
 }
 
-modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__ = {
+modeu5_read_us04_monthly_location_estate_requested_quantities_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_monthly_requested_quantity_peasants_estate value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_monthly_requested_quantity_burghers_estate value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_monthly_requested_quantity_nobles_estate value = 0 }
@@ -197,6 +197,10 @@ modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__ = {
 			min = 0
 		}
 	}
+}
+
+modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__ = {
+	modeu5_read_us04_monthly_location_estate_requested_quantities_good___GOOD__ = yes
 }
 
 modeu5_write_pop_demand_multiplier_good___GOOD__ = {
@@ -449,6 +453,10 @@ modeu5_monthly_reconcile_country_market_pop_demand_good___GOOD__ = {
 	}
 }
 
+modeu5_monthly_assess_country_market_estate_consumption_good___GOOD__ = {
+	modeu5_monthly_reconcile_country_market_pop_demand_good___GOOD__ = yes
+}
+
 modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_as = modeu5_us04_reconciliation_location
 	owner ?= { save_temporary_scope_as = modeu5_us04_reconciliation_country }
@@ -456,7 +464,7 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 
 	modeu5_get_us04_reconciliation_coefficient_good___GOOD__ = yes
 	modeu5_read_us04_monthly_pop_requested_quantity_good___GOOD__ = yes
-	modeu5_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__ = yes
+	modeu5_read_us04_monthly_location_estate_requested_quantities_good___GOOD__ = yes
 
 	save_temporary_scope_value_as = {
 		name = modeu5_us04_reconciliation_delta_ratio
@@ -497,10 +505,14 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			exists = scope:modeu5_us04_reconciliation_market
 			modeu5_stock_runtime_ready_trigger = yes
 		}
-		debug_log = "ModeU5 US-04 BLOCKED reason=direct_pop_demand_read_not_confirmed good=__GOOD__ action=no_stock_removed_no_estate_charged"
+		debug_log = "ModeU5 US-04 BLOCKED reason=location_estate_demand_exposure_not_confirmed good=__GOOD__ action=no_stock_removed_no_estate_charged"
 	}
 
 	modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = yes
+}
+
+modeu5_monthly_assess_location_estate_consumption_good___GOOD__ = {
+	modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = yes
 }
 
 modeu5_annual_adjust_location_pop_demand_good___GOOD__ = {
