@@ -171,8 +171,15 @@ cbp_core04_refresh_current_country_location_market_memory = {
 }
 
 cbp_core04_refresh_all_location_market_memory = {
-	every_country = {
-		cbp_core04_refresh_current_country_location_market_memory = yes
+	if = {
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		every_country = {
+			cbp_core04_refresh_current_country_location_market_memory = yes
+		}
+		set_global_variable = {
+			name = cbp_core04_market_memory_snapshot_version
+			value = 1
+		}
 	}
 }
 

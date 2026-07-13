@@ -1442,6 +1442,28 @@ cbp_start_game_stock_initialization_dispatcher = {
 	}
 }
 
+cbp_repair_stock_lifecycle_on_game_load = {
+	cbp_initialize_pop_demand_multipliers_once = yes
+
+	if = {
+		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }
+		cbp_start_game_stock_initialization_dispatcher = yes
+	}
+	else = {
+		set_global_variable = {
+			name = cbp_initialization_last_mode
+			value = 3
+		}
+	}
+
+	cbp_core04_refresh_all_location_market_memory = yes
+
+	set_global_variable = {
+		name = cbp_stock_load_repair_version
+		value = 1
+	}
+}
+
 # US-11
 
 cbp_prepare_reconciliation_controller = {
