@@ -52,15 +52,15 @@ modeu5_pr126_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.pr126_helpers.pass
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_helpers_passed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_passed }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_helpers.blocked
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_helpers_blocked }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_helpers.fail
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_helpers_failed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_failed }
 	}
 	option = {
 		name = modeu5_debug.close
@@ -79,15 +79,15 @@ modeu5_pr126_debug.4 = {
 
 	option = {
 		name = modeu5_debug.test.pr126_local_branch.pass
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_passed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_passed }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_local_branch.blocked
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_blocked }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_local_branch.fail
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_local_branch_failed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_failed }
 	}
 	option = {
 		name = modeu5_debug.close
@@ -106,15 +106,15 @@ modeu5_pr126_debug.5 = {
 
 	option = {
 		name = modeu5_debug.test.pr126_dispatcher_compare.pass
-		trigger = { has_global_variable = modeu5_test_pr126_monthly_dispatcher_compare_passed }
+		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_passed }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_dispatcher_compare.blocked
-		trigger = { has_global_variable = modeu5_test_pr126_monthly_dispatcher_compare_blocked }
+		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_dispatcher_compare.fail
-		trigger = { has_global_variable = modeu5_test_pr126_monthly_dispatcher_compare_failed }
+		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_failed }
 	}
 	option = {
 		name = modeu5_debug.close
@@ -133,15 +133,15 @@ modeu5_pr126_debug.3 = {
 
 	option = {
 		name = modeu5_debug.test.pr126_shell.pass
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_shell_passed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_passed }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_shell.blocked
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_shell_blocked }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.pr126_shell.fail
-		trigger = { has_global_variable = modeu5_test_pr126_promoted_market_shell_failed }
+		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_failed }
 	}
 	option = {
 		name = modeu5_debug.close

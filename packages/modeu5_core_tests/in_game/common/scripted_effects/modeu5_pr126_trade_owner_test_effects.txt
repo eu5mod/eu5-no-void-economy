@@ -10,53 +10,53 @@
 # stock consumption is therefore intentionally absent from this probe.
 
 modeu5_pr126_trade_owner_ensure_metric_globals = {
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_pass_runs } } set_global_variable = { name = modeu5_country_trade_owner_pass_runs value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_trades_seen } } set_global_variable = { name = modeu5_country_trade_owner_trades_seen value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_inter_market_trades } } set_global_variable = { name = modeu5_country_trade_owner_inter_market_trades value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_owner_mismatches } } set_global_variable = { name = modeu5_country_trade_owner_owner_mismatches value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_quantity_confirmed_trades } } set_global_variable = { name = modeu5_country_trade_owner_quantity_confirmed_trades value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_quantity_blocked_trades } } set_global_variable = { name = modeu5_country_trade_owner_quantity_blocked_trades value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_explicit_requests } } set_global_variable = { name = modeu5_country_trade_owner_explicit_requests value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_inter_market_transfers } } set_global_variable = { name = modeu5_country_trade_owner_inter_market_transfers value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_requested_quantity } } set_global_variable = { name = modeu5_country_trade_owner_requested_quantity value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_confirmed_trade_quantity } } set_global_variable = { name = modeu5_country_trade_owner_confirmed_trade_quantity value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_transferred_quantity } } set_global_variable = { name = modeu5_country_trade_owner_transferred_quantity value = 0 } }
-	if = { limit = { NOT = { has_global_variable = modeu5_country_trade_owner_unsatisfied_quantity } } set_global_variable = { name = modeu5_country_trade_owner_unsatisfied_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_pass_runs } } set_global_variable = { name = cbp_country_trade_owner_pass_runs value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_trades_seen } } set_global_variable = { name = cbp_country_trade_owner_trades_seen value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_inter_market_trades } } set_global_variable = { name = cbp_country_trade_owner_inter_market_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_owner_mismatches } } set_global_variable = { name = cbp_country_trade_owner_owner_mismatches value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_quantity_confirmed_trades } } set_global_variable = { name = cbp_country_trade_owner_quantity_confirmed_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_quantity_blocked_trades } } set_global_variable = { name = cbp_country_trade_owner_quantity_blocked_trades value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_explicit_requests } } set_global_variable = { name = cbp_country_trade_owner_explicit_requests value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_inter_market_transfers } } set_global_variable = { name = cbp_country_trade_owner_inter_market_transfers value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_requested_quantity } } set_global_variable = { name = cbp_country_trade_owner_requested_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_confirmed_trade_quantity } } set_global_variable = { name = cbp_country_trade_owner_confirmed_trade_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_transferred_quantity } } set_global_variable = { name = cbp_country_trade_owner_transferred_quantity value = 0 } }
+	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_unsatisfied_quantity } } set_global_variable = { name = cbp_country_trade_owner_unsatisfied_quantity value = 0 } }
 }
 
 modeu5_pr126_trade_owner_capture_metrics = {
 	modeu5_pr126_trade_owner_ensure_metric_globals = yes
 
-	set_variable = { name = modeu5_pr126_ui_trade_owner_pass_runs value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_trades_seen value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_owner_mismatches value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_blocked value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_explicit_requests value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market_transfers value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_requested value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed_quantity value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_transferred value = 0 }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_unsatisfied value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_pass_runs value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_trades_seen value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_inter_market value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_owner_mismatches value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_confirmed value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_blocked value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_explicit_requests value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_inter_market_transfers value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_requested value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_confirmed_quantity value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_transferred value = 0 }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_unsatisfied value = 0 }
 
-	set_variable = { name = modeu5_pr126_ui_trade_owner_pass_runs value = global_var:modeu5_country_trade_owner_pass_runs }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_trades_seen value = global_var:modeu5_country_trade_owner_trades_seen }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market value = global_var:modeu5_country_trade_owner_inter_market_trades }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_owner_mismatches value = global_var:modeu5_country_trade_owner_owner_mismatches }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed value = global_var:modeu5_country_trade_owner_quantity_confirmed_trades }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_blocked value = global_var:modeu5_country_trade_owner_quantity_blocked_trades }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_explicit_requests value = global_var:modeu5_country_trade_owner_explicit_requests }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_inter_market_transfers value = global_var:modeu5_country_trade_owner_inter_market_transfers }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_requested value = global_var:modeu5_country_trade_owner_requested_quantity }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_confirmed_quantity value = global_var:modeu5_country_trade_owner_confirmed_trade_quantity }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_transferred value = global_var:modeu5_country_trade_owner_transferred_quantity }
-	set_variable = { name = modeu5_pr126_ui_trade_owner_unsatisfied value = global_var:modeu5_country_trade_owner_unsatisfied_quantity }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_pass_runs value = global_var:cbp_country_trade_owner_pass_runs }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_trades_seen value = global_var:cbp_country_trade_owner_trades_seen }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_inter_market value = global_var:cbp_country_trade_owner_inter_market_trades }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_owner_mismatches value = global_var:cbp_country_trade_owner_owner_mismatches }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_confirmed value = global_var:cbp_country_trade_owner_quantity_confirmed_trades }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_blocked value = global_var:cbp_country_trade_owner_quantity_blocked_trades }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_explicit_requests value = global_var:cbp_country_trade_owner_explicit_requests }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_inter_market_transfers value = global_var:cbp_country_trade_owner_inter_market_transfers }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_requested value = global_var:cbp_country_trade_owner_requested_quantity }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_confirmed_quantity value = global_var:cbp_country_trade_owner_confirmed_trade_quantity }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_transferred value = global_var:cbp_country_trade_owner_transferred_quantity }
+	set_variable = { name = gui_cbp_pr126_ui_trade_owner_unsatisfied value = global_var:cbp_country_trade_owner_unsatisfied_quantity }
 }
 
 modeu5_pr126_trade_owner_select_two_markets = {
-	remove_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
-	set_local_variable = { name = modeu5_pr126_trade_owner_market_index value = 0 }
+	remove_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
+	set_local_variable = { name = test_cbp_pr126_trade_owner_market_index value = 0 }
 
 	every_market_present_in_country = {
 		if = {
@@ -79,41 +79,41 @@ modeu5_pr126_trade_owner_select_two_markets = {
 			save_temporary_scope_as = modeu5_pr126_trade_owner_target_market
 		}
 		scope:modeu5_pr126_trade_owner_test_country = {
-			change_local_variable = { name = modeu5_pr126_trade_owner_market_index add = 1 }
+			change_local_variable = { name = test_cbp_pr126_trade_owner_market_index add = 1 }
 		}
 	}
 
 	if = {
 		limit = { NOT = { exists = scope:modeu5_pr126_trade_owner_source_market } }
-		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
+		set_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 	}
 	else_if = {
 		limit = { scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market }
-		set_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
+		set_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 	}
 }
 
 modeu5_debug_run_pr126_country_trade_owner_pass_test = {
-	remove_global_variable = modeu5_test_pr126_country_trade_owner_pass_passed
-	remove_global_variable = modeu5_test_pr126_country_trade_owner_pass_failed
-	remove_global_variable = modeu5_test_pr126_country_trade_owner_pass_blocked
-	remove_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed
+	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_passed
+	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_failed
+	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_blocked
+	remove_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 
-	remove_variable = modeu5_pr126_ui_trade_owner_pass_runs
-	remove_variable = modeu5_pr126_ui_trade_owner_trades_seen
-	remove_variable = modeu5_pr126_ui_trade_owner_inter_market
-	remove_variable = modeu5_pr126_ui_trade_owner_owner_mismatches
-	remove_variable = modeu5_pr126_ui_trade_owner_confirmed
-	remove_variable = modeu5_pr126_ui_trade_owner_blocked
-	remove_variable = modeu5_pr126_ui_trade_owner_explicit_requests
-	remove_variable = modeu5_pr126_ui_trade_owner_inter_market_transfers
-	remove_variable = modeu5_pr126_ui_trade_owner_requested
-	remove_variable = modeu5_pr126_ui_trade_owner_confirmed_quantity
-	remove_variable = modeu5_pr126_ui_trade_owner_transferred
-	remove_variable = modeu5_pr126_ui_trade_owner_unsatisfied
+	remove_variable = gui_cbp_pr126_ui_trade_owner_pass_runs
+	remove_variable = gui_cbp_pr126_ui_trade_owner_trades_seen
+	remove_variable = gui_cbp_pr126_ui_trade_owner_inter_market
+	remove_variable = gui_cbp_pr126_ui_trade_owner_owner_mismatches
+	remove_variable = gui_cbp_pr126_ui_trade_owner_confirmed
+	remove_variable = gui_cbp_pr126_ui_trade_owner_blocked
+	remove_variable = gui_cbp_pr126_ui_trade_owner_explicit_requests
+	remove_variable = gui_cbp_pr126_ui_trade_owner_inter_market_transfers
+	remove_variable = gui_cbp_pr126_ui_trade_owner_requested
+	remove_variable = gui_cbp_pr126_ui_trade_owner_confirmed_quantity
+	remove_variable = gui_cbp_pr126_ui_trade_owner_transferred
+	remove_variable = gui_cbp_pr126_ui_trade_owner_unsatisfied
 
-	save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = 0 }
 	if = {
 		limit = {
 			has_variable_map = cmm
@@ -122,9 +122,9 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 				target = flag:no_void_economy__nve_no_void_economy_main
 			}
 		}
-		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
-			name = modeu5_perf14_original_cmm_main_value
+			name = test_cbp_perf14_original_cmm_main_value
 			value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)"
 		}
 	}
@@ -137,8 +137,8 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 	modeu5_pr126_trade_owner_select_two_markets = yes
 
 	if = {
-		limit = { has_global_variable = modeu5_test_pr126_trade_owner_market_selection_failed }
-		set_global_variable = modeu5_test_pr126_country_trade_owner_pass_blocked
+		limit = { has_global_variable = test_cbp_pr126_trade_owner_market_selection_failed }
+		set_global_variable = test_cbp_pr126_country_trade_owner_pass_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_country_trade_owner_pass reason=not_enough_distinct_current_country_markets"
 	}
 	else = {
@@ -182,22 +182,22 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 
 	if = {
 		limit = {
-			NOT = { has_global_variable = modeu5_test_pr126_country_trade_owner_pass_blocked }
-			global_var:modeu5_country_trade_owner_pass_runs = 1
-			global_var:modeu5_country_trade_owner_explicit_requests = 1
-			global_var:modeu5_country_trade_owner_inter_market_transfers = 1
-			global_var:modeu5_country_trade_owner_requested_quantity = 4
-			global_var:modeu5_country_trade_owner_transferred_quantity >= 4
-			global_var:modeu5_country_trade_owner_unsatisfied_quantity = 0
+			NOT = { has_global_variable = test_cbp_pr126_country_trade_owner_pass_blocked }
+			global_var:cbp_country_trade_owner_pass_runs = 1
+			global_var:cbp_country_trade_owner_explicit_requests = 1
+			global_var:cbp_country_trade_owner_inter_market_transfers = 1
+			global_var:cbp_country_trade_owner_requested_quantity = 4
+			global_var:cbp_country_trade_owner_transferred_quantity >= 4
+			global_var:cbp_country_trade_owner_unsatisfied_quantity = 0
 		}
-		set_global_variable = modeu5_test_pr126_country_trade_owner_pass_passed
+		set_global_variable = test_cbp_pr126_country_trade_owner_pass_passed
 		debug_log = "ModeU5 TEST PASS scenario=pr126_country_trade_owner_pass"
 	}
 	else_if = {
 		limit = {
-			NOT = { has_global_variable = modeu5_test_pr126_country_trade_owner_pass_blocked }
+			NOT = { has_global_variable = test_cbp_pr126_country_trade_owner_pass_blocked }
 		}
-		set_global_variable = modeu5_test_pr126_country_trade_owner_pass_failed
+		set_global_variable = test_cbp_pr126_country_trade_owner_pass_failed
 		debug_log = "ModeU5 TEST FAIL scenario=pr126_country_trade_owner_pass"
 	}
 

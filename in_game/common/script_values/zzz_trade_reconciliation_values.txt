@@ -25,7 +25,7 @@ modeu5_trade_efficiency_zero_value = {
 # hook runs. It is derived from trade_volume / traded_goods:transport_cost by
 # the existing literal-good helper path.
 modeu5_trade_efficiency_route_quantity = {
-	value = scope:modeu5_trade_owner_goods_quantity
+	value = scope:cbp_trade_owner_goods_quantity
 	min = 0
 }
 

@@ -43,39 +43,39 @@ modeu5_us00_debug.2 = {
 
 	option = {
 		name = modeu5_debug.test.us00_controlled_e2e.pass
-		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_passed }
+		trigger = { has_global_variable = test_cbp_us00_controlled_e2e_passed }
 	}
 	option = {
 		name = modeu5_debug.test.us00_controlled_e2e.fail
-		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_failed }
+		trigger = { has_global_variable = test_cbp_us00_controlled_e2e_failed }
 	}
 	option = {
 		name = modeu5_debug.test.us00_controlled_e2e.blocked
-		trigger = { has_global_variable = modeu5_test_us00_controlled_e2e_blocked }
+		trigger = { has_global_variable = test_cbp_us00_controlled_e2e_blocked }
 	}
 	option = {
 		name = modeu5_debug.test.probe021.pass
-		trigger = { has_global_variable = modeu5_test_probe021_passed }
+		trigger = { has_global_variable = test_cbp_probe021_passed }
 	}
 	option = {
 		name = modeu5_debug.test.probe021.pending
-		trigger = { has_global_variable = modeu5_test_probe021_pending }
+		trigger = { has_global_variable = test_cbp_probe021_pending }
 	}
 	option = {
 		name = modeu5_debug.test.probe021.fail
-		trigger = { has_global_variable = modeu5_test_probe021_failed }
+		trigger = { has_global_variable = test_cbp_probe021_failed }
 	}
 	option = {
 		name = modeu5_debug.test.us00_monthly_runtime.pass
-		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_passed }
+		trigger = { has_global_variable = test_cbp_us00_monthly_runtime_passed }
 	}
 	option = {
 		name = modeu5_debug.test.us00_monthly_runtime.fail
-		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_failed }
+		trigger = { has_global_variable = test_cbp_us00_monthly_runtime_failed }
 	}
 	option = {
 		name = modeu5_debug.test.us00_monthly_runtime.blocked
-		trigger = { has_global_variable = modeu5_test_us00_monthly_runtime_blocked }
+		trigger = { has_global_variable = test_cbp_us00_monthly_runtime_blocked }
 	}
 	option = {
 		name = modeu5_debug.close

@@ -3,68 +3,68 @@
 
 modeu5_q8_7_increment_perf_relevant_cache_rebuild_count = {
 	if = {
-		limit = { has_global_variable = modeu5_test_q8_7_perf_relevant_cache_rebuild_count }
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count }
 		set_global_variable = {
-			name = modeu5_test_q8_7_perf_relevant_cache_rebuild_count
-			value = { value = global_var:modeu5_test_q8_7_perf_relevant_cache_rebuild_count add = 1 }
+			name = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_cache_rebuild_count add = 1 }
 		}
 	}
-	else = { set_global_variable = { name = modeu5_test_q8_7_perf_relevant_cache_rebuild_count value = 1 } }
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_cache_rebuild_count value = 1 } }
 }
 
 modeu5_q8_7_increment_perf_relevant_cache_failure_count = {
 	if = {
-		limit = { has_global_variable = modeu5_test_q8_7_perf_relevant_cache_failure_count }
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count }
 		set_global_variable = {
-			name = modeu5_test_q8_7_perf_relevant_cache_failure_count
-			value = { value = global_var:modeu5_test_q8_7_perf_relevant_cache_failure_count add = 1 }
+			name = test_cbp_q8_7_perf_relevant_cache_failure_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_cache_failure_count add = 1 }
 		}
 	}
-	else = { set_global_variable = { name = modeu5_test_q8_7_perf_relevant_cache_failure_count value = 1 } }
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_cache_failure_count value = 1 } }
 }
 
 modeu5_q8_7_increment_perf_relevant_country_count = {
 	if = {
-		limit = { has_global_variable = modeu5_test_q8_7_perf_relevant_country_count }
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_country_count }
 		set_global_variable = {
-			name = modeu5_test_q8_7_perf_relevant_country_count
-			value = { value = global_var:modeu5_test_q8_7_perf_relevant_country_count add = 1 }
+			name = test_cbp_q8_7_perf_relevant_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_country_count add = 1 }
 		}
 	}
-	else = { set_global_variable = { name = modeu5_test_q8_7_perf_relevant_country_count value = 1 } }
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_country_count value = 1 } }
 }
 
 modeu5_q8_7_increment_perf_relevant_human_country_count = {
 	if = {
-		limit = { has_global_variable = modeu5_test_q8_7_perf_relevant_human_country_count }
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_human_country_count }
 		set_global_variable = {
-			name = modeu5_test_q8_7_perf_relevant_human_country_count
-			value = { value = global_var:modeu5_test_q8_7_perf_relevant_human_country_count add = 1 }
+			name = test_cbp_q8_7_perf_relevant_human_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_human_country_count add = 1 }
 		}
 	}
-	else = { set_global_variable = { name = modeu5_test_q8_7_perf_relevant_human_country_count value = 1 } }
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_human_country_count value = 1 } }
 }
 
 modeu5_q8_7_increment_perf_relevant_ai_country_count = {
 	if = {
-		limit = { has_global_variable = modeu5_test_q8_7_perf_relevant_ai_country_count }
+		limit = { has_global_variable = test_cbp_q8_7_perf_relevant_ai_country_count }
 		set_global_variable = {
-			name = modeu5_test_q8_7_perf_relevant_ai_country_count
-			value = { value = global_var:modeu5_test_q8_7_perf_relevant_ai_country_count add = 1 }
+			name = test_cbp_q8_7_perf_relevant_ai_country_count
+			value = { value = global_var:test_cbp_q8_7_perf_relevant_ai_country_count add = 1 }
 		}
 	}
-	else = { set_global_variable = { name = modeu5_test_q8_7_perf_relevant_ai_country_count value = 1 } }
+	else = { set_global_variable = { name = test_cbp_q8_7_perf_relevant_ai_country_count value = 1 } }
 }
 
 modeu5_q8_7_clear_performance_relevant_shadow_state = {
 	modeu5_q8_7_clear_shadow_comparison_state = yes
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_cache_rebuild_count
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_cache_failure_count
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_country_count
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_human_country_count
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_ai_country_count
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_shadow_passed
-	remove_global_variable = modeu5_test_q8_7_perf_relevant_shadow_failed
+	remove_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_human_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_ai_country_count
+	remove_global_variable = test_cbp_q8_7_perf_relevant_shadow_passed
+	remove_global_variable = test_cbp_q8_7_perf_relevant_shadow_failed
 }
 
 modeu5_q8_7_note_country_present_in_perf_relevant_market = {
@@ -90,9 +90,9 @@ modeu5_q8_7_probe_performance_relevant_global_shadow_compare = {
 
 	# Expected set: markets currently classified as human-relevant by PERF-14.
 	if = {
-		limit = { has_global_variable_list = modeu5_performance_relevant_markets }
+		limit = { has_global_variable_list = cbp_performance_relevant_markets }
 		every_in_global_list = {
-			variable = modeu5_performance_relevant_markets
+			variable = cbp_performance_relevant_markets
 			save_temporary_scope_as = modeu5_q8_7_shadow_comparison_market
 			modeu5_q8_7_note_market_center_shadow_comparison_market = yes
 		}
@@ -106,25 +106,25 @@ modeu5_q8_7_probe_performance_relevant_global_shadow_compare = {
 		save_temporary_scope_as = modeu5_q8_7_shadow_comparison_market
 		if = {
 			limit = {
-				has_global_variable_list = modeu5_performance_relevant_markets
+				has_global_variable_list = cbp_performance_relevant_markets
 				is_target_in_global_variable_list = {
-					name = modeu5_performance_relevant_markets
+					name = cbp_performance_relevant_markets
 					target = scope:modeu5_q8_7_shadow_comparison_market
 				}
 			}
 			modeu5_q8_7_note_global_shadow_comparison_market = yes
 			save_temporary_scope_as = modeu5_market_country_cache_market
-			remove_global_variable = modeu5_market_country_cache_last_rebuild_failed
+			remove_global_variable = cbp_market_country_cache_last_rebuild_failed
 			modeu5_rebuild_countries_present_in_market = yes
 			modeu5_q8_7_increment_perf_relevant_cache_rebuild_count = yes
 			if = {
-				limit = { has_global_variable = modeu5_market_country_cache_last_rebuild_failed }
+				limit = { has_global_variable = cbp_market_country_cache_last_rebuild_failed }
 				modeu5_q8_7_increment_perf_relevant_cache_failure_count = yes
 			}
 			if = {
-				limit = { has_global_variable_list = modeu5_countries_present_in_market }
+				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
-					variable = modeu5_countries_present_in_market
+					variable = cbp_countries_present_in_market
 					save_temporary_scope_as = modeu5_q8_7_perf_relevant_country
 					modeu5_q8_7_note_country_present_in_perf_relevant_market = yes
 				}
@@ -138,29 +138,29 @@ modeu5_q8_7_probe_performance_relevant_global_shadow_compare = {
 
 	if = {
 		limit = {
-			has_global_variable = modeu5_test_q8_7_shadow_comparison_global_unique_count
-			has_global_variable = modeu5_test_q8_7_shadow_comparison_center_unique_count
-			global_var:modeu5_test_q8_7_shadow_comparison_global_unique_count > 0
-			global_var:modeu5_test_q8_7_shadow_comparison_center_unique_count > 0
-			global_var:modeu5_test_q8_7_shadow_comparison_global_unique_count = global_var:modeu5_test_q8_7_shadow_comparison_center_unique_count
-			NOT = { has_global_variable = modeu5_test_q8_7_shadow_comparison_global_duplicate_count }
-			NOT = { has_global_variable = modeu5_test_q8_7_shadow_comparison_center_duplicate_count }
-			NOT = { has_global_variable = modeu5_test_q8_7_shadow_comparison_missing_count }
-			NOT = { has_global_variable = modeu5_test_q8_7_shadow_comparison_extra_count }
-			has_global_variable = modeu5_test_q8_7_perf_relevant_cache_rebuild_count
-			global_var:modeu5_test_q8_7_perf_relevant_cache_rebuild_count > 0
-			NOT = { has_global_variable = modeu5_test_q8_7_perf_relevant_cache_failure_count }
-			has_global_variable = modeu5_test_q8_7_perf_relevant_country_count
-			global_var:modeu5_test_q8_7_perf_relevant_country_count > 0
-			has_global_variable = modeu5_test_q8_7_perf_relevant_human_country_count
-			global_var:modeu5_test_q8_7_perf_relevant_human_country_count > 0
+			has_global_variable = test_cbp_q8_7_shadow_comparison_global_unique_count
+			has_global_variable = test_cbp_q8_7_shadow_comparison_center_unique_count
+			global_var:test_cbp_q8_7_shadow_comparison_global_unique_count > 0
+			global_var:test_cbp_q8_7_shadow_comparison_center_unique_count > 0
+			global_var:test_cbp_q8_7_shadow_comparison_global_unique_count = global_var:test_cbp_q8_7_shadow_comparison_center_unique_count
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_global_duplicate_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_center_duplicate_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_missing_count }
+			NOT = { has_global_variable = test_cbp_q8_7_shadow_comparison_extra_count }
+			has_global_variable = test_cbp_q8_7_perf_relevant_cache_rebuild_count
+			global_var:test_cbp_q8_7_perf_relevant_cache_rebuild_count > 0
+			NOT = { has_global_variable = test_cbp_q8_7_perf_relevant_cache_failure_count }
+			has_global_variable = test_cbp_q8_7_perf_relevant_country_count
+			global_var:test_cbp_q8_7_perf_relevant_country_count > 0
+			has_global_variable = test_cbp_q8_7_perf_relevant_human_country_count
+			global_var:test_cbp_q8_7_perf_relevant_human_country_count > 0
 		}
-		set_global_variable = modeu5_test_q8_7_perf_relevant_shadow_passed
+		set_global_variable = test_cbp_q8_7_perf_relevant_shadow_passed
 		debug_log = "ModeU5 Q8.7 PROBE performance_relevant_global_shadow_compare PASS"
 		debug_log = "ModeU5 TEST PASS scenario=q87_performance_relevant_global_shadow_compare"
 	}
 	else = {
-		set_global_variable = modeu5_test_q8_7_perf_relevant_shadow_failed
+		set_global_variable = test_cbp_q8_7_perf_relevant_shadow_failed
 		error_log = "ModeU5 Q8.7 PROBE performance_relevant_global_shadow_compare FAIL"
 		error_log = "ModeU5 TEST FAIL scenario=q87_performance_relevant_global_shadow_compare"
 	}

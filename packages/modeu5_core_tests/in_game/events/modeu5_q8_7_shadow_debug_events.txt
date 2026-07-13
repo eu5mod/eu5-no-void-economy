@@ -33,11 +33,11 @@ modeu5_q8_probe_debug.4 = {
 
 	option = {
 		name = modeu5_q8_probe_debug.result.q87_shadow.pass
-		trigger = { has_global_variable = modeu5_test_q8_7_shadow_dispatcher_passed }
+		trigger = { has_global_variable = test_cbp_q8_7_shadow_dispatcher_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q87_shadow.fail
-		trigger = { has_global_variable = modeu5_test_q8_7_shadow_dispatcher_failed }
+		trigger = { has_global_variable = test_cbp_q8_7_shadow_dispatcher_failed }
 	}
 	option = {
 		name = modeu5_debug.close
@@ -57,8 +57,8 @@ modeu5_q8_probe_debug.5 = {
 
 	option = {
 		name = modeu5_q8_probe_debug.5.a
-		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = 1 }
 		if = {
 			limit = {
 				has_variable_map = cmm
@@ -67,8 +67,8 @@ modeu5_q8_probe_debug.5 = {
 					target = flag:no_void_economy__nve_no_void_economy_main
 				}
 			}
-			save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 1 }
-			save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
+			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
+			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
 		}
 		modeu5_q8_7_probe_shadow_market_center_global_equivalence = yes
 		trigger_event_non_silently = modeu5_q8_probe_debug.6
@@ -90,11 +90,11 @@ modeu5_q8_probe_debug.6 = {
 
 	option = {
 		name = modeu5_q8_probe_debug.result.q87_shadow_compare.pass
-		trigger = { has_global_variable = modeu5_test_q8_7_shadow_comparison_passed }
+		trigger = { has_global_variable = test_cbp_q8_7_shadow_comparison_passed }
 	}
 	option = {
 		name = modeu5_q8_probe_debug.result.q87_shadow_compare.fail
-		trigger = { has_global_variable = modeu5_test_q8_7_shadow_comparison_failed }
+		trigger = { has_global_variable = test_cbp_q8_7_shadow_comparison_failed }
 	}
 	option = {
 		name = modeu5_debug.close

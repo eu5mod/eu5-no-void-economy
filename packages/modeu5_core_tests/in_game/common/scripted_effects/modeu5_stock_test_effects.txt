@@ -4,145 +4,145 @@
 modeu5_debug_clear_stock_test_results = {
 	modeu5_enter_test_audit_runtime_mode = yes
 
-	remove_global_variable = modeu5_test_add_allow_over_capacity_passed
-	remove_global_variable = modeu5_test_add_enforce_passed
-	remove_global_variable = modeu5_test_remove_passed
-	remove_global_variable = modeu5_test_decay_passed
-	remove_global_variable = modeu5_test_same_market_transfer_passed
-	remove_global_variable = modeu5_test_invalid_same_record_passed
-	remove_global_variable = modeu5_test_same_market_transfer_blocked
-	remove_global_variable = modeu5_test_inter_market_transfer_passed
-	remove_global_variable = modeu5_test_inter_market_transfer_blocked
-	remove_global_variable = modeu5_test_rebuild_passed
-	remove_global_variable = modeu5_test_validation_repair_passed
-	remove_global_variable = modeu5_test_validation_noop_passed
-	remove_global_variable = modeu5_test_country_stock_dimensions_passed
-	remove_global_variable = modeu5_test_storage_capacity_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_immediate_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_monthly_passed
-	remove_global_variable = modeu5_test_storage_capacity_timing_pending
-	remove_global_variable = modeu5_test_storage_capacity_timing_failed
-	remove_global_variable = modeu5_test_reconciliation_dirty_passed
-	remove_global_variable = modeu5_test_reconciliation_active_passed
-	remove_global_variable = modeu5_test_reconciliation_empty_passed
-	remove_global_variable = modeu5_test_reconciliation_cadence_passed
-	remove_global_variable = modeu5_test_reconciliation_cadence_failed
-	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
-	remove_global_variable = modeu5_test_core02_proportional_passed
-	remove_global_variable = modeu5_test_core02_over_capacity_passed
-	remove_global_variable = modeu5_test_core02_initialization_started
-	remove_global_variable = modeu5_test_core02_initialization_finished
-	remove_global_variable = modeu5_test_us10_demand_resolution_passed
-	remove_global_variable = modeu5_test_us10_demand_resolution_failed
-	remove_global_variable = modeu5_test_us10_demand_resolution_blocked
-	remove_global_variable = modeu5_test_core03_location_succession_started
-	remove_global_variable = modeu5_test_core03_location_succession_passed
-	remove_global_variable = modeu5_test_core03_location_succession_failed
-	remove_global_variable = modeu5_test_core03_location_succession_blocked
-	remove_global_variable = modeu5_core03_last_location_transfer_attempted
-	remove_global_variable = modeu5_core03_last_location_transfer_skipped
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_stock
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_capacity
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_available
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_over_cap
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_trade_capacity
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_rank_capacity
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_location_count
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_market_count
-	remove_global_variable = modeu5_debug_us02_dump_fra_wheat_country_pool_total
-	remove_global_variable = modeu5_debug_us02_dump_fra_iron_capacity
-	remove_global_variable = modeu5_debug_us02_probe_started
-	remove_global_variable = modeu5_debug_us02_probe_before_capacity
-	remove_global_variable = modeu5_debug_us02_probe_after_build_capacity
-	remove_global_variable = modeu5_debug_us02_probe_after_month_capacity
-	remove_global_variable = modeu5_debug_us02_probe_delta_immediate_capacity
-	remove_global_variable = modeu5_debug_us02_probe_delta_month_capacity
-	remove_global_variable = modeu5_debug_us02_probe_before_trade
-	remove_global_variable = modeu5_debug_us02_probe_after_build_trade
-	remove_global_variable = modeu5_debug_us02_probe_after_month_trade
-	remove_global_variable = modeu5_debug_us02_probe_delta_immediate_trade
-	remove_global_variable = modeu5_debug_us02_probe_delta_month_trade
-	remove_global_variable = modeu5_debug_core03_cas_before
-	remove_global_variable = modeu5_debug_core03_por_before
-	remove_global_variable = modeu5_debug_core03_market_before
-	remove_global_variable = modeu5_debug_core03_loser_capacity_before
-	remove_global_variable = modeu5_debug_core03_location_capacity
-	remove_global_variable = modeu5_debug_core03_expected_transfer
-	remove_global_variable = modeu5_debug_core03_cas_after
-	remove_global_variable = modeu5_debug_core03_por_after
-	remove_global_variable = modeu5_debug_core03_market_after
-	remove_global_variable = modeu5_debug_core03_actual_transfer
-	remove_global_variable = modeu5_debug_core03_market_delta
+	remove_global_variable = test_cbp_add_allow_over_capacity_passed
+	remove_global_variable = test_cbp_add_enforce_passed
+	remove_global_variable = test_cbp_remove_passed
+	remove_global_variable = test_cbp_decay_passed
+	remove_global_variable = test_cbp_same_market_transfer_passed
+	remove_global_variable = test_cbp_invalid_same_record_passed
+	remove_global_variable = test_cbp_same_market_transfer_blocked
+	remove_global_variable = test_cbp_inter_market_transfer_passed
+	remove_global_variable = test_cbp_inter_market_transfer_blocked
+	remove_global_variable = test_cbp_rebuild_passed
+	remove_global_variable = test_cbp_validation_repair_passed
+	remove_global_variable = test_cbp_validation_noop_passed
+	remove_global_variable = test_cbp_country_stock_dimensions_passed
+	remove_global_variable = test_cbp_storage_capacity_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_immediate_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_monthly_passed
+	remove_global_variable = test_cbp_storage_capacity_timing_pending
+	remove_global_variable = test_cbp_storage_capacity_timing_failed
+	remove_global_variable = test_cbp_reconciliation_dirty_passed
+	remove_global_variable = test_cbp_reconciliation_active_passed
+	remove_global_variable = test_cbp_reconciliation_empty_passed
+	remove_global_variable = test_cbp_reconciliation_cadence_passed
+	remove_global_variable = test_cbp_reconciliation_cadence_failed
+	remove_global_variable = test_cbp_reconciliation_cadence_blocked
+	remove_global_variable = test_cbp_core02_proportional_passed
+	remove_global_variable = test_cbp_core02_over_capacity_passed
+	remove_global_variable = test_cbp_core02_initialization_started
+	remove_global_variable = test_cbp_core02_initialization_finished
+	remove_global_variable = test_cbp_us10_demand_resolution_passed
+	remove_global_variable = test_cbp_us10_demand_resolution_failed
+	remove_global_variable = test_cbp_us10_demand_resolution_blocked
+	remove_global_variable = test_cbp_core03_location_succession_started
+	remove_global_variable = test_cbp_core03_location_succession_passed
+	remove_global_variable = test_cbp_core03_location_succession_failed
+	remove_global_variable = test_cbp_core03_location_succession_blocked
+	remove_global_variable = cbp_core03_last_location_transfer_attempted
+	remove_global_variable = cbp_core03_last_location_transfer_skipped
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_stock
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_capacity
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_available
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_over_cap
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_trade_capacity
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_location_rank_capacity
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_location_count
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_market_count
+	remove_global_variable = test_cbp_debug_us02_dump_fra_wheat_country_pool_total
+	remove_global_variable = test_cbp_debug_us02_dump_fra_iron_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_started
+	remove_global_variable = test_cbp_debug_us02_probe_before_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_after_build_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_after_month_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_delta_immediate_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_delta_month_capacity
+	remove_global_variable = test_cbp_debug_us02_probe_before_trade
+	remove_global_variable = test_cbp_debug_us02_probe_after_build_trade
+	remove_global_variable = test_cbp_debug_us02_probe_after_month_trade
+	remove_global_variable = test_cbp_debug_us02_probe_delta_immediate_trade
+	remove_global_variable = test_cbp_debug_us02_probe_delta_month_trade
+	remove_global_variable = test_cbp_debug_core03_cas_before
+	remove_global_variable = test_cbp_debug_core03_por_before
+	remove_global_variable = test_cbp_debug_core03_market_before
+	remove_global_variable = test_cbp_debug_core03_loser_capacity_before
+	remove_global_variable = test_cbp_debug_core03_location_capacity
+	remove_global_variable = test_cbp_debug_core03_expected_transfer
+	remove_global_variable = test_cbp_debug_core03_cas_after
+	remove_global_variable = test_cbp_debug_core03_por_after
+	remove_global_variable = test_cbp_debug_core03_market_after
+	remove_global_variable = test_cbp_debug_core03_actual_transfer
+	remove_global_variable = test_cbp_debug_core03_market_delta
 
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_stock
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_capacity
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_available
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_over_cap
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_trade_capacity
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_rank_capacity
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_location_count
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_market_count
-	remove_variable = modeu5_debug_us02_ui_fra_wheat_country_pool_total
-	remove_variable = modeu5_debug_us02_ui_fra_iron_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_before_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_after_build_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_after_month_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_delta_immediate_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_delta_month_capacity
-	remove_variable = modeu5_debug_us02_ui_probe_before_trade
-	remove_variable = modeu5_debug_us02_ui_probe_after_build_trade
-	remove_variable = modeu5_debug_us02_ui_probe_after_month_trade
-	remove_variable = modeu5_debug_us02_ui_probe_delta_immediate_trade
-	remove_variable = modeu5_debug_us02_ui_probe_delta_month_trade
-	remove_variable = modeu5_debug_core03_ui_cas_before
-	remove_variable = modeu5_debug_core03_ui_por_before
-	remove_variable = modeu5_debug_core03_ui_market_before
-	remove_variable = modeu5_debug_core03_ui_loser_capacity
-	remove_variable = modeu5_debug_core03_ui_location_capacity
-	remove_variable = modeu5_debug_core03_ui_expected_transfer
-	remove_variable = modeu5_debug_core03_ui_cas_after
-	remove_variable = modeu5_debug_core03_ui_por_after
-	remove_variable = modeu5_debug_core03_ui_market_after
-	remove_variable = modeu5_debug_core03_ui_actual_transfer
-	remove_variable = modeu5_debug_core03_ui_market_delta
-	remove_variable = modeu5_debug_us11_ui_dirty_records_checked
-	remove_variable = modeu5_debug_us11_ui_dirty_inconsistencies
-	remove_variable = modeu5_debug_us11_ui_dirty_rebuilds
-	remove_variable = modeu5_debug_us11_ui_dirty_failures
-	remove_variable = modeu5_debug_us11_ui_dirty_market_stock
-	remove_variable = modeu5_debug_us11_ui_empty_records_checked
-	remove_variable = modeu5_debug_us11_ui_empty_inconsistencies
-	remove_variable = modeu5_debug_us11_ui_empty_rebuilds
-	remove_variable = modeu5_debug_us11_ui_empty_failures
-	remove_variable = modeu5_debug_us11_ui_active_type
-	remove_variable = modeu5_debug_us11_ui_active_records_checked
-	remove_variable = modeu5_debug_us11_ui_active_inconsistencies
-	remove_variable = modeu5_debug_us11_ui_active_rebuilds
-	remove_variable = modeu5_debug_us11_ui_active_failures
-	remove_variable = modeu5_debug_us11_ui_active_market_stock
-	remove_variable = modeu5_debug_us11_ui_market_owned_active_markets
-	remove_variable = modeu5_debug_us11_ui_market_owned_cache_rebuilds
-	remove_variable = modeu5_debug_us11_ui_market_owned_active_goods
-	remove_variable = modeu5_debug_us11_ui_market_owned_dirty_repairs
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_stock
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_capacity
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_available
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_over_cap
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_trade_capacity
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_location_rank_capacity
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_location_count
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_market_count
+	remove_variable = gui_cbp_debug_us02_ui_fra_wheat_country_pool_total
+	remove_variable = gui_cbp_debug_us02_ui_fra_iron_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_before_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_after_build_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_after_month_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_delta_immediate_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_delta_month_capacity
+	remove_variable = gui_cbp_debug_us02_ui_probe_before_trade
+	remove_variable = gui_cbp_debug_us02_ui_probe_after_build_trade
+	remove_variable = gui_cbp_debug_us02_ui_probe_after_month_trade
+	remove_variable = gui_cbp_debug_us02_ui_probe_delta_immediate_trade
+	remove_variable = gui_cbp_debug_us02_ui_probe_delta_month_trade
+	remove_variable = gui_cbp_debug_core03_ui_cas_before
+	remove_variable = gui_cbp_debug_core03_ui_por_before
+	remove_variable = gui_cbp_debug_core03_ui_market_before
+	remove_variable = gui_cbp_debug_core03_ui_loser_capacity
+	remove_variable = gui_cbp_debug_core03_ui_location_capacity
+	remove_variable = gui_cbp_debug_core03_ui_expected_transfer
+	remove_variable = gui_cbp_debug_core03_ui_cas_after
+	remove_variable = gui_cbp_debug_core03_ui_por_after
+	remove_variable = gui_cbp_debug_core03_ui_market_after
+	remove_variable = gui_cbp_debug_core03_ui_actual_transfer
+	remove_variable = gui_cbp_debug_core03_ui_market_delta
+	remove_variable = gui_cbp_debug_us11_ui_dirty_records_checked
+	remove_variable = gui_cbp_debug_us11_ui_dirty_inconsistencies
+	remove_variable = gui_cbp_debug_us11_ui_dirty_rebuilds
+	remove_variable = gui_cbp_debug_us11_ui_dirty_failures
+	remove_variable = gui_cbp_debug_us11_ui_dirty_market_stock
+	remove_variable = gui_cbp_debug_us11_ui_empty_records_checked
+	remove_variable = gui_cbp_debug_us11_ui_empty_inconsistencies
+	remove_variable = gui_cbp_debug_us11_ui_empty_rebuilds
+	remove_variable = gui_cbp_debug_us11_ui_empty_failures
+	remove_variable = gui_cbp_debug_us11_ui_active_type
+	remove_variable = gui_cbp_debug_us11_ui_active_records_checked
+	remove_variable = gui_cbp_debug_us11_ui_active_inconsistencies
+	remove_variable = gui_cbp_debug_us11_ui_active_rebuilds
+	remove_variable = gui_cbp_debug_us11_ui_active_failures
+	remove_variable = gui_cbp_debug_us11_ui_active_market_stock
+	remove_variable = gui_cbp_debug_us11_ui_market_owned_active_markets
+	remove_variable = gui_cbp_debug_us11_ui_market_owned_cache_rebuilds
+	remove_variable = gui_cbp_debug_us11_ui_market_owned_active_goods
+	remove_variable = gui_cbp_debug_us11_ui_market_owned_dirty_repairs
 }
 
 modeu5_debug_replace_country_wheat_capacity = {
 	$country$ = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_stock_cap_by_market
+				has_variable_map = cbp_stock_cap_by_market
 				is_key_in_variable_map = {
-					name = modeu5_stock_cap_by_market
+					name = cbp_stock_cap_by_market
 					target = $market$
 				}
 			}
 			remove_from_variable_map = {
-				name = modeu5_stock_cap_by_market
+				name = cbp_stock_cap_by_market
 				key = $market$
 			}
 		}
 		add_to_variable_map = {
-			name = modeu5_stock_cap_by_market
+			name = cbp_stock_cap_by_market
 			key = $market$
 			value = $value$
 		}
@@ -154,15 +154,15 @@ modeu5_read_country_stock_good_wheat = {
 	$country$ = {
 		if = {
 			limit = {
-				has_variable_map = modeu5_wheat_stock_by_market
+				has_variable_map = test_cbp_wheat_stock_by_market
 				is_key_in_variable_map = {
-					name = modeu5_wheat_stock_by_market
+					name = test_cbp_wheat_stock_by_market
 					target = scope:modeu5_test_record_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = $output$
-				value = "variable_map(modeu5_wheat_stock_by_market|scope:modeu5_test_record_market)"
+				value = "variable_map(test_cbp_wheat_stock_by_market|scope:modeu5_test_record_market)"
 			}
 		}
 		else = {
@@ -178,9 +178,9 @@ modeu5_read_market_stock_good_wheat = {
 	$market$ = { save_temporary_scope_as = modeu5_test_record_market }
 	if = {
 		limit = {
-			has_global_variable_map = modeu5_wheat_market_stock
+			has_global_variable_map = test_cbp_wheat_market_stock
 			is_key_in_global_variable_map = {
-				name = modeu5_wheat_market_stock
+				name = test_cbp_wheat_market_stock
 				target = scope:modeu5_test_record_market
 			}
 		}
@@ -228,12 +228,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_fra_market_one_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_before_fra_market_one_wheat
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_market_one_wheat
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_before_market_one_wheat
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:FRA
@@ -241,12 +241,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_fra_market_two_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_before_fra_market_two_wheat
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_market_two_wheat
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_before_market_two_wheat
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:FRA
@@ -254,12 +254,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = iron
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_fra_market_one_iron
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_before_fra_market_one_iron
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_market_one_iron
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_before_market_one_iron
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:ENG
@@ -267,8 +267,8 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_before_eng_market_one_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_before_eng_market_one_wheat
+			value = scope:cbp_read_country_stock
 		}
 
 		modeu5_add_stock = {
@@ -279,8 +279,8 @@ modeu5_debug_run_country_stock_dimension_test = {
 			capacity_policy = allow_over_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_added_fra_market_one_wheat
-			value = scope:modeu5_actual_added_quantity
+			name = test_cbp_added_fra_market_one_wheat
+			value = scope:cbp_actual_added_quantity
 		}
 		modeu5_add_stock = {
 			country = c:FRA
@@ -290,8 +290,8 @@ modeu5_debug_run_country_stock_dimension_test = {
 			capacity_policy = allow_over_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_added_fra_market_two_wheat
-			value = scope:modeu5_actual_added_quantity
+			name = test_cbp_added_fra_market_two_wheat
+			value = scope:cbp_actual_added_quantity
 		}
 		modeu5_add_stock = {
 			country = c:FRA
@@ -301,8 +301,8 @@ modeu5_debug_run_country_stock_dimension_test = {
 			capacity_policy = allow_over_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_added_fra_market_one_iron
-			value = scope:modeu5_actual_added_quantity
+			name = test_cbp_added_fra_market_one_iron
+			value = scope:cbp_actual_added_quantity
 		}
 		modeu5_add_stock = {
 			country = c:ENG
@@ -312,56 +312,56 @@ modeu5_debug_run_country_stock_dimension_test = {
 			capacity_policy = allow_over_capacity
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_added_eng_market_one_wheat
-			value = scope:modeu5_actual_added_quantity
+			name = test_cbp_added_eng_market_one_wheat
+			value = scope:cbp_actual_added_quantity
 		}
 
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_fra_market_one_wheat
+			name = test_cbp_expected_fra_market_one_wheat
 			value = {
-				value = scope:modeu5_test_before_fra_market_one_wheat
+				value = scope:test_cbp_before_fra_market_one_wheat
 				add = 11
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_fra_market_two_wheat
+			name = test_cbp_expected_fra_market_two_wheat
 			value = {
-				value = scope:modeu5_test_before_fra_market_two_wheat
+				value = scope:test_cbp_before_fra_market_two_wheat
 				add = 13
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_fra_market_one_iron
+			name = test_cbp_expected_fra_market_one_iron
 			value = {
-				value = scope:modeu5_test_before_fra_market_one_iron
+				value = scope:test_cbp_before_fra_market_one_iron
 				add = 17
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_eng_market_one_wheat
+			name = test_cbp_expected_eng_market_one_wheat
 			value = {
-				value = scope:modeu5_test_before_eng_market_one_wheat
+				value = scope:test_cbp_before_eng_market_one_wheat
 				add = 19
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_market_one_wheat
+			name = test_cbp_expected_market_one_wheat
 			value = {
-				value = scope:modeu5_test_before_market_one_wheat
+				value = scope:test_cbp_before_market_one_wheat
 				add = 30
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_market_two_wheat
+			name = test_cbp_expected_market_two_wheat
 			value = {
-				value = scope:modeu5_test_before_market_two_wheat
+				value = scope:test_cbp_before_market_two_wheat
 				add = 13
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_market_one_iron
+			name = test_cbp_expected_market_one_iron
 			value = {
-				value = scope:modeu5_test_before_market_one_iron
+				value = scope:test_cbp_before_market_one_iron
 				add = 17
 			}
 		}
@@ -372,12 +372,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_fra_market_one_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_after_fra_market_one_wheat
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_market_one_wheat
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_after_market_one_wheat
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:FRA
@@ -385,12 +385,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_fra_market_two_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_after_fra_market_two_wheat
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_market_two_wheat
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_after_market_two_wheat
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:FRA
@@ -398,12 +398,12 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = iron
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_fra_market_one_iron
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_after_fra_market_one_iron
+			value = scope:cbp_read_country_stock
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_market_one_iron
-			value = scope:modeu5_read_market_stock
+			name = test_cbp_after_market_one_iron
+			value = scope:cbp_read_market_stock
 		}
 		modeu5_read_country_stock_record = {
 			country = c:ENG
@@ -411,24 +411,24 @@ modeu5_debug_run_country_stock_dimension_test = {
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_after_eng_market_one_wheat
-			value = scope:modeu5_read_country_stock
+			name = test_cbp_after_eng_market_one_wheat
+			value = scope:cbp_read_country_stock
 		}
 
 		if = {
 			limit = {
-				scope:modeu5_test_after_fra_market_one_wheat = scope:modeu5_test_expected_fra_market_one_wheat
-				scope:modeu5_test_after_fra_market_two_wheat = scope:modeu5_test_expected_fra_market_two_wheat
-				scope:modeu5_test_after_fra_market_one_iron = scope:modeu5_test_expected_fra_market_one_iron
-				scope:modeu5_test_after_eng_market_one_wheat = scope:modeu5_test_expected_eng_market_one_wheat
-				scope:modeu5_test_after_market_one_wheat = scope:modeu5_test_expected_market_one_wheat
-				scope:modeu5_test_after_market_two_wheat = scope:modeu5_test_expected_market_two_wheat
-				scope:modeu5_test_after_market_one_iron = scope:modeu5_test_expected_market_one_iron
+				scope:test_cbp_after_fra_market_one_wheat = scope:test_cbp_expected_fra_market_one_wheat
+				scope:test_cbp_after_fra_market_two_wheat = scope:test_cbp_expected_fra_market_two_wheat
+				scope:test_cbp_after_fra_market_one_iron = scope:test_cbp_expected_fra_market_one_iron
+				scope:test_cbp_after_eng_market_one_wheat = scope:test_cbp_expected_eng_market_one_wheat
+				scope:test_cbp_after_market_one_wheat = scope:test_cbp_expected_market_one_wheat
+				scope:test_cbp_after_market_two_wheat = scope:test_cbp_expected_market_two_wheat
+				scope:test_cbp_after_market_one_iron = scope:test_cbp_expected_market_one_iron
 			}
-			set_global_variable = modeu5_test_country_stock_dimensions_passed
+			set_global_variable = test_cbp_country_stock_dimensions_passed
 		}
 		else = {
-			remove_global_variable = modeu5_test_country_stock_dimensions_passed
+			remove_global_variable = test_cbp_country_stock_dimensions_passed
 			error_log = "ModeU5 deterministic US-01 country, market, and good isolation test failed."
 		}
 
@@ -436,28 +436,28 @@ modeu5_debug_run_country_stock_dimension_test = {
 			country = c:FRA
 			market = scope:modeu5_test_market_one
 			good = wheat
-			quantity = scope:modeu5_test_added_fra_market_one_wheat
+			quantity = scope:test_cbp_added_fra_market_one_wheat
 			reason = debug_test
 		}
 		modeu5_remove_stock = {
 			country = c:FRA
 			market = scope:modeu5_test_market_two
 			good = wheat
-			quantity = scope:modeu5_test_added_fra_market_two_wheat
+			quantity = scope:test_cbp_added_fra_market_two_wheat
 			reason = debug_test
 		}
 		modeu5_remove_stock = {
 			country = c:FRA
 			market = scope:modeu5_test_market_one
 			good = iron
-			quantity = scope:modeu5_test_added_fra_market_one_iron
+			quantity = scope:test_cbp_added_fra_market_one_iron
 			reason = debug_test
 		}
 		modeu5_remove_stock = {
 			country = c:ENG
 			market = scope:modeu5_test_market_one
 			good = wheat
-			quantity = scope:modeu5_test_added_eng_market_one_wheat
+			quantity = scope:test_cbp_added_eng_market_one_wheat
 			reason = debug_test
 		}
 		modeu5_validate_stock_consistency = {
@@ -474,7 +474,7 @@ modeu5_debug_run_country_stock_dimension_test = {
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_country_stock_dimensions_passed
+		remove_global_variable = test_cbp_country_stock_dimensions_passed
 		error_log = "ModeU5 deterministic US-01 test requires FRA and ENG in different markets."
 	}
 }
@@ -509,15 +509,15 @@ modeu5_debug_run_single_record_stock_tests = {
 	}
 	if = {
 		limit = {
-			scope:modeu5_actual_added_quantity = 60
-			scope:modeu5_rejected_quantity = 0
-			scope:modeu5_over_capacity_after = 20
+			scope:cbp_actual_added_quantity = 60
+			scope:cbp_rejected_quantity = 0
+			scope:cbp_over_capacity_after = 20
 			scope:modeu5_test_country_stock_after_allow_add = 60
 		}
-		set_global_variable = modeu5_test_add_allow_over_capacity_passed
+		set_global_variable = test_cbp_add_allow_over_capacity_passed
 	}
 	else = {
-		remove_global_variable = modeu5_test_add_allow_over_capacity_passed
+		remove_global_variable = test_cbp_add_allow_over_capacity_passed
 		error_log = "ModeU5 deterministic CORE-01 add allow_over_capacity test failed."
 	}
 
@@ -552,7 +552,7 @@ modeu5_debug_run_single_record_stock_tests = {
 		capacity_policy = enforce
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_test_expected_market_after_enforced_add
+		name = test_cbp_expected_market_after_enforced_add
 		value = {
 			value = scope:modeu5_test_market_before_enforced_add
 			add = 20
@@ -569,15 +569,15 @@ modeu5_debug_run_single_record_stock_tests = {
 	}
 	if = {
 		limit = {
-			scope:modeu5_actual_added_quantity = 20
-			scope:modeu5_rejected_quantity = 30
+			scope:cbp_actual_added_quantity = 20
+			scope:cbp_rejected_quantity = 30
 			scope:modeu5_test_country_stock_after_enforced_add = 100
-			scope:modeu5_test_market_after_enforced_add = scope:modeu5_test_expected_market_after_enforced_add
+			scope:modeu5_test_market_after_enforced_add = scope:test_cbp_expected_market_after_enforced_add
 		}
-		set_global_variable = modeu5_test_add_enforce_passed
+		set_global_variable = test_cbp_add_enforce_passed
 	}
 	else = {
-		remove_global_variable = modeu5_test_add_enforce_passed
+		remove_global_variable = test_cbp_add_enforce_passed
 		error_log = "ModeU5 deterministic CORE-01 add enforce test failed."
 	}
 
@@ -595,14 +595,14 @@ modeu5_debug_run_single_record_stock_tests = {
 	}
 	if = {
 		limit = {
-			scope:modeu5_actual_removed_quantity = 100
-			scope:modeu5_unsatisfied_quantity = 50
+			scope:cbp_actual_removed_quantity = 100
+			scope:cbp_unsatisfied_quantity = 50
 			scope:modeu5_test_country_stock_after_remove = 0
 		}
-		set_global_variable = modeu5_test_remove_passed
+		set_global_variable = test_cbp_remove_passed
 	}
 	else = {
-		remove_global_variable = modeu5_test_remove_passed
+		remove_global_variable = test_cbp_remove_passed
 		error_log = "ModeU5 deterministic CORE-01 remove test failed."
 	}
 
@@ -624,7 +624,7 @@ modeu5_debug_run_single_record_stock_tests = {
 		decay_rate = 0.1
 	}
 	save_temporary_scope_value_as = {
-		name = modeu5_test_expected_market_after_decay
+		name = test_cbp_expected_market_after_decay
 		value = {
 			value = scope:modeu5_test_market_before_decay
 			subtract = 10
@@ -643,22 +643,22 @@ modeu5_debug_run_single_record_stock_tests = {
 	# test fails, inspect the raw decay values and TECH-01 113 before changing it.
 	if = {
 		limit = {
-			scope:modeu5_decayed_quantity = 10
+			scope:cbp_decayed_quantity = 10
 			scope:modeu5_test_country_stock_after_decay = 90
-			scope:modeu5_test_market_after_decay = scope:modeu5_test_expected_market_after_decay
+			scope:modeu5_test_market_after_decay = scope:test_cbp_expected_market_after_decay
 		}
-		set_global_variable = modeu5_test_decay_passed
+		set_global_variable = test_cbp_decay_passed
 	}
 	else = {
-		remove_global_variable = modeu5_test_decay_passed
+		remove_global_variable = test_cbp_decay_passed
 		error_log = "ModeU5 deterministic CORE-01 decay test failed."
 	}
 	if = {
 		limit = {
-			has_global_variable = modeu5_test_add_allow_over_capacity_passed
-			has_global_variable = modeu5_test_add_enforce_passed
-			has_global_variable = modeu5_test_remove_passed
-			has_global_variable = modeu5_test_decay_passed
+			has_global_variable = test_cbp_add_allow_over_capacity_passed
+			has_global_variable = test_cbp_add_enforce_passed
+			has_global_variable = test_cbp_remove_passed
+			has_global_variable = test_cbp_decay_passed
 		}
 		debug_log = "ModeU5 CORE-01 RESULT single_record PASS"
 	}
@@ -669,7 +669,7 @@ modeu5_debug_run_single_record_stock_tests = {
 
 modeu5_debug_run_same_market_transfer_tests = {
 	save_temporary_scope_as = modeu5_test_controller
-	remove_global_variable = modeu5_test_same_market_transfer_blocked
+	remove_global_variable = test_cbp_same_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -746,20 +746,20 @@ modeu5_debug_run_same_market_transfer_tests = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_actual_transferred_quantity = 50
-				scope:modeu5_unsatisfied_quantity = 0
-				scope:modeu5_over_capacity_after = 40
+				scope:cbp_actual_transferred_quantity = 50
+				scope:cbp_unsatisfied_quantity = 0
+				scope:cbp_over_capacity_after = 40
 				scope:modeu5_test_seller_stock_after_same_market_transfer = 0
 				scope:modeu5_test_buyer_stock_after_same_market_transfer = 140
 				scope:modeu5_test_market_after_same_market_transfer = scope:modeu5_test_market_before_same_market_transfer
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_same_market_transfer_passed
+				set_global_variable = test_cbp_same_market_transfer_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_same_market_transfer_passed
+				remove_global_variable = test_cbp_same_market_transfer_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 same-market transfer test failed."
 		}
@@ -775,36 +775,36 @@ modeu5_debug_run_same_market_transfer_tests = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_actual_transferred_quantity = 0
-				scope:modeu5_unsatisfied_quantity = 10
-				scope:modeu5_invalid_same_record_transfer = 1
+				scope:cbp_actual_transferred_quantity = 0
+				scope:cbp_unsatisfied_quantity = 10
+				scope:cbp_invalid_same_record_transfer = 1
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_invalid_same_record_passed
+				set_global_variable = test_cbp_invalid_same_record_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_invalid_same_record_passed
+				remove_global_variable = test_cbp_invalid_same_record_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 invalid same-record transfer test failed."
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_same_market_transfer_passed
-		remove_global_variable = modeu5_test_invalid_same_record_passed
-		set_global_variable = modeu5_test_same_market_transfer_blocked
+		remove_global_variable = test_cbp_same_market_transfer_passed
+		remove_global_variable = test_cbp_invalid_same_record_passed
+		set_global_variable = test_cbp_same_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 transfer test requires FRA and ENG."
 	}
 	if = {
 		limit = {
-			has_global_variable = modeu5_test_same_market_transfer_passed
-			has_global_variable = modeu5_test_invalid_same_record_passed
+			has_global_variable = test_cbp_same_market_transfer_passed
+			has_global_variable = test_cbp_invalid_same_record_passed
 		}
 		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer PASS"
 	}
 	else_if = {
-		limit = { has_global_variable = modeu5_test_same_market_transfer_blocked }
+		limit = { has_global_variable = test_cbp_same_market_transfer_blocked }
 		debug_log = "ModeU5 CORE-01 RESULT same_market_transfer BLOCKED missing_FRA_ENG"
 	}
 	else = {
@@ -814,7 +814,7 @@ modeu5_debug_run_same_market_transfer_tests = {
 
 modeu5_debug_run_inter_market_transfer_test = {
 	save_temporary_scope_as = modeu5_test_controller
-	remove_global_variable = modeu5_test_inter_market_transfer_blocked
+	remove_global_variable = test_cbp_inter_market_transfer_blocked
 
 	if = {
 		limit = {
@@ -872,14 +872,14 @@ modeu5_debug_run_inter_market_transfer_test = {
 			output = modeu5_test_target_market_before_transfer
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_source_market_after_transfer
+			name = test_cbp_expected_source_market_after_transfer
 			value = {
 				value = scope:modeu5_test_source_market_before_transfer
 				subtract = 30
 			}
 		}
 		save_temporary_scope_value_as = {
-			name = modeu5_test_expected_target_market_after_transfer
+			name = test_cbp_expected_target_market_after_transfer
 			value = {
 				value = scope:modeu5_test_target_market_before_transfer
 				add = 30
@@ -915,37 +915,37 @@ modeu5_debug_run_inter_market_transfer_test = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_actual_transferred_quantity = 30
-				scope:modeu5_unsatisfied_quantity = 20
+				scope:cbp_actual_transferred_quantity = 30
+				scope:cbp_unsatisfied_quantity = 20
 				scope:modeu5_test_seller_stock_after_inter_market_transfer = 70
 				scope:modeu5_test_buyer_stock_after_inter_market_transfer = 100
-				scope:modeu5_test_source_market_after_transfer = scope:modeu5_test_expected_source_market_after_transfer
-				scope:modeu5_test_target_market_after_transfer = scope:modeu5_test_expected_target_market_after_transfer
+				scope:modeu5_test_source_market_after_transfer = scope:test_cbp_expected_source_market_after_transfer
+				scope:modeu5_test_target_market_after_transfer = scope:test_cbp_expected_target_market_after_transfer
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_inter_market_transfer_passed
+				set_global_variable = test_cbp_inter_market_transfer_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_inter_market_transfer_passed
+				remove_global_variable = test_cbp_inter_market_transfer_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01 inter-market transfer test failed."
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_inter_market_transfer_passed
-		set_global_variable = modeu5_test_inter_market_transfer_blocked
+		remove_global_variable = test_cbp_inter_market_transfer_passed
+		set_global_variable = test_cbp_inter_market_transfer_blocked
 		error_log = "ModeU5 deterministic CORE-01 inter-market transfer test requires FRA and ENG in different markets."
 	}
 	if = {
 		limit = {
-			has_global_variable = modeu5_test_inter_market_transfer_passed
+			has_global_variable = test_cbp_inter_market_transfer_passed
 		}
 		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer PASS"
 	}
 	else_if = {
-		limit = { has_global_variable = modeu5_test_inter_market_transfer_blocked }
+		limit = { has_global_variable = test_cbp_inter_market_transfer_blocked }
 		debug_log = "ModeU5 CORE-01 RESULT inter_market_transfer BLOCKED missing_FRA_ENG_or_distinct_markets"
 	}
 	else = {
@@ -1026,22 +1026,22 @@ modeu5_debug_run_rebuild_and_validation_tests = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_rebuild_market_stock_before = 200
-				scope:modeu5_rebuild_expected_market_stock = 150
-				scope:modeu5_rebuild_market_stock_after = 150
-				scope:modeu5_rebuild_correction_applied = -50
-				scope:modeu5_rebuild_country_stocks_modified = 0
+				scope:cbp_rebuild_market_stock_before = 200
+				scope:cbp_rebuild_expected_market_stock = 150
+				scope:cbp_rebuild_market_stock_after = 150
+				scope:cbp_rebuild_correction_applied = -50
+				scope:cbp_rebuild_country_stocks_modified = 0
 				scope:modeu5_test_rebuild_fra_stock = 100
 				scope:modeu5_test_rebuild_eng_stock = 50
 				scope:modeu5_test_rebuilt_market_stock = 150
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_rebuild_passed
+				set_global_variable = test_cbp_rebuild_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_rebuild_passed
+				remove_global_variable = test_cbp_rebuild_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01.5 rebuild test failed."
 		}
@@ -1071,26 +1071,26 @@ modeu5_debug_run_rebuild_and_validation_tests = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_validation_expected_market_stock = 150
-				scope:modeu5_validation_actual_market_stock_before = 200
-				scope:modeu5_validation_difference_before = 50
-				scope:modeu5_validation_inconsistency_detected = 1
-				scope:modeu5_validation_inconsistency_severity = 2
-				scope:modeu5_validation_rebuild_called = 1
-				scope:modeu5_validation_actual_market_stock_after = 150
-				scope:modeu5_validation_difference_after = 0
-				scope:modeu5_validation_failed_after_rebuild = 0
+				scope:cbp_validation_expected_market_stock = 150
+				scope:cbp_validation_actual_market_stock_before = 200
+				scope:cbp_validation_difference_before = 50
+				scope:cbp_validation_inconsistency_detected = 1
+				scope:cbp_validation_inconsistency_severity = 2
+				scope:cbp_validation_rebuild_called = 1
+				scope:cbp_validation_actual_market_stock_after = 150
+				scope:cbp_validation_difference_after = 0
+				scope:cbp_validation_failed_after_rebuild = 0
 				scope:modeu5_test_validation_fra_stock = 100
 				scope:modeu5_test_validation_eng_stock = 50
 				scope:modeu5_test_validated_market_stock = 150
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_validation_repair_passed
+				set_global_variable = test_cbp_validation_repair_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_validation_repair_passed
+				remove_global_variable = test_cbp_validation_repair_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01.6 repair test failed."
 		}
@@ -1101,31 +1101,31 @@ modeu5_debug_run_rebuild_and_validation_tests = {
 		}
 		if = {
 			limit = {
-				scope:modeu5_validation_expected_market_stock = 150
-				scope:modeu5_validation_actual_market_stock_before = 150
-				scope:modeu5_validation_difference_before = 0
-				scope:modeu5_validation_inconsistency_detected = 0
-				scope:modeu5_validation_inconsistency_severity = 0
-				scope:modeu5_validation_rebuild_called = 0
-				scope:modeu5_validation_actual_market_stock_after = 150
-				scope:modeu5_validation_difference_after = 0
-				scope:modeu5_validation_failed_after_rebuild = 0
+				scope:cbp_validation_expected_market_stock = 150
+				scope:cbp_validation_actual_market_stock_before = 150
+				scope:cbp_validation_difference_before = 0
+				scope:cbp_validation_inconsistency_detected = 0
+				scope:cbp_validation_inconsistency_severity = 0
+				scope:cbp_validation_rebuild_called = 0
+				scope:cbp_validation_actual_market_stock_after = 150
+				scope:cbp_validation_difference_after = 0
+				scope:cbp_validation_failed_after_rebuild = 0
 			}
 			scope:modeu5_test_controller = {
-				set_global_variable = modeu5_test_validation_noop_passed
+				set_global_variable = test_cbp_validation_noop_passed
 			}
 		}
 		else = {
 			scope:modeu5_test_controller = {
-				remove_global_variable = modeu5_test_validation_noop_passed
+				remove_global_variable = test_cbp_validation_noop_passed
 			}
 			error_log = "ModeU5 deterministic CORE-01.6 no-op test failed."
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_rebuild_passed
-		remove_global_variable = modeu5_test_validation_repair_passed
-		remove_global_variable = modeu5_test_validation_noop_passed
+		remove_global_variable = test_cbp_rebuild_passed
+		remove_global_variable = test_cbp_validation_repair_passed
+		remove_global_variable = test_cbp_validation_noop_passed
 		error_log = "ModeU5 deterministic CORE-01.5/01.6 tests require FRA and ENG."
 	}
 }
@@ -1191,73 +1191,73 @@ modeu5_debug_run_reconciliation_tests = {
 			output = modeu5_test_reconciled_market_stock
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_dirty_records_checked
-			value = scope:modeu5_reconciliation_records_checked_result
+			name = gui_cbp_debug_us11_ui_dirty_records_checked
+			value = scope:cbp_reconciliation_records_checked_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_dirty_inconsistencies
-			value = scope:modeu5_reconciliation_inconsistencies_found_result
+			name = gui_cbp_debug_us11_ui_dirty_inconsistencies
+			value = scope:cbp_reconciliation_inconsistencies_found_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_dirty_rebuilds
-			value = scope:modeu5_reconciliation_rebuilds_called_result
+			name = gui_cbp_debug_us11_ui_dirty_rebuilds
+			value = scope:cbp_reconciliation_rebuilds_called_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_dirty_failures
-			value = scope:modeu5_reconciliation_failures_result
+			name = gui_cbp_debug_us11_ui_dirty_failures
+			value = scope:cbp_reconciliation_failures_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_dirty_market_stock
+			name = gui_cbp_debug_us11_ui_dirty_market_stock
 			value = scope:modeu5_test_reconciled_market_stock
 		}
 		debug_log = "ModeU5 US-11 DUMP dirty_reconciliation records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_failures').GetValue|0] market_stock=[THIS.GetVariable('modeu5_debug_us11_ui_dirty_market_stock').GetValue|2]"
 		if = {
 			limit = {
-				scope:modeu5_reconciliation_records_checked_result = 1
-				scope:modeu5_reconciliation_inconsistencies_found_result = 1
-				scope:modeu5_reconciliation_rebuilds_called_result = 1
-				scope:modeu5_reconciliation_failures_result = 0
+				scope:cbp_reconciliation_records_checked_result = 1
+				scope:cbp_reconciliation_inconsistencies_found_result = 1
+				scope:cbp_reconciliation_rebuilds_called_result = 1
+				scope:cbp_reconciliation_failures_result = 0
 				scope:modeu5_test_reconciled_market_stock = 150
 				NOT = {
-					has_global_variable_list = modeu5_wheat_dirty_markets
+					has_global_variable_list = test_cbp_wheat_dirty_markets
 				}
 			}
-			set_global_variable = modeu5_test_reconciliation_dirty_passed
+			set_global_variable = test_cbp_reconciliation_dirty_passed
 		}
 		else = {
-			remove_global_variable = modeu5_test_reconciliation_dirty_passed
+			remove_global_variable = test_cbp_reconciliation_dirty_passed
 			error_log = "ModeU5 deterministic US-11 dirty reconciliation test failed."
 		}
 
 		modeu5_validate_dirty_stock_consistency = yes
 		set_variable = {
-			name = modeu5_debug_us11_ui_empty_records_checked
-			value = scope:modeu5_reconciliation_records_checked_result
+			name = gui_cbp_debug_us11_ui_empty_records_checked
+			value = scope:cbp_reconciliation_records_checked_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_empty_inconsistencies
-			value = scope:modeu5_reconciliation_inconsistencies_found_result
+			name = gui_cbp_debug_us11_ui_empty_inconsistencies
+			value = scope:cbp_reconciliation_inconsistencies_found_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_empty_rebuilds
-			value = scope:modeu5_reconciliation_rebuilds_called_result
+			name = gui_cbp_debug_us11_ui_empty_rebuilds
+			value = scope:cbp_reconciliation_rebuilds_called_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_empty_failures
-			value = scope:modeu5_reconciliation_failures_result
+			name = gui_cbp_debug_us11_ui_empty_failures
+			value = scope:cbp_reconciliation_failures_result
 		}
 		debug_log = "ModeU5 US-11 DUMP empty_reconciliation records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_empty_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_empty_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_empty_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_empty_failures').GetValue|0]"
 		if = {
 			limit = {
-				scope:modeu5_reconciliation_records_checked_result = 0
-				scope:modeu5_reconciliation_inconsistencies_found_result = 0
-				scope:modeu5_reconciliation_rebuilds_called_result = 0
-				scope:modeu5_reconciliation_failures_result = 0
+				scope:cbp_reconciliation_records_checked_result = 0
+				scope:cbp_reconciliation_inconsistencies_found_result = 0
+				scope:cbp_reconciliation_rebuilds_called_result = 0
+				scope:cbp_reconciliation_failures_result = 0
 			}
-			set_global_variable = modeu5_test_reconciliation_empty_passed
+			set_global_variable = test_cbp_reconciliation_empty_passed
 		}
 		else = {
-			remove_global_variable = modeu5_test_reconciliation_empty_passed
+			remove_global_variable = test_cbp_reconciliation_empty_passed
 			error_log = "ModeU5 deterministic US-11 empty reconciliation test failed."
 		}
 
@@ -1272,104 +1272,104 @@ modeu5_debug_run_reconciliation_tests = {
 			output = modeu5_test_active_reconciled_market_stock
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_type
-			value = scope:modeu5_reconciliation_type
+			name = gui_cbp_debug_us11_ui_active_type
+			value = scope:cbp_reconciliation_type
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_records_checked
-			value = scope:modeu5_reconciliation_records_checked_result
+			name = gui_cbp_debug_us11_ui_active_records_checked
+			value = scope:cbp_reconciliation_records_checked_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_inconsistencies
-			value = scope:modeu5_reconciliation_inconsistencies_found_result
+			name = gui_cbp_debug_us11_ui_active_inconsistencies
+			value = scope:cbp_reconciliation_inconsistencies_found_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_rebuilds
-			value = scope:modeu5_reconciliation_rebuilds_called_result
+			name = gui_cbp_debug_us11_ui_active_rebuilds
+			value = scope:cbp_reconciliation_rebuilds_called_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_failures
-			value = scope:modeu5_reconciliation_failures_result
+			name = gui_cbp_debug_us11_ui_active_failures
+			value = scope:cbp_reconciliation_failures_result
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_active_market_stock
+			name = gui_cbp_debug_us11_ui_active_market_stock
 			value = scope:modeu5_test_active_reconciled_market_stock
 		}
 		if = {
-			limit = { has_global_variable = modeu5_market_owned_active_markets_processed_count }
+			limit = { has_global_variable = cbp_market_owned_active_markets_processed_count }
 			set_variable = {
-				name = modeu5_debug_us11_ui_market_owned_active_markets
-				value = global_var:modeu5_market_owned_active_markets_processed_count
+				name = gui_cbp_debug_us11_ui_market_owned_active_markets
+				value = global_var:cbp_market_owned_active_markets_processed_count
 			}
 		}
 		else = {
-			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_markets value = 0 }
+			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_active_markets value = 0 }
 		}
 		if = {
-			limit = { has_global_variable = modeu5_market_owned_country_cache_rebuild_count }
+			limit = { has_global_variable = cbp_market_owned_country_cache_rebuild_count }
 			set_variable = {
-				name = modeu5_debug_us11_ui_market_owned_cache_rebuilds
-				value = global_var:modeu5_market_owned_country_cache_rebuild_count
+				name = gui_cbp_debug_us11_ui_market_owned_cache_rebuilds
+				value = global_var:cbp_market_owned_country_cache_rebuild_count
 			}
 		}
 		else = {
-			set_variable = { name = modeu5_debug_us11_ui_market_owned_cache_rebuilds value = 0 }
+			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_cache_rebuilds value = 0 }
 		}
 		if = {
-			limit = { has_global_variable = modeu5_market_owned_active_goods_processed_count }
+			limit = { has_global_variable = cbp_market_owned_active_goods_processed_count }
 			set_variable = {
-				name = modeu5_debug_us11_ui_market_owned_active_goods
-				value = global_var:modeu5_market_owned_active_goods_processed_count
+				name = gui_cbp_debug_us11_ui_market_owned_active_goods
+				value = global_var:cbp_market_owned_active_goods_processed_count
 			}
 		}
 		else = {
-			set_variable = { name = modeu5_debug_us11_ui_market_owned_active_goods value = 0 }
+			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_active_goods value = 0 }
 		}
 		if = {
-			limit = { has_global_variable = modeu5_market_country_cache_dirty_repair_count }
+			limit = { has_global_variable = cbp_market_country_cache_dirty_repair_count }
 			set_variable = {
-				name = modeu5_debug_us11_ui_market_owned_dirty_repairs
-				value = global_var:modeu5_market_country_cache_dirty_repair_count
+				name = gui_cbp_debug_us11_ui_market_owned_dirty_repairs
+				value = global_var:cbp_market_country_cache_dirty_repair_count
 			}
 		}
 		else = {
-			set_variable = { name = modeu5_debug_us11_ui_market_owned_dirty_repairs value = 0 }
+			set_variable = { name = gui_cbp_debug_us11_ui_market_owned_dirty_repairs value = 0 }
 		}
 		debug_log = "ModeU5 US-11 DUMP active_reconciliation type=[THIS.GetVariable('modeu5_debug_us11_ui_active_type').GetValue|0] records_checked=[THIS.GetVariable('modeu5_debug_us11_ui_active_records_checked').GetValue|0] inconsistencies=[THIS.GetVariable('modeu5_debug_us11_ui_active_inconsistencies').GetValue|0] rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_active_rebuilds').GetValue|0] failures=[THIS.GetVariable('modeu5_debug_us11_ui_active_failures').GetValue|0] market_stock=[THIS.GetVariable('modeu5_debug_us11_ui_active_market_stock').GetValue|2]"
 		debug_log = "ModeU5 PERF-07 DUMP market_owned_runtime active_markets=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_markets').GetValue|0] cache_rebuilds=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_cache_rebuilds').GetValue|0] active_goods=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_active_goods').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_debug_us11_ui_market_owned_dirty_repairs').GetValue|0]"
 		if = {
 			limit = {
-				scope:modeu5_reconciliation_type = 3
-				scope:modeu5_reconciliation_records_checked_result = 1
-				scope:modeu5_reconciliation_inconsistencies_found_result = 1
-				scope:modeu5_reconciliation_rebuilds_called_result = 1
-				scope:modeu5_reconciliation_failures_result = 0
+				scope:cbp_reconciliation_type = 3
+				scope:cbp_reconciliation_records_checked_result = 1
+				scope:cbp_reconciliation_inconsistencies_found_result = 1
+				scope:cbp_reconciliation_rebuilds_called_result = 1
+				scope:cbp_reconciliation_failures_result = 0
 				scope:modeu5_test_active_reconciled_market_stock = 150
-				global_var:modeu5_market_owned_active_markets_processed_count >= 1
-				global_var:modeu5_market_owned_country_cache_rebuild_count >= 1
-				global_var:modeu5_market_owned_active_goods_processed_count >= 1
-				has_global_variable_list = modeu5_active_markets_any_good
-				has_global_variable_list = modeu5_wheat_active_markets
+				global_var:cbp_market_owned_active_markets_processed_count >= 1
+				global_var:cbp_market_owned_country_cache_rebuild_count >= 1
+				global_var:cbp_market_owned_active_goods_processed_count >= 1
+				has_global_variable_list = cbp_active_markets_any_good
+				has_global_variable_list = test_cbp_wheat_active_markets
 				is_target_in_global_variable_list = {
-					name = modeu5_active_markets_any_good
+					name = cbp_active_markets_any_good
 					target = scope:modeu5_test_market
 				}
 				is_target_in_global_variable_list = {
-					name = modeu5_wheat_active_markets
+					name = test_cbp_wheat_active_markets
 					target = scope:modeu5_test_market
 				}
 			}
-			set_global_variable = modeu5_test_reconciliation_active_passed
+			set_global_variable = test_cbp_reconciliation_active_passed
 		}
 		else = {
-			remove_global_variable = modeu5_test_reconciliation_active_passed
+			remove_global_variable = test_cbp_reconciliation_active_passed
 			error_log = "ModeU5 deterministic US-11 active reconciliation test failed."
 		}
 		if = {
 			limit = {
-				has_global_variable = modeu5_test_reconciliation_dirty_passed
-				has_global_variable = modeu5_test_reconciliation_empty_passed
-				has_global_variable = modeu5_test_reconciliation_active_passed
+				has_global_variable = test_cbp_reconciliation_dirty_passed
+				has_global_variable = test_cbp_reconciliation_empty_passed
+				has_global_variable = test_cbp_reconciliation_active_passed
 			}
 			debug_log = "ModeU5 US-11 RESULT reconciliation PASS"
 		}
@@ -1378,90 +1378,90 @@ modeu5_debug_run_reconciliation_tests = {
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_reconciliation_dirty_passed
-		remove_global_variable = modeu5_test_reconciliation_active_passed
-		remove_global_variable = modeu5_test_reconciliation_empty_passed
+		remove_global_variable = test_cbp_reconciliation_dirty_passed
+		remove_global_variable = test_cbp_reconciliation_active_passed
+		remove_global_variable = test_cbp_reconciliation_empty_passed
 		error_log = "ModeU5 deterministic US-11 tests require FRA and ENG."
 	}
 }
 
 modeu5_debug_run_reconciliation_cadence_tests = {
 	save_temporary_scope_as = modeu5_test_controller
-	remove_global_variable = modeu5_test_reconciliation_cadence_passed
-	remove_global_variable = modeu5_test_reconciliation_cadence_failed
-	remove_global_variable = modeu5_test_reconciliation_cadence_blocked
+	remove_global_variable = test_cbp_reconciliation_cadence_passed
+	remove_global_variable = test_cbp_reconciliation_cadence_failed
+	remove_global_variable = test_cbp_reconciliation_cadence_blocked
 
 	if = {
 		limit = { modeu5_stock_runtime_ready_trigger = yes }
-		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
-		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+		remove_global_variable = cbp_last_monthly_reconciliation_stamp
+		remove_global_variable = cbp_last_four_yearly_reconciliation_stamp
 
-		save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 0 }
-		save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_cadence_normal_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_cadence_debug_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_cadence_audit_monthly_stamp value = 0 }
+		save_temporary_scope_value_as = { name = test_cbp_cadence_four_yearly_stamp value = 0 }
 
 		modeu5_enter_normal_runtime_mode = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
 		if = {
-			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
-			save_temporary_scope_value_as = { name = modeu5_test_cadence_normal_monthly_stamp value = 1 }
+			limit = { has_global_variable = cbp_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = test_cbp_cadence_normal_monthly_stamp value = 1 }
 		}
 
-		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		remove_global_variable = cbp_last_monthly_reconciliation_stamp
 		modeu5_enter_debug_runtime_mode = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
 		if = {
-			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
-			save_temporary_scope_value_as = { name = modeu5_test_cadence_debug_monthly_stamp value = 1 }
+			limit = { has_global_variable = cbp_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = test_cbp_cadence_debug_monthly_stamp value = 1 }
 		}
 
-		remove_global_variable = modeu5_last_monthly_reconciliation_stamp
+		remove_global_variable = cbp_last_monthly_reconciliation_stamp
 		modeu5_enter_audit_runtime_mode = yes
 		modeu5_run_monthly_stock_reconciliation_once = yes
 		if = {
-			limit = { has_global_variable = modeu5_last_monthly_reconciliation_stamp }
-			save_temporary_scope_value_as = { name = modeu5_test_cadence_audit_monthly_stamp value = 1 }
+			limit = { has_global_variable = cbp_last_monthly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = test_cbp_cadence_audit_monthly_stamp value = 1 }
 		}
 
-		remove_global_variable = modeu5_last_four_yearly_reconciliation_stamp
+		remove_global_variable = cbp_last_four_yearly_reconciliation_stamp
 		modeu5_enter_normal_runtime_mode = yes
 		modeu5_run_four_yearly_stock_reconciliation_once = yes
 		if = {
-			limit = { has_global_variable = modeu5_last_four_yearly_reconciliation_stamp }
-			save_temporary_scope_value_as = { name = modeu5_test_cadence_four_yearly_stamp value = 1 }
+			limit = { has_global_variable = cbp_last_four_yearly_reconciliation_stamp }
+			save_temporary_scope_value_as = { name = test_cbp_cadence_four_yearly_stamp value = 1 }
 		}
 
 		set_variable = {
-			name = modeu5_debug_us11_ui_cadence_normal_monthly_stamp
-			value = scope:modeu5_test_cadence_normal_monthly_stamp
+			name = gui_cbp_debug_us11_ui_cadence_normal_monthly_stamp
+			value = scope:test_cbp_cadence_normal_monthly_stamp
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_cadence_debug_monthly_stamp
-			value = scope:modeu5_test_cadence_debug_monthly_stamp
+			name = gui_cbp_debug_us11_ui_cadence_debug_monthly_stamp
+			value = scope:test_cbp_cadence_debug_monthly_stamp
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_cadence_audit_monthly_stamp
-			value = scope:modeu5_test_cadence_audit_monthly_stamp
+			name = gui_cbp_debug_us11_ui_cadence_audit_monthly_stamp
+			value = scope:test_cbp_cadence_audit_monthly_stamp
 		}
 		set_variable = {
-			name = modeu5_debug_us11_ui_cadence_four_yearly_stamp
-			value = scope:modeu5_test_cadence_four_yearly_stamp
+			name = gui_cbp_debug_us11_ui_cadence_four_yearly_stamp
+			value = scope:test_cbp_cadence_four_yearly_stamp
 		}
 		debug_log = "ModeU5 US-11 DUMP cadence normal_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_normal_monthly_stamp').GetValue|0] debug_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_debug_monthly_stamp').GetValue|0] audit_monthly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_audit_monthly_stamp').GetValue|0] four_yearly_stamp=[THIS.GetVariable('modeu5_debug_us11_ui_cadence_four_yearly_stamp').GetValue|0]"
 
 		if = {
 			limit = {
-				scope:modeu5_test_cadence_normal_monthly_stamp = 0
-				scope:modeu5_test_cadence_debug_monthly_stamp = 0
-				scope:modeu5_test_cadence_audit_monthly_stamp = 1
-				scope:modeu5_test_cadence_four_yearly_stamp = 1
+				scope:test_cbp_cadence_normal_monthly_stamp = 0
+				scope:test_cbp_cadence_debug_monthly_stamp = 0
+				scope:test_cbp_cadence_audit_monthly_stamp = 1
+				scope:test_cbp_cadence_four_yearly_stamp = 1
 			}
-			set_global_variable = modeu5_test_reconciliation_cadence_passed
+			set_global_variable = test_cbp_reconciliation_cadence_passed
 			debug_log = "ModeU5 US-11 RESULT cadence PASS"
 		}
 		else = {
-			set_global_variable = modeu5_test_reconciliation_cadence_failed
+			set_global_variable = test_cbp_reconciliation_cadence_failed
 			error_log = "ModeU5 deterministic US-11 cadence test failed."
 			debug_log = "ModeU5 US-11 RESULT cadence FAIL"
 		}
@@ -1469,7 +1469,7 @@ modeu5_debug_run_reconciliation_cadence_tests = {
 		modeu5_enter_test_audit_runtime_mode = yes
 	}
 	else = {
-		set_global_variable = modeu5_test_reconciliation_cadence_blocked
+		set_global_variable = test_cbp_reconciliation_cadence_blocked
 		error_log = "ModeU5 deterministic US-11 cadence test requires completed CORE-02 initialization."
 		debug_log = "ModeU5 US-11 RESULT cadence BLOCKED runtime_not_ready"
 	}
@@ -1540,18 +1540,18 @@ modeu5_debug_run_core02_initialization_tests = {
 		}
 		if = {
 			limit = {
-				NOT = { has_global_variable = modeu5_initialization_failure_detected }
+				NOT = { has_global_variable = cbp_initialization_failure_detected }
 				scope:modeu5_test_core02_fra_proportional_stock = 50
 				scope:modeu5_test_core02_eng_proportional_stock = 150
 				scope:modeu5_test_core02_proportional_market_stock = 200
-				global_var:modeu5_initialization_market_goods_seeded = 1
-				global_var:modeu5_initialization_allocated_total = 200
+				global_var:cbp_initialization_market_goods_seeded = 1
+				global_var:cbp_initialization_allocated_total = 200
 			}
-			set_global_variable = modeu5_test_core02_proportional_passed
+			set_global_variable = test_cbp_core02_proportional_passed
 			debug_log = "ModeU5 CORE-02 RESULT proportional PASS"
 		}
 		else = {
-			remove_global_variable = modeu5_test_core02_proportional_passed
+			remove_global_variable = test_cbp_core02_proportional_passed
 			debug_log = "ModeU5 CORE-02 RESULT proportional FAIL"
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
 		}
@@ -1611,25 +1611,25 @@ modeu5_debug_run_core02_initialization_tests = {
 		}
 		if = {
 			limit = {
-				NOT = { has_global_variable = modeu5_initialization_failure_detected }
+				NOT = { has_global_variable = cbp_initialization_failure_detected }
 				scope:modeu5_test_core02_fra_over_capacity_stock = 60
 				scope:modeu5_test_core02_eng_over_capacity_stock = 90
 				scope:modeu5_test_core02_over_capacity_market_stock = 150
-				global_var:modeu5_initialization_market_goods_seeded = 1
-				global_var:modeu5_initialization_allocated_total = 150
+				global_var:cbp_initialization_market_goods_seeded = 1
+				global_var:cbp_initialization_allocated_total = 150
 			}
-			set_global_variable = modeu5_test_core02_over_capacity_passed
+			set_global_variable = test_cbp_core02_over_capacity_passed
 			debug_log = "ModeU5 CORE-02 RESULT over_capacity PASS"
 		}
 		else = {
-			remove_global_variable = modeu5_test_core02_over_capacity_passed
+			remove_global_variable = test_cbp_core02_over_capacity_passed
 			debug_log = "ModeU5 CORE-02 RESULT over_capacity FAIL"
 			error_log = "ModeU5 deterministic CORE-02 over-capacity initialization allocation test failed."
 		}
 		if = {
 			limit = {
-				has_global_variable = modeu5_test_core02_proportional_passed
-				has_global_variable = modeu5_test_core02_over_capacity_passed
+				has_global_variable = test_cbp_core02_proportional_passed
+				has_global_variable = test_cbp_core02_over_capacity_passed
 			}
 			debug_log = "ModeU5 CORE-02 RESULT initialization PASS"
 		}
@@ -1638,8 +1638,8 @@ modeu5_debug_run_core02_initialization_tests = {
 		}
 	}
 	else = {
-		remove_global_variable = modeu5_test_core02_proportional_passed
-		remove_global_variable = modeu5_test_core02_over_capacity_passed
+		remove_global_variable = test_cbp_core02_proportional_passed
+		remove_global_variable = test_cbp_core02_over_capacity_passed
 		debug_log = "ModeU5 CORE-02 RESULT initialization BLOCKED missing_FRA_ENG"
 		error_log = "ModeU5 deterministic CORE-02 initialization tests require FRA and ENG."
 	}

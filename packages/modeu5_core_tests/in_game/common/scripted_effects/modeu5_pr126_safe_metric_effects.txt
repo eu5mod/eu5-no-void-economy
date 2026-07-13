@@ -1,33 +1,33 @@
 modeu5_pr126_seed_shell_scope_values = {
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_candidates_normal value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_normal value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_rejected_normal value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_normal value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_candidates_performance value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_performance value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_rejected_performance value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_performance value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_candidates_normal value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_promoted_normal value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_rejected_normal value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_iterations_normal value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_candidates_performance value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_promoted_performance value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_rejected_performance value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_pr126_shell_iterations_performance value = 0 }
 }
 
 modeu5_pr126_snapshot_shell_normal_globals = {
 	modeu5_pr126_seed_shell_scope_values = yes
-	if = { limit = { has_global_variable = modeu5_promoted_market_candidate_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_candidates_normal value = global_var:modeu5_promoted_market_candidate_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_normal value = global_var:modeu5_promoted_market_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_rejected_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_rejected_normal value = global_var:modeu5_promoted_market_rejected_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_shell_iterations } save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_normal value = global_var:modeu5_promoted_market_shell_iterations } }
-	set_variable = { name = modeu5_pr126_ui_shell_candidates_normal value = scope:modeu5_pr126_shell_candidates_normal }
-	set_variable = { name = modeu5_pr126_ui_shell_promoted_normal value = scope:modeu5_pr126_shell_promoted_normal }
-	set_variable = { name = modeu5_pr126_ui_shell_rejected_normal value = scope:modeu5_pr126_shell_rejected_normal }
-	set_variable = { name = modeu5_pr126_ui_shell_iterations_normal value = scope:modeu5_pr126_shell_iterations_normal }
+	if = { limit = { has_global_variable = cbp_promoted_market_candidate_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_candidates_normal value = global_var:cbp_promoted_market_candidate_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_promoted_normal value = global_var:cbp_promoted_market_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_rejected_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_rejected_normal value = global_var:cbp_promoted_market_rejected_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_shell_iterations } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_iterations_normal value = global_var:cbp_promoted_market_shell_iterations } }
+	set_variable = { name = gui_cbp_pr126_ui_shell_candidates_normal value = scope:test_cbp_pr126_shell_candidates_normal }
+	set_variable = { name = gui_cbp_pr126_ui_shell_promoted_normal value = scope:test_cbp_pr126_shell_promoted_normal }
+	set_variable = { name = gui_cbp_pr126_ui_shell_rejected_normal value = scope:test_cbp_pr126_shell_rejected_normal }
+	set_variable = { name = gui_cbp_pr126_ui_shell_iterations_normal value = scope:test_cbp_pr126_shell_iterations_normal }
 }
 
 modeu5_pr126_snapshot_shell_performance_globals = {
-	if = { limit = { has_global_variable = modeu5_promoted_market_candidate_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_candidates_performance value = global_var:modeu5_promoted_market_candidate_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_promoted_performance value = global_var:modeu5_promoted_market_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_rejected_count } save_temporary_scope_value_as = { name = modeu5_pr126_shell_rejected_performance value = global_var:modeu5_promoted_market_rejected_count } }
-	if = { limit = { has_global_variable = modeu5_promoted_market_shell_iterations } save_temporary_scope_value_as = { name = modeu5_pr126_shell_iterations_performance value = global_var:modeu5_promoted_market_shell_iterations } }
-	set_variable = { name = modeu5_pr126_ui_shell_candidates_performance value = scope:modeu5_pr126_shell_candidates_performance }
-	set_variable = { name = modeu5_pr126_ui_shell_promoted_performance value = scope:modeu5_pr126_shell_promoted_performance }
-	set_variable = { name = modeu5_pr126_ui_shell_rejected_performance value = scope:modeu5_pr126_shell_rejected_performance }
-	set_variable = { name = modeu5_pr126_ui_shell_iterations_performance value = scope:modeu5_pr126_shell_iterations_performance }
+	if = { limit = { has_global_variable = cbp_promoted_market_candidate_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_candidates_performance value = global_var:cbp_promoted_market_candidate_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_promoted_performance value = global_var:cbp_promoted_market_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_rejected_count } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_rejected_performance value = global_var:cbp_promoted_market_rejected_count } }
+	if = { limit = { has_global_variable = cbp_promoted_market_shell_iterations } save_temporary_scope_value_as = { name = test_cbp_pr126_shell_iterations_performance value = global_var:cbp_promoted_market_shell_iterations } }
+	set_variable = { name = gui_cbp_pr126_ui_shell_candidates_performance value = scope:test_cbp_pr126_shell_candidates_performance }
+	set_variable = { name = gui_cbp_pr126_ui_shell_promoted_performance value = scope:test_cbp_pr126_shell_promoted_performance }
+	set_variable = { name = gui_cbp_pr126_ui_shell_rejected_performance value = scope:test_cbp_pr126_shell_rejected_performance }
+	set_variable = { name = gui_cbp_pr126_ui_shell_iterations_performance value = scope:test_cbp_pr126_shell_iterations_performance }
 }

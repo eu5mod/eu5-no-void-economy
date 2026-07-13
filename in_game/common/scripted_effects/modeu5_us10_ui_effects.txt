@@ -7,45 +7,45 @@
 
 modeu5_us10_ui_clear_selected_market_work_list = {
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_selected_market }
-		clear_global_variable_list = modeu5_us10_ui_selected_market
+		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
+		clear_global_variable_list = gui_cbp_us10_ui_selected_market
 	}
 }
 
 modeu5_us10_ui_clear_next_selected_market_work_list = {
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_next_selected_market }
-		clear_global_variable_list = modeu5_us10_ui_next_selected_market
+		limit = { has_global_variable_list = gui_cbp_us10_ui_next_selected_market }
+		clear_global_variable_list = gui_cbp_us10_ui_next_selected_market
 	}
 }
 
 modeu5_us10_ui_clear_market_selector_work_list = {
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_market_selector_markets }
-		clear_global_variable_list = modeu5_us10_ui_market_selector_markets
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets }
+		clear_global_variable_list = gui_cbp_us10_ui_market_selector_markets
 	}
 }
 
 modeu5_us10_ui_clear_good_row = {
-	remove_variable = modeu5_us10_ui_$key$_country_stock
-	remove_variable = modeu5_us10_ui_$key$_country_capacity
-	remove_variable = modeu5_us10_ui_$key$_market_stock
-	remove_variable = modeu5_us10_ui_$key$_market_capacity
-	remove_variable = modeu5_us10_ui_$key$_overproduction_percent
-	remove_variable = modeu5_us10_ui_$key$_overproduction_warning
-	remove_variable = modeu5_us10_ui_$key$_country_over_cap
-	remove_variable = modeu5_us10_ui_$key$_market_over_cap
-	remove_variable = modeu5_us10_ui_$key$_produced
-	remove_variable = modeu5_us10_ui_$key$_added
-	remove_variable = modeu5_us10_ui_$key$_rejected
-	remove_variable = modeu5_us10_ui_$key$_production_penalty_percent
+	remove_variable = gui_cbp_us10_ui_$key$_country_stock
+	remove_variable = gui_cbp_us10_ui_$key$_country_capacity
+	remove_variable = gui_cbp_us10_ui_$key$_market_stock
+	remove_variable = gui_cbp_us10_ui_$key$_market_capacity
+	remove_variable = gui_cbp_us10_ui_$key$_overproduction_percent
+	remove_variable = gui_cbp_us10_ui_$key$_overproduction_warning
+	remove_variable = gui_cbp_us10_ui_$key$_country_over_cap
+	remove_variable = gui_cbp_us10_ui_$key$_market_over_cap
+	remove_variable = gui_cbp_us10_ui_$key$_produced
+	remove_variable = gui_cbp_us10_ui_$key$_added
+	remove_variable = gui_cbp_us10_ui_$key$_rejected
+	remove_variable = gui_cbp_us10_ui_$key$_production_penalty_percent
 }
 
 modeu5_us10_ui_clear_table_variables = {
-	remove_variable = modeu5_us10_ui_selected_market_available
-	remove_variable = modeu5_us10_ui_market_count
-	remove_variable = modeu5_us10_ui_selected_market_index
-	remove_variable = modeu5_us10_ui_selected_market_capacity
+	remove_variable = gui_cbp_us10_ui_selected_market_available
+	remove_variable = gui_cbp_us10_ui_market_count
+	remove_variable = gui_cbp_us10_ui_selected_market_index
+	remove_variable = gui_cbp_us10_ui_selected_market_capacity
 	modeu5_us10_ui_clear_good_row = { key = cotton }
 	modeu5_us10_ui_clear_good_row = { key = sugar }
 	modeu5_us10_ui_clear_good_row = { key = tobacco }
@@ -126,28 +126,28 @@ modeu5_us10_ui_rebuild_country_market_selector = {
 	save_temporary_scope_as = modeu5_us10_ui_country
 	modeu5_us10_ui_clear_market_selector_work_list = yes
 
-	set_variable = { name = modeu5_us10_ui_market_count value = 0 }
-	set_variable = { name = modeu5_us10_ui_market_iterator_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_count value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
 
 	every_market_present_in_country = {
 		save_temporary_scope_as = modeu5_us10_ui_candidate_market
 		scope:modeu5_us10_ui_country = {
 			set_variable = {
-				name = modeu5_us10_ui_market_count
-				value = { value = var:modeu5_us10_ui_market_count add = 1 }
+				name = gui_cbp_us10_ui_market_count
+				value = { value = var:gui_cbp_us10_ui_market_count add = 1 }
 			}
 		}
 		if = {
-			limit = { NOT = { has_global_variable_list = modeu5_us10_ui_market_selector_markets } }
-			add_to_global_variable_list = { name = modeu5_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
+			limit = { NOT = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets } }
+			add_to_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
 		}
 		else_if = {
 			limit = {
 				NOT = {
-					is_target_in_global_variable_list = { name = modeu5_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
+					is_target_in_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
 				}
 			}
-			add_to_global_variable_list = { name = modeu5_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
+			add_to_global_variable_list = { name = gui_cbp_us10_ui_market_selector_markets target = scope:modeu5_us10_ui_candidate_market }
 		}
 	}
 }
@@ -155,30 +155,30 @@ modeu5_us10_ui_rebuild_country_market_selector = {
 modeu5_us10_ui_set_selected_market = {
 	$market$ = { save_temporary_scope_as = modeu5_us10_ui_candidate_market }
 	modeu5_us10_ui_clear_selected_market_work_list = yes
-	add_to_global_variable_list = { name = modeu5_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
+	add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
 }
 
 modeu5_us10_ui_select_first_market_from_selector = {
 	save_temporary_scope_as = modeu5_us10_ui_country
 	modeu5_us10_ui_clear_selected_market_work_list = yes
-	set_variable = { name = modeu5_us10_ui_selected_market_found value = 0 }
-	set_variable = { name = modeu5_us10_ui_market_iterator_index value = 0 }
-	set_variable = { name = modeu5_us10_ui_selected_market_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_index value = 0 }
 
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_market_selector_markets }
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets }
 		every_in_global_list = {
-			variable = modeu5_us10_ui_market_selector_markets
+			variable = gui_cbp_us10_ui_market_selector_markets
 			save_temporary_scope_as = modeu5_us10_ui_candidate_market
 			scope:modeu5_us10_ui_country = {
-				set_variable = { name = modeu5_us10_ui_market_iterator_index value = { value = var:modeu5_us10_ui_market_iterator_index add = 1 } }
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
 			}
 			if = {
-				limit = { scope:modeu5_us10_ui_country = { var:modeu5_us10_ui_selected_market_found = 0 } }
-				add_to_global_variable_list = { name = modeu5_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
+				limit = { scope:modeu5_us10_ui_country = { var:gui_cbp_us10_ui_selected_market_found = 0 } }
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
 				scope:modeu5_us10_ui_country = {
-					set_variable = { name = modeu5_us10_ui_selected_market_found value = 1 }
-					set_variable = { name = modeu5_us10_ui_selected_market_index value = var:modeu5_us10_ui_market_iterator_index }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
 				}
 			}
 		}
@@ -188,30 +188,30 @@ modeu5_us10_ui_select_first_market_from_selector = {
 modeu5_us10_ui_validate_or_select_market = {
 	save_temporary_scope_as = modeu5_us10_ui_country
 	modeu5_us10_ui_rebuild_country_market_selector = yes
-	set_variable = { name = modeu5_us10_ui_selected_market_valid value = 0 }
-	set_variable = { name = modeu5_us10_ui_market_iterator_index value = 0 }
-	set_variable = { name = modeu5_us10_ui_selected_market_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_valid value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_index value = 0 }
 
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_market_selector_markets has_global_variable_list = modeu5_us10_ui_selected_market }
+		limit = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets has_global_variable_list = gui_cbp_us10_ui_selected_market }
 		every_in_global_list = {
-			variable = modeu5_us10_ui_market_selector_markets
+			variable = gui_cbp_us10_ui_market_selector_markets
 			save_temporary_scope_as = modeu5_us10_ui_candidate_market
 			scope:modeu5_us10_ui_country = {
-				set_variable = { name = modeu5_us10_ui_market_iterator_index value = { value = var:modeu5_us10_ui_market_iterator_index add = 1 } }
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
 			}
 			if = {
-				limit = { is_target_in_global_variable_list = { name = modeu5_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market } }
+				limit = { is_target_in_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market } }
 				scope:modeu5_us10_ui_country = {
-					set_variable = { name = modeu5_us10_ui_selected_market_valid value = 1 }
-					set_variable = { name = modeu5_us10_ui_selected_market_index value = var:modeu5_us10_ui_market_iterator_index }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_valid value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
 				}
 			}
 		}
 	}
 
 	if = {
-		limit = { var:modeu5_us10_ui_selected_market_valid = 0 }
+		limit = { var:gui_cbp_us10_ui_selected_market_valid = 0 }
 		modeu5_us10_ui_select_first_market_from_selector = yes
 	}
 }
@@ -222,69 +222,69 @@ modeu5_us10_ui_select_next_market = {
 	modeu5_us10_ui_clear_next_selected_market_work_list = yes
 
 	if = {
-		limit = { OR = { NOT = { has_global_variable_list = modeu5_us10_ui_selected_market } NOT = { has_global_variable_list = modeu5_us10_ui_market_selector_markets } } }
+		limit = { OR = { NOT = { has_global_variable_list = gui_cbp_us10_ui_selected_market } NOT = { has_global_variable_list = gui_cbp_us10_ui_market_selector_markets } } }
 		modeu5_us10_ui_select_first_market_from_selector = yes
 	}
 	else = {
-		set_variable = { name = modeu5_us10_ui_seen_current_market value = 0 }
-		set_variable = { name = modeu5_us10_ui_selected_market_found value = 0 }
-		set_variable = { name = modeu5_us10_ui_market_iterator_index value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_seen_current_market value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 0 }
+		set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = 0 }
 
 		every_in_global_list = {
-			variable = modeu5_us10_ui_market_selector_markets
+			variable = gui_cbp_us10_ui_market_selector_markets
 			save_temporary_scope_as = modeu5_us10_ui_candidate_market
 			scope:modeu5_us10_ui_country = {
-				set_variable = { name = modeu5_us10_ui_market_iterator_index value = { value = var:modeu5_us10_ui_market_iterator_index add = 1 } }
+				set_variable = { name = gui_cbp_us10_ui_market_iterator_index value = { value = var:gui_cbp_us10_ui_market_iterator_index add = 1 } }
 			}
 			if = {
-				limit = { scope:modeu5_us10_ui_country = { var:modeu5_us10_ui_seen_current_market = 1 var:modeu5_us10_ui_selected_market_found = 0 } }
-				add_to_global_variable_list = { name = modeu5_us10_ui_next_selected_market target = scope:modeu5_us10_ui_candidate_market }
+				limit = { scope:modeu5_us10_ui_country = { var:gui_cbp_us10_ui_seen_current_market = 1 var:gui_cbp_us10_ui_selected_market_found = 0 } }
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_next_selected_market target = scope:modeu5_us10_ui_candidate_market }
 				scope:modeu5_us10_ui_country = {
-					set_variable = { name = modeu5_us10_ui_selected_market_found value = 1 }
-					set_variable = { name = modeu5_us10_ui_selected_market_index value = var:modeu5_us10_ui_market_iterator_index }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_found value = 1 }
+					set_variable = { name = gui_cbp_us10_ui_selected_market_index value = var:gui_cbp_us10_ui_market_iterator_index }
 				}
 			}
 			if = {
-				limit = { is_target_in_global_variable_list = { name = modeu5_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market } }
-				scope:modeu5_us10_ui_country = { set_variable = { name = modeu5_us10_ui_seen_current_market value = 1 } }
+				limit = { is_target_in_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market } }
+				scope:modeu5_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_seen_current_market value = 1 } }
 			}
 		}
 
 		if = {
-			limit = { var:modeu5_us10_ui_selected_market_found = 0 }
+			limit = { var:gui_cbp_us10_ui_selected_market_found = 0 }
 			modeu5_us10_ui_select_first_market_from_selector = yes
 		}
 		else = {
 			modeu5_us10_ui_clear_selected_market_work_list = yes
 			every_in_global_list = {
-				variable = modeu5_us10_ui_next_selected_market
+				variable = gui_cbp_us10_ui_next_selected_market
 				save_temporary_scope_as = modeu5_us10_ui_candidate_market
-				add_to_global_variable_list = { name = modeu5_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
+				add_to_global_variable_list = { name = gui_cbp_us10_ui_selected_market target = scope:modeu5_us10_ui_candidate_market }
 			}
 		}
 	}
 }
 
 modeu5_us10_ui_compute_selected_market_capacity = {
-	scope:modeu5_us10_ui_country = { set_local_variable = { name = modeu5_us10_ui_market_capacity_accumulator value = 0 } }
+	scope:modeu5_us10_ui_country = { set_local_variable = { name = gui_cbp_us10_ui_market_capacity_accumulator value = 0 } }
 	scope:modeu5_us10_ui_selected_market_scope = { save_temporary_scope_as = modeu5_market_country_cache_market }
 	modeu5_rebuild_countries_present_in_market = yes
 
 	if = {
-		limit = { has_global_variable_list = modeu5_countries_present_in_market }
+		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
-			variable = modeu5_countries_present_in_market
+			variable = cbp_countries_present_in_market
 			if = {
-				limit = { has_variable_map = modeu5_stock_cap_by_market is_key_in_variable_map = { name = modeu5_stock_cap_by_market target = scope:modeu5_us10_ui_selected_market_scope } }
-				save_temporary_scope_value_as = { name = modeu5_us10_ui_country_market_capacity value = { value = "variable_map(modeu5_stock_cap_by_market|scope:modeu5_us10_ui_selected_market_scope)" min = 0 } }
-				scope:modeu5_us10_ui_country = { change_local_variable = { name = modeu5_us10_ui_market_capacity_accumulator add = scope:modeu5_us10_ui_country_market_capacity } }
+				limit = { has_variable_map = cbp_stock_cap_by_market is_key_in_variable_map = { name = cbp_stock_cap_by_market target = scope:modeu5_us10_ui_selected_market_scope } }
+				save_temporary_scope_value_as = { name = gui_cbp_us10_ui_country_market_capacity value = { value = "variable_map(cbp_stock_cap_by_market|scope:modeu5_us10_ui_selected_market_scope)" min = 0 } }
+				scope:modeu5_us10_ui_country = { change_local_variable = { name = gui_cbp_us10_ui_market_capacity_accumulator add = scope:gui_cbp_us10_ui_country_market_capacity } }
 			}
 		}
 	}
 
 	scope:modeu5_us10_ui_country = {
-		save_temporary_scope_value_as = { name = modeu5_us10_ui_selected_market_capacity_value value = local_var:modeu5_us10_ui_market_capacity_accumulator }
-		set_variable = { name = modeu5_us10_ui_selected_market_capacity value = scope:modeu5_us10_ui_selected_market_capacity_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_selected_market_capacity_value value = local_var:modeu5_us10_ui_market_capacity_accumulator }
+		set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
 	}
 }
 
@@ -300,26 +300,26 @@ modeu5_us10_ui_capture_good_row = {
 		good = $good$
 	}
 	scope:modeu5_us10_ui_country = {
-		save_temporary_scope_value_as = { name = modeu5_us10_ui_row_market_capacity value = var:modeu5_us10_ui_selected_market_capacity }
-		set_variable = { name = modeu5_us10_ui_$key$_country_stock value = scope:modeu5_read_country_stock }
-		set_variable = { name = modeu5_us10_ui_$key$_country_capacity value = scope:modeu5_read_country_stock_cap }
-		set_variable = { name = modeu5_us10_ui_$key$_market_stock value = scope:modeu5_read_market_stock }
-		set_variable = { name = modeu5_us10_ui_$key$_market_capacity value = scope:modeu5_us10_ui_row_market_capacity }
-		set_variable = { name = modeu5_us10_ui_$key$_produced value = scope:modeu5_us00_produced }
-		set_variable = { name = modeu5_us10_ui_$key$_added value = scope:modeu5_us00_added }
-		set_variable = { name = modeu5_us10_ui_$key$_rejected value = scope:modeu5_us00_rejected }
-		set_variable = { name = modeu5_us10_ui_$key$_country_over_cap value = scope:modeu5_read_over_capacity }
-		save_temporary_scope_value_as = { name = modeu5_us10_ui_$key$_market_over_cap_value value = { value = scope:modeu5_read_market_stock subtract = scope:modeu5_us10_ui_row_market_capacity min = 0 } }
-		set_variable = { name = modeu5_us10_ui_$key$_market_over_cap value = scope:modeu5_us10_ui_$key$_market_over_cap_value }
-		save_temporary_scope_value_as = { name = modeu5_us10_ui_$key$_overproduction_percent_value value = { value = scope:modeu5_us00_read_overproduction_ratio multiply = 100 min = 0 } }
-		set_variable = { name = modeu5_us10_ui_$key$_overproduction_percent value = scope:modeu5_us10_ui_$key$_overproduction_percent_value }
-		save_temporary_scope_value_as = { name = modeu5_us10_ui_$key$_production_penalty_percent_value value = { value = scope:modeu5_us00_read_production_penalty multiply = 100 } }
-		set_variable = { name = modeu5_us10_ui_$key$_production_penalty_percent value = scope:modeu5_us10_ui_$key$_production_penalty_percent_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_row_market_capacity value = var:gui_cbp_us10_ui_selected_market_capacity }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = scope:cbp_read_country_stock }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = scope:cbp_read_country_stock_cap }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = scope:cbp_read_market_stock }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = scope:gui_cbp_us10_ui_row_market_capacity }
+		set_variable = { name = gui_cbp_us10_ui_$key$_produced value = scope:cbp_us00_produced }
+		set_variable = { name = gui_cbp_us10_ui_$key$_added value = scope:cbp_us00_added }
+		set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = scope:cbp_us00_rejected }
+		set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = scope:cbp_read_over_capacity }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = scope:gui_cbp_us10_ui_row_market_capacity min = 0 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = scope:gui_cbp_us10_ui_$key$_market_over_cap_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_overproduction_percent_value value = { value = scope:cbp_us00_read_overproduction_ratio multiply = 100 min = 0 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = scope:gui_cbp_us10_ui_$key$_overproduction_percent_value }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_production_penalty_percent_value value = { value = scope:cbp_us00_read_production_penalty multiply = 100 } }
+		set_variable = { name = gui_cbp_us10_ui_$key$_production_penalty_percent value = scope:gui_cbp_us10_ui_$key$_production_penalty_percent_value }
 		if = {
-			limit = { scope:modeu5_us00_read_overproduction_ratio > 0.05 }
-			set_variable = { name = modeu5_us10_ui_$key$_overproduction_warning value = 1 }
+			limit = { scope:cbp_us00_read_overproduction_ratio > 0.05 }
+			set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 1 }
 		}
-		else = { set_variable = { name = modeu5_us10_ui_$key$_overproduction_warning value = 0 } }
+		else = { set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 0 } }
 	}
 }
 
@@ -406,17 +406,17 @@ modeu5_us10_ui_prepare_current_market_table = {
 	modeu5_us10_ui_validate_or_select_market = yes
 
 	if = {
-		limit = { has_global_variable_list = modeu5_us10_ui_selected_market }
+		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
 		every_in_global_list = {
-			variable = modeu5_us10_ui_selected_market
+			variable = gui_cbp_us10_ui_selected_market
 			save_temporary_scope_as = modeu5_us10_ui_selected_market_scope
-			scope:modeu5_us10_ui_country = { set_variable = { name = modeu5_us10_ui_selected_market_available value = 1 } }
+			scope:modeu5_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 1 } }
 			modeu5_us10_ui_compute_selected_market_capacity = yes
 			modeu5_us10_ui_capture_all_good_rows = yes
 			modeu5_us10_ui_log_table = yes
 		}
 	}
-	else = { set_variable = { name = modeu5_us10_ui_selected_market_available value = 0 } }
+	else = { set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 0 } }
 }
 
 modeu5_us10_ui_log_table = {

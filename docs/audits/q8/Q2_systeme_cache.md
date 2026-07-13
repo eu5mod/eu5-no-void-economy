@@ -55,13 +55,13 @@ Q8.6 — debug-only verifier work lists, probe-only until proven.
 Q8.1 keeps PR7.1 counters classified as debug/profile metrics:
 
 ```txt
-modeu5_pr71_us00_goods_considered
-modeu5_pr71_us00_goods_processed
-modeu5_pr71_us00_goods_produced_gate_hits
-modeu5_pr71_us00_goods_previous_state_hits
-modeu5_pr71_us10_goods_considered
-modeu5_pr71_us10_pending_request_hits
-modeu5_pr71_us10_requests_processed
+cbp_pr71_us00_goods_considered
+cbp_pr71_us00_goods_processed
+cbp_pr71_us00_goods_produced_gate_hits
+cbp_pr71_us00_goods_previous_state_hits
+cbp_pr71_us10_goods_considered
+cbp_pr71_us10_pending_request_hits
+cbp_pr71_us10_requests_processed
 ```
 
 Ownership and lifecycle:

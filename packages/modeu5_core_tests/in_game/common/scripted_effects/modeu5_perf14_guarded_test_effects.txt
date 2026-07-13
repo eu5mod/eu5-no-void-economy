@@ -5,36 +5,36 @@
 # cannot coexist with script-system errors from unset promotion metrics.
 
 modeu5_perf14_load_promotion_globals_for_test = {
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_last_result_for_test value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_noop_already_promoted_for_test value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_blocked_not_human_relevant_for_test value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_failure_detected_for_test value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_goods_materialized_for_test value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_promotion_allocated_total_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_last_result_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_noop_already_promoted_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_blocked_not_human_relevant_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_failure_detected_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_goods_materialized_for_test value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_allocated_total_for_test value = 0 }
 
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_last_result }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_last_result_for_test value = global_var:modeu5_perf14_promotion_last_result }
+		limit = { has_global_variable = cbp_perf14_promotion_last_result }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_last_result_for_test value = global_var:cbp_perf14_promotion_last_result }
 	}
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_noop_already_promoted }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_noop_already_promoted_for_test value = global_var:modeu5_perf14_promotion_noop_already_promoted }
+		limit = { has_global_variable = cbp_perf14_promotion_noop_already_promoted }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_noop_already_promoted_for_test value = global_var:cbp_perf14_promotion_noop_already_promoted }
 	}
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_blocked_not_human_relevant }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_blocked_not_human_relevant_for_test value = global_var:modeu5_perf14_promotion_blocked_not_human_relevant }
+		limit = { has_global_variable = cbp_perf14_promotion_blocked_not_human_relevant }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_blocked_not_human_relevant_for_test value = global_var:cbp_perf14_promotion_blocked_not_human_relevant }
 	}
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_failure_detected }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_failure_detected_for_test value = global_var:modeu5_perf14_promotion_failure_detected }
+		limit = { has_global_variable = cbp_perf14_promotion_failure_detected }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_failure_detected_for_test value = global_var:cbp_perf14_promotion_failure_detected }
 	}
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_goods_materialized }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_goods_materialized_for_test value = global_var:modeu5_perf14_promotion_goods_materialized }
+		limit = { has_global_variable = cbp_perf14_promotion_goods_materialized }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_goods_materialized_for_test value = global_var:cbp_perf14_promotion_goods_materialized }
 	}
 	if = {
-		limit = { has_global_variable = modeu5_perf14_promotion_allocated_total }
-		save_temporary_scope_value_as = { name = modeu5_perf14_promotion_allocated_total_for_test value = global_var:modeu5_perf14_promotion_allocated_total }
+		limit = { has_global_variable = cbp_perf14_promotion_allocated_total }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_promotion_allocated_total_for_test value = global_var:cbp_perf14_promotion_allocated_total }
 	}
 }
 
@@ -50,25 +50,25 @@ modeu5_perf14_guarded_check_performance_mode_gate = {
 	if = {
 		limit = {
 			OR = {
-				NOT = { has_global_variable = modeu5_nve_main_mode }
-				NOT = { global_var:modeu5_nve_main_mode = 1 }
+				NOT = { has_global_variable = cbp_nve_main_mode }
+				NOT = { global_var:cbp_nve_main_mode = 1 }
 				NOT = { modeu5_performance_mode_enabled_trigger = yes }
 				NOT = { modeu5_detailed_country_market_accounting_enabled_trigger = yes }
-				scope:modeu5_detailed_country_market_stock_mutation_allowed > 0
+				scope:cbp_detailed_country_market_stock_mutation_allowed > 0
 				modeu5_market_level_fallback_required_trigger = yes
-				NOT = { scope:modeu5_accounting_decision_country_is_human > 0 }
-				NOT = { scope:modeu5_accounting_decision_market_human_relevant > 0 }
+				NOT = { scope:cbp_accounting_decision_country_is_human > 0 }
+				NOT = { scope:cbp_accounting_decision_market_human_relevant > 0 }
 				NOT = {
-					has_global_variable_list = modeu5_performance_relevant_markets
+					has_global_variable_list = cbp_performance_relevant_markets
 					is_target_in_global_variable_list = {
-						name = modeu5_performance_relevant_markets
+						name = cbp_performance_relevant_markets
 						target = scope:modeu5_perf14_test_market
 					}
 				}
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=performance_decision_gate_unexpected_state"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -88,13 +88,13 @@ modeu5_perf14_guarded_probe_stock_mutation_gate_promotes = {
 				NOT = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes }
 				modeu5_stock_mutation_use_market_level_fallback_trigger = yes
 				modeu5_stock_mutation_blocked_trigger = yes
-				NOT = { scope:modeu5_stock_mutation_promotion_attempted > 0 }
-				NOT = { scope:modeu5_stock_mutation_promotion_succeeded > 0 }
+				NOT = { scope:cbp_stock_mutation_promotion_attempted > 0 }
+				NOT = { scope:cbp_stock_mutation_promotion_succeeded > 0 }
 				NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=stock_mutation_gate_positive_promotion_unexpected_state"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -115,14 +115,14 @@ modeu5_perf14_guarded_probe_market_runtime_gate = {
 				NOT = { modeu5_market_runtime_use_detailed_accounting_trigger = yes }
 				modeu5_market_runtime_use_vanilla_fallback_trigger = yes
 				modeu5_market_runtime_blocked_trigger = yes
-				NOT = { scope:modeu5_market_runtime_market_human_relevant > 0 }
-				NOT = { scope:modeu5_market_runtime_promotion_attempted > 0 }
-				NOT = { scope:modeu5_market_runtime_promotion_succeeded > 0 }
+				NOT = { scope:cbp_market_runtime_market_human_relevant > 0 }
+				NOT = { scope:cbp_market_runtime_promotion_attempted > 0 }
+				NOT = { scope:cbp_market_runtime_promotion_succeeded > 0 }
 				NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=market_runtime_gate_human_relevant_unexpected_state"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 
 	modeu5_clear_detailed_accounting_promoted_markets = yes
@@ -138,13 +138,13 @@ modeu5_perf14_guarded_probe_market_runtime_gate = {
 				modeu5_market_runtime_use_detailed_accounting_trigger = yes
 				NOT = { modeu5_market_runtime_use_vanilla_fallback_trigger = yes }
 				modeu5_market_runtime_blocked_trigger = yes
-				scope:modeu5_market_runtime_market_human_relevant > 0
-				scope:modeu5_market_runtime_promotion_attempted > 0
+				scope:cbp_market_runtime_market_human_relevant > 0
+				scope:cbp_market_runtime_promotion_attempted > 0
 				modeu5_market_detailed_accounting_promoted_trigger = yes
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=market_runtime_gate_vanilla_fallback_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -169,53 +169,53 @@ modeu5_perf14_guarded_probe_positive_promotion = {
 	}
 	modeu5_perf14_mirror_decision_to_ui = yes
 	modeu5_perf14_load_promotion_globals_for_test = yes
-	set_variable = { name = modeu5_perf14_debug_wheat_country_sum value = scope:modeu5_perf14_wheat_country_sum }
-	set_variable = { name = modeu5_perf14_debug_wheat_market_aggregate value = scope:modeu5_perf14_wheat_market_aggregate }
-	set_variable = { name = modeu5_perf14_debug_wheat_country_source_count value = scope:modeu5_perf14_wheat_country_source_count }
-	set_variable = { name = modeu5_perf14_debug_promotion_result value = scope:modeu5_perf14_promotion_last_result_for_test }
-	set_variable = { name = modeu5_perf14_debug_promotion_goods_materialized value = scope:modeu5_perf14_promotion_goods_materialized_for_test }
-	set_variable = { name = modeu5_perf14_debug_promotion_allocated_total value = scope:modeu5_perf14_promotion_allocated_total_for_test }
+	set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
+	set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
+	set_variable = { name = test_cbp_perf14_debug_wheat_country_source_count value = scope:test_cbp_perf14_wheat_country_source_count }
+	set_variable = { name = test_cbp_perf14_debug_promotion_result value = scope:test_cbp_perf14_promotion_last_result_for_test }
+	set_variable = { name = test_cbp_perf14_debug_promotion_goods_materialized value = scope:test_cbp_perf14_promotion_goods_materialized_for_test }
+	set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = scope:test_cbp_perf14_promotion_allocated_total_for_test }
 	debug_log = "ModeU5 PERF-14 PROMOTION positive aggregate=120 country_sum=[THIS.GetVariable('modeu5_perf14_debug_wheat_country_sum').GetValue|2] market=[THIS.GetVariable('modeu5_perf14_debug_wheat_market_aggregate').GetValue|2] sources=[THIS.GetVariable('modeu5_perf14_debug_wheat_country_source_count').GetValue|0] result=[THIS.GetVariable('modeu5_perf14_debug_promotion_result').GetValue|0] materialized=[THIS.GetVariable('modeu5_perf14_debug_promotion_goods_materialized').GetValue|0] allocated=[THIS.GetVariable('modeu5_perf14_debug_promotion_allocated_total').GetValue|2]"
 	if = {
 		limit = {
 			OR = {
-				NOT = { scope:modeu5_perf14_promotion_last_result_for_test = 1 }
+				NOT = { scope:test_cbp_perf14_promotion_last_result_for_test = 1 }
 				NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
 				NOT = { modeu5_detailed_country_market_stock_mutation_allowed_trigger = yes }
-				scope:modeu5_perf14_wheat_country_sum != 120
-				scope:modeu5_perf14_wheat_market_aggregate != 120
-				scope:modeu5_perf14_wheat_country_source_count <= 0
-				scope:modeu5_perf14_promotion_failure_detected_for_test > 0
+				scope:test_cbp_perf14_wheat_country_sum != 120
+				scope:test_cbp_perf14_wheat_market_aggregate != 120
+				scope:test_cbp_perf14_wheat_country_source_count <= 0
+				scope:test_cbp_perf14_promotion_failure_detected_for_test > 0
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=positive_promotion_invariant"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
 modeu5_perf14_guarded_probe_idempotent_promotion = {
-	save_temporary_scope_value_as = { name = modeu5_perf14_idempotent_country_sum_before value = scope:modeu5_perf14_wheat_country_sum }
-	save_temporary_scope_value_as = { name = modeu5_perf14_idempotent_market_before value = scope:modeu5_perf14_wheat_market_aggregate }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_idempotent_country_sum_before value = scope:test_cbp_perf14_wheat_country_sum }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_idempotent_market_before value = scope:test_cbp_perf14_wheat_market_aggregate }
 	modeu5_promote_market_to_detailed_accounting = { market = scope:modeu5_perf14_test_market }
 	modeu5_perf14_scan_wheat_market = { market = scope:modeu5_perf14_test_market }
 	modeu5_perf14_load_promotion_globals_for_test = yes
-	set_variable = { name = modeu5_perf14_debug_idempotent_country_sum_before value = scope:modeu5_perf14_idempotent_country_sum_before }
-	set_variable = { name = modeu5_perf14_debug_idempotent_market_before value = scope:modeu5_perf14_idempotent_market_before }
-	set_variable = { name = modeu5_perf14_debug_wheat_country_sum value = scope:modeu5_perf14_wheat_country_sum }
-	set_variable = { name = modeu5_perf14_debug_wheat_market_aggregate value = scope:modeu5_perf14_wheat_market_aggregate }
-	set_variable = { name = modeu5_perf14_debug_promotion_result value = scope:modeu5_perf14_promotion_noop_already_promoted_for_test }
+	set_variable = { name = test_cbp_perf14_debug_idempotent_country_sum_before value = scope:test_cbp_perf14_idempotent_country_sum_before }
+	set_variable = { name = test_cbp_perf14_debug_idempotent_market_before value = scope:test_cbp_perf14_idempotent_market_before }
+	set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
+	set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
+	set_variable = { name = test_cbp_perf14_debug_promotion_result value = scope:test_cbp_perf14_promotion_noop_already_promoted_for_test }
 	debug_log = "ModeU5 PERF-14 PROMOTION idempotent before_country_sum=[THIS.GetVariable('modeu5_perf14_debug_idempotent_country_sum_before').GetValue|2] after_country_sum=[THIS.GetVariable('modeu5_perf14_debug_wheat_country_sum').GetValue|2] before_market=[THIS.GetVariable('modeu5_perf14_debug_idempotent_market_before').GetValue|2] after_market=[THIS.GetVariable('modeu5_perf14_debug_wheat_market_aggregate').GetValue|2] noop=[THIS.GetVariable('modeu5_perf14_debug_promotion_result').GetValue|0]"
 	if = {
 		limit = {
 			OR = {
-				NOT = { scope:modeu5_perf14_promotion_last_result_for_test = 1 }
-				NOT = { scope:modeu5_perf14_promotion_noop_already_promoted_for_test = 1 }
-				scope:modeu5_perf14_wheat_country_sum != scope:modeu5_perf14_idempotent_country_sum_before
-				scope:modeu5_perf14_wheat_market_aggregate != scope:modeu5_perf14_idempotent_market_before
+				NOT = { scope:test_cbp_perf14_promotion_last_result_for_test = 1 }
+				NOT = { scope:test_cbp_perf14_promotion_noop_already_promoted_for_test = 1 }
+				scope:test_cbp_perf14_wheat_country_sum != scope:test_cbp_perf14_idempotent_country_sum_before
+				scope:test_cbp_perf14_wheat_market_aggregate != scope:test_cbp_perf14_idempotent_market_before
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=idempotent_promotion_invariant"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -232,26 +232,26 @@ modeu5_perf14_guarded_probe_sparse_supplier_scan = {
 	modeu5_rebuild_countries_present_in_market = yes
 	modeu5_scan_us10_candidates_good_wheat = yes
 
-	set_variable = { name = modeu5_perf14_debug_sparse_source_count value = scope:modeu5_us10_sparse_supplier_source_count }
-	set_variable = { name = modeu5_perf14_debug_sparse_supplier_count value = scope:modeu5_us10_sparse_supplier_count }
-	set_variable = { name = modeu5_perf14_debug_sparse_scan_used value = scope:modeu5_us10_sparse_supplier_scan_used }
-	set_variable = { name = modeu5_perf14_debug_sparse_fallback_used value = scope:modeu5_us10_sparse_supplier_fallback_used }
-	set_variable = { name = modeu5_perf14_debug_sparse_candidate_count value = scope:modeu5_us10_candidate_count }
+	set_variable = { name = test_cbp_perf14_debug_sparse_source_count value = scope:cbp_us10_sparse_supplier_source_count }
+	set_variable = { name = test_cbp_perf14_debug_sparse_supplier_count value = scope:cbp_us10_sparse_supplier_count }
+	set_variable = { name = test_cbp_perf14_debug_sparse_scan_used value = scope:cbp_us10_sparse_supplier_scan_used }
+	set_variable = { name = test_cbp_perf14_debug_sparse_fallback_used value = scope:cbp_us10_sparse_supplier_fallback_used }
+	set_variable = { name = test_cbp_perf14_debug_sparse_candidate_count value = scope:cbp_us10_candidate_count }
 	debug_log = "ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=[THIS.GetVariable('modeu5_perf14_debug_sparse_source_count').GetValue|0] sparse=[THIS.GetVariable('modeu5_perf14_debug_sparse_supplier_count').GetValue|0] candidates=[THIS.GetVariable('modeu5_perf14_debug_sparse_candidate_count').GetValue|0] used=[THIS.GetVariable('modeu5_perf14_debug_sparse_scan_used').GetValue|0] fallback=[THIS.GetVariable('modeu5_perf14_debug_sparse_fallback_used').GetValue|0]"
 
 	if = {
 		limit = {
 			OR = {
-				scope:modeu5_us10_sparse_supplier_source_count <= 0
-				scope:modeu5_us10_sparse_supplier_count <= 0
-				scope:modeu5_us10_sparse_supplier_count > scope:modeu5_us10_sparse_supplier_source_count
-				NOT = { scope:modeu5_us10_sparse_supplier_scan_used = 1 }
-				scope:modeu5_us10_sparse_supplier_fallback_used > 0
-				scope:modeu5_us10_candidate_count != scope:modeu5_us10_sparse_supplier_count
+				scope:cbp_us10_sparse_supplier_source_count <= 0
+				scope:cbp_us10_sparse_supplier_count <= 0
+				scope:cbp_us10_sparse_supplier_count > scope:cbp_us10_sparse_supplier_source_count
+				NOT = { scope:cbp_us10_sparse_supplier_scan_used = 1 }
+				scope:cbp_us10_sparse_supplier_fallback_used > 0
+				scope:cbp_us10_candidate_count != scope:cbp_us10_sparse_supplier_count
 			}
 		}
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=sparse_supplier_scan_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -278,46 +278,46 @@ modeu5_perf14_guarded_probe_partial_promotion = {
 	modeu5_promote_market_to_detailed_accounting = { market = scope:modeu5_perf14_test_market }
 	modeu5_perf14_scan_wheat_market = { market = scope:modeu5_perf14_test_market }
 	modeu5_perf14_load_promotion_globals_for_test = yes
-	set_variable = { name = modeu5_perf14_debug_wheat_country_sum value = scope:modeu5_perf14_wheat_country_sum }
-	set_variable = { name = modeu5_perf14_debug_wheat_market_aggregate value = scope:modeu5_perf14_wheat_market_aggregate }
-	set_variable = { name = modeu5_perf14_debug_promotion_allocated_total value = scope:modeu5_perf14_promotion_allocated_total_for_test }
+	set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
+	set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
+	set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = scope:test_cbp_perf14_promotion_allocated_total_for_test }
 	debug_log = "ModeU5 PERF-14 PROMOTION partial aggregate=100 existing_country_sum=25 final_country_sum=[THIS.GetVariable('modeu5_perf14_debug_wheat_country_sum').GetValue|2] final_market=[THIS.GetVariable('modeu5_perf14_debug_wheat_market_aggregate').GetValue|2] allocated=[THIS.GetVariable('modeu5_perf14_debug_promotion_allocated_total').GetValue|2]"
 	if = {
 		limit = {
 			OR = {
-				NOT = { scope:modeu5_perf14_promotion_last_result_for_test = 1 }
+				NOT = { scope:test_cbp_perf14_promotion_last_result_for_test = 1 }
 				NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
-				scope:modeu5_perf14_wheat_country_sum != 100
-				scope:modeu5_perf14_wheat_market_aggregate != 100
-				scope:modeu5_perf14_promotion_failure_detected_for_test > 0
+				scope:test_cbp_perf14_wheat_country_sum != 100
+				scope:test_cbp_perf14_wheat_market_aggregate != 100
+				scope:test_cbp_perf14_promotion_failure_detected_for_test > 0
 			}
 		}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=partial_promotion_invariant"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
 modeu5_perf14_guarded_probe_ai_gate = {
 	if = {
 		limit = { country_exists = c:ENG c:ENG = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		c:ENG = { save_temporary_scope_as = modeu5_perf14_ai_country }
 		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
 	}
 	else_if = {
 		limit = { country_exists = c:FRA c:FRA = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		c:FRA = { save_temporary_scope_as = modeu5_perf14_ai_country }
 		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
 	}
 	else_if = {
 		limit = { country_exists = c:POR c:POR = { is_ai = yes has_markets = yes } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		c:POR = { save_temporary_scope_as = modeu5_perf14_ai_country }
 		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
 	}
 	if = {
-		limit = { scope:modeu5_perf14_ai_fixture_available > 0 }
+		limit = { scope:test_cbp_perf14_ai_fixture_available > 0 }
 		modeu5_clear_performance_relevant_markets = yes
 		modeu5_prepare_country_market_accounting_decision = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
 		if = {
@@ -325,11 +325,11 @@ modeu5_perf14_guarded_probe_ai_gate = {
 				OR = {
 					modeu5_detailed_country_market_accounting_enabled_trigger = yes
 					NOT = { modeu5_market_level_fallback_required_trigger = yes }
-					scope:modeu5_accounting_decision_country_is_human > 0
+					scope:cbp_accounting_decision_country_is_human > 0
 				}
 			}
 				debug_log = "ModeU5 PERF-14 FAIL_REASON reason=ai_decision_gate_unexpected_state"
-				set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+				set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 		modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
 		if = {
@@ -338,11 +338,11 @@ modeu5_perf14_guarded_probe_ai_gate = {
 					modeu5_stock_mutation_use_detailed_accounting_trigger = yes
 					NOT = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes }
 					modeu5_stock_mutation_blocked_trigger = yes
-					scope:modeu5_stock_mutation_promotion_attempted > 0
+					scope:cbp_stock_mutation_promotion_attempted > 0
 				}
 			}
 				debug_log = "ModeU5 PERF-14 FAIL_REASON reason=ai_stock_mutation_fallback_unexpected_state"
-				set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+				set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 		modeu5_clear_detailed_accounting_promoted_markets = yes
 		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
@@ -354,17 +354,17 @@ modeu5_perf14_guarded_probe_ai_gate = {
 					NOT = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes }
 					modeu5_stock_mutation_use_market_level_fallback_trigger = yes
 					modeu5_stock_mutation_blocked_trigger = yes
-					NOT = { scope:modeu5_stock_mutation_promotion_attempted > 0 }
-					NOT = { scope:modeu5_stock_mutation_promotion_succeeded > 0 }
+					NOT = { scope:cbp_stock_mutation_promotion_attempted > 0 }
+					NOT = { scope:cbp_stock_mutation_promotion_succeeded > 0 }
 					NOT = { modeu5_market_detailed_accounting_promoted_trigger = yes }
 				}
 			}
 				debug_log = "ModeU5 PERF-14 FAIL_REASON reason=ai_human_relevant_market_promotion_unexpected_state"
-				set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+				set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 	}
 	else = {
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_blocked
 		error_log = "ModeU5 PERF-14 performance mode CMM probe blocked because no AI country market fixture was available."
 	}
 }
@@ -374,29 +374,29 @@ modeu5_perf14_guarded_probe_nonpresent_block = {
 		limit = { country_exists = c:ENG c:ENG = { has_markets = yes } NOT = { c:ENG.capital.market = scope:modeu5_perf14_test_market } }
 		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_nonpresent_market }
 		modeu5_perf14_check_country_market_present = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_nonpresent_market }
-		if = { limit = { scope:modeu5_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = modeu5_perf14_nonpresent_market_fixture_available value = 1 } }
+		if = { limit = { scope:test_cbp_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = test_cbp_perf14_nonpresent_market_fixture_available value = 1 } }
 	}
 	if = {
-		limit = { scope:modeu5_perf14_nonpresent_market_fixture_available = 0 country_exists = c:FRA c:FRA = { has_markets = yes } NOT = { c:FRA.capital.market = scope:modeu5_perf14_test_market } }
+		limit = { scope:test_cbp_perf14_nonpresent_market_fixture_available = 0 country_exists = c:FRA c:FRA = { has_markets = yes } NOT = { c:FRA.capital.market = scope:modeu5_perf14_test_market } }
 		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_nonpresent_market }
 		modeu5_perf14_check_country_market_present = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_nonpresent_market }
-		if = { limit = { scope:modeu5_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = modeu5_perf14_nonpresent_market_fixture_available value = 1 } }
+		if = { limit = { scope:test_cbp_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = test_cbp_perf14_nonpresent_market_fixture_available value = 1 } }
 	}
 	if = {
-		limit = { scope:modeu5_perf14_nonpresent_market_fixture_available = 0 country_exists = c:POR c:POR = { has_markets = yes } NOT = { c:POR.capital.market = scope:modeu5_perf14_test_market } }
+		limit = { scope:test_cbp_perf14_nonpresent_market_fixture_available = 0 country_exists = c:POR c:POR = { has_markets = yes } NOT = { c:POR.capital.market = scope:modeu5_perf14_test_market } }
 		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_nonpresent_market }
 		modeu5_perf14_check_country_market_present = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_nonpresent_market }
-		if = { limit = { scope:modeu5_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = modeu5_perf14_nonpresent_market_fixture_available value = 1 } }
+		if = { limit = { scope:test_cbp_perf14_country_market_present = 0 } save_temporary_scope_value_as = { name = test_cbp_perf14_nonpresent_market_fixture_available value = 1 } }
 	}
 	if = {
-		limit = { scope:modeu5_perf14_nonpresent_market_fixture_available > 0 }
+		limit = { scope:test_cbp_perf14_nonpresent_market_fixture_available > 0 }
 		modeu5_clear_performance_relevant_markets = yes
 		modeu5_clear_detailed_accounting_promoted_markets = yes
 		modeu5_prepare_country_market_accounting_decision = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_nonpresent_market }
 		if = {
-			limit = { OR = { modeu5_detailed_country_market_accounting_enabled_trigger = yes NOT = { modeu5_market_level_fallback_required_trigger = yes } NOT = { scope:modeu5_accounting_decision_country_is_human > 0 } scope:modeu5_accounting_decision_market_human_relevant > 0 } }
+			limit = { OR = { modeu5_detailed_country_market_accounting_enabled_trigger = yes NOT = { modeu5_market_level_fallback_required_trigger = yes } NOT = { scope:cbp_accounting_decision_country_is_human > 0 } scope:cbp_accounting_decision_market_human_relevant > 0 } }
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=nonpresent_decision_gate_unexpected_state"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 		modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_nonpresent_market }
 		if = {
@@ -405,23 +405,23 @@ modeu5_perf14_guarded_probe_nonpresent_block = {
 					modeu5_stock_mutation_use_detailed_accounting_trigger = yes
 					NOT = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes }
 					modeu5_stock_mutation_blocked_trigger = yes
-					scope:modeu5_stock_mutation_promotion_attempted > 0
+					scope:cbp_stock_mutation_promotion_attempted > 0
 				}
 			}
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=nonpresent_stock_mutation_fallback_unexpected_state"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 		modeu5_promote_market_to_detailed_accounting = { market = scope:modeu5_perf14_nonpresent_market }
 		scope:modeu5_perf14_nonpresent_market = { save_temporary_scope_as = modeu5_market }
 		modeu5_perf14_load_promotion_globals_for_test = yes
 		if = {
-			limit = { OR = { NOT = { scope:modeu5_perf14_promotion_blocked_not_human_relevant_for_test = 1 } scope:modeu5_perf14_promotion_last_result_for_test > 0 modeu5_market_detailed_accounting_promoted_trigger = yes } }
+			limit = { OR = { NOT = { scope:test_cbp_perf14_promotion_blocked_not_human_relevant_for_test = 1 } scope:test_cbp_perf14_promotion_last_result_for_test > 0 modeu5_market_detailed_accounting_promoted_trigger = yes } }
 			debug_log = "ModeU5 PERF-14 FAIL_REASON reason=nonpresent_direct_promotion_should_block"
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 		}
 	}
 	else = {
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_blocked
 		error_log = "ModeU5 PERF-14 performance mode CMM probe blocked because no non-present market fixture was available."
 	}
 }
@@ -430,15 +430,15 @@ modeu5_perf14_guarded_probe_normal_mode = {
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
 	modeu5_prepare_country_market_accounting_decision = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_test_market }
 	if = {
-		limit = { OR = { NOT = { has_global_variable = modeu5_nve_main_mode } NOT = { global_var:modeu5_nve_main_mode = 2 } NOT = { modeu5_nve_normal_mode_trigger = yes } NOT = { modeu5_detailed_country_market_accounting_enabled_trigger = yes } modeu5_market_level_fallback_required_trigger = yes } }
+		limit = { OR = { NOT = { has_global_variable = cbp_nve_main_mode } NOT = { global_var:cbp_nve_main_mode = 2 } NOT = { modeu5_nve_normal_mode_trigger = yes } NOT = { modeu5_detailed_country_market_accounting_enabled_trigger = yes } modeu5_market_level_fallback_required_trigger = yes } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=normal_mode_decision_gate_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 	modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_test_market }
 	if = {
-		limit = { OR = { NOT = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } modeu5_stock_mutation_use_market_level_fallback_trigger = yes modeu5_stock_mutation_blocked_trigger = yes scope:modeu5_stock_mutation_promotion_attempted > 0 } }
+		limit = { OR = { NOT = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } modeu5_stock_mutation_use_market_level_fallback_trigger = yes modeu5_stock_mutation_blocked_trigger = yes scope:cbp_stock_mutation_promotion_attempted > 0 } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=normal_mode_stock_mutation_gate_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
@@ -446,39 +446,39 @@ modeu5_perf14_guarded_probe_deactivated_mode = {
 	modeu5_perf14_set_cmm_main_mode_for_test = { value = 3 }
 	modeu5_prepare_country_market_accounting_decision = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_test_market }
 	if = {
-		limit = { OR = { NOT = { has_global_variable = modeu5_nve_main_mode } NOT = { global_var:modeu5_nve_main_mode = 3 } NOT = { modeu5_nve_deactivated_trigger = yes } modeu5_detailed_country_market_accounting_enabled_trigger = yes modeu5_market_level_fallback_required_trigger = yes } }
+		limit = { OR = { NOT = { has_global_variable = cbp_nve_main_mode } NOT = { global_var:cbp_nve_main_mode = 3 } NOT = { modeu5_nve_deactivated_trigger = yes } modeu5_detailed_country_market_accounting_enabled_trigger = yes modeu5_market_level_fallback_required_trigger = yes } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=deactivated_mode_decision_gate_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 	modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_test_country market = scope:modeu5_perf14_test_market }
 	if = {
-		limit = { OR = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes modeu5_stock_mutation_use_market_level_fallback_trigger = yes NOT = { modeu5_stock_mutation_blocked_trigger = yes } scope:modeu5_stock_mutation_promotion_attempted > 0 } }
+		limit = { OR = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes modeu5_stock_mutation_use_market_level_fallback_trigger = yes NOT = { modeu5_stock_mutation_blocked_trigger = yes } scope:cbp_stock_mutation_promotion_attempted > 0 } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=deactivated_mode_stock_mutation_gate_unexpected_state"
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_failed
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
 }
 
 modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = {
 	modeu5_perf14_clear_test_results = yes
 	modeu5_enter_test_audit_runtime_mode = yes
-	set_global_variable = modeu5_test_perf14_performance_mode_cmm_started
+	set_global_variable = test_cbp_perf14_performance_mode_cmm_started
 	debug_log = "ModeU5 TEST ENTERED scenario=perf14_performance_mode_cmm"
 
 	save_temporary_scope_as = modeu5_perf14_test_country
-	save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = 1 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_ai_fixture_available value = 0 }
-	save_temporary_scope_value_as = { name = modeu5_perf14_nonpresent_market_fixture_available value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = 1 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_nonpresent_market_fixture_available value = 0 }
 
 	if = {
 		limit = { has_variable_map = cmm is_key_in_variable_map = { name = cmm target = flag:no_void_economy__nve_no_void_economy_main } }
-		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_present value = 1 }
-		save_temporary_scope_value_as = { name = modeu5_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
 	}
 
 	if = {
 		limit = { has_markets = no }
-		set_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked
+		set_global_variable = test_cbp_perf14_performance_mode_cmm_blocked
 		error_log = "ModeU5 PERF-14 performance mode CMM probe blocked because the current country has no markets."
 	}
 	else = {
@@ -495,8 +495,8 @@ modeu5_debug_run_perf14_performance_mode_cmm_test_guarded = {
 		modeu5_perf14_guarded_probe_normal_mode = yes
 		modeu5_perf14_guarded_probe_deactivated_mode = yes
 		if = {
-			limit = { NOT = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_failed } NOT = { has_global_variable = modeu5_test_perf14_performance_mode_cmm_blocked } }
-			set_global_variable = modeu5_test_perf14_performance_mode_cmm_passed
+			limit = { NOT = { has_global_variable = test_cbp_perf14_performance_mode_cmm_failed } NOT = { has_global_variable = test_cbp_perf14_performance_mode_cmm_blocked } }
+			set_global_variable = test_cbp_perf14_performance_mode_cmm_passed
 		}
 	}
 

@@ -1,0 +1,558 @@
+#!/usr/bin/env python3
+"""Migrate and validate CBP-owned EU5 variables.
+
+Naming contract:
+
+- runtime/internal variable: ``cbp_``
+- test-only variable: ``test_cbp_``
+- current or planned GUI variable: ``gui_cbp_``
+
+GUI classification has precedence over test classification.
+
+Only parsed variable contexts are changed in EU5 sources and templates. Saved
+scope aliases, scripted effects/triggers/values, engine identifiers, localization
+keys, and file names are not renamed.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import subprocess
+import sys
+from collections import defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+REPORT_PATH = ROOT / "docs/technical/CBP_VARIABLE_PREFIX_MIGRATION.md"
+
+EU5_ROOTS = (
+    ROOT / "in_game",
+    ROOT / "main_menu",
+    ROOT / "packages",
+    ROOT / "tools" / "templates",
+)
+TOOL_ROOT = ROOT / "tools"
+EU5_SUFFIXES = {".txt", ".gui"}
+TOOL_SUFFIXES = {".py", ".sh"}
+TARGET_PREFIXES = ("gui_cbp_", "test_cbp_", "cbp_")
+LEGACY_PREFIXES = ("modeu5_", "nve_")
+IDENT = r"[A-Za-z_][A-Za-z0-9_$]*"
+
+# External framework, vanilla, and generator-placeholder variables are not
+# owned by CBP and retain their external identifiers.
+EXTERNAL_VARIABLE_NAMES = {
+    "cmm",
+    "cmf_callback",
+    "spanish_cloth_industry",
+    "X",
+    "__ACTIVE_LIST__",
+    "__ADDED_MAP__",
+    "__DIRTY_LIST__",
+    "__EFFECTIVE_OVERPRODUCTION_RATIO_MAP__",
+    "__MARKET_MAP__",
+    "__OVERPRODUCTION_RATIO_MAP__",
+    "__PRODUCED_MAP__",
+    "__PRODUCTION_PENALTY_MAP__",
+    "__REJECTED_MAP__",
+    "__SPARSE_SUPPLIER_LIST__",
+    "__STOCK_MAP__",
+    "__UI_MONTHLY_CONSUMPTION_MAP__",
+    "__UI_MONTHLY_SURPLUS_MAP__",
+    "__US00_ACTIVE_MAP__",
+    "__VOID_TAXABLE_PROXY_MAP__",
+    "__VOID_WEALTH_MAP__",
+}
+
+# These four identifiers are both script-value object names and runtime variable
+# names. EU5 context replacement renames only the variable form. Generic tool
+# replacement excludes them so script-value references remain unchanged.
+SCRIPT_OBJECT_OVERLAPS = {
+    "modeu5_buying_selling_efficiency_clamped",
+    "modeu5_trade_efficiency_old_price_side_bonus",
+    "modeu5_trade_efficiency_route_money_delta",
+    "modeu5_trade_efficiency_route_quantity",
+}
+
+# Two distinct legacy US-10 test variables otherwise collapse to the same target.
+EXPLICIT_TARGET_NAMES = {
+    "modeu5_test_us10_ui_visibility_blocked":
+        "gui_cbp_us10_ui_visibility_result_blocked",
+}
+
+# Variables intended for a future route-accounting GUI receive gui_cbp_ now,
+# even before the trade-level GUI is implemented.
+FUTURE_GUI_PATTERNS = tuple(
+    re.compile(pattern)
+    for pattern in (
+        r"^trade_efficiency_(?:route_quantity|buying_efficiency|selling_efficiency|merchant_maintenance_efficiency|base_maintenance_unit_cost|base_maintenance_amount|merchant_maintenance_factor|adjusted_base_maintenance_amount|sell_side_bonus|buy_side_bonus|export_cost_factor|old_price_side_bonus|route_money_delta|money_delta_total|treasury_delta_total|sell_price|buy_price|export_cost_modifier)$",
+        r"^buying_selling_efficiency_(?:clamped|delta)$",
+        r"^trade_maintenance_efficiency_delta$",
+        r"^us20_(?:trade_maintenance|trade_maintenance_loss_factor|goods_amount_sent|engine_goods_amount_received|goods_received_loss|goods_loss_quantity|goods_base_receipt_quantity|target_goods_amount_received|goods_reconciliation_delta|market_goods_supply_delta)$",
+    )
+)
+
+ASSIGNMENT_RE = re.compile(r"\b(?P<operation>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*")
+NAME_RE = re.compile(rf"\bname\s*=\s*(?P<name>{IDENT})")
+DIRECT_RE = re.compile(rf"(?P<name>{IDENT})")
+VAR_REF_RE = re.compile(rf"\b(?:var|global_var):(?P<name>{IDENT})")
+MAP_REF_RE = re.compile(rf"\bvariable_map\((?P<name>{IDENT})\|")
+SCOPE_ALIAS_RE = re.compile(rf"\bsave_(?:temporary_)?scope_as\s*=\s*(?P<name>{IDENT})")
+TOP_LEVEL_RE = re.compile(rf"(?m)^\s*(?P<name>{IDENT})\s*=\s*\{{")
+
+
+@dataclass(frozen=True)
+class Classification:
+    category: str
+    reason: str
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8-sig", errors="strict")
+
+
+def write_text(path: Path, content: str) -> None:
+    path.write_text(content, encoding="utf-8")
+
+
+def iter_eu5_files() -> list[Path]:
+    files: list[Path] = []
+    for root in EU5_ROOTS:
+        if not root.exists():
+            continue
+        files.extend(
+            path for path in root.rglob("*")
+            if path.is_file() and path.suffix.lower() in EU5_SUFFIXES
+        )
+    return sorted(set(files))
+
+
+def iter_tool_files() -> list[Path]:
+    excluded = {
+        Path(__file__).resolve(),
+        (TOOL_ROOT / "analyze_cbp_variable_names.py").resolve(),
+    }
+    return sorted(
+        path for path in TOOL_ROOT.rglob("*")
+        if path.is_file()
+        and path.suffix.lower() in TOOL_SUFFIXES
+        and path.resolve() not in excluded
+    )
+
+
+def is_variable_operation(operation: str) -> bool:
+    if operation == "save_temporary_scope_value_as":
+        return True
+    if "variable" not in operation:
+        return False
+    return operation.startswith((
+        "set_", "change_", "remove_", "has_", "clear_", "add_to_",
+        "remove_from_", "is_target_in_", "ordered_", "every_", "random_",
+    ))
+
+
+def matching_brace(text: str, opening: int) -> int | None:
+    depth = 0
+    quote = False
+    escape = False
+    for index in range(opening, len(text)):
+        char = text[index]
+        if quote:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                quote = False
+            continue
+        if char == '"':
+            quote = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return index
+    return None
+
+
+def add_occurrence(
+    occurrences: dict[str, set[Path]], name: str, path: Path
+) -> None:
+    occurrences[name].add(path)
+
+
+def discover_file_variables(text: str) -> set[str]:
+    names = {match.group("name") for match in VAR_REF_RE.finditer(text)}
+    names.update(match.group("name") for match in MAP_REF_RE.finditer(text))
+
+    for match in ASSIGNMENT_RE.finditer(text):
+        operation = match.group("operation")
+        if not is_variable_operation(operation):
+            continue
+        cursor = match.end()
+        while cursor < len(text) and text[cursor].isspace():
+            cursor += 1
+        if cursor >= len(text):
+            continue
+        if text[cursor] == "{":
+            closing = matching_brace(text, cursor)
+            if closing is None:
+                continue
+            name_match = NAME_RE.search(text, cursor + 1, closing)
+            if name_match:
+                names.add(name_match.group("name"))
+        else:
+            direct = DIRECT_RE.match(text, cursor)
+            if direct:
+                names.add(direct.group("name"))
+    return names
+
+
+def discover_inventory() -> tuple[
+    set[str], dict[str, set[Path]], set[str], set[str]
+]:
+    names: set[str] = set()
+    occurrences: dict[str, set[Path]] = defaultdict(set)
+    aliases: set[str] = set()
+    script_objects: set[str] = set()
+
+    for path in iter_eu5_files():
+        text = read_text(path)
+        found = discover_file_variables(text)
+        names.update(found)
+        for name in found:
+            add_occurrence(occurrences, name, path)
+        aliases.update(match.group("name") for match in SCOPE_ALIAS_RE.finditer(text))
+        script_objects.update(match.group("name") for match in TOP_LEVEL_RE.finditer(text))
+
+    return names, occurrences, aliases, script_objects
+
+
+def strip_namespace(name: str) -> str:
+    for prefix in TARGET_PREFIXES + LEGACY_PREFIXES:
+        if name.startswith(prefix):
+            return name[len(prefix):]
+    return name
+
+
+def semantic_name(name: str, category: str) -> str:
+    semantic = strip_namespace(name)
+    if category == "test" and semantic.startswith("test_"):
+        semantic = semantic[len("test_"):]
+    if category == "gui" and semantic.startswith("gui_"):
+        semantic = semantic[len("gui_"):]
+    if not semantic:
+        raise RuntimeError(f"empty semantic variable name derived from {name!r}")
+    return semantic
+
+
+def is_gui_path(path: Path) -> bool:
+    relative = path.relative_to(ROOT).as_posix().lower()
+    return (
+        path.suffix.lower() == ".gui"
+        or "/scripted_guis/" in f"/{relative}/"
+        or "/gui/" in f"/{relative}/"
+    )
+
+
+def is_test_path(path: Path) -> bool:
+    relative = path.relative_to(ROOT).as_posix().lower()
+    return relative.startswith("packages/modeu5_core_tests/")
+
+
+def is_future_gui(name: str) -> bool:
+    semantic = strip_namespace(name)
+    if semantic.startswith("ui_") or "_ui_" in semantic or semantic.endswith("_ui"):
+        return True
+    return any(pattern.fullmatch(semantic) for pattern in FUTURE_GUI_PATTERNS)
+
+
+def classify(name: str, paths: set[Path]) -> Classification:
+    if is_future_gui(name):
+        return Classification("gui", "current or planned GUI field")
+    if any(is_gui_path(path) for path in paths):
+        return Classification("gui", "referenced by GUI/scripted-GUI code")
+    if paths and all(is_test_path(path) for path in paths):
+        return Classification("test", "used only by test package code")
+    return Classification("runtime", "runtime/internal variable")
+
+
+def expected_name(name: str, classification: Classification) -> str:
+    if name in EXPLICIT_TARGET_NAMES:
+        return EXPLICIT_TARGET_NAMES[name]
+    prefix = {
+        "runtime": "cbp_",
+        "test": "test_cbp_",
+        "gui": "gui_cbp_",
+    }[classification.category]
+    return prefix + semantic_name(name, classification.category)
+
+
+def build_mapping(
+    names: set[str], occurrences: dict[str, set[Path]]
+) -> tuple[dict[str, str], dict[str, Classification], list[str]]:
+    unknown = sorted(
+        name for name in names
+        if name not in EXTERNAL_VARIABLE_NAMES
+        and not name.startswith(TARGET_PREFIXES + LEGACY_PREFIXES)
+    )
+    mapping: dict[str, str] = {}
+    classifications: dict[str, Classification] = {}
+
+    for name in sorted(names):
+        if name in EXTERNAL_VARIABLE_NAMES:
+            continue
+        if not name.startswith(TARGET_PREFIXES + LEGACY_PREFIXES):
+            continue
+        classification = classify(name, occurrences.get(name, set()))
+        classifications[name] = classification
+        target = expected_name(name, classification)
+        if target != name:
+            mapping[name] = target
+
+    targets: dict[str, list[str]] = defaultdict(list)
+    for source, target in mapping.items():
+        targets[target].append(source)
+    duplicates = {
+        target: sources for target, sources in targets.items() if len(sources) > 1
+    }
+    if duplicates:
+        detail = "; ".join(
+            f"{target} <- {', '.join(sorted(sources))}"
+            for target, sources in sorted(duplicates.items())
+        )
+        raise RuntimeError(f"target-name collision: {detail}")
+
+    return mapping, classifications, unknown
+
+
+def compile_eu5_patterns(mapping: dict[str, str]) -> tuple[re.Pattern[str], ...]:
+    alternatives = "|".join(
+        re.escape(name) for name in sorted(mapping, key=len, reverse=True)
+    )
+    return (
+        re.compile(
+            rf"(?P<prefix>\b(?:var|global_var|scope):)"
+            rf"(?P<name>{alternatives})(?![A-Za-z0-9_])"
+        ),
+        re.compile(
+            rf"(?P<prefix>\bvariable_map\()(?P<name>{alternatives})(?=\|)"
+        ),
+        re.compile(
+            rf"(?P<prefix>\b(?:name|variable)\s*=\s*)"
+            rf"(?P<name>{alternatives})(?![A-Za-z0-9_])"
+        ),
+        re.compile(
+            rf"(?P<prefix>\b(?:set|change|remove|has|clear|add_to|remove_from|is_target_in|ordered|every|random)"
+            rf"[A-Za-z0-9_]*variable[A-Za-z0-9_]*\s*=\s*)"
+            rf"(?P<name>{alternatives})(?![A-Za-z0-9_])"
+        ),
+    )
+
+
+def replace_eu5_files(mapping: dict[str, str]) -> list[Path]:
+    if not mapping:
+        return []
+    patterns = compile_eu5_patterns(mapping)
+    changed: list[Path] = []
+
+    def replacement(match: re.Match[str]) -> str:
+        return match.group("prefix") + mapping[match.group("name")]
+
+    for path in iter_eu5_files():
+        original = read_text(path)
+        updated = original
+        for pattern in patterns:
+            updated = pattern.sub(replacement, updated)
+        if updated != original:
+            write_text(path, updated)
+            changed.append(path)
+    return changed
+
+
+def replace_tool_files(mapping: dict[str, str]) -> list[Path]:
+    safe_mapping = {
+        source: target for source, target in mapping.items()
+        if source not in SCRIPT_OBJECT_OVERLAPS
+    }
+    if not safe_mapping:
+        return []
+    alternatives = "|".join(
+        re.escape(name) for name in sorted(safe_mapping, key=len, reverse=True)
+    )
+    pattern = re.compile(
+        rf"(?<![A-Za-z0-9_])(?P<name>{alternatives})(?![A-Za-z0-9_])"
+    )
+    changed: list[Path] = []
+
+    for path in iter_tool_files():
+        original = read_text(path)
+        updated = pattern.sub(lambda match: safe_mapping[match.group("name")], original)
+        if updated != original:
+            write_text(path, updated)
+            changed.append(path)
+    return changed
+
+
+def write_report(
+    mapping: dict[str, str], classifications: dict[str, Classification]
+) -> None:
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    counts = defaultdict(int)
+    rows: list[str] = []
+    for source, target in sorted(mapping.items(), key=lambda item: item[1]):
+        classification = classifications[source]
+        counts[classification.category] += 1
+        rows.append(
+            f"| `{source}` | `{target}` | {classification.category} | {classification.reason} |"
+        )
+
+    REPORT_PATH.write_text("\n".join([
+        "# CBP variable-prefix migration",
+        "",
+        "Generated by `tools/cbp_variable_prefixes.py`.",
+        "",
+        "## Summary",
+        "",
+        f"- Total renamed variables: **{len(mapping)}**",
+        f"- Runtime/internal (`cbp_`): **{counts['runtime']}**",
+        f"- Test-only (`test_cbp_`): **{counts['test']}**",
+        f"- GUI/planned GUI (`gui_cbp_`): **{counts['gui']}**",
+        "",
+        "GUI classification has precedence over test classification.",
+        "US-17/US-20 route-accounting values are GUI-classified before the GUI exists.",
+        "",
+        "## Rename map",
+        "",
+        "| Previous identifier | New identifier | Class | Reason |",
+        "|---|---|---|---|",
+        *rows,
+        "",
+    ]), encoding="utf-8")
+
+
+def validate_current() -> list[str]:
+    names, occurrences, aliases, _objects = discover_inventory()
+    failures: list[str] = []
+
+    overlap = sorted(names & aliases)
+    if overlap:
+        failures.append(
+            "variable/saved-scope alias overlaps require explicit resolution: "
+            + ", ".join(overlap)
+        )
+
+    for name in sorted(names):
+        if name in EXTERNAL_VARIABLE_NAMES:
+            continue
+        if name.startswith(LEGACY_PREFIXES):
+            failures.append(f"legacy variable prefix remains: {name}")
+            continue
+        if not name.startswith(TARGET_PREFIXES):
+            failures.append(f"owned variable has no CBP prefix: {name}")
+            continue
+        classification = classify(name, occurrences.get(name, set()))
+        expected = expected_name(name, classification)
+        if name != expected:
+            failures.append(
+                f"classification mismatch: {name} must be {expected} ({classification.reason})"
+            )
+    return failures
+
+
+def git_status() -> list[str]:
+    result = subprocess.run(
+        ["git", "status", "--short"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.splitlines()
+
+
+def run_apply() -> int:
+    names, occurrences, aliases, objects = discover_inventory()
+    overlap = sorted(names & aliases)
+    if overlap:
+        print(
+            "CBP migration stopped: variable/saved-scope alias overlaps: "
+            + ", ".join(overlap),
+            file=sys.stderr,
+        )
+        return 2
+
+    object_overlap = names & objects
+    if not object_overlap.issubset(SCRIPT_OBJECT_OVERLAPS):
+        print(
+            "CBP migration stopped: unexpected variable/script-object overlaps: "
+            + ", ".join(sorted(object_overlap)),
+            file=sys.stderr,
+        )
+        return 3
+
+    try:
+        mapping, classifications, unknown = build_mapping(names, occurrences)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 4
+    if unknown:
+        print(
+            "CBP migration stopped: unclassified external candidates: "
+            + ", ".join(unknown),
+            file=sys.stderr,
+        )
+        return 5
+
+    changed = set(replace_eu5_files(mapping))
+    changed.update(replace_tool_files(mapping))
+    write_report(mapping, classifications)
+    changed.add(REPORT_PATH)
+
+    failures = validate_current()
+    if failures:
+        print("CBP prefix validation failed after migration:", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
+
+    category_counts = defaultdict(int)
+    for classification in classifications.values():
+        category_counts[classification.category] += 1
+    print(json.dumps({
+        "renamed_variables": len(mapping),
+        "runtime_variables": category_counts["runtime"],
+        "test_variables": category_counts["test"],
+        "gui_variables": category_counts["gui"],
+        "changed_files": len(changed),
+        "git_changes": git_status(),
+    }, indent=2))
+    return 0
+
+
+def run_check() -> int:
+    failures = validate_current()
+    if failures:
+        print("CBP variable-prefix validation failed:", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
+    names, _occurrences, _aliases, _objects = discover_inventory()
+    print(f"CBP variable-prefix validation passed ({len(names)} variables inspected)")
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--apply", action="store_true")
+    mode.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    return run_apply() if args.apply else run_check()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

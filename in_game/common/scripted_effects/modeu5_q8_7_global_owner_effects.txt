@@ -13,38 +13,38 @@
 # - old market-center owner remains available through the fallback switch.
 
 modeu5_enable_q8_7_live_global_market_owner = {
-	remove_global_variable = modeu5_q8_7_live_global_market_owner_disabled
+	remove_global_variable = cbp_q8_7_live_global_market_owner_disabled
 }
 
 modeu5_disable_q8_7_live_global_market_owner = {
-	set_global_variable = modeu5_q8_7_live_global_market_owner_disabled
+	set_global_variable = cbp_q8_7_live_global_market_owner_disabled
 }
 
 modeu5_reset_q8_7_live_global_owner_metrics = {
-	remove_global_variable = modeu5_q8_7_live_global_owner_runs
-	remove_global_variable = modeu5_q8_7_live_global_owner_skip_runs
-	remove_global_variable = modeu5_q8_7_live_global_owner_markets_seen
-	remove_global_variable = modeu5_q8_7_live_global_owner_markets_detailed
-	remove_global_variable = modeu5_q8_7_live_global_owner_markets_fallback
-	remove_global_variable = modeu5_q8_7_live_global_owner_markets_blocked
-	remove_global_variable = modeu5_q8_7_live_global_owner_us00_before_us10_guard
-	remove_global_variable = modeu5_q8_7_live_global_owner_no_market_scope_trade_guard
+	remove_global_variable = cbp_q8_7_live_global_owner_runs
+	remove_global_variable = cbp_q8_7_live_global_owner_skip_runs
+	remove_global_variable = cbp_q8_7_live_global_owner_markets_seen
+	remove_global_variable = cbp_q8_7_live_global_owner_markets_detailed
+	remove_global_variable = cbp_q8_7_live_global_owner_markets_fallback
+	remove_global_variable = cbp_q8_7_live_global_owner_markets_blocked
+	remove_global_variable = cbp_q8_7_live_global_owner_us00_before_us10_guard
+	remove_global_variable = cbp_q8_7_live_global_owner_no_market_scope_trade_guard
 
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_runs value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_skip_runs value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_markets_seen value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_markets_detailed value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_markets_fallback value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_markets_blocked value = 0 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_us00_before_us10_guard value = 1 }
-	set_global_variable = { name = modeu5_q8_7_live_global_owner_no_market_scope_trade_guard value = 1 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_runs value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_skip_runs value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_markets_seen value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_markets_detailed value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_markets_fallback value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_markets_blocked value = 0 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_us00_before_us10_guard value = 1 }
+	set_global_variable = { name = cbp_q8_7_live_global_owner_no_market_scope_trade_guard value = 1 }
 }
 
 modeu5_note_q8_7_live_global_owner_run = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_runs
+		name = cbp_q8_7_live_global_owner_runs
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_runs
+			value = global_var:cbp_q8_7_live_global_owner_runs
 			add = 1
 		}
 	}
@@ -52,9 +52,9 @@ modeu5_note_q8_7_live_global_owner_run = {
 
 modeu5_note_q8_7_live_global_owner_skip_run = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_skip_runs
+		name = cbp_q8_7_live_global_owner_skip_runs
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_skip_runs
+			value = global_var:cbp_q8_7_live_global_owner_skip_runs
 			add = 1
 		}
 	}
@@ -62,9 +62,9 @@ modeu5_note_q8_7_live_global_owner_skip_run = {
 
 modeu5_note_q8_7_live_global_owner_market_seen = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_markets_seen
+		name = cbp_q8_7_live_global_owner_markets_seen
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_markets_seen
+			value = global_var:cbp_q8_7_live_global_owner_markets_seen
 			add = 1
 		}
 	}
@@ -72,9 +72,9 @@ modeu5_note_q8_7_live_global_owner_market_seen = {
 
 modeu5_note_q8_7_live_global_owner_detailed_market = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_markets_detailed
+		name = cbp_q8_7_live_global_owner_markets_detailed
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_markets_detailed
+			value = global_var:cbp_q8_7_live_global_owner_markets_detailed
 			add = 1
 		}
 	}
@@ -82,9 +82,9 @@ modeu5_note_q8_7_live_global_owner_detailed_market = {
 
 modeu5_note_q8_7_live_global_owner_fallback_market = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_markets_fallback
+		name = cbp_q8_7_live_global_owner_markets_fallback
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_markets_fallback
+			value = global_var:cbp_q8_7_live_global_owner_markets_fallback
 			add = 1
 		}
 	}
@@ -92,9 +92,9 @@ modeu5_note_q8_7_live_global_owner_fallback_market = {
 
 modeu5_note_q8_7_live_global_owner_blocked_market = {
 	set_global_variable = {
-		name = modeu5_q8_7_live_global_owner_markets_blocked
+		name = cbp_q8_7_live_global_owner_markets_blocked
 		value = {
-			value = global_var:modeu5_q8_7_live_global_owner_markets_blocked
+			value = global_var:cbp_q8_7_live_global_owner_markets_blocked
 			add = 1
 		}
 	}
@@ -145,7 +145,7 @@ modeu5_run_monthly_q8_7_global_market_local_cycle_once = {
 	}
 
 	save_temporary_scope_value_as = {
-		name = modeu5_q8_7_live_global_owner_month_stamp
+		name = cbp_q8_7_live_global_owner_month_stamp
 		value = {
 			value = current_year
 			multiply = 12
@@ -156,13 +156,13 @@ modeu5_run_monthly_q8_7_global_market_local_cycle_once = {
 	if = {
 		limit = {
 			OR = {
-				NOT = { has_global_variable = modeu5_q8_7_live_global_owner_month_stamp }
-				global_var:modeu5_q8_7_live_global_owner_month_stamp != scope:modeu5_q8_7_live_global_owner_month_stamp
+				NOT = { has_global_variable = cbp_q8_7_live_global_owner_month_stamp }
+				global_var:cbp_q8_7_live_global_owner_month_stamp != scope:cbp_q8_7_live_global_owner_month_stamp
 			}
 		}
 		set_global_variable = {
-			name = modeu5_q8_7_live_global_owner_month_stamp
-			value = scope:modeu5_q8_7_live_global_owner_month_stamp
+			name = cbp_q8_7_live_global_owner_month_stamp
+			value = scope:cbp_q8_7_live_global_owner_month_stamp
 		}
 		modeu5_reset_q8_7_live_global_owner_metrics = yes
 		modeu5_prepare_monthly_promoted_market_live_dispatcher_metrics = yes
@@ -211,7 +211,7 @@ modeu5_run_monthly_stock_cycle_q8_7_owner_switch = {
 		if = {
 			limit = { modeu5_debug_capture_enabled_trigger = yes }
 			set_variable = {
-				name = modeu5_debug_last_monthly_capacity_refresh_gate_passed
+				name = cbp_debug_last_monthly_capacity_refresh_gate_passed
 				value = 0
 			}
 		}

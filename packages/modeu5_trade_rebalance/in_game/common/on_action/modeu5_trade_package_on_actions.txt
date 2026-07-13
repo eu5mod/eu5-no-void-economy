@@ -7,9 +7,9 @@ on_game_start = {
 
 modeu5_trade_rebalance_package_on_game_start = {
 	effect = {
-		set_global_variable = modeu5_trade_rebalance_loaded
+		set_global_variable = cbp_trade_rebalance_loaded
 		set_global_variable = {
-			name = modeu5_trade_package_version
+			name = cbp_trade_package_version
 			value = 100
 		}
 	}
