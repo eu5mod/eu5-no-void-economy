@@ -4,5 +4,6 @@ __pycache__
 # Generated ModeU5 script adapters.
 # Regenerate locally with ./tools/generate_all.sh; do not commit the output.
 modeu5_*_generated.txt
+
 modeu5_*_generated_l_english.yml
 tools/generated/
