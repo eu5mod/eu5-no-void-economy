@@ -1,0 +1,11 @@
+on_game_start = {
+	on_actions = {
+		cbp_configuration_on_game_start
+	}
+}
+
+cbp_configuration_on_game_start = {
+	effect = {
+		cbp_initialize_configuration_state_effect = yes
+	}
+}

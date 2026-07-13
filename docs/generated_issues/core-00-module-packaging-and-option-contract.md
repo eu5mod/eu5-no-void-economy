@@ -46,7 +46,7 @@ Feeds counters to: startup guard and debug
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Separate package descriptors | launcher/mod load | one descriptor and content root per package | CONFIRMED | internal |
-| Declare and report companion dependency in launcher/playset metadata | launcher/mod descriptor | `relationships` dependency on `modeu5_core` version `0.1.*` | CONFIRMED | 103 |
+| Declare and report companion dependency in launcher/playset metadata | launcher/mod descriptor | `relationships` dependency on `cbp_core` version `0.1.*` | CONFIRMED | 103 |
 | Custom game-rule definitions | main menu | `main_menu/common/game_rules` | CONFIRMED | 100 |
 | Read an active game-rule setting | global script context | `has_game_rule = <setting>` | CONFIRMED | 101 |
 | Conditionally gate static building/RGO numeric overrides | static definition | game-rule-dependent static value | NOT_CONFIRMED | 102 |
@@ -59,10 +59,10 @@ Package metadata is scalar/version configuration, not multidimensional gameplay 
 
 ```txt
 logical fields:
-  modeu5_core_package_version
-  modeu5_economy_package_version, when loaded
-  modeu5_trade_package_version, when Rebalance Estate Power is loaded
-  modeu5_war_package_version, when Rebalance Early Blobbing is loaded
+  cbp_core_package_version
+  cbp_economy_package_version, when loaded
+  cbp_trade_package_version, when Rebalance Estate Power is loaded
+  cbp_war_package_version, when Rebalance Early Blobbing is loaded
 owner: global startup/debug context
 write owner: each package's startup marker
 readers: CORE-00 validation and debug
@@ -74,9 +74,9 @@ reset lifecycle: never reset during a campaign
 ```txt
 .metadata/metadata.json
 descriptor.mod or package-specific descriptors
-packages/modeu5_economy_rebalance/
-packages/modeu5_trade_rebalance/
-packages/modeu5_war_rebalance/
+packages/cbp_economy_rebalance/
+packages/cbp_trade_rebalance/
+packages/cbp_war_rebalance/
 main_menu/common/game_rules/
 main_menu/localization/
 in_game/common/on_action/
@@ -128,7 +128,7 @@ Related US: every optional module story
 - [ ] Core has no supported disabled state.
 - [ ] The default/recommended playset selects all four packages.
 - [ ] Rebalance Economy absence leaves US-04/05/08/09 inactive.
-- [ ] Rebalance Estate Power absence leaves vanilla US-07 building values untouched.
+- [ ] Rebalance Estate Power absence installs no standalone US-07 override; vanilla US-07 trade-building values remain untouched only when Rebalance Economy is also absent.
 - [ ] Rebalance Early Blobbing absence leaves vanilla conquest behavior untouched.
 - [ ] Missing, inactive, or mismatched Core produces a launcher/playset dependency issue.
 - [ ] Enabling any companion automatically enables compatible Core.
@@ -154,7 +154,7 @@ Related US: every optional module story
 - [ ] Startup debug lists all detected ModeU5 package versions.
 - [ ] No optional UI claims an inactive feature is enabled.
 - [ ] The ModeU5 CMM Debug Messages setting offers Off, Basic, and Detailed before campaign start.
-- [ ] The selected CMM debug setting initializes `modeu5_debug_level` without mutating stock or package state.
+- [ ] The selected CMM debug setting initializes `cbp_debug_level` without mutating stock or package state.
 - [ ] Fresh stock seeding is absent from all configuration surfaces.
 - [ ] The lifecycle warning is visible from both the available-mod list and the selected playset.
 - [ ] TECH-01 and package-combination tests are updated.
@@ -179,7 +179,8 @@ Test the default playset, then four reduced clean campaigns:
 All documented modules are active in the default full-suite campaign
 Core stock/void-economy behavior exists in all five campaigns
 US-04/05/08/09 behavior exists in campaigns 1 and 3
-US-07 behavior exists in campaigns 1 and 4
+The US-07 `local_burghers_estate_power` trade-building fragment composed into US-09 exists in campaigns 1 and 3
+Standalone US-07 behavior exists in campaigns 1 and 4
 US-13 behavior exists in campaigns 1 and 5
 Startup debug reports the exact package set
 No missing-dependency or stale optional effect is present
@@ -190,4 +191,4 @@ No custom in-game configuration panel is present
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-07 and US-08. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.
+EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-08 and for any non-overlapping US-07 static surface. The overlapping US-07 `trade_buildings.txt` estate-power field is intentionally composed into the US-09 Economy exact-path override to avoid duplicate static definitions. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.

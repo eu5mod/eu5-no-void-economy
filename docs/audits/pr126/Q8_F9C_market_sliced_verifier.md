@@ -59,27 +59,27 @@ The repository already has several pieces F9c can reuse.
 
 ### Performance relevant market list
 
-`modeu5_performance_relevant_markets` is a global variable list populated by performance helpers.
+`cbp_performance_relevant_markets` is a global variable list populated by performance helpers.
 
 Current shape:
 
 ```txt
-modeu5_rebuild_human_relevant_markets:
+cbp_rebuild_human_relevant_markets:
   clear relevant market list
   every_country:
     limit = { is_ai = no }
     every_market_present_in_country:
       save market
-      add market to modeu5_performance_relevant_markets if absent
+      add market to cbp_performance_relevant_markets if absent
 ```
 
 Relevant existing helpers:
 
 ```txt
-modeu5_clear_performance_relevant_markets
-modeu5_mark_performance_relevant_market
-modeu5_add_country_present_markets_to_performance_relevant_list
-modeu5_rebuild_human_relevant_markets
+cbp_clear_performance_relevant_markets
+cbp_mark_performance_relevant_market
+cbp_add_country_present_markets_to_performance_relevant_list
+cbp_rebuild_human_relevant_markets
 ```
 
 ### Promoted detailed market list
@@ -87,9 +87,9 @@ modeu5_rebuild_human_relevant_markets
 Performance Mode already distinguishes detailed/promoted markets through:
 
 ```txt
-modeu5_detailed_accounting_promoted_markets
-modeu5_mark_market_detailed_accounting_promoted
-modeu5_market_detailed_accounting_promoted_trigger
+cbp_detailed_accounting_promoted_markets
+cbp_mark_market_detailed_accounting_promoted
+cbp_market_detailed_accounting_promoted_trigger
 ```
 
 This is important because Performance Mode should not verify markets that cannot become detailed or are not human-relevant.
@@ -99,32 +99,32 @@ This is important because Performance Mode should not verify markets that cannot
 The market-country cache layer already has:
 
 ```txt
-modeu5_market_country_cache_dirty_markets
-modeu5_mark_market_country_cache_dirty
-modeu5_mark_current_market_country_cache_dirty
-modeu5_repair_dirty_market_country_caches
+cbp_market_country_cache_dirty_markets
+cbp_mark_market_country_cache_dirty
+cbp_mark_current_market_country_cache_dirty
+cbp_repair_dirty_market_country_caches
 ```
 
 The repair path already loops dirty markets:
 
 ```txt
 every_in_global_list = {
-  variable = modeu5_market_country_cache_dirty_markets
-  save_temporary_scope_as = modeu5_market_country_cache_market
-  modeu5_rebuild_countries_present_in_market = yes
+  variable = cbp_market_country_cache_dirty_markets
+  save_temporary_scope_as = cbp_market_country_cache_market
+  cbp_rebuild_countries_present_in_market = yes
 }
 ```
 
 ### Market -> location -> owner rebuild
 
-`modeu5_rebuild_countries_present_in_market` already rebuilds the current market work cache with:
+`cbp_rebuild_countries_present_in_market` already rebuilds the current market work cache with:
 
 ```txt
-scope:modeu5_market_country_cache_market = {
+scope:cbp_market_country_cache_market = {
   every_location_in_market = {
     owner ?= {
-      save_temporary_scope_as = modeu5_market_country_cache_country
-      modeu5_add_country_to_current_market_country_cache = yes
+      save_temporary_scope_as = cbp_market_country_cache_country
+      cbp_add_country_to_current_market_country_cache = yes
     }
   }
 }
@@ -139,15 +139,15 @@ There is no confirmed direct `market_count` value in current ModeU5 docs.
 However, a probe can count markets manually:
 
 ```txt
-modeu5_f9c_count_world_markets = {
-  remove_global_variable = modeu5_f9c_world_market_count
-  set_global_variable = { name = modeu5_f9c_world_market_count value = 0 }
+cbp_f9c_count_world_markets = {
+  remove_global_variable = cbp_f9c_world_market_count
+  set_global_variable = { name = cbp_f9c_world_market_count value = 0 }
 
   every_market_in_world = {
     set_global_variable = {
-      name = modeu5_f9c_world_market_count
+      name = cbp_f9c_world_market_count
       value = {
-        value = global_var:modeu5_f9c_world_market_count
+        value = global_var:cbp_f9c_world_market_count
         add = 1
       }
     }
@@ -168,7 +168,7 @@ Counting alone does not prove deterministic slicing. It only gives a baseline fo
 ```txt
 ordered_market_in_world = {
   limit = { <triggers> }
-  order_by = modeu5_f9c_market_order_value
+  order_by = cbp_f9c_market_order_value
   min = 1
   max = 20
   check_range_bounds = no
@@ -205,23 +205,23 @@ max = runtime_calculated_end
 Use generated fixed slice helpers first:
 
 ```txt
-modeu5_f9c_verify_world_market_slice_01
-modeu5_f9c_verify_world_market_slice_02
+cbp_f9c_verify_world_market_slice_01
+cbp_f9c_verify_world_market_slice_02
 ...
-modeu5_f9c_verify_world_market_slice_30
+cbp_f9c_verify_world_market_slice_30
 ```
 
 Example shape:
 
 ```txt
-modeu5_f9c_verify_world_market_slice_01 = {
+cbp_f9c_verify_world_market_slice_01 = {
   ordered_market_in_world = {
-    order_by = modeu5_f9c_market_order_value
+    order_by = cbp_f9c_market_order_value
     min = 1
     max = 20
     check_range_bounds = no
-    save_temporary_scope_as = modeu5_f9c_market
-    modeu5_f9c_verify_current_market_if_needed = yes
+    save_temporary_scope_as = cbp_f9c_market
+    cbp_f9c_verify_current_market_if_needed = yes
   }
 }
 ```
@@ -235,23 +235,23 @@ For Performance Mode, do not start with `ordered_market_in_world`.
 Start with existing candidate lists:
 
 ```txt
-modeu5_performance_relevant_markets
-modeu5_detailed_accounting_promoted_markets
-modeu5_market_country_cache_dirty_markets
+cbp_performance_relevant_markets
+cbp_detailed_accounting_promoted_markets
+cbp_market_country_cache_dirty_markets
 ```
 
 Use `ordered_in_global_list` over those lists:
 
 ```txt
 ordered_in_global_list = {
-  variable = modeu5_performance_relevant_markets
-  order_by = modeu5_f9c_market_order_value
+  variable = cbp_performance_relevant_markets
+  order_by = cbp_f9c_market_order_value
   min = 1
   max = 10
   check_range_bounds = no
 
-  save_temporary_scope_as = modeu5_f9c_market
-  modeu5_f9c_verify_current_market_if_needed = yes
+  save_temporary_scope_as = cbp_f9c_market
+  cbp_f9c_verify_current_market_if_needed = yes
 }
 ```
 
@@ -264,21 +264,21 @@ verify candidate markets, not the world
 The market verifier should only enter `every_location_in_market` when the current market is still worth checking:
 
 ```txt
-modeu5_f9c_verify_current_market_if_needed = {
-  save_temporary_scope_as = modeu5_market
+cbp_f9c_verify_current_market_if_needed = {
+  save_temporary_scope_as = cbp_market
 
   if = {
     limit = {
-      NOT = { modeu5_f9c_current_market_already_dirty_trigger = yes }
+      NOT = { cbp_f9c_current_market_already_dirty_trigger = yes }
       OR = {
-        modeu5_market_detailed_accounting_promoted_trigger = yes
-        modeu5_human_relevant_full_ledger_market_trigger = yes
-        modeu5_audit_enabled_trigger = yes
+        cbp_market_detailed_accounting_promoted_trigger = yes
+        cbp_human_relevant_full_ledger_market_trigger = yes
+        cbp_audit_enabled_trigger = yes
       }
     }
 
     every_location_in_market = {
-      modeu5_f9c_verify_location_membership = yes
+      cbp_f9c_verify_location_membership = yes
     }
   }
 }
@@ -315,7 +315,7 @@ Therefore, F9c should optimise by avoiding entire market-location scans for dirt
 
 ```txt
 every_market_in_world:
-  increment modeu5_f9c_world_market_count
+  increment cbp_f9c_world_market_count
 ```
 
 Expected output:
@@ -329,16 +329,16 @@ ModeU5 F9C COUNT world_markets=<n>
 Generate 30 fixed helpers:
 
 ```txt
-modeu5_f9c_verify_world_market_slice_01
+cbp_f9c_verify_world_market_slice_01
 ...
-modeu5_f9c_verify_world_market_slice_30
+cbp_f9c_verify_world_market_slice_30
 ```
 
 Each helper:
 
 ```txt
 ordered_market_in_world:
-  order_by = modeu5_f9c_market_order_value
+  order_by = cbp_f9c_market_order_value
   min/max = fixed range
   check_range_bounds = no
   mark visited market in debug list
@@ -365,13 +365,13 @@ market ownership changes if a test can cause them
 Rebuild candidate lists:
 
 ```txt
-modeu5_rebuild_human_relevant_markets
+cbp_rebuild_human_relevant_markets
 ```
 
 Then slice:
 
 ```txt
-ordered_in_global_list over modeu5_performance_relevant_markets
+ordered_in_global_list over cbp_performance_relevant_markets
 ```
 
 Expected proof:
@@ -390,7 +390,7 @@ This is the most important Performance Mode probe.
 Seed dirty markets:
 
 ```txt
-modeu5_mark_market_country_cache_dirty
+cbp_mark_market_country_cache_dirty
 ```
 
 Then run candidate slice verifier.

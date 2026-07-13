@@ -1,0 +1,16 @@
+cbp_disable_review_pop = {
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings
+			}
+		}
+		remove_from_variable_map = {
+			name = cmm
+			key = flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings
+		}
+	}
+	add_to_variable_map = { name = cmm key = flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings value = 0 }
+}

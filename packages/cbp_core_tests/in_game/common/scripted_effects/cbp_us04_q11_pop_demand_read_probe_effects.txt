@@ -1,0 +1,145 @@
+# US-04 Q11 read-only probes for vanilla Pop-demand x good access.
+#
+# This package intentionally does not replace or inject into pop_demand. It only
+# tries candidate read syntaxes and logs whether values resolve at runtime.
+#
+# Expected use:
+#   event cbp_us04_q11_debug.1
+#
+# Interpretation:
+# - Parser/value errors in error.log are useful negative evidence.
+# - Positive non-zero values in debug.log are candidate positive evidence.
+# - goods_demand_in_market is included only as a known-good control.
+
+cbp_us04_q11_clear_state = {
+	remove_global_variable = test_cbp_us04_q11_pop_demand_read_passed
+	remove_global_variable = test_cbp_us04_q11_pop_demand_read_blocked
+	remove_global_variable = test_cbp_us04_q11_seen_every_pop
+	remove_global_variable = test_cbp_us04_q11_seen_random_pop
+	clear_saved_scope = cbp_us04_q11_capital_market
+	clear_saved_scope = cbp_us04_q11_saved_every_pop
+	clear_saved_scope = cbp_us04_q11_saved_random_pop
+}
+
+cbp_us04_q11_log_value = {
+	# Helper convention: caller sets local variable cbp_us04_q11_ui_value.
+	# Kept intentionally empty; logging is explicit at each candidate so line
+	# numbers identify the failing syntax in error.log.
+}
+
+cbp_us04_q11_capture_current_scope_candidates = {
+	# Candidate family A: direct function-style access from the current scope.
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_direct_books value = "pop_demand(goods:books)" }
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_direct_wheat value = "pop_demand(goods:wheat)" }
+	set_variable = { name = gui_cbp_us04_q11_ui_direct_books value = scope:test_cbp_us04_q11_candidate_direct_books }
+	set_variable = { name = gui_cbp_us04_q11_ui_direct_wheat value = scope:test_cbp_us04_q11_candidate_direct_wheat }
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_direct_books syntax=pop_demand(goods:books) value=[THIS.GetVariable('cbp_us04_q11_ui_direct_books').GetValue|4]"
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_direct_wheat syntax=pop_demand(goods:wheat) value=[THIS.GetVariable('cbp_us04_q11_ui_direct_wheat').GetValue|4]"
+
+	# Candidate family B: demand-object function-style access. The wiki lists a
+	# generic demand scope link and pop_demand as a hardcoded good-demand object;
+	# this tests whether that object can be resolved as a numeric good value.
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_demand_object_books value = "demand:pop_demand(goods:books)" }
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_demand_object_wheat value = "demand:pop_demand(goods:wheat)" }
+	set_variable = { name = gui_cbp_us04_q11_ui_demand_object_books value = scope:test_cbp_us04_q11_candidate_demand_object_books }
+	set_variable = { name = gui_cbp_us04_q11_ui_demand_object_wheat value = scope:test_cbp_us04_q11_candidate_demand_object_wheat }
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_demand_object_books syntax=demand:pop_demand(goods:books) value=[THIS.GetVariable('cbp_us04_q11_ui_demand_object_books').GetValue|4]"
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_demand_object_wheat syntax=demand:pop_demand(goods:wheat) value=[THIS.GetVariable('cbp_us04_q11_ui_demand_object_wheat').GetValue|4]"
+
+	# Candidate family C: colon-like access variants. These are deliberately
+	# speculative and are expected to produce parser/value errors if unsupported.
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_colon_books value = "pop_demand:books" }
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_colon_wheat value = "pop_demand:wheat" }
+	set_variable = { name = gui_cbp_us04_q11_ui_colon_books value = scope:test_cbp_us04_q11_candidate_colon_books }
+	set_variable = { name = gui_cbp_us04_q11_ui_colon_wheat value = scope:test_cbp_us04_q11_candidate_colon_wheat }
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_colon_books syntax=pop_demand:books value=[THIS.GetVariable('cbp_us04_q11_ui_colon_books').GetValue|4]"
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=current_scope_colon_wheat syntax=pop_demand:wheat value=[THIS.GetVariable('cbp_us04_q11_ui_colon_wheat').GetValue|4]"
+}
+
+cbp_us04_q11_capture_saved_pop_dot_candidates = {
+	# Candidate family D: saved Pop-scope dot-chain access. This only becomes
+	# meaningful if one of the Pop iterators below succeeds in saving a Pop scope.
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_saved_pop_dot_books value = "scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:books)" }
+	save_temporary_scope_value_as = { name = test_cbp_us04_q11_candidate_saved_pop_dot_wheat value = "scope:cbp_us04_q11_saved_every_pop.pop_demand(goods:wheat)" }
+	set_variable = { name = gui_cbp_us04_q11_ui_saved_pop_dot_books value = scope:test_cbp_us04_q11_candidate_saved_pop_dot_books }
+	set_variable = { name = gui_cbp_us04_q11_ui_saved_pop_dot_wheat value = scope:test_cbp_us04_q11_candidate_saved_pop_dot_wheat }
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=saved_pop_dot_books syntax=scope:saved_pop.pop_demand(goods:books) value=[THIS.GetVariable('cbp_us04_q11_ui_saved_pop_dot_books').GetValue|4]"
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 candidate=saved_pop_dot_wheat syntax=scope:saved_pop.pop_demand(goods:wheat) value=[THIS.GetVariable('cbp_us04_q11_ui_saved_pop_dot_wheat').GetValue|4]"
+}
+
+cbp_us04_q11_pop_demand_read_probe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q11_pop_demand_read_probe"
+	cbp_us04_q11_clear_state = yes
+
+	# Known-good control: market x good demand. This is not Pop x good demand.
+	capital.market = {
+		save_temporary_scope_as = cbp_us04_q11_capital_market
+		save_temporary_scope_value_as = { name = test_cbp_us04_q11_control_market_books value = "goods_demand_in_market(goods:books)" }
+		save_temporary_scope_value_as = { name = test_cbp_us04_q11_control_market_wheat value = "goods_demand_in_market(goods:wheat)" }
+	}
+	set_variable = { name = gui_cbp_us04_q11_ui_control_market_books value = scope:test_cbp_us04_q11_control_market_books }
+	set_variable = { name = gui_cbp_us04_q11_ui_control_market_wheat value = scope:test_cbp_us04_q11_control_market_wheat }
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 control=market_goods_demand_books syntax=goods_demand_in_market(goods:books) value=[THIS.GetVariable('cbp_us04_q11_ui_control_market_books').GetValue|4]"
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 control=market_goods_demand_wheat syntax=goods_demand_in_market(goods:wheat) value=[THIS.GetVariable('cbp_us04_q11_ui_control_market_wheat').GetValue|4]"
+
+	# Probe from country scope.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=country_scope_candidates"
+	cbp_us04_q11_capture_current_scope_candidates = yes
+
+	# Probe from location scope.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=capital_location_scope_candidates"
+	capital = {
+		cbp_us04_q11_capture_current_scope_candidates = yes
+	}
+
+	# Probe from market scope.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=capital_market_scope_candidates"
+	scope:cbp_us04_q11_capital_market = {
+		cbp_us04_q11_capture_current_scope_candidates = yes
+	}
+
+	# Probe for actual Pop scope acquisition. These iterator names are deliberately
+	# tested because no confirmed Pop iterator exists in the current evidence set.
+	# If the engine rejects every_pop/random_pop, that rejection is useful evidence.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=pop_scope_iterator_candidates"
+	capital = {
+		every_pop = {
+			limit = { NOT = { has_global_variable = test_cbp_us04_q11_seen_every_pop } }
+			save_temporary_scope_as = cbp_us04_q11_saved_every_pop
+			set_global_variable = test_cbp_us04_q11_seen_every_pop
+			debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=entered"
+			cbp_us04_q11_capture_current_scope_candidates = yes
+		}
+	}
+	capital = {
+		random_pop = {
+			save_temporary_scope_as = cbp_us04_q11_saved_random_pop
+			set_global_variable = test_cbp_us04_q11_seen_random_pop
+			debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=entered"
+			cbp_us04_q11_capture_current_scope_candidates = yes
+		}
+	}
+
+	# Probe saved-pop dot-chain syntax after iterator attempts.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=saved_pop_dot_candidates"
+	cbp_us04_q11_capture_saved_pop_dot_candidates = yes
+
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q11_seen_every_pop }
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=seen"
+	}
+	else = {
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=not_seen"
+	}
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q11_seen_random_pop }
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=seen"
+	}
+	else = {
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=not_seen"
+	}
+
+	debug_log = "ModeU5 US-04 POP DEMAND READ RESULT q11 COMPLETE read_probe_executed=1 review_debug_and_error_logs=1"
+	set_global_variable = test_cbp_us04_q11_pop_demand_read_passed
+	debug_log = "ModeU5 TEST PASS scenario=us04_q11_pop_demand_read_probe"
+}

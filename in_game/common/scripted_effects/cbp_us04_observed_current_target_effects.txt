@@ -1,0 +1,155 @@
+# US-04 observed-current consumption target helpers.
+#
+# This architecture does not mutate vanilla pop_demand. It observes current
+# engine demand, persists a ModeU5 consumption target, applies yearly transition
+# factors, then feeds ModeU5 stock consumption from that target.
+
+cbp_us04_set_current_consumption_target_books = {
+	$market$ = { save_temporary_scope_as = cbp_us04_target_market }
+	$country$ = {
+		if = {
+			limit = {
+				has_variable_map = cbp_us04_current_pop_consumption_target_books_by_market
+				is_key_in_variable_map = { name = cbp_us04_current_pop_consumption_target_books_by_market target = scope:cbp_us04_target_market }
+			}
+			remove_from_variable_map = { name = cbp_us04_current_pop_consumption_target_books_by_market key = scope:cbp_us04_target_market }
+		}
+		add_to_variable_map = { name = cbp_us04_current_pop_consumption_target_books_by_market key = scope:cbp_us04_target_market value = $value$ }
+	}
+}
+
+cbp_us04_read_current_consumption_target_books = {
+	$market$ = { save_temporary_scope_as = cbp_us04_target_market }
+	$country$ = {
+		if = {
+			limit = {
+				has_variable_map = cbp_us04_current_pop_consumption_target_books_by_market
+				is_key_in_variable_map = { name = cbp_us04_current_pop_consumption_target_books_by_market target = scope:cbp_us04_target_market }
+			}
+			save_temporary_scope_value_as = { name = cbp_us04_current_consumption_target value = "variable_map(cbp_us04_current_pop_consumption_target_books_by_market|scope:cbp_us04_target_market)" }
+		}
+		else = { save_temporary_scope_value_as = { name = cbp_us04_current_consumption_target value = 0 } }
+	}
+}
+
+cbp_us04_initialize_current_consumption_target_books = {
+	$market$ = {
+		save_temporary_scope_as = cbp_us04_target_market
+		save_temporary_scope_value_as = { name = cbp_us04_observed_engine_demand value = "goods_demand_in_market(goods:books)" }
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us04_initialized_consumption_target
+		value = {
+			value = scope:cbp_us04_observed_engine_demand
+			multiply = $baseline_multiplier$
+			min = 0
+		}
+	}
+	cbp_us04_set_current_consumption_target_books = {
+		country = $country$
+		market = scope:cbp_us04_target_market
+		value = scope:cbp_us04_initialized_consumption_target
+	}
+}
+
+cbp_us04_transition_current_consumption_target_books = {
+	cbp_us04_read_current_consumption_target_books = { country = $country$ market = $market$ }
+	save_temporary_scope_value_as = {
+		name = cbp_us04_transitioned_consumption_target
+		value = {
+			value = scope:cbp_us04_current_consumption_target
+			multiply = $factor$
+			min = 0
+		}
+	}
+	cbp_us04_set_current_consumption_target_books = {
+		country = $country$
+		market = $market$
+		value = scope:cbp_us04_transitioned_consumption_target
+	}
+}
+
+cbp_us04_resolve_current_consumption_target_books = {
+	cbp_us04_read_current_consumption_target_books = { country = $country$ market = $market$ }
+	cbp_resolve_stock_consumption = {
+		consumer_country = $country$
+		market = $market$
+		good = books
+		requested_quantity = scope:cbp_us04_current_consumption_target
+	}
+}
+
+cbp_us04_set_current_consumption_target_wheat = {
+	$market$ = { save_temporary_scope_as = cbp_us04_target_market }
+	$country$ = {
+		if = {
+			limit = {
+				has_variable_map = cbp_us04_current_pop_consumption_target_wheat_by_market
+				is_key_in_variable_map = { name = cbp_us04_current_pop_consumption_target_wheat_by_market target = scope:cbp_us04_target_market }
+			}
+			remove_from_variable_map = { name = cbp_us04_current_pop_consumption_target_wheat_by_market key = scope:cbp_us04_target_market }
+		}
+		add_to_variable_map = { name = cbp_us04_current_pop_consumption_target_wheat_by_market key = scope:cbp_us04_target_market value = $value$ }
+	}
+}
+
+cbp_us04_read_current_consumption_target_wheat = {
+	$market$ = { save_temporary_scope_as = cbp_us04_target_market }
+	$country$ = {
+		if = {
+			limit = {
+				has_variable_map = cbp_us04_current_pop_consumption_target_wheat_by_market
+				is_key_in_variable_map = { name = cbp_us04_current_pop_consumption_target_wheat_by_market target = scope:cbp_us04_target_market }
+			}
+			save_temporary_scope_value_as = { name = cbp_us04_current_consumption_target value = "variable_map(cbp_us04_current_pop_consumption_target_wheat_by_market|scope:cbp_us04_target_market)" }
+		}
+		else = { save_temporary_scope_value_as = { name = cbp_us04_current_consumption_target value = 0 } }
+	}
+}
+
+cbp_us04_initialize_current_consumption_target_wheat = {
+	$market$ = {
+		save_temporary_scope_as = cbp_us04_target_market
+		save_temporary_scope_value_as = { name = cbp_us04_observed_engine_demand value = "goods_demand_in_market(goods:wheat)" }
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us04_initialized_consumption_target
+		value = {
+			value = scope:cbp_us04_observed_engine_demand
+			multiply = $baseline_multiplier$
+			min = 0
+		}
+	}
+	cbp_us04_set_current_consumption_target_wheat = {
+		country = $country$
+		market = scope:cbp_us04_target_market
+		value = scope:cbp_us04_initialized_consumption_target
+	}
+}
+
+cbp_us04_transition_current_consumption_target_wheat = {
+	cbp_us04_read_current_consumption_target_wheat = { country = $country$ market = $market$ }
+	save_temporary_scope_value_as = {
+		name = cbp_us04_transitioned_consumption_target
+		value = {
+			value = scope:cbp_us04_current_consumption_target
+			multiply = $factor$
+			min = 0
+		}
+	}
+	cbp_us04_set_current_consumption_target_wheat = {
+		country = $country$
+		market = $market$
+		value = scope:cbp_us04_transitioned_consumption_target
+	}
+}
+
+cbp_us04_resolve_current_consumption_target_wheat = {
+	cbp_us04_read_current_consumption_target_wheat = { country = $country$ market = $market$ }
+	cbp_resolve_stock_consumption = {
+		consumer_country = $country$
+		market = $market$
+		good = wheat
+		requested_quantity = scope:cbp_us04_current_consumption_target
+	}
+}

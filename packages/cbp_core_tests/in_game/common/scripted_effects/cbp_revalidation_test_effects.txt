@@ -1,0 +1,274 @@
+# Broad deterministic regression harness for the testing-only package.
+# Run through event cbp_revalidate_debug.1.
+
+cbp_revalidate_clear_results = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_debug_clear_stock_test_results = yes
+	cbp_us00_clear_test_results = yes
+	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation"
+
+	remove_global_variable = test_cbp_revalidation_started
+	remove_global_variable = test_cbp_revalidation_finished
+	remove_global_variable = test_cbp_revalidation_passed
+	remove_global_variable = test_cbp_revalidation_failed
+	remove_global_variable = test_cbp_revalidation_blocked
+	remove_global_variable = test_cbp_revalidation_us02_capacity_passed
+	remove_global_variable = test_cbp_revalidation_us02_capacity_failed
+	remove_global_variable = test_cbp_revalidation_us02_capacity_blocked
+	remove_global_variable = test_cbp_revalidation_core01_single_record_passed
+	remove_global_variable = test_cbp_revalidation_core01_single_record_failed
+	remove_global_variable = test_cbp_revalidation_core01_same_market_transfer_passed
+	remove_global_variable = test_cbp_revalidation_core01_same_market_transfer_failed
+	remove_global_variable = test_cbp_revalidation_core01_same_market_transfer_blocked
+	remove_global_variable = test_cbp_revalidation_core01_inter_market_transfer_passed
+	remove_global_variable = test_cbp_revalidation_core01_inter_market_transfer_failed
+	remove_global_variable = test_cbp_revalidation_core01_inter_market_transfer_blocked
+	remove_global_variable = test_cbp_revalidation_core02_initialization_passed
+	remove_global_variable = test_cbp_revalidation_core02_initialization_failed
+	remove_global_variable = test_cbp_revalidation_core02_initialization_blocked
+	remove_global_variable = test_cbp_revalidation_us00_controlled_pipeline_passed
+	remove_global_variable = test_cbp_revalidation_us00_controlled_pipeline_failed
+	remove_global_variable = test_cbp_revalidation_us00_controlled_pipeline_blocked
+	remove_global_variable = test_cbp_revalidation_us00_monthly_runtime_passed
+	remove_global_variable = test_cbp_revalidation_us00_monthly_runtime_failed
+	remove_global_variable = test_cbp_revalidation_us00_monthly_runtime_blocked
+	remove_global_variable = test_cbp_revalidation_us10_demand_resolution_passed
+	remove_global_variable = test_cbp_revalidation_us10_demand_resolution_failed
+	remove_global_variable = test_cbp_revalidation_us10_demand_resolution_blocked
+	remove_global_variable = test_cbp_revalidation_us10_issue109_passed
+	remove_global_variable = test_cbp_revalidation_us10_issue109_failed
+	remove_global_variable = test_cbp_revalidation_us10_issue109_blocked
+	remove_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed
+	remove_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed
+	remove_global_variable = gui_cbp_revalidation_us10_ui_visibility_blocked
+	remove_global_variable = test_cbp_revalidation_perf10_13_active_repair_passed
+	remove_global_variable = test_cbp_revalidation_perf10_13_active_repair_failed
+	remove_global_variable = test_cbp_revalidation_perf10_13_active_repair_blocked
+	remove_global_variable = test_cbp_revalidation_core04_market_entry_passed
+	remove_global_variable = test_cbp_revalidation_core04_market_entry_failed
+	remove_global_variable = test_cbp_revalidation_core04_market_entry_blocked
+	remove_global_variable = test_cbp_revalidation_us17_us20_reconciliation_passed
+	remove_global_variable = test_cbp_revalidation_us17_us20_reconciliation_failed
+	remove_global_variable = test_cbp_revalidation_us17_us20_reconciliation_blocked
+}
+
+cbp_revalidate_run_us02_capacity = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us02_capacity"
+	cbp_debug_run_storage_capacity_test = yes
+	if = { limit = { has_global_variable = test_cbp_storage_capacity_passed } set_global_variable = test_cbp_revalidation_us02_capacity_passed debug_log = "ModeU5 TEST PASS scenario=us02_capacity" }
+	else_if = { limit = { NOT = { country_exists = c:FRA } } set_global_variable = test_cbp_revalidation_us02_capacity_blocked debug_log = "ModeU5 TEST BLOCKED scenario=us02_capacity reason=missing_FRA" }
+	else = { set_global_variable = test_cbp_revalidation_us02_capacity_failed debug_log = "ModeU5 TEST FAIL scenario=us02_capacity" }
+}
+
+cbp_revalidate_run_core01_single_record = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_single_record"
+	cbp_debug_run_single_record_stock_tests = yes
+	if = { limit = { has_global_variable = test_cbp_add_allow_over_capacity_passed has_global_variable = test_cbp_add_enforce_passed has_global_variable = test_cbp_remove_passed has_global_variable = test_cbp_decay_passed } set_global_variable = test_cbp_revalidation_core01_single_record_passed debug_log = "ModeU5 TEST PASS scenario=core01_single_record" }
+	else = { set_global_variable = test_cbp_revalidation_core01_single_record_failed debug_log = "ModeU5 TEST FAIL scenario=core01_single_record" }
+}
+
+cbp_revalidate_run_core01_same_market_transfer = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_same_market_transfer"
+	cbp_debug_run_same_market_transfer_tests = yes
+	if = { limit = { has_global_variable = test_cbp_same_market_transfer_passed has_global_variable = test_cbp_invalid_same_record_passed } set_global_variable = test_cbp_revalidation_core01_same_market_transfer_passed debug_log = "ModeU5 TEST PASS scenario=core01_same_market_transfer" }
+	else_if = { limit = { has_global_variable = test_cbp_same_market_transfer_blocked } set_global_variable = test_cbp_revalidation_core01_same_market_transfer_blocked debug_log = "ModeU5 TEST BLOCKED scenario=core01_same_market_transfer reason=missing_FRA_ENG" }
+	else = { set_global_variable = test_cbp_revalidation_core01_same_market_transfer_failed debug_log = "ModeU5 TEST FAIL scenario=core01_same_market_transfer" }
+}
+
+cbp_revalidate_run_core01_inter_market_transfer = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core01_inter_market_transfer"
+	cbp_debug_run_inter_market_transfer_test = yes
+	if = { limit = { has_global_variable = test_cbp_inter_market_transfer_passed } set_global_variable = test_cbp_revalidation_core01_inter_market_transfer_passed debug_log = "ModeU5 TEST PASS scenario=core01_inter_market_transfer" }
+	else_if = { limit = { has_global_variable = test_cbp_inter_market_transfer_blocked } set_global_variable = test_cbp_revalidation_core01_inter_market_transfer_blocked debug_log = "ModeU5 TEST BLOCKED scenario=core01_inter_market_transfer reason=missing_FRA_ENG_or_distinct_markets" }
+	else = { set_global_variable = test_cbp_revalidation_core01_inter_market_transfer_failed debug_log = "ModeU5 TEST FAIL scenario=core01_inter_market_transfer" }
+}
+
+cbp_revalidate_run_core02_initialization = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core02_initialization"
+	set_global_variable = test_cbp_core02_initialization_started
+	cbp_debug_run_core02_initialization_tests = yes
+	set_global_variable = test_cbp_core02_initialization_finished
+	if = { limit = { has_global_variable = test_cbp_core02_proportional_passed has_global_variable = test_cbp_core02_over_capacity_passed } set_global_variable = test_cbp_revalidation_core02_initialization_passed debug_log = "ModeU5 TEST PASS scenario=core02_initialization" }
+	else_if = { limit = { OR = { NOT = { country_exists = c:FRA } NOT = { country_exists = c:ENG } } } set_global_variable = test_cbp_revalidation_core02_initialization_blocked debug_log = "ModeU5 TEST BLOCKED scenario=core02_initialization reason=missing_FRA_ENG" }
+	else = { set_global_variable = test_cbp_revalidation_core02_initialization_failed debug_log = "ModeU5 TEST FAIL scenario=core02_initialization" }
+}
+
+cbp_revalidate_run_us00_controlled_pipeline = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us00_controlled_pipeline"
+	cbp_us00_debug_run_controlled_e2e_test = yes
+	if = { limit = { has_global_variable = test_cbp_us00_controlled_e2e_passed } set_global_variable = test_cbp_revalidation_us00_controlled_pipeline_passed debug_log = "ModeU5 TEST PASS scenario=us00_controlled_pipeline" }
+	else_if = { limit = { has_global_variable = test_cbp_us00_controlled_e2e_blocked } set_global_variable = test_cbp_revalidation_us00_controlled_pipeline_blocked debug_log = "ModeU5 TEST BLOCKED scenario=us00_controlled_pipeline reason=missing_FRA" }
+	else = { set_global_variable = test_cbp_revalidation_us00_controlled_pipeline_failed debug_log = "ModeU5 TEST FAIL scenario=us00_controlled_pipeline" }
+}
+
+cbp_revalidate_run_us00_monthly_runtime = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us00_monthly_runtime"
+	cbp_us00_debug_run_monthly_runtime_test = yes
+	if = { limit = { has_global_variable = test_cbp_us00_monthly_runtime_passed } set_global_variable = test_cbp_revalidation_us00_monthly_runtime_passed debug_log = "ModeU5 TEST PASS scenario=us00_monthly_runtime" }
+	else_if = { limit = { has_global_variable = test_cbp_us00_monthly_runtime_blocked } set_global_variable = test_cbp_revalidation_us00_monthly_runtime_blocked debug_log = "ModeU5 TEST BLOCKED scenario=us00_monthly_runtime reason=missing_FRA_or_runtime_not_ready" }
+	else = { set_global_variable = test_cbp_revalidation_us00_monthly_runtime_failed debug_log = "ModeU5 TEST FAIL scenario=us00_monthly_runtime" }
+}
+
+cbp_revalidate_run_us10_demand_resolution = {
+	cbp_debug_run_us10_demand_resolution_tests = yes
+	if = { limit = { has_global_variable = test_cbp_us10_demand_resolution_passed } set_global_variable = test_cbp_revalidation_us10_demand_resolution_passed }
+	else_if = { limit = { has_global_variable = test_cbp_us10_demand_resolution_blocked } set_global_variable = test_cbp_revalidation_us10_demand_resolution_blocked }
+	else = { set_global_variable = test_cbp_revalidation_us10_demand_resolution_failed }
+}
+
+cbp_revalidate_run_us10_issue109_fast_path_pruning = {
+	cbp_debug_run_us10_issue109_tests = yes
+	if = { limit = { has_global_variable = test_cbp_us10_issue109_passed } set_global_variable = test_cbp_revalidation_us10_issue109_passed }
+	else_if = { limit = { has_global_variable = test_cbp_us10_issue109_blocked } set_global_variable = test_cbp_revalidation_us10_issue109_blocked }
+	else = { set_global_variable = test_cbp_revalidation_us10_issue109_failed }
+}
+
+cbp_revalidate_run_us10_ui_visibility = {
+	cbp_debug_run_us10_ui_visibility_tests = yes
+	if = { limit = { has_global_variable = gui_cbp_us10_ui_visibility_passed } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed }
+	else_if = { limit = { has_global_variable = gui_cbp_us10_ui_visibility_result_blocked } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_blocked }
+	else = { set_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed }
+}
+
+cbp_revalidate2_run_us04_suite = {
+	remove_global_variable = test_cbp_revalidation2_us04_suite_passed
+	remove_global_variable = test_cbp_revalidation2_us04_suite_failed
+	remove_global_variable = test_cbp_revalidation2_us04_suite_blocked
+
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_revalidate2_suite"
+	cbp_debug_run_us04_pop_demand_adaptation_test = yes
+	cbp_debug_run_us04_pop_demand_endpoint_test = yes
+	cbp_debug_run_us04_estate_level_accounting_probe = yes
+	cbp_debug_run_us04_initialization_test = yes
+
+	if = {
+		limit = {
+			OR = {
+				has_global_variable = test_cbp_us04_pop_demand_adaptation_failed
+				has_global_variable = test_cbp_us04_pop_demand_endpoint_failed
+				has_global_variable = test_cbp_us04_estate_level_accounting_failed
+				has_global_variable = test_cbp_us04_pop_demand_initialization_failed
+			}
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us04_revalidate2_suite"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = test_cbp_us04_pop_demand_adaptation_blocked
+				has_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
+				has_global_variable = test_cbp_us04_estate_level_accounting_blocked
+				has_global_variable = test_cbp_us04_pop_demand_initialization_blocked
+			}
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_revalidate2_suite reason=one_or_more_us04_tests_blocked"
+	}
+	else_if = {
+		limit = {
+			has_global_variable = test_cbp_us04_pop_demand_adaptation_passed
+			has_global_variable = test_cbp_us04_pop_demand_endpoint_passed
+			has_global_variable = test_cbp_us04_estate_level_accounting_passed
+			has_global_variable = test_cbp_us04_pop_demand_initialization_passed
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_passed
+		debug_log = "ModeU5 TEST PASS scenario=us04_revalidate2_suite"
+	}
+	else = {
+		set_global_variable = test_cbp_revalidation2_us04_suite_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us04_revalidate2_suite reason=missing_us04_result_marker"
+	}
+}
+
+cbp_revalidate_run_perf10_13_active_repair_metrics = {
+	debug_log = "ModeU5 TEST ENTERED scenario=perf10_13_active_repair_metrics"
+	cbp_debug_run_perf10_13_active_repair_metrics_probe = yes
+	if = { limit = { has_global_variable = test_cbp_perf10_13_active_repair_passed } set_global_variable = test_cbp_revalidation_perf10_13_active_repair_passed }
+	else_if = { limit = { has_global_variable = test_cbp_perf10_13_active_repair_blocked } set_global_variable = test_cbp_revalidation_perf10_13_active_repair_blocked }
+	else = { set_global_variable = test_cbp_revalidation_perf10_13_active_repair_failed }
+}
+
+cbp_revalidate_run_core04_market_entry = {
+	cbp_debug_run_core04_market_entry_test = yes
+	if = { limit = { has_global_variable = test_cbp_core04_market_entry_passed } set_global_variable = test_cbp_revalidation_core04_market_entry_passed }
+	else_if = { limit = { has_global_variable = test_cbp_core04_market_entry_blocked } set_global_variable = test_cbp_revalidation_core04_market_entry_blocked }
+	else = { set_global_variable = test_cbp_revalidation_core04_market_entry_failed }
+}
+
+cbp_revalidate_run_us17_us20_reconciliation = {
+	cbp_debug_run_us17_us20_reconciliation_tests = yes
+	if = { limit = { has_global_variable = test_cbp_us17_us20_reconciliation_passed } set_global_variable = test_cbp_revalidation_us17_us20_reconciliation_passed }
+	else_if = { limit = { has_global_variable = test_cbp_us17_us20_reconciliation_blocked } set_global_variable = test_cbp_revalidation_us17_us20_reconciliation_blocked }
+	else = { set_global_variable = test_cbp_revalidation_us17_us20_reconciliation_failed }
+}
+
+cbp_revalidate_finalize = {
+	set_global_variable = test_cbp_revalidation_finished
+	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation_summary"
+
+	if = {
+		limit = {
+			has_global_variable = test_cbp_revalidation_us02_capacity_passed
+			has_global_variable = test_cbp_revalidation_core01_single_record_passed
+			has_global_variable = test_cbp_revalidation_core01_same_market_transfer_passed
+			has_global_variable = test_cbp_revalidation_core01_inter_market_transfer_passed
+			has_global_variable = test_cbp_revalidation_core02_initialization_passed
+			has_global_variable = test_cbp_revalidation_us00_controlled_pipeline_passed
+			has_global_variable = test_cbp_revalidation_us00_monthly_runtime_passed
+			has_global_variable = test_cbp_revalidation_us10_demand_resolution_passed
+			has_global_variable = test_cbp_revalidation_us10_issue109_passed
+			has_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed
+			has_global_variable = test_cbp_revalidation_perf10_13_active_repair_passed
+			has_global_variable = test_cbp_revalidation_core04_market_entry_passed
+			has_global_variable = test_cbp_revalidation_us17_us20_reconciliation_passed
+		}
+		set_global_variable = test_cbp_revalidation_passed
+		debug_log = "ModeU5 TEST PASS scenario=main_revalidation_summary"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = test_cbp_revalidation_us02_capacity_failed
+				has_global_variable = test_cbp_revalidation_core01_single_record_failed
+				has_global_variable = test_cbp_revalidation_core01_same_market_transfer_failed
+				has_global_variable = test_cbp_revalidation_core01_inter_market_transfer_failed
+				has_global_variable = test_cbp_revalidation_core02_initialization_failed
+				has_global_variable = test_cbp_revalidation_us00_controlled_pipeline_failed
+				has_global_variable = test_cbp_revalidation_us00_monthly_runtime_failed
+				has_global_variable = test_cbp_revalidation_us10_demand_resolution_failed
+				has_global_variable = test_cbp_revalidation_us10_issue109_failed
+				has_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed
+				has_global_variable = test_cbp_revalidation_perf10_13_active_repair_failed
+				has_global_variable = test_cbp_revalidation_core04_market_entry_failed
+				has_global_variable = test_cbp_revalidation_us17_us20_reconciliation_failed
+			}
+		}
+		set_global_variable = test_cbp_revalidation_failed
+		debug_log = "ModeU5 TEST FAIL scenario=main_revalidation_summary"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = test_cbp_revalidation_us02_capacity_blocked
+				has_global_variable = test_cbp_revalidation_core01_same_market_transfer_blocked
+				has_global_variable = test_cbp_revalidation_core01_inter_market_transfer_blocked
+				has_global_variable = test_cbp_revalidation_core02_initialization_blocked
+				has_global_variable = test_cbp_revalidation_us00_controlled_pipeline_blocked
+				has_global_variable = test_cbp_revalidation_us00_monthly_runtime_blocked
+				has_global_variable = test_cbp_revalidation_us10_demand_resolution_blocked
+				has_global_variable = test_cbp_revalidation_us10_issue109_blocked
+				has_global_variable = gui_cbp_revalidation_us10_ui_visibility_blocked
+				has_global_variable = test_cbp_revalidation_perf10_13_active_repair_blocked
+				has_global_variable = test_cbp_revalidation_core04_market_entry_blocked
+				has_global_variable = test_cbp_revalidation_us17_us20_reconciliation_blocked
+			}
+		}
+		set_global_variable = test_cbp_revalidation_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=main_revalidation_summary reason=one_or_more_scenarios_blocked"
+	}
+	else = {
+		set_global_variable = test_cbp_revalidation_failed
+		debug_log = "ModeU5 TEST FAIL scenario=main_revalidation_summary"
+	}
+}

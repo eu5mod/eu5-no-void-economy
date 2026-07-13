@@ -28,8 +28,8 @@ Feeds counters to: US-04 and debug/UI
 |---|---|---|---|---|
 | Candidate relations/scoring | country/market/location | opinion, access, war, embargo, subject, market owner | CONFIRMED | 067-073 |
 | Deterministic ordering | list/map/typed iterator | ordered iterators with `order_by` | CONFIRMED | 074 |
-| Consumption removal | ModeU5 | `modeu5_remove_stock` | CONFIRMED | 075 |
-| Inter-market transfer | ModeU5 | `modeu5_transfer_stock` | CONFIRMED | 076 |
+| Consumption removal | ModeU5 | `cbp_remove_stock` | CONFIRMED | 075 |
+| Inter-market transfer | ModeU5 | `cbp_transfer_stock` | CONFIRMED | 076 |
 | Satisfaction tracking | current transaction | local requested/satisfied/transferred/unsatisfied values handed to US-10.3 | CONFIRMED | 077 |
 | Persistent outcome records | location × good and country × market × good | US-10.3 logical records backed by synchronized map families | CONFIRMED | 007, 040, 077 |
 | Runtime Pop requested-demand input | Pop / location × good | runtime vanilla requested-demand value | NOT_CONFIRMED | 087 |
@@ -63,8 +63,8 @@ Related US: US-10.0, US-10.1, US-10.2, US-10.3, US-10-UI
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Never mutate stocks directly.
-- Use `modeu5_resolve_stock_demand` for shared candidate logic.
-- Use `modeu5_remove_stock` for consumption and `modeu5_transfer_stock` for inter-market exchange.
+- Use `cbp_resolve_stock_demand` for shared candidate logic.
+- Use `cbp_remove_stock` for consumption and `cbp_transfer_stock` for inter-market exchange.
 - Do not create trade economics inside one market.
 - Keep US-10 transport cost and trade-income reconciliation outside scope.
 - Make candidates, exclusions, quantities, and fallbacks visible.

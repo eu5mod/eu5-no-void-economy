@@ -1,0 +1,18 @@
+cbp_apply_us09_base_rgo_size_bonus = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = cbp_change_max_rgo }
+		}
+		every_location_in_the_world = {
+			add_location_modifier = {
+				modifier = cbp_us09_base_rgo_size_10_percent_bonus
+				years = -1
+				mode = replace
+			}
+		}
+		set_global_variable = {
+			name = cbp_change_max_rgo
+			value = yes
+		}
+	}
+}

@@ -22,7 +22,7 @@ The US-00 closure PR wires the complete monthly runtime path: apply the previous
 
 ```txt
 Monthly step: 8, then 13-15; reset only at step 19
-Depends on counters from: modeu5_add_stock
+Depends on counters from: cbp_add_stock
 Feeds counters to: debug/UI and balancing diagnostics
 ```
 
@@ -72,7 +72,7 @@ Related US: US-00.1, US-00.2, US-00.3, US-00.4, US-10-UI
 - Keep source production granularity separate from the aggregated ledger key.
 - Do not equate the producing country with the location owner without confirmed exposure.
 - Accumulate the monthly ledger from production stock-add transactions; never infer it from final stock.
-- Route every ledger write through `modeu5_update_production_rejection_ledger`.
+- Route every ledger write through `cbp_update_production_rejection_ledger`.
 - Treat all US-00 persistent values as fields of one logical country × market × good record.
 - Keep the country as physical map owner, market as shared key, and good/field in each static map name until nested record storage is confirmed.
 - Keep one-operation quantities local until the ledger helper persists their monthly aggregates.

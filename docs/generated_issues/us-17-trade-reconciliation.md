@@ -11,8 +11,8 @@
 ## Runtime placement
 
 ```txt
-modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-  -> modeu5_run_monthly_country_trade_owner_cycle
+cbp_run_monthly_stock_cycle_q8_7_owner_switch
+  -> cbp_run_monthly_country_trade_owner_cycle
      -> every_trade
         -> save trade owner
         -> save source market
@@ -28,9 +28,9 @@ modeu5_run_monthly_stock_cycle_q8_7_owner_switch
 The live insertion point is:
 
 ```txt
-scope:modeu5_trade_owner_country = {
-  modeu5_capture_trade_owner_country_modifier_inputs = yes
-  modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
+scope:cbp_trade_owner_country = {
+  cbp_capture_trade_owner_country_modifier_inputs = yes
+  cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
 }
 ```
 
@@ -62,7 +62,7 @@ is `import_efficiency`.
 The three country modifiers are read only from:
 
 ```txt
-scope:modeu5_trade_owner_country
+scope:cbp_trade_owner_country
 ```
 
 They must never be read from the scheduler country, market-center owner, source
@@ -158,7 +158,7 @@ the maintenance-side saving. It remains a distinct debug field.
 The route delta belongs to:
 
 ```txt
-scope:modeu5_trade_owner_country
+scope:cbp_trade_owner_country
 ```
 
 The confirmed cash surface is:
@@ -212,7 +212,7 @@ unavailable.
 US-20 retains its separate route-maintenance input for received-goods loss:
 
 ```txt
-modeu5_us20_trade_maintenance
+cbp_us20_trade_maintenance
 ```
 
 Do not substitute `merchant_maintenance_efficiency` or the merchant-maintenance
@@ -251,7 +251,7 @@ accounting_mode_detailed_or_fallback
 Run:
 
 ```txt
-event modeu5_us17_owner_modifiers.1
+event cbp_us17_owner_modifiers.1
 ```
 
 The probe validates:

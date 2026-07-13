@@ -1,0 +1,17 @@
+monthly_country_pulse = {
+	on_actions = {
+		cbp_review_pop_exact_date_scheduler
+	}
+}
+
+cbp_review_pop_exact_date_scheduler = {
+	trigger = {
+		current_date = 1524.2.1
+	}
+	events = {
+		# Monthly country pulse runs at the start of the month; schedule the
+		# popup exactly for 20 February 1524 rather than showing it on the pulse day.
+		delay = { days = 19 }
+		cbp_review.1
+	}
+}

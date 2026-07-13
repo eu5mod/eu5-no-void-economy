@@ -1,0 +1,23 @@
+# Initialize package state on a new campaign and when loading an existing save.
+on_game_start = {
+	on_actions = {
+		cbp_economy_rebalance_package_initialize
+	}
+}
+
+on_game_load = {
+	on_actions = {
+		cbp_economy_rebalance_package_initialize
+	}
+}
+
+cbp_economy_rebalance_package_initialize = {
+	effect = {
+		set_global_variable = cbp_economy_rebalance_loaded
+		set_global_variable = {
+			name = cbp_economy_package_version
+			value = 100
+		}
+		cbp_apply_us09_base_rgo_size_bonus = yes
+	}
+}

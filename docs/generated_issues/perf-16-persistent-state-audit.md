@@ -20,7 +20,7 @@ later PERF-17 through PERF-20 PRs must satisfy.
 ## Selected Design
 
 - Add `docs/technical/PERSISTENT_STATE_AUDIT.md`.
-- Add `tools/audit_modeu5_persistent_state.sh`.
+- Add `tools/audit_cbp_persistent_state.sh`.
 - Classify each structured ModeU5 persistent map/list by owner, key, lifecycle,
   reader group, persistence reason, and fourth-phase target.
 - Wire the audit into `tools/validate_module_packages.sh`.
@@ -41,7 +41,7 @@ Static checks:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ./tools/install_local_packages.sh --check

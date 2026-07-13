@@ -22,11 +22,11 @@ US-20 = received-goods/base-receipt/loss reconciliation
 
 ```mermaid
 flowchart TD
-    A[monthly_country_pulse] --> B[modeu5_run_monthly_stock_cycle_q8_7_owner_switch]
+    A[monthly_country_pulse] --> B[cbp_run_monthly_stock_cycle_q8_7_owner_switch]
     B --> C[Readiness and runtime-mode gates]
     C --> D[Market-local stock pass]
     D --> E[Country trade-owner pass]
-    E --> F[modeu5_run_monthly_country_trade_owner_cycle]
+    E --> F[cbp_run_monthly_country_trade_owner_cycle]
     F --> G[every_trade]
     G --> H[Save owner, source market, target market and good]
     H --> I[Capture confirmed moved-goods quantity]
@@ -161,8 +161,8 @@ list order, and per-good `current_stock < capacity` eligibility.
 ```mermaid
 flowchart TD
     A[Capacity-eligible receiver selected] --> B{Origin promoted?}
-    B -- no --> C[BR-27: modeu5_add_stock at destination]
-    B -- yes --> D[BR-28: modeu5_transfer_stock source to destination]
+    B -- no --> C[BR-27: cbp_add_stock at destination]
+    B -- yes --> D[BR-28: cbp_transfer_stock source to destination]
     C --> E[capacity_policy = allow_over_capacity]
     D --> F[target_capacity_policy = allow_over_capacity]
     E --> G[Apply delivery loss]
@@ -202,7 +202,7 @@ BASE_RECEIPT applied=add_at_destination capacity_policy=allow_over_capacity
 Run:
 
 ```txt
-event modeu5_us17_owner_modifiers.1
+event cbp_us17_owner_modifiers.1
 ```
 
 Expected PASS marker:
@@ -241,8 +241,8 @@ This probe is implemented but not yet runtime-confirmed on the new branch head.
 | US-17 route profit/country trade income | TECH-01 blocked | Expected-blocked PASS | `add_gold` proves cash only, not displayed accounting. |
 | US-20 received-goods formula | Complete | PASS | Target received quantity and loss are calculated. |
 | Cases 1 and 2 market-only loss | Complete | PASS | Negative `add_goods_supply`; no receiver required. |
-| BR-27 add-at-destination receipt | Complete | PASS | Explicit and allocator paths exercise `modeu5_add_stock`. |
-| BR-28 country-market transfer receipt | Complete | PASS | Promoted-to-promoted path exercises `modeu5_transfer_stock`. |
+| BR-27 add-at-destination receipt | Complete | PASS | Explicit and allocator paths exercise `cbp_add_stock`. |
+| BR-28 country-market transfer receipt | Complete | PASS | Promoted-to-promoted path exercises `cbp_transfer_stock`. |
 | BR-29 receiver fallback | Complete MVP | PASS | Stored, trade-owner and allocator receiver paths. |
 | BR-30 capacity eligibility | Complete MVP | PASS | Ineligible stored receiver rejected; allocator selected. |
 | Console localization deferral | Implemented | Existing US20 rerun clean; new probe pending | Hidden continuation avoids console localization context. |
@@ -302,7 +302,7 @@ Static validation:
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/normalize_cmm_value_links.sh --check
 python3 ./tools/validate_cmm_configuration.py
 git diff --check
@@ -318,9 +318,9 @@ Install and clear logs:
 Run:
 
 ```txt
-event modeu5_revalidate_debug.1
-event modeu5_us20_probe.1
-event modeu5_us17_owner_modifiers.1
+event cbp_revalidate_debug.1
+event cbp_us20_probe.1
+event cbp_us17_owner_modifiers.1
 ```
 
 Post-run grep:

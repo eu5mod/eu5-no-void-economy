@@ -40,11 +40,11 @@ Generated US-00 production-penalty static modifiers must have generated
 localization in the same generation pass. The generator writes:
 
 ```txt
-main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
-main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml
+main_menu/common/static_modifiers/cbp_us00_modifiers_generated.txt
+main_menu/localization/english/cbp_us00_static_modifiers_generated_l_english.yml
 ```
 
-The localization file defines `STATIC_MODIFIER_NAME_modeu5_<good>_production_penalty_modifier`
+The localization file defines `STATIC_MODIFIER_NAME_cbp_<good>_production_penalty_modifier`
 for every generated modifier. This prevents EU5 from emitting placeholder
 `STATIC MODIFIER NAME ...` lines during load.
 
@@ -65,11 +65,11 @@ file starts with another key even though the JSON is otherwise valid. Current
 packages use these IDs:
 
 ```txt
-modeu5_core
-modeu5_economy_rebalance
-modeu5_trade_rebalance
-modeu5_war_rebalance
-modeu5_core_tests
+cbp_core
+cbp_economy_rebalance
+cbp_trade_rebalance
+cbp_war_rebalance
+cbp_core_tests
 ```
 
 If `error.log` contains a metadata read error mentioning the old bootstrap name

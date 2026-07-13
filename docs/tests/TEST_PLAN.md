@@ -104,7 +104,7 @@ or a concise excerpt preserving all numeric fields needed to audit the result.
 
 Logs are the source of truth for test review. When a test is driven by a
 deterministic console event, the test must provide log-reviewable evidence in
-addition to setting `modeu5_test_*` markers. A result event may mirror the dump
+addition to setting `test_cbp_*` markers. A result event may mirror the dump
 for human readability, but it is not the authoritative artifact.
 
 The dump must show enough numeric state to distinguish a real pass from a
@@ -168,7 +168,7 @@ docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
 ```
 
 Performance Mode CMM plumbing PRs must prove that the CMM
-`nve_no_void_economy_main` dropdown resolves to script-safe runtime flags before
+`cbp_no_void_economy_main` dropdown resolves to script-safe runtime flags before
 any stock mutation path relies on it. For the first PERF-14 pass, use:
 
 ```txt
@@ -208,7 +208,7 @@ Market 1 wheat aggregate increases by both country additions
 Market 2 wheat and Market 1 iron aggregates change independently
 Read-only record access reports stock, capacity, available capacity, over-cap,
 and the selected market aggregate without rewriting any map
-Cleanup uses modeu5_remove_stock
+Cleanup uses cbp_remove_stock
 Final validation reports no divergence
 ```
 
@@ -434,15 +434,15 @@ Setup:
 
 ```txt
 Start three clean campaigns with NVE Debug Messages set to Off, Basic, and Detailed
-Inspect `modeu5_debug_level` after startup
+Inspect `cbp_debug_level` after startup
 ```
 
 Expected:
 
 ```txt
-Off initializes `modeu5_debug_level = 0`
-Basic initializes `modeu5_debug_level = 1`
-Verbose initializes `modeu5_debug_level = 2`
+Off initializes `cbp_debug_level = 0`
+Basic initializes `cbp_debug_level = 1`
+Verbose initializes `cbp_debug_level = 2`
 The setting does not mutate stock or package state
 ```
 
@@ -557,7 +557,7 @@ Expected:
 The CORE-02 debug option sets started/finished markers after the delayed startup day
 The proportional allocation scenario passes
 The over-capacity allocation scenario passes
-modeu5_seed_opening_market_good writes only through modeu5_add_stock
+cbp_seed_opening_market_good writes only through cbp_add_stock
 Market stock equals country-stock sums after each scenario
 No ModeU5 script error is added to error.log
 ```
@@ -651,7 +651,7 @@ Country A initial stock = 50
 Country B initial stock = 150
 Market aggregate = 200
 Difference = 0
-Every positive write calls modeu5_add_stock
+Every positive write calls cbp_add_stock
 US-00.1 ledger remains zero
 ```
 
@@ -735,7 +735,7 @@ Expected:
 ```txt
 Positive source with zero total capacity fails initialization without erasing or assigning stock
 Residue is assigned only to a country with positive capacity
-Residue write calls modeu5_add_stock
+Residue write calls cbp_add_stock
 Final allocation does not exceed opening target
 ```
 
@@ -899,7 +899,7 @@ Expected:
 ```txt
 ModeU5 initialization state is complete and schema is current; this is the same runtime-ready gate used by monthly audit and four-year stock reconciliation
 A permanent location owner change transfers loser stock by the transferred location capacity share
-The transfer uses modeu5_transfer_stock with target_capacity_policy = allow_over_capacity
+The transfer uses cbp_transfer_stock with target_capacity_policy = allow_over_capacity
 The same-market market_good_stock aggregate remains unchanged except for validation/rebuild correction
 Loser and winner capacities are recalculated after the transfer
 Annexation finalizers transfer only residual disappearing-country stock and do not duplicate location-level transfers
@@ -923,7 +923,7 @@ Follow the exact console procedure in
 Run from a clean 1337 campaign:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 The event exposes five test actions:
@@ -937,31 +937,31 @@ US-11 dirty-record reconciliation
 US-11 reconciliation cadence gates
 ```
 
-Each action opens `modeu5_debug.2` after execution. Read the visible PASS or
-FAIL / NOT RUN rows there; do not enter `modeu5_test_*` as console commands.
+Each action opens `cbp_debug.2` after execution. Read the visible PASS or
+FAIL / NOT RUN rows there; do not enter `test_cbp_*` as console commands.
 The variables remain available for scripted assertions, and failed assertions
 are also written to `error.log`.
 
 Expected pass variables on the event country:
 
 ```txt
-modeu5_test_add_allow_over_capacity_passed = 1
-modeu5_test_add_enforce_passed = 1
-modeu5_test_remove_passed = 1
-modeu5_test_decay_passed = 1
-modeu5_test_same_market_transfer_passed = 1
-modeu5_test_invalid_same_record_passed = 1
-modeu5_test_inter_market_transfer_passed = 1
-modeu5_test_rebuild_passed = 1
-modeu5_test_validation_repair_passed = 1
-modeu5_test_validation_noop_passed = 1
-modeu5_test_reconciliation_dirty_passed = 1
-modeu5_test_reconciliation_active_passed = 1
-modeu5_test_reconciliation_empty_passed = 1
-modeu5_test_reconciliation_cadence_passed = 1
+test_cbp_add_allow_over_capacity_passed = 1
+test_cbp_add_enforce_passed = 1
+test_cbp_remove_passed = 1
+test_cbp_decay_passed = 1
+test_cbp_same_market_transfer_passed = 1
+test_cbp_invalid_same_record_passed = 1
+test_cbp_inter_market_transfer_passed = 1
+test_cbp_rebuild_passed = 1
+test_cbp_validation_repair_passed = 1
+test_cbp_validation_noop_passed = 1
+test_cbp_reconciliation_dirty_passed = 1
+test_cbp_reconciliation_active_passed = 1
+test_cbp_reconciliation_empty_passed = 1
+test_cbp_reconciliation_cadence_passed = 1
 ```
 
-Inspect the latest operation through `modeu5_debug_last_*`. The transfer tests
+Inspect the latest operation through `cbp_debug_last_*`. The transfer tests
 require FRA and ENG; the inter-market test also requires their capitals to be
 in different markets.
 
@@ -979,7 +979,7 @@ decisions.
 
 ---
 
-### Test 1 — Production simple through `modeu5_add_stock`
+### Test 1 — Production simple through `cbp_add_stock`
 
 Setup:
 
@@ -1068,7 +1068,7 @@ Difference = 0
 
 ---
 
-### Test 3 — Consumption through `modeu5_remove_stock`
+### Test 3 — Consumption through `cbp_remove_stock`
 
 Setup:
 
@@ -1201,7 +1201,7 @@ Market X stock = 200
 Deterministic console path:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 Select "Test rebuild and consistency validation"
 ```
 
@@ -1225,7 +1225,7 @@ Setup:
 Country A stock = 100
 Country B stock = 50
 Market X stock = 200
-Run modeu5_validate_stock_consistency for Market X and the selected good
+Run cbp_validate_stock_consistency for Market X and the selected good
 ```
 
 Expected result:
@@ -1234,7 +1234,7 @@ Expected result:
 Expected market stock = 150
 Difference before = 50
 Inconsistency detected = yes
-modeu5_rebuild_market_stock_from_country_stocks called = yes
+cbp_rebuild_market_stock_from_country_stocks called = yes
 Market X stock after = 150
 Difference after = 0
 Second validation performs no write
@@ -1256,7 +1256,7 @@ PASS - Consistent validation is a no-op
 Setup:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 Select "Test US-11 dirty-record reconciliation"
 ```
 
@@ -1282,7 +1282,7 @@ Setup:
 ```txt
 Use an initialized controlled fixture.
 Run:
-event modeu5_debug.1
+event cbp_debug.1
 
 Select "Test US-11 reconciliation cadence gates".
 ```
@@ -1310,7 +1310,7 @@ docs/tests/US_00_VOID_ECONOMY_PIPELINE_RUNBOOK.md
 
 The US-00 closure validates both the deterministic arithmetic fixture and the
 monthly runtime path. The runtime smoke test reads live `goods_output`, calls
-`modeu5_add_stock`, writes the US-00 record, values rejected production, stores
+`cbp_add_stock`, writes the US-00 record, values rejected production, stores
 the replacement penalty, and applies the previous penalty to producing
 locations through generated per-good modifiers.
 
@@ -1461,7 +1461,7 @@ Setup:
 ```txt
 CORE-02 initialization is complete
 FRA exists and has wheat output in its capital market
-Run event modeu5_us00_debug.1
+Run event cbp_us00_debug.1
 Choose "Run US-00 monthly runtime smoke test"
 ```
 
@@ -1490,7 +1490,7 @@ docs/tests/US_10_DEMAND_RESOLUTION_RUNBOOK.md
 Command:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -1508,7 +1508,7 @@ Consumption unsatisfied = 20
 Inter-market requested = 100
 Inter-market transferred = 70
 Inter-market unsatisfied = 30
-All stock mutations call modeu5_remove_stock or modeu5_transfer_stock
+All stock mutations call cbp_remove_stock or cbp_transfer_stock
 US-10.3 country-market-good counters record requested, satisfied/transferred, and unsatisfied quantities
 ModeU5 TEST PASS scenario=us10_demand_resolution
 ```
@@ -1541,7 +1541,7 @@ A stock used first if own_country_bonus is highest
 Then B and/or C according to score
 satisfied_quantity = 100
 unsatisfied_quantity = 0
-All removals call modeu5_remove_stock
+All removals call cbp_remove_stock
 No trade income or transport cost is generated
 ```
 
@@ -1590,6 +1590,67 @@ transferred_quantity recorded for diagnostics = 35
 ```
 
 ## US-04 demand adaptation tests
+
+Console entry:
+
+```txt
+event cbp_us04_debug.1
+```
+
+The debug fixture temporarily enables the CMM setting
+`Pop consumption influenced by offer & demand`, uses the current country's
+capital location, then writes:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation
+ModeU5 US-04 DUMP base_multiplier=1.2000 wheat_multiplier=1.2120 wheat_reconciliation_coefficient=1.2120 beer_multiplier=1.1880 beer_reconciliation_coefficient=1.1880 cloth_multiplier=1.2000 cloth_reconciliation_coefficient=1.2000 tools_multiplier=1.2000 tools_reconciliation_coefficient=1.2000 wheat_reconciliation_requested=121.20 wheat_reconciliation_extra=21.20 wheat_reconciliation_removed=21.20 wheat_reconciliation_goods_supply_removed=21.20 wheat_reconciliation_unsatisfied=0.00 wheat_reconciliation_country_delta=21.20 wheat_reconciliation_market_delta=21.20 wheat_reconciliation_estate_charge=<positive>
+ModeU5 US-04 RESULT pop_demand_adaptation PASS
+ModeU5 TEST PASS scenario=us04_pop_demand_adaptation
+```
+
+The `*_multiplier` values are the archived PR69 vanilla-demand injection probe
+state. EU5 1.2+ rejects that path as a reliable runtime mutation, so the active
+ModeU5 state is the `cbp_us04_reconciliation_coefficient` family.
+The current monthly reconciliation fixture uses the TECH-01 150 ModeU5 proxy:
+
+```txt
+cbp_us04_reconciliation_coefficient(location, good)
+× proxy_estate_size_at_location
+```
+
+The proxy path runs as a signed monthly reconciliation delta after the monthly
+stock cycle: it removes satisfied extra demand through `cbp_remove_stock`,
+mirrors the same extra delta to vanilla market supply through negative
+`add_goods_supply`, and charges the known estates through `add_gold_to_estate`.
+There is no `peasants_estate` fallback.
+
+The same test also covers the below-baseline coefficient path. A fixture with
+`coefficient = 0.99` must restore only the 1% avoided-consumption delta through
+`cbp_add_stock` and mirror that same delta through positive
+`add_goods_supply`, then refund the known estates through positive
+`add_gold_to_estate`. It must not remove stock, subtract vanilla supply, charge
+estates, or apply the whole consumption a second time.
+
+Option C runs the PR #167 Estate/location probe:
+
+```txt
+ModeU5 TEST ENTERED scenario=us04_estate_level_accounting
+ModeU5 US-04 ESTATE ACCOUNTING location_level=1 goods=2 estates=4 ... result=active_proxy
+ModeU5 TEST PASS scenario=us04_estate_level_accounting
+```
+
+Use:
+
+```txt
+./tools/summarize_cbp_logs.sh --expected us04-estate
+```
+
+The full revalidation chain also includes this scenario:
+
+```txt
+event cbp_revalidate_debug.1
+./tools/summarize_cbp_logs.sh
+```
 
 ### Test 19 — Local demand grows after full-year satisfaction
 
@@ -1662,7 +1723,7 @@ tax_base = 3000
 Expected:
 
 ```txt
-modeu5_slider_cost_base = 1200
+cbp_slider_cost_base = 1200
 Tax Base is not used for ModeU5 slider target
 Only Stability and Court/Government Power are affected
 No gold or modifier reconciliation is applied
@@ -1708,8 +1769,8 @@ No additive country-level production-efficiency modifier path is loaded for this
 Expected:
 
 ```txt
-Generated modeu5_run_us00_monthly_pipeline_all_goods loops each country market once
-Generated modeu5_process_us00_monthly_market_all_goods runs per-good US-00 helpers inside that market scope
+Generated cbp_run_us00_monthly_pipeline_all_goods loops each country market once
+Generated cbp_process_us00_monthly_market_all_goods runs per-good US-00 helpers inside that market scope
 Single-good US-00 monthly wrappers remain available
 US-00 controlled and monthly runtime tests still emit PASS dumps
 Non-owned/non-territorial market presence is documented as deferred/negligible for MVP, not silently ignored
@@ -1721,7 +1782,7 @@ Setup:
 
 ```txt
 Run:
-event modeu5_debug.1
+event cbp_debug.1
 
 Choose "Test US-11 dirty-record reconciliation".
 ```
@@ -1733,8 +1794,8 @@ PASS - Dirty market-good reconciliation
 PASS - Active market-good reconciliation
 PASS - Empty reconciliation is a no-op
 PASS - US-11 reconciliation cadence gates
-modeu5_active_markets_any_good contains the fixture market
-modeu5_wheat_active_markets contains the fixture market
+cbp_active_markets_any_good contains the fixture market
+cbp_wheat_active_markets contains the fixture market
 Active validation repairs the test market without requiring every_market_in_world
 Strict exhaustive validation remains available for explicit manual audit only
 ```
@@ -1745,7 +1806,7 @@ Setup:
 
 ```txt
 Run:
-event modeu5_debug.1
+event cbp_debug.1
 
 Choose "Test US-11 dirty-record reconciliation".
 ```
@@ -1770,7 +1831,7 @@ docs/tests/PERF_08_SHARED_STORAGE_CAPACITY_RUNBOOK.md
 Expected:
 
 ```txt
-Generated helpers read modeu5_stock_cap_by_market, not modeu5_<good>_stock_cap_by_market
+Generated helpers read cbp_stock_cap_by_market, not cbp_<good>_stock_cap_by_market
 ModeU5 US-02 DUMP capacity ... iron_wrapper_capacity=<same country-market capacity>
 ModeU5 US-02 RESULT capacity PASS
 CORE-01 add/transfer capacity enforcement tests pass
@@ -1791,11 +1852,11 @@ docs/tests/PERF_10_13_SECOND_PHASE_RUNBOOK.md
 Expected:
 
 ```txt
-tools/audit_modeu5_per_good_loops.sh reports Shared capacity per-good helpers: 0
+tools/audit_cbp_per_good_loops.sh reports Shared capacity per-good helpers: 0
 Main revalidation emits ModeU5 TEST PASS scenario=perf10_13_active_repair_metrics
 PERF-11 active-list repair rebuilds active market-good lists from stock/ledger state, not capacity-only state
 PERF-13 metrics appear only in explicit debug/test dumps
-PERF-12 remains an explicit probe through event modeu5_perf12_debug.1
+PERF-12 remains an explicit probe through event cbp_perf12_debug.1
 ```
 
 ## US-13 tests

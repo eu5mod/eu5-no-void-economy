@@ -1,0 +1,7 @@
+cbp_us09_base_rgo_size_10_percent_bonus = {
+	game_data = {
+		category = location
+	}
+
+	local_max_rgo_size = 0.2
+}

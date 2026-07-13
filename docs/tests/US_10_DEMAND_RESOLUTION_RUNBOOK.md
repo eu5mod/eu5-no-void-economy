@@ -38,7 +38,7 @@ Start a disposable campaign where France and England exist and have distinct
 capital markets. Then run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -84,7 +84,7 @@ The consumption dump is aggregated across two deterministic sub-scenarios:
 Start a disposable campaign after ModeU5 initialization has completed. Then run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -109,11 +109,11 @@ ModeU5 TEST PASS scenario=us10_monthly_runtime_integration
 
 What this proves:
 
-- the monthly input queue `modeu5_consumption_<good>_pending_requested_by_market`
+- the monthly input queue `cbp_consumption_<good>_pending_requested_by_market`
   is read and removed;
 - consumption is resolved from ModeU5 country x market x good stock through
-  `modeu5_resolve_stock_consumption`;
-- the stock mutation still goes through `modeu5_remove_stock`;
+  `cbp_resolve_stock_consumption`;
+- the stock mutation still goes through `cbp_remove_stock`;
 - US-10.3 country-market outcome counters are written;
 - vanilla market trade signals are observed only as blocked diagnostics unless
   an explicit transfer quantity is available.
@@ -123,7 +123,7 @@ What this proves:
 Run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -144,7 +144,7 @@ ModeU5 TEST PASS scenario=us10_trade_capacity_conversion
 This validates the generated static helper:
 
 ```txt
-modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+cbp_computed_goods_quantity = capacity_volume / static transport_cost
 ```
 
 The static `transport_cost` comes from local vanilla `common/goods`. Missing
@@ -156,7 +156,7 @@ clamps the denominator so it cannot divide by zero.
 Run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -202,7 +202,7 @@ A consumer requests 60 wheat in Market M.
 Call:
 
 ```txt
-modeu5_resolve_stock_consumption = {
+cbp_resolve_stock_consumption = {
   consumer_country = scope:country_a
   market = scope:market_m
   good = wheat
@@ -217,7 +217,7 @@ satisfied_quantity = 60
 unsatisfied_quantity = 0
 country A stock after = 0
 country B is used only after A's own stock is exhausted
-modeu5_remove_stock is the only stock mutation effect used
+cbp_remove_stock is the only stock mutation effect used
 same-market trade income generated = no
 transport cost generated = no
 trade capacity used = no
@@ -226,18 +226,18 @@ trade capacity used = no
 ### Debug output to inspect
 
 ```txt
-modeu5_debug_last_us10_requested_quantity
-modeu5_debug_last_us10_satisfied_quantity
-modeu5_debug_last_us10_unsatisfied_quantity
-modeu5_debug_last_us10_candidate_count
-modeu5_debug_last_us10_excluded_candidate_count
-modeu5_debug_last_us10_total_available_candidate_stock
-modeu5_debug_last_us10_best_candidate_bucket
-modeu5_debug_last_us10_is_intra_market_trade
-modeu5_debug_last_us10_trade_income_generated
-modeu5_debug_last_us10_transport_cost_generated
-modeu5_debug_last_us10_trade_capacity_used
-modeu5_debug_last_us10_mutation_effect_called
+cbp_debug_last_us10_requested_quantity
+cbp_debug_last_us10_satisfied_quantity
+cbp_debug_last_us10_unsatisfied_quantity
+cbp_debug_last_us10_candidate_count
+cbp_debug_last_us10_excluded_candidate_count
+cbp_debug_last_us10_total_available_candidate_stock
+cbp_debug_last_us10_best_candidate_bucket
+cbp_debug_last_us10_is_intra_market_trade
+cbp_debug_last_us10_trade_income_generated
+cbp_debug_last_us10_transport_cost_generated
+cbp_debug_last_us10_trade_capacity_used
+cbp_debug_last_us10_mutation_effect_called
 ```
 
 ## Manual scenario 2 — Pop outcome tracking
@@ -254,7 +254,7 @@ The same-market resolver satisfies 75 wheat.
 Call:
 
 ```txt
-modeu5_resolve_pop_stock_consumption = {
+cbp_resolve_pop_stock_consumption = {
   location = scope:location_l
   consumer_country = scope:country_a
   market = scope:market_m
@@ -266,11 +266,11 @@ modeu5_resolve_pop_stock_consumption = {
 ### Expected result
 
 ```txt
-modeu5_pop_demand_requested_quantity[wheat] increases by 100
-modeu5_pop_demand_satisfied_quantity[wheat] increases by 75
-modeu5_pop_demand_unsatisfied_quantity[wheat] increases by 25
-modeu5_pop_demand_unsatisfied_months[wheat] increases by 1
-modeu5_pop_demand_satisfied_months[wheat] does not increase for that shortage month
+cbp_pop_demand_requested_quantity[wheat] increases by 100
+cbp_pop_demand_satisfied_quantity[wheat] increases by 75
+cbp_pop_demand_unsatisfied_quantity[wheat] increases by 25
+cbp_pop_demand_unsatisfied_months[wheat] increases by 1
+cbp_pop_demand_satisfied_months[wheat] does not increase for that shortage month
 ```
 
 ## Manual scenario 3 — inter-market transfer
@@ -289,7 +289,7 @@ Buyer C requests 100 wheat from M1 to M2.
 Call:
 
 ```txt
-modeu5_resolve_inter_market_stock_transfer = {
+cbp_resolve_inter_market_stock_transfer = {
   buyer_country = scope:country_c
   source_market = scope:market_m1
   target_market = scope:market_m2
@@ -305,22 +305,22 @@ transferred_quantity = 70
 unsatisfied_quantity = 30
 source market stock decreases by 70
 target market stock increases by 70
-modeu5_transfer_stock is the only stock mutation effect used
+cbp_transfer_stock is the only stock mutation effect used
 target capacity is enforced
 ```
 
 ### Debug output to inspect
 
 ```txt
-modeu5_debug_last_us10_source_market
-modeu5_debug_last_us10_target_market
-modeu5_debug_last_us10_requested_quantity
-modeu5_debug_last_us10_transferred_quantity
-modeu5_debug_last_us10_unsatisfied_trade_quantity
-modeu5_debug_last_us10_candidate_count
-modeu5_debug_last_us10_excluded_candidate_count
-modeu5_debug_last_us10_total_available_candidate_stock
-modeu5_debug_last_us10_mutation_effect_called
+cbp_debug_last_us10_source_market
+cbp_debug_last_us10_target_market
+cbp_debug_last_us10_requested_quantity
+cbp_debug_last_us10_transferred_quantity
+cbp_debug_last_us10_unsatisfied_trade_quantity
+cbp_debug_last_us10_candidate_count
+cbp_debug_last_us10_excluded_candidate_count
+cbp_debug_last_us10_total_available_candidate_stock
+cbp_debug_last_us10_mutation_effect_called
 ```
 
 ## Focused Issue #109 Fast-Path And Pruning Test
@@ -328,7 +328,7 @@ modeu5_debug_last_us10_mutation_effect_called
 Run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -355,9 +355,9 @@ ModeU5 TEST PASS scenario=us10_issue109_fast_path_pruning
 
 What this proves:
 
-- own country stock is consumed first through `modeu5_remove_stock`;
+- own country stock is consumed first through `cbp_remove_stock`;
 - a fully satisfied own-stock request skips the fallback supplier scan unless
-  `modeu5_us10_debug_force_full_candidate_scan` is enabled;
+  `cbp_us10_debug_force_full_candidate_scan` is enabled;
 - external suppliers below the configured reserve floor are excluded before
   mutation;
 - an empty ModeU5 market aggregate fails closed before rebuilding the candidate
@@ -368,15 +368,15 @@ What this proves:
 Additional debug fields to inspect:
 
 ```txt
-modeu5_debug_last_us10_own_stock_fast_path_used
-modeu5_debug_last_us10_own_stock_taken
-modeu5_debug_last_us10_market_aggregate_prefilter_used
-modeu5_debug_last_us10_supplier_stock_floor_ratio
-modeu5_debug_last_us10_negative_balance_exclusions
-modeu5_debug_last_us10_bucket_1_candidates
-modeu5_debug_last_us10_bucket_2_candidates
-modeu5_debug_last_us10_bucket_3_candidates
-modeu5_debug_last_us10_bucket_4_candidates
+cbp_debug_last_us10_own_stock_fast_path_used
+cbp_debug_last_us10_own_stock_taken
+cbp_debug_last_us10_market_aggregate_prefilter_used
+cbp_debug_last_us10_supplier_stock_floor_ratio
+cbp_debug_last_us10_negative_balance_exclusions
+cbp_debug_last_us10_bucket_1_candidates
+cbp_debug_last_us10_bucket_2_candidates
+cbp_debug_last_us10_bucket_3_candidates
+cbp_debug_last_us10_bucket_4_candidates
 ```
 
 ## Focused US-10-UI Visibility Test
@@ -384,7 +384,7 @@ modeu5_debug_last_us10_bucket_4_candidates
 Run:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 ```
 
 Choose:
@@ -400,7 +400,7 @@ PASS - US-10 demand resolution
 ```
 
 Expected dump shape in `debug.log` and in
-`./tools/summarize_modeu5_test_logs.sh`:
+`./tools/summarize_cbp_logs.sh`:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us10_ui_visibility
@@ -466,7 +466,7 @@ Expected result:
 Then run the deterministic read-model probe:
 
 ```txt
-event modeu5_us10_debug.1
+event cbp_us10_debug.1
 Run US-10 UI visibility summary
 ```
 
@@ -486,7 +486,7 @@ tab hook is runtime-confirmed.
 The broad chain now includes the US-10 scenarios:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 Choose:
@@ -498,7 +498,7 @@ Revalidate main operations
 After closing EU5:
 
 ```bash
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 Expected summary includes:

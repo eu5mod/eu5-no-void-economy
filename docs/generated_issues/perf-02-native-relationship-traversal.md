@@ -37,11 +37,11 @@ cache. That belongs to the next performance layer.
 
 ```txt
 tools/generate_stock_good_helpers.sh
-tools/templates/modeu5_stock_good_adapter.template.txt
-in_game/common/scripted_effects/modeu5_performance_effects.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf02_test_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_perf02_debug_events.txt
-main_menu/localization/english/modeu5_stock_l_english.yml
+tools/templates/cbp_stock_good_adapter.template.txt
+in_game/common/scripted_effects/cbp_performance_effects.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf02_test_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_perf02_debug_events.txt
+main_menu/localization/english/cbp_stock_l_english.yml
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/TEST_PLAN.md
 docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
@@ -71,7 +71,7 @@ docs/tests/PERF_02_NATIVE_RELATIONSHIP_TRAVERSAL_RUNBOOK.md
 - The shared country storage-capacity wrapper iterates native country markets
   once and processes goods inside each market.
 - The previous per-good country-market wrapper remains available.
-- `modeu5_rebuild_human_relevant_markets` builds a deduplicated global market
+- `cbp_rebuild_human_relevant_markets` builds a deduplicated global market
   list from human countries using `every_market_present_in_country`.
 - A focused PERF-02 debug event validates that owned-location markets for the
   current country are present in the native iterator output.
@@ -93,7 +93,7 @@ Run:
 Then in a disposable campaign as a country with markets, run:
 
 ```txt
-event modeu5_perf02_debug.1
+event cbp_perf02_debug.1
 ```
 
 ## Known limitations

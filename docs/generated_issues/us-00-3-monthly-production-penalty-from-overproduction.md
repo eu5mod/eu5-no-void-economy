@@ -32,7 +32,7 @@ Feeds counters to: next monthly cycle, US-10-UI
 |---|---|---|---|---|
 | Effective ratio calculation/output | country × market × good | US-00.2 result using guarded `change_variable` arithmetic | CONFIRMED | 026 |
 | Read keyed ratio entry | country-scoped per-good map keyed by market | <code>variable_map(name&#124;key)</code> | CONFIRMED | 007, 025 |
-| Prepared N+1 penalty field | country × market × good record | logical `production_penalty` field; physical `modeu5_<good>_production_penalty_by_market` map keyed by market | CONFIRMED | 007, 025 |
+| Prepared N+1 penalty field | country × market × good record | logical `production_penalty` field; physical `cbp_<good>_production_penalty_by_market` map keyed by market | CONFIRMED | 007, 025 |
 | Identify affected production sources/locations | building/location/market/good | production iterators, output checks, `market` link | CONFIRMED | 003-004, 029 |
 | Identify the country to penalize | country-rooted cycle → affected owned location | current country plus owned-location and market context | CONFIRMED | 003-005, 011, 081 |
 | Preferred modifier | location × good | `local_<good>_output_modifier` | CONFIRMED | 027 |

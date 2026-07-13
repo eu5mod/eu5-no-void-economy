@@ -40,7 +40,7 @@ It must not be:
 country
   -> goods:wheat
   -> every_market_present_in_country
-    -> modeu5_recalculate_country_market_capacity_from_prepared_pool_good_wheat
+    -> cbp_recalculate_country_market_capacity_from_prepared_pool_good_wheat
 ```
 
 ## Shared Capacity Maps
@@ -48,22 +48,22 @@ country
 The refresh writes only these country-scoped maps keyed by market:
 
 ```txt
-modeu5_stock_cap_by_market
-modeu5_base_capacity_by_market
-modeu5_building_capacity_by_market
-modeu5_foreign_capacity_by_market
+cbp_stock_cap_by_market
+cbp_base_capacity_by_market
+cbp_building_capacity_by_market
+cbp_foreign_capacity_by_market
 ```
 
 Generated per-good adapters still read these maps when a good-specific stock operation needs capacity enforcement or debug values.
 
 ## Implementation Rules
 
-- `modeu5_recalculate_saved_country_storage_capacities` must not select `goods:wheat` or any other sentinel good.
-- `modeu5_recalculate_saved_country_market_storage_capacities` must call the shared capacity effect, not a generated good adapter.
-- Pure capacity refresh must not call `modeu5_load_stock_record_good_<good>`.
-- Pure capacity refresh must not call `modeu5_mark_active_market_good_<good>`.
+- `cbp_recalculate_saved_country_storage_capacities` must not select `goods:wheat` or any other sentinel good.
+- `cbp_recalculate_saved_country_market_storage_capacities` must call the shared capacity effect, not a generated good adapter.
+- Pure capacity refresh must not call `cbp_load_stock_record_good_<good>`.
+- Pure capacity refresh must not call `cbp_mark_active_market_good_<good>`.
 - Active market-good lists represent stock, market aggregate, ledger, dirty, or validation work. Capacity-only presence is not market-good activity.
-- Per-good stock adapters may read shared capacity through `modeu5_load_capacity_breakdown`.
+- Per-good stock adapters may read shared capacity through `cbp_load_capacity_breakdown`.
 
 ## Per-Good Loop Preservation Rule
 
@@ -90,27 +90,27 @@ good-neutral generated dispatchers
 
 ## Acceptance Criteria
 
-- [ ] `modeu5_recalculate_saved_country_storage_capacities` contains no `goods:wheat` or other sentinel good.
-- [ ] Generated stock adapters contain no `modeu5_recalculate_country_market_capacity_good_<good>` helpers.
+- [ ] `cbp_recalculate_saved_country_storage_capacities` contains no `goods:wheat` or other sentinel good.
+- [ ] Generated stock adapters contain no `cbp_recalculate_country_market_capacity_good_<good>` helpers.
 - [ ] Capacity-only refresh writes shared capacity maps and does not mark per-good active lists.
 - [ ] US-02 deterministic test still proves wheat and iron read the same capacity.
 - [ ] CORE-01 stock tests still enforce shared capacity through centralized stock operators.
 - [ ] CORE-02 initialization still uses shared capacity as allocation weight.
-- [ ] Main revalidation remains runnable through `event modeu5_revalidate_debug.1`.
+- [ ] Main revalidation remains runnable through `event cbp_revalidate_debug.1`.
 
 ## Manual Test Scenario
 
 Preferred end-to-end path:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 Select "Revalidate main operations"
 ```
 
 Then summarize logs:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 Expected compact result:
@@ -124,7 +124,7 @@ Missing expected scenarios: 0
 For focused US-02 validation:
 
 ```txt
-event modeu5_us02_debug.1
+event cbp_us02_debug.1
 Select "Run US-02 storage-capacity test"
 ```
 

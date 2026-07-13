@@ -22,8 +22,8 @@ full world market list.
 Add sparse active-market scheduling indexes:
 
 ```txt
-modeu5_<good>_active_markets
-modeu5_active_markets_any_good
+cbp_<good>_active_markets
+cbp_active_markets_any_good
 ```
 
 Then use those indexes for active validation:
@@ -60,19 +60,19 @@ US-00 ledger updates.
 |---|---|---|---|---|
 | Deduplicated global market list | global -> market | `add_to_global_variable_list`, `is_target_in_global_variable_list`, `every_in_global_list`, `clear_global_variable_list` | CONFIRMED | 111, 129 |
 | Per-good active market list | global -> market | one literal generated list per good | CONFIRMED | 129 |
-| Active validation traversal | global active market -> rebuilt current-market country work cache -> per-good active membership | generated `modeu5_validate_active_market_all_goods` with prepared-cache validators | CONFIRMED | 129, 132 |
-| Monthly seen-market registry | country -> market; global -> market | `modeu5_monthly_markets_seen_this_cycle` | CONFIRMED | 130 |
+| Active validation traversal | global active market -> rebuilt current-market country work cache -> per-good active membership | generated `cbp_validate_active_market_all_goods` with prepared-cache validators | CONFIRMED | 129, 132 |
+| Monthly seen-market registry | country -> market; global -> market | `cbp_monthly_markets_seen_this_cycle` | CONFIRMED | 130 |
 | Strict exhaustive audit | none -> market | `every_market_in_world` | CONFIRMED | 002 |
 
 ## Files expected to change
 
 ```txt
 tools/generate_stock_good_helpers.sh
-tools/templates/modeu5_stock_good_adapter.template.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_debug_events.txt
-main_menu/localization/english/modeu5_stock_l_english.yml
+tools/templates/cbp_stock_good_adapter.template.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_debug_events.txt
+main_menu/localization/english/cbp_stock_l_english.yml
 docs/generated_issues/perf-05-reduce-global-market-scans.md
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
@@ -106,13 +106,13 @@ docs/tests/TEST_PLAN.md
 ## Acceptance criteria
 
 - Generated adapters maintain one active-market list per good.
-- Generated adapters maintain one global `modeu5_active_markets_any_good` list.
+- Generated adapters maintain one global `cbp_active_markets_any_good` list.
 - Stock, transfer, capacity, and rebuild paths mark markets active when they
   leave positive stock/capacity/aggregate state.
-- Active validation iterates `modeu5_active_markets_any_good` once, rebuilds the
+- Active validation iterates `cbp_active_markets_any_good` once, rebuilds the
   current-market country work cache once for that market, then checks each
   per-good active list inside the market scope.
-- `modeu5_validate_all_stock_consistency` remains strict/exhaustive and still
+- `cbp_validate_all_stock_consistency` remains strict/exhaustive and still
   uses `every_market_in_world`.
 - Automatic allowed validation uses dirty validation in normal runtime and
   active validation in audit mode.
@@ -121,7 +121,7 @@ docs/tests/TEST_PLAN.md
 - Monthly reconciliation preselects the current pulse country as the
   reconciliation controller before invoking dirty validation.
 - The monthly all-goods dispatcher marks markets in
-  `modeu5_monthly_markets_seen_this_cycle` while preserving all country-owned
+  `cbp_monthly_markets_seen_this_cycle` while preserving all country-owned
   market/good processing.
 - Deterministic reconciliation tests expose a PASS/FAIL marker for active
   validation.
@@ -141,7 +141,7 @@ Run:
 Then in a disposable campaign:
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 choose "Test US-11 dirty-record reconciliation"
 ```
 
