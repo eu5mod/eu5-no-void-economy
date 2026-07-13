@@ -1,0 +1,34 @@
+# US-05 monthly application of the Wealth + Trade Income reconciliation ratio.
+#
+# This effect runs after PR #166 refreshes cbp_country_wealth_endpoint. The
+# permanent country modifier is replaced each month with the current ratio.
+
+modeu5_us05_refresh_safe_slider_cost_reconciliation = {
+	remove_country_modifier = modeu5_us05_economic_base_slider_cost_reconciliation
+
+	if = {
+		limit = {
+			has_variable = cbp_country_wealth_endpoint
+			modeu5_slider_cost_vanilla_base > 0
+		}
+		add_country_modifier = {
+			modifier = modeu5_us05_economic_base_slider_cost_reconciliation
+			years = -1
+			mode = replace
+			size = modeu5_slider_cost_reconciliation_modifier
+		}
+	}
+
+	set_variable = {
+		name = cbp_us05_slider_cost_reconciliation_modifier
+		value = modeu5_slider_cost_reconciliation_modifier
+	}
+	set_variable = {
+		name = cbp_us05_slider_cost_target_base
+		value = modeu5_slider_cost_target_base
+	}
+	set_variable = {
+		name = cbp_us05_slider_cost_vanilla_base
+		value = modeu5_slider_cost_vanilla_base
+	}
+}
