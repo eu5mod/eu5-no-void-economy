@@ -16,4 +16,6 @@ NEconomy = {
 	PRICE_SCALE_FROM_ECO_BASE = 0          #VANILLA = 0.1
 	GOODS_RGO_BASE_COST = 1          #VANILLA = 0.5
 	GOODS_RGO_PRICE_SCALE = 0          #VANILLA = 0.25
+
+	# POP_NEEDS_INCOME_SCALE = 1          #VANILLA = 1.33
 }
