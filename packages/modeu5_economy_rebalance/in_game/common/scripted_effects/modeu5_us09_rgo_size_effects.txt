@@ -1,16 +1,18 @@
 modeu5_apply_us09_base_rgo_size_bonus = {
 	if = {
 		limit = {
-			NOT = { has_global_variable = cbp_us09_base_rgo_size_bonus_applied }
+			NOT = { has_global_variable = cbp_change_max_rgo }
 		}
 		every_location_in_the_world = {
 			add_location_modifier = {
 				modifier = modeu5_us09_base_rgo_size_10_percent_bonus
-				days = -1
+				years = -1
 				mode = replace
-				recalculate_immediately = yes
 			}
 		}
-		set_global_variable = cbp_us09_base_rgo_size_bonus_applied
+		set_global_variable = {
+			name = cbp_change_max_rgo
+			value = yes
+		}
 	}
 }
