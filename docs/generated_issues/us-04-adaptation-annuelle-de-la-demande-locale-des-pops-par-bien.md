@@ -29,12 +29,14 @@ Persistent key/value:
 modeu5_pop_demand_multiplier[goods:<good>] = coefficient
 modeu5_us04_reconciliation_coefficient[goods:<good>] = active ModeU5 coefficient
 modeu5_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
-modeu5_us04_reconciliation_extra_quantity[goods:<good>] = requested × max(0, coefficient - 1)
+modeu5_us04_reconciliation_extra_quantity[goods:<good>] = proxy base × max(0, coefficient - 1)
 modeu5_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
 modeu5_us04_reconciliation_goods_supply_removed_quantity[goods:<good>] = actual extra quantity mirrored to vanilla market supply
+modeu5_us04_reconciliation_restored_quantity[goods:<good>] = stock actually restored for coefficients below 1
+modeu5_us04_reconciliation_goods_supply_added_quantity[goods:<good>] = actual restored quantity mirrored to vanilla market supply
 modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
-modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock decrease
-modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock decrease
+modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock change magnitude
+modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock change magnitude
 modeu5_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
 modeu5_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
 modeu5_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
@@ -126,14 +128,16 @@ ModeU5 demand through an explicit ModeU5-owned location Estate proxy. A plain
 which estate should pay for the extra consumption, and a fixed fallback Estate is
 not a safe production substitute for real local composition.
 
-The target production shape is not a post-US-10 reconciliation competing with
-US-10. It is a pre-US-10 additional-demand preparation pass:
+The long-term target production shape is a US-10-compatible signed demand delta,
+not an independent full-consumption resolver. In the current branch, US-04 is
+wired after the monthly stock cycle and therefore applies only the signed
+coefficient delta:
 
 ```txt
 monthly country pulse
   -> current country
   -> every_market_present_in_country as target market
-  -> generated per-good US-04 demand-preparation adapter
+  -> generated per-good US-04 signed reconciliation adapter
   -> for each good demanded by Pops in the target market
   -> every_owned_location limited to location.market = target market
 ```
@@ -146,7 +150,7 @@ promoted market shell
   -> target promoted market
   -> rebuild countries_present_in_market
   -> each present country
-  -> generated per-good US-04 demand-preparation adapter
+  -> generated per-good US-04 signed reconciliation adapter
   -> for each good demanded by Pops in the target market
   -> that country's owned locations in the target market
 ```
@@ -183,21 +187,30 @@ estate_extra_quantity =
   proxy_estate_size_at_location
   × max(0, modeu5_us04_reconciliation_coefficient - 1)
 
+estate_restored_quantity =
+  proxy_estate_size_at_location
+  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+
 total_extra_quantity =
   sum(estate_extra_quantity for all estates)
+
+total_restored_quantity =
+  sum(estate_restored_quantity for all estates)
 ```
 
-Then US-10, or a US-10-compatible central demand resolver, should consume the
-request through:
+The current monthly hook runs after the monthly stock cycle. Therefore US-04 is
+a signed monthly reconciliation delta, not a second full consumption pass:
 
 ```txt
-modeu5_remove_stock(reason = consumption)
+coefficient = 1.20 -> remove the additional 20% through modeu5_remove_stock
+coefficient = 1.00 -> no stock or vanilla supply correction
+coefficient = 0.99 -> restore 1% through modeu5_add_stock
 ```
 
-That centralized call updates both country × market × good stock and the market
-× good aggregate/cache. The monthly reconciliation record stores requested,
-extra, removed, unsatisfied, stock deltas, estate total, and per-estate charge
-diagnostics.
+Both central stock calls update country × market × good stock and the market ×
+good aggregate/cache in the same transaction. US-04 must never debit the whole
+consumption again; US-10 owns full consumption resolution. US-04 only applies
+the coefficient delta.
 
 The charge side uses the confirmed country-scope vanilla effect:
 
@@ -221,10 +234,20 @@ estate_charge =
   estate_actual_quantity × market_price(goods:<good>)
 ```
 
-US-04 also removes vanilla market supply through `add_goods_supply` with a
-negative amount equal to the same `actual_removed_quantity`, not the theoretical
-requested `total_extra_quantity`. This avoids double imputation: only the
-additional satisfied consumption delta is mirrored to vanilla supply.
+US-04 also mirrors the stock delta to vanilla market supply through
+`add_goods_supply`:
+
+```txt
+positive delta:
+  amount = -actual_removed_quantity
+
+negative delta:
+  amount = actual_restored_quantity
+```
+
+This avoids double imputation: only the additional satisfied/restored
+consumption delta is mirrored to vanilla supply, never the full requested
+consumption.
 
 The legacy bridge maps remain diagnostic/test-only:
 
@@ -273,9 +296,13 @@ for each relevant country × market:
         x proxy_estate_size_at_location
 
       after the location-estate calculation:
-        create one additional US-10 demand request from the estate extra quantities
-        consume satisfied quantity through modeu5_remove_stock
-        adjust vanilla supply and charge estates only for satisfied quantity
+        if coefficient > 1:
+          consume only the extra satisfied quantity through modeu5_remove_stock
+          subtract that actual extra delta from vanilla supply
+          charge estates only for the satisfied extra quantity
+        if coefficient < 1:
+          restore only the below-baseline delta through modeu5_add_stock
+          add that actual restored delta back to vanilla supply
 ```
 
 Do not use raw `pop_size` as a demand proxy and do not fallback to

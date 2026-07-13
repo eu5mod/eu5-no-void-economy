@@ -151,7 +151,16 @@ estate_requested_quantity =
 estate_extra_quantity =
   proxy_estate_size_at_location
   × max(0, modeu5_us04_reconciliation_coefficient - 1)
+
+estate_restored_quantity =
+  proxy_estate_size_at_location
+  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
 ```
+
+The positive path removes only the additional satisfied delta from ModeU5 stock
+and vanilla market supply. The below-baseline path restores only the avoided
+consumption delta to ModeU5 stock and vanilla market supply. US-04 does not
+reapply whole consumption; US-10 owns that.
 
 `proxy_estate_size_at_location` may be derived from summed Pops of the matching
 Estate only if the relevant Pop-size read is confirmed. Pop size is not accepted

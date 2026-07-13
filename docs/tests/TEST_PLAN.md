@@ -1618,11 +1618,17 @@ modeu5_us04_reconciliation_coefficient(location, good)
 × proxy_estate_size_at_location
 ```
 
-The proxy path removes satisfied extra demand through `modeu5_remove_stock`,
+The proxy path runs as a signed monthly reconciliation delta after the monthly
+stock cycle: it removes satisfied extra demand through `modeu5_remove_stock`,
 mirrors the same extra delta to vanilla market supply through negative
 `add_goods_supply`, and charges the known estates through `add_gold_to_estate`.
-It remains a pre-US-10 additional-demand preparation pass, not a post-US-10
-correction. There is no `peasants_estate` fallback.
+There is no `peasants_estate` fallback.
+
+The same test also covers the below-baseline coefficient path. A fixture with
+`coefficient = 0.99` must restore only the 1% avoided-consumption delta through
+`modeu5_add_stock` and mirror that same delta through positive
+`add_goods_supply`. It must not remove stock, subtract vanilla supply, or apply
+the whole consumption a second time.
 
 Option C runs the PR #167 Estate/location probe:
 

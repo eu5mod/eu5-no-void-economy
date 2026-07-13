@@ -89,12 +89,21 @@ estate_extra_quantity =
   proxy_estate_size_at_location
   × max(0, modeu5_us04_reconciliation_coefficient - 1)
 
+estate_restored_quantity =
+  proxy_estate_size_at_location
+  × max(0, 1 - modeu5_us04_reconciliation_coefficient)
+
 total_extra_quantity = sum(estate_extra_quantity)
+total_restored_quantity = sum(estate_restored_quantity)
 
 if total_extra_quantity > 0 and stock runtime is ready:
     call modeu5_remove_stock(reason = consumption)
     charge known estates through add_gold_to_estate
     persist requested / extra / removed / unsatisfied / stock-delta diagnostics
+
+if total_restored_quantity > 0 and stock runtime is ready:
+    call modeu5_add_stock(capacity_policy = allow_over_capacity)
+    persist requested / restored / stock-delta diagnostics
 ```
 
 A location x good aggregate alone still cannot tell which estate should pay. A
@@ -104,9 +113,19 @@ not a hard-coded fallback Estate.
 
 ## Runtime Flow
 
-The proxy production flow is a pre-US-10 additional-demand preparation pass. It
-should run before US-10 consumption resolution, not as a competing post-US-10
-reconciliation pass.
+The desired target architecture remains a US-10-compatible demand request, but
+the current branch wires US-04 from the monthly country pulse after the monthly
+stock cycle. Therefore the implemented production flow is a signed monthly
+reconciliation delta:
+
+```txt
+coefficient = 1.20 -> remove the additional 20%
+coefficient = 1.00 -> no stock/supply correction
+coefficient = 0.99 -> restore/add 1%
+```
+
+US-10 owns full consumption resolution. US-04 must not remove the whole
+consumption again; it only applies the coefficient delta.
 
 The intended traversal is country-owned and market-scoped:
 
@@ -176,31 +195,41 @@ for each country x market reached by the monthly country-owned traversal:
             coefficient_extra =
               max(0, modeu5_us04_reconciliation_coefficient - 1)
 
+            coefficient_restore =
+              max(0, 1 - modeu5_us04_reconciliation_coefficient)
+
             for each estate with requested quantity:
                 estate_extra_quantity =
                   estate_requested_quantity x coefficient_extra
+                estate_restored_quantity =
+                  estate_requested_quantity x coefficient_restore
 
             total_extra_quantity = sum estate_extra_quantity
-            if total_extra_quantity <= 0:
-                skip this location x good
+            total_restored_quantity = sum estate_restored_quantity
 
-            register one US-10 additional-demand request:
+            apply signed reconciliation delta:
                 country = current country
                 market = target market
                 location = current location
                 good = current good
-                requested quantity = total_extra_quantity
+                extra quantity = total_extra_quantity
+                restored quantity = total_restored_quantity
                 estate split = estate_extra_quantity by estate
 ```
 
-Then US-10, or a US-10-compatible central demand resolver, applies the request:
+The current reconciliation implementation applies the signed delta directly
+through central stock operators:
 
 ```txt
 actual_removed_quantity =
   modeu5_remove_stock(country, market, good, total_extra_quantity)
 
+actual_restored_quantity =
+  modeu5_add_stock(country, market, good, total_restored_quantity)
+
 vanilla_supply_delta =
   -actual_removed_quantity
+  +actual_restored_quantity
   through the confirmed add_goods_supply surface
 
 for each estate with estate_extra_quantity:
@@ -219,10 +248,12 @@ unsatisfied_extra_quantity =
   total_extra_quantity - actual_removed_quantity
 ```
 
-Important accounting rule: charge estates and remove vanilla market supply only
-for `actual_removed_quantity`, not for theoretical `total_extra_quantity` or
-full requested consumption. This keeps ModeU5 stock, vanilla supply adjustment,
-and estate payment aligned, and avoids double imputation.
+Important accounting rule: mutate stock and vanilla market supply only for the
+actual delta applied by the central operators, not for theoretical totals or full
+requested consumption. Positive deltas charge estates and subtract vanilla
+supply. Negative deltas restore stock and add vanilla supply back. This keeps
+ModeU5 stock, vanilla supply adjustment, and estate payment aligned, and avoids
+double imputation.
 
 The central stock invariant still applies:
 
@@ -243,15 +274,14 @@ flowchart TD
     B --> C{Existing coefficient record?}
     C -->|No| D[No write]
     C -->|Yes| E[Update ModeU5 coefficient]
-    E --> F[Pre-US-10 additional-demand preparation]
-    F --> G{Location Estate demand exposure confirmed?}
-    G -->|No| H[BLOCKED: diagnostic only]
-    H --> I[No stock removal]
-    H --> J[No estate charge]
-    G -->|Yes, future| K[Read location Estate demand by good]
-    K --> L[Register US-10 additional demand]
-    L --> M[US-10 removes satisfied quantity centrally]
-    M --> N[Charge exact estates and adjust vanilla supply for satisfied quantity]
+    E --> F[Monthly signed delta reconciliation]
+    F --> G[Read ModeU5 location Estate-size proxy]
+    G --> H{Coefficient above, equal, or below 1?}
+    H -->|Above 1| I[Remove actual extra stock and subtract vanilla supply]
+    I --> J[Charge estates for satisfied extra quantity]
+    H -->|Equal 1| K[No stock or supply delta]
+    H -->|Below 1| L[Restore stock and add vanilla supply]
+    G --> M[Future direct exposure can replace proxy input]
 ```
 
 ## Evidence Map
@@ -322,6 +352,18 @@ goods_supply_removed_quantity = removed_quantity
 country_stock_delta > 0
 market_stock_delta > 0
 estate_charge > 0
+```
+
+Expected below-baseline diagnostics:
+
+```txt
+coefficient = 0.99
+restored_quantity > 0
+goods_supply_added_quantity = restored_quantity
+country_stock_delta > 0
+market_stock_delta > 0
+removed_quantity = 0
+goods_supply_removed_quantity = 0
 ```
 
 No parser/database errors related to US-04 are acceptable. Vanilla noise should
