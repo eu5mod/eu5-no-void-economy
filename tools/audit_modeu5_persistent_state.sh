@@ -107,6 +107,11 @@ def is_state_like(name: str) -> bool:
         "modeu5_us04_reconciliation_estate_charge_clergy_estate",
         "modeu5_us04_reconciliation_estate_charge_nobles_estate",
         "modeu5_us04_reconciliation_estate_charge_peasants_estate",
+        "modeu5_us04_reconciliation_estate_refund",
+        "modeu5_us04_reconciliation_estate_refund_burghers_estate",
+        "modeu5_us04_reconciliation_estate_refund_clergy_estate",
+        "modeu5_us04_reconciliation_estate_refund_nobles_estate",
+        "modeu5_us04_reconciliation_estate_refund_peasants_estate",
         "modeu5_us04_reconciliation_estate_requested_total",
         "modeu5_us04_reconciliation_extra_quantity",
         "modeu5_us04_reconciliation_goods_supply_added_quantity",
@@ -230,6 +235,11 @@ modeu5_us04_reconciliation_estate_charge_peasants_estate	variable map	monthly di
 modeu5_us04_reconciliation_estate_charge_burghers_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_estate_charge_nobles_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_us04_reconciliation_estate_charge_clergy_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	positive value refunded to known estates for below-baseline restoration
+modeu5_us04_reconciliation_estate_refund_peasants_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_burghers_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_nobles_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
+modeu5_us04_reconciliation_estate_refund_clergy_estate	variable map	monthly diagnostic	location	US-04 estate-aware monthly reconciliation	clear before each monthly reconciliation write	current month diagnostic
 modeu5_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 

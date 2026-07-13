@@ -409,6 +409,11 @@ modeu5_us04_clear_monthly_reconciliation_record_good___GOOD__ = {
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_burghers_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_burghers_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_charge_burghers_estate key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_nobles_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_nobles_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_charge_nobles_estate key = goods:__GOOD__ } }
 	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_charge_clergy_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_charge_clergy_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_charge_clergy_estate key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_refund key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_peasants_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_peasants_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_refund_peasants_estate key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_burghers_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_burghers_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_refund_burghers_estate key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_nobles_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_nobles_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_refund_nobles_estate key = goods:__GOOD__ } }
+	if = { limit = { has_variable_map = modeu5_us04_reconciliation_estate_refund_clergy_estate is_key_in_variable_map = { name = modeu5_us04_reconciliation_estate_refund_clergy_estate target = goods:__GOOD__ } } remove_from_variable_map = { name = modeu5_us04_reconciliation_estate_refund_clergy_estate key = goods:__GOOD__ } }
 }
 
 modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
@@ -533,6 +538,46 @@ modeu5_us04_store_monthly_reconciliation_record_good___GOOD__ = {
 			value = scope:modeu5_us04_reconciliation_estate_charge_clergy_estate
 		}
 	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_refund_value > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_refund
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_refund_value
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_refund_peasants_estate > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_refund_peasants_estate
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_refund_peasants_estate
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_refund_burghers_estate > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_refund_burghers_estate
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_refund_burghers_estate
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_refund_nobles_estate > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_refund_nobles_estate
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_refund_nobles_estate
+		}
+	}
+	if = {
+		limit = { scope:modeu5_us04_reconciliation_estate_refund_clergy_estate > 0 }
+		add_to_variable_map = {
+			name = modeu5_us04_reconciliation_estate_refund_clergy_estate
+			key = goods:__GOOD__
+			value = scope:modeu5_us04_reconciliation_estate_refund_clergy_estate
+		}
+	}
 }
 
 modeu5_monthly_reconcile_country_market_pop_demand_good___GOOD__ = {
@@ -615,12 +660,20 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_burghers_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_burghers_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
 	save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_nobles_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_nobles_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
 	save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_clergy_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_clergy_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_peasants_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_peasants_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_burghers_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_burghers_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_nobles_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_nobles_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+	save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_clergy_estate value = { value = scope:modeu5_us04_monthly_requested_quantity_clergy_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
 	if = {
 		limit = { scope:modeu5_us04_proxy_estate_source_present > 0 }
 		save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_peasants_estate value = { value = scope:modeu5_us04_proxy_estate_size_peasants_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
 		save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_burghers_estate value = { value = scope:modeu5_us04_proxy_estate_size_burghers_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
 		save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_nobles_estate value = { value = scope:modeu5_us04_proxy_estate_size_nobles_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
 		save_temporary_scope_value_as = { name = modeu5_us04_extra_reconciliation_quantity_clergy_estate value = { value = scope:modeu5_us04_proxy_estate_size_clergy_estate multiply = scope:modeu5_us04_positive_reconciliation_delta_ratio min = 0 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_peasants_estate value = { value = scope:modeu5_us04_proxy_estate_size_peasants_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_burghers_estate value = { value = scope:modeu5_us04_proxy_estate_size_burghers_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_nobles_estate value = { value = scope:modeu5_us04_proxy_estate_size_nobles_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
+		save_temporary_scope_value_as = { name = modeu5_us04_restore_reconciliation_quantity_clergy_estate value = { value = scope:modeu5_us04_proxy_estate_size_clergy_estate multiply = scope:modeu5_us04_restore_reconciliation_delta_ratio min = 0 } }
 	}
 	save_temporary_scope_value_as = { name = modeu5_us04_actual_reconciled_quantity value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_actual_restored_quantity value = 0 }
@@ -630,6 +683,7 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_goods_supply_delta value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_good_price value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_value value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_value value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_country_stock_before_reconciliation value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_country_stock_after_reconciliation value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_market_stock_before_reconciliation value = 0 }
@@ -640,6 +694,10 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_burghers_estate value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_nobles_estate value = 0 }
 	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_charge_clergy_estate value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_peasants_estate value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_burghers_estate value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_nobles_estate value = 0 }
+	save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_clergy_estate value = 0 }
 
 	if = {
 		limit = {
@@ -781,12 +839,44 @@ modeu5_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 		save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_country_stock_delta value = { value = scope:modeu5_us04_country_stock_after_reconciliation subtract = scope:modeu5_us04_country_stock_before_reconciliation min = 0 } }
 		save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_market_stock_delta value = { value = scope:modeu5_us04_market_stock_after_reconciliation subtract = scope:modeu5_us04_market_stock_before_reconciliation min = 0 } }
 
+		scope:modeu5_us04_reconciliation_market = {
+			save_temporary_scope_value_as = {
+				name = modeu5_us04_reconciliation_good_price
+				value = { value = "market_price(goods:__GOOD__)" min = 0 }
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = modeu5_us04_reconciliation_estate_refund_value
+			value = {
+				value = scope:modeu5_us04_actual_restored_quantity
+				multiply = scope:modeu5_us04_reconciliation_good_price
+				min = 0
+			}
+		}
+		if = {
+			limit = {
+				scope:modeu5_us04_reconciliation_estate_refund_value > 0
+				scope:modeu5_us04_restore_reconciliation_quantity > 0
+			}
+			save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_peasants_estate value = { value = scope:modeu5_us04_reconciliation_estate_refund_value multiply = scope:modeu5_us04_restore_reconciliation_quantity_peasants_estate divide = scope:modeu5_us04_restore_reconciliation_quantity min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_burghers_estate value = { value = scope:modeu5_us04_reconciliation_estate_refund_value multiply = scope:modeu5_us04_restore_reconciliation_quantity_burghers_estate divide = scope:modeu5_us04_restore_reconciliation_quantity min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_nobles_estate value = { value = scope:modeu5_us04_reconciliation_estate_refund_value multiply = scope:modeu5_us04_restore_reconciliation_quantity_nobles_estate divide = scope:modeu5_us04_restore_reconciliation_quantity min = 0 } }
+			save_temporary_scope_value_as = { name = modeu5_us04_reconciliation_estate_refund_clergy_estate value = { value = scope:modeu5_us04_reconciliation_estate_refund_value multiply = scope:modeu5_us04_restore_reconciliation_quantity_clergy_estate divide = scope:modeu5_us04_restore_reconciliation_quantity min = 0 } }
+			scope:modeu5_us04_reconciliation_country = {
+				if = { limit = { scope:modeu5_us04_reconciliation_estate_refund_peasants_estate > 0 } add_gold_to_estate = { estate_type = estate_type:peasants_estate value = scope:modeu5_us04_reconciliation_estate_refund_peasants_estate } }
+				if = { limit = { scope:modeu5_us04_reconciliation_estate_refund_burghers_estate > 0 } add_gold_to_estate = { estate_type = estate_type:burghers_estate value = scope:modeu5_us04_reconciliation_estate_refund_burghers_estate } }
+				if = { limit = { scope:modeu5_us04_reconciliation_estate_refund_nobles_estate > 0 } add_gold_to_estate = { estate_type = estate_type:nobles_estate value = scope:modeu5_us04_reconciliation_estate_refund_nobles_estate } }
+				if = { limit = { scope:modeu5_us04_reconciliation_estate_refund_clergy_estate > 0 } add_gold_to_estate = { estate_type = estate_type:clergy_estate value = scope:modeu5_us04_reconciliation_estate_refund_clergy_estate } }
+			}
+		}
+
 		if = {
 			limit = { modeu5_audit_enabled_trigger = yes }
 			set_variable = { name = modeu5_debug_us04_last_requested_quantity value = scope:modeu5_us04_monthly_requested_quantity }
 			set_variable = { name = modeu5_debug_us04_last_restored_quantity value = scope:modeu5_us04_actual_restored_quantity }
 			set_variable = { name = modeu5_debug_us04_last_goods_supply_added value = scope:modeu5_us04_goods_supply_added_quantity }
-			debug_log = "ModeU5 US-04 RESTORED good=__GOOD__ requested=[THIS.GetVariable('modeu5_debug_us04_last_requested_quantity').GetValue|2] restored=[THIS.GetVariable('modeu5_debug_us04_last_restored_quantity').GetValue|2] goods_supply_added=[THIS.GetVariable('modeu5_debug_us04_last_goods_supply_added').GetValue|2]"
+			set_variable = { name = modeu5_debug_us04_last_estate_refund value = scope:modeu5_us04_reconciliation_estate_refund_value }
+			debug_log = "ModeU5 US-04 RESTORED good=__GOOD__ requested=[THIS.GetVariable('modeu5_debug_us04_last_requested_quantity').GetValue|2] restored=[THIS.GetVariable('modeu5_debug_us04_last_restored_quantity').GetValue|2] goods_supply_added=[THIS.GetVariable('modeu5_debug_us04_last_goods_supply_added').GetValue|2] estate_refund=[THIS.GetVariable('modeu5_debug_us04_last_estate_refund').GetValue|2]"
 		}
 	}
 

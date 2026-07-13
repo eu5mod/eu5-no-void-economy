@@ -1627,8 +1627,9 @@ There is no `peasants_estate` fallback.
 The same test also covers the below-baseline coefficient path. A fixture with
 `coefficient = 0.99` must restore only the 1% avoided-consumption delta through
 `modeu5_add_stock` and mirror that same delta through positive
-`add_goods_supply`. It must not remove stock, subtract vanilla supply, or apply
-the whole consumption a second time.
+`add_goods_supply`, then refund the known estates through positive
+`add_gold_to_estate`. It must not remove stock, subtract vanilla supply, charge
+estates, or apply the whole consumption a second time.
 
 Option C runs the PR #167 Estate/location probe:
 

@@ -143,6 +143,8 @@ def main() -> int:
     expect("name = modeu5_us04_goods_supply_delta value = { value = scope:modeu5_us04_goods_supply_removed_quantity multiply = -1 }" in monthly_reconciliation, "US-04 goods-supply reconciliation must apply a negative delta equal to actual extra consumption")
     expect("modeu5_add_stock" in monthly_reconciliation, "US-04 monthly reconciliation must restore stock for coefficients below 1")
     expect("name = modeu5_us04_goods_supply_added_quantity value = scope:modeu5_us04_actual_restored_quantity" in monthly_reconciliation, "US-04 goods-supply restoration must use actual stock restored")
+    expect("modeu5_us04_reconciliation_estate_refund_value" in monthly_reconciliation, "US-04 below-baseline restoration must compute an estate refund")
+    expect("add_gold_to_estate = { estate_type = estate_type:peasants_estate value = scope:modeu5_us04_reconciliation_estate_refund_peasants_estate }" in monthly_reconciliation, "US-04 below-baseline restoration must refund Estates through positive add_gold_to_estate")
     expect("add_goods_supply" in monthly_reconciliation, "US-04 monthly reconciliation must mirror satisfied extra consumption into vanilla market supply")
     expect("add_gold_to_estate" in monthly_reconciliation, "US-04 monthly reconciliation must charge known Estates through the confirmed country-scope effect")
     expect("reason=location_estate_demand_exposure_not_confirmed" not in monthly_reconciliation, "US-04 proxy reconciliation must not stay blocked on direct location Estate demand exposure")
@@ -164,8 +166,10 @@ def main() -> int:
     expect("modeu5_pop_demand_requested_quantity_clergy_estate" in template, "US-04 must support clergy estate requested-demand records")
     for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
         expect(f"modeu5_us04_reconciliation_estate_charge_{estate}" in template, f"US-04 monthly reconciliation must record {estate} charge diagnostics")
+        expect(f"modeu5_us04_reconciliation_estate_refund_{estate}" in template, f"US-04 monthly reconciliation must record {estate} refund diagnostics")
     expect("modeu5_us04_monthly_requested_quantity_estate_total" in template, "US-04 must keep estate requested total diagnostics available")
     expect("modeu5_us04_reconciliation_estate_charge" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate charge amount")
+    expect("modeu5_us04_reconciliation_estate_refund" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate refund amount")
 
     expect("modeu5_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
     expect("modeu5_initialize_us04_reconciliation_coefficient_all_goods" in helper_generator, "US-04 helper generator must emit the active reconciliation initializer")
@@ -196,6 +200,7 @@ def main() -> int:
     expect("reconciliation_goods_supply_removed_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation removes the same extra quantity from goods supply")
     expect("coefficient_below_one_goods_supply_added" in debug_test, "US-04 debug test must assert below-baseline coefficients restore vanilla goods supply")
     expect("coefficient_below_one_stock_restoration" in debug_test, "US-04 debug test must assert below-baseline coefficients restore country and market stock")
+    expect("coefficient_below_one_estate_refund" in debug_test, "US-04 debug test must assert below-baseline coefficients refund estates")
     expect("reconciliation_estate_charge_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation charges estates")
     expect("ModeU5 TEST PASS scenario=us04_estate_level_accounting" in debug_test, "US-04 Estate-level accounting probe must now pass when proxy inputs are present")
 

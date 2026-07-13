@@ -40,7 +40,7 @@ US-04 now has two separate layers:
 | Q9 full `REPLACE:pop_demand` | AMBIGUOUS HISTORICAL RESULT | Not accepted as proof after Q10/Q10b/Q10c failed to reproduce safe runtime responsiveness. |
 | Q10/Q10b/Q10c replacement lifecycle | REJECTED | Runtime replacement is not a viable production path. |
 | `every_pop -> pop_demand x good` direct read | NOT_CONFIRMED | Archived; no longer required for the proxy implementation. |
-| `modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for stock removal and estate charge. |
+| `modeu5_us04_reconciliation_coefficient × proxy_estate_size_at_location` | ACCEPTED | Active bridge for signed stock/supply delta, estate charge, and estate refund. |
 
 ## Implemented Coefficient Layer
 
@@ -244,6 +244,18 @@ for each estate with estate_extra_quantity:
 
     add_gold_to_estate = negative estate_charge
 
+for each estate with estate_restored_quantity:
+    estate_actual_restored_quantity =
+      actual_restored_quantity
+      x estate_restored_quantity
+      / total_restored_quantity
+
+    estate_refund =
+      estate_actual_restored_quantity
+      x market_price(goods:<good>)
+
+    add_gold_to_estate = positive estate_refund
+
 unsatisfied_extra_quantity =
   total_extra_quantity - actual_removed_quantity
 ```
@@ -362,6 +374,7 @@ restored_quantity > 0
 goods_supply_added_quantity = restored_quantity
 country_stock_delta > 0
 market_stock_delta > 0
+estate_refund > 0
 removed_quantity = 0
 goods_supply_removed_quantity = 0
 ```

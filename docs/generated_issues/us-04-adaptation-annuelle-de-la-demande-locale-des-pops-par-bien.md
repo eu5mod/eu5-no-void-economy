@@ -38,9 +38,11 @@ modeu5_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not
 modeu5_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock change magnitude
 modeu5_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock change magnitude
 modeu5_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
+modeu5_us04_reconciliation_estate_refund[goods:<good>] = positive estate refund amount
 modeu5_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
 modeu5_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
 modeu5_us04_reconciliation_estate_charge_<estate>[goods:<good>] = positive charge amount per estate
+modeu5_us04_reconciliation_estate_refund_<estate>[goods:<good>] = positive refund amount per estate
 ```
 
 `modeu5_pop_demand_multiplier` is retained as archived PR69 probe state.
@@ -218,6 +220,13 @@ The charge side uses the confirmed country-scope vanilla effect:
 add_gold_to_estate = { estate_type = estate_type:<estate> value = -estate_charge }
 ```
 
+The refund side uses the same confirmed country-scope effect with a positive
+value:
+
+```txt
+add_gold_to_estate = { estate_type = estate_type:<estate> value = estate_refund }
+```
+
 When the proxy records estate-specific extra quantities, US-04 splits the charge
 by each estate's share of the additional demand that was actually satisfied:
 
@@ -232,6 +241,19 @@ estate_actual_quantity =
 
 estate_charge =
   estate_actual_quantity × market_price(goods:<good>)
+```
+
+For coefficients below 1, the restored delta is split with the same proxy
+weights:
+
+```txt
+estate_restored_quantity =
+  actual_restored_quantity
+  × estate_restore_quantity
+  / total_restore_quantity
+
+estate_refund =
+  estate_restored_quantity × market_price(goods:<good>)
 ```
 
 US-04 also mirrors the stock delta to vanilla market supply through
@@ -303,6 +325,7 @@ for each relevant country × market:
         if coefficient < 1:
           restore only the below-baseline delta through modeu5_add_stock
           add that actual restored delta back to vanilla supply
+          refund estates for the restored quantity using the same proxy split
 ```
 
 Do not use raw `pop_size` as a demand proxy and do not fallback to

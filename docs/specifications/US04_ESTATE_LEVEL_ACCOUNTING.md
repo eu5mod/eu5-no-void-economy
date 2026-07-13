@@ -158,8 +158,9 @@ estate_restored_quantity =
 ```
 
 The positive path removes only the additional satisfied delta from ModeU5 stock
-and vanilla market supply. The below-baseline path restores only the avoided
-consumption delta to ModeU5 stock and vanilla market supply. US-04 does not
+and vanilla market supply, then charges the affected Estates. The
+below-baseline path restores only the avoided consumption delta to ModeU5 stock
+and vanilla market supply, then refunds the affected Estates. US-04 does not
 reapply whole consumption; US-10 owns that.
 
 `proxy_estate_size_at_location` may be derived from summed Pops of the matching
