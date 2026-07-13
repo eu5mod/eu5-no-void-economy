@@ -1,40 +1,46 @@
 ## Why this mod ? 
 
-This mod is born from the desire to fix :
- - PDX policy to balance snowbaling via punitive Gameplay
- - Economic issues such as unsold goods that create income
- - Economic issues such as [trade loops](https://github.com/user-attachments/assets/66c93022-9b1c-418c-b71d-2d30cbcbe329) 
+This mod is born from the desire to remove Paradox punive Balance Changes introduced since (1.2) and offer a more balanced alternative against, with methodic approach as someone who has balanced game : 
 
-## Mod description
+ - Method 1 : Set anchor & remove variable prices/speed. 
+    - Example : Scaling RGO prices
+    - Example : Scaling Consumption
+ - Method 2 : Set methodology **each candidate modification**  is attributed a set of "side effect" ahead
+    - Example : If my represent 40% of wealth for equilibrium => Average controll will tend to 40% or more
+    - Example : If consomption depend of good availability, it will **slowly** converge to absorbe production
 
- - The Mod is built arround **optionality** which means every feature can be activated or deactivated independently.
- - The changes are listed in 3 catégories :
-    - **Gameplay**: Changes that provides major Game Mechanics overhault designed to increase strategic depht
-    - **Design**: Changes that provide minimal Game Mechanics overhaul designed to increase strategic depht or flavour
-    - **Balance:** Changes that tweek vanilla values 
- - **Optionality exception**: The feature **Countries have own stocks** is a bundle of 5 changes (⚠️ The feature consume a lot of computing resources)
+In the making the mod has deepened few **Optional** mechanics : 
+ - Optional mechanic : Trade Loop Fix
+ - Optional mechanic : Stocks are managed at country level
+ - Optional mechanic : ⏳ Improvement of War Exhaustion as a Political Pressure
+ - Optional mechanic : ⏳ Improvement of Rebel behaviours
+ - Optional mechanic : ⏳ Imperial Hubris for Great Power & Regional Power reflecting difficulty to maintain Hegemon 
 
-### Gameplay - Community Balance Patch
+## Change Details
 
 > [!WARNING]  
 > While the we are confident in the redesign, we welcome your feedback to adapt modifiers.
 
 <details>
-<summary><strong> ✅ Trade Loop Fix</strong> (click for detail)</summary>
- The trade profit is de difference of price between market minus logitic cost</br>
+<summary><strong> ⚠️ Trade Loop Fix</strong> : Trading the same resource between two market is no longer beneficial </summary>
+ The trade profit is de difference of price between market minus logitic cost. </br>
+ ⚠️ We need to update the GUI & AI on that one with a few limitations from PARADOX : [A request has been made on the modder discord](https://discord.com/channels/1221948891704856757/1435416284044202157/threads/1524695676695478315)
+ <img width="1474" height="180" alt="image" src="https://github.com/user-attachments/assets/592ad8f5-c57f-4d01-88b6-71615fd089e3" />
 </details>
 
 <details>
-<summary><strong> ✅ Countries have own stocks</strong> (click for detail)</summary>
-    - incl : ✅ Only good that are sold generate an income; Thus reflecting the real economy</br>
-    - incl : ✅ Boycotts & Wars block country from buying your resources even if you don't own the Market Center (Vanilla embargo : Can't use a Market Center you own)</br>
+<summary><strong> ✅ Countries have own stocks & Resources generate income when they are sold</strong> (click for detail)</summary>
+    - incl : ✅ Goods produced over storage capacity don't generate an income</br>
+    - incl : ✅ Wars block country from buying your resources even if you don't own the Market Center </br>
+    - incl : ⏳ (<strong>New Diplo action</strong>: Boycott) : Block a country from buying trading with you (Even if you don't own the Market Center)
+    - incl : ⏳ (<strong>New Law </strong>: <goods/food> Export Control) : Allow you to block export of you critical matérial **Food**, **Weapons**, **Wood/Massonery**
     - incl : ✅ Production is increased by <strong>5%</strong> to compensate for the Revenue Loss</br>
     - incl : ✅ Trade Capacity is increased by 10% to absorbe the greater need for exchange.</br>
 
 </details>
 
 <details>
-<summary><strong> ✅ Improved anti snowballing solutions</strong> (click for detail)</summary>
+<summary><strong> ✅ Improved anti snowballing solutions</strong> (click for detail) : Sliders tuned for optimal average control at 50%</summary>
 Anti snowballing mesures introduced by PDX are cancelled & substituted in order to facilitate future balance. </br>
  1. ✅ RGO prices are stable & therefore facilitate balancing work as they provide a <strong>Fixed</strong> point of reference for Traditional Economy. </br>
  2. ✅ Economic Base redefinition  (Huge increase)</br>
@@ -42,7 +48,7 @@ Anti snowballing mesures introduced by PDX are cancelled & substituted in order 
 </details>
 
 <details>
-<summary><strong> ✅ Improved POP Consuming Behaviour</strong> (click for detail)</summary>
+<summary><strong> ✅ Improved POP Consuming Behaviour</strong> (click for detail): Align consuming behaviour with goods availability</summary>
 The only way to get consuming behaviour aligned with production, is to align consuming behaviour with production. So we made it :</br>
  1. ✅ We removed the scaling of POP needs with income</br>
  2. ✅ We introduced the following mechanic : If a good is undersupplied, the POP need slowly decrease (- 1% / year)</br>
@@ -90,6 +96,15 @@ The only way to get consuming behaviour aligned with production, is to align con
 
 ⚠️: Want to help us ? [Keep supporting this Thread](https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701)
 
+## Mod description
+
+ - The Mod is built arround **optionality** which means every feature can be activated or deactivated independently.
+ - The changes are listed in 3 catégories :
+    - **Gameplay**: Changes that provides major Game Mechanics overhault designed to increase strategic depht
+    - **Design**: Changes that provide minimal Game Mechanics overhaul designed to increase strategic depht or flavour
+    - **Balance:** Changes that tweek vanilla values 
+ - **Optionality exception**: The feature **Countries have own stocks** is a bundle of 5 changes (⚠️ The feature consume a lot of computing resources)
+ - 
 <!--
 ### War Balance Extension ( ❌ Under Consideration)
  1. Increased conquer cost before 1537 for non Horde in Europe (Status : ❌ Feasability unconfirmed)
