@@ -355,6 +355,17 @@ def validate_us10_ui_widget_contract(*, lateralview_gui: str, scripted_widget: s
     )
 
 
+def validate_perf14_test_contract(perf14_text: str, stock_loc: str) -> None:
+    expect(
+        "THIS.GetVariable('cbp_perf14_" not in perf14_text,
+        "PERF-14 debug dumps must read test_cbp_perf14* or gui_cbp_perf14* variables, matching the variables they set",
+    )
+    expect(
+        "THIS.GetVariable('cbp_perf14_ui_" not in stock_loc,
+        "PERF-14 localization dumps must read gui_cbp_perf14_ui* variables, matching the variables they set",
+    )
+
+
 def main() -> int:
     validate_required_files()
     if failures:
@@ -387,6 +398,8 @@ def main() -> int:
     us10_lateralview_gui = read("in_game/gui/cbp_us10_stock_lateralview.gui")
     us10_scripted_widget = read("in_game/gui/scripted_widgets/cbp_us10_stock.txt")
     stock_loc = read("in_game/localization/cbp_stock_l_english.yml")
+    perf14_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt")
+    perf14_guarded_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt")
     loc = read("main_menu/localization/english/cbp__cmm_l_english.yml")
 
     validate_no_legacy_review_pop_id("\n".join([cmm_effects, runtime_effects, scripted_gui, loc, read("in_game/events/cbp_review_events.txt"), read("in_game/common/scripted_effects/cbp_review_effects.txt")]))
@@ -414,6 +427,7 @@ def main() -> int:
         ui_effects=us10_ui_effects,
         stock_loc=stock_loc,
     )
+    validate_perf14_test_contract(perf14_test_effects + "\n" + perf14_guarded_test_effects, stock_loc)
 
     if failures:
         print("ModeU5 CI static contract validation failed:", file=sys.stderr)

@@ -175,7 +175,7 @@ cbp_perf14_guarded_probe_positive_promotion = {
 	set_variable = { name = test_cbp_perf14_debug_promotion_result value = scope:test_cbp_perf14_promotion_last_result_for_test }
 	set_variable = { name = test_cbp_perf14_debug_promotion_goods_materialized value = scope:test_cbp_perf14_promotion_goods_materialized_for_test }
 	set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = scope:test_cbp_perf14_promotion_allocated_total_for_test }
-	debug_log = "ModeU5 PERF-14 PROMOTION positive aggregate=120 country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] sources=[THIS.GetVariable('cbp_perf14_debug_wheat_country_source_count').GetValue|0] result=[THIS.GetVariable('cbp_perf14_debug_promotion_result').GetValue|0] materialized=[THIS.GetVariable('cbp_perf14_debug_promotion_goods_materialized').GetValue|0] allocated=[THIS.GetVariable('cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
+	debug_log = "ModeU5 PERF-14 PROMOTION positive aggregate=120 country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] sources=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_source_count').GetValue|0] result=[THIS.GetVariable('test_cbp_perf14_debug_promotion_result').GetValue|0] materialized=[THIS.GetVariable('test_cbp_perf14_debug_promotion_goods_materialized').GetValue|0] allocated=[THIS.GetVariable('test_cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
 	if = {
 		limit = {
 			OR = {
@@ -204,7 +204,7 @@ cbp_perf14_guarded_probe_idempotent_promotion = {
 	set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
 	set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
 	set_variable = { name = test_cbp_perf14_debug_promotion_result value = scope:test_cbp_perf14_promotion_noop_already_promoted_for_test }
-	debug_log = "ModeU5 PERF-14 PROMOTION idempotent before_country_sum=[THIS.GetVariable('cbp_perf14_debug_idempotent_country_sum_before').GetValue|2] after_country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] before_market=[THIS.GetVariable('cbp_perf14_debug_idempotent_market_before').GetValue|2] after_market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] noop=[THIS.GetVariable('cbp_perf14_debug_promotion_result').GetValue|0]"
+	debug_log = "ModeU5 PERF-14 PROMOTION idempotent before_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_idempotent_country_sum_before').GetValue|2] after_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] before_market=[THIS.GetVariable('test_cbp_perf14_debug_idempotent_market_before').GetValue|2] after_market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] noop=[THIS.GetVariable('test_cbp_perf14_debug_promotion_result').GetValue|0]"
 	if = {
 		limit = {
 			OR = {
@@ -237,7 +237,7 @@ cbp_perf14_guarded_probe_sparse_supplier_scan = {
 	set_variable = { name = test_cbp_perf14_debug_sparse_scan_used value = scope:cbp_us10_sparse_supplier_scan_used }
 	set_variable = { name = test_cbp_perf14_debug_sparse_fallback_used value = scope:cbp_us10_sparse_supplier_fallback_used }
 	set_variable = { name = test_cbp_perf14_debug_sparse_candidate_count value = scope:cbp_us10_candidate_count }
-	debug_log = "ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=[THIS.GetVariable('cbp_perf14_debug_sparse_source_count').GetValue|0] sparse=[THIS.GetVariable('cbp_perf14_debug_sparse_supplier_count').GetValue|0] candidates=[THIS.GetVariable('cbp_perf14_debug_sparse_candidate_count').GetValue|0] used=[THIS.GetVariable('cbp_perf14_debug_sparse_scan_used').GetValue|0] fallback=[THIS.GetVariable('cbp_perf14_debug_sparse_fallback_used').GetValue|0]"
+	debug_log = "ModeU5 PERF-14 SPARSE_SUPPLIERS good=wheat present=[THIS.GetVariable('test_cbp_perf14_debug_sparse_source_count').GetValue|0] sparse=[THIS.GetVariable('test_cbp_perf14_debug_sparse_supplier_count').GetValue|0] candidates=[THIS.GetVariable('test_cbp_perf14_debug_sparse_candidate_count').GetValue|0] used=[THIS.GetVariable('test_cbp_perf14_debug_sparse_scan_used').GetValue|0] fallback=[THIS.GetVariable('test_cbp_perf14_debug_sparse_fallback_used').GetValue|0]"
 
 	if = {
 		limit = {
@@ -281,7 +281,7 @@ cbp_perf14_guarded_probe_partial_promotion = {
 	set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
 	set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
 	set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = scope:test_cbp_perf14_promotion_allocated_total_for_test }
-	debug_log = "ModeU5 PERF-14 PROMOTION partial aggregate=100 existing_country_sum=25 final_country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] final_market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] allocated=[THIS.GetVariable('cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
+	debug_log = "ModeU5 PERF-14 PROMOTION partial aggregate=100 existing_country_sum=25 final_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] final_market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] allocated=[THIS.GetVariable('test_cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
 	if = {
 		limit = {
 			OR = {
