@@ -1,0 +1,7 @@
+# Vanilla country_base_values adds building_upkeep_multiplier = 0.2.
+# Auto modifiers stack, so cancel that base share without replacing the full
+# vanilla country_base_values block and its unrelated country defaults.
+cbp_zero_crown_building_upkeep_base = {
+	requires_real = no
+	building_upkeep_multiplier = -0.2
+}
