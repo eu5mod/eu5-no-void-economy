@@ -1,15 +1,15 @@
-namespace = modeu5_us04_q9_debug
+namespace = cbp_us04_q9_debug
 
 # Destructive full pop_demand replacement probes. Enable only the dedicated Q9
 # package for these tests.
 #
 # Q9 one-step replacement reachability:
-#   event modeu5_us04_q9_debug.1
+#   event cbp_us04_q9_debug.1
 #
 # Q10 replacement response curve:
-#   event modeu5_us04_q9_debug.10
+#   event cbp_us04_q9_debug.10
 
-modeu5_us04_q9_debug.1 = {
+cbp_us04_q9_debug.1 = {
 	type = country_event
 	outcome = neutral
 	orphan = yes
@@ -20,15 +20,15 @@ modeu5_us04_q9_debug.1 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q9_replace_begin = yes
+		cbp_us04_q9_replace_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = modeu5_test_us04_q9_replace_pop_demand_blocked } }
-			trigger_event_non_silently = { id = modeu5_us04_q9_debug.2 days = 2 }
+			limit = { NOT = { has_global_variable = cbp_test_us04_q9_replace_pop_demand_blocked } }
+			trigger_event_non_silently = { id = cbp_us04_q9_debug.2 days = 2 }
 		}
 	}
 }
 
-modeu5_us04_q9_debug.2 = {
+cbp_us04_q9_debug.2 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -38,12 +38,12 @@ modeu5_us04_q9_debug.2 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q9_replace_capture_low_and_raise = yes
-		trigger_event_non_silently = { id = modeu5_us04_q9_debug.3 days = 35 }
+		cbp_us04_q9_replace_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = cbp_us04_q9_debug.3 days = 35 }
 	}
 }
 
-modeu5_us04_q9_debug.3 = {
+cbp_us04_q9_debug.3 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -53,11 +53,11 @@ modeu5_us04_q9_debug.3 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q9_replace_finalize = yes
+		cbp_us04_q9_replace_finalize = yes
 	}
 }
 
-modeu5_us04_q9_debug.10 = {
+cbp_us04_q9_debug.10 = {
 	type = country_event
 	outcome = neutral
 	orphan = yes
@@ -68,15 +68,15 @@ modeu5_us04_q9_debug.10 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_begin = yes
+		cbp_us04_q10_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = modeu5_test_us04_q10_replace_curve_blocked } }
-			trigger_event_non_silently = { id = modeu5_us04_q9_debug.11 days = 35 }
+			limit = { NOT = { has_global_variable = cbp_test_us04_q10_replace_curve_blocked } }
+			trigger_event_non_silently = { id = cbp_us04_q9_debug.11 days = 35 }
 		}
 	}
 }
 
-modeu5_us04_q9_debug.11 = {
+cbp_us04_q9_debug.11 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -86,12 +86,12 @@ modeu5_us04_q9_debug.11 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_capture_100_set_099 = yes
-		trigger_event_non_silently = { id = modeu5_us04_q9_debug.12 days = 35 }
+		cbp_us04_q10_capture_100_set_099 = yes
+		trigger_event_non_silently = { id = cbp_us04_q9_debug.12 days = 35 }
 	}
 }
 
-modeu5_us04_q9_debug.12 = {
+cbp_us04_q9_debug.12 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -101,12 +101,12 @@ modeu5_us04_q9_debug.12 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_capture_099_set_101 = yes
-		trigger_event_non_silently = { id = modeu5_us04_q9_debug.13 days = 35 }
+		cbp_us04_q10_capture_099_set_101 = yes
+		trigger_event_non_silently = { id = cbp_us04_q9_debug.13 days = 35 }
 	}
 }
 
-modeu5_us04_q9_debug.13 = {
+cbp_us04_q9_debug.13 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -116,12 +116,12 @@ modeu5_us04_q9_debug.13 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_capture_101_set_120 = yes
-		trigger_event_non_silently = { id = modeu5_us04_q9_debug.14 days = 35 }
+		cbp_us04_q10_capture_101_set_120 = yes
+		trigger_event_non_silently = { id = cbp_us04_q9_debug.14 days = 35 }
 	}
 }
 
-modeu5_us04_q9_debug.14 = {
+cbp_us04_q9_debug.14 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -131,12 +131,12 @@ modeu5_us04_q9_debug.14 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_capture_120_set_400 = yes
-		trigger_event_non_silently = { id = modeu5_us04_q9_debug.15 days = 35 }
+		cbp_us04_q10_capture_120_set_400 = yes
+		trigger_event_non_silently = { id = cbp_us04_q9_debug.15 days = 35 }
 	}
 }
 
-modeu5_us04_q9_debug.15 = {
+cbp_us04_q9_debug.15 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -146,6 +146,6 @@ modeu5_us04_q9_debug.15 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q10_finalize = yes
+		cbp_us04_q10_finalize = yes
 	}
 }

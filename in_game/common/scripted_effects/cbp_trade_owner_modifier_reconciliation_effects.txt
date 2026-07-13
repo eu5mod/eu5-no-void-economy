@@ -1,8 +1,8 @@
 # ModeU5 US-17 trade-owner country modifier inputs and formula path.
 #
 # Scope contract:
-# - modeu5_capture_trade_owner_country_modifier_inputs runs in country scope;
-# - that country must be scope:modeu5_trade_owner_country;
+# - cbp_capture_trade_owner_country_modifier_inputs runs in country scope;
+# - that country must be scope:cbp_trade_owner_country;
 # - import_efficiency, selling_efficiency, and merchant_maintenance_efficiency
 #   are country modifiers owned by the trade owner, never by the scheduler
 #   country, market-center owner, source market, or target market;
@@ -19,22 +19,22 @@
 # The buying/selling average has only an upper bound of 1. Negative values are
 # preserved and therefore create a negative maintenance saving (an added cost).
 
-modeu5_capture_trade_owner_country_modifier_inputs = {
+cbp_capture_trade_owner_country_modifier_inputs = {
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_buying_efficiency
-		value = modeu5_trade_owner_buying_efficiency
+		value = cbp_trade_owner_buying_efficiency
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_selling_efficiency
-		value = modeu5_trade_owner_selling_efficiency
+		value = cbp_trade_owner_selling_efficiency
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_merchant_maintenance_efficiency
-		value = modeu5_trade_owner_merchant_maintenance_efficiency
+		value = cbp_trade_owner_merchant_maintenance_efficiency
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_base_maintenance_unit_cost
-		value = modeu5_trade_base_merchant_maintenance_cost
+		value = cbp_trade_base_merchant_maintenance_cost
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_base_maintenance_amount
@@ -66,7 +66,7 @@ modeu5_capture_trade_owner_country_modifier_inputs = {
 #
 # A negative buying/selling average is intentionally retained, producing a
 # negative saving and therefore an added route cost.
-modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
+cbp_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_merchant_maintenance_factor
 		value = {
@@ -94,7 +94,7 @@ modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
 	}
 }
 
-modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
+cbp_compute_us17_us20_route_formula_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_route_quantity
 		value = {
@@ -145,7 +145,7 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 		}
 	}
 
-	modeu5_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes
+	cbp_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes
 	save_temporary_scope_value_as = {
 		name = gui_cbp_buying_selling_efficiency_delta
 		value = 0
@@ -203,16 +203,16 @@ modeu5_compute_us17_us20_route_formula_from_owner_modifiers = {
 	}
 }
 
-modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = {
+cbp_compute_trade_efficiency_route_money_delta_from_owner_modifiers = {
 	if = {
 		limit = {
 			scope:cbp_trade_efficiency_formula_inputs_available > 0
 			scope:cbp_trade_efficiency_country_modifier_inputs_available > 0
 		}
-		modeu5_compute_us17_us20_route_formula_from_owner_modifiers = yes
+		cbp_compute_us17_us20_route_formula_from_owner_modifiers = yes
 	}
 	else = {
-		modeu5_note_trade_efficiency_money_delta_blocked_route = yes
+		cbp_note_trade_efficiency_money_delta_blocked_route = yes
 		save_temporary_scope_value_as = { name = gui_cbp_trade_maintenance_efficiency_delta value = 0 }
 		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_old_price_side_bonus value = 0 }
 		save_temporary_scope_value_as = { name = gui_cbp_buying_selling_efficiency_delta value = 0 }
@@ -223,21 +223,21 @@ modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = {
 # Live owner-modifier route wrapper. It reuses the established US-17/US-20
 # accounting, stock, receiver, and diagnostics effects; only the owner-modifier
 # input and formula path differ from the historical deterministic scaffold.
-modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
+cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = {
 	if = {
-		limit = { modeu5_trade_rework_enabled_trigger = yes }
-		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
-		modeu5_note_trade_efficiency_route_seen = yes
-		modeu5_clear_trade_efficiency_route_values = yes
-		modeu5_prepare_trade_efficiency_route_quantity_input = yes
+		limit = { cbp_trade_rework_enabled_trigger = yes }
+		cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
+		cbp_note_trade_efficiency_route_seen = yes
+		cbp_clear_trade_efficiency_route_values = yes
+		cbp_prepare_trade_efficiency_route_quantity_input = yes
 		if = {
 			limit = {
 				scope:cbp_trade_owner_quantity_matched > 0
 				scope:cbp_trade_owner_goods_quantity > 0
 			}
-			modeu5_note_trade_efficiency_quantity_confirmed = yes
-			modeu5_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes
-			modeu5_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
+			cbp_note_trade_efficiency_quantity_confirmed = yes
+			cbp_compute_trade_efficiency_route_money_delta_from_owner_modifiers = yes
+			cbp_accumulate_trade_efficiency_route_delta_to_trade_owner = yes
 
 			# Preserve the gross route reconciliation, then apply only the country
 			# treasury share after Crown-power and trade-income allocation.
@@ -261,17 +261,17 @@ modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = {
 					multiply = scope:cbp_trade_efficiency_trade_income_modifier
 				}
 			}
-			modeu5_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
+			cbp_apply_trade_efficiency_income_reconciliation_to_trade_owner = yes
 			save_temporary_scope_value_as = {
 				name = gui_cbp_trade_efficiency_route_money_delta
 				value = scope:cbp_trade_efficiency_gross_route_money_delta
 			}
 
-			modeu5_compute_us20_goods_received_delta = yes
-			modeu5_apply_us20_goods_delta_to_target_market_good = yes
+			cbp_compute_us20_goods_received_delta = yes
+			cbp_apply_us20_goods_delta_to_target_market_good = yes
 		}
 		else = {
-			modeu5_note_trade_efficiency_quantity_blocked = yes
+			cbp_note_trade_efficiency_quantity_blocked = yes
 		}
 	}
 }

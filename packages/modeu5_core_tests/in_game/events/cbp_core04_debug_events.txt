@@ -1,9 +1,9 @@
-namespace = modeu5_core04_debug
+namespace = cbp_core04_debug
 
-modeu5_core04_debug.1 = {
+cbp_core04_debug.1 = {
 	type = country_event
-	title = modeu5_core04_debug.1.title
-	desc = modeu5_core04_debug.1.desc
+	title = cbp_core04_debug.1.title
+	desc = cbp_core04_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,20 +12,20 @@ modeu5_core04_debug.1 = {
 	}
 
 	option = {
-		name = modeu5_core04_debug.1.a
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_core04_market_entry_test = yes
-		trigger_event_non_silently = modeu5_core04_debug.2
+		name = cbp_core04_debug.1.a
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_core04_market_entry_test = yes
+		trigger_event_non_silently = cbp_core04_debug.2
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_core04_debug.2 = {
+cbp_core04_debug.2 = {
 	type = country_event
-	title = modeu5_core04_debug.2.title
-	desc = modeu5_core04_debug.2.desc
+	title = cbp_core04_debug.2.title
+	desc = cbp_core04_debug.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -33,19 +33,19 @@ modeu5_core04_debug.2 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.core04_market_entry.pass
+		name = cbp_debug.test.core04_market_entry.pass
 		trigger = { has_global_variable = test_cbp_core04_market_entry_passed }
 	}
 	option = {
-		name = modeu5_debug.test.core04_market_entry.blocked
+		name = cbp_debug.test.core04_market_entry.blocked
 		trigger = { has_global_variable = test_cbp_core04_market_entry_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.core04_market_entry.fail
+		name = cbp_debug.test.core04_market_entry.fail
 		trigger = { has_global_variable = test_cbp_core04_market_entry_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 

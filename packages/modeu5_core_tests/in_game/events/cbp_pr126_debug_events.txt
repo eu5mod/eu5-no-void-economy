@@ -1,9 +1,9 @@
-namespace = modeu5_pr126_debug
+namespace = cbp_pr126_debug
 
-modeu5_pr126_debug.1 = {
+cbp_pr126_debug.1 = {
 	type = country_event
-	title = modeu5_pr126_debug.1.title
-	desc = modeu5_pr126_debug.1.desc
+	title = cbp_pr126_debug.1.title
+	desc = cbp_pr126_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,38 +12,38 @@ modeu5_pr126_debug.1 = {
 	}
 
 	option = {
-		name = modeu5_pr126_debug.1.a
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_promoted_market_helper_test = yes
-		trigger_event_non_silently = modeu5_pr126_debug.2
+		name = cbp_pr126_debug.1.a
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_pr126_promoted_market_helper_test = yes
+		trigger_event_non_silently = cbp_pr126_debug.2
 	}
 	option = {
-		name = modeu5_pr126_debug.1.b
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_promoted_market_shell_test_without_var_snapshot = yes
-		trigger_event_non_silently = modeu5_pr126_debug.3
+		name = cbp_pr126_debug.1.b
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_pr126_promoted_market_shell_test_without_var_snapshot = yes
+		trigger_event_non_silently = cbp_pr126_debug.3
 	}
 	option = {
-		name = modeu5_pr126_debug.1.c
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_promoted_market_local_branch_test = yes
-		trigger_event_non_silently = modeu5_pr126_debug.4
+		name = cbp_pr126_debug.1.c
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_pr126_promoted_market_local_branch_test = yes
+		trigger_event_non_silently = cbp_pr126_debug.4
 	}
 	option = {
-		name = modeu5_pr126_debug.1.d
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_monthly_dispatcher_compare_test = yes
-		trigger_event_non_silently = modeu5_pr126_debug.5
+		name = cbp_pr126_debug.1.d
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_pr126_monthly_dispatcher_compare_test = yes
+		trigger_event_non_silently = cbp_pr126_debug.5
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_pr126_debug.2 = {
+cbp_pr126_debug.2 = {
 	type = country_event
-	title = modeu5_pr126_debug.2.title
-	desc = modeu5_pr126_debug.2.desc
+	title = cbp_pr126_debug.2.title
+	desc = cbp_pr126_debug.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -51,26 +51,26 @@ modeu5_pr126_debug.2 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.pr126_helpers.pass
+		name = cbp_debug.test.pr126_helpers.pass
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_passed }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_helpers.blocked
+		name = cbp_debug.test.pr126_helpers.blocked
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_helpers.fail
+		name = cbp_debug.test.pr126_helpers.fail
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_helpers_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_pr126_debug.4 = {
+cbp_pr126_debug.4 = {
 	type = country_event
-	title = modeu5_pr126_debug.4.title
-	desc = modeu5_pr126_debug.4.desc
+	title = cbp_pr126_debug.4.title
+	desc = cbp_pr126_debug.4.desc
 	outcome = neutral
 
 	trigger = {
@@ -78,26 +78,26 @@ modeu5_pr126_debug.4 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.pr126_local_branch.pass
+		name = cbp_debug.test.pr126_local_branch.pass
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_passed }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_local_branch.blocked
+		name = cbp_debug.test.pr126_local_branch.blocked
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_local_branch.fail
+		name = cbp_debug.test.pr126_local_branch.fail
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_local_branch_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_pr126_debug.5 = {
+cbp_pr126_debug.5 = {
 	type = country_event
-	title = modeu5_pr126_debug.5.title
-	desc = modeu5_pr126_debug.5.desc
+	title = cbp_pr126_debug.5.title
+	desc = cbp_pr126_debug.5.desc
 	outcome = neutral
 
 	trigger = {
@@ -105,26 +105,26 @@ modeu5_pr126_debug.5 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.pr126_dispatcher_compare.pass
+		name = cbp_debug.test.pr126_dispatcher_compare.pass
 		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_passed }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_dispatcher_compare.blocked
+		name = cbp_debug.test.pr126_dispatcher_compare.blocked
 		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_dispatcher_compare.fail
+		name = cbp_debug.test.pr126_dispatcher_compare.fail
 		trigger = { has_global_variable = test_cbp_pr126_monthly_dispatcher_compare_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_pr126_debug.3 = {
+cbp_pr126_debug.3 = {
 	type = country_event
-	title = modeu5_pr126_debug.3.title
-	desc = modeu5_pr126_debug.3.desc
+	title = cbp_pr126_debug.3.title
+	desc = cbp_pr126_debug.3.desc
 	outcome = neutral
 
 	trigger = {
@@ -132,18 +132,18 @@ modeu5_pr126_debug.3 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.pr126_shell.pass
+		name = cbp_debug.test.pr126_shell.pass
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_passed }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_shell.blocked
+		name = cbp_debug.test.pr126_shell.blocked
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.pr126_shell.fail
+		name = cbp_debug.test.pr126_shell.fail
 		trigger = { has_global_variable = test_cbp_pr126_promoted_market_shell_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

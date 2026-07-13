@@ -1,9 +1,9 @@
-namespace = modeu5_pr126_profile_debug
+namespace = cbp_pr126_profile_debug
 
-modeu5_pr126_profile_debug.1 = {
+cbp_pr126_profile_debug.1 = {
 	type = country_event
-	title = modeu5_pr126_debug.1.title
-	desc = modeu5_pr126_debug.1.desc
+	title = cbp_pr126_debug.1.title
+	desc = cbp_pr126_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,19 +12,19 @@ modeu5_pr126_profile_debug.1 = {
 	}
 
 	option = {
-		name = modeu5_pr126_debug.1.d
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_profile_pr126_monthly_phases = yes
+		name = cbp_pr126_debug.1.d
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_profile_pr126_monthly_phases = yes
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_pr126_profile_debug.2 = {
+cbp_pr126_profile_debug.2 = {
 	type = country_event
-	title = modeu5_pr126_debug.1.title
-	desc = modeu5_pr126_debug.1.desc
+	title = cbp_pr126_debug.1.title
+	desc = cbp_pr126_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -33,11 +33,11 @@ modeu5_pr126_profile_debug.2 = {
 	}
 
 	option = {
-		name = modeu5_pr126_debug.1.d
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_profile_pr126_live_monthly_on_action_shape = yes
+		name = cbp_pr126_debug.1.d
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_profile_pr126_live_monthly_on_action_shape = yes
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

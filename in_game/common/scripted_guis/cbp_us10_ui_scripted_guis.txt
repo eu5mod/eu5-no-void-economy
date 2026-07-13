@@ -1,4 +1,4 @@
-modeu5_us10_ui_refresh_on_click = {
+cbp_us10_ui_refresh_on_click = {
 	scope = country
 
 	is_shown = {
@@ -10,11 +10,11 @@ modeu5_us10_ui_refresh_on_click = {
 	}
 
 	effect = {
-		modeu5_us10_ui_prepare_current_market_table_for_production_ui = yes
+		cbp_us10_ui_prepare_current_market_table_for_production_ui = yes
 	}
 }
 
-modeu5_us10_ui_select_market_on_click = {
+cbp_us10_ui_select_market_on_click = {
 	scope = country
 
 	is_shown = {
@@ -28,15 +28,15 @@ modeu5_us10_ui_select_market_on_click = {
 	effect = {
 		if = {
 			limit = {
-				scope:modeu5_us10_ui_clicked_market ?= { always = yes }
+				scope:cbp_us10_ui_clicked_market ?= { always = yes }
 			}
-			modeu5_us10_ui_set_selected_market = { market = scope:modeu5_us10_ui_clicked_market }
+			cbp_us10_ui_set_selected_market = { market = scope:cbp_us10_ui_clicked_market }
 		}
-		modeu5_us10_ui_prepare_current_market_table_for_production_ui = yes
+		cbp_us10_ui_prepare_current_market_table_for_production_ui = yes
 	}
 }
 
-modeu5_us10_ui_next_market_on_click = {
+cbp_us10_ui_next_market_on_click = {
 	scope = country
 
 	is_shown = {
@@ -48,7 +48,7 @@ modeu5_us10_ui_next_market_on_click = {
 	}
 
 	effect = {
-		modeu5_us10_ui_select_next_market = yes
-		modeu5_us10_ui_prepare_current_market_table_for_production_ui = yes
+		cbp_us10_ui_select_next_market = yes
+		cbp_us10_ui_prepare_current_market_table_for_production_ui = yes
 	}
 }

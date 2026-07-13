@@ -1,44 +1,44 @@
-modeu5_core_package_loaded_trigger = {
+cbp_core_package_loaded_trigger = {
 	has_global_variable = cbp_core_package_loaded
 }
 
-modeu5_economy_rebalance_loaded_trigger = {
+cbp_economy_rebalance_loaded_trigger = {
 	has_global_variable = cbp_economy_rebalance_loaded
 }
 
-modeu5_trade_rebalance_loaded_trigger = {
+cbp_trade_rebalance_loaded_trigger = {
 	has_global_variable = cbp_trade_rebalance_loaded
 }
 
-modeu5_war_rebalance_loaded_trigger = {
+cbp_war_rebalance_loaded_trigger = {
 	has_global_variable = cbp_war_rebalance_loaded
 }
 
-modeu5_normal_runtime_mode_trigger = {
+cbp_normal_runtime_mode_trigger = {
 	has_global_variable = cbp_runtime_mode_normal
 }
 
-modeu5_debug_runtime_mode_trigger = {
+cbp_debug_runtime_mode_trigger = {
 	has_global_variable = cbp_runtime_mode_debug
 }
 
-modeu5_audit_runtime_mode_trigger = {
+cbp_audit_runtime_mode_trigger = {
 	has_global_variable = cbp_runtime_mode_audit
 }
 
-modeu5_performance_mode_enabled_trigger = {
+cbp_performance_mode_enabled_trigger = {
 	has_global_variable = cbp_performance_mode_enabled
 }
 
-modeu5_nve_normal_mode_trigger = {
+cbp_nve_normal_mode_trigger = {
 	has_global_variable = cbp_normal_mode_enabled
 }
 
-modeu5_nve_deactivated_trigger = {
+cbp_nve_deactivated_trigger = {
 	has_global_variable = cbp_nve_deactivated
 }
 
-modeu5_trade_rework_enabled_trigger = {
+cbp_trade_rework_enabled_trigger = {
 	has_variable_map = cmm
 	is_key_in_variable_map = {
 		name = cmm
@@ -47,8 +47,8 @@ modeu5_trade_rework_enabled_trigger = {
 	"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings)" = 1
 }
 
-modeu5_pop_consumption_offer_demand_enabled_trigger = {
-	modeu5_economy_rebalance_loaded_trigger = yes
+cbp_pop_consumption_offer_demand_enabled_trigger = {
+	cbp_economy_rebalance_loaded_trigger = yes
 	has_variable_map = cmm
 	is_key_in_variable_map = {
 		name = cmm
@@ -57,131 +57,131 @@ modeu5_pop_consumption_offer_demand_enabled_trigger = {
 	"variable_map(cmm|flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)" = 1
 }
 
-modeu5_detailed_country_market_accounting_enabled_trigger = {
+cbp_detailed_country_market_accounting_enabled_trigger = {
 	OR = {
 		scope:cbp_detailed_country_market_accounting_enabled > 0
 		AND = {
-			modeu5_performance_mode_enabled_trigger = yes
+			cbp_performance_mode_enabled_trigger = yes
 			scope:cbp_accounting_decision_market_human_relevant > 0
 		}
 	}
 }
 
-modeu5_market_detailed_accounting_promoted_trigger = {
+cbp_market_detailed_accounting_promoted_trigger = {
 	has_global_variable_list = cbp_detailed_accounting_promoted_markets
 	is_target_in_global_variable_list = {
 		name = cbp_detailed_accounting_promoted_markets
-		target = scope:modeu5_market
+		target = scope:cbp_market
 	}
 }
 
-modeu5_detailed_country_market_stock_mutation_allowed_trigger = {
+cbp_detailed_country_market_stock_mutation_allowed_trigger = {
 	OR = {
-		modeu5_nve_normal_mode_trigger = yes
+		cbp_nve_normal_mode_trigger = yes
 		AND = {
-			modeu5_performance_mode_enabled_trigger = yes
-			modeu5_market_detailed_accounting_promoted_trigger = yes
+			cbp_performance_mode_enabled_trigger = yes
+			cbp_market_detailed_accounting_promoted_trigger = yes
 		}
 	}
 }
 
-modeu5_market_level_fallback_required_trigger = {
+cbp_market_level_fallback_required_trigger = {
 	scope:cbp_market_level_fallback_required > 0
 	NOT = { scope:cbp_accounting_decision_market_human_relevant > 0 }
 }
 
-modeu5_stock_mutation_use_detailed_accounting_trigger = {
+cbp_stock_mutation_use_detailed_accounting_trigger = {
 	scope:cbp_stock_mutation_use_detailed_accounting > 0
 }
 
-modeu5_stock_mutation_use_market_level_fallback_trigger = {
+cbp_stock_mutation_use_market_level_fallback_trigger = {
 	scope:cbp_stock_mutation_use_market_level_fallback > 0
 }
 
-modeu5_stock_mutation_blocked_trigger = {
+cbp_stock_mutation_blocked_trigger = {
 	scope:cbp_stock_mutation_blocked > 0
 }
 
-modeu5_market_runtime_use_detailed_accounting_trigger = {
+cbp_market_runtime_use_detailed_accounting_trigger = {
 	scope:cbp_market_runtime_use_detailed_accounting > 0
 }
 
-modeu5_market_runtime_use_vanilla_fallback_trigger = {
+cbp_market_runtime_use_vanilla_fallback_trigger = {
 	scope:cbp_market_runtime_use_vanilla_fallback > 0
 }
 
-modeu5_market_runtime_blocked_trigger = {
+cbp_market_runtime_blocked_trigger = {
 	scope:cbp_market_runtime_blocked > 0
 }
 
-modeu5_debug_enabled_trigger = {
-	modeu5_debug_runtime_mode_trigger = yes
+cbp_debug_enabled_trigger = {
+	cbp_debug_runtime_mode_trigger = yes
 }
 
-modeu5_verbose_debug_enabled_trigger = {
-	modeu5_debug_runtime_mode_trigger = yes
+cbp_verbose_debug_enabled_trigger = {
+	cbp_debug_runtime_mode_trigger = yes
 	has_global_variable = cbp_debug_level
 	global_var:cbp_debug_level > 1
 }
 
-modeu5_audit_enabled_trigger = {
-	modeu5_audit_runtime_mode_trigger = yes
+cbp_audit_enabled_trigger = {
+	cbp_audit_runtime_mode_trigger = yes
 }
 
-modeu5_accounting_minimal_persistence_trigger = {
+cbp_accounting_minimal_persistence_trigger = {
 	has_global_variable = cbp_accounting_persistence_minimal
 }
 
-modeu5_accounting_strict_persistence_trigger = {
+cbp_accounting_strict_persistence_trigger = {
 	has_global_variable = cbp_accounting_persistence_strict
 }
 
-modeu5_accounting_human_relevant_persistence_trigger = {
+cbp_accounting_human_relevant_persistence_trigger = {
 	has_global_variable = cbp_accounting_persistence_human_relevant
 }
 
-modeu5_human_relevant_full_ledger_market_trigger = {
-	modeu5_accounting_human_relevant_persistence_trigger = yes
+cbp_human_relevant_full_ledger_market_trigger = {
+	cbp_accounting_human_relevant_persistence_trigger = yes
 	has_global_variable_list = cbp_performance_relevant_markets
 	is_target_in_global_variable_list = {
 		name = cbp_performance_relevant_markets
-		target = scope:modeu5_market
+		target = scope:cbp_market
 	}
 }
 
-modeu5_us00_full_ledger_persistence_allowed_trigger = {
+cbp_us00_full_ledger_persistence_allowed_trigger = {
 	OR = {
-		modeu5_accounting_strict_persistence_trigger = yes
-		modeu5_human_relevant_full_ledger_market_trigger = yes
-		modeu5_debug_enabled_trigger = yes
-		modeu5_audit_enabled_trigger = yes
+		cbp_accounting_strict_persistence_trigger = yes
+		cbp_human_relevant_full_ledger_market_trigger = yes
+		cbp_debug_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
 	}
 }
 
-modeu5_debug_capture_enabled_trigger = {
-	modeu5_debug_enabled_trigger = yes
+cbp_debug_capture_enabled_trigger = {
+	cbp_debug_enabled_trigger = yes
 }
 
-modeu5_pr71_metrics_enabled_trigger = {
+cbp_pr71_metrics_enabled_trigger = {
 	OR = {
-		modeu5_debug_capture_enabled_trigger = yes
-		modeu5_audit_enabled_trigger = yes
+		cbp_debug_capture_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
 	}
 }
 
-modeu5_full_validation_allowed_trigger = {
-	modeu5_audit_enabled_trigger = yes
+cbp_full_validation_allowed_trigger = {
+	cbp_audit_enabled_trigger = yes
 }
 
-modeu5_market_sliced_verifier_allowed_trigger = {
+cbp_market_sliced_verifier_allowed_trigger = {
 	OR = {
-		modeu5_debug_enabled_trigger = yes
-		modeu5_audit_enabled_trigger = yes
+		cbp_debug_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
 	}
 }
 
-modeu5_stock_runtime_ready_trigger = {
-	modeu5_initialization_complete_trigger = yes
+cbp_stock_runtime_ready_trigger = {
+	cbp_initialization_complete_trigger = yes
 	has_global_variable = cbp_stock_schema_version
-	global_var:cbp_stock_schema_version = modeu5_current_stock_schema_version
+	global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
 }

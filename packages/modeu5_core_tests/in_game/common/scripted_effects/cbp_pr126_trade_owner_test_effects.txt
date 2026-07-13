@@ -9,7 +9,7 @@
 # Vanilla trade cannot have source_market == target_market. Same-market local
 # stock consumption is therefore intentionally absent from this probe.
 
-modeu5_pr126_trade_owner_ensure_metric_globals = {
+cbp_pr126_trade_owner_ensure_metric_globals = {
 	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_pass_runs } } set_global_variable = { name = cbp_country_trade_owner_pass_runs value = 0 } }
 	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_trades_seen } } set_global_variable = { name = cbp_country_trade_owner_trades_seen value = 0 } }
 	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_inter_market_trades } } set_global_variable = { name = cbp_country_trade_owner_inter_market_trades value = 0 } }
@@ -24,8 +24,8 @@ modeu5_pr126_trade_owner_ensure_metric_globals = {
 	if = { limit = { NOT = { has_global_variable = cbp_country_trade_owner_unsatisfied_quantity } } set_global_variable = { name = cbp_country_trade_owner_unsatisfied_quantity value = 0 } }
 }
 
-modeu5_pr126_trade_owner_capture_metrics = {
-	modeu5_pr126_trade_owner_ensure_metric_globals = yes
+cbp_pr126_trade_owner_capture_metrics = {
+	cbp_pr126_trade_owner_ensure_metric_globals = yes
 
 	set_variable = { name = gui_cbp_pr126_ui_trade_owner_pass_runs value = 0 }
 	set_variable = { name = gui_cbp_pr126_ui_trade_owner_trades_seen value = 0 }
@@ -54,46 +54,46 @@ modeu5_pr126_trade_owner_capture_metrics = {
 	set_variable = { name = gui_cbp_pr126_ui_trade_owner_unsatisfied value = global_var:cbp_country_trade_owner_unsatisfied_quantity }
 }
 
-modeu5_pr126_trade_owner_select_two_markets = {
+cbp_pr126_trade_owner_select_two_markets = {
 	remove_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 	set_local_variable = { name = test_cbp_pr126_trade_owner_market_index value = 0 }
 
 	every_market_present_in_country = {
 		if = {
 			limit = {
-				scope:modeu5_pr126_trade_owner_test_country = {
-					local_var:modeu5_pr126_trade_owner_market_index = 0
+				scope:cbp_pr126_trade_owner_test_country = {
+					local_var:cbp_pr126_trade_owner_market_index = 0
 				}
 			}
-			save_temporary_scope_as = modeu5_pr126_trade_owner_source_market
+			save_temporary_scope_as = cbp_pr126_trade_owner_source_market
 			# Default target to source so later comparisons never dereference an unset
 			# target. A second market replaces this below; otherwise the probe blocks.
-			save_temporary_scope_as = modeu5_pr126_trade_owner_target_market
+			save_temporary_scope_as = cbp_pr126_trade_owner_target_market
 		}
 		else_if = {
 			limit = {
-				scope:modeu5_pr126_trade_owner_test_country = {
-					local_var:modeu5_pr126_trade_owner_market_index = 1
+				scope:cbp_pr126_trade_owner_test_country = {
+					local_var:cbp_pr126_trade_owner_market_index = 1
 				}
 			}
-			save_temporary_scope_as = modeu5_pr126_trade_owner_target_market
+			save_temporary_scope_as = cbp_pr126_trade_owner_target_market
 		}
-		scope:modeu5_pr126_trade_owner_test_country = {
+		scope:cbp_pr126_trade_owner_test_country = {
 			change_local_variable = { name = test_cbp_pr126_trade_owner_market_index add = 1 }
 		}
 	}
 
 	if = {
-		limit = { NOT = { exists = scope:modeu5_pr126_trade_owner_source_market } }
+		limit = { NOT = { exists = scope:cbp_pr126_trade_owner_source_market } }
 		set_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 	}
 	else_if = {
-		limit = { scope:modeu5_pr126_trade_owner_source_market = scope:modeu5_pr126_trade_owner_target_market }
+		limit = { scope:cbp_pr126_trade_owner_source_market = scope:cbp_pr126_trade_owner_target_market }
 		set_global_variable = test_cbp_pr126_trade_owner_market_selection_failed
 	}
 }
 
-modeu5_debug_run_pr126_country_trade_owner_pass_test = {
+cbp_debug_run_pr126_country_trade_owner_pass_test = {
 	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_passed
 	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_failed
 	remove_global_variable = test_cbp_pr126_country_trade_owner_pass_blocked
@@ -131,10 +131,10 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 
 	debug_log = "ModeU5 TEST ENTERED scenario=pr126_country_trade_owner_pass"
 
-	save_temporary_scope_as = modeu5_pr126_trade_owner_test_country
-	modeu5_perf14_set_cmm_main_mode_for_test = { value = 2 }
-	modeu5_reset_country_trade_owner_pass_metrics = yes
-	modeu5_pr126_trade_owner_select_two_markets = yes
+	save_temporary_scope_as = cbp_pr126_trade_owner_test_country
+	cbp_perf14_set_cmm_main_mode_for_test = { value = 2 }
+	cbp_reset_country_trade_owner_pass_metrics = yes
+	cbp_pr126_trade_owner_select_two_markets = yes
 
 	if = {
 		limit = { has_global_variable = test_cbp_pr126_trade_owner_market_selection_failed }
@@ -142,43 +142,43 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 		debug_log = "ModeU5 TEST BLOCKED scenario=pr126_country_trade_owner_pass reason=not_enough_distinct_current_country_markets"
 	}
 	else = {
-		modeu5_run_monthly_country_trade_owner_cycle = yes
+		cbp_run_monthly_country_trade_owner_cycle = yes
 
-		modeu5_perf14_clear_wheat_stock_in_market = {
-			market = scope:modeu5_pr126_trade_owner_source_market
+		cbp_perf14_clear_wheat_stock_in_market = {
+			market = scope:cbp_pr126_trade_owner_source_market
 		}
-		modeu5_perf14_clear_wheat_stock_in_market = {
-			market = scope:modeu5_pr126_trade_owner_target_market
+		cbp_perf14_clear_wheat_stock_in_market = {
+			market = scope:cbp_pr126_trade_owner_target_market
 		}
-		modeu5_debug_replace_country_wheat_capacity = {
-			country = scope:modeu5_pr126_trade_owner_test_country
-			market = scope:modeu5_pr126_trade_owner_source_market
+		cbp_debug_replace_country_wheat_capacity = {
+			country = scope:cbp_pr126_trade_owner_test_country
+			market = scope:cbp_pr126_trade_owner_source_market
 			value = 100
 		}
-		modeu5_debug_replace_country_wheat_capacity = {
-			country = scope:modeu5_pr126_trade_owner_test_country
-			market = scope:modeu5_pr126_trade_owner_target_market
+		cbp_debug_replace_country_wheat_capacity = {
+			country = scope:cbp_pr126_trade_owner_test_country
+			market = scope:cbp_pr126_trade_owner_target_market
 			value = 100
 		}
-		modeu5_add_stock = {
-			country = scope:modeu5_pr126_trade_owner_test_country
-			market = scope:modeu5_pr126_trade_owner_source_market
+		cbp_add_stock = {
+			country = scope:cbp_pr126_trade_owner_test_country
+			market = scope:cbp_pr126_trade_owner_source_market
 			good = wheat
 			quantity = 10
 			capacity_policy = allow_over_capacity
 		}
 
-		modeu5_process_country_trade_owner_explicit_request = {
-			buyer_country = scope:modeu5_pr126_trade_owner_test_country
-			source_market = scope:modeu5_pr126_trade_owner_source_market
-			target_market = scope:modeu5_pr126_trade_owner_target_market
+		cbp_process_country_trade_owner_explicit_request = {
+			buyer_country = scope:cbp_pr126_trade_owner_test_country
+			source_market = scope:cbp_pr126_trade_owner_source_market
+			target_market = scope:cbp_pr126_trade_owner_target_market
 			good = wheat
 			requested_quantity = 4
 		}
 	}
 
-	modeu5_pr126_trade_owner_capture_metrics = yes
-	debug_log = "ModeU5 PR126 TRADE_OWNER pass_runs=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_pass_runs').GetValue|0] trades_seen=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_trades_seen').GetValue|0] inter_market=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_inter_market').GetValue|0] owner_mismatches=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_owner_mismatches').GetValue|0] confirmed_trades=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_confirmed').GetValue|0] blocked=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_blocked').GetValue|0] confirmed_quantity=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_confirmed_quantity').GetValue|2] explicit_requests=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_explicit_requests').GetValue|0] inter_market_transfers=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_inter_market_transfers').GetValue|0] requested=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_pr126_ui_trade_owner_unsatisfied').GetValue|2]"
+	cbp_pr126_trade_owner_capture_metrics = yes
+	debug_log = "ModeU5 PR126 TRADE_OWNER pass_runs=[THIS.GetVariable('cbp_pr126_ui_trade_owner_pass_runs').GetValue|0] trades_seen=[THIS.GetVariable('cbp_pr126_ui_trade_owner_trades_seen').GetValue|0] inter_market=[THIS.GetVariable('cbp_pr126_ui_trade_owner_inter_market').GetValue|0] owner_mismatches=[THIS.GetVariable('cbp_pr126_ui_trade_owner_owner_mismatches').GetValue|0] confirmed_trades=[THIS.GetVariable('cbp_pr126_ui_trade_owner_confirmed').GetValue|0] blocked=[THIS.GetVariable('cbp_pr126_ui_trade_owner_blocked').GetValue|0] confirmed_quantity=[THIS.GetVariable('cbp_pr126_ui_trade_owner_confirmed_quantity').GetValue|2] explicit_requests=[THIS.GetVariable('cbp_pr126_ui_trade_owner_explicit_requests').GetValue|0] inter_market_transfers=[THIS.GetVariable('cbp_pr126_ui_trade_owner_inter_market_transfers').GetValue|0] requested=[THIS.GetVariable('cbp_pr126_ui_trade_owner_requested').GetValue|2] transferred=[THIS.GetVariable('cbp_pr126_ui_trade_owner_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_pr126_ui_trade_owner_unsatisfied').GetValue|2]"
 
 	if = {
 		limit = {
@@ -201,5 +201,5 @@ modeu5_debug_run_pr126_country_trade_owner_pass_test = {
 		debug_log = "ModeU5 TEST FAIL scenario=pr126_country_trade_owner_pass"
 	}
 
-	modeu5_perf14_restore_cmm_main_mode_after_test = yes
+	cbp_perf14_restore_cmm_main_mode_after_test = yes
 }

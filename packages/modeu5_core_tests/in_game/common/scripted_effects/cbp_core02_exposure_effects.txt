@@ -1,5 +1,5 @@
 # Controlled TECH-01 091 probe. This must not initialize or mutate ModeU5 stock.
-modeu5_core02_run_opening_stock_exposure_probe = {
+cbp_core02_run_opening_stock_exposure_probe = {
 	remove_global_variable = test_cbp_core02_probe_market_found
 	remove_global_variable = test_cbp_core02_probe_value_read
 	remove_global_variable = test_cbp_core02_probe_passed

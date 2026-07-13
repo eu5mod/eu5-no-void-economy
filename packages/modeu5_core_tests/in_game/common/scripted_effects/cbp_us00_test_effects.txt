@@ -2,8 +2,8 @@
 # These tests exercise both the controlled ledger pipeline and the confirmed
 # vanilla location-output path used by monthly runtime ingestion.
 
-modeu5_us00_clear_test_results = {
-	modeu5_enter_test_audit_runtime_mode = yes
+cbp_us00_clear_test_results = {
+	cbp_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = test_cbp_us00_controlled_e2e_started
 	remove_global_variable = test_cbp_us00_controlled_e2e_passed
@@ -52,8 +52,8 @@ modeu5_us00_clear_test_results = {
 	remove_variable = gui_cbp_us00_ui_runtime_modifier_mode
 }
 
-modeu5_us00_write_e2e_dump_variables = {
-	scope:modeu5_us00_test_controller = {
+cbp_us00_write_e2e_dump_variables = {
+	scope:cbp_us00_test_controller = {
 		set_variable = { name = gui_cbp_us00_ui_produced value = scope:test_cbp_us00_test_produced }
 		set_variable = { name = gui_cbp_us00_ui_added value = scope:test_cbp_us00_test_added }
 		set_variable = { name = gui_cbp_us00_ui_rejected value = scope:test_cbp_us00_test_rejected }
@@ -72,14 +72,14 @@ modeu5_us00_write_e2e_dump_variables = {
 	}
 }
 
-modeu5_us00_log_e2e_dump = {
-	scope:modeu5_us00_test_controller = {
-		debug_log = "ModeU5 US-00 DUMP controlled_e2e country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_produced').GetValue|2] added=[THIS.GetVariable('modeu5_us00_ui_added').GetValue|2] rejected=[THIS.GetVariable('modeu5_us00_ui_rejected').GetValue|2] ratio=[THIS.GetVariable('modeu5_us00_ui_ratio').GetValue|4] effective_ratio=[THIS.GetVariable('modeu5_us00_ui_effective_ratio').GetValue|4] void_wealth=[THIS.GetVariable('modeu5_us00_ui_void_wealth').GetValue|2] taxable_proxy=[THIS.GetVariable('modeu5_us00_ui_taxable_proxy').GetValue|2] penalty=[THIS.GetVariable('modeu5_us00_ui_penalty').GetValue|4] market_void_wealth=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth').GetValue|2] market_void_wealth_delta=[THIS.GetVariable('modeu5_us00_ui_market_void_wealth_delta').GetValue|2] total_void_wealth=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth').GetValue|2] total_void_wealth_delta=[THIS.GetVariable('modeu5_us00_ui_total_void_wealth_delta').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us00_ui_stock_after').GetValue|2] capacity=[THIS.GetVariable('modeu5_us00_ui_capacity').GetValue|2] market_stock_after=[THIS.GetVariable('modeu5_us00_ui_market_stock_after').GetValue|2]"
+cbp_us00_log_e2e_dump = {
+	scope:cbp_us00_test_controller = {
+		debug_log = "ModeU5 US-00 DUMP controlled_e2e country=FRA good=wheat produced=[THIS.GetVariable('cbp_us00_ui_produced').GetValue|2] added=[THIS.GetVariable('cbp_us00_ui_added').GetValue|2] rejected=[THIS.GetVariable('cbp_us00_ui_rejected').GetValue|2] ratio=[THIS.GetVariable('cbp_us00_ui_ratio').GetValue|4] effective_ratio=[THIS.GetVariable('cbp_us00_ui_effective_ratio').GetValue|4] void_wealth=[THIS.GetVariable('cbp_us00_ui_void_wealth').GetValue|2] taxable_proxy=[THIS.GetVariable('cbp_us00_ui_taxable_proxy').GetValue|2] penalty=[THIS.GetVariable('cbp_us00_ui_penalty').GetValue|4] market_void_wealth=[THIS.GetVariable('cbp_us00_ui_market_void_wealth').GetValue|2] market_void_wealth_delta=[THIS.GetVariable('cbp_us00_ui_market_void_wealth_delta').GetValue|2] total_void_wealth=[THIS.GetVariable('cbp_us00_ui_total_void_wealth').GetValue|2] total_void_wealth_delta=[THIS.GetVariable('cbp_us00_ui_total_void_wealth_delta').GetValue|2] stock_after=[THIS.GetVariable('cbp_us00_ui_stock_after').GetValue|2] capacity=[THIS.GetVariable('cbp_us00_ui_capacity').GetValue|2] market_stock_after=[THIS.GetVariable('cbp_us00_ui_market_stock_after').GetValue|2]"
 	}
 }
 
-modeu5_us00_write_probe021_dump_variables = {
-	scope:modeu5_us00_test_controller = {
+cbp_us00_write_probe021_dump_variables = {
+	scope:cbp_us00_test_controller = {
 		if = {
 			limit = { has_global_variable = test_cbp_us00_probe021_location_count }
 			set_variable = { name = gui_cbp_us00_ui_probe_location_count value = global_var:test_cbp_us00_probe021_location_count }
@@ -111,14 +111,14 @@ modeu5_us00_write_probe021_dump_variables = {
 	}
 }
 
-modeu5_us00_log_probe021_dump = {
-	scope:modeu5_us00_test_controller = {
-		debug_log = "ModeU5 PROBE-021 DUMP location_output country=FRA good=wheat locations=[THIS.GetVariable('modeu5_us00_ui_probe_location_count').GetValue|0] positive_goods_output_locations=[THIS.GetVariable('modeu5_us00_ui_probe_positive_goods_output_count').GetValue|0] goods_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_wheat_goods_output_total').GetValue|4] raw_material_output_total=[THIS.GetVariable('modeu5_us00_ui_probe_raw_material_output_total').GetValue|4]"
+cbp_us00_log_probe021_dump = {
+	scope:cbp_us00_test_controller = {
+		debug_log = "ModeU5 PROBE-021 DUMP location_output country=FRA good=wheat locations=[THIS.GetVariable('cbp_us00_ui_probe_location_count').GetValue|0] positive_goods_output_locations=[THIS.GetVariable('cbp_us00_ui_probe_positive_goods_output_count').GetValue|0] goods_output_total=[THIS.GetVariable('cbp_us00_ui_probe_wheat_goods_output_total').GetValue|4] raw_material_output_total=[THIS.GetVariable('cbp_us00_ui_probe_raw_material_output_total').GetValue|4]"
 	}
 }
 
-modeu5_us00_write_monthly_runtime_dump_variables = {
-	scope:modeu5_us00_test_controller = {
+cbp_us00_write_monthly_runtime_dump_variables = {
+	scope:cbp_us00_test_controller = {
 		set_variable = { name = gui_cbp_us00_ui_runtime_produced value = scope:test_cbp_us00_runtime_produced }
 		set_variable = { name = gui_cbp_us00_ui_runtime_added value = scope:test_cbp_us00_runtime_added }
 		set_variable = { name = gui_cbp_us00_ui_runtime_rejected value = scope:test_cbp_us00_runtime_rejected }
@@ -131,24 +131,24 @@ modeu5_us00_write_monthly_runtime_dump_variables = {
 	}
 }
 
-modeu5_us00_log_monthly_runtime_dump = {
-	scope:modeu5_us00_test_controller = {
-		debug_log = "ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat produced=[THIS.GetVariable('modeu5_us00_ui_runtime_produced').GetValue|4] added=[THIS.GetVariable('modeu5_us00_ui_runtime_added').GetValue|4] rejected=[THIS.GetVariable('modeu5_us00_ui_runtime_rejected').GetValue|4] previous_penalty=[THIS.GetVariable('modeu5_us00_ui_runtime_previous_penalty').GetValue|4] new_penalty=[THIS.GetVariable('modeu5_us00_ui_runtime_new_penalty').GetValue|4] affected_locations=[THIS.GetVariable('modeu5_us00_ui_runtime_affected_locations').GetValue|0] positive_locations=[THIS.GetVariable('modeu5_us00_ui_runtime_positive_locations').GetValue|0] good_price=[THIS.GetVariable('modeu5_us00_ui_runtime_good_price').GetValue|4] modifier_mode=[THIS.GetVariable('modeu5_us00_ui_runtime_modifier_mode').GetValue|0]"
+cbp_us00_log_monthly_runtime_dump = {
+	scope:cbp_us00_test_controller = {
+		debug_log = "ModeU5 US-00 DUMP monthly_runtime country=FRA good=wheat produced=[THIS.GetVariable('cbp_us00_ui_runtime_produced').GetValue|4] added=[THIS.GetVariable('cbp_us00_ui_runtime_added').GetValue|4] rejected=[THIS.GetVariable('cbp_us00_ui_runtime_rejected').GetValue|4] previous_penalty=[THIS.GetVariable('cbp_us00_ui_runtime_previous_penalty').GetValue|4] new_penalty=[THIS.GetVariable('cbp_us00_ui_runtime_new_penalty').GetValue|4] affected_locations=[THIS.GetVariable('cbp_us00_ui_runtime_affected_locations').GetValue|0] positive_locations=[THIS.GetVariable('cbp_us00_ui_runtime_positive_locations').GetValue|0] good_price=[THIS.GetVariable('cbp_us00_ui_runtime_good_price').GetValue|4] modifier_mode=[THIS.GetVariable('cbp_us00_ui_runtime_modifier_mode').GetValue|0]"
 	}
 }
 
-modeu5_us00_debug_run_controlled_e2e_test = {
-	modeu5_us00_clear_test_results = yes
+cbp_us00_debug_run_controlled_e2e_test = {
+	cbp_us00_clear_test_results = yes
 	set_global_variable = test_cbp_us00_controlled_e2e_started
-	save_temporary_scope_as = modeu5_us00_test_controller
+	save_temporary_scope_as = cbp_us00_test_controller
 
 	if = {
 		limit = { country_exists = c:FRA }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us00_test_market }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_us00_test_market }
 
-		modeu5_clear_us00_record = {
+		cbp_clear_us00_record = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 		}
 		c:FRA = {
@@ -157,12 +157,12 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 					has_variable_map = cbp_void_wealth_by_market
 					is_key_in_variable_map = {
 						name = cbp_void_wealth_by_market
-						target = scope:modeu5_us00_test_market
+						target = scope:cbp_us00_test_market
 					}
 				}
 				save_temporary_scope_value_as = {
 					name = test_cbp_us00_test_market_void_wealth_baseline
-					value = "variable_map(cbp_void_wealth_by_market|scope:modeu5_us00_test_market)"
+					value = "variable_map(cbp_void_wealth_by_market|scope:cbp_us00_test_market)"
 				}
 			}
 			else = {
@@ -176,21 +176,21 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 				save_temporary_scope_value_as = { name = test_cbp_us00_test_total_void_wealth_baseline value = 0 }
 			}
 		}
-		modeu5_debug_replace_country_wheat_capacity = {
+		cbp_debug_replace_country_wheat_capacity = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			value = 40
 		}
-		modeu5_remove_stock = {
+		cbp_remove_stock = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
 		}
-		modeu5_add_stock = {
+		cbp_add_stock = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 			quantity = 100
 			capacity_policy = enforce
@@ -204,34 +204,34 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			value = scope:cbp_rejected_quantity
 		}
 
-		modeu5_update_production_rejection_ledger = {
+		cbp_update_production_rejection_ledger = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 			produced_quantity = 100
 			actual_added_quantity = scope:test_cbp_us00_test_actual_added
 			rejected_quantity = scope:test_cbp_us00_test_actual_rejected
 		}
-		modeu5_run_us00_record_calculations = {
+		cbp_run_us00_record_calculations = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 			good_price = 2
 			good_price_source = 99
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = { name = test_cbp_us00_test_stock_after value = scope:cbp_read_country_stock }
 		save_temporary_scope_value_as = { name = test_cbp_us00_test_capacity value = scope:cbp_read_country_stock_cap }
 		save_temporary_scope_value_as = { name = test_cbp_us00_test_market_stock_after value = scope:cbp_read_market_stock }
 
-		modeu5_read_void_economy_record = {
+		cbp_read_void_economy_record = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = { name = test_cbp_us00_test_produced value = scope:cbp_us00_produced }
@@ -248,12 +248,12 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 					has_variable_map = cbp_void_wealth_by_market
 					is_key_in_variable_map = {
 						name = cbp_void_wealth_by_market
-						target = scope:modeu5_us00_test_market
+						target = scope:cbp_us00_test_market
 					}
 				}
 				save_temporary_scope_value_as = {
 					name = test_cbp_us00_test_market_void_wealth
-					value = "variable_map(cbp_void_wealth_by_market|scope:modeu5_us00_test_market)"
+					value = "variable_map(cbp_void_wealth_by_market|scope:cbp_us00_test_market)"
 				}
 			}
 			else = {
@@ -292,7 +292,7 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			name = test_cbp_us00_test_expected_effective_ratio
 			value = {
 				value = scope:test_cbp_us00_test_expected_ratio
-				subtract = modeu5_overproduction_stability_buffer
+				subtract = cbp_overproduction_stability_buffer
 				min = 0
 			}
 		}
@@ -300,8 +300,8 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			name = test_cbp_us00_test_expected_penalty_magnitude
 			value = {
 				value = scope:test_cbp_us00_test_expected_effective_ratio
-				multiply = modeu5_production_penalty_per_effective_overproduction
-				max = modeu5_max_production_penalty
+				multiply = cbp_production_penalty_per_effective_overproduction
+				max = cbp_max_production_penalty
 			}
 		}
 		save_temporary_scope_value_as = {
@@ -312,8 +312,8 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			}
 		}
 
-		modeu5_us00_write_e2e_dump_variables = yes
-		modeu5_us00_log_e2e_dump = yes
+		cbp_us00_write_e2e_dump_variables = yes
+		cbp_us00_log_e2e_dump = yes
 
 		if = {
 			limit = {
@@ -341,16 +341,16 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 			error_log = "ModeU5 deterministic US-00 controlled pipeline test failed."
 		}
 
-		modeu5_remove_stock = {
+		cbp_remove_stock = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
 		}
-		modeu5_clear_us00_record = {
+		cbp_clear_us00_record = {
 			country = c:FRA
-			market = scope:modeu5_us00_test_market
+			market = scope:cbp_us00_test_market
 			good = wheat
 		}
 	}
@@ -361,58 +361,58 @@ modeu5_us00_debug_run_controlled_e2e_test = {
 	}
 }
 
-modeu5_us00_debug_run_monthly_runtime_test = {
-	modeu5_us00_clear_test_results = yes
+cbp_us00_debug_run_monthly_runtime_test = {
+	cbp_us00_clear_test_results = yes
 	set_global_variable = test_cbp_us00_monthly_runtime_started
-	save_temporary_scope_as = modeu5_us00_test_controller
+	save_temporary_scope_as = cbp_us00_test_controller
 
 	if = {
 		limit = {
 			country_exists = c:FRA
-			modeu5_stock_runtime_ready_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
 		}
-		c:FRA = { save_temporary_scope_as = modeu5_country }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_market }
+		c:FRA = { save_temporary_scope_as = cbp_country }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_market }
 
-		modeu5_remove_stock = {
+		cbp_remove_stock = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
 		}
-		modeu5_debug_replace_country_wheat_capacity = {
+		cbp_debug_replace_country_wheat_capacity = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			value = 10
 		}
-		modeu5_clear_us00_record = {
+		cbp_clear_us00_record = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			good = wheat
 		}
 
-		modeu5_update_production_rejection_ledger = {
+		cbp_update_production_rejection_ledger = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			good = wheat
 			produced_quantity = 100
 			actual_added_quantity = 94
 			rejected_quantity = 6
 		}
-		modeu5_run_us00_record_calculations = {
+		cbp_run_us00_record_calculations = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			good = wheat
 			good_price = 2
 			good_price_source = 99
 		}
 
-		modeu5_process_us00_monthly_market_good_wheat = yes
+		cbp_process_us00_monthly_market_good_wheat = yes
 
-		modeu5_read_void_economy_record = {
+		cbp_read_void_economy_record = {
 			country = c:FRA
-			market = scope:modeu5_market
+			market = scope:cbp_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = { name = test_cbp_us00_runtime_produced value = scope:cbp_us00_produced }
@@ -448,8 +448,8 @@ modeu5_us00_debug_run_monthly_runtime_test = {
 			else = { save_temporary_scope_value_as = { name = test_cbp_us00_runtime_modifier_mode value = 0 } }
 		}
 
-		modeu5_us00_write_monthly_runtime_dump_variables = yes
-		modeu5_us00_log_monthly_runtime_dump = yes
+		cbp_us00_write_monthly_runtime_dump_variables = yes
+		cbp_us00_log_monthly_runtime_dump = yes
 
 		if = {
 			limit = {
@@ -479,7 +479,7 @@ modeu5_us00_debug_run_monthly_runtime_test = {
 	}
 }
 
-modeu5_probe021_increment_location_count = {
+cbp_probe021_increment_location_count = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = test_cbp_us00_probe021_location_count }
@@ -497,7 +497,7 @@ modeu5_probe021_increment_location_count = {
 	}
 }
 
-modeu5_probe021_increment_positive_goods_output_count = {
+cbp_probe021_increment_positive_goods_output_count = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = test_cbp_us00_probe021_positive_goods_output_count }
@@ -515,7 +515,7 @@ modeu5_probe021_increment_positive_goods_output_count = {
 	}
 }
 
-modeu5_probe021_add_wheat_goods_output_total = {
+cbp_probe021_add_wheat_goods_output_total = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = test_cbp_us00_probe021_wheat_goods_output_total }
@@ -536,7 +536,7 @@ modeu5_probe021_add_wheat_goods_output_total = {
 	}
 }
 
-modeu5_probe021_add_raw_material_output_total = {
+cbp_probe021_add_raw_material_output_total = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = test_cbp_us00_probe021_raw_material_output_total }
@@ -557,16 +557,16 @@ modeu5_probe021_add_raw_material_output_total = {
 	}
 }
 
-modeu5_us00_debug_run_probe021 = {
-	modeu5_us00_clear_test_results = yes
+cbp_us00_debug_run_probe021 = {
+	cbp_us00_clear_test_results = yes
 	set_global_variable = test_cbp_probe021_started
-	save_temporary_scope_as = modeu5_us00_test_controller
+	save_temporary_scope_as = cbp_us00_test_controller
 
 	if = {
 		limit = { country_exists = c:FRA }
 		c:FRA = {
 			every_owned_location = {
-				modeu5_probe021_increment_location_count = yes
+				cbp_probe021_increment_location_count = yes
 				save_temporary_scope_value_as = {
 					name = test_cbp_probe021_location_wheat_goods_output
 					value = {
@@ -583,15 +583,15 @@ modeu5_us00_debug_run_probe021 = {
 				}
 				if = {
 					limit = { scope:test_cbp_probe021_location_wheat_goods_output > 0 }
-					modeu5_probe021_increment_positive_goods_output_count = yes
+					cbp_probe021_increment_positive_goods_output_count = yes
 				}
-				modeu5_probe021_add_wheat_goods_output_total = yes
-				modeu5_probe021_add_raw_material_output_total = yes
+				cbp_probe021_add_wheat_goods_output_total = yes
+				cbp_probe021_add_raw_material_output_total = yes
 			}
 		}
 
-		modeu5_us00_write_probe021_dump_variables = yes
-		modeu5_us00_log_probe021_dump = yes
+		cbp_us00_write_probe021_dump_variables = yes
+		cbp_us00_log_probe021_dump = yes
 		if = {
 			limit = {
 				NOT = { has_global_variable = test_cbp_us00_probe021_location_count }

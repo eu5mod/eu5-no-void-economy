@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Rename tracked repository files from the ``modeu5_`` prefix to ``cbp_``.
+"""Rename tracked repository files from the ``cbp_`` prefix to ``cbp_``.
 
 The script changes file names only. It does not modify file contents, identifiers,
 localization keys, or directory names.
 
 Examples:
-    python3 tools/rename_modeu5_file_prefix.py
-    python3 tools/rename_modeu5_file_prefix.py --check
-    python3 tools/rename_modeu5_file_prefix.py --apply
+    python3 tools/rename_cbp_file_prefix.py
+    python3 tools/rename_cbp_file_prefix.py --check
+    python3 tools/rename_cbp_file_prefix.py --apply
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-SOURCE_PREFIX = "modeu5_"
+SOURCE_PREFIX = "cbp_"
 TARGET_PREFIX = "cbp_"
 ROOT = Path(__file__).resolve().parents[1]
 

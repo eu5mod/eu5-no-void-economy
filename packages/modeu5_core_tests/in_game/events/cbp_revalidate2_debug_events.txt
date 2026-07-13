@@ -1,9 +1,9 @@
-namespace = modeu5_revalidate_debug
+namespace = cbp_revalidate_debug
 
-modeu5_revalidate_debug.2 = {
+cbp_revalidate_debug.2 = {
 	type = country_event
-	title = modeu5_revalidate_debug.2.title
-	desc = modeu5_revalidate_debug.2.desc
+	title = cbp_revalidate_debug.2.title
+	desc = cbp_revalidate_debug.2.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,34 +12,34 @@ modeu5_revalidate_debug.2 = {
 	}
 
 	option = {
-		name = modeu5_revalidate_debug.2.a
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_perf14_log_debug_level_before_guarded_probe = yes
-		modeu5_debug_run_perf14_performance_mode_cmm_test_guarded_diagnostic = yes
-		modeu5_perf14_log_debug_level_after_guarded_probe = yes
-		trigger_event_non_silently = modeu5_perf14_debug.2
+		name = cbp_revalidate_debug.2.a
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_perf14_log_debug_level_before_guarded_probe = yes
+		cbp_debug_run_perf14_performance_mode_cmm_test_guarded_diagnostic = yes
+		cbp_perf14_log_debug_level_after_guarded_probe = yes
+		trigger_event_non_silently = cbp_perf14_debug.2
 	}
 	option = {
-		name = modeu5_revalidate_debug.2.b
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_us17_us20_reconciliation_tests = yes
-		trigger_event_non_silently = modeu5_revalidate_debug.3
+		name = cbp_revalidate_debug.2.b
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_us17_us20_reconciliation_tests = yes
+		trigger_event_non_silently = cbp_revalidate_debug.3
 	}
 	option = {
-		name = modeu5_revalidate_debug.2.c
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_revalidate2_run_us04_suite = yes
-		trigger_event_non_silently = modeu5_revalidate_debug.4
+		name = cbp_revalidate_debug.2.c
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_revalidate2_run_us04_suite = yes
+		trigger_event_non_silently = cbp_revalidate_debug.4
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_revalidate_debug.3 = {
+cbp_revalidate_debug.3 = {
 	type = country_event
-	title = modeu5_revalidate_debug.3.title
-	desc = modeu5_revalidate_debug.3.desc
+	title = cbp_revalidate_debug.3.title
+	desc = cbp_revalidate_debug.3.desc
 	outcome = neutral
 
 	trigger = {
@@ -47,26 +47,26 @@ modeu5_revalidate_debug.3 = {
 	}
 
 	option = {
-		name = modeu5_revalidate_debug.us17_us20.pass
+		name = cbp_revalidate_debug.us17_us20.pass
 		trigger = { has_global_variable = test_cbp_us17_us20_reconciliation_passed }
 	}
 	option = {
-		name = modeu5_revalidate_debug.us17_us20.blocked
+		name = cbp_revalidate_debug.us17_us20.blocked
 		trigger = { has_global_variable = test_cbp_us17_us20_reconciliation_blocked }
 	}
 	option = {
-		name = modeu5_revalidate_debug.us17_us20.fail
+		name = cbp_revalidate_debug.us17_us20.fail
 		trigger = { has_global_variable = test_cbp_us17_us20_reconciliation_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_revalidate_debug.4 = {
+cbp_revalidate_debug.4 = {
 	type = country_event
-	title = modeu5_revalidate_debug.4.title
-	desc = modeu5_revalidate_debug.4.desc
+	title = cbp_revalidate_debug.4.title
+	desc = cbp_revalidate_debug.4.desc
 	outcome = neutral
 
 	trigger = {
@@ -74,18 +74,18 @@ modeu5_revalidate_debug.4 = {
 	}
 
 	option = {
-		name = modeu5_revalidate_debug.us04.pass
+		name = cbp_revalidate_debug.us04.pass
 		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_passed }
 	}
 	option = {
-		name = modeu5_revalidate_debug.us04.blocked
+		name = cbp_revalidate_debug.us04.blocked
 		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_blocked }
 	}
 	option = {
-		name = modeu5_revalidate_debug.us04.fail
+		name = cbp_revalidate_debug.us04.fail
 		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

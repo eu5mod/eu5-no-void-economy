@@ -14,7 +14,7 @@ MODEU5_TOOL_LIB_LOADED=1
 
 MODEU5_REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-modeu5_load_local_config() {
+cbp_load_local_config() {
 	local local_config="${1:-$MODEU5_REPO_ROOT/.modeu5.local.env}"
 
 	if [[ -f "$local_config" ]]; then
@@ -25,12 +25,12 @@ modeu5_load_local_config() {
 	fi
 }
 
-modeu5_load_goods_registry() {
-	# shellcheck source=tools/modeu5_goods.sh
-	source "$MODEU5_REPO_ROOT/tools/modeu5_goods.sh"
+cbp_load_goods_registry() {
+	# shellcheck source=tools/cbp_goods.sh
+	source "$MODEU5_REPO_ROOT/tools/cbp_goods.sh"
 }
 
-modeu5_require_file() {
+cbp_require_file() {
 	local file="$1"
 	if [[ ! -f "$file" ]]; then
 		printf 'Required file is missing: %s\n' "$file" >&2
@@ -38,12 +38,12 @@ modeu5_require_file() {
 	fi
 }
 
-modeu5_make_parent_dir() {
+cbp_make_parent_dir() {
 	local path="$1"
 	mkdir -p "$(dirname "$path")"
 }
 
-modeu5_search_quiet() {
+cbp_search_quiet() {
 	local pattern="$1"
 	shift
 
@@ -54,7 +54,7 @@ modeu5_search_quiet() {
 	fi
 }
 
-modeu5_search_lines() {
+cbp_search_lines() {
 	local pattern="$1"
 	shift
 
@@ -65,22 +65,22 @@ modeu5_search_lines() {
 	fi
 }
 
-modeu5_require_match() {
+cbp_require_match() {
 	local pattern="$1"
 	local file="$2"
 	local message="$3"
 
-	if ! modeu5_search_quiet "$pattern" "$file"; then
+	if ! cbp_search_quiet "$pattern" "$file"; then
 		printf '%s: %s\n' "$message" "$file" >&2
 		exit 1
 	fi
 }
 
-modeu5_render_template_to_stdout() {
+cbp_render_template_to_stdout() {
 	local template="$1"
 	shift
 
-	modeu5_require_file "$template"
+	cbp_require_file "$template"
 
 	python3 - "$template" "$@" <<'PY'
 from pathlib import Path
@@ -112,11 +112,11 @@ sys.stdout.write(text)
 PY
 }
 
-modeu5_render_template_to_file() {
+cbp_render_template_to_file() {
 	local output="$1"
 	local template="$2"
 	shift 2
 
-	modeu5_make_parent_dir "$output"
-	modeu5_render_template_to_stdout "$template" "$@" > "$output"
+	cbp_make_parent_dir "$output"
+	cbp_render_template_to_stdout "$template" "$@" > "$output"
 }

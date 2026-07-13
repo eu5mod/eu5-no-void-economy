@@ -10,7 +10,7 @@
 # - no live verifier;
 # - no production use of global market iteration.
 
-modeu5_q8_clear_remaining_probe_results = {
+cbp_q8_clear_remaining_probe_results = {
 	remove_global_variable = test_cbp_q8_remaining_probes_started
 	remove_global_variable = test_cbp_q8_remaining_probes_passed
 	remove_global_variable = test_cbp_q8_remaining_probes_failed
@@ -51,15 +51,15 @@ modeu5_q8_clear_remaining_probe_results = {
 	}
 }
 
-modeu5_debug_run_q8_remaining_candidate_probes = {
-	modeu5_q8_clear_remaining_probe_results = yes
+cbp_debug_run_q8_remaining_candidate_probes = {
+	cbp_q8_clear_remaining_probe_results = yes
 	set_global_variable = test_cbp_q8_remaining_probes_started
 
-	modeu5_q8_probe_us10_pending_gate = yes
-	modeu5_q8_probe_helper_inventory = yes
-	modeu5_q8_probe_dirty_cache_lifecycle = yes
-	modeu5_q8_probe_market_sliced_verifier_candidate = yes
-	modeu5_q8_probe_global_market_iterator_exposure = yes
+	cbp_q8_probe_us10_pending_gate = yes
+	cbp_q8_probe_helper_inventory = yes
+	cbp_q8_probe_dirty_cache_lifecycle = yes
+	cbp_q8_probe_market_sliced_verifier_candidate = yes
+	cbp_q8_probe_global_market_iterator_exposure = yes
 
 	if = {
 		limit = {
@@ -84,11 +84,11 @@ modeu5_debug_run_q8_remaining_candidate_probes = {
 # probe can safely inspect the existing per-good pending-request map and record
 # a value for one canonical good. If this is insufficient in runtime logs, the
 # next implementation must add a generated has-any-pending bucket.
-modeu5_q8_probe_us10_pending_gate = {
+cbp_q8_probe_us10_pending_gate = {
 	set_global_variable = test_cbp_q8_2_us10_pending_gate_probe_started
-	save_temporary_scope_as = modeu5_q8_probe_country
+	save_temporary_scope_as = cbp_q8_probe_country
 	capital.market = {
-		save_temporary_scope_as = modeu5_q8_probe_market
+		save_temporary_scope_as = cbp_q8_probe_market
 	}
 
 	save_temporary_scope_value_as = { name = test_cbp_q8_probe_wheat_pending_requested value = 0 }
@@ -98,12 +98,12 @@ modeu5_q8_probe_us10_pending_gate = {
 			has_variable_map = test_cbp_consumption_wheat_pending_requested_by_market
 			is_key_in_variable_map = {
 				name = test_cbp_consumption_wheat_pending_requested_by_market
-				target = scope:modeu5_q8_probe_market
+				target = scope:cbp_q8_probe_market
 			}
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_q8_probe_wheat_pending_requested
-			value = "variable_map(test_cbp_consumption_wheat_pending_requested_by_market|scope:modeu5_q8_probe_market)"
+			value = "variable_map(test_cbp_consumption_wheat_pending_requested_by_market|scope:cbp_q8_probe_market)"
 		}
 	}
 
@@ -112,7 +112,7 @@ modeu5_q8_probe_us10_pending_gate = {
 	if = {
 		limit = { scope:test_cbp_q8_probe_wheat_pending_requested >= 0 }
 		set_global_variable = test_cbp_q8_2_us10_pending_gate_probe_passed
-		debug_log = "ModeU5 Q8.2 PROBE us10_pending_gate PASS wheat_pending=[THIS.GetVariable('modeu5_q8_probe_wheat_pending_requested').GetValue|4]"
+		debug_log = "ModeU5 Q8.2 PROBE us10_pending_gate PASS wheat_pending=[THIS.GetVariable('cbp_q8_probe_wheat_pending_requested').GetValue|4]"
 	}
 	else = {
 		set_global_variable = test_cbp_q8_2_us10_pending_gate_probe_failed
@@ -126,7 +126,7 @@ modeu5_q8_probe_us10_pending_gate = {
 # static audit script. It marks the runtime side as intentionally inert and
 # keeps the decision blocked until the script confirms the generated wrapper
 # still calls the existing heavy helpers.
-modeu5_q8_probe_helper_inventory = {
+cbp_q8_probe_helper_inventory = {
 	set_global_variable = test_cbp_q8_4_helper_inventory_probe_started
 	set_global_variable = test_cbp_q8_4_helper_inventory_probe_passed
 	debug_log = "ModeU5 Q8.4 PROBE helper_inventory PASS runtime_noop_static_inventory_required"
@@ -136,16 +136,16 @@ modeu5_q8_probe_helper_inventory = {
 #
 # This marks the capital market dirty, repairs dirty market-country caches, and
 # verifies the existing dirty repair consumer ran. It does not mutate stock.
-modeu5_q8_probe_dirty_cache_lifecycle = {
+cbp_q8_probe_dirty_cache_lifecycle = {
 	set_global_variable = test_cbp_q8_5_dirty_cache_probe_started
-	save_temporary_scope_as = modeu5_q8_probe_country
+	save_temporary_scope_as = cbp_q8_probe_country
 	capital.market = {
-		save_temporary_scope_as = modeu5_q8_probe_market
-		save_temporary_scope_as = modeu5_market_country_cache_dirty_market
+		save_temporary_scope_as = cbp_q8_probe_market
+		save_temporary_scope_as = cbp_market_country_cache_dirty_market
 	}
 
-	modeu5_mark_market_country_cache_dirty = yes
-	modeu5_repair_dirty_market_country_caches = yes
+	cbp_mark_market_country_cache_dirty = yes
+	cbp_repair_dirty_market_country_caches = yes
 
 	if = {
 		limit = {
@@ -153,7 +153,7 @@ modeu5_q8_probe_dirty_cache_lifecycle = {
 			global_var:cbp_market_country_cache_dirty_repair_count > 0
 		}
 		set_global_variable = test_cbp_q8_5_dirty_cache_probe_passed
-		debug_log = "ModeU5 Q8.5 PROBE dirty_cache_lifecycle PASS repair_count=[GetGlobalVariable('modeu5_market_country_cache_dirty_repair_count').GetValue|0]"
+		debug_log = "ModeU5 Q8.5 PROBE dirty_cache_lifecycle PASS repair_count=[GetGlobalVariable('cbp_market_country_cache_dirty_repair_count').GetValue|0]"
 	}
 	else = {
 		set_global_variable = test_cbp_q8_5_dirty_cache_probe_failed
@@ -165,11 +165,11 @@ modeu5_q8_probe_dirty_cache_lifecycle = {
 #
 # This only creates and reads a candidate market slice. It is a verifier-scope
 # probe, not a verifier and not a stock repair path.
-modeu5_q8_probe_market_sliced_verifier_candidate = {
+cbp_q8_probe_market_sliced_verifier_candidate = {
 	set_global_variable = test_cbp_q8_6_market_slice_probe_started
-	save_temporary_scope_as = modeu5_q8_probe_country
+	save_temporary_scope_as = cbp_q8_probe_country
 	capital.market = {
-		save_temporary_scope_as = modeu5_q8_probe_market
+		save_temporary_scope_as = cbp_q8_probe_market
 	}
 
 	if = {
@@ -179,14 +179,14 @@ modeu5_q8_probe_market_sliced_verifier_candidate = {
 
 	add_to_global_variable_list = {
 		name = test_cbp_q8_probe_market_slice_candidates
-		target = scope:modeu5_q8_probe_market
+		target = scope:cbp_q8_probe_market
 	}
 
 	if = {
 		limit = {
 			is_target_in_global_variable_list = {
 				name = test_cbp_q8_probe_market_slice_candidates
-				target = scope:modeu5_q8_probe_market
+				target = scope:cbp_q8_probe_market
 			}
 		}
 		set_global_variable = test_cbp_q8_6_market_slice_probe_passed
@@ -198,7 +198,7 @@ modeu5_q8_probe_market_sliced_verifier_candidate = {
 	}
 }
 
-modeu5_q8_7_increment_global_market_count = {
+cbp_q8_7_increment_global_market_count = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_global_market_count }
 		set_global_variable = {
@@ -214,7 +214,7 @@ modeu5_q8_7_increment_global_market_count = {
 	}
 }
 
-modeu5_q8_7_increment_global_market_unique_count = {
+cbp_q8_7_increment_global_market_unique_count = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_global_market_unique_count }
 		set_global_variable = {
@@ -230,7 +230,7 @@ modeu5_q8_7_increment_global_market_unique_count = {
 	}
 }
 
-modeu5_q8_7_increment_global_market_duplicate_count = {
+cbp_q8_7_increment_global_market_duplicate_count = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_global_market_duplicate_count }
 		set_global_variable = {
@@ -246,7 +246,7 @@ modeu5_q8_7_increment_global_market_duplicate_count = {
 	}
 }
 
-modeu5_q8_7_increment_market_country_cache_rebuild_count = {
+cbp_q8_7_increment_market_country_cache_rebuild_count = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_market_country_cache_rebuild_count }
 		set_global_variable = {
@@ -262,7 +262,7 @@ modeu5_q8_7_increment_market_country_cache_rebuild_count = {
 	}
 }
 
-modeu5_q8_7_increment_market_country_cache_failed_count = {
+cbp_q8_7_increment_market_country_cache_failed_count = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_market_country_cache_failed_count }
 		set_global_variable = {
@@ -278,34 +278,34 @@ modeu5_q8_7_increment_market_country_cache_failed_count = {
 	}
 }
 
-modeu5_q8_7_note_seen_global_market = {
+cbp_q8_7_note_seen_global_market = {
 	if = {
 		limit = {
 			NOT = { has_global_variable_list = test_cbp_q8_7_global_market_seen_markets }
 		}
 		add_to_global_variable_list = {
 			name = test_cbp_q8_7_global_market_seen_markets
-			target = scope:modeu5_q8_7_global_market_candidate
+			target = scope:cbp_q8_7_global_market_candidate
 		}
-		modeu5_q8_7_increment_global_market_unique_count = yes
+		cbp_q8_7_increment_global_market_unique_count = yes
 	}
 	else_if = {
 		limit = {
 			NOT = {
 				is_target_in_global_variable_list = {
 					name = test_cbp_q8_7_global_market_seen_markets
-					target = scope:modeu5_q8_7_global_market_candidate
+					target = scope:cbp_q8_7_global_market_candidate
 				}
 			}
 		}
 		add_to_global_variable_list = {
 			name = test_cbp_q8_7_global_market_seen_markets
-			target = scope:modeu5_q8_7_global_market_candidate
+			target = scope:cbp_q8_7_global_market_candidate
 		}
-		modeu5_q8_7_increment_global_market_unique_count = yes
+		cbp_q8_7_increment_global_market_unique_count = yes
 	}
 	else = {
-		modeu5_q8_7_increment_global_market_duplicate_count = yes
+		cbp_q8_7_increment_global_market_duplicate_count = yes
 	}
 }
 
@@ -315,7 +315,7 @@ modeu5_q8_7_note_seen_global_market = {
 # than raw iterator exposure: a global/none-scope entry can enter each market,
 # deduplicate the market set, and call the existing market-country work-cache
 # rebuild from market scope without stock mutation or a dispatcher switch.
-modeu5_q8_probe_global_market_iterator_exposure = {
+cbp_q8_probe_global_market_iterator_exposure = {
 	set_global_variable = test_cbp_q8_7_global_market_probe_started
 	debug_log = "ModeU5 TEST ENTERED scenario=q87_global_market_local_pass"
 
@@ -331,15 +331,15 @@ modeu5_q8_probe_global_market_iterator_exposure = {
 	}
 
 	every_market_in_world = {
-		save_temporary_scope_as = modeu5_q8_7_global_market_candidate
-		save_temporary_scope_as = modeu5_market_country_cache_market
-		modeu5_q8_7_increment_global_market_count = yes
-		modeu5_q8_7_note_seen_global_market = yes
-		modeu5_rebuild_countries_present_in_market = yes
-		modeu5_q8_7_increment_market_country_cache_rebuild_count = yes
+		save_temporary_scope_as = cbp_q8_7_global_market_candidate
+		save_temporary_scope_as = cbp_market_country_cache_market
+		cbp_q8_7_increment_global_market_count = yes
+		cbp_q8_7_note_seen_global_market = yes
+		cbp_rebuild_countries_present_in_market = yes
+		cbp_q8_7_increment_market_country_cache_rebuild_count = yes
 		if = {
 			limit = { has_global_variable = cbp_market_country_cache_last_rebuild_failed }
-			modeu5_q8_7_increment_market_country_cache_failed_count = yes
+			cbp_q8_7_increment_market_country_cache_failed_count = yes
 		}
 	}
 

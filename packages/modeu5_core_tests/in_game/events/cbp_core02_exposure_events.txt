@@ -1,9 +1,9 @@
-namespace = modeu5_core02_probe
+namespace = cbp_core02_probe
 
-modeu5_core02_probe.1 = {
+cbp_core02_probe.1 = {
 	type = country_event
-	title = modeu5_core02_probe.1.title
-	desc = modeu5_core02_probe.1.desc
+	title = cbp_core02_probe.1.title
+	desc = cbp_core02_probe.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,13 +12,13 @@ modeu5_core02_probe.1 = {
 	}
 
 	option = {
-		name = modeu5_core02_probe.delayed.pass
+		name = cbp_core02_probe.delayed.pass
 		trigger = {
 			has_global_variable = test_cbp_core02_probe_started_after_delay
 		}
 	}
 	option = {
-		name = modeu5_core02_probe.delayed.fail
+		name = cbp_core02_probe.delayed.fail
 		trigger = {
 			NOT = {
 				has_global_variable = test_cbp_core02_probe_started_after_delay
@@ -26,13 +26,13 @@ modeu5_core02_probe.1 = {
 		}
 	}
 	option = {
-		name = modeu5_core02_probe.market.pass
+		name = cbp_core02_probe.market.pass
 		trigger = {
 			has_global_variable = test_cbp_core02_probe_market_found
 		}
 	}
 	option = {
-		name = modeu5_core02_probe.market.fail
+		name = cbp_core02_probe.market.fail
 		trigger = {
 			NOT = {
 				has_global_variable = test_cbp_core02_probe_market_found
@@ -40,13 +40,13 @@ modeu5_core02_probe.1 = {
 		}
 	}
 	option = {
-		name = modeu5_core02_probe.value.pass
+		name = cbp_core02_probe.value.pass
 		trigger = {
 			has_global_variable = test_cbp_core02_probe_passed
 		}
 	}
 	option = {
-		name = modeu5_core02_probe.value.fail
+		name = cbp_core02_probe.value.fail
 		trigger = {
 			NOT = {
 				has_global_variable = test_cbp_core02_probe_passed
@@ -54,6 +54,6 @@ modeu5_core02_probe.1 = {
 		}
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

@@ -1,11 +1,11 @@
 # ModeU5 US-10 stock panel shell.
 #
 # Plan A mounts this shell inside Production through
-# zz_modeu5_us10_production_subtabs.gui. The stock table itself lives in
-# modeu5_us10_stock_table.gui so it can be reused unchanged by Plan B if needed.
+# zz_cbp_us10_production_subtabs.gui. The stock table itself lives in
+# cbp_us10_stock_table.gui so it can be reused unchanged by Plan B if needed.
 
-template modeu5_us10_stock_panel {
-	visible = "[GetVariableSystem.Exists('modeu5_us10_stock_tab')]"
+template cbp_us10_stock_panel {
+	visible = "[GetVariableSystem.Exists('cbp_us10_stock_tab')]"
 	layoutpolicy_horizontal = expanding
 	layoutpolicy_vertical = expanding
 	size = { -1 940 }
@@ -15,7 +15,7 @@ template modeu5_us10_stock_panel {
 	# the read-model from ProductionView.GetSelectedMarket. A true click-time sync
 	# would require patching the original production selector inside the vanilla
 	# lateralview body.
-	onmousehierarchyenter = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', ProductionView.GetSelectedMarket.MakeScope).End)]"
+	onmousehierarchyenter = "[GetScriptedGui('cbp_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('cbp_us10_ui_clicked_market', ProductionView.GetSelectedMarket.MakeScope).End)]"
 
 	vbox = {
 		layoutpolicy_horizontal = expanding
@@ -39,7 +39,7 @@ template modeu5_us10_stock_panel {
 				size = { 80 30 }
 				raw_text = "Close"
 				using = bg_button_flavor_4
-				onclick = "[GetVariableSystem.Clear('modeu5_us10_stock_tab')]"
+				onclick = "[GetVariableSystem.Clear('cbp_us10_stock_tab')]"
 				tooltipwidget = { BasicFunctionalTooltip = {} }
 			}
 		}
@@ -49,7 +49,7 @@ template modeu5_us10_stock_panel {
 			size = { -1 44 }
 			using = bg_window_default_alt
 			datacontext = "[ProductionView.GetSelectedMarket]"
-			onmousehierarchyenter = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+			onmousehierarchyenter = "[GetScriptedGui('cbp_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('cbp_us10_ui_clicked_market', Market.MakeScope).End)]"
 
 			hbox = {
 				layoutpolicy_horizontal = expanding
@@ -75,7 +75,7 @@ template modeu5_us10_stock_panel {
 					size = { 90 28 }
 					raw_text = "Sync"
 					using = bg_button_flavor_4
-					onclick = "[GetScriptedGui('modeu5_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('modeu5_us10_ui_clicked_market', Market.MakeScope).End)]"
+					onclick = "[GetScriptedGui('cbp_us10_ui_select_market_on_click').Execute(GuiScope.SetRoot(Player.MakeScope).AddScope('cbp_us10_ui_clicked_market', Market.MakeScope).End)]"
 					tooltipwidget = { BasicFunctionalTooltip = {} }
 				}
 			}
@@ -84,7 +84,7 @@ template modeu5_us10_stock_panel {
 				layoutpolicy_horizontal = expanding
 				autoresize = no
 				size = { -1 58 }
-				text = "modeu5_us10_ui.read_only_note"
+				text = "cbp_us10_ui.read_only_note"
 			}
 		}
 
@@ -93,7 +93,7 @@ template modeu5_us10_stock_panel {
 			layoutpolicy_vertical = expanding
 			minimumsize = { 520 760 }
 			maximumsize = { 520 760 }
-			using = modeu5_us10_stock_table
+			using = cbp_us10_stock_table
 		}
 	}
 }

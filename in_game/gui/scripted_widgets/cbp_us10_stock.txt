@@ -1,1 +1,1 @@
-﻿"gui/modeu5_us10_stock_lateralview.gui" = modeu5_us10_stock
+﻿"gui/cbp_us10_stock_lateralview.gui" = cbp_us10_stock

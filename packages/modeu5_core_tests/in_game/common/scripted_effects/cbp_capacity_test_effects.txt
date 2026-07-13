@@ -1,8 +1,8 @@
 # Deterministic US-02 manual-test helper.
 # Recalculation may replace capacity maps but must never mutate stock.
 
-modeu5_debug_write_us02_capacity_dump_variables = {
-	scope:modeu5_capacity_test_controller = {
+cbp_debug_write_us02_capacity_dump_variables = {
+	scope:cbp_capacity_test_controller = {
 		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_stock value = scope:test_cbp_capacity_test_wheat_stock_after }
 		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_capacity value = scope:test_cbp_capacity_test_wheat_total }
 		set_variable = { name = gui_cbp_debug_us02_ui_fra_wheat_available value = scope:test_cbp_capacity_test_wheat_read_available }
@@ -16,14 +16,14 @@ modeu5_debug_write_us02_capacity_dump_variables = {
 	}
 }
 
-modeu5_debug_log_us02_capacity_dump = {
-	scope:modeu5_capacity_test_controller = {
-		debug_log = "ModeU5 US-02 DUMP capacity country=FRA good=wheat stock=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_stock').GetValue|2] capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_capacity').GetValue|2] available=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_available').GetValue|2] over_cap=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_over_cap').GetValue|2] market_trade_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_trade_capacity').GetValue|2] location_pool_share=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_rank_capacity').GetValue|2] country_location_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_location_count').GetValue|0] market_count=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_market_count').GetValue|0] country_location_pool_total=[THIS.GetVariable('modeu5_debug_us02_ui_fra_wheat_country_pool_total').GetValue|2] iron_wrapper_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_fra_iron_capacity').GetValue|2]"
+cbp_debug_log_us02_capacity_dump = {
+	scope:cbp_capacity_test_controller = {
+		debug_log = "ModeU5 US-02 DUMP capacity country=FRA good=wheat stock=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_stock').GetValue|2] capacity=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_capacity').GetValue|2] available=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_available').GetValue|2] over_cap=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_over_cap').GetValue|2] market_trade_capacity=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_trade_capacity').GetValue|2] location_pool_share=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_location_rank_capacity').GetValue|2] country_location_count=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_location_count').GetValue|0] market_count=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_market_count').GetValue|0] country_location_pool_total=[THIS.GetVariable('cbp_debug_us02_ui_fra_wheat_country_pool_total').GetValue|2] iron_wrapper_capacity=[THIS.GetVariable('cbp_debug_us02_ui_fra_iron_capacity').GetValue|2]"
 	}
 }
 
-modeu5_debug_write_us02_timing_probe_variables = {
-	scope:modeu5_capacity_test_controller = {
+cbp_debug_write_us02_timing_probe_variables = {
+	scope:cbp_capacity_test_controller = {
 		set_variable = { name = gui_cbp_debug_us02_ui_probe_before_capacity value = scope:test_cbp_capacity_probe_before_capacity }
 		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_build_capacity value = scope:test_cbp_capacity_probe_after_build_capacity }
 		set_variable = { name = gui_cbp_debug_us02_ui_probe_after_month_capacity value = scope:test_cbp_capacity_probe_after_month_capacity }
@@ -37,22 +37,22 @@ modeu5_debug_write_us02_timing_probe_variables = {
 	}
 }
 
-modeu5_debug_log_us02_timing_probe_dump = {
-	scope:modeu5_capacity_test_controller = {
-		debug_log = "ModeU5 US-02 DUMP timing country=FRA good=wheat before_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_before_capacity').GetValue|2] after_build_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_build_capacity').GetValue|2] after_month_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_month_capacity').GetValue|2] delta_immediate_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_immediate_capacity').GetValue|2] delta_month_capacity=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_month_capacity').GetValue|2] before_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_before_trade').GetValue|2] after_build_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_build_trade').GetValue|2] after_month_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_after_month_trade').GetValue|2] delta_immediate_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_immediate_trade').GetValue|2] delta_month_trade=[THIS.GetVariable('modeu5_debug_us02_ui_probe_delta_month_trade').GetValue|2]"
+cbp_debug_log_us02_timing_probe_dump = {
+	scope:cbp_capacity_test_controller = {
+		debug_log = "ModeU5 US-02 DUMP timing country=FRA good=wheat before_capacity=[THIS.GetVariable('cbp_debug_us02_ui_probe_before_capacity').GetValue|2] after_build_capacity=[THIS.GetVariable('cbp_debug_us02_ui_probe_after_build_capacity').GetValue|2] after_month_capacity=[THIS.GetVariable('cbp_debug_us02_ui_probe_after_month_capacity').GetValue|2] delta_immediate_capacity=[THIS.GetVariable('cbp_debug_us02_ui_probe_delta_immediate_capacity').GetValue|2] delta_month_capacity=[THIS.GetVariable('cbp_debug_us02_ui_probe_delta_month_capacity').GetValue|2] before_trade=[THIS.GetVariable('cbp_debug_us02_ui_probe_before_trade').GetValue|2] after_build_trade=[THIS.GetVariable('cbp_debug_us02_ui_probe_after_build_trade').GetValue|2] after_month_trade=[THIS.GetVariable('cbp_debug_us02_ui_probe_after_month_trade').GetValue|2] delta_immediate_trade=[THIS.GetVariable('cbp_debug_us02_ui_probe_delta_immediate_trade').GetValue|2] delta_month_trade=[THIS.GetVariable('cbp_debug_us02_ui_probe_delta_month_trade').GetValue|2]"
 	}
 }
 
-modeu5_debug_run_storage_capacity_test = {
-	save_temporary_scope_as = modeu5_capacity_test_controller
+cbp_debug_run_storage_capacity_test = {
+	save_temporary_scope_as = cbp_capacity_test_controller
 
 	if = {
 		limit = { country_exists = c:FRA }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_capacity_test_market }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_capacity_test_market }
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_capacity_test_market
+			market = scope:cbp_capacity_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -60,13 +60,13 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:cbp_read_country_stock
 		}
 
-		modeu5_recalculate_country_storage_capacities = {
+		cbp_recalculate_country_storage_capacities = {
 			country = c:FRA
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_capacity_test_market
+			market = scope:cbp_capacity_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -74,9 +74,9 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:cbp_read_country_stock_cap
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_capacity_test_market
+			market = scope:cbp_capacity_test_market
 			good = iron
 		}
 		save_temporary_scope_value_as = {
@@ -84,9 +84,9 @@ modeu5_debug_run_storage_capacity_test = {
 			value = scope:cbp_read_country_stock_cap
 		}
 
-		modeu5_recalculate_country_market_capacity = {
+		cbp_recalculate_country_market_capacity = {
 			country = c:FRA
-			market = scope:modeu5_capacity_test_market
+			market = scope:cbp_capacity_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -142,9 +142,9 @@ modeu5_debug_run_storage_capacity_test = {
 			}
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_capacity_test_market
+			market = scope:cbp_capacity_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -243,8 +243,8 @@ modeu5_debug_run_storage_capacity_test = {
 			name = test_cbp_debug_us02_dump_fra_iron_capacity
 			value = scope:test_cbp_capacity_test_wrapped_iron_total
 		}
-		modeu5_debug_write_us02_capacity_dump_variables = yes
-		modeu5_debug_log_us02_capacity_dump = yes
+		cbp_debug_write_us02_capacity_dump_variables = yes
+		cbp_debug_log_us02_capacity_dump = yes
 
 		if = {
 			limit = {
@@ -282,8 +282,8 @@ modeu5_debug_run_storage_capacity_test = {
 	}
 }
 
-modeu5_debug_run_storage_capacity_timing_probe = {
-	save_temporary_scope_as = modeu5_capacity_test_controller
+cbp_debug_run_storage_capacity_timing_probe = {
+	save_temporary_scope_as = cbp_capacity_test_controller
 
 	remove_global_variable = test_cbp_storage_capacity_timing_immediate_passed
 	remove_global_variable = test_cbp_storage_capacity_timing_monthly_passed
@@ -292,11 +292,11 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 
 	if = {
 		limit = { country_exists = c:FRA }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_capacity_probe_market }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_capacity_probe_market }
 
-		modeu5_recalculate_country_market_capacity = {
+		cbp_recalculate_country_market_capacity = {
 			country = c:FRA
-			market = scope:modeu5_capacity_probe_market
+			market = scope:cbp_capacity_probe_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -315,9 +315,9 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 			}
 		}
 
-		modeu5_recalculate_country_market_capacity = {
+		cbp_recalculate_country_market_capacity = {
 			country = c:FRA
-			market = scope:modeu5_capacity_probe_market
+			market = scope:cbp_capacity_probe_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -358,8 +358,8 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 		set_global_variable = { name = test_cbp_debug_us02_probe_delta_immediate_trade value = scope:test_cbp_capacity_probe_delta_immediate_trade }
 		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_capacity value = 0 }
 		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_trade value = 0 }
-		modeu5_debug_write_us02_timing_probe_variables = yes
-		modeu5_debug_log_us02_timing_probe_dump = yes
+		cbp_debug_write_us02_timing_probe_variables = yes
+		cbp_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
@@ -386,16 +386,16 @@ modeu5_debug_run_storage_capacity_timing_probe = {
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_trade value = 0 }
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_trade value = 0 }
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_trade value = 0 }
-		modeu5_debug_write_us02_timing_probe_variables = yes
-		modeu5_debug_log_us02_timing_probe_dump = yes
+		cbp_debug_write_us02_timing_probe_variables = yes
+		cbp_debug_log_us02_timing_probe_dump = yes
 		set_global_variable = test_cbp_storage_capacity_timing_failed
 		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_FRA"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe requires FRA."
 	}
 }
 
-modeu5_debug_finish_storage_capacity_timing_probe = {
-	save_temporary_scope_as = modeu5_capacity_test_controller
+cbp_debug_finish_storage_capacity_timing_probe = {
+	save_temporary_scope_as = cbp_capacity_test_controller
 
 	remove_global_variable = test_cbp_storage_capacity_timing_monthly_passed
 	remove_global_variable = test_cbp_storage_capacity_timing_failed
@@ -407,11 +407,11 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 			has_global_variable = test_cbp_debug_us02_probe_before_capacity
 			has_global_variable = test_cbp_debug_us02_probe_before_trade
 		}
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_capacity_probe_market }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_capacity_probe_market }
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_capacity_probe_market
+			market = scope:cbp_capacity_probe_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_before_capacity value = global_var:test_cbp_debug_us02_probe_before_capacity }
@@ -422,8 +422,8 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		save_temporary_scope_value_as = {
 			name = test_cbp_capacity_probe_after_month_trade
 			value = {
-				value = "scope:modeu5_capacity_probe_market.merchant_capacity(scope:modeu5_country)"
-				multiply = modeu5_storage_capacity_per_trade_capacity
+				value = "scope:cbp_capacity_probe_market.merchant_capacity(scope:cbp_country)"
+				multiply = cbp_storage_capacity_per_trade_capacity
 				min = 0
 			}
 		}
@@ -448,8 +448,8 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		set_global_variable = { name = test_cbp_debug_us02_probe_after_month_trade value = scope:test_cbp_capacity_probe_after_month_trade }
 		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_capacity value = scope:test_cbp_capacity_probe_delta_month_capacity }
 		set_global_variable = { name = test_cbp_debug_us02_probe_delta_month_trade value = scope:test_cbp_capacity_probe_delta_month_trade }
-		modeu5_debug_write_us02_timing_probe_variables = yes
-		modeu5_debug_log_us02_timing_probe_dump = yes
+		cbp_debug_write_us02_timing_probe_variables = yes
+		cbp_debug_log_us02_timing_probe_dump = yes
 
 		if = {
 			limit = {
@@ -477,8 +477,8 @@ modeu5_debug_finish_storage_capacity_timing_probe = {
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_after_month_trade value = 0 }
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_immediate_trade value = 0 }
 		save_temporary_scope_value_as = { name = test_cbp_capacity_probe_delta_month_trade value = 0 }
-		modeu5_debug_write_us02_timing_probe_variables = yes
-		modeu5_debug_log_us02_timing_probe_dump = yes
+		cbp_debug_write_us02_timing_probe_variables = yes
+		cbp_debug_log_us02_timing_probe_dump = yes
 		set_global_variable = test_cbp_storage_capacity_timing_failed
 		debug_log = "ModeU5 US-02 RESULT timing BLOCKED missing_started_probe"
 		error_log = "ModeU5 deterministic US-02 storage-capacity timing probe was finished without a started probe."

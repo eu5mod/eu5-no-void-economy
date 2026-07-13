@@ -30,7 +30,7 @@
 # into the existing every_trade body after route scopes and quantity are captured.
 # This preserves the #161 Q8.7 boundary: no market-scope every_trade loop is
 # introduced. The hook is dormant unless the CMM trade-rework setting enables
-# modeu5_trade_rework_enabled_trigger.
+# cbp_trade_rework_enabled_trigger.
 #
 # US-17 owner-modifier rule:
 # - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are read
@@ -38,7 +38,7 @@
 # - the scheduler country and market-center owner are never used as substitutes;
 # - unresolved route prices/base-maintenance/income surfaces remain fail-closed.
 
-modeu5_reset_country_trade_owner_pass_metrics = {
+cbp_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = cbp_country_trade_owner_pass_runs
 	remove_global_variable = cbp_country_trade_owner_trades_seen
 	remove_global_variable = cbp_country_trade_owner_inter_market_trades
@@ -66,35 +66,35 @@ modeu5_reset_country_trade_owner_pass_metrics = {
 	set_global_variable = { name = cbp_country_trade_owner_unsatisfied_quantity value = 0 }
 }
 
-modeu5_note_country_trade_owner_pass_run = {
+cbp_note_country_trade_owner_pass_run = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_pass_runs
 		value = { value = global_var:cbp_country_trade_owner_pass_runs add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_trade_seen = {
+cbp_note_country_trade_owner_trade_seen = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_trades_seen
 		value = { value = global_var:cbp_country_trade_owner_trades_seen add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_inter_market_trade = {
+cbp_note_country_trade_owner_inter_market_trade = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_inter_market_trades
 		value = { value = global_var:cbp_country_trade_owner_inter_market_trades add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_owner_mismatch = {
+cbp_note_country_trade_owner_owner_mismatch = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_owner_mismatches
 		value = { value = global_var:cbp_country_trade_owner_owner_mismatches add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_quantity_confirmed_trade = {
+cbp_note_country_trade_owner_quantity_confirmed_trade = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_quantity_confirmed_trades
 		value = { value = global_var:cbp_country_trade_owner_quantity_confirmed_trades add = 1 }
@@ -105,14 +105,14 @@ modeu5_note_country_trade_owner_quantity_confirmed_trade = {
 	}
 }
 
-modeu5_note_country_trade_owner_quantity_blocked_trade = {
+cbp_note_country_trade_owner_quantity_blocked_trade = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_quantity_blocked_trades
 		value = { value = global_var:cbp_country_trade_owner_quantity_blocked_trades add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_explicit_request = {
+cbp_note_country_trade_owner_explicit_request = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_explicit_requests
 		value = { value = global_var:cbp_country_trade_owner_explicit_requests add = 1 }
@@ -124,14 +124,14 @@ modeu5_note_country_trade_owner_explicit_request = {
 	}
 }
 
-modeu5_note_country_trade_owner_inter_market_transfer = {
+cbp_note_country_trade_owner_inter_market_transfer = {
 	set_global_variable = {
 		name = cbp_country_trade_owner_inter_market_transfers
 		value = { value = global_var:cbp_country_trade_owner_inter_market_transfers add = 1 }
 	}
 }
 
-modeu5_note_country_trade_owner_outcome_quantities = {
+cbp_note_country_trade_owner_outcome_quantities = {
 	save_temporary_scope_value_as = { name = cbp_country_trade_owner_transferred_delta value = { value = $transferred_quantity$ min = 0 } }
 	save_temporary_scope_value_as = { name = cbp_country_trade_owner_unsatisfied_delta value = { value = $unsatisfied_quantity$ min = 0 } }
 	set_global_variable = {
@@ -144,7 +144,7 @@ modeu5_note_country_trade_owner_outcome_quantities = {
 	}
 }
 
-modeu5_capture_country_trade_owner_trade_quantity = {
+cbp_capture_country_trade_owner_trade_quantity = {
 	save_temporary_scope_value_as = {
 		name = cbp_trade_owner_trade_volume
 		value = {
@@ -156,22 +156,22 @@ modeu5_capture_country_trade_owner_trade_quantity = {
 	# Do not divide by `traded_goods:transport_cost` here. The safe current
 	# implementation is the generated literal-good helper pattern:
 	#
-	#   modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+	#   cbp_compute_goods_quantity_from_trade_capacity_good_<good>
 	#
 	# The generated dispatcher matches the saved traded-good scope to a literal
 	# good and then uses the existing static transport-cost denominator with
 	# the same 0.0001 clamp as the current implementation.
-	modeu5_compute_trade_owner_goods_quantity_from_traded_good = yes
+	cbp_compute_trade_owner_goods_quantity_from_traded_good = yes
 
 	if = {
 		limit = {
 			scope:cbp_trade_owner_quantity_matched > 0
 			scope:cbp_trade_owner_goods_quantity > 0
 		}
-		modeu5_note_country_trade_owner_quantity_confirmed_trade = yes
+		cbp_note_country_trade_owner_quantity_confirmed_trade = yes
 	}
 	else = {
-		modeu5_note_country_trade_owner_quantity_blocked_trade = yes
+		cbp_note_country_trade_owner_quantity_blocked_trade = yes
 	}
 }
 
@@ -180,47 +180,47 @@ modeu5_capture_country_trade_owner_trade_quantity = {
 # `owner` link. The current country is retained only as the controller/scheduler
 # so tests can detect whether country-scoped every_trade ever yields a trade whose
 # owner differs from the country that scheduled the pass.
-modeu5_run_monthly_country_trade_owner_cycle = {
-	save_temporary_scope_as = modeu5_trade_owner_controller_country
-	modeu5_note_country_trade_owner_pass_run = yes
+cbp_run_monthly_country_trade_owner_cycle = {
+	save_temporary_scope_as = cbp_trade_owner_controller_country
+	cbp_note_country_trade_owner_pass_run = yes
 	if = {
-		limit = { modeu5_trade_rework_enabled_trigger = yes }
-		modeu5_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
-		modeu5_reset_trade_efficiency_reconciliation_accumulator = yes
+		limit = { cbp_trade_rework_enabled_trigger = yes }
+		cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
+		cbp_reset_trade_efficiency_reconciliation_accumulator = yes
 	}
 
 	every_trade = {
-		save_temporary_scope_as = modeu5_trade_owner_trade
-		modeu5_note_country_trade_owner_trade_seen = yes
+		save_temporary_scope_as = cbp_trade_owner_trade
+		cbp_note_country_trade_owner_trade_seen = yes
 
-		owner = { save_temporary_scope_as = modeu5_trade_owner_country }
-		from_market = { save_temporary_scope_as = modeu5_trade_owner_source_market }
-		to_market = { save_temporary_scope_as = modeu5_trade_owner_target_market }
-		traded_goods = { save_temporary_scope_as = modeu5_trade_owner_good }
-		modeu5_capture_country_trade_owner_trade_quantity = yes
+		owner = { save_temporary_scope_as = cbp_trade_owner_country }
+		from_market = { save_temporary_scope_as = cbp_trade_owner_source_market }
+		to_market = { save_temporary_scope_as = cbp_trade_owner_target_market }
+		traded_goods = { save_temporary_scope_as = cbp_trade_owner_good }
+		cbp_capture_country_trade_owner_trade_quantity = yes
 		if = {
-			limit = { exists = scope:modeu5_trade_owner_country }
-			scope:modeu5_trade_owner_country = {
+			limit = { exists = scope:cbp_trade_owner_country }
+			scope:cbp_trade_owner_country = {
 				if = {
-					limit = { modeu5_trade_rework_enabled_trigger = yes }
+					limit = { cbp_trade_rework_enabled_trigger = yes }
 					# Country modifier inputs are live and confirmed here. Route prices,
 					# export cost, base maintenance and visible income/profit remain
 					# explicit fail-closed inputs until their route surfaces are proven.
-					modeu5_capture_trade_owner_country_modifier_inputs = yes
+					cbp_capture_trade_owner_country_modifier_inputs = yes
 					save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 0 }
-					modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
+					cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
 				}
 			}
 		}
 
 		if = {
 			limit = {
-				NOT = { scope:modeu5_trade_owner_country = scope:modeu5_trade_owner_controller_country }
+				NOT = { scope:cbp_trade_owner_country = scope:cbp_trade_owner_controller_country }
 			}
-			modeu5_note_country_trade_owner_owner_mismatch = yes
+			cbp_note_country_trade_owner_owner_mismatch = yes
 		}
 
-		modeu5_note_country_trade_owner_inter_market_trade = yes
+		cbp_note_country_trade_owner_inter_market_trade = yes
 	}
 }
 
@@ -228,23 +228,23 @@ modeu5_run_monthly_country_trade_owner_cycle = {
 # PR6 only models inter-market trade transfer here. Same-market local consumption
 # is intentionally absent because vanilla trade cannot have source_market equal
 # to target_market.
-modeu5_process_country_trade_owner_explicit_request = {
-	$buyer_country$ = { save_temporary_scope_as = modeu5_country_trade_owner_buyer_country }
-	$source_market$ = { save_temporary_scope_as = modeu5_country_trade_owner_source_market }
-	$target_market$ = { save_temporary_scope_as = modeu5_country_trade_owner_target_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_process_country_trade_owner_explicit_request = {
+	$buyer_country$ = { save_temporary_scope_as = cbp_country_trade_owner_buyer_country }
+	$source_market$ = { save_temporary_scope_as = cbp_country_trade_owner_source_market }
+	$target_market$ = { save_temporary_scope_as = cbp_country_trade_owner_target_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_note_country_trade_owner_explicit_request = { requested_quantity = $requested_quantity$ }
-	modeu5_note_country_trade_owner_inter_market_trade = yes
-	modeu5_handoff_scoped_inter_market_transfer = {
-		buyer_country = scope:modeu5_country_trade_owner_buyer_country
-		source_market = scope:modeu5_country_trade_owner_source_market
-		target_market = scope:modeu5_country_trade_owner_target_market
+	cbp_note_country_trade_owner_explicit_request = { requested_quantity = $requested_quantity$ }
+	cbp_note_country_trade_owner_inter_market_trade = yes
+	cbp_handoff_scoped_inter_market_transfer = {
+		buyer_country = scope:cbp_country_trade_owner_buyer_country
+		source_market = scope:cbp_country_trade_owner_source_market
+		target_market = scope:cbp_country_trade_owner_target_market
 		good = $good$
 		requested_quantity = $requested_quantity$
 	}
-	modeu5_note_country_trade_owner_inter_market_transfer = yes
-	modeu5_note_country_trade_owner_outcome_quantities = {
+	cbp_note_country_trade_owner_inter_market_transfer = yes
+	cbp_note_country_trade_owner_outcome_quantities = {
 		transferred_quantity = scope:cbp_transferred_quantity
 		unsatisfied_quantity = scope:cbp_unsatisfied_quantity
 	}

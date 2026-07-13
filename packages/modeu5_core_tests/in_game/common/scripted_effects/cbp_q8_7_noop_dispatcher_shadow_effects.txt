@@ -10,7 +10,7 @@
 # The candidate implementation uses every_market_in_world. The current reference
 # remains the existing market-center ownership workaround.
 
-modeu5_q8_7_clear_noop_dispatcher_shadow_state = {
+cbp_q8_7_clear_noop_dispatcher_shadow_state = {
 	remove_global_variable = test_cbp_q8_7_noop_dispatcher_shadow_passed
 	remove_global_variable = test_cbp_q8_7_noop_dispatcher_shadow_failed
 
@@ -47,23 +47,23 @@ modeu5_q8_7_clear_noop_dispatcher_shadow_state = {
 	set_global_variable = { name = test_cbp_q8_7_noop_global_ai_country_passes value = 0 }
 }
 
-modeu5_q8_7_note_noop_current_market = {
+cbp_q8_7_note_noop_current_market = {
 	set_global_variable = { name = test_cbp_q8_7_noop_current_markets value = { value = global_var:test_cbp_q8_7_noop_current_markets add = 1 } }
 }
 
-modeu5_q8_7_note_noop_global_market = {
+cbp_q8_7_note_noop_global_market = {
 	set_global_variable = { name = test_cbp_q8_7_noop_global_markets value = { value = global_var:test_cbp_q8_7_noop_global_markets add = 1 } }
 }
 
-modeu5_q8_7_note_noop_current_cache_rebuild = {
+cbp_q8_7_note_noop_current_cache_rebuild = {
 	set_global_variable = { name = test_cbp_q8_7_noop_current_cache_rebuilds value = { value = global_var:test_cbp_q8_7_noop_current_cache_rebuilds add = 1 } }
 }
 
-modeu5_q8_7_note_noop_global_cache_rebuild = {
+cbp_q8_7_note_noop_global_cache_rebuild = {
 	set_global_variable = { name = test_cbp_q8_7_noop_global_cache_rebuilds value = { value = global_var:test_cbp_q8_7_noop_global_cache_rebuilds add = 1 } }
 }
 
-modeu5_q8_7_note_noop_current_cache_failure = {
+cbp_q8_7_note_noop_current_cache_failure = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_noop_current_cache_failures }
 		set_global_variable = { name = test_cbp_q8_7_noop_current_cache_failures value = { value = global_var:test_cbp_q8_7_noop_current_cache_failures add = 1 } }
@@ -71,7 +71,7 @@ modeu5_q8_7_note_noop_current_cache_failure = {
 	else = { set_global_variable = { name = test_cbp_q8_7_noop_current_cache_failures value = 1 } }
 }
 
-modeu5_q8_7_note_noop_global_cache_failure = {
+cbp_q8_7_note_noop_global_cache_failure = {
 	if = {
 		limit = { has_global_variable = test_cbp_q8_7_noop_global_cache_failures }
 		set_global_variable = { name = test_cbp_q8_7_noop_global_cache_failures value = { value = global_var:test_cbp_q8_7_noop_global_cache_failures add = 1 } }
@@ -79,11 +79,11 @@ modeu5_q8_7_note_noop_global_cache_failure = {
 	else = { set_global_variable = { name = test_cbp_q8_7_noop_global_cache_failures value = 1 } }
 }
 
-modeu5_q8_7_note_noop_current_present_country = {
+cbp_q8_7_note_noop_current_present_country = {
 	set_global_variable = { name = test_cbp_q8_7_noop_current_capacity_passes value = { value = global_var:test_cbp_q8_7_noop_current_capacity_passes add = 1 } }
 	set_global_variable = { name = test_cbp_q8_7_noop_current_us00_passes value = { value = global_var:test_cbp_q8_7_noop_current_us00_passes add = 1 } }
 	set_global_variable = { name = test_cbp_q8_7_noop_current_us10_passes value = { value = global_var:test_cbp_q8_7_noop_current_us10_passes add = 1 } }
-	scope:modeu5_q8_7_noop_country = {
+	scope:cbp_q8_7_noop_country = {
 		if = {
 			limit = { is_ai = no }
 			set_global_variable = { name = test_cbp_q8_7_noop_current_human_country_passes value = { value = global_var:test_cbp_q8_7_noop_current_human_country_passes add = 1 } }
@@ -94,11 +94,11 @@ modeu5_q8_7_note_noop_current_present_country = {
 	}
 }
 
-modeu5_q8_7_note_noop_global_present_country = {
+cbp_q8_7_note_noop_global_present_country = {
 	set_global_variable = { name = test_cbp_q8_7_noop_global_capacity_passes value = { value = global_var:test_cbp_q8_7_noop_global_capacity_passes add = 1 } }
 	set_global_variable = { name = test_cbp_q8_7_noop_global_us00_passes value = { value = global_var:test_cbp_q8_7_noop_global_us00_passes add = 1 } }
 	set_global_variable = { name = test_cbp_q8_7_noop_global_us10_passes value = { value = global_var:test_cbp_q8_7_noop_global_us10_passes add = 1 } }
-	scope:modeu5_q8_7_noop_country = {
+	scope:cbp_q8_7_noop_country = {
 		if = {
 			limit = { is_ai = no }
 			set_global_variable = { name = test_cbp_q8_7_noop_global_human_country_passes value = { value = global_var:test_cbp_q8_7_noop_global_human_country_passes add = 1 } }
@@ -109,36 +109,36 @@ modeu5_q8_7_note_noop_global_present_country = {
 	}
 }
 
-modeu5_q8_7_probe_current_owner_noop_dispatcher_shadow = {
+cbp_q8_7_probe_current_owner_noop_dispatcher_shadow = {
 	# Current owner reference: market-center ownership workaround, filtered to the
 	# same performance-relevant market set. This shadows the live branch order but
 	# does not call capacity refresh, US-00, US-10, validation, or stock operators.
 	every_country = {
 		every_market_center_in_country = {
-			save_temporary_scope_as = modeu5_q8_7_noop_market
+			save_temporary_scope_as = cbp_q8_7_noop_market
 			if = {
 				limit = {
 					has_global_variable_list = cbp_performance_relevant_markets
 					is_target_in_global_variable_list = {
 						name = cbp_performance_relevant_markets
-						target = scope:modeu5_q8_7_noop_market
+						target = scope:cbp_q8_7_noop_market
 					}
 				}
-				modeu5_q8_7_note_noop_current_market = yes
-				save_temporary_scope_as = modeu5_market_country_cache_market
+				cbp_q8_7_note_noop_current_market = yes
+				save_temporary_scope_as = cbp_market_country_cache_market
 				remove_global_variable = cbp_market_country_cache_last_rebuild_failed
-				modeu5_rebuild_countries_present_in_market = yes
-				modeu5_q8_7_note_noop_current_cache_rebuild = yes
+				cbp_rebuild_countries_present_in_market = yes
+				cbp_q8_7_note_noop_current_cache_rebuild = yes
 				if = {
 					limit = { has_global_variable = cbp_market_country_cache_last_rebuild_failed }
-					modeu5_q8_7_note_noop_current_cache_failure = yes
+					cbp_q8_7_note_noop_current_cache_failure = yes
 				}
 				if = {
 					limit = { has_global_variable_list = cbp_countries_present_in_market }
 					every_in_global_list = {
 						variable = cbp_countries_present_in_market
-						save_temporary_scope_as = modeu5_q8_7_noop_country
-						modeu5_q8_7_note_noop_current_present_country = yes
+						save_temporary_scope_as = cbp_q8_7_noop_country
+						cbp_q8_7_note_noop_current_present_country = yes
 					}
 				}
 			}
@@ -146,53 +146,53 @@ modeu5_q8_7_probe_current_owner_noop_dispatcher_shadow = {
 	}
 }
 
-modeu5_q8_7_probe_candidate_global_noop_dispatcher_shadow = {
+cbp_q8_7_probe_candidate_global_noop_dispatcher_shadow = {
 	# Candidate Q8.7 implementation shape: native global market pass, filtered to
 	# the same performance-relevant market set, then the same market-local two-pass
 	# present-country scheduling. This is still no-op: it counts pass surfaces only.
 	every_market_in_world = {
-		save_temporary_scope_as = modeu5_q8_7_noop_market
+		save_temporary_scope_as = cbp_q8_7_noop_market
 		if = {
 			limit = {
 				has_global_variable_list = cbp_performance_relevant_markets
 				is_target_in_global_variable_list = {
 					name = cbp_performance_relevant_markets
-					target = scope:modeu5_q8_7_noop_market
+					target = scope:cbp_q8_7_noop_market
 				}
 			}
-			modeu5_q8_7_note_noop_global_market = yes
-			save_temporary_scope_as = modeu5_market_country_cache_market
+			cbp_q8_7_note_noop_global_market = yes
+			save_temporary_scope_as = cbp_market_country_cache_market
 			remove_global_variable = cbp_market_country_cache_last_rebuild_failed
-			modeu5_rebuild_countries_present_in_market = yes
-			modeu5_q8_7_note_noop_global_cache_rebuild = yes
+			cbp_rebuild_countries_present_in_market = yes
+			cbp_q8_7_note_noop_global_cache_rebuild = yes
 			if = {
 				limit = { has_global_variable = cbp_market_country_cache_last_rebuild_failed }
-				modeu5_q8_7_note_noop_global_cache_failure = yes
+				cbp_q8_7_note_noop_global_cache_failure = yes
 			}
 			if = {
 				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
 					variable = cbp_countries_present_in_market
-					save_temporary_scope_as = modeu5_q8_7_noop_country
-					modeu5_q8_7_note_noop_global_present_country = yes
+					save_temporary_scope_as = cbp_q8_7_noop_country
+					cbp_q8_7_note_noop_global_present_country = yes
 				}
 			}
 		}
 	}
 }
 
-modeu5_q8_7_probe_performance_noop_dispatcher_shadow = {
+cbp_q8_7_probe_performance_noop_dispatcher_shadow = {
 	debug_log = "ModeU5 TEST ENTERED scenario=q87_performance_noop_dispatcher_shadow"
-	modeu5_q8_7_clear_noop_dispatcher_shadow_state = yes
+	cbp_q8_7_clear_noop_dispatcher_shadow_state = yes
 
-	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
-	modeu5_clear_performance_relevant_markets = yes
-	modeu5_rebuild_human_relevant_markets = yes
+	cbp_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	cbp_clear_performance_relevant_markets = yes
+	cbp_rebuild_human_relevant_markets = yes
 
-	modeu5_q8_7_probe_current_owner_noop_dispatcher_shadow = yes
-	modeu5_q8_7_probe_candidate_global_noop_dispatcher_shadow = yes
+	cbp_q8_7_probe_current_owner_noop_dispatcher_shadow = yes
+	cbp_q8_7_probe_candidate_global_noop_dispatcher_shadow = yes
 
-	debug_log = "ModeU5 Q8.7 NOOP_DISPATCHER_SHADOW current_markets=[GetGlobalVariable('modeu5_test_q8_7_noop_current_markets').GetValue|0] global_markets=[GetGlobalVariable('modeu5_test_q8_7_noop_global_markets').GetValue|0] current_cache=[GetGlobalVariable('modeu5_test_q8_7_noop_current_cache_rebuilds').GetValue|0] global_cache=[GetGlobalVariable('modeu5_test_q8_7_noop_global_cache_rebuilds').GetValue|0] current_capacity=[GetGlobalVariable('modeu5_test_q8_7_noop_current_capacity_passes').GetValue|0] global_capacity=[GetGlobalVariable('modeu5_test_q8_7_noop_global_capacity_passes').GetValue|0] current_us00=[GetGlobalVariable('modeu5_test_q8_7_noop_current_us00_passes').GetValue|0] global_us00=[GetGlobalVariable('modeu5_test_q8_7_noop_global_us00_passes').GetValue|0] current_us10=[GetGlobalVariable('modeu5_test_q8_7_noop_current_us10_passes').GetValue|0] global_us10=[GetGlobalVariable('modeu5_test_q8_7_noop_global_us10_passes').GetValue|0] current_human=[GetGlobalVariable('modeu5_test_q8_7_noop_current_human_country_passes').GetValue|0] global_human=[GetGlobalVariable('modeu5_test_q8_7_noop_global_human_country_passes').GetValue|0] current_ai=[GetGlobalVariable('modeu5_test_q8_7_noop_current_ai_country_passes').GetValue|0] global_ai=[GetGlobalVariable('modeu5_test_q8_7_noop_global_ai_country_passes').GetValue|0] mode=performance no_capacity_mutation=1 no_us00=1 no_us10=1 no_trade_owner=1 no_validation=1 no_stock_mutation=1"
+	debug_log = "ModeU5 Q8.7 NOOP_DISPATCHER_SHADOW current_markets=[GetGlobalVariable('cbp_test_q8_7_noop_current_markets').GetValue|0] global_markets=[GetGlobalVariable('cbp_test_q8_7_noop_global_markets').GetValue|0] current_cache=[GetGlobalVariable('cbp_test_q8_7_noop_current_cache_rebuilds').GetValue|0] global_cache=[GetGlobalVariable('cbp_test_q8_7_noop_global_cache_rebuilds').GetValue|0] current_capacity=[GetGlobalVariable('cbp_test_q8_7_noop_current_capacity_passes').GetValue|0] global_capacity=[GetGlobalVariable('cbp_test_q8_7_noop_global_capacity_passes').GetValue|0] current_us00=[GetGlobalVariable('cbp_test_q8_7_noop_current_us00_passes').GetValue|0] global_us00=[GetGlobalVariable('cbp_test_q8_7_noop_global_us00_passes').GetValue|0] current_us10=[GetGlobalVariable('cbp_test_q8_7_noop_current_us10_passes').GetValue|0] global_us10=[GetGlobalVariable('cbp_test_q8_7_noop_global_us10_passes').GetValue|0] current_human=[GetGlobalVariable('cbp_test_q8_7_noop_current_human_country_passes').GetValue|0] global_human=[GetGlobalVariable('cbp_test_q8_7_noop_global_human_country_passes').GetValue|0] current_ai=[GetGlobalVariable('cbp_test_q8_7_noop_current_ai_country_passes').GetValue|0] global_ai=[GetGlobalVariable('cbp_test_q8_7_noop_global_ai_country_passes').GetValue|0] mode=performance no_capacity_mutation=1 no_us00=1 no_us10=1 no_trade_owner=1 no_validation=1 no_stock_mutation=1"
 
 	if = {
 		limit = {
@@ -224,5 +224,5 @@ modeu5_q8_7_probe_performance_noop_dispatcher_shadow = {
 		error_log = "ModeU5 TEST FAIL scenario=q87_performance_noop_dispatcher_shadow"
 	}
 
-	modeu5_perf14_restore_cmm_main_mode_after_test = yes
+	cbp_perf14_restore_cmm_main_mode_after_test = yes
 }

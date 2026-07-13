@@ -77,7 +77,7 @@ tuple. Chaque champ persistant est donc une map physique synchronisée :
 ```txt
 owner physique: country
 key: market scope
-map: modeu5_<good>_<field>_by_market
+map: cbp_<good>_<field>_by_market
 value: number
 default numérique manquant: 0, sauf règle explicite du champ
 ```
@@ -92,7 +92,7 @@ Le cache physique est donc :
 ```txt
 owner physique: global variable system
 key: market scope
-map: modeu5_<good>_market_stock
+map: cbp_<good>_market_stock
 value: number
 default manquant: 0
 ```
@@ -122,12 +122,12 @@ Aucune US ne modifie directement les stocks.
 Toutes les mutations passent par :
 
 ```txt
-modeu5_add_stock
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_decay_stock
-modeu5_rebuild_market_stock_from_country_stocks
-modeu5_validate_stock_consistency
+cbp_add_stock
+cbp_remove_stock
+cbp_transfer_stock
+cbp_decay_stock
+cbp_rebuild_market_stock_from_country_stocks
+cbp_validate_stock_consistency
 ```
 
 Une écriture directe dans une map de stock hors de ces effets est interdite.
@@ -254,7 +254,7 @@ decay_rate
 La valeur par défaut est chargée depuis :
 
 ```txt
-in_game/common/script_values/modeu5_stock_values.txt
+in_game/common/script_values/cbp_stock_values.txt
 ```
 
 Le taux est borné dans `[0, 1]`. Le decay est calculé depuis le stock pays, puis
@@ -276,7 +276,7 @@ CORE-01.5 :
 2. lit le stock du marché ciblé dans chaque map pays;
 3. traite une clé absente comme zéro;
 4. inclut tout stock non négatif, y compris un stock over-cap;
-5. remplace uniquement `modeu5_<good>_market_stock[market]`;
+5. remplace uniquement `cbp_<good>_market_stock[market]`;
 6. ne modifie aucun stock pays.
 
 L'itération ne se limite pas aux pays territorialement présents dans le marché.
@@ -400,19 +400,19 @@ reliquat du pays disparu à son successeur.
 3. Appliquer les modificateurs Rebalance Economy, dont US-09, si chargé.
 4. Lire ou estimer la production vanilla.
 5. Calculer la production reconnue par ModeU5.
-6. Ajouter la production via modeu5_add_stock.
+6. Ajouter la production via cbp_add_stock.
 7. Mettre à jour le cache marché dans l'opération centralisée.
 8. Mettre à jour le ledger US-00.1.
 9. Résoudre la consommation via US-10.1.
 10. Enregistrer satisfait/insatisfait via US-10.3.
 11. Résoudre les transferts inter-marchés via US-10.2.
-12. Appliquer le decay via modeu5_decay_stock.
+12. Appliquer le decay via cbp_decay_stock.
 13. Calculer les ratios US-00.2.
 14. Calculer la void wealth US-00.4.
 15. Calculer les pénalités du mois suivant via US-00.3.
 16. Calculer US-05 si Rebalance Economy est chargé.
 17. Afficher les entrées/résultats US-05 si l'exposition le permet.
-18. Valider les stocks via modeu5_validate_stock_consistency.
+18. Valider les stocks via cbp_validate_stock_consistency.
 19. Réinitialiser les compteurs mensuels après leur dernier lecteur.
 ```
 
@@ -437,7 +437,7 @@ US-00 suit la chaîne :
 
 ```txt
 production vanilla
--> modeu5_add_stock
+-> cbp_add_stock
 -> actual_added_quantity / rejected_quantity
 -> ledger US-00.1
 -> ratio US-00.2
@@ -453,7 +453,7 @@ US-05 remplace directement la base utilisée pour Stability et le Court/
 Government Power lorsqu'il produit de la Legitimacy :
 
 ```txt
-modeu5_slider_cost_base = Wealth + Trade Income
+cbp_slider_cost_base = Wealth + Trade Income
 ```
 
 Il n'existe pas de fallback par réconciliation mensuelle. Si Wealth ou le hook
@@ -549,17 +549,17 @@ erreurs moteur.
 La seule commande console CORE-01 est :
 
 ```txt
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Les tests ciblés hors CORE-01 utilisent leurs propres événements :
 
 ```txt
-event modeu5_us01_debug.1
-event modeu5_us02_debug.1
+event cbp_us01_debug.1
+event cbp_us02_debug.1
 ```
 
-Les noms `modeu5_test_*_passed` sont des marqueurs de résultat, pas des
+Les noms `cbp_test_*_passed` sont des marqueurs de résultat, pas des
 commandes console.
 
 Un rejet métier attendu est affiché dans le résultat/debug. `error_log` est
@@ -575,7 +575,7 @@ Avant de conclure un test local :
 ```
 
 Vérifier qu'aucune ancienne copie réelle ou alias du mod ne masque
-`modeu5_core`, puis inspecter `MODEU5_SOURCE.txt`, `error.log`, `game.log` et
+`cbp_core`, puis inspecter `MODEU5_SOURCE.txt`, `error.log`, `game.log` et
 `system.log`.
 
 Le runbook détaillé est :

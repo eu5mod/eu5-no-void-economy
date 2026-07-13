@@ -1,7 +1,7 @@
-namespace = modeu5_us20_probe
+namespace = cbp_us20_probe
 
 # Experimental US-20 promoted-market probe.
-# This intentionally stays outside modeu5_revalidate_debug.1 so the stable
+# This intentionally stays outside cbp_revalidate_debug.1 so the stable
 # baseline summary remains available even if this larger E2E probe needs work.
 #
 # The console launcher must not execute the logging effect directly. EU5 disables
@@ -10,10 +10,10 @@ namespace = modeu5_us20_probe
 # The launcher schedules a hidden continuation so probe logging starts in the
 # ordinary event context instead.
 
-modeu5_us20_probe.1 = {
+cbp_us20_probe.1 = {
 	type = country_event
-	title = modeu5_us20_probe.1.title
-	desc = modeu5_us20_probe.1.desc
+	title = cbp_us20_probe.1.title
+	desc = cbp_us20_probe.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -22,15 +22,15 @@ modeu5_us20_probe.1 = {
 	}
 
 	option = {
-		name = modeu5_us20_probe.1.a
-		trigger_event_non_silently = { id = modeu5_us20_probe.10 days = 0 }
+		name = cbp_us20_probe.1.a
+		trigger_event_non_silently = { id = cbp_us20_probe.10 days = 0 }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_us20_probe.10 = {
+cbp_us20_probe.10 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -40,16 +40,16 @@ modeu5_us20_probe.10 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_us20_case12_market_loss_probe = yes
-		trigger_event_non_silently = { id = modeu5_us20_probe.2 days = 0 }
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_us20_case12_market_loss_probe = yes
+		trigger_event_non_silently = { id = cbp_us20_probe.2 days = 0 }
 	}
 }
 
-modeu5_us20_probe.2 = {
+cbp_us20_probe.2 = {
 	type = country_event
-	title = modeu5_us20_probe.2.title
-	desc = modeu5_us20_probe.2.desc
+	title = cbp_us20_probe.2.title
+	desc = cbp_us20_probe.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -57,14 +57,14 @@ modeu5_us20_probe.2 = {
 	}
 
 	option = {
-		name = modeu5_us20_probe.case12.pass
+		name = cbp_us20_probe.case12.pass
 		trigger = { has_global_variable = test_cbp_us20_case12_probe_passed }
 	}
 	option = {
-		name = modeu5_us20_probe.case12.fail
+		name = cbp_us20_probe.case12.fail
 		trigger = { has_global_variable = test_cbp_us20_case12_probe_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

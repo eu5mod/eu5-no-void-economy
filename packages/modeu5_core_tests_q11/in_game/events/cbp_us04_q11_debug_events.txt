@@ -1,10 +1,10 @@
-namespace = modeu5_us04_q11_debug
+namespace = cbp_us04_q11_debug
 
 # Read-only Pop-demand accessor probes.
-# Enable only modeu5_core_tests_q11 and run:
-#   event modeu5_us04_q11_debug.1
+# Enable only cbp_core_tests_q11 and run:
+#   event cbp_us04_q11_debug.1
 
-modeu5_us04_q11_debug.1 = {
+cbp_us04_q11_debug.1 = {
 	type = country_event
 	outcome = neutral
 	orphan = yes
@@ -15,6 +15,6 @@ modeu5_us04_q11_debug.1 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q11_pop_demand_read_probe = yes
+		cbp_us04_q11_pop_demand_read_probe = yes
 	}
 }

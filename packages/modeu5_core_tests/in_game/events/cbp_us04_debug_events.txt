@@ -1,4 +1,4 @@
-namespace = modeu5_us04_debug
+namespace = cbp_us04_debug
 
 # Visible console launchers schedule hidden continuations so debug_log runs
 # outside the console command's localization-disabled context.
@@ -6,13 +6,13 @@ namespace = modeu5_us04_debug
 # Keep the visible menu to four business options plus Close. The EU5 event UI on
 # some resolutions did not expose the fifth business option reliably.
 # The full additive syntax matrix is historical. It requires the isolated
-# modeu5_core_tests_q9 package and remains available directly via:
-#   event modeu5_us04_debug.30
+# cbp_core_tests_q9 package and remains available directly via:
+#   event cbp_us04_debug.30
 
-modeu5_us04_debug.1 = {
+cbp_us04_debug.1 = {
 	type = country_event
-	title = modeu5_us04_debug.1.title
-	desc = modeu5_us04_debug.1.desc
+	title = cbp_us04_debug.1.title
+	desc = cbp_us04_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -21,27 +21,27 @@ modeu5_us04_debug.1 = {
 	}
 
 	option = {
-		name = modeu5_us04_debug.1.a
-		trigger_event_non_silently = { id = modeu5_us04_debug.10 days = 0 }
+		name = cbp_us04_debug.1.a
+		trigger_event_non_silently = { id = cbp_us04_debug.10 days = 0 }
 	}
 	option = {
-		name = modeu5_us04_debug.1.b
-		trigger_event_non_silently = { id = modeu5_us04_debug.20 days = 0 }
+		name = cbp_us04_debug.1.b
+		trigger_event_non_silently = { id = cbp_us04_debug.20 days = 0 }
 	}
 	option = {
-		name = modeu5_us04_debug.1.c
-		trigger_event_non_silently = { id = modeu5_us04_debug.60 days = 0 }
+		name = cbp_us04_debug.1.c
+		trigger_event_non_silently = { id = cbp_us04_debug.60 days = 0 }
 	}
 	option = {
-		name = modeu5_us04_debug.1.d
-		trigger_event_non_silently = { id = modeu5_us04_debug.40 days = 0 }
+		name = cbp_us04_debug.1.d
+		trigger_event_non_silently = { id = cbp_us04_debug.40 days = 0 }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_us04_debug.10 = {
+cbp_us04_debug.10 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -51,11 +51,11 @@ modeu5_us04_debug.10 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_debug_run_us04_pop_demand_adaptation_test = yes
+		cbp_debug_run_us04_pop_demand_adaptation_test = yes
 	}
 }
 
-modeu5_us04_debug.20 = {
+cbp_us04_debug.20 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -65,12 +65,12 @@ modeu5_us04_debug.20 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_debug_run_us04_pop_demand_endpoint_test = yes
+		cbp_debug_run_us04_pop_demand_endpoint_test = yes
 	}
 }
 
 # PR #167 focused Estate-level accounting probe for the active ModeU5 proxy.
-modeu5_us04_debug.60 = {
+cbp_us04_debug.60 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -80,13 +80,13 @@ modeu5_us04_debug.60 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_debug_run_us04_estate_level_accounting_probe = yes
+		cbp_debug_run_us04_estate_level_accounting_probe = yes
 	}
 }
 
 # Direct-console compatibility probe. Not exposed in the visible menu anymore.
 # Phase 1: force all candidate goods to neutral multiplier 1.0.
-modeu5_us04_debug.30 = {
+cbp_us04_debug.30 = {
 	type = country_event
 	outcome = neutral
 	orphan = yes
@@ -97,18 +97,18 @@ modeu5_us04_debug.30 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_matrix_begin = yes
+		cbp_us04_matrix_begin = yes
 		if = {
 			limit = {
-				NOT = { has_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked }
+				NOT = { has_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked }
 			}
-			trigger_event_non_silently = { id = modeu5_us04_debug.31 days = 2 }
+			trigger_event_non_silently = { id = cbp_us04_debug.31 days = 2 }
 		}
 	}
 }
 
 # Phase 2: capture all low values, then force every candidate multiplier to 4.0.
-modeu5_us04_debug.31 = {
+cbp_us04_debug.31 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -118,13 +118,13 @@ modeu5_us04_debug.31 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_matrix_capture_low_and_raise = yes
-		trigger_event_non_silently = { id = modeu5_us04_debug.32 days = 2 }
+		cbp_us04_matrix_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = cbp_us04_debug.32 days = 2 }
 	}
 }
 
 # Phase 3: capture high values, classify each syntax, summarize, and restore state.
-modeu5_us04_debug.32 = {
+cbp_us04_debug.32 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -134,11 +134,11 @@ modeu5_us04_debug.32 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_matrix_finalize = yes
+		cbp_us04_matrix_finalize = yes
 	}
 }
 
-modeu5_us04_debug.40 = {
+cbp_us04_debug.40 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -148,13 +148,13 @@ modeu5_us04_debug.40 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_debug_run_us04_initialization_test = yes
+		cbp_debug_run_us04_initialization_test = yes
 	}
 }
 
 # Focused positive-demand Q7/Q8 global probes plus downstream observed-current
 # target architecture. Phase 3 runs the architecture test after global probes.
-modeu5_us04_debug.50 = {
+cbp_us04_debug.50 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -164,15 +164,15 @@ modeu5_us04_debug.50 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q7_q8_begin = yes
+		cbp_us04_q7_q8_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked } }
-			trigger_event_non_silently = { id = modeu5_us04_debug.51 days = 2 }
+			limit = { NOT = { has_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked } }
+			trigger_event_non_silently = { id = cbp_us04_debug.51 days = 2 }
 		}
 	}
 }
 
-modeu5_us04_debug.51 = {
+cbp_us04_debug.51 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -182,12 +182,12 @@ modeu5_us04_debug.51 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q7_q8_capture_low_and_raise = yes
-		trigger_event_non_silently = { id = modeu5_us04_debug.52 days = 2 }
+		cbp_us04_q7_q8_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = cbp_us04_debug.52 days = 2 }
 	}
 }
 
-modeu5_us04_debug.52 = {
+cbp_us04_debug.52 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -197,6 +197,6 @@ modeu5_us04_debug.52 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_us04_q7_q8_finalize = yes
+		cbp_us04_q7_q8_finalize = yes
 	}
 }

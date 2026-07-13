@@ -55,12 +55,12 @@ En cas de divergence, le stock marché doit être recalculé à partir des stock
 Aucune US ne doit modifier directement les stocks.
 Toutes les opérations doivent passer par des effets centralisés de mutation des stocks.
 Les seules opérations autorisées sont :
-modeu5_add_stock
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_decay_stock
-modeu5_rebuild_market_stock_from_country_stocks
-modeu5_validate_stock_consistency
+cbp_add_stock
+cbp_remove_stock
+cbp_transfer_stock
+cbp_decay_stock
+cbp_rebuild_market_stock_from_country_stocks
+cbp_validate_stock_consistency
 Les US de production, consommation, trade inter-marchés, decay ou réconciliation ne doivent jamais écrire directement dans :
 country_market_good_stock
 market_good_stock
@@ -91,7 +91,7 @@ Chaque cycle économique mensuel doit suivre un ordre stable.
 | 3. | Si Rebalance Economy est chargé, appliquer le bonus global de Production Efficiency de US-09. |
 | 4. | Exécuter ou lire la production vanilla. |
 | 5. | Calculer la production reconnue par le mod. |
-| 6. | Ajouter la production stockable aux stocks pays via modeu5_add_stock. |
+| 6. | Ajouter la production stockable aux stocks pays via cbp_add_stock. |
 | 7. | Mettre à jour automatiquement le stock marché via l’opération centralisée. |
 | 8. | Enregistrer la production produite, stockée et rejetée dans le ledger US-00.1. |
 | 9. | Résoudre la consommation des Pops et Estates depuis les stocks disponibles via US-10.1. |
@@ -99,7 +99,7 @@ Chaque cycle économique mensuel doit suivre un ordre stable.
 | 11. | Résoudre les transferts inter-marchés via US-10.2, si applicable. |
 | 12. | Exposer les quantités réellement transférées à US-06. |
 | 13. | Calculer le coût logistique du trade inter-marchés via US-06. |
-| 14. | Appliquer le decay mensuel des stocks via modeu5_decay_stock. |
+| 14. | Appliquer le decay mensuel des stocks via cbp_decay_stock. |
 | 15. | Calculer le ratio de surproduction via US-00.2. |
 | 16. | Calculer la void wealth via US-00.4. |
 | 17. | Calculer le malus de production du mois suivant via US-00.3. |
@@ -107,7 +107,7 @@ Chaque cycle économique mensuel doit suivre un ordre stable.
 | 19. | Si Rebalance Economy est chargé, calculer la base économique ModeU5 des sliders via US-05. |
 | 20. | Si Rebalance Economy est chargé et US-05.1 est implémenté, empêcher que la void wealth suivie soit comptée deux fois. |
 | 21. | Si Rebalance Economy est chargé, afficher les entrées et le résultat de la formule US-05 sans réconciliation silencieuse du slider vanilla. |
-| 22. | Valider la cohérence des stocks via modeu5_validate_stock_consistency. |
+| 22. | Valider la cohérence des stocks via cbp_validate_stock_consistency. |
 | 23. | Réinitialiser les compteurs mensuels nécessaires. |
 
 ## 6. Séquence runtime annuelle cible
@@ -148,12 +148,12 @@ Elle ne décrit pas l’ordre d’exécution mensuel en jeu.
 Les six opérations centrales disposent de tickets techniques séparés dans `docs/generated_issues/` :
 
 ```txt
-CORE-01.1 - modeu5_add_stock
-CORE-01.2 - modeu5_remove_stock
-CORE-01.3 - modeu5_transfer_stock
-CORE-01.4 - modeu5_decay_stock
-CORE-01.5 - modeu5_rebuild_market_stock_from_country_stocks
-CORE-01.6 - modeu5_validate_stock_consistency
+CORE-01.1 - cbp_add_stock
+CORE-01.2 - cbp_remove_stock
+CORE-01.3 - cbp_transfer_stock
+CORE-01.4 - cbp_decay_stock
+CORE-01.5 - cbp_rebuild_market_stock_from_country_stocks
+CORE-01.6 - cbp_validate_stock_consistency
 ```
 
 Ces tickets implémentent le contrat de mutation et de réconciliation. Les US appelantes conservent la sélection des données, l'orchestration runtime et les effets économiques propres à leur périmètre.
@@ -168,7 +168,7 @@ on_game_start
 -> calcul de toutes les capacités pays x marché x bien
 -> lecture du stockpile vanilla marché x bien
 -> répartition proportionnelle selon la capacité de chaque pays
--> ajout intégral via modeu5_add_stock avec allow_over_capacity
+-> ajout intégral via cbp_add_stock avec allow_over_capacity
 -> rebuild et validation des agrégats marché
 -> activation du cycle mensuel ModeU5
 ```
@@ -186,7 +186,7 @@ quantite_transferee
    / capacite_perdant_avant
 ```
 
-Le transfert utilise `modeu5_transfer_stock` dans le même marché avec `target_capacity_policy = allow_over_capacity`. Il ne modifie pas le stock total du marché et la capacité du gagnant ne tronque pas la quantité calculée.
+Le transfert utilise `cbp_transfer_stock` dans le même marché avec `target_capacity_policy = allow_over_capacity`. Il ne modifie pas le stock total du marché et la capacité du gagnant ne tronque pas la quantité calculée.
 
 Cette règle appliquée successivement produit également :
 
@@ -433,17 +433,17 @@ Chaque cycle économique doit suivre un ordre stable.
 
 ## 2. Calcul de la production reconnue par le mod
 
-## 3. Ajout aux stocks pays via modeu5_add_stock
+## 3. Ajout aux stocks pays via cbp_add_stock
 
 ## 4. Mise à jour automatique du stock marché
 
-## 5. Consommation des Estates et Pops via modeu5_remove_stock
+## 5. Consommation des Estates et Pops via cbp_remove_stock
 
-## 6. Trade via modeu5_transfer_stock ou modeu5_remove_stock
+## 6. Trade via cbp_transfer_stock ou cbp_remove_stock
 
 ## 7. Application du coût de transport
 
-## 8. Application du decay via modeu5_decay_stock
+## 8. Application du decay via cbp_decay_stock
 
 ## 9. Réconciliation des revenus vanilla
 
@@ -591,12 +591,12 @@ L’exclusion de la void wealth de la base des sliders est traitée par US-05.1,
 US-00 ne possède pas les stocks.
 Les stocks restent gérés par :
 US-01
-modeu5_add_stock
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_decay_stock
-modeu5_validate_stock_consistency
-modeu5_rebuild_market_stock_from_country_stocks
+cbp_add_stock
+cbp_remove_stock
+cbp_transfer_stock
+cbp_decay_stock
+cbp_validate_stock_consistency
+cbp_rebuild_market_stock_from_country_stocks
 US-00 ne doit jamais écrire directement dans :
 country_market_good_stock
 market_good_stock
@@ -608,7 +608,7 @@ available_capacity
 Pipeline fonctionnel
 Le pipeline logique de US-00 est le suivant :
 production vanilla
-→ modeu5_add_stock
+→ cbp_add_stock
 → actual_added_quantity / rejected_quantity
 → monthly production rejection ledger
 → overproduction_ratio
@@ -616,7 +616,7 @@ production vanilla
 → void_wealth_tracked
 → production penalty N+1
 → debug / UI
-→ export de modeu5_total_void_wealth vers US-05.1
+→ export de cbp_total_void_wealth vers US-05.1
 
 ## US-00.1 — Monthly Production and Stock Rejection Ledger
 
@@ -625,7 +625,7 @@ production vanilla
 En tant que joueur, je veux que le mod enregistre, pour chaque pays, marché et bien, la quantité produite, la quantité réellement entrée en stock et la quantité rejetée, afin que la void economy puisse être mesurée précisément.
 Cette US crée le ledger mensuel de production reconnue et non reconnue par ModeU5.
 Elle ne décide pas elle-même quelle quantité peut entrer en stock.
-Elle lit uniquement les résultats fournis par modeu5_add_stock.
+Elle lit uniquement les résultats fournis par cbp_add_stock.
 ### Niveau de suivi
 
 Le suivi est effectué au niveau :
@@ -639,7 +639,7 @@ wood not surproduced in Market A
 ### Source des données
 
 US-00.1 lit les sorties de :
-modeu5_add_stock
+cbp_add_stock
 Sorties attendues :
 country
 market
@@ -648,8 +648,8 @@ produced_quantity
 actual_added_quantity
 rejected_quantity
 available_capacity
-Si modeu5_add_stock ne fournit pas directement produced_quantity, US-00.1 peut lire la production calculée juste avant l’appel à modeu5_add_stock.
-US-00.1 ne doit pas recalculer actual_added_quantity ou rejected_quantity si ces valeurs sont déjà fournies par modeu5_add_stock.
+Si cbp_add_stock ne fournit pas directement produced_quantity, US-00.1 peut lire la production calculée juste avant l’appel à cbp_add_stock.
+US-00.1 ne doit pas recalculer actual_added_quantity ou rejected_quantity si ces valeurs sont déjà fournies par cbp_add_stock.
 ### Variables persistantes
 
 Le modèle logique repose sur un enregistrement unique par couple country × market × good :
@@ -666,24 +666,24 @@ Les variable maps EU5 documentées associent une clé à une seule valeur. Elles
 
 En l’absence d’un scope persistant unique pouvant représenter chaque enregistrement country × market × good, l’implémentation physique confirmée utilise une famille synchronisée de variable maps stockées sur le scope country :
 
-modeu5_<good>_produced_by_market[market]
-modeu5_<good>_added_by_market[market]
-modeu5_<good>_rejected_by_market[market]
+cbp_<good>_produced_by_market[market]
+cbp_<good>_added_by_market[market]
+cbp_<good>_rejected_by_market[market]
 
 Ces trois valeurs sont les champs physiques d’un même enregistrement logique. Elles ne doivent pas être traitées comme trois systèmes indépendants.
 Elles sont alimentées pendant le mois, puis lues en fin de mois par US-00.2, US-00.3 et US-00.4.
 ### Règle de mise à jour
 
 À chaque ajout de stock lié à une production :
-modeu5_<good>_produced_by_market[market] += produced_quantity
-modeu5_<good>_added_by_market[market] += actual_added_quantity
-modeu5_<good>_rejected_by_market[market] += rejected_quantity
+cbp_<good>_produced_by_market[market] += produced_quantity
+cbp_<good>_added_by_market[market] += actual_added_quantity
+cbp_<good>_rejected_by_market[market] += rejected_quantity
 Si produced_quantity <= 0, aucune surproduction ne doit être enregistrée.
 Si rejected_quantity < 0, la valeur doit être corrigée à zéro et l’anomalie doit être loggée.
 ### Helper centralisé
 
 Toute écriture dans les variable maps doit passer par un helper centralisé :
-modeu5_update_production_rejection_ledger
+cbp_update_production_rejection_ledger
 Ce helper reçoit :
 country
 market
@@ -701,9 +701,9 @@ Le helper est responsable :
 ### Reset mensuel
 
 À la fin du calcul mensuel, après calcul des ratios, de la void wealth et des malus N+1, les compteurs mensuels doivent être remis à zéro :
-modeu5_<good>_produced_by_market[market] = 0
-modeu5_<good>_added_by_market[market] = 0
-modeu5_<good>_rejected_by_market[market] = 0
+cbp_<good>_produced_by_market[market] = 0
+cbp_<good>_added_by_market[market] = 0
+cbp_<good>_rejected_by_market[market] = 0
 Le reset ne doit jamais avoir lieu avant que US-00.2, US-00.3 et US-00.4 aient lu les valeurs du mois.
 ### Debug obligatoire
 
@@ -721,8 +721,8 @@ ledger_update_source
 | • | La production produite, stockée et rejetée est suivie au niveau country × market × good. |
 | --- | --- |
 | • | US-00.1 ne modifie jamais directement les stocks. |
-| • | US-00.1 lit les sorties de modeu5_add_stock. |
-| • | US-00.1 ne recalcule pas actual_added_quantity ou rejected_quantity lorsque ces valeurs sont fournies par modeu5_add_stock. |
+| • | US-00.1 lit les sorties de cbp_add_stock. |
+| • | US-00.1 ne recalcule pas actual_added_quantity ou rejected_quantity lorsque ces valeurs sont fournies par cbp_add_stock. |
 | • | Un même pays peut avoir des compteurs différents pour le même bien dans deux marchés différents. |
 | • | Un même pays peut avoir des compteurs différents pour deux biens différents dans le même marché. |
 | • | Les compteurs mensuels sont remis à zéro après le calcul mensuel. |
@@ -740,9 +740,9 @@ Elle applique ensuite un buffer de stabilité afin d’ignorer une faible surpro
 ### Entrées
 
 US-00.2 lit les compteurs mensuels produits par US-00.1 :
-modeu5_<good>_produced_by_market[market]
-modeu5_<good>_added_by_market[market]
-modeu5_<good>_rejected_by_market[market]
+cbp_<good>_produced_by_market[market]
+cbp_<good>_added_by_market[market]
+cbp_<good>_rejected_by_market[market]
 ### Variables produites
 
 US-00.2 ajoute deux champs au même enregistrement logique country × market × good :
@@ -754,13 +754,13 @@ effective_overproduction_ratio
 
 L’implémentation physique confirmée utilise :
 
-modeu5_<good>_overproduction_ratio_by_market[market]
-modeu5_<good>_effective_overproduction_ratio_by_market[market]
+cbp_<good>_overproduction_ratio_by_market[market]
+cbp_<good>_effective_overproduction_ratio_by_market[market]
 ### Calcul du ratio de surproduction
 
 Pour chaque country × market × good :
-produced_quantity = modeu5_<good>_produced_by_market[market]
-rejected_quantity = modeu5_<good>_rejected_by_market[market]
+produced_quantity = cbp_<good>_produced_by_market[market]
+rejected_quantity = cbp_<good>_rejected_by_market[market]
 Si :
 produced_quantity <= 0
 Alors :
@@ -844,12 +844,12 @@ production non stockée pendant le mois N
 ### Entrées
 
 US-00.3 lit :
-modeu5_<good>_effective_overproduction_ratio_by_market[market]
+cbp_<good>_effective_overproduction_ratio_by_market[market]
 Produit par US-00.2.
 ### Variables produites
 
 US-00.3 produit :
-modeu5_<good>_production_penalty_by_market[market]
+cbp_<good>_production_penalty_by_market[market]
 ### Paramètres de configuration
 
 Valeurs MVP recommandées :
@@ -862,7 +862,7 @@ Interprétation :
 ### Formule du malus
 
 Pour chaque country × market × good :
-modeu5_<good>_production_penalty_by_market[market] =
+cbp_<good>_production_penalty_by_market[market] =
 -min(
 max_production_efficiency_penalty,
 effective_overproduction_ratio * production_efficiency_penalty_coefficient
@@ -870,7 +870,7 @@ effective_overproduction_ratio * production_efficiency_penalty_coefficient
 Si :
 effective_overproduction_ratio = 0
 Alors :
-modeu5_<good>_production_penalty_by_market[market] = 0
+cbp_<good>_production_penalty_by_market[market] = 0
 ### Application du malus
 
 Le malus doit s’appliquer aux sources de production concernées :
@@ -892,7 +892,7 @@ Le malus du mois N+1 remplace le malus précédent.
 
 Si aucun modifier fiable n’est disponible pour appliquer un malus spécifique au bien ou à la location, US-00.3 doit :
 - calculer quand même le malus théorique ;
-- le stocker dans modeu5_<good>_production_penalty_by_market[market] ;
+- le stocker dans cbp_<good>_production_penalty_by_market[market] ;
 - ne pas appliquer de modifier gameplay si aucun effet fiable n’existe ;
 - afficher en debug que le malus est théorique seulement.
 ### Debug obligatoire
@@ -904,7 +904,7 @@ good
 effective_overproduction_ratio
 production_efficiency_penalty_coefficient
 max_production_efficiency_penalty
-modeu5_<good>_production_penalty_by_market[market]
+cbp_<good>_production_penalty_by_market[market]
 modifier_application_mode
 affected_locations_count
 fallback_used
@@ -951,7 +951,7 @@ country
 ### Entrées
 
 US-00.4 lit :
-modeu5_<good>_rejected_by_market[market]
+cbp_<good>_rejected_by_market[market]
 good_price
 void_income_penalty_coefficient
 Si disponible, elle peut aussi lire :
@@ -962,12 +962,12 @@ estate_tax
 ### Variables produites
 
 Au niveau country × market × good :
-modeu5_<good>_void_wealth_by_market[market]
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
+cbp_<good>_void_wealth_by_market[market]
+cbp_<good>_void_taxable_income_proxy_by_market[market]
 Au niveau country × market :
-modeu5_void_wealth_by_market[market]
+cbp_void_wealth_by_market[market]
 Au niveau country :
-modeu5_total_void_wealth
+cbp_total_void_wealth
 ### Formule MVP
 
 Formule MVP recommandée :
@@ -997,7 +997,7 @@ estate_taxable_income
 estate_tax
 Mais cette information ne constitue pas la punition principale de US-00.
 Elle sert uniquement à alimenter :
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
+cbp_<good>_void_taxable_income_proxy_by_market[market]
 Et à comparer la taille de la void economy avec l’économie taxable vanilla.
 US-00.4 ne doit donc pas être interprétée comme :
 production non stockée
@@ -1010,18 +1010,18 @@ production non stockée
 ### Agrégations
 
 Pour chaque country × market :
-modeu5_void_wealth_by_market[market] =
-sum(modeu5_<good>_void_wealth_by_market[market])
+cbp_void_wealth_by_market[market] =
+sum(cbp_<good>_void_wealth_by_market[market])
 Pour chaque country :
-modeu5_total_void_wealth =
-sum(modeu5_void_wealth_by_market[market])
+cbp_total_void_wealth =
+sum(cbp_void_wealth_by_market[market])
 La valeur pays ne doit pas remplacer le niveau country × market × good.
 Elle sert uniquement d’agrégat de lecture, d’UI ou d’intégration avec d’autres US.
 ### Export vers US-05.1
 
 US-00.4 expose les valeurs suivantes à US-05.1 :
-modeu5_void_wealth_by_market[market]
-modeu5_total_void_wealth
+cbp_void_wealth_by_market[market]
+cbp_total_void_wealth
 US-05.1 utilise ces valeurs pour exclure la void wealth de la base des sliders.
 ### Debug obligatoire
 
@@ -1033,13 +1033,13 @@ rejected_quantity
 good_price
 good_price_source
 void_income_penalty_coefficient
-modeu5_<good>_void_wealth_by_market[market]
+cbp_<good>_void_wealth_by_market[market]
 estate_taxable_income_if_available
 estate_tax_if_available
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
+cbp_<good>_void_taxable_income_proxy_by_market[market]
 Le debug doit également afficher :
-modeu5_void_wealth_by_market[market]
-modeu5_total_void_wealth
+cbp_void_wealth_by_market[market]
+cbp_total_void_wealth
 ### Critères de validation
 
 | • | La void wealth est suivie au niveau country × market × good. |
@@ -1050,7 +1050,7 @@ modeu5_total_void_wealth
 | • | La réconciliation via estate_taxable_income est utilisée comme proxy de taille économique, pas comme punition mensuelle principale. |
 | • | US-00.4 ne modifie jamais directement les stocks. |
 | • | US-00.4 ne modifie pas directement les revenus des Estates. |
-| • | La valeur modeu5_total_void_wealth est transmise à US-05.1. |
+| • | La valeur cbp_total_void_wealth est transmise à US-05.1. |
 | • | Le debug permet de lire la quantité rejetée, le prix utilisé, la source du prix et la void wealth suivie. |
 
 ## US-00-UI — Folded into US-10-UI Super Visibility
@@ -1089,15 +1089,15 @@ target_overproduction_buffer
 effective_overproduction_ratio
 production_efficiency_penalty_coefficient
 max_production_efficiency_penalty
-modeu5_<good>_production_penalty_by_market[market]
+cbp_<good>_production_penalty_by_market[market]
 modifier_application_mode
 good_price
 good_price_source
-modeu5_<good>_void_wealth_by_market[market]
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
+cbp_<good>_void_wealth_by_market[market]
+cbp_<good>_void_taxable_income_proxy_by_market[market]
 Le debug doit également afficher les agrégations :
-modeu5_void_wealth_by_market[market]
-modeu5_total_void_wealth
+cbp_void_wealth_by_market[market]
+cbp_total_void_wealth
 ### Affichage UI recommandé
 
 Si une UI custom ModeU5 existe, elle doit afficher un panneau “Void Economy”.
@@ -1394,7 +1394,7 @@ Le cycle mensuel doit être :
 
 ## 3. Obtenir mod_location_pop_good_demand
 
-## 4. Appeler modeu5_resolve_stock_demand
+## 4. Appeler cbp_resolve_stock_demand
 
 ## 5. Mesurer satisfied_quantity et unsatisfied_quantity
 
@@ -1422,7 +1422,7 @@ market = location_market
 good = requested_good
 requested_quantity = mod_location_pop_good_demand
 La fonction appelée est :
-modeu5_resolve_stock_demand(
+cbp_resolve_stock_demand(
 demand_type = consumption
 consumer_type = pop
 consumer_scope = location_pops
@@ -1471,7 +1471,7 @@ Cette quantité devient la demande transmise à US-10 pour résolution depuis le
 
 ### Mesure mensuelle de satisfaction
 
-Chaque mois, après la résolution de la consommation par modeu5_resolve_stock_demand, le mod compare :
+Chaque mois, après la résolution de la consommation par cbp_resolve_stock_demand, le mod compare :
 requested_quantity
 satisfied_quantity
 unsatisfied_quantity
@@ -1522,7 +1522,7 @@ satisfaction_threshold = 0.95
 | • | Le suivi de satisfaction est effectué au niveau location / good. |
 | --- | --- |
 | • | L’US-04 concerne la demande de consommation des Pops, pas les inputs des bâtiments. |
-| • | Le multiplicateur est appliqué avant l’appel à modeu5_resolve_stock_demand. |
+| • | Le multiplicateur est appliqué avant l’appel à cbp_resolve_stock_demand. |
 | • | La demande transmise à US-10 est égale à : |
 
 base_location_pop_good_demand * location_good_demand_multiplier
@@ -1580,13 +1580,13 @@ Le joueur comprend qu’une disponibilité durable augmente progressivement la d
 
 Le mod ne modifie pas l’ensemble des expected expenses. Seules deux dépenses sont concernées : Stability Investment et Cost of the Court / Government Power, lorsque cette dernière produit de la Legitimacy.
 La base cible utilisée par le mod pour ces deux sliders est :
-modeu5_slider_cost_base = Wealth + Trade Income
+cbp_slider_cost_base = Wealth + Trade Income
 Si les coûts des sliders sont directement exposés dans les fichiers modables, le mod remplace leur base de calcul afin que Stability et Legitimacy utilisent directement Wealth + Trade Income au lieu de Tax Base.
 Si les coûts ne sont pas directement modifiables, le mod applique une réconciliation mensuelle entre le coût vanilla et le coût cible. Cette réconciliation ne doit jamais être invisible : elle doit être affichée soit dans le tooltip du slider, soit via un modifier pays clairement nommé, soit dans un panneau de debug/économie du mod.
 Le joueur doit pouvoir comprendre le coût effectif final :
 net_effective_slider_cost =
 vanilla_slider_cost
-+ modeu5_slider_reconciliation
++ cbp_slider_reconciliation
 Les autres sliders, notamment Diplomatic Spending, Army Maintenance, Navy Maintenance, Fort Maintenance, Building Subsidies, Minting et Food, ne sont pas modifiés dans le MVP.
 ### Critères de validation
 
@@ -1640,47 +1640,47 @@ Food
 ### Entrées
 
 US-05.1 lit les valeurs produites par US-00.4 :
-modeu5_total_void_wealth
-modeu5_void_wealth_by_market[market]
+cbp_total_void_wealth
+cbp_void_wealth_by_market[market]
 US-05.1 lit aussi la base cible de US-05 :
-modeu5_slider_cost_base = Wealth + Trade Income
+cbp_slider_cost_base = Wealth + Trade Income
 Formule cible
 Si la correction peut être effectuée au niveau country :
-modeu5_corrected_slider_cost_base =
+cbp_corrected_slider_cost_base =
 max(
 0,
-modeu5_slider_cost_base - modeu5_total_void_wealth
+cbp_slider_cost_base - cbp_total_void_wealth
 )
 Si la correction doit rester sensible au marché :
-modeu5_corrected_slider_cost_base_by_market[market] =
+cbp_corrected_slider_cost_base_by_market[market] =
 max(
 0,
-modeu5_slider_cost_base_by_market[market]
-- modeu5_void_wealth_by_market[market]
+cbp_slider_cost_base_by_market[market]
+- cbp_void_wealth_by_market[market]
 )
 ### Application
 
 Si les coûts des sliders sont directement modifiables :
-slider_cost_base = modeu5_corrected_slider_cost_base
+slider_cost_base = cbp_corrected_slider_cost_base
 Si les coûts ne sont pas directement modifiables :
-modeu5_target_slider_cost =
-calculate_slider_cost(modeu5_corrected_slider_cost_base)
+cbp_target_slider_cost =
+calculate_slider_cost(cbp_corrected_slider_cost_base)
 
-modeu5_slider_reconciliation =
-modeu5_target_slider_cost - vanilla_slider_cost
+cbp_slider_reconciliation =
+cbp_target_slider_cost - vanilla_slider_cost
 
 net_effective_slider_cost =
-vanilla_slider_cost + modeu5_slider_reconciliation
+vanilla_slider_cost + cbp_slider_reconciliation
 ### Visibilité
 
 La correction ne doit jamais être invisible.
 L’UI ou le debug doit afficher :
 vanilla_slider_cost
-modeu5_slider_cost_base
-modeu5_total_void_wealth
-modeu5_corrected_slider_cost_base
-modeu5_target_slider_cost
-modeu5_slider_reconciliation
+cbp_slider_cost_base
+cbp_total_void_wealth
+cbp_corrected_slider_cost_base
+cbp_target_slider_cost
+cbp_slider_reconciliation
 net_effective_slider_cost
 ### Debug obligatoire
 
@@ -1688,11 +1688,11 @@ Pour chaque pays, le debug doit afficher :
 country
 slider_name
 vanilla_slider_cost
-modeu5_slider_cost_base
-modeu5_total_void_wealth
-modeu5_corrected_slider_cost_base
-modeu5_target_slider_cost
-modeu5_slider_reconciliation
+cbp_slider_cost_base
+cbp_total_void_wealth
+cbp_corrected_slider_cost_base
+cbp_target_slider_cost
+cbp_slider_reconciliation
 net_effective_slider_cost
 correction_mode
 Valeurs possibles :
@@ -1703,8 +1703,8 @@ correction_mode = debug_only
 
 | • | Les sliders concernés ne calculent pas leur coût sur une base économique gonflée par de la void wealth. |
 | --- | --- |
-| • | modeu5_total_void_wealth est soustrait de la base économique si le calcul est au niveau country. |
-| • | modeu5_void_wealth_by_market[market] peut être utilisé si le calcul reste sensible au marché. |
+| • | cbp_total_void_wealth est soustrait de la base économique si le calcul est au niveau country. |
+| • | cbp_void_wealth_by_market[market] peut être utilisé si le calcul reste sensible au marché. |
 | • | La base corrigée ne peut jamais être négative. |
 | • | Une même void economy ne peut pas à la fois déclencher un malus de production futur et augmenter le coût des sliders. |
 | • | La correction est visible dans l’UI, dans un tooltip, via un modifier ou dans le debug. |
@@ -1718,8 +1718,8 @@ correction_mode = debug_only
 Le joueur doit comprendre pourquoi les coûts de Stability et Government Power diffèrent du vanilla.
 Pour chaque slider concerné, l’UI ou le tooltip doit afficher :
 vanilla_slider_cost
-modeu5_target_slider_cost
-modeu5_slider_reconciliation
+cbp_target_slider_cost
+cbp_slider_reconciliation
 net_effective_slider_cost
 ### Critères de validation
 
@@ -1735,13 +1735,13 @@ Le mod applique un coût logistique aux échanges commerciaux exposés par le mo
 L’objectif est que la distance commerciale réduise la profitabilité économique effective du trade, sans supposer que le revenu vanilla d’un trade individuel puisse toujours être modifié directement.
 Le mod distingue conceptuellement :
 gross_trade_income
-modeu5_transport_cost
-modeu5_trade_income_reconciliation
+cbp_transport_cost
+cbp_trade_income_reconciliation
 effective_trade_income
 La formule cible reste :
 effective_trade_income =
 gross_trade_income
-- modeu5_transport_cost
+- cbp_transport_cost
 Cependant, dans le MVP, le mod applique par défaut une réconciliation mensuelle, calculée à partir des trades/imports/exports exposés par le moteur.
 
 ### Principe MVP
@@ -1780,18 +1780,18 @@ Si une donnée manque, le mod doit utiliser un fallback ou ignorer le trade pour
 ### Formule du coût logistique
 
 Lorsque les données nécessaires sont disponibles, le coût est calculé ainsi :
-modeu5_transport_cost =
+cbp_transport_cost =
 used_trade_capacity
 * transport_cost_base_coefficient
 * (trade_distance / trade_range)
-* modeu5_transport_cost_coefficient
+* cbp_transport_cost_coefficient
 Valeurs MVP recommandées :
 transport_cost_base_coefficient = 0.1
-modeu5_transport_cost_coefficient = 1.0
+cbp_transport_cost_coefficient = 1.0
 Sécurité :
 if trade_range <= 0:
-modeu5_transport_cost = 0
-trade_flag = invalid_for_modeu5_transport_cost
+cbp_transport_cost = 0
+trade_flag = invalid_for_cbp_transport_cost
 
 ### Quantité utilisée pour le calcul
 
@@ -1813,7 +1813,7 @@ gross_trade_income = vanilla_trade_income
 
 net_trade_income =
 gross_trade_income
-- modeu5_transport_cost
+- cbp_transport_cost
 
 recognized_trade_income = net_trade_income
 Ce mode est le comportement idéal.
@@ -1823,14 +1823,14 @@ Il n’est pas requis pour le MVP.
 
 Si le revenu d’un trade individuel n’est pas modifiable directement, le mod applique une réconciliation mensuelle.
 Pour chaque trade/import/export inspecté :
-modeu5_monthly_transport_cost_accumulator += modeu5_transport_cost
+cbp_monthly_transport_cost_accumulator += cbp_transport_cost
 À la fin du mois :
-modeu5_trade_income_reconciliation =
--modeu5_monthly_transport_cost_accumulator
+cbp_trade_income_reconciliation =
+-cbp_monthly_transport_cost_accumulator
 Le revenu effectif reconnu par le mod devient :
 effective_trade_income =
 estimated_gross_trade_income
-+ modeu5_trade_income_reconciliation
++ cbp_trade_income_reconciliation
 La réconciliation peut être appliquée via :
 
 | • | une pénalité monétaire ; |
@@ -1893,7 +1893,7 @@ trade_distance
 trade_range
 cost_basis_quantity
 gross_trade_income_if_available
-modeu5_transport_cost
+cbp_transport_cost
 transport_cost_payer
 imputation_mode
 missing_trade_data
@@ -1914,7 +1914,7 @@ Et :
 ui_display_mode = vanilla_trade_tooltip
 ui_display_mode = country_modifier
 ui_display_mode = debug_window
-ui_display_mode = custom_modeu5_window
+ui_display_mode = custom_cbp_window
 
 ### Relation avec US-10
 
@@ -1955,8 +1955,8 @@ iterate exposed trade/import/export scopes
 Le joueur doit voir que la distance réduit la profitabilité effective du commerce.
 L’UI doit afficher :
 gross_trade_income_if_available
-modeu5_transport_cost
-modeu5_trade_income_reconciliation
+cbp_transport_cost
+cbp_trade_income_reconciliation
 estimated_effective_trade_income
 transport_cost_payer
 imputation_mode
@@ -1988,7 +1988,7 @@ Le joueur doit comprendre les effets des modifications sur les bâtiments commer
 L’UI doit afficher :
 building_name
 vanilla_trade_power_or_estate_power
-modeu5_trade_power_or_estate_power
+cbp_trade_power_or_estate_power
 operating_cost_if_modified
 storage_capacity_if_any
 ### Critères de validation
@@ -2058,7 +2058,7 @@ L’objectif est d'accélérer les chaînes de transformation et compenser le re
 
 Le joueur doit comprendre que le mod applique un bonus global de Production Efficiency de +5 %.
 L’UI doit afficher :
-modeu5_global_production_efficiency_bonus = +5%
+cbp_global_production_efficiency_bonus = +5%
 reason = ModeU5 economic compensation
 affected_countries
 affected_production
@@ -2079,9 +2079,9 @@ Elle ne modifie jamais directement :
 country_market_good_stock
 market_good_stock
 Elle appelle uniquement les opérations centralisées :
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_validate_stock_consistency
+cbp_remove_stock
+cbp_transfer_stock
+cbp_validate_stock_consistency
 Clarification fondamentale — pas de trade intra-marché ModeU5
 US-10 ne modélise pas un trade intra-marché au sens économique complet.
 Au sein d’un même marché, il n’y a pas de transaction commerciale ModeU5 générant :
@@ -2134,7 +2134,7 @@ US-10 est divisée en cinq sous-US :
 
 En tant que moddeur, je veux disposer d’une fonction commune de résolution de demande fondée sur les stocks disponibles, afin que la consommation et le trade inter-marchés utilisent la même logique de sélection, de filtrage, de scoring et de debug.
 Cette US crée le cœur technique commun :
-modeu5_resolve_stock_demand
+cbp_resolve_stock_demand
 Cette fonction ne doit pas être responsable de toute la logique métier.
 Elle doit fournir un socle commun permettant de :
 - recevoir une demande ;
@@ -2245,7 +2245,7 @@ trade_advantage_weight =
 seller_trade_advantage_in_market * trade_advantage_coefficient
 ### Sorties de la fonction
 
-La fonction modeu5_resolve_stock_demand doit retourner ou exposer :
+La fonction cbp_resolve_stock_demand doit retourner ou exposer :
 ordered_stock_candidates
 stock_priority_score_by_candidate
 excluded_candidates
@@ -2309,7 +2309,7 @@ Lorsqu’un consommateur dans un marché demande un bien, ModeU5 cherche des sto
 
 La consommation est une disparition du bien.
 Elle utilise :
-modeu5_remove_stock
+cbp_remove_stock
 Elle ne génère pas :
 - trade income ;
 - transport cost ;
@@ -2354,7 +2354,7 @@ remaining_demand = requested_quantity
 satisfied_quantity = 0
 
 available_stock_candidates =
-modeu5_resolve_stock_demand(
+cbp_resolve_stock_demand(
 demand_type = consumption
 demanding_country = demanding_country
 market = market
@@ -2377,7 +2377,7 @@ stock_candidate_stock,
 remaining_demand
 )
 
-modeu5_remove_stock(
+cbp_remove_stock(
 country = stock_candidate_country
 market = market
 good = good
@@ -2416,8 +2416,8 @@ Elle peut alimenter :
 Même si un stock étranger du même marché est utilisé pour satisfaire une consommation locale, ce n’est pas un trade intra-marché ModeU5.
 C’est une résolution de disponibilité du stock dans le marché.
 Cette résolution ne doit pas déclencher :
-modeu5_transport_cost
-modeu5_trade_income_reconciliation
+cbp_transport_cost
+cbp_trade_income_reconciliation
 trade_capacity_usage
 gross_trade_income
 effective_trade_income
@@ -2454,7 +2454,7 @@ exclusion_reason
 | • | Une consommation ne consomme pas de trade capacity. |
 | • | Une consommation utilisant un stock étranger dans le même marché reste une résolution de stock, pas un trade intra-marché. |
 | • | Toute demande non satisfaite est enregistrée. |
-| • | Toutes les mutations passent par modeu5_remove_stock. |
+| • | Toutes les mutations passent par cbp_remove_stock. |
 | • | Le debug permet de comprendre quels stocks ont été utilisés, dans quel ordre et pourquoi. |
 
 ## US-10.2 — Inter-Market Trade Stock Transfer
@@ -2470,7 +2470,7 @@ Dans ce cas, un bien quitte le marché source et entre dans le marché cible.
 
 Le trade inter-marchés est un transfert de stock.
 Il utilise :
-modeu5_transfer_stock
+cbp_transfer_stock
 Il peut alimenter US-06 pour le calcul du coût logistique.
 US-10.2 ne calcule pas elle-même :
 - le coût logistique ;
@@ -2524,7 +2524,7 @@ remaining_trade_demand = requested_trade_quantity
 transferred_quantity = 0
 
 available_seller_stocks =
-modeu5_resolve_stock_demand(
+cbp_resolve_stock_demand(
 demand_type = inter_market_trade
 buyer_country = buyer_country
 demanding_country = buyer_country
@@ -2555,7 +2555,7 @@ buyer_available_capacity,
 remaining_trade_demand
 )
 
-modeu5_transfer_stock(
+cbp_transfer_stock(
 seller_country = seller_stock_country
 buyer_country = buyer_country
 source_market = source_market
@@ -2634,7 +2634,7 @@ exclusion_reason
 | • | Le revenu de trade n’est pas calculé dans US-10.2. |
 | • | La consommation de trade capacity n’est pas calculée dans US-10.2. |
 | • | US-10.2 expose transferred_quantity à US-06. |
-| • | Toutes les mutations passent par modeu5_transfer_stock. |
+| • | Toutes les mutations passent par cbp_transfer_stock. |
 | • | Le debug permet de lire les marchés source et cible, les vendeurs utilisés, les quantités transférées et les quantités non satisfaites. |
 
 ## US-10.3 — Unsatisfied Demand Tracking
@@ -2937,13 +2937,13 @@ market_good_stock = sum(country_market_good_stock)
 Le mod doit utiliser une approche transactionnelle simplifiée.
 Les stocks ne doivent jamais être modifiés directement par les US individuelles.
 Chaque US doit appeler une opération commune :
-Production -> modeu5_add_stock
-Consumption -> modeu5_remove_stock
-Trade inter-market -> modeu5_transfer_stock
-Decay -> modeu5_decay_stock
-Debug / correction -> modeu5_validate_stock_consistency
-Monthly dirty safety -> modeu5_validate_stock_consistency
-Annual exhaustive safety -> modeu5_validate_stock_consistency
+Production -> cbp_add_stock
+Consumption -> cbp_remove_stock
+Trade inter-market -> cbp_transfer_stock
+Decay -> cbp_decay_stock
+Debug / correction -> cbp_validate_stock_consistency
+Monthly dirty safety -> cbp_validate_stock_consistency
+Annual exhaustive safety -> cbp_validate_stock_consistency
 Le stock pays est la source de vérité.
 Le stock marché est un agrégat de contrôle.
 En cas de divergence, le stock marché doit être recalculé depuis les stocks pays, jamais l’inverse.
@@ -3047,13 +3047,13 @@ if attacker_country is horde:
 use vanilla_conquest_wargoal
 
 if attacker_country is not horde and current_age = age_1 or :
-use modeu5_conquer_province_non_horde_age_1
+use cbp_conquer_province_non_horde_age_1
 
 if attacker_country is not horde and current_age = age_2:
-use modeu5_conquer_province_non_horde_age_2
+use cbp_conquer_province_non_horde_age_2
 
 if attacker_country is not horde and current_age = age_3:
-use modeu5_conquer_province_non_horde_age_3
+use cbp_conquer_province_non_horde_age_3
 
 if current_age >= age_4:
 use vanilla_conquest_wargoal

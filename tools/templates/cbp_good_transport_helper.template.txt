@@ -1,4 +1,4 @@
-modeu5_get_transport_cost_good___GOOD__ = {
+cbp_get_transport_cost_good___GOOD__ = {
 	save_temporary_scope_value_as = {
 		name = cbp_good_transport_cost_raw
 		value = __TRANSPORT_COST__
@@ -13,7 +13,7 @@ modeu5_get_transport_cost_good___GOOD__ = {
 	}
 }
 
-modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
+cbp_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
 	save_temporary_scope_value_as = {
 		name = cbp_trade_capacity_volume_raw
 		value = {
@@ -22,7 +22,7 @@ modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
 		}
 	}
 
-	modeu5_get_transport_cost_good___GOOD__ = yes
+	cbp_get_transport_cost_good___GOOD__ = yes
 
 	save_temporary_scope_value_as = {
 		name = cbp_computed_goods_quantity
@@ -35,7 +35,7 @@ modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = cbp_estimated_goods_quantity value = scope:cbp_computed_goods_quantity }
 }
 
-modeu5_compute_goods_quantity_from_trade_capacity_with_route_good___GOOD__ = {
+cbp_compute_goods_quantity_from_trade_capacity_with_route_good___GOOD__ = {
 	save_temporary_scope_value_as = {
 		name = cbp_trade_capacity_volume_raw
 		value = {
@@ -52,7 +52,7 @@ modeu5_compute_goods_quantity_from_trade_capacity_with_route_good___GOOD__ = {
 		}
 	}
 
-	modeu5_get_transport_cost_good___GOOD__ = yes
+	cbp_get_transport_cost_good___GOOD__ = yes
 
 	save_temporary_scope_value_as = {
 		name = cbp_trade_quantity_denominator
@@ -74,8 +74,8 @@ modeu5_compute_goods_quantity_from_trade_capacity_with_route_good___GOOD__ = {
 	save_temporary_scope_value_as = { name = cbp_estimated_goods_quantity value = scope:cbp_computed_goods_quantity }
 }
 
-modeu5_diagnostic_trade_capacity_conversion_good___GOOD__ = {
-	modeu5_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
+cbp_diagnostic_trade_capacity_conversion_good___GOOD__ = {
+	cbp_compute_goods_quantity_from_trade_capacity_good___GOOD__ = {
 		capacity_volume = $capacity_volume$
 	}
 }

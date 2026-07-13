@@ -2,7 +2,7 @@
 
 # Canonical ModeU5 good registry used by generators.
 # Keep this list aligned with the vanilla goods covered by ModeU5 stock helpers.
-modeu5_goods=(
+cbp_goods=(
 	cotton sugar tobacco
 	tar porcelain naval_supplies firearms cannons weaponry glass steel cloth
 	fine_cloth liquor beer paper books jewelry leather tools masonry

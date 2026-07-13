@@ -1,13 +1,13 @@
-namespace = modeu5_us17_owner_modifiers
+namespace = cbp_us17_owner_modifiers
 
 # Focused US-17 owner-modifier and maximum-only cap probe.
 # The visible console launcher schedules a hidden continuation so the first
 # debug_log runs outside the console command's localization-disabled context.
 
-modeu5_us17_owner_modifiers.1 = {
+cbp_us17_owner_modifiers.1 = {
 	type = country_event
-	title = modeu5_us17_owner_modifiers.1.title
-	desc = modeu5_us17_owner_modifiers.1.desc
+	title = cbp_us17_owner_modifiers.1.title
+	desc = cbp_us17_owner_modifiers.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -16,15 +16,15 @@ modeu5_us17_owner_modifiers.1 = {
 	}
 
 	option = {
-		name = modeu5_us17_owner_modifiers.1.a
-		trigger_event_non_silently = { id = modeu5_us17_owner_modifiers.10 days = 0 }
+		name = cbp_us17_owner_modifiers.1.a
+		trigger_event_non_silently = { id = cbp_us17_owner_modifiers.10 days = 0 }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_us17_owner_modifiers.10 = {
+cbp_us17_owner_modifiers.10 = {
 	type = country_event
 	outcome = neutral
 	title = empty_text
@@ -34,16 +34,16 @@ modeu5_us17_owner_modifiers.10 = {
 	trigger = { always = yes }
 
 	immediate = {
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_us17_owner_modifier_probe = yes
-		trigger_event_non_silently = { id = modeu5_us17_owner_modifiers.2 days = 0 }
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_us17_owner_modifier_probe = yes
+		trigger_event_non_silently = { id = cbp_us17_owner_modifiers.2 days = 0 }
 	}
 }
 
-modeu5_us17_owner_modifiers.2 = {
+cbp_us17_owner_modifiers.2 = {
 	type = country_event
-	title = modeu5_us17_owner_modifiers.2.title
-	desc = modeu5_us17_owner_modifiers.2.desc
+	title = cbp_us17_owner_modifiers.2.title
+	desc = cbp_us17_owner_modifiers.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -51,18 +51,18 @@ modeu5_us17_owner_modifiers.2 = {
 	}
 
 	option = {
-		name = modeu5_us17_owner_modifiers.pass
+		name = cbp_us17_owner_modifiers.pass
 		trigger = { has_global_variable = test_cbp_us17_owner_modifiers_passed }
 	}
 	option = {
-		name = modeu5_us17_owner_modifiers.fail
+		name = cbp_us17_owner_modifiers.fail
 		trigger = { has_global_variable = test_cbp_us17_owner_modifiers_failed }
 	}
 	option = {
-		name = modeu5_us17_owner_modifiers.blocked
+		name = cbp_us17_owner_modifiers.blocked
 		trigger = { has_global_variable = test_cbp_us17_owner_modifiers_blocked }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

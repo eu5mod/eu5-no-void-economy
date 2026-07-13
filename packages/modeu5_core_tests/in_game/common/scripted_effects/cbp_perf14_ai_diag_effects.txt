@@ -1,7 +1,7 @@
 # Manual PERF-14 AI/human-relevant-market diagnostic.
 # Values are mirrored to country-scope variables for the localized result event.
 
-modeu5_perf14_diag_reset_ui = {
+cbp_perf14_diag_reset_ui = {
 	set_variable = { name = test_cbp_perf14_ai_diag_fixture value = 0 }
 	set_variable = { name = test_cbp_perf14_ai_diag_before_relevant_marker value = 0 }
 	set_variable = { name = test_cbp_perf14_ai_diag_before_promoted_marker value = 0 }
@@ -25,10 +25,10 @@ modeu5_perf14_diag_reset_ui = {
 	set_variable = { name = test_cbp_perf14_ai_diag_audit_missing_materialization_delta value = 0 }
 }
 
-modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_perf14_set_cmm_main_mode_for_test = { value = 1 }
-	modeu5_perf14_diag_reset_ui = yes
+cbp_perf14_diag_run_ai_human_relevant_market_promotion = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_perf14_set_cmm_main_mode_for_test = { value = 1 }
+	cbp_perf14_diag_reset_ui = yes
 
 	save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 0 }
 
@@ -36,24 +36,24 @@ modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 		limit = { country_exists = c:ENG c:ENG = { is_ai = yes has_markets = yes } }
 		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		set_variable = { name = test_cbp_perf14_ai_diag_fixture value = 1 }
-		c:ENG = { save_temporary_scope_as = modeu5_perf14_ai_country }
-		c:ENG.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		c:ENG = { save_temporary_scope_as = cbp_perf14_ai_country }
+		c:ENG.capital.market = { save_temporary_scope_as = cbp_perf14_ai_market }
 		debug_log = "ModeU5 PERF-14 AI_DIAG fixture ENG"
 	}
 	else_if = {
 		limit = { country_exists = c:FRA c:FRA = { is_ai = yes has_markets = yes } }
 		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		set_variable = { name = test_cbp_perf14_ai_diag_fixture value = 2 }
-		c:FRA = { save_temporary_scope_as = modeu5_perf14_ai_country }
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		c:FRA = { save_temporary_scope_as = cbp_perf14_ai_country }
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_perf14_ai_market }
 		debug_log = "ModeU5 PERF-14 AI_DIAG fixture FRA"
 	}
 	else_if = {
 		limit = { country_exists = c:POR c:POR = { is_ai = yes has_markets = yes } }
 		save_temporary_scope_value_as = { name = test_cbp_perf14_ai_fixture_available value = 1 }
 		set_variable = { name = test_cbp_perf14_ai_diag_fixture value = 3 }
-		c:POR = { save_temporary_scope_as = modeu5_perf14_ai_country }
-		c:POR.capital.market = { save_temporary_scope_as = modeu5_perf14_ai_market }
+		c:POR = { save_temporary_scope_as = cbp_perf14_ai_country }
+		c:POR.capital.market = { save_temporary_scope_as = cbp_perf14_ai_market }
 		debug_log = "ModeU5 PERF-14 AI_DIAG fixture POR"
 	}
 
@@ -62,38 +62,38 @@ modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 		if = {
 			limit = {
 				has_global_variable_list = cbp_performance_relevant_markets
-				is_target_in_global_variable_list = { name = cbp_performance_relevant_markets target = scope:modeu5_perf14_ai_market }
+				is_target_in_global_variable_list = { name = cbp_performance_relevant_markets target = scope:cbp_perf14_ai_market }
 			}
 			set_variable = { name = test_cbp_perf14_ai_diag_before_relevant_marker value = 1 }
 			debug_log = "ModeU5 PERF-14 AI_AUDIT before_relevant_marker YES"
 		}
 		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT before_relevant_marker NO" }
 
-		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_market }
+		scope:cbp_perf14_ai_market = { save_temporary_scope_as = cbp_market }
 		if = {
-			limit = { modeu5_market_detailed_accounting_promoted_trigger = yes }
+			limit = { cbp_market_detailed_accounting_promoted_trigger = yes }
 			set_variable = { name = test_cbp_perf14_ai_diag_before_promoted_marker value = 1 }
 			debug_log = "ModeU5 PERF-14 AI_AUDIT before_promoted_marker YES"
 		}
 		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT before_promoted_marker NO" }
 
-		modeu5_clear_performance_relevant_markets = yes
-		modeu5_clear_detailed_accounting_promoted_markets = yes
+		cbp_clear_performance_relevant_markets = yes
+		cbp_clear_detailed_accounting_promoted_markets = yes
 
-		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_performance_relevant_market }
-		modeu5_mark_performance_relevant_market = yes
+		scope:cbp_perf14_ai_market = { save_temporary_scope_as = cbp_performance_relevant_market }
+		cbp_mark_performance_relevant_market = yes
 
 		if = {
 			limit = {
 				has_global_variable_list = cbp_performance_relevant_markets
-				is_target_in_global_variable_list = { name = cbp_performance_relevant_markets target = scope:modeu5_perf14_ai_market }
+				is_target_in_global_variable_list = { name = cbp_performance_relevant_markets target = scope:cbp_perf14_ai_market }
 			}
 			set_variable = { name = test_cbp_perf14_ai_diag_relevant_list value = 1 }
 			debug_log = "ModeU5 PERF-14 AI_DIAG relevant_list YES"
 		}
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG relevant_list NO" }
 
-		modeu5_prepare_stock_mutation_accounting_mode = { country = scope:modeu5_perf14_ai_country market = scope:modeu5_perf14_ai_market }
+		cbp_prepare_stock_mutation_accounting_mode = { country = scope:cbp_perf14_ai_country market = scope:cbp_perf14_ai_market }
 
 		set_variable = { name = test_cbp_perf14_ai_diag_audit_goods_checked value = global_var:cbp_perf14_promotion_market_goods_checked }
 		set_variable = { name = test_cbp_perf14_ai_diag_audit_country_sum_before value = global_var:cbp_perf14_promotion_country_sum_total_before }
@@ -105,19 +105,19 @@ modeu5_perf14_diag_run_ai_human_relevant_market_promotion = {
 		if = { limit = { global_var:cbp_perf14_promotion_country_sum_total_before > global_var:cbp_perf14_promotion_aggregate_total_before } debug_log = "ModeU5 PERF-14 AI_AUDIT country_sum_gt_market_aggregate YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_AUDIT country_sum_gt_market_aggregate NO" }
 
-		if = { limit = { modeu5_stock_mutation_use_detailed_accounting_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_detailed value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG detailed YES" }
+		if = { limit = { cbp_stock_mutation_use_detailed_accounting_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_detailed value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG detailed YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG detailed NO" }
-		if = { limit = { modeu5_stock_mutation_use_market_level_fallback_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_fallback value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG fallback YES" }
+		if = { limit = { cbp_stock_mutation_use_market_level_fallback_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_fallback value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG fallback YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG fallback NO" }
-		if = { limit = { modeu5_stock_mutation_blocked_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_blocked value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG blocked YES" }
+		if = { limit = { cbp_stock_mutation_blocked_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_blocked value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG blocked YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG blocked NO" }
 		if = { limit = { scope:cbp_stock_mutation_promotion_attempted > 0 } set_variable = { name = test_cbp_perf14_ai_diag_attempted value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG attempted YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG attempted NO" }
 		if = { limit = { scope:cbp_stock_mutation_promotion_succeeded > 0 } set_variable = { name = test_cbp_perf14_ai_diag_succeeded value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG succeeded YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG succeeded NO" }
 
-		scope:modeu5_perf14_ai_market = { save_temporary_scope_as = modeu5_market }
-		if = { limit = { modeu5_market_detailed_accounting_promoted_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_promoted value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG promoted YES" }
+		scope:cbp_perf14_ai_market = { save_temporary_scope_as = cbp_market }
+		if = { limit = { cbp_market_detailed_accounting_promoted_trigger = yes } set_variable = { name = test_cbp_perf14_ai_diag_promoted value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG promoted YES" }
 		else = { debug_log = "ModeU5 PERF-14 AI_DIAG promoted NO" }
 
 		if = { limit = { has_global_variable = cbp_perf14_promotion_blocked_not_human_relevant global_var:cbp_perf14_promotion_blocked_not_human_relevant > 0 } set_variable = { name = test_cbp_perf14_ai_diag_reason_not_relevant value = 1 } debug_log = "ModeU5 PERF-14 AI_DIAG reason_not_relevant YES" }

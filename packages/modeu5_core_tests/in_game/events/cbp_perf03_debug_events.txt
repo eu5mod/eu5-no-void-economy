@@ -1,9 +1,9 @@
-namespace = modeu5_perf03_debug
+namespace = cbp_perf03_debug
 
-modeu5_perf03_debug.1 = {
+cbp_perf03_debug.1 = {
 	type = country_event
-	title = modeu5_perf03_debug.1.title
-	desc = modeu5_perf03_debug.1.desc
+	title = cbp_perf03_debug.1.title
+	desc = cbp_perf03_debug.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,19 +12,19 @@ modeu5_perf03_debug.1 = {
 	}
 
 	option = {
-		name = modeu5_perf03_debug.1.a
-		modeu5_perf03_probe_current_market_country_cache = yes
-		trigger_event_non_silently = modeu5_perf03_debug.2
+		name = cbp_perf03_debug.1.a
+		cbp_perf03_probe_current_market_country_cache = yes
+		trigger_event_non_silently = cbp_perf03_debug.2
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_perf03_debug.2 = {
+cbp_perf03_debug.2 = {
 	type = country_event
-	title = modeu5_perf03_debug.2.title
-	desc = modeu5_perf03_debug.2.desc
+	title = cbp_perf03_debug.2.title
+	desc = cbp_perf03_debug.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -32,18 +32,18 @@ modeu5_perf03_debug.2 = {
 	}
 
 	option = {
-		name = modeu5_debug.test.perf03_market_country_cache.pass
+		name = cbp_debug.test.perf03_market_country_cache.pass
 		trigger = { has_global_variable = test_cbp_perf03_market_country_cache_passed }
 	}
 	option = {
-		name = modeu5_debug.test.perf03_market_country_cache.blocked
+		name = cbp_debug.test.perf03_market_country_cache.blocked
 		trigger = { has_global_variable = test_cbp_perf03_market_country_cache_blocked }
 	}
 	option = {
-		name = modeu5_debug.test.perf03_market_country_cache.fail
+		name = cbp_debug.test.perf03_market_country_cache.fail
 		trigger = { has_global_variable = test_cbp_perf03_market_country_cache_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

@@ -14,74 +14,74 @@
 # locations. That path is global behavior for all runtime modes; Performance
 # Mode only changes accounting detail, not whether US-04 falls back to vanilla.
 
-modeu5_run_yearly_pop_demand_adaptation_for_current_country = {
+cbp_run_yearly_pop_demand_adaptation_for_current_country = {
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
-			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
+			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
 		every_owned_location = {
-			modeu5_annual_adjust_location_pop_demand_all_goods = yes
+			cbp_annual_adjust_location_pop_demand_all_goods = yes
 		}
 	}
 }
 
-modeu5_run_monthly_us04_reconciliation_for_current_country = {
-	modeu5_run_monthly_us04_estate_accounting_for_current_country = yes
+cbp_run_monthly_us04_reconciliation_for_current_country = {
+	cbp_run_monthly_us04_estate_accounting_for_current_country = yes
 }
 
-modeu5_run_monthly_us04_estate_accounting_for_current_country = {
-	save_temporary_scope_as = modeu5_us04_reconciliation_country
+cbp_run_monthly_us04_estate_accounting_for_current_country = {
+	save_temporary_scope_as = cbp_us04_reconciliation_country
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
-			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
+			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
 		every_market_present_in_country = {
-			save_temporary_scope_as = modeu5_us04_reconciliation_market
-			modeu5_monthly_assess_country_market_estate_consumption_all_goods = yes
+			save_temporary_scope_as = cbp_us04_reconciliation_market
+			cbp_monthly_assess_country_market_estate_consumption_all_goods = yes
 		}
 	}
 }
 
-modeu5_run_monthly_us04_reconciliation_for_location = {
-	modeu5_run_monthly_us04_estate_accounting_for_location = {
+cbp_run_monthly_us04_reconciliation_for_location = {
+	cbp_run_monthly_us04_estate_accounting_for_location = {
 		location = $location$
 	}
 }
 
-modeu5_run_monthly_us04_estate_accounting_for_location = {
-	$location$ = { save_temporary_scope_as = modeu5_us04_reconciliation_target_location }
+cbp_run_monthly_us04_estate_accounting_for_location = {
+	$location$ = { save_temporary_scope_as = cbp_us04_reconciliation_target_location }
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
-			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
+			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
-		scope:modeu5_us04_reconciliation_target_location = {
-			modeu5_monthly_assess_location_estate_consumption_all_goods = yes
+		scope:cbp_us04_reconciliation_target_location = {
+			cbp_monthly_assess_location_estate_consumption_all_goods = yes
 		}
 	}
 }
 
-modeu5_run_pop_demand_adaptation_for_location = {
-	$location$ = { save_temporary_scope_as = modeu5_us04_target_location }
+cbp_run_pop_demand_adaptation_for_location = {
+	$location$ = { save_temporary_scope_as = cbp_us04_target_location }
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
-			modeu5_pop_consumption_offer_demand_enabled_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
+			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
-		scope:modeu5_us04_target_location = {
-			modeu5_annual_adjust_location_pop_demand_all_goods = yes
+		scope:cbp_us04_target_location = {
+			cbp_annual_adjust_location_pop_demand_all_goods = yes
 		}
 	}
 }
 
-modeu5_us04_debug_run_location_pop_demand_adaptation_fixture = {
-	$location$ = { save_temporary_scope_as = modeu5_us04_fixture_location }
-	scope:modeu5_us04_fixture_location = {
-		modeu5_annual_adjust_location_pop_demand_good_wheat = yes
-		modeu5_annual_adjust_location_pop_demand_good_beer = yes
-		modeu5_annual_adjust_location_pop_demand_good_cloth = yes
-		modeu5_annual_adjust_location_pop_demand_good_tools = yes
+cbp_us04_debug_run_location_pop_demand_adaptation_fixture = {
+	$location$ = { save_temporary_scope_as = cbp_us04_fixture_location }
+	scope:cbp_us04_fixture_location = {
+		cbp_annual_adjust_location_pop_demand_good_wheat = yes
+		cbp_annual_adjust_location_pop_demand_good_beer = yes
+		cbp_annual_adjust_location_pop_demand_good_cloth = yes
+		cbp_annual_adjust_location_pop_demand_good_tools = yes
 	}
 }

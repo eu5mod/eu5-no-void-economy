@@ -5,16 +5,16 @@
 # They do not read vanilla production directly; TECH-01 021 must confirm that
 # source before monthly gameplay wiring is enabled.
 
-modeu5_read_void_economy_record = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_read_void_economy_record = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_load_void_economy_record_good_$good$ = yes
-	modeu5_normalize_void_economy_record_read = yes
+	cbp_load_void_economy_record_good_$good$ = yes
+	cbp_normalize_void_economy_record_read = yes
 }
 
-modeu5_normalize_void_economy_record_read = {
+cbp_normalize_void_economy_record_read = {
 	save_temporary_scope_value_as = {
 		name = cbp_us00_produced
 		value = {
@@ -72,10 +72,10 @@ modeu5_normalize_void_economy_record_read = {
 	}
 }
 
-modeu5_update_production_rejection_ledger = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_update_production_rejection_ledger = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
 	save_temporary_scope_value_as = {
 		name = cbp_us00_produced_quantity_raw
@@ -124,21 +124,21 @@ modeu5_update_production_rejection_ledger = {
 		error_log = "ModeU5 US-00 ledger received a negative rejected quantity; normalized to zero."
 	}
 
-	modeu5_update_production_rejection_ledger_good_$good$ = yes
+	cbp_update_production_rejection_ledger_good_$good$ = yes
 }
 
-modeu5_calculate_us00_overproduction_ratio = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_calculate_us00_overproduction_ratio = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_calculate_overproduction_ratio_good_$good$ = yes
+	cbp_calculate_overproduction_ratio_good_$good$ = yes
 }
 
-modeu5_calculate_us00_void_wealth = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_calculate_us00_void_wealth = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = {
 		name = cbp_us00_good_price_raw
 		value = $good_price$
@@ -159,21 +159,21 @@ modeu5_calculate_us00_void_wealth = {
 		error_log = "ModeU5 US-00 void wealth received a negative good price; normalized to zero."
 	}
 
-	modeu5_calculate_void_wealth_good_$good$ = yes
+	cbp_calculate_void_wealth_good_$good$ = yes
 }
 
-modeu5_calculate_us00_production_penalty = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_calculate_us00_production_penalty = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_calculate_production_penalty_good_$good$ = yes
+	cbp_calculate_production_penalty_good_$good$ = yes
 }
 
-modeu5_run_us00_record_calculations = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_run_us00_record_calculations = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = {
 		name = cbp_us00_good_price_raw
 		value = $good_price$
@@ -190,34 +190,34 @@ modeu5_run_us00_record_calculations = {
 		value = $good_price_source$
 	}
 
-	modeu5_calculate_overproduction_ratio_good_$good$ = yes
-	modeu5_calculate_void_wealth_good_$good$ = yes
-	modeu5_calculate_production_penalty_good_$good$ = yes
+	cbp_calculate_overproduction_ratio_good_$good$ = yes
+	cbp_calculate_void_wealth_good_$good$ = yes
+	cbp_calculate_production_penalty_good_$good$ = yes
 }
 
-modeu5_clear_us00_record = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_clear_us00_record = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_clear_void_economy_record_good_$good$ = yes
+	cbp_clear_void_economy_record_good_$good$ = yes
 }
 
-modeu5_update_void_wealth_aggregates = {
+cbp_update_void_wealth_aggregates = {
 	if = {
 		limit = { scope:cbp_us00_void_wealth_delta != 0 }
-		scope:modeu5_country = {
+		scope:cbp_country = {
 			if = {
 				limit = {
 					has_variable_map = cbp_void_wealth_by_market
 					is_key_in_variable_map = {
 						name = cbp_void_wealth_by_market
-						target = scope:modeu5_market
+						target = scope:cbp_market
 					}
 				}
 				save_temporary_scope_value_as = {
 					name = cbp_us00_market_void_wealth_before
-					value = "variable_map(cbp_void_wealth_by_market|scope:modeu5_market)"
+					value = "variable_map(cbp_void_wealth_by_market|scope:cbp_market)"
 				}
 			}
 			else = {
@@ -239,19 +239,19 @@ modeu5_update_void_wealth_aggregates = {
 					has_variable_map = cbp_void_wealth_by_market
 					is_key_in_variable_map = {
 						name = cbp_void_wealth_by_market
-						target = scope:modeu5_market
+						target = scope:cbp_market
 					}
 				}
 				remove_from_variable_map = {
 					name = cbp_void_wealth_by_market
-					key = scope:modeu5_market
+					key = scope:cbp_market
 				}
 			}
 			if = {
 				limit = { scope:cbp_us00_market_void_wealth_after > 0 }
 				add_to_variable_map = {
 					name = cbp_void_wealth_by_market
-					key = scope:modeu5_market
+					key = scope:cbp_market
 					value = scope:cbp_us00_market_void_wealth_after
 				}
 			}

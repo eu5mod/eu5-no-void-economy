@@ -1,9 +1,9 @@
-namespace = modeu5_perf14_ai_diag
+namespace = cbp_perf14_ai_diag
 
-modeu5_perf14_ai_diag.1 = {
+cbp_perf14_ai_diag.1 = {
 	type = country_event
-	title = modeu5_perf14_ai_diag.1.title
-	desc = modeu5_perf14_ai_diag.1.desc
+	title = cbp_perf14_ai_diag.1.title
+	desc = cbp_perf14_ai_diag.1.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,19 +12,19 @@ modeu5_perf14_ai_diag.1 = {
 	}
 
 	option = {
-		name = modeu5_perf14_ai_diag.1.a
-		modeu5_perf14_diag_run_ai_human_relevant_market_promotion = yes
-		trigger_event_non_silently = { id = modeu5_perf14_ai_diag.2 days = 0 }
+		name = cbp_perf14_ai_diag.1.a
+		cbp_perf14_diag_run_ai_human_relevant_market_promotion = yes
+		trigger_event_non_silently = { id = cbp_perf14_ai_diag.2 days = 0 }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_perf14_ai_diag.2 = {
+cbp_perf14_ai_diag.2 = {
 	type = country_event
-	title = modeu5_perf14_ai_diag.2.title
-	desc = modeu5_perf14_ai_diag.2.desc
+	title = cbp_perf14_ai_diag.2.title
+	desc = cbp_perf14_ai_diag.2.desc
 	outcome = neutral
 
 	trigger = {
@@ -32,6 +32,6 @@ modeu5_perf14_ai_diag.2 = {
 	}
 
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

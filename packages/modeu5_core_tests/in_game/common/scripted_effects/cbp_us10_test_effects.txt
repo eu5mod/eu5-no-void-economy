@@ -1,6 +1,6 @@
 # Deterministic US-10.1 / US-10.2 / US-10.3 test helpers.
 
-modeu5_us10_clear_test_results = {
+cbp_us10_clear_test_results = {
 	remove_global_variable = test_cbp_us10_demand_resolution_passed
 	remove_global_variable = test_cbp_us10_demand_resolution_failed
 	remove_global_variable = test_cbp_us10_demand_resolution_blocked
@@ -21,20 +21,20 @@ modeu5_us10_clear_test_results = {
 	remove_global_variable = test_cbp_us10_direct_trade_formula_blocked
 }
 
-modeu5_us10_clear_wheat_stock_in_market = {
+cbp_us10_clear_wheat_stock_in_market = {
 	$market$ = {
-		save_temporary_scope_as = modeu5_us10_clear_market
-		save_temporary_scope_as = modeu5_market_country_cache_market
+		save_temporary_scope_as = cbp_us10_clear_market
+		save_temporary_scope_as = cbp_market_country_cache_market
 	}
-	modeu5_rebuild_countries_present_in_market = yes
+	cbp_rebuild_countries_present_in_market = yes
 	if = {
 		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
 			variable = cbp_countries_present_in_market
-			save_temporary_scope_as = modeu5_us10_clear_country
-			modeu5_remove_stock = {
-				country = scope:modeu5_us10_clear_country
-				market = scope:modeu5_us10_clear_market
+			save_temporary_scope_as = cbp_us10_clear_country
+			cbp_remove_stock = {
+				country = scope:cbp_us10_clear_country
+				market = scope:cbp_us10_clear_market
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
@@ -43,25 +43,25 @@ modeu5_us10_clear_wheat_stock_in_market = {
 	}
 }
 
-modeu5_us10_seed_foreign_wheat_stock_in_market = {
+cbp_us10_seed_foreign_wheat_stock_in_market = {
 	$market$ = {
-		save_temporary_scope_as = modeu5_us10_seed_market
-		save_temporary_scope_as = modeu5_market_country_cache_market
+		save_temporary_scope_as = cbp_us10_seed_market
+		save_temporary_scope_as = cbp_market_country_cache_market
 	}
-	$excluded_country$ = { save_temporary_scope_as = modeu5_us10_seed_excluded_country }
+	$excluded_country$ = { save_temporary_scope_as = cbp_us10_seed_excluded_country }
 	save_temporary_scope_value_as = { name = test_cbp_us10_seed_foreign_stock_quantity value = $quantity$ }
 	save_temporary_scope_value_as = { name = test_cbp_us10_seed_foreign_country_count value = 0 }
-	modeu5_rebuild_countries_present_in_market = yes
+	cbp_rebuild_countries_present_in_market = yes
 	if = {
 		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
 			variable = cbp_countries_present_in_market
-			save_temporary_scope_as = modeu5_us10_seed_country
+			save_temporary_scope_as = cbp_us10_seed_country
 			if = {
-				limit = { scope:modeu5_us10_seed_country != scope:modeu5_us10_seed_excluded_country }
-				modeu5_add_stock = {
-					country = scope:modeu5_us10_seed_country
-					market = scope:modeu5_us10_seed_market
+				limit = { scope:cbp_us10_seed_country != scope:cbp_us10_seed_excluded_country }
+				cbp_add_stock = {
+					country = scope:cbp_us10_seed_country
+					market = scope:cbp_us10_seed_market
 					good = wheat
 					quantity = scope:test_cbp_us10_seed_foreign_stock_quantity
 					capacity_policy = allow_over_capacity
@@ -75,19 +75,19 @@ modeu5_us10_seed_foreign_wheat_stock_in_market = {
 	}
 }
 
-modeu5_us10_read_fra_wheat_consumption_outcome = {
+cbp_us10_read_fra_wheat_consumption_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
 				has_variable_map = test_cbp_consumption_wheat_requested_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_consumption_wheat_requested_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_requested_record
-				value = "variable_map(test_cbp_consumption_wheat_requested_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_consumption_wheat_requested_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -98,12 +98,12 @@ modeu5_us10_read_fra_wheat_consumption_outcome = {
 				has_variable_map = test_cbp_consumption_wheat_satisfied_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_consumption_wheat_satisfied_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_satisfied_record
-				value = "variable_map(test_cbp_consumption_wheat_satisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_consumption_wheat_satisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -114,12 +114,12 @@ modeu5_us10_read_fra_wheat_consumption_outcome = {
 				has_variable_map = test_cbp_consumption_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_consumption_wheat_unsatisfied_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_unsatisfied_record
-				value = "variable_map(test_cbp_consumption_wheat_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_consumption_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -128,19 +128,19 @@ modeu5_us10_read_fra_wheat_consumption_outcome = {
 	}
 }
 
-modeu5_us10_read_fra_wheat_trade_outcome = {
+cbp_us10_read_fra_wheat_trade_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
 				has_variable_map = test_cbp_trade_wheat_requested_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_trade_wheat_requested_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_requested_record
-				value = "variable_map(test_cbp_trade_wheat_requested_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_trade_wheat_requested_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -151,12 +151,12 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 				has_variable_map = test_cbp_trade_wheat_transferred_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_trade_wheat_transferred_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_transferred_record
-				value = "variable_map(test_cbp_trade_wheat_transferred_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_trade_wheat_transferred_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -167,12 +167,12 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 				has_variable_map = test_cbp_trade_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
 					name = test_cbp_trade_wheat_unsatisfied_by_market
-					target = scope:modeu5_us10_target_market
+					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_unsatisfied_record
-				value = "variable_map(test_cbp_trade_wheat_unsatisfied_by_market|scope:modeu5_us10_target_market)"
+				value = "variable_map(test_cbp_trade_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -181,33 +181,33 @@ modeu5_us10_read_fra_wheat_trade_outcome = {
 	}
 }
 
-modeu5_us10_note_assertion_failure = {
+cbp_us10_note_assertion_failure = {
 	save_temporary_scope_value_as = {
 		name = test_cbp_us10_assertion_failure_count
 		value = { value = scope:test_cbp_us10_assertion_failure_count add = 1 }
 	}
 }
 
-modeu5_us10_evaluate_fixture_assertions = {
+cbp_us10_evaluate_fixture_assertions = {
 	save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
 
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied = 80 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_satisfied expected=80" }
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_unsatisfied expected=20" }
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_stock_after = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_fra_stock_after expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_ordering_foreign_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_foreign_candidate_count expected_gt=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_ordering_satisfied = 60 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_satisfied expected=60" }
-	if = { limit = { NOT = { scope:test_cbp_us10_ordering_unsatisfied = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_unsatisfied expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_ordering_own_stock_after = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_own_stock_after expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_requested_record = 160 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_requested_record expected=160" }
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied_record = 140 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_satisfied_record expected=140" }
-	if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied_record = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_unsatisfied_record expected=20" }
-	if = { limit = { NOT = { scope:test_cbp_us10_trade_transferred = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_transferred expected=70" }
-	if = { limit = { NOT = { scope:test_cbp_us10_trade_unsatisfied = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_unsatisfied expected=30" }
-	if = { limit = { NOT = { scope:test_cbp_us10_buyer_stock_after = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_buyer_stock_after expected=70" }
-	if = { limit = { NOT = { scope:test_cbp_us10_seller_stock_after = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_seller_stock_after expected=20" }
-	if = { limit = { NOT = { scope:test_cbp_us10_trade_requested_record = 100 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_requested_record expected=100" }
-	if = { limit = { NOT = { scope:test_cbp_us10_trade_transferred_record = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_transferred_record expected=70" }
-	if = { limit = { NOT = { scope:test_cbp_us10_trade_unsatisfied_record = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_unsatisfied_record expected=30" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied = 80 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_satisfied expected=80" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied = 20 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_unsatisfied expected=20" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_stock_after = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=base_consumption_fra_stock_after expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_ordering_foreign_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_foreign_candidate_count expected_gt=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_ordering_satisfied = 60 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_satisfied expected=60" }
+	if = { limit = { NOT = { scope:test_cbp_us10_ordering_unsatisfied = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_unsatisfied expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_ordering_own_stock_after = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ordering_own_stock_after expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_requested_record = 160 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_requested_record expected=160" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied_record = 140 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_satisfied_record expected=140" }
+	if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied_record = 20 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=consumption_outcome_unsatisfied_record expected=20" }
+	if = { limit = { NOT = { scope:test_cbp_us10_trade_transferred = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_transferred expected=70" }
+	if = { limit = { NOT = { scope:test_cbp_us10_trade_unsatisfied = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_unsatisfied expected=30" }
+	if = { limit = { NOT = { scope:test_cbp_us10_buyer_stock_after = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_buyer_stock_after expected=70" }
+	if = { limit = { NOT = { scope:test_cbp_us10_seller_stock_after = 20 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_seller_stock_after expected=20" }
+	if = { limit = { NOT = { scope:test_cbp_us10_trade_requested_record = 100 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_requested_record expected=100" }
+	if = { limit = { NOT = { scope:test_cbp_us10_trade_transferred_record = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_transferred_record expected=70" }
+	if = { limit = { NOT = { scope:test_cbp_us10_trade_unsatisfied_record = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_outcome_unsatisfied_record expected=30" }
 
 	if = {
 		limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -219,74 +219,74 @@ modeu5_us10_evaluate_fixture_assertions = {
 	}
 }
 
-modeu5_us10_run_demand_resolution_fixture = {
-	$source_country$ = { save_temporary_scope_as = modeu5_us10_source_country }
-	$source_market$ = { save_temporary_scope_as = modeu5_us10_source_market }
-	c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
+cbp_us10_run_demand_resolution_fixture = {
+	$source_country$ = { save_temporary_scope_as = cbp_us10_source_country }
+	$source_market$ = { save_temporary_scope_as = cbp_us10_source_market }
+	c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_target_market }
 	save_temporary_scope_value_as = { name = test_cbp_us10_fixture_passed value = 0 }
 
-	modeu5_debug_replace_country_wheat_capacity = {
+	cbp_debug_replace_country_wheat_capacity = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		value = 100
 	}
-	modeu5_reset_country_market_consumption_outcome = {
+	cbp_reset_country_market_consumption_outcome = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
-	modeu5_reset_country_market_trade_outcome = {
+	cbp_reset_country_market_trade_outcome = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_source_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_source_market
 	}
 
-	modeu5_add_stock = {
+	cbp_add_stock = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		quantity = 80
 		capacity_policy = allow_over_capacity
 	}
-	modeu5_resolve_stock_consumption = {
+	cbp_resolve_stock_consumption = {
 		consumer_country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 100
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_consumption_satisfied value = scope:cbp_satisfied_quantity }
 	save_temporary_scope_value_as = { name = test_cbp_us10_consumption_unsatisfied value = scope:cbp_unsatisfied_quantity }
-	modeu5_read_country_stock_record = {
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_consumption_stock_after value = scope:cbp_read_country_stock }
-	modeu5_us10_read_fra_wheat_consumption_outcome = yes
+	cbp_us10_read_fra_wheat_consumption_outcome = yes
 
-	modeu5_debug_replace_country_wheat_capacity = {
+	cbp_debug_replace_country_wheat_capacity = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		value = 200
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 	}
-	modeu5_add_stock = {
+	cbp_add_stock = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		quantity = 40
 		capacity_policy = allow_over_capacity
 	}
-	modeu5_us10_seed_foreign_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_seed_foreign_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 		excluded_country = c:FRA
 		quantity = 80
 	}
@@ -294,73 +294,73 @@ modeu5_us10_run_demand_resolution_fixture = {
 		name = test_cbp_us10_ordering_foreign_count
 		value = scope:test_cbp_us10_seed_foreign_country_count
 	}
-	modeu5_resolve_stock_consumption = {
+	cbp_resolve_stock_consumption = {
 		consumer_country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 60
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_ordering_satisfied value = scope:cbp_satisfied_quantity }
 	save_temporary_scope_value_as = { name = test_cbp_us10_ordering_unsatisfied value = scope:cbp_unsatisfied_quantity }
-	modeu5_read_country_stock_record = {
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_ordering_own_stock_after value = scope:cbp_read_country_stock }
-	modeu5_us10_read_fra_wheat_consumption_outcome = yes
+	cbp_us10_read_fra_wheat_consumption_outcome = yes
 
-	modeu5_debug_replace_country_wheat_capacity = {
+	cbp_debug_replace_country_wheat_capacity = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		value = 70
 	}
-	modeu5_reset_country_market_trade_outcome = {
+	cbp_reset_country_market_trade_outcome = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_source_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_source_market
 	}
-	modeu5_add_stock = {
-		country = scope:modeu5_us10_source_country
-		market = scope:modeu5_us10_source_market
+	cbp_add_stock = {
+		country = scope:cbp_us10_source_country
+		market = scope:cbp_us10_source_market
 		good = wheat
 		quantity = 90
 		capacity_policy = allow_over_capacity
 	}
-	modeu5_read_country_stock_record = {
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_trade_capacity value = scope:cbp_read_available_capacity }
-	modeu5_resolve_inter_market_stock_transfer = {
+	cbp_resolve_inter_market_stock_transfer = {
 		buyer_country = c:FRA
-		source_market = scope:modeu5_us10_source_market
-		target_market = scope:modeu5_us10_target_market
+		source_market = scope:cbp_us10_source_market
+		target_market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 100
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_trade_transferred value = scope:cbp_transferred_quantity }
 	save_temporary_scope_value_as = { name = test_cbp_us10_trade_unsatisfied value = scope:cbp_unsatisfied_quantity }
-	modeu5_read_country_stock_record = {
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_buyer_stock_after value = scope:cbp_read_country_stock }
-	modeu5_read_country_stock_record = {
-		country = scope:modeu5_us10_source_country
-		market = scope:modeu5_us10_source_market
+	cbp_read_country_stock_record = {
+		country = scope:cbp_us10_source_country
+		market = scope:cbp_us10_source_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_seller_stock_after value = scope:cbp_read_country_stock }
-	modeu5_us10_read_fra_wheat_trade_outcome = yes
+	cbp_us10_read_fra_wheat_trade_outcome = yes
 
 	set_variable = { name = gui_cbp_us10_ui_consumption_requested value = scope:test_cbp_us10_consumption_requested_record }
 	set_variable = { name = gui_cbp_us10_ui_consumption_satisfied value = scope:test_cbp_us10_consumption_satisfied_record }
@@ -375,15 +375,15 @@ modeu5_us10_run_demand_resolution_fixture = {
 	set_variable = { name = gui_cbp_us10_ui_seller_stock_after value = scope:test_cbp_us10_seller_stock_after }
 	set_variable = { name = gui_cbp_us10_ui_buyer_capacity value = scope:test_cbp_us10_trade_capacity }
 
-	debug_log = "ModeU5 US-10 DUMP consumption requested=[THIS.GetVariable('modeu5_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us10_ui_consumption_stock_after').GetValue|2] ordering_foreign_count=[THIS.GetVariable('modeu5_us10_ui_ordering_foreign_count').GetValue|0] ordering_own_stock_after=[THIS.GetVariable('modeu5_us10_ui_ordering_own_stock_after').GetValue|2]"
-	debug_log = "ModeU5 US-10 DUMP transfer requested=[THIS.GetVariable('modeu5_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('modeu5_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('modeu5_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('modeu5_us10_ui_buyer_capacity').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP consumption requested=[THIS.GetVariable('cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_consumption_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('cbp_us10_ui_consumption_stock_after').GetValue|2] ordering_foreign_count=[THIS.GetVariable('cbp_us10_ui_ordering_foreign_count').GetValue|0] ordering_own_stock_after=[THIS.GetVariable('cbp_us10_ui_ordering_own_stock_after').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP transfer requested=[THIS.GetVariable('cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('cbp_us10_ui_buyer_capacity').GetValue|2]"
 
-	modeu5_us10_evaluate_fixture_assertions = yes
+	cbp_us10_evaluate_fixture_assertions = yes
 }
 
-modeu5_debug_run_us10_demand_resolution_tests = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_run_us10_demand_resolution_tests = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_demand_resolution"
 	save_temporary_scope_value_as = { name = test_cbp_us10_try_fallback_fixture value = 0 }
 
@@ -402,10 +402,10 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 		}
 		else = {
 			debug_log = "ModeU5 TEST NOTICE scenario=us10_demand_resolution primary_pair=FRA_ENG at_war=no"
-			c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_primary_source_market }
-			modeu5_us10_run_demand_resolution_fixture = {
+			c:ENG.capital.market = { save_temporary_scope_as = cbp_us10_primary_source_market }
+			cbp_us10_run_demand_resolution_fixture = {
 				source_country = c:ENG
-				source_market = scope:modeu5_us10_primary_source_market
+				source_market = scope:cbp_us10_primary_source_market
 			}
 			if = {
 				limit = { scope:test_cbp_us10_fixture_passed > 0 }
@@ -445,10 +445,10 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 			}
 			else = {
 				debug_log = "ModeU5 TEST NOTICE scenario=us10_demand_resolution fallback_pair=FRA_POR at_war=no"
-				c:POR.capital.market = { save_temporary_scope_as = modeu5_us10_fallback_source_market }
-				modeu5_us10_run_demand_resolution_fixture = {
+				c:POR.capital.market = { save_temporary_scope_as = cbp_us10_fallback_source_market }
+				cbp_us10_run_demand_resolution_fixture = {
 					source_country = c:POR
-					source_market = scope:modeu5_us10_fallback_source_market
+					source_market = scope:cbp_us10_fallback_source_market
 				}
 				if = {
 					limit = { scope:test_cbp_us10_fixture_passed > 0 }
@@ -469,60 +469,60 @@ modeu5_debug_run_us10_demand_resolution_tests = {
 	}
 }
 
-modeu5_debug_run_us10_monthly_runtime_tests = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_run_us10_monthly_runtime_tests = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_monthly_runtime_integration"
 
 	if = {
 		limit = {
 			country_exists = c:FRA
-			c:FRA = { modeu5_stock_runtime_ready_trigger = yes }
+			c:FRA = { cbp_stock_runtime_ready_trigger = yes }
 		}
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
-		modeu5_debug_replace_country_wheat_capacity = {
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_target_market }
+		cbp_debug_replace_country_wheat_capacity = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			value = 100
 		}
-		modeu5_reset_country_market_consumption_outcome = {
+		cbp_reset_country_market_consumption_outcome = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			good = wheat
 		}
-		modeu5_reset_monthly_stock_consumption_request = {
+		cbp_reset_monthly_stock_consumption_request = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			good = wheat
 		}
-		modeu5_us10_clear_wheat_stock_in_market = {
-			market = scope:modeu5_us10_target_market
+		cbp_us10_clear_wheat_stock_in_market = {
+			market = scope:cbp_us10_target_market
 		}
-		modeu5_add_stock = {
+		cbp_add_stock = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			good = wheat
 			quantity = 50
 			capacity_policy = allow_over_capacity
 		}
-		modeu5_queue_monthly_stock_consumption = {
+		cbp_queue_monthly_stock_consumption = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			good = wheat
 			requested_quantity = 30
 		}
-		modeu5_reset_us10_monthly_runtime_counters = yes
+		cbp_reset_us10_monthly_runtime_counters = yes
 		c:FRA = {
-			modeu5_run_monthly_stock_demand_resolution = yes
+			cbp_run_monthly_stock_demand_resolution = yes
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:FRA
-			market = scope:modeu5_us10_target_market
+			market = scope:cbp_us10_target_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = { name = test_cbp_us10_monthly_stock_after value = scope:cbp_read_country_stock }
-		modeu5_us10_read_fra_wheat_consumption_outcome = yes
+		cbp_us10_read_fra_wheat_consumption_outcome = yes
 
 		set_variable = { name = gui_cbp_us10_ui_monthly_requested value = scope:test_cbp_us10_consumption_requested_record }
 		set_variable = { name = gui_cbp_us10_ui_monthly_satisfied value = scope:test_cbp_us10_consumption_satisfied_record }
@@ -531,14 +531,14 @@ modeu5_debug_run_us10_monthly_runtime_tests = {
 		set_variable = { name = gui_cbp_us10_ui_monthly_processed value = global_var:cbp_us10_monthly_consumption_requests_processed }
 		set_variable = { name = gui_cbp_us10_ui_monthly_trade_blocked value = global_var:cbp_us10_monthly_trade_signals_blocked }
 
-		debug_log = "ModeU5 US-10 DUMP monthly_runtime requested=[THIS.GetVariable('modeu5_us10_ui_monthly_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_monthly_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_monthly_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('modeu5_us10_ui_monthly_stock_after').GetValue|2] processed=[THIS.GetVariable('modeu5_us10_ui_monthly_processed').GetValue|0] trade_signals_blocked=[THIS.GetVariable('modeu5_us10_ui_monthly_trade_blocked').GetValue|0]"
+		debug_log = "ModeU5 US-10 DUMP monthly_runtime requested=[THIS.GetVariable('cbp_us10_ui_monthly_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_monthly_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_monthly_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('cbp_us10_ui_monthly_stock_after').GetValue|2] processed=[THIS.GetVariable('cbp_us10_ui_monthly_processed').GetValue|0] trade_signals_blocked=[THIS.GetVariable('cbp_us10_ui_monthly_trade_blocked').GetValue|0]"
 
 		save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
-		if = { limit = { NOT = { scope:test_cbp_us10_consumption_requested_record = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_requested expected=30" }
-		if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied_record = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_satisfied expected=30" }
-		if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied_record = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_unsatisfied expected=0" }
-		if = { limit = { NOT = { scope:test_cbp_us10_monthly_stock_after = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_stock_after expected=20" }
-		if = { limit = { NOT = { global_var:cbp_us10_monthly_consumption_requests_processed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_processed_count expected_gt=0" }
+		if = { limit = { NOT = { scope:test_cbp_us10_consumption_requested_record = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_requested expected=30" }
+		if = { limit = { NOT = { scope:test_cbp_us10_consumption_satisfied_record = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_satisfied expected=30" }
+		if = { limit = { NOT = { scope:test_cbp_us10_consumption_unsatisfied_record = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_unsatisfied expected=0" }
+		if = { limit = { NOT = { scope:test_cbp_us10_monthly_stock_after = 20 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_stock_after expected=20" }
+		if = { limit = { NOT = { global_var:cbp_us10_monthly_consumption_requests_processed > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_processed_count expected_gt=0" }
 
 		if = {
 			limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -557,12 +557,12 @@ modeu5_debug_run_us10_monthly_runtime_tests = {
 	}
 }
 
-modeu5_debug_run_us10_trade_capacity_conversion_tests = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_run_us10_trade_capacity_conversion_tests = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_trade_capacity_conversion"
 
-	modeu5_compute_goods_quantity_from_trade_capacity_good_wheat = {
+	cbp_compute_goods_quantity_from_trade_capacity_good_wheat = {
 		capacity_volume = 20
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_conversion_wheat_capacity value = scope:cbp_trade_capacity_volume_raw }
@@ -574,9 +574,9 @@ modeu5_debug_run_us10_trade_capacity_conversion_tests = {
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_transport_cost value = scope:test_cbp_us10_conversion_wheat_transport_cost }
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_quantity value = scope:test_cbp_us10_conversion_wheat_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_defaulted value = scope:test_cbp_us10_conversion_wheat_defaulted }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_capacity').GetValue|2] transport_cost=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('modeu5_us10_ui_conversion_wheat_defaulted').GetValue|0]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_capacity').GetValue|2] transport_cost=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_defaulted').GetValue|0]"
 
-	modeu5_compute_goods_quantity_from_trade_capacity_good_copper = {
+	cbp_compute_goods_quantity_from_trade_capacity_good_copper = {
 		capacity_volume = 20
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_conversion_copper_capacity value = scope:cbp_trade_capacity_volume_raw }
@@ -588,29 +588,29 @@ modeu5_debug_run_us10_trade_capacity_conversion_tests = {
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_transport_cost value = scope:test_cbp_us10_conversion_copper_transport_cost }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_quantity value = scope:test_cbp_us10_conversion_copper_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_defaulted value = scope:test_cbp_us10_conversion_copper_defaulted }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_capacity').GetValue|2] transport_cost=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_defaulted').GetValue|0]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=[THIS.GetVariable('cbp_us10_ui_conversion_copper_capacity').GetValue|2] transport_cost=[THIS.GetVariable('cbp_us10_ui_conversion_copper_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_copper_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('cbp_us10_ui_conversion_copper_defaulted').GetValue|0]"
 
-	modeu5_compute_goods_quantity_from_trade_capacity_with_route_good_copper = {
+	cbp_compute_goods_quantity_from_trade_capacity_with_route_good_copper = {
 		capacity_volume = 20
 		route_cost_multiplier = 2
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_conversion_copper_route_quantity value = scope:cbp_computed_goods_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_route_quantity value = scope:test_cbp_us10_conversion_copper_route_quantity }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 route_cost_multiplier=2 computed_goods_quantity=[THIS.GetVariable('modeu5_us10_ui_conversion_copper_route_quantity').GetValue|4]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 route_cost_multiplier=2 computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_copper_route_quantity').GetValue|4]"
 
-	modeu5_compute_goods_quantity_from_trade_capacity_good_copper = {
+	cbp_compute_goods_quantity_from_trade_capacity_good_copper = {
 		capacity_volume = 0
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_conversion_copper_zero_quantity value = scope:cbp_computed_goods_quantity }
 
 	save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_wheat_transport_cost > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_transport_cost_positive" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_wheat_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_quantity_positive" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_transport_cost > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_transport_cost_positive" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_quantity_positive" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_route_quantity > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_route_quantity_positive" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_route_quantity < scope:test_cbp_us10_conversion_copper_quantity } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_route_multiplier_reduces_quantity" }
-	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_zero_quantity = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_zero_capacity_returns_zero" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_wheat_transport_cost > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_transport_cost_positive" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_wheat_quantity > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_wheat_quantity_positive" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_transport_cost > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_transport_cost_positive" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_quantity > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_quantity_positive" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_route_quantity > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_copper_route_quantity_positive" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_route_quantity < scope:test_cbp_us10_conversion_copper_quantity } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_route_multiplier_reduces_quantity" }
+	if = { limit = { NOT = { scope:test_cbp_us10_conversion_copper_zero_quantity = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=trade_capacity_zero_capacity_returns_zero" }
 
 	if = {
 		limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -624,30 +624,30 @@ modeu5_debug_run_us10_trade_capacity_conversion_tests = {
 	}
 }
 
-modeu5_us10_run_issue109_fixture = {
-	$source_country$ = { save_temporary_scope_as = modeu5_us10_source_country }
-	$source_market$ = { save_temporary_scope_as = modeu5_us10_source_market }
-	c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
+cbp_us10_run_issue109_fixture = {
+	$source_country$ = { save_temporary_scope_as = cbp_us10_source_country }
+	$source_market$ = { save_temporary_scope_as = cbp_us10_source_market }
+	c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_target_market }
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_fixture_passed value = 0 }
 
-	modeu5_debug_replace_country_wheat_capacity = {
+	cbp_debug_replace_country_wheat_capacity = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		value = 100
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 	}
-	modeu5_add_stock = {
+	cbp_add_stock = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		quantity = 40
 		capacity_policy = allow_over_capacity
 	}
-	modeu5_resolve_stock_consumption = {
+	cbp_resolve_stock_consumption = {
 		consumer_country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 30
 	}
@@ -656,40 +656,40 @@ modeu5_us10_run_issue109_fixture = {
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_fast_candidate_count value = scope:cbp_us10_candidate_count }
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_fast_path_used value = scope:cbp_us10_own_stock_fast_path_used }
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_fast_path_taken value = scope:cbp_us10_own_stock_taken }
-	modeu5_read_country_stock_record = {
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_fast_stock_after value = scope:cbp_read_country_stock }
 
-	modeu5_debug_replace_country_wheat_capacity = {
+	cbp_debug_replace_country_wheat_capacity = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		value = 100
 	}
-	modeu5_debug_replace_country_wheat_capacity = {
-		country = scope:modeu5_us10_source_country
-		market = scope:modeu5_us10_source_market
+	cbp_debug_replace_country_wheat_capacity = {
+		country = scope:cbp_us10_source_country
+		market = scope:cbp_us10_source_market
 		value = 100
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_target_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_target_market
 	}
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_source_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_source_market
 	}
-	modeu5_add_stock = {
-		country = scope:modeu5_us10_source_country
-		market = scope:modeu5_us10_source_market
+	cbp_add_stock = {
+		country = scope:cbp_us10_source_country
+		market = scope:cbp_us10_source_market
 		good = wheat
 		quantity = 5
 		capacity_policy = allow_over_capacity
 	}
-	modeu5_resolve_inter_market_stock_transfer = {
+	cbp_resolve_inter_market_stock_transfer = {
 		buyer_country = c:FRA
-		source_market = scope:modeu5_us10_source_market
-		target_market = scope:modeu5_us10_target_market
+		source_market = scope:cbp_us10_source_market
+		target_market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 10
 	}
@@ -697,20 +697,20 @@ modeu5_us10_run_issue109_fixture = {
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_floor_unsatisfied value = scope:cbp_unsatisfied_quantity }
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_floor_candidate_count value = scope:cbp_us10_candidate_count }
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_floor_excluded_count value = scope:cbp_us10_excluded_candidate_count }
-	modeu5_read_country_stock_record = {
-		country = scope:modeu5_us10_source_country
-		market = scope:modeu5_us10_source_market
+	cbp_read_country_stock_record = {
+		country = scope:cbp_us10_source_country
+		market = scope:cbp_us10_source_market
 		good = wheat
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_floor_seller_stock_after value = scope:cbp_read_country_stock }
 
-	modeu5_us10_clear_wheat_stock_in_market = {
-		market = scope:modeu5_us10_source_market
+	cbp_us10_clear_wheat_stock_in_market = {
+		market = scope:cbp_us10_source_market
 	}
-	modeu5_resolve_inter_market_stock_transfer = {
+	cbp_resolve_inter_market_stock_transfer = {
 		buyer_country = c:FRA
-		source_market = scope:modeu5_us10_source_market
-		target_market = scope:modeu5_us10_target_market
+		source_market = scope:cbp_us10_source_market
+		target_market = scope:cbp_us10_target_market
 		good = wheat
 		requested_quantity = 10
 	}
@@ -737,27 +737,27 @@ modeu5_us10_run_issue109_fixture = {
 	set_variable = { name = gui_cbp_us10_ui_issue109_prefilter_transferred value = scope:test_cbp_us10_issue109_prefilter_transferred }
 	set_variable = { name = gui_cbp_us10_ui_issue109_prefilter_unsatisfied value = scope:test_cbp_us10_issue109_prefilter_unsatisfied }
 
-	debug_log = "ModeU5 US-10 DUMP issue109 fast_path_used=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_used').GetValue|0] fast_taken=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_taken').GetValue|2] fast_satisfied=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_satisfied').GetValue|2] fast_unsatisfied=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_unsatisfied').GetValue|2] fast_stock_after=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_stock_after').GetValue|2] fast_candidate_count=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_candidate_count').GetValue|0]"
-	debug_log = "ModeU5 US-10 DUMP issue109 floor_transferred=[THIS.GetVariable('modeu5_us10_ui_issue109_floor_transferred').GetValue|2] floor_unsatisfied=[THIS.GetVariable('modeu5_us10_ui_issue109_floor_unsatisfied').GetValue|2] floor_candidates=[THIS.GetVariable('modeu5_us10_ui_issue109_floor_candidate_count').GetValue|0] floor_excluded=[THIS.GetVariable('modeu5_us10_ui_issue109_floor_excluded_count').GetValue|0] floor_seller_stock_after=[THIS.GetVariable('modeu5_us10_ui_issue109_floor_seller_stock_after').GetValue|2]"
-	debug_log = "ModeU5 US-10 DUMP issue109 prefilter_used=[THIS.GetVariable('modeu5_us10_ui_issue109_prefilter_used').GetValue|0] prefilter_blocked=[THIS.GetVariable('modeu5_us10_ui_issue109_prefilter_blocked').GetValue|0] prefilter_candidates=[THIS.GetVariable('modeu5_us10_ui_issue109_prefilter_candidate_count').GetValue|0] prefilter_transferred=[THIS.GetVariable('modeu5_us10_ui_issue109_prefilter_transferred').GetValue|2] prefilter_unsatisfied=[THIS.GetVariable('modeu5_us10_ui_issue109_prefilter_unsatisfied').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP issue109 fast_path_used=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_used').GetValue|0] fast_taken=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_taken').GetValue|2] fast_satisfied=[THIS.GetVariable('cbp_us10_ui_issue109_fast_satisfied').GetValue|2] fast_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_fast_unsatisfied').GetValue|2] fast_stock_after=[THIS.GetVariable('cbp_us10_ui_issue109_fast_stock_after').GetValue|2] fast_candidate_count=[THIS.GetVariable('cbp_us10_ui_issue109_fast_candidate_count').GetValue|0]"
+	debug_log = "ModeU5 US-10 DUMP issue109 floor_transferred=[THIS.GetVariable('cbp_us10_ui_issue109_floor_transferred').GetValue|2] floor_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_floor_unsatisfied').GetValue|2] floor_candidates=[THIS.GetVariable('cbp_us10_ui_issue109_floor_candidate_count').GetValue|0] floor_excluded=[THIS.GetVariable('cbp_us10_ui_issue109_floor_excluded_count').GetValue|0] floor_seller_stock_after=[THIS.GetVariable('cbp_us10_ui_issue109_floor_seller_stock_after').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP issue109 prefilter_used=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_used').GetValue|0] prefilter_blocked=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_blocked').GetValue|0] prefilter_candidates=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_candidate_count').GetValue|0] prefilter_transferred=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_transferred').GetValue|2] prefilter_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_unsatisfied').GetValue|2]"
 
 	save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_path_used expected=1" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_taken = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_path_taken expected=30" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_satisfied = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_satisfied expected=30" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_unsatisfied = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_unsatisfied expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_stock_after = 10 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_stock_after expected=10" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_candidate_count = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_candidate_count expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_transferred = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_transferred expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_unsatisfied = 10 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_unsatisfied expected=10" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_candidate_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_candidate_count expected_gt=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_excluded_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_excluded_count expected_gt=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_seller_stock_after = 5 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_seller_stock_after expected=5" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_used expected=1" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_blocked = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_blocked expected=1" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_candidate_count = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_candidate_count expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_transferred = 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_transferred expected=0" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_unsatisfied = 10 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_unsatisfied expected=10" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_path_used expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_taken = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_path_taken expected=30" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_satisfied = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_satisfied expected=30" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_unsatisfied = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_unsatisfied expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_stock_after = 10 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_stock_after expected=10" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_candidate_count = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_candidate_count expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_transferred = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_transferred expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_unsatisfied = 10 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_unsatisfied expected=10" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_candidate_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_candidate_count expected_gt=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_excluded_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_excluded_count expected_gt=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_seller_stock_after = 5 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_floor_seller_stock_after expected=5" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_used expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_blocked = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_blocked expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_candidate_count = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_candidate_count expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_transferred = 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_transferred expected=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_unsatisfied = 10 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_prefilter_unsatisfied expected=10" }
 
 	if = {
 		limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -769,9 +769,9 @@ modeu5_us10_run_issue109_fixture = {
 	}
 }
 
-modeu5_debug_run_us10_issue109_tests = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_run_us10_issue109_tests = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_issue109_fast_path_pruning"
 	save_temporary_scope_value_as = { name = test_cbp_us10_issue109_try_fallback_fixture value = 0 }
 
@@ -781,10 +781,10 @@ modeu5_debug_run_us10_issue109_tests = {
 			country_exists = c:ENG
 			NOT = { c:FRA.capital.market = c:ENG.capital.market }
 		}
-		c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_issue109_primary_source_market }
-		modeu5_us10_run_issue109_fixture = {
+		c:ENG.capital.market = { save_temporary_scope_as = cbp_us10_issue109_primary_source_market }
+		cbp_us10_run_issue109_fixture = {
 			source_country = c:ENG
-			source_market = scope:modeu5_us10_issue109_primary_source_market
+			source_market = scope:cbp_us10_issue109_primary_source_market
 		}
 	}
 	else_if = {
@@ -793,10 +793,10 @@ modeu5_debug_run_us10_issue109_tests = {
 			country_exists = c:POR
 			NOT = { c:FRA.capital.market = c:POR.capital.market }
 		}
-		c:POR.capital.market = { save_temporary_scope_as = modeu5_us10_issue109_fallback_source_market }
-		modeu5_us10_run_issue109_fixture = {
+		c:POR.capital.market = { save_temporary_scope_as = cbp_us10_issue109_fallback_source_market }
+		cbp_us10_run_issue109_fixture = {
 			source_country = c:POR
-			source_market = scope:modeu5_us10_issue109_fallback_source_market
+			source_market = scope:cbp_us10_issue109_fallback_source_market
 		}
 	}
 	else = {
@@ -820,11 +820,11 @@ modeu5_debug_run_us10_issue109_tests = {
 	}
 }
 
-modeu5_us10_capture_ui_visibility_summary = {
-	c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_target_market }
-	modeu5_read_country_stock_record = {
+cbp_us10_capture_ui_visibility_summary = {
+	c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_target_market }
+	cbp_read_country_stock_record = {
 		country = c:FRA
-		market = scope:modeu5_us10_target_market
+		market = scope:cbp_us10_target_market
 		good = wheat
 	}
 
@@ -842,7 +842,7 @@ modeu5_us10_capture_ui_visibility_summary = {
 	set_variable = { name = gui_cbp_us10_ui_visibility_same_market_trade_capacity_used value = 0 }
 }
 
-modeu5_us10_capture_ui_candidate_snapshot = {
+cbp_us10_capture_ui_candidate_snapshot = {
 	c:FRA = {
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_candidate_count value = var:cbp_debug_last_us10_candidate_count }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_excluded_candidate_count value = var:cbp_debug_last_us10_excluded_candidate_count }
@@ -906,39 +906,39 @@ modeu5_us10_capture_ui_candidate_snapshot = {
 	set_variable = { name = gui_cbp_us10_ui_visibility_mutation_remaining value = scope:gui_cbp_us10_ui_tmp_mutation_remaining }
 }
 
-modeu5_us10_log_ui_visibility_dump = {
-	debug_log = "ModeU5 US-10-UI SUMMARY good=wheat country_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_country_stock').GetValue|2] country_capacity=[THIS.GetVariable('modeu5_us10_ui_visibility_country_capacity').GetValue|2] country_available_capacity=[THIS.GetVariable('modeu5_us10_ui_visibility_country_available_capacity').GetValue|2] country_over_cap=[THIS.GetVariable('modeu5_us10_ui_visibility_country_over_cap').GetValue|2] market_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_market_stock').GetValue|2] market_capacity_available=[THIS.GetVariable('modeu5_us10_ui_visibility_market_capacity_available').GetValue|0] overproduction_available=[THIS.GetVariable('modeu5_us10_ui_visibility_overproduction_available').GetValue|0] production_efficiency_available=[THIS.GetVariable('modeu5_us10_ui_visibility_production_efficiency_available').GetValue|0]"
-	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=[THIS.GetVariable('modeu5_us10_ui_visibility_consumption_non_trade').GetValue|0] requested=[THIS.GetVariable('modeu5_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_consumption_unsatisfied').GetValue|2] trade_income_generated=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_trade_income_generated').GetValue|0] transport_cost_generated=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_transport_cost_generated').GetValue|0] trade_capacity_used=[THIS.GetVariable('modeu5_us10_ui_visibility_same_market_trade_capacity_used').GetValue|0]"
-	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=[THIS.GetVariable('modeu5_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('modeu5_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('modeu5_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('modeu5_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('modeu5_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('modeu5_us10_ui_buyer_capacity').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=[THIS.GetVariable('modeu5_us10_ui_visibility_candidate_count').GetValue|0] excluded=[THIS.GetVariable('modeu5_us10_ui_visibility_excluded_candidate_count').GetValue|0] total_available=[THIS.GetVariable('modeu5_us10_ui_visibility_available_candidate_stock').GetValue|2] best_bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_best_candidate_bucket').GetValue|0] best_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_best_candidate_stock').GetValue|2] bucket_counts=[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_1').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_2').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_3').GetValue|0]/[THIS.GetVariable('modeu5_us10_ui_visibility_bucket_4').GetValue|0] trace_index=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_index').GetValue|0] trace_stock=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_stock').GetValue|2] trace_allowed=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_allowed').GetValue|0] trace_exclusion_reason=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_exclusion_reason').GetValue|0] trace_bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_bucket').GetValue|0] trace_score=[THIS.GetVariable('modeu5_us10_ui_visibility_trace_score').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI MUTATION_TRACE bounded=1 mutation_index=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_index').GetValue|0] bucket=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_bucket').GetValue|0] score=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_score').GetValue|2] stock_before=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_stock_before').GetValue|2] requested=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_requested').GetValue|2] selected=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_selected').GetValue|2] actual=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_actual').GetValue|2] remaining=[THIS.GetVariable('modeu5_us10_ui_visibility_mutation_remaining').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI FAST_PATH own_stock_used=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_used').GetValue|0] own_stock_taken=[THIS.GetVariable('modeu5_us10_ui_issue109_fast_path_taken').GetValue|2] aggregate_prefilter_used=[THIS.GetVariable('modeu5_us10_ui_visibility_prefilter_used').GetValue|0] sparse_source_count=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_source_count').GetValue|0] sparse_count=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_count').GetValue|0] sparse_scan_used=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_scan_used').GetValue|0] sparse_fallback_used=[THIS.GetVariable('modeu5_us10_ui_visibility_sparse_fallback_used').GetValue|0] negative_balance_exclusions=[THIS.GetVariable('modeu5_us10_ui_visibility_negative_balance_exclusions').GetValue|0]"
+cbp_us10_log_ui_visibility_dump = {
+	debug_log = "ModeU5 US-10-UI SUMMARY good=wheat country_stock=[THIS.GetVariable('cbp_us10_ui_visibility_country_stock').GetValue|2] country_capacity=[THIS.GetVariable('cbp_us10_ui_visibility_country_capacity').GetValue|2] country_available_capacity=[THIS.GetVariable('cbp_us10_ui_visibility_country_available_capacity').GetValue|2] country_over_cap=[THIS.GetVariable('cbp_us10_ui_visibility_country_over_cap').GetValue|2] market_stock=[THIS.GetVariable('cbp_us10_ui_visibility_market_stock').GetValue|2] market_capacity_available=[THIS.GetVariable('cbp_us10_ui_visibility_market_capacity_available').GetValue|0] overproduction_available=[THIS.GetVariable('cbp_us10_ui_visibility_overproduction_available').GetValue|0] production_efficiency_available=[THIS.GetVariable('cbp_us10_ui_visibility_production_efficiency_available').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=[THIS.GetVariable('cbp_us10_ui_visibility_consumption_non_trade').GetValue|0] requested=[THIS.GetVariable('cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_consumption_unsatisfied').GetValue|2] trade_income_generated=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_trade_income_generated').GetValue|0] transport_cost_generated=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_transport_cost_generated').GetValue|0] trade_capacity_used=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_trade_capacity_used').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=[THIS.GetVariable('cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('cbp_us10_ui_buyer_capacity').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=[THIS.GetVariable('cbp_us10_ui_visibility_candidate_count').GetValue|0] excluded=[THIS.GetVariable('cbp_us10_ui_visibility_excluded_candidate_count').GetValue|0] total_available=[THIS.GetVariable('cbp_us10_ui_visibility_available_candidate_stock').GetValue|2] best_bucket=[THIS.GetVariable('cbp_us10_ui_visibility_best_candidate_bucket').GetValue|0] best_stock=[THIS.GetVariable('cbp_us10_ui_visibility_best_candidate_stock').GetValue|2] bucket_counts=[THIS.GetVariable('cbp_us10_ui_visibility_bucket_1').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_2').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_3').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_4').GetValue|0] trace_index=[THIS.GetVariable('cbp_us10_ui_visibility_trace_index').GetValue|0] trace_stock=[THIS.GetVariable('cbp_us10_ui_visibility_trace_stock').GetValue|2] trace_allowed=[THIS.GetVariable('cbp_us10_ui_visibility_trace_allowed').GetValue|0] trace_exclusion_reason=[THIS.GetVariable('cbp_us10_ui_visibility_trace_exclusion_reason').GetValue|0] trace_bucket=[THIS.GetVariable('cbp_us10_ui_visibility_trace_bucket').GetValue|0] trace_score=[THIS.GetVariable('cbp_us10_ui_visibility_trace_score').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI MUTATION_TRACE bounded=1 mutation_index=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_index').GetValue|0] bucket=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_bucket').GetValue|0] score=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_score').GetValue|2] stock_before=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_stock_before').GetValue|2] requested=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_requested').GetValue|2] selected=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_selected').GetValue|2] actual=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_actual').GetValue|2] remaining=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_remaining').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI FAST_PATH own_stock_used=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_used').GetValue|0] own_stock_taken=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_taken').GetValue|2] aggregate_prefilter_used=[THIS.GetVariable('cbp_us10_ui_visibility_prefilter_used').GetValue|0] sparse_source_count=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_source_count').GetValue|0] sparse_count=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_count').GetValue|0] sparse_scan_used=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_scan_used').GetValue|0] sparse_fallback_used=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_fallback_used').GetValue|0] negative_balance_exclusions=[THIS.GetVariable('cbp_us10_ui_visibility_negative_balance_exclusions').GetValue|0]"
 	debug_log = "ModeU5 US-10-UI REASON_MAP 0=allowed 1=no_stock 2=below_minimum_stock 3=below_capacity_floor 4=negative_monthly_balance_reserve 5=at_war 6=embargo 8=foreign_disallowed 9=subject_or_overlord_disallowed 10=market_owner_disallowed 11=aggregate_prefilter_empty"
 }
 
-modeu5_us10_evaluate_ui_visibility_assertions = {
+cbp_us10_evaluate_ui_visibility_assertions = {
 	save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
 
-	if = { limit = { NOT = { scope:test_cbp_us10_fixture_passed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_demand_fixture_passed expected=1" }
-	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fixture_passed > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_issue109_fixture_passed expected=1" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_consumption_non_trade = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_non_trade expected=1" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_requested = 160 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_requested expected=160" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_satisfied = 140 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_satisfied expected=140" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_unsatisfied = 20 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_unsatisfied expected=20" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_requested = 100 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_requested expected=100" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_transferred = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_transferred expected=70" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_unsatisfied = 30 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_unsatisfied expected=30" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_country_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_country_stock expected=70" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_market_stock = 70 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_market_stock expected=70" }
-	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_selected_market_available = 1 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_selected_market_available expected=1" }
-	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_country_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_country_stock expected=70" }
-	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_stock = 70 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_stock expected=70" }
-	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_capacity > 0 } } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_capacity expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_trace_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_candidate_trace_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_mutation_index > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_mutation_trace_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_floor_excluded_count > 0 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_fast_path_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_fast_path_visible expected=1" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_prefilter_used = 1 } } modeu5_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_prefilter_visible expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_fixture_passed > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_demand_fixture_passed expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fixture_passed > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_issue109_fixture_passed expected=1" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_consumption_non_trade = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_non_trade expected=1" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_requested = 160 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_requested expected=160" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_satisfied = 140 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_satisfied expected=140" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_consumption_unsatisfied = 20 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_consumption_unsatisfied expected=20" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_requested = 100 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_requested expected=100" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_transferred = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_transferred expected=70" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_trade_unsatisfied = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_transfer_unsatisfied expected=30" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_country_stock = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_country_stock expected=70" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_market_stock = 70 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_selected_market_available = 1 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_selected_market_available expected=1" }
+	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_country_stock = 70 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_country_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_stock = 70 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_stock expected=70" }
+	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_capacity > 0 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_capacity expected_gt=0" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_trace_index > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_candidate_trace_visible expected_gt=0" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_mutation_index > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_mutation_trace_visible expected_gt=0" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_floor_excluded_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_fast_path_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_fast_path_visible expected=1" }
+	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_prefilter_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_prefilter_visible expected=1" }
 
 	if = {
 		limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -950,34 +950,34 @@ modeu5_us10_evaluate_ui_visibility_assertions = {
 	}
 }
 
-modeu5_us10_run_ui_visibility_fixture_for_pair = {
-	$source_country$ = { save_temporary_scope_as = modeu5_us10_source_country }
-	$source_market$ = { save_temporary_scope_as = modeu5_us10_source_market }
+cbp_us10_run_ui_visibility_fixture_for_pair = {
+	$source_country$ = { save_temporary_scope_as = cbp_us10_source_country }
+	$source_market$ = { save_temporary_scope_as = cbp_us10_source_market }
 
-	modeu5_us10_run_demand_resolution_fixture = {
-		source_country = scope:modeu5_us10_source_country
-		source_market = scope:modeu5_us10_source_market
+	cbp_us10_run_demand_resolution_fixture = {
+		source_country = scope:cbp_us10_source_country
+		source_market = scope:cbp_us10_source_market
 	}
-	modeu5_us10_capture_ui_visibility_summary = yes
+	cbp_us10_capture_ui_visibility_summary = yes
 	c:FRA = {
-		c:FRA.capital.market = { save_temporary_scope_as = modeu5_us10_ui_fixture_market }
-		modeu5_us10_ui_set_selected_market = {
-			market = scope:modeu5_us10_ui_fixture_market
+		c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_ui_fixture_market }
+		cbp_us10_ui_set_selected_market = {
+			market = scope:cbp_us10_ui_fixture_market
 		}
-		modeu5_us10_ui_prepare_current_market_table = yes
+		cbp_us10_ui_prepare_current_market_table = yes
 	}
-	modeu5_us10_run_issue109_fixture = {
-		source_country = scope:modeu5_us10_source_country
-		source_market = scope:modeu5_us10_source_market
+	cbp_us10_run_issue109_fixture = {
+		source_country = scope:cbp_us10_source_country
+		source_market = scope:cbp_us10_source_market
 	}
-	modeu5_us10_capture_ui_candidate_snapshot = yes
-	modeu5_us10_log_ui_visibility_dump = yes
-	modeu5_us10_evaluate_ui_visibility_assertions = yes
+	cbp_us10_capture_ui_candidate_snapshot = yes
+	cbp_us10_log_ui_visibility_dump = yes
+	cbp_us10_evaluate_ui_visibility_assertions = yes
 }
 
-modeu5_debug_run_us10_ui_visibility_tests = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_run_us10_ui_visibility_tests = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=us10_ui_visibility"
 	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_visibility_fixture_passed value = 0 }
 	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_visibility_blocked value = 0 }
@@ -989,10 +989,10 @@ modeu5_debug_run_us10_ui_visibility_tests = {
 			NOT = { c:FRA.capital.market = c:ENG.capital.market }
 			c:ENG = { NOT = { is_at_war_with = c:FRA } }
 		}
-		c:ENG.capital.market = { save_temporary_scope_as = modeu5_us10_ui_source_market }
-		modeu5_us10_run_ui_visibility_fixture_for_pair = {
+		c:ENG.capital.market = { save_temporary_scope_as = cbp_us10_ui_source_market }
+		cbp_us10_run_ui_visibility_fixture_for_pair = {
 			source_country = c:ENG
-			source_market = scope:modeu5_us10_ui_source_market
+			source_market = scope:cbp_us10_ui_source_market
 		}
 	}
 	else_if = {
@@ -1002,10 +1002,10 @@ modeu5_debug_run_us10_ui_visibility_tests = {
 			NOT = { c:FRA.capital.market = c:POR.capital.market }
 			c:POR = { NOT = { is_at_war_with = c:FRA } }
 		}
-		c:POR.capital.market = { save_temporary_scope_as = modeu5_us10_ui_source_market }
-		modeu5_us10_run_ui_visibility_fixture_for_pair = {
+		c:POR.capital.market = { save_temporary_scope_as = cbp_us10_ui_source_market }
+		cbp_us10_run_ui_visibility_fixture_for_pair = {
 			source_country = c:POR
-			source_market = scope:modeu5_us10_ui_source_market
+			source_market = scope:cbp_us10_ui_source_market
 		}
 	}
 	else = {
@@ -1030,8 +1030,8 @@ modeu5_debug_run_us10_ui_visibility_tests = {
 	}
 }
 
-modeu5_debug_probe_us10_direct_trade_quantity_formula = {
-	modeu5_enter_test_audit_runtime_mode = yes
-	modeu5_us10_clear_test_results = yes
+cbp_debug_probe_us10_direct_trade_quantity_formula = {
+	cbp_enter_test_audit_runtime_mode = yes
+	cbp_us10_clear_test_results = yes
 	set_global_variable = test_cbp_us10_direct_trade_formula_blocked
 }

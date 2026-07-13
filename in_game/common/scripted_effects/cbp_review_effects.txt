@@ -1,4 +1,4 @@
-modeu5_disable_review_pop = {
+cbp_disable_review_pop = {
 	if = {
 		limit = {
 			has_variable_map = cmm

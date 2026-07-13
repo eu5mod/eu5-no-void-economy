@@ -1,6 +1,6 @@
 # Controlled TECH-01 098 instrumentation. This file must never mutate stock.
 
-modeu5_core03_probe_increment_sequence = {
+cbp_core03_probe_increment_sequence = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = cbp_core03_probe_sequence }
@@ -18,7 +18,7 @@ modeu5_core03_probe_increment_sequence = {
 	}
 }
 
-modeu5_core03_probe_increment_location_count = {
+cbp_core03_probe_increment_location_count = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = cbp_core03_probe_location_change_count }
@@ -36,7 +36,7 @@ modeu5_core03_probe_increment_location_count = {
 	}
 }
 
-modeu5_core03_probe_increment_country_hook_count = {
+cbp_core03_probe_increment_country_hook_count = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = cbp_core03_probe_country_hook_count }
@@ -54,7 +54,7 @@ modeu5_core03_probe_increment_country_hook_count = {
 	}
 }
 
-modeu5_core03_probe_increment_delayed_finalizer_count = {
+cbp_core03_probe_increment_delayed_finalizer_count = {
 	if = {
 		limit = {
 			NOT = { has_global_variable = cbp_core03_probe_delayed_finalizer_count }
@@ -73,9 +73,9 @@ modeu5_core03_probe_increment_delayed_finalizer_count = {
 	}
 }
 
-modeu5_core03_probe_record_location_changed_owner = {
-	modeu5_core03_probe_increment_sequence = yes
-	modeu5_core03_probe_increment_location_count = yes
+cbp_core03_probe_record_location_changed_owner = {
+	cbp_core03_probe_increment_sequence = yes
+	cbp_core03_probe_increment_location_count = yes
 	set_global_variable = cbp_core03_probe_location_hook_observed
 	set_global_variable = {
 		name = cbp_core03_probe_last_location_sequence
@@ -97,7 +97,7 @@ modeu5_core03_probe_record_location_changed_owner = {
 		error_log = "ModeU5 CORE-03 FAIL location hook did not resolve distinct loser and winner scopes."
 	}
 
-	save_temporary_scope_as = modeu5_core03_probe_location
+	save_temporary_scope_as = cbp_core03_probe_location
 	if = {
 		limit = {
 			NOT = {
@@ -106,7 +106,7 @@ modeu5_core03_probe_record_location_changed_owner = {
 		}
 		add_to_global_variable_list = {
 			name = cbp_core03_probe_seen_locations
-			target = scope:modeu5_core03_probe_location
+			target = scope:cbp_core03_probe_location
 		}
 	}
 	else_if = {
@@ -114,13 +114,13 @@ modeu5_core03_probe_record_location_changed_owner = {
 			NOT = {
 				is_target_in_global_variable_list = {
 					name = cbp_core03_probe_seen_locations
-					target = scope:modeu5_core03_probe_location
+					target = scope:cbp_core03_probe_location
 				}
 			}
 		}
 		add_to_global_variable_list = {
 			name = cbp_core03_probe_seen_locations
-			target = scope:modeu5_core03_probe_location
+			target = scope:cbp_core03_probe_location
 		}
 	}
 	else = {
@@ -129,9 +129,9 @@ modeu5_core03_probe_record_location_changed_owner = {
 	}
 }
 
-modeu5_core03_probe_record_country_hook = {
-	modeu5_core03_probe_increment_sequence = yes
-	modeu5_core03_probe_increment_country_hook_count = yes
+cbp_core03_probe_record_country_hook = {
+	cbp_core03_probe_increment_sequence = yes
+	cbp_core03_probe_increment_country_hook_count = yes
 	set_global_variable = cbp_core03_probe_country_hook_observed
 	set_global_variable = {
 		name = cbp_core03_probe_last_country_hook_sequence
@@ -139,19 +139,19 @@ modeu5_core03_probe_record_country_hook = {
 	}
 }
 
-modeu5_core03_probe_record_new_country_formed = {
+cbp_core03_probe_record_new_country_formed = {
 	set_global_variable = cbp_core03_probe_new_country_formed_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_new_country_formed."
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_released_country = {
+cbp_core03_probe_record_released_country = {
 	set_global_variable = cbp_core03_probe_released_country_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_released_country."
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_annexed = {
+cbp_core03_probe_record_annexed = {
 	set_global_variable = cbp_core03_probe_annexed_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_annexed."
 	if = {
@@ -163,10 +163,10 @@ modeu5_core03_probe_record_annexed = {
 		set_global_variable = cbp_core03_probe_annex_target_invalid
 		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
 	}
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_diplomatic_annexed = {
+cbp_core03_probe_record_diplomatic_annexed = {
 	set_global_variable = cbp_core03_probe_diplomatic_annexed_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_diplomatic_annexed."
 	if = {
@@ -178,10 +178,10 @@ modeu5_core03_probe_record_diplomatic_annexed = {
 		set_global_variable = cbp_core03_probe_annex_target_invalid
 		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
 	}
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_military_annexed = {
+cbp_core03_probe_record_military_annexed = {
 	set_global_variable = cbp_core03_probe_military_annexed_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_military_annexed."
 	if = {
@@ -193,10 +193,10 @@ modeu5_core03_probe_record_military_annexed = {
 		set_global_variable = cbp_core03_probe_annex_target_invalid
 		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
 	}
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_civil_war_annexed = {
+cbp_core03_probe_record_civil_war_annexed = {
 	set_global_variable = cbp_core03_probe_civil_war_annexed_observed
 	error_log = "ModeU5 CORE-03 OBSERVED on_civil_war_annexed."
 	if = {
@@ -208,12 +208,12 @@ modeu5_core03_probe_record_civil_war_annexed = {
 		set_global_variable = cbp_core03_probe_annex_target_invalid
 		error_log = "ModeU5 CORE-03 FAIL annexation target scope did not resolve."
 	}
-	modeu5_core03_probe_record_country_hook = yes
+	cbp_core03_probe_record_country_hook = yes
 }
 
-modeu5_core03_probe_record_delayed_country_finalizer = {
-	modeu5_core03_probe_increment_sequence = yes
-	modeu5_core03_probe_increment_delayed_finalizer_count = yes
+cbp_core03_probe_record_delayed_country_finalizer = {
+	cbp_core03_probe_increment_sequence = yes
+	cbp_core03_probe_increment_delayed_finalizer_count = yes
 	set_global_variable = cbp_core03_probe_delayed_finalizer_observed
 	set_global_variable = {
 		name = cbp_core03_probe_last_delayed_finalizer_sequence
@@ -232,13 +232,13 @@ modeu5_core03_probe_record_delayed_country_finalizer = {
 	}
 }
 
-modeu5_core03_probe_clear_scenario_selection = {
+cbp_core03_probe_clear_scenario_selection = {
 	remove_global_variable = cbp_core03_probe_scenario_location_transfer
 	remove_global_variable = cbp_core03_probe_scenario_release_or_creation
 	remove_global_variable = cbp_core03_probe_scenario_annexation
 }
 
-modeu5_core03_probe_reset = {
+cbp_core03_probe_reset = {
 	remove_global_variable = cbp_core03_probe_sequence
 	remove_global_variable = cbp_core03_probe_location_change_count
 	remove_global_variable = cbp_core03_probe_country_hook_count
@@ -279,44 +279,44 @@ modeu5_core03_probe_reset = {
 	set_global_variable = cbp_core03_probe_reset_complete
 }
 
-modeu5_core03_probe_select_scenario_location_transfer = {
-	modeu5_core03_probe_clear_scenario_selection = yes
-	modeu5_core03_probe_reset = yes
+cbp_core03_probe_select_scenario_location_transfer = {
+	cbp_core03_probe_clear_scenario_selection = yes
+	cbp_core03_probe_reset = yes
 	set_global_variable = cbp_core03_probe_scenario_location_transfer
 }
 
-modeu5_core03_probe_select_scenario_release_or_creation = {
-	modeu5_core03_probe_clear_scenario_selection = yes
-	modeu5_core03_probe_reset = yes
+cbp_core03_probe_select_scenario_release_or_creation = {
+	cbp_core03_probe_clear_scenario_selection = yes
+	cbp_core03_probe_reset = yes
 	set_global_variable = cbp_core03_probe_scenario_release_or_creation
 }
 
-modeu5_core03_probe_select_scenario_annexation = {
-	modeu5_core03_probe_clear_scenario_selection = yes
-	modeu5_core03_probe_reset = yes
+cbp_core03_probe_select_scenario_annexation = {
+	cbp_core03_probe_clear_scenario_selection = yes
+	cbp_core03_probe_reset = yes
 	set_global_variable = cbp_core03_probe_scenario_annexation
 }
 
-modeu5_core03_probe_prepare_scenario_location_transfer = {
-	modeu5_core03_probe_select_scenario_location_transfer = yes
+cbp_core03_probe_prepare_scenario_location_transfer = {
+	cbp_core03_probe_select_scenario_location_transfer = yes
 	set_global_variable = cbp_core03_probe_manual_prepare_complete
 	error_log = "ModeU5 CORE-03 manual Scenario A prepared."
 }
 
-modeu5_core03_probe_prepare_scenario_release_or_creation = {
-	modeu5_core03_probe_select_scenario_release_or_creation = yes
+cbp_core03_probe_prepare_scenario_release_or_creation = {
+	cbp_core03_probe_select_scenario_release_or_creation = yes
 	set_global_variable = cbp_core03_probe_manual_prepare_complete
 	error_log = "ModeU5 CORE-03 manual Scenario B prepared."
 }
 
-modeu5_core03_probe_prepare_scenario_annexation = {
-	modeu5_core03_probe_select_scenario_annexation = yes
+cbp_core03_probe_prepare_scenario_annexation = {
+	cbp_core03_probe_select_scenario_annexation = yes
 	set_global_variable = cbp_core03_probe_manual_prepare_complete
 	error_log = "ModeU5 CORE-03 manual Scenario C prepared."
 }
 
-modeu5_core03_probe_run_synthetic_location_transfer = {
-	modeu5_core03_probe_select_scenario_location_transfer = yes
+cbp_core03_probe_run_synthetic_location_transfer = {
+	cbp_core03_probe_select_scenario_location_transfer = yes
 	set_global_variable = cbp_core03_probe_synthetic_run
 	set_global_variable = cbp_core03_probe_synthetic_runner_started
 	error_log = "ModeU5 CORE-03 scripted Scenario A started: transfer Cadiz from Castile to Portugal."
@@ -334,19 +334,19 @@ modeu5_core03_probe_run_synthetic_location_transfer = {
 		set_global_variable = cbp_core03_probe_synthetic_runner_completed
 		error_log = "ModeU5 CORE-03 scripted Scenario A completed: Cadiz should now belong to Portugal."
 		c:CAS = {
-			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 1 }
+			trigger_event_non_silently = { id = cbp_core03_probe.2 days = 1 }
 		}
 	}
 	else = {
 		set_global_variable = cbp_core03_probe_synthetic_fixture_invalid
 		set_global_variable = cbp_core03_probe_synthetic_runner_aborted
 		error_log = "ModeU5 CORE-03 scripted Scenario A aborted because Castile, Portugal, or Castilian-owned Cadiz is unavailable."
-		trigger_event_non_silently = modeu5_core03_probe.2
+		trigger_event_non_silently = cbp_core03_probe.2
 	}
 }
 
-modeu5_core03_probe_run_synthetic_release_or_creation = {
-	modeu5_core03_probe_select_scenario_release_or_creation = yes
+cbp_core03_probe_run_synthetic_release_or_creation = {
+	cbp_core03_probe_select_scenario_release_or_creation = yes
 	set_global_variable = cbp_core03_probe_synthetic_run
 	set_global_variable = cbp_core03_probe_synthetic_runner_started
 	error_log = "ModeU5 CORE-03 scripted Scenario B started: create a Castile subject centered on Leon."
@@ -374,19 +374,19 @@ modeu5_core03_probe_run_synthetic_release_or_creation = {
 		set_global_variable = cbp_core03_probe_synthetic_runner_completed
 		error_log = "ModeU5 CORE-03 scripted Scenario B completed: a Leon-centered Castile subject should now be visible on the map."
 		c:CAS = {
-			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 2 }
+			trigger_event_non_silently = { id = cbp_core03_probe.2 days = 2 }
 		}
 	}
 	else = {
 		set_global_variable = cbp_core03_probe_synthetic_fixture_invalid
 		set_global_variable = cbp_core03_probe_synthetic_runner_aborted
 		error_log = "ModeU5 CORE-03 scripted Scenario B aborted because Castilian-owned Leon is unavailable or a Leon subject already exists."
-		trigger_event_non_silently = modeu5_core03_probe.2
+		trigger_event_non_silently = cbp_core03_probe.2
 	}
 }
 
-modeu5_core03_probe_run_synthetic_annexation = {
-	modeu5_core03_probe_select_scenario_annexation = yes
+cbp_core03_probe_run_synthetic_annexation = {
+	cbp_core03_probe_select_scenario_annexation = yes
 	set_global_variable = cbp_core03_probe_synthetic_run
 	set_global_variable = cbp_core03_probe_synthetic_runner_started
 	error_log = "ModeU5 CORE-03 scripted Scenario C started: stage a Leon subject for Castile, then annex it."
@@ -403,7 +403,7 @@ modeu5_core03_probe_run_synthetic_annexation = {
 		set_global_variable = cbp_core03_probe_synthetic_runner_staged
 		error_log = "ModeU5 CORE-03 scripted Scenario C staging complete: an eligible Leon subject already exists and will be annexed next."
 		c:CAS = {
-			trigger_event_non_silently = { id = modeu5_core03_probe.21 days = 1 }
+			trigger_event_non_silently = { id = cbp_core03_probe.21 days = 1 }
 		}
 	}
 	else_if = {
@@ -431,18 +431,18 @@ modeu5_core03_probe_run_synthetic_annexation = {
 		set_global_variable = cbp_core03_probe_synthetic_runner_staged
 		error_log = "ModeU5 CORE-03 scripted Scenario C staging complete: Leon subject created and should now be visible on the map."
 		c:CAS = {
-			trigger_event_non_silently = { id = modeu5_core03_probe.21 days = 1 }
+			trigger_event_non_silently = { id = cbp_core03_probe.21 days = 1 }
 		}
 	}
 	else = {
 		set_global_variable = cbp_core03_probe_synthetic_fixture_invalid
 		set_global_variable = cbp_core03_probe_synthetic_runner_aborted
 		error_log = "ModeU5 CORE-03 scripted Scenario C aborted because Castile, Leon, or the staged Leon subject fixture is unavailable."
-		trigger_event_non_silently = modeu5_core03_probe.2
+		trigger_event_non_silently = cbp_core03_probe.2
 	}
 }
 
-modeu5_core03_probe_execute_staged_annexation = {
+cbp_core03_probe_execute_staged_annexation = {
 	if = {
 		limit = {
 			has_global_variable = cbp_core03_probe_annexation_stage_ready
@@ -453,7 +453,7 @@ modeu5_core03_probe_execute_staged_annexation = {
 				}
 			}
 		}
-		modeu5_core03_probe_select_scenario_annexation = yes
+		cbp_core03_probe_select_scenario_annexation = yes
 		set_global_variable = cbp_core03_probe_synthetic_run
 		set_global_variable = cbp_core03_probe_synthetic_runner_started
 		error_log = "ModeU5 CORE-03 scripted Scenario C annexation step started: Castile will annex the staged Leon subject."
@@ -462,12 +462,12 @@ modeu5_core03_probe_execute_staged_annexation = {
 				limit = {
 					capital ?= location:leon
 				}
-				save_temporary_scope_as = modeu5_core03_probe_target_country
+				save_temporary_scope_as = cbp_core03_probe_target_country
 			}
 		}
 		c:CAS = {
 			annex_country = {
-				country = scope:modeu5_core03_probe_target_country
+				country = scope:cbp_core03_probe_target_country
 				reason = Diplomatic
 				transfer = yes
 			}
@@ -475,13 +475,13 @@ modeu5_core03_probe_execute_staged_annexation = {
 		set_global_variable = cbp_core03_probe_synthetic_runner_completed
 		error_log = "ModeU5 CORE-03 scripted Scenario C completed: the staged Leon subject should now be annexed by Castile."
 		c:CAS = {
-			trigger_event_non_silently = { id = modeu5_core03_probe.2 days = 2 }
+			trigger_event_non_silently = { id = cbp_core03_probe.2 days = 2 }
 		}
 	}
 	else = {
 		set_global_variable = cbp_core03_probe_synthetic_fixture_invalid
 		set_global_variable = cbp_core03_probe_synthetic_runner_aborted
 		error_log = "ModeU5 CORE-03 scripted Scenario C annexation step aborted because the staged Leon subject could not be found."
-		trigger_event_non_silently = modeu5_core03_probe.2
+		trigger_event_non_silently = cbp_core03_probe.2
 	}
 }

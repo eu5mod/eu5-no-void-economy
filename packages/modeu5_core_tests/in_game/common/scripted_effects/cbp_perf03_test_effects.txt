@@ -1,7 +1,7 @@
 # PERF-03 probes the market -> countries-present work cache.
 
-modeu5_perf03_clear_probe_results = {
-	modeu5_enter_test_audit_runtime_mode = yes
+cbp_perf03_clear_probe_results = {
+	cbp_enter_test_audit_runtime_mode = yes
 
 	remove_global_variable = test_cbp_perf03_market_country_cache_started
 	remove_global_variable = test_cbp_perf03_market_country_cache_passed
@@ -18,7 +18,7 @@ modeu5_perf03_clear_probe_results = {
 	remove_variable = gui_cbp_perf03_ui_rebuild_empty
 }
 
-modeu5_perf03_mirror_probe_to_ui = {
+cbp_perf03_mirror_probe_to_ui = {
 	if = {
 		limit = { has_global_variable = cbp_market_country_cache_locations_scanned }
 		set_variable = {
@@ -82,8 +82,8 @@ modeu5_perf03_mirror_probe_to_ui = {
 	}
 }
 
-modeu5_perf03_log_probe_result = {
-	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('modeu5_perf03_ui_locations_scanned').GetValue|0] locations_with_owner=[THIS.GetVariable('modeu5_perf03_ui_locations_with_owner').GetValue|0] countries_present=[THIS.GetVariable('modeu5_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('modeu5_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('modeu5_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('modeu5_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('modeu5_perf03_ui_rebuild_empty').GetValue|0]"
+cbp_perf03_log_probe_result = {
+	debug_log = "ModeU5 PERF-03 DUMP market_country_cache locations_scanned=[THIS.GetVariable('cbp_perf03_ui_locations_scanned').GetValue|0] locations_with_owner=[THIS.GetVariable('cbp_perf03_ui_locations_with_owner').GetValue|0] countries_present=[THIS.GetVariable('cbp_perf03_ui_countries_present').GetValue|0] dirty_repairs=[THIS.GetVariable('cbp_perf03_ui_dirty_repairs').GetValue|0] current_country_present=[THIS.GetVariable('cbp_perf03_ui_current_country_present').GetValue|0] rebuild_failed=[THIS.GetVariable('cbp_perf03_ui_rebuild_failed').GetValue|0] rebuild_empty=[THIS.GetVariable('cbp_perf03_ui_rebuild_empty').GetValue|0]"
 	if = {
 		limit = { has_global_variable = test_cbp_perf03_market_country_cache_passed }
 		debug_log = "ModeU5 PERF-03 RESULT market_country_cache PASS"
@@ -101,10 +101,10 @@ modeu5_perf03_log_probe_result = {
 	}
 }
 
-modeu5_perf03_probe_current_market_country_cache = {
-	modeu5_perf03_clear_probe_results = yes
+cbp_perf03_probe_current_market_country_cache = {
+	cbp_perf03_clear_probe_results = yes
 	set_global_variable = test_cbp_perf03_market_country_cache_started
-	save_temporary_scope_as = modeu5_perf03_probe_country
+	save_temporary_scope_as = cbp_perf03_probe_country
 
 	if = {
 		limit = { has_markets = no }
@@ -112,18 +112,18 @@ modeu5_perf03_probe_current_market_country_cache = {
 		error_log = "ModeU5 PERF-03 market-country cache probe blocked because the current country has no markets."
 	}
 	else = {
-		capital.market = { save_temporary_scope_as = modeu5_perf03_probe_market }
+		capital.market = { save_temporary_scope_as = cbp_perf03_probe_market }
 
-		scope:modeu5_perf03_probe_market = {
-			save_temporary_scope_as = modeu5_market_country_cache_dirty_market
+		scope:cbp_perf03_probe_market = {
+			save_temporary_scope_as = cbp_market_country_cache_dirty_market
 		}
-		modeu5_mark_market_country_cache_dirty = yes
-		modeu5_repair_dirty_market_country_caches = yes
+		cbp_mark_market_country_cache_dirty = yes
+		cbp_repair_dirty_market_country_caches = yes
 
-		scope:modeu5_perf03_probe_market = {
-			save_temporary_scope_as = modeu5_market_country_cache_market
+		scope:cbp_perf03_probe_market = {
+			save_temporary_scope_as = cbp_market_country_cache_market
 		}
-		modeu5_rebuild_countries_present_in_market = yes
+		cbp_rebuild_countries_present_in_market = yes
 
 		if = {
 			limit = {
@@ -132,7 +132,7 @@ modeu5_perf03_probe_current_market_country_cache = {
 					NOT = {
 						is_target_in_global_variable_list = {
 							name = cbp_countries_present_in_market
-							target = scope:modeu5_perf03_probe_country
+							target = scope:cbp_perf03_probe_country
 						}
 					}
 				}
@@ -146,6 +146,6 @@ modeu5_perf03_probe_current_market_country_cache = {
 		}
 	}
 
-	modeu5_perf03_mirror_probe_to_ui = yes
-	modeu5_perf03_log_probe_result = yes
+	cbp_perf03_mirror_probe_to_ui = yes
+	cbp_perf03_log_probe_result = yes
 }

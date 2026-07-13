@@ -4,8 +4,8 @@
 # seed Castile wheat stock in Cadiz's market, transfer Cadiz to Portugal,
 # then verify that stock survives through the CORE-03 on_action path.
 
-modeu5_debug_write_core03_before_dump_variables = {
-	scope:modeu5_core03_test_controller = {
+cbp_debug_write_core03_before_dump_variables = {
+	scope:cbp_core03_test_controller = {
 		set_variable = { name = gui_cbp_debug_core03_ui_cas_before value = scope:test_cbp_core03_test_cas_before }
 		set_variable = { name = gui_cbp_debug_core03_ui_por_before value = scope:test_cbp_core03_test_por_before }
 		set_variable = { name = gui_cbp_debug_core03_ui_market_before value = scope:test_cbp_core03_test_market_before }
@@ -15,14 +15,14 @@ modeu5_debug_write_core03_before_dump_variables = {
 	}
 }
 
-modeu5_debug_log_core03_before_dump = {
-	scope:modeu5_core03_test_controller = {
-		debug_log = "ModeU5 CORE-03 DUMP before scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_stock=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] por_stock=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] market_stock=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] loser_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_loser_capacity').GetValue|2] location_capacity=[THIS.GetVariable('modeu5_debug_core03_ui_location_capacity').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2]"
+cbp_debug_log_core03_before_dump = {
+	scope:cbp_core03_test_controller = {
+		debug_log = "ModeU5 CORE-03 DUMP before scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_stock=[THIS.GetVariable('cbp_debug_core03_ui_cas_before').GetValue|2] por_stock=[THIS.GetVariable('cbp_debug_core03_ui_por_before').GetValue|2] market_stock=[THIS.GetVariable('cbp_debug_core03_ui_market_before').GetValue|2] loser_capacity=[THIS.GetVariable('cbp_debug_core03_ui_loser_capacity').GetValue|2] location_capacity=[THIS.GetVariable('cbp_debug_core03_ui_location_capacity').GetValue|2] expected_transfer=[THIS.GetVariable('cbp_debug_core03_ui_expected_transfer').GetValue|2]"
 	}
 }
 
-modeu5_debug_write_core03_after_dump_variables = {
-	scope:modeu5_core03_test_controller = {
+cbp_debug_write_core03_after_dump_variables = {
+	scope:cbp_core03_test_controller = {
 		set_variable = { name = gui_cbp_debug_core03_ui_cas_before value = global_var:test_cbp_debug_core03_cas_before }
 		set_variable = { name = gui_cbp_debug_core03_ui_por_before value = global_var:test_cbp_debug_core03_por_before }
 		set_variable = { name = gui_cbp_debug_core03_ui_market_before value = global_var:test_cbp_debug_core03_market_before }
@@ -37,63 +37,63 @@ modeu5_debug_write_core03_after_dump_variables = {
 	}
 }
 
-modeu5_debug_log_core03_after_dump = {
-	scope:modeu5_core03_test_controller = {
-		debug_log = "ModeU5 CORE-03 DUMP after scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_before=[THIS.GetVariable('modeu5_debug_core03_ui_cas_before').GetValue|2] cas_after=[THIS.GetVariable('modeu5_debug_core03_ui_cas_after').GetValue|2] por_before=[THIS.GetVariable('modeu5_debug_core03_ui_por_before').GetValue|2] por_after=[THIS.GetVariable('modeu5_debug_core03_ui_por_after').GetValue|2] expected_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_expected_transfer').GetValue|2] actual_transfer=[THIS.GetVariable('modeu5_debug_core03_ui_actual_transfer').GetValue|2] market_before=[THIS.GetVariable('modeu5_debug_core03_ui_market_before').GetValue|2] market_after=[THIS.GetVariable('modeu5_debug_core03_ui_market_after').GetValue|2] market_delta=[THIS.GetVariable('modeu5_debug_core03_ui_market_delta').GetValue|2]"
+cbp_debug_log_core03_after_dump = {
+	scope:cbp_core03_test_controller = {
+		debug_log = "ModeU5 CORE-03 DUMP after scenario=Cadiz_to_Portugal good=wheat loser=CAS winner=POR cas_before=[THIS.GetVariable('cbp_debug_core03_ui_cas_before').GetValue|2] cas_after=[THIS.GetVariable('cbp_debug_core03_ui_cas_after').GetValue|2] por_before=[THIS.GetVariable('cbp_debug_core03_ui_por_before').GetValue|2] por_after=[THIS.GetVariable('cbp_debug_core03_ui_por_after').GetValue|2] expected_transfer=[THIS.GetVariable('cbp_debug_core03_ui_expected_transfer').GetValue|2] actual_transfer=[THIS.GetVariable('cbp_debug_core03_ui_actual_transfer').GetValue|2] market_before=[THIS.GetVariable('cbp_debug_core03_ui_market_before').GetValue|2] market_after=[THIS.GetVariable('cbp_debug_core03_ui_market_after').GetValue|2] market_delta=[THIS.GetVariable('cbp_debug_core03_ui_market_delta').GetValue|2]"
 	}
 }
 
-modeu5_debug_run_core03_location_succession_test = {
-	save_temporary_scope_as = modeu5_core03_test_controller
-	modeu5_core03_probe_reset = yes
+cbp_debug_run_core03_location_succession_test = {
+	save_temporary_scope_as = cbp_core03_test_controller
+	cbp_core03_probe_reset = yes
 
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
 			country_exists = c:CAS
 			country_exists = c:POR
 			location:cadiz = {
 				owner ?= c:CAS
 			}
 		}
-		location:cadiz.market = { save_temporary_scope_as = modeu5_core03_test_market }
+		location:cadiz.market = { save_temporary_scope_as = cbp_core03_test_market }
 
-		modeu5_recalculate_country_market_capacity = {
+		cbp_recalculate_country_market_capacity = {
 			country = c:CAS
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
-		modeu5_recalculate_country_market_capacity = {
+		cbp_recalculate_country_market_capacity = {
 			country = c:POR
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
 
-		modeu5_remove_stock = {
+		cbp_remove_stock = {
 			country = c:CAS
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
 		}
-		modeu5_remove_stock = {
+		cbp_remove_stock = {
 			country = c:POR
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
 		}
-		modeu5_add_stock = {
+		cbp_add_stock = {
 			country = c:CAS
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 			quantity = 100
 			capacity_policy = allow_over_capacity
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:CAS
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -109,9 +109,9 @@ modeu5_debug_run_core03_location_succession_test = {
 			value = scope:cbp_read_market_stock
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:POR
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -119,7 +119,7 @@ modeu5_debug_run_core03_location_succession_test = {
 			value = scope:cbp_read_country_stock
 		}
 
-		modeu5_calculate_location_storage_capacity = {
+		cbp_calculate_location_storage_capacity = {
 			country = c:CAS
 			location = location:cadiz
 		}
@@ -174,8 +174,8 @@ modeu5_debug_run_core03_location_succession_test = {
 			value = scope:test_cbp_core03_test_expected_transfer
 		}
 
-		modeu5_debug_write_core03_before_dump_variables = yes
-		modeu5_debug_log_core03_before_dump = yes
+		cbp_debug_write_core03_before_dump_variables = yes
+		cbp_debug_log_core03_before_dump = yes
 
 		location:cadiz = {
 			change_location_owner = c:POR
@@ -189,8 +189,8 @@ modeu5_debug_run_core03_location_succession_test = {
 	}
 }
 
-modeu5_debug_finish_core03_location_succession_test = {
-	save_temporary_scope_as = modeu5_core03_test_controller
+cbp_debug_finish_core03_location_succession_test = {
+	save_temporary_scope_as = cbp_core03_test_controller
 
 	if = {
 		limit = {
@@ -198,11 +198,11 @@ modeu5_debug_finish_core03_location_succession_test = {
 			country_exists = c:CAS
 			country_exists = c:POR
 		}
-		location:cadiz.market = { save_temporary_scope_as = modeu5_core03_test_market }
+		location:cadiz.market = { save_temporary_scope_as = cbp_core03_test_market }
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:CAS
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -214,9 +214,9 @@ modeu5_debug_finish_core03_location_succession_test = {
 			value = scope:cbp_read_market_stock
 		}
 
-		modeu5_read_country_stock_record = {
+		cbp_read_country_stock_record = {
 			country = c:POR
-			market = scope:modeu5_core03_test_market
+			market = scope:cbp_core03_test_market
 			good = wheat
 		}
 		save_temporary_scope_value_as = {
@@ -275,8 +275,8 @@ modeu5_debug_finish_core03_location_succession_test = {
 			value = scope:test_cbp_core03_test_market_delta
 		}
 
-		modeu5_debug_write_core03_after_dump_variables = yes
-		modeu5_debug_log_core03_after_dump = yes
+		cbp_debug_write_core03_after_dump_variables = yes
+		cbp_debug_log_core03_after_dump = yes
 
 		if = {
 			limit = {

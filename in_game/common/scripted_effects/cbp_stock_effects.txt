@@ -2,7 +2,7 @@
 #
 # Public calls use a literal goods token so each expanded map name remains static:
 #
-# modeu5_add_stock = {
+# cbp_add_stock = {
 #     country = root
 #     market = root.capital.market
 #     good = wheat
@@ -14,49 +14,49 @@
 # reserved for CORE-02, CORE-03, separately approved migrations, and explicit
 # reconciliation/restoration offsets such as US-04 below-baseline consumption.
 
-modeu5_select_capacity_policy_enforce = {
+cbp_select_capacity_policy_enforce = {
 	save_temporary_scope_value_as = {
 		name = cbp_capacity_policy
 		value = 0
 	}
 }
 
-modeu5_select_capacity_policy_allow_over_capacity = {
+cbp_select_capacity_policy_allow_over_capacity = {
 	save_temporary_scope_value_as = {
 		name = cbp_capacity_policy
 		value = 1
 	}
 }
 
-modeu5_select_remove_reason_consumption = {
+cbp_select_remove_reason_consumption = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 1
 	}
 }
 
-modeu5_select_remove_reason_stock_loss = {
+cbp_select_remove_reason_stock_loss = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 2
 	}
 }
 
-modeu5_select_remove_reason_reconciliation = {
+cbp_select_remove_reason_reconciliation = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 3
 	}
 }
 
-modeu5_select_remove_reason_migration = {
+cbp_select_remove_reason_migration = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 4
 	}
 }
 
-modeu5_select_remove_reason_debug_test = {
+cbp_select_remove_reason_debug_test = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 99
@@ -69,15 +69,15 @@ modeu5_select_remove_reason_debug_test = {
 
 # US-01 read-only country x market x good record access.
 
-modeu5_read_country_stock_record = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_read_country_stock_record = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_read_country_stock_record_good_$good$ = yes
+	cbp_read_country_stock_record_good_$good$ = yes
 }
 
-modeu5_read_country_stock_record_calculate = {
+cbp_read_country_stock_record_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_read_country_stock
 		value = {
@@ -140,10 +140,10 @@ modeu5_read_country_stock_record_calculate = {
 
 # CORE-01.1
 
-modeu5_add_stock = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_add_stock = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
 	save_temporary_scope_value_as = {
 		name = cbp_quantity_requested_raw
@@ -158,14 +158,14 @@ modeu5_add_stock = {
 	}
 	if = {
 		limit = { scope:cbp_quantity_requested_raw < 0 }
-		error_log = "ModeU5 modeu5_add_stock received a negative quantity; request normalized to zero."
+		error_log = "ModeU5 cbp_add_stock received a negative quantity; request normalized to zero."
 	}
 
-	modeu5_select_capacity_policy_$capacity_policy$ = yes
-	modeu5_add_stock_good_$good$ = yes
+	cbp_select_capacity_policy_$capacity_policy$ = yes
+	cbp_add_stock_good_$good$ = yes
 }
 
-modeu5_add_stock_calculate = {
+cbp_add_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_country_stock_before
 		value = {
@@ -267,7 +267,7 @@ modeu5_add_stock_calculate = {
 
 	if = {
 		limit = { scope:cbp_country_stock_before_raw < 0 }
-		error_log = "ModeU5 modeu5_add_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		error_log = "ModeU5 cbp_add_stock found a negative country stock; the country record is normalized and consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -275,11 +275,11 @@ modeu5_add_stock_calculate = {
 	}
 	if = {
 		limit = { scope:cbp_country_stock_cap_raw < 0 }
-		error_log = "ModeU5 modeu5_add_stock found a negative capacity; capacity is treated as zero."
+		error_log = "ModeU5 cbp_add_stock found a negative capacity; capacity is treated as zero."
 	}
 	if = {
 		limit = { scope:cbp_market_stock_before < 0 }
-		error_log = "ModeU5 modeu5_add_stock found a negative market aggregate; consistency validation is required."
+		error_log = "ModeU5 cbp_add_stock found a negative market aggregate; consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -318,10 +318,10 @@ modeu5_add_stock_calculate = {
 
 # CORE-01.2
 
-modeu5_remove_stock = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_remove_stock = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
 	save_temporary_scope_value_as = {
 		name = cbp_quantity_requested_raw
@@ -336,14 +336,14 @@ modeu5_remove_stock = {
 	}
 	if = {
 		limit = { scope:cbp_quantity_requested_raw < 0 }
-		error_log = "ModeU5 modeu5_remove_stock received a negative quantity; request normalized to zero."
+		error_log = "ModeU5 cbp_remove_stock received a negative quantity; request normalized to zero."
 	}
 
-	modeu5_select_remove_reason_$reason$ = yes
-	modeu5_remove_stock_good_$good$ = yes
+	cbp_select_remove_reason_$reason$ = yes
+	cbp_remove_stock_good_$good$ = yes
 }
 
-modeu5_remove_stock_calculate = {
+cbp_remove_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_country_stock_before
 		value = {
@@ -379,7 +379,7 @@ modeu5_remove_stock_calculate = {
 				scope:cbp_market_stock_before < scope:cbp_actual_removed_quantity
 			}
 		}
-		error_log = "ModeU5 modeu5_remove_stock blocked a market aggregate underflow; consistency validation is required."
+		error_log = "ModeU5 cbp_remove_stock blocked a market aggregate underflow; consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_actual_removed_quantity
 			value = 0
@@ -452,7 +452,7 @@ modeu5_remove_stock_calculate = {
 
 	if = {
 		limit = { scope:cbp_country_stock_before_raw < 0 }
-		error_log = "ModeU5 modeu5_remove_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		error_log = "ModeU5 cbp_remove_stock found a negative country stock; the country record is normalized and consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -460,7 +460,7 @@ modeu5_remove_stock_calculate = {
 	}
 	if = {
 		limit = { scope:cbp_country_stock_cap_raw < 0 }
-		error_log = "ModeU5 modeu5_remove_stock found a negative capacity; capacity is treated as zero."
+		error_log = "ModeU5 cbp_remove_stock found a negative capacity; capacity is treated as zero."
 	}
 
 	save_temporary_scope_value_as = {
@@ -495,12 +495,12 @@ modeu5_remove_stock_calculate = {
 
 # CORE-01.3
 
-modeu5_transfer_stock = {
-	$seller_country$ = { save_temporary_scope_as = modeu5_seller_country }
-	$buyer_country$ = { save_temporary_scope_as = modeu5_buyer_country }
-	$source_market$ = { save_temporary_scope_as = modeu5_source_market }
-	$target_market$ = { save_temporary_scope_as = modeu5_target_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_transfer_stock = {
+	$seller_country$ = { save_temporary_scope_as = cbp_seller_country }
+	$buyer_country$ = { save_temporary_scope_as = cbp_buyer_country }
+	$source_market$ = { save_temporary_scope_as = cbp_source_market }
+	$target_market$ = { save_temporary_scope_as = cbp_target_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
 	save_temporary_scope_value_as = {
 		name = cbp_quantity_requested_raw
@@ -515,14 +515,14 @@ modeu5_transfer_stock = {
 	}
 	if = {
 		limit = { scope:cbp_quantity_requested_raw < 0 }
-		error_log = "ModeU5 modeu5_transfer_stock received a negative quantity; request normalized to zero."
+		error_log = "ModeU5 cbp_transfer_stock received a negative quantity; request normalized to zero."
 	}
 
-	modeu5_select_capacity_policy_$target_capacity_policy$ = yes
-	modeu5_transfer_stock_good_$good$ = yes
+	cbp_select_capacity_policy_$target_capacity_policy$ = yes
+	cbp_transfer_stock_good_$good$ = yes
 }
 
-modeu5_transfer_stock_calculate = {
+cbp_transfer_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_seller_stock_before
 		value = {
@@ -565,7 +565,7 @@ modeu5_transfer_stock_calculate = {
 		value = 0
 	}
 	if = {
-		limit = { scope:modeu5_source_market = scope:modeu5_target_market }
+		limit = { scope:cbp_source_market = scope:cbp_target_market }
 		save_temporary_scope_value_as = {
 			name = cbp_same_market_transfer
 			value = 1
@@ -577,8 +577,8 @@ modeu5_transfer_stock_calculate = {
 	}
 	if = {
 		limit = {
-			scope:modeu5_seller_country = scope:modeu5_buyer_country
-			scope:modeu5_source_market = scope:modeu5_target_market
+			scope:cbp_seller_country = scope:cbp_buyer_country
+			scope:cbp_source_market = scope:cbp_target_market
 		}
 		save_temporary_scope_value_as = {
 			name = cbp_invalid_same_record_transfer
@@ -631,7 +631,7 @@ modeu5_transfer_stock_calculate = {
 				scope:cbp_source_market_stock_before < scope:cbp_actual_transferred_quantity
 			}
 		}
-		error_log = "ModeU5 modeu5_transfer_stock blocked a source-market aggregate underflow; consistency validation is required."
+		error_log = "ModeU5 cbp_transfer_stock blocked a source-market aggregate underflow; consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_actual_transferred_quantity
 			value = 0
@@ -716,7 +716,7 @@ modeu5_transfer_stock_calculate = {
 
 	if = {
 		limit = { scope:cbp_seller_stock_before_raw < 0 }
-		error_log = "ModeU5 modeu5_transfer_stock found a negative seller stock; the seller record is normalized and consistency validation is required."
+		error_log = "ModeU5 cbp_transfer_stock found a negative seller stock; the seller record is normalized and consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -724,7 +724,7 @@ modeu5_transfer_stock_calculate = {
 	}
 	if = {
 		limit = { scope:cbp_buyer_stock_before_raw < 0 }
-		error_log = "ModeU5 modeu5_transfer_stock found a negative buyer stock; the buyer record is normalized and consistency validation is required."
+		error_log = "ModeU5 cbp_transfer_stock found a negative buyer stock; the buyer record is normalized and consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -732,7 +732,7 @@ modeu5_transfer_stock_calculate = {
 	}
 	if = {
 		limit = { scope:cbp_buyer_stock_cap_raw < 0 }
-		error_log = "ModeU5 modeu5_transfer_stock found a negative buyer capacity; capacity is treated as zero."
+		error_log = "ModeU5 cbp_transfer_stock found a negative buyer capacity; capacity is treated as zero."
 	}
 
 	save_temporary_scope_value_as = {
@@ -788,10 +788,10 @@ modeu5_transfer_stock_calculate = {
 
 # CORE-01.4
 
-modeu5_decay_stock = {
-	$country$ = { save_temporary_scope_as = modeu5_country }
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_decay_stock = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
 	save_temporary_scope_value_as = {
 		name = cbp_decay_rate_raw
@@ -812,13 +812,13 @@ modeu5_decay_stock = {
 				scope:cbp_decay_rate_raw > 1
 			}
 		}
-		error_log = "ModeU5 modeu5_decay_stock received an out-of-range decay rate; rate clamped to [0, 1]."
+		error_log = "ModeU5 cbp_decay_stock received an out-of-range decay rate; rate clamped to [0, 1]."
 	}
 
-	modeu5_decay_stock_good_$good$ = yes
+	cbp_decay_stock_good_$good$ = yes
 }
 
-modeu5_decay_stock_calculate = {
+cbp_decay_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_country_stock_before
 		value = {
@@ -855,7 +855,7 @@ modeu5_decay_stock_calculate = {
 				scope:cbp_market_stock_before < scope:cbp_decayed_quantity
 			}
 		}
-		error_log = "ModeU5 modeu5_decay_stock blocked a market aggregate underflow; consistency validation is required."
+		error_log = "ModeU5 cbp_decay_stock blocked a market aggregate underflow; consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_decayed_quantity
 			value = 0
@@ -925,7 +925,7 @@ modeu5_decay_stock_calculate = {
 
 	if = {
 		limit = { scope:cbp_country_stock_before_raw < 0 }
-		error_log = "ModeU5 modeu5_decay_stock found a negative country stock; the country record is normalized and consistency validation is required."
+		error_log = "ModeU5 cbp_decay_stock found a negative country stock; the country record is normalized and consistency validation is required."
 		save_temporary_scope_value_as = {
 			name = cbp_consistency_validation_required
 			value = 1
@@ -933,7 +933,7 @@ modeu5_decay_stock_calculate = {
 	}
 	if = {
 		limit = { scope:cbp_country_stock_cap_raw < 0 }
-		error_log = "ModeU5 modeu5_decay_stock found a negative capacity; capacity is treated as zero."
+		error_log = "ModeU5 cbp_decay_stock found a negative capacity; capacity is treated as zero."
 	}
 
 	save_temporary_scope_value_as = {
@@ -968,15 +968,15 @@ modeu5_decay_stock_calculate = {
 
 # CORE-01.5
 
-modeu5_rebuild_market_stock_from_country_stocks = {
-	save_temporary_scope_as = modeu5_consistency_controller
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_rebuild_market_stock_from_country_stocks = {
+	save_temporary_scope_as = cbp_consistency_controller
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_rebuild_market_stock_good_$good$ = yes
+	cbp_rebuild_market_stock_good_$good$ = yes
 }
 
-modeu5_rebuild_market_stock_calculate = {
+cbp_rebuild_market_stock_calculate = {
 	save_temporary_scope_value_as = {
 		name = cbp_rebuild_market_stock_before
 		value = scope:cbp_scanned_market_stock
@@ -1016,23 +1016,23 @@ modeu5_rebuild_market_stock_calculate = {
 
 # CORE-01.6
 
-modeu5_validate_stock_consistency = {
+cbp_validate_stock_consistency = {
 	if = {
-		limit = { exists = scope:modeu5_reconciliation_controller }
-		scope:modeu5_reconciliation_controller = {
-			save_temporary_scope_as = modeu5_consistency_controller
+		limit = { exists = scope:cbp_reconciliation_controller }
+		scope:cbp_reconciliation_controller = {
+			save_temporary_scope_as = cbp_consistency_controller
 		}
 	}
 	else = {
-		save_temporary_scope_as = modeu5_consistency_controller
+		save_temporary_scope_as = cbp_consistency_controller
 	}
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 
-	modeu5_validate_stock_consistency_good_$good$ = yes
+	cbp_validate_stock_consistency_good_$good$ = yes
 }
 
-modeu5_validate_stock_consistency_prepare = {
+cbp_validate_stock_consistency_prepare = {
 	save_temporary_scope_value_as = {
 		name = cbp_validation_expected_market_stock
 		value = scope:cbp_expected_market_stock
@@ -1085,7 +1085,7 @@ modeu5_validate_stock_consistency_prepare = {
 	}
 	if = {
 		limit = {
-			scope:cbp_validation_absolute_difference >= modeu5_stock_consistency_prominent_threshold
+			scope:cbp_validation_absolute_difference >= cbp_stock_consistency_prominent_threshold
 		}
 		save_temporary_scope_value_as = {
 			name = cbp_validation_inconsistency_severity
@@ -1110,7 +1110,7 @@ modeu5_validate_stock_consistency_prepare = {
 	}
 }
 
-modeu5_validate_stock_consistency_finalize = {
+cbp_validate_stock_consistency_finalize = {
 	save_temporary_scope_value_as = {
 		name = cbp_validation_actual_market_stock_after
 		value = scope:cbp_scanned_market_stock
@@ -1139,7 +1139,7 @@ modeu5_validate_stock_consistency_finalize = {
 
 # CORE-02
 
-modeu5_initialization_clear_last_result = {
+cbp_initialization_clear_last_result = {
 	remove_global_variable = cbp_initialization_failure_detected
 	remove_global_variable = cbp_initialization_failure_code
 	remove_global_variable = cbp_initialization_market_goods_checked
@@ -1161,7 +1161,7 @@ modeu5_initialization_clear_last_result = {
 	remove_global_variable = cbp_initialization_last_mode
 }
 
-modeu5_initialization_mark_failure = {
+cbp_initialization_mark_failure = {
 	set_global_variable = cbp_initialization_failure_detected
 	set_global_variable = {
 		name = cbp_initialization_failure_code
@@ -1169,8 +1169,8 @@ modeu5_initialization_mark_failure = {
 	}
 }
 
-modeu5_initialization_prepare_counters = {
-	modeu5_initialization_clear_last_result = yes
+cbp_initialization_prepare_counters = {
+	cbp_initialization_clear_last_result = yes
 
 	set_global_variable = { name = cbp_initialization_market_goods_checked value = 0 }
 	set_global_variable = { name = cbp_initialization_market_goods_seeded value = 0 }
@@ -1185,7 +1185,7 @@ modeu5_initialization_prepare_counters = {
 	set_global_variable = { name = cbp_initialization_validation_failures value = 0 }
 }
 
-modeu5_initialization_finalize_counters = {
+cbp_initialization_finalize_counters = {
 	if = {
 		limit = {
 			OR = {
@@ -1195,11 +1195,11 @@ modeu5_initialization_finalize_counters = {
 				global_var:cbp_initialization_validation_failures > 0
 			}
 		}
-		modeu5_initialization_mark_failure = { code = 10 }
+		cbp_initialization_mark_failure = { code = 10 }
 	}
 }
 
-modeu5_initialization_count_zero_source_market_good = {
+cbp_initialization_count_zero_source_market_good = {
 	set_global_variable = {
 		name = cbp_initialization_market_goods_checked
 		value = {
@@ -1216,9 +1216,9 @@ modeu5_initialization_count_zero_source_market_good = {
 	}
 }
 
-modeu5_seed_opening_market_good = {
-	$market$ = { save_temporary_scope_as = modeu5_initialization_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_initialization_good }
+cbp_seed_opening_market_good = {
+	$market$ = { save_temporary_scope_as = cbp_initialization_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_initialization_good }
 	save_temporary_scope_value_as = {
 		name = cbp_opening_source_quantity_raw
 		value = $quantity$
@@ -1232,22 +1232,22 @@ modeu5_seed_opening_market_good = {
 	}
 	if = {
 		limit = { scope:cbp_opening_source_quantity_raw < 0 }
-		modeu5_initialization_mark_failure = { code = 11 }
+		cbp_initialization_mark_failure = { code = 11 }
 	}
-	modeu5_seed_opening_market_good_$good$ = yes
+	cbp_seed_opening_market_good_$good$ = yes
 }
 
-modeu5_run_allowed_stock_consistency_validation = {
+cbp_run_allowed_stock_consistency_validation = {
 	if = {
-		limit = { modeu5_full_validation_allowed_trigger = yes }
-		modeu5_validate_active_stock_consistency = yes
+		limit = { cbp_full_validation_allowed_trigger = yes }
+		cbp_validate_active_stock_consistency = yes
 	}
 	else = {
-		modeu5_validate_dirty_stock_consistency = yes
+		cbp_validate_dirty_stock_consistency = yes
 	}
 }
 
-modeu5_prepare_monthly_market_seen_registry = {
+cbp_prepare_monthly_market_seen_registry = {
 	save_temporary_scope_value_as = {
 		name = cbp_monthly_market_seen_stamp
 		value = {
@@ -1280,26 +1280,26 @@ modeu5_prepare_monthly_market_seen_registry = {
 			name = cbp_monthly_markets_seen_duplicate_count
 			value = 0
 		}
-		modeu5_reset_us10_monthly_runtime_counters = yes
+		cbp_reset_us10_monthly_runtime_counters = yes
 	}
 }
 
-modeu5_mark_monthly_market_seen = {
-	modeu5_prepare_monthly_market_seen_registry = yes
+cbp_mark_monthly_market_seen = {
+	cbp_prepare_monthly_market_seen_registry = yes
 	save_temporary_scope_value_as = {
 		name = cbp_monthly_market_already_seen
 		value = 0
 	}
 
 	if = {
-		limit = { exists = scope:modeu5_market }
+		limit = { exists = scope:cbp_market }
 		if = {
 			limit = {
 				NOT = { has_global_variable_list = cbp_monthly_markets_seen_this_cycle }
 			}
 			add_to_global_variable_list = {
 				name = cbp_monthly_markets_seen_this_cycle
-				target = scope:modeu5_market
+				target = scope:cbp_market
 			}
 			set_global_variable = {
 				name = cbp_monthly_markets_seen_new_count
@@ -1314,13 +1314,13 @@ modeu5_mark_monthly_market_seen = {
 				NOT = {
 					is_target_in_global_variable_list = {
 						name = cbp_monthly_markets_seen_this_cycle
-						target = scope:modeu5_market
+						target = scope:cbp_market
 					}
 				}
 			}
 			add_to_global_variable_list = {
 				name = cbp_monthly_markets_seen_this_cycle
-				target = scope:modeu5_market
+				target = scope:cbp_market
 			}
 			set_global_variable = {
 				name = cbp_monthly_markets_seen_new_count
@@ -1349,25 +1349,25 @@ modeu5_mark_monthly_market_seen = {
 	}
 }
 
-modeu5_run_fresh_opening_stock_initialization = {
-	modeu5_initialization_prepare_counters = yes
-	modeu5_initialize_storage_capacities = yes
-	modeu5_prepare_reconciliation_controller = yes
+cbp_run_fresh_opening_stock_initialization = {
+	cbp_initialization_prepare_counters = yes
+	cbp_initialize_storage_capacities = yes
+	cbp_prepare_reconciliation_controller = yes
 	if = {
-		limit = { exists = scope:modeu5_reconciliation_controller }
-		modeu5_initialize_opening_stocks = yes
+		limit = { exists = scope:cbp_reconciliation_controller }
+		cbp_initialize_opening_stocks = yes
 	}
 	else = {
-		modeu5_initialization_mark_failure = { code = 19 }
+		cbp_initialization_mark_failure = { code = 19 }
 		error_log = "ModeU5 CORE-02 opening stock initialization could not find a country scope for consistency debug."
 	}
-	modeu5_initialization_finalize_counters = yes
+	cbp_initialization_finalize_counters = yes
 }
 
-modeu5_commit_successful_initialization = {
+cbp_commit_successful_initialization = {
 	set_global_variable = {
 		name = cbp_stock_schema_version
-		value = modeu5_current_stock_schema_version
+		value = cbp_current_stock_schema_version
 	}
 	set_global_variable = {
 		name = cbp_initialization_state
@@ -1380,7 +1380,7 @@ modeu5_commit_successful_initialization = {
 	debug_log = "ModeU5 CORE-02 opening stock initialization completed."
 }
 
-modeu5_fail_initialization = {
+cbp_fail_initialization = {
 	set_global_variable = {
 		name = cbp_initialization_state
 		value = -1
@@ -1389,39 +1389,39 @@ modeu5_fail_initialization = {
 		name = cbp_initialization_last_mode
 		value = -1
 	}
-	error_log = "ModeU5 CORE-02 opening stock initialization failed; inspect modeu5_initialization_* globals."
+	error_log = "ModeU5 CORE-02 opening stock initialization failed; inspect cbp_initialization_* globals."
 }
 
-modeu5_start_game_stock_initialization_dispatcher = {
+cbp_start_game_stock_initialization_dispatcher = {
 	if = {
-		limit = { modeu5_stock_runtime_ready_trigger = yes }
+		limit = { cbp_stock_runtime_ready_trigger = yes }
 		set_global_variable = {
 			name = cbp_initialization_last_mode
 			value = 2
 		}
 	}
 	else_if = {
-		limit = { modeu5_initialization_not_started_trigger = yes }
+		limit = { cbp_initialization_not_started_trigger = yes }
 		set_global_variable = {
 			name = cbp_initialization_state
 			value = 1
 		}
-		modeu5_run_fresh_opening_stock_initialization = yes
+		cbp_run_fresh_opening_stock_initialization = yes
 		if = {
 			limit = { has_global_variable = cbp_initialization_failure_detected }
-			modeu5_fail_initialization = yes
+			cbp_fail_initialization = yes
 		}
 		else = {
-			modeu5_commit_successful_initialization = yes
+			cbp_commit_successful_initialization = yes
 		}
 	}
 	else_if = {
-		limit = { modeu5_initialization_in_progress_trigger = yes }
-		modeu5_initialization_mark_failure = { code = 20 }
-		modeu5_fail_initialization = yes
+		limit = { cbp_initialization_in_progress_trigger = yes }
+		cbp_initialization_mark_failure = { code = 20 }
+		cbp_fail_initialization = yes
 	}
 	else_if = {
-		limit = { modeu5_initialization_failed_trigger = yes }
+		limit = { cbp_initialization_failed_trigger = yes }
 		set_global_variable = {
 			name = cbp_initialization_last_mode
 			value = -1
@@ -1431,35 +1431,35 @@ modeu5_start_game_stock_initialization_dispatcher = {
 	else_if = {
 		limit = {
 			has_global_variable = cbp_stock_schema_version
-			global_var:cbp_stock_schema_version = modeu5_current_stock_schema_version
+			global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
 		}
-		modeu5_initialization_mark_failure = { code = 21 }
-		modeu5_fail_initialization = yes
+		cbp_initialization_mark_failure = { code = 21 }
+		cbp_fail_initialization = yes
 	}
 	else = {
-		modeu5_initialization_mark_failure = { code = 22 }
-		modeu5_fail_initialization = yes
+		cbp_initialization_mark_failure = { code = 22 }
+		cbp_fail_initialization = yes
 	}
 }
 
 # US-11
 
-modeu5_prepare_reconciliation_controller = {
+cbp_prepare_reconciliation_controller = {
 	if = {
-		limit = { NOT = { exists = scope:modeu5_reconciliation_controller } }
+		limit = { NOT = { exists = scope:cbp_reconciliation_controller } }
 		remove_global_variable = cbp_reconciliation_controller_selected
 		every_country = {
 			limit = {
 				NOT = { has_global_variable = cbp_reconciliation_controller_selected }
 			}
-			save_temporary_scope_as = modeu5_reconciliation_controller
+			save_temporary_scope_as = cbp_reconciliation_controller
 			set_global_variable = cbp_reconciliation_controller_selected
 		}
 		remove_global_variable = cbp_reconciliation_controller_selected
 	}
 }
 
-modeu5_reconciliation_prepare = {
+cbp_reconciliation_prepare = {
 	set_local_variable = {
 		name = cbp_reconciliation_records_checked
 		value = 0
@@ -1478,7 +1478,7 @@ modeu5_reconciliation_prepare = {
 	}
 }
 
-modeu5_reconciliation_accumulate_last_validation = {
+cbp_reconciliation_accumulate_last_validation = {
 	change_local_variable = {
 		name = cbp_reconciliation_records_checked
 		add = 1
@@ -1497,30 +1497,30 @@ modeu5_reconciliation_accumulate_last_validation = {
 	}
 }
 
-modeu5_reconciliation_finalize = {
+cbp_reconciliation_finalize = {
 	save_temporary_scope_value_as = {
 		name = cbp_reconciliation_records_checked_result
-		value = local_var:modeu5_reconciliation_records_checked
+		value = local_var:cbp_reconciliation_records_checked
 	}
 	save_temporary_scope_value_as = {
 		name = cbp_reconciliation_inconsistencies_found_result
-		value = local_var:modeu5_reconciliation_inconsistencies_found
+		value = local_var:cbp_reconciliation_inconsistencies_found
 	}
 	save_temporary_scope_value_as = {
 		name = cbp_reconciliation_rebuilds_called_result
-		value = local_var:modeu5_reconciliation_rebuilds_called
+		value = local_var:cbp_reconciliation_rebuilds_called
 	}
 	save_temporary_scope_value_as = {
 		name = cbp_reconciliation_failures_result
-		value = local_var:modeu5_reconciliation_failures
+		value = local_var:cbp_reconciliation_failures
 	}
 
 	if = {
 		limit = {
-			modeu5_debug_capture_enabled_trigger = yes
-			exists = scope:modeu5_reconciliation_controller
+			cbp_debug_capture_enabled_trigger = yes
+			exists = scope:cbp_reconciliation_controller
 		}
-		scope:modeu5_reconciliation_controller = {
+		scope:cbp_reconciliation_controller = {
 			set_variable = {
 				name = cbp_debug_last_reconciliation_type
 				value = scope:cbp_reconciliation_type
@@ -1558,25 +1558,25 @@ modeu5_reconciliation_finalize = {
 	}
 }
 
-modeu5_run_monthly_stock_cycle = {
+cbp_run_monthly_stock_cycle = {
 	if = {
-		limit = { modeu5_stock_runtime_ready_trigger = yes }
-		modeu5_prepare_performance_mode_human_relevant_markets = yes
-		modeu5_run_monthly_capacity_refresh_for_current_country = yes
-		modeu5_prepare_monthly_market_seen_registry = yes
-		modeu5_prepare_human_relevant_full_ledger_markets = yes
-		save_temporary_scope_as = modeu5_country
-		modeu5_run_monthly_promoted_market_local_cycle = yes
-		modeu5_run_monthly_country_trade_owner_cycle = yes
-		modeu5_note_promoted_market_live_trade_owner_pass = yes
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		cbp_prepare_performance_mode_human_relevant_markets = yes
+		cbp_run_monthly_capacity_refresh_for_current_country = yes
+		cbp_prepare_monthly_market_seen_registry = yes
+		cbp_prepare_human_relevant_full_ledger_markets = yes
+		save_temporary_scope_as = cbp_country
+		cbp_run_monthly_promoted_market_local_cycle = yes
+		cbp_run_monthly_country_trade_owner_cycle = yes
+		cbp_note_promoted_market_live_trade_owner_pass = yes
 		if = {
-			limit = { modeu5_audit_enabled_trigger = yes }
-			modeu5_run_monthly_stock_reconciliation_once = yes
+			limit = { cbp_audit_enabled_trigger = yes }
+			cbp_run_monthly_stock_reconciliation_once = yes
 		}
 	}
 	else = {
 		if = {
-			limit = { modeu5_debug_capture_enabled_trigger = yes }
+			limit = { cbp_debug_capture_enabled_trigger = yes }
 			set_variable = {
 				name = cbp_debug_last_monthly_capacity_refresh_gate_passed
 				value = 0
@@ -1585,13 +1585,13 @@ modeu5_run_monthly_stock_cycle = {
 	}
 }
 
-modeu5_run_monthly_stock_reconciliation_once = {
+cbp_run_monthly_stock_reconciliation_once = {
 	if = {
 		limit = {
-			modeu5_stock_runtime_ready_trigger = yes
-			modeu5_audit_enabled_trigger = yes
+			cbp_stock_runtime_ready_trigger = yes
+			cbp_audit_enabled_trigger = yes
 		}
-		save_temporary_scope_as = modeu5_reconciliation_controller
+		save_temporary_scope_as = cbp_reconciliation_controller
 		save_temporary_scope_value_as = {
 			name = cbp_reconciliation_month_stamp
 			value = {
@@ -1608,9 +1608,9 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				name = cbp_last_monthly_reconciliation_stamp
 				value = scope:cbp_reconciliation_month_stamp
 			}
-			modeu5_run_allowed_stock_consistency_validation = yes
+			cbp_run_allowed_stock_consistency_validation = yes
 			if = {
-				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				limit = { cbp_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = cbp_debug_last_reconciliation_cycle_stamp
 					value = scope:cbp_reconciliation_month_stamp
@@ -1629,9 +1629,9 @@ modeu5_run_monthly_stock_reconciliation_once = {
 				name = cbp_last_monthly_reconciliation_stamp
 				value = scope:cbp_reconciliation_month_stamp
 			}
-			modeu5_run_allowed_stock_consistency_validation = yes
+			cbp_run_allowed_stock_consistency_validation = yes
 			if = {
-				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				limit = { cbp_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = cbp_debug_last_reconciliation_cycle_stamp
 					value = scope:cbp_reconciliation_month_stamp
@@ -1645,10 +1645,10 @@ modeu5_run_monthly_stock_reconciliation_once = {
 	}
 }
 
-modeu5_run_four_yearly_stock_reconciliation_once = {
+cbp_run_four_yearly_stock_reconciliation_once = {
 	if = {
-		limit = { modeu5_stock_runtime_ready_trigger = yes }
-		save_temporary_scope_as = modeu5_reconciliation_controller
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = cbp_reconciliation_controller
 		save_temporary_scope_value_as = {
 			name = cbp_reconciliation_four_year_stamp
 			value = current_year
@@ -1661,9 +1661,9 @@ modeu5_run_four_yearly_stock_reconciliation_once = {
 				name = cbp_last_four_yearly_reconciliation_stamp
 				value = scope:cbp_reconciliation_four_year_stamp
 			}
-			modeu5_validate_active_stock_consistency = yes
+			cbp_validate_active_stock_consistency = yes
 			if = {
-				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				limit = { cbp_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = cbp_debug_last_reconciliation_cycle_stamp
 					value = scope:cbp_reconciliation_four_year_stamp
@@ -1682,9 +1682,9 @@ modeu5_run_four_yearly_stock_reconciliation_once = {
 				name = cbp_last_four_yearly_reconciliation_stamp
 				value = scope:cbp_reconciliation_four_year_stamp
 			}
-			modeu5_validate_active_stock_consistency = yes
+			cbp_validate_active_stock_consistency = yes
 			if = {
-				limit = { modeu5_debug_capture_enabled_trigger = yes }
+				limit = { cbp_debug_capture_enabled_trigger = yes }
 				set_variable = {
 					name = cbp_debug_last_reconciliation_cycle_stamp
 					value = scope:cbp_reconciliation_four_year_stamp
@@ -1699,13 +1699,13 @@ modeu5_run_four_yearly_stock_reconciliation_once = {
 }
 
 # Test-only fault injection used to prove CORE-01.6 repairs the market cache.
-modeu5_debug_corrupt_market_stock_for_test = {
-	$market$ = { save_temporary_scope_as = modeu5_market }
-	goods:$good$ = { save_temporary_scope_as = modeu5_good }
+cbp_debug_corrupt_market_stock_for_test = {
+	$market$ = { save_temporary_scope_as = cbp_market }
+	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = {
 		name = cbp_debug_corrupted_market_stock
 		value = $value$
 	}
 
-	modeu5_debug_corrupt_market_stock_good_$good$ = yes
+	cbp_debug_corrupt_market_stock_good_$good$ = yes
 }

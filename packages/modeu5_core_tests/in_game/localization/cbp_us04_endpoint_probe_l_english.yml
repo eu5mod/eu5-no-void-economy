@@ -1,5 +1,5 @@
 ﻿l_english:
- modeu5_us04_debug.1.b: "Probe live Pop-demand endpoint"
- modeu5_us04_debug.1.c: "Probe Estate-level location accounting"
- modeu5_us04_debug.1.d: "Probe startup multiplier init"
- modeu5_us04_debug.1.e: "Run full additive Pop-demand injection matrix"
+ cbp_us04_debug.1.b: "Probe live Pop-demand endpoint"
+ cbp_us04_debug.1.c: "Probe Estate-level location accounting"
+ cbp_us04_debug.1.d: "Probe startup multiplier init"
+ cbp_us04_debug.1.e: "Run full additive Pop-demand injection matrix"

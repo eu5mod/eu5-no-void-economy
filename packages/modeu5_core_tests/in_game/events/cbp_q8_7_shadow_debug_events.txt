@@ -1,9 +1,9 @@
-namespace = modeu5_q8_probe_debug
+namespace = cbp_q8_probe_debug
 
-modeu5_q8_probe_debug.3 = {
+cbp_q8_probe_debug.3 = {
 	type = country_event
-	title = modeu5_q8_probe_debug.3.title
-	desc = modeu5_q8_probe_debug.3.desc
+	title = cbp_q8_probe_debug.3.title
+	desc = cbp_q8_probe_debug.3.desc
 	outcome = neutral
 	orphan = yes
 
@@ -12,19 +12,19 @@ modeu5_q8_probe_debug.3 = {
 	}
 
 	option = {
-		name = modeu5_q8_probe_debug.3.a
-		modeu5_q8_7_probe_shadow_market_local_dispatcher = yes
-		trigger_event_non_silently = modeu5_q8_probe_debug.4
+		name = cbp_q8_probe_debug.3.a
+		cbp_q8_7_probe_shadow_market_local_dispatcher = yes
+		trigger_event_non_silently = cbp_q8_probe_debug.4
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_q8_probe_debug.4 = {
+cbp_q8_probe_debug.4 = {
 	type = country_event
-	title = modeu5_q8_probe_debug.4.title
-	desc = modeu5_q8_probe_debug.4.desc
+	title = cbp_q8_probe_debug.4.title
+	desc = cbp_q8_probe_debug.4.desc
 	outcome = neutral
 
 	trigger = {
@@ -32,22 +32,22 @@ modeu5_q8_probe_debug.4 = {
 	}
 
 	option = {
-		name = modeu5_q8_probe_debug.result.q87_shadow.pass
+		name = cbp_q8_probe_debug.result.q87_shadow.pass
 		trigger = { has_global_variable = test_cbp_q8_7_shadow_dispatcher_passed }
 	}
 	option = {
-		name = modeu5_q8_probe_debug.result.q87_shadow.fail
+		name = cbp_q8_probe_debug.result.q87_shadow.fail
 		trigger = { has_global_variable = test_cbp_q8_7_shadow_dispatcher_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_q8_probe_debug.5 = {
+cbp_q8_probe_debug.5 = {
 	type = country_event
-	title = modeu5_q8_probe_debug.5.title
-	desc = modeu5_q8_probe_debug.5.desc
+	title = cbp_q8_probe_debug.5.title
+	desc = cbp_q8_probe_debug.5.desc
 	outcome = neutral
 	orphan = yes
 
@@ -56,7 +56,7 @@ modeu5_q8_probe_debug.5 = {
 	}
 
 	option = {
-		name = modeu5_q8_probe_debug.5.a
+		name = cbp_q8_probe_debug.5.a
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 0 }
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = 1 }
 		if = {
@@ -70,18 +70,18 @@ modeu5_q8_probe_debug.5 = {
 			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
 		}
-		modeu5_q8_7_probe_shadow_market_center_global_equivalence = yes
-		trigger_event_non_silently = modeu5_q8_probe_debug.6
+		cbp_q8_7_probe_shadow_market_center_global_equivalence = yes
+		trigger_event_non_silently = cbp_q8_probe_debug.6
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }
 
-modeu5_q8_probe_debug.6 = {
+cbp_q8_probe_debug.6 = {
 	type = country_event
-	title = modeu5_q8_probe_debug.6.title
-	desc = modeu5_q8_probe_debug.6.desc
+	title = cbp_q8_probe_debug.6.title
+	desc = cbp_q8_probe_debug.6.desc
 	outcome = neutral
 
 	trigger = {
@@ -89,14 +89,14 @@ modeu5_q8_probe_debug.6 = {
 	}
 
 	option = {
-		name = modeu5_q8_probe_debug.result.q87_shadow_compare.pass
+		name = cbp_q8_probe_debug.result.q87_shadow_compare.pass
 		trigger = { has_global_variable = test_cbp_q8_7_shadow_comparison_passed }
 	}
 	option = {
-		name = modeu5_q8_probe_debug.result.q87_shadow_compare.fail
+		name = cbp_q8_probe_debug.result.q87_shadow_compare.fail
 		trigger = { has_global_variable = test_cbp_q8_7_shadow_comparison_failed }
 	}
 	option = {
-		name = modeu5_debug.close
+		name = cbp_debug.close
 	}
 }

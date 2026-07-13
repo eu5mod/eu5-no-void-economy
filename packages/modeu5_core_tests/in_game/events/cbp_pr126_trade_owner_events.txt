@@ -1,18 +1,18 @@
-namespace = modeu5_pr126_trade_owner
+namespace = cbp_pr126_trade_owner
 
-modeu5_pr126_trade_owner.1 = {
+cbp_pr126_trade_owner.1 = {
 	type = country_event
-	title = modeu5_pr126_trade_owner.1.title
-	desc = modeu5_pr126_trade_owner.1.desc
+	title = cbp_pr126_trade_owner.1.title
+	desc = cbp_pr126_trade_owner.1.desc
 	outcome = neutral
 	orphan = yes
 
 	trigger = { always = no }
 
 	option = {
-		name = modeu5_pr126_trade_owner.1.a
-		modeu5_enter_test_audit_runtime_mode = yes
-		modeu5_debug_run_pr126_country_trade_owner_pass_test = yes
+		name = cbp_pr126_trade_owner.1.a
+		cbp_enter_test_audit_runtime_mode = yes
+		cbp_debug_run_pr126_country_trade_owner_pass_test = yes
 	}
-	option = { name = modeu5_debug.close }
+	option = { name = cbp_debug.close }
 }
