@@ -98,6 +98,7 @@ def main() -> int:
     q9_candidate = read("docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_09_replace_pop_demand_books.txt")
     q9_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q9_replace_pop_demand_test_effects.txt")
     q9_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_q9_debug_events.txt")
+    q11_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q11_pop_demand_read_probe_effects.txt")
     debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
     localization = read("packages/cbp_core_tests/in_game/localization/cbp_us04_endpoint_probe_l_english.yml")
     summarizer = read("tools/summarize_cbp_logs.sh")
@@ -253,6 +254,17 @@ def main() -> int:
     expect("cbp_us04_q9_debug.1" in q9_debug_events and "cbp_us04_q9_debug.3" in q9_debug_events, "Q9 isolated console event chain must be present")
     expect("id = cbp_us04_q9_debug.3 days = 35" in q9_debug_events, "Q9 must wait across a monthly tick before final capture")
     expect("cbp_us04_q9_replace" not in debug_events, "Normal core test launcher must not reference isolated Q9 effects")
+    q11_executable = "\n".join(executable_lines(q11_test))
+    for invalid_syntax in [
+        "pop_demand(goods:",
+        "demand:pop_demand(goods:",
+        "pop_demand:books",
+        "pop_demand:wheat",
+        ".pop_demand(goods:",
+    ]:
+        expect(invalid_syntax not in q11_executable, f"Q11 loaded probe must not execute archived invalid syntax: {invalid_syntax}")
+    expect("reason=direct_pop_demand_read_not_confirmed" in q11_test, "Q11 loaded probe must report blocked direct Pop-demand reads")
+    expect("no_invalid_value_links_executed=1" in q11_test, "Q11 loaded probe must explicitly report that invalid value links were not executed")
 
     expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
     expect("VANILLA DEMAND" in summarizer, "Summarizer must include US-04 vanilla-demand probe lines")

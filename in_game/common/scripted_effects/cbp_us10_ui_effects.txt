@@ -421,6 +421,6 @@ cbp_us10_ui_prepare_current_market_table = {
 
 cbp_us10_ui_log_table = {
 	scope:cbp_us10_ui_country = {
-		debug_log = "ModeU5 US-10-UI TABLE market_index=[THIS.GetVariable('cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('cbp_us10_ui_selected_market_available').GetValue|0]"
+		debug_log = "ModeU5 US-10-UI TABLE market_index=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('gui_cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_available').GetValue|0]"
 	}
 }

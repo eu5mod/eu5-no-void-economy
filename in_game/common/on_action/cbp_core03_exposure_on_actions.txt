@@ -33,7 +33,7 @@ cbp_core03_probe_new_country_formed = {
 	}
 	on_actions = {
 		delay = { days = 1 }
-		cbp_core03_probe_delayed_country_finalizer
+		cbp_core03_probe_delayed_new_country_finalizer
 	}
 }
 
@@ -63,7 +63,7 @@ cbp_core03_probe_annexed = {
 	}
 	on_actions = {
 		delay = { days = 1 }
-		cbp_core03_probe_delayed_country_finalizer
+		cbp_core03_probe_delayed_annexation_finalizer
 	}
 }
 
@@ -106,7 +106,14 @@ cbp_core03_probe_civil_war_annexed = {
 	}
 }
 
-cbp_core03_probe_delayed_country_finalizer = {
+cbp_core03_probe_delayed_new_country_finalizer = {
+	effect = {
+		cbp_core03_probe_record_delayed_country_finalizer = yes
+		cbp_core03_handle_new_country_finalizer = yes
+	}
+}
+
+cbp_core03_probe_delayed_annexation_finalizer = {
 	effect = {
 		cbp_core03_probe_record_delayed_country_finalizer = yes
 		cbp_core03_handle_new_country_finalizer = yes
