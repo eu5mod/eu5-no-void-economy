@@ -364,6 +364,38 @@ def validate_perf14_test_contract(perf14_text: str, stock_loc: str) -> None:
         "THIS.GetVariable('cbp_perf14_ui_" not in stock_loc,
         "PERF-14 localization dumps must read gui_cbp_perf14_ui* variables, matching the variables they set",
     )
+    expect(
+        "cbp_no_void_economy_main" not in perf14_text,
+        "PERF-14 tests must use the current CMM main-mode setting id, not legacy cbp_no_void_economy_main",
+    )
+
+
+def validate_us04_debug_event_contract(us04_debug_events: str) -> None:
+    def event_block(event_id: str) -> str:
+        return block(us04_debug_events, event_id)
+
+    for event_id in [
+        "cbp_us04_debug.31",
+        "cbp_us04_debug.32",
+        "cbp_us04_debug.40",
+        "cbp_us04_debug.51",
+        "cbp_us04_debug.52",
+    ]:
+        expect("orphan = yes" not in event_block(event_id), f"{event_id} has callers and must not be scripted as orphan")
+
+    for event_id in ["cbp_us04_debug.30", "cbp_us04_debug.50"]:
+        expect("orphan = yes" in event_block(event_id), f"{event_id} is a direct-console compatibility event and should remain orphan")
+
+
+def validate_core_stock_test_contract(stock_test_effects: str) -> None:
+    expect(
+        "test_cbp_wheat_stock_by_market" not in stock_test_effects,
+        "CORE stock tests must read cbp_wheat_stock_by_market, not stale test_cbp_wheat_stock_by_market",
+    )
+    expect(
+        "test_cbp_wheat_market_stock" not in stock_test_effects,
+        "CORE stock tests must read cbp_wheat_market_stock, not stale test_cbp_wheat_market_stock",
+    )
 
 
 def main() -> int:
@@ -394,12 +426,14 @@ def main() -> int:
     owner_modifier_probe_events = read("packages/cbp_core_tests/in_game/events/cbp_us17_owner_modifier_probe_events.txt")
     owner_modifier_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt")
     us10_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us10_test_effects.txt")
+    stock_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt")
     us10_ui_effects = read("in_game/common/scripted_effects/cbp_us10_ui_effects.txt")
     us10_lateralview_gui = read("in_game/gui/cbp_us10_stock_lateralview.gui")
     us10_scripted_widget = read("in_game/gui/scripted_widgets/cbp_us10_stock.txt")
     stock_loc = read("in_game/localization/cbp_stock_l_english.yml")
     perf14_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt")
     perf14_guarded_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt")
+    us04_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
     loc = read("main_menu/localization/english/cbp__cmm_l_english.yml")
 
     validate_no_legacy_review_pop_id("\n".join([cmm_effects, runtime_effects, scripted_gui, loc, read("in_game/events/cbp_review_events.txt"), read("in_game/common/scripted_effects/cbp_review_effects.txt")]))
@@ -428,6 +462,8 @@ def main() -> int:
         stock_loc=stock_loc,
     )
     validate_perf14_test_contract(perf14_test_effects + "\n" + perf14_guarded_test_effects, stock_loc)
+    validate_us04_debug_event_contract(us04_debug_events)
+    validate_core_stock_test_contract(stock_test_effects)
 
     if failures:
         print("ModeU5 CI static contract validation failed:", file=sys.stderr)

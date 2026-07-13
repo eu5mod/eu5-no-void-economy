@@ -154,15 +154,15 @@ cbp_read_country_stock_good_wheat = {
 	$country$ = {
 		if = {
 			limit = {
-				has_variable_map = test_cbp_wheat_stock_by_market
+				has_variable_map = cbp_wheat_stock_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_wheat_stock_by_market
+					name = cbp_wheat_stock_by_market
 					target = scope:test_cbp_record_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = $output$
-				value = "variable_map(test_cbp_wheat_stock_by_market|scope:test_cbp_record_market)"
+				value = "variable_map(cbp_wheat_stock_by_market|scope:test_cbp_record_market)"
 			}
 		}
 		else = {
@@ -178,9 +178,9 @@ cbp_read_market_stock_good_wheat = {
 	$market$ = { save_temporary_scope_as = test_cbp_record_market }
 	if = {
 		limit = {
-			has_global_variable_map = test_cbp_wheat_market_stock
+			has_global_variable_map = cbp_wheat_market_stock
 			is_key_in_global_variable_map = {
-				name = test_cbp_wheat_market_stock
+				name = cbp_wheat_market_stock
 				target = scope:test_cbp_record_market
 			}
 		}
