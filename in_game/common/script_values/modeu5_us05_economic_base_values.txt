@@ -1,16 +1,48 @@
-# US-05 ModeU5 Economic Base values.
+# US-05 ModeU5 Economic Base reconciliation values.
 #
-# This file deliberately exposes the replacement base without attempting a
-# monthly gold/modifier reconciliation. The remaining integration boundary is
-# the direct Stability / legitimacy-producing Court-Government Power cost call
-# site described by TECH-01 #044.
+# Vanilla slider costs are assumed to use:
+#
+#   Tax Base + Trade Income
+#
+# ModeU5 targets:
+#
+#   Wealth + Trade Income
+#
+# For a multiplicative cost modifier applied as cost * (1 + modifier), the exact
+# reconciliation modifier is:
+#
+#   ((Wealth + Trade Income) / (Tax Base + Trade Income)) - 1
+#
+# The remaining engine boundary is identifying and validating the modifier keys
+# used by each Economic-Base-driven slider. No gold or outcome reconciliation is
+# performed here.
 
-modeu5_slider_cost_base = {
+modeu5_slider_cost_target_base = {
 	value = 0
 	if = {
 		limit = { has_variable = cbp_country_wealth_endpoint }
 		value = var:cbp_country_wealth_endpoint
 		add = monthly_trade_income
+		min = 0
+	}
+}
+
+modeu5_slider_cost_vanilla_base = {
+	value = tax_base
+	add = monthly_trade_income
+	min = 0
+}
+
+modeu5_slider_cost_reconciliation_modifier = {
+	value = 0
+	if = {
+		limit = {
+			has_variable = cbp_country_wealth_endpoint
+			modeu5_slider_cost_vanilla_base > 0
+		}
+		value = modeu5_slider_cost_target_base
+		divide = modeu5_slider_cost_vanilla_base
+		subtract = 1
 	}
 }
 
@@ -19,7 +51,13 @@ modeu5_slider_cost_base_wealth_component = {
 	if = {
 		limit = { has_variable = cbp_country_wealth_endpoint }
 		value = var:cbp_country_wealth_endpoint
+		min = 0
 	}
+}
+
+modeu5_slider_cost_base_tax_component = {
+	value = tax_base
+	min = 0
 }
 
 modeu5_slider_cost_base_trade_income_component = {
