@@ -1411,6 +1411,26 @@ cbp_repair_current_schema_runtime_marker = {
 		}
 		debug_log = "ModeU5 CORE-02 repaired missing initialization_state for current stock schema."
 	}
+	else_if = {
+		limit = {
+			has_global_variable = cbp_stock_schema_version
+			global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
+			cbp_initialization_failed_trigger = yes
+			has_global_variable = cbp_initialization_failure_code
+			global_var:cbp_initialization_failure_code = 21
+		}
+		remove_global_variable = cbp_initialization_failure_detected
+		remove_global_variable = cbp_initialization_failure_code
+		set_global_variable = {
+			name = cbp_initialization_state
+			value = 2
+		}
+		set_global_variable = {
+			name = cbp_initialization_last_mode
+			value = 5
+		}
+		debug_log = "ModeU5 CORE-02 repaired legacy current-schema initialization failure code 21."
+	}
 }
 
 cbp_start_game_stock_initialization_dispatcher = {

@@ -484,6 +484,9 @@ def validate_game_load_lifecycle_contract(
         "NOT = { cbp_initialization_complete_trigger = yes }",
         "NOT = { cbp_initialization_in_progress_trigger = yes }",
         "NOT = { cbp_initialization_failed_trigger = yes }",
+        "global_var:cbp_initialization_failure_code = 21",
+        "remove_global_variable = cbp_initialization_failure_detected",
+        "remove_global_variable = cbp_initialization_failure_code",
         "name = cbp_initialization_state",
         "value = 2",
     ]:

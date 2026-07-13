@@ -23,8 +23,10 @@ The repair path is deliberately conservative: it makes the same loaded package s
 - initialize stock only when the stock schema has not started;
 - repair legacy/current-schema saves where `cbp_stock_schema_version` is current
   but `cbp_initialization_state` is missing or non-standard;
+- repair the legacy current-schema failure code `21`, which was produced by an
+  earlier dispatcher when only the readiness marker was missing;
 - leave ready stock state untouched;
-- leave failed or incompatible stock state fail-closed;
+- leave other failed or incompatible stock states fail-closed;
 - refresh CORE-04 location market memory only after stock runtime readiness;
 - rewrite optional package markers for packages that are currently loaded.
 
@@ -58,8 +60,11 @@ The repair path is deliberately conservative: it makes the same loaded package s
 5. If `cbp_stock_schema_version` already matches the current schema and the
    state is neither failed nor in-progress, load repair may restore
    `cbp_initialization_state = 2` without touching stock maps.
-6. CORE-04 location market memory is refreshed only when `cbp_stock_runtime_ready_trigger = yes`.
-7. Optional package load hooks repair package presence/version markers only for packages actually loaded in the current playset.
+6. If the state is failed only because of legacy failure code `21`, load repair
+   may clear that failure marker and restore `cbp_initialization_state = 2`
+   without touching stock maps.
+7. CORE-04 location market memory is refreshed only when `cbp_stock_runtime_ready_trigger = yes`.
+8. Optional package load hooks repair package presence/version markers only for packages actually loaded in the current playset.
 
 ## Unsupported Case
 
