@@ -2,518 +2,518 @@
 # Do not edit manually.
 # One location static modifier per good so add_location_modifier can use literal identifiers.
 
-modeu5_cotton_production_penalty_modifier = {
+cbp_cotton_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_cotton_output_modifier = 1
 }
 
-modeu5_sugar_production_penalty_modifier = {
+cbp_sugar_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_sugar_output_modifier = 1
 }
 
-modeu5_tobacco_production_penalty_modifier = {
+cbp_tobacco_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_tobacco_output_modifier = 1
 }
 
-modeu5_tar_production_penalty_modifier = {
+cbp_tar_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_tar_output_modifier = 1
 }
 
-modeu5_porcelain_production_penalty_modifier = {
+cbp_porcelain_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_porcelain_output_modifier = 1
 }
 
-modeu5_naval_supplies_production_penalty_modifier = {
+cbp_naval_supplies_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_naval_supplies_output_modifier = 1
 }
 
-modeu5_firearms_production_penalty_modifier = {
+cbp_firearms_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_firearms_output_modifier = 1
 }
 
-modeu5_cannons_production_penalty_modifier = {
+cbp_cannons_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_cannons_output_modifier = 1
 }
 
-modeu5_weaponry_production_penalty_modifier = {
+cbp_weaponry_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_weaponry_output_modifier = 1
 }
 
-modeu5_glass_production_penalty_modifier = {
+cbp_glass_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_glass_output_modifier = 1
 }
 
-modeu5_steel_production_penalty_modifier = {
+cbp_steel_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_steel_output_modifier = 1
 }
 
-modeu5_cloth_production_penalty_modifier = {
+cbp_cloth_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_cloth_output_modifier = 1
 }
 
-modeu5_fine_cloth_production_penalty_modifier = {
+cbp_fine_cloth_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_fine_cloth_output_modifier = 1
 }
 
-modeu5_liquor_production_penalty_modifier = {
+cbp_liquor_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_liquor_output_modifier = 1
 }
 
-modeu5_beer_production_penalty_modifier = {
+cbp_beer_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_beer_output_modifier = 1
 }
 
-modeu5_paper_production_penalty_modifier = {
+cbp_paper_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_paper_output_modifier = 1
 }
 
-modeu5_books_production_penalty_modifier = {
+cbp_books_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_books_output_modifier = 1
 }
 
-modeu5_jewelry_production_penalty_modifier = {
+cbp_jewelry_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_jewelry_output_modifier = 1
 }
 
-modeu5_leather_production_penalty_modifier = {
+cbp_leather_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_leather_output_modifier = 1
 }
 
-modeu5_tools_production_penalty_modifier = {
+cbp_tools_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_tools_output_modifier = 1
 }
 
-modeu5_masonry_production_penalty_modifier = {
+cbp_masonry_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_masonry_output_modifier = 1
 }
 
-modeu5_lacquerware_production_penalty_modifier = {
+cbp_lacquerware_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_lacquerware_output_modifier = 1
 }
 
-modeu5_pottery_production_penalty_modifier = {
+cbp_pottery_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_pottery_output_modifier = 1
 }
 
-modeu5_furniture_production_penalty_modifier = {
+cbp_furniture_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_furniture_output_modifier = 1
 }
 
-modeu5_horses_production_penalty_modifier = {
+cbp_horses_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_horses_output_modifier = 1
 }
 
-modeu5_clay_production_penalty_modifier = {
+cbp_clay_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_clay_output_modifier = 1
 }
 
-modeu5_sand_production_penalty_modifier = {
+cbp_sand_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_sand_output_modifier = 1
 }
 
-modeu5_coal_production_penalty_modifier = {
+cbp_coal_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_coal_output_modifier = 1
 }
 
-modeu5_iron_production_penalty_modifier = {
+cbp_iron_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_iron_output_modifier = 1
 }
 
-modeu5_copper_production_penalty_modifier = {
+cbp_copper_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_copper_output_modifier = 1
 }
 
-modeu5_goods_gold_production_penalty_modifier = {
+cbp_goods_gold_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_goods_gold_output_modifier = 1
 }
 
-modeu5_silver_production_penalty_modifier = {
+cbp_silver_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_silver_output_modifier = 1
 }
 
-modeu5_stone_production_penalty_modifier = {
+cbp_stone_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_stone_output_modifier = 1
 }
 
-modeu5_tin_production_penalty_modifier = {
+cbp_tin_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_tin_output_modifier = 1
 }
 
-modeu5_lead_production_penalty_modifier = {
+cbp_lead_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_lead_output_modifier = 1
 }
 
-modeu5_silk_production_penalty_modifier = {
+cbp_silk_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_silk_output_modifier = 1
 }
 
-modeu5_dyes_production_penalty_modifier = {
+cbp_dyes_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_dyes_output_modifier = 1
 }
 
-modeu5_incense_production_penalty_modifier = {
+cbp_incense_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_incense_output_modifier = 1
 }
 
-modeu5_tea_production_penalty_modifier = {
+cbp_tea_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_tea_output_modifier = 1
 }
 
-modeu5_cocoa_production_penalty_modifier = {
+cbp_cocoa_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_cocoa_output_modifier = 1
 }
 
-modeu5_coffee_production_penalty_modifier = {
+cbp_coffee_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_coffee_output_modifier = 1
 }
 
-modeu5_fiber_crops_production_penalty_modifier = {
+cbp_fiber_crops_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_fiber_crops_output_modifier = 1
 }
 
-modeu5_ivory_production_penalty_modifier = {
+cbp_ivory_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_ivory_output_modifier = 1
 }
 
-modeu5_lumber_production_penalty_modifier = {
+cbp_lumber_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_lumber_output_modifier = 1
 }
 
-modeu5_salt_production_penalty_modifier = {
+cbp_salt_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_salt_output_modifier = 1
 }
 
-modeu5_medicaments_production_penalty_modifier = {
+cbp_medicaments_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_medicaments_output_modifier = 1
 }
 
-modeu5_gems_production_penalty_modifier = {
+cbp_gems_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_gems_output_modifier = 1
 }
 
-modeu5_pearls_production_penalty_modifier = {
+cbp_pearls_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_pearls_output_modifier = 1
 }
 
-modeu5_amber_production_penalty_modifier = {
+cbp_amber_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_amber_output_modifier = 1
 }
 
-modeu5_saltpeter_production_penalty_modifier = {
+cbp_saltpeter_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_saltpeter_output_modifier = 1
 }
 
-modeu5_alum_production_penalty_modifier = {
+cbp_alum_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_alum_output_modifier = 1
 }
 
-modeu5_wine_production_penalty_modifier = {
+cbp_wine_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_wine_output_modifier = 1
 }
 
-modeu5_elephants_production_penalty_modifier = {
+cbp_elephants_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_elephants_output_modifier = 1
 }
 
-modeu5_marble_production_penalty_modifier = {
+cbp_marble_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_marble_output_modifier = 1
 }
 
-modeu5_mercury_production_penalty_modifier = {
+cbp_mercury_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_mercury_output_modifier = 1
 }
 
-modeu5_saffron_production_penalty_modifier = {
+cbp_saffron_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_saffron_output_modifier = 1
 }
 
-modeu5_pepper_production_penalty_modifier = {
+cbp_pepper_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_pepper_output_modifier = 1
 }
 
-modeu5_cloves_production_penalty_modifier = {
+cbp_cloves_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_cloves_output_modifier = 1
 }
 
-modeu5_chili_production_penalty_modifier = {
+cbp_chili_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_chili_output_modifier = 1
 }
 
-modeu5_wool_production_penalty_modifier = {
+cbp_wool_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_wool_output_modifier = 1
 }
 
-modeu5_wild_game_production_penalty_modifier = {
+cbp_wild_game_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_wild_game_output_modifier = 1
 }
 
-modeu5_fur_production_penalty_modifier = {
+cbp_fur_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_fur_output_modifier = 1
 }
 
-modeu5_fish_production_penalty_modifier = {
+cbp_fish_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_fish_output_modifier = 1
 }
 
-modeu5_wheat_production_penalty_modifier = {
+cbp_wheat_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_wheat_output_modifier = 1
 }
 
-modeu5_maize_production_penalty_modifier = {
+cbp_maize_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_maize_output_modifier = 1
 }
 
-modeu5_rice_production_penalty_modifier = {
+cbp_rice_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_rice_output_modifier = 1
 }
 
-modeu5_millet_production_penalty_modifier = {
+cbp_millet_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_millet_output_modifier = 1
 }
 
-modeu5_legumes_production_penalty_modifier = {
+cbp_legumes_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_legumes_output_modifier = 1
 }
 
-modeu5_potato_production_penalty_modifier = {
+cbp_potato_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_potato_output_modifier = 1
 }
 
-modeu5_livestock_production_penalty_modifier = {
+cbp_livestock_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_livestock_output_modifier = 1
 }
 
-modeu5_olives_production_penalty_modifier = {
+cbp_olives_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_olives_output_modifier = 1
 }
 
-modeu5_fruit_production_penalty_modifier = {
+cbp_fruit_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_fruit_output_modifier = 1
 }
 
-modeu5_beeswax_production_penalty_modifier = {
+cbp_beeswax_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}
 	local_beeswax_output_modifier = 1
 }
 
-modeu5_slaves_goods_production_penalty_modifier = {
+cbp_slaves_goods_production_penalty_modifier = {
 	game_data = {
 		category = location
 	}

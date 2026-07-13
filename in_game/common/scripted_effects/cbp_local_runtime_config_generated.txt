@@ -7,6 +7,6 @@
 # This decouples ModeU5 debug runtime from the EU5 engine --debug_mode launch
 # argument. Use .modeu5.local.env to choose ModeU5 debug behaviour explicitly.
 
-modeu5_apply_generated_local_runtime_mode = {
-	modeu5_enter_debug_runtime_mode = yes
+cbp_apply_generated_local_runtime_mode = {
+	cbp_enter_debug_runtime_mode = yes
 }

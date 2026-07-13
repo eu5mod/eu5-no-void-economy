@@ -18,7 +18,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-SOURCE_PREFIX = "cbp_"
+SOURCE_PREFIX = "nve_"
 TARGET_PREFIX = "cbp_"
 ROOT = Path(__file__).resolve().parents[1]
 
