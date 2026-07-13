@@ -130,6 +130,57 @@ modeu5_revalidate_run_us10_ui_visibility = {
 	else = { set_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed }
 }
 
+modeu5_revalidate2_run_us04_suite = {
+	remove_global_variable = test_cbp_revalidation2_us04_suite_passed
+	remove_global_variable = test_cbp_revalidation2_us04_suite_failed
+	remove_global_variable = test_cbp_revalidation2_us04_suite_blocked
+
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_revalidate2_suite"
+	modeu5_debug_run_us04_pop_demand_adaptation_test = yes
+	modeu5_debug_run_us04_pop_demand_endpoint_test = yes
+	modeu5_debug_run_us04_estate_level_accounting_probe = yes
+	modeu5_debug_run_us04_initialization_test = yes
+
+	if = {
+		limit = {
+			OR = {
+				has_global_variable = modeu5_test_us04_pop_demand_adaptation_failed
+				has_global_variable = modeu5_test_us04_pop_demand_endpoint_failed
+				has_global_variable = modeu5_test_us04_estate_level_accounting_failed
+				has_global_variable = modeu5_test_us04_pop_demand_initialization_failed
+			}
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us04_revalidate2_suite"
+	}
+	else_if = {
+		limit = {
+			OR = {
+				has_global_variable = modeu5_test_us04_pop_demand_adaptation_blocked
+				has_global_variable = modeu5_test_us04_pop_demand_endpoint_blocked
+				has_global_variable = modeu5_test_us04_estate_level_accounting_blocked
+				has_global_variable = modeu5_test_us04_pop_demand_initialization_blocked
+			}
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_revalidate2_suite reason=one_or_more_us04_tests_blocked"
+	}
+	else_if = {
+		limit = {
+			has_global_variable = modeu5_test_us04_pop_demand_adaptation_passed
+			has_global_variable = modeu5_test_us04_pop_demand_endpoint_passed
+			has_global_variable = modeu5_test_us04_estate_level_accounting_passed
+			has_global_variable = modeu5_test_us04_pop_demand_initialization_passed
+		}
+		set_global_variable = test_cbp_revalidation2_us04_suite_passed
+		debug_log = "ModeU5 TEST PASS scenario=us04_revalidate2_suite"
+	}
+	else = {
+		set_global_variable = test_cbp_revalidation2_us04_suite_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us04_revalidate2_suite reason=missing_us04_result_marker"
+	}
+}
+
 modeu5_revalidate_run_perf10_13_active_repair_metrics = {
 	debug_log = "ModeU5 TEST ENTERED scenario=perf10_13_active_repair_metrics"
 	modeu5_debug_run_perf10_13_active_repair_metrics_probe = yes

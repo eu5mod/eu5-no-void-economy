@@ -1,0 +1,202 @@
+namespace = modeu5_us04_debug
+
+# Visible console launchers schedule hidden continuations so debug_log runs
+# outside the console command's localization-disabled context.
+#
+# Keep the visible menu to four business options plus Close. The EU5 event UI on
+# some resolutions did not expose the fifth business option reliably.
+# The full additive syntax matrix is historical. It requires the isolated
+# modeu5_core_tests_q9 package and remains available directly via:
+#   event modeu5_us04_debug.30
+
+modeu5_us04_debug.1 = {
+	type = country_event
+	title = modeu5_us04_debug.1.title
+	desc = modeu5_us04_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_us04_debug.1.a
+		trigger_event_non_silently = { id = modeu5_us04_debug.10 days = 0 }
+	}
+	option = {
+		name = modeu5_us04_debug.1.b
+		trigger_event_non_silently = { id = modeu5_us04_debug.20 days = 0 }
+	}
+	option = {
+		name = modeu5_us04_debug.1.c
+		trigger_event_non_silently = { id = modeu5_us04_debug.60 days = 0 }
+	}
+	option = {
+		name = modeu5_us04_debug.1.d
+		trigger_event_non_silently = { id = modeu5_us04_debug.40 days = 0 }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_us04_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_pop_demand_adaptation_test = yes
+	}
+}
+
+modeu5_us04_debug.20 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_pop_demand_endpoint_test = yes
+	}
+}
+
+# PR #167 focused Estate-level accounting probe for the active ModeU5 proxy.
+modeu5_us04_debug.60 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_estate_level_accounting_probe = yes
+	}
+}
+
+# Direct-console compatibility probe. Not exposed in the visible menu anymore.
+# Phase 1: force all candidate goods to neutral multiplier 1.0.
+modeu5_us04_debug.30 = {
+	type = country_event
+	outcome = neutral
+	orphan = yes
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_matrix_begin = yes
+		if = {
+			limit = {
+				NOT = { has_global_variable = modeu5_test_us04_pop_demand_injection_matrix_blocked }
+			}
+			trigger_event_non_silently = { id = modeu5_us04_debug.31 days = 2 }
+		}
+	}
+}
+
+# Phase 2: capture all low values, then force every candidate multiplier to 4.0.
+modeu5_us04_debug.31 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_matrix_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = modeu5_us04_debug.32 days = 2 }
+	}
+}
+
+# Phase 3: capture high values, classify each syntax, summarize, and restore state.
+modeu5_us04_debug.32 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_matrix_finalize = yes
+	}
+}
+
+modeu5_us04_debug.40 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_debug_run_us04_initialization_test = yes
+	}
+}
+
+# Focused positive-demand Q7/Q8 global probes plus downstream observed-current
+# target architecture. Phase 3 runs the architecture test after global probes.
+modeu5_us04_debug.50 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_begin = yes
+		if = {
+			limit = { NOT = { has_global_variable = modeu5_test_us04_q7_q8_positive_globals_blocked } }
+			trigger_event_non_silently = { id = modeu5_us04_debug.51 days = 2 }
+		}
+	}
+}
+
+modeu5_us04_debug.51 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_capture_low_and_raise = yes
+		trigger_event_non_silently = { id = modeu5_us04_debug.52 days = 2 }
+	}
+}
+
+modeu5_us04_debug.52 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		modeu5_us04_q7_q8_finalize = yes
+	}
+}

@@ -1,0 +1,8 @@
+# US-04 injection syntax matrix — candidate 01.
+# Known previous result: loads, but did not affect wheat demand.
+
+INJECT:pop_demand = {
+	wheat = {
+		multiply = "modeu5_us04_live_pop_demand_multiplier_wheat"
+	}
+}

@@ -1,0 +1,10 @@
+# US-04 injection syntax matrix — candidate 07.
+# Outer INJECT on pop_demand, nested INJECT on books, direct global variable expression.
+# This tests the user's proposed temporary/current global-value route while still
+# requiring a database hook into pop_demand.
+
+INJECT:pop_demand = {
+	INJECT:books = {
+		multiply = global_var:modeu5_us04_matrix_global_books
+	}
+}

@@ -1,0 +1,120 @@
+# New-campaign US-04 initialization probe.
+# Run only after the delayed day-1 startup pulse has completed.
+
+modeu5_us04_initialization_note_failure = {
+	save_temporary_scope_value_as = {
+		name = modeu5_us04_initialization_failure_count
+		value = {
+			value = scope:modeu5_us04_initialization_failure_count
+			add = 1
+		}
+	}
+}
+
+modeu5_debug_run_us04_initialization_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_initialization"
+	remove_global_variable = modeu5_test_us04_pop_demand_initialization_passed
+	remove_global_variable = modeu5_test_us04_pop_demand_initialization_failed
+	remove_global_variable = modeu5_test_us04_pop_demand_initialization_blocked
+	save_temporary_scope_value_as = { name = modeu5_us04_initialization_failure_count value = 0 }
+
+	if = {
+		limit = { NOT = { modeu5_economy_rebalance_loaded_trigger = yes } }
+		set_global_variable = modeu5_test_us04_pop_demand_initialization_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_initialization reason=economy_package_not_loaded"
+	}
+	else_if = {
+		limit = { NOT = { has_global_variable = modeu5_us04_multiplier_initialization_version } }
+		set_global_variable = modeu5_test_us04_pop_demand_initialization_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_initialization reason=day1_initialization_not_completed"
+	}
+	else = {
+		capital = { save_temporary_scope_as = modeu5_us04_initialization_test_location }
+		scope:modeu5_us04_initialization_test_location = {
+			modeu5_get_pop_demand_multiplier_good_wheat = yes
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_wheat_before value = scope:modeu5_us04_old_multiplier }
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_wheat_present_before value = scope:modeu5_us04_multiplier_present }
+			modeu5_get_pop_demand_multiplier_good_beer = yes
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_beer_before value = scope:modeu5_us04_old_multiplier }
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_beer_present_before value = scope:modeu5_us04_multiplier_present }
+		}
+
+		if = {
+			limit = {
+				OR = {
+					global_var:modeu5_us04_multiplier_initialization_version != 1
+					scope:modeu5_us04_initialization_wheat_present_before = 0
+					scope:modeu5_us04_initialization_beer_present_before = 0
+					scope:modeu5_us04_initialization_wheat_before < 1.199
+					scope:modeu5_us04_initialization_wheat_before > 1.201
+					scope:modeu5_us04_initialization_beer_before < 1.199
+					scope:modeu5_us04_initialization_beer_before > 1.201
+				}
+			}
+			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=baseline_or_version_missing"
+			modeu5_us04_initialization_note_failure = yes
+		}
+
+		# Re-running the public once-only entry point must not multiply or rewrite.
+		modeu5_initialize_pop_demand_multipliers_once = yes
+		scope:modeu5_us04_initialization_test_location = {
+			modeu5_get_pop_demand_multiplier_good_wheat = yes
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_wheat_after_second_call value = scope:modeu5_us04_old_multiplier }
+		}
+		if = {
+			limit = {
+				OR = {
+					scope:modeu5_us04_initialization_wheat_after_second_call < 1.199
+					scope:modeu5_us04_initialization_wheat_after_second_call > 1.201
+				}
+			}
+			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=second_call_not_idempotent"
+			modeu5_us04_initialization_note_failure = yes
+		}
+
+		# Missing records after completed initialization must remain missing. They are
+		# not silently recreated by the once-only entry point or yearly adaptation.
+		scope:modeu5_us04_initialization_test_location = {
+			remove_from_variable_map = {
+				name = modeu5_pop_demand_multiplier
+				key = goods:wheat
+			}
+		}
+		modeu5_initialize_pop_demand_multipliers_once = yes
+		scope:modeu5_us04_initialization_test_location = {
+			modeu5_get_pop_demand_multiplier_good_wheat = yes
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_missing_present_after_call value = scope:modeu5_us04_multiplier_present }
+			save_temporary_scope_value_as = { name = modeu5_us04_initialization_missing_read_after_call value = scope:modeu5_us04_old_multiplier }
+			modeu5_write_pop_demand_multiplier_good_wheat = { value = scope:modeu5_us04_initialization_wheat_before }
+		}
+		if = {
+			limit = {
+				OR = {
+					scope:modeu5_us04_initialization_missing_present_after_call > 0
+					scope:modeu5_us04_initialization_missing_read_after_call < 0.999
+					scope:modeu5_us04_initialization_missing_read_after_call > 1.001
+				}
+			}
+			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=missing_record_recreated_or_nonvanilla_fallback"
+			modeu5_us04_initialization_note_failure = yes
+		}
+
+		set_variable = { name = modeu5_us04_initialization_ui_version value = global_var:modeu5_us04_multiplier_initialization_version }
+		set_variable = { name = modeu5_us04_initialization_ui_wheat value = scope:modeu5_us04_initialization_wheat_before }
+		set_variable = { name = modeu5_us04_initialization_ui_beer value = scope:modeu5_us04_initialization_beer_before }
+		set_variable = { name = modeu5_us04_initialization_ui_missing value = scope:modeu5_us04_initialization_missing_read_after_call }
+		debug_log = "ModeU5 US-04 INITIALIZATION DUMP version=[THIS.GetVariable('modeu5_us04_initialization_ui_version').GetValue|0] wheat=[THIS.GetVariable('modeu5_us04_initialization_ui_wheat').GetValue|4] beer=[THIS.GetVariable('modeu5_us04_initialization_ui_beer').GetValue|4] missing_fallback=[THIS.GetVariable('modeu5_us04_initialization_ui_missing').GetValue|4]"
+
+		if = {
+			limit = { scope:modeu5_us04_initialization_failure_count = 0 }
+			set_global_variable = modeu5_test_us04_pop_demand_initialization_passed
+			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed PASS"
+			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_initialization"
+		}
+		else = {
+			set_global_variable = modeu5_test_us04_pop_demand_initialization_failed
+			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_initialization"
+		}
+	}
+}

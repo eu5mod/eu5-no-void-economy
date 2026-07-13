@@ -26,6 +26,12 @@ modeu5_revalidate_debug.2 = {
 		trigger_event_non_silently = modeu5_revalidate_debug.3
 	}
 	option = {
+		name = modeu5_revalidate_debug.2.c
+		modeu5_enter_test_audit_runtime_mode = yes
+		modeu5_revalidate2_run_us04_suite = yes
+		trigger_event_non_silently = modeu5_revalidate_debug.4
+	}
+	option = {
 		name = modeu5_debug.close
 	}
 }
@@ -51,6 +57,33 @@ modeu5_revalidate_debug.3 = {
 	option = {
 		name = modeu5_revalidate_debug.us17_us20.fail
 		trigger = { has_global_variable = test_cbp_us17_us20_reconciliation_failed }
+	}
+	option = {
+		name = modeu5_debug.close
+	}
+}
+
+modeu5_revalidate_debug.4 = {
+	type = country_event
+	title = modeu5_revalidate_debug.4.title
+	desc = modeu5_revalidate_debug.4.desc
+	outcome = neutral
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = modeu5_revalidate_debug.us04.pass
+		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_passed }
+	}
+	option = {
+		name = modeu5_revalidate_debug.us04.blocked
+		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_blocked }
+	}
+	option = {
+		name = modeu5_revalidate_debug.us04.fail
+		trigger = { has_global_variable = test_cbp_revalidation2_us04_suite_failed }
 	}
 	option = {
 		name = modeu5_debug.close

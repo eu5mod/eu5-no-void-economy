@@ -1,0 +1,28 @@
+{
+	"id": "modeu5_core_tests_q9",
+	"name": "NVE : US-04 Pop-demand engine probes (Optional)",
+	"version": "0.1.0",
+	"supported_game_version": "1.*.*",
+	"short_description": "TESTING ONLY. Archived US-04 Pop-demand engine probes. Enable only for dedicated probe validation sessions.",
+	"tags": [
+		"Utilities",
+		"Trade and Economics"
+	],
+	"relationships": [
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core",
+			"display_name": "No Void Economy (NVE)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		},
+		{
+			"rel_type": "dependency",
+			"id": "modeu5_core_tests",
+			"display_name": "NVE : Core deterministic tests (Optional)",
+			"resource_type": "mod",
+			"version": "0.1.*"
+		}
+	],
+	"game_custom_data": {}
+}
