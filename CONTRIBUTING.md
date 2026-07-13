@@ -108,19 +108,19 @@ git diff --check
 ### Summarize tests
 
 ```bash
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 ### Focus on a fresh time window:
 
 ```bash
-./tools/summarize_test_cbp_logs.sh --since 16:15:00
+./tools/summarize_cbp_logs.sh --since 16:15:00
 ```
 
 ### For a focused probe
 
 ```bash
-./tools/summarize_test_cbp_logs.sh --expected none
+./tools/summarize_cbp_logs.sh --expected none
 ```
 
 ⚠️ PR validation comments should include the exact commit SHA, the commands run, the console events run, and the relevant PASS/FAIL log markers.

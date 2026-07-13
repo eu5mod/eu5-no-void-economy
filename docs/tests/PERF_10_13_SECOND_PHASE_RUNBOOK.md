@@ -64,7 +64,7 @@ Revalidate main operations
 Wait for the final result event. Then close EU5 and run:
 
 ```sh
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 Expected compact result:

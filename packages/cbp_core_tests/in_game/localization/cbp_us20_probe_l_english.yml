@@ -1,6 +1,6 @@
 ﻿l_english:
  cbp_us20_probe.1.title: "ModeU5 US-20 Probe"
- cbp_us20_probe.1.desc: "Run the standalone US-20 five-path market-loss, base-receipt, and promoted-receiver probe. Results are written to the logs and summarized by tools/summarize_test_cbp_logs.sh."
+ cbp_us20_probe.1.desc: "Run the standalone US-20 five-path market-loss, base-receipt, and promoted-receiver probe. Results are written to the logs and summarized by tools/summarize_cbp_logs.sh."
  cbp_us20_probe.1.a: "Run US-20 five-path probe"
  cbp_us20_probe.2.title: "ModeU5 US-20 Probe Result"
  cbp_us20_probe.2.desc: "The US-20 standalone probe finished. Review the logs for CASE12, BASE_RECEIPT, and RECEIVER_SELECTION diagnostics."

@@ -141,7 +141,7 @@ ModeU5 TEST BLOCKED scenario=<name> reason=<reason>
 After closing EU5, run:
 
 ```bash
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 The script prints entered/pass/fail/blocked counts and the exact scenario lines.

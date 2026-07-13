@@ -333,7 +333,7 @@ Implemented boundary for the #119 stack:
 
 - `event cbp_us10_debug.1` includes `Run US-10 UI visibility summary`.
 - `event cbp_revalidate_debug.1` includes `scenario=us10_ui_visibility`.
-- `tools/summarize_test_cbp_logs.sh` prints `ModeU5 US-10-UI ...` lines
+- `tools/summarize_cbp_logs.sh` prints `ModeU5 US-10-UI ...` lines
   and bounded US-10 candidate / mutation traces.
 - The visibility layer is read-only and reuses existing stock, capacity,
   outcome, resolver-debug, sparse-supplier, and Performance Mode fallback
@@ -378,7 +378,7 @@ Runtime/debug:
 ```txt
 event cbp_us10_debug.1
 event cbp_revalidate_debug.1
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 New targeted scenarios:

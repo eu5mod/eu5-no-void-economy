@@ -343,7 +343,7 @@ Runtime validation:
 2. Start a fresh disposable campaign.
 3. Let at least one full in-game day pass.
 4. Run: event cbp_us04_debug.1
-5. Run: ./tools/summarize_test_cbp_logs.sh --expected us04
+5. Run: ./tools/summarize_cbp_logs.sh --expected us04
 6. Review error.log, game.log, debug.log, and system.log.
 ```
 

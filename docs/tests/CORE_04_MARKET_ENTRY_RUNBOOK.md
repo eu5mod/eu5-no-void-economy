@@ -33,7 +33,7 @@ event cbp_revalidate_debug.1
 After closing EU5, summarize the logs:
 
 ```txt
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 ## Expected Summary Markers

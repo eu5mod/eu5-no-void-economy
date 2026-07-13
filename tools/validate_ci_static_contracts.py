@@ -33,8 +33,8 @@ CMM_SETTINGS: dict[str, tuple[str, str, bool]] = {
     "cbp_economic_balance_design_activate_goods_decay_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
     "cbp_economic_balance_design_sliders_adjustments_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
     "cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
-    "cbp_economic_balance_balance_increased_location_specialisation_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_balance_group", True),
-    "cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_balance_group", True),
+    "cbp_economic_balance_balance_increased_location_specialisation_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_mandatorybase_group", True),
+    "cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_mandatorybase_group", True),
     "cbp_war_subjects_balance_general_difficulty_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_general_group", True),
     "cbp_war_subjects_balance_design_overlord_declares_war_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_design_group", True),
     "cbp_war_subjects_balance_design_persistence_of_resources_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_design_group", True),
@@ -107,7 +107,7 @@ def block(text: str, name: str) -> str:
 
 
 def field_value(text: str, field_name: str) -> str:
-    match = re.search(rf"^\s*{re.escape(field_name)}\s*=\s*(.*?)\s*$", text, re.MULTILINE)
+    match = re.search(rf"^[ \t]*{re.escape(field_name)}[ \t]*=[ \t]*(.*?)[ \t]*$", text, re.MULTILINE)
     return match.group(1).strip() if match else ""
 
 

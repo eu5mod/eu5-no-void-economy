@@ -74,7 +74,7 @@ Select "Revalidate main operations"
 Expected summary after closing EU5:
 
 ```sh
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 ```txt

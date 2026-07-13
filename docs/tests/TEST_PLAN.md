@@ -1642,14 +1642,14 @@ ModeU5 TEST PASS scenario=us04_estate_level_accounting
 Use:
 
 ```txt
-./tools/summarize_test_cbp_logs.sh --expected us04-estate
+./tools/summarize_cbp_logs.sh --expected us04-estate
 ```
 
 The full revalidation chain also includes this scenario:
 
 ```txt
 event cbp_revalidate_debug.1
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 ### Test 19 — Local demand grows after full-year satisfaction

@@ -191,7 +191,7 @@ event cbp_revalidate_debug.1
 Close EU5 and summarize:
 
 ```bash
-./tools/summarize_test_cbp_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 Logs remain the source of truth for PR validation comments.
