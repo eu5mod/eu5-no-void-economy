@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-local_config="$repo_root/.modeu5.local.env"
+local_config="$repo_root/.cbp.local.env"
 
 if [[ -f "$local_config" ]]; then
 	set -a

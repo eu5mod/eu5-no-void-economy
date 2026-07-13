@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 output="${1:-$repo_root/in_game/common/scripted_effects/cbp_local_runtime_config_generated.txt}"
-local_config="${2:-${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.modeu5.local.env}}"
+local_config="${2:-${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}}"
 
 # shellcheck source=tools/cbp_tool_lib.sh
 source "$repo_root/tools/cbp_tool_lib.sh"
@@ -46,7 +46,7 @@ cat > "$output" <<TXT
 # Selected ModeU5 runtime mode: ${selected_label}
 #
 # This decouples ModeU5 debug runtime from the EU5 engine --debug_mode launch
-# argument. Use .modeu5.local.env to choose ModeU5 debug behaviour explicitly.
+# argument. Use .cbp.local.env to choose ModeU5 debug behaviour explicitly.
 
 cbp_apply_generated_local_runtime_mode = {
 	${selected_effect}

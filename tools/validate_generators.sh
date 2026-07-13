@@ -57,7 +57,7 @@ cbp_require_match 'cbp_render_template_to_stdout' \
 	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
 	'US20 promoted-destination generator must render per-good Jomini through templates'
 cbp_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
-	".modeu5.local.env.template" \
+	".cbp.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
 cbp_require_match 'strip_utf8_bom_stream' \
 	"tools/generate_us09_economy_overrides.sh" \

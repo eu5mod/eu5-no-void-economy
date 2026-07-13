@@ -78,7 +78,7 @@ tools/cbp_tool_lib.sh
 This file owns:
 
 - repository root discovery;
-- local `.modeu5.local.env` loading;
+- local `.cbp.local.env` loading;
 - canonical good registry loading;
 - template rendering;
 - common file and pattern validation helpers.

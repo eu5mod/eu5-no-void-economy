@@ -15,7 +15,7 @@ MODEU5_TOOL_LIB_LOADED=1
 MODEU5_REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cbp_load_local_config() {
-	local local_config="${1:-$MODEU5_REPO_ROOT/.modeu5.local.env}"
+	local local_config="${1:-$MODEU5_REPO_ROOT/.cbp.local.env}"
 
 	if [[ -f "$local_config" ]]; then
 		set -a

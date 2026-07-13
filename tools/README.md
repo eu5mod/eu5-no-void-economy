@@ -5,10 +5,10 @@
 Copy the local configuration template once:
 
 ```bash
-cp .modeu5.local.env.template .modeu5.local.env
+cp .cbp.local.env.template .cbp.local.env
 ```
 
-Then edit `.modeu5.local.env` with your local EU5 install path and local runtime preferences:
+Then edit `.cbp.local.env` with your local EU5 install path and local runtime preferences:
 
 ```bash
 EU5_GAME_COMMON_DIR="<EU5_INSTALL_DIR>/game/in_game/common"
@@ -16,7 +16,7 @@ MODEU5_ENABLE_DEBUG_RUNTIME=false
 MODEU5_US09_BONUS_PERCENT=5
 ```
 
-The real `.modeu5.local.env` file is ignored by Git. Do not commit personal
+The real `.cbp.local.env` file is ignored by Git. Do not commit personal
 install paths.
 
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
@@ -69,7 +69,7 @@ Generated local runtime config is written to:
 in_game/common/scripted_effects/cbp_local_runtime_config_generated.txt
 ```
 
-It is ignored by Git and generated from `.modeu5.local.env`. Do not edit it
+It is ignored by Git and generated from `.cbp.local.env`. Do not edit it
 manually.
 
 Any new generated text artifact should follow the `cbp_*_generated.txt` or
@@ -223,7 +223,7 @@ Pass the desired compensation percentage explicitly. Example:
 ./tools/generate_us09_economy_overrides.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
 ```
 
-If `.modeu5.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
+If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
 needed.
 
 Do not copy these files into the loaded Economy package as an implementation

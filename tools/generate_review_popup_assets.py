@@ -12,7 +12,7 @@ import qrcode
 import qrcode.image.svg
 
 ROOT = Path(__file__).resolve().parent.parent
-LOCAL_ENV_PATH = ROOT / ".modeu5.local.env"
+LOCAL_ENV_PATH = ROOT / ".cbp.local.env"
 PR157 = ROOT / "docs" / "assets" / "pr157"
 SOURCE_DIR = PR157 / "source"
 GENERATED_DIR = PR157 / "generated"

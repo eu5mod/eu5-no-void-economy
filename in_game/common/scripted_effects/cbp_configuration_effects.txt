@@ -1,6 +1,6 @@
 # ModeU5 package selection is owned by the launcher playset.
 # Community Mod Framework configures diagnostic/performance behavior.
-# Local developer runtime mode is generated from .modeu5.local.env by
+# Local developer runtime mode is generated from .cbp.local.env by
 # tools/generate_local_runtime_config.sh. It must not depend on the EU5 engine
 # --debug_mode launch argument.
 # Package presence is captured for a new campaign; existing-save package changes are unsupported.

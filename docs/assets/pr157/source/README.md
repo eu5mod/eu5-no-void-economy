@@ -31,7 +31,7 @@ review_popup_1524_ci_smoke.svg
   -> generated/review_popup_1524_ci_smoke_qr.dds
 ```
 
-To promote another raw source as the production event image during local generation, set this in `.modeu5.local.env`:
+To promote another raw source as the production event image during local generation, set this in `.cbp.local.env`:
 
 ```sh
 MODEU5_REVIEW_POPUP_SELECTED_SOURCE="my_candidate.svg"

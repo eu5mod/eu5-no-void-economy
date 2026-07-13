@@ -112,11 +112,11 @@ The event template contains the `<!-- MODEU5_QR_OVERLAY -->` marker after the te
 
 Raw SVGs in `source/` do not need the marker. If the marker is absent, the generator injects the QR overlay before `</svg>`.
 
-The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.modeu5.local.env`.
+The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.cbp.local.env`.
 
 ## Local QR overlay overrides
 
-The committed defaults are CI-safe and require no local env file. To tune the layout locally, copy `.modeu5.local.env.template` to `.modeu5.local.env` and uncomment/change any of these values:
+The committed defaults are CI-safe and require no local env file. To tune the layout locally, copy `.cbp.local.env.template` to `.cbp.local.env` and uncomment/change any of these values:
 
 ```sh
 MODEU5_REVIEW_POPUP_QR_URL="https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701"

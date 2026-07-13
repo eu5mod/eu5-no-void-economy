@@ -31,10 +31,10 @@ cd eu5-no-void-economy
 Create your local environment file:
 
 ```bash
-cp .modeu5.local.env.template .modeu5.local.env
+cp .cbp.local.env.template .cbp.local.env
 ```
 
-Edit `.modeu5.local.env` for your machine.
+Edit `.cbp.local.env` for your machine.
 
 Minimal example:
 
@@ -49,7 +49,7 @@ MODEU5_ENABLE_DEBUG_RUNTIME=false
 MODEU5_MOD_DIR="$HOME/Documents/Paradox Interactive/Europa Universalis V/mod"
 ```
 
-Never commit `.modeu5.local.env`. It can contain local install paths and developer-only runtime preferences.
+Never commit `.cbp.local.env`. It can contain local install paths and developer-only runtime preferences.
 
 
 ### `EU5_GAME_COMMON_DIR`
