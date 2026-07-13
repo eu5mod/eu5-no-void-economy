@@ -24,7 +24,11 @@ if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
 	if [[ "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "false" || "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "0" ]]; then
 		printf '%s\n' 'Skipping US-09 static file generation; MODEU5_ENABLE_US09_STATIC_OVERRIDES=false.'
 	elif [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
-		bash "$repo_root/tools/generate_us09_economy_overrides.sh" "${MODEU5_US09_BONUS_PERCENT:-5}" --package-common-dir "$repo_root/packages/modeu5_economy_rebalance/in_game/common"
+		bash "$repo_root/tools/generate_us09_economy_overrides.sh" \
+			"${MODEU5_US09_BONUS_PERCENT:-5}" \
+			--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
+			--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
+			--package-common-dir "$repo_root/packages/modeu5_economy_rebalance/in_game/common"
 	else
 		printf '%s\n' 'Skipping US-09 static file generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 	fi
