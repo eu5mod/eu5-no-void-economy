@@ -1,23 +1,22 @@
-# US-05 ModeU5 Economic Base reconciliation values.
+# US-05 per-expense reconciliation values.
 #
-# Vanilla slider costs are assumed to use:
+# Each expense family owns its target base and reconciliation modifier:
 #
-#   Tax Base + Trade Income
+#   modifier = (target base / vanilla denominator) - 1
 #
-# ModeU5 targets:
+# Court and Diplomatic currently share the same target base:
 #
 #   Wealth + Trade Income
 #
-# For a multiplicative cost modifier applied as cost * (1 + modifier), the exact
-# reconciliation modifier is:
-#
-#   ((Wealth + Trade Income) / (Tax Base + Trade Income)) - 1
-#
-# The remaining engine boundary is identifying and validating the modifier keys
-# used by each Economic-Base-driven slider. No gold or outcome reconciliation is
-# performed here.
+# They remain separate endpoints so later tuning can diverge independently.
 
-modeu5_slider_cost_target_base = {
+modeu5_us05_vanilla_economic_base = {
+	value = tax_base
+	add = monthly_trade_income
+	min = 0
+}
+
+modeu5_us05_wealth_plus_trade_income_base = {
 	value = 0
 	if = {
 		limit = { has_variable = cbp_country_wealth_endpoint }
@@ -27,25 +26,43 @@ modeu5_slider_cost_target_base = {
 	}
 }
 
-modeu5_slider_cost_vanilla_base = {
-	value = tax_base
-	add = monthly_trade_income
-	min = 0
+# Court spending target base.
+modeu5_us05_court_target_base = {
+	value = modeu5_us05_wealth_plus_trade_income_base
 }
 
-modeu5_slider_cost_reconciliation_modifier = {
+modeu5_us05_court_cost_modifier = {
 	value = 0
 	if = {
 		limit = {
 			has_variable = cbp_country_wealth_endpoint
-			modeu5_slider_cost_vanilla_base > 0
+			modeu5_us05_vanilla_economic_base > 0
 		}
-		value = modeu5_slider_cost_target_base
-		divide = modeu5_slider_cost_vanilla_base
+		value = modeu5_us05_court_target_base
+		divide = modeu5_us05_vanilla_economic_base
 		subtract = 1
 	}
 }
 
+# Diplomatic upkeep target base.
+modeu5_us05_diplomatic_target_base = {
+	value = modeu5_us05_wealth_plus_trade_income_base
+}
+
+modeu5_us05_diplomatic_cost_modifier = {
+	value = 0
+	if = {
+		limit = {
+			has_variable = cbp_country_wealth_endpoint
+			modeu5_us05_vanilla_economic_base > 0
+		}
+		value = modeu5_us05_diplomatic_target_base
+		divide = modeu5_us05_vanilla_economic_base
+		subtract = 1
+	}
+}
+
+# Shared diagnostic components.
 modeu5_slider_cost_base_wealth_component = {
 	value = 0
 	if = {
