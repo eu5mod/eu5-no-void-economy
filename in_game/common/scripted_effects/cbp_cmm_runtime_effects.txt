@@ -140,6 +140,10 @@ cbp_cmm_mark_planned_services_restricted = {
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_balance_remove_control_penalty_on_research_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
 		setting_id = cbp_general_gameplay_other_extra_revenue_to_ai_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
@@ -161,6 +165,18 @@ cbp_cmm_mark_planned_services_restricted = {
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
 		setting_id = cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_fixed_rgo_prices_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_maintenance_price_stabilisation_settings
+	}
+	cmm_set_requires_unrestricted_tools_enabled = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_economy_10_percent_faster_settings
 	}
 }
 

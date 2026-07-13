@@ -79,6 +79,16 @@ no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer
 	effect = { }
 }
 
+## Economic Balance (cbp_economic_balance_balance_group) Group
+no_void_economy__cbp_economic_balance_balance_remove_control_penalty_on_research_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
 ## Mandatory Base (cbp_economic_balance_mandatorybase_group) Group
 no_void_economy__cbp_economic_balance_balance_increased_location_specialisation_settings_on_changed = {
 	scope = country
@@ -94,6 +104,33 @@ no_void_economy__cbp_economic_balance_balance_increased_location_specialisation_
 }
 
 no_void_economy__cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__cbp_economic_balance_mandatorybase_fixed_rgo_prices_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__cbp_economic_balance_mandatorybase_maintenance_price_stabilisation_settings_on_changed = {
+	scope = country
+
+	is_valid = {
+		always = no
+	}
+	effect = { }
+}
+
+no_void_economy__cbp_economic_balance_mandatorybase_economy_10_percent_faster_settings_on_changed = {
 	scope = country
 
 	is_valid = {

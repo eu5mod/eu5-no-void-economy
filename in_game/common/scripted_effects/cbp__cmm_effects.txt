@@ -180,6 +180,23 @@ cbp__register_cmf_mod = {
 		setting_id = cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 	}
 
+	## Economic Balance (cbp_economic_balance_balance_group) Group
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_balance_remove_control_penalty_on_research_settings
+		tab_id = cbp_economic_balance_tab
+		group_id = cbp_economic_balance_balance_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_balance_remove_control_penalty_on_research_settings
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_balance_remove_control_penalty_on_research_settings
+	}
+
 	## Mandatory Base (cbp_economic_balance_mandatorybase_group) Group
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy
@@ -211,6 +228,54 @@ cbp__register_cmf_mod = {
 	cmm_set_no_reset = {
 		mod_id = no_void_economy
 		setting_id = cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings
+	}
+
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_fixed_rgo_prices_settings
+		tab_id = cbp_economic_balance_tab
+		group_id = cbp_economic_balance_mandatorybase_group
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_fixed_rgo_prices_settings
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_fixed_rgo_prices_settings
+	}
+
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_maintenance_price_stabilisation_settings
+		tab_id = cbp_economic_balance_tab
+		group_id = cbp_economic_balance_mandatorybase_group
+		default_value = 0
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_maintenance_price_stabilisation_settings
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_maintenance_price_stabilisation_settings
+	}
+
+	cmm_register_global_bool_setting = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_economy_10_percent_faster_settings
+		tab_id = cbp_economic_balance_tab
+		group_id = cbp_economic_balance_mandatorybase_group
+		default_value = 1
+	}
+	cmm_add_scripted_gui = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_economy_10_percent_faster_settings
+	}
+	cmm_set_no_reset = {
+		mod_id = no_void_economy
+		setting_id = cbp_economic_balance_mandatorybase_economy_10_percent_faster_settings
 	}
 
 	# War & Subjects Balance (cbp_war_subjects_balance_tab) Tab
