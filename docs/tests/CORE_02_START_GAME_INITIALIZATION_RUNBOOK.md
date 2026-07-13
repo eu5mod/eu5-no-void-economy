@@ -146,10 +146,10 @@ system.log
 ```
 
 Passing deterministic tests should show the CORE-02 PASS lines in the result
-event and set `cbp_test_core02_initialization_started`,
-`cbp_test_core02_initialization_finished`,
-`cbp_test_core02_proportional_passed`, and
-`cbp_test_core02_over_capacity_passed`. Console-driven tests may use static
+event and set `test_cbp_core02_initialization_started`,
+`test_cbp_core02_initialization_finished`,
+`test_cbp_core02_proportional_passed`, and
+`test_cbp_core02_over_capacity_passed`. Console-driven tests may use static
 `debug_log` result markers such as `ModeU5 CORE-02 RESULT initialization PASS`.
 They still avoid dynamic numeric `debug_log` dumps unless the affected runbook
 explicitly documents the known localization assertion. Logs remain the source

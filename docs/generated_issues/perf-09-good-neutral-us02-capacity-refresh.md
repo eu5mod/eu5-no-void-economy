@@ -110,7 +110,7 @@ Select "Revalidate main operations"
 Then summarize logs:
 
 ```sh
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected compact result:

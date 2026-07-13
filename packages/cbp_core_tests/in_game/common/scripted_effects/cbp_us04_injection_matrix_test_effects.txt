@@ -7,9 +7,9 @@
 # The 4.0 multiplier is diagnostic only and is restored at the end.
 
 cbp_us04_matrix_clear_state = {
-	remove_global_variable = cbp_test_us04_pop_demand_injection_matrix_passed
-	remove_global_variable = cbp_test_us04_pop_demand_injection_matrix_failed
-	remove_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked
+	remove_global_variable = test_cbp_us04_pop_demand_injection_matrix_passed
+	remove_global_variable = test_cbp_us04_pop_demand_injection_matrix_failed
+	remove_global_variable = test_cbp_us04_pop_demand_injection_matrix_blocked
 	remove_global_variable = cbp_us04_matrix_in_progress
 	remove_global_variable = cbp_us04_matrix_original_live_marker_present
 	remove_global_variable = cbp_us04_matrix_original_init_version_present
@@ -214,7 +214,7 @@ cbp_us04_matrix_begin = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_injection_matrix"
 	if = {
 		limit = { has_global_variable = cbp_us04_matrix_in_progress }
-		set_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked
+		set_global_variable = test_cbp_us04_pop_demand_injection_matrix_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=matrix_already_in_progress"
 	}
 	else = {
@@ -224,7 +224,7 @@ cbp_us04_matrix_begin = {
 		set_global_variable = { name = cbp_us04_matrix_blocked_count value = 0 }
 		if = {
 			limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
-			set_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked
+			set_global_variable = test_cbp_us04_pop_demand_injection_matrix_blocked
 			debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=economy_package_not_loaded"
 		}
 		else = {
@@ -241,7 +241,7 @@ cbp_us04_matrix_begin = {
 cbp_us04_matrix_capture_low_and_raise = {
 	if = {
 		limit = { NOT = { has_global_variable = cbp_us04_matrix_in_progress } }
-		set_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked
+		set_global_variable = test_cbp_us04_pop_demand_injection_matrix_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=low_capture_without_in_progress"
 	}
 	else = {
@@ -393,7 +393,7 @@ cbp_us04_matrix_evaluate_08_coffee = {
 cbp_us04_matrix_finalize = {
 	if = {
 		limit = { NOT = { has_global_variable = cbp_us04_matrix_in_progress } }
-		set_global_variable = cbp_test_us04_pop_demand_injection_matrix_blocked
+		set_global_variable = test_cbp_us04_pop_demand_injection_matrix_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_injection_matrix reason=finalize_without_in_progress"
 	}
 	else = {
@@ -440,11 +440,11 @@ cbp_us04_matrix_finalize = {
 		debug_log = "ModeU5 US-04 INJECTION MATRIX SUMMARY pass=[THIS.GetVariable('cbp_us04_matrix_ui_pass').GetValue|0] fail=[THIS.GetVariable('cbp_us04_matrix_ui_fail').GetValue|0] blocked=[THIS.GetVariable('cbp_us04_matrix_ui_blocked').GetValue|0]"
 		if = {
 			limit = { global_var:cbp_us04_matrix_pass_count > 0 }
-			set_global_variable = cbp_test_us04_pop_demand_injection_matrix_passed
+			set_global_variable = test_cbp_us04_pop_demand_injection_matrix_passed
 			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_injection_matrix"
 		}
 		else = {
-			set_global_variable = cbp_test_us04_pop_demand_injection_matrix_failed
+			set_global_variable = test_cbp_us04_pop_demand_injection_matrix_failed
 			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_injection_matrix"
 		}
 		cbp_us04_matrix_restore_state = yes

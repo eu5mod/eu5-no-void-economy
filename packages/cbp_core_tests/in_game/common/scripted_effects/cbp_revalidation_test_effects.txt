@@ -125,7 +125,7 @@ cbp_revalidate_run_us10_issue109_fast_path_pruning = {
 
 cbp_revalidate_run_us10_ui_visibility = {
 	cbp_debug_run_us10_ui_visibility_tests = yes
-	if = { limit = { has_global_variable = gui_cbp_test_us10_ui_visibility_passed } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed }
+	if = { limit = { has_global_variable = gui_test_cbp_us10_ui_visibility_passed } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_passed }
 	else_if = { limit = { has_global_variable = gui_cbp_us10_ui_visibility_result_blocked } set_global_variable = gui_cbp_revalidation_us10_ui_visibility_blocked }
 	else = { set_global_variable = gui_cbp_revalidation_us10_ui_visibility_failed }
 }
@@ -144,10 +144,10 @@ cbp_revalidate2_run_us04_suite = {
 	if = {
 		limit = {
 			OR = {
-				has_global_variable = cbp_test_us04_pop_demand_adaptation_failed
-				has_global_variable = cbp_test_us04_pop_demand_endpoint_failed
-				has_global_variable = cbp_test_us04_estate_level_accounting_failed
-				has_global_variable = cbp_test_us04_pop_demand_initialization_failed
+				has_global_variable = test_cbp_us04_pop_demand_adaptation_failed
+				has_global_variable = test_cbp_us04_pop_demand_endpoint_failed
+				has_global_variable = test_cbp_us04_estate_level_accounting_failed
+				has_global_variable = test_cbp_us04_pop_demand_initialization_failed
 			}
 		}
 		set_global_variable = test_cbp_revalidation2_us04_suite_failed
@@ -156,10 +156,10 @@ cbp_revalidate2_run_us04_suite = {
 	else_if = {
 		limit = {
 			OR = {
-				has_global_variable = cbp_test_us04_pop_demand_adaptation_blocked
-				has_global_variable = cbp_test_us04_pop_demand_endpoint_blocked
-				has_global_variable = cbp_test_us04_estate_level_accounting_blocked
-				has_global_variable = cbp_test_us04_pop_demand_initialization_blocked
+				has_global_variable = test_cbp_us04_pop_demand_adaptation_blocked
+				has_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
+				has_global_variable = test_cbp_us04_estate_level_accounting_blocked
+				has_global_variable = test_cbp_us04_pop_demand_initialization_blocked
 			}
 		}
 		set_global_variable = test_cbp_revalidation2_us04_suite_blocked
@@ -167,10 +167,10 @@ cbp_revalidate2_run_us04_suite = {
 	}
 	else_if = {
 		limit = {
-			has_global_variable = cbp_test_us04_pop_demand_adaptation_passed
-			has_global_variable = cbp_test_us04_pop_demand_endpoint_passed
-			has_global_variable = cbp_test_us04_estate_level_accounting_passed
-			has_global_variable = cbp_test_us04_pop_demand_initialization_passed
+			has_global_variable = test_cbp_us04_pop_demand_adaptation_passed
+			has_global_variable = test_cbp_us04_pop_demand_endpoint_passed
+			has_global_variable = test_cbp_us04_estate_level_accounting_passed
+			has_global_variable = test_cbp_us04_pop_demand_initialization_passed
 		}
 		set_global_variable = test_cbp_revalidation2_us04_suite_passed
 		debug_log = "ModeU5 TEST PASS scenario=us04_revalidate2_suite"

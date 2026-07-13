@@ -41,12 +41,12 @@ event cbp_debug.1
 Do not enter any of the following:
 
 ```txt
-cbp_test_*_passed
-trigger "var:cbp_test_*_passed = 1"
-trigger "global_var:cbp_test_*_passed = 1"
+test_cbp_*_passed
+trigger "var:test_cbp_*_passed = 1"
+trigger "global_var:test_cbp_*_passed = 1"
 ```
 
-The `cbp_test_*` names are internal result markers, not console commands.
+The `test_cbp_*` names are internal result markers, not console commands.
 
 ## Test A: add, remove, and decay
 

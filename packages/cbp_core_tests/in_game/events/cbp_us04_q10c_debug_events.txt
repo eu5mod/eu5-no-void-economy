@@ -17,7 +17,7 @@ cbp_us04_q10c_debug.1 = {
 	immediate = {
 		cbp_us04_q10c_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = cbp_test_us04_q10c_daily_099_blocked } }
+			limit = { NOT = { has_global_variable = test_cbp_us04_q10c_daily_099_blocked } }
 			trigger_event_non_silently = { id = cbp_us04_q10c_debug.2 days = 1 }
 		}
 	}

@@ -122,7 +122,7 @@ Do not compare unset numeric variables in result-event triggers.
 The runtime evidence is sufficient for probe PASS, but the log is not clean:
 
 ```txt
-- Q8.7 emitted PASS count=129 but also produced unset-counter script errors around cbp_test_q8_7_global_market_count.
+- Q8.7 emitted PASS count=129 but also produced unset-counter script errors around test_cbp_q8_7_global_market_count.
 - Q8 probe event localization keys are missing.
 ```
 

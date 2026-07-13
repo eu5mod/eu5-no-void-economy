@@ -130,7 +130,7 @@ Wait for the final result event.
 Then summarize:
 
 ```sh
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected compact result:

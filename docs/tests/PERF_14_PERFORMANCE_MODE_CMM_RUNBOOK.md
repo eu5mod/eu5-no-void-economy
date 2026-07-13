@@ -241,7 +241,7 @@ Deactivated / cbp_no_void_economy_main=3
 After running the event, use:
 
 ```txt
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 The helper now prints separate counts and sections for:

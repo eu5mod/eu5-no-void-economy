@@ -296,7 +296,7 @@ ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=missing_old_new_market_scope
 ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=cbp_deactivated
 ```
 
-Update `./tools/summarize_cbp_test_logs.sh` to include:
+Update `./tools/summarize_test_cbp_logs.sh` to include:
 
 ```txt
 CORE-04 topology diagnostics: <n>
@@ -381,7 +381,7 @@ git diff --check
 ```txt
 event cbp_core04_debug.1
 event cbp_perf14_debug.1
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected runtime summary should include:

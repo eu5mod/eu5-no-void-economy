@@ -100,7 +100,7 @@ def main() -> int:
     q9_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_q9_debug_events.txt")
     debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
     localization = read("packages/cbp_core_tests/in_game/localization/cbp_us04_endpoint_probe_l_english.yml")
-    summarizer = read("tools/summarize_cbp_test_logs.sh")
+    summarizer = read("tools/summarize_test_cbp_logs.sh")
     generate_all = read("tools/generate_all.sh")
     gitignore = read(".gitignore")
 

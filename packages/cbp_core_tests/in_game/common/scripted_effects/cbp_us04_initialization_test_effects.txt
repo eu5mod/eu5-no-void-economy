@@ -13,19 +13,19 @@ cbp_us04_initialization_note_failure = {
 
 cbp_debug_run_us04_initialization_test = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_initialization"
-	remove_global_variable = cbp_test_us04_pop_demand_initialization_passed
-	remove_global_variable = cbp_test_us04_pop_demand_initialization_failed
-	remove_global_variable = cbp_test_us04_pop_demand_initialization_blocked
+	remove_global_variable = test_cbp_us04_pop_demand_initialization_passed
+	remove_global_variable = test_cbp_us04_pop_demand_initialization_failed
+	remove_global_variable = test_cbp_us04_pop_demand_initialization_blocked
 	save_temporary_scope_value_as = { name = cbp_us04_initialization_failure_count value = 0 }
 
 	if = {
 		limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
-		set_global_variable = cbp_test_us04_pop_demand_initialization_blocked
+		set_global_variable = test_cbp_us04_pop_demand_initialization_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_initialization reason=economy_package_not_loaded"
 	}
 	else_if = {
 		limit = { NOT = { has_global_variable = cbp_us04_multiplier_initialization_version } }
-		set_global_variable = cbp_test_us04_pop_demand_initialization_blocked
+		set_global_variable = test_cbp_us04_pop_demand_initialization_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_initialization reason=day1_initialization_not_completed"
 	}
 	else = {
@@ -107,12 +107,12 @@ cbp_debug_run_us04_initialization_test = {
 
 		if = {
 			limit = { scope:cbp_us04_initialization_failure_count = 0 }
-			set_global_variable = cbp_test_us04_pop_demand_initialization_passed
+			set_global_variable = test_cbp_us04_pop_demand_initialization_passed
 			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed PASS"
 			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_initialization"
 		}
 		else = {
-			set_global_variable = cbp_test_us04_pop_demand_initialization_failed
+			set_global_variable = test_cbp_us04_pop_demand_initialization_failed
 			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed FAIL"
 			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_initialization"
 		}

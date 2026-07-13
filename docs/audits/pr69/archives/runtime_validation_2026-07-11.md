@@ -169,7 +169,7 @@ grep -E \
 The standard summarizer also displays all US-04 diagnostic families:
 
 ```sh
-./tools/summarize_cbp_test_logs.sh --expected none
+./tools/summarize_test_cbp_logs.sh --expected none
 ```
 
 ## Current status

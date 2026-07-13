@@ -2,9 +2,9 @@
 # No generator is used for this file.
 
 cbp_us04_q7_q8_clear_state = {
-	remove_global_variable = cbp_test_us04_q7_q8_positive_globals_passed
-	remove_global_variable = cbp_test_us04_q7_q8_positive_globals_failed
-	remove_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked
+	remove_global_variable = test_cbp_us04_q7_q8_positive_globals_passed
+	remove_global_variable = test_cbp_us04_q7_q8_positive_globals_failed
+	remove_global_variable = test_cbp_us04_q7_q8_positive_globals_blocked
 	remove_global_variable = cbp_us04_q7_q8_in_progress
 	remove_global_variable = cbp_us04_matrix_global_books
 	remove_global_variable = cbp_us04_matrix_global_furniture
@@ -36,7 +36,7 @@ cbp_us04_q7_q8_begin = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_q7_q8_positive_globals"
 	if = {
 		limit = { has_global_variable = cbp_us04_q7_q8_in_progress }
-		set_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked
+		set_global_variable = test_cbp_us04_q7_q8_positive_globals_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=probe_already_in_progress"
 	}
 	else = {
@@ -57,7 +57,7 @@ cbp_us04_q7_q8_begin = {
 cbp_us04_q7_q8_capture_low_and_raise = {
 	if = {
 		limit = { NOT = { has_global_variable = cbp_us04_q7_q8_in_progress } }
-		set_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked
+		set_global_variable = test_cbp_us04_q7_q8_positive_globals_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=low_capture_without_in_progress"
 	}
 	else = {
@@ -80,7 +80,7 @@ cbp_us04_q7_q8_capture_low_and_raise = {
 cbp_us04_q7_q8_finalize = {
 	if = {
 		limit = { NOT = { has_global_variable = cbp_us04_q7_q8_in_progress } }
-		set_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked
+		set_global_variable = test_cbp_us04_q7_q8_positive_globals_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=finalize_without_in_progress"
 	}
 	else = {
@@ -134,16 +134,16 @@ cbp_us04_q7_q8_finalize = {
 		debug_log = "ModeU5 US-04 INJECTION MATRIX SUMMARY q7_q8_positive pass=[THIS.GetVariable('cbp_us04_q7_q8_ui_pass').GetValue|0] fail=[THIS.GetVariable('cbp_us04_q7_q8_ui_fail').GetValue|0] blocked=[THIS.GetVariable('cbp_us04_q7_q8_ui_blocked').GetValue|0]"
 		if = {
 			limit = { global_var:cbp_us04_q7_q8_pass_count > 0 }
-			set_global_variable = cbp_test_us04_q7_q8_positive_globals_passed
+			set_global_variable = test_cbp_us04_q7_q8_positive_globals_passed
 			debug_log = "ModeU5 TEST PASS scenario=us04_q7_q8_positive_globals"
 		}
 		else_if = {
 			limit = { global_var:cbp_us04_q7_q8_blocked_count > 0 global_var:cbp_us04_q7_q8_fail_count = 0 }
-			set_global_variable = cbp_test_us04_q7_q8_positive_globals_blocked
+			set_global_variable = test_cbp_us04_q7_q8_positive_globals_blocked
 			debug_log = "ModeU5 TEST BLOCKED scenario=us04_q7_q8_positive_globals reason=all_positive_global_candidates_blocked"
 		}
 		else = {
-			set_global_variable = cbp_test_us04_q7_q8_positive_globals_failed
+			set_global_variable = test_cbp_us04_q7_q8_positive_globals_failed
 			debug_log = "ModeU5 TEST FAIL scenario=us04_q7_q8_positive_globals"
 		}
 		remove_global_variable = cbp_us04_matrix_global_books
@@ -171,9 +171,9 @@ cbp_us04_clear_books_stock_in_market = {
 
 cbp_debug_run_us04_observed_current_target_architecture_test = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_observed_current_target_architecture"
-	remove_global_variable = cbp_test_us04_observed_current_target_passed
-	remove_global_variable = cbp_test_us04_observed_current_target_failed
-	remove_global_variable = cbp_test_us04_observed_current_target_blocked
+	remove_global_variable = test_cbp_us04_observed_current_target_passed
+	remove_global_variable = test_cbp_us04_observed_current_target_failed
+	remove_global_variable = test_cbp_us04_observed_current_target_blocked
 	c:FRA.capital.market = { save_scope_as = cbp_us04_observed_target_market }
 
 	scope:cbp_us04_observed_target_market = {
@@ -181,7 +181,7 @@ cbp_debug_run_us04_observed_current_target_architecture_test = {
 	}
 	if = {
 		limit = { scope:cbp_us04_arch_observed_books <= 0.0001 }
-		set_global_variable = cbp_test_us04_observed_current_target_blocked
+		set_global_variable = test_cbp_us04_observed_current_target_blocked
 		set_variable = { name = cbp_us04_arch_ui_observed value = scope:cbp_us04_arch_observed_books }
 		debug_log = "ModeU5 US-04 DUMP observed_current_target good=books observed=[THIS.GetVariable('cbp_us04_arch_ui_observed').GetValue|4] result=BLOCKED reason=baseline_demand_nonpositive"
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_observed_current_target_architecture reason=books_baseline_demand_nonpositive"
@@ -223,12 +223,12 @@ cbp_debug_run_us04_observed_current_target_architecture_test = {
 				scope:cbp_us04_arch_consumed_satisfied > 0
 				scope:cbp_us04_arch_consumed_unsatisfied <= 0.0001
 			}
-			set_global_variable = cbp_test_us04_observed_current_target_passed
+			set_global_variable = test_cbp_us04_observed_current_target_passed
 			debug_log = "ModeU5 US-04 RESULT observed_current_target PASS"
 			debug_log = "ModeU5 TEST PASS scenario=us04_observed_current_target_architecture"
 		}
 		else = {
-			set_global_variable = cbp_test_us04_observed_current_target_failed
+			set_global_variable = test_cbp_us04_observed_current_target_failed
 			debug_log = "ModeU5 US-04 RESULT observed_current_target FAIL"
 			debug_log = "ModeU5 TEST FAIL scenario=us04_observed_current_target_architecture"
 		}

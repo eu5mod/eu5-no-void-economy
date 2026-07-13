@@ -59,7 +59,7 @@ event cbp_us02_debug.1
 PASS - Storage capacity reconciles without mutating stock
 ```
 
-The `cbp_test_storage_capacity_passed` text is a result marker, not a
+The `test_cbp_storage_capacity_passed` text is a result marker, not a
 console command.
 
 The result event currently displays a compact fallback dump for FRA's capital

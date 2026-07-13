@@ -6,9 +6,9 @@
 # which leaves the complete vanilla Pop-demand coefficient unchanged.
 
 cbp_us04_endpoint_clear_results = {
-	remove_global_variable = cbp_test_us04_pop_demand_endpoint_passed
-	remove_global_variable = cbp_test_us04_pop_demand_endpoint_failed
-	remove_global_variable = cbp_test_us04_pop_demand_endpoint_blocked
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_passed
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_failed
+	remove_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
 }
 
 cbp_us04_endpoint_note_failure = {
@@ -92,7 +92,7 @@ cbp_debug_run_us04_pop_demand_endpoint_test = {
 
 	if = {
 		limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
-		set_global_variable = cbp_test_us04_pop_demand_endpoint_blocked
+		set_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_endpoint reason=economy_package_not_loaded"
 	}
 	else = {
@@ -134,7 +134,7 @@ cbp_debug_run_us04_pop_demand_endpoint_test = {
 
 		if = {
 			limit = { NOT = { exists = scope:cbp_us04_endpoint_test_pop } }
-			set_global_variable = cbp_test_us04_pop_demand_endpoint_blocked
+			set_global_variable = test_cbp_us04_pop_demand_endpoint_blocked
 			debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_endpoint reason=no_pop_in_capital_location"
 		}
 		else = {
@@ -227,12 +227,12 @@ cbp_debug_run_us04_pop_demand_endpoint_test = {
 			cbp_us04_endpoint_export_debug_values = yes
 			if = {
 				limit = { scope:cbp_us04_endpoint_failure_count = 0 }
-				set_global_variable = cbp_test_us04_pop_demand_endpoint_passed
+				set_global_variable = test_cbp_us04_pop_demand_endpoint_passed
 				debug_log = "ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map PASS"
 				debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_endpoint"
 			}
 			else = {
-				set_global_variable = cbp_test_us04_pop_demand_endpoint_failed
+				set_global_variable = test_cbp_us04_pop_demand_endpoint_failed
 				debug_log = "ModeU5 US-04 ENDPOINT RESULT pop_scope_location_map FAIL"
 				debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_endpoint"
 			}

@@ -128,7 +128,7 @@ event cbp_revalidate_debug.1: NOT REQUIRED for #150 validation.
 ## Known cleanup items
 
 ```txt
-- Q8.7 emitted PASS with count=129, but error.log also reported unset-counter script errors around cbp_test_q8_7_global_market_count. Harden the counter guard if a clean error log is required.
+- Q8.7 emitted PASS with count=129, but error.log also reported unset-counter script errors around test_cbp_q8_7_global_market_count. Harden the counter guard if a clean error log is required.
 - Q8 probe event localization keys are missing. This is cosmetic for the probe event and does not invalidate the runtime PASS markers.
 ```
 

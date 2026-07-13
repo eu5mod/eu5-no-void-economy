@@ -80,7 +80,7 @@ Then run:
 
 ```txt
 event cbp_revalidate_debug.1
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected broad result:

@@ -13,8 +13,8 @@ cbp_us10_clear_test_results = {
 	remove_global_variable = test_cbp_us10_issue109_passed
 	remove_global_variable = test_cbp_us10_issue109_failed
 	remove_global_variable = test_cbp_us10_issue109_blocked
-	remove_global_variable = gui_cbp_test_us10_ui_visibility_passed
-	remove_global_variable = gui_cbp_test_us10_ui_visibility_failed
+	remove_global_variable = gui_test_cbp_us10_ui_visibility_passed
+	remove_global_variable = gui_test_cbp_us10_ui_visibility_failed
 	remove_global_variable = gui_cbp_us10_ui_visibility_result_blocked
 	remove_global_variable = test_cbp_us10_direct_trade_formula_passed
 	remove_global_variable = test_cbp_us10_direct_trade_formula_failed
@@ -1019,12 +1019,12 @@ cbp_debug_run_us10_ui_visibility_tests = {
 			scope:gui_cbp_us10_ui_visibility_blocked = 0
 			scope:gui_cbp_us10_ui_visibility_fixture_passed > 0
 		}
-		set_global_variable = gui_cbp_test_us10_ui_visibility_passed
+		set_global_variable = gui_test_cbp_us10_ui_visibility_passed
 		debug_log = "ModeU5 TEST PASS scenario=us10_ui_visibility"
 	}
 	else_if = {
 		limit = { scope:gui_cbp_us10_ui_visibility_blocked = 0 }
-		set_global_variable = gui_cbp_test_us10_ui_visibility_failed
+		set_global_variable = gui_test_cbp_us10_ui_visibility_failed
 		debug_log = "ModeU5 TEST FAIL scenario=us10_ui_visibility"
 		error_log = "ModeU5 deterministic US-10-UI visibility test failed."
 	}

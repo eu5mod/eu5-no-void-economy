@@ -84,7 +84,7 @@ Implemented debug support:
 
 - `event cbp_us10_debug.1` -> `Run US-10 UI visibility summary`;
 - `event cbp_revalidate_debug.1` includes `scenario=us10_ui_visibility`;
-- `tools/summarize_cbp_test_logs.sh` prints the dedicated
+- `tools/summarize_test_cbp_logs.sh` prints the dedicated
   `ModeU5 US-10-UI ...` lines, including `ModeU5 US-10-UI TABLE`;
 - audit logs expose bounded candidate and mutation traces, including bucket,
   score, stock, selected/actual quantity, remaining quantity, exclusion reason
@@ -112,7 +112,7 @@ packages/cbp_core_tests/in_game/
 docs/technical/DEBUG_CONVENTIONS.md
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
-tools/summarize_cbp_test_logs.sh
+tools/summarize_test_cbp_logs.sh
 ```
 
 ## Dependencies

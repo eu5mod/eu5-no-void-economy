@@ -82,7 +82,7 @@ cbp_us10_debug.2 = {
 				has_global_variable = test_cbp_us10_monthly_runtime_passed
 				has_global_variable = test_cbp_us10_trade_capacity_conversion_passed
 				has_global_variable = test_cbp_us10_issue109_passed
-				has_global_variable = gui_cbp_test_us10_ui_visibility_passed
+				has_global_variable = gui_test_cbp_us10_ui_visibility_passed
 			}
 		}
 	}
@@ -106,7 +106,7 @@ cbp_us10_debug.2 = {
 				has_global_variable = test_cbp_us10_monthly_runtime_failed
 				has_global_variable = test_cbp_us10_trade_capacity_conversion_failed
 				has_global_variable = test_cbp_us10_issue109_failed
-				has_global_variable = gui_cbp_test_us10_ui_visibility_failed
+				has_global_variable = gui_test_cbp_us10_ui_visibility_failed
 			}
 		}
 	}

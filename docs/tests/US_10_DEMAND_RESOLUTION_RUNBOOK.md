@@ -400,7 +400,7 @@ PASS - US-10 demand resolution
 ```
 
 Expected dump shape in `debug.log` and in
-`./tools/summarize_cbp_test_logs.sh`:
+`./tools/summarize_test_cbp_logs.sh`:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us10_ui_visibility
@@ -498,7 +498,7 @@ Revalidate main operations
 After closing EU5:
 
 ```bash
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 Expected summary includes:

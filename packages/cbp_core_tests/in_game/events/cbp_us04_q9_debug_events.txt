@@ -22,7 +22,7 @@ cbp_us04_q9_debug.1 = {
 	immediate = {
 		cbp_us04_q9_replace_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = cbp_test_us04_q9_replace_pop_demand_blocked } }
+			limit = { NOT = { has_global_variable = test_cbp_us04_q9_replace_pop_demand_blocked } }
 			trigger_event_non_silently = { id = cbp_us04_q9_debug.2 days = 2 }
 		}
 	}
@@ -70,7 +70,7 @@ cbp_us04_q9_debug.10 = {
 	immediate = {
 		cbp_us04_q10_begin = yes
 		if = {
-			limit = { NOT = { has_global_variable = cbp_test_us04_q10_replace_curve_blocked } }
+			limit = { NOT = { has_global_variable = test_cbp_us04_q10_replace_curve_blocked } }
 			trigger_event_non_silently = { id = cbp_us04_q9_debug.11 days = 35 }
 		}
 	}

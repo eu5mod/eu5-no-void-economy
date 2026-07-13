@@ -93,5 +93,5 @@ Run Q7/Q8 globals + observed-current target
 Advance four in-game days, then:
 
 ```sh
-./tools/summarize_cbp_test_logs.sh --expected none
+./tools/summarize_test_cbp_logs.sh --expected none
 ```

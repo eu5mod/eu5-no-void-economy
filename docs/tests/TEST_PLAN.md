@@ -104,7 +104,7 @@ or a concise excerpt preserving all numeric fields needed to audit the result.
 
 Logs are the source of truth for test review. When a test is driven by a
 deterministic console event, the test must provide log-reviewable evidence in
-addition to setting `cbp_test_*` markers. A result event may mirror the dump
+addition to setting `test_cbp_*` markers. A result event may mirror the dump
 for human readability, but it is not the authoritative artifact.
 
 The dump must show enough numeric state to distinguish a real pass from a
@@ -938,27 +938,27 @@ US-11 reconciliation cadence gates
 ```
 
 Each action opens `cbp_debug.2` after execution. Read the visible PASS or
-FAIL / NOT RUN rows there; do not enter `cbp_test_*` as console commands.
+FAIL / NOT RUN rows there; do not enter `test_cbp_*` as console commands.
 The variables remain available for scripted assertions, and failed assertions
 are also written to `error.log`.
 
 Expected pass variables on the event country:
 
 ```txt
-cbp_test_add_allow_over_capacity_passed = 1
-cbp_test_add_enforce_passed = 1
-cbp_test_remove_passed = 1
-cbp_test_decay_passed = 1
-cbp_test_same_market_transfer_passed = 1
-cbp_test_invalid_same_record_passed = 1
-cbp_test_inter_market_transfer_passed = 1
-cbp_test_rebuild_passed = 1
-cbp_test_validation_repair_passed = 1
-cbp_test_validation_noop_passed = 1
-cbp_test_reconciliation_dirty_passed = 1
-cbp_test_reconciliation_active_passed = 1
-cbp_test_reconciliation_empty_passed = 1
-cbp_test_reconciliation_cadence_passed = 1
+test_cbp_add_allow_over_capacity_passed = 1
+test_cbp_add_enforce_passed = 1
+test_cbp_remove_passed = 1
+test_cbp_decay_passed = 1
+test_cbp_same_market_transfer_passed = 1
+test_cbp_invalid_same_record_passed = 1
+test_cbp_inter_market_transfer_passed = 1
+test_cbp_rebuild_passed = 1
+test_cbp_validation_repair_passed = 1
+test_cbp_validation_noop_passed = 1
+test_cbp_reconciliation_dirty_passed = 1
+test_cbp_reconciliation_active_passed = 1
+test_cbp_reconciliation_empty_passed = 1
+test_cbp_reconciliation_cadence_passed = 1
 ```
 
 Inspect the latest operation through `cbp_debug_last_*`. The transfer tests
@@ -1642,14 +1642,14 @@ ModeU5 TEST PASS scenario=us04_estate_level_accounting
 Use:
 
 ```txt
-./tools/summarize_cbp_test_logs.sh --expected us04-estate
+./tools/summarize_test_cbp_logs.sh --expected us04-estate
 ```
 
 The full revalidation chain also includes this scenario:
 
 ```txt
 event cbp_revalidate_debug.1
-./tools/summarize_cbp_test_logs.sh
+./tools/summarize_test_cbp_logs.sh
 ```
 
 ### Test 19 — Local demand grows after full-year satisfaction

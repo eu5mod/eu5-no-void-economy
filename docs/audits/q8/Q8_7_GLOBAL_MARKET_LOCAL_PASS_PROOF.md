@@ -36,11 +36,11 @@ This is stronger than the earlier raw iterator probe. It proves that market scop
 ## Counters
 
 ```txt
-cbp_test_q8_7_global_market_count
-cbp_test_q8_7_global_market_unique_count
-cbp_test_q8_7_global_market_duplicate_count
-cbp_test_q8_7_market_country_cache_rebuild_count
-cbp_test_q8_7_market_country_cache_failed_count
+test_cbp_q8_7_global_market_count
+test_cbp_q8_7_global_market_unique_count
+test_cbp_q8_7_global_market_duplicate_count
+test_cbp_q8_7_market_country_cache_rebuild_count
+test_cbp_q8_7_market_country_cache_failed_count
 ```
 
 ## Runtime scenario marker

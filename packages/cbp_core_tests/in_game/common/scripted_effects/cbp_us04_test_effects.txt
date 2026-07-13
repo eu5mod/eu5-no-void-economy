@@ -257,21 +257,21 @@ cbp_us04_log_fixture_dump = {
 
 cbp_debug_run_us04_pop_demand_adaptation_test = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_pop_demand_adaptation"
-	remove_global_variable = cbp_test_us04_pop_demand_adaptation_passed
-	remove_global_variable = cbp_test_us04_pop_demand_adaptation_failed
-	remove_global_variable = cbp_test_us04_pop_demand_adaptation_blocked
+	remove_global_variable = test_cbp_us04_pop_demand_adaptation_passed
+	remove_global_variable = test_cbp_us04_pop_demand_adaptation_failed
+	remove_global_variable = test_cbp_us04_pop_demand_adaptation_blocked
 
 	save_temporary_scope_value_as = { name = cbp_us04_assertion_failure_count value = 0 }
 	cbp_us04_capture_original_cmm_setting = yes
 
 	if = {
 		limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
-		set_global_variable = cbp_test_us04_pop_demand_adaptation_blocked
+		set_global_variable = test_cbp_us04_pop_demand_adaptation_blocked
 		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because Rebalance Economy is not loaded."
 	}
 	else_if = {
 		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }
-		set_global_variable = cbp_test_us04_pop_demand_adaptation_blocked
+		set_global_variable = test_cbp_us04_pop_demand_adaptation_blocked
 		error_log = "ModeU5 US-04 pop demand adaptation probe blocked because stock runtime is not ready."
 	}
 	else = {
@@ -597,12 +597,12 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 
 			if = {
 				limit = { scope:cbp_us04_assertion_failure_count = 0 }
-					set_global_variable = cbp_test_us04_pop_demand_adaptation_passed
+					set_global_variable = test_cbp_us04_pop_demand_adaptation_passed
 					debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation PASS"
 					debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_adaptation"
 			}
 		else = {
-			set_global_variable = cbp_test_us04_pop_demand_adaptation_failed
+			set_global_variable = test_cbp_us04_pop_demand_adaptation_failed
 			debug_log = "ModeU5 US-04 RESULT pop_demand_adaptation FAIL"
 			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_adaptation"
 		}
@@ -613,9 +613,9 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 
 cbp_debug_run_us04_estate_level_accounting_probe = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_estate_level_accounting"
-	remove_global_variable = cbp_test_us04_estate_level_accounting_blocked
-	remove_global_variable = cbp_test_us04_estate_level_accounting_failed
-	remove_global_variable = cbp_test_us04_estate_level_accounting_passed
+	remove_global_variable = test_cbp_us04_estate_level_accounting_blocked
+	remove_global_variable = test_cbp_us04_estate_level_accounting_failed
+	remove_global_variable = test_cbp_us04_estate_level_accounting_passed
 
 	save_temporary_scope_value_as = { name = cbp_us04_assertion_failure_count value = 0 }
 	save_temporary_scope_value_as = { name = cbp_us04_wheat_reconciliation_requested value = 0 }
@@ -770,12 +770,12 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 
 	if = {
 		limit = { scope:cbp_us04_assertion_failure_count = 0 }
-		set_global_variable = cbp_test_us04_estate_level_accounting_passed
+		set_global_variable = test_cbp_us04_estate_level_accounting_passed
 		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting PASS"
 		debug_log = "ModeU5 TEST PASS scenario=us04_estate_level_accounting"
 	}
 	else = {
-		set_global_variable = cbp_test_us04_estate_level_accounting_failed
+		set_global_variable = test_cbp_us04_estate_level_accounting_failed
 		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting FAIL"
 		debug_log = "ModeU5 TEST FAIL scenario=us04_estate_level_accounting"
 	}

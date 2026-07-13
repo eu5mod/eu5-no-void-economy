@@ -559,7 +559,7 @@ event cbp_us01_debug.1
 event cbp_us02_debug.1
 ```
 
-Les noms `cbp_test_*_passed` sont des marqueurs de résultat, pas des
+Les noms `test_cbp_*_passed` sont des marqueurs de résultat, pas des
 commandes console.
 
 Un rejet métier attendu est affiché dans le résultat/debug. `error_log` est

@@ -724,12 +724,12 @@ event cbp_us01_debug.1
 event cbp_us02_debug.1
 ```
 
-`cbp_test_*_passed` values are result markers, not console commands.
+`test_cbp_*_passed` values are result markers, not console commands.
 
 Use persistent global marker presence for PASS state:
 
 ```txt
-has_global_variable = cbp_test_<case>_passed
+has_global_variable = test_cbp_<case>_passed
 ```
 
 Use `NOT = { has_global_variable = ... }` for FAIL / NOT RUN. Do not compare an
@@ -743,11 +743,11 @@ inputs into initialized temporary `scope:` values first, then compare those
 temporary values:
 
 ```txt
-save_temporary_scope_value_as = { name = cbp_test_actual value = var:cbp_some_metric }
-save_temporary_scope_value_as = { name = cbp_test_expected value = 1 }
+save_temporary_scope_value_as = { name = test_cbp_actual value = var:cbp_some_metric }
+save_temporary_scope_value_as = { name = test_cbp_expected value = 1 }
 
 if = {
-	limit = { scope:cbp_test_actual = scope:cbp_test_expected }
+	limit = { scope:test_cbp_actual = scope:test_cbp_expected }
 	...
 }
 ```

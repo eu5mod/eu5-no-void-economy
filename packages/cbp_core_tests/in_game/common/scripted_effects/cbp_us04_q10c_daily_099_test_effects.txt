@@ -6,8 +6,8 @@
 # at a later monthly refresh.
 
 cbp_us04_q10c_clear_state = {
-	remove_global_variable = cbp_test_us04_q10c_daily_099_passed
-	remove_global_variable = cbp_test_us04_q10c_daily_099_blocked
+	remove_global_variable = test_cbp_us04_q10c_daily_099_passed
+	remove_global_variable = test_cbp_us04_q10c_daily_099_blocked
 	remove_global_variable = cbp_us04_q10c_daily_099_in_progress
 	remove_global_variable = cbp_us04_q10c_books_baseline
 	remove_global_variable = cbp_us04_q10c_control_baseline
@@ -38,7 +38,7 @@ cbp_us04_q10c_begin = {
 	debug_log = "ModeU5 TEST ENTERED scenario=us04_q10c_replace_pop_demand_daily_099"
 	if = {
 		limit = { has_global_variable = cbp_us04_q10c_daily_099_in_progress }
-		set_global_variable = cbp_test_us04_q10c_daily_099_blocked
+		set_global_variable = test_cbp_us04_q10c_daily_099_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10c_replace_pop_demand_daily_099 reason=probe_already_in_progress"
 	}
 	else = {
@@ -175,7 +175,7 @@ cbp_us04_q10c_capture_day_09 = {
 cbp_us04_q10c_finalize_day_10 = {
 	if = {
 		limit = { NOT = { has_global_variable = cbp_us04_q10c_daily_099_in_progress } }
-		set_global_variable = cbp_test_us04_q10c_daily_099_blocked
+		set_global_variable = test_cbp_us04_q10c_daily_099_blocked
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_q10c_replace_pop_demand_daily_099 reason=finalize_without_in_progress"
 	}
 	else = {
@@ -189,7 +189,7 @@ cbp_us04_q10c_finalize_day_10 = {
 		set_variable = { name = cbp_us04_q10c_ui_control value = global_var:cbp_us04_q10c_control_day_10 }
 		debug_log = "ModeU5 US-04 VANILLA DEMAND DUMP q10c_daily_099 day=10 source=0.9900 books=[THIS.GetVariable('cbp_us04_q10c_ui_books').GetValue|4] control_wool=[THIS.GetVariable('cbp_us04_q10c_ui_control').GetValue|4]"
 		debug_log = "ModeU5 US-04 VANILLA DEMAND RESULT q10c_daily_099 COMPLETE held_source=0.9900 days=10"
-		set_global_variable = cbp_test_us04_q10c_daily_099_passed
+		set_global_variable = test_cbp_us04_q10c_daily_099_passed
 		debug_log = "ModeU5 TEST PASS scenario=us04_q10c_replace_pop_demand_daily_099"
 		remove_global_variable = cbp_us04_q10c_daily_099_in_progress
 	}
