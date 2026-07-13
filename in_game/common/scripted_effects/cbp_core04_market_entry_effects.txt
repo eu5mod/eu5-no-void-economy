@@ -33,9 +33,9 @@ cbp_core04_reset_market_entry_metrics = {
 	set_global_variable = { name = cbp_core04_market_entry_promotion_succeeded value = 0 }
 }
 
-cbp_core04_log_blocked_nve_deactivated_market_entry = {
+cbp_core04_log_blocked_cbp_deactivated_market_entry = {
 	set_global_variable = { name = cbp_core04_market_entry_last_result value = 4 }
-	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=nve_deactivated"
+	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=cbp_deactivated"
 }
 
 cbp_core04_log_blocked_mutation_gate_market_entry = {
@@ -185,9 +185,9 @@ cbp_prepare_core04_market_entry_stock_migration = {
 	$location$ = { save_temporary_scope_as = cbp_core04_location }
 
 	if = {
-		limit = { cbp_nve_deactivated_trigger = yes }
+		limit = { cbp_cbp_deactivated_trigger = yes }
 		set_global_variable = { name = cbp_core04_market_entry_last_reason value = 1 }
-		cbp_core04_log_blocked_nve_deactivated_market_entry = yes
+		cbp_core04_log_blocked_cbp_deactivated_market_entry = yes
 	}
 	else_if = {
 		limit = { scope:cbp_core04_source_market = scope:cbp_core04_target_market }

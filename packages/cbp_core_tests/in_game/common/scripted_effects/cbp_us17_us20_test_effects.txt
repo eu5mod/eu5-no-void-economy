@@ -59,13 +59,13 @@ cbp_us17_us20_save_original_cmm_trade_rework_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_us17_us20_original_cmm_trade_rework_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_us17_us20_original_cmm_trade_rework_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings)"
 		}
 	}
 }
@@ -76,12 +76,12 @@ cbp_us17_us20_remove_cmm_trade_rework_setting_for_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			key = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 		}
 	}
 }
@@ -90,7 +90,7 @@ cbp_us17_us20_set_cmm_trade_rework_setting_for_test = {
 	cbp_us17_us20_remove_cmm_trade_rework_setting_for_test = yes
 	add_to_variable_map = {
 		name = cmm
-		key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+		key = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 		value = $value$
 	}
 }
@@ -101,7 +101,7 @@ cbp_us17_us20_restore_original_cmm_trade_rework_setting = {
 		limit = { scope:test_cbp_us17_us20_original_cmm_trade_rework_present > 0 }
 		add_to_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			key = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 			value = scope:test_cbp_us17_us20_original_cmm_trade_rework_value
 		}
 	}

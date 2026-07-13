@@ -17,42 +17,42 @@ ROOT = Path(__file__).resolve().parents[1]
 failures: list[str] = []
 
 CMM_MOD_ID = "no_void_economy"
-TRADE_REWORK_SETTING = "nve_general_gameplay_gameplay_trade_rework_settings"
-REVIEW_POP_SETTING = "nve_debug_audit_misc_review_pop_settings"
+TRADE_REWORK_SETTING = "cbp_general_gameplay_gameplay_trade_rework_settings"
+REVIEW_POP_SETTING = "cbp_debug_audit_misc_review_pop_settings"
 TRADE_REWORK_FLAG = f"flag:{CMM_MOD_ID}__{TRADE_REWORK_SETTING}"
 TRADE_REWORK_VALUE_LINK = f'"variable_map(cmm|{TRADE_REWORK_FLAG})" = 1'
 
 CMM_SETTINGS: dict[str, tuple[str, str, bool]] = {
-    "nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_gameplay_group", False),
-    TRADE_REWORK_SETTING: ("nve_general_gameplay_tab", "nve_general_gameplay_gameplay_group", True),
-    "nve_general_gameplay_gameplay_empire_military_difficulties_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_gameplay_group", False),
-    "nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_country_level_stocks_group", False),
-    "nve_general_gameplay_country_level_stocks_only_sold_goods_create_revenue_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_country_level_stocks_group", True),
-    "nve_general_gameplay_country_level_stocks_boycotts_wars_block_resource_buying_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_country_level_stocks_group", True),
-    "nve_general_gameplay_other_extra_revenue_to_ai_settings": ("nve_general_gameplay_tab", "nve_general_gameplay_other_group", True),
-    "nve_economic_balance_design_activate_goods_decay_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
-    "nve_economic_balance_design_sliders_adjustments_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
-    "nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings": ("nve_economic_balance_tab", "nve_economic_balance_design_group", True),
-    "nve_economic_balance_balance_increased_location_specialisation_settings": ("nve_economic_balance_tab", "nve_economic_balance_balance_group", True),
-    "nve_economic_balance_balance_marketplace_burgher_power_reduction_settings": ("nve_economic_balance_tab", "nve_economic_balance_balance_group", True),
-    "nve_war_subjects_balance_general_difficulty_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_general_group", True),
-    "nve_war_subjects_balance_design_overlord_declares_war_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_design_group", True),
-    "nve_war_subjects_balance_design_persistence_of_resources_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_design_group", True),
-    "nve_war_subjects_balance_balance_shorter_wars_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_balance_group", True),
-    "nve_war_subjects_balance_balance_adjust_rebel_threshold_settings": ("nve_war_subjects_balance_tab", "nve_war_subjects_balance_balance_group", True),
-    "nve_debug_audit_debug_audit_debug_messages_settings": ("nve_debug_audit_tab", "nve_debug_audit_debug_audit_group", True),
-    "nve_debug_audit_debug_audit_monthly_stock_check_settings": ("nve_debug_audit_tab", "nve_debug_audit_debug_audit_group", True),
-    "nve_debug_audit_debug_audit_save_mode_settings": ("nve_debug_audit_tab", "nve_debug_audit_debug_audit_group", True),
-    REVIEW_POP_SETTING: ("nve_debug_audit_tab", "nve_debug_audit_misc_group", True),
+    "cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_gameplay_group", False),
+    TRADE_REWORK_SETTING: ("cbp_general_gameplay_tab", "cbp_general_gameplay_gameplay_group", True),
+    "cbp_general_gameplay_gameplay_empire_military_difficulties_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_gameplay_group", False),
+    "cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_country_level_stocks_group", False),
+    "cbp_general_gameplay_country_level_stocks_only_sold_goods_create_revenue_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_country_level_stocks_group", True),
+    "cbp_general_gameplay_country_level_stocks_boycotts_wars_block_resource_buying_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_country_level_stocks_group", True),
+    "cbp_general_gameplay_other_extra_revenue_to_ai_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_other_group", True),
+    "cbp_economic_balance_design_activate_goods_decay_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
+    "cbp_economic_balance_design_sliders_adjustments_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
+    "cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_design_group", True),
+    "cbp_economic_balance_balance_increased_location_specialisation_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_balance_group", True),
+    "cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings": ("cbp_economic_balance_tab", "cbp_economic_balance_balance_group", True),
+    "cbp_war_subjects_balance_general_difficulty_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_general_group", True),
+    "cbp_war_subjects_balance_design_overlord_declares_war_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_design_group", True),
+    "cbp_war_subjects_balance_design_persistence_of_resources_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_design_group", True),
+    "cbp_war_subjects_balance_balance_shorter_wars_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_balance_group", True),
+    "cbp_war_subjects_balance_balance_adjust_rebel_threshold_settings": ("cbp_war_subjects_balance_tab", "cbp_war_subjects_balance_balance_group", True),
+    "cbp_debug_audit_debug_audit_debug_messages_settings": ("cbp_debug_audit_tab", "cbp_debug_audit_debug_audit_group", True),
+    "cbp_debug_audit_debug_audit_monthly_stock_check_settings": ("cbp_debug_audit_tab", "cbp_debug_audit_debug_audit_group", True),
+    "cbp_debug_audit_debug_audit_save_mode_settings": ("cbp_debug_audit_tab", "cbp_debug_audit_debug_audit_group", True),
+    REVIEW_POP_SETTING: ("cbp_debug_audit_tab", "cbp_debug_audit_misc_group", True),
 }
 
 REQUIRED_FILES = [
     ".metadata/metadata.json",
     "in_game/common/on_action/cbp_stock_on_actions.txt",
-    "in_game/common/on_action/nve__cmm_on_actions.txt",
-    "in_game/common/on_action/nve_cmm_runtime_on_action.txt",
+    "in_game/common/on_action/cbp__cmm_on_actions.txt",
+    "in_game/common/on_action/cbp_cmm_runtime_on_action.txt",
     "in_game/common/script_values/zzz_trade_reconciliation_values.txt",
-    "in_game/common/scripted_effects/nve__cmm_effects.txt",
+    "in_game/common/scripted_effects/cbp__cmm_effects.txt",
     "in_game/common/scripted_effects/cbp_cmm_runtime_effects.txt",
     "in_game/common/scripted_effects/cbp_configuration_effects.txt",
     "in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt",
@@ -60,7 +60,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt",
     "in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt",
     "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt",
-    "in_game/common/scripted_guis/nve__cmm_scripted_gui.txt",
+    "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
     "in_game/events/cbp_cmm_warning_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt",
@@ -69,7 +69,7 @@ REQUIRED_FILES = [
     "packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt",
     "packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt",
     "packages/cbp_core_tests/in_game/localization/cbp_us17_owner_modifier_probe_l_english.yml",
-    "main_menu/localization/english/nve__cmm_l_english.yml",
+    "main_menu/localization/english/cbp__cmm_l_english.yml",
 ]
 
 
@@ -119,8 +119,8 @@ def validate_required_files() -> None:
 def validate_no_legacy_review_pop_id(all_text: str) -> None:
     exact_legacy_lines = [
         r"^\s*setting_id\s*=\s*review_pop\s*$",
-        r"^\s*tab_id\s*=\s*nve_general\s*$",
-        r"^\s*group_id\s*=\s*nve_no_void_economy\s*$",
+        r"^\s*tab_id\s*=\s*cbp_general\s*$",
+        r"^\s*group_id\s*=\s*cbp_no_void_economy\s*$",
     ]
     for pattern in exact_legacy_lines:
         expect(re.search(pattern, all_text, re.MULTILINE) is None, f"Legacy review-pop CMM assignment must not remain: {pattern}")
@@ -151,8 +151,8 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
 
     runtime_review_pop = block(runtime_effects, "cbp_cmm_register_review_pop")
     expect(f"setting_id = {REVIEW_POP_SETTING}" in runtime_review_pop, "Runtime review-pop registration must use the standard setting id")
-    expect("tab_id = nve_debug_audit_tab" in runtime_review_pop, "Runtime review-pop registration must use the Debug & Audit tab")
-    expect("group_id = nve_debug_audit_misc_group" in runtime_review_pop, "Runtime review-pop registration must use the Debug & Audit / Misc group")
+    expect("tab_id = cbp_debug_audit_tab" in runtime_review_pop, "Runtime review-pop registration must use the Debug & Audit tab")
+    expect("group_id = cbp_debug_audit_misc_group" in runtime_review_pop, "Runtime review-pop registration must use the Debug & Audit / Misc group")
 
     for setting_id, (_tab_id, _group_id, has_scripted_gui) in CMM_SETTINGS.items():
         expect(f"setting_id = {setting_id}" in cmm_effects, f"Missing CMM registration for {setting_id}")
@@ -161,7 +161,7 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
         if has_scripted_gui:
             expect(f"{CMM_MOD_ID}__{setting_id}" in scripted_gui, f"Missing scripted GUI handler for {setting_id}")
 
-    expect("no_void_economy__nve_debug_audit_tab__nve_debug_audit_misc_group_name" in loc, "Missing localization name for Debug & Audit / Misc group")
+    expect("no_void_economy__cbp_debug_audit_tab__cbp_debug_audit_misc_group_name" in loc, "Missing localization name for Debug & Audit / Misc group")
 
     trade_trigger = block(config_triggers, "cbp_trade_rework_enabled_trigger")
     expect("has_variable_map = cmm" in trade_trigger, "Trade rework trigger must require the CMM variable map")
@@ -324,9 +324,9 @@ def main() -> int:
 
     stock_on_actions = read("in_game/common/on_action/cbp_stock_on_actions.txt")
     trade_values = read("in_game/common/script_values/zzz_trade_reconciliation_values.txt")
-    cmm_effects = read("in_game/common/scripted_effects/nve__cmm_effects.txt")
+    cmm_effects = read("in_game/common/scripted_effects/cbp__cmm_effects.txt")
     runtime_effects = read("in_game/common/scripted_effects/cbp_cmm_runtime_effects.txt")
-    scripted_gui = read("in_game/common/scripted_guis/nve__cmm_scripted_gui.txt")
+    scripted_gui = read("in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt")
     config_triggers = read("in_game/common/scripted_triggers/cbp_configuration_triggers.txt")
     country_trade_owner_effects = read("in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt")
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt")
@@ -337,7 +337,7 @@ def main() -> int:
     us20_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt")
     owner_modifier_probe_events = read("packages/cbp_core_tests/in_game/events/cbp_us17_owner_modifier_probe_events.txt")
     owner_modifier_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt")
-    loc = read("main_menu/localization/english/nve__cmm_l_english.yml")
+    loc = read("main_menu/localization/english/cbp__cmm_l_english.yml")
 
     validate_no_legacy_review_pop_id("\n".join([cmm_effects, runtime_effects, scripted_gui, loc, read("in_game/events/cbp_review_events.txt"), read("in_game/common/scripted_effects/cbp_review_effects.txt")]))
     validate_cmm_surface(cmm_effects, runtime_effects, config_triggers, loc, scripted_gui)

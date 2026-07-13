@@ -78,6 +78,6 @@ cbp_initialize_pop_demand_multipliers_for_current_country_once = {
 
 # Generated CMM setting callback. Configuration is campaign-fixed, but keeping
 # the marker synchronized also supports deterministic test toggles.
-no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings_on_changed = {
+no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings_on_changed = {
 	cbp_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 }

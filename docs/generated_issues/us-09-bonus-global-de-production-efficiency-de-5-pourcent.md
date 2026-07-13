@@ -297,7 +297,7 @@ development_bonus = starting_development * 0.01
 
 Example:
 
-nve_location_123_rgo_size_scaffold_bonus = {
+cbp_location_123_rgo_size_scaffold_bonus = {
     game_data = {
         category = location
     }
@@ -313,7 +313,7 @@ Example:
 
 123 = {
     add_location_modifier = {
-        modifier = nve_location_123_rgo_size_scaffold_bonus
+        modifier = cbp_location_123_rgo_size_scaffold_bonus
         days = -1
         mode = replace
         recalculate_immediately = yes

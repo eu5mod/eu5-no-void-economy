@@ -5,48 +5,48 @@
 cbp_cmm_register_review_pop = {
 	cmm_register_bool_setting = {
 		mod_id = no_void_economy
-		setting_id = nve_debug_audit_misc_review_pop_settings
-		tab_id = nve_debug_audit_tab
-		group_id = nve_debug_audit_misc_group
+		setting_id = cbp_debug_audit_misc_review_pop_settings
+		tab_id = cbp_debug_audit_tab
+		group_id = cbp_debug_audit_misc_group
 		default_value = 1
 	}
 	cmm_add_scripted_gui = {
 		mod_id = no_void_economy
-		setting_id = nve_debug_audit_misc_review_pop_settings
+		setting_id = cbp_debug_audit_misc_review_pop_settings
 	}
 }
 
 # Performance-warning callbacks kept as scripted effects because the generated
-# nve__cmm_effects callback may call them when the matching CMM setting changes.
-no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = {
+# cbp__cmm_effects callback may call them when the matching CMM setting changes.
+no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings_on_changed = {
 	cbp_refresh_configuration_from_cmm_country_scope = yes
 }
 
-no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = {
+no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = {
 	cbp_refresh_configuration_from_cmm_country_scope = yes
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings)" = 2
 		}
 		trigger_event_non_silently = cbp_cmm_warning.2
 	}
 }
 
-no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
+no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings_on_changed = {
 	cbp_refresh_configuration_from_cmm_country_scope = yes
 	if = {
 		limit = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings)" = 3
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings)" = 3
 		}
 		trigger_event_non_silently = cbp_cmm_warning.3
 	}
@@ -54,10 +54,10 @@ no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = {
 
 # Compatibility stubs for generated CMM callbacks. Runtime package selection is
 # owned by the launcher/playset, so these callbacks must not mutate gameplay.
-nve_cmf_activate_no_void_economy = {
+cbp_cmf_activate_no_void_economy = {
 }
 
-nve_cmf_activate_good_decay = {
+cbp_cmf_activate_good_decay = {
 }
 
 # Refreshes a script-safe UI marker from the CMM main NVE dropdown.
@@ -72,41 +72,41 @@ nve_cmf_activate_good_decay = {
 #
 # Visibility policy:
 #
-#   unset/default -> visible, because nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings default_index = 1
+#   unset/default -> visible, because cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings default_index = 1
 #   value 1       -> visible
 #   value 2       -> visible
 #   value 3       -> hidden
-cbp_refresh_nve_main_cmm_visibility = {
-	remove_global_variable = gui_cbp_cmm_nve_main_enabled
+cbp_refresh_cbp_main_cmm_visibility = {
+	remove_global_variable = gui_cbp_cmm_cbp_main_enabled
 
 	if = {
 		limit = {
 			NOT = { has_variable_map = cmm }
 		}
-		set_global_variable = gui_cbp_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	}
 	else_if = {
 		limit = {
 			NOT = {
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
+					target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 				}
 			}
 		}
-		set_global_variable = gui_cbp_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 1
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 1
 		}
-		set_global_variable = gui_cbp_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
 		}
-		set_global_variable = gui_cbp_cmm_nve_main_enabled
+		set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	}
 }
 
@@ -116,51 +116,51 @@ cbp_refresh_nve_main_cmm_visibility = {
 cbp_cmm_mark_planned_services_restricted = {
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_economic_balance_design_activate_goods_decay_settings
+		setting_id = cbp_economic_balance_design_activate_goods_decay_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_gameplay_trade_rework_settings
+		setting_id = cbp_general_gameplay_gameplay_trade_rework_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_war_subjects_balance_balance_shorter_wars_settings
+		setting_id = cbp_war_subjects_balance_balance_shorter_wars_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
+		setting_id = cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_economic_balance_balance_increased_location_specialisation_settings
+		setting_id = cbp_economic_balance_balance_increased_location_specialisation_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_economic_balance_design_sliders_adjustments_settings
+		setting_id = cbp_economic_balance_design_sliders_adjustments_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_other_extra_revenue_to_ai_settings
+		setting_id = cbp_general_gameplay_other_extra_revenue_to_ai_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
+		setting_id = cbp_war_subjects_balance_balance_adjust_rebel_threshold_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_war_subjects_balance_design_overlord_declares_war_settings
+		setting_id = cbp_war_subjects_balance_design_overlord_declares_war_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_war_subjects_balance_design_persistence_of_resources_settings
+		setting_id = cbp_war_subjects_balance_design_persistence_of_resources_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_general_gameplay_gameplay_empire_military_difficulties_settings
+		setting_id = cbp_general_gameplay_gameplay_empire_military_difficulties_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = nve_economic_balance_balance_marketplace_burgher_power_reduction_settings
+		setting_id = cbp_economic_balance_balance_marketplace_burgher_power_reduction_settings
 	}
 }
 
@@ -173,12 +173,12 @@ cbp_cmm_reset_activate_goods_decay_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_economic_balance_design_activate_goods_decay_settings
+				target = flag:no_void_economy__cbp_economic_balance_design_activate_goods_decay_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_economic_balance_design_activate_goods_decay_settings
+			key = flag:no_void_economy__cbp_economic_balance_design_activate_goods_decay_settings
 		}
 	}
 }
@@ -189,18 +189,18 @@ cbp_cmm_reset_trade_rework_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings
+			key = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 		}
 	}
 }
 
-cbp_cmm_refresh_nve_main_enabled = {
-	cbp_refresh_nve_main_mode_from_cmm_country_scope = yes
+cbp_cmm_refresh_cbp_main_enabled = {
+	cbp_refresh_cbp_main_mode_from_cmm_country_scope = yes
 }
 
 cbp_cmm_reset_shorter_wars_setting = {
@@ -209,12 +209,12 @@ cbp_cmm_reset_shorter_wars_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings
+				target = flag:no_void_economy__cbp_war_subjects_balance_balance_shorter_wars_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings
+			key = flag:no_void_economy__cbp_war_subjects_balance_balance_shorter_wars_settings
 		}
 	}
 }
@@ -225,12 +225,12 @@ cbp_cmm_reset_war_exhaustion_political_pressure_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
+			key = flag:no_void_economy__cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings
 		}
 	}
 }
@@ -241,12 +241,12 @@ cbp_cmm_reset_increased_location_specialisation_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings
+				target = flag:no_void_economy__cbp_economic_balance_balance_increased_location_specialisation_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings
+			key = flag:no_void_economy__cbp_economic_balance_balance_increased_location_specialisation_settings
 		}
 	}
 }
@@ -257,12 +257,12 @@ cbp_cmm_reset_sliders_adjustments_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_economic_balance_design_sliders_adjustments_settings
+				target = flag:no_void_economy__cbp_economic_balance_design_sliders_adjustments_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_economic_balance_design_sliders_adjustments_settings
+			key = flag:no_void_economy__cbp_economic_balance_design_sliders_adjustments_settings
 		}
 	}
 }
@@ -273,12 +273,12 @@ cbp_cmm_reset_extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings
+				target = flag:no_void_economy__cbp_general_gameplay_other_extra_revenue_to_ai_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings
+			key = flag:no_void_economy__cbp_general_gameplay_other_extra_revenue_to_ai_settings
 		}
 	}
 }
@@ -289,12 +289,12 @@ cbp_cmm_reset_adjust_rebel_threshold_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
+				target = flag:no_void_economy__cbp_war_subjects_balance_balance_adjust_rebel_threshold_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings
+			key = flag:no_void_economy__cbp_war_subjects_balance_balance_adjust_rebel_threshold_settings
 		}
 	}
 }
@@ -305,12 +305,12 @@ cbp_cmm_reset_overlord_declares_war_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings
+				target = flag:no_void_economy__cbp_war_subjects_balance_design_overlord_declares_war_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings
+			key = flag:no_void_economy__cbp_war_subjects_balance_design_overlord_declares_war_settings
 		}
 	}
 }
@@ -321,12 +321,12 @@ cbp_cmm_reset_persistence_of_resources_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings
+				target = flag:no_void_economy__cbp_war_subjects_balance_design_persistence_of_resources_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings
+			key = flag:no_void_economy__cbp_war_subjects_balance_design_persistence_of_resources_settings
 		}
 	}
 }
@@ -337,61 +337,61 @@ cbp_handle_cmm_runtime_callback = {
 	switch = {
 		trigger = var:cmf_callback
 
-		flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings = {
-			cbp_cmm_refresh_nve_main_enabled = yes
+		flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings = {
+			cbp_cmm_refresh_cbp_main_enabled = yes
 		}
 
-		flag:no_void_economy__nve_debug_audit_misc_review_pop_settings = {
+		flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings = {
 		}
-		flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings = {
-			no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings_on_changed = yes
-		}
-
-		flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings = {
-			no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = yes
+		flag:no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings = {
+			no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings_on_changed = yes
 		}
 
-		flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings = {
-			no_void_economy__nve_debug_audit_debug_audit_save_mode_settings_on_changed = yes
+		flag:no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings = {
+			no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings_on_changed = yes
 		}
 
-		flag:no_void_economy__nve_economic_balance_design_activate_goods_decay_settings = {
+		flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings = {
+			no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings_on_changed = yes
+		}
+
+		flag:no_void_economy__cbp_economic_balance_design_activate_goods_decay_settings = {
 			cbp_cmm_reset_activate_goods_decay_setting = yes
 		}
 
-		flag:no_void_economy__nve_general_gameplay_gameplay_trade_rework_settings = {
+		flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings = {
 			cbp_cmm_reset_trade_rework_setting = yes
 		}
 
-		flag:no_void_economy__nve_war_subjects_balance_balance_shorter_wars_settings = {
+		flag:no_void_economy__cbp_war_subjects_balance_balance_shorter_wars_settings = {
 			cbp_cmm_reset_shorter_wars_setting = yes
 		}
 
-		flag:no_void_economy__nve_general_gameplay_gameplay_war_exhaustion_political_pressure_settings = {
+		flag:no_void_economy__cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings = {
 			cbp_cmm_reset_war_exhaustion_political_pressure_setting = yes
 		}
 
-		flag:no_void_economy__nve_economic_balance_balance_increased_location_specialisation_settings = {
+		flag:no_void_economy__cbp_economic_balance_balance_increased_location_specialisation_settings = {
 			cbp_cmm_reset_increased_location_specialisation_setting = yes
 		}
 
-		flag:no_void_economy__nve_economic_balance_design_sliders_adjustments_settings = {
+		flag:no_void_economy__cbp_economic_balance_design_sliders_adjustments_settings = {
 			cbp_cmm_reset_sliders_adjustments_setting = yes
 		}
 
-		flag:no_void_economy__nve_general_gameplay_other_extra_revenue_to_ai_settings = {
+		flag:no_void_economy__cbp_general_gameplay_other_extra_revenue_to_ai_settings = {
 			cbp_cmm_reset_extra_revenue_to_ai_to_compensate_for_lack_of_strategy_setting = yes
 		}
 
-		flag:no_void_economy__nve_war_subjects_balance_balance_adjust_rebel_threshold_settings = {
+		flag:no_void_economy__cbp_war_subjects_balance_balance_adjust_rebel_threshold_settings = {
 			cbp_cmm_reset_adjust_rebel_threshold_setting = yes
 		}
 
-		flag:no_void_economy__nve_war_subjects_balance_design_overlord_declares_war_settings = {
+		flag:no_void_economy__cbp_war_subjects_balance_design_overlord_declares_war_settings = {
 			cbp_cmm_reset_overlord_declares_war_setting = yes
 		}
 
-		flag:no_void_economy__nve_war_subjects_balance_design_persistence_of_resources_settings = {
+		flag:no_void_economy__cbp_war_subjects_balance_design_persistence_of_resources_settings = {
 			cbp_cmm_reset_persistence_of_resources_setting = yes
 		}
 	}

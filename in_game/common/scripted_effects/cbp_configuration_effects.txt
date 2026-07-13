@@ -32,75 +32,75 @@ cbp_enter_test_audit_runtime_mode = {
 	set_global_variable = cbp_runtime_mode_audit
 }
 
-cbp_clear_nve_main_mode_flags = {
+cbp_clear_cbp_main_mode_flags = {
 	remove_global_variable = cbp_performance_mode_enabled
 	remove_global_variable = cbp_normal_mode_enabled
-	remove_global_variable = cbp_nve_deactivated
-	remove_global_variable = gui_cbp_cmm_nve_main_enabled
-	remove_global_variable = cbp_nve_main_mode
+	remove_global_variable = cbp_cbp_deactivated
+	remove_global_variable = gui_cbp_cmm_cbp_main_enabled
+	remove_global_variable = cbp_cbp_main_mode
 }
 
-cbp_enter_nve_performance_mode = {
-	cbp_clear_nve_main_mode_flags = yes
+cbp_enter_cbp_performance_mode = {
+	cbp_clear_cbp_main_mode_flags = yes
 	set_global_variable = cbp_performance_mode_enabled
-	set_global_variable = gui_cbp_cmm_nve_main_enabled
+	set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	set_global_variable = {
-		name = cbp_nve_main_mode
+		name = cbp_cbp_main_mode
 		value = 1
 	}
 }
 
-cbp_enter_nve_normal_mode = {
-	cbp_clear_nve_main_mode_flags = yes
+cbp_enter_cbp_normal_mode = {
+	cbp_clear_cbp_main_mode_flags = yes
 	set_global_variable = cbp_normal_mode_enabled
-	set_global_variable = gui_cbp_cmm_nve_main_enabled
+	set_global_variable = gui_cbp_cmm_cbp_main_enabled
 	set_global_variable = {
-		name = cbp_nve_main_mode
+		name = cbp_cbp_main_mode
 		value = 2
 	}
 }
 
-cbp_enter_nve_deactivated_mode = {
-	cbp_clear_nve_main_mode_flags = yes
-	set_global_variable = cbp_nve_deactivated
+cbp_enter_cbp_deactivated_mode = {
+	cbp_clear_cbp_main_mode_flags = yes
+	set_global_variable = cbp_cbp_deactivated
 	set_global_variable = {
-		name = cbp_nve_main_mode
+		name = cbp_cbp_main_mode
 		value = 3
 	}
 }
 
-cbp_refresh_nve_main_mode_from_cmm_country_scope = {
+cbp_refresh_cbp_main_mode_from_cmm_country_scope = {
 	if = {
 		limit = {
 			NOT = { has_variable_map = cmm }
 		}
-		cbp_enter_nve_performance_mode = yes
+		cbp_enter_cbp_performance_mode = yes
 	}
 	else_if = {
 		limit = {
 			NOT = {
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
+					target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 				}
 			}
 		}
-		cbp_enter_nve_performance_mode = yes
+		cbp_enter_cbp_performance_mode = yes
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 2
 		}
-		cbp_enter_nve_normal_mode = yes
+		cbp_enter_cbp_normal_mode = yes
 	}
 	else_if = {
 		limit = {
-			"variable_map(cmm|flag:no_void_economy__nve_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 3
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)" = 3
 		}
-		cbp_enter_nve_deactivated_mode = yes
+		cbp_enter_cbp_deactivated_mode = yes
 	}
 	else = {
-		cbp_enter_nve_performance_mode = yes
+		cbp_enter_cbp_performance_mode = yes
 	}
 }
 
@@ -143,11 +143,11 @@ cbp_prepare_country_market_accounting_decision = {
 	save_temporary_scope_value_as = { name = cbp_accounting_decision_market_human_relevant value = 0 }
 
 	if = {
-		limit = { cbp_nve_deactivated_trigger = yes }
+		limit = { cbp_cbp_deactivated_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_market_level_fallback_required value = 0 }
 	}
 	else_if = {
-		limit = { cbp_nve_normal_mode_trigger = yes }
+		limit = { cbp_cbp_normal_mode_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_detailed_country_market_accounting_enabled value = 1 }
 	}
 	else = {
@@ -215,12 +215,12 @@ cbp_prepare_stock_mutation_accounting_mode = {
 	scope:cbp_stock_mutation_market = { save_temporary_scope_as = cbp_market }
 
 	if = {
-		limit = { cbp_nve_deactivated_trigger = yes }
+		limit = { cbp_cbp_deactivated_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_stock_mutation_blocked value = 1 }
 		save_temporary_scope_value_as = { name = cbp_stock_mutation_gate_result value = 3 }
 	}
 	else_if = {
-		limit = { cbp_nve_normal_mode_trigger = yes }
+		limit = { cbp_cbp_normal_mode_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_stock_mutation_use_detailed_accounting value = 1 }
 		save_temporary_scope_value_as = { name = cbp_stock_mutation_gate_result value = 1 }
 	}
@@ -275,12 +275,12 @@ cbp_prepare_market_runtime_accounting_mode = {
 	save_temporary_scope_value_as = { name = cbp_market_runtime_market_human_relevant value = 0 }
 
 	if = {
-		limit = { cbp_nve_deactivated_trigger = yes }
+		limit = { cbp_cbp_deactivated_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_market_runtime_blocked value = 1 }
 		save_temporary_scope_value_as = { name = cbp_market_runtime_gate_result value = 3 }
 	}
 	else_if = {
-		limit = { cbp_nve_normal_mode_trigger = yes }
+		limit = { cbp_cbp_normal_mode_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_market_runtime_use_detailed_accounting value = 1 }
 		save_temporary_scope_value_as = { name = cbp_market_runtime_gate_result value = 1 }
 	}
@@ -374,7 +374,7 @@ cbp_initialize_configuration_state_effect = {
     }
 
     cbp_apply_generated_local_runtime_mode = yes
-    cbp_enter_nve_performance_mode = yes
+    cbp_enter_cbp_performance_mode = yes
     cbp_prepare_performance_mode_human_relevant_markets = yes
 
     set_global_variable = {
@@ -387,7 +387,7 @@ cbp_initialize_configuration_state_effect = {
 
 cbp_refresh_configuration_from_cmm_country_scope = {
 	cbp_apply_debug_mode_cmm_defaults = yes
-	cbp_refresh_nve_main_mode_from_cmm_country_scope = yes
+	cbp_refresh_cbp_main_mode_from_cmm_country_scope = yes
 	cbp_prepare_performance_mode_human_relevant_markets = yes
 
 	if = {
@@ -395,9 +395,9 @@ cbp_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings)" = 3
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings)" = 3
 		}
 		cbp_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -410,9 +410,9 @@ cbp_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_debug_messages_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_debug_messages_settings)" = 2
 		}
 		cbp_enter_debug_runtime_mode = yes
 		set_global_variable = {
@@ -433,9 +433,9 @@ cbp_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_monthly_stock_check_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_monthly_stock_check_settings)" = 2
 		}
 		if = {
 			limit = { cbp_debug_enabled_trigger = yes }
@@ -451,9 +451,9 @@ cbp_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings)" = 3
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings)" = 3
 		}
 		cbp_enter_strict_accounting_persistence = yes
 	}
@@ -462,9 +462,9 @@ cbp_refresh_configuration_from_cmm_country_scope = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings
+				target = flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings
 			}
-			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_debug_audit_save_mode_settings)" = 2
+			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_debug_audit_save_mode_settings)" = 2
 		}
 		cbp_enter_human_relevant_accounting_persistence = yes
 	}

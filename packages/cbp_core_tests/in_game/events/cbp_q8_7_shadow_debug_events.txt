@@ -64,11 +64,11 @@ cbp_q8_probe_debug.5 = {
 				has_variable_map = cmm
 				is_key_in_variable_map = {
 					name = cmm
-					target = flag:no_void_economy__nve_no_void_economy_main
+					target = flag:no_void_economy__cbp_no_void_economy_main
 				}
 			}
 			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
-			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
+			save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)" }
 		}
 		cbp_q8_7_probe_shadow_market_center_global_equivalence = yes
 		trigger_event_non_silently = cbp_q8_probe_debug.6

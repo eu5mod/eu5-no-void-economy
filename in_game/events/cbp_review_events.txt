@@ -19,10 +19,10 @@ cbp_review.1 = {
 		# 			NOT = {
 		# 				is_key_in_variable_map = {
 		# 					name = cmm
-		# 					target = flag:no_void_economy__nve_debug_audit_misc_review_pop_settings
+		# 					target = flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings
 		# 				}
 		# 			}
-		# 			"variable_map(cmm|flag:no_void_economy__nve_debug_audit_misc_review_pop_settings)" = 1
+		# 			"variable_map(cmm|flag:no_void_economy__cbp_debug_audit_misc_review_pop_settings)" = 1
 		# 		}
 		# 	}
 		# }

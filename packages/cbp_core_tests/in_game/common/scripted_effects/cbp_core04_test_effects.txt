@@ -170,13 +170,13 @@ cbp_debug_run_core04_market_entry_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_no_void_economy_main
+				target = flag:no_void_economy__cbp_no_void_economy_main
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_original_cmm_main_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)"
 		}
 	}
 
@@ -265,7 +265,7 @@ cbp_debug_run_core04_market_entry_test = {
 
 		# CORE-04 deactivation is a market-entry gate invariant. Force the derived
 		# runtime mode directly so this probe does not depend on a brittle CMM test key.
-		cbp_enter_nve_deactivated_mode = yes
+		cbp_enter_cbp_deactivated_mode = yes
 		cbp_prepare_core04_market_entry_stock_migration = {
 			country = scope:cbp_core04_test_country
 			source_market = scope:cbp_core04_test_source_market

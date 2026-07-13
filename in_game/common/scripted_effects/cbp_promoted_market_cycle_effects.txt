@@ -213,7 +213,7 @@ cbp_prepare_promoted_market_work_list_for_current_country = {
 		cbp_note_promoted_market_cycle_candidate = yes
 
 		if = {
-			limit = { cbp_nve_normal_mode_trigger = yes }
+			limit = { cbp_cbp_normal_mode_trigger = yes }
 			cbp_add_current_market_to_promoted_market_cycle_work_list = yes
 		}
 		else_if = {

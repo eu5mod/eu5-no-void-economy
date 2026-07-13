@@ -12,13 +12,13 @@ cbp_us04_capture_original_cmm_setting = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+				target = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 			}
 		}
 		save_temporary_scope_value_as = { name = cbp_us04_original_cmm_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = cbp_us04_original_cmm_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)"
 		}
 	}
 }
@@ -29,12 +29,12 @@ cbp_us04_remove_cmm_setting_for_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+				target = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			key = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 		}
 	}
 }
@@ -43,7 +43,7 @@ cbp_us04_set_cmm_setting_for_test = {
 	cbp_us04_remove_cmm_setting_for_test = yes
 	add_to_variable_map = {
 		name = cmm
-		key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+		key = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 		value = $value$
 	}
 }
@@ -54,7 +54,7 @@ cbp_us04_restore_original_cmm_setting = {
 		limit = { scope:cbp_us04_original_cmm_present > 0 }
 		add_to_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__nve_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+			key = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
 			value = scope:cbp_us04_original_cmm_value
 		}
 	}

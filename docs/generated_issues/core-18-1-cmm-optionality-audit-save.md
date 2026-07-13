@@ -93,18 +93,18 @@ Feeds counters / gates to:
 
 | Need                            | Scope                                 | Candidate                                                                                                                                         | Status    | TECH-01 ID |
 | ------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
-| CMF registration hook           | country / CMF registration on_action  | `cmf_on_mod_registration` → `nve__on_register_cmf_mod` → `nve__register_cmf_mod`                                                                  | TO_TEST   | CMF        |
-| CMF callback hook               | country / CMF callback on_action      | `cmf_on_callback` → `nve__on_cmf_callback` → `nve__handle_cmf_callback`                                                                           | TO_TEST   | CMF        |
+| CMF registration hook           | country / CMF registration on_action  | `cmf_on_mod_registration` → `cbp__on_register_cmf_mod` → `cbp__register_cmf_mod`                                                                  | TO_TEST   | CMF        |
+| CMF callback hook               | country / CMF callback on_action      | `cmf_on_callback` → `cbp__on_cmf_callback` → `cbp__handle_cmf_callback`                                                                           | TO_TEST   | CMF        |
 | Register dropdown settings      | country                               | `cmm_register_dropdown_setting` for NVE main profile, debug messages, monthly stock check, save mode, balance difficulty                          | TO_TEST   | CMF        |
 | Register bool settings          | country                               | `cmm_register_bool_setting` for decay, trade cost, planned balance/rebel/subject services                                                         | TO_TEST   | CMF        |
 | Expose scripted GUI callbacks   | country                               | `cmm_add_scripted_gui` plus `*_on_changed` handlers                                                                                               | TO_TEST   | CMF        |
 | Read CMM setting values         | country-owned CMM map access          | quoted value links such as `"variable_map(cmm|flag:<setting>)"`                                                                                   | TO_TEST   | CMF        |
-| Main NVE service flag           | CMM setting map                       | `no_void_economy__nve_no_void_economy_main` plus alias sync for `activate_no_void_economy`                                                        | TO_TEST   | CMF        |
+| Main NVE service flag           | CMM setting map                       | `no_void_economy__cbp_no_void_economy_main` plus alias sync for `activate_no_void_economy`                                                        | TO_TEST   | CMF        |
 | Debug mode                      | global runtime flags                  | `cbp_enter_normal_runtime_mode`, `cbp_enter_debug_runtime_mode`, `cbp_debug_level`                                                       | CONFIRMED | internal   |
 | Audit mode                      | global runtime flags                  | `cbp_enter_audit_runtime_mode`, `cbp_audit_enabled_trigger`, `cbp_full_validation_allowed_trigger`                                       | CONFIRMED | internal   |
 | Accounting persistence policy   | global runtime flags                  | `cbp_enter_minimal_accounting_persistence`, `cbp_enter_human_relevant_accounting_persistence`, `cbp_enter_strict_accounting_persistence` | CONFIRMED | internal   |
 | Human-relevant full ledger gate | global variable list / market scope   | `cbp_performance_relevant_markets`, `cbp_human_relevant_full_ledger_market_trigger`                                                         | CONFIRMED | internal   |
-| Slow-mode player warnings       | country event                         | `nve_cmm_warning.*` events for slow audit/save settings                                                                                           | TO_TEST   | CMF        |
+| Slow-mode player warnings       | country event                         | `cbp_cmm_warning.*` events for slow audit/save settings                                                                                           | TO_TEST   | CMF        |
 
 ## Persistent storage / variable-map contract
 
@@ -196,13 +196,13 @@ Rules:
 ```txt
 .metadata/metadata.json
 docs/generated_issues/us-18-cmf-cmm-a-la-carte-services-log-saving-audit.md
-in_game/common/on_action/nve__cmm_on_actions.txt
-in_game/common/scripted_effects/nve__cmm_effects.txt
-in_game/common/scripted_guis/nve__cmm_scripted_gui.txt
+in_game/common/on_action/cbp__cmm_on_actions.txt
+in_game/common/scripted_effects/cbp__cmm_effects.txt
+in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt
 in_game/common/scripted_effects/cbp_configuration_effects.txt
 in_game/common/scripted_triggers/cbp_configuration_triggers.txt
 in_game/common/scripted_effects/cbp_performance_effects.txt
-main_menu/localization/english/nve__cmm_l_english.yml
+main_menu/localization/english/cbp__cmm_l_english.yml
 docs/technical/MODULE_OPTION_MODEL.md
 docs/technical/PERSISTENT_STATE_AUDIT.md
 tools/audit_cbp_persistent_state.sh

@@ -230,13 +230,13 @@ cbp_pr126_setup_promoted_market_shell_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_no_void_economy_main
+				target = flag:no_void_economy__cbp_no_void_economy_main
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_original_cmm_main_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)"
 		}
 	}
 
@@ -378,13 +378,13 @@ cbp_debug_run_pr126_promoted_market_local_branch_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_no_void_economy_main
+				target = flag:no_void_economy__cbp_no_void_economy_main
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_original_cmm_main_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)"
 		}
 	}
 
@@ -695,13 +695,13 @@ cbp_pr126_setup_monthly_dispatcher_compare_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__nve_no_void_economy_main
+				target = flag:no_void_economy__cbp_no_void_economy_main
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_original_cmm_main_value
-			value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)"
 		}
 	}
 

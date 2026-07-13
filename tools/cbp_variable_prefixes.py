@@ -38,7 +38,7 @@ TOOL_ROOT = ROOT / "tools"
 EU5_SUFFIXES = {".txt", ".gui"}
 TOOL_SUFFIXES = {".py", ".sh"}
 TARGET_PREFIXES = ("gui_cbp_", "test_cbp_", "cbp_")
-LEGACY_PREFIXES = ("modeu5_", "nve_")
+LEGACY_PREFIXES = ("modeu5_", "cbp_")
 IDENT = r"[A-Za-z_][A-Za-z0-9_$]*"
 
 # External framework, vanilla, and generator-placeholder variables are not

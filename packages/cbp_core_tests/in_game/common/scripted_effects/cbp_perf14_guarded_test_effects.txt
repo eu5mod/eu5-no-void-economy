@@ -50,8 +50,8 @@ cbp_perf14_guarded_check_performance_mode_gate = {
 	if = {
 		limit = {
 			OR = {
-				NOT = { has_global_variable = cbp_nve_main_mode }
-				NOT = { global_var:cbp_nve_main_mode = 1 }
+				NOT = { has_global_variable = cbp_cbp_main_mode }
+				NOT = { global_var:cbp_cbp_main_mode = 1 }
 				NOT = { cbp_performance_mode_enabled_trigger = yes }
 				NOT = { cbp_detailed_country_market_accounting_enabled_trigger = yes }
 				scope:cbp_detailed_country_market_stock_mutation_allowed > 0
@@ -430,7 +430,7 @@ cbp_perf14_guarded_probe_normal_mode = {
 	cbp_perf14_set_cmm_main_mode_for_test = { value = 2 }
 	cbp_prepare_country_market_accounting_decision = { country = scope:cbp_perf14_test_country market = scope:cbp_perf14_test_market }
 	if = {
-		limit = { OR = { NOT = { has_global_variable = cbp_nve_main_mode } NOT = { global_var:cbp_nve_main_mode = 2 } NOT = { cbp_nve_normal_mode_trigger = yes } NOT = { cbp_detailed_country_market_accounting_enabled_trigger = yes } cbp_market_level_fallback_required_trigger = yes } }
+		limit = { OR = { NOT = { has_global_variable = cbp_cbp_main_mode } NOT = { global_var:cbp_cbp_main_mode = 2 } NOT = { cbp_cbp_normal_mode_trigger = yes } NOT = { cbp_detailed_country_market_accounting_enabled_trigger = yes } cbp_market_level_fallback_required_trigger = yes } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=normal_mode_decision_gate_unexpected_state"
 		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
@@ -446,7 +446,7 @@ cbp_perf14_guarded_probe_deactivated_mode = {
 	cbp_perf14_set_cmm_main_mode_for_test = { value = 3 }
 	cbp_prepare_country_market_accounting_decision = { country = scope:cbp_perf14_test_country market = scope:cbp_perf14_test_market }
 	if = {
-		limit = { OR = { NOT = { has_global_variable = cbp_nve_main_mode } NOT = { global_var:cbp_nve_main_mode = 3 } NOT = { cbp_nve_deactivated_trigger = yes } cbp_detailed_country_market_accounting_enabled_trigger = yes cbp_market_level_fallback_required_trigger = yes } }
+		limit = { OR = { NOT = { has_global_variable = cbp_cbp_main_mode } NOT = { global_var:cbp_cbp_main_mode = 3 } NOT = { cbp_cbp_deactivated_trigger = yes } cbp_detailed_country_market_accounting_enabled_trigger = yes cbp_market_level_fallback_required_trigger = yes } }
 		debug_log = "ModeU5 PERF-14 FAIL_REASON reason=deactivated_mode_decision_gate_unexpected_state"
 		set_global_variable = test_cbp_perf14_performance_mode_cmm_failed
 	}
@@ -471,9 +471,9 @@ cbp_debug_run_perf14_performance_mode_cmm_test_guarded = {
 	save_temporary_scope_value_as = { name = test_cbp_perf14_nonpresent_market_fixture_available value = 0 }
 
 	if = {
-		limit = { has_variable_map = cmm is_key_in_variable_map = { name = cmm target = flag:no_void_economy__nve_no_void_economy_main } }
+		limit = { has_variable_map = cmm is_key_in_variable_map = { name = cmm target = flag:no_void_economy__cbp_no_void_economy_main } }
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
-		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__nve_no_void_economy_main)" }
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)" }
 	}
 
 	if = {

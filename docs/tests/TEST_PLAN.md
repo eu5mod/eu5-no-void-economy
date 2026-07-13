@@ -168,7 +168,7 @@ docs/tests/PERF_03_MARKET_COUNTRY_CACHE_RUNBOOK.md
 ```
 
 Performance Mode CMM plumbing PRs must prove that the CMM
-`nve_no_void_economy_main` dropdown resolves to script-safe runtime flags before
+`cbp_no_void_economy_main` dropdown resolves to script-safe runtime flags before
 any stock mutation path relies on it. For the first PERF-14 pass, use:
 
 ```txt

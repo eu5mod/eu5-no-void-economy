@@ -259,7 +259,7 @@ cbp_note_runtime_blocked_market = {
 				cbp_audit_enabled_trigger = yes
 			}
 		}
-		debug_log = "ModeU5 PERF-14 RUNTIME_BLOCKED reason=nve_deactivated"
+		debug_log = "ModeU5 PERF-14 RUNTIME_BLOCKED reason=cbp_deactivated"
 	}
 }
 

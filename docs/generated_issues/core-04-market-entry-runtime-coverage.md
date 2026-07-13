@@ -162,7 +162,7 @@ If no successor is known:
 ### Normal Mode
 
 ```txt
-nve_no_void_economy_main=2
+cbp_no_void_economy_main=2
 performance=0
 normal=1
 deactivated=0
@@ -178,7 +178,7 @@ Expected:
 ### Performance Mode
 
 ```txt
-nve_no_void_economy_main=1
+cbp_no_void_economy_main=1
 performance=1
 normal=0
 deactivated=0
@@ -218,7 +218,7 @@ cbp_promote_market_to_detailed_accounting
 ### Deactivated
 
 ```txt
-nve_no_void_economy_main=3
+cbp_no_void_economy_main=3
 performance=0
 normal=0
 deactivated=1
@@ -293,7 +293,7 @@ ModeU5 CORE-04 MARKET_ENTRY mode=performance result=promoted_and_migrated countr
 ModeU5 CORE-04 MARKET_ENTRY mode=performance result=vanilla_fallback country=... target_market=... reason=market_not_human_relevant
 ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation country=... source_market=... target_market=... moved_stock=0
 ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=missing_old_new_market_scope
-ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=nve_deactivated
+ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=cbp_deactivated
 ```
 
 Update `./tools/summarize_cbp_test_logs.sh` to include:

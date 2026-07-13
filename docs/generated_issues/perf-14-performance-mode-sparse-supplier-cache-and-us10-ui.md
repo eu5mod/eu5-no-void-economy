@@ -5,14 +5,14 @@
 This master PR prepares the next feature branch after the #109 fast-path/pruning work. It covers three linked concerns:
 
 1. Replace the #109 MVP “generated per-good pruning before expensive reads” with a true sparse supplier cache/list where lifecycle and invalidation are safe.
-2. Specify and implement CMM `nve_no_void_economy_main` option 1: `Activate (Performance Mode)`.
+2. Specify and implement CMM `cbp_no_void_economy_main` option 1: `Activate (Performance Mode)`.
 3. Implement the debug/read-only visibility required by #37 / US-10-UI for stock resolution.
 
 This is intentionally a master/scaffold PR. Implementation commits may be split into narrower child PRs if needed.
 
 ## CMM performance mode contract
 
-`nve_no_void_economy_main` is interpreted as:
+`cbp_no_void_economy_main` is interpreted as:
 
 | Option | Meaning |
 |---:|---|
@@ -190,9 +190,9 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 
 ### Phase 1 — specification and CMM plumbing
 
-- Add parser-safe helpers for reading the `nve_no_void_economy_main` CMM setting.
+- Add parser-safe helpers for reading the `cbp_no_void_economy_main` CMM setting.
 - Define temporary flags:
-  - `cbp_nve_main_mode`
+  - `cbp_cbp_main_mode`
   - `cbp_performance_mode_enabled`
   - `cbp_detailed_country_market_accounting_enabled`
   - `cbp_market_level_fallback_required`
@@ -201,7 +201,7 @@ Same-market consumption must be labelled as non-trade. Inter-market transfer mus
 
 Implementation note for the first stacked PR:
 
-- `cbp_refresh_nve_main_mode_from_cmm_country_scope` derives script-safe
+- `cbp_refresh_cbp_main_mode_from_cmm_country_scope` derives script-safe
   `performance`, `normal`, and `deactivated` runtime flags from CMM.
 - Performance Mode refresh rebuilds `cbp_performance_relevant_markets` from
   human countries with `every_market_present_in_country`.
