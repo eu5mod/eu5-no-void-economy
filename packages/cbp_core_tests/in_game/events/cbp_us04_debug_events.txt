@@ -157,6 +157,7 @@ cbp_us04_debug.40 = {
 cbp_us04_debug.50 = {
 	type = country_event
 	outcome = neutral
+	orphan = yes
 	title = empty_text
 	desc = empty_text
 	hidden = yes

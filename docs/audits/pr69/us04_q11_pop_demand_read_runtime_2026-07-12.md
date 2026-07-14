@@ -124,6 +124,23 @@ Direct vanilla Pop × good demand read: REJECTED for tested syntaxes / NOT_CONFI
 Pop × good read/write integration:     NOT_CONFIRMED
 ```
 
+## Loaded-probe hygiene update — 2026-07-13
+
+The original Q11 loaded test intentionally executed rejected candidate syntaxes,
+which was useful for first-pass evidence but kept producing avoidable
+`error.log` noise on later validation runs.
+
+The loadable `packages/cbp_core_tests` Q11 effect now keeps the historical
+evidence archived here and fails closed:
+
+```txt
+ModeU5 US-04 POP DEMAND READ RESULT q11 BLOCKED reason=direct_pop_demand_read_not_confirmed archived_negative_evidence=1 no_invalid_value_links_executed=1
+ModeU5 TEST BLOCKED scenario=us04_q11_pop_demand_read_probe reason=direct_pop_demand_read_not_confirmed
+```
+
+Do not re-enable the rejected value links in loaded scripts unless a new engine
+build or documentation update gives a concrete new accessor to probe.
+
 Next useful step:
 
 ```txt

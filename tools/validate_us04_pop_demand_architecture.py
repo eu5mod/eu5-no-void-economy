@@ -98,6 +98,7 @@ def main() -> int:
     q9_candidate = read("docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_09_replace_pop_demand_books.txt")
     q9_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q9_replace_pop_demand_test_effects.txt")
     q9_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_q9_debug_events.txt")
+    q11_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q11_pop_demand_read_probe_effects.txt")
     debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
     localization = read("packages/cbp_core_tests/in_game/localization/cbp_us04_endpoint_probe_l_english.yml")
     summarizer = read("tools/summarize_cbp_logs.sh")
@@ -155,6 +156,14 @@ def main() -> int:
     for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
         expect(f"cbp_us04_proxy_estate_size_{estate}" in template, f"US-04 template must read {estate} proxy size")
         expect(f"cbp_record_us04_location_estate_proxy_{estate}" in demand_resolver, f"US-04 resolver must expose {estate} proxy writer")
+        proxy_writer = block(demand_resolver, f"cbp_record_us04_location_estate_proxy_{estate}")
+        expect("target = goods:$good$" in proxy_writer, f"US-04 {estate} proxy writer must test the same literal good key read by generated helpers")
+        expect("key = goods:$good$" in proxy_writer, f"US-04 {estate} proxy writer must write the same literal good key read by generated helpers")
+        expect("target = scope:cbp_good" not in proxy_writer and "key = scope:cbp_good" not in proxy_writer, f"US-04 {estate} proxy writer must not persist proxy records under a saved-scope key")
+    proxy_reset = block(demand_resolver, "cbp_reset_us04_location_estate_proxy")
+    expect("target = goods:$good$" in proxy_reset, "US-04 proxy reset must test literal good keys")
+    expect("key = goods:$good$" in proxy_reset, "US-04 proxy reset must remove literal good keys")
+    expect("target = scope:cbp_good" not in proxy_reset and "key = scope:cbp_good" not in proxy_reset, "US-04 proxy reset must not use saved-scope keys")
     expect("demands_goods_by_pops = goods:__GOOD__" in market_monthly_reconciliation, "US-04 market monthly dispatcher must gate each good with documented market Pop-demand presence")
     expect("every_owned_location = {" in market_monthly_reconciliation and "limit = { market = scope:cbp_us04_reconciliation_market }" in market_monthly_reconciliation, "US-04 market monthly dispatcher must scan only owned locations in the target market after the good gate")
     expect("cbp_monthly_reconcile_location_pop_demand_good___GOOD__ = yes" in market_monthly_reconciliation, "US-04 market monthly dispatcher must delegate to the location-level blocked reconciliation helper")
@@ -253,6 +262,17 @@ def main() -> int:
     expect("cbp_us04_q9_debug.1" in q9_debug_events and "cbp_us04_q9_debug.3" in q9_debug_events, "Q9 isolated console event chain must be present")
     expect("id = cbp_us04_q9_debug.3 days = 35" in q9_debug_events, "Q9 must wait across a monthly tick before final capture")
     expect("cbp_us04_q9_replace" not in debug_events, "Normal core test launcher must not reference isolated Q9 effects")
+    q11_executable = "\n".join(executable_lines(q11_test))
+    for invalid_syntax in [
+        "pop_demand(goods:",
+        "demand:pop_demand(goods:",
+        "pop_demand:books",
+        "pop_demand:wheat",
+        ".pop_demand(goods:",
+    ]:
+        expect(invalid_syntax not in q11_executable, f"Q11 loaded probe must not execute archived invalid syntax: {invalid_syntax}")
+    expect("reason=direct_pop_demand_read_not_confirmed" in q11_test, "Q11 loaded probe must report blocked direct Pop-demand reads")
+    expect("no_invalid_value_links_executed=1" in q11_test, "Q11 loaded probe must explicitly report that invalid value links were not executed")
 
     expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
     expect("VANILLA DEMAND" in summarizer, "Summarizer must include US-04 vanilla-demand probe lines")

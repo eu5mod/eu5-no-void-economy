@@ -3,6 +3,10 @@
 
 cbp_revalidate_clear_results = {
 	cbp_enter_test_audit_runtime_mode = yes
+	if = {
+		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }
+		cbp_start_game_stock_initialization_dispatcher = yes
+	}
 	cbp_debug_clear_stock_test_results = yes
 	cbp_us00_clear_test_results = yes
 	debug_log = "ModeU5 TEST ENTERED scenario=main_revalidation"
