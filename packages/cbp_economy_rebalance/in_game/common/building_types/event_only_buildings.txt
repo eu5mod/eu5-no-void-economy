@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/event_only_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -1269,8 +1270,8 @@ archive_of_the_indies = {
 
 	modifier = {
 		local_merchant_power = 0.1
-		local_trades_per_burgher = 0.11
-		local_merchant_capacity = 1.1
+		local_trades_per_burgher = 0.10
+		local_merchant_capacity = 1.2
 
 	}
 
@@ -1436,9 +1437,9 @@ chi_macau_port = {
 	}
 
 	modifier = {
-		merchant_capacity_from_building = 0.22
+		merchant_capacity_from_building = 0.24
 		building_owner_maritime_presence = 0.025
-		local_merchant_capacity = 1.1
+		local_merchant_capacity = 1.2
 		# gold_to_location_owner = 20 CAESAR-25168
 	}
 }
@@ -1721,7 +1722,7 @@ oma_nizwa_fort = {
 	modifier = {
 		local_garrison_size = 0.4
 		local_defensive = 0.1
-		local_trades_per_burgher = 0.11
+		local_trades_per_burgher = 0.1
 	}
 
 }
@@ -1748,7 +1749,7 @@ dutch_trade_outpost = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.1
+		merchant_capacity_from_building = 1.2
 		building_owner_maritime_presence = 0.025
 	}
 
@@ -2460,7 +2461,7 @@ husuni_kubwa = {
 	country_potential = { has_variable = unlocked_husuni_kubwa_variable }
 
 	capital_modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 		local_merchant_power = 0.15
 	}
 
@@ -2469,7 +2470,7 @@ husuni_kubwa = {
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 	possible_production_methods = {
@@ -2776,7 +2777,7 @@ lighthouse_of_alexandria = {
 		local_merchant_power = 0.5
 		local_defensive = 0.1
 		hostile_fleet_attrition = 0.5
-		local_trades_per_burgher = 0.22
+		local_trades_per_burgher = 0.2
 	}
 
 }
@@ -3844,8 +3845,8 @@ phanariot_district = {
 
 	modifier = {
 		local_burghers_estate_power = 0.2
-		local_merchant_capacity = 5.5
-		local_trades_per_burgher = 2.2
+		local_merchant_capacity = 6.0
+		local_trades_per_burgher = 2
 	}
 
 	unique_production_methods = {

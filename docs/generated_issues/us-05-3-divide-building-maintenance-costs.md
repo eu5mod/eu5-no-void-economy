@@ -35,7 +35,7 @@ load noise.
 
 - Read vanilla `game/in_game/common/building_types/*.txt` as source input.
 - Identify explicit `category = building_maintenance` production-method blocks.
-- Inside those blocks, multiply ModeU5-covered good quantities by `0.3`.
+- Inside those blocks, multiply ModeU5-covered good quantities by `0.7`.
 - If the enclosing building has `category = trade_category`, use `0.5`
   instead. This covers marketplaces and other trade buildings.
 - Preserve zero as zero and preserve the sign of unusual negative quantities.
@@ -55,14 +55,14 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
   --us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
-  --maintenance-multiplier 0.3 \
+  --maintenance-multiplier 0.7 \
   --trade-building-maintenance-multiplier 0.5
 ```
 
 The validator proves:
 
 - every vanilla maintenance source file has a generated exact-path override;
-- every non-trade maintenance-good quantity is exactly `source * 0.3`;
+- every non-trade maintenance-good quantity is exactly `source * 0.7`;
 - every trade-category maintenance-good quantity is exactly `source * 0.5`;
 - the generated body matches the shared transformer used by the generator.
 

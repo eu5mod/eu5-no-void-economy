@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/pirate_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -35,7 +36,7 @@ black_market = {
 
 	modifier = {
 		scaled_gold_to_building_owner = 0.05
-		merchant_capacity_from_building = 2.2
+		merchant_capacity_from_building = 2.4
 	}
 }
 

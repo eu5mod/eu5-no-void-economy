@@ -87,6 +87,7 @@ jobs:
 
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --trade-capacity-percent 15 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
             --building-maintenance-multiplier 0.7 \
@@ -103,9 +104,9 @@ jobs:
           grep -q 'output = 11.0' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'wheat = 2.8' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'copper = 1.4' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_trades_per_burgher = 1' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_merchant_capacity = 2.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'merchant_capacity_from_building = 3.45' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
@@ -128,10 +129,74 @@ jobs:
                   local_merchant_power = 1
               }
           }
+
+          merchants_quarters = {
+              category = trade_category
+              unique_production_methods = {
+                  merchants_quarters_maintenance = {
+                      cloth = 0.30
+                      paper = 0.25
+                      beeswax = 0.20
+                      category = building_maintenance
+                  }
+              }
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 1.5
+                  local_merchant_capacity = 1.5
+                  local_merchant_power = 1.5
+              }
+          }
+
+          grand_marketplace = {
+              category = trade_category
+              unique_production_methods = {
+                  grand_marketplace_maintenance = {
+                      cloth = 0.60
+                      paper = 0.50
+                      beeswax = 0.40
+                      category = building_maintenance
+                  }
+              }
+              modifier = {
+                  local_burghers_estate_power = 0.1
+                  local_trades_per_burgher = 2
+                  local_merchant_capacity = 2
+                  local_merchant_power = 2
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/building_types/market_buildings.txt" <<'EOF'
+          market_warehouse = {
+              is_foreign = no
+              pop_type = burghers
+              max_levels = market_warehouse_max_level
+              category = trade_category
+              location_potential = {
+                  is_market_center = yes
+              }
+              modifier = {
+                  local_merchant_capacity = 0.1
+                  local_trades_per_burgher = 0.1
+              }
+              market_center_modifier = {
+                  maximum_stockpile_capacity = 200
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/building_types/event_only_buildings.txt" <<'EOF'
+          test_event_market_building = {
+              market_center_modifier = {
+                  maximum_stockpile_capacity = 345
+              }
+          }
           EOF
 
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --trade-capacity-percent 15 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
             --building-maintenance-multiplier 0.7 \
@@ -142,9 +207,22 @@ jobs:
           grep -q 'local_burghers_estate_power = 0.05' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'cloth = 0.03' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'paper = 0.025' "$fixture_package/building_types/trade_buildings.txt"
-          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/trade_buildings.txt"
-          grep -q 'local_merchant_capacity = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          test "$(grep -c 'cloth = 0.03' "$fixture_package/building_types/trade_buildings.txt")" -eq 3
+          test "$(grep -c 'paper = 0.025' "$fixture_package/building_types/trade_buildings.txt")" -eq 3
+          test "$(grep -c 'beeswax' "$fixture_package/building_types/trade_buildings.txt")" -eq 0
+          grep -q 'local_trades_per_burgher = 1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_capacity = 1.15' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'local_merchant_power = 1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'market_warehouse = {' "$fixture_package/building_types/market_buildings.txt"
+          grep -q 'country_potential = {' "$fixture_package/building_types/market_buildings.txt"
+          grep -q 'location_potential = {' "$fixture_package/building_types/market_buildings.txt"
+          test "$(grep -c 'always = no' "$fixture_package/building_types/market_buildings.txt")" -eq 2
+          grep -q 'local_merchant_capacity = 0.115' "$fixture_package/building_types/market_buildings.txt"
+          grep -q 'local_trades_per_burgher = 0.1' "$fixture_package/building_types/market_buildings.txt"
+          grep -q '# maximum_stockpile_capacity = 200' "$fixture_package/building_types/market_buildings.txt"
+          grep -q '# maximum_stockpile_capacity = 345' "$fixture_package/building_types/event_only_buildings.txt"
+          test "$(grep -c '^[[:space:]]*maximum_stockpile_capacity[[:space:]]*=' "$fixture_package/building_types/market_buildings.txt")" -eq 0
+          test "$(grep -c '^[[:space:]]*maximum_stockpile_capacity[[:space:]]*=' "$fixture_package/building_types/event_only_buildings.txt")" -eq 0
           grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"

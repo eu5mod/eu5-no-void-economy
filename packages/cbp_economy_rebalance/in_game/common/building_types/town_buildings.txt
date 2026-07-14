@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/town_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -359,7 +360,7 @@ wharf = {
 
 	modifier = {
 		local_sailors = 0.001
-		local_merchant_capacity = 0.11
+		local_merchant_capacity = 0.12
 		can_build_ships_in_this_location = yes
 		harbor_suitability = 0.1
 		local_repair_speed = 0.01

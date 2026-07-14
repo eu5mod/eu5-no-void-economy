@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/trade_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -43,8 +44,8 @@ marketplace = {
 
 
 		local_merchant_power = 1
-		local_trades_per_burgher = 1.1
-		local_merchant_capacity = 1.1
+		local_trades_per_burgher = 1
+		local_merchant_capacity = 1.2
 	}
 }
 
@@ -84,8 +85,8 @@ merchants_quarters = {
 		local_market_access = 0.005
 
 		local_merchant_power = 1.5
-		local_trades_per_burgher = 1.65
-		local_merchant_capacity = 1.65
+		local_trades_per_burgher = 1.5
+		local_merchant_capacity = 1.8
 	}
 
 	obsolete = marketplace
@@ -126,8 +127,8 @@ grand_marketplace = {
 		local_market_access = 0.01
 
 		local_merchant_power = 2.0
-		local_trades_per_burgher = 2.2
-		local_merchant_capacity = 2.2
+		local_trades_per_burgher = 2.0
+		local_merchant_capacity = 2.4
 	}
 
 	obsolete = merchants_quarters
@@ -173,8 +174,8 @@ commerce_center = {
 		local_market_access = 0.01
 
 		local_merchant_power = 4.0
-		local_trades_per_burgher = 4.4
-		local_merchant_capacity = 4.4
+		local_trades_per_burgher = 4.0
+		local_merchant_capacity = 4.8
 	}
 
 	obsolete = grand_marketplace
@@ -212,9 +213,9 @@ port_authority = {
 	build_time = merchant_build_time
 
 	modifier = {
-		local_merchant_capacity = 0.55
+		local_merchant_capacity = 0.6
 		local_trade_protection_factor = 0.10
-		local_trades_per_burgher = 0.275
+		local_trades_per_burgher = 0.25
 
 		local_market_access = 0.005
 	}

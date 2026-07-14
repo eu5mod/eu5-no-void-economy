@@ -37,6 +37,7 @@ def strip_generated_header(text: str) -> list[str]:
         "# Do not edit manually.",
         "# Source: ",
         "# Output multiplier: ",
+        "# Trade capacity multiplier: ",
         "# Building maintenance multiplier: ",
         "# Trade-building maintenance multiplier: ",
     )
@@ -89,6 +90,25 @@ def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, fl
     return entries
 
 
+def active_stockpile_capacity_entries(lines: list[str]) -> list[float]:
+    entries: list[float] = []
+    for line in lines:
+        match = transformer.ASSIGNMENT.match(line)
+        if not match or match.group(2) != transformer.STOCKPILE_CAPACITY_FIELD:
+            continue
+        entries.append(float(match.group(3)))
+    return entries
+
+
+def commented_stockpile_capacity_entries(lines: list[str]) -> list[float]:
+    entries: list[float] = []
+    for line in lines:
+        match = transformer.COMMENTED_STOCKPILE_CAPACITY.match(line)
+        if match:
+            entries.append(float(match.group(1)))
+    return entries
+
+
 def compare_float(actual: float, expected: float) -> bool:
     return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-9)
 
@@ -104,7 +124,17 @@ def main() -> int:
         default=Path("packages/cbp_economy_rebalance/in_game/common"),
     )
     parser.add_argument("--us09-percent", type=float, default=float(os.environ.get("MODEU5_US09_BONUS_PERCENT", "10")))
-    parser.add_argument("--maintenance-multiplier", type=float, default=0.3)
+    parser.add_argument(
+        "--trade-capacity-percent",
+        type=float,
+        default=float(
+            os.environ.get(
+                "MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT",
+                os.environ.get("MODEU5_US09_BONUS_PERCENT", "10"),
+            )
+        ),
+    )
+    parser.add_argument("--maintenance-multiplier", type=float, default=0.7)
     parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
     args = parser.parse_args()
 
@@ -123,12 +153,14 @@ def main() -> int:
     goods = parse_goods_registry(repo_root)
     goods_set = set(goods)
     output_multiplier = 1.0 + args.us09_percent / 100.0
+    trade_capacity_multiplier = 1.0 + args.trade_capacity_percent / 100.0
     us07_multiplier = 0.5
 
     failures: list[str] = []
     source_files_with_maintenance = 0
     generated_files_checked = 0
     maintenance_entries_checked = 0
+    stockpile_capacity_entries_checked = 0
 
     for source_file in sorted(source_dir.glob("*.txt")):
         if source_file.name == "readme.txt":
@@ -136,13 +168,16 @@ def main() -> int:
 
         source_lines = source_file.read_text(encoding="utf-8-sig").splitlines()
         source_entries = maintenance_entries(source_lines, goods_set)
+        source_stockpile_entries = active_stockpile_capacity_entries(source_lines)
         generated_file = output_dir / source_file.name
 
         if source_entries:
             source_files_with_maintenance += 1
+
+        if source_entries or source_stockpile_entries:
             if not generated_file.is_file():
                 failures.append(
-                    f"Missing generated override for maintenance source file: {source_file.name}"
+                    f"Missing generated override for targeted source file: {source_file.name}"
                 )
                 continue
 
@@ -152,59 +187,75 @@ def main() -> int:
         generated_text = generated_file.read_text(encoding="utf-8-sig")
         generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
         generated_entries = maintenance_entries(generated_body_lines, goods_set)
-
-        if source_entries:
-            if len(source_entries) != len(generated_entries):
-                failures.append(
-                    f"{source_file.name}: maintenance entry count mismatch "
-                    f"source={len(source_entries)} generated={len(generated_entries)}"
-                )
-                continue
-
-            for ordinal, (
-                (source_key, source_value, source_trade_building),
-                (generated_key, generated_value, generated_trade_building),
-            ) in enumerate(
-                zip(source_entries, generated_entries),
-                start=1,
-            ):
-                expected_multiplier = (
-                    args.trade_building_maintenance_multiplier
-                    if source_trade_building
-                    else args.maintenance_multiplier
-                )
-                expected = source_value * expected_multiplier
-                if source_key != generated_key:
-                    failures.append(
-                        f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
-                        f"source={source_key} generated={generated_key}"
-                    )
-                    continue
-                if source_trade_building != generated_trade_building:
-                    failures.append(
-                        f"{source_file.name}: {source_key} maintenance entry #{ordinal} "
-                        f"trade-building classification mismatch "
-                        f"source={source_trade_building} generated={generated_trade_building}"
-                    )
-                    continue
-                if not compare_float(generated_value, expected):
-                    failures.append(
-                        f"{source_file.name}: {source_key} maintenance entry #{ordinal} "
-                        f"expected {expected:g}, found {generated_value:g}"
-                    )
-                maintenance_entries_checked += 1
-
         expected_body = normalize_generator_whitespace(
             transformer.transform_lines(
                 source_lines,
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
+                trade_capacity_multiplier=trade_capacity_multiplier,
                 maintenance_multiplier=args.maintenance_multiplier,
                 trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,
                 goods=goods_set,
             )
         )
+        expected_entries = maintenance_entries(expected_body, goods_set)
+        generated_active_stockpile_entries = active_stockpile_capacity_entries(
+            generated_body_lines
+        )
+        generated_stockpile_entries = commented_stockpile_capacity_entries(
+            generated_body_lines
+        )
+
+        if source_stockpile_entries:
+            if generated_active_stockpile_entries:
+                failures.append(
+                    f"{source_file.name}: maximum_stockpile_capacity must be commented out; "
+                    f"active generated values={generated_active_stockpile_entries}"
+                )
+            elif generated_stockpile_entries != source_stockpile_entries:
+                failures.append(
+                    f"{source_file.name}: commented maximum_stockpile_capacity values must "
+                    f"match vanilla; vanilla={source_stockpile_entries} "
+                    f"generated={generated_stockpile_entries}"
+                )
+            else:
+                stockpile_capacity_entries_checked += len(generated_stockpile_entries)
+
+        if source_entries:
+            if len(expected_entries) != len(generated_entries):
+                failures.append(
+                    f"{source_file.name}: maintenance entry count mismatch "
+                    f"expected={len(expected_entries)} generated={len(generated_entries)}"
+                )
+                continue
+
+            for ordinal, (
+                (expected_key, expected_value, expected_trade_building),
+                (generated_key, generated_value, generated_trade_building),
+            ) in enumerate(
+                zip(expected_entries, generated_entries),
+                start=1,
+            ):
+                if expected_key != generated_key:
+                    failures.append(
+                        f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
+                        f"expected={expected_key} generated={generated_key}"
+                    )
+                    continue
+                if expected_trade_building != generated_trade_building:
+                    failures.append(
+                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
+                        f"trade-building classification mismatch "
+                        f"expected={expected_trade_building} generated={generated_trade_building}"
+                    )
+                    continue
+                if not compare_float(generated_value, expected_value):
+                    failures.append(
+                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
+                        f"expected {expected_value:g}, found {generated_value:g}"
+                    )
+                maintenance_entries_checked += 1
         if generated_body_lines != expected_body:
             failures.append(
                 f"{source_file.name}: generated building override body is stale or hand-edited"
@@ -223,7 +274,8 @@ def main() -> int:
         "CBP US-08 building maintenance validation passed: "
         f"{source_files_with_maintenance} maintenance source files, "
         f"{generated_files_checked} generated building files, "
-        f"{maintenance_entries_checked} maintenance entries checked."
+        f"{maintenance_entries_checked} maintenance entries checked, "
+        f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked."
     )
     return 0
 

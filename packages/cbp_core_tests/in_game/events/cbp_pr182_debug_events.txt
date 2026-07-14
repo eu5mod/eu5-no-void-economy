@@ -1,0 +1,35 @@
+namespace = cbp_pr182_debug
+
+cbp_pr182_debug.1 = {
+	type = country_event
+	title = cbp_pr182_debug.1.title
+	desc = cbp_pr182_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = {
+		always = no
+	}
+
+	option = {
+		name = cbp_pr182_debug.1.a
+		trigger_event_non_silently = { id = cbp_pr182_debug.10 days = 0 }
+	}
+	option = {
+		name = cbp_debug.close
+	}
+}
+
+cbp_pr182_debug.10 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		cbp_debug_run_pr182_market_stockpile_capacity_probe = yes
+	}
+}
