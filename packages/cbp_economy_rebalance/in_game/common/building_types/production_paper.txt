@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_paper.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 paper_guild = {
 	is_foreign = no
@@ -28,7 +30,6 @@ paper_guild = {
 			produced = paper
 			output = 0.55
 
-
 			debug_max_profit = 0.15
 
 			category = guild_input
@@ -40,7 +41,6 @@ paper_guild = {
 			produced = paper
 			output = 1.1
 
-
 			debug_max_profit = 0.45
 
 			category = guild_input
@@ -51,7 +51,6 @@ paper_guild = {
 			lumber = 0.1
 			produced = paper
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -86,7 +85,6 @@ paper_workshop = {
 			produced = paper
 			output = 1.1
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -96,7 +94,6 @@ paper_workshop = {
 			lumber = 0.1
 			produced = paper
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -139,7 +136,6 @@ paper_manufactory = {
 			produced = paper
 			output = 2.2
 
-
 			debug_max_profit = 0.75
 			category = manufactory_input
 		}
@@ -178,7 +174,6 @@ paper_mill = {
 			produced = paper
 			output = 2.2
 
-
 			debug_max_profit = 1.0
 			category = mills_input
 		}
@@ -188,7 +183,6 @@ paper_mill = {
 			lumber = 3.0
 			produced = paper
 			output = 4.95
-
 
 			debug_max_profit = 1.25		#better one
 

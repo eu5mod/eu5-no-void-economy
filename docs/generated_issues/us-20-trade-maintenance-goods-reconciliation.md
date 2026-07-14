@@ -147,15 +147,24 @@ loss reconciliation:
 
 Public EU5 script documentation lists `add_goods_supply` as a market-scope effect that adds goods to a market stockpile and accepts `goods` and `amount` parameters.
 
-US-20 uses this market-stockpile surface with a negative amount for delivery loss:
+US-20 uses this market-stockpile surface with a negative amount for delivery
+loss, but runtime feature code must call it through the central stock helper in
+`cbp_stock_effects.txt`:
 
 ```txt
 market_loss_delta = -goods_loss_quantity
 
-scope:target_market = {
+cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = {
+  cbp_vanilla_market_goods_supply_market = scope:target_market
+  cbp_vanilla_market_goods_supply_good = scope:route_good
+  cbp_vanilla_market_goods_supply_delta = market_loss_delta
+}
+
+# central helper:
+scope:cbp_vanilla_market_goods_supply_market = {
   add_goods_supply = {
-    goods = scope:route_good
-    amount = market_loss_delta
+    goods = scope:cbp_vanilla_market_goods_supply_good
+    amount = scope:cbp_vanilla_market_goods_supply_delta
   }
 }
 ```
@@ -182,7 +191,7 @@ Resulting cases:
      no country-market transfer is available.
 
    Loss reconciliation:
-     remove at destination market through add_goods_supply with a negative amount.
+     remove at destination market through the central vanilla market-supply helper with a negative amount.
 
 2. Origin market promoted + destination market non-promoted
 
@@ -190,7 +199,7 @@ Resulting cases:
      origin has country-market detail, destination does not.
 
    Loss reconciliation:
-     remove at destination market through add_goods_supply with a negative amount.
+     remove at destination market through the central vanilla market-supply helper with a negative amount.
 
 3. Origin market non-promoted + destination market promoted
 
@@ -199,7 +208,7 @@ Resulting cases:
 
    Loss reconciliation:
      remove the loss at destination:
-       - destination market through add_goods_supply with a negative amount
+       - destination market through the central vanilla market-supply helper with a negative amount
        - destination country x market through remove_stock
 
 4. Origin market promoted + destination market promoted
@@ -209,7 +218,7 @@ Resulting cases:
 
    Loss reconciliation:
      remove the loss at destination:
-       - destination market through add_goods_supply with a negative amount
+       - destination market through the central vanilla market-supply helper with a negative amount
        - destination country x market through remove_stock
 ```
 
@@ -374,7 +383,7 @@ Detailed route accounting available:
   compute goods delta in every_trade
   classify origin/destination promotion
   apply money delta only after the income/profit API probe confirms the surface
-  apply market-level goods loss through add_goods_supply with a negative amount
+  apply market-level goods loss through the central vanilla market-supply helper with a negative amount
   apply promoted-destination country-stock loss through remove_stock
 
 Detailed accounting unavailable or blocked:
@@ -470,11 +479,11 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 | Money accumulator | Accumulate route-local money delta to trade owner | ModeU5-only country accumulator is updated | Implemented | This is not vanilla income/profit application. |
 | Vanilla income/profit application | Probe country income, route profit, add route profit, then test country-income relation | Probe matrix exists as blocked counters/logs; no speculative API calls are used | Blocked TECH-01 | Identify confirmed EU5 read/write APIs for country income and route profit. |
 | Goods received formula | `target = sent - 0.1 * clamp(1 - trade_maintenance, 0, 1)` | Formula kernel computes target, delta, and loss quantity | Implemented | Confirm whether formula is absolute loss, not percentage-of-sent; current implementation follows written spec. |
-| Market-level destination loss | Remove delivery loss from destination market stockpile | Uses documented market-scope `add_goods_supply` with negative amount and route-good scope | Implemented | Needs in-game confirmation that negative amount is accepted as stockpile removal. |
+| Market-level destination loss | Remove delivery loss from destination market stockpile | Uses documented market-scope `add_goods_supply` with negative amount and route-good scope through the central stock helper | Implemented | Needs in-game confirmation that negative amount is accepted as stockpile removal. |
 | Base movement vs loss | Base add/transfer is separate from destination loss removal | Code comments and status matrix separate receipt path from loss reconciliation | Partial | Implement generated-good base receipt operators separately. |
 | Four-case classification | Classify origin promoted and destination promoted | Runtime computes `cbp_us20_origin_market_is_promoted` and `cbp_us20_target_market_is_promoted`; counters exist for all four cases | Implemented | Deterministic fixture currently covers case 4 only. |
-| Case 1: origin non-promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through `add_goods_supply` | Partial | Add deterministic case-1 fixture and run in-game. |
-| Case 2: origin promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through `add_goods_supply` | Partial | Add deterministic case-2 fixture and run in-game. |
+| Case 1: origin non-promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through the central vanilla market-supply helper | Partial | Add deterministic case-1 fixture and run in-game. |
+| Case 2: origin promoted / destination non-promoted | Remove loss at destination market | Branch classified; destination market loss goes through the central vanilla market-supply helper | Partial | Add deterministic case-2 fixture and run in-game. |
 | Case 3: origin non-promoted / destination promoted | Add received goods at destination country-market; then remove destination market + country-stock loss | Branch classified; market loss is implemented; receiver/country loss path exists for explicit receiver + wheat fixture; base add is not implemented | Partial | Generate literal-good add-at-destination operator and test case 3. |
 | Case 4: origin promoted / destination promoted | Transfer country-market to country-market; then remove destination market + country-stock loss | Branch classified; deterministic fixture asserts case 4, market loss, and country loss with explicit receiver + wheat | Partial | Generate literal-good transfer receipt operator; generic country-stock route-good dispatcher still missing. |
 | Stored receiving country | If earlier transfer/demand resolution stored receiver, use it | Implemented: `scope:cbp_us20_receiving_country` wins | Implemented | Need actual upstream storage when base movement operator is implemented. |
@@ -501,7 +510,7 @@ Blocked TECH-01    = requires confirmed EU5 API/operator before safe implementat
 - Vanilla money application remains blocked until country-income / trade-profit probes are confirmed.
 - Probe matrix covers read country income, read route profit, add route profit, and the country-income relation test.
 - US-20 classifies both origin-market promotion and destination-market promotion.
-- Destination market loss uses add_goods_supply with a negative amount.
+- Destination market loss uses the central vanilla market-supply helper with a negative amount.
 - Case 1 origin non-promoted / destination non-promoted removes loss at destination market.
 - Case 2 origin promoted / destination non-promoted removes loss at destination market.
 - Case 3 origin non-promoted / destination promoted adds at destination country-market, then removes destination market + country-stock loss.

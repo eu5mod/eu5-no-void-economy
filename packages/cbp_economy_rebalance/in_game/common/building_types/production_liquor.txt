@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_liquor.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 distillers_guild = {
 	is_foreign = no
@@ -30,7 +32,6 @@ distillers_guild = {
 			produced = liquor
 			output = 1.1
 
-
 			category = guild_input
 		}
 		rice_liquor_guild_maintenance = {
@@ -40,7 +41,6 @@ distillers_guild = {
 
 			produced = liquor
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -52,7 +52,6 @@ distillers_guild = {
 			produced = liquor
 			output = 1.1
 
-
 			category = guild_input
 		}
 		wheat_liquor_guild_maintenance = {
@@ -62,7 +61,6 @@ distillers_guild = {
 
 			produced = liquor
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -74,7 +72,6 @@ distillers_guild = {
 			produced = liquor
 			output = 1.1
 
-
 			category = guild_input
 		}
 		wine_liquor_guild_maintenance = {
@@ -84,7 +81,6 @@ distillers_guild = {
 
 			produced = liquor
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -119,7 +115,6 @@ distillers_workshop = {
 			produced = liquor
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -131,7 +126,6 @@ distillers_workshop = {
 
 			produced = liquor
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -146,7 +140,6 @@ distillers_workshop = {
 			output = 1.21
 
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -158,7 +151,6 @@ distillers_workshop = {
 
 			produced = liquor
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -172,7 +164,6 @@ distillers_workshop = {
 			produced = liquor
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -184,7 +175,6 @@ distillers_workshop = {
 
 			produced = liquor
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -226,7 +216,6 @@ distiller_manufactory = {
 			produced = liquor
 			output = 2.2
 
-
 			category = manufactory_input
 
 			debug_max_profit = 0.75
@@ -241,7 +230,6 @@ distiller_manufactory = {
 			produced = liquor
 			output = 2.2
 
-
 			category = manufactory_input
 			debug_max_profit = 0.75
 		}
@@ -254,7 +242,6 @@ distiller_manufactory = {
 			produced = liquor
 			output = 2.2
 
-
 			category = manufactory_input
 			debug_max_profit = 0.75
 		}
@@ -264,7 +251,6 @@ distiller_manufactory = {
 			glass = 0.17
 			produced = liquor
 			output = 2.2
-
 
 			category = manufactory_input
 			debug_max_profit = 0.75
@@ -278,7 +264,6 @@ distiller_manufactory = {
 
 			produced = liquor
 			output = 2.2
-
 
 			category = manufactory_input
 			debug_max_profit = 0.75
@@ -319,7 +304,6 @@ distiller_mill = {
 			produced = liquor
 			output = 4.4
 
-
 			category = mills_input
 
 			debug_max_profit = 1.0
@@ -334,7 +318,6 @@ distiller_mill = {
 			produced = liquor
 			output = 4.4
 
-
 			category = mills_input
 			debug_max_profit = 1.0
 		}
@@ -347,7 +330,6 @@ distiller_mill = {
 			produced = liquor
 			output = 4.4
 
-
 			category = mills_input
 			debug_max_profit = 1.0
 		}
@@ -357,7 +339,6 @@ distiller_mill = {
 			glass = 0.4
 			produced = liquor
 			output = 4.4
-
 
 
 
@@ -373,7 +354,6 @@ distiller_mill = {
 
 			produced = liquor
 			output = 4.4
-
 
 			category = mills_input
 			debug_max_profit = 1.1

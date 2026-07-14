@@ -277,6 +277,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = 11
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_added_fra_market_one_wheat
@@ -288,6 +289,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = 13
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_added_fra_market_two_wheat
@@ -299,6 +301,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = iron
 			quantity = 17
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_added_fra_market_one_iron
@@ -310,6 +313,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = 19
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_added_eng_market_one_wheat
@@ -438,6 +442,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = scope:test_cbp_added_fra_market_one_wheat
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:FRA
@@ -445,6 +450,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = scope:test_cbp_added_fra_market_two_wheat
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:FRA
@@ -452,6 +458,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = iron
 			quantity = scope:test_cbp_added_fra_market_one_iron
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:ENG
@@ -459,6 +466,7 @@ cbp_debug_run_country_stock_dimension_test = {
 			good = wheat
 			quantity = scope:test_cbp_added_eng_market_one_wheat
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_validate_stock_consistency = {
 			market = scope:test_cbp_market_one
@@ -494,6 +502,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 1000000
 		reason = debug_test
+		only_remove_at_country_level = yes
 	}
 	cbp_add_stock = {
 		country = scope:test_cbp_controller
@@ -501,6 +510,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 60
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_read_country_stock_good_wheat = {
 		country = scope:test_cbp_controller
@@ -527,6 +537,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 1000000
 		reason = debug_test
+		only_remove_at_country_level = yes
 	}
 	cbp_debug_replace_country_wheat_capacity = {
 		country = scope:test_cbp_controller
@@ -539,6 +550,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 80
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_read_market_stock_good_wheat = {
 		market = scope:test_cbp_market
@@ -550,6 +562,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 50
 		capacity_policy = enforce
+		only_add_at_country_level = yes
 	}
 	save_temporary_scope_value_as = {
 		name = test_cbp_expected_market_after_enforced_add
@@ -587,6 +600,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 150
 		reason = debug_test
+		only_remove_at_country_level = yes
 	}
 	cbp_read_country_stock_good_wheat = {
 		country = scope:test_cbp_controller
@@ -612,6 +626,7 @@ cbp_debug_run_single_record_stock_tests = {
 		good = wheat
 		quantity = 100
 		capacity_policy = enforce
+		only_add_at_country_level = yes
 	}
 	cbp_read_market_stock_good_wheat = {
 		market = scope:test_cbp_market
@@ -694,6 +709,7 @@ cbp_debug_run_same_market_transfer_tests = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:ENG
@@ -701,6 +717,7 @@ cbp_debug_run_same_market_transfer_tests = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:FRA
@@ -708,6 +725,7 @@ cbp_debug_run_same_market_transfer_tests = {
 			good = wheat
 			quantity = 50
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:ENG
@@ -715,6 +733,7 @@ cbp_debug_run_same_market_transfer_tests = {
 			good = wheat
 			quantity = 90
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_read_market_stock_good_wheat = {
 			market = scope:test_cbp_market
@@ -841,6 +860,7 @@ cbp_debug_run_inter_market_transfer_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:ENG
@@ -848,6 +868,7 @@ cbp_debug_run_inter_market_transfer_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:FRA
@@ -855,6 +876,7 @@ cbp_debug_run_inter_market_transfer_test = {
 			good = wheat
 			quantity = 100
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:ENG
@@ -862,6 +884,7 @@ cbp_debug_run_inter_market_transfer_test = {
 			good = wheat
 			quantity = 70
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_read_market_stock_good_wheat = {
 			market = scope:test_cbp_source_market
@@ -974,6 +997,7 @@ cbp_debug_run_rebuild_and_validation_tests = {
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 		}
 		cbp_debug_replace_country_wheat_capacity = {
@@ -992,6 +1016,7 @@ cbp_debug_run_rebuild_and_validation_tests = {
 			good = wheat
 			quantity = 100
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:ENG
@@ -999,6 +1024,7 @@ cbp_debug_run_rebuild_and_validation_tests = {
 			good = wheat
 			quantity = 50
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 
 		cbp_debug_corrupt_market_stock_for_test = {
@@ -1153,6 +1179,7 @@ cbp_debug_run_reconciliation_tests = {
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 		}
 		cbp_debug_replace_country_wheat_capacity = {
@@ -1171,6 +1198,7 @@ cbp_debug_run_reconciliation_tests = {
 			good = wheat
 			quantity = 100
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:ENG
@@ -1178,6 +1206,7 @@ cbp_debug_run_reconciliation_tests = {
 			good = wheat
 			quantity = 50
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_debug_corrupt_market_stock_for_test = {
 			market = scope:test_cbp_market
@@ -1492,6 +1521,7 @@ cbp_debug_run_core02_initialization_tests = {
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 		}
 		cbp_rebuild_market_stock_from_country_stocks = {
@@ -1563,6 +1593,7 @@ cbp_debug_run_core02_initialization_tests = {
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 		}
 		cbp_rebuild_market_stock_from_country_stocks = {

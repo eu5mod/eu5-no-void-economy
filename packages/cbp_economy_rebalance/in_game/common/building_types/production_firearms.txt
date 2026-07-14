@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_firearms.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 hand_cannon_guild = {
 	is_foreign = no
@@ -29,7 +31,6 @@ hand_cannon_guild = {
 
 			produced = firearms
 			output = 0.33
-
 
 			category = guild_input
 		}
@@ -69,7 +70,6 @@ gun_smith = {
 			produced = firearms
 			output = 0.165
 
-
 			category = guild_input
 
 
@@ -85,7 +85,6 @@ gun_smith = {
 			produced = firearms
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -96,7 +95,6 @@ gun_smith = {
 
 			produced = firearms
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -110,7 +108,6 @@ gun_smith = {
 			saltpeter = 0.1
 			produced = firearms
 			output = 0.176
-
 			category = guild_input
 		}
 		guns_guild_ammunition_iron_maintenance = {
@@ -118,7 +115,6 @@ gun_smith = {
 			saltpeter = 0.1
 			produced = firearms
 			output = 0.22
-
 
 			category = guild_input
 		}
@@ -159,7 +155,6 @@ guns_workshop = {
 
 			produced = firearms
 			output = 1.21
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -172,7 +167,6 @@ guns_workshop = {
 
 			produced = firearms
 			output = 1.1
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -187,7 +181,6 @@ guns_workshop = {
 			saltpeter = 0.1
 			produced = firearms
 			output = 0.22
-
 			debug_max_profit = 0.6
 			category = workshop_input
 		}
@@ -196,7 +189,6 @@ guns_workshop = {
 			saltpeter = 0.1
 			produced = firearms
 			output = 0.275
-
 			debug_max_profit = 0.6
 			category = workshop_input
 		}
@@ -243,7 +235,6 @@ firearms_manufactory = {
 			category = manufactory_input
 			produced = firearms
 			output = 2.2
-
 			debug_max_profit = 0.75
 		}
 	}
@@ -284,7 +275,6 @@ firearms_factory = {
 
 			produced = firearms
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 

@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_pottery.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 pottery_guild = {
 	is_foreign = no
@@ -28,7 +30,6 @@ pottery_guild = {
 
 			produced = pottery
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -64,7 +65,6 @@ pottery_workshop = {
 
 			produced = pottery
 			output = 1.21
-
 
 			debug_max_profit = 0.5
 
@@ -102,7 +102,6 @@ pottery_manufactory = {
 
 			produced = pottery
 			output = 1.65
-
 
 			category = manufactory_input
 
@@ -148,7 +147,6 @@ pottery_mill = {
 
 			produced = pottery
 			output = 3.575
-
 
 			debug_max_profit = 1.0
 

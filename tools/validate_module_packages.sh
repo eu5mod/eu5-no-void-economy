@@ -5,6 +5,14 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
+local_config="$repo_root/.cbp.local.env"
+if [[ -f "$local_config" ]]; then
+	set -a
+	# shellcheck source=/dev/null
+	source "$local_config"
+	set +a
+fi
+
 search_quiet() {
 	local pattern="$1"
 	shift
@@ -215,6 +223,18 @@ require_match '^expand_rgo_gathering = \{$' \
 require_match '^# US-07 composed trade-building estate-power multiplier: 0\.5$' \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must document the composed US-07 multiplier'
+require_match '^# Building maintenance multiplier: 0\.7$' \
+	"$us09_trade_buildings_file" \
+	'US-08/US-05.3 building maintenance override must document the composed 30% non-trade maintenance multiplier'
+require_match '^# Trade-building maintenance multiplier: 0\.5$' \
+	"$us09_trade_buildings_file" \
+	'US-08/US-05.3 building maintenance override must document the composed 50% trade-building maintenance multiplier'
+require_match '^[[:space:]]+cloth = 0\.03$' \
+	"$us09_trade_buildings_file" \
+	'US-08/US-05.3 trade-building maintenance must halve marketplace cloth maintenance'
+require_match '^[[:space:]]+paper = 0\.025$' \
+	"$us09_trade_buildings_file" \
+	'US-08/US-05.3 trade-building maintenance must halve marketplace paper maintenance'
 require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must compose the approved US-07 local_burghers_estate_power reduction'
@@ -267,6 +287,15 @@ if search_quiet 'building_upkeep_multiplier' \
 then
 	printf '%s\n' 'CBP building upkeep overrides must not use the invalid building_upkeep_multiplier modifier type.' >&2
 	exit 1
+fi
+
+if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_types" ]]; then
+	python3 tools/validate_us08_building_maintenance_overrides.py \
+		--common-dir "$EU5_GAME_COMMON_DIR" \
+		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
+		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
+		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
+		--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 fi
 
 stale_us09_override_files="$(

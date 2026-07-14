@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/foreign_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 trade_office = {
 	is_foreign = yes
@@ -40,7 +42,7 @@ trade_office = {
 
 	unique_production_methods = {
 		trade_office_requirements = {
-			paper = 0.1
+			paper = 0.05
 			category = building_maintenance
 		}
 	}
@@ -48,7 +50,6 @@ trade_office = {
 
 	modifier = {
 		merchant_capacity_from_building = 0.33
-
 		building_owner_maritime_presence = 0.05
 		merchant_power_from_building = 0.2
 	}
@@ -100,8 +101,8 @@ embassy = {
 
 	unique_production_methods = {
 		embassy_requirements = {
-			paper = 1.0
-			jewelry = 0.5
+			paper = 0.7
+			jewelry = 0.35
 
 			category = building_maintenance
 		}
@@ -211,13 +212,12 @@ slave_center = {
 
 	unique_production_methods = {
 		slave_center_maintenance = {
-			stone = 0.1
-			tools = 0.1
-			firearms = 0.05
-			paper = 0.05
+			stone = 0.07
+			tools = 0.07
+			firearms = 0.035
+			paper = 0.035
 			produced = slaves_goods
 			output = 1.1
-
 
 			debug_max_profit = -1
 			category = building_maintenance
@@ -283,7 +283,6 @@ overseas_trading_post = {
 
 	modifier = {
 		merchant_capacity_from_building = 0.11
-
 		merchant_power_from_building = 0.2
 	}
 
@@ -345,7 +344,7 @@ colonial_administration = {
 
 	unique_production_methods = {
 		colonial_administration_requirements = {
-			paper = 0.1
+			paper = 0.07
 			category = building_maintenance
 		}
 	}
@@ -356,7 +355,6 @@ colonial_administration = {
 
 	modifier = {
 		merchant_capacity_from_building = 0.22
-
 		merchant_power_from_building = 0.2
 	}
 
@@ -445,11 +443,11 @@ viceroyalty = {
 
 	unique_production_methods = {
 		viceroyalty_maintenance = {
-			fine_cloth = 1
-			paper = 3
-			furniture = 0.5
-			goods_gold = 0.5
-			jewelry = 0.5
+			fine_cloth = 0.7
+			paper = 2.1
+			furniture = 0.35
+			goods_gold = 0.35
+			jewelry = 0.35
 
 			category = building_maintenance
 		}
@@ -458,7 +456,6 @@ viceroyalty = {
 
 	modifier = {
 		merchant_capacity_from_building = 0.33
-
 		merchant_power_from_building = 0.2
 		local_crown_estate_power = 1
 	}

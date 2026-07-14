@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_cannons.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 cannon_maker = {
 	is_foreign = no
@@ -32,7 +34,6 @@ cannon_maker = {
 			produced = cannons
 			output = 0.11
 
-
 			category = guild_input
 
 
@@ -48,7 +49,6 @@ cannon_maker = {
 			produced = cannons
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -59,7 +59,6 @@ cannon_maker = {
 
 			produced = cannons
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -72,7 +71,6 @@ cannon_maker = {
 			produced = cannons
 			output = 0.0957
 
-
 			category = guild_input
 		}
 		cannon_maker_ammunition_lead_maintenance = {
@@ -81,7 +79,6 @@ cannon_maker = {
 			produced = cannons
 			output = 0.132
 
-
 			category = guild_input
 		}
 		cannon_maker_ammunition_iron_maintenance = {
@@ -89,7 +86,6 @@ cannon_maker = {
 			saltpeter = 0.1
 			produced = cannons
 			output = 0.176
-
 
 			category = guild_input
 		}
@@ -130,7 +126,6 @@ cannon_workshop = {
 			produced = cannons
 			output = 1.21
 
-
 			debug_max_profit = 0.5
 
 			category = workshop_input
@@ -146,7 +141,6 @@ cannon_workshop = {
 
 			produced = cannons
 			output = 1.21
-
 
 			debug_max_profit = 0.5
 
@@ -164,7 +158,6 @@ cannon_workshop = {
 			output = 0.11
 
 
-
 			debug_max_profit = 0.5
 
 			category = workshop_input
@@ -176,7 +169,6 @@ cannon_workshop = {
 			output = 0.165
 
 
-
 			debug_max_profit = 0.5
 
 			category = workshop_input
@@ -186,7 +178,6 @@ cannon_workshop = {
 			saltpeter = 0.1
 			produced = cannons
 			output = 0.22
-
 
 			debug_max_profit = 0.5
 
@@ -235,7 +226,6 @@ cannon_foundry = {
 			produced = cannons
 			output = 2.2
 
-
 			debug_max_profit = 0.75
 			category = manufactory_input
 		}
@@ -277,7 +267,6 @@ cannons_factory = {
 
 			produced = cannons
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 
