@@ -12,7 +12,7 @@ US09_OUTPUT_FIELDS = {
     "output",
 }
 US09_TRADE_CAPACITY_FIELDS = {
-    "local_trades_per_burgher",
+    # "local_trades_per_burgher",
     "local_merchant_capacity",
     "merchant_capacity_from_building",
 }
