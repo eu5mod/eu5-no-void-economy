@@ -1,4 +1,4 @@
-name: US-177 Reference Generation
+name: US-177 Finalize Branch
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  generate-reference-overrides:
-    if: ${{ !contains(github.event.head_commit.message, '[us177-generated]') }}
+  finalize-us177:
+    if: ${{ !contains(github.event.head_commit.message, '[us177-finalized]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out implementation branch
@@ -19,67 +19,103 @@ jobs:
           ref: agent/us177-double-food-minting
           fetch-depth: 0
 
-      - name: Fetch pinned vanilla reference
+      - name: Finalize permanent CI and TECH-01
         run: |
           set -euo pipefail
-          reference_checkout="$RUNNER_TEMP/eu5_reference"
-          git init "$reference_checkout"
-          git -C "$reference_checkout" remote add origin https://github.com/razorstorm/Europa-Universalis-V.git
-          git -C "$reference_checkout" fetch --depth=1 origin 045b50a8263b6c3a9dba098751028aa884b89cd5
-          git -C "$reference_checkout" checkout --detach FETCH_HEAD
-          printf 'EU5_REFERENCE_GAME_ROOT=%s\n' "$reference_checkout/game" >> "$GITHUB_ENV"
-
-      - name: Generate tracked US-177 exact-path overrides
-        run: |
-          set -euo pipefail
-          python3 tools/generate_us177_food_goods_manifest.py \
-            --game-root "$EU5_REFERENCE_GAME_ROOT" \
-            --package-root packages/cbp_economy_rebalance
-          python3 tools/generate_us177_minting_overrides.py \
-            --game-root "$EU5_REFERENCE_GAME_ROOT" \
-            --package-root packages/cbp_economy_rebalance \
-            --multiplier 2
-          python3 tools/postprocess_us177_minting_building_overrides.py \
-            --common-dir "$EU5_REFERENCE_GAME_ROOT/in_game/common" \
-            --package-common-dir packages/cbp_economy_rebalance/in_game/common \
-            --multiplier 2
-          python3 tools/validate_us177_food_minting_overrides.py \
-            --game-root "$EU5_REFERENCE_GAME_ROOT" \
-            --package-root packages/cbp_economy_rebalance
-
-      - name: Commit generated override set
-        run: |
-          set -euo pipefail
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-
-          git add \
-            packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json \
-            packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json \
-            packages/cbp_economy_rebalance/cbp_generated/us177_minting_building_manifest.json
-
-          python3 - <<'PY' > "$RUNNER_TEMP/us177_paths.txt"
-          import json
+          python3 - <<'PY'
           from pathlib import Path
 
-          root = Path("packages/cbp_economy_rebalance/cbp_generated")
-          for manifest_name in (
-              "us177_minting_income_manifest.json",
-              "us177_minting_building_manifest.json",
-          ):
-              payload = json.loads((root / manifest_name).read_text(encoding="utf-8"))
-              for item in payload["files"]:
-                  print(Path("packages/cbp_economy_rebalance") / item["path"])
+          workflow_path = Path('.github/workflows/generated-files.yml')
+          workflow = workflow_path.read_text(encoding='utf-8')
+          step_marker = '      - name: Validate US-177 food and minting generators with fixture game root\n'
+          if step_marker not in workflow:
+              raise SystemExit('Could not find permanent US-177 fixture step.')
+          prefix, tail = workflow.split(step_marker, 1)
+
+          directory_old = '''            "$fixture_common/building_types" \\
+            "$fixture_common/prices" \\
+'''
+          directory_new = '''            "$fixture_common/building_types" \\
+            "$fixture_common/goods" \\
+            "$fixture_common/prices" \\
+'''
+          if directory_old not in tail:
+              raise SystemExit('Could not add the fixture goods directory.')
+          tail = tail.replace(directory_old, directory_new, 1)
+
+          advances_marker = '''          cat > "$fixture_common/advances/test_advances.txt" <<'EOF'
+'''
+          goods_fixture = '''          cat > "$fixture_common/goods/03_food.txt" <<'EOF'
+          wheat = {
+              food = 8
+              default_market_price = 1
+          }
+          stone = {
+              food = 0
+              default_market_price = 2
+          }
+          EOF
+
+'''
+          if advances_marker not in tail:
+              raise SystemExit('Could not insert the food-goods fixture.')
+          tail = tail.replace(advances_marker, goods_fixture + advances_marker, 1)
+
+          minting_generator_marker = '''          python3 ./tools/generate_us177_minting_overrides.py \\
+'''
+          food_generator = '''          python3 ./tools/generate_us177_food_goods_manifest.py \\
+            --game-root "$fixture_game" \\
+            --package-root "$fixture_package"
+'''
+          if minting_generator_marker not in tail:
+              raise SystemExit('Could not insert the food-goods manifest generator.')
+          tail = tail.replace(minting_generator_marker, food_generator + minting_generator_marker, 1)
+
+          manifest_marker = '''          test -f "$fixture_package/cbp_generated/us177_minting_income_manifest.json"
+'''
+          food_manifest_checks = '''          test -f "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
+          grep -q '"good": "wheat"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
+          if grep -q '"good": "stone"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"; then
+            echo 'Goods with food = 0 must not be classified as food.' >&2
+            exit 1
+          fi
+'''
+          if manifest_marker not in tail:
+              raise SystemExit('Could not insert food-manifest fixture assertions.')
+          tail = tail.replace(manifest_marker, food_manifest_checks + manifest_marker, 1)
+
+          temporary_start = '      - name: Build temporary US-177 reference artifact\n'
+          permanent_next = '      - name: Validate package structure and generated adapters\n'
+          if temporary_start not in tail or permanent_next not in tail:
+              raise SystemExit('Could not remove temporary reference-artifact steps.')
+          before_temporary, temporary_and_after = tail.split(temporary_start, 1)
+          _, after_temporary = temporary_and_after.split(permanent_next, 1)
+          tail = before_temporary + permanent_next + after_temporary
+          workflow_path.write_text(prefix + step_marker + tail, encoding='utf-8')
+
+          tech_path = Path('docs/technical/TECH-01_engine_exposure_matrix.md')
+          tech = tech_path.read_text(encoding='utf-8')
+          if '| 153 | US-177 |' not in tech:
+              rows = '''| 153 | US-177 | Set the shared food valuation input to exactly twice vanilla | loading-screen define database | `NMarket.FOOD_PRICE = 0.1` against supported vanilla `0.05` | static define | Local vanilla `loading_screen/common/defines/00_defines.txt`; issue #177 | CONFIRMED | Package-owned static override | The Rebalance Economy package changes only `FOOD_PRICE`; non-food market defines remain untouched. Local source comparison must fail when the supported vanilla value changes. |
+| 154 | US-177 | Identify the definitive set of goods treated as food | goods database object | numeric `food` field in `in_game/common/goods`; food good iff `food > 0` | static field / generated manifest | Local vanilla `goods/readme.txt`; supported vanilla goods files; `us177_food_goods_manifest.json` | CONFIRMED | Generate the list from vanilla rather than hard-code it | The supported reference contains 14 food goods. The manifest records every source file, line, value, and source fingerprint and must be regenerated after an EU5 patch. |
+| 155 | US-177 | Double total gross minting income despite additive bonuses | country modifier stack plus exact-path static sources | universal `minting_income_factor = 1.0` plus every vanilla numeric `minting_income_factor` source multiplied by `2` | additive modifier / generated exact-path overrides | Modifier docs; supported vanilla source audit; US-177 manifests and CI fixture | FALLBACK_ACCEPTED | Exact algebraic composition: `1 + 1 + 2S = 2(1 + S)` | No multiplicative total-minting endpoint or base define was confirmed. The accepted fallback scales positive and negative vanilla sources, fails on dynamic expressions, composes building files with US-07/US-09, and does not alter inflation fields. |
+'''
+              unresolved_marker = '\n\n\n## Unresolved exposure impact matrix'
+              if unresolved_marker not in tech:
+                  raise SystemExit('Could not locate TECH-01 matrix insertion point.')
+              tech = tech.replace(unresolved_marker, '\n' + rows + '\n\n## Unresolved exposure impact matrix', 1)
+              tech_path.write_text(tech, encoding='utf-8')
           PY
 
-          while IFS= read -r generated_path; do
-            git add "$generated_path"
-          done < "$RUNNER_TEMP/us177_paths.txt"
-
-          if git diff --cached --quiet; then
-            echo 'US-177 generated overrides are already current.'
-            exit 0
-          fi
-
-          git commit -m 'US-177: refresh generated source manifests [us177-generated]'
+      - name: Commit finalization and remove temporary workflow
+        run: |
+          set -euo pipefail
+          rm .github/workflows/us177-generate-reference.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            .github/workflows/generated-files.yml \
+            docs/technical/TECH-01_engine_exposure_matrix.md
+          git add -u .github/workflows/us177-generate-reference.yml
+          git commit -m 'US-177: finalize CI and engine exposure records [us177-finalized]'
           git push origin HEAD:agent/us177-double-food-minting
