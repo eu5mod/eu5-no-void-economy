@@ -216,6 +216,7 @@ require_match 'name = cbp_war_package_version' \
 
 us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
 us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
+us09_market_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/market_buildings.txt"
 us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
 us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
@@ -225,6 +226,7 @@ us09_trade_capacity_multiplier="$(format_multiplier_from_percent "$us09_trade_ca
 us09_trade_capacity_multiplier_pattern="${us09_trade_capacity_multiplier//./\\.}"
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
+require_file "$us09_market_buildings_file"
 require_file "$us09_rgo_static_modifier_file"
 require_file "$us09_rgo_size_effects_file"
 require_file "$us09_market_stockpile_static_modifier_file"
@@ -256,12 +258,54 @@ require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
 require_match "^# Trade capacity multiplier: ${us09_trade_capacity_multiplier_pattern} \\(${us09_trade_capacity_percent}%\\)$" \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must document the configured trade-capacity multiplier'
-require_match "^[[:space:]]+local_trades_per_burgher = ${us09_trade_capacity_multiplier_pattern}$" \
+require_match '^[[:space:]]+local_trades_per_burgher = 1$' \
 	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the configured local_trades_per_burgher compensation'
+	'US-09 trade-building override must leave local_trades_per_burgher unchanged'
 require_match "^[[:space:]]+local_merchant_capacity = ${us09_trade_capacity_multiplier_pattern}$" \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must apply the configured local_merchant_capacity compensation'
+python3 - "$us09_market_buildings_file" <<'PY'
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+lines = path.read_text(encoding="utf-8-sig").splitlines()
+
+def code(line: str) -> str:
+    return line.split("#", 1)[0]
+
+stack: list[tuple[str, int, int]] = []
+ranges: list[tuple[str, int, int, int]] = []
+for index, line in enumerate(lines):
+    match = re.match(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{", code(line))
+    if match:
+        stack.append((match.group(1), index, len(stack)))
+    for _ in range(code(line).count("}")):
+        if not stack:
+            break
+        key, start, depth = stack.pop()
+        ranges.append((key, start, index, depth))
+
+top_level = [item for item in ranges if item[0] == "market_warehouse" and item[3] == 0]
+if not top_level:
+    raise SystemExit("US-09 market-building override must contain market_warehouse")
+_, start, end, depth = top_level[0]
+children = {
+    key: (child_start, child_end)
+    for key, child_start, child_end, child_depth in ranges
+    if start < child_start < end and child_depth == depth + 1
+}
+for key in ("country_potential", "location_potential"):
+    if key not in children:
+        raise SystemExit(f"US-09 market_warehouse override must contain {key}")
+    child_start, child_end = children[key]
+    child_text = "\n".join(lines[child_start : child_end + 1])
+    if not re.search(r"\balways\s*=\s*no\b", child_text):
+        raise SystemExit(f"US-09 market_warehouse {key} must be always = no")
+PY
 require_match '^[[:space:]]+local_max_rgo_size = 1$' \
 	"$us09_rgo_static_modifier_file" \
 	'US-09 base RGO size static modifier must be scalable through add_location_modifier size'

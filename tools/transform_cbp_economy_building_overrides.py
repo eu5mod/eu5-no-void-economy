@@ -183,17 +183,57 @@ def disable_market_warehouse(lines: list[str], source_basename: str) -> list[str
     if not blocks:
         return lines
     block = blocks[0]
-    body = lines[block.start : block.end + 1]
-    if any(re.search(r"\bcountry_potential\s*=\s*\{", code_without_comment(line)) for line in body):
-        return lines
+    result = list(lines)
 
-    insertion = [
-        "",
-        "\tcountry_potential = {",
+    child_blocks = [
+        child
+        for child in find_named_blocks(result)
+        if block.start < child.start < block.end and child.depth == block.depth + 1
+    ]
+
+    country_potential_blocks = [
+        child for child in child_blocks if child.key == "country_potential"
+    ]
+    if not country_potential_blocks:
+        insertion = [
+            "",
+            "\tcountry_potential = {",
+            "\t\talways = no",
+            "\t}",
+        ]
+        result = result[: block.start + 1] + insertion + result[block.start + 1 :]
+        block = [
+            refreshed
+            for refreshed in find_named_blocks(result)
+            if refreshed.key == "market_warehouse" and refreshed.depth == 0
+        ][0]
+
+    child_blocks = [
+        child
+        for child in find_named_blocks(result)
+        if block.start < child.start < block.end and child.depth == block.depth + 1
+    ]
+    location_potential_blocks = [
+        child for child in child_blocks if child.key == "location_potential"
+    ]
+    replacement = [
+        "\tlocation_potential = {",
         "\t\talways = no",
         "\t}",
     ]
-    return lines[: block.start + 1] + insertion + lines[block.start + 1 :]
+    if location_potential_blocks:
+        target = location_potential_blocks[0]
+        result = result[: target.start] + replacement + result[target.end + 1 :]
+    else:
+        insert_after = block.start + 1
+        country_potential_blocks = [
+            child for child in child_blocks if child.key == "country_potential"
+        ]
+        if country_potential_blocks:
+            insert_after = country_potential_blocks[0].end + 1
+        result = result[:insert_after] + [""] + replacement + result[insert_after:]
+
+    return result
 
 
 def transform_lines(

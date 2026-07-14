@@ -22,7 +22,7 @@ Usage:
 
 Options:
   --percent N                            Percent increase for building output
-  --trade-capacity-percent N             Percent increase for trade-capacity fields
+  --trade-capacity-percent N             Percent increase for merchant-capacity fields
                                           (default: same as --percent)
   --extra-burgher-promotion-speed N      Extra Burgher promotion speed percent (10 = +10%)
   --extra-laborer-promotion-speed N      Extra Laborer promotion speed percent (10 = +10%)
@@ -93,6 +93,9 @@ has_economy_building_target_field() {
 		/^[[:space:]]*#/ {
 			next
 		}
+		# Keep legacy exact-path building overrides materialized even when they
+		# only contain the old trade-count field. The transformer intentionally
+		# leaves local_trades_per_burgher unchanged.
 		/^[[:space:]]*(output|local_trades_per_burgher|local_merchant_capacity|merchant_capacity_from_building)[[:space:]]*=/ {
 			found = 1
 		}

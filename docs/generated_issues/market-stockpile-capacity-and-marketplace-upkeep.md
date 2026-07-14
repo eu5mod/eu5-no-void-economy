@@ -2,7 +2,9 @@
 
 ## Functional changes
 
-- Disable `market_warehouse` through generated `country_potential = { always = no }`.
+- Disable `market_warehouse` through generated visible gates:
+  `country_potential = { always = no }` and
+  `location_potential = { always = no }`.
 - Keep `Marketplace`, `Merchants Quarters`, and `Grand Marketplace` maintenance equal to the generated base Marketplace maintenance quantities.
 - Apply vanilla `maximum_stockpile_capacity` on the location of each Market Center (`market.location`).
 - Size the location modifier from the sum of authoritative ModeU5 country x market capacity records for the selected market.

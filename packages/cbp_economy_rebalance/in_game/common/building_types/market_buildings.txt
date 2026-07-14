@@ -221,7 +221,7 @@ market_warehouse = {
 	build_time = market_build_time
 
 	location_potential = {
-		is_market_center = yes
+		always = no
 	}
 
 	remove_if = {

@@ -18,6 +18,10 @@ cbp_refresh_market_center_stockpile_capacity = {
 			name = cbp_market_stockpile_capacity_accumulator
 			value = 0
 		}
+		set_local_variable = {
+			name = cbp_market_stockpile_capacity_country_count
+			value = 0
+		}
 	}
 
 	if = {
@@ -43,6 +47,10 @@ cbp_refresh_market_center_stockpile_capacity = {
 						name = cbp_market_stockpile_capacity_accumulator
 						add = scope:cbp_market_current_country_capacity
 					}
+					change_local_variable = {
+						name = cbp_market_stockpile_capacity_country_count
+						add = 1
+					}
 				}
 			}
 		}
@@ -57,7 +65,12 @@ cbp_refresh_market_center_stockpile_capacity = {
 			size = local_var:cbp_market_stockpile_capacity_accumulator
 			recalculate_immediately = yes
 		}
+		if = {
+			limit = { has_global_variable = test_cbp_pr182_market_stockpile_probe_active }
+			debug_log = "ModeU5 PR-182 STOCKPILE_REFRESH capacity=[THIS.GetVariable('cbp_market_stockpile_capacity_accumulator').GetValue|2] countries=[THIS.GetVariable('cbp_market_stockpile_capacity_country_count').GetValue|0]"
+		}
 		remove_local_variable = cbp_market_stockpile_capacity_accumulator
+		remove_local_variable = cbp_market_stockpile_capacity_country_count
 	}
 }
 

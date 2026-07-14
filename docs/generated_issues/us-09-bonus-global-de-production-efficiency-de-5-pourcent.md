@@ -46,7 +46,7 @@ Feeds counters to: vanilla production read at step 4
 | Monthly invocation at runtime step 3 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
 | Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions; loaded duplicate-key override path | NOT_CONFIRMED | 118 |
-| Static trade-capacity fields | local vanilla `common/building_types` | `local_trades_per_burgher`, `local_merchant_capacity`, `merchant_capacity_from_building`; exact-path package override path | TO_TEST | 118 |
+| Static merchant-capacity fields | local vanilla `common/building_types` | `local_merchant_capacity`, `merchant_capacity_from_building`; exact-path package override path. `local_trades_per_burgher` is intentionally left unchanged. | TO_TEST | 118 |
 | Composed US-07 trade-building estate-power field | local vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; exact-path package override path | TO_TEST | 083 |
 | Composed US-08/US-05.3 building maintenance quantities | local vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by `0.7`, or `0.5` for enclosing `trade_category` buildings; exact-path package override path | CONFIRMED | 153 |
 | Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry`; loaded duplicate-key override path | NOT_CONFIRMED | 119 |
@@ -58,7 +58,7 @@ Probe solution:
 ```txt
 Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
 Increase each eligible `output =` value by configurable `X%`.
-Increase each eligible `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the same `X%`.
+Increase each eligible `local_merchant_capacity` and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the same `X%`. `local_trades_per_burgher` is intentionally not increased by US-09.
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
 Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.7`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
@@ -162,7 +162,7 @@ Related US: US-00.3, stock-aware production pipeline
 ## Acceptance criteria
 
 - [ ] Generated package files increase every targeted `output =` value by the configured `X%`.
-- [ ] Generated package files increase every targeted `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to `X%` when no independent value is configured.
+- [ ] Generated package files increase every targeted `local_merchant_capacity` and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to `X%` when no independent value is configured, while leaving `local_trades_per_burgher` unchanged.
 - [ ] The generated exact-path `trade_buildings.txt` file composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
 - [ ] Generated package files divide every building-maintenance good quantity by exactly `2`.
 - [ ] Generated package files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.
