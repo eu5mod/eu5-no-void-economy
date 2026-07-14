@@ -256,20 +256,25 @@ estate_refund =
   estate_restored_quantity × market_price(goods:<good>)
 ```
 
-US-04 also mirrors the stock delta to vanilla market supply through
-`add_goods_supply`:
+US-04 also mirrors the stock delta to vanilla market supply through the central
+stock operators:
 
 ```txt
 positive delta:
-  amount = -actual_removed_quantity
+  cbp_remove_stock
+    only_remove_at_country_level = no
+    vanilla market-supply delta = -actual_removed_quantity
 
 negative delta:
-  amount = actual_restored_quantity
+  cbp_add_stock
+    only_add_at_country_level = no
+    vanilla market-supply delta = actual_restored_quantity
 ```
 
 This avoids double imputation: only the additional satisfied/restored
 consumption delta is mirrored to vanilla supply, never the full requested
-consumption.
+consumption. US-04 must not call `add_goods_supply` directly; direct vanilla
+market-supply writes are centralized in `cbp_stock_effects.txt`.
 
 The legacy bridge maps remain diagnostic/test-only:
 

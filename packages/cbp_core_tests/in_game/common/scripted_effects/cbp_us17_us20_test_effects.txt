@@ -214,6 +214,7 @@ cbp_debug_run_us17_us20_reconciliation_tests = {
 			good = wheat
 			quantity = 1
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_us17_us20_seed_reconciliation_fixture = yes
 		cbp_run_us17_us20_route_reconciliation = yes
@@ -229,6 +230,7 @@ cbp_debug_run_us17_us20_reconciliation_tests = {
 				good = wheat
 				quantity = 1
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 			c:FRA.capital.market = {
 				add_goods_supply = {
@@ -253,6 +255,7 @@ cbp_debug_run_us17_us20_reconciliation_tests = {
 				good = wheat
 				quantity = 0.97
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 			c:FRA.capital.market = {
 				add_goods_supply = {

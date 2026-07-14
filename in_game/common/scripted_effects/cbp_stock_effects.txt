@@ -8,11 +8,20 @@
 #     good = wheat
 #     quantity = 50
 #     capacity_policy = enforce
+#     only_add_at_country_level = yes
 # }
 #
 # Supported capacity policies are enforce and allow_over_capacity. The latter is
 # reserved for CORE-02, CORE-03, separately approved migrations, and explicit
 # reconciliation/restoration offsets such as US-04 below-baseline consumption.
+#
+# only_*_at_country_level = yes keeps the vanilla market-supply ledger untouched.
+# only_*_at_country_level = no also applies the matching add_goods_supply delta
+# from this central wrapper.
+#
+# Rare vanilla-ledger-only adjustments without a country stock receiver, such as
+# US-20 destination-route loss on an unpromoted market, must still go through
+# this file rather than calling add_goods_supply from feature code.
 
 cbp_select_capacity_policy_enforce = {
 	save_temporary_scope_value_as = {
@@ -60,6 +69,34 @@ cbp_select_remove_reason_debug_test = {
 	save_temporary_scope_value_as = {
 		name = cbp_remove_reason
 		value = 99
+	}
+}
+
+cbp_select_stock_operator_country_only_yes = {
+	save_temporary_scope_value_as = { name = cbp_stock_operator_contract_valid value = 1 }
+	save_temporary_scope_value_as = { name = cbp_stock_operator_apply_vanilla_market_delta value = 0 }
+}
+
+cbp_select_stock_operator_country_only_no = {
+	save_temporary_scope_value_as = { name = cbp_stock_operator_contract_valid value = 1 }
+	save_temporary_scope_value_as = { name = cbp_stock_operator_apply_vanilla_market_delta value = 1 }
+}
+
+cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = {
+	if = {
+		limit = {
+			exists = scope:cbp_vanilla_market_goods_supply_market
+			exists = scope:cbp_vanilla_market_goods_supply_good
+		}
+		scope:cbp_vanilla_market_goods_supply_market = {
+			add_goods_supply = {
+				goods = scope:cbp_vanilla_market_goods_supply_good
+				amount = scope:cbp_vanilla_market_goods_supply_delta
+			}
+		}
+	}
+	else = {
+		error_log = "ModeU5 STOCK CONTRACT ERROR operator=cbp_apply_vanilla_market_goods_supply_delta_from_saved_good reason=missing_market_or_good_scope"
 	}
 }
 
@@ -161,8 +198,32 @@ cbp_add_stock = {
 		error_log = "ModeU5 cbp_add_stock received a negative quantity; request normalized to zero."
 	}
 
-	cbp_select_capacity_policy_$capacity_policy$ = yes
-	cbp_add_stock_good_$good$ = yes
+	save_temporary_scope_value_as = { name = cbp_stock_operator_contract_valid value = 0 }
+	save_temporary_scope_value_as = { name = cbp_stock_operator_apply_vanilla_market_delta value = 0 }
+	cbp_select_stock_operator_country_only_$only_add_at_country_level$ = yes
+	if = {
+		limit = { scope:cbp_stock_operator_contract_valid > 0 }
+		cbp_select_capacity_policy_$capacity_policy$ = yes
+		cbp_add_stock_good_$good$ = yes
+		if = {
+			limit = {
+				scope:cbp_stock_operator_apply_vanilla_market_delta > 0
+				scope:cbp_actual_added_quantity > 0
+			}
+			scope:cbp_market = {
+				add_goods_supply = {
+					goods = goods:$good$
+					amount = scope:cbp_actual_added_quantity
+				}
+			}
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = { name = cbp_actual_added_quantity value = 0 }
+		save_temporary_scope_value_as = { name = cbp_rejected_quantity value = scope:cbp_quantity_requested }
+		save_temporary_scope_value_as = { name = cbp_consistency_validation_required value = 1 }
+		error_log = "ModeU5 STOCK CONTRACT ERROR operator=cbp_add_stock reason=missing_or_invalid_only_add_at_country_level"
+	}
 }
 
 cbp_add_stock_calculate = {
@@ -339,8 +400,39 @@ cbp_remove_stock = {
 		error_log = "ModeU5 cbp_remove_stock received a negative quantity; request normalized to zero."
 	}
 
-	cbp_select_remove_reason_$reason$ = yes
-	cbp_remove_stock_good_$good$ = yes
+	save_temporary_scope_value_as = { name = cbp_stock_operator_contract_valid value = 0 }
+	save_temporary_scope_value_as = { name = cbp_stock_operator_apply_vanilla_market_delta value = 0 }
+	cbp_select_stock_operator_country_only_$only_remove_at_country_level$ = yes
+	if = {
+		limit = { scope:cbp_stock_operator_contract_valid > 0 }
+		cbp_select_remove_reason_$reason$ = yes
+		cbp_remove_stock_good_$good$ = yes
+		if = {
+			limit = {
+				scope:cbp_stock_operator_apply_vanilla_market_delta > 0
+				scope:cbp_actual_removed_quantity > 0
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_stock_operator_vanilla_market_delta
+				value = {
+					value = scope:cbp_actual_removed_quantity
+					multiply = -1
+				}
+			}
+			scope:cbp_market = {
+				add_goods_supply = {
+					goods = goods:$good$
+					amount = scope:cbp_stock_operator_vanilla_market_delta
+				}
+			}
+		}
+	}
+	else = {
+		save_temporary_scope_value_as = { name = cbp_actual_removed_quantity value = 0 }
+		save_temporary_scope_value_as = { name = cbp_unsatisfied_quantity value = scope:cbp_quantity_requested }
+		save_temporary_scope_value_as = { name = cbp_consistency_validation_required value = 1 }
+		error_log = "ModeU5 STOCK CONTRACT ERROR operator=cbp_remove_stock reason=missing_or_invalid_only_remove_at_country_level"
+	}
 }
 
 cbp_remove_stock_calculate = {

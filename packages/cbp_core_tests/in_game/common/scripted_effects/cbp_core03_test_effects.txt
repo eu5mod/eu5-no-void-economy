@@ -75,6 +75,7 @@ cbp_debug_run_core03_location_succession_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_remove_stock = {
 			country = c:POR
@@ -82,6 +83,7 @@ cbp_debug_run_core03_location_succession_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:CAS
@@ -89,6 +91,7 @@ cbp_debug_run_core03_location_succession_test = {
 			good = wheat
 			quantity = 100
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 
 		cbp_read_country_stock_record = {
