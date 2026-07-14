@@ -38,6 +38,7 @@ cbp_us10_clear_wheat_stock_in_market = {
 				good = wheat
 				quantity = 1000000
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 		}
 	}
@@ -65,6 +66,7 @@ cbp_us10_seed_foreign_wheat_stock_in_market = {
 					good = wheat
 					quantity = scope:test_cbp_us10_seed_foreign_stock_quantity
 					capacity_policy = allow_over_capacity
+					only_add_at_country_level = yes
 				}
 				save_temporary_scope_value_as = {
 					name = test_cbp_us10_seed_foreign_country_count
@@ -253,6 +255,7 @@ cbp_us10_run_demand_resolution_fixture = {
 		good = wheat
 		quantity = 80
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_resolve_stock_consumption = {
 		consumer_country = c:FRA
@@ -284,6 +287,7 @@ cbp_us10_run_demand_resolution_fixture = {
 		good = wheat
 		quantity = 40
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_us10_seed_foreign_wheat_stock_in_market = {
 		market = scope:cbp_us10_target_market
@@ -332,6 +336,7 @@ cbp_us10_run_demand_resolution_fixture = {
 		good = wheat
 		quantity = 90
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_read_country_stock_record = {
 		country = c:FRA
@@ -504,6 +509,7 @@ cbp_debug_run_us10_monthly_runtime_tests = {
 			good = wheat
 			quantity = 50
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		cbp_queue_monthly_stock_consumption = {
 			country = c:FRA
@@ -644,6 +650,7 @@ cbp_us10_run_issue109_fixture = {
 		good = wheat
 		quantity = 40
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_resolve_stock_consumption = {
 		consumer_country = c:FRA
@@ -685,6 +692,7 @@ cbp_us10_run_issue109_fixture = {
 		good = wheat
 		quantity = 5
 		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
 	}
 	cbp_resolve_inter_market_stock_transfer = {
 		buyer_country = c:FRA

@@ -371,6 +371,7 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 				good = wheat
 				quantity = 99999
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 			cbp_add_stock = {
 				country = scope:cbp_us04_test_country
@@ -378,7 +379,8 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 				good = wheat
 					quantity = 200
 					capacity_policy = allow_over_capacity
-				}
+				only_add_at_country_level = yes
+			}
 				cbp_read_country_stock_record = {
 					country = scope:cbp_us04_test_country
 					market = scope:cbp_us04_test_market
@@ -465,6 +467,7 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 						good = beer
 						quantity = 99999
 						reason = debug_test
+						only_remove_at_country_level = yes
 					}
 					cbp_add_stock = {
 						country = scope:cbp_us04_test_country
@@ -472,6 +475,7 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 						good = beer
 						quantity = 200
 						capacity_policy = allow_over_capacity
+						only_add_at_country_level = yes
 					}
 					cbp_read_country_stock_record = {
 						country = scope:cbp_us04_test_country
@@ -532,13 +536,15 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 					good = beer
 					quantity = 99999
 					reason = debug_test
-				}
+						only_remove_at_country_level = yes
+					}
 				cbp_add_stock = {
 					country = scope:cbp_us04_test_country
 					market = scope:cbp_us04_test_market
 					good = beer
 					quantity = 200
 					capacity_policy = allow_over_capacity
+					only_add_at_country_level = yes
 				}
 				cbp_read_country_stock_record = {
 					country = scope:cbp_us04_test_country
@@ -678,6 +684,7 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 				good = wheat
 				quantity = 99999
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 			cbp_remove_stock = {
 				country = scope:cbp_us04_estate_probe_country
@@ -685,6 +692,7 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 				good = beer
 				quantity = 99999
 				reason = debug_test
+				only_remove_at_country_level = yes
 			}
 			cbp_add_stock = {
 				country = scope:cbp_us04_estate_probe_country
@@ -692,6 +700,7 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 				good = wheat
 				quantity = 200
 				capacity_policy = allow_over_capacity
+				only_add_at_country_level = yes
 			}
 			cbp_add_stock = {
 				country = scope:cbp_us04_estate_probe_country
@@ -699,6 +708,7 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 				good = beer
 				quantity = 200
 				capacity_policy = allow_over_capacity
+				only_add_at_country_level = yes
 			}
 			cbp_reset_pop_demand_outcome = {
 				location = scope:cbp_us04_estate_probe_location

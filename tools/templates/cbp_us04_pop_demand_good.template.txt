@@ -722,6 +722,7 @@ cbp_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			good = __GOOD__
 			quantity = scope:cbp_us04_extra_reconciliation_quantity
 			reason = consumption
+			only_remove_at_country_level = yes
 		}
 		save_temporary_scope_value_as = { name = cbp_us04_actual_reconciled_quantity value = scope:cbp_actual_removed_quantity }
 		save_temporary_scope_value_as = { name = cbp_us04_unsatisfied_reconciliation_quantity value = scope:cbp_unsatisfied_quantity }
@@ -815,6 +816,7 @@ cbp_monthly_reconcile_location_pop_demand_good___GOOD__ = {
 			good = __GOOD__
 			quantity = scope:cbp_us04_restore_reconciliation_quantity
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = { name = cbp_us04_actual_restored_quantity value = scope:cbp_actual_added_quantity }
 		save_temporary_scope_value_as = { name = cbp_us04_goods_supply_added_quantity value = scope:cbp_us04_actual_restored_quantity }

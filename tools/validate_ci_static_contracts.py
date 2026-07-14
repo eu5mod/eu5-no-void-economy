@@ -13,6 +13,8 @@ import re
 import sys
 from pathlib import Path
 
+from validate_cbp_stock_operator_contracts import find_violations, iter_scan_files
+
 ROOT = Path(__file__).resolve().parents[1]
 failures: list[str] = []
 
@@ -419,6 +421,16 @@ def validate_core_stock_test_contract(stock_test_effects: str) -> None:
     )
 
 
+def validate_stock_operator_contract() -> None:
+    for path in iter_scan_files(ROOT):
+        text = path.read_text(encoding="utf-8-sig", errors="ignore")
+        for violation in find_violations(path, text):
+            rel = violation.path.relative_to(ROOT)
+            failures.append(
+                f"{rel}:{violation.line}: {violation.operator} must include {violation.required_field} = yes"
+            )
+
+
 def validate_perf10_13_test_contract(perf10_13_test_effects: str) -> None:
     expect(
         "test_cbp_wheat_active_markets" not in perf10_13_test_effects,
@@ -626,6 +638,7 @@ def main() -> int:
     validate_core04_test_contract(core04_test_effects)
     validate_us04_debug_event_contract(us04_debug_events)
     validate_core_stock_test_contract(stock_test_effects)
+    validate_stock_operator_contract()
     validate_perf10_13_test_contract(perf10_13_test_effects)
     validate_game_load_lifecycle_contract(
         configuration_on_actions=configuration_on_actions,
