@@ -385,7 +385,9 @@ jobs:
 
           python3 ./tools/generate_us177_food_goods_manifest.py \
             --game-root "$fixture_game" \
-            --package-root "$fixture_package"
+            --package-root "$fixture_package" \
+            --food-price 0.3 \
+            --food-production-divisor 4
           python3 ./tools/generate_us177_minting_overrides.py \
             --game-root "$fixture_game" \
             --package-root "$fixture_package" \
@@ -398,7 +400,8 @@ jobs:
           python3 ./tools/validate_us177_food_minting_overrides.py \
             --game-root "$fixture_game" \
             --package-root "$fixture_package" \
-            --food-multiplier 2 \
+            --food-price 0.3 \
+            --food-production-divisor 4 \
             --minting-multiplier 2
 
           grep -q 'minting_income_factor = 0.2' "$fixture_package/in_game/common/advances/test_advances.txt"
@@ -412,6 +415,11 @@ jobs:
           grep -q 'inflation_impact = 0.30' "$fixture_package/main_menu/common/static_modifiers/country.txt"
           test -f "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
           grep -q '"good": "wheat"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
+          grep -q '"configured_food_price": "0.3"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
+          grep -q '"food_production_divisor": "4.0"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
+          grep -q 'FOOD_PRICE = 0.3' "$fixture_package/loading_screen/common/defines/cbp_us177_food_price_defines.txt"
+          grep -q 'food = 2.0' "$fixture_package/in_game/common/goods/03_food.txt"
+          grep -q 'default_market_price = 1' "$fixture_package/in_game/common/goods/03_food.txt"
           if grep -q '"good": "stone"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"; then
             echo 'Goods with food = 0 must not be classified as food.' >&2
             exit 1

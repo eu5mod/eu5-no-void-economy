@@ -87,7 +87,9 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	us177_game_root="${us177_common_dir%/in_game/common}"
 	python3 "$repo_root/tools/generate_us177_food_goods_manifest.py" \
 		--game-root "$us177_game_root" \
-		--package-root "$repo_root/packages/cbp_economy_rebalance"
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--food-price "${MODEU5_US177_FOOD_PRICE:-0.3}" \
+		--food-production-divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}"
 	python3 "$repo_root/tools/generate_us177_minting_overrides.py" \
 		--game-root "$us177_game_root" \
 		--package-root "$repo_root/packages/cbp_economy_rebalance" \

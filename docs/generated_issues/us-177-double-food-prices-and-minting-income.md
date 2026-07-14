@@ -9,7 +9,8 @@ Package: `packages/cbp_economy_rebalance`
 When the Rebalance Economy package is loaded:
 
 ```txt
-food valuation input = vanilla NMarket.FOOD_PRICE * 2
+food valuation input = configured NMarket.FOOD_PRICE (default 0.3)
+food supplied per unit of a food good = vanilla food field / configured divisor (default 3)
 minting gross income = vanilla gross minting income * 2
 ```
 
@@ -50,18 +51,29 @@ packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json
 ```
 
 It records each food good, its vanilla `food` value, source file, source line,
-and source fingerprint. Goods with no `food` field or `food = 0` are not food
-for this feature. The list is generated rather than hand-maintained so a vanilla
-patch changes the manifest and fails source validation.
+source fingerprint, configured food price, production divisor, and generated
+override hashes. Goods with no `food` field or `food = 0` are not food for this
+feature. The generator creates exact-path goods overrides such as
+`in_game/common/goods/03_food.txt` and divides only positive `food` fields.
+It does not change `default_market_price` or other goods properties.
 
 The price endpoint is the shared market define:
 
 ```txt
-NMarket.FOOD_PRICE = 0.1
+NMarket.FOOD_PRICE = 0.3
 ```
 
-against the supported vanilla value `0.05`. US-177 does not alter
+independently from the default food-production divisor `3`. Against vanilla
+`FOOD_PRICE = 0.05`, the configured default is therefore x6 while each unit of
+a food good contributes one third of its vanilla food quantity. US-177 does not alter
 `default_market_price` on individual goods and does not alter non-food prices.
+
+Local configuration:
+
+```txt
+MODEU5_US177_FOOD_PRICE=0.3
+MODEU5_US177_FOOD_PRODUCTION_DIVISOR=3
+```
 
 ## Exact minting-income rule
 
@@ -108,7 +120,9 @@ Generate the authoritative food-good manifest:
 ```bash
 python3 tools/generate_us177_food_goods_manifest.py \
   --game-root "<EU5_INSTALL_DIR>/game" \
-  --package-root packages/cbp_economy_rebalance
+  --package-root packages/cbp_economy_rebalance \
+  --food-price 0.3 \
+  --food-production-divisor 3
 ```
 
 Generate non-building minting overrides:
@@ -155,9 +169,11 @@ python3 tools/validate_us177_food_minting_overrides.py \
 
 The validator proves:
 
-- package `FOOD_PRICE` is exactly `2 *` vanilla and no other numeric market define
-  is present in the US-177 file;
+- package `FOOD_PRICE` equals the independently configured value and no other
+  numeric market define is present in the US-177 file;
 - the food-good manifest exactly matches every vanilla good with `food > 0`;
+- generated exact-path goods overrides divide every positive vanilla `food`
+  value by the configured divisor without changing unrelated goods fields;
 - the universal minting base is exactly `minting_income_factor = 1.0`;
 - every supported vanilla numeric minting source is present once and doubled;
 - building minting sources remain composed with the shared building generator;
@@ -177,10 +193,11 @@ the main TECH-01 matrix when the stacked branch is flattened.
 In a controlled campaign, compare the same country with and without Rebalance
 Economy:
 
-1. confirm the effective food valuation uses `0.1` rather than `0.05`;
-2. compare gross minting income at the same minting input and confirm exact `2x`;
-3. repeat with a country having a positive vanilla minting bonus;
-4. repeat with a negative vanilla minting source;
-5. verify inflation behavior is unchanged apart from any indirect consequence of
+1. confirm the effective food valuation uses `0.3` rather than `0.05`;
+2. confirm representative food goods provide one third of their vanilla food quantity;
+3. compare gross minting income at the same minting input and confirm exact `2x`;
+4. repeat with a country having a positive vanilla minting bonus;
+5. repeat with a negative vanilla minting source;
+6. verify inflation behavior is unchanged apart from any indirect consequence of
    the larger gross income;
-6. inspect `error.log` for duplicate keys, unsupported tokens, or missing objects.
+7. inspect `error.log` for duplicate keys, unsupported tokens, or missing objects.

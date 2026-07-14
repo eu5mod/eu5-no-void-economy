@@ -9,7 +9,7 @@ geo_legacy_of_saint_george = {
 
 	requires = scholasticism
 
-	army_infantry_power = 0.1
+	army_heavy_infantry_power = 0.1
 }
 
 geo_bagrationi_dynasty = {
@@ -70,7 +70,7 @@ geo_georgian_titles = {
 
 	requires = faceting
 
-	court_spending_cost = -0.01
+	court_spending_cost_modifier = -0.05
 }
 
 ############################
@@ -111,7 +111,7 @@ geo_georgian_principalities = {
 
 	requires = the_constitution
 
-	global_distance_from_capital_cost_modifier = -0.05
+	global_distance_from_capital_speed_propagation = 0.1
 }
 
 ############################

@@ -1,21 +1,21 @@
 {
   "files": [
     {
-      "generated_sha256": "70724a92d1cef895c2a6503266b07a3f7383dcbff8e91f6fba42a70ad88cfe7a",
+      "generated_sha256": "54b5b8d70030863efd4846fd599167e135e052d4f2514bc41363d49189a65f56",
       "occurrences": [
         {
-          "line": 1115,
+          "line": 1155,
           "new": "0.2",
           "old": "0.10"
         },
         {
-          "line": 3593,
+          "line": 3770,
           "new": "0.4",
           "old": "0.2"
         }
       ],
       "path": "in_game/common/building_types/event_only_buildings.txt",
-      "source_sha256": "abc17235122600ff1254bd536a9741d22a3dd2553e40b2956ea6c25b3ccdd1fc"
+      "source_sha256": "41aa2ae4d76fed4524d7dccfc0cd960941338c324ede5066ce11cc8709dc8af9"
     }
   ],
   "generated_file_count": 1,

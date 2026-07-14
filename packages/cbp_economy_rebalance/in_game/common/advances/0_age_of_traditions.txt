@@ -87,6 +87,7 @@ taxation_advance = {
 	enable_taxation = yes
 	has_stability_investment = yes
 	
+	unlock_law = coin_laws
 	
 	requires = codified_laws
 }
@@ -169,15 +170,26 @@ agriculture_advance = {
 
 	depth = 0
 
-	allow = {
-	}
-	
 	starting_technology_level = 1
 }
 
 windmills_advance = {
 	age = age_1_traditions
 	unlock_building = windmill
+	requires = agriculture_advance
+}
+
+aqueduct_system = {
+	age = age_1_traditions
+
+	potential = { 
+		OR = {
+			has_or_had_tag = BYZ
+			has_or_had_tag = ROM
+		}
+	}
+
+	unlock_building = aqueduct_system
 	requires = agriculture_advance
 }
 
@@ -204,6 +216,7 @@ city_building_advance = {
 	icon = city_building_advance
 	research_cost = 2.0
 	can_build_cities = yes
+	can_grant_town_rights = yes
 
 	requires = agriculture_advance
 }
@@ -219,12 +232,12 @@ ranching = {
 	allow = { 
 		OR = {
 			has_embraced_institution = institution:feudalism
-			capital ?= { continent = continent:europe }
-			capital ?= { continent = continent:asia }
-			capital ?= { sub_continent = sub_continent:north_africa }
-			capital ?= { sub_continent = sub_continent:west_africa }
+			original_capital ?= { continent = continent:europe }
+			original_capital ?= { continent = continent:asia }
+			original_capital ?= { sub_continent = sub_continent:north_africa }
+			original_capital ?= { sub_continent = sub_continent:west_africa }
 			
-			capital ?= {
+			original_capital ?= {
 				market ?= { 
 					OR = {
 						is_produced_in_market = goods:horses 
@@ -276,10 +289,10 @@ trade_caravans = {
 
 	requires = horse_riding_advance
 	
-	trade_land_movement_cost_modifier = -0.33
+	trade_land_efficiency = 0.66
 
 	potential = {
-		capital ?= { sub_continent = sub_continent:central_asia }
+		original_capital ?= { sub_continent = sub_continent:central_asia }
 	}
 	
 	starting_technology_level = 1
@@ -397,7 +410,7 @@ trade_advance_age_of_trad = {
 	
 	requires = ship_building_advance
 	
-	trade_efficiency = small_trade_efficiency_bonus
+	selling_efficiency = small_trade_efficiency_bonus
 	
 	starting_technology_level = 3
 }
@@ -534,6 +547,7 @@ efficient_bureaucracy = {
 	requires = educated_bureaucrats
 
 	legislative_efficiency = 0.05
+	global_bureaucracy_maintenance_cost_modifier = -0.02
 }
 
 right_to_rule = {
@@ -565,7 +579,8 @@ province_governors = {
 	icon = glorious_arms
 	requires = efficient_logistics
 
-	global_integration_speed_modifier = 0.02
+	global_integration_speed_modifier = 0.10
+	subject_loyalty = 5
 }
 
 appointed_chain_of_command = {
@@ -573,7 +588,7 @@ appointed_chain_of_command = {
 	icon = glorious_arms
 	requires = efficient_logistics
 	potential = {
-		capital ?= { sub_continent = sub_continent:east_asia }
+		original_capital ?= { sub_continent = sub_continent:east_asia }
 	}
 	
 	levy_combat_efficiency_modifier = 0.1
@@ -625,7 +640,7 @@ talented_traders = {
 	icon = merchants_and_trade
 	requires = abacus_advance
 
-	trade_efficiency = small_trade_efficiency_bonus
+	selling_efficiency = small_trade_efficiency_bonus
 }
 
 government_sanctioned_celebrations = {

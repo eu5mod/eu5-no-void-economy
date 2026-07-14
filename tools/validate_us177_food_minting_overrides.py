@@ -25,9 +25,8 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("packages/cbp_economy_rebalance"),
     )
-    # Retained as an ignored compatibility option so existing local commands and
-    # CI fixtures do not break. FOOD_PRICE is an intentionally free balance value.
-    parser.add_argument("--food-multiplier", help=argparse.SUPPRESS)
+    parser.add_argument("--food-price", default="0.3")
+    parser.add_argument("--food-production-divisor", default="3")
     parser.add_argument("--minting-multiplier", default="2")
     return parser.parse_args()
 
@@ -103,6 +102,10 @@ def main() -> int:
     game_root = resolve_game_root(args.game_root)
     package_root = args.package_root.resolve()
     minting_multiplier = decimal(args.minting_multiplier, "minting multiplier")
+    food_price = decimal(args.food_price, "food price")
+    food_production_divisor = decimal(
+        args.food_production_divisor, "food production divisor"
+    )
 
     validate_minting_baseline(package_root)
 
@@ -115,6 +118,10 @@ def main() -> int:
             "--package-root",
             str(package_root),
             "--check",
+            "--food-price",
+            str(food_price),
+            "--food-production-divisor",
+            str(food_production_divisor),
         ]
     )
     run_checked(
@@ -147,7 +154,8 @@ def main() -> int:
     print(
         "US-177 validation passed: authoritative food-good classification and exact "
         "minting identity 1 + 1 + 2*sum(vanilla modifiers) = "
-        "2*(1 + sum(vanilla modifiers)). FOOD_PRICE is not balance-validated."
+        "2*(1 + sum(vanilla modifiers)). FOOD_PRICE and the food-production "
+        "divisor are independently validated."
     )
     return 0
 

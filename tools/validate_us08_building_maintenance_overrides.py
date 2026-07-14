@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import transform_cbp_economy_building_overrides as transformer
+import postprocess_us177_minting_building_overrides as minting_transformer
 
 
 def parse_goods_registry(repo_root: Path) -> list[str]:
@@ -136,6 +137,10 @@ def main() -> int:
     )
     parser.add_argument("--maintenance-multiplier", type=float, default=0.7)
     parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
+    parser.add_argument(
+        "--minting-multiplier",
+        default=os.environ.get("MODEU5_US177_MINTING_MULTIPLIER", "2"),
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -155,6 +160,7 @@ def main() -> int:
     output_multiplier = 1.0 + args.us09_percent / 100.0
     trade_capacity_multiplier = 1.0 + args.trade_capacity_percent / 100.0
     us07_multiplier = 0.5
+    minting_multiplier = minting_transformer.parse_multiplier(args.minting_multiplier)
 
     failures: list[str] = []
     source_files_with_maintenance = 0
@@ -187,8 +193,7 @@ def main() -> int:
         generated_text = generated_file.read_text(encoding="utf-8-sig")
         generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
         generated_entries = maintenance_entries(generated_body_lines, goods_set)
-        expected_body = normalize_generator_whitespace(
-            transformer.transform_lines(
+        expected_body = transformer.transform_lines(
                 source_lines,
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
@@ -198,7 +203,17 @@ def main() -> int:
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,
                 goods=goods_set,
             )
+        minting_occurrences = minting_transformer.source_occurrences(
+            source_file, minting_multiplier
         )
+        if minting_occurrences:
+            expected_text = minting_transformer.apply_expected_values(
+                "\n".join(expected_body) + "\n",
+                minting_occurrences,
+                source_file.name,
+            )
+            expected_body = expected_text.splitlines()
+        expected_body = normalize_generator_whitespace(expected_body)
         expected_entries = maintenance_entries(expected_body, goods_set)
         generated_active_stockpile_entries = active_stockpile_capacity_entries(
             generated_body_lines
