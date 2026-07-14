@@ -11,7 +11,7 @@
 # - money-side reconciliation uses the confirmed country-scope add_gold surface;
 # - trade_profit / country_income display-accounting remains TECH-01 expected-blocked;
 # - US-20 loss is always removed at destination;
-# - market-level destination loss uses market-scope add_goods_supply with a negative amount;
+# - market-level destination loss uses the central stock helper to apply a negative vanilla market-supply delta;
 # - promoted destination base receipt and country-stock loss use receiver country-stock dispatchers.
 #
 # Four-case support:
@@ -375,18 +375,16 @@ cbp_apply_us20_market_stockpile_loss_reconciliation = {
 	}
 	if = {
 		limit = { exists = scope:cbp_trade_owner_target_market exists = scope:cbp_trade_owner_good }
-		scope:cbp_trade_owner_target_market = {
-			add_goods_supply = {
-				goods = scope:cbp_trade_owner_good
-				amount = scope:gui_cbp_us20_market_goods_supply_delta
-			}
-		}
+		scope:cbp_trade_owner_target_market = { save_temporary_scope_as = cbp_vanilla_market_goods_supply_market }
+		scope:cbp_trade_owner_good = { save_temporary_scope_as = cbp_vanilla_market_goods_supply_good }
+		save_temporary_scope_value_as = { name = cbp_vanilla_market_goods_supply_delta value = scope:gui_cbp_us20_market_goods_supply_delta }
+		cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = yes
 		cbp_note_us20_market_goods_supply_loss_route = yes
 	}
 	else = {
 		cbp_note_us20_market_level_remove_good_blocked_route = yes
 		cbp_note_trade_efficiency_goods_delta_blocked_route = yes
-		debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=missing_destination_market_or_goods_scope required_surface=market_add_goods_supply_negative_amount"
+		debug_log = "ModeU5 US20 GOODS_RECONCILIATION blocked reason=missing_destination_market_or_goods_scope required_surface=central_vanilla_market_goods_supply_delta"
 	}
 }
 

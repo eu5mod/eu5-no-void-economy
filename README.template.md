@@ -2,12 +2,18 @@
 
 This mod is born from the desire to remove Paradox punive Balance Changes introduced since (1.2) and offer a more balanced alternative against, with methodic approach as someone who has balanced game : 
 
- - Method 1 : Set anchor & remove variable prices/speed. 
+ - Method 1 : Set anchor & remove variable prices/speed to set baseline.
     - Example : Scaling RGO prices
     - Example : Scaling Consumption
+    - Example : Scaling Maintenance Cost
  - Method 2 : Set methodology **each candidate modification**  is attributed a set of "side effect" ahead
     - Example : If my represent 40% of wealth for equilibrium => Average controll will tend to 40% or more
     - Example : If consomption depend of good availability, it will **slowly** converge to absorbe production
+    - Example : If the RGO production is increased by 10%
+      - Traditional economy is Improved vs Capital economy, Land vs Naval, ect...
+      - RGO Income is improved vs Production Income vs Trade Income
+      - Noble, Peasant & Crown Income Increase
+      - ...
 
 In the making the mod has deepened few **Optional** mechanics : 
  - Optional mechanic : Trade Loop Fix
@@ -43,8 +49,9 @@ In the making the mod has deepened few **Optional** mechanics :
 <summary><strong> ✅ Improved anti snowballing solutions</strong> (click for detail) : Sliders tuned for optimal average control at 50%</summary>
 Anti snowballing mesures introduced by PDX are cancelled & substituted in order to facilitate future balance. </br>
  1. ✅ RGO prices are stable & therefore facilitate balancing work as they provide a <strong>Fixed</strong> point of reference for Traditional Economy. </br>
- 2. ✅ Economic Base redefinition  (Huge increase)</br>
- 3. ✅ Production is increased by <strong>5%</strong> to compensate for Economic Base redefinition</br>
+ 2. ✅ Building Maintenance is stable over time (Against +10%/ Hundred year in 1.3)</br>
+ 3. ✅ Economic Base redefinition (Huge increase)</br>
+ 4. ✅ Production is increased by <strong>5%</strong> to compensate for Economic Base redefinition</br>
 </details>
 
 <details>
@@ -61,6 +68,7 @@ The only way to get consuming behaviour aligned with production, is to align con
 <details>
 <summary><strong> ✅ Minor balance tweeks</strong> (click for detail)</summary>
  1. ✅ Reduce Local Burgher Power given by Marketplace to avoid a situaton where new Marketplace reduce Trade Income</br>
+ 2. ✅ Remove Crown participation in Building Maintenance</br>
  2. ✅ Increasex location specialisation bonus (1.5% production bonus per building level is 1.5% instead of 1%) </br>
 </details>
 

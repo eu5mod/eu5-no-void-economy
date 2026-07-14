@@ -14,6 +14,15 @@ goods=("${cbp_goods[@]}")
 
 mkdir -p "$(dirname "$output")" "$(dirname "$modifiers_output")" "$(dirname "$modifiers_localization_output")"
 
+format_good_label() {
+	printf '%s\n' "${1//_/ }" | awk '{
+		for (i = 1; i <= NF; i++) {
+			$i = toupper(substr($i, 1, 1)) substr($i, 2)
+		}
+		print
+	}'
+}
+
 postprocess_stock_goods_output() {
 	local generated_path="$1"
 
@@ -574,8 +583,13 @@ postprocess_stock_goods_output "$output"
 	printf '%s\n' 'l_english:'
 	for good in "${goods[@]}"; do
 		key="cbp_${good}_production_penalty_modifier"
-		label="${good//_/ }"
-		printf ' %s:0 "ModeU5 %s Production Penalty"\n' "$key" "$label"
-		printf ' %s_desc:0 "Production output adjustment applied by ModeU5 when stock capacity is saturated."\n' "$key"
+		label="$(format_good_label "$good")"
+		name="(CBP) ${label} in overproduction in Market"
+		desc="Production output adjustment applied by CBP when ${label} is overproduced in the current market."
+		printf ' %s:0 "%s"\n' "$key" "$name"
+		printf ' STATIC_MODIFIER_%s:0 "%s"\n' "$key" "$name"
+		printf ' STATIC_MODIFIER_NAME_%s:0 "%s"\n' "$key" "$name"
+		printf ' %s_desc:0 "%s"\n' "$key" "$desc"
+		printf ' STATIC_MODIFIER_DESC_%s:0 "%s"\n' "$key" "$desc"
 	done
 } > "$modifiers_localization_output"

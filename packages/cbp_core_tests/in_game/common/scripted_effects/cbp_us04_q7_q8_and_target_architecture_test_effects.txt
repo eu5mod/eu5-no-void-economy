@@ -164,7 +164,7 @@ cbp_us04_clear_books_stock_in_market = {
 		every_in_global_list = {
 			variable = cbp_countries_present_in_market
 			save_temporary_scope_as = cbp_us04_clear_country
-			cbp_remove_stock = { country = scope:cbp_us04_clear_country market = scope:cbp_us04_clear_market good = books quantity = 1000000 reason = debug_test }
+			cbp_remove_stock = { country = scope:cbp_us04_clear_country market = scope:cbp_us04_clear_market good = books quantity = 1000000 reason = debug_test only_remove_at_country_level = yes }
 		}
 	}
 }
@@ -202,7 +202,7 @@ cbp_debug_run_us04_observed_current_target_architecture_test = {
 
 		cbp_us04_set_current_consumption_target_books = { country = c:FRA market = scope:cbp_us04_observed_target_market value = scope:test_cbp_us04_arch_target_initial }
 		cbp_us04_clear_books_stock_in_market = { market = scope:cbp_us04_observed_target_market }
-		cbp_add_stock = { country = c:FRA market = scope:cbp_us04_observed_target_market good = books quantity = scope:test_cbp_us04_arch_target_initial capacity_policy = allow_over_capacity }
+		cbp_add_stock = { country = c:FRA market = scope:cbp_us04_observed_target_market good = books quantity = scope:test_cbp_us04_arch_target_initial capacity_policy = allow_over_capacity only_add_at_country_level = yes }
 		cbp_us04_resolve_current_consumption_target_books = { country = c:FRA market = scope:cbp_us04_observed_target_market }
 		save_temporary_scope_value_as = { name = test_cbp_us04_arch_consumed_satisfied value = scope:cbp_satisfied_quantity }
 		save_temporary_scope_value_as = { name = test_cbp_us04_arch_consumed_unsatisfied value = scope:cbp_unsatisfied_quantity }

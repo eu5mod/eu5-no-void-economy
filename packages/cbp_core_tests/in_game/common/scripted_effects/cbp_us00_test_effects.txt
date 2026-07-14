@@ -187,6 +187,7 @@ cbp_us00_debug_run_controlled_e2e_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_add_stock = {
 			country = c:FRA
@@ -194,6 +195,7 @@ cbp_us00_debug_run_controlled_e2e_test = {
 			good = wheat
 			quantity = 100
 			capacity_policy = enforce
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = test_cbp_us00_test_actual_added
@@ -347,6 +349,7 @@ cbp_us00_debug_run_controlled_e2e_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_clear_us00_record = {
 			country = c:FRA
@@ -380,6 +383,7 @@ cbp_us00_debug_run_monthly_runtime_test = {
 			good = wheat
 			quantity = 1000000
 			reason = debug_test
+			only_remove_at_country_level = yes
 		}
 		cbp_debug_replace_country_wheat_capacity = {
 			country = c:FRA
