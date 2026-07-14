@@ -230,8 +230,7 @@ the same vanilla files:
 
 - US-09 output and trade-capacity compensation;
 - US-09 trade-capacity compensation can use an independent
-  `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT`; if unset, it follows
-  `MODEU5_US09_BONUS_PERCENT`;
+  `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT`; if unset, it defaults to `15`;
 - US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5`;
 - US-08/US-05.3 building maintenance quantities multiplied by `0.7`;
 - US-08/US-05.3 marketplace and other `trade_category` building maintenance
@@ -266,7 +265,7 @@ against the local vanilla source:
 python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
-  --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-${MODEU5_US09_BONUS_PERCENT:-10}}" \
+  --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
   --maintenance-multiplier 0.7 \
   --trade-building-maintenance-multiplier 0.5
 ```

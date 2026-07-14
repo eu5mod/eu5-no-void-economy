@@ -58,7 +58,7 @@ Probe solution:
 ```txt
 Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
 Increase each eligible `output =` value by configurable `X%`.
-Increase each eligible `local_merchant_capacity` and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the same `X%`. `local_trades_per_burgher` is intentionally not increased by US-09.
+Increase each eligible `local_merchant_capacity` and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the independent default `15%`. `local_trades_per_burgher` is intentionally not increased by US-09.
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
 Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.7`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
@@ -162,7 +162,7 @@ Related US: US-00.3, stock-aware production pipeline
 ## Acceptance criteria
 
 - [ ] Generated package files increase every targeted `output =` value by the configured `X%`.
-- [ ] Generated package files increase every targeted `local_merchant_capacity` and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to `X%` when no independent value is configured, while leaving `local_trades_per_burgher` unchanged.
+- [ ] Generated package files increase every targeted `local_merchant_capacity` and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to the independent default `15%` when no value is configured, while leaving `local_trades_per_burgher` unchanged.
 - [ ] The generated exact-path `trade_buildings.txt` file composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
 - [ ] Generated package files divide every building-maintenance good quantity by exactly `2`.
 - [ ] Generated package files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.

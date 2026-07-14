@@ -221,7 +221,7 @@ us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/s
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
 us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
 us09_market_stockpile_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_market_stockpile_capacity_effects.txt"
-us09_trade_capacity_percent="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-${MODEU5_US09_BONUS_PERCENT:-10}}"
+us09_trade_capacity_percent="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}"
 us09_trade_capacity_multiplier="$(format_multiplier_from_percent "$us09_trade_capacity_percent")"
 us09_trade_capacity_multiplier_pattern="${us09_trade_capacity_multiplier//./\\.}"
 require_file "$us09_prices_file"
