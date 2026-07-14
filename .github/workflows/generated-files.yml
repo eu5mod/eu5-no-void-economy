@@ -113,6 +113,7 @@ jobs:
 
           cat > "$fixture_common/building_types/trade_buildings.txt" <<'EOF'
           marketplace = {
+              category = trade_category
               unique_production_methods = {
                   marketplace_maintenance = {
                       cloth = 0.06
