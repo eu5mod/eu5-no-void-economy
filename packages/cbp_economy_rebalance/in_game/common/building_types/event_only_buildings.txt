@@ -1158,7 +1158,7 @@ wisselbank = {
 	}
 
 	capital_country_modifier = {
-		minting_income_factor = 0.10
+		minting_income_factor = 0.2
 		minting_inflation_threshold = 0.02
 	}
 
@@ -3781,7 +3781,7 @@ usa_national_mint = {
 	build_time = generic_town_build_time
 
 	capital_country_modifier = {
-		minting_income_factor = 0.2
+		minting_income_factor = 0.4
 	}
 
 	unique_production_methods = {
