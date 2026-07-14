@@ -1,0 +1,81 @@
+name: US-177 Reference Generation
+
+on:
+  push:
+    branches:
+      - agent/us177-double-food-minting
+
+permissions:
+  contents: write
+
+jobs:
+  generate-reference-overrides:
+    if: ${{ !contains(github.event.head_commit.message, '[us177-generated]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out implementation branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/us177-double-food-minting
+          fetch-depth: 0
+
+      - name: Fetch pinned vanilla reference
+        run: |
+          set -euo pipefail
+          reference_checkout="$RUNNER_TEMP/eu5_reference"
+          git init "$reference_checkout"
+          git -C "$reference_checkout" remote add origin https://github.com/razorstorm/Europa-Universalis-V.git
+          git -C "$reference_checkout" fetch --depth=1 origin 045b50a8263b6c3a9dba098751028aa884b89cd5
+          git -C "$reference_checkout" checkout --detach FETCH_HEAD
+          printf 'EU5_REFERENCE_GAME_ROOT=%s\n' "$reference_checkout/game" >> "$GITHUB_ENV"
+
+      - name: Generate tracked US-177 exact-path overrides
+        run: |
+          set -euo pipefail
+          python3 tools/generate_us177_minting_overrides.py \
+            --game-root "$EU5_REFERENCE_GAME_ROOT" \
+            --package-root packages/cbp_economy_rebalance \
+            --multiplier 2
+          python3 tools/postprocess_us177_minting_building_overrides.py \
+            --common-dir "$EU5_REFERENCE_GAME_ROOT/in_game/common" \
+            --package-common-dir packages/cbp_economy_rebalance/in_game/common \
+            --multiplier 2
+          python3 tools/validate_us177_food_minting_overrides.py \
+            --game-root "$EU5_REFERENCE_GAME_ROOT" \
+            --package-root packages/cbp_economy_rebalance
+
+      - name: Commit generated override set
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+          git add \
+            packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json \
+            packages/cbp_economy_rebalance/cbp_generated/us177_minting_building_manifest.json
+
+          python3 - <<'PY' > "$RUNNER_TEMP/us177_paths.txt"
+          import json
+          from pathlib import Path
+
+          root = Path("packages/cbp_economy_rebalance/cbp_generated")
+          for manifest_name in (
+              "us177_minting_income_manifest.json",
+              "us177_minting_building_manifest.json",
+          ):
+              payload = json.loads((root / manifest_name).read_text(encoding="utf-8"))
+              for item in payload["files"]:
+                  print(Path("packages/cbp_economy_rebalance") / item["path"])
+          PY
+
+          while IFS= read -r generated_path; do
+            git add "$generated_path"
+          done < "$RUNNER_TEMP/us177_paths.txt"
+
+          if git diff --cached --quiet; then
+            echo 'US-177 generated overrides are already current.'
+            exit 0
+          fi
+
+          git commit -m 'US-177: commit generated minting overrides [us177-generated]'
+          git push origin HEAD:agent/us177-double-food-minting
