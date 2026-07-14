@@ -186,6 +186,14 @@ jobs:
           }
           EOF
 
+          cat > "$fixture_common/building_types/event_only_buildings.txt" <<'EOF'
+          test_event_market_building = {
+              market_center_modifier = {
+                  maximum_stockpile_capacity = 345
+              }
+          }
+          EOF
+
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
             --trade-capacity-percent 15 \
@@ -211,6 +219,10 @@ jobs:
           test "$(grep -c 'always = no' "$fixture_package/building_types/market_buildings.txt")" -eq 2
           grep -q 'local_merchant_capacity = 0.115' "$fixture_package/building_types/market_buildings.txt"
           grep -q 'local_trades_per_burgher = 0.1' "$fixture_package/building_types/market_buildings.txt"
+          grep -q '# maximum_stockpile_capacity = 200' "$fixture_package/building_types/market_buildings.txt"
+          grep -q '# maximum_stockpile_capacity = 345' "$fixture_package/building_types/event_only_buildings.txt"
+          test "$(grep -c '^[[:space:]]*maximum_stockpile_capacity[[:space:]]*=' "$fixture_package/building_types/market_buildings.txt")" -eq 0
+          test "$(grep -c '^[[:space:]]*maximum_stockpile_capacity[[:space:]]*=' "$fixture_package/building_types/event_only_buildings.txt")" -eq 0
           grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"

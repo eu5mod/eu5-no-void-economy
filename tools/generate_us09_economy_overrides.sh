@@ -96,7 +96,7 @@ has_economy_building_target_field() {
 		# Keep legacy exact-path building overrides materialized even when they
 		# only contain the old trade-count field. The transformer intentionally
 		# leaves local_trades_per_burgher unchanged.
-		/^[[:space:]]*(output|local_trades_per_burgher|local_merchant_capacity|merchant_capacity_from_building)[[:space:]]*=/ {
+		/^[[:space:]]*(output|local_trades_per_burgher|local_merchant_capacity|merchant_capacity_from_building|maximum_stockpile_capacity)[[:space:]]*=/ {
 			found = 1
 		}
 		/^[[:space:]]*category[[:space:]]*=[[:space:]]*building_maintenance([[:space:]]|#|$)/ {

@@ -236,7 +236,7 @@ market_warehouse = {
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 
@@ -287,7 +287,7 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 	construction_demand = funduq_building_construction

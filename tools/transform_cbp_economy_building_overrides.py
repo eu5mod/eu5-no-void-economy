@@ -16,6 +16,12 @@ US09_TRADE_CAPACITY_FIELDS = {
     "local_merchant_capacity",
     "merchant_capacity_from_building",
 }
+STOCKPILE_CAPACITY_FIELD = "maximum_stockpile_capacity"
+COMMENTED_STOCKPILE_CAPACITY = re.compile(
+    r"^\s*#\s*maximum_stockpile_capacity\s*=\s*"
+    r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))"
+    r"(?:\s+#.*)?$"
+)
 MARKETPLACE_BUILDINGS = {
     "marketplace",
     "merchants_quarters",
@@ -266,6 +272,13 @@ def transform_lines(
         value = float(match.group(3))
         new_value: float | None = None
 
+        if key == STOCKPILE_CAPACITY_FIELD:
+            indentation = line[: len(line) - len(line.lstrip())]
+            transformed.append(
+                f"{indentation}# {STOCKPILE_CAPACITY_FIELD} = {match.group(3)}{match.group(4)}"
+            )
+            continue
+
         maintenance_range = maintenance_range_for_line(index, maintenance_ranges)
         if maintenance_range is not None and key in goods:
             multiplier = maintenance_multiplier
@@ -297,10 +310,8 @@ def transform_lines(
         if source_basename == "trade_buildings.txt" and key == "local_burghers_estate_power":
             new_value = value * us07_trade_burghers_estate_power_multiplier
 
-        if new_value is None:
-            transformed.append(line)
-        else:
-            transformed.append(f"{match.group(1)}{format_decimal(new_value)}{match.group(4)}")
+        rendered_value = match.group(3) if new_value is None else format_decimal(new_value)
+        transformed.append(f"{match.group(1)}{rendered_value}{match.group(4)}")
 
     return disable_market_warehouse(transformed, source_basename)
 

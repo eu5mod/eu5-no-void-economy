@@ -90,6 +90,25 @@ def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, fl
     return entries
 
 
+def active_stockpile_capacity_entries(lines: list[str]) -> list[float]:
+    entries: list[float] = []
+    for line in lines:
+        match = transformer.ASSIGNMENT.match(line)
+        if not match or match.group(2) != transformer.STOCKPILE_CAPACITY_FIELD:
+            continue
+        entries.append(float(match.group(3)))
+    return entries
+
+
+def commented_stockpile_capacity_entries(lines: list[str]) -> list[float]:
+    entries: list[float] = []
+    for line in lines:
+        match = transformer.COMMENTED_STOCKPILE_CAPACITY.match(line)
+        if match:
+            entries.append(float(match.group(1)))
+    return entries
+
+
 def compare_float(actual: float, expected: float) -> bool:
     return math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-9)
 
@@ -141,6 +160,7 @@ def main() -> int:
     source_files_with_maintenance = 0
     generated_files_checked = 0
     maintenance_entries_checked = 0
+    stockpile_capacity_entries_checked = 0
 
     for source_file in sorted(source_dir.glob("*.txt")):
         if source_file.name == "readme.txt":
@@ -148,13 +168,16 @@ def main() -> int:
 
         source_lines = source_file.read_text(encoding="utf-8-sig").splitlines()
         source_entries = maintenance_entries(source_lines, goods_set)
+        source_stockpile_entries = active_stockpile_capacity_entries(source_lines)
         generated_file = output_dir / source_file.name
 
         if source_entries:
             source_files_with_maintenance += 1
+
+        if source_entries or source_stockpile_entries:
             if not generated_file.is_file():
                 failures.append(
-                    f"Missing generated override for maintenance source file: {source_file.name}"
+                    f"Missing generated override for targeted source file: {source_file.name}"
                 )
                 continue
 
@@ -177,6 +200,27 @@ def main() -> int:
             )
         )
         expected_entries = maintenance_entries(expected_body, goods_set)
+        generated_active_stockpile_entries = active_stockpile_capacity_entries(
+            generated_body_lines
+        )
+        generated_stockpile_entries = commented_stockpile_capacity_entries(
+            generated_body_lines
+        )
+
+        if source_stockpile_entries:
+            if generated_active_stockpile_entries:
+                failures.append(
+                    f"{source_file.name}: maximum_stockpile_capacity must be commented out; "
+                    f"active generated values={generated_active_stockpile_entries}"
+                )
+            elif generated_stockpile_entries != source_stockpile_entries:
+                failures.append(
+                    f"{source_file.name}: commented maximum_stockpile_capacity values must "
+                    f"match vanilla; vanilla={source_stockpile_entries} "
+                    f"generated={generated_stockpile_entries}"
+                )
+            else:
+                stockpile_capacity_entries_checked += len(generated_stockpile_entries)
 
         if source_entries:
             if len(expected_entries) != len(generated_entries):
@@ -230,7 +274,8 @@ def main() -> int:
         "CBP US-08 building maintenance validation passed: "
         f"{source_files_with_maintenance} maintenance source files, "
         f"{generated_files_checked} generated building files, "
-        f"{maintenance_entries_checked} maintenance entries checked."
+        f"{maintenance_entries_checked} maintenance entries checked, "
+        f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked."
     )
     return 0
 

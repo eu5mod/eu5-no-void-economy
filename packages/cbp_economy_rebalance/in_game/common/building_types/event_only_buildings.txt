@@ -2470,7 +2470,7 @@ husuni_kubwa = {
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 	possible_production_methods = {
