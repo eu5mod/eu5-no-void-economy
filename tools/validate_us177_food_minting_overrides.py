@@ -143,6 +143,17 @@ def main() -> int:
     run_checked(
         [
             sys.executable,
+            str(repo_root / "tools/generate_us177_food_goods_manifest.py"),
+            "--game-root",
+            str(game_root),
+            "--package-root",
+            str(package_root),
+            "--check",
+        ]
+    )
+    run_checked(
+        [
+            sys.executable,
             str(repo_root / "tools/generate_us177_minting_overrides.py"),
             "--game-root",
             str(game_root),
@@ -168,8 +179,9 @@ def main() -> int:
     )
 
     print(
-        "US-177 validation passed: FOOD_PRICE x2 and exact minting identity "
-        "1 + 1 + 2*sum(vanilla modifiers) = 2*(1 + sum(vanilla modifiers))."
+        "US-177 validation passed: authoritative food-good classification, FOOD_PRICE x2, "
+        "and exact minting identity 1 + 1 + 2*sum(vanilla modifiers) = "
+        "2*(1 + sum(vanilla modifiers))."
     )
     return 0
 
