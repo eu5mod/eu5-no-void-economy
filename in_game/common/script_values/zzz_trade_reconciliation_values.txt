@@ -60,7 +60,7 @@ cbp_trade_owner_merchant_maintenance_efficiency = {
 cbp_buying_selling_efficiency_clamped = {
 	value = cbp_trade_owner_buying_efficiency
 	add = cbp_trade_owner_selling_efficiency
-	max = 0.5
+	max = 1
 }
 
 # The following route-money values still fail closed until route-safe price,
