@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/market_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 entrepot = {
 	is_foreign = no
@@ -28,7 +30,6 @@ entrepot = {
 	}
 	modifier = {
 		local_merchant_capacity = 5.5
-
 	}
 
 	market_center_modifier = {
@@ -68,7 +69,6 @@ trading_hub = {
 	}
 	modifier = {
 		local_merchant_capacity = 5.5
-
 	}
 
 	market_center_modifier = {
@@ -108,7 +108,6 @@ customs_house = {
 	}
 	modifier = {
 		local_merchant_capacity = 5.5
-
 	}
 
 	market_center_modifier = {
@@ -148,7 +147,6 @@ stock_exchange = {
 	}
 	modifier = {
 		local_merchant_capacity = 5.5
-
 	}
 
 	market_center_modifier = {
@@ -188,7 +186,6 @@ clearing_house = {
 	}
 	modifier = {
 		local_merchant_capacity = 5.5
-
 	}
 
 	market_center_modifier = {
@@ -229,10 +226,8 @@ market_warehouse = {
 
 	modifier = {
 		local_merchant_capacity = 0.11
-
 		local_merchant_power = 0.1
 		local_trades_per_burgher = 0.11
-
 	}
 
 	market_center_modifier = {
@@ -283,9 +278,7 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 	modifier = {
 		local_merchant_power = 0.5
 		local_merchant_capacity = 1.1
-
 		local_trades_per_burgher = 0.11
-
 	}
 
 	market_center_modifier = {
@@ -296,10 +289,10 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 
 	unique_production_methods = {
 		funduq_maintenance = {
-			books = 0.05
-			paper = 0.2
-			jewelry = 0.01
-			fine_cloth = 0.01
+			books = 0.025
+			paper = 0.1
+			jewelry = 0.005
+			fine_cloth = 0.005
 			category = building_maintenance
 		}
 

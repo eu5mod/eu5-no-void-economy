@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_dyes.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 dyes_guild = {
 	is_foreign = no
@@ -28,7 +30,6 @@ dyes_guild = {
 			produced = dyes
 			output = 0.22
 
-
 			category = guild_input
 		}
 		alum_dyes_guild_maintenance = {
@@ -38,7 +39,6 @@ dyes_guild = {
 
 			produced = dyes
 			output = 0.33
-
 
 			debug_max_profit = 0.4		#better one
 			category = guild_input
@@ -78,7 +78,6 @@ dyes_workshop = {
 			produced = dyes
 			output = 0.44
 
-
 			debug_max_profit = 0.6
 			category = workshop_input
 		}
@@ -114,7 +113,6 @@ dyesworks = {
 
 			produced = dyes
 			output = 2.2
-
 
 			debug_max_profit = 0.75
 
@@ -152,7 +150,6 @@ dyes_mill = {
 
 			produced = dyes
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 

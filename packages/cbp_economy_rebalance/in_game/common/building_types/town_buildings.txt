@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/town_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 temple = {
 	is_foreign = no
@@ -61,8 +63,8 @@ construction_center = {
 
 	unique_production_methods = {
 		construction_center_maintenance = {
-			masonry = 0.2
-			tools = 0.25
+			masonry = 0.14
+			tools = 0.175
 			category = building_maintenance
 		}
 	}
@@ -97,10 +99,10 @@ counting_house = {
 
 	unique_production_methods = {
 		counting_house_maintenance = {
-			paper = 0.2
-			books = 0.05
-			goods_gold = 0.05
-			tools = 0.1
+			paper = 0.14
+			books = 0.035
+			goods_gold = 0.035
+			tools = 0.07
 			category = building_maintenance
 		}
 	}
@@ -168,7 +170,7 @@ granary = {
 
 	unique_production_methods = {
 		granary_maintenance = {
-			masonry = 0.2
+			masonry = 0.14
 			category = building_maintenance
 		}
 	}
@@ -221,12 +223,12 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 
 	unique_production_methods = {
 		fortress_granary_maintenance = {
-			wheat = 0.1
-			masonry = 0.2
-			weaponry = 0.05
-			cloth = 0.05
-			copper = 0.025
-			tin = 0.01
+			wheat = 0.07
+			masonry = 0.14
+			weaponry = 0.035
+			cloth = 0.035
+			copper = 0.0175
+			tin = 0.007
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:wheat
@@ -341,10 +343,10 @@ wharf = {
 
 	unique_production_methods = {
 		wharf_maintenance = {
-			tar = 0.1
-			naval_supplies = 0.05
-			tools = 0.1
-			lumber = 0.1
+			tar = 0.07
+			naval_supplies = 0.035
+			tools = 0.07
+			lumber = 0.07
 			category = building_maintenance
 		}
 
@@ -358,7 +360,6 @@ wharf = {
 	modifier = {
 		local_sailors = 0.001
 		local_merchant_capacity = 0.11
-
 		can_build_ships_in_this_location = yes
 		harbor_suitability = 0.1
 		local_repair_speed = 0.01
@@ -415,9 +416,9 @@ lazaretto = {
 
 	unique_production_methods = {
 		lazaretto_maintenance = {
-			fiber_crops = 0.15
-			books = 0.05
-			medicaments = 0.03
+			fiber_crops = 0.105
+			books = 0.035
+			medicaments = 0.021
 			category = building_maintenance
 		}
 	}
@@ -468,8 +469,8 @@ pest_house = {
 
 	unique_production_methods = {
 		pest_house_maintenance = {
-			fiber_crops = 0.10
-			incense = 0.10
+			fiber_crops = 0.07
+			incense = 0.07
 			category = building_maintenance
 		}
 	}
@@ -556,14 +557,13 @@ slave_market = {
 	unique_production_methods = {
 
 		slave_market_maintenance = {
-			leather = 0.5
-			tools = 0.45
-			weaponry = 0.4
-			paper = 0.35
+			leather = 0.35
+			tools = 0.315
+			weaponry = 0.28
+			paper = 0.245
 
 			produced = slaves_goods
 			output = 2.2
-
 
 			category = building_maintenance
 		}

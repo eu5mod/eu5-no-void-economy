@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/production_beer.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 brewery = {
 	is_foreign = no
@@ -31,7 +33,6 @@ brewery = {
 			produced = beer
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -42,7 +43,6 @@ brewery = {
 
 			produced = beer
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -55,7 +55,6 @@ brewery = {
 			produced = beer
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -65,7 +64,6 @@ brewery = {
 
 			produced = beer
 			output = 1.1
-
 			category = guild_input
 
 		}
@@ -77,7 +75,6 @@ brewery = {
 
 			produced = beer
 			output = 1.32
-
 
 			category = guild_input
 			debug_max_profit = 0.4
@@ -92,7 +89,6 @@ brewery = {
 			produced = beer
 			output = 1.1
 
-
 			category = guild_input
 		}
 
@@ -103,7 +99,6 @@ brewery = {
 
 			produced = beer
 			output = 1.1
-
 
 			category = guild_input
 		}
@@ -142,7 +137,6 @@ beer_workshop = {
 			produced = beer
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -155,7 +149,6 @@ beer_workshop = {
 
 			produced = beer
 			output = 1.21
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -169,7 +162,6 @@ beer_workshop = {
 			produced = beer
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -181,7 +173,6 @@ beer_workshop = {
 
 			produced = beer
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 			category = workshop_input
@@ -198,7 +189,6 @@ beer_workshop = {
 
 
 
-
 			category = workshop_input
 			debug_max_profit = 0.6
 		}
@@ -212,7 +202,6 @@ beer_workshop = {
 			produced = beer
 			output = 1.21
 
-
 			debug_max_profit = 0.6
 
 			category = workshop_input
@@ -225,7 +214,6 @@ beer_workshop = {
 
 			produced = beer
 			output = 1.21
-
 
 			debug_max_profit = 0.6
 
@@ -270,7 +258,6 @@ brewery_manufactory = {
 			produced = beer
 			output = 2.2
 
-
 			debug_max_profit = 0.75
 
 			category = manufactory_input
@@ -310,7 +297,6 @@ brewery_mill = {
 
 			produced = beer
 			output = 4.4
-
 
 			debug_max_profit = 1.0
 
