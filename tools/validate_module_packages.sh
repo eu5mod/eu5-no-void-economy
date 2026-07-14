@@ -257,6 +257,10 @@ require_match '^[[:space:]]*STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bo
 require_match '^[[:space:]]*building_upkeep_costs = -1\.0$' \
 	packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt \
 	'CBP building upkeep auto modifier must cancel country-paid upkeep through the confirmed building_upkeep_costs modifier type'
+if [[ -e packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_building_upkeep_static_modifiers.txt ]]; then
+	printf '%s\n' 'CBP must not ship cbp_building_upkeep_static_modifiers.txt; its old REPLACE:years_since_game_start target does not exist in static_modifiers.' >&2
+	exit 1
+fi
 if search_quiet 'building_upkeep_multiplier' \
 	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
 	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
