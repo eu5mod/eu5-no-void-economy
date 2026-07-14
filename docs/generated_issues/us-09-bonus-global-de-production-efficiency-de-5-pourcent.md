@@ -57,7 +57,8 @@ Probe solution:
 
 ```txt
 Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
-Increase each eligible `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by a configurable `X%`
+Increase each eligible `output =` value by configurable `X%`.
+Increase each eligible `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the same `X%`.
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
 Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.7`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
@@ -68,6 +69,7 @@ Rationale:
 
 ```txt
 This path changes source output and trade-capacity-like static fields directly when the Economy package is loaded.
+Trade-capacity compensation is independently configurable so local tests can use, for example, output/RGO `+10%` with trade capacity `+15%`.
 It also carries the approved US-07 marketplace estate-power reduction for the same exact-path trade-building file.
 It therefore scales correctly with downstream national or technological production modifiers.
 It matches the intended compensation logic better than a flat additive `global_production_efficiency = +5%`, but it is not currently runtime-safe.
@@ -159,7 +161,8 @@ Related US: US-00.3, stock-aware production pipeline
 
 ## Acceptance criteria
 
-- [ ] Generated package files increase every targeted `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by the configured `X%`.
+- [ ] Generated package files increase every targeted `output =` value by the configured `X%`.
+- [ ] Generated package files increase every targeted `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to `X%` when no independent value is configured.
 - [ ] The generated exact-path `trade_buildings.txt` file composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
 - [ ] Generated package files divide every building-maintenance good quantity by exactly `2`.
 - [ ] Generated package files scale `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, and `expand_rgo_forestry` by `gold x (1 / (1 + X))`.

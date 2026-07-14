@@ -87,6 +87,7 @@ jobs:
 
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --trade-capacity-percent 15 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
             --building-maintenance-multiplier 0.7 \
@@ -103,9 +104,9 @@ jobs:
           grep -q 'output = 11.0' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'wheat = 2.8' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'copper = 1.4' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_trades_per_burgher = 1.15' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'local_merchant_capacity = 2.3' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'merchant_capacity_from_building = 3.45' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
@@ -168,6 +169,7 @@ jobs:
 
           ./tools/generate_us09_economy_overrides.sh \
             --percent 10 \
+            --trade-capacity-percent 15 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
             --building-maintenance-multiplier 0.7 \
@@ -181,8 +183,8 @@ jobs:
           test "$(grep -c 'cloth = 0.03' "$fixture_package/building_types/trade_buildings.txt")" -eq 3
           test "$(grep -c 'paper = 0.025' "$fixture_package/building_types/trade_buildings.txt")" -eq 3
           test "$(grep -c 'beeswax' "$fixture_package/building_types/trade_buildings.txt")" -eq 0
-          grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/trade_buildings.txt"
-          grep -q 'local_merchant_capacity = 1.1' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_trades_per_burgher = 1.15' "$fixture_package/building_types/trade_buildings.txt"
+          grep -q 'local_merchant_capacity = 1.15' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'local_merchant_power = 1' "$fixture_package/building_types/trade_buildings.txt"
           grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"

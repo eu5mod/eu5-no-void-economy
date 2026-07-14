@@ -37,6 +37,7 @@ def strip_generated_header(text: str) -> list[str]:
         "# Do not edit manually.",
         "# Source: ",
         "# Output multiplier: ",
+        "# Trade capacity multiplier: ",
         "# Building maintenance multiplier: ",
         "# Trade-building maintenance multiplier: ",
     )
@@ -104,6 +105,16 @@ def main() -> int:
         default=Path("packages/cbp_economy_rebalance/in_game/common"),
     )
     parser.add_argument("--us09-percent", type=float, default=float(os.environ.get("MODEU5_US09_BONUS_PERCENT", "10")))
+    parser.add_argument(
+        "--trade-capacity-percent",
+        type=float,
+        default=float(
+            os.environ.get(
+                "MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT",
+                os.environ.get("MODEU5_US09_BONUS_PERCENT", "10"),
+            )
+        ),
+    )
     parser.add_argument("--maintenance-multiplier", type=float, default=0.7)
     parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
     args = parser.parse_args()
@@ -123,6 +134,7 @@ def main() -> int:
     goods = parse_goods_registry(repo_root)
     goods_set = set(goods)
     output_multiplier = 1.0 + args.us09_percent / 100.0
+    trade_capacity_multiplier = 1.0 + args.trade_capacity_percent / 100.0
     us07_multiplier = 0.5
 
     failures: list[str] = []
@@ -157,6 +169,7 @@ def main() -> int:
                 source_lines,
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
+                trade_capacity_multiplier=trade_capacity_multiplier,
                 maintenance_multiplier=args.maintenance_multiplier,
                 trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,

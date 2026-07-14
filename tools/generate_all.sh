@@ -54,6 +54,7 @@ else
 		if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 			bash "$repo_root/tools/generate_us09_economy_overrides.sh" \
 				"${MODEU5_US09_BONUS_PERCENT:-5}" \
+				--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-${MODEU5_US09_BONUS_PERCENT:-5}}" \
 				--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 				--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
 				--package-common-dir "$repo_root/packages/cbp_economy_rebalance/in_game/common"

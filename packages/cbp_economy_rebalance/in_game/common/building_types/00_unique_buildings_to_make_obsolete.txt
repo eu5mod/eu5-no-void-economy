@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/00_unique_buildings_to_make_obsolete.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.1 (10%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 

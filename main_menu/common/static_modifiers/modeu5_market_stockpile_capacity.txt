@@ -1,9 +1,0 @@
-modeu5_market_stockpile_capacity = {
-	game_data = {
-		category = location
-	}
-
-	# Applied to market.location with a dynamic size equal to the sum of all
-	# persisted country x market storage-capacity records for that market.
-	maximum_stockpile_capacity = 1
-}

@@ -8,8 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-US09_FIELDS = {
+US09_OUTPUT_FIELDS = {
     "output",
+}
+US09_TRADE_CAPACITY_FIELDS = {
     "local_trades_per_burgher",
     "local_merchant_capacity",
     "merchant_capacity_from_building",
@@ -199,6 +201,7 @@ def transform_lines(
     *,
     source_basename: str,
     output_multiplier: float,
+    trade_capacity_multiplier: float,
     maintenance_multiplier: float,
     trade_building_maintenance_multiplier: float,
     us07_trade_burghers_estate_power_multiplier: float,
@@ -245,8 +248,11 @@ def transform_lines(
                     file=sys.stderr,
                 )
 
-        if key in US09_FIELDS:
+        if key in US09_OUTPUT_FIELDS:
             new_value = value * output_multiplier
+
+        if key in US09_TRADE_CAPACITY_FIELDS:
+            new_value = value * trade_capacity_multiplier
 
         if source_basename == "trade_buildings.txt" and key == "local_burghers_estate_power":
             new_value = value * us07_trade_burghers_estate_power_multiplier
@@ -266,6 +272,7 @@ def main() -> int:
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--source-basename", required=True)
     parser.add_argument("--output-multiplier", required=True, type=float)
+    parser.add_argument("--trade-capacity-multiplier", required=True, type=float)
     parser.add_argument("--maintenance-multiplier", required=True, type=float)
     parser.add_argument("--trade-building-maintenance-multiplier", required=True, type=float)
     parser.add_argument("--us07-trade-burghers-estate-power-multiplier", required=True, type=float)
@@ -283,6 +290,7 @@ def main() -> int:
         lines,
         source_basename=args.source_basename,
         output_multiplier=args.output_multiplier,
+        trade_capacity_multiplier=args.trade_capacity_multiplier,
         maintenance_multiplier=args.maintenance_multiplier,
         trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
         us07_trade_burghers_estate_power_multiplier=(

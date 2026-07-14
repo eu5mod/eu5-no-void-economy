@@ -53,6 +53,14 @@ require_match() {
 	fi
 }
 
+format_multiplier_from_percent() {
+	local percent="$1"
+	awk -v percent="$percent" 'BEGIN {
+		value = 1 + (percent / 100)
+		printf "%.10f", value
+	}' | sed -e 's/0*$//' -e 's/\.$/.0/'
+}
+
 tracked_generated_files="$(git ls-files | grep -E '(^|/)cbp_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
 if [[ -n "$tracked_generated_files" ]]; then
 	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
@@ -210,10 +218,17 @@ us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/00_hardco
 us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
 us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
+us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
+us09_market_stockpile_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_market_stockpile_capacity_effects.txt"
+us09_trade_capacity_percent="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-${MODEU5_US09_BONUS_PERCENT:-10}}"
+us09_trade_capacity_multiplier="$(format_multiplier_from_percent "$us09_trade_capacity_percent")"
+us09_trade_capacity_multiplier_pattern="${us09_trade_capacity_multiplier//./\\.}"
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
 require_file "$us09_rgo_static_modifier_file"
 require_file "$us09_rgo_size_effects_file"
+require_file "$us09_market_stockpile_static_modifier_file"
+require_file "$us09_market_stockpile_effects_file"
 require_match '^# Source: <EU5_GAME_COMMON_DIR>/prices/00_hardcoded\.txt$' \
 	"$us09_prices_file" \
 	'US-09 RGO price override must preserve the vanilla prices file path'
@@ -238,12 +253,15 @@ require_match '^[[:space:]]+paper = 0\.025$' \
 require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must compose the approved US-07 local_burghers_estate_power reduction'
-require_match '^[[:space:]]+local_trades_per_burgher = 1\.1$' \
+require_match "^# Trade capacity multiplier: ${us09_trade_capacity_multiplier_pattern} \\(${us09_trade_capacity_percent}%\\)$" \
 	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the +10% local_trades_per_burgher compensation'
-require_match '^[[:space:]]+local_merchant_capacity = 1\.1$' \
+	'US-09 trade-building override must document the configured trade-capacity multiplier'
+require_match "^[[:space:]]+local_trades_per_burgher = ${us09_trade_capacity_multiplier_pattern}$" \
 	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the +10% local_merchant_capacity compensation'
+	'US-09 trade-building override must apply the configured local_trades_per_burgher compensation'
+require_match "^[[:space:]]+local_merchant_capacity = ${us09_trade_capacity_multiplier_pattern}$" \
+	"$us09_trade_buildings_file" \
+	'US-09 trade-building override must apply the configured local_merchant_capacity compensation'
 require_match '^[[:space:]]+local_max_rgo_size = 1$' \
 	"$us09_rgo_static_modifier_file" \
 	'US-09 base RGO size static modifier must be scalable through add_location_modifier size'
@@ -253,6 +271,12 @@ require_match 'cbp_apply_us09_base_rgo_size_bonus = yes' \
 require_match 'cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes' \
 	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
 	'US-09 base RGO size bonus must be refreshed by the Economy package monthly country pulse'
+require_match 'cbp_refresh_all_market_center_stockpile_capacity = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
+	'CBP market stockpile capacity must be applied by the Economy package on game start/load'
+require_match 'cbp_refresh_market_center_stockpile_capacity_for_current_country = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
+	'CBP market stockpile capacity must be refreshed by the Economy package monthly country pulse'
 require_match 'every_location_in_the_world = \{' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size initial effect must iterate every world location through the confirmed iterator'
@@ -271,12 +295,25 @@ require_match '^[[:space:]]*multiply = 0\.000025$' \
 require_match '^[[:space:]]*multiply = 0\.025$' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must document the display-equivalent population formula'
+require_match '^[[:space:]]*maximum_stockpile_capacity = 1$' \
+	"$us09_market_stockpile_static_modifier_file" \
+	'CBP market stockpile capacity static modifier must expose unit stockpile capacity'
+require_match 'scope:cbp_market\.location = \{' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity must apply to the market-center location'
+require_match '^[[:space:]]*modifier = cbp_market_stockpile_capacity$' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity effect must apply the CBP static modifier'
+require_match 'every_market_center_in_country = \{' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity monthly refresh must iterate market centers from country scope'
 
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_types" ]]; then
 	python3 tools/validate_us08_building_maintenance_overrides.py \
 		--common-dir "$EU5_GAME_COMMON_DIR" \
 		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
 		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
+		--trade-capacity-percent "$us09_trade_capacity_percent" \
 		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
 		--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 fi
