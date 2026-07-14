@@ -31,6 +31,32 @@ jobs:
             done < <(find packages/cbp_economy_rebalance/in_game/common -type f -name '*.txt' -print0)
           fi
 
+          # US-177 exact-path files intentionally preserve vanilla script objects,
+          # including vanilla-owned variable names. Remove every path owned by the
+          # generated manifests before applying the CBP-authored-variable contract.
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          package_root = Path('packages/cbp_economy_rebalance')
+          manifest_root = package_root / 'cbp_generated'
+          for manifest_name in (
+              'us177_minting_income_manifest.json',
+              'us177_minting_building_manifest.json',
+          ):
+              manifest = manifest_root / manifest_name
+              if not manifest.is_file():
+                  continue
+              payload = json.loads(manifest.read_text(encoding='utf-8'))
+              for item in payload.get('files', []):
+                  relative = item.get('path')
+                  if not isinstance(relative, str):
+                      continue
+                  generated = package_root / relative
+                  if generated.is_file():
+                      generated.unlink()
+          PY
+
       - name: Validate CBP variable-prefix contract
         id: validate
         shell: bash
