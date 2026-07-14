@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/rural_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 bailiff = {
 	is_foreign = no
@@ -33,10 +34,10 @@ bailiff = {
 
 	unique_production_methods = {
 		bailiff_input = {
-			paper = 0.05
-			tools = 0.075
-			weaponry = 0.125
-			stone = 0.05
+			paper = 0.07
+			tools = 0.105
+			weaponry = 0.175
+			stone = 0.07
 			category = building_maintenance
 		}
 	}
@@ -77,8 +78,8 @@ fishing_village = {
 			produced = fish
 			output = 0.55
 
-			salt = 0.03
-			tools = 0.005
+			salt = 0.042
+			tools = 0.007
 
 			debug_max_profit = 1.0
 
@@ -90,8 +91,8 @@ fishing_village = {
 			produced = fish
 			output = 0.55
 
-			salt = 0.0225
-			ivory = 0.01
+			salt = 0.0315
+			ivory = 0.014
 
 			debug_max_profit = 1.0
 
@@ -154,8 +155,8 @@ farming_village = {
 
 	unique_production_methods = {
 		farming_village_maintenance = {
-			tools = 0.0125
-			clay = 0.5
+			tools = 0.0175
+			clay = 0.7
 
 			output = 0.55
 
@@ -214,9 +215,9 @@ forest_village = {
 
 			output = 0.22
 
-			sand = 0.025
-			tar = 0.015
-			wild_game = 0.2
+			sand = 0.035
+			tar = 0.021
+			wild_game = 0.28
 
 
 			category = building_maintenance
@@ -226,7 +227,7 @@ forest_village = {
 
 			output = 0.22
 
-			weaponry = 0.025
+			weaponry = 0.035
 
 
 			debug_max_profit = 0.4
@@ -555,9 +556,9 @@ windmill = {
 	unique_production_methods = {
 
 		windmill_maintenance = {
-			tools  = 0.0125
-			lumber = 0.025
-			cloth = 0.025
+			tools  = 0.0175
+			lumber = 0.035
+			cloth = 0.035
 			category = building_maintenance
 		}
 	}
@@ -601,9 +602,9 @@ local_smelters = {
 	unique_production_methods = {
 
 		local_smelters_maintenance = {
-			tools  = 0.0125
-			lumber = 0.025
-			coal = 0.025
+			tools  = 0.0175
+			lumber = 0.035
+			coal = 0.035
 			category = building_maintenance
 		}
 	}
@@ -649,7 +650,7 @@ sawmill = {
 	unique_production_methods = {
 
 		sawmill_maintenance = {
-			tools  = 0.025
+			tools  = 0.035
 			category = building_maintenance
 		}
 	}
@@ -692,8 +693,8 @@ sheep_farms = {
 			produced = wool
 			output = 0.55
 
-			lumber = 0.25
-			tools = 0.05
+			lumber = 0.35
+			tools = 0.07
 			category = building_maintenance
 		}
 	}

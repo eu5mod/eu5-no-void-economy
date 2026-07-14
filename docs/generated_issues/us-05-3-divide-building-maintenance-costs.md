@@ -1,4 +1,4 @@
-# US-05.3 / US-08 — Divide building maintenance quantities by 2
+# US-05.3 / US-08 — Reduce building maintenance quantities
 
 Labels: `module:economy`, `static-override`, `generator`
 
@@ -6,11 +6,12 @@ GitHub issue: #171
 
 ## Functional objective
 
-When the Rebalance Economy package is loaded, every vanilla building maintenance
-production method should consume half of its vanilla maintenance quantity:
+When the Rebalance Economy package is loaded, vanilla building maintenance
+production methods should consume less than their vanilla maintenance quantity:
 
 ```txt
-modded_maintenance_quantity = vanilla_maintenance_quantity * 0.5
+non-trade building maintenance = vanilla_maintenance_quantity * 0.7
+trade-category building maintenance = vanilla_maintenance_quantity * 0.5
 ```
 
 This is a static building-definition override. It does not add a monthly pulse,
@@ -34,7 +35,9 @@ load noise.
 
 - Read vanilla `game/in_game/common/building_types/*.txt` as source input.
 - Identify explicit `category = building_maintenance` production-method blocks.
-- Inside those blocks, multiply ModeU5-covered good quantities by `0.5`.
+- Inside those blocks, multiply ModeU5-covered good quantities by `0.3`.
+- If the enclosing building has `category = trade_category`, use `0.5`
+  instead. This covers marketplaces and other trade buildings.
 - Preserve zero as zero and preserve the sign of unusual negative quantities.
 - Leave construction demand, production output, employment, estate power,
   merchant capacity, RGO size, and unrelated numeric fields unchanged unless an
@@ -52,13 +55,15 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
   --us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
-  --maintenance-multiplier 0.5
+  --maintenance-multiplier 0.3 \
+  --trade-building-maintenance-multiplier 0.5
 ```
 
 The validator proves:
 
 - every vanilla maintenance source file has a generated exact-path override;
-- every maintenance-good quantity is exactly `source * 0.5`;
+- every non-trade maintenance-good quantity is exactly `source * 0.3`;
+- every trade-category maintenance-good quantity is exactly `source * 0.5`;
 - the generated body matches the shared transformer used by the generator.
 
 ## Test protocol

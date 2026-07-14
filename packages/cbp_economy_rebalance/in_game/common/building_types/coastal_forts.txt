@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/coastal_forts.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 coastal_fort = {
 	is_foreign = no
@@ -29,11 +30,11 @@ coastal_fort = {
 	unique_production_methods = {
 
 		coastal_fort_maintenance = {
-			stone = 0.1
-			firearms = 0.1
-			cannons = 0.25
-			tools = 0.1
-			tar = 0.1
+			stone = 0.14
+			firearms = 0.14
+			cannons = 0.35
+			tools = 0.14
+			tar = 0.14
 			category = building_maintenance
 		}
 
@@ -78,11 +79,11 @@ naval_battery = {
 	unique_production_methods = {
 
 		naval_battery_maintenance = {
-			stone = 0.1
-			firearms = 0.1
-			cannons = 0.5
-			tools = 0.25
-			tar = 0.1
+			stone = 0.14
+			firearms = 0.14
+			cannons = 0.7
+			tools = 0.35
+			tar = 0.14
 			category = building_maintenance
 		}
 	}

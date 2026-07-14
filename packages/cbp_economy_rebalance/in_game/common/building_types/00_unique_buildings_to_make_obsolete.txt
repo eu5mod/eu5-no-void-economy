@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/00_unique_buildings_to_make_obsolete.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 #This file exists so generic buildings (such as castles) can properly replace the unique ones
 sofa_stockade = {
@@ -31,9 +32,9 @@ sofa_stockade = {
 	}
 	unique_production_methods = {
 		sofa_stockade_maintenance = {
-			clay = 0.1
-			weaponry = 0.025
-			tar = 0.025
+			clay = 0.14
+			weaponry = 0.035
+			tar = 0.035
 			category = building_maintenance
 		}
 	}

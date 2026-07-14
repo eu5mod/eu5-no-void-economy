@@ -230,7 +230,9 @@ the same vanilla files:
 
 - US-09 output and trade-capacity compensation;
 - US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5`;
-- US-08/US-05.3 building maintenance quantities multiplied by `0.5`.
+- US-08/US-05.3 building maintenance quantities multiplied by `0.7`;
+- US-08/US-05.3 marketplace and other `trade_category` building maintenance
+  quantities multiplied by `0.5`.
 
 Pass the desired compensation percentage explicitly. Example:
 
@@ -259,7 +261,9 @@ against the local vanilla source:
 ```bash
 python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
-  --package-common-dir packages/cbp_economy_rebalance/in_game/common
+  --package-common-dir packages/cbp_economy_rebalance/in_game/common \
+  --maintenance-multiplier 0.3 \
+  --trade-building-maintenance-multiplier 0.5
 ```
 
 ## Recommended local deployment pipeline

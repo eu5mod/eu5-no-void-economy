@@ -111,7 +111,8 @@ Issue #171 / US-05.3 implements the separate Economy-package maintenance-cost
 change:
 
 ```txt
-building maintenance goods quantity = vanilla quantity * 0.5
+non-trade building maintenance goods quantity = vanilla quantity * 0.7
+trade-category building maintenance goods quantity = vanilla quantity * 0.5
 ```
 
 That maintenance change is generated from vanilla `common/building_types` and

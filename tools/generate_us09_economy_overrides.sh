@@ -24,7 +24,9 @@ Options:
   --percent N                            Percent increase for building output
   --extra-burgher-promotion-speed N      Extra Burgher promotion speed percent (10 = +10%)
   --extra-laborer-promotion-speed N      Extra Laborer promotion speed percent (10 = +10%)
-  --building-maintenance-multiplier N    Maintenance quantity multiplier (default: 0.5)
+  --building-maintenance-multiplier N    Non-trade maintenance quantity multiplier (default: 0.7)
+  --trade-building-maintenance-multiplier N
+                                          Trade-building maintenance quantity multiplier (default: 0.5)
   --common-dir PATH                      EU5 `game/in_game/common` source directory
   --package-common-dir PATH              Output `in_game/common` directory for generated files
   --help                                 Show this help text
@@ -128,7 +130,8 @@ validate_nonnegative_number() {
 percent=""
 extra_burgher_promotion_speed="${EXTRA_BURGHER_PROMOTION_SPEED:-0}"
 extra_laborer_promotion_speed="${EXTRA_LABORER_PROMOTION_SPEED:-0}"
-building_maintenance_multiplier="${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
+building_maintenance_multiplier="${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}"
+trade_building_maintenance_multiplier="${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 common_dir=""
 package_common_dir="$repo_root/tools/generated/us09_economy_overrides/common"
 
@@ -148,6 +151,10 @@ while (($# > 0)); do
 			;;
 		--building-maintenance-multiplier)
 			building_maintenance_multiplier="$2"
+			shift 2
+			;;
+		--trade-building-maintenance-multiplier)
+			trade_building_maintenance_multiplier="$2"
 			shift 2
 			;;
 		--common-dir)
@@ -193,6 +200,7 @@ validate_percent "US-09 percent" "$percent"
 validate_percent "EXTRA_BURGHER_PROMOTION_SPEED" "$extra_burgher_promotion_speed"
 validate_percent "EXTRA_LABORER_PROMOTION_SPEED" "$extra_laborer_promotion_speed"
 validate_nonnegative_number "MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER" "$building_maintenance_multiplier"
+validate_nonnegative_number "MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER" "$trade_building_maintenance_multiplier"
 
 if [[ -z "$common_dir" ]]; then
 	if ! common_dir="$(find_default_common_dir)"; then
@@ -277,7 +285,8 @@ while IFS= read -r -d '' source_file; do
 		printf '%s\n' '# Do not edit manually.'
 		printf '# Source: %s\n' "$(source_label "$source_file")"
 		printf '# Output multiplier: %s (%s%%)\n' "$(format_decimal "$output_multiplier")" "$percent"
-		printf '# Building maintenance multiplier: %s\n\n' "$(format_decimal "$building_maintenance_multiplier")"
+		printf '# Building maintenance multiplier: %s\n' "$(format_decimal "$building_maintenance_multiplier")"
+		printf '# Trade-building maintenance multiplier: %s\n\n' "$(format_decimal "$trade_building_maintenance_multiplier")"
 		if [[ "$source_basename" == "trade_buildings.txt" ]]; then
 			printf '# US-07 composed trade-building estate-power multiplier: %s\n\n' \
 				"$(format_decimal "$us07_trade_burghers_estate_power_multiplier")"
@@ -287,6 +296,7 @@ while IFS= read -r -d '' source_file; do
 			--source-basename "$source_basename" \
 			--output-multiplier "$output_multiplier" \
 			--maintenance-multiplier "$building_maintenance_multiplier" \
+			--trade-building-maintenance-multiplier "$trade_building_maintenance_multiplier" \
 			--us07-trade-burghers-estate-power-multiplier "$us07_trade_burghers_estate_power_multiplier" \
 			--goods "${cbp_goods[@]}"
 	} > "$output_file"

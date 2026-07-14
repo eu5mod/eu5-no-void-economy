@@ -223,9 +223,12 @@ require_match '^expand_rgo_gathering = \{$' \
 require_match '^# US-07 composed trade-building estate-power multiplier: 0\.5$' \
 	"$us09_trade_buildings_file" \
 	'US-09 trade-building override must document the composed US-07 multiplier'
-require_match '^# Building maintenance multiplier: 0\.5$' \
+require_match '^# Building maintenance multiplier: 0\.7$' \
 	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 building maintenance override must document the composed 50% maintenance multiplier'
+	'US-08/US-05.3 building maintenance override must document the composed 30% non-trade maintenance multiplier'
+require_match '^# Trade-building maintenance multiplier: 0\.5$' \
+	"$us09_trade_buildings_file" \
+	'US-08/US-05.3 building maintenance override must document the composed 50% trade-building maintenance multiplier'
 require_match '^[[:space:]]+cloth = 0\.03$' \
 	"$us09_trade_buildings_file" \
 	'US-08/US-05.3 trade-building maintenance must halve marketplace cloth maintenance'
@@ -274,7 +277,8 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_typ
 		--common-dir "$EU5_GAME_COMMON_DIR" \
 		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
 		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
-		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
+		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
+		--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 fi
 
 stale_us09_override_files="$(

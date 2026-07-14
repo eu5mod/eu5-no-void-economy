@@ -70,6 +70,9 @@ cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_match 'Building maintenance multiplier' \
 	"tools/generate_us09_economy_overrides.sh" \
 	'US-09 Economy override generator must document the composed US-08/US-05.3 maintenance multiplier'
+cbp_require_match 'Trade-building maintenance multiplier' \
+	"tools/generate_us09_economy_overrides.sh" \
+	'US-09 Economy override generator must document the composed trade-building maintenance multiplier'
 cbp_require_match 'building_maintenance' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must target explicit building_maintenance blocks'

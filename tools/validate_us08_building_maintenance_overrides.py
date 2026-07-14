@@ -38,6 +38,7 @@ def strip_generated_header(text: str) -> list[str]:
         "# Source: ",
         "# Output multiplier: ",
         "# Building maintenance multiplier: ",
+        "# Trade-building maintenance multiplier: ",
     )
     while index < len(lines) and any(
         lines[index].startswith(prefix) for prefix in generated_prefixes
@@ -68,18 +69,23 @@ def normalize_generator_whitespace(lines: list[str]) -> list[str]:
     return normalized
 
 
-def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, float]]:
-    ranges = transformer.find_maintenance_ranges(lines)
-    entries: list[tuple[str, float]] = []
+def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, float, bool]]:
+    ranges = transformer.find_maintenance_blocks(lines)
+    entries: list[tuple[str, float, bool]] = []
     for index, line in enumerate(lines):
-        if not transformer.line_is_in_ranges(index, ranges):
+        maintenance_range = transformer.maintenance_range_for_line(index, ranges)
+        if maintenance_range is None:
             continue
         match = transformer.ASSIGNMENT.match(line)
         if not match:
             continue
         key = match.group(2)
         if key in goods:
-            entries.append((key, float(match.group(3))))
+            trade_building = (
+                isinstance(maintenance_range, transformer.MaintenanceRange)
+                and maintenance_range.trade_building
+            )
+            entries.append((key, float(match.group(3)), trade_building))
     return entries
 
 
@@ -98,7 +104,8 @@ def main() -> int:
         default=Path("packages/cbp_economy_rebalance/in_game/common"),
     )
     parser.add_argument("--us09-percent", type=float, default=float(os.environ.get("MODEU5_US09_BONUS_PERCENT", "10")))
-    parser.add_argument("--maintenance-multiplier", type=float, default=0.5)
+    parser.add_argument("--maintenance-multiplier", type=float, default=0.3)
+    parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -154,15 +161,30 @@ def main() -> int:
                 )
                 continue
 
-            for ordinal, ((source_key, source_value), (generated_key, generated_value)) in enumerate(
+            for ordinal, (
+                (source_key, source_value, source_trade_building),
+                (generated_key, generated_value, generated_trade_building),
+            ) in enumerate(
                 zip(source_entries, generated_entries),
                 start=1,
             ):
-                expected = source_value * args.maintenance_multiplier
+                expected_multiplier = (
+                    args.trade_building_maintenance_multiplier
+                    if source_trade_building
+                    else args.maintenance_multiplier
+                )
+                expected = source_value * expected_multiplier
                 if source_key != generated_key:
                     failures.append(
                         f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
                         f"source={source_key} generated={generated_key}"
+                    )
+                    continue
+                if source_trade_building != generated_trade_building:
+                    failures.append(
+                        f"{source_file.name}: {source_key} maintenance entry #{ordinal} "
+                        f"trade-building classification mismatch "
+                        f"source={source_trade_building} generated={generated_trade_building}"
                     )
                     continue
                 if not compare_float(generated_value, expected):
@@ -178,6 +200,7 @@ def main() -> int:
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
                 maintenance_multiplier=args.maintenance_multiplier,
+                trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,
                 goods=goods_set,
             )

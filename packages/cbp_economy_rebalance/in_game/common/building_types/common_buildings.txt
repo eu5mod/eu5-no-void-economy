@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/common_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 irrigation_systems = {
 	is_foreign = no
@@ -30,7 +31,7 @@ irrigation_systems = {
 
 	unique_production_methods = {
 		irrigation_maintenance = {
-			tools = 0.05
+			tools = 0.07
 			category = building_maintenance
 		}
 	}
@@ -174,7 +175,7 @@ mercury_patio = {
 
 	unique_production_methods = {
 		mercury_patio_maintenance = {
-			mercury = 0.5
+			mercury = 0.7
 			category = building_maintenance
 		}
 	}
@@ -259,8 +260,8 @@ horse_breeders = {
 		horse_breeders_maintenance = {
 			produced = horses
 			output = 1.1
-			wheat = 0.75
-			horses = 0.15
+			wheat = 1.05
+			horses = 0.21
 			category = building_maintenance
 		}
 	}
@@ -298,9 +299,9 @@ stone_quarry = {
 	unique_production_methods = {
 
 		stone_quarry_maintenance = {
-			tools = 0.05
-			lumber = 0.06
-			leather = 0.05
+			tools = 0.07
+			lumber = 0.084
+			leather = 0.07
 
 			produced = stone
 			output = 1.1
@@ -309,7 +310,7 @@ stone_quarry = {
 		}
 
 		crude_quarry_maintenance = {
-			lumber = 0.14
+			lumber = 0.196
 
 			produced = stone
 			output = 0.55
@@ -357,7 +358,7 @@ lumber_mill = {
 			produced = lumber
 			output = 1.1
 
-			tools = 0.2
+			tools = 0.28
 
 			category = building_maintenance
 		}
@@ -391,9 +392,9 @@ fiber_crops_farm = {
 
 	unique_production_methods = {
 		fiber_crops_farm_maintenance = {
-			livestock = 0.25
-			lumber = 0.1
-			tools = 0.05
+			livestock = 0.35
+			lumber = 0.14
+			tools = 0.07
 			category = building_maintenance
 
 			produced = fiber_crops
@@ -429,8 +430,8 @@ sand_pit = {
 
 	unique_production_methods = {
 		sand_pit_maintenance = {
-			tools = 0.03
-			lumber = 0.075
+			tools = 0.042
+			lumber = 0.105
 			category = building_maintenance
 
 			produced = sand
@@ -471,7 +472,7 @@ bog_iron_smelter = {
 		bog_iron_maintenance = {
 			produced = iron
 			output = 0.33
-			coal = 0.2
+			coal = 0.28
 			debug_max_profit = 0.2
 			category = building_maintenance
 		}
@@ -510,7 +511,7 @@ clay_pit = {
 		clay_pit_maintenance = {
 			produced = clay
 			output = 1.1
-			lumber = 0.14
+			lumber = 0.196
 			category = building_maintenance
 		}
 	}
@@ -547,7 +548,7 @@ salt_collector = {
 			produced = salt
 			output = 0.33
 
-			clay  = 1.0
+			clay  = 1.4
 			category = building_maintenance
 		}
 	}
@@ -589,7 +590,7 @@ fruit_orchard = {
 			produced = fruit
 			output = 0.33
 
-			lumber = 0.085
+			lumber = 0.119
 			category = building_maintenance
 		}
 	}
