@@ -66,10 +66,11 @@ merchants_quarters = {
 	build_time = merchant_build_time
 	unique_production_methods = {
 		merchants_quarters_maintenance = {
-			cloth = 0.03
-			jewelry = 0.025
-			paper = 0.025
-			salt = 0.03
+			cloth = 0.0375
+			jewelry = 0.0375
+			paper = 0.0375
+			salt = 0.0375
+			beeswax = 0.015
 
 			category = building_maintenance
 		}
@@ -108,10 +109,11 @@ grand_marketplace = {
 
 	unique_production_methods = {
 		grand_marketplace_maintenance = {
-			cloth = 0.03
-			jewelry = 0.025
-			paper = 0.025
-			salt = 0.03
+			cloth = 0.05
+			jewelry = 0.05
+			paper = 0.05
+			salt = 0.05
+			beeswax = 0.02
 
 			category = building_maintenance
 		}
