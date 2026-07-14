@@ -385,6 +385,70 @@ cbp_initialize_configuration_state_effect = {
     cbp_enter_minimal_accounting_persistence = yes
 }
 
+cbp_repair_configuration_state_on_game_load = {
+	if = {
+		limit = {
+			NOT = { has_global_variable = cbp_core_package_loaded }
+		}
+		set_global_variable = cbp_core_package_loaded
+	}
+
+	set_global_variable = {
+		name = cbp_core_package_version
+		value = 100
+	}
+
+	if = {
+		limit = {
+			NOT = { has_global_variable = cbp_runtime_mode_normal }
+			NOT = { has_global_variable = cbp_runtime_mode_debug }
+			NOT = { has_global_variable = cbp_runtime_mode_audit }
+		}
+		cbp_apply_generated_local_runtime_mode = yes
+	}
+
+	if = {
+		limit = { NOT = { has_global_variable = cbp_debug_level } }
+		set_global_variable = {
+			name = cbp_debug_level
+			value = 0
+		}
+	}
+
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_global_variable = cbp_cbp_main_mode }
+				AND = {
+					NOT = { has_global_variable = cbp_performance_mode_enabled }
+					NOT = { has_global_variable = cbp_normal_mode_enabled }
+					NOT = { has_global_variable = cbp_cbp_deactivated }
+				}
+			}
+		}
+		cbp_enter_cbp_performance_mode = yes
+	}
+
+	if = {
+		limit = {
+			NOT = { has_global_variable = cbp_accounting_persistence_minimal }
+			NOT = { has_global_variable = cbp_accounting_persistence_human_relevant }
+			NOT = { has_global_variable = cbp_accounting_persistence_strict }
+		}
+		cbp_enter_minimal_accounting_persistence = yes
+	}
+
+	if = {
+		limit = { cbp_performance_mode_enabled_trigger = yes }
+		cbp_prepare_performance_mode_human_relevant_markets = yes
+	}
+
+	set_global_variable = {
+		name = cbp_configuration_load_repair_version
+		value = 1
+	}
+}
+
 cbp_refresh_configuration_from_cmm_country_scope = {
 	cbp_apply_debug_mode_cmm_defaults = yes
 	cbp_refresh_cbp_main_mode_from_cmm_country_scope = yes

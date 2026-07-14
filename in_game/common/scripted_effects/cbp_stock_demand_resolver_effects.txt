@@ -808,10 +808,10 @@ cbp_reset_us04_location_estate_proxy = {
 	$location$ = { save_temporary_scope_as = cbp_demand_location }
 	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	scope:cbp_demand_location = {
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = scope:cbp_good } }
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = scope:cbp_good } }
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = scope:cbp_good } }
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = scope:cbp_good } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = goods:$good$ } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = goods:$good$ } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = goods:$good$ } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = goods:$good$ } }
 	}
 }
 
@@ -820,8 +820,8 @@ cbp_record_us04_location_estate_proxy_peasants_estate = {
 	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = { name = cbp_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
 	scope:cbp_demand_location = {
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = scope:cbp_good } }
-		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = scope:cbp_good value = scope:cbp_us04_proxy_estate_size } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_peasants_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = goods:$good$ } }
+		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_peasants_estate key = goods:$good$ value = scope:cbp_us04_proxy_estate_size } }
 	}
 }
 
@@ -830,8 +830,8 @@ cbp_record_us04_location_estate_proxy_burghers_estate = {
 	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = { name = cbp_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
 	scope:cbp_demand_location = {
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = scope:cbp_good } }
-		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = scope:cbp_good value = scope:cbp_us04_proxy_estate_size } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_burghers_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = goods:$good$ } }
+		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_burghers_estate key = goods:$good$ value = scope:cbp_us04_proxy_estate_size } }
 	}
 }
 
@@ -840,8 +840,8 @@ cbp_record_us04_location_estate_proxy_nobles_estate = {
 	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = { name = cbp_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
 	scope:cbp_demand_location = {
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = scope:cbp_good } }
-		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = scope:cbp_good value = scope:cbp_us04_proxy_estate_size } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_nobles_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = goods:$good$ } }
+		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_nobles_estate key = goods:$good$ value = scope:cbp_us04_proxy_estate_size } }
 	}
 }
 
@@ -850,8 +850,8 @@ cbp_record_us04_location_estate_proxy_clergy_estate = {
 	goods:$good$ = { save_temporary_scope_as = cbp_good }
 	save_temporary_scope_value_as = { name = cbp_us04_proxy_estate_size value = { value = $proxy_estate_size$ min = 0 } }
 	scope:cbp_demand_location = {
-		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate target = scope:cbp_good } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = scope:cbp_good } }
-		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = scope:cbp_good value = scope:cbp_us04_proxy_estate_size } }
+		if = { limit = { has_variable_map = cbp_us04_proxy_estate_size_clergy_estate is_key_in_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate target = goods:$good$ } } remove_from_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = goods:$good$ } }
+		if = { limit = { scope:cbp_us04_proxy_estate_size > 0 } add_to_variable_map = { name = cbp_us04_proxy_estate_size_clergy_estate key = goods:$good$ value = scope:cbp_us04_proxy_estate_size } }
 	}
 }
 

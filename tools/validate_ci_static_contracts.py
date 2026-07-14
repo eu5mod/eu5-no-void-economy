@@ -52,6 +52,8 @@ CMM_SETTINGS: dict[str, tuple[str, str, bool]] = {
 
 REQUIRED_FILES = [
     ".metadata/metadata.json",
+    "docs/technical/GAME_LOAD_LIFECYCLE.md",
+    "in_game/common/on_action/cbp_configuration_on_actions.txt",
     "in_game/common/on_action/cbp_stock_on_actions.txt",
     "in_game/common/on_action/cbp__cmm_on_actions.txt",
     "in_game/common/on_action/cbp_cmm_runtime_on_action.txt",
@@ -59,13 +61,17 @@ REQUIRED_FILES = [
     "in_game/common/scripted_effects/cbp__cmm_effects.txt",
     "in_game/common/scripted_effects/cbp_cmm_runtime_effects.txt",
     "in_game/common/scripted_effects/cbp_configuration_effects.txt",
+    "in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt",
     "in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt",
     "in_game/common/scripted_effects/cbp_performance_effects.txt",
     "in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt",
     "in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt",
+    "in_game/common/scripted_effects/cbp_us10_ui_effects.txt",
     "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt",
     "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
+    "in_game/gui/cbp_us10_stock_lateralview.gui",
+    "in_game/gui/scripted_widgets/cbp_us10_stock.txt",
     "in_game/events/cbp_cmm_warning_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_us20_case12_probe_events.txt",
@@ -73,6 +79,9 @@ REQUIRED_FILES = [
     "packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt",
     "packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt",
     "packages/cbp_core_tests/in_game/localization/cbp_us17_owner_modifier_probe_l_english.yml",
+    "packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt",
+    "packages/cbp_trade_rebalance/in_game/common/on_action/cbp_trade_package_on_actions.txt",
+    "packages/cbp_war_rebalance/in_game/common/on_action/cbp_war_package_on_actions.txt",
     "main_menu/localization/english/cbp__cmm_l_english.yml",
 ]
 
@@ -314,6 +323,232 @@ def validate_us17_us20_static_contract(
         expect(assertion in us20_probe_effects, f"US20 E2E probe must assert {assertion}")
 
 
+def validate_us10_test_contract(us10_test_effects: str) -> None:
+    """Keep the US-10 harness aligned with the canonical generated ledgers."""
+
+    legacy_ledger_patterns = [
+        "test_cbp_consumption_wheat_requested_by_market",
+        "test_cbp_consumption_wheat_satisfied_by_market",
+        "test_cbp_consumption_wheat_unsatisfied_by_market",
+        "test_cbp_trade_wheat_requested_by_market",
+        "test_cbp_trade_wheat_transferred_by_market",
+        "test_cbp_trade_wheat_unsatisfied_by_market",
+    ]
+    for pattern in legacy_ledger_patterns:
+        expect(
+            pattern not in us10_test_effects,
+            f"US-10 harness must read canonical generated outcome maps, not stale test ledger {pattern}",
+        )
+
+    expect(
+        "THIS.GetVariable('cbp_us10_ui" not in us10_test_effects,
+        "US-10 debug dumps must read gui_cbp_us10_ui* variables, matching the variables they set",
+    )
+
+
+def validate_us10_ui_widget_contract(*, lateralview_gui: str, scripted_widget: str, ui_effects: str, stock_loc: str) -> None:
+    expect(
+        "template cbp_us10_stock_panel" in lateralview_gui,
+        "US-10 stock lateralview file must expose the cbp_us10_stock_panel template",
+    )
+    expect(
+        '"gui/cbp_us10_stock_lateralview.gui" = cbp_us10_stock_panel' in scripted_widget,
+        "US-10 scripted widget registration must point at the existing cbp_us10_stock_panel template",
+    )
+    expect(
+        "THIS.GetVariable('cbp_us10_ui" not in ui_effects + stock_loc,
+        "US-10 UI runtime dumps/localization must read gui_cbp_us10_ui* variables, matching the variables they set",
+    )
+
+
+def validate_perf14_test_contract(perf14_text: str, stock_loc: str) -> None:
+    expect(
+        "THIS.GetVariable('cbp_perf14_" not in perf14_text,
+        "PERF-14 debug dumps must read test_cbp_perf14* or gui_cbp_perf14* variables, matching the variables they set",
+    )
+    expect(
+        "THIS.GetVariable('cbp_perf14_ui_" not in stock_loc,
+        "PERF-14 localization dumps must read gui_cbp_perf14_ui* variables, matching the variables they set",
+    )
+    expect(
+        "cbp_no_void_economy_main" not in perf14_text,
+        "PERF-14 tests must use the current CMM main-mode setting id, not legacy cbp_no_void_economy_main",
+    )
+
+
+def validate_core04_test_contract(core04_test_effects: str) -> None:
+    expect(
+        "cbp_no_void_economy_main" not in core04_test_effects,
+        "CORE-04 tests must use the current CMM main-mode setting id, not legacy cbp_no_void_economy_main",
+    )
+
+
+def validate_us04_debug_event_contract(us04_debug_events: str) -> None:
+    def event_block(event_id: str) -> str:
+        return block(us04_debug_events, event_id)
+
+    for event_id in [
+        "cbp_us04_debug.31",
+        "cbp_us04_debug.32",
+        "cbp_us04_debug.40",
+        "cbp_us04_debug.51",
+        "cbp_us04_debug.52",
+    ]:
+        expect("orphan = yes" not in event_block(event_id), f"{event_id} has callers and must not be scripted as orphan")
+
+    for event_id in ["cbp_us04_debug.30", "cbp_us04_debug.50"]:
+        expect("orphan = yes" in event_block(event_id), f"{event_id} is a direct-console compatibility event and should remain orphan")
+
+
+def validate_core_stock_test_contract(stock_test_effects: str) -> None:
+    expect(
+        "test_cbp_wheat_stock_by_market" not in stock_test_effects,
+        "CORE stock tests must read cbp_wheat_stock_by_market, not stale test_cbp_wheat_stock_by_market",
+    )
+    expect(
+        "test_cbp_wheat_market_stock" not in stock_test_effects,
+        "CORE stock tests must read cbp_wheat_market_stock, not stale test_cbp_wheat_market_stock",
+    )
+    expect(
+        "test_cbp_wheat_active_markets" not in stock_test_effects,
+        "CORE stock tests must read cbp_wheat_active_markets, not stale test_cbp_wheat_active_markets",
+    )
+    expect(
+        "THIS.GetVariable('cbp_debug_us11_ui" not in stock_test_effects,
+        "US-11 debug dumps must read gui_cbp_debug_us11_ui* variables, matching the variables they set",
+    )
+
+
+def validate_perf10_13_test_contract(perf10_13_test_effects: str) -> None:
+    expect(
+        "test_cbp_wheat_active_markets" not in perf10_13_test_effects,
+        "PERF-10/13 tests must read cbp_wheat_active_markets, not stale test_cbp_wheat_active_markets",
+    )
+    expect(
+        "THIS.GetVariable('cbp_perf10_13_ui" not in perf10_13_test_effects,
+        "PERF-10/13 debug dumps must read gui_cbp_perf10_13_ui* variables, matching the variables they set",
+    )
+
+
+def validate_game_load_lifecycle_contract(
+    *,
+    configuration_on_actions: str,
+    configuration_effects: str,
+    stock_on_actions: str,
+    stock_effects: str,
+    core04_effects: str,
+    economy_on_actions: str,
+    trade_on_actions: str,
+    war_on_actions: str,
+    lifecycle_doc: str,
+) -> None:
+    config_load = block(configuration_on_actions, "on_game_load")
+    config_load_action = block(configuration_on_actions, "cbp_configuration_on_game_load")
+    expect("cbp_configuration_on_game_load" in config_load, "Configuration on_game_load must call the load-repair on_action")
+    expect(
+        "cbp_repair_configuration_state_on_game_load = yes" in config_load_action,
+        "Configuration load on_action must call the idempotent load-repair effect",
+    )
+    expect(
+        "cbp_initialize_configuration_state_effect = yes" not in config_load_action,
+        "Configuration on_game_load must not rerun the full start-game initializer",
+    )
+
+    config_repair = block(configuration_effects, "cbp_repair_configuration_state_on_game_load")
+    for token in [
+        "cbp_core_package_loaded",
+        "cbp_core_package_version",
+        "cbp_apply_generated_local_runtime_mode = yes",
+        "cbp_enter_cbp_performance_mode = yes",
+        "cbp_enter_minimal_accounting_persistence = yes",
+        "cbp_prepare_performance_mode_human_relevant_markets = yes",
+        "cbp_configuration_load_repair_version",
+    ]:
+        expect(token in config_repair, f"Configuration load repair must maintain {token}")
+
+    stock_load = block(stock_on_actions, "on_game_load")
+    stock_load_action = block(stock_on_actions, "cbp_load_game_stock_initialization_pulse")
+    expect("delay = { days = 1 }" in stock_load, "Stock on_game_load repair must keep the delayed startup timing")
+    expect("cbp_load_game_stock_initialization_pulse" in stock_load, "Stock on_game_load must call the load-repair pulse")
+    expect(
+        "cbp_repair_stock_lifecycle_on_game_load = yes" in stock_load_action,
+        "Stock load pulse must call the idempotent load-repair effect",
+    )
+
+    stock_repair = block(stock_effects, "cbp_repair_stock_lifecycle_on_game_load")
+    current_schema_repair = block(stock_effects, "cbp_repair_current_schema_runtime_marker")
+    stock_dispatcher = block(stock_effects, "cbp_start_game_stock_initialization_dispatcher")
+    for token in [
+        "has_global_variable = cbp_stock_schema_version",
+        "global_var:cbp_stock_schema_version = cbp_current_stock_schema_version",
+        "NOT = { cbp_initialization_complete_trigger = yes }",
+        "NOT = { cbp_initialization_in_progress_trigger = yes }",
+        "NOT = { cbp_initialization_failed_trigger = yes }",
+        "global_var:cbp_initialization_failure_code = 21",
+        "remove_global_variable = cbp_initialization_failure_detected",
+        "remove_global_variable = cbp_initialization_failure_code",
+        "NOT = { has_global_variable = cbp_initialization_failure_detected }",
+        "NOT = { has_global_variable = cbp_initialization_failure_code }",
+        "name = cbp_initialization_state",
+        "value = 2",
+        "value = 6",
+    ]:
+        expect(token in current_schema_repair, f"Current-schema load repair must maintain {token}")
+    expect(
+        "cbp_repair_current_schema_runtime_marker = yes" in stock_dispatcher,
+        "Stock initialization dispatcher must repair legacy current-schema readiness markers before fail-closed checks",
+    )
+    for token in [
+        "cbp_initialize_pop_demand_multipliers_once = yes",
+        "cbp_repair_current_schema_runtime_marker = yes",
+        "cbp_stock_runtime_ready_trigger = yes",
+        "cbp_start_game_stock_initialization_dispatcher = yes",
+        "cbp_core04_refresh_all_location_market_memory = yes",
+        "cbp_stock_load_repair_version",
+    ]:
+        expect(token in stock_repair, f"Stock load repair must maintain {token}")
+    expect(
+        "cbp_run_fresh_opening_stock_initialization = yes" not in stock_repair,
+        "Stock load repair must delegate through the dispatcher, not force fresh opening-stock initialization",
+    )
+
+    memory_refresh = block(core04_effects, "cbp_core04_refresh_all_location_market_memory")
+    expect("cbp_stock_runtime_ready_trigger = yes" in memory_refresh, "CORE-04 all-location memory refresh must be stock-runtime guarded")
+    expect("cbp_core04_market_memory_snapshot_version" in memory_refresh, "CORE-04 load/start memory refresh must write a snapshot marker")
+
+    for package_name, package_text, loaded_marker, version_marker in [
+        ("Rebalance Economy", economy_on_actions, "cbp_economy_rebalance_loaded", "cbp_economy_package_version"),
+        ("Rebalance Trade", trade_on_actions, "cbp_trade_rebalance_loaded", "cbp_trade_package_version"),
+        ("Rebalance War", war_on_actions, "cbp_war_rebalance_loaded", "cbp_war_package_version"),
+    ]:
+        package_start = block(package_text, "on_game_start")
+        package_load = block(package_text, "on_game_load")
+        expect(package_start, f"{package_name} package must keep an on_game_start marker hook")
+        expect(package_load, f"{package_name} package must keep an on_game_load marker repair hook")
+        expect(loaded_marker in package_text, f"{package_name} on_actions must write {loaded_marker}")
+        expect(version_marker in package_text, f"{package_name} on_actions must write {version_marker}")
+
+    trade_load_action = block(trade_on_actions, "cbp_trade_rebalance_package_on_game_load")
+    war_load_action = block(war_on_actions, "cbp_war_rebalance_package_on_game_load")
+    expect(
+        "cbp_trade_rebalance_package_on_game_start = yes" not in trade_load_action,
+        "Trade package on_game_load must write markers directly instead of calling its on_game_start action as an effect",
+    )
+    expect(
+        "cbp_war_rebalance_package_on_game_start = yes" not in war_load_action,
+        "War package on_game_load must write markers directly instead of calling its on_game_start action as an effect",
+    )
+
+    for token in [
+        "on_game_load",
+        "cbp_configuration_load_repair_version",
+        "cbp_stock_load_repair_version",
+        "cbp_core04_market_memory_snapshot_version",
+        "does not support arbitrary package-set changes mid-campaign",
+    ]:
+        expect(token in lifecycle_doc, f"Game-load lifecycle documentation must mention {token}")
+
+
 def main() -> int:
     validate_required_files()
     if failures:
@@ -327,11 +562,15 @@ def main() -> int:
     )
 
     stock_on_actions = read("in_game/common/on_action/cbp_stock_on_actions.txt")
+    configuration_on_actions = read("in_game/common/on_action/cbp_configuration_on_actions.txt")
     trade_values = read("in_game/common/script_values/zzz_trade_reconciliation_values.txt")
     cmm_effects = read("in_game/common/scripted_effects/cbp__cmm_effects.txt")
     runtime_effects = read("in_game/common/scripted_effects/cbp_cmm_runtime_effects.txt")
     scripted_gui = read("in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt")
     config_triggers = read("in_game/common/scripted_triggers/cbp_configuration_triggers.txt")
+    configuration_effects = read("in_game/common/scripted_effects/cbp_configuration_effects.txt")
+    stock_effects = read("in_game/common/scripted_effects/cbp_stock_effects.txt")
+    core04_effects = read("in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt")
     country_trade_owner_effects = read("in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt")
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt")
     trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
@@ -341,7 +580,22 @@ def main() -> int:
     us20_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt")
     owner_modifier_probe_events = read("packages/cbp_core_tests/in_game/events/cbp_us17_owner_modifier_probe_events.txt")
     owner_modifier_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt")
+    us10_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us10_test_effects.txt")
+    stock_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt")
+    perf10_13_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf10_13_test_effects.txt")
+    us10_ui_effects = read("in_game/common/scripted_effects/cbp_us10_ui_effects.txt")
+    us10_lateralview_gui = read("in_game/gui/cbp_us10_stock_lateralview.gui")
+    us10_scripted_widget = read("in_game/gui/scripted_widgets/cbp_us10_stock.txt")
+    stock_loc = read("in_game/localization/cbp_stock_l_english.yml")
+    perf14_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt")
+    perf14_guarded_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt")
+    core04_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_core04_test_effects.txt")
+    us04_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
     loc = read("main_menu/localization/english/cbp__cmm_l_english.yml")
+    economy_on_actions = read("packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt")
+    trade_on_actions = read("packages/cbp_trade_rebalance/in_game/common/on_action/cbp_trade_package_on_actions.txt")
+    war_on_actions = read("packages/cbp_war_rebalance/in_game/common/on_action/cbp_war_package_on_actions.txt")
+    lifecycle_doc = read("docs/technical/GAME_LOAD_LIFECYCLE.md")
 
     validate_no_legacy_review_pop_id("\n".join([cmm_effects, runtime_effects, scripted_gui, loc, read("in_game/events/cbp_review_events.txt"), read("in_game/common/scripted_effects/cbp_review_effects.txt")]))
     validate_cmm_surface(cmm_effects, runtime_effects, config_triggers, loc, scripted_gui)
@@ -360,6 +614,29 @@ def main() -> int:
         revalidate_events=revalidate_events,
         us20_probe_events=us20_probe_events,
         us20_probe_effects=us20_probe_effects,
+    )
+    validate_us10_test_contract(us10_test_effects)
+    validate_us10_ui_widget_contract(
+        lateralview_gui=us10_lateralview_gui,
+        scripted_widget=us10_scripted_widget,
+        ui_effects=us10_ui_effects,
+        stock_loc=stock_loc,
+    )
+    validate_perf14_test_contract(perf14_test_effects + "\n" + perf14_guarded_test_effects, stock_loc)
+    validate_core04_test_contract(core04_test_effects)
+    validate_us04_debug_event_contract(us04_debug_events)
+    validate_core_stock_test_contract(stock_test_effects)
+    validate_perf10_13_test_contract(perf10_13_test_effects)
+    validate_game_load_lifecycle_contract(
+        configuration_on_actions=configuration_on_actions,
+        configuration_effects=configuration_effects,
+        stock_on_actions=stock_on_actions,
+        stock_effects=stock_effects,
+        core04_effects=core04_effects,
+        economy_on_actions=economy_on_actions,
+        trade_on_actions=trade_on_actions,
+        war_on_actions=war_on_actions,
+        lifecycle_doc=lifecycle_doc,
     )
 
     if failures:
