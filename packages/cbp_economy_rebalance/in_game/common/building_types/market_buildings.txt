@@ -215,6 +215,10 @@ market_warehouse = {
 	expensive = yes
 	build_time = market_build_time
 
+	country_potential = {
+		always = no
+	}
+
 	location_potential = {
 		is_market_center = yes
 	}
