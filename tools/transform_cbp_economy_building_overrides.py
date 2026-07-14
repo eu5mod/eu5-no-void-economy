@@ -15,6 +15,12 @@ US09_FIELDS = {
     "merchant_capacity_from_building",
 }
 
+MARKETPLACE_CHAIN = {
+    "marketplace",
+    "merchants_quarters",
+    "grand_marketplace",
+}
+
 BLOCK_START = re.compile(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{")
 ASSIGNMENT = re.compile(
     r"^(\s*([A-Za-z0-9_]+)\s*=\s*)"
@@ -28,6 +34,14 @@ class MaintenanceRange:
     start: int
     end: int
     trade_building: bool
+    building_name: str | None
+
+
+@dataclass(frozen=True)
+class NamedBlock:
+    name: str
+    start: int
+    end: int
 
 
 def format_decimal(value: float) -> str:
@@ -41,8 +55,31 @@ def code_without_comment(line: str) -> str:
     return line.split("#", 1)[0]
 
 
+def find_named_blocks(lines: list[str]) -> list[NamedBlock]:
+    stack: list[tuple[str, int]] = []
+    blocks: list[NamedBlock] = []
+
+    for index, line in enumerate(lines):
+        stripped = line.lstrip()
+        if stripped.startswith("#"):
+            continue
+
+        code = code_without_comment(line)
+        start_match = BLOCK_START.match(code)
+        if start_match:
+            stack.append((start_match.group(1), index))
+
+        for _ in range(code.count("}")):
+            if not stack:
+                break
+            name, start = stack.pop()
+            blocks.append(NamedBlock(name=name, start=start, end=index))
+
+    return blocks
+
+
 def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
-    stack: list[dict[str, int | bool]] = []
+    stack: list[dict[str, int | bool | str]] = []
     ranges: list[MaintenanceRange] = []
 
     for index, line in enumerate(lines):
@@ -53,7 +90,14 @@ def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
         code = code_without_comment(line)
         start_match = BLOCK_START.match(code)
         if start_match:
-            stack.append({"start": index, "maintenance": False, "trade": False})
+            stack.append(
+                {
+                    "start": index,
+                    "name": start_match.group(1),
+                    "maintenance": False,
+                    "trade": False,
+                }
+            )
 
         if re.search(r"\bcategory\s*=\s*trade_category\b", code):
             if stack:
@@ -68,12 +112,21 @@ def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
                 break
             block = stack.pop()
             if block["maintenance"]:
-                trade_building = bool(block["trade"]) or any(bool(parent["trade"]) for parent in stack)
+                trade_building = bool(block["trade"]) or any(
+                    bool(parent["trade"]) for parent in stack
+                )
+                building_name = None
+                for parent in reversed(stack):
+                    parent_name = str(parent["name"])
+                    if parent_name in MARKETPLACE_CHAIN:
+                        building_name = parent_name
+                        break
                 ranges.append(
                     MaintenanceRange(
                         start=int(block["start"]),
                         end=index,
                         trade_building=trade_building,
+                        building_name=building_name,
                     )
                 )
 
@@ -101,6 +154,91 @@ def maintenance_range_for_line(
             if start <= index <= end:
                 return item
     return None
+
+
+def align_marketplace_chain_maintenance(lines: list[str], goods: set[str]) -> list[str]:
+    ranges = find_maintenance_blocks(lines)
+    marketplace_range = next(
+        (item for item in ranges if item.building_name == "marketplace"),
+        None,
+    )
+    if marketplace_range is None:
+        return lines
+
+    baseline: dict[str, str] = {}
+    for index in range(marketplace_range.start, marketplace_range.end + 1):
+        match = ASSIGNMENT.match(lines[index])
+        if match and match.group(2) in goods:
+            baseline[match.group(2)] = match.group(3)
+
+    if not baseline:
+        return lines
+
+    target_ranges = {
+        item.building_name: item
+        for item in ranges
+        if item.building_name in {"merchants_quarters", "grand_marketplace"}
+    }
+    transformed: list[str] = []
+
+    for index, line in enumerate(lines):
+        target = next(
+            (
+                item
+                for item in target_ranges.values()
+                if item.start <= index <= item.end
+            ),
+            None,
+        )
+        if target is None:
+            transformed.append(line)
+            continue
+
+        match = ASSIGNMENT.match(line)
+        if not match or match.group(2) not in goods:
+            transformed.append(line)
+            continue
+
+        key = match.group(2)
+        if key not in baseline:
+            continue
+
+        transformed.append(f"{match.group(1)}{baseline[key]}{match.group(4)}")
+
+    return transformed
+
+
+def disable_market_warehouse(lines: list[str], source_basename: str) -> list[str]:
+    if source_basename != "market_buildings.txt":
+        return lines
+
+    warehouse = next(
+        (block for block in find_named_blocks(lines) if block.name == "market_warehouse"),
+        None,
+    )
+    if warehouse is None:
+        return lines
+
+    warehouse_lines = lines[warehouse.start : warehouse.end + 1]
+    if any(re.match(r"^\s*country_potential\s*=\s*\{", line) for line in warehouse_lines):
+        return lines
+
+    insertion_index = next(
+        (
+            index
+            for index in range(warehouse.start + 1, warehouse.end)
+            if re.match(r"^\s*location_potential\s*=\s*\{", lines[index])
+        ),
+        warehouse.start + 1,
+    )
+    indent = "\t"
+    block = [
+        f"{indent}country_potential = {{",
+        f"{indent * 2}always = no",
+        f"{indent}}}",
+        "",
+    ]
+    return lines[:insertion_index] + block + lines[insertion_index:]
 
 
 def transform_lines(
@@ -155,6 +293,9 @@ def transform_lines(
         else:
             transformed.append(f"{match.group(1)}{format_decimal(new_value)}{match.group(4)}")
 
+    if source_basename == "trade_buildings.txt":
+        transformed = align_marketplace_chain_maintenance(transformed, goods)
+    transformed = disable_market_warehouse(transformed, source_basename)
     return transformed
 
 
