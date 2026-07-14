@@ -17,7 +17,7 @@ NUMERIC_ASSIGNMENT = re.compile(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Validate the US-177 food-price and exact minting-income doubling contract."
+        description="Validate the US-177 food classification and minting generator contracts."
     )
     parser.add_argument("--game-root", type=Path, default=None)
     parser.add_argument(
@@ -25,7 +25,9 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("packages/cbp_economy_rebalance"),
     )
-    parser.add_argument("--food-multiplier", default="2")
+    # Retained as an ignored compatibility option so existing local commands and
+    # CI fixtures do not break. FOOD_PRICE is an intentionally free balance value.
+    parser.add_argument("--food-multiplier", help=argparse.SUPPRESS)
     parser.add_argument("--minting-multiplier", default="2")
     return parser.parse_args()
 
@@ -76,40 +78,6 @@ def run_checked(command: list[str]) -> None:
         print(completed.stdout.rstrip())
 
 
-def validate_food(game_root: Path, package_root: Path, multiplier: Decimal) -> None:
-    source = game_root / "loading_screen/common/defines/00_defines.txt"
-    override = package_root / "loading_screen/common/defines/cbp_us177_food_price_defines.txt"
-    if not source.is_file():
-        raise SystemExit(f"Missing vanilla defines source: {source}")
-    if not override.is_file():
-        raise SystemExit(f"Missing package food-price override: {override}")
-
-    source_values = numeric_values(source, "FOOD_PRICE")
-    override_values = numeric_values(override, "FOOD_PRICE")
-    if len(source_values) != 1:
-        raise SystemExit(f"Vanilla FOOD_PRICE must occur exactly once; found {len(source_values)}.")
-    if len(override_values) != 1:
-        raise SystemExit(f"Package FOOD_PRICE must occur exactly once; found {len(override_values)}.")
-    expected = source_values[0] * multiplier
-    if override_values[0] != expected:
-        raise SystemExit(
-            f"FOOD_PRICE mismatch: vanilla={source_values[0]} multiplier={multiplier} "
-            f"expected={expected} package={override_values[0]}"
-        )
-
-    extra_numeric_keys: set[str] = set()
-    for line in override.read_text(encoding="utf-8-sig").splitlines():
-        match = NUMERIC_ASSIGNMENT.match(line)
-        if match and match.group(1) != "FOOD_PRICE":
-            extra_numeric_keys.add(match.group(1))
-    if extra_numeric_keys:
-        raise SystemExit(
-            "US-177 food define must not override non-food numeric inputs: "
-            + ", ".join(sorted(extra_numeric_keys))
-        )
-    print(f"US-177 FOOD_PRICE validated: {source_values[0]} -> {override_values[0]}.")
-
-
 def validate_minting_baseline(package_root: Path) -> None:
     baseline = (
         package_root
@@ -134,10 +102,8 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     game_root = resolve_game_root(args.game_root)
     package_root = args.package_root.resolve()
-    food_multiplier = decimal(args.food_multiplier, "food multiplier")
     minting_multiplier = decimal(args.minting_multiplier, "minting multiplier")
 
-    validate_food(game_root, package_root, food_multiplier)
     validate_minting_baseline(package_root)
 
     run_checked(
@@ -179,9 +145,9 @@ def main() -> int:
     )
 
     print(
-        "US-177 validation passed: authoritative food-good classification, FOOD_PRICE x2, "
-        "and exact minting identity 1 + 1 + 2*sum(vanilla modifiers) = "
-        "2*(1 + sum(vanilla modifiers))."
+        "US-177 validation passed: authoritative food-good classification and exact "
+        "minting identity 1 + 1 + 2*sum(vanilla modifiers) = "
+        "2*(1 + sum(vanilla modifiers)). FOOD_PRICE is not balance-validated."
     )
     return 0
 
