@@ -2,5 +2,5 @@
 # This file is package-owned so vanilla behavior is restored when the
 # Rebalance Economy package is absent.
 NMarket = {
-	FOOD_PRICE = 0.1 # Vanilla 0.05; exact x2.
+	FOOD_PRICE = 0.3 # Vanilla 0.05; exact x6.
 }
