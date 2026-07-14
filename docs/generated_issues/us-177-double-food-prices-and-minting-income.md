@@ -18,10 +18,29 @@ When the package is absent, neither rule is loaded.
 ## Food-price endpoint and food-good set
 
 Vanilla goods define food contribution through the numeric `food` field in
-`in_game/common/goods/*.txt`. The authoritative US-177 food-good set is therefore:
+`in_game/common/goods/*.txt`. The authoritative US-177 food-good set is:
 
 ```txt
 every vanilla good whose food field is greater than zero
+```
+
+The supported source fingerprint currently resolves to 14 goods:
+
+```txt
+beeswax
+fish
+fruit
+fur
+legumes
+livestock
+maize
+millet
+olives
+potato
+rice
+wheat
+wild_game
+wool
 ```
 
 The deterministic source manifest is generated at:
@@ -32,7 +51,8 @@ packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json
 
 It records each food good, its vanilla `food` value, source file, source line,
 and source fingerprint. Goods with no `food` field or `food = 0` are not food
-for this feature.
+for this feature. The list is generated rather than hand-maintained so a vanilla
+patch changes the manifest and fails source validation.
 
 The price endpoint is the shared market define:
 
@@ -73,9 +93,25 @@ This is an exact gross-income doubling, including negative vanilla sources.
 Inflation fields, inflation thresholds, and unrelated monetary modifiers are not
 scaled.
 
+The supported source audit currently contains:
+
+```txt
+19 non-building exact-path files / 26 minting assignments
+1 composed building file / 2 minting assignments
+20 exact-path files / 28 minting assignments total
+```
+
 ## Generation model
 
-The generator:
+Generate the authoritative food-good manifest:
+
+```bash
+python3 tools/generate_us177_food_goods_manifest.py \
+  --game-root "<EU5_INSTALL_DIR>/game" \
+  --package-root packages/cbp_economy_rebalance
+```
+
+Generate non-building minting overrides:
 
 ```bash
 python3 tools/generate_us177_minting_overrides.py \
@@ -84,7 +120,8 @@ python3 tools/generate_us177_minting_overrides.py \
   --multiplier 2
 ```
 
-scans vanilla common data, events, static modifiers, and auto modifiers. It:
+This generator scans vanilla common data, events, static modifiers, and auto
+modifiers. It:
 
 - creates only exact-path overrides for files containing numeric
   `minting_income_factor` assignments;
@@ -94,7 +131,7 @@ scans vanilla common data, events, static modifiers, and auto modifiers. It:
   `cbp_generated/us177_minting_income_manifest.json`.
 
 Building definitions are already owned by the composed US-07/US-09 exact-path
-generator. They are therefore handled by:
+generator. They are handled by:
 
 ```bash
 python3 tools/postprocess_us177_minting_building_overrides.py \
@@ -127,9 +164,13 @@ The validator proves:
 - unsupported or dynamic minting expressions fail closed;
 - inflation assignments are absent from the US-177 baseline.
 
-The CI fixture also covers positive, negative, inline, commented, building, and
-static-modifier minting sources while checking that unrelated and inflation
-fields remain unchanged.
+The permanent CI fixture covers positive, negative, inline, commented, building,
+and static-modifier minting sources. It also proves that `food = 0`, non-food
+prices, unrelated modifiers, and inflation fields remain unchanged.
+
+Engine exposure records 153–155 are documented in
+`docs/technical/TECH-01_us177_engine_exposures.md` for later consolidation into
+the main TECH-01 matrix when the stacked branch is flattened.
 
 ## Runtime validation still required
 
