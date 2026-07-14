@@ -2,11 +2,11 @@ cbp_debug_run_pr182_market_stockpile_capacity_probe = {
 	remove_global_variable = test_cbp_pr182_market_stockpile_probe_passed
 	remove_global_variable = test_cbp_pr182_market_stockpile_probe_failed
 	remove_global_variable = test_cbp_pr182_market_stockpile_probe_blocked
-	remove_global_variable = test_cbp_pr182_market_stockpile_probe_active
+	remove_global_variable = cbp_pr182_market_stockpile_probe_active
 
-	set_variable = { name = cbp_pr182_stockpile_probe_country_count value = 0 }
-	set_variable = { name = cbp_pr182_stockpile_probe_capacity value = 0 }
-	set_variable = { name = cbp_pr182_stockpile_probe_fixed_modifier_seen value = 0 }
+	set_variable = { name = test_cbp_pr182_stockpile_probe_country_count value = 0 }
+	set_variable = { name = test_cbp_pr182_stockpile_probe_capacity value = 0 }
+	set_variable = { name = test_cbp_pr182_stockpile_probe_fixed_modifier_seen value = 0 }
 
 	debug_log = "ModeU5 TEST ENTERED scenario=pr182_market_stockpile_capacity_probe"
 
@@ -37,28 +37,28 @@ cbp_debug_run_pr182_market_stockpile_capacity_probe = {
 						}
 					}
 					save_temporary_scope_value_as = {
-						name = cbp_pr182_current_country_capacity
+						name = test_cbp_pr182_current_country_capacity
 						value = "variable_map(cbp_stock_cap_by_market|scope:cbp_pr182_probe_market)"
 					}
 					scope:cbp_pr182_probe_country = {
 						change_variable = {
-							name = cbp_pr182_stockpile_probe_country_count
+							name = test_cbp_pr182_stockpile_probe_country_count
 							add = 1
 						}
 						change_variable = {
-							name = cbp_pr182_stockpile_probe_capacity
-							add = scope:cbp_pr182_current_country_capacity
+							name = test_cbp_pr182_stockpile_probe_capacity
+							add = scope:test_cbp_pr182_current_country_capacity
 						}
 					}
 				}
 			}
 		}
 
-		set_global_variable = test_cbp_pr182_market_stockpile_probe_active
+		set_global_variable = cbp_pr182_market_stockpile_probe_active
 		cbp_refresh_market_center_stockpile_capacity = {
 			market = scope:cbp_pr182_probe_market
 		}
-		remove_global_variable = test_cbp_pr182_market_stockpile_probe_active
+		remove_global_variable = cbp_pr182_market_stockpile_probe_active
 
 		scope:cbp_pr182_probe_market.location = {
 			remove_location_modifier = cbp_market_stockpile_capacity
@@ -73,20 +73,20 @@ cbp_debug_run_pr182_market_stockpile_capacity_probe = {
 				limit = { has_location_modifier = cbp_market_stockpile_capacity }
 				scope:cbp_pr182_probe_country = {
 					set_variable = {
-						name = cbp_pr182_stockpile_probe_fixed_modifier_seen
+						name = test_cbp_pr182_stockpile_probe_fixed_modifier_seen
 						value = 1
 					}
 				}
 			}
 		}
 
-		debug_log = "ModeU5 PR-182 STOCKPILE_PROBE computed_capacity=[THIS.GetVariable('cbp_pr182_stockpile_probe_capacity').GetValue|2] countries=[THIS.GetVariable('cbp_pr182_stockpile_probe_country_count').GetValue|0] fixed_modifier_seen=[THIS.GetVariable('cbp_pr182_stockpile_probe_fixed_modifier_seen').GetValue|0] fixed_size=1234"
+		debug_log = "ModeU5 PR-182 STOCKPILE_PROBE computed_capacity=[THIS.GetVariable('test_cbp_pr182_stockpile_probe_capacity').GetValue|2] countries=[THIS.GetVariable('test_cbp_pr182_stockpile_probe_country_count').GetValue|0] fixed_modifier_seen=[THIS.GetVariable('test_cbp_pr182_stockpile_probe_fixed_modifier_seen').GetValue|0] fixed_size=1234"
 
 		if = {
 			limit = {
-				var:cbp_pr182_stockpile_probe_country_count > 0
-				var:cbp_pr182_stockpile_probe_capacity > 0
-				var:cbp_pr182_stockpile_probe_fixed_modifier_seen = 1
+				var:test_cbp_pr182_stockpile_probe_country_count > 0
+				var:test_cbp_pr182_stockpile_probe_capacity > 0
+				var:test_cbp_pr182_stockpile_probe_fixed_modifier_seen = 1
 			}
 			set_global_variable = test_cbp_pr182_market_stockpile_probe_passed
 			debug_log = "ModeU5 TEST PASS scenario=pr182_market_stockpile_capacity_probe"
@@ -97,7 +97,7 @@ cbp_debug_run_pr182_market_stockpile_capacity_probe = {
 		}
 	}
 
-	remove_variable = cbp_pr182_stockpile_probe_country_count
-	remove_variable = cbp_pr182_stockpile_probe_capacity
-	remove_variable = cbp_pr182_stockpile_probe_fixed_modifier_seen
+	remove_variable = test_cbp_pr182_stockpile_probe_country_count
+	remove_variable = test_cbp_pr182_stockpile_probe_capacity
+	remove_variable = test_cbp_pr182_stockpile_probe_fixed_modifier_seen
 }
