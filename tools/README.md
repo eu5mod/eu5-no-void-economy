@@ -19,6 +19,12 @@ MODEU5_US09_BONUS_PERCENT=5
 The real `.cbp.local.env` file is ignored by Git. Do not commit personal
 install paths.
 
+`generate_all.sh` derives the vanilla location-static-modifier source from
+`EU5_GAME_COMMON_DIR`. `EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE` may override
+that path. `generate_cbp_location_overrides.sh` copies the selected vanilla
+blocks and changes only their configured target assignment, so unrelated
+vanilla balance changes flow into the generated override automatically.
+
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
 the EU5 engine `--debug_mode` launch argument:
 
@@ -229,6 +235,8 @@ The building override generator composes the approved static changes that share
 the same vanilla files:
 
 - US-09 output and trade-capacity compensation;
+- US-09 trade-capacity compensation can use an independent
+  `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT`; if unset, it defaults to `15`;
 - US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5`;
 - US-08/US-05.3 building maintenance quantities multiplied by `0.7`;
 - US-08/US-05.3 marketplace and other `trade_category` building maintenance
@@ -238,6 +246,7 @@ Pass the desired compensation percentage explicitly. Example:
 
 ```bash
 ./tools/generate_us09_economy_overrides.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
+MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_all.sh
 ```
 
 If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
@@ -262,7 +271,8 @@ against the local vanilla source:
 python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
-  --maintenance-multiplier 0.3 \
+  --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
+  --maintenance-multiplier 0.7 \
   --trade-building-maintenance-multiplier 0.5
 ```
 

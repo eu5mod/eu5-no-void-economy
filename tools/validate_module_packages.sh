@@ -208,42 +208,177 @@ require_match 'name = cbp_war_package_version' \
 
 us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
 us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
+us09_market_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/market_buildings.txt"
 us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
+us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
+us09_market_stockpile_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_market_stockpile_capacity_effects.txt"
+us09_trade_capacity_percent=""
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
+require_file "$us09_market_buildings_file"
 require_file "$us09_rgo_static_modifier_file"
 require_file "$us09_rgo_size_effects_file"
+require_file "$us09_market_stockpile_static_modifier_file"
+require_file "$us09_market_stockpile_effects_file"
 require_match '^# Source: <EU5_GAME_COMMON_DIR>/prices/00_hardcoded\.txt$' \
 	"$us09_prices_file" \
 	'US-09 RGO price override must preserve the vanilla prices file path'
 require_match '^expand_rgo_gathering = \{$' \
 	"$us09_prices_file" \
 	'US-09 RGO price override must contain the vanilla expand_rgo_gathering key'
-require_match '^# US-07 composed trade-building estate-power multiplier: 0\.5$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must document the composed US-07 multiplier'
-require_match '^# Building maintenance multiplier: 0\.7$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 building maintenance override must document the composed 30% non-trade maintenance multiplier'
-require_match '^# Trade-building maintenance multiplier: 0\.5$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 building maintenance override must document the composed 50% trade-building maintenance multiplier'
-require_match '^[[:space:]]+cloth = 0\.03$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 trade-building maintenance must halve marketplace cloth maintenance'
-require_match '^[[:space:]]+paper = 0\.025$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 trade-building maintenance must halve marketplace paper maintenance'
-require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must compose the approved US-07 local_burghers_estate_power reduction'
-require_match '^[[:space:]]+local_trades_per_burgher = 1\.1$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the +10% local_trades_per_burgher compensation'
-require_match '^[[:space:]]+local_merchant_capacity = 1\.1$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the +10% local_merchant_capacity compensation'
+us09_trade_capacity_percent="$(
+	python3 - "$us09_trade_buildings_file" <<'PY'
+from __future__ import annotations
+
+import math
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+lines = path.read_text(encoding="utf-8-sig").splitlines()
+
+def header_value(label: str) -> tuple[float, float | None]:
+    number = r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)"
+    pattern = rf"^# {re.escape(label)}: ({number})(?: \(({number})%\))?$"
+    for line in lines[:16]:
+        match = re.match(pattern, line)
+        if match:
+            multiplier = float(match.group(1))
+            percent = float(match.group(2)) if match.group(2) is not None else None
+            return multiplier, percent
+    raise SystemExit(f"US-09 trade-building override must document {label}")
+
+trade_multiplier, trade_percent = header_value("Trade capacity multiplier")
+if trade_percent is None:
+    raise SystemExit("US-09 trade-capacity header must include the percent form")
+if not math.isclose(trade_multiplier, 1 + trade_percent / 100, rel_tol=0, abs_tol=0.000001):
+    raise SystemExit("US-09 trade-capacity multiplier and percent header disagree")
+
+for label in (
+    "Building maintenance multiplier",
+    "Trade-building maintenance multiplier",
+    "US-07 composed trade-building estate-power multiplier",
+):
+    header_value(label)
+
+def code(line: str) -> str:
+    return line.split("#", 1)[0]
+
+def top_block(name: str) -> str:
+    for index, line in enumerate(lines):
+        if re.match(rf"^{re.escape(name)}\s*=\s*\{{", code(line)):
+            depth = 0
+            block: list[str] = []
+            for child in lines[index:]:
+                block.append(child)
+                depth += code(child).count("{")
+                depth -= code(child).count("}")
+                if depth == 0:
+                    return "\n".join(block)
+    raise SystemExit(f"US-09 trade-building override must contain {name}")
+
+def assignment(block: str, key: str) -> float:
+    match = re.search(rf"^\s*{re.escape(key)}\s*=\s*(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))\b", block, re.M)
+    if not match:
+        raise SystemExit(f"US-09 trade-building override must contain {key}")
+    return float(match.group(1))
+
+marketplace_blocks = {
+    name: top_block(name)
+    for name in ("marketplace", "merchants_quarters", "grand_marketplace")
+}
+marketplace_maintenance: dict[str, float] | None = None
+for name, block in marketplace_blocks.items():
+    trades_per_burgher = assignment(block, "local_trades_per_burgher")
+    merchant_capacity = assignment(block, "local_merchant_capacity")
+    if not math.isclose(
+        merchant_capacity,
+        trades_per_burgher * trade_multiplier,
+        rel_tol=0,
+        abs_tol=0.000001,
+    ):
+        raise SystemExit(
+            f"US-09 {name} local_merchant_capacity must equal "
+            "local_trades_per_burgher x declared trade-capacity multiplier"
+        )
+    if assignment(block, "local_burghers_estate_power") <= 0:
+        raise SystemExit(f"US-09 {name} estate-power value must stay positive")
+
+    maintenance_match = re.search(
+        r"\b[A-Za-z0-9_]+_maintenance\s*=\s*\{(?P<body>.*?)^\s*\}",
+        block,
+        re.S | re.M,
+    )
+    if not maintenance_match:
+        raise SystemExit(f"US-09 {name} must retain a maintenance block")
+    body = maintenance_match.group("body")
+    values = {
+        key: float(value)
+        for key, value in re.findall(
+            r"^\s*([A-Za-z0-9_]+)\s*=\s*(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))\b",
+            body,
+            re.M,
+        )
+        if key != "category"
+    }
+    if not values:
+        raise SystemExit(f"US-09 {name} maintenance block must retain goods")
+    if marketplace_maintenance is None:
+        marketplace_maintenance = values
+    elif values != marketplace_maintenance:
+        raise SystemExit(
+            "US-08/US-05.3 composed marketplace maintenance must stay normalized "
+            "across marketplace, merchants_quarters, and grand_marketplace"
+        )
+
+print(f"{trade_percent:g}")
+PY
+)"
+
+python3 - "$us09_market_buildings_file" <<'PY'
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+lines = path.read_text(encoding="utf-8-sig").splitlines()
+
+def code(line: str) -> str:
+    return line.split("#", 1)[0]
+
+stack: list[tuple[str, int, int]] = []
+ranges: list[tuple[str, int, int, int]] = []
+for index, line in enumerate(lines):
+    match = re.match(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{", code(line))
+    if match:
+        stack.append((match.group(1), index, len(stack)))
+    for _ in range(code(line).count("}")):
+        if not stack:
+            break
+        key, start, depth = stack.pop()
+        ranges.append((key, start, index, depth))
+
+top_level = [item for item in ranges if item[0] == "market_warehouse" and item[3] == 0]
+if not top_level:
+    raise SystemExit("US-09 market-building override must contain market_warehouse")
+_, start, end, depth = top_level[0]
+children = {
+    key: (child_start, child_end)
+    for key, child_start, child_end, child_depth in ranges
+    if start < child_start < end and child_depth == depth + 1
+}
+for key in ("country_potential", "location_potential"):
+    if key not in children:
+        raise SystemExit(f"US-09 market_warehouse override must contain {key}")
+    child_start, child_end = children[key]
+    child_text = "\n".join(lines[child_start : child_end + 1])
+    if not re.search(r"\balways\s*=\s*no\b", child_text):
+        raise SystemExit(f"US-09 market_warehouse {key} must be always = no")
+PY
 require_match '^[[:space:]]+local_max_rgo_size = 1$' \
 	"$us09_rgo_static_modifier_file" \
 	'US-09 base RGO size static modifier must be scalable through add_location_modifier size'
@@ -253,6 +388,12 @@ require_match 'cbp_apply_us09_base_rgo_size_bonus = yes' \
 require_match 'cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes' \
 	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
 	'US-09 base RGO size bonus must be refreshed by the Economy package monthly country pulse'
+require_match 'cbp_refresh_all_market_center_stockpile_capacity = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
+	'CBP market stockpile capacity must be applied by the Economy package on game start/load'
+require_match 'cbp_refresh_market_center_stockpile_capacity_for_current_country = yes' \
+	packages/cbp_economy_rebalance/in_game/common/on_action/cbp_economy_package_on_actions.txt \
+	'CBP market stockpile capacity must be refreshed by the Economy package monthly country pulse'
 require_match 'every_location_in_the_world = \{' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size initial effect must iterate every world location through the confirmed iterator'
@@ -271,6 +412,18 @@ require_match '^[[:space:]]*multiply = 0\.025$' \
 require_match '^[[:space:]]*multiply = 0\.025$' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must document the display-equivalent population formula'
+require_match '^[[:space:]]*maximum_stockpile_capacity = 1$' \
+	"$us09_market_stockpile_static_modifier_file" \
+	'CBP market stockpile capacity static modifier must expose unit stockpile capacity'
+require_match 'scope:cbp_market\.location = \{' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity must apply to the market-center location'
+require_match '^[[:space:]]*modifier = cbp_market_stockpile_capacity$' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity effect must apply the CBP static modifier'
+require_match 'every_market_center_in_country = \{' \
+	"$us09_market_stockpile_effects_file" \
+	'CBP market stockpile capacity monthly refresh must iterate market centers from country scope'
 require_match '^[[:space:]]*STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "\(CBP\) 10% Bigger RGO"$' \
 	packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us09_rgo_l_english.yml \
 	'US-09 base RGO size static modifier localization must include the engine-displayed STATIC_MODIFIER key'
@@ -294,6 +447,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_typ
 		--common-dir "$EU5_GAME_COMMON_DIR" \
 		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
 		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
+		--trade-capacity-percent "$us09_trade_capacity_percent" \
 		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
 		--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 fi

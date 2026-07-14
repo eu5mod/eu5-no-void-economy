@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/foreign_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -49,7 +50,7 @@ trade_office = {
 
 
 	modifier = {
-		merchant_capacity_from_building = 0.33
+		merchant_capacity_from_building = 0.36
 		building_owner_maritime_presence = 0.05
 		merchant_power_from_building = 0.2
 	}
@@ -282,7 +283,7 @@ overseas_trading_post = {
 	build_time = colonise_build_time
 
 	modifier = {
-		merchant_capacity_from_building = 0.11
+		merchant_capacity_from_building = 0.12
 		merchant_power_from_building = 0.2
 	}
 
@@ -354,7 +355,7 @@ colonial_administration = {
 	build_time = colonise_build_time
 
 	modifier = {
-		merchant_capacity_from_building = 0.22
+		merchant_capacity_from_building = 0.24
 		merchant_power_from_building = 0.2
 	}
 
@@ -455,7 +456,7 @@ viceroyalty = {
 	construction_demand = local_governor_construction
 
 	modifier = {
-		merchant_capacity_from_building = 0.33
+		merchant_capacity_from_building = 0.36
 		merchant_power_from_building = 0.2
 		local_crown_estate_power = 1
 	}

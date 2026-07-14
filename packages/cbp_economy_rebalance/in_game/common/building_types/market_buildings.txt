@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/market_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -29,7 +30,7 @@ entrepot = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -68,7 +69,7 @@ trading_hub = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -107,7 +108,7 @@ customs_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -146,7 +147,7 @@ stock_exchange = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -185,7 +186,7 @@ clearing_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.5
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -200,6 +201,10 @@ clearing_house = {
 }
 
 market_warehouse = {
+
+	country_potential = {
+		always = no
+	}
 	is_foreign = no
 	pop_type = burghers
 	max_levels = market_warehouse_max_level
@@ -215,12 +220,8 @@ market_warehouse = {
 	expensive = yes
 	build_time = market_build_time
 
-	country_potential = {
-		always = no
-	}
-
 	location_potential = {
-		is_market_center = yes
+		always = no
 	}
 
 	remove_if = {
@@ -229,13 +230,13 @@ market_warehouse = {
 
 
 	modifier = {
-		local_merchant_capacity = 0.11
+		local_merchant_capacity = 0.12
 		local_merchant_power = 0.1
-		local_trades_per_burgher = 0.11
+		local_trades_per_burgher = 0.1
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 
@@ -281,12 +282,12 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.1
-		local_trades_per_burgher = 0.11
+		local_merchant_capacity = 1.2
+		local_trades_per_burgher = 0.1
 	}
 
 	market_center_modifier = {
-		maximum_stockpile_capacity = 200
+		# maximum_stockpile_capacity = 200
 	}
 
 	construction_demand = funduq_building_construction

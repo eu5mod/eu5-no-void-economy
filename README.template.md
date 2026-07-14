@@ -2,7 +2,7 @@
 
 This mod is born from the desire to remove Paradox punive Balance Changes introduced since (1.2) and offer a more balanced alternative against, with methodic approach as someone who has balanced game : 
 
- - Method 1 : Set anchor & remove variable prices/speed to set baseline. 
+ - Method 1 : Set anchor & remove variable prices/speed to set baseline.
     - Example : Scaling RGO prices
     - Example : Scaling Consumption
     - Example : Scaling Maintenance Cost

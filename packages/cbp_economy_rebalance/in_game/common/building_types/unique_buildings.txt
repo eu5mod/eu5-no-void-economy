@@ -2,6 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/unique_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -115,7 +116,7 @@ hanseatic_kontor = {
 	modifier = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.1
-		merchant_capacity_from_building = 0.275
+		merchant_capacity_from_building = 0.3
 	}
 
 	possible_production_methods = {
@@ -249,7 +250,7 @@ fondaco = {
 	modifier = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.025
-		merchant_capacity_from_building = 0.22
+		merchant_capacity_from_building = 0.24
 		#Italian merchants settle in the new location
 		local_migration_attraction = 0.025
 	}
@@ -712,7 +713,7 @@ caravanserai = {
 
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.1
+		local_merchant_capacity = 1.2
 	}
 
 	construction_demand = caravanserai_building_construction
@@ -765,7 +766,7 @@ caravan_stop = {
 
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.1
+		local_merchant_capacity = 1.2
 	}
 
 	construction_demand = caravan_stop_building_construction
@@ -1412,7 +1413,7 @@ pomor_outpost = {
 	construction_demand = pomor_outpost_construction
 
 	modifier = {
-		local_merchant_capacity = 0.275
+		local_merchant_capacity = 0.3
 		local_raw_material_output = 0.33
 		local_peasants_estate_power = 0.25		#25% higher here.
 	}
@@ -2186,7 +2187,7 @@ kokufu = {
 		can_recruit_regiment_in_this_location = yes
 		gold_to_building_owner = 0.3
 		merchant_power_from_building = 0.3
-		merchant_capacity_from_building = 0.33
+		merchant_capacity_from_building = 0.36
 	}
 
 	possible_production_methods = {
@@ -2454,7 +2455,7 @@ shoen = {
 	modifier = {
 		gold_to_building_owner = 0.1
 		merchant_power_from_building = 0.1
-		merchant_capacity_from_building = 0.11
+		merchant_capacity_from_building = 0.12
 		manpower_to_building_owner = 0.001
 	}
 
@@ -2902,7 +2903,7 @@ venetian_quarter = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.1
+		merchant_capacity_from_building = 1.2
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -2943,7 +2944,7 @@ galata = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.1
+		merchant_capacity_from_building = 1.2
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -4211,7 +4212,7 @@ trans_saharan_trade_outposts = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.1
+		merchant_capacity_from_building = 1.2
 		merchant_power_from_building = 2
 	}
 
@@ -4578,7 +4579,7 @@ por_feitoria = {
 
 	modifier = {
 		building_owner_maritime_presence = 0.025
-		merchant_capacity_from_building = 0.275
+		merchant_capacity_from_building = 0.3
 		merchant_power_from_building = 1
 	}
 }
@@ -4621,7 +4622,7 @@ gurgaddi = {
 		local_clergy_max_literacy = 10
 		gold_to_building_owner = 0.05
 		merchant_power_from_building = 0.1
-		merchant_capacity_from_building = 0.11
+		merchant_capacity_from_building = 0.12
 	}
 }
 

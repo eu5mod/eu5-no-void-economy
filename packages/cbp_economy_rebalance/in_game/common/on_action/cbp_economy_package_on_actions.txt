@@ -25,11 +25,13 @@ cbp_economy_rebalance_package_initialize = {
 			value = 100
 		}
 		cbp_apply_us09_base_rgo_size_bonus = yes
+		cbp_refresh_all_market_center_stockpile_capacity = yes
 	}
 }
 
 cbp_economy_rebalance_monthly_country_pulse = {
 	effect = {
 		cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes
+		cbp_refresh_market_center_stockpile_capacity_for_current_country = yes
 	}
 }

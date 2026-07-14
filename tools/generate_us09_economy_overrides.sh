@@ -22,6 +22,8 @@ Usage:
 
 Options:
   --percent N                            Percent increase for building output
+  --trade-capacity-percent N             Percent increase for merchant-capacity fields
+                                          (default: same as --percent)
   --extra-burgher-promotion-speed N      Extra Burgher promotion speed percent (10 = +10%)
   --extra-laborer-promotion-speed N      Extra Laborer promotion speed percent (10 = +10%)
   --building-maintenance-multiplier N    Non-trade maintenance quantity multiplier (default: 0.7)
@@ -36,6 +38,7 @@ Examples:
   ./tools/generate_us09_economy_overrides.sh 5
   ./tools/generate_us09_economy_overrides.sh 10
   ./tools/generate_us09_economy_overrides.sh --percent 7.5
+  MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_us09_economy_overrides.sh 10
   EXTRA_BURGHER_PROMOTION_SPEED=10 EXTRA_LABORER_PROMOTION_SPEED=10 ./tools/generate_us09_economy_overrides.sh 10
 
 By default, this writes offline probe output under tools/generated/us09_economy_overrides.
@@ -90,7 +93,10 @@ has_economy_building_target_field() {
 		/^[[:space:]]*#/ {
 			next
 		}
-		/^[[:space:]]*(output|local_trades_per_burgher|local_merchant_capacity|merchant_capacity_from_building)[[:space:]]*=/ {
+		# Keep legacy exact-path building overrides materialized even when they
+		# only contain the old trade-count field. The transformer intentionally
+		# leaves local_trades_per_burgher unchanged.
+		/^[[:space:]]*(output|local_trades_per_burgher|local_merchant_capacity|merchant_capacity_from_building|maximum_stockpile_capacity)[[:space:]]*=/ {
 			found = 1
 		}
 		/^[[:space:]]*category[[:space:]]*=[[:space:]]*building_maintenance([[:space:]]|#|$)/ {
@@ -128,6 +134,7 @@ validate_nonnegative_number() {
 }
 
 percent=""
+trade_capacity_percent="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-}"
 extra_burgher_promotion_speed="${EXTRA_BURGHER_PROMOTION_SPEED:-0}"
 extra_laborer_promotion_speed="${EXTRA_LABORER_PROMOTION_SPEED:-0}"
 building_maintenance_multiplier="${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}"
@@ -139,6 +146,10 @@ while (($# > 0)); do
 	case "$1" in
 		--percent)
 			percent="$2"
+			shift 2
+			;;
+		--trade-capacity-percent)
+			trade_capacity_percent="$2"
 			shift 2
 			;;
 		--extra-burgher-promotion-speed)
@@ -197,6 +208,10 @@ if [[ -z "$percent" ]]; then
 fi
 
 validate_percent "US-09 percent" "$percent"
+if [[ -z "$trade_capacity_percent" ]]; then
+	trade_capacity_percent="$percent"
+fi
+validate_percent "MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT" "$trade_capacity_percent"
 validate_percent "EXTRA_BURGHER_PROMOTION_SPEED" "$extra_burgher_promotion_speed"
 validate_percent "EXTRA_LABORER_PROMOTION_SPEED" "$extra_laborer_promotion_speed"
 validate_nonnegative_number "MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER" "$building_maintenance_multiplier"
@@ -261,6 +276,7 @@ if [[ -d "$pop_types_output_dir" ]]; then
 fi
 
 output_multiplier="$(awk -v percent="$percent" 'BEGIN { printf "%.12f", 1 + (percent / 100) }')"
+trade_capacity_multiplier="$(awk -v percent="$trade_capacity_percent" 'BEGIN { printf "%.12f", 1 + (percent / 100) }')"
 rgo_price_multiplier="$(awk -v percent="$percent" 'BEGIN { printf "%.12f", 1 / (1 + (percent / 100)) }')"
 burgher_promotion_multiplier="$(awk -v percent="$extra_burgher_promotion_speed" 'BEGIN { printf "%.12f", 1 + (percent / 100) }')"
 laborer_promotion_multiplier="$(awk -v percent="$extra_laborer_promotion_speed" 'BEGIN { printf "%.12f", 1 + (percent / 100) }')"
@@ -285,6 +301,7 @@ while IFS= read -r -d '' source_file; do
 		printf '%s\n' '# Do not edit manually.'
 		printf '# Source: %s\n' "$(source_label "$source_file")"
 		printf '# Output multiplier: %s (%s%%)\n' "$(format_decimal "$output_multiplier")" "$percent"
+		printf '# Trade capacity multiplier: %s (%s%%)\n' "$(format_decimal "$trade_capacity_multiplier")" "$trade_capacity_percent"
 		printf '# Building maintenance multiplier: %s\n' "$(format_decimal "$building_maintenance_multiplier")"
 		printf '# Trade-building maintenance multiplier: %s\n\n' "$(format_decimal "$trade_building_maintenance_multiplier")"
 		if [[ "$source_basename" == "trade_buildings.txt" ]]; then
@@ -295,6 +312,7 @@ while IFS= read -r -d '' source_file; do
 			--source "$source_file" \
 			--source-basename "$source_basename" \
 			--output-multiplier "$output_multiplier" \
+			--trade-capacity-multiplier "$trade_capacity_multiplier" \
 			--maintenance-multiplier "$building_maintenance_multiplier" \
 			--trade-building-maintenance-multiplier "$trade_building_maintenance_multiplier" \
 			--us07-trade-burghers-estate-power-multiplier "$us07_trade_burghers_estate_power_multiplier" \
@@ -500,6 +518,6 @@ if LC_ALL=C grep -RIl $'\xEF\xBB\xBF' "${bom_scan_dirs[@]}" >/dev/null 2>&1; the
 	exit 1
 fi
 
-printf 'Generated %d building override files, 1 RGO expansion price override file, and %d pop-type promotion override files for US-09 (%s%%).\n' \
-	"$generated_building_files" "$generated_pop_type_files" "$percent"
+printf 'Generated %d building override files, 1 RGO expansion price override file, and %d pop-type promotion override files for US-09 (output/RGO %s%%; trade capacity %s%%).\n' \
+	"$generated_building_files" "$generated_pop_type_files" "$percent" "$trade_capacity_percent"
 printf 'Output directory: %s\n' "$package_common_dir"
