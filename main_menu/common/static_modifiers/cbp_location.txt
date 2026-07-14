@@ -1,44 +1,54 @@
-﻿#multiplies with prosperity in location (0 to 1)
-prosperity = {
+﻿#multiplied by how far above FOOD_PRICE food is in this location.
+expensive_food_in_location = {
 	game_data = {
 		category = location
 	}
-	#local_monthly_development = 0.004
-	#local_migration_attraction = 0.1
-	#local_life_expectancy = 10
-	#local_population_growth = 0.002
-	
-	#local_mercenaries_modifier = -0.5
+	local_population_growth = 0 #=>PUT THIS LINE AT 0
 }
 
-
-#multiplies with development in location (0-100)
-development = {
+#multiplied by how far below FOOD_PRICE food is in this location.
+cheap_food_in_location = {
 	game_data = {
 		category = location
 	}
-	#local_population_capacity_modifier = 0.025
-	#local_distance_from_capital_speed_propagation = 0.005
-	#local_supply_limit_modifier = 0.02
-	#blockade_force_required = 0.01
-	#local_migration_attraction = 0.0025
-	#local_trade_center_power = 0.001
-
-	#local_institution_growth_modifier = 0.002
-	
-	#local_construction_speed = 0.01
-	
-	#local_monthly_food_modifier = 0.01
-	
-	#free_building_levels = 1
-	
-	#local_max_rgo_size = 0.1
-	
-	#local_life_expectancy = 0.1
-	
-	#occupation_time = 0.01
-	
-	#local_build_buildings_cost = -0.001
-	#maximum_stockpile_capacity = 5
+	local_population_growth = 0.001 #=>PUT THIS LINE AT 0.001
 }
 
+capital = {
+	game_data = {
+		category = location
+	}
+	local_proximity_source = 100
+	local_max_control = 0.20
+	local_population_capacity_modifier = 0.10
+	local_migration_attraction = 0.025
+	
+	local_nobles_desired_pop_scaled = 0.002
+	local_clergy_desired_pop_scaled = 0.002
+	local_fort_maintenance_cost = -0.50
+	
+	free_building_levels = 5
+	cbp_country_strock = 8 #=>PUT THIS LINE AT 8
+}
+
+market_center = {
+	game_data = {
+		category = location
+	}
+	local_migration_attraction = 0.025
+	local_merchant_capacity = 2
+	local_merchant_power = 20
+	local_institution_growth_modifier = 0.25
+	free_building_levels = 5
+	maximum_stockpile_capacity = 0 #=>PUT THIS LINE AT 0
+}
+
+#per 1k available jobs
+surplus_jobs = {
+	game_data = {
+		category = location
+	}
+	local_migration_attraction = 0.2 #=>PUT THIS LINE AT 0.2
+	local_peasant_enfranchisment = 0.02
+	local_construction_speed = -0.1
+}

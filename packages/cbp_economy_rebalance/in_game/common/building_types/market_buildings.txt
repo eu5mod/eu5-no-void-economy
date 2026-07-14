@@ -2,7 +2,7 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/market_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Trade capacity multiplier: 1.15 (15%)
+# Trade capacity multiplier: 1.2 (20%)
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 
@@ -30,7 +30,7 @@ entrepot = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -69,7 +69,7 @@ trading_hub = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -108,7 +108,7 @@ customs_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -147,7 +147,7 @@ stock_exchange = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -186,7 +186,7 @@ clearing_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 6.0
 	}
 
 	market_center_modifier = {
@@ -230,7 +230,7 @@ market_warehouse = {
 
 
 	modifier = {
-		local_merchant_capacity = 0.115
+		local_merchant_capacity = 0.12
 		local_merchant_power = 0.1
 		local_trades_per_burgher = 0.1
 	}
@@ -282,7 +282,7 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.2
 		local_trades_per_burgher = 0.1
 	}
 
