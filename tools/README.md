@@ -19,6 +19,12 @@ MODEU5_US09_BONUS_PERCENT=5
 The real `.cbp.local.env` file is ignored by Git. Do not commit personal
 install paths.
 
+`generate_all.sh` derives the vanilla location-static-modifier source from
+`EU5_GAME_COMMON_DIR`. `EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE` may override
+that path. `generate_cbp_location_overrides.sh` copies the selected vanilla
+blocks and changes only their configured target assignment, so unrelated
+vanilla balance changes flow into the generated override automatically.
+
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
 the EU5 engine `--debug_mode` launch argument:
 

@@ -8,6 +8,12 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repo_root/tools/cbp_tool_lib.sh"
 cbp_load_local_config
 
+if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	bash "$repo_root/tools/generate_cbp_location_overrides.sh"
+else
+	printf '%s\n' 'Skipping CBP location static-modifier generation; configure EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE or EU5_GAME_COMMON_DIR.'
+fi
+
 # Remove artifacts produced by the abandoned exact-path vanilla Pop-demand
 # generator. Leaving either file in a working tree would reintroduce an override
 # or duplicate the tracked injection script value during local installation.
