@@ -1,2 +1,4 @@
 ﻿l_english:
- cbp_us09_base_rgo_size_10_percent_bonus: "(CBP) 10% Bigger RGO"
+ cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"
+ STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"
+ STATIC_MODIFIER_NAME_cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"

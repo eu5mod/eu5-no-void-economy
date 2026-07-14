@@ -251,6 +251,19 @@ require_match '^[[:space:]]*multiply = 0\.025$' \
 require_match '^[[:space:]]*multiply = 0\.025$' \
 	"$us09_rgo_size_effects_file" \
 	'US-09 base RGO size effect must document the display-equivalent population formula'
+require_match '^[[:space:]]*STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "\(CBP\) 10% Bigger RGO"$' \
+	packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us09_rgo_l_english.yml \
+	'US-09 base RGO size static modifier localization must include the engine-displayed STATIC_MODIFIER key'
+require_match '^[[:space:]]*building_upkeep_costs = -1\.0$' \
+	packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt \
+	'CBP building upkeep auto modifier must cancel country-paid upkeep through the confirmed building_upkeep_costs modifier type'
+if search_quiet 'building_upkeep_multiplier' \
+	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
+	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
+then
+	printf '%s\n' 'CBP building upkeep overrides must not use the invalid building_upkeep_multiplier modifier type.' >&2
+	exit 1
+fi
 
 stale_us09_override_files="$(
 	{
