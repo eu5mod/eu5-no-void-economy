@@ -62,8 +62,8 @@ The only way to get consuming behaviour aligned with production, is to align con
  3. ✅ We introduced the following mechanic : If a good is oversupplied, the POP need slowly increase (+ 1% / year)</br>
 </details>
 
-#### ⏳ [Imperial Hurbis](https://github.com/eu5mod/eu5-no-void-economy/issues/112) - Implement Empire Military Difficulties
-#### ⏳ [War Exhaustion a Political Pressure](https://github.com/eu5mod/eu5-no-void-economy/issues/68) - Implement War Impact on a country stability & a governement Legitimacy 
+#### ⏳ [Imperial Hurbis](https://github.com/eu5mod/eu5-no-void-economy/issues/112) - Empire military difficulties
+#### ⏳ [War Exhaustion a Political Pressure](https://github.com/eu5mod/eu5-no-void-economy/issues/68) - War impact stability & legitimacy 
 
 <details>
 <summary><strong> ✅ Minor balance tweeks</strong> (click for detail)</summary>

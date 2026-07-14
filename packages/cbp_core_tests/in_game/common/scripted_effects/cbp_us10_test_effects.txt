@@ -79,15 +79,15 @@ cbp_us10_read_fra_wheat_consumption_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
-				has_variable_map = test_cbp_consumption_wheat_requested_by_market
+				has_variable_map = cbp_consumption_wheat_requested_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_consumption_wheat_requested_by_market
+					name = cbp_consumption_wheat_requested_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_requested_record
-				value = "variable_map(test_cbp_consumption_wheat_requested_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_consumption_wheat_requested_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -95,15 +95,15 @@ cbp_us10_read_fra_wheat_consumption_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = test_cbp_consumption_wheat_satisfied_by_market
+				has_variable_map = cbp_consumption_wheat_satisfied_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_consumption_wheat_satisfied_by_market
+					name = cbp_consumption_wheat_satisfied_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_satisfied_record
-				value = "variable_map(test_cbp_consumption_wheat_satisfied_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_consumption_wheat_satisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -111,15 +111,15 @@ cbp_us10_read_fra_wheat_consumption_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = test_cbp_consumption_wheat_unsatisfied_by_market
+				has_variable_map = cbp_consumption_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_consumption_wheat_unsatisfied_by_market
+					name = cbp_consumption_wheat_unsatisfied_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_consumption_unsatisfied_record
-				value = "variable_map(test_cbp_consumption_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_consumption_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -132,15 +132,15 @@ cbp_us10_read_fra_wheat_trade_outcome = {
 	c:FRA = {
 		if = {
 			limit = {
-				has_variable_map = test_cbp_trade_wheat_requested_by_market
+				has_variable_map = cbp_trade_wheat_requested_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_trade_wheat_requested_by_market
+					name = cbp_trade_wheat_requested_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_requested_record
-				value = "variable_map(test_cbp_trade_wheat_requested_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_trade_wheat_requested_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -148,15 +148,15 @@ cbp_us10_read_fra_wheat_trade_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = test_cbp_trade_wheat_transferred_by_market
+				has_variable_map = cbp_trade_wheat_transferred_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_trade_wheat_transferred_by_market
+					name = cbp_trade_wheat_transferred_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_transferred_record
-				value = "variable_map(test_cbp_trade_wheat_transferred_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_trade_wheat_transferred_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -164,15 +164,15 @@ cbp_us10_read_fra_wheat_trade_outcome = {
 		}
 		if = {
 			limit = {
-				has_variable_map = test_cbp_trade_wheat_unsatisfied_by_market
+				has_variable_map = cbp_trade_wheat_unsatisfied_by_market
 				is_key_in_variable_map = {
-					name = test_cbp_trade_wheat_unsatisfied_by_market
+					name = cbp_trade_wheat_unsatisfied_by_market
 					target = scope:cbp_us10_target_market
 				}
 			}
 			save_temporary_scope_value_as = {
 				name = test_cbp_us10_trade_unsatisfied_record
-				value = "variable_map(test_cbp_trade_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
+				value = "variable_map(cbp_trade_wheat_unsatisfied_by_market|scope:cbp_us10_target_market)"
 			}
 		}
 		else = {
@@ -375,8 +375,8 @@ cbp_us10_run_demand_resolution_fixture = {
 	set_variable = { name = gui_cbp_us10_ui_seller_stock_after value = scope:test_cbp_us10_seller_stock_after }
 	set_variable = { name = gui_cbp_us10_ui_buyer_capacity value = scope:test_cbp_us10_trade_capacity }
 
-	debug_log = "ModeU5 US-10 DUMP consumption requested=[THIS.GetVariable('cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_consumption_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('cbp_us10_ui_consumption_stock_after').GetValue|2] ordering_foreign_count=[THIS.GetVariable('cbp_us10_ui_ordering_foreign_count').GetValue|0] ordering_own_stock_after=[THIS.GetVariable('cbp_us10_ui_ordering_own_stock_after').GetValue|2]"
-	debug_log = "ModeU5 US-10 DUMP transfer requested=[THIS.GetVariable('cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('cbp_us10_ui_buyer_capacity').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP consumption requested=[THIS.GetVariable('gui_cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('gui_cbp_us10_ui_consumption_stock_after').GetValue|2] ordering_foreign_count=[THIS.GetVariable('gui_cbp_us10_ui_ordering_foreign_count').GetValue|0] ordering_own_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_ordering_own_stock_after').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP transfer requested=[THIS.GetVariable('gui_cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('gui_cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('gui_cbp_us10_ui_buyer_capacity').GetValue|2]"
 
 	cbp_us10_evaluate_fixture_assertions = yes
 }
@@ -531,7 +531,7 @@ cbp_debug_run_us10_monthly_runtime_tests = {
 		set_variable = { name = gui_cbp_us10_ui_monthly_processed value = global_var:cbp_us10_monthly_consumption_requests_processed }
 		set_variable = { name = gui_cbp_us10_ui_monthly_trade_blocked value = global_var:cbp_us10_monthly_trade_signals_blocked }
 
-		debug_log = "ModeU5 US-10 DUMP monthly_runtime requested=[THIS.GetVariable('cbp_us10_ui_monthly_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_monthly_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_monthly_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('cbp_us10_ui_monthly_stock_after').GetValue|2] processed=[THIS.GetVariable('cbp_us10_ui_monthly_processed').GetValue|0] trade_signals_blocked=[THIS.GetVariable('cbp_us10_ui_monthly_trade_blocked').GetValue|0]"
+		debug_log = "ModeU5 US-10 DUMP monthly_runtime requested=[THIS.GetVariable('gui_cbp_us10_ui_monthly_requested').GetValue|2] satisfied=[THIS.GetVariable('gui_cbp_us10_ui_monthly_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_monthly_unsatisfied').GetValue|2] stock_after=[THIS.GetVariable('gui_cbp_us10_ui_monthly_stock_after').GetValue|2] processed=[THIS.GetVariable('gui_cbp_us10_ui_monthly_processed').GetValue|0] trade_signals_blocked=[THIS.GetVariable('gui_cbp_us10_ui_monthly_trade_blocked').GetValue|0]"
 
 		save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
 		if = { limit = { NOT = { scope:test_cbp_us10_consumption_requested_record = 30 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=monthly_consumption_requested expected=30" }
@@ -574,7 +574,7 @@ cbp_debug_run_us10_trade_capacity_conversion_tests = {
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_transport_cost value = scope:test_cbp_us10_conversion_wheat_transport_cost }
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_quantity value = scope:test_cbp_us10_conversion_wheat_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_wheat_defaulted value = scope:test_cbp_us10_conversion_wheat_defaulted }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_capacity').GetValue|2] transport_cost=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('cbp_us10_ui_conversion_wheat_defaulted').GetValue|0]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=[THIS.GetVariable('gui_cbp_us10_ui_conversion_wheat_capacity').GetValue|2] transport_cost=[THIS.GetVariable('gui_cbp_us10_ui_conversion_wheat_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('gui_cbp_us10_ui_conversion_wheat_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('gui_cbp_us10_ui_conversion_wheat_defaulted').GetValue|0]"
 
 	cbp_compute_goods_quantity_from_trade_capacity_good_copper = {
 		capacity_volume = 20
@@ -588,7 +588,7 @@ cbp_debug_run_us10_trade_capacity_conversion_tests = {
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_transport_cost value = scope:test_cbp_us10_conversion_copper_transport_cost }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_quantity value = scope:test_cbp_us10_conversion_copper_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_defaulted value = scope:test_cbp_us10_conversion_copper_defaulted }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=[THIS.GetVariable('cbp_us10_ui_conversion_copper_capacity').GetValue|2] transport_cost=[THIS.GetVariable('cbp_us10_ui_conversion_copper_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_copper_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('cbp_us10_ui_conversion_copper_defaulted').GetValue|0]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=[THIS.GetVariable('gui_cbp_us10_ui_conversion_copper_capacity').GetValue|2] transport_cost=[THIS.GetVariable('gui_cbp_us10_ui_conversion_copper_transport_cost').GetValue|4] computed_goods_quantity=[THIS.GetVariable('gui_cbp_us10_ui_conversion_copper_quantity').GetValue|4] transport_cost_defaulted=[THIS.GetVariable('gui_cbp_us10_ui_conversion_copper_defaulted').GetValue|0]"
 
 	cbp_compute_goods_quantity_from_trade_capacity_with_route_good_copper = {
 		capacity_volume = 20
@@ -596,7 +596,7 @@ cbp_debug_run_us10_trade_capacity_conversion_tests = {
 	}
 	save_temporary_scope_value_as = { name = test_cbp_us10_conversion_copper_route_quantity value = scope:cbp_computed_goods_quantity }
 	set_variable = { name = gui_cbp_us10_ui_conversion_copper_route_quantity value = scope:test_cbp_us10_conversion_copper_route_quantity }
-	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 route_cost_multiplier=2 computed_goods_quantity=[THIS.GetVariable('cbp_us10_ui_conversion_copper_route_quantity').GetValue|4]"
+	debug_log = "ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 route_cost_multiplier=2 computed_goods_quantity=[THIS.GetVariable('gui_cbp_us10_ui_conversion_copper_route_quantity').GetValue|4]"
 
 	cbp_compute_goods_quantity_from_trade_capacity_good_copper = {
 		capacity_volume = 0
@@ -737,9 +737,9 @@ cbp_us10_run_issue109_fixture = {
 	set_variable = { name = gui_cbp_us10_ui_issue109_prefilter_transferred value = scope:test_cbp_us10_issue109_prefilter_transferred }
 	set_variable = { name = gui_cbp_us10_ui_issue109_prefilter_unsatisfied value = scope:test_cbp_us10_issue109_prefilter_unsatisfied }
 
-	debug_log = "ModeU5 US-10 DUMP issue109 fast_path_used=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_used').GetValue|0] fast_taken=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_taken').GetValue|2] fast_satisfied=[THIS.GetVariable('cbp_us10_ui_issue109_fast_satisfied').GetValue|2] fast_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_fast_unsatisfied').GetValue|2] fast_stock_after=[THIS.GetVariable('cbp_us10_ui_issue109_fast_stock_after').GetValue|2] fast_candidate_count=[THIS.GetVariable('cbp_us10_ui_issue109_fast_candidate_count').GetValue|0]"
-	debug_log = "ModeU5 US-10 DUMP issue109 floor_transferred=[THIS.GetVariable('cbp_us10_ui_issue109_floor_transferred').GetValue|2] floor_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_floor_unsatisfied').GetValue|2] floor_candidates=[THIS.GetVariable('cbp_us10_ui_issue109_floor_candidate_count').GetValue|0] floor_excluded=[THIS.GetVariable('cbp_us10_ui_issue109_floor_excluded_count').GetValue|0] floor_seller_stock_after=[THIS.GetVariable('cbp_us10_ui_issue109_floor_seller_stock_after').GetValue|2]"
-	debug_log = "ModeU5 US-10 DUMP issue109 prefilter_used=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_used').GetValue|0] prefilter_blocked=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_blocked').GetValue|0] prefilter_candidates=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_candidate_count').GetValue|0] prefilter_transferred=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_transferred').GetValue|2] prefilter_unsatisfied=[THIS.GetVariable('cbp_us10_ui_issue109_prefilter_unsatisfied').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP issue109 fast_path_used=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_path_used').GetValue|0] fast_taken=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_path_taken').GetValue|2] fast_satisfied=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_satisfied').GetValue|2] fast_unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_unsatisfied').GetValue|2] fast_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_stock_after').GetValue|2] fast_candidate_count=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_candidate_count').GetValue|0]"
+	debug_log = "ModeU5 US-10 DUMP issue109 floor_transferred=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_transferred').GetValue|2] floor_unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_unsatisfied').GetValue|2] floor_candidates=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_candidate_count').GetValue|0] floor_excluded=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_excluded_count').GetValue|0] floor_seller_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_seller_stock_after').GetValue|2]"
+	debug_log = "ModeU5 US-10 DUMP issue109 prefilter_used=[THIS.GetVariable('gui_cbp_us10_ui_issue109_prefilter_used').GetValue|0] prefilter_blocked=[THIS.GetVariable('gui_cbp_us10_ui_issue109_prefilter_blocked').GetValue|0] prefilter_candidates=[THIS.GetVariable('gui_cbp_us10_ui_issue109_prefilter_candidate_count').GetValue|0] prefilter_transferred=[THIS.GetVariable('gui_cbp_us10_ui_issue109_prefilter_transferred').GetValue|2] prefilter_unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_issue109_prefilter_unsatisfied').GetValue|2]"
 
 	save_temporary_scope_value_as = { name = test_cbp_us10_assertion_failure_count value = 0 }
 	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=issue109_fast_path_used expected=1" }
@@ -907,12 +907,12 @@ cbp_us10_capture_ui_candidate_snapshot = {
 }
 
 cbp_us10_log_ui_visibility_dump = {
-	debug_log = "ModeU5 US-10-UI SUMMARY good=wheat country_stock=[THIS.GetVariable('cbp_us10_ui_visibility_country_stock').GetValue|2] country_capacity=[THIS.GetVariable('cbp_us10_ui_visibility_country_capacity').GetValue|2] country_available_capacity=[THIS.GetVariable('cbp_us10_ui_visibility_country_available_capacity').GetValue|2] country_over_cap=[THIS.GetVariable('cbp_us10_ui_visibility_country_over_cap').GetValue|2] market_stock=[THIS.GetVariable('cbp_us10_ui_visibility_market_stock').GetValue|2] market_capacity_available=[THIS.GetVariable('cbp_us10_ui_visibility_market_capacity_available').GetValue|0] overproduction_available=[THIS.GetVariable('cbp_us10_ui_visibility_overproduction_available').GetValue|0] production_efficiency_available=[THIS.GetVariable('cbp_us10_ui_visibility_production_efficiency_available').GetValue|0]"
-	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=[THIS.GetVariable('cbp_us10_ui_visibility_consumption_non_trade').GetValue|0] requested=[THIS.GetVariable('cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_consumption_unsatisfied').GetValue|2] trade_income_generated=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_trade_income_generated').GetValue|0] transport_cost_generated=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_transport_cost_generated').GetValue|0] trade_capacity_used=[THIS.GetVariable('cbp_us10_ui_visibility_same_market_trade_capacity_used').GetValue|0]"
-	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=[THIS.GetVariable('cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('cbp_us10_ui_buyer_capacity').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=[THIS.GetVariable('cbp_us10_ui_visibility_candidate_count').GetValue|0] excluded=[THIS.GetVariable('cbp_us10_ui_visibility_excluded_candidate_count').GetValue|0] total_available=[THIS.GetVariable('cbp_us10_ui_visibility_available_candidate_stock').GetValue|2] best_bucket=[THIS.GetVariable('cbp_us10_ui_visibility_best_candidate_bucket').GetValue|0] best_stock=[THIS.GetVariable('cbp_us10_ui_visibility_best_candidate_stock').GetValue|2] bucket_counts=[THIS.GetVariable('cbp_us10_ui_visibility_bucket_1').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_2').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_3').GetValue|0]/[THIS.GetVariable('cbp_us10_ui_visibility_bucket_4').GetValue|0] trace_index=[THIS.GetVariable('cbp_us10_ui_visibility_trace_index').GetValue|0] trace_stock=[THIS.GetVariable('cbp_us10_ui_visibility_trace_stock').GetValue|2] trace_allowed=[THIS.GetVariable('cbp_us10_ui_visibility_trace_allowed').GetValue|0] trace_exclusion_reason=[THIS.GetVariable('cbp_us10_ui_visibility_trace_exclusion_reason').GetValue|0] trace_bucket=[THIS.GetVariable('cbp_us10_ui_visibility_trace_bucket').GetValue|0] trace_score=[THIS.GetVariable('cbp_us10_ui_visibility_trace_score').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI MUTATION_TRACE bounded=1 mutation_index=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_index').GetValue|0] bucket=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_bucket').GetValue|0] score=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_score').GetValue|2] stock_before=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_stock_before').GetValue|2] requested=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_requested').GetValue|2] selected=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_selected').GetValue|2] actual=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_actual').GetValue|2] remaining=[THIS.GetVariable('cbp_us10_ui_visibility_mutation_remaining').GetValue|2]"
-	debug_log = "ModeU5 US-10-UI FAST_PATH own_stock_used=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_used').GetValue|0] own_stock_taken=[THIS.GetVariable('cbp_us10_ui_issue109_fast_path_taken').GetValue|2] aggregate_prefilter_used=[THIS.GetVariable('cbp_us10_ui_visibility_prefilter_used').GetValue|0] sparse_source_count=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_source_count').GetValue|0] sparse_count=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_count').GetValue|0] sparse_scan_used=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_scan_used').GetValue|0] sparse_fallback_used=[THIS.GetVariable('cbp_us10_ui_visibility_sparse_fallback_used').GetValue|0] negative_balance_exclusions=[THIS.GetVariable('cbp_us10_ui_visibility_negative_balance_exclusions').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI SUMMARY good=wheat country_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_country_stock').GetValue|2] country_capacity=[THIS.GetVariable('gui_cbp_us10_ui_visibility_country_capacity').GetValue|2] country_available_capacity=[THIS.GetVariable('gui_cbp_us10_ui_visibility_country_available_capacity').GetValue|2] country_over_cap=[THIS.GetVariable('gui_cbp_us10_ui_visibility_country_over_cap').GetValue|2] market_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_market_stock').GetValue|2] market_capacity_available=[THIS.GetVariable('gui_cbp_us10_ui_visibility_market_capacity_available').GetValue|0] overproduction_available=[THIS.GetVariable('gui_cbp_us10_ui_visibility_overproduction_available').GetValue|0] production_efficiency_available=[THIS.GetVariable('gui_cbp_us10_ui_visibility_production_efficiency_available').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=consumption same_market_non_trade=[THIS.GetVariable('gui_cbp_us10_ui_visibility_consumption_non_trade').GetValue|0] requested=[THIS.GetVariable('gui_cbp_us10_ui_consumption_requested').GetValue|2] satisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_satisfied').GetValue|2] unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_unsatisfied').GetValue|2] trade_income_generated=[THIS.GetVariable('gui_cbp_us10_ui_visibility_same_market_trade_income_generated').GetValue|0] transport_cost_generated=[THIS.GetVariable('gui_cbp_us10_ui_visibility_same_market_transport_cost_generated').GetValue|0] trade_capacity_used=[THIS.GetVariable('gui_cbp_us10_ui_visibility_same_market_trade_capacity_used').GetValue|0]"
+	debug_log = "ModeU5 US-10-UI RESOLUTION demand_type=inter_market_transfer requested=[THIS.GetVariable('gui_cbp_us10_ui_trade_requested').GetValue|2] transferred=[THIS.GetVariable('gui_cbp_us10_ui_trade_transferred').GetValue|2] unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_trade_unsatisfied').GetValue|2] buyer_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_buyer_stock_after').GetValue|2] seller_stock_after=[THIS.GetVariable('gui_cbp_us10_ui_seller_stock_after').GetValue|2] buyer_capacity=[THIS.GetVariable('gui_cbp_us10_ui_buyer_capacity').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI CANDIDATE_TRACE bounded=1 candidate_count=[THIS.GetVariable('gui_cbp_us10_ui_visibility_candidate_count').GetValue|0] excluded=[THIS.GetVariable('gui_cbp_us10_ui_visibility_excluded_candidate_count').GetValue|0] total_available=[THIS.GetVariable('gui_cbp_us10_ui_visibility_available_candidate_stock').GetValue|2] best_bucket=[THIS.GetVariable('gui_cbp_us10_ui_visibility_best_candidate_bucket').GetValue|0] best_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_best_candidate_stock').GetValue|2] bucket_counts=[THIS.GetVariable('gui_cbp_us10_ui_visibility_bucket_1').GetValue|0]/[THIS.GetVariable('gui_cbp_us10_ui_visibility_bucket_2').GetValue|0]/[THIS.GetVariable('gui_cbp_us10_ui_visibility_bucket_3').GetValue|0]/[THIS.GetVariable('gui_cbp_us10_ui_visibility_bucket_4').GetValue|0] trace_index=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_index').GetValue|0] trace_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_stock').GetValue|2] trace_allowed=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_allowed').GetValue|0] trace_exclusion_reason=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_exclusion_reason').GetValue|0] trace_bucket=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_bucket').GetValue|0] trace_score=[THIS.GetVariable('gui_cbp_us10_ui_visibility_trace_score').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI MUTATION_TRACE bounded=1 mutation_index=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_index').GetValue|0] bucket=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_bucket').GetValue|0] score=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_score').GetValue|2] stock_before=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_stock_before').GetValue|2] requested=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_requested').GetValue|2] selected=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_selected').GetValue|2] actual=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_actual').GetValue|2] remaining=[THIS.GetVariable('gui_cbp_us10_ui_visibility_mutation_remaining').GetValue|2]"
+	debug_log = "ModeU5 US-10-UI FAST_PATH own_stock_used=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_path_used').GetValue|0] own_stock_taken=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_path_taken').GetValue|2] aggregate_prefilter_used=[THIS.GetVariable('gui_cbp_us10_ui_visibility_prefilter_used').GetValue|0] sparse_source_count=[THIS.GetVariable('gui_cbp_us10_ui_visibility_sparse_source_count').GetValue|0] sparse_count=[THIS.GetVariable('gui_cbp_us10_ui_visibility_sparse_count').GetValue|0] sparse_scan_used=[THIS.GetVariable('gui_cbp_us10_ui_visibility_sparse_scan_used').GetValue|0] sparse_fallback_used=[THIS.GetVariable('gui_cbp_us10_ui_visibility_sparse_fallback_used').GetValue|0] negative_balance_exclusions=[THIS.GetVariable('gui_cbp_us10_ui_visibility_negative_balance_exclusions').GetValue|0]"
 	debug_log = "ModeU5 US-10-UI REASON_MAP 0=allowed 1=no_stock 2=below_minimum_stock 3=below_capacity_floor 4=negative_monthly_balance_reserve 5=at_war 6=embargo 8=foreign_disallowed 9=subject_or_overlord_disallowed 10=market_owner_disallowed 11=aggregate_prefilter_empty"
 }
 

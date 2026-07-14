@@ -60,6 +60,13 @@ cbp_us04_restore_original_cmm_setting = {
 	}
 }
 
+cbp_us04_ensure_stock_runtime_for_test = {
+	if = {
+		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }
+		cbp_start_game_stock_initialization_dispatcher = yes
+	}
+}
+
 cbp_us04_clear_fixture_goods = {
 	cbp_us04_reset_pop_demand_annual_counters_good_wheat = yes
 	cbp_us04_reset_pop_demand_annual_counters_good_beer = yes
@@ -263,6 +270,7 @@ cbp_debug_run_us04_pop_demand_adaptation_test = {
 
 	save_temporary_scope_value_as = { name = test_cbp_us04_assertion_failure_count value = 0 }
 	cbp_us04_capture_original_cmm_setting = yes
+	cbp_us04_ensure_stock_runtime_for_test = yes
 
 	if = {
 		limit = { NOT = { cbp_economy_rebalance_loaded_trigger = yes } }
@@ -617,6 +625,7 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 	remove_global_variable = test_cbp_us04_estate_level_accounting_failed
 	remove_global_variable = test_cbp_us04_estate_level_accounting_passed
 
+	cbp_us04_ensure_stock_runtime_for_test = yes
 	save_temporary_scope_value_as = { name = test_cbp_us04_assertion_failure_count value = 0 }
 	save_temporary_scope_value_as = { name = test_cbp_us04_wheat_reconciliation_requested value = 0 }
 	save_temporary_scope_value_as = { name = test_cbp_us04_wheat_reconciliation_extra value = 0 }
@@ -643,6 +652,11 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 		limit = { NOT = { exists = scope:cbp_us04_estate_probe_location } }
 		debug_log = "ModeU5 US-04 ESTATE FAIL_REASON reason=missing_capital_location"
 		cbp_us04_note_assertion_failure = yes
+	}
+	else_if = {
+		limit = { NOT = { cbp_stock_runtime_ready_trigger = yes } }
+		debug_log = "ModeU5 US-04 ESTATE BLOCKED reason=stock_runtime_not_ready"
+		set_global_variable = test_cbp_us04_estate_level_accounting_blocked
 	}
 	else = {
 		scope:cbp_us04_estate_probe_location = {
@@ -769,6 +783,11 @@ cbp_debug_run_us04_estate_level_accounting_probe = {
 	}
 
 	if = {
+		limit = { has_global_variable = test_cbp_us04_estate_level_accounting_blocked }
+		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting BLOCKED"
+		debug_log = "ModeU5 TEST BLOCKED scenario=us04_estate_level_accounting reason=stock_runtime_not_ready"
+	}
+	else_if = {
 		limit = { scope:test_cbp_us04_assertion_failure_count = 0 }
 		set_global_variable = test_cbp_us04_estate_level_accounting_passed
 		debug_log = "ModeU5 US-04 ESTATE RESULT estate_level_accounting PASS"

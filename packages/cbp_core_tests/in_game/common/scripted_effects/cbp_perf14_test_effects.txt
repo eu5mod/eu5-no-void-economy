@@ -55,17 +55,17 @@ cbp_perf14_set_cmm_main_mode_for_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__cbp_no_void_economy_main
+				target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__cbp_no_void_economy_main
+			key = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 		}
 	}
 	add_to_variable_map = {
 		name = cmm
-		key = flag:no_void_economy__cbp_no_void_economy_main
+		key = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 		value = $value$
 	}
 	cbp_refresh_configuration_from_cmm_country_scope = yes
@@ -77,19 +77,19 @@ cbp_perf14_restore_cmm_main_mode_after_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__cbp_no_void_economy_main
+				target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 			}
 		}
 		remove_from_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__cbp_no_void_economy_main
+			key = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 		}
 	}
 	if = {
 		limit = { scope:test_cbp_perf14_original_cmm_main_present > 0 }
 		add_to_variable_map = {
 			name = cmm
-			key = flag:no_void_economy__cbp_no_void_economy_main
+			key = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 			value = scope:test_cbp_perf14_original_cmm_main_value
 		}
 	}
@@ -145,12 +145,12 @@ cbp_perf14_refresh_debug_level_ui = {
 
 cbp_perf14_log_debug_level_before_guarded_probe = {
 	cbp_perf14_refresh_debug_level_ui = yes
-	debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_probe level=[THIS.GetVariable('cbp_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('cbp_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('cbp_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('cbp_perf14_runtime_audit').GetValue|0]"
+	debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=before_guarded_probe level=[THIS.GetVariable('test_cbp_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('test_cbp_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('test_cbp_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('test_cbp_perf14_runtime_audit').GetValue|0]"
 }
 
 cbp_perf14_log_debug_level_after_guarded_probe = {
 	cbp_perf14_refresh_debug_level_ui = yes
-	debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=after_guarded_probe level=[THIS.GetVariable('cbp_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('cbp_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('cbp_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('cbp_perf14_runtime_audit').GetValue|0]"
+	debug_log = "ModeU5 DEBUG_LEVEL scenario=perf14_performance_mode_cmm phase=after_guarded_probe level=[THIS.GetVariable('test_cbp_perf14_debug_level_numeric').GetValue|0] normal=[THIS.GetVariable('test_cbp_perf14_runtime_normal').GetValue|0] debug=[THIS.GetVariable('test_cbp_perf14_runtime_debug').GetValue|0] audit=[THIS.GetVariable('test_cbp_perf14_runtime_audit').GetValue|0]"
 }
 
 cbp_perf14_clear_wheat_stock_in_market = {
@@ -321,7 +321,7 @@ cbp_perf14_mirror_stock_mutation_gate_to_ui = {
 }
 
 cbp_perf14_log_stock_mutation_gate_result = {
-	debug_log = "ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=[THIS.GetVariable('cbp_perf14_ui_stock_gate_detailed').GetValue|0] fallback=[THIS.GetVariable('cbp_perf14_ui_stock_gate_fallback').GetValue|0] blocked=[THIS.GetVariable('cbp_perf14_ui_stock_gate_blocked').GetValue|0] promotion_attempted=[THIS.GetVariable('cbp_perf14_ui_stock_gate_promotion_attempted').GetValue|0] promotion_succeeded=[THIS.GetVariable('cbp_perf14_ui_stock_gate_promotion_succeeded').GetValue|0] result=[THIS.GetVariable('cbp_perf14_ui_stock_gate_result').GetValue|0]"
+	debug_log = "ModeU5 PERF-14 STOCK_MUTATION_GATE detailed=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_detailed').GetValue|0] fallback=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_fallback').GetValue|0] blocked=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_blocked').GetValue|0] promotion_attempted=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_promotion_attempted').GetValue|0] promotion_succeeded=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_promotion_succeeded').GetValue|0] result=[THIS.GetVariable('gui_cbp_perf14_ui_stock_gate_result').GetValue|0]"
 }
 
 cbp_perf14_mirror_market_runtime_gate_to_ui = {
@@ -356,11 +356,11 @@ cbp_perf14_mirror_market_runtime_gate_to_ui = {
 }
 
 cbp_perf14_log_market_runtime_gate_result = {
-	debug_log = "ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=[THIS.GetVariable('cbp_perf14_ui_market_runtime_detailed').GetValue|0] vanilla_fallback=[THIS.GetVariable('cbp_perf14_ui_market_runtime_vanilla_fallback').GetValue|0] blocked=[THIS.GetVariable('cbp_perf14_ui_market_runtime_blocked').GetValue|0] human_relevant=[THIS.GetVariable('cbp_perf14_ui_market_runtime_human_relevant').GetValue|0] promotion_attempted=[THIS.GetVariable('cbp_perf14_ui_market_runtime_promotion_attempted').GetValue|0] promotion_succeeded=[THIS.GetVariable('cbp_perf14_ui_market_runtime_promotion_succeeded').GetValue|0] result=[THIS.GetVariable('cbp_perf14_ui_market_runtime_result').GetValue|0]"
+	debug_log = "ModeU5 PERF-14 MARKET_RUNTIME_GATE detailed=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_detailed').GetValue|0] vanilla_fallback=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_vanilla_fallback').GetValue|0] blocked=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_blocked').GetValue|0] human_relevant=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_human_relevant').GetValue|0] promotion_attempted=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_promotion_attempted').GetValue|0] promotion_succeeded=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_promotion_succeeded').GetValue|0] result=[THIS.GetVariable('gui_cbp_perf14_ui_market_runtime_result').GetValue|0]"
 }
 
 cbp_perf14_log_probe_result = {
-	debug_log = "ModeU5 PERF-14 DUMP main_mode=[THIS.GetVariable('cbp_perf14_ui_main_mode').GetValue|0] performance=[THIS.GetVariable('cbp_perf14_ui_performance_enabled').GetValue|0] normal=[THIS.GetVariable('cbp_perf14_ui_normal_enabled').GetValue|0] deactivated=[THIS.GetVariable('cbp_perf14_ui_deactivated').GetValue|0] detailed=[THIS.GetVariable('cbp_perf14_ui_detailed_enabled').GetValue|0] mutation_allowed=[THIS.GetVariable('cbp_perf14_ui_mutation_allowed').GetValue|0] fallback=[THIS.GetVariable('cbp_perf14_ui_fallback_required').GetValue|0] human=[THIS.GetVariable('cbp_perf14_ui_country_is_human').GetValue|0] market_human_relevant=[THIS.GetVariable('cbp_perf14_ui_market_human_relevant').GetValue|0] human_relevant_markets=[THIS.GetVariable('cbp_perf14_ui_human_relevant_market_count').GetValue|0] current_market_human_relevant=[THIS.GetVariable('cbp_perf14_ui_current_market_human_relevant').GetValue|0] promotion_result=[THIS.GetVariable('cbp_perf14_ui_promotion_result').GetValue|0] promotion_goods_materialized=[THIS.GetVariable('cbp_perf14_ui_promotion_goods_materialized').GetValue|0] promotion_delta_total=[THIS.GetVariable('cbp_perf14_ui_promotion_delta_total').GetValue|2] promotion_allocated_total=[THIS.GetVariable('cbp_perf14_ui_promotion_allocated_total').GetValue|2]"
+	debug_log = "ModeU5 PERF-14 DUMP main_mode=[THIS.GetVariable('gui_cbp_perf14_ui_main_mode').GetValue|0] performance=[THIS.GetVariable('gui_cbp_perf14_ui_performance_enabled').GetValue|0] normal=[THIS.GetVariable('gui_cbp_perf14_ui_normal_enabled').GetValue|0] deactivated=[THIS.GetVariable('gui_cbp_perf14_ui_deactivated').GetValue|0] detailed=[THIS.GetVariable('gui_cbp_perf14_ui_detailed_enabled').GetValue|0] mutation_allowed=[THIS.GetVariable('gui_cbp_perf14_ui_mutation_allowed').GetValue|0] fallback=[THIS.GetVariable('gui_cbp_perf14_ui_fallback_required').GetValue|0] human=[THIS.GetVariable('gui_cbp_perf14_ui_country_is_human').GetValue|0] market_human_relevant=[THIS.GetVariable('gui_cbp_perf14_ui_market_human_relevant').GetValue|0] human_relevant_markets=[THIS.GetVariable('gui_cbp_perf14_ui_human_relevant_market_count').GetValue|0] current_market_human_relevant=[THIS.GetVariable('gui_cbp_perf14_ui_current_market_human_relevant').GetValue|0] promotion_result=[THIS.GetVariable('gui_cbp_perf14_ui_promotion_result').GetValue|0] promotion_goods_materialized=[THIS.GetVariable('gui_cbp_perf14_ui_promotion_goods_materialized').GetValue|0] promotion_delta_total=[THIS.GetVariable('gui_cbp_perf14_ui_promotion_delta_total').GetValue|2] promotion_allocated_total=[THIS.GetVariable('gui_cbp_perf14_ui_promotion_allocated_total').GetValue|2]"
 	if = {
 		limit = { has_global_variable = test_cbp_perf14_performance_mode_cmm_failed }
 		debug_log = "ModeU5 PERF-14 RESULT performance_mode_cmm FAIL"
@@ -399,13 +399,13 @@ cbp_debug_run_perf14_performance_mode_cmm_test = {
 			has_variable_map = cmm
 			is_key_in_variable_map = {
 				name = cmm
-				target = flag:no_void_economy__cbp_no_void_economy_main
+				target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
 			}
 		}
 		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
 		save_temporary_scope_value_as = {
 			name = test_cbp_perf14_original_cmm_main_value
-			value = "variable_map(cmm|flag:no_void_economy__cbp_no_void_economy_main)"
+			value = "variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)"
 		}
 	}
 
@@ -481,7 +481,7 @@ cbp_debug_run_perf14_performance_mode_cmm_test = {
 		set_variable = { name = test_cbp_perf14_debug_promotion_result value = global_var:cbp_perf14_promotion_last_result }
 		set_variable = { name = test_cbp_perf14_debug_promotion_goods_materialized value = global_var:cbp_perf14_promotion_goods_materialized }
 		set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = global_var:cbp_perf14_promotion_allocated_total }
-		debug_log = "ModeU5 PERF-14 PROMOTION positive aggregate=120 country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] sources=[THIS.GetVariable('cbp_perf14_debug_wheat_country_source_count').GetValue|0] result=[THIS.GetVariable('cbp_perf14_debug_promotion_result').GetValue|0] materialized=[THIS.GetVariable('cbp_perf14_debug_promotion_goods_materialized').GetValue|0] allocated=[THIS.GetVariable('cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
+		debug_log = "ModeU5 PERF-14 PROMOTION positive aggregate=120 country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] sources=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_source_count').GetValue|0] result=[THIS.GetVariable('test_cbp_perf14_debug_promotion_result').GetValue|0] materialized=[THIS.GetVariable('test_cbp_perf14_debug_promotion_goods_materialized').GetValue|0] allocated=[THIS.GetVariable('test_cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
 		if = {
 			limit = {
 				OR = {
@@ -510,7 +510,7 @@ cbp_debug_run_perf14_performance_mode_cmm_test = {
 		set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
 		set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
 		set_variable = { name = test_cbp_perf14_debug_promotion_result value = global_var:cbp_perf14_promotion_noop_already_promoted }
-		debug_log = "ModeU5 PERF-14 PROMOTION idempotent before_country_sum=[THIS.GetVariable('cbp_perf14_debug_idempotent_country_sum_before').GetValue|2] after_country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] before_market=[THIS.GetVariable('cbp_perf14_debug_idempotent_market_before').GetValue|2] after_market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] noop=[THIS.GetVariable('cbp_perf14_debug_promotion_result').GetValue|0]"
+		debug_log = "ModeU5 PERF-14 PROMOTION idempotent before_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_idempotent_country_sum_before').GetValue|2] after_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] before_market=[THIS.GetVariable('test_cbp_perf14_debug_idempotent_market_before').GetValue|2] after_market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] noop=[THIS.GetVariable('test_cbp_perf14_debug_promotion_result').GetValue|0]"
 		if = {
 			limit = {
 				OR = {
@@ -553,7 +553,7 @@ cbp_debug_run_perf14_performance_mode_cmm_test = {
 		set_variable = { name = test_cbp_perf14_debug_wheat_country_sum value = scope:test_cbp_perf14_wheat_country_sum }
 		set_variable = { name = test_cbp_perf14_debug_wheat_market_aggregate value = scope:test_cbp_perf14_wheat_market_aggregate }
 		set_variable = { name = test_cbp_perf14_debug_promotion_allocated_total value = global_var:cbp_perf14_promotion_allocated_total }
-		debug_log = "ModeU5 PERF-14 PROMOTION partial aggregate=100 existing_country_sum=25 final_country_sum=[THIS.GetVariable('cbp_perf14_debug_wheat_country_sum').GetValue|2] final_market=[THIS.GetVariable('cbp_perf14_debug_wheat_market_aggregate').GetValue|2] allocated=[THIS.GetVariable('cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
+		debug_log = "ModeU5 PERF-14 PROMOTION partial aggregate=100 existing_country_sum=25 final_country_sum=[THIS.GetVariable('test_cbp_perf14_debug_wheat_country_sum').GetValue|2] final_market=[THIS.GetVariable('test_cbp_perf14_debug_wheat_market_aggregate').GetValue|2] allocated=[THIS.GetVariable('test_cbp_perf14_debug_promotion_allocated_total').GetValue|2]"
 		if = {
 			limit = {
 				OR = {

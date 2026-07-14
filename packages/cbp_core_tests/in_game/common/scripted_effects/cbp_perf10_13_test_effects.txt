@@ -34,7 +34,7 @@ cbp_perf10_13_write_active_repair_dump_variables = {
 }
 
 cbp_perf10_13_log_active_repair_dump = {
-	debug_log = "ModeU5 PERF-11 DUMP active_repair good=wheat goods_scanned=[THIS.GetVariable('cbp_perf10_13_ui_goods_scanned').GetValue|0] market_good_scans=[THIS.GetVariable('cbp_perf10_13_ui_market_good_scans').GetValue|0] country_source_checks=[THIS.GetVariable('cbp_perf10_13_ui_country_source_checks').GetValue|0] market_aggregate_hits=[THIS.GetVariable('cbp_perf10_13_ui_market_aggregate_hits').GetValue|0] country_state_hits=[THIS.GetVariable('cbp_perf10_13_ui_country_state_hits').GetValue|0] market_goods_marked=[THIS.GetVariable('cbp_perf10_13_ui_market_goods_marked').GetValue|0]"
+	debug_log = "ModeU5 PERF-11 DUMP active_repair good=wheat goods_scanned=[THIS.GetVariable('gui_cbp_perf10_13_ui_goods_scanned').GetValue|0] market_good_scans=[THIS.GetVariable('gui_cbp_perf10_13_ui_market_good_scans').GetValue|0] country_source_checks=[THIS.GetVariable('gui_cbp_perf10_13_ui_country_source_checks').GetValue|0] market_aggregate_hits=[THIS.GetVariable('gui_cbp_perf10_13_ui_market_aggregate_hits').GetValue|0] country_state_hits=[THIS.GetVariable('gui_cbp_perf10_13_ui_country_state_hits').GetValue|0] market_goods_marked=[THIS.GetVariable('gui_cbp_perf10_13_ui_market_goods_marked').GetValue|0]"
 	debug_log = "ModeU5 PERF-13 DUMP metrics_probe path=active_repair metrics_disabled_in_normal_runtime=yes"
 }
 
@@ -65,13 +65,13 @@ cbp_debug_run_perf10_13_active_repair_metrics_probe = {
 		if = {
 			limit = {
 				has_global_variable_list = cbp_active_markets_any_good
-				has_global_variable_list = test_cbp_wheat_active_markets
+				has_global_variable_list = cbp_wheat_active_markets
 				is_target_in_global_variable_list = {
 					name = cbp_active_markets_any_good
 					target = scope:cbp_perf10_13_test_market
 				}
 				is_target_in_global_variable_list = {
-					name = test_cbp_wheat_active_markets
+					name = cbp_wheat_active_markets
 					target = scope:cbp_perf10_13_test_market
 				}
 				global_var:cbp_perf13_active_repair_goods_scanned >= 1

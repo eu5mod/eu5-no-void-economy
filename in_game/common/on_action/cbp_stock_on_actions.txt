@@ -5,6 +5,13 @@ on_game_start = {
 	}
 }
 
+on_game_load = {
+	on_actions = {
+		delay = { days = 1 }
+		cbp_load_game_stock_initialization_pulse
+	}
+}
+
 cbp_start_game_stock_initialization_pulse = {
 	effect = {
 		# This delayed on-action may run from an empty/root scope. Keep country-scoped
@@ -14,6 +21,14 @@ cbp_start_game_stock_initialization_pulse = {
 		cbp_initialize_pop_demand_multipliers_once = yes
 		cbp_start_game_stock_initialization_dispatcher = yes
 		cbp_core04_refresh_all_location_market_memory = yes
+	}
+}
+
+cbp_load_game_stock_initialization_pulse = {
+	effect = {
+		# Load repair is idempotent. It fills missing startup markers, but it does
+		# not overwrite a ready schema or revive a failed/incompatible schema.
+		cbp_repair_stock_lifecycle_on_game_load = yes
 	}
 }
 
