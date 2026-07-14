@@ -14,8 +14,7 @@ US09_FIELDS = {
     "local_merchant_capacity",
     "merchant_capacity_from_building",
 }
-
-MARKETPLACE_CHAIN = {
+MARKETPLACE_BUILDINGS = {
     "marketplace",
     "merchants_quarters",
     "grand_marketplace",
@@ -34,14 +33,15 @@ class MaintenanceRange:
     start: int
     end: int
     trade_building: bool
-    building_name: str | None
+    building_key: str | None = None
 
 
 @dataclass(frozen=True)
-class NamedBlock:
-    name: str
+class NamedBlockRange:
+    key: str
     start: int
     end: int
+    depth: int
 
 
 def format_decimal(value: float) -> str:
@@ -55,27 +55,24 @@ def code_without_comment(line: str) -> str:
     return line.split("#", 1)[0]
 
 
-def find_named_blocks(lines: list[str]) -> list[NamedBlock]:
-    stack: list[tuple[str, int]] = []
-    blocks: list[NamedBlock] = []
+def find_named_blocks(lines: list[str]) -> list[NamedBlockRange]:
+    stack: list[tuple[str, int, int]] = []
+    ranges: list[NamedBlockRange] = []
 
     for index, line in enumerate(lines):
         stripped = line.lstrip()
         if stripped.startswith("#"):
             continue
-
         code = code_without_comment(line)
         start_match = BLOCK_START.match(code)
         if start_match:
-            stack.append((start_match.group(1), index))
-
+            stack.append((start_match.group(1), index, len(stack)))
         for _ in range(code.count("}")):
             if not stack:
                 break
-            name, start = stack.pop()
-            blocks.append(NamedBlock(name=name, start=start, end=index))
-
-    return blocks
+            key, start, depth = stack.pop()
+            ranges.append(NamedBlockRange(key=key, start=start, end=index, depth=depth))
+    return ranges
 
 
 def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
@@ -93,9 +90,9 @@ def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
             stack.append(
                 {
                     "start": index,
-                    "name": start_match.group(1),
                     "maintenance": False,
                     "trade": False,
+                    "key": start_match.group(1),
                 }
             )
 
@@ -115,18 +112,18 @@ def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
                 trade_building = bool(block["trade"]) or any(
                     bool(parent["trade"]) for parent in stack
                 )
-                building_name = None
+                building_key = None
                 for parent in reversed(stack):
-                    parent_name = str(parent["name"])
-                    if parent_name in MARKETPLACE_CHAIN:
-                        building_name = parent_name
+                    candidate = str(parent["key"])
+                    if candidate in MARKETPLACE_BUILDINGS:
+                        building_key = candidate
                         break
                 ranges.append(
                     MaintenanceRange(
                         start=int(block["start"]),
                         end=index,
                         trade_building=trade_building,
-                        building_name=building_name,
+                        building_key=building_key,
                     )
                 )
 
@@ -135,10 +132,6 @@ def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
 
 def find_maintenance_ranges(lines: list[str]) -> list[tuple[int, int]]:
     return [(block.start, block.end) for block in find_maintenance_blocks(lines)]
-
-
-def line_is_in_ranges(index: int, ranges: list[tuple[int, int] | MaintenanceRange]) -> bool:
-    return maintenance_range_for_line(index, ranges) is not None
 
 
 def maintenance_range_for_line(
@@ -156,89 +149,49 @@ def maintenance_range_for_line(
     return None
 
 
-def align_marketplace_chain_maintenance(lines: list[str], goods: set[str]) -> list[str]:
-    ranges = find_maintenance_blocks(lines)
-    marketplace_range = next(
-        (item for item in ranges if item.building_name == "marketplace"),
-        None,
-    )
-    if marketplace_range is None:
-        return lines
+def line_is_in_ranges(index: int, ranges: list[tuple[int, int] | MaintenanceRange]) -> bool:
+    return maintenance_range_for_line(index, ranges) is not None
 
-    baseline: dict[str, str] = {}
-    for index in range(marketplace_range.start, marketplace_range.end + 1):
-        match = ASSIGNMENT.match(lines[index])
-        if match and match.group(2) in goods:
-            baseline[match.group(2)] = match.group(3)
 
-    if not baseline:
-        return lines
-
-    target_ranges = {
-        item.building_name: item
-        for item in ranges
-        if item.building_name in {"merchants_quarters", "grand_marketplace"}
-    }
-    transformed: list[str] = []
-
+def marketplace_base_maintenance(
+    lines: list[str], maintenance_ranges: list[MaintenanceRange], goods: set[str]
+) -> dict[str, float]:
+    result: dict[str, float] = {}
     for index, line in enumerate(lines):
-        target = next(
-            (
-                item
-                for item in target_ranges.values()
-                if item.start <= index <= item.end
-            ),
-            None,
-        )
-        if target is None:
-            transformed.append(line)
+        maintenance_range = maintenance_range_for_line(index, maintenance_ranges)
+        if not isinstance(maintenance_range, MaintenanceRange):
             continue
-
+        if maintenance_range.building_key != "marketplace":
+            continue
         match = ASSIGNMENT.match(line)
-        if not match or match.group(2) not in goods:
-            transformed.append(line)
-            continue
-
-        key = match.group(2)
-        if key not in baseline:
-            continue
-
-        transformed.append(f"{match.group(1)}{baseline[key]}{match.group(4)}")
-
-    return transformed
+        if match and match.group(2) in goods:
+            result[match.group(2)] = float(match.group(3))
+    return result
 
 
 def disable_market_warehouse(lines: list[str], source_basename: str) -> list[str]:
     if source_basename != "market_buildings.txt":
         return lines
 
-    warehouse = next(
-        (block for block in find_named_blocks(lines) if block.name == "market_warehouse"),
-        None,
-    )
-    if warehouse is None:
-        return lines
-
-    warehouse_lines = lines[warehouse.start : warehouse.end + 1]
-    if any(re.match(r"^\s*country_potential\s*=\s*\{", line) for line in warehouse_lines):
-        return lines
-
-    insertion_index = next(
-        (
-            index
-            for index in range(warehouse.start + 1, warehouse.end)
-            if re.match(r"^\s*location_potential\s*=\s*\{", lines[index])
-        ),
-        warehouse.start + 1,
-    )
-    indent = "\t"
-    block = [
-        f"{indent}country_potential = {{",
-        f"{indent * 2}always = no",
-        f"{indent}}}",
-        "",
+    blocks = [
+        block
+        for block in find_named_blocks(lines)
+        if block.key == "market_warehouse" and block.depth == 0
     ]
-    return lines[:insertion_index] + block + lines[insertion_index:]
+    if not blocks:
+        return lines
+    block = blocks[0]
+    body = lines[block.start : block.end + 1]
+    if any(re.search(r"\bcountry_potential\s*=\s*\{", code_without_comment(line)) for line in body):
+        return lines
+
+    insertion = [
+        "",
+        "\tcountry_potential = {",
+        "\t\talways = no",
+        "\t}",
+    ]
+    return lines[: block.start + 1] + insertion + lines[block.start + 1 :]
 
 
 def transform_lines(
@@ -252,6 +205,7 @@ def transform_lines(
     goods: set[str],
 ) -> list[str]:
     maintenance_ranges = find_maintenance_blocks(lines)
+    marketplace_maintenance = marketplace_base_maintenance(lines, maintenance_ranges, goods)
     transformed: list[str] = []
 
     for index, line in enumerate(lines):
@@ -274,7 +228,14 @@ def transform_lines(
             multiplier = maintenance_multiplier
             if isinstance(maintenance_range, MaintenanceRange) and maintenance_range.trade_building:
                 multiplier = trade_building_maintenance_multiplier
-            new_value = value * multiplier
+            source_value = value
+            if (
+                isinstance(maintenance_range, MaintenanceRange)
+                and maintenance_range.building_key in MARKETPLACE_BUILDINGS
+                and key in marketplace_maintenance
+            ):
+                source_value = marketplace_maintenance[key]
+            new_value = source_value * multiplier
             if value < 0:
                 print(
                     f"WARNING: negative building maintenance value in {source_basename}: "
@@ -293,10 +254,7 @@ def transform_lines(
         else:
             transformed.append(f"{match.group(1)}{format_decimal(new_value)}{match.group(4)}")
 
-    if source_basename == "trade_buildings.txt":
-        transformed = align_marketplace_chain_maintenance(transformed, goods)
-    transformed = disable_market_warehouse(transformed, source_basename)
-    return transformed
+    return disable_market_warehouse(transformed, source_basename)
 
 
 def main() -> int:
