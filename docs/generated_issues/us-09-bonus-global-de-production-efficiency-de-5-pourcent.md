@@ -203,7 +203,7 @@ base + population_contribution + development_contribution
 where:
 
 base = 2
-population_contribution = population * 0.000025
+population_contribution = population * 0.00025
 development_contribution = development * 0.1
 
 A simple modifier such as:
@@ -222,7 +222,7 @@ The desired bonus is:
 
 which expands to:
 
-0.2 + population * 0.0000025 + development * 0.01
+0.2 + population * 0.000025 + development * 0.01
 
 Technical Strategy
 
@@ -232,26 +232,47 @@ Current implemented layer:
 
 ```txt
 cbp_us09_base_rgo_size_10_percent_bonus
-  local_max_rgo_size = 0.2
+  local_max_rgo_size = 1
 ```
 
-The Economy package applies this static location modifier once at campaign start through `cbp_apply_us09_base_rgo_size_bonus`. This covers the fixed `10% * base = 0.2` part without using the additive percentage modifier bucket.
+The Economy package applies this static location modifier with a computed `size`.
+Initial campaign/load backfill uses `cbp_apply_us09_base_rgo_size_bonus`, then the
+monthly country pulse refreshes owned locations through
+`cbp_refresh_us09_base_rgo_size_bonus_for_current_country`.
+
+The display-equivalent source formula is:
+
+```txt
+200 + location population * 0.025
+```
+
+The applied bonus remains the approved 10% increase and is stored in normalized
+`local_max_rgo_size`/PopCaps units:
+
+```txt
+0.2 + population * 0.000025
+```
+
+The modifier is applied with `mode = replace`, so monthly refreshes revalue the
+same modifier instead of stacking duplicate bonuses.
 
 Deferred scaffold layer:
 
-The scaffold should later generate flat `local_max_rgo_size` modifiers for the variable parts of the formula:
+The development contribution remains deferred:
 
-population * 0.0000025
 development * 0.01
 
-The generated values should be based on the source map/setup data used by the mod scaffolding pipeline.
+The population contribution is now live and refreshed monthly from location
+`population`.
 
 The base component is a special case:
 
 base = 2
 10% * base = 0.2
 
-Since the base Max RGO Size value is not changed directly through defines, the current fallback script applies a flat `local_max_rgo_size = 0.2` modifier to every location at game start.
+Since the base Max RGO Size value is not changed directly through defines, CBP
+applies a scalable location modifier whose monthly `size` is recomputed from
+the current location population.
 
 ## Implementation Requirements
 
@@ -265,7 +286,7 @@ cbp_us09_base_rgo_size_10_percent_bonus = {
         category = location
     }
 
-    local_max_rgo_size = 0.2
+    local_max_rgo_size = 1
 }
 ```
 
@@ -275,56 +296,49 @@ Implemented:
 
 ```txt
 every_location_in_the_world = {
+    cbp_refresh_us09_base_rgo_size_bonus_for_current_location = yes
+}
+```
+
+Monthly owned-location refresh:
+
+```txt
+every_owned_location = {
+    cbp_refresh_us09_base_rgo_size_bonus_for_current_location = yes
+}
+
+cbp_refresh_us09_base_rgo_size_bonus_for_current_location = {
+    save_temporary_scope_value_as = {
+        name = cbp_us09_base_rgo_size_bonus_modifier_size
+        value = {
+            value = population
+            multiply = 0.000025
+            add = 0.2
+            min = 0.2
+        }
+    }
+
     add_location_modifier = {
         modifier = cbp_us09_base_rgo_size_10_percent_bonus
-        days = -1
+        years = -1
         mode = replace
+        size = scope:cbp_us09_base_rgo_size_bonus_modifier_size
         recalculate_immediately = yes
     }
 }
 ```
 
-### 3. Deferred generated location modifiers
+### 3. Deferred development contribution
 
-For each eligible location, generate a static flat modifier representing:
+The remaining unimplemented part of the target formula is:
 
-population_bonus + development_bonus
+```txt
+development * 0.01
+```
 
-where:
-
-population_bonus = starting_population * 0.0000025
-development_bonus = starting_development * 0.01
-
-Example:
-
-cbp_location_123_rgo_size_scaffold_bonus = {
-    game_data = {
-        category = location
-    }
-
-    local_max_rgo_size = 0.1375
-}
-
-### 4. Deferred scaffolded modifier application
-
-Each generated modifier must be applied to its matching location through generated setup script.
-
-Example:
-
-123 = {
-    add_location_modifier = {
-        modifier = cbp_location_123_rgo_size_scaffold_bonus
-        days = -1
-        mode = replace
-        recalculate_immediately = yes
-    }
-}
-
-If the final implementation supports fully scaffolded per-location application, the generated per-location modifier may instead include the 0.2 base component directly:
-
-local_max_rgo_size = 0.2 + population_bonus + development_bonus
-
-In that case, the game-start fallback modifier is not needed.
+That contribution still needs either a confirmed dynamic `development` monthly
+refresh path or a deterministic generated setup source. It is intentionally not
+folded into this monthly population refresh.
 
 ## Acceptance Criteria
 
@@ -332,13 +346,17 @@ The implementation does not use global_max_rgo_size_modifier = 0.10 as the main 
 
 The implementation does not rely on additive percentage Max RGO Size modifiers.
 
-The current PR applies the fixed base contribution through a flat `local_max_rgo_size = 0.2` location modifier.
+The current PR applies the base and population contribution through the scalable
+`cbp_us09_base_rgo_size_10_percent_bonus` location modifier.
 
-The population and development scaffold remains deferred until a deterministic location setup data source is wired into the generator.
+The population contribution is refreshed monthly from current location
+`population`; the development contribution remains deferred.
 
-The fixed base contribution adds exactly 0.2 Max RGO Size per eligible location.
+The minimum base contribution adds exactly 0.2 Max RGO Size per eligible
+location.
 
-If the base value cannot be changed through scaffolding or defines, the 0.2 base contribution is applied once at game start.
+The modifier is applied with `mode = replace`; monthly refreshes must not stack
+additional copies of the bonus.
 
 The base modifier and application effect are deterministic and reproducible.
 
@@ -358,20 +376,20 @@ development = 10
 
 The original pre-modifier component is:
 
-2 + 40,000 * 0.000025 + 10 * 0.1
-= 2 + 1 + 1
-= 4
+2 + 40,000 * 0.00025 + 10 * 0.1
+= 2 + 10 + 1
+= 13
 
 The expected 10% bonus is:
 
-4 * 0.10 = 0.4
+13 * 0.10 = 1.3
 
 The scaffolded/generated flat bonus should therefore be:
 
 base_bonus + population_bonus + development_bonus
-= 0.2 + 40,000 * 0.0000025 + 10 * 0.01
-= 0.2 + 0.1 + 0.1
-= 0.4
+= 0.2 + 40,000 * 0.000025 + 10 * 0.01
+= 0.2 + 1 + 0.1
+= 1.3
 
 ## Non-Goals
 

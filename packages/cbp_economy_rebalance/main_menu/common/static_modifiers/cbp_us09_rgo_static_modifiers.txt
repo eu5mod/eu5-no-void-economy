@@ -3,5 +3,5 @@ cbp_us09_base_rgo_size_10_percent_bonus = {
 		category = location
 	}
 
-	local_max_rgo_size = 0.2
+	local_max_rgo_size = 1
 }

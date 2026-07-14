@@ -1,18 +1,49 @@
 cbp_apply_us09_base_rgo_size_bonus = {
-	if = {
-		limit = {
-			NOT = { has_global_variable = cbp_change_max_rgo }
+	every_location_in_the_world = {
+		cbp_refresh_us09_base_rgo_size_bonus_for_current_location = yes
+	}
+	set_global_variable = {
+		name = cbp_change_max_rgo
+		value = yes
+	}
+}
+
+cbp_refresh_us09_base_rgo_size_bonus_for_current_country = {
+	every_owned_location = {
+		cbp_refresh_us09_base_rgo_size_bonus_for_current_location = yes
+	}
+}
+
+cbp_refresh_us09_base_rgo_size_bonus_for_current_location = {
+	# Display-equivalent base RGO size requested by US-09:
+	# 200 + location population * 0.025.
+	save_temporary_scope_value_as = {
+		name = cbp_us09_base_rgo_size_display_formula_value
+		value = {
+			value = population
+			multiply = 0.025
+			add = 200
+			min = 200
 		}
-		every_location_in_the_world = {
-			add_location_modifier = {
-				modifier = cbp_us09_base_rgo_size_10_percent_bonus
-				years = -1
-				mode = replace
-			}
+	}
+
+	# `local_max_rgo_size` is stored in the engine's normalized PopCaps units.
+	# The modifier remains a 10% bonus over the formula above.
+	save_temporary_scope_value_as = {
+		name = cbp_us09_base_rgo_size_bonus_modifier_size
+		value = {
+			value = population
+			multiply = 0.000025
+			add = 0.2
+			min = 0.2
 		}
-		set_global_variable = {
-			name = cbp_change_max_rgo
-			value = yes
-		}
+	}
+
+	add_location_modifier = {
+		modifier = cbp_us09_base_rgo_size_10_percent_bonus
+		years = -1
+		mode = replace
+		size = scope:cbp_us09_base_rgo_size_bonus_modifier_size
+		recalculate_immediately = yes
 	}
 }

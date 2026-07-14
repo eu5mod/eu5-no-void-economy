@@ -11,6 +11,12 @@ on_game_load = {
 	}
 }
 
+monthly_country_pulse = {
+	on_actions = {
+		cbp_economy_rebalance_monthly_country_pulse
+	}
+}
+
 cbp_economy_rebalance_package_initialize = {
 	effect = {
 		set_global_variable = cbp_economy_rebalance_loaded
@@ -19,5 +25,11 @@ cbp_economy_rebalance_package_initialize = {
 			value = 100
 		}
 		cbp_apply_us09_base_rgo_size_bonus = yes
+	}
+}
+
+cbp_economy_rebalance_monthly_country_pulse = {
+	effect = {
+		cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes
 	}
 }
