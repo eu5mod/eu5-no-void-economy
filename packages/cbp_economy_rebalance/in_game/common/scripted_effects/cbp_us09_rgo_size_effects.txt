@@ -33,7 +33,7 @@ cbp_refresh_us09_base_rgo_size_bonus_for_current_location = {
 		name = cbp_us09_base_rgo_size_bonus_modifier_size
 		value = {
 			value = population
-			multiply = 0.000025
+			multiply = 0.025
 			add = 0.2
 			min = 0.2
 		}
