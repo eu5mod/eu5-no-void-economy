@@ -71,19 +71,24 @@ else
 	# fi
 fi
 
-# US-177 is package-owned independently from US-09. It scans the complete
-# vanilla source tree for minting_income_factor, while the building post-pass
-# composes with whichever exact-path building files are already present.
+# US-177 is package-owned independently from US-09. It records the authoritative
+# vanilla food-good set, scans the complete vanilla source tree for
+# minting_income_factor, and composes building changes with whichever exact-path
+# building files are already present.
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
-	us177_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
+	us177_common_dir="${EU5_GAME_COMMON_DIR%/}"
+	us177_game_root="${us177_common_dir%/in_game/common}"
+	python3 "$repo_root/tools/generate_us177_food_goods_manifest.py" \
+		--game-root "$us177_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance"
 	python3 "$repo_root/tools/generate_us177_minting_overrides.py" \
 		--game-root "$us177_game_root" \
 		--package-root "$repo_root/packages/cbp_economy_rebalance" \
 		--multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
 	python3 "$repo_root/tools/postprocess_us177_minting_building_overrides.py" \
-		--common-dir "$EU5_GAME_COMMON_DIR" \
+		--common-dir "$us177_common_dir" \
 		--package-common-dir "$repo_root/packages/cbp_economy_rebalance/in_game/common" \
 		--multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
 else
-	printf '%s\n' 'Skipping US-177 minting source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
+	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 fi
