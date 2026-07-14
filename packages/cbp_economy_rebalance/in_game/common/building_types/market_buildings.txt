@@ -200,6 +200,10 @@ clearing_house = {
 }
 
 market_warehouse = {
+
+	country_potential = {
+		always = no
+	}
 	is_foreign = no
 	pop_type = burghers
 	max_levels = market_warehouse_max_level
@@ -214,10 +218,6 @@ market_warehouse = {
 
 	expensive = yes
 	build_time = market_build_time
-
-	country_potential = {
-		always = no
-	}
 
 	location_potential = {
 		is_market_center = yes

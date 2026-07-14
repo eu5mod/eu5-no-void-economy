@@ -232,9 +232,11 @@ def transform_lines(
             if (
                 isinstance(maintenance_range, MaintenanceRange)
                 and maintenance_range.building_key in MARKETPLACE_BUILDINGS
-                and key in marketplace_maintenance
             ):
-                source_value = marketplace_maintenance[key]
+                if key in marketplace_maintenance:
+                    source_value = marketplace_maintenance[key]
+                elif maintenance_range.building_key != "marketplace":
+                    continue
             new_value = source_value * multiplier
             if value < 0:
                 print(

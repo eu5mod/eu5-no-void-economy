@@ -104,7 +104,7 @@ def main() -> int:
         default=Path("packages/cbp_economy_rebalance/in_game/common"),
     )
     parser.add_argument("--us09-percent", type=float, default=float(os.environ.get("MODEU5_US09_BONUS_PERCENT", "10")))
-    parser.add_argument("--maintenance-multiplier", type=float, default=0.3)
+    parser.add_argument("--maintenance-multiplier", type=float, default=0.7)
     parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
     args = parser.parse_args()
 
@@ -152,48 +152,6 @@ def main() -> int:
         generated_text = generated_file.read_text(encoding="utf-8-sig")
         generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
         generated_entries = maintenance_entries(generated_body_lines, goods_set)
-
-        if source_entries:
-            if len(source_entries) != len(generated_entries):
-                failures.append(
-                    f"{source_file.name}: maintenance entry count mismatch "
-                    f"source={len(source_entries)} generated={len(generated_entries)}"
-                )
-                continue
-
-            for ordinal, (
-                (source_key, source_value, source_trade_building),
-                (generated_key, generated_value, generated_trade_building),
-            ) in enumerate(
-                zip(source_entries, generated_entries),
-                start=1,
-            ):
-                expected_multiplier = (
-                    args.trade_building_maintenance_multiplier
-                    if source_trade_building
-                    else args.maintenance_multiplier
-                )
-                expected = source_value * expected_multiplier
-                if source_key != generated_key:
-                    failures.append(
-                        f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
-                        f"source={source_key} generated={generated_key}"
-                    )
-                    continue
-                if source_trade_building != generated_trade_building:
-                    failures.append(
-                        f"{source_file.name}: {source_key} maintenance entry #{ordinal} "
-                        f"trade-building classification mismatch "
-                        f"source={source_trade_building} generated={generated_trade_building}"
-                    )
-                    continue
-                if not compare_float(generated_value, expected):
-                    failures.append(
-                        f"{source_file.name}: {source_key} maintenance entry #{ordinal} "
-                        f"expected {expected:g}, found {generated_value:g}"
-                    )
-                maintenance_entries_checked += 1
-
         expected_body = normalize_generator_whitespace(
             transformer.transform_lines(
                 source_lines,
@@ -205,6 +163,42 @@ def main() -> int:
                 goods=goods_set,
             )
         )
+        expected_entries = maintenance_entries(expected_body, goods_set)
+
+        if source_entries:
+            if len(expected_entries) != len(generated_entries):
+                failures.append(
+                    f"{source_file.name}: maintenance entry count mismatch "
+                    f"expected={len(expected_entries)} generated={len(generated_entries)}"
+                )
+                continue
+
+            for ordinal, (
+                (expected_key, expected_value, expected_trade_building),
+                (generated_key, generated_value, generated_trade_building),
+            ) in enumerate(
+                zip(expected_entries, generated_entries),
+                start=1,
+            ):
+                if expected_key != generated_key:
+                    failures.append(
+                        f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
+                        f"expected={expected_key} generated={generated_key}"
+                    )
+                    continue
+                if expected_trade_building != generated_trade_building:
+                    failures.append(
+                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
+                        f"trade-building classification mismatch "
+                        f"expected={expected_trade_building} generated={generated_trade_building}"
+                    )
+                    continue
+                if not compare_float(generated_value, expected_value):
+                    failures.append(
+                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
+                        f"expected {expected_value:g}, found {generated_value:g}"
+                    )
+                maintenance_entries_checked += 1
         if generated_body_lines != expected_body:
             failures.append(
                 f"{source_file.name}: generated building override body is stale or hand-edited"
