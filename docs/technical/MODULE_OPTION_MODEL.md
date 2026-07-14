@@ -41,6 +41,12 @@ The package set is fixed for the lifetime of a campaign. Loading an existing
 save with the same package set is supported. Adding or removing a package from
 that save is not.
 
+`on_game_load` includes an idempotent repair path for missing startup markers
+when the same package set is still loaded. This repairs load ordering and
+partially initialized saves; it is not a package migration system. Package-set
+changes remain unsupported unless a future story explicitly defines migration
+and cleanup rules.
+
 | Package | Lifecycle-sensitive content | Add to an existing save | Remove from an existing save |
 |---|---|---|---|
 | No Void Economy | Start-game schema initialization and persistent stock state | Unsupported | Unsupported |

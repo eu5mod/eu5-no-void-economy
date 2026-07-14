@@ -76,6 +76,8 @@ us10ui_file="$tmp_dir/us10_ui_lines"
 us04_file="$tmp_dir/us04_lines"
 core04_file="$tmp_dir/core04_lines"
 localization_only_file="$tmp_dir/localization_only_cbp_lines"
+scenario_state_file="$tmp_dir/scenario_state"
+incomplete_scenario_file="$tmp_dir/incomplete_scenarios"
 
 cat "${log_files[@]}" > "$all_lines_file"
 
@@ -92,6 +94,23 @@ fi
 grep -hE 'ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$scenario_file" || true
+
+sed -nE 's/.*ModeU5 TEST (ENTERED|PASS|FAIL|BLOCKED|PENDING) scenario=([^[:space:]]+).*/\2	\1	&/p' "$scenario_file" \
+	>"$scenario_state_file" || true
+
+awk -F '\t' '
+	{
+		last_marker[$1] = $2
+		last_line[$1] = $3
+	}
+	END {
+		for (scenario in last_marker) {
+			if (last_marker[scenario] == "ENTERED") {
+				print scenario "\t" last_line[scenario]
+			}
+		}
+	}
+' "$scenario_state_file" >"$incomplete_scenario_file" || true
 
 grep -hE 'ModeU5 DEBUG_LEVEL ' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
@@ -130,6 +149,7 @@ pass_count="$(count_marker PASS)"
 fail_count="$(count_marker FAIL)"
 blocked_count="$(count_marker BLOCKED)"
 pending_count="$(count_marker PENDING)"
+incomplete_scenario_count="$(grep -c . "$incomplete_scenario_file" || true)"
 debug_level_count="$(grep -c 'ModeU5 DEBUG_LEVEL ' "$debug_level_file" || true)"
 main_mode_count="$(grep -c 'ModeU5 PERF-14 ' "$main_mode_file" || true)"
 perf14_count="$(grep -c 'ModeU5 PERF-14 ' "$perf14_file" || true)"
@@ -192,6 +212,7 @@ printf 'Passed:  %s\n' "$pass_count"
 printf 'Failed:  %s\n' "$fail_count"
 printf 'Blocked: %s\n' "$blocked_count"
 printf 'Pending: %s\n' "$pending_count"
+printf 'Incomplete latest scenario runs: %s\n' "$incomplete_scenario_count"
 printf 'Debug level markers: %s\n' "$debug_level_count"
 printf 'Main mode traces: %s\n' "$main_mode_count"
 printf 'PERF-14 diagnostics: %s\n' "$perf14_count"
@@ -231,6 +252,14 @@ if [[ -s "$core04_file" ]]; then printf 'CORE-04 topology diagnostic lines:\n'; 
 if [[ -s "$scenario_file" ]]; then
 	printf 'Scenario lines:\n'
 	cat "$scenario_file"
+fi
+
+if [[ -s "$incomplete_scenario_file" ]]; then
+	printf '\n'
+	printf 'Incomplete latest scenario runs:\n'
+	while IFS=$'\t' read -r scenario line; do
+		printf '%s\n' "$line"
+	done <"$incomplete_scenario_file"
 fi
 
 if [[ "$expected_mode" != "none" && ${#missing_scenarios[@]} -gt 0 ]]; then
