@@ -1,6 +1,5 @@
 ﻿l_english:
- cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"
- STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"
  STATIC_MODIFIER_NAME_cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO"
+STATIC_MODIFIER_DESC_cbp_us09_base_rgo_size_10_percent_bonus:0 "(CBP) 10% Bigger RGO & 10% Cheaper RGO increase Traditional Economy speed by 10%."
  AUTO_MODIFIER_NAME_cbp_zero_crown_building_upkeep_base:0 "(CBP) Zero Crown Building Upkeep"
- AUTO_MODIFIER_DESC_cbp_zero_crown_building_upkeep_base:0 "CBP diagnostic guard intended to prevent the crown from paying building upkeep."
+ AUTO_MODIFIER_DESC_cbp_zero_crown_building_upkeep_base:0 "(CBP) Guard intended to prevent the Crown from paying building upkeep."
