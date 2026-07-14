@@ -13,7 +13,7 @@ import re
 import sys
 from pathlib import Path
 
-from validate_cbp_stock_operator_contracts import find_violations, iter_scan_files
+from validate_cbp_stock_operator_contracts import find_goods_supply_violations, find_violations, iter_scan_files
 
 ROOT = Path(__file__).resolve().parents[1]
 failures: list[str] = []
@@ -297,8 +297,9 @@ def validate_us17_us20_static_contract(
     expect("change_global_variable = { name = cbp_trade_efficiency_routes_seen add = 1 }" in trade_reconciliation_effects, "Route-seen counter must use change_global_variable after first set")
     expect("change_global_variable = { name = cbp_us20_market_goods_supply_loss_routes add = 1 }" in trade_reconciliation_effects, "US20 market-loss counter must use change_global_variable after first set")
 
-    expect("goods = scope:cbp_trade_owner_good" in trade_reconciliation_effects, "US20 market loss must use the saved route good scope")
-    expect("amount = scope:gui_cbp_us20_market_goods_supply_delta" in trade_reconciliation_effects, "US20 market loss must use the computed negative market goods delta")
+    expect("save_temporary_scope_as = cbp_vanilla_market_goods_supply_good" in trade_reconciliation_effects, "US20 market loss must pass the saved route good scope into the central vanilla-supply helper")
+    expect("name = cbp_vanilla_market_goods_supply_delta value = scope:gui_cbp_us20_market_goods_supply_delta" in trade_reconciliation_effects, "US20 market loss must pass the computed negative market goods delta into the central vanilla-supply helper")
+    expect("cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = yes" in trade_reconciliation_effects, "US20 market loss must apply vanilla supply through the central stock helper")
     expect("cbp_select_us20_goods_receiver_country_for_promoted_market = yes" in trade_reconciliation_effects, "Promoted-destination loss must select a receiver before country-stock loss")
 
     expect(e2e_probe_call not in revalidate_events, "Experimental US20 E2E probe must stay outside stable full revalidation")
@@ -427,7 +428,12 @@ def validate_stock_operator_contract() -> None:
         for violation in find_violations(path, text):
             rel = violation.path.relative_to(ROOT)
             failures.append(
-                f"{rel}:{violation.line}: {violation.operator} must include {violation.required_field} = yes"
+                f"{rel}:{violation.line}: {violation.operator} must include {violation.required_field} = yes or {violation.required_field} = no"
+            )
+        for violation in find_goods_supply_violations(path, text):
+            rel = violation.path.relative_to(ROOT)
+            failures.append(
+                f"{rel}:{violation.line}: add_goods_supply must only be called from cbp_stock_effects.txt or packages/cbp_core_tests"
             )
 
 

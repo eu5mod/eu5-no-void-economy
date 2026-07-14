@@ -41,6 +41,12 @@ class Violation:
     required_field: str
 
 
+@dataclass(frozen=True)
+class GoodsSupplyViolation:
+    path: Path
+    line: int
+
+
 def iter_scan_files(root: Path = ROOT) -> list[Path]:
     files: list[Path] = []
     for item in SCAN_ROOTS:
@@ -123,6 +129,32 @@ def find_violations(path: Path, text: str) -> list[Violation]:
     return violations
 
 
+def add_goods_supply_allowed(path: Path) -> bool:
+    rel = path.relative_to(ROOT).as_posix()
+    return (
+        rel == "in_game/common/scripted_effects/cbp_stock_effects.txt"
+        or rel.startswith("packages/cbp_core_tests/")
+    )
+
+
+def find_goods_supply_violations(path: Path, text: str) -> list[GoodsSupplyViolation]:
+    if add_goods_supply_allowed(path):
+        return []
+
+    violations: list[GoodsSupplyViolation] = []
+    pattern = re.compile(r"\badd_goods_supply\s*=\s*\{")
+    for match in pattern.finditer(text):
+        if is_comment_match(text, match.start()):
+            continue
+        violations.append(
+            GoodsSupplyViolation(
+                path=path,
+                line=line_for_offset(text, match.start()),
+            )
+        )
+    return violations
+
+
 def insert_contract_field(block: str, required_field: str, *, indent: str, inline: bool) -> str:
     cleaned = re.sub(rf"\s+{re.escape(required_field)}\s*=\s*(?:yes|no)(?=\s*}})", "", block)
     cleaned = re.sub(rf"\n[ \t]*{re.escape(required_field)}\s*=\s*(?:yes|no)[ \t]*(?=\n)", "", cleaned)
@@ -156,6 +188,7 @@ def fix_text(text: str) -> tuple[str, bool]:
 
 def run(*, fix: bool) -> int:
     all_violations: list[Violation] = []
+    all_goods_supply_violations: list[GoodsSupplyViolation] = []
     changed_files: list[Path] = []
     for path in iter_scan_files():
         text = path.read_text(encoding="utf-8-sig", errors="ignore")
@@ -166,19 +199,27 @@ def run(*, fix: bool) -> int:
                 changed_files.append(path)
                 text = fixed_text
         all_violations.extend(find_violations(path, text))
+        all_goods_supply_violations.extend(find_goods_supply_violations(path, text))
 
     if fix and changed_files:
         print("ModeU5 stock-operator contract fixer updated:")
         for path in changed_files:
             print(f"- {path.relative_to(ROOT)}")
 
-    if all_violations:
+    if all_violations or all_goods_supply_violations:
         print("ModeU5 stock-operator contract validation failed:", file=sys.stderr)
         for violation in all_violations:
             rel = violation.path.relative_to(ROOT)
             print(
                 f"- {rel}:{violation.line}: {violation.operator} must include "
                 f"{violation.required_field} = yes or {violation.required_field} = no",
+                file=sys.stderr,
+            )
+        for violation in all_goods_supply_violations:
+            rel = violation.path.relative_to(ROOT)
+            print(
+                f"- {rel}:{violation.line}: add_goods_supply must only be called from "
+                "in_game/common/scripted_effects/cbp_stock_effects.txt or packages/cbp_core_tests",
                 file=sys.stderr,
             )
         return 1

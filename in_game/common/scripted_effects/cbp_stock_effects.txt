@@ -18,6 +18,10 @@
 # only_*_at_country_level = yes keeps the vanilla market-supply ledger untouched.
 # only_*_at_country_level = no also applies the matching add_goods_supply delta
 # from this central wrapper.
+#
+# Rare vanilla-ledger-only adjustments without a country stock receiver, such as
+# US-20 destination-route loss on an unpromoted market, must still go through
+# this file rather than calling add_goods_supply from feature code.
 
 cbp_select_capacity_policy_enforce = {
 	save_temporary_scope_value_as = {
@@ -76,6 +80,24 @@ cbp_select_stock_operator_country_only_yes = {
 cbp_select_stock_operator_country_only_no = {
 	save_temporary_scope_value_as = { name = cbp_stock_operator_contract_valid value = 1 }
 	save_temporary_scope_value_as = { name = cbp_stock_operator_apply_vanilla_market_delta value = 1 }
+}
+
+cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = {
+	if = {
+		limit = {
+			exists = scope:cbp_vanilla_market_goods_supply_market
+			exists = scope:cbp_vanilla_market_goods_supply_good
+		}
+		scope:cbp_vanilla_market_goods_supply_market = {
+			add_goods_supply = {
+				goods = scope:cbp_vanilla_market_goods_supply_good
+				amount = scope:cbp_vanilla_market_goods_supply_delta
+			}
+		}
+	}
+	else = {
+		error_log = "ModeU5 STOCK CONTRACT ERROR operator=cbp_apply_vanilla_market_goods_supply_delta_from_saved_good reason=missing_market_or_good_scope"
+	}
 }
 
 # Generated per-good adapters read and replace literal physical map names.

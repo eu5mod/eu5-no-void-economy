@@ -139,11 +139,22 @@ cbp_remove_stock + only_remove_at_country_level = no
   -> add negative vanilla goods supply equal to actual_removed_quantity
 ```
 
-Existing callsites remain `yes` in this PR to preserve behavior. US-04, for
-example, already applies a carefully signed vanilla supply delta after reading
-the actual satisfied reconciliation quantity. Future callsites can switch to
-`no` only when they want that vanilla market delta owned by the central stock
-operator.
+US-04 signed consumption/restitution now uses `no`, so the same central stock
+operator applies both the ModeU5 country-market delta and the matching vanilla
+market-supply delta. Future callsites can switch to `no` only when they want
+that vanilla market delta owned by the central stock operator.
+
+Direct `add_goods_supply` calls are restricted to:
+
+```txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+packages/cbp_core_tests
+```
+
+Runtime features that need vanilla market-supply reconciliation must use either
+`cbp_add_stock` / `cbp_remove_stock` with the `no` flag, or a central helper in
+`cbp_stock_effects.txt` when there is no country-stock receiver, such as US-20
+market-level destination loss on an unpromoted destination market.
 
 ## Failure Mode And Static Guard
 
@@ -170,6 +181,7 @@ harnesses, and templates for:
 ```txt
 cbp_add_stock    -> only_add_at_country_level = yes | no
 cbp_remove_stock -> only_remove_at_country_level = yes | no
+add_goods_supply -> only in cbp_stock_effects.txt or packages/cbp_core_tests
 ```
 
 Meaning:
@@ -185,4 +197,5 @@ only_remove_at_country_level
 ```
 
 It is also called by `tools/validate_ci_static_contracts.py`, so CI fails if a
-future stock mutation callsite omits the explicit contract.
+future stock mutation callsite omits the explicit contract or bypasses the
+central vanilla market-supply operator.
