@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/culture_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.3
+# Trade-building maintenance multiplier: 0.5
 
 university = {
 	is_foreign = no
@@ -42,10 +43,10 @@ university = {
 
 	unique_production_methods = {
 		university_maintenance = {
-		paper = 0.25
-		books = 0.125
-		glass = 0.125
-		beeswax = 0.025
+		paper = 0.15
+		books = 0.075
+		glass = 0.075
+		beeswax = 0.015
 
 		category = building_maintenance
 		}
@@ -183,11 +184,11 @@ confucian_academy = {
 
 	unique_production_methods = {
 		confucian_academy_maintenance = {
-			paper = 0.2
-			beeswax = 0.05
-			books = 0.1
-			cloth = 0.15
-			fine_cloth = 0.05
+			paper = 0.12
+			beeswax = 0.03
+			books = 0.06
+			cloth = 0.09
+			fine_cloth = 0.03
 
 			category = building_maintenance
 		}
@@ -223,12 +224,12 @@ opera_house = {
 
 	unique_production_methods = {
 		opera_house_maintenance = {
-			cloth = 0.3
-			wine = 0.3
-			paper = 0.3
-			lacquerware = 0.1
-			fine_cloth = 0.05
-			beeswax = 0.1
+			cloth = 0.18
+			wine = 0.18
+			paper = 0.18
+			lacquerware = 0.06
+			fine_cloth = 0.03
+			beeswax = 0.06
 
 			category = building_maintenance
 		}
@@ -315,10 +316,10 @@ jesuit_college = {
 	unique_production_methods = {
 
 		jesuit_college_maintenance = {
-			paper = 0.25
-			books = 0.5
-			fine_cloth = 0.1
-			beeswax = 0.05
+			paper = 0.15
+			books = 0.3
+			fine_cloth = 0.06
+			beeswax = 0.03
 
 			category = building_maintenance
 		}

@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/event_only_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.3
+# Trade-building maintenance multiplier: 0.5
 
 cantonments = {
 	is_special = yes
@@ -117,8 +118,8 @@ great_madrasa = {
 
 	unique_production_methods = {
 		great_madrasa_maintenance = {
-			paper = 0.25
-			cloth = 0.2
+			paper = 0.15
+			cloth = 0.12
 
 			category = building_maintenance
 		}
@@ -384,9 +385,9 @@ grand_apartment = {
 
 	unique_production_methods = {
 		grand_apartment_maintenance = {
-			furniture = 0.05
-			books = 0.05
-			marble = 0.025
+			furniture = 0.03
+			books = 0.03
+			marble = 0.015
 
 			category = building_maintenance
 		}
@@ -550,12 +551,12 @@ enderun_academy = {
 
 	unique_production_methods = {
 		endrun_academy_maintenance = {
-			firearms = 0.25
-			leather = 0.25
-			cloth = 0.125
-			paper = 0.25
-			weaponry = 0.25
-			fine_cloth = 0.25
+			firearms = 0.15
+			leather = 0.15
+			cloth = 0.075
+			paper = 0.15
+			weaponry = 0.15
+			fine_cloth = 0.15
 
 			category = building_maintenance
 		}
@@ -602,11 +603,11 @@ imperial_halic_shipyards = {
 
 	unique_production_methods = {
 		imperial_halic_shipyards_maintenance = {
-			tar = 0.25
-			naval_supplies = 0.5
-			tools = 0.1
-			lumber = 0.2
-			stone = 0.12
+			tar = 0.15
+			naval_supplies = 0.3
+			tools = 0.06
+			lumber = 0.12
+			stone = 0.072
 			category = building_maintenance
 		}
 	}
@@ -841,11 +842,11 @@ globe_theatre = {
 
 	unique_production_methods = {
 		globe_theater_maintenance = {
-			cloth = 0.1
-			furniture = 0.05
-			wine = 0.15
-			paper = 0.25
-			fine_cloth = 0.2
+			cloth = 0.06
+			furniture = 0.03
+			wine = 0.09
+			paper = 0.15
+			fine_cloth = 0.12
 
 			category = building_maintenance
 		}
@@ -884,11 +885,11 @@ schwaz_mine = {
 
 	unique_production_methods = {
 		schwaz_mine_maintenance = {
-			tools = 0.125
-			leather = 0.15
-			lumber = 0.25
-			stone = 0.25
-			liquor = 0.05
+			tools = 0.075
+			leather = 0.09
+			lumber = 0.15
+			stone = 0.15
+			liquor = 0.03
 
 			produced = silver
 			output = 1.1
@@ -999,11 +1000,11 @@ ribeira_das_naus = {
 
 	unique_production_methods = {
 		ribeira_das_naus_maintenance = {
-			tar = 0.125
-			naval_supplies = 0.4
-			tools = 0.075
-			lumber = 0.1
-			stone = 0.05
+			tar = 0.075
+			naval_supplies = 0.24
+			tools = 0.045
+			lumber = 0.06
+			stone = 0.03
 			category = building_maintenance
 		}
 	}
@@ -1219,12 +1220,12 @@ bolshoi_theater = {
 
 	unique_production_methods = {
 		bolshoi_theater_maintenance = {
-			cloth = 0.05
-			furniture = 0.05
-			liquor = 0.25
-			paper = 0.25
-			fine_cloth = 0.2
-			fur = 0.05
+			cloth = 0.03
+			furniture = 0.03
+			liquor = 0.15
+			paper = 0.15
+			fine_cloth = 0.12
+			fur = 0.03
 
 			category = building_maintenance
 		}
@@ -1534,9 +1535,9 @@ college_of_poets = {
 
 	unique_production_methods = {
 		college_of_poets_maintenance = {
-			paper = 0.5
-			books = 0.25
-			glass = 0.25
+			paper = 0.3
+			books = 0.15
+			glass = 0.15
 			category = building_maintenance
 		}
 	}
@@ -1567,9 +1568,9 @@ bibliotheca_corviniana = {
 
 	unique_production_methods = {
 		bibliotheca_corviniana_maintenance = {
-			paper = 0.1
-			books = 0.5
-			furniture = 0.05
+			paper = 0.06
+			books = 0.3
+			furniture = 0.03
 			category = building_maintenance
 		}
 	}
@@ -2352,9 +2353,9 @@ swi_collegium_helveticum = {
 	}
 	unique_production_methods = {
 		swi_collegium_helveticum_maintenance = {
-			paper = 0.25
-			books = 0.125
-			glass = 0.125
+			paper = 0.15
+			books = 0.075
+			glass = 0.075
 			category = building_maintenance
 		}
 	}
@@ -2760,10 +2761,10 @@ lighthouse_of_alexandria = {
 
 	unique_production_methods = {
 		lighthouse_of_alexandria_maintenance = {
-			masonry = 0.25
-			weaponry = 0.1
-			naval_supplies = 0.25
-			tar = 0.05
+			masonry = 0.15
+			weaponry = 0.06
+			naval_supplies = 0.15
+			tar = 0.03
 			category = building_maintenance
 		}
 	}
@@ -3156,9 +3157,9 @@ guich_garrison = {
 	unique_production_methods = {
 
 		guich_garrison_maintenance = {
-			masonry = 0.05
-			weaponry = 0.01
-			tar = 0.01
+			masonry = 0.03
+			weaponry = 0.006
+			tar = 0.006
 			category = building_maintenance
 		}
 	}
@@ -3277,11 +3278,11 @@ herrenchiemsee_abbey = {
 
 	unique_production_methods = {
 		herrenchiemsee_abbey_maintenance = {
-			glass = 0.2
-			paper = 0.2
-			cloth = 0.2
-			beer = 0.2
-			beeswax = 0.1
+			glass = 0.12
+			paper = 0.12
+			cloth = 0.12
+			beer = 0.12
+			beeswax = 0.06
 
 			category = building_maintenance
 		}
@@ -3638,10 +3639,10 @@ usa_academy_of_arts_and_sciences = {
 
 	unique_production_methods = {
 		usa_academy_of_arts_and_sciences_maintenance = {
-			paper = 0.5
-			books = 0.125
-			glass = 0.125
-			beeswax = 0.025
+			paper = 0.3
+			books = 0.075
+			glass = 0.075
+			beeswax = 0.015
 			category = building_maintenance
 		}
 	}
@@ -3691,10 +3692,10 @@ usa_philosophical_society = {
 
 	unique_production_methods = {
 		usa_philosophical_society_maintenance = {
-			paper = 0.75
-			books = 0.25
-			glass = 0.25
-			beeswax = 0.05
+			paper = 0.45
+			books = 0.15
+			glass = 0.15
+			beeswax = 0.03
 			category = building_maintenance
 		}
 	}
@@ -3849,9 +3850,9 @@ phanariot_district = {
 
 	unique_production_methods = {
 		phanariot_district_maintenance = {
-			masonry = 0.1
-			lumber = 0.1
-			sand = 0.1
+			masonry = 0.06
+			lumber = 0.06
+			sand = 0.06
 			category = building_maintenance
 		}
 	}
@@ -3977,11 +3978,11 @@ jewish_district = {
 
 	unique_production_methods = {
 		jewish_district_maintenance = {
-			masonry = 0.25
-			tools = 0.05
-			glass = 0.1
-			furniture = 0.05
-			lumber = 0.125
+			masonry = 0.15
+			tools = 0.03
+			glass = 0.06
+			furniture = 0.03
+			lumber = 0.075
 			category = building_maintenance
 		}
 	}
@@ -4062,8 +4063,8 @@ woodhenge_of_cahokia = {
 
 	unique_production_methods = {
 		cahokia_woodhenge_production_method = {
-			clay = 0.5
-			lumber = 0.5
+			clay = 0.3
+			lumber = 0.3
 			category = building_maintenance
 		}
 	}

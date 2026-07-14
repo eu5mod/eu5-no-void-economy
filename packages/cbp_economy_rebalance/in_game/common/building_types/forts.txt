@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/forts.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.3
+# Trade-building maintenance multiplier: 0.5
 
 stockade = {
 
@@ -29,9 +30,9 @@ stockade = {
 	unique_production_methods = {
 
 		stockade_maintenance = {
-			lumber = 0.05
-			weaponry = 0.01
-			tar = 0.01
+			lumber = 0.03
+			weaponry = 0.006
+			tar = 0.006
 			category = building_maintenance
 		}
 	}
@@ -75,10 +76,10 @@ castle = {
 
 	unique_production_methods = {
 		castle_maintenance = {
-			stone = 0.05
-			tools = 0.025
-			weaponry = 0.05
-			tar = 0.0125
+			stone = 0.03
+			tools = 0.015
+			weaponry = 0.03
+			tar = 0.0075
 			category = building_maintenance
 		}
 	}
@@ -122,11 +123,11 @@ bastion = {
 	unique_production_methods = {
 
 		bastion_maintenance = {
-			stone = 0.25
-			firearms = 0.25
-			cannons = 0.25
-			tools = 0.1
-			weaponry = 0.25
+			stone = 0.15
+			firearms = 0.15
+			cannons = 0.15
+			tools = 0.06
+			weaponry = 0.15
 			category = building_maintenance
 		}
 
@@ -167,11 +168,11 @@ star_fort = {
 
 	unique_production_methods = {
 		star_fort_maintenance = {
-			stone = 0.5
-			firearms = 0.5
-			cannons = 0.5
-			tools = 0.25
-			weaponry = 0.5
+			stone = 0.3
+			firearms = 0.3
+			cannons = 0.3
+			tools = 0.15
+			weaponry = 0.3
 			category = building_maintenance
 		}
 	}
@@ -212,11 +213,11 @@ fortress = {
 
 	unique_production_methods = {
 		fortress_maintenance = {
-			stone = 1.0
-			firearms = 2.0
-			cannons = 2.0
-			tools = 1.0
-			weaponry = 1.0
+			stone = 0.6
+			firearms = 1.2
+			cannons = 1.2
+			tools = 0.6
+			weaponry = 0.6
 			category = building_maintenance
 		}
 	}

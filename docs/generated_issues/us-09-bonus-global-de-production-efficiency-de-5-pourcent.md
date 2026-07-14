@@ -48,7 +48,7 @@ Feeds counters to: vanilla production read at step 4
 | Static production output field | local vanilla `common/building_types` | `output = <float>` inside production definitions; loaded duplicate-key override path | NOT_CONFIRMED | 118 |
 | Static trade-capacity fields | local vanilla `common/building_types` | `local_trades_per_burgher`, `local_merchant_capacity`, `merchant_capacity_from_building`; exact-path package override path | TO_TEST | 118 |
 | Composed US-07 trade-building estate-power field | local vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; exact-path package override path | TO_TEST | 083 |
-| Composed US-08/US-05.3 building maintenance quantities | local vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by `0.5`; exact-path package override path | CONFIRMED | 153 |
+| Composed US-08/US-05.3 building maintenance quantities | local vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by `0.3`, or `0.5` for enclosing `trade_category` buildings; exact-path package override path | CONFIRMED | 153 |
 | Static RGO expansion price entries | local vanilla `common/prices/00_hardcoded.txt` | `expand_rgo_mining`, `expand_rgo_farming`, `expand_rgo_hunting`, `expand_rgo_gathering`, `expand_rgo_forestry`; loaded duplicate-key override path | NOT_CONFIRMED | 119 |
 
 ## Probe implementation path
@@ -59,7 +59,7 @@ Probe solution:
 Generate exact-path override files from vanilla `.../game/in_game/common/building_types`
 Increase each eligible `output =`, `local_trades_per_burgher`, `local_merchant_capacity`, and `merchant_capacity_from_building` value by a configurable `X%`
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
-Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.5`
+Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.3`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
 Override each targeted RGO expansion gold value by `gold x (1 / (1 + X))`
 ```

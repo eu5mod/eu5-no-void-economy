@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/capital_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.3
+# Trade-building maintenance multiplier: 0.5
 
 royal_court = {
 	is_foreign = no
@@ -45,13 +46,13 @@ royal_court = {
 
 	unique_production_methods = {
 		royal_court_maintenance = {
-			furniture = 0.075
-			tools = 0.025
-			glass = 0.05
-			fine_cloth = 0.1
-			books = 0.05
-			goods_gold = 0.05
-			marble = 0.05
+			furniture = 0.045
+			tools = 0.015
+			glass = 0.03
+			fine_cloth = 0.06
+			books = 0.03
+			goods_gold = 0.03
+			marble = 0.03
 
 			category = building_maintenance
 		}
@@ -108,9 +109,9 @@ house_of_parliament = {
 
 	unique_production_methods = {
 		house_of_parliament_requirements = {
-			fine_cloth = 0.05
-			books = 0.05
-			paper = 0.25
+			fine_cloth = 0.03
+			books = 0.03
+			paper = 0.15
 			category = building_maintenance
 		}
 	}
@@ -167,13 +168,13 @@ order_headquarters = {
 
 	unique_production_methods = {
 		order_headquarters_requirements = {
-			lumber = 0.05
-			tools = 0.05
-			glass = 0.05
-			fine_cloth = 0.05
-			beeswax = 0.025
-			books = 0.025
-			weaponry = 0.05
+			lumber = 0.03
+			tools = 0.03
+			glass = 0.03
+			fine_cloth = 0.03
+			beeswax = 0.015
+			books = 0.015
+			weaponry = 0.03
 			category = building_maintenance
 		}
 	}
@@ -218,11 +219,11 @@ admiralty = {
 
 	unique_production_methods = {
 		admiralty_requirements = {
-			tools = 0.05
-			naval_supplies = 0.1
-			fine_cloth = 0.1
-			books = 0.05
-			paper = 0.15
+			tools = 0.03
+			naval_supplies = 0.06
+			fine_cloth = 0.06
+			books = 0.03
+			paper = 0.09
 			category = building_maintenance
 		}
 	}
@@ -265,13 +266,13 @@ war_college = {
 	unique_production_methods = {
 
 		war_college_requirements = {
-			tools = 0.1
-			weaponry = 0.25
-			firearms = 0.25
-			fine_cloth = 0.5
-			books = 0.5
-			paper = 1.0
-			cannons = 0.125
+			tools = 0.06
+			weaponry = 0.15
+			firearms = 0.15
+			fine_cloth = 0.3
+			books = 0.3
+			paper = 0.6
+			cannons = 0.075
 			category = building_maintenance
 		}
 	}
@@ -317,8 +318,8 @@ tax_assessor = {
 	unique_production_methods = {
 
 		tax_assessor_requirements = {
-			tools = 0.1
-			paper = 0.5
+			tools = 0.06
+			paper = 0.3
 			category = building_maintenance
 		}
 	}
@@ -361,13 +362,13 @@ supreme_court = {
 
 	unique_production_methods = {
 		supreme_court_requirements = {
-			lumber = 0.05
-			tools = 0.05
-			glass = 0.05
-			fine_cloth = 0.05
-			books = 0.05
-			paper = 0.25
-			goods_gold = 0.05
+			lumber = 0.03
+			tools = 0.03
+			glass = 0.03
+			fine_cloth = 0.03
+			books = 0.03
+			paper = 0.15
+			goods_gold = 0.03
 			category = building_maintenance
 		}
 	}
@@ -425,10 +426,10 @@ chancery = {
 
 	unique_production_methods = {
 		chancery_maintenance = {
-			fine_cloth = 0.05
-			books = 0.05
-			paper = 0.25
-			goods_gold = 0.025
+			fine_cloth = 0.03
+			books = 0.03
+			paper = 0.15
+			goods_gold = 0.015
 
 			category = building_maintenance
 		}
@@ -483,13 +484,13 @@ republican_assembly = {
 
 	unique_production_methods = {
 		republican_assembly_maintenance = {
-			furniture = 0.05
-			tools = 0.05
-			glass = 0.25
-			fine_cloth = 0.25
-			books = 0.05
-			goods_gold = 0.05
-			marble = 0.05
+			furniture = 0.03
+			tools = 0.03
+			glass = 0.15
+			fine_cloth = 0.15
+			books = 0.03
+			goods_gold = 0.03
+			marble = 0.03
 
 			category = building_maintenance
 		}
@@ -536,13 +537,13 @@ royal_garden = {
 
 	unique_production_methods = {
 		royal_garden_maintenance = {
-			furniture = 0.05
-			tools = 0.05
-			glass = 0.05
-			fine_cloth = 0.025
-			books = 0.05
-			goods_gold = 0.025
-			marble = 0.025
+			furniture = 0.03
+			tools = 0.03
+			glass = 0.03
+			fine_cloth = 0.015
+			books = 0.03
+			goods_gold = 0.015
+			marble = 0.015
 
 			category = building_maintenance
 		}
@@ -654,14 +655,14 @@ local_governor = {
 
 	unique_production_methods = {
 		local_governor_maintenance = {
-			tools = 0.5
-			masonry = 0.5
-			weaponry = 0.25
-			paper = 1.5
-			books = 0.5
-			goods_gold = 0.5
-			furniture = 1.0
-			fine_cloth = 0.5
+			tools = 0.3
+			masonry = 0.3
+			weaponry = 0.15
+			paper = 0.9
+			books = 0.3
+			goods_gold = 0.3
+			furniture = 0.6
+			fine_cloth = 0.3
 
 			category = building_maintenance
 		}
@@ -722,15 +723,15 @@ naval_governor = {
 
 	unique_production_methods = {
 		naval_governor_maintenance = {
-			tools = 0.5
-			masonry = 0.5
-			weaponry = 0.25
-			paper = 1.5
-			books = 0.5
-			goods_gold = 0.5
-			furniture = 1.0
-			naval_supplies = 0.25
-			fine_cloth = 0.25
+			tools = 0.3
+			masonry = 0.3
+			weaponry = 0.15
+			paper = 0.9
+			books = 0.3
+			goods_gold = 0.3
+			furniture = 0.6
+			naval_supplies = 0.15
+			fine_cloth = 0.15
 
 			category = building_maintenance
 		}

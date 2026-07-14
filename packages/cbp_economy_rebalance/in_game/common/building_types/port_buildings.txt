@@ -2,7 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/port_buildings.txt
 # Output multiplier: 1.1 (10%)
-# Building maintenance multiplier: 0.5
+# Building maintenance multiplier: 0.3
+# Trade-building maintenance multiplier: 0.5
 
 dock = {
 	is_foreign = no
@@ -27,11 +28,11 @@ dock = {
 
 	unique_production_methods = {
 		dock_maintenance = {
-			tar = 0.1
-			naval_supplies = 0.05
-			tools = 0.1
-			lumber = 0.1
-			cloth = 0.05
+			tar = 0.06
+			naval_supplies = 0.03
+			tools = 0.06
+			lumber = 0.06
+			cloth = 0.03
 			category = building_maintenance
 		}
 
@@ -77,11 +78,11 @@ dry_dock = {
 
 	unique_production_methods = {
 		dry_dock_maintenance = {
-			tar = 0.2
-			naval_supplies = 0.1
-			tools = 0.2
-			lumber = 0.2
-			cloth = 0.1
+			tar = 0.12
+			naval_supplies = 0.06
+			tools = 0.12
+			lumber = 0.12
+			cloth = 0.06
 			category = building_maintenance
 		}
 
@@ -127,11 +128,11 @@ shipyard = {
 
 	unique_production_methods = {
 		shipyard_maintenance = {
-			tar = 0.4
-			naval_supplies = 0.2
-			tools = 0.4
-			lumber = 0.4
-			cloth = 0.2
+			tar = 0.24
+			naval_supplies = 0.12
+			tools = 0.24
+			lumber = 0.24
+			cloth = 0.12
 			category = building_maintenance
 		}
 
@@ -177,11 +178,11 @@ grand_shipyard = {
 
 	unique_production_methods = {
 		grand_shipyard_maintenance = {
-			tar = 0.8
-			naval_supplies = 0.4
-			tools = 0.8
-			lumber = 0.8
-			cloth = 0.4
+			tar = 0.48
+			naval_supplies = 0.24
+			tools = 0.48
+			lumber = 0.48
+			cloth = 0.24
 			category = building_maintenance
 		}
 
@@ -227,11 +228,11 @@ naval_base = {
 
 	unique_production_methods = {
 		naval_base_maintenance = {
-			tar = 1.5
-			naval_supplies = 0.75
-			tools = 1.5
-			lumber = 1.5
-			cloth = 0.75
+			tar = 0.9
+			naval_supplies = 0.45
+			tools = 0.9
+			lumber = 0.9
+			cloth = 0.45
 			category = building_maintenance
 		}
 
@@ -275,10 +276,10 @@ protected_harbor = {
 
 	unique_production_methods = {
 		protected_harbor_maintenance = {
-			tar = 0.05
-			tools = 0.05
-			lumber = 0.05
-			stone = 0.1
+			tar = 0.03
+			tools = 0.03
+			lumber = 0.03
+			stone = 0.06
 			category = building_maintenance
 		}
 
