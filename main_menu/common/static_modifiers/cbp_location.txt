@@ -1,9 +1,9 @@
-﻿#multiplied by how far above FOOD_PRICE food is in this location.
+#multiplied by how far above FOOD_PRICE food is in this location.
 expensive_food_in_location = {
 	game_data = {
 		category = location
 	}
-	local_population_growth = 0 #=>PUT THIS LINE AT 0
+	local_population_growth = 0 # VANILLA VALUE IS -0.001
 }
 
 #multiplied by how far below FOOD_PRICE food is in this location.
@@ -11,7 +11,7 @@ cheap_food_in_location = {
 	game_data = {
 		category = location
 	}
-	local_population_growth = 0.001 #=>PUT THIS LINE AT 0.001
+	local_population_growth = 0.001 # VANILLA VALUE IS 0.002
 }
 
 capital = {
@@ -22,13 +22,13 @@ capital = {
 	local_max_control = 0.20
 	local_population_capacity_modifier = 0.10
 	local_migration_attraction = 0.025
-	
+
 	local_nobles_desired_pop_scaled = 0.002
 	local_clergy_desired_pop_scaled = 0.002
 	local_fort_maintenance_cost = -0.50
-	
+
 	free_building_levels = 5
-	cbp_country_strock = 8 #=>PUT THIS LINE AT 8
+	cbp_country_strock = 8 # VANILLA VALUE IS NOT PRESENT
 }
 
 market_center = {
@@ -40,7 +40,7 @@ market_center = {
 	local_merchant_power = 20
 	local_institution_growth_modifier = 0.25
 	free_building_levels = 5
-	maximum_stockpile_capacity = 0 #=>PUT THIS LINE AT 0
+	maximum_stockpile_capacity = 0 # VANILLA VALUE IS 250
 }
 
 #per 1k available jobs
@@ -48,7 +48,7 @@ surplus_jobs = {
 	game_data = {
 		category = location
 	}
-	local_migration_attraction = 0.2 #=>PUT THIS LINE AT 0.2
+	local_migration_attraction = 0.2 # VANILLA VALUE IS 0.1
 	local_peasant_enfranchisment = 0.02
 	local_construction_speed = -0.1
 }
