@@ -53,14 +53,6 @@ require_match() {
 	fi
 }
 
-format_multiplier_from_percent() {
-	local percent="$1"
-	awk -v percent="$percent" 'BEGIN {
-		value = 1 + (percent / 100)
-		printf "%.10f", value
-	}' | sed -e 's/0*$//' -e 's/\.$/.0/'
-}
-
 tracked_generated_files="$(git ls-files | grep -E '(^|/)cbp_[^/]*_generated(\.txt|_l_english\.yml)$' || true)"
 if [[ -n "$tracked_generated_files" ]]; then
 	printf 'Generated ModeU5 files must not be tracked by Git:\n%s\n' "$tracked_generated_files" >&2
@@ -221,9 +213,7 @@ us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/s
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
 us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
 us09_market_stockpile_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_market_stockpile_capacity_effects.txt"
-us09_trade_capacity_percent="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}"
-us09_trade_capacity_multiplier="$(format_multiplier_from_percent "$us09_trade_capacity_percent")"
-us09_trade_capacity_multiplier_pattern="${us09_trade_capacity_multiplier//./\\.}"
+us09_trade_capacity_percent=""
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
 require_file "$us09_market_buildings_file"
@@ -237,33 +227,116 @@ require_match '^# Source: <EU5_GAME_COMMON_DIR>/prices/00_hardcoded\.txt$' \
 require_match '^expand_rgo_gathering = \{$' \
 	"$us09_prices_file" \
 	'US-09 RGO price override must contain the vanilla expand_rgo_gathering key'
-require_match '^# US-07 composed trade-building estate-power multiplier: 0\.5$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must document the composed US-07 multiplier'
-require_match '^# Building maintenance multiplier: 0\.7$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 building maintenance override must document the composed 30% non-trade maintenance multiplier'
-require_match '^# Trade-building maintenance multiplier: 0\.5$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 building maintenance override must document the composed 50% trade-building maintenance multiplier'
-require_match '^[[:space:]]+cloth = 0\.03$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 trade-building maintenance must halve marketplace cloth maintenance'
-require_match '^[[:space:]]+paper = 0\.025$' \
-	"$us09_trade_buildings_file" \
-	'US-08/US-05.3 trade-building maintenance must halve marketplace paper maintenance'
-require_match '^[[:space:]]+local_burghers_estate_power = 0\.05$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must compose the approved US-07 local_burghers_estate_power reduction'
-require_match "^# Trade capacity multiplier: ${us09_trade_capacity_multiplier_pattern} \\(${us09_trade_capacity_percent}%\\)$" \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must document the configured trade-capacity multiplier'
-require_match '^[[:space:]]+local_trades_per_burgher = 1$' \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must leave local_trades_per_burgher unchanged'
-require_match "^[[:space:]]+local_merchant_capacity = ${us09_trade_capacity_multiplier_pattern}$" \
-	"$us09_trade_buildings_file" \
-	'US-09 trade-building override must apply the configured local_merchant_capacity compensation'
+us09_trade_capacity_percent="$(
+	python3 - "$us09_trade_buildings_file" <<'PY'
+from __future__ import annotations
+
+import math
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+lines = path.read_text(encoding="utf-8-sig").splitlines()
+
+def header_value(label: str) -> tuple[float, float | None]:
+    number = r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)"
+    pattern = rf"^# {re.escape(label)}: ({number})(?: \(({number})%\))?$"
+    for line in lines[:16]:
+        match = re.match(pattern, line)
+        if match:
+            multiplier = float(match.group(1))
+            percent = float(match.group(2)) if match.group(2) is not None else None
+            return multiplier, percent
+    raise SystemExit(f"US-09 trade-building override must document {label}")
+
+trade_multiplier, trade_percent = header_value("Trade capacity multiplier")
+if trade_percent is None:
+    raise SystemExit("US-09 trade-capacity header must include the percent form")
+if not math.isclose(trade_multiplier, 1 + trade_percent / 100, rel_tol=0, abs_tol=0.000001):
+    raise SystemExit("US-09 trade-capacity multiplier and percent header disagree")
+
+for label in (
+    "Building maintenance multiplier",
+    "Trade-building maintenance multiplier",
+    "US-07 composed trade-building estate-power multiplier",
+):
+    header_value(label)
+
+def code(line: str) -> str:
+    return line.split("#", 1)[0]
+
+def top_block(name: str) -> str:
+    for index, line in enumerate(lines):
+        if re.match(rf"^{re.escape(name)}\s*=\s*\{{", code(line)):
+            depth = 0
+            block: list[str] = []
+            for child in lines[index:]:
+                block.append(child)
+                depth += code(child).count("{")
+                depth -= code(child).count("}")
+                if depth == 0:
+                    return "\n".join(block)
+    raise SystemExit(f"US-09 trade-building override must contain {name}")
+
+def assignment(block: str, key: str) -> float:
+    match = re.search(rf"^\s*{re.escape(key)}\s*=\s*(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))\b", block, re.M)
+    if not match:
+        raise SystemExit(f"US-09 trade-building override must contain {key}")
+    return float(match.group(1))
+
+marketplace_blocks = {
+    name: top_block(name)
+    for name in ("marketplace", "merchants_quarters", "grand_marketplace")
+}
+marketplace_maintenance: dict[str, float] | None = None
+for name, block in marketplace_blocks.items():
+    trades_per_burgher = assignment(block, "local_trades_per_burgher")
+    merchant_capacity = assignment(block, "local_merchant_capacity")
+    if not math.isclose(
+        merchant_capacity,
+        trades_per_burgher * trade_multiplier,
+        rel_tol=0,
+        abs_tol=0.000001,
+    ):
+        raise SystemExit(
+            f"US-09 {name} local_merchant_capacity must equal "
+            "local_trades_per_burgher x declared trade-capacity multiplier"
+        )
+    if assignment(block, "local_burghers_estate_power") <= 0:
+        raise SystemExit(f"US-09 {name} estate-power value must stay positive")
+
+    maintenance_match = re.search(
+        r"\b[A-Za-z0-9_]+_maintenance\s*=\s*\{(?P<body>.*?)^\s*\}",
+        block,
+        re.S | re.M,
+    )
+    if not maintenance_match:
+        raise SystemExit(f"US-09 {name} must retain a maintenance block")
+    body = maintenance_match.group("body")
+    values = {
+        key: float(value)
+        for key, value in re.findall(
+            r"^\s*([A-Za-z0-9_]+)\s*=\s*(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))\b",
+            body,
+            re.M,
+        )
+        if key != "category"
+    }
+    if not values:
+        raise SystemExit(f"US-09 {name} maintenance block must retain goods")
+    if marketplace_maintenance is None:
+        marketplace_maintenance = values
+    elif values != marketplace_maintenance:
+        raise SystemExit(
+            "US-08/US-05.3 composed marketplace maintenance must stay normalized "
+            "across marketplace, merchants_quarters, and grand_marketplace"
+        )
+
+print(f"{trade_percent:g}")
+PY
+)"
+
 python3 - "$us09_market_buildings_file" <<'PY'
 from __future__ import annotations
 
