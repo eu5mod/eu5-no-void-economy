@@ -89,6 +89,8 @@ jobs:
             --percent 10 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
+            --building-maintenance-multiplier 0.7 \
+            --trade-building-maintenance-multiplier 0.5 \
             --common-dir "$fixture_common" \
             --package-common-dir "$fixture_package"
 
@@ -99,8 +101,8 @@ jobs:
           test ! -f "$fixture_package/prices/zzzz_cbp_us09_expand_rgo_prices.txt"
           test ! -f "$fixture_package/prices/expand_rgo_prices.txt"
           grep -q 'output = 11.0' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'wheat = 2.0' "$fixture_package/building_types/00_test_production.txt"
-          grep -q 'copper = 1.0' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'wheat = 2.8' "$fixture_package/building_types/00_test_production.txt"
+          grep -q 'copper = 1.4' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'local_trades_per_burgher = 1.1' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'local_merchant_capacity = 2.2' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'merchant_capacity_from_building = 3.3' "$fixture_package/building_types/00_test_production.txt"
@@ -131,6 +133,8 @@ jobs:
             --percent 10 \
             --extra-burgher-promotion-speed 10 \
             --extra-laborer-promotion-speed 10 \
+            --building-maintenance-multiplier 0.7 \
+            --trade-building-maintenance-multiplier 0.5 \
             --common-dir "$fixture_common" \
             --package-common-dir "$fixture_package"
 
