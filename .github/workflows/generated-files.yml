@@ -190,6 +190,169 @@ jobs:
             exit 1
           fi
 
+      - name: Validate US-177 food and minting generators with fixture game root
+        run: |
+          set -euo pipefail
+
+          fixture_game="$RUNNER_TEMP/us177_game"
+          fixture_package="$RUNNER_TEMP/us177_package"
+          fixture_common="$fixture_game/in_game/common"
+
+          mkdir -p \
+            "$fixture_game/loading_screen/common/defines" \
+            "$fixture_common/advances" \
+            "$fixture_common/laws" \
+            "$fixture_common/building_types" \
+            "$fixture_common/prices" \
+            "$fixture_game/main_menu/common/static_modifiers" \
+            "$fixture_package/loading_screen/common/defines" \
+            "$fixture_package/in_game/common/auto_modifiers"
+
+          cp packages/cbp_economy_rebalance/loading_screen/common/defines/cbp_us177_food_price_defines.txt \
+            "$fixture_package/loading_screen/common/defines/"
+          cp packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_us177_minting_income_auto_modifiers.txt \
+            "$fixture_package/in_game/common/auto_modifiers/"
+
+          cat > "$fixture_game/loading_screen/common/defines/00_defines.txt" <<'EOF'
+          NMarket = {
+              FOOD_PRICE = 0.05
+              NON_FOOD_PRICE = 9
+          }
+          EOF
+
+          cat > "$fixture_common/advances/test_advances.txt" <<'EOF'
+          minting_advance = {
+              modifier = {
+                  minting_income_factor = 0.10
+                  unrelated_modifier = 0.40
+              }
+          }
+          inline_minting_advance = { modifier = { minting_income_factor = -0.05 } }
+          EOF
+
+          cat > "$fixture_common/laws/test_laws.txt" <<'EOF'
+          minting_law = {
+              country_modifier = {
+                  minting_income_factor = 0.20 # preserve this comment
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/building_types/event_only_buildings.txt" <<'EOF'
+          minting_building = {
+              output = 10
+              modifier = {
+                  minting_income_factor = 0.25
+                  unrelated_building_modifier = 0.75
+              }
+          }
+          EOF
+
+          cat > "$fixture_common/prices/00_hardcoded.txt" <<'EOF'
+          expand_rgo_mining = { gold = 100 }
+          expand_rgo_farming = { gold = 100 }
+          expand_rgo_hunting = { gold = 100 }
+          expand_rgo_gathering = { gold = 100 }
+          expand_rgo_forestry = { gold = 100 }
+          EOF
+
+          cat > "$fixture_game/main_menu/common/static_modifiers/country.txt" <<'EOF'
+          years_since_game_start = {
+              minting_income_factor = 0.01
+              inflation_impact = 0.30
+          }
+          EOF
+
+          bash ./tools/generate_us09_economy_overrides.sh \
+            --percent 10 \
+            --extra-burgher-promotion-speed 0 \
+            --extra-laborer-promotion-speed 0 \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package/in_game/common"
+
+          python3 ./tools/generate_us177_minting_overrides.py \
+            --game-root "$fixture_game" \
+            --package-root "$fixture_package" \
+            --multiplier 2
+          python3 ./tools/postprocess_us177_minting_building_overrides.py \
+            --common-dir "$fixture_common" \
+            --package-common-dir "$fixture_package/in_game/common" \
+            --multiplier 2
+
+          python3 ./tools/validate_us177_food_minting_overrides.py \
+            --game-root "$fixture_game" \
+            --package-root "$fixture_package" \
+            --food-multiplier 2 \
+            --minting-multiplier 2
+
+          grep -q 'minting_income_factor = 0.2' "$fixture_package/in_game/common/advances/test_advances.txt"
+          grep -q 'minting_income_factor = -0.1' "$fixture_package/in_game/common/advances/test_advances.txt"
+          grep -q 'unrelated_modifier = 0.40' "$fixture_package/in_game/common/advances/test_advances.txt"
+          grep -q 'minting_income_factor = 0.4 # preserve this comment' "$fixture_package/in_game/common/laws/test_laws.txt"
+          grep -q 'output = 11.0' "$fixture_package/in_game/common/building_types/event_only_buildings.txt"
+          grep -q 'minting_income_factor = 0.5' "$fixture_package/in_game/common/building_types/event_only_buildings.txt"
+          grep -q 'unrelated_building_modifier = 0.75' "$fixture_package/in_game/common/building_types/event_only_buildings.txt"
+          grep -q 'minting_income_factor = 0.02' "$fixture_package/main_menu/common/static_modifiers/country.txt"
+          grep -q 'inflation_impact = 0.30' "$fixture_package/main_menu/common/static_modifiers/country.txt"
+          test -f "$fixture_package/cbp_generated/us177_minting_income_manifest.json"
+          test -f "$fixture_package/cbp_generated/us177_minting_building_manifest.json"
+
+          bad_game="$RUNNER_TEMP/us177_bad_game"
+          cp -R "$fixture_game" "$bad_game"
+          printf '\nbad = { minting_income_factor = dynamic_value }\n' >> "$bad_game/in_game/common/laws/test_laws.txt"
+          if python3 ./tools/generate_us177_minting_overrides.py \
+            --game-root "$bad_game" \
+            --package-root "$RUNNER_TEMP/us177_bad_package" >/dev/null 2>&1
+          then
+            echo 'US-177 generator must fail on non-numeric minting expressions.' >&2
+            exit 1
+          fi
+
+      - name: Build temporary US-177 reference artifact
+        run: |
+          set -euo pipefail
+
+          reference_checkout="$RUNNER_TEMP/eu5_reference"
+          reference_package="$RUNNER_TEMP/us177_reference_package"
+          git init "$reference_checkout"
+          git -C "$reference_checkout" remote add origin https://github.com/razorstorm/Europa-Universalis-V.git
+          git -C "$reference_checkout" fetch --depth=1 origin 045b50a8263b6c3a9dba098751028aa884b89cd5
+          git -C "$reference_checkout" checkout --detach FETCH_HEAD
+
+          mkdir -p \
+            "$reference_package/loading_screen/common/defines" \
+            "$reference_package/in_game/common/auto_modifiers"
+          cp packages/cbp_economy_rebalance/loading_screen/common/defines/cbp_us177_food_price_defines.txt \
+            "$reference_package/loading_screen/common/defines/"
+          cp packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_us177_minting_income_auto_modifiers.txt \
+            "$reference_package/in_game/common/auto_modifiers/"
+
+          bash ./tools/generate_us09_economy_overrides.sh \
+            --percent 5 \
+            --extra-burgher-promotion-speed 10 \
+            --extra-laborer-promotion-speed 10 \
+            --common-dir "$reference_checkout/game/in_game/common" \
+            --package-common-dir "$reference_package/in_game/common"
+          python3 ./tools/generate_us177_minting_overrides.py \
+            --game-root "$reference_checkout/game" \
+            --package-root "$reference_package" \
+            --multiplier 2
+          python3 ./tools/postprocess_us177_minting_building_overrides.py \
+            --common-dir "$reference_checkout/game/in_game/common" \
+            --package-common-dir "$reference_package/in_game/common" \
+            --multiplier 2
+          python3 ./tools/validate_us177_food_minting_overrides.py \
+            --game-root "$reference_checkout/game" \
+            --package-root "$reference_package"
+
+          tar -czf us177-reference-overrides.tar.gz -C "$reference_package" .
+
+      - name: Upload temporary US-177 reference artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: us177-reference-overrides
+          path: us177-reference-overrides.tar.gz
+
       - name: Validate package structure and generated adapters
         run: |
           set +e
