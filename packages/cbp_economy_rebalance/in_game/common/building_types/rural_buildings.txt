@@ -2,6 +2,8 @@
 # Do not edit manually.
 # Source: <EU5_GAME_COMMON_DIR>/building_types/rural_buildings.txt
 # Output multiplier: 1.1 (10%)
+# Building maintenance multiplier: 0.7
+# Trade-building maintenance multiplier: 0.5
 
 bailiff = {
 	is_foreign = no
@@ -32,10 +34,10 @@ bailiff = {
 
 	unique_production_methods = {
 		bailiff_input = {
-			paper = 0.1
-			tools = 0.15
-			weaponry = 0.25
-			stone = 0.1
+			paper = 0.07
+			tools = 0.105
+			weaponry = 0.175
+			stone = 0.07
 			category = building_maintenance
 		}
 	}
@@ -76,9 +78,8 @@ fishing_village = {
 			produced = fish
 			output = 0.55
 
-
-			salt = 0.06
-			tools = 0.01
+			salt = 0.042
+			tools = 0.007
 
 			debug_max_profit = 1.0
 
@@ -90,9 +91,8 @@ fishing_village = {
 			produced = fish
 			output = 0.55
 
-
-			salt = 0.045
-			ivory = 0.02
+			salt = 0.0315
+			ivory = 0.014
 
 			debug_max_profit = 1.0
 
@@ -103,7 +103,6 @@ fishing_village = {
 
 	modifier = {
 		local_merchant_capacity = 0.275
-
 		local_peasants_estate_power = 0.25		#25% higher here.
 		local_food_capacity = 50
 		local_peasant_enfranchisment = 0.01
@@ -156,11 +155,10 @@ farming_village = {
 
 	unique_production_methods = {
 		farming_village_maintenance = {
-			tools = 0.025
-			clay = 1.0
+			tools = 0.0175
+			clay = 0.7
 
 			output = 0.55
-
 
 			produced = livestock
 
@@ -217,10 +215,9 @@ forest_village = {
 
 			output = 0.22
 
-
-			sand = 0.05
-			tar = 0.03
-			wild_game = 0.4
+			sand = 0.035
+			tar = 0.021
+			wild_game = 0.28
 
 
 			category = building_maintenance
@@ -230,8 +227,7 @@ forest_village = {
 
 			output = 0.22
 
-
-			weaponry = 0.05
+			weaponry = 0.035
 
 
 			debug_max_profit = 0.4
@@ -281,7 +277,6 @@ market_village = {
 			produced = tools
 			output = 0.55
 
-
 			iron = 0.4
 			category = guild_input
 		}
@@ -289,7 +284,6 @@ market_village = {
 		rural_glassmaker = {
 			produced = glass
 			output = 0.22
-
 			sand = 1.0
 
 			category = guild_input
@@ -304,13 +298,11 @@ market_village = {
 			output = 0.55
 
 
-
 			category = guild_input
 		}
 		rural_weaponmaker = {
 			produced = weaponry
 			output = 0.22
-
 
 			lumber = 0.32
 			category = guild_input
@@ -318,7 +310,6 @@ market_village = {
 		rural_jewelry_carver = {
 			produced = jewelry
 			output = 0.11
-
 
 			stone = 0.4
 			category = guild_input
@@ -328,7 +319,6 @@ market_village = {
 			produced = pottery
 			output = 0.22
 
-
 			clay = 0.33
 			category = guild_input
 		}
@@ -336,7 +326,6 @@ market_village = {
 
 	modifier = {
 		local_merchant_capacity = 0.11
-
 		local_merchant_power = 0.10
 		local_market_access = 0.005
 
@@ -384,7 +373,6 @@ rural_clothmaker = {
 			produced = cloth
 			output = 0.55
 
-
 			category = guild_input
 		}
 
@@ -393,7 +381,6 @@ rural_clothmaker = {
 
 			produced = cloth
 			output = 0.55
-
 
 			category = guild_input
 		}
@@ -404,7 +391,6 @@ rural_clothmaker = {
 
 			produced = cloth
 			output = 0.44
-
 
 			category = guild_input
 		}
@@ -438,7 +424,6 @@ charcoal_maker = {
 		char_coal_maintenance = {
 			produced = coal
 			output = 0.88
-
 
 			debug_max_profit = 0.4
 
@@ -474,7 +459,6 @@ improved_charcoal_maker = {
 		improved_char_coal_maintenance = {
 			produced = coal
 			output = 1.32
-
 
 			debug_max_profit = 1
 
@@ -528,7 +512,6 @@ elephant_hunting_grounds = {
 			produced = ivory
 			output = 1.1
 
-
 			tools = 0.2
 			weaponry = 0.2
 			elephants = 0.4
@@ -573,9 +556,9 @@ windmill = {
 	unique_production_methods = {
 
 		windmill_maintenance = {
-			tools  = 0.025
-			lumber = 0.05
-			cloth = 0.05
+			tools  = 0.0175
+			lumber = 0.035
+			cloth = 0.035
 			category = building_maintenance
 		}
 	}
@@ -619,9 +602,9 @@ local_smelters = {
 	unique_production_methods = {
 
 		local_smelters_maintenance = {
-			tools  = 0.025
-			lumber = 0.05
-			coal = 0.05
+			tools  = 0.0175
+			lumber = 0.035
+			coal = 0.035
 			category = building_maintenance
 		}
 	}
@@ -667,7 +650,7 @@ sawmill = {
 	unique_production_methods = {
 
 		sawmill_maintenance = {
-			tools  = 0.05
+			tools  = 0.035
 			category = building_maintenance
 		}
 	}
@@ -710,9 +693,8 @@ sheep_farms = {
 			produced = wool
 			output = 0.55
 
-
-			lumber = 0.5
-			tools = 0.1
+			lumber = 0.35
+			tools = 0.07
 			category = building_maintenance
 		}
 	}

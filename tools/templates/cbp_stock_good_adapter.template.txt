@@ -1523,6 +1523,7 @@ cbp_seed_opening_market_good___GOOD__ = {
 							good = __GOOD__
 							quantity = scope:cbp_initialization_requested_country_quantity
 							capacity_policy = allow_over_capacity
+							only_add_at_country_level = yes
 						}
 						set_global_variable = {
 							name = cbp_initialization_market_allocated_quantity
@@ -1586,6 +1587,7 @@ cbp_seed_opening_market_good___GOOD__ = {
 					good = __GOOD__
 					quantity = scope:cbp_initialization_remaining_quantity
 					capacity_policy = allow_over_capacity
+					only_add_at_country_level = yes
 				}
 				set_global_variable = {
 					name = cbp_initialization_market_allocated_quantity
@@ -1884,6 +1886,7 @@ cbp_promote_market_to_detailed_accounting_good___GOOD__ = {
 								good = __GOOD__
 								quantity = scope:cbp_perf14_promotion_requested_country_quantity
 								capacity_policy = allow_over_capacity
+								only_add_at_country_level = yes
 							}
 							set_global_variable = {
 								name = cbp_perf14_promotion_market_allocated_quantity
@@ -1952,6 +1955,7 @@ cbp_promote_market_to_detailed_accounting_good___GOOD__ = {
 						good = __GOOD__
 						quantity = scope:cbp_perf14_promotion_remaining_quantity
 						capacity_policy = allow_over_capacity
+						only_add_at_country_level = yes
 					}
 					set_global_variable = {
 						name = cbp_perf14_promotion_market_allocated_quantity
@@ -2825,6 +2829,7 @@ cbp_ingest_us00_monthly_production_good___GOOD__ = {
 			good = __GOOD__
 			quantity = scope:cbp_us00_monthly_produced_quantity
 			capacity_policy = enforce
+			only_add_at_country_level = yes
 		}
 		save_temporary_scope_value_as = {
 			name = cbp_us00_monthly_actual_added_quantity
@@ -3177,6 +3182,7 @@ cbp_apply_us10_own_stock_fast_path_good___GOOD__ = {
 				good = __GOOD__
 				quantity = scope:cbp_us10_candidate_take_quantity
 				reason = consumption
+				only_remove_at_country_level = yes
 			}
 			save_temporary_scope_value_as = {
 				name = cbp_satisfied_quantity
@@ -3410,6 +3416,7 @@ cbp_resolve_stock_consumption_bucket_candidate_good___GOOD__ = {
 					good = __GOOD__
 					quantity = scope:cbp_us10_candidate_take_quantity
 					reason = consumption
+					only_remove_at_country_level = yes
 				}
 				save_temporary_scope_value_as = {
 					name = cbp_satisfied_quantity

@@ -166,6 +166,7 @@ cbp_debug_run_pr126_country_trade_owner_pass_test = {
 			good = wheat
 			quantity = 10
 			capacity_policy = allow_over_capacity
+			only_add_at_country_level = yes
 		}
 
 		cbp_process_country_trade_owner_explicit_request = {
