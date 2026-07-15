@@ -434,7 +434,10 @@ if [[ -e packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_bu
 	printf '%s\n' 'CBP must not ship cbp_building_upkeep_static_modifiers.txt; its old REPLACE:years_since_game_start target does not exist in static_modifiers.' >&2
 	exit 1
 fi
-if search_quiet 'building_upkeep_multiplier' \
+# Preserve commented Vanilla provenance while rejecting an active assignment.
+# A plain token search incorrectly flags lines such as
+# `# building_upkeep_multiplier = 0.001` in exact-path generated overrides.
+if search_quiet '^[ \t]*building_upkeep_multiplier[ \t]*=' \
 	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
 	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
 then
