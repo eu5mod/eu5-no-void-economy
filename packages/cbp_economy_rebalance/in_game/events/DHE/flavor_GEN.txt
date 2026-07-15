@@ -95,7 +95,7 @@ flavor_gen.1 = {
 	}
 	option = {
 		name = flavor_gen.1.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		ai_chance = {
 			factor = 5
 		}
@@ -381,7 +381,7 @@ flavor_gen.7 = {
 				}
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = flavor_gen.7.b
@@ -1796,7 +1796,7 @@ flavor_gen.27 = {
 			}
 		}
 		else = {
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		}
 	}
 	#Famine and death might be the only sensible course of action.
@@ -1952,7 +1952,7 @@ flavor_gen.30 = {
 	option = {
 		name = flavor_gen.30.a
 		historical_option = yes
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_yearly_gold = -0.5
 	}
 }

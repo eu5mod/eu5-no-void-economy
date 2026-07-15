@@ -50,7 +50,7 @@ cossacks_hetmanate = {
 	potential = {
 		country_has_estate = estate_type:cossacks_estate
 	}
-	monthly_legitimacy = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	unlock_estate_privilege = cossacks_rada_autonomy
 
 	requires = cossacks_escaped_serfs

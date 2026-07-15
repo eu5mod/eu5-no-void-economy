@@ -7,7 +7,7 @@
 		}
 	}
 	icon = diplomatic_influence
-	monthly_tribal_cohesion = 0.075
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 
 	requires = medieval_administration
 }

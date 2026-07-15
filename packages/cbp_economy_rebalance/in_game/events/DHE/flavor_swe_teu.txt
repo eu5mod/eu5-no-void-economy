@@ -100,7 +100,7 @@ flavor_swe_teu.1 = {
 				change_government_type = government_type:republic
 				change_heir_selection = heir_selection:pirate_elective
 				add_gold = 1000
-				add_government_power = 50
+				add_government_power = 50 # VANILLA = 100
 				set_new_ruler = scope:target_character
 				set_variable = { name = VTB_victual_brothers value = yes }
 

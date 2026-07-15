@@ -411,7 +411,7 @@
 		}
 		duration = 365
 		modifier_while_progressing = {
-			stability_investment = 0.75
+			stability_investment = 0.75 # VANILLA = 1
 			global_crown_estate_power = -0.1
 		}
 

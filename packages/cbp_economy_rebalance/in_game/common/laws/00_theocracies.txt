@@ -74,7 +74,7 @@
 			religion.group = religion_group:muslim
 		}
 		country_modifier = {
-			monthly_devotion = 0.075
+			monthly_devotion = 0.075 # VANILLA = 0.1
 			tolerance_own = 1
 		}
 		estate_preferences = {
@@ -114,7 +114,7 @@ holy_mission_law = {
 	}
 	balanced_mission_policy = {
 		country_modifier = {
-			monthly_devotion = 0.075
+			monthly_devotion = 0.075 # VANILLA = 0.1
 		}
 		estate_preferences = {
 			clergy_estate

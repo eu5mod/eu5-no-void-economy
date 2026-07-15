@@ -168,7 +168,7 @@ lutheranism_events.7 = {
 	image = "gfx/interface/illustrations/disaster/religious_turmoil.dds"
 	option = {
 		name = lutheranism_events.7.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = lutheranism_events.7.b
@@ -223,7 +223,7 @@ lutheranism_events.9 = {
 	}
 	option = {
 		name = lutheranism_events.9.e
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

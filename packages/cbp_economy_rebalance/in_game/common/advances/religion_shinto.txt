@@ -105,9 +105,9 @@ bodaiji = {
 
 	potential = { religion = religion:shinto }
 
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 
 	requires = improved_book_binding
 }

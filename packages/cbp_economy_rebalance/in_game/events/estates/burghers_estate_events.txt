@@ -438,7 +438,7 @@ burghers_estate_events.13 = {
 		scope:target_location = {
 			change_prosperity = prosperity_mild_penalty
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
 }

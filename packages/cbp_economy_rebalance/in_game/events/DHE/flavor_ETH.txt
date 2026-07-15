@@ -51,7 +51,7 @@ flavor_eth.10 = { #Pêro da Covilhã
 	}
 	option = {
 		name = flavor_eth.10.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:pero_covilha = {
 			move_country = c:POR
 		}
@@ -225,7 +225,7 @@ flavor_eth.23 = { #We have been neglected
 	}
 	option = {
 		name = flavor_eth.23.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -268,7 +268,7 @@ flavor_eth.30 = { #Centralization reforms of [GetCountry('ETH').GetGovernment.Ge
 	}
 	option = {
 		name = flavor_eth.30.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -359,7 +359,7 @@ flavor_eth.50 = { #Debre Berhan - The Mountain of Light
 	}
 	option = {
 		name = flavor_eth.50.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -427,7 +427,7 @@ flavor_eth.70 = { #Gondar - A new Capital
 	}
 	option = {
 		name = flavor_eth.70.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1235,7 +1235,7 @@ flavor_eth.140 = { #The Justice of the Kings
 	}
 	option = {
 		name = flavor_eth.140.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_weak_penalty
 		}
@@ -1514,7 +1514,7 @@ flavor_eth.155 = { #Taking land away from the church
 			value = estate_satisfaction_mild_bonus
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -1626,7 +1626,7 @@ flavor_eth.157 = { #Ethiopian Court and moving it around
 	option = {
 		name = flavor_eth.157.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2217,7 +2217,7 @@ flavor_eth.202 = { #Seven Disciples of Ewostatewos
 		name = flavor_eth.202.a
 		historical_option = yes
 		add_prestige = prestige_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_weak_bonus }
 		trigger_event_silently = { id = flavor_eth.203 days = 30 }
 	}
@@ -2694,7 +2694,7 @@ flavor_eth.230 = { #Codyfing the Double Sabbath
 	option = {
 		name = flavor_eth.230.b
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -3176,6 +3176,6 @@ flavor_eth.271 = {
 
 		cancel_subject = scope:target_country
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }

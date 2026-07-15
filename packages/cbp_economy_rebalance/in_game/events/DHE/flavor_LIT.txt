@@ -1526,7 +1526,7 @@ flavor_lit.18 = {#Centralization reforms
 	option = {
 		name = flavor_lit.18.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
 }
@@ -1610,7 +1610,7 @@ flavor_lit.19 = {#Fancy New Dishes
 	option = {
 		name = flavor_lit.19.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_weak_bonus
 
 		change_societal_value = {
@@ -1760,7 +1760,7 @@ flavor_lit.21 = {
 	option = {
 		name = flavor_lit.21.c
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		scope:target_character = {
 			banish_character = yes
@@ -1828,7 +1828,7 @@ flavor_lit.22 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_character = { move_country = root }
 	}
 
@@ -2774,7 +2774,7 @@ flavor_lit.34 = {
 	option = {
 		name = flavor_lit.34.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = lit_all_lithuanian_nobles_gain_pop_satisfaction_tt

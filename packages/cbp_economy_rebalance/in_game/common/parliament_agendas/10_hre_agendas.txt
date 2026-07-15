@@ -169,7 +169,7 @@ pa_hre_affirmation_of_free_city_rights = {
 			text = pa_hre_affirmation_of_free_city_rights_tt
 			every_international_organization_member = {
 				limit = { has_special_status_in_international_organization = { type = scope:target international_organization = root } }
-				add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+				add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 				if = {
 					limit = {
 						exists = scope:leader_country_scope

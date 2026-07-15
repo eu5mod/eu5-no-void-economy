@@ -151,7 +151,7 @@ crisis_of_the_sayfawa_dynasty.2 = {
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		hidden_effect = {
 			destroy_rebel = scope:rival_branch_sayfawa_scope
@@ -183,7 +183,7 @@ crisis_of_the_sayfawa_dynasty.3 = { #Family Infighting
 	option = {
 		name = crisis_of_the_sayfawa_dynasty.3.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_extreme_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
@@ -234,7 +234,7 @@ crisis_of_the_sayfawa_dynasty.4 = { #Strength Through Unity
 			value = estate_satisfaction_extreme_penalty
 		}
 		change_gold_effect = { scale = -3 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -297,7 +297,7 @@ crisis_of_the_sayfawa_dynasty.5 = { #The Rise of a Legendary Warrior
 			value = estate_satisfaction_extreme_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		hidden_effect = {
 			kill_character_silently = scope:kbo_strong_general_scope

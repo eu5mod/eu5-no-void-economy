@@ -149,7 +149,7 @@ flavor_flo.3 = { #The Emperor Confirms [ROOT.GetCountry.GetNameWithNoTooltip]'s 
 		international_organization:hre.leader_country = {
 			remove_opinion = { target = root modifier = opinion_emperor_tus_refused }
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -290,7 +290,7 @@ flavor_flo.6 = { #The Reforms of [ROOT.GetCountry.GetGovernment.GetRuler.GetName
 	}
 	option = {
 		name = flavor_flo.6.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -509,7 +509,7 @@ flavor_flo.28 = { # The Florence Cathedral
 		name = flavor_flo.28.c
 
 		add_prestige = prestige_weak_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -1228,7 +1228,7 @@ flavor_flo.38 = { # Nuova Cronica
 			VALUE = 20
 		}
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		c:PAP = {
 			add_opinion = {
 				target = root
@@ -1640,7 +1640,7 @@ flavor_flo.44 = { #The New Urban Planning Registration System
 	option = {
 		name = flavor_flo.44.b
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_estate_satisfaction = { type = estate_type:burghers_estate
 			value = estate_satisfaction_mild_penalty
 		}
@@ -2054,7 +2054,7 @@ flavor_flo.49 = { # The Consolidation of Power
 		name = flavor_flo.49.b
 
 		add_government_power = government_power_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

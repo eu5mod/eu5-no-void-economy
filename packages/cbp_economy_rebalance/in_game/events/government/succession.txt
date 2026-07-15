@@ -319,7 +319,7 @@ succession.1 = {
 				}
 				root = {
 					add_prestige = prestige_weak_penalty
-					add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+					add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 				}
 				kill_character = {
 					target = this
@@ -330,7 +330,7 @@ succession.1 = {
 		}
 		show_as_tooltip = {
 			add_prestige = prestige_weak_penalty
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		}
 		set_new_ruler_with_union_fratricide = { character = scope:killer_scope }
 	}
@@ -406,7 +406,7 @@ succession.2 = { #The powerful advisor
 	option = {
 		name = succession.2.a
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_weak_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 		set_regent = scope:usurper_scope
@@ -462,7 +462,7 @@ succession.3 = { #Get a member of the dynasty and make him the new ruler
 
 		add_stability = stability_weak_bonus
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		#Make him the new ruler
 		set_new_ruler_with_union_fratricide = { character = scope:dynasty_member_scope }
 	}
@@ -544,7 +544,7 @@ succession.4 = { #Get a member of the dynasty and make him the new ruler
 
 		add_stability = stability_weak_bonus
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		set_new_ruler_with_union_fratricide = { character = scope:new_leader }
 		if = { #Only change the dynasty if the game rule is active
@@ -651,7 +651,7 @@ succession.5 = {
 				}
 				root = {
 					add_prestige = prestige_weak_penalty
-					add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+					add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 				}
 				kill_character = {
 					target = this
@@ -662,7 +662,7 @@ succession.5 = {
 		}
 		show_as_tooltip = {
 			add_prestige = prestige_weak_penalty
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		}
 		set_new_ruler_with_union_fratricide = { character = scope:new_ruler_son }
 	}
@@ -672,7 +672,7 @@ succession.5 = {
 		trigger = { NOT = { exists = scope:new_ruler_son } }
 		add_stability = stability_weak_bonus
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		if = {
 			limit = { NOT = { exists = scope:new_ruler_regent } }
@@ -850,7 +850,7 @@ succession.100 = {
 			custom_tooltip = succession.100.b.tt
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 
 	}

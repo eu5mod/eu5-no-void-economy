@@ -401,9 +401,9 @@ guru_hargobind_guruship = {
 		}
 
 		country_modifier = {
-			monthly_devotion = 0.075
-			monthly_legitimacy = 0.075
-			monthly_republican_tradition = 0.075
+			monthly_devotion = 0.075 # VANILLA = 0.1
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
+			monthly_republican_tradition = 0.075 # VANILLA = 0.1
 			monthly_towards_aristocracy = societal_value_tiny_monthly_move
 		}
 	}

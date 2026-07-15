@@ -90,7 +90,7 @@ flavor_dan_corfitz_ulfeldt.1 = { #Corfits Ulfeldt
 			}
 		}
 		scope:target_character = { marry_character = scope:target_princess }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 
 	option = {
@@ -149,7 +149,7 @@ flavor_dan_corfitz_ulfeldt.2 = { #The Growing Influence of Corfits Ulfeldt
 			change_gold_effect = { scale = -3 }
 		}
 		else = {
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 			add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
 			change_gold_effect = { scale = -2 }
 		}
@@ -348,7 +348,7 @@ flavor_dan_corfitz_ulfeldt.5 = { #Corfits Ulfeldt is becoming a nuisance
 
 	option = {
 		name = flavor_dan_corfitz_ulfeldt.2.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
 		change_gold_effect = { scale = -2 }
 	}
@@ -399,7 +399,7 @@ flavor_dan_corfitz_ulfeldt.6 = { #Corfits Ulfeldt Arrives with a Proposal
 
 	option = {
 		name = flavor_dan_corfitz_ulfeldt.6.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		change_gold_effect = { scale = 3 }
 		add_casus_belli = { target = c:DAN type = casus_belli:cb_claim_throne }
 	}
@@ -408,7 +408,7 @@ flavor_dan_corfitz_ulfeldt.6 = { #Corfits Ulfeldt Arrives with a Proposal
 		name = flavor_dan_corfitz_ulfeldt.6.b
 		historical_option = yes
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		save_scope_as = origin_country
 		c:DAN = { trigger_event_silently = flavor_dan_corfitz_ulfeldt.7 }
 	}

@@ -103,7 +103,7 @@ zeus_god = {
 					value = "monarch_power_percentage_in_country(power:adm)"
 					add = 1
 				}
-				monthly_legitimacy = 0.1875
+				monthly_legitimacy = 0.1875 # VANILLA = 0.25
 			}
 		}
 		immortal_omen = {

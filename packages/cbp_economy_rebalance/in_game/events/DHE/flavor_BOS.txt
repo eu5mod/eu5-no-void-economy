@@ -151,7 +151,7 @@ flavor_bos.2 = { #The Decline of Serbia
 
 	option = {
 		name = flavor_bos.2.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = belligerent_vs_conciliatory
 			value = societal_value_move_to_right
@@ -268,7 +268,7 @@ flavor_bos.4 = { #Council of Strojnici
 
 	option = {
 		name = flavor_bos.4.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {

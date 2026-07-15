@@ -50,7 +50,7 @@
 			if = {	#Should not happen, but in case it does
 				limit = { scope:recipient = { is_ruler = yes } }
 				add_prestige = ABDICATE_PRESTIGE_HIT
-				add_government_power = cbp_instant_add_government_power_abdicate_government_power_hit_7d40a260a1
+				add_government_power = cbp_instant_add_government_power_abdicate_government_power_hit_7d40a260a1 # VANILLA = ABDICATE_GOVERNMENT_POWER_HIT
 			}
 			if = {	#Should not happen, but in case it does
 				limit = { scope:recipient = { is_heir = yes } }
@@ -78,11 +78,11 @@
 			if = {
 				limit = { scope:recipient = { has_estate = estate_type:peasants_estate } }
 				add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_weak_penalty }
-				add_stability = cbp_instant_add_stability_stability_weak_penalty_3cd5b5132d
+				add_stability = cbp_instant_add_stability_stability_weak_penalty_3cd5b5132d # VANILLA = stability_weak_penalty
 			}
 			if = {
 				limit = { has_variable = has_banished_or_executed_character }
-				add_government_power = cbp_instant_add_government_power_var_has_banished_or_executed_character_6969121025
+				add_government_power = cbp_instant_add_government_power_var_has_banished_or_executed_character_6969121025 # VANILLA = var:has_banished_or_executed_character
 			}
 			custom_tooltip = increase_gov_power_cost_executed_character_tt
 			hidden_effect = {

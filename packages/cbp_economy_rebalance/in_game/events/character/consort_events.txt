@@ -431,7 +431,7 @@ consort_events.54 = {
 				dip > 75
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = consort_events.54.c
@@ -657,7 +657,7 @@ consort_events.61 = {
 
 	option = {
 		name = consort_events.61.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_consort = {
 			if = {
 				limit = { religion != root.religion }
@@ -732,7 +732,7 @@ consort_events.101 = {
 
 	option = {
 		name = consort_events.101.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = consort_events.101.b
@@ -814,11 +814,11 @@ consort_events.102 = {
 			add_dip = 7
 			add_mil = 7
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = consort_events.102.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1122,7 +1122,7 @@ consort_events.309 = {
 		name = consort_events.309.b
 		custom_tooltip = consort_events.309.b.tt
 		consort = { set_variable = { name = consort_decided_to_not_pursue_the_throne value = 1 } }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1154,12 +1154,12 @@ consort_events.310 = {
 		name = consort_events.310.a
 		consort = { remove_variable = consort_decided_to_not_pursue_the_throne }
 		set_new_ruler ?= consort
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
 		name = consort_events.310.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1201,7 +1201,7 @@ consort_events.311 = {
 	}
 	option = {
 		name = consort_events.311.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 

@@ -299,7 +299,7 @@ flavor_hab.5 = { #Meteorite of Ensisheim
 
 	option = {
 		name = flavor_hab.5.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_religious_influence = religious_influence_mild_bonus
 		location:ensisheim = {
 			change_max_raw_material_workers = -1
@@ -377,7 +377,7 @@ flavor_hab.7 = { #Reichshofrat
 	option = {
 		name = flavor_hab.7.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -646,7 +646,7 @@ flavor_hab.12 = { #Kaspar Schlick
 		name = flavor_hab.12.a
 		historical_option = yes
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = { move_country = root }
 	}
 
@@ -781,7 +781,7 @@ flavor_hab.14 = { #Tractatus de iuribus incorporalibus
 	option = {
 		name = flavor_hab.14.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_move_to_left }
 	}
 }
@@ -1153,7 +1153,7 @@ flavor_hab.19 = { #Prince Eugene of Savoy
 	option = {
 		name = flavor_hab.19.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_character = { banish_character = yes }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_penalty }
 	}
@@ -1323,7 +1323,7 @@ flavor_hab.22 = { #Resettlements into Hungary
 	option = {
 		name = flavor_hab.22.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1522,7 +1522,7 @@ flavor_hab.25 = { #Schönbrunn Palace
 	option = {
 		name = flavor_hab.25.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_artist = { banish_character = yes }
 	}
 }
@@ -1804,7 +1804,7 @@ flavor_hab.31 = { #Vienna Gesera
 		name = flavor_hab.31.a
 		historical_option = yes
 		add_prestige = prestige_severe_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		location:vienna = {
 			change_prosperity = prosperity_severe_penalty
 		}
@@ -2044,7 +2044,7 @@ flavor_hab.34 = { #Petrus Zwicker
 	option = {
 		name = flavor_hab.34.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_religious_influence_if_valid = { VALUE = religious_influence_weak_bonus }
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
@@ -2057,7 +2057,7 @@ flavor_hab.34 = { #Petrus Zwicker
 
 	option = {
 		name = flavor_hab.34.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_religious_influence_if_valid = { VALUE = religious_influence_weak_penalty }
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
@@ -2522,7 +2522,7 @@ flavor_hab.41 = { #The Ambras Castle
 
 	option = {
 		name = flavor_hab.41.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -2866,7 +2866,7 @@ flavor_hab.47 = { #A Palace of Splendor
 	option = {
 		name = flavor_hab.47.b
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -3814,7 +3814,7 @@ flavor_hab.65 = { #The Hammer of Heretics
 
 	option = {
 		name = flavor_hab.65.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_penalty
@@ -6651,8 +6651,8 @@ flavor_hab.1009 = { #Rudolfine House Rules - formerly flavor_hab.28
 	option = {
 		name = flavor_hab.1009.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 		unlock_policy_effect = { type = dop_rudolfine_house_rules }
 		add_policy = policy:dop_rudolfine_house_rules
@@ -7160,7 +7160,7 @@ flavor_hab.1301 = { #College of Poets - Conrad Celtes
 	option = {
 		name = flavor_hab.1301.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = { banish_character = yes }
 	}
 }
@@ -7304,7 +7304,7 @@ flavor_hab.1303 = { #Johannes Cuspinian
 	option = {
 		name = flavor_hab.1303.c
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = { banish_character = yes }
 	}
 }
@@ -7486,7 +7486,7 @@ flavor_hab.1401 = { #Ulrich von Eyczing declares for the rebels
 	option = {
 		name = flavor_hab.1401.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		change_gold_effect = { scale = -2 }
 	}
 }
@@ -8271,7 +8271,7 @@ flavor_hab.1604 = { #Jesuit Colleges in Bohemia
 	option = {
 		name = flavor_hab.1604.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_mild_penalty
 		set_variable = jesuit_colleges_rejected
 	}
@@ -8341,7 +8341,7 @@ flavor_hab.1605 = { #Lutherans are unhappy with Jesuit Colleges
 	option = {
 		name = flavor_hab.1605.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_mild_penalty
 
 		custom_tooltip = flavor_hab.1605.b.tt
@@ -8687,7 +8687,7 @@ flavor_hab.1609 = { #Austrian Recatholicization - formerly flavor_hab.63
 
 	option = {
 		name = flavor_hab.1609.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_minor_move_to_left }
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
@@ -9327,7 +9327,7 @@ flavor_hab.2000 = { #Wenzel Anton Kaunitz - Diplomatic Revolution
 		name = flavor_hab.2000.b
 
 		scope:target_character = { move_country = root }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_prestige = prestige_mild_bonus
 	}
 }
@@ -9580,7 +9580,7 @@ flavor_hab.2103 = { #The Raabization of the Land Management - formerly flavor_ha
 
 	option = {
 		name = flavor_hab.2103.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_bonus
 		}
@@ -9729,7 +9729,7 @@ flavor_hab.2200 = { #Growth of Wiener Neustadt
 	option = {
 		name = flavor_hab.2200.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -9797,7 +9797,7 @@ flavor_hab.2201 = { #Bastion of Wiener Neustadt
 	option = {
 		name = flavor_hab.2201.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -9865,7 +9865,7 @@ flavor_hab.2202 = { #Military Academy of Maria Theresia
 	option = {
 		name = flavor_hab.2202.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -9930,7 +9930,7 @@ flavor_hab.2300 = { #Burgundian Marriage
 
 	option = {
 		name = flavor_hab.2300.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -10085,7 +10085,7 @@ flavor_hab.2400 = { #Bohemian Marriage
 
 	option = {
 		name = flavor_hab.2400.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -10446,7 +10446,7 @@ flavor_hab.2600 = { #Spanish Marriage
 
 	option = {
 		name = flavor_hab.2600.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 

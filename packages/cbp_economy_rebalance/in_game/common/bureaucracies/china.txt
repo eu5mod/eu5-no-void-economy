@@ -38,7 +38,7 @@ central_secretariat_bureaucracy = {
 				multiply = 1.5
 			}
 		}
-		monthly_legitimacy = 0.15
+		monthly_legitimacy = 0.15 # VANILLA = 0.2
 		monthly_celestial_authority = 0.02
 	}
 
@@ -194,7 +194,7 @@ grand_secretariat_bureaucracy = {
 
 	#neutral
 	neutral_modifier = {
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 
 	#positive - reform_the_grand_secretariat advance raises scale by 50%
@@ -216,7 +216,7 @@ grand_secretariat_bureaucracy = {
 			value = 1
 			subtract = scope:maintenance
 		}
-		monthly_legitimacy = -0.15
+		monthly_legitimacy = -0.15 # VANILLA = -0.2
 		monthly_celestial_authority = -0.04
 	}
 }

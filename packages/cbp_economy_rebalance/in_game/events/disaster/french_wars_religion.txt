@@ -243,7 +243,7 @@ french_wars_religion.2 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = {
 			type = spiritualist_vs_humanist
 			value = societal_value_move_to_right
@@ -285,7 +285,7 @@ french_wars_religion.2 = {
 			value = societal_value_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -666,7 +666,7 @@ french_wars_religion.5 = {	#Massacre in Province
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		change_societal_value = {
 			type = spiritualist_vs_humanist
 			value = societal_value_minor_move_to_right
@@ -1284,7 +1284,7 @@ french_wars_religion.11 = {
 				}
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -1393,7 +1393,7 @@ french_wars_religion.14 = {
 		if = {
 			limit = { has_variable = fwr_counter }
 			custom_tooltip = status_heretics_unresolved_10_years_cd_tt
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			add_stability = stability_severe_penalty
 		}
 	}

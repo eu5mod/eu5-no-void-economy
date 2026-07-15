@@ -1077,7 +1077,7 @@ sco_clan_holdings = {
 	inherited_clan_holdings = {
 		country_modifier = {
 			parliament_base_support = 0.10
-			monthly_legitimacy = 0.1125
+			monthly_legitimacy = 0.1125 # VANILLA = 0.15
 			global_tribes_estate_power = 0.10
 			global_nobles_estate_power = 0.10
 			global_crown_estate_power = -0.10
@@ -1093,7 +1093,7 @@ sco_clan_holdings = {
 
 	revert_to_the_crown = {
 		country_modifier = {
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.10
 			global_tribes_estate_power = 0.05
 			global_nobles_estate_power = 0.05
 			global_crown_estate_power = -0.05

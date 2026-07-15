@@ -184,7 +184,7 @@ pirate_events.4 = {
 	option = {
 		name = pirate_events.4.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_penalty
@@ -720,7 +720,7 @@ pirate_events.12 = {
 			base = 0
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_penalty
@@ -734,6 +734,6 @@ pirate_events.12 = {
 			base = 0
 		}
 		scope:target_location = { change_prosperity = prosperity_mild_penalty }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }

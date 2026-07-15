@@ -49,13 +49,13 @@ laws.0001 = { # State-critical Art
 	option = { # Ok, whatever
 		name = laws.0001.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = { # I'm going to take that painting and shove it u-
 		name = laws.0001.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		kill_character = {
 			target = scope:critical_artist
@@ -120,7 +120,7 @@ laws.0002 = { # Great art because artists like freedom
 		name = laws.0002.b
 
 		destroy_art = scope:non_critical_art
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_tiny_move_to_left }
 	}
 }
@@ -207,7 +207,7 @@ laws.0004 = { # The church is unhappy about art
 	option = {
 		name = laws.0004.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_weak_bonus
 		}
@@ -348,7 +348,7 @@ laws.0025 = { # "Underground Theologist Society" asks to parlay
 	option = {
 		name = laws.0025.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_bonus
 		}
@@ -401,7 +401,7 @@ laws.0026 = { # Foreign Missionaries
 				modifier = opinion_pleased
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -664,7 +664,7 @@ laws.0010 = { # Aritstocrat is saved from scandal by censorship
 			value = societal_value_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -761,7 +761,7 @@ laws.0019 = { # Banned books
 	option = {
 		name = laws.0019.a
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -870,7 +870,7 @@ laws.0027 = { # Outdated Doctrine
 	option = {
 		name = laws.0027.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_weak_bonus
 		}
@@ -990,7 +990,7 @@ laws.0012 = { # Information control adverts panics and maintains localized harmo
 	option = {
 		name = laws.0012.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_research_progress = research_progress_severe_bonus
 	}
 }
@@ -1201,14 +1201,14 @@ laws.0023 = { # Book Burning
 		name = laws.0023.a
 
 		add_research_progress = research_progress_severe_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_tiny_move_to_right }
 	}
 
 	option = {
 		name = laws.0023.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_severe_penalty
 		}
@@ -1356,7 +1356,7 @@ laws.0030 = {
 	option = {
 		name = laws.0030.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_weak_bonus
 		}
@@ -1494,7 +1494,7 @@ laws.0040 = {
 	option = {
 		name = laws.0040.d
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		capital ?= {
 			change_prosperity = prosperity_mild_bonus

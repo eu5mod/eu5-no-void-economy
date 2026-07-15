@@ -120,7 +120,7 @@ hellenism_religion.1 = { # <Selected God> Smiles Upon Us
 			# ==================================================
 			hellenism_religion_aphrodite_1 = {
 				# Stability
-				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 			}
 			hellenism_religion_aphrodite_2 = {
 				# Fertility
@@ -1084,7 +1084,7 @@ hellenism_religion.10 = { # <Province> Harvests / Demeter
 	option = {
 		name = hellenism_religion.10.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_estate_satisfaction = {
 			type = estate_type:peasants_estate
@@ -1143,7 +1143,7 @@ hellenism_religion.11 = { # <Selected God> Displeased With Us
 			trigger = has_variable
 
 			hellenism_religion_11_variable_1 = {
-				add_stability = cbp_event_add_stability_religious_influence_extreme_penalty_862dbf41b2
+				add_stability = cbp_event_add_stability_religious_influence_extreme_penalty_862dbf41b2 # VANILLA = religious_influence_extreme_penalty
 			}
 
 			hellenism_religion_11_variable_2 = {
@@ -1164,11 +1164,11 @@ hellenism_religion.11 = { # <Selected God> Displeased With Us
 			trigger = has_variable
 
 			hellenism_religion_11_variable_1 = {
-				add_stability = cbp_event_add_stability_religious_influence_mild_penalty_c06efd4e67
+				add_stability = cbp_event_add_stability_religious_influence_mild_penalty_c06efd4e67 # VANILLA = religious_influence_mild_penalty
 			}
 
 			hellenism_religion_11_variable_2 = {
-				add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+				add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 			}
 
 			hellenism_religion_11_variable_3 = {
@@ -1995,7 +1995,7 @@ hellenism_religion.21 = { # <Location> Neglects Hellenic Rites
 
 		add_religious_influence = religious_influence_mild_penalty
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -2310,7 +2310,7 @@ hellenism_religion.26 = { # <God> Hear Our Plea
 			}
 
 			hellenism_religion_26_variable_2 = {
-				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 				custom_tooltip = gods_imbue_stability_tt
 			}
@@ -2619,7 +2619,7 @@ hellenism_religion.30 = { # The Cult of a Mercenary
 	option = {
 		name = hellenism_religion.30.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_all_estate_satisfaction = { value = estate_satisfaction_weak_penalty }
 
 		custom_tooltip = cult_operates_shadows_tt
@@ -2956,7 +2956,7 @@ hellenism_religion.36 = { # The Olympian Restorationists
 			value = estate_satisfaction_mild_penalty
 		}
 		add_religious_influence = religious_influence_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -2978,6 +2978,6 @@ hellenism_religion.36 = { # The Olympian Restorationists
 			type = estate_type:clergy_estate
 			value = estate_satisfaction_severe_bonus
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }

@@ -560,8 +560,8 @@ curb_central_authority = {
 	}
 
 	modifier_when_in_debate = {
-		monthly_legitimacy = -1.5
-        monthly_republican_tradition = -1.5
+		monthly_legitimacy = -1.5 # VANILLA = -2
+        monthly_republican_tradition = -1.5 # VANILLA = -2
 	}
 
 	allow = {

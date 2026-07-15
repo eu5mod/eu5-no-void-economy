@@ -301,9 +301,9 @@ feo_the_northern_star_of_greece_advance = {
 		religion = religion:orthodox
 	}
 
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	monthly_religious_influence = 0.1
 
 	requires = confessionalism_advance

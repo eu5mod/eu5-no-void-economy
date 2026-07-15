@@ -152,7 +152,7 @@ negotiate_rebels_accept_demands = {
 			}
 			scope:actor = {
 				apply_rebel_demands = scope:target
-				add_legitimacy = -12.5
+				add_legitimacy = -12.5 # VANILLA = -25
 				destroy_rebel = scope:target
 			}
 		}

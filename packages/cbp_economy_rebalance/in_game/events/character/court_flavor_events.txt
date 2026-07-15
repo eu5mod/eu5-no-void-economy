@@ -507,7 +507,7 @@ court_flavor_events.20 = {
 		scope:corrupt_advisor_location = {
 			change_development  = development_mild_bonus
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		ai_will_select = {
 			if = {

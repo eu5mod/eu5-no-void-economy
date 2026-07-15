@@ -56,7 +56,7 @@ culture_religion_events.1 = {
 		heir = {
 			change_character_culture = scope:teacher.culture
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -109,7 +109,7 @@ culture_religion_events.2 = {
 				add_opinion = { target = root modifier = opinion_ruler_of_our_culture }
 			}
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = culture_religion_events.2.b
@@ -170,7 +170,7 @@ culture_religion_events.3 = {
 	}
 	option = {
 		name = culture_religion_events.3.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -211,7 +211,7 @@ culture_religion_events.4 = {
 
 	option = {
 		name = culture_religion_events.4.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:rebel_province = { every_pop = {	add_pop_satisfaction = pop_satisfaction_severe_penalty	} }
 	}
 }
@@ -290,7 +290,7 @@ culture_religion_events.6 = {
 	}
 	option = {
 		name = culture_religion_events.6.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		remove_from_cabinet = scope:minister
 		scope:minister = { add_character_modifier = { modifier = banned_from_cabinet years = 20 mode = add_and_extend }	}
 	}
@@ -325,7 +325,7 @@ culture_religion_events.7 = {
 
 	option = {
 		name = culture_religion_events.7.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = culture_religion_events.7.b
@@ -355,7 +355,7 @@ culture_religion_events.8 = {
 
 	option = {
 		name = culture_religion_events.8.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = culture_religion_events.8.b
@@ -535,7 +535,7 @@ culture_religion_events.12 = {
 
 	option = {
 		name = culture_religion_events.12.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = culture_religion_events.12.a.tt
 			every_owned_location = {

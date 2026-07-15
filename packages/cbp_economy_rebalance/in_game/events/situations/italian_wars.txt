@@ -499,7 +499,7 @@ italian_wars.100 = {
 			add = { value = "opinion(scope:target_country)" }
 		}
 		add_prestige = prestige_severe_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = {
 				scope:target_italian_io = {
@@ -1805,7 +1805,7 @@ italian_wars.26 = { #Diplomatic Incident
 				}
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 

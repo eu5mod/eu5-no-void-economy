@@ -31,7 +31,7 @@
 	}
 
 	leader_modifier = {
-		monthly_tribal_cohesion = 0.075
+		monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 		monthly_prestige = 0.1
 	}
 

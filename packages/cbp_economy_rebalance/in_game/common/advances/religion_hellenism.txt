@@ -108,9 +108,9 @@ preserve_theogony_advance = {
 		religion = religion:hellenism_religion
 	}
 
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
-	monthly_devotion = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
 
 	requires = gov_reform_reformation_a
 }

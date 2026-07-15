@@ -491,7 +491,7 @@ hundred_years_war.200 = {
 
 	option = { # Not worth pursuing
 		name = hundred_years_war.200.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 		custom_tooltip = hundred_years_war.200.tt.b
 		hidden_effect = {
@@ -598,7 +598,7 @@ hundred_years_war.201 = {
 	option = { # Return Robert de Artois
 		name = hundred_years_war.201.b
 		custom_tooltip = hundred_years_war.201.tt.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_severe_penalty
 		scope:fugitive_robert_de_artois = {
 			move_country = c:FRA
@@ -796,7 +796,7 @@ hundred_years_war.203 = { # England Returns Robert
 		custom_tooltip = hundred_years_war.203.tt.d # Artois
 		add_stability = stability_mild_penalty
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		hidden_effect = {
 			character:eng_robert_iii_artois = {
 				move_country = c:ARS
@@ -915,7 +915,7 @@ hundred_years_war.204 = {
 		ai_chance = {
 			base = 5
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = may_still_trigger_hyw_tt
 		kill_character = {
 			target = scope:fugitive_robert_de_artois
@@ -1287,7 +1287,7 @@ hundred_years_war.208 = {
 				modifier = accepted_demands_modifier
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -1299,7 +1299,7 @@ hundred_years_war.208 = {
 			base = 50
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		scope:actor = {
 			add_country_modifier = {
@@ -1358,7 +1358,7 @@ hundred_years_war.208 = {
 				modifier = accepted_demands_modifier
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -1950,7 +1950,7 @@ hundred_years_war.213 = {
 	option = {
 		name = hundred_years_war.213.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		c:FRA = { trigger_event_non_silently = hundred_years_war.214 }
 	}
 }

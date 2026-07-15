@@ -4,7 +4,7 @@
   ],
   "files": [
     {
-      "generated_sha256": "42b3690aafdd7503d388c13184af4bdd6c982d504e76180a5339d565754e7274",
+      "generated_sha256": "d7848a744634d7325432ed3aa8237de679b14557e9c7d206eff9206b74dc9713",
       "occurrences": [
         {
           "line": 147,
@@ -14,62 +14,36 @@
         }
       ],
       "path": "in_game/common/advances/0_age_of_traditions.txt",
-      "source_sha256": "d9f4b67a490a3901ed49a2948a4f7d66334bf14aa94c52a40e35f33ca439f66d"
+      "source_sha256": "3d1b6968d73bdd78f2dfae7371c99381e55b7b5bfb3b125cbedaf9380e3886e7"
     },
     {
-      "generated_sha256": "267a630adea83ce05ffa4e9ee6a18e403e00be6b8c58e7cbbae819162e7febef",
+      "generated_sha256": "78b917ec39547aa361ddf14b623a072cf01df262f5404d2d6d652fce8617b4ba",
       "occurrences": [
         {
-          "line": 252,
+          "line": 253,
           "new": "0.2",
           "object_path": "national_bank",
           "old": "0.10"
         }
       ],
       "path": "in_game/common/advances/4_choices_adm.txt",
-      "source_sha256": "41374d0c93bca10a2623a6024b7b366d5c61d2a10a300ad1f31e940e10309ba3"
+      "source_sha256": "459caf79e9ba94f708f5fd5ed3bb1d4e42ae66ed1daa091dd93381e2b2569df1"
     },
     {
-      "generated_sha256": "49331d884e7bd160364b9bed075360e1146f53faf4365c3c54e38aa5dadeca34",
+      "generated_sha256": "1efeb3cf2a7a7918d2c6217c311425ae8178078275ce3b779ec3fa8d09bee1a7",
       "occurrences": [
         {
-          "line": 100,
+          "line": 108,
           "new": "0.2",
           "object_path": "bohemian_thaler",
           "old": "0.1"
         }
       ],
       "path": "in_game/common/advances/country_BOH.txt",
-      "source_sha256": "c54c09e1bd8ab8d0443c4d2423e26a49636e576c24aeb55693539ed6af37f814"
+      "source_sha256": "c62cf64236312416b5aa67cec7262bf59c26f4ef0f39a619dd11a232cda94050"
     },
     {
-      "generated_sha256": "e695255428f5da8578001ea0d57695c6a919882d5a80b16346a18290698b9f55",
-      "occurrences": [
-        {
-          "line": 34,
-          "new": "0.2",
-          "object_path": "a_land_of_banks",
-          "old": "0.10"
-        }
-      ],
-      "path": "in_game/common/advances/country_FLO.txt",
-      "source_sha256": "a5b9394872a38bf16bb60c0ea774515e56e17b3a6dfcb3dd28f81756fbd182da"
-    },
-    {
-      "generated_sha256": "5d931ef77daf7654581c02f886228fd0cf46a3be6a09cf427b47d1d951450c63",
-      "occurrences": [
-        {
-          "line": 69,
-          "new": "0.2",
-          "object_path": "bank_of_saint_george",
-          "old": "0.10"
-        }
-      ],
-      "path": "in_game/common/advances/country_GEN.txt",
-      "source_sha256": "536539e17cf8b0b13432666cb77afc46b1472e9e6f243015650531f9205b2987"
-    },
-    {
-      "generated_sha256": "72f449176c6b739f660855c012e5690ed3f7e7fd3c1f6e9898f1d4ac42805e27",
+      "generated_sha256": "784b02470165b991428efd676d5d9aa22b39c155fbf75c20c76a00d8652c938f",
       "occurrences": [
         {
           "line": 172,
@@ -79,36 +53,36 @@
         }
       ],
       "path": "in_game/common/advances/country_NED.txt",
-      "source_sha256": "c17388c9c834e891ae15674f398e847491bf42c9e356bddfe80d0b8a27f710bf"
+      "source_sha256": "5cbc2ddae57b614885d3daa6d66cad7ea4952bf3020cb6d724330d263b491da5"
     },
     {
-      "generated_sha256": "866efa6339a4532171eefee884ef39a491c39c80b35b2846b8ba28ff78441f0c",
+      "generated_sha256": "83e2492c2e2840805245060d0e56eee19680efa5cbb854162b4cde9cea7a3b32",
       "occurrences": [
         {
           "line": 74,
-          "new": "0.5",
+          "new": "0.4",
           "object_path": "mint_of_the_gulf",
-          "old": "0.25"
+          "old": "0.20"
         }
       ],
       "path": "in_game/common/advances/country_ORM.txt",
-      "source_sha256": "e86286271b6efb2364f1ffbc2bd82ddad3f20f9c1e2f1eb96faa11fb5ee9ce50"
+      "source_sha256": "dda8e218f7a5b092220adfdc98fe59297cf39f0e760482d71db486b8ce5e5f5b"
     },
     {
-      "generated_sha256": "8f2737c967f03137b59dc172749f1d0dc8d232451381d9e3cbbdf467e932a940",
+      "generated_sha256": "d0154195fe7f1716f604a54f61db23ac6c216987da5d6148e8ae2f84b4d91f3b",
       "occurrences": [
         {
-          "line": 104,
+          "line": 99,
           "new": "0.2",
           "object_path": "cro_the_banovac_silver_denar",
           "old": "0.1"
         }
       ],
       "path": "in_game/common/advances/country_cro.txt",
-      "source_sha256": "1ee0e109d3fec6d9941bc53ecab96472ccda0728c7eef7fd1ed78a7659540db2"
+      "source_sha256": "0fc7484b0e4fbf209e38ed9081f4609d1f805b5a73d3bce10163587cca1e430f"
     },
     {
-      "generated_sha256": "1ba38cef89e4f140c41c878b357280ffb207bd5e159e57f024dffdfe7c01b0f7",
+      "generated_sha256": "66b87e746a4352749ef0f4443f65745ac3f9549d28399db7267391de1a772cd0",
       "occurrences": [
         {
           "line": 88,
@@ -118,10 +92,10 @@
         }
       ],
       "path": "in_game/common/advances/country_geo.txt",
-      "source_sha256": "144f3ac06bbc98f2790a07417b8485c941580a4e16b2b232337bbc7afd735793"
+      "source_sha256": "31833cab1cebf47d74d4c6e475b2ea12b6b8f307a276e93d83b586edd7b5a1a4"
     },
     {
-      "generated_sha256": "3256e1cfb816561c7c3a6d678d47427f5f980ee849f852d266e22f8f5ab3d9c1",
+      "generated_sha256": "3e220d3a73f8e18fbc6499d7aaa8b840f9c53b65e283a49f51fae0ee659ff768",
       "occurrences": [
         {
           "line": 35,
@@ -131,23 +105,23 @@
         }
       ],
       "path": "in_game/common/advances/country_mei.txt",
-      "source_sha256": "d7fd7b2acd585c3b203687ed9eee462d67983a1f41e1174005539771e2de897a"
+      "source_sha256": "3098489fbe5f8cca66e3bdf620fcf3e8d8616f90064ee34915f10115f2e0ce8b"
     },
     {
-      "generated_sha256": "a4fa931775f369114e62af2860d32b9a9c246ea522e2dfe3669995ab17f25b69",
+      "generated_sha256": "0479243e8e0682c6f70d562e4eda9f0e4a010dd59750091fb3417196eaf8c561",
       "occurrences": [
         {
-          "line": 203,
+          "line": 204,
           "new": "0.4",
           "object_path": "bavarian_coinage",
           "old": "0.2"
         }
       ],
       "path": "in_game/common/advances/country_ubv.txt",
-      "source_sha256": "c94c7b2ef0bce88a0e4525ff2a52a67061748212c2d3ae70c82ac1c9cb786647"
+      "source_sha256": "495c0833c8debc3a687ed324fd3bafd66ef176975d2db45d3d05045aa6a7ac8f"
     },
     {
-      "generated_sha256": "a7017b8212c2c96f6c482e410a60fcd3a767c98d91dade2f6507af6afb00d543",
+      "generated_sha256": "7b0c6e7162e330e91da1c7a26add4bd0000799968b59a9134231e54ed2427f72",
       "occurrences": [
         {
           "line": 17,
@@ -157,10 +131,10 @@
         }
       ],
       "path": "in_game/common/advances/ctype_buildings.txt",
-      "source_sha256": "0593031e509d4b822fb311dcdf8173210f6b835a397afa68e59d04cbaaaaf356"
+      "source_sha256": "76ef28cd658dc2b0dbb7c4d7ab60e06ef8edd61b901aee3c0c3a0c3fcc4fb57b"
     },
     {
-      "generated_sha256": "f784b05f6e7650e86e175bf79edaae68960acda45fd2fb96ebf27214cb0b4260",
+      "generated_sha256": "e8c8bbf96dd51d4ed25d77ff57d7af06e09c26005ce48f129d5f5a2a048cac57",
       "occurrences": [
         {
           "line": 44,
@@ -170,135 +144,174 @@
         }
       ],
       "path": "in_game/common/advances/culture_bengali.txt",
-      "source_sha256": "c7094ae8f0fffd4ec72a0a9ee92fb46bbff8a72d74a1e9b69edaab4a40401b0b"
+      "source_sha256": "426606a33545da0f2519a7ae3bda557d78d4eda4825ebfbbc5f1e56dd5fbb3ec"
     },
     {
-      "generated_sha256": "621567e84bbd541fd5f585707854a283e63ae000d6ff57b79307907cd9c937dc",
+      "generated_sha256": "473edfd2693c108554f9b971e39c26d7ec284641c6ef71622202e26e72587e99",
       "occurrences": [
         {
-          "line": 166,
+          "line": 76,
+          "new": "0.2",
+          "object_path": "bank_of_saint_george",
+          "old": "0.10"
+        }
+      ],
+      "path": "in_game/common/advances/culture_ligurian.txt",
+      "source_sha256": "4a5e9bc8c57d755ab2647cfae097b702f9abacb000b9edc2069adc3a8e3c9edb"
+    },
+    {
+      "generated_sha256": "f17e17a5b82fc1ebd981b1654e1c2457d25d9b9f8e2b6f480e6c21d2a208e3f5",
+      "occurrences": [
+        {
+          "line": 27,
+          "new": "0.2",
+          "object_path": "slo_the_law_of_the_seven_towns",
+          "old": "0.1"
+        }
+      ],
+      "path": "in_game/common/advances/culture_slovak.txt",
+      "source_sha256": "783b760fd57d15d06f4c850b126364048a166460efbcb0bc8c3aaf41a2d1c756"
+    },
+    {
+      "generated_sha256": "fa9f70c81171d8bf6593de4b018cdfda42d0c5a5c5b210c4ea02b492bc59c0a5",
+      "occurrences": [
+        {
+          "line": 167,
           "new": "0.2",
           "object_path": "photduang",
           "old": "0.1"
         }
       ],
       "path": "in_game/common/advances/culture_thai.txt",
-      "source_sha256": "a6111ced9462a2ea7d60b2d0e6b88648b27e86b75fb6ea975197bbfac209ab5a"
+      "source_sha256": "86135b271ebb2d3b40d9ddd99ad007da1e838c7337f9e6857a9f7b961e331e6b"
     },
     {
-      "generated_sha256": "25afe24968bd1f2126a8d8c9bce8adb5596f72fbf02d07eb589158181cd713db",
+      "generated_sha256": "ef8c24ed60af03d5ba4bc470a0770ddd7b516821f401eef601cee301dbc9a9cc",
       "occurrences": [
         {
-          "line": 720,
+          "line": 84,
+          "new": "0.2",
+          "object_path": "a_land_of_banks",
+          "old": "0.10"
+        }
+      ],
+      "path": "in_game/common/advances/culture_tuscan.txt",
+      "source_sha256": "bd9f078763352da071437e2fd579fb710dcf91a4e38c544f953b78027d94587f"
+    },
+    {
+      "generated_sha256": "5b5c1c2ca69550d420ce66b23f5c41747102d93eada09b6edd62d44ed0251c45",
+      "occurrences": [
+        {
+          "line": 721,
           "new": "0.2",
           "object_path": "pat_the_patrine_mint_advance",
           "old": "0.1"
         }
       ],
       "path": "in_game/common/advances/frankokratia.txt",
-      "source_sha256": "a1455351b9126e287c97f156d37ae4a1fee86949bc0270ce7066fb7868ce3abe"
+      "source_sha256": "50fa8d0ef0514f6f9b874d6618383539a956b048d49d7ffd3c28f8be15d6c7f8"
     },
     {
-      "generated_sha256": "f66fe39058397914d12e7306e61354ff8cc985f5eed7303046fbab1d0f247094",
+      "generated_sha256": "30024477bda899645c53062ccec6041105691c138e31a7e1e2c1a6bef0dea528",
       "occurrences": [
         {
-          "line": 561,
+          "line": 593,
           "new": "0.1",
           "object_path": "fra_marcel_great_ordinance/country_modifier",
           "old": "0.05"
         },
         {
-          "line": 581,
+          "line": 613,
           "new": "0.1",
           "object_path": "fra_marcel_compromise_ordinance/country_modifier",
           "old": "0.05"
         },
         {
-          "line": 675,
+          "line": 707,
           "new": "0.5",
           "object_path": "bra_kreditwerk/country_modifier",
           "old": "0.25"
         }
       ],
       "path": "in_game/common/estate_privileges/burghers_estate.txt",
-      "source_sha256": "bc4a17103e07492e86cd36f979108f98980e9b3cd015f98fd8c0aa5c90a93c28"
+      "source_sha256": "6aad35bdc792de57ecc34b6cc6a457d8a24e9628ca1c9759252ef17d4599b1ee"
     },
     {
-      "generated_sha256": "a38da4817040398efd6dbaccdba11ff47843073b206e07cc2660773c5bc7467b",
+      "generated_sha256": "2f2d1ceb57cc362545f8e108b0de16c73b05a590423da8a28917bd0b0c93fe8f",
       "occurrences": [
         {
-          "line": 3737,
+          "line": 3870,
           "new": "0.2",
           "object_path": "control_of_the_mahdali_coinage_reform/country_modifier",
           "old": "0.1"
         }
       ],
       "path": "in_game/common/government_reforms/country_specific.txt",
-      "source_sha256": "246a790c14e58eb5879f4e68af7534d0cfea8f250860f702c77143a586c7d7c3"
+      "source_sha256": "9484687b5fa15bf665b1af9cd703141a025329f94db27cade0edd14395d8ab53"
     },
     {
-      "generated_sha256": "75f48055b33a885e485cd6516d816b2acb09ad1d6473bd780fa04a323b21309d",
+      "generated_sha256": "e3df10ff8d6f6316a25ef8426f75570fa39d88d7d4eaf07c3656a8763511bc10",
       "occurrences": [
         {
-          "line": 1843,
+          "line": 1851,
           "new": "0.2",
           "object_path": "coin_laws/gold_and_silver_coins/country_modifier",
           "old": "0.1"
         },
         {
-          "line": 1875,
+          "line": 1884,
           "new": "0.2",
           "object_path": "coin_laws/gold_coins/country_modifier",
           "old": "0.1"
         },
         {
-          "line": 1906,
+          "line": 1916,
           "new": "0.2",
           "object_path": "coin_laws/silver_coins/country_modifier",
           "old": "0.1"
         },
         {
-          "line": 1938,
+          "line": 1950,
           "new": "0.4",
           "object_path": "coin_laws/copper_coins/country_modifier",
           "old": "0.2"
         },
         {
-          "line": 1981,
+          "line": 1995,
           "new": "0.2",
           "object_path": "coin_laws/bullion_coins/country_modifier",
           "old": "0.1"
         },
         {
-          "line": 2029,
+          "line": 2033,
           "new": "0.02",
           "object_path": "coin_laws/barter_exchange/country_modifier",
           "old": "0.01"
         },
         {
-          "line": 2075,
+          "line": 2066,
           "new": "0.2",
           "object_path": "coin_laws/stavraton_coin_policy/country_modifier",
           "old": "0.1"
         },
         {
-          "line": 2113,
+          "line": 2104,
           "new": "0.66",
           "object_path": "precious_metal_distribution_law/gold_export_ban/country_modifier",
           "old": "0.33"
         },
         {
-          "line": 2141,
+          "line": 2132,
           "new": "-0.66",
           "object_path": "precious_metal_distribution_law/unlimited_gold_export/country_modifier",
           "old": "-0.33"
         }
       ],
       "path": "in_game/common/laws/01_common.txt",
-      "source_sha256": "46912af119dade6e1fc6358961b326eb5457c7b606fd76ff127360d86c8bc6f3"
+      "source_sha256": "eff197f5fc6c2c3c22d3663d492af29adec79ad4e0f76146aef42909ced368a9"
     },
     {
-      "generated_sha256": "30c203c3131fff95e700b3ac26f83e62422972913de0a585d7ead0d2d9ff4688",
+      "generated_sha256": "b9f09065b50c9258f6f5b76159203b792f0ddc87b7121eab37660a6e24a81044",
       "occurrences": [
         {
           "line": 2034,
@@ -308,10 +321,10 @@
         }
       ],
       "path": "in_game/common/laws/20_middle_kingdom.txt",
-      "source_sha256": "de154037f75ce31419c38c1939ce0a305b21078d4859f82b80cbe3c960052dd6"
+      "source_sha256": "42a2799793ff42e7ec46ebb9aa3bf8a6132bfd3e8b9bb11b4a433908cf81b4a4"
     },
     {
-      "generated_sha256": "02dcf02932ac5b21b6d55d43404281d260e20965fa69995d386f09fdf5ce043d",
+      "generated_sha256": "9f3692e689514c0bbf114fe4f0d41d54a90c91b25b60ce75cc7fb53dc8e09288",
       "occurrences": [
         {
           "line": 498,
@@ -321,70 +334,76 @@
         }
       ],
       "path": "in_game/common/religious_aspects/common.txt",
-      "source_sha256": "6739319e64c279c4607d5eebba75fc5f7d9e22ca80ae4dd1ba51e658dfd49c26"
+      "source_sha256": "3a4799f7673ff6c6eb95bdaad39445c46baa462df8f8252d786265f3e6445e08"
     },
     {
-      "generated_sha256": "ecb53564ecad5b85b360139cec9a4c4fdaea9a350a435f3ca3ee7f38dfdafde1",
+      "generated_sha256": "ccc06c01c3e9d71ee5208b770a75fe16850c0db0fc1815116bdd83dceb4fb488",
       "occurrences": [
         {
-          "line": 46,
+          "line": 62,
           "new": "0.1",
           "object_path": "fiscal_hawk/modifier",
           "old": "0.05"
         }
       ],
       "path": "in_game/common/traits/07_cabinet.txt",
-      "source_sha256": "756ecbd3ef1bffc1ba75e0593668c82a8d4f77289d672eab843c8121e7f71266"
+      "source_sha256": "d3f8e2dcaf77552fd028095e15bd7a911244c17db6c2d0881edf16c16dacdb7b"
     },
     {
-      "generated_sha256": "568a153388b8a7534ad0a08d2cadd778f7eaff98b9d0184b0ba41b985174a26e",
+      "generated_sha256": "c71fd7b66dca819791898691d211eb6bbdedf5f7f5db0730246fc6791993dca2",
       "occurrences": [
         {
-          "line": 4405,
+          "line": 4617,
           "new": "0.3",
           "object_path": "exploiting_the_franc_coinage",
           "old": "0.15"
         },
         {
-          "line": 4413,
+          "line": 4625,
           "new": "0.1",
           "object_path": "minting_of_the_franc",
           "old": "0.05"
         },
         {
-          "line": 9813,
+          "line": 10111,
           "new": "0.1",
           "object_path": "cas_spanish_dollar_not_adopted",
           "old": "0.05"
         },
         {
-          "line": 10104,
+          "line": 10391,
           "new": "0.2",
           "object_path": "strengthened_ministry_of_revenue",
           "old": "0.1"
         },
         {
-          "line": 10719,
+          "line": 11032,
           "new": "0.3",
           "object_path": "nov_minting_of_novgorodka",
           "old": "0.15"
         },
         {
-          "line": 11923,
+          "line": 12389,
           "new": "0.2",
           "object_path": "parl_royal_treasury_mod",
           "old": "0.10"
+        },
+        {
+          "line": 12903,
+          "new": "-0.4",
+          "object_path": "reformed_circle_coinage_leader",
+          "old": "-0.2"
         }
       ],
       "path": "main_menu/common/static_modifiers/country.txt",
-      "source_sha256": "9c51837ad8b9022201e169505dbcd9600de2eba0c3e90c7845617d5343740391"
+      "source_sha256": "e4b33481340f1412adabe32ceacbf2544273d9d2594b02258500c124dbc6478e"
     }
   ],
-  "generated_file_count": 22,
+  "generated_file_count": 23,
   "modifier": "minting_income_factor",
   "multiplier": "2.0",
-  "occurrence_count": 37,
+  "occurrence_count": 39,
   "schema_version": 1,
-  "source_fingerprint_sha256": "a89e41fb93378d7bc18b5ef7263d0f3ab14ea8d650d657b32c87d7b5b56cba60",
+  "source_fingerprint_sha256": "94388ab6c18dd7f261375af8fab083e75441743412be3444fef7c062f380adbc",
   "source_root": "<EU5_GAME_ROOT>"
 }

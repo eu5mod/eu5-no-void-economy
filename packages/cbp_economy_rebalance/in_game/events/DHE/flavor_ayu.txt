@@ -411,7 +411,7 @@ flavor_ayu.6 = { #Wat Chaiwatthanaram
 	}
 	option = {
 		name = flavor_ayu.6.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_weak_penalty }
 		add_prestige = prestige_mild_bonus
 	}
@@ -609,12 +609,12 @@ flavor_ayu.9 = { #Constantine Phaulkon
 		historical_option = yes
 		scope:target_character = { move_country = root }
 		add_estate_satisfaction = { type = estate_type:nobles_estate	value = estate_satisfaction_mild_penalty }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = { #No need
 		name = flavor_ayu.9.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_character = {
 			banish_character = yes
 		}

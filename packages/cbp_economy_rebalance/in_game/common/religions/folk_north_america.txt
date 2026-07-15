@@ -151,7 +151,7 @@ totemism = {
 	religious_aspects = 1
 
 	definition_modifier = {
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		import_efficiency = small_trade_efficiency_bonus
 	}
 }

@@ -20,7 +20,7 @@ geo_bagrationi_dynasty = {
 
 	requires = distribution_of_power_advance
 
-	monthly_legitimacy = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
 }
 
 ############################

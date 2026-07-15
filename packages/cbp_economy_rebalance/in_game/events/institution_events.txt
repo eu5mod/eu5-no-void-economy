@@ -309,7 +309,7 @@ institution_events.11 = {
 			change_institution_progress = { type = institution:legalism value = institution_progress_extreme_bonus }
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 	option = {
 		name = institution_events.11.b
@@ -564,7 +564,7 @@ institution_events.30 = {
 	}
 	option = {
 		name = institution_events.30.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		capital = {
 			change_institution_progress = { type = institution:renaissance value = institution_progress_extreme_bonus }
 		}
@@ -3297,7 +3297,7 @@ institution_events.153 = {
 	}
 	option = {
 		name = institution_events.153.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3504,7 +3504,7 @@ institution_events.170 = {
 	option = {
 		name = institution_events.170.c
 		scope:target_location = { change_institution_progress = { type = institution:levee_en_masse value = institution_progress_extreme_bonus } }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_war_exhaustion = war_exhaustion_mild_bonus
 	}
 }

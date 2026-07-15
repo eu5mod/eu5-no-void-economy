@@ -26,7 +26,7 @@
 	modifier = {
 		monthly_pretender_rebel_growth  = 0.025
 		monthly_nationalist_rebel_growth   = 0.025
-		monthly_legitimacy = -0.1875
+		monthly_legitimacy = -0.1875 # VANILLA = -0.25
 	}
 
 	on_start = {

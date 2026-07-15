@@ -45,7 +45,7 @@ suk_ram_khamhaeng_stele = {
 
 	requires = recovery_efforts
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 ############################

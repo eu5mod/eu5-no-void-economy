@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
@@ -33,6 +34,14 @@ RESEARCH_MODIFIERS = {
     "monthly_horde_unity",
     "monthly_tribal_cohesion",
 }
+PROFIT_MARGIN_FIELDS = {
+    "rural_profit_margin",
+    "guild_profit_margin",
+    "workshop_profit_margin",
+    "manufactory_profit_margin",
+    "mills_profit_margin",
+}
+PROFIT_MARGIN_FACTOR = Decimal("1.10")
 SIMPLE_ASSIGNMENT = re.compile(
     r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_]+)[ \t]*=[ \t]*(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
 )
@@ -53,6 +62,13 @@ def scaled_number(value: str, factor: Decimal) -> str:
     result = Decimal(value) * factor
     rendered = format(result.normalize(), "f")
     return "0" if rendered in {"-0", ""} else rendered
+
+
+def transformed_comment(vanilla_value: str, existing: str | None = None) -> str:
+    trace = f"# VANILLA = {vanilla_value}"
+    if not existing:
+        return trace
+    return f"{trace}; {existing.lstrip('# ').strip()}"
 
 
 def alias_name(surface: str, field: str, value: str, factor: Decimal) -> str:
@@ -133,7 +149,7 @@ def transform_assignments(
             if centralized_tokens and value in centralized_tokens:
                 index += 1
                 continue
-            comment = f" {simple.group('comment')}" if simple.group("comment") else ""
+            comment = " " + transformed_comment(value, simple.group("comment"))
             if NUMBER.fullmatch(value):
                 replacement = scaled_number(value, factor)
             else:
@@ -229,7 +245,7 @@ def compose_simple_assignments(
                 active.pop()
         return found
 
-    expected: dict[tuple[tuple[str, ...], str, int], tuple[str, str]] = {}
+    expected: dict[tuple[tuple[str, ...], str, int], tuple[str, str, str]] = {}
     aliases: dict[str, tuple[str, str]] = {}
     for _index, key, match in records(source_text):
         field = match.group("field")
@@ -241,7 +257,7 @@ def compose_simple_assignments(
         else:
             replacement = alias_name(surface, field, value, factor)
             aliases[replacement] = (value, str(factor))
-        expected[key] = (field, replacement)
+        expected[key] = (field, replacement, value)
 
     if not expected:
         return TransformResult(current_text, 0, {})
@@ -256,11 +272,11 @@ def compose_simple_assignments(
         )
 
     for index, key, match in current:
-        field, replacement = expected[key]
+        field, replacement, vanilla_value = expected[key]
         raw = lines[index]
         body = raw.rstrip("\r\n")
         newline = raw[len(body) :]
-        comment = f" {match.group('comment')}" if match.group("comment") else ""
+        comment = " " + transformed_comment(vanilla_value, match.group("comment"))
         lines[index] = f"{match.group('indent')}{field} = {replacement}{comment}{newline}"
     return TransformResult("".join(lines), len(current), aliases)
 
@@ -377,16 +393,21 @@ def write_central_script_value_override(game_root: Path, package_root: Path, pol
     changed: set[str] = set()
     for index, line in enumerate(lines):
         match = re.match(r"^(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?P<value>-?\d+(?:\.\d+)?)(?P<comment>\s*#.*)?$", line)
-        if not match or match.group("name") not in policies:
+        if not match or (
+            match.group("name") not in policies
+            and match.group("name") not in PROFIT_MARGIN_FIELDS
+        ):
             continue
         name = match.group("name")
-        value = scaled_number(match.group("value"), policies[name])
-        comment = match.group("comment") or ""
-        lines[index] = f"{name} = {value}{comment}"
+        vanilla_value = match.group("value")
+        factor = policies.get(name, PROFIT_MARGIN_FACTOR)
+        value = scaled_number(vanilla_value, factor)
+        comment = transformed_comment(vanilla_value, match.group("comment"))
+        lines[index] = f"{name} = {value} {comment}"
         changed.add(name)
-    missing = set(policies) - changed
+    missing = (set(policies) | PROFIT_MARGIN_FIELDS) - changed
     if missing:
-        raise SystemExit(f"Missing central political script-value definitions: {sorted(missing)}")
+        raise SystemExit(f"Missing central CBP script-value definitions: {sorted(missing)}")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(normalize_generated_whitespace("\n".join(lines)), encoding="utf-8-sig")
     return output
@@ -456,25 +477,21 @@ def main() -> int:
     centralized = centralizable_script_values(args.game_root)
 
     manifest_path = args.package_root / "cbp_generated/political_reward_overrides_manifest.json"
+    baseline_root = args.package_root / "cbp_generated/political_reward_baselines"
     if manifest_path.is_file():
         previous = json.loads(manifest_path.read_text(encoding="utf-8"))
         for entry in previous.get("files", []):
-            if entry.get("created", True):
-                stale = (
-                    args.package_root / entry["path"]
-                    if entry.get("package_relative")
-                    else output_in_game / entry["path"]
-                )
-                legacy_baseline = (
-                    args.package_root
-                    / "cbp_generated/political_reward_baselines"
-                    / entry["path"]
-                )
-                if not entry.get("package_relative") and legacy_baseline.is_file():
-                    stale.parent.mkdir(parents=True, exist_ok=True)
-                    stale.write_bytes(legacy_baseline.read_bytes())
-                elif stale.is_file():
-                    stale.unlink()
+            stale = (
+                args.package_root / entry["path"]
+                if entry.get("package_relative")
+                else output_in_game / entry["path"]
+            )
+            baseline = baseline_root / (entry.get("baseline") or entry["path"])
+            if baseline.is_file():
+                stale.parent.mkdir(parents=True, exist_ok=True)
+                stale.write_bytes(baseline.read_bytes())
+            elif entry.get("created", True) and stale.is_file() and not entry.get("package_relative"):
+                stale.unlink()
         if args.clean:
             alias_path = args.package_root / "main_menu/common/script_values/cbp_political_reward_scalars_generated.txt"
             if alias_path.is_file():
@@ -482,6 +499,8 @@ def main() -> int:
             central_path = args.package_root / "main_menu/common/script_values/default_values.txt"
             if central_path.is_file():
                 central_path.unlink()
+            if baseline_root.is_dir():
+                shutil.rmtree(baseline_root)
             manifest_path.unlink()
             print("Cleaned files owned solely by the political reward generator.")
             return 0
@@ -529,6 +548,7 @@ def main() -> int:
         output = output_in_game / relative
         created = not output.is_file()
         current_text = output.read_text(encoding="utf-8-sig") if output.is_file() else source_text
+        baseline_relative = f"in_game/{relative.as_posix()}"
         if relative.parts[:2] == ("common", "building_types"):
             static_result = TransformResult(current_text, 0, {})
         else:
@@ -580,6 +600,13 @@ def main() -> int:
         result_text = preserved.text
         if not static_result.count and not outcome_count and not preserved.count:
             continue
+        if not created:
+            baseline = baseline_root / baseline_relative
+            baseline.parent.mkdir(parents=True, exist_ok=True)
+            baseline.write_text(
+                normalize_generated_whitespace(output.read_text(encoding="utf-8-sig")),
+                encoding="utf-8-sig",
+            )
         output.parent.mkdir(parents=True, exist_ok=True)
         result_text = apply_package_compatibility_sanitizers(relative, result_text)
         if created:
@@ -600,6 +627,7 @@ def main() -> int:
                 "preserved_nonpolitical_uses": preserved.count,
                 "changes": static_result.count + outcome_count + preserved.count,
                 "created": created,
+                "baseline": baseline_relative if not created else None,
             }
         )
 
@@ -608,13 +636,23 @@ def main() -> int:
     for source in sorted(main_menu_common.rglob("*.txt")):
         if source == central_source:
             continue
+        relative = source.relative_to(args.game_root)
+        output = args.package_root / relative
+        created = not output.is_file()
+        input_path = source if created else output
         preserved = preserve_nonpolitical_token_uses(
-            source.read_text(encoding="utf-8-sig"), centralized
+            input_path.read_text(encoding="utf-8-sig"), centralized
         )
         if not preserved.count:
             continue
-        relative = source.relative_to(args.game_root)
-        output = args.package_root / relative
+        baseline_relative = relative
+        if not created:
+            baseline = baseline_root / baseline_relative
+            baseline.parent.mkdir(parents=True, exist_ok=True)
+            baseline.write_text(
+                normalize_generated_whitespace(output.read_text(encoding="utf-8-sig")),
+                encoding="utf-8-sig",
+            )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(normalize_generated_whitespace(preserved.text), encoding="utf-8-sig")
         aliases.update(preserved.aliases)
@@ -622,7 +660,8 @@ def main() -> int:
             "path": str(relative),
             "policy": "preserve_nonpolitical_use",
             "changes": preserved.count,
-            "created": True,
+            "created": created,
+            "baseline": str(baseline_relative) if not created else None,
             "package_relative": True,
         })
 
@@ -632,6 +671,7 @@ def main() -> int:
     manifest = {
         "generator": "tools/generate_political_reward_overrides.py",
         "policies": {"instant_effects": 0.5, "static_sources": 0.75},
+        "profit_margin_factor": float(PROFIT_MARGIN_FACTOR),
         "files": generated,
         "aliases": len(aliases),
         "central_script_values": {name: float(factor) for name, factor in sorted(centralized.items())},

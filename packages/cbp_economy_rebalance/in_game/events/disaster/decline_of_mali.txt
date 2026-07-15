@@ -469,7 +469,7 @@ decline_of_mali.7 = {
 	#Who cares about naysayers
 	option = {
 		name = decline_of_mali.7.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	#Show them our right to rule!
 	option = {
@@ -518,7 +518,7 @@ decline_of_mali.9 = {
 	#Focus on our Stability
 	option = {
 		name = decline_of_mali.9.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	#Focus on our Legitimacy
 	option = {
@@ -793,7 +793,7 @@ decline_of_mali.12 = {
 	option = {
 		name = decline_of_mali.12.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:diawara_ruler = {
 			move_country = root
 			change_character_allegiance = scope:mal_separatists_rebels
@@ -988,7 +988,7 @@ decline_of_mali.14 = {
 	option = {
 		name = decline_of_mali.14.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:fulo_ruler = {
 			move_country = root
 			change_character_allegiance = scope:mal_separatists_rebels

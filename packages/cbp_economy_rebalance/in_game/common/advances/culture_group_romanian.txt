@@ -84,9 +84,9 @@ romanian_the_foundation_of_the_voivodeship_tradition = {
 		culture = { has_culture_group = culture_group:romanian_group }
 	}
 
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	stability_cost_efficiency = 0.1
 
 	requires = renaissance_advance

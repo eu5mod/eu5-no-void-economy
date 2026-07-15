@@ -83,7 +83,7 @@
 				divide = 1000
 			}
 		}
-        monthly_legitimacy = 0.225
+        monthly_legitimacy = 0.225 # VANILLA = 0.3
 		monthly_karma = 0.1
 	}
 

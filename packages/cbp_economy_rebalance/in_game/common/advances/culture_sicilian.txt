@@ -170,9 +170,9 @@ sicilian_the_cult_of_the_santuzze = {
 	}
 
 	tolerance_own = 1
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 
 	requires = confessionalism_advance
 }

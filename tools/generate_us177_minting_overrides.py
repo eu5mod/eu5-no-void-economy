@@ -225,6 +225,18 @@ def transform_file(relative_path: PurePosixPath, source_file: Path, multiplier: 
         return None
 
     generated_text = "".join(transformed_lines)
+    if relative_path == PurePosixPath("main_menu/common/static_modifiers/country.txt"):
+        # This legacy modifier is rejected by the current EU5 build. Keep the
+        # exact-path US-177 override compatible when composing from Vanilla.
+        generated_text = re.sub(
+            r"^[ \t]*building_upkeep_multiplier[ \t]*=.*(?:\r?\n|$)",
+            "",
+            generated_text,
+            flags=re.MULTILINE,
+        )
+    generated_text = "\n".join(
+        line.rstrip(" \t") for line in generated_text.splitlines()
+    ) + "\n"
     generated_bytes = generated_text.encode("utf-8")
     if has_bom:
         generated_bytes = b"\xef\xbb\xbf" + generated_bytes

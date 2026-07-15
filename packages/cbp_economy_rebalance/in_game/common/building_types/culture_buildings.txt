@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 university = {
 	audio_tier = 3
@@ -46,10 +47,10 @@ university = {
 	
 	unique_production_methods = {
 		university_maintenance = {
-		paper = 0.35
-		books = 0.175
-		glass = 0.175
-		beeswax = 0.035
+		paper = 0.35 # VANILLA = 0.5
+		books = 0.175 # VANILLA = 0.25
+		glass = 0.175 # VANILLA = 0.25
+		beeswax = 0.035 # VANILLA = 0.05
 	
 		category = building_maintenance
 		}
@@ -190,11 +191,11 @@ confucian_academy = {
 	
 	unique_production_methods = {
 		confucian_academy_maintenance = {
-			paper = 0.28
-			beeswax = 0.07
-			books = 0.14
-			cloth = 0.21
-			fine_cloth = 0.07
+			paper = 0.28 # VANILLA = 0.4
+			beeswax = 0.07 # VANILLA = 0.1
+			books = 0.14 # VANILLA = 0.2
+			cloth = 0.21 # VANILLA = 0.3
+			fine_cloth = 0.07 # VANILLA = 0.1
 			
 			category = building_maintenance
 		}
@@ -231,12 +232,12 @@ opera_house = {
 	
 	unique_production_methods = {
 		opera_house_maintenance = {
-			cloth = 0.42
-			wine = 0.42
-			paper = 0.42
-			lacquerware = 0.14
-			fine_cloth = 0.07
-			beeswax = 0.14
+			cloth = 0.42 # VANILLA = 0.6
+			wine = 0.42 # VANILLA = 0.6
+			paper = 0.42 # VANILLA = 0.6
+			lacquerware = 0.14 # VANILLA = 0.2
+			fine_cloth = 0.07 # VANILLA = 0.1
+			beeswax = 0.14 # VANILLA = 0.2
 			
 			category = building_maintenance
 		}
@@ -326,10 +327,10 @@ jesuit_college = {
 	unique_production_methods = {
 		
 		jesuit_college_maintenance = {
-			paper = 0.35
-			books = 0.7
-			fine_cloth = 0.14
-			beeswax = 0.07
+			paper = 0.35 # VANILLA = 0.5
+			books = 0.7 # VANILLA = 1.0
+			fine_cloth = 0.14 # VANILLA = 0.2
+			beeswax = 0.07 # VANILLA = 0.1
 
 			category = building_maintenance
 		}

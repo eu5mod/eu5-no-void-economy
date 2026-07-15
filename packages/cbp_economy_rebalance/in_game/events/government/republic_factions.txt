@@ -344,7 +344,7 @@ republic_factions.6 = { #Guild Before Country
 			}
 		}
 		add_republican_tradition = republican_tradition_mild_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_research_progress = research_progress_weak_bonus
 	}
 }
@@ -655,7 +655,7 @@ republic_factions.10 = { #Trade between Rivals
 	option = {
 		name = republic_factions.10.b
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_weak_penalty }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

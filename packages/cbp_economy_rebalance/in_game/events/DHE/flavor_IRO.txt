@@ -304,7 +304,7 @@ flavor_iro.13 = { # The Legend of Hiawatha
 		name = flavor_iro.13.a
 		historical_option = yes
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		capital = {
 			create_art = {
 				artist = scope:target_character
@@ -496,7 +496,7 @@ flavor_iro.30 = { # Shikellamy and Pennsylvania
 		name = flavor_iro.30.b
 		kill_character_silently = scope:target_character
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -593,7 +593,7 @@ flavor_iro.31 = { # Shikellamy and the Walking Purchase
 	option = { # We cannot agree to this proposal!
 		name = flavor_iro.31.b
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_opinion = { target = scope:colonial_nation_target modifier = refused_iro_walking_sale }
 		reverse_add_opinion = { target = scope:colonial_nation_target modifier = refused_iro_walking_sale }
 	}
@@ -699,7 +699,7 @@ flavor_iro.32 = { # Arrival of the Moravian Missionaries
 	option = { # Forbid the missionaries from staying in the village!
 		name = flavor_iro.32.b
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -992,7 +992,7 @@ flavor_iro.43 = { # Adoption of Prisoners
 	}
 	option = { # They must remain prisoners for now
 		name = flavor_iro.43.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1077,7 +1077,7 @@ flavor_iro.45 = { # Welcoming of the Skarure # Tuscarora
 
 	option = { # The Skarureh must integrate with <root.culture>
 		name = flavor_iro.45.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1303,7 +1303,7 @@ flavor_iro.51 = { # Beaver Wars
 
 	option = { # We must move to control the beaver supply
 		name = flavor_iro.51.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1406,7 +1406,7 @@ flavor_iro.60 = { # Grand Council of the Iroquois # Reform Unlock
 		name = flavor_iro.60.a
 		historical_option = yes
 		add_reform = government_reform:iro_council_of_the_fifty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = { # Disobey the guidance of the council
 		name = flavor_iro.60.b
@@ -1470,7 +1470,7 @@ flavor_iro.61 = { # Council of the Fifty Intervenes in Colonial Diplomacy
 		name = flavor_iro.61.a
 		historical_option = yes
 		add_country_modifier = { modifier = iro_assertive_council_of_fifty years = 10 mode = add }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = { # Refute the advice of the council!
 		name = flavor_iro.61.b
@@ -1778,7 +1778,7 @@ flavor_iro.65 = { # Expedition of Simon Le Moyne and Sainte Marie de Ganentaa
 	option = { # Forbid the Jesuit from preaching!
 		name = flavor_iro.65.b
 		kill_character_silently = scope:target_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
 	}
 }
@@ -1913,7 +1913,7 @@ flavor_iro.70 = { # Forming of a New Delegation
 	}
 	option = { # There is no need to welcome an expanded delegation.
 		name = flavor_iro.70.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_severe_bonus
 	}
 }

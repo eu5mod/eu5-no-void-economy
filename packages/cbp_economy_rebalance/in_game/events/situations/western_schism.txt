@@ -161,7 +161,7 @@ western_schism.5 = { #Erosion of Faith
 	option = {
 		name = western_schism.5.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_legitimacy = legitimacy_weak_penalty
 		if = {
 			limit = {

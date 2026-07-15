@@ -174,7 +174,7 @@ random_event.4 = {
 	option = {
 		name = random_event.4.a
 		add_research_progress = research_progress_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		ai_will_select = {
 			if = {
@@ -330,7 +330,7 @@ random_event.7 = {
 
 	option = {
 		name = random_event.7.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -463,7 +463,7 @@ random_event.10 = {
 
 	option = {
 		name = random_event.10.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = random_event.10.b
@@ -825,7 +825,7 @@ random_event.18 = {
 
 	option = {
 		name = random_event.18.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:insulted_party = {
 			add_opinion = { target = root modifier = opinion_good_relations }
 		}
@@ -904,7 +904,7 @@ random_event.20 = {
 
 	option = {
 		name = random_event.20.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -965,7 +965,7 @@ random_event.21 = {
 
 	option = {
 		name = random_event.21.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -1030,7 +1030,7 @@ random_event.22 = {
 
 	option = {
 		name = random_event.22.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_weak_penalty
@@ -1371,7 +1371,7 @@ random_event.29 = {
 				mode = add_and_extend
 			}
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -2230,7 +2230,7 @@ random_event.42 = {
 
 	option = {
 		name = random_event.42.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -2314,7 +2314,7 @@ random_event.44 = {
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_extreme_penalty
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -2392,7 +2392,7 @@ random_event.45 = {
 		}
 		else = {
 			add_prestige = prestige_weak_penalty
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		}
 	}
 
@@ -2528,7 +2528,7 @@ random_event.48 = {
 	option = {
 		name = random_event.48.c
 		add_army_tradition = army_tradition_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -2792,7 +2792,7 @@ random_event.53 = {
 	}
 	option = {
 		name = random_event.53.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -2869,7 +2869,7 @@ random_event.55 = {
 
 	option = {
 		name = random_event.55.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_army_tradition = army_tradition_extreme_penalty
 		add_navy_tradition = navy_tradition_extreme_penalty
 	}
@@ -3644,7 +3644,7 @@ random_event.68 = {
 				type = serfdom_vs_free_subjects
 				value = societal_value_minor_move_to_left
 			}
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		}
 		else = {
 			change_societal_value = {
@@ -4667,7 +4667,7 @@ random_event.90 = {
 	}
 	option = {
 		name = random_event.90.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -4809,7 +4809,7 @@ random_event.93 = {
 
 	option = {
 		name = random_event.93.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -5335,7 +5335,7 @@ random_event.105 = {
 
 	option = {
 		name = random_event.105.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_republican_tradition = republican_tradition_mild_penalty
 	}
 

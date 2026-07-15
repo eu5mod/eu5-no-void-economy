@@ -58,8 +58,8 @@ society_bengler_mainz = {
 
 society_furspang_franconia = {
 	country_modifier = {
-		monthly_devotion = 0.075
-		monthly_legitimacy = 0.075
+		monthly_devotion = 0.075 # VANILLA = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 	character_modifier = {
 		monthly_prestige = 0.05

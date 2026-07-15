@@ -58,7 +58,7 @@
 						scope:recipient = { has_variable = no_cost_for_promotion }
 					}
 				}
-				add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43
+				add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43 # VANILLA = government_power_mild_penalty
 			}
 			promote_to_head_of_cabinet_effect = {
 				target = scope:recipient

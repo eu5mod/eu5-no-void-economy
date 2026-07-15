@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 black_market = {
 	audio_tier = 2
@@ -38,7 +39,7 @@ black_market = {
 	
 	modifier = {
 		scaled_gold_to_building_owner = 0.05
-		merchant_capacity_from_building = 2.3
+		merchant_capacity_from_building = 2.3 # VANILLA = 2
 	}
 }
 

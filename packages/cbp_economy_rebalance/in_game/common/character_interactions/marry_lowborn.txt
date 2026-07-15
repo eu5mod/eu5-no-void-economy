@@ -131,7 +131,7 @@
 							}
 						}
 					}
-					add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7
+					add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
 					add_prestige = prestige_extreme_penalty
 				}
 				else_if = {

@@ -58,7 +58,7 @@
       }
     ]
   },
-  "generated_sha256": "9945892b7a6d0c3a3956d57d6d9c666cb212d4754c1d0adc903589fe30baeaff",
+  "generated_sha256": "78aca4d0e7159fd7985407dade0b029deafbd9f3d558494aa83969541f7a7ffa",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_paper.txt",
   "source_sha256": "e2690285d72a6388df281f88eff6884b95e0326325c9e3982ee3adc9b30b5c76",

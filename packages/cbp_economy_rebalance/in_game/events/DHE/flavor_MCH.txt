@@ -845,7 +845,7 @@ flavor_mch.14 = {
 			value = societal_value_huge_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {

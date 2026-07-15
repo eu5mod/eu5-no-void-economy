@@ -6,7 +6,7 @@
 
 	modifier = {
 		blocked_from_being_leader = yes
-		monthly_legitimacy = -0.0375
+		monthly_legitimacy = -0.0375 # VANILLA = -0.05
 		character_life_expectancy = -10
 		counter_espionage = -0.2
 		marriage_desirability = -20
@@ -90,7 +90,7 @@ eunuch = {
 
 	modifier = {
 		character_fertility = -1000
-		monthly_legitimacy = -0.15
+		monthly_legitimacy = -0.15 # VANILLA = -0.2
 		monthly_prestige = -0.2
 		character_life_expectancy = 10
 		blocked_from_marriage = yes
@@ -109,7 +109,7 @@ castrated = {
 	modifier = {
 		character_fertility = -1000
 		monthly_prestige = -0.2
-		monthly_legitimacy = -0.15
+		monthly_legitimacy = -0.15 # VANILLA = -0.2
 		character_life_expectancy = -5
 		marriage_desirability = -50
 	}
@@ -152,7 +152,7 @@ healthy = {
 	modifier = {
 		character_child_education = 0.33
 		character_life_expectancy = 10
-		monthly_legitimacy = 0.0375
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		marriage_desirability = 15
 	}
 

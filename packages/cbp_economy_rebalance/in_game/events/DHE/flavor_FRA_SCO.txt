@@ -97,7 +97,7 @@ flavor_fra_sco.101 = {
 	option = { # David II must return home
 		name = flavor_fra_sco.101.c
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		c:SCO = {
 			add_opinion = { target = root modifier = opinion_no_extra_support_for_david_ii }
 			set_variable = { name = fra_forces_david_ii_return value = 1 }
@@ -476,7 +476,7 @@ flavor_fra_sco.103 = { # French offer David II to Balliol for support
 			killer = ruler
 		}
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		c:SCO = {
 			add_opinion = { target = root modifier = opinion_sbl_executed_scottish_king }
 			add_country_modifier = { modifier = david_ii_has_been_executed months = 60 mode = add_and_extend }

@@ -259,7 +259,7 @@ latinization_vs_hellenization.3 = {	#Latinization Pays Off
 			societal_values_3_1 = {
 				if = {
 					limit = { has_country_modifier = suppressing_latinization_modifier }
-					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 					custom_tooltip = bonus_weakened_because_of_suppressing_latinization_modifier
 				}
@@ -895,7 +895,7 @@ latinization_vs_hellenization.7 = {	#Nobles across scope:target_province and bey
 			1 = {
 				show_chance = no
 				desc = perceived_as_weakness
-				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			}
 		}
 	}
@@ -1028,7 +1028,7 @@ latinization_vs_hellenization.8 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1221,7 +1221,7 @@ latinization_vs_hellenization.9 = {	#The Education of <Heir>
 			1 = {
 				show_chance = no
 				desc = refusal_to_politicize_tt
-				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 			}
 			1 = {
 				desc = court_does_not_react
@@ -2216,7 +2216,7 @@ latinization_vs_hellenization.16 = {	#General Falls Through with <Estate>
 			1 = {
 				desc = our_authority_will_suffer_penalty
 				show_chance = no
-				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			}
 		}
 	}
@@ -2642,7 +2642,7 @@ latinization_vs_hellenization.19 = {	#City Attracts Foreign Refugees
 
 		if = {
 			limit = { modifier:disallow_migration_beyond_borders = yes }
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		}
 	}
 
@@ -3000,7 +3000,7 @@ latinization_vs_hellenization.22 = {	#Heir has favored tutor
 	option = {
 		name = latinization_vs_hellenization.22.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -3530,7 +3530,7 @@ latinization_vs_hellenization.29 = {	#Clergy Resist Current Trend
 			1 = {
 				show_chance = no
 				desc = refusal_leads_instability
-				add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+				add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 			}
 			1 = {
 				desc = situation_dissipates
@@ -3665,6 +3665,6 @@ latinization_vs_hellenization.30 = {    #Peasants Resist Current Trend
             }
         }
 
-        add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+        add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
     }
 }

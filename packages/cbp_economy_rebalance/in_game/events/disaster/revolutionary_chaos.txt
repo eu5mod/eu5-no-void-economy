@@ -285,10 +285,10 @@ revolutionary_chaos.5 = {
 		add_country_modifier = { modifier = bureaucratic_expansion months = -1 mode = add_and_extend }
 		rev_chaos_side_effect = {
 			revolution_effect = "
-				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			"
 			monarchist_effect = "
-				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+				add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 			"
 		}
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_left }
@@ -588,7 +588,7 @@ revolutionary_chaos.101 = {
 	}
 	option = {
 		name = revolutionary_chaos.101.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -1173,7 +1173,7 @@ revolutionary_chaos.1000 = {
 			add_stability = stability_severe_penalty
 		}
 		else = {
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		}
 		scope:target_character = {
 			if = {
@@ -1475,13 +1475,13 @@ revolutionary_chaos.1102 = {
 	option = {
 		name = revolutionary_chaos.1102.a
 		trigger = { has_variable = napoleon_dies }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		remove_variable = napoleon_dies
 	}
 	option = {
 		name = revolutionary_chaos.1102.b
 		trigger = { NOT = { has_variable = napoleon_dies } }
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 

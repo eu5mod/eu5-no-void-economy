@@ -43,7 +43,7 @@
 
 	effect = {
 		scope:actor = {
-			add_government_power = cbp_instant_add_government_power_government_power_weak_penalty_5fc3290c35
+			add_government_power = cbp_instant_add_government_power_government_power_weak_penalty_5fc3290c35 # VANILLA = government_power_weak_penalty
 			add_prestige = prestige_extreme_penalty
 		}
 		scope:recipient = {

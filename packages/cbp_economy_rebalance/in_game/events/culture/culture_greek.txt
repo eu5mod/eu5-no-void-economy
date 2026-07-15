@@ -80,7 +80,7 @@ culture_greek.1 = {
 			value = estate_satisfaction_mild_bonus
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 	}
 
@@ -353,7 +353,7 @@ culture_greek.4 = {
 	option = {
 		name = culture_greek.4.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		if = {
 			limit = {
@@ -375,7 +375,7 @@ culture_greek.4 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = greek_culture_greek_peasants_will_gain_satisfaction
@@ -599,7 +599,7 @@ culture_greek.6 = {
 	option = {
 		name = culture_greek.6.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = greek_culture_all_capital_pops_gain_pop_satisfaction
@@ -622,7 +622,7 @@ culture_greek.6 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		custom_tooltip = {
 			text = greek_culture_prevent_coup_for_two_year
@@ -712,7 +712,7 @@ culture_greek.7 = {
 		set_new_ruler = scope:target_character
 
 		add_stability = stability_severe_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -1221,7 +1221,7 @@ culture_greek.10 = {
 	option = {
 		name = culture_greek.10.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_all_estate_satisfaction = {
 			value = estate_satisfaction_mild_bonus
@@ -1379,7 +1379,7 @@ culture_greek.12 = {
 			years = 5
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		if = {
 			limit = {
@@ -1649,7 +1649,7 @@ culture_greek.14 = {
 		}
 
 		add_prestige = prestige_weak_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -1804,7 +1804,7 @@ culture_greek.16 = {
 			value = estate_satisfaction_mild_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -2034,7 +2034,7 @@ culture_greek.19 = {
 
 		change_gold_effect = { scale = -1 }
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		culture = {
 			add_cultural_influence = cultural_influence_mild_bonus
@@ -2650,7 +2650,7 @@ culture_greek.25 = {
 			add_cultural_tradition = cultural_tradition_mild_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3224,6 +3224,6 @@ culture_greek.30 = {
 			value = societal_value_tiny_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }

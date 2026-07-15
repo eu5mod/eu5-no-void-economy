@@ -251,6 +251,6 @@ missionaries.8 = {
 
 		ai_will_select = { value = 0 }
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }

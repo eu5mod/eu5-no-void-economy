@@ -2099,7 +2099,7 @@ flavor_tim.1101 = { #Rise of...
 			target = scope:target_character
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		create_rebel = {
 			category = religious

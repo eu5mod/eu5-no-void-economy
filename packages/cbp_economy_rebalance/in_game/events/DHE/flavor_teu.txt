@@ -1187,7 +1187,7 @@ flavor_teu.17 = {
 	option = {
 		name = flavor_teu.17.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_prestige = prestige_mild_penalty
 
 		hidden_effect = {

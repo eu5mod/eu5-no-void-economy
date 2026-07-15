@@ -293,7 +293,7 @@ flavor_pol_teu.3 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:pol_teutonic_side = {
 			trigger_event_non_silently = flavor_pol_teu.6
 		}

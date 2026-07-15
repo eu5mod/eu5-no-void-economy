@@ -552,7 +552,7 @@ flavor_mos.5 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = spiritualist_vs_humanist
@@ -775,7 +775,7 @@ flavor_mos.7 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		ai_chance = {
 			factor = 1
@@ -2063,7 +2063,7 @@ flavor_mos.16 = {
 			is_member_of_international_organization = international_organization:tatar_yoke
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		set_variable = { name = direct_appeal_to_khan }
 		c:GLH = { trigger_event_silently = flavor_glh.3 }
@@ -2685,7 +2685,7 @@ flavor_mos.27 = {
 			custom_tooltip = flavor_mos.27.tt3
 		}
 		else = {
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			custom_tooltip = flavor_mos.27.tt4
 		}
 
@@ -3118,7 +3118,7 @@ flavor_mos.31 = {
 			add_trait = trait:silver_tongue
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		custom_tooltip = flavor_mos.31.tt1
 
@@ -3731,7 +3731,7 @@ flavor_mos.36 = {
 			marry_character = scope:eleanor_glinskaya
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_penalty
@@ -3754,7 +3754,7 @@ flavor_mos.36 = {
 		hidden_effect = { kill_character_silently = scope:eleanor_glinskaya }
 		hidden_effect = { kill_character_silently = scope:ivan_the_terrible }
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_severe_bonus
@@ -4797,7 +4797,7 @@ flavor_mos.43 = {
 
 		nudge_towards_isolationism = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		ai_chance = {
 			factor = 0.5
@@ -6067,7 +6067,7 @@ flavor_mos.53 = {
 		grant_estate_privilege = estate_privilege:salt_tax_exemption
 		set_variable = { name = mos_salt_tax_exemption_flag value = 1 }
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		destroy_rebel = scope:salt_riot
 
@@ -6187,7 +6187,7 @@ flavor_mos.54 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		religion:orthodox = {
 			set_religious_view = {
@@ -6977,7 +6977,7 @@ flavor_mos.60 = {
 			value = societal_value_move_to_right
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		ai_chance = {
 			factor = 0.5
@@ -7892,7 +7892,7 @@ flavor_mos.69 = {
 	option = {
 	name = flavor_mos.69.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 
@@ -8174,7 +8174,7 @@ flavor_mos.72 = {
 			}
 		}
 
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 
@@ -8728,7 +8728,7 @@ flavor_mos.77 = {
 	option = {
 		name = flavor_mos.77.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		ai_chance = {
 			factor = 0.5
@@ -8935,7 +8935,7 @@ flavor_mos.79 = {
 
 		change_gold_effect = { scale = -6 }
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		custom_tooltip = flavor_mos.79.tt2
 		custom_tooltip = flavor_mos.79.tt3
@@ -10735,7 +10735,7 @@ flavor_mos.94 = {
 			}
 			else = {
 				root = {
-					add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+					add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 				}
 			}
 		}
@@ -12681,7 +12681,7 @@ flavor_mos.108 = {
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_stability = stability_mild_penalty
 
 		ai_chance = {

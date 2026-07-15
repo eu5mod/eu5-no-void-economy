@@ -328,11 +328,11 @@ licensing_of_the_press_act = {
 
 	country_modifier = {
 
-		monthly_legitimacy = 0.075
-		monthly_republican_tradition = 0.075
-		monthly_devotion = 0.075
-		monthly_horde_unity = 0.075
-		monthly_tribal_cohesion = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
+		monthly_republican_tradition = 0.075 # VANILLA = 0.1
+		monthly_devotion = 0.075 # VANILLA = 0.1
+		monthly_horde_unity = 0.075 # VANILLA = 0.1
+		monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 
 		monthly_towards_traditionalist = societal_value_monthly_move
 
@@ -1156,9 +1156,9 @@ righteous_government = {
 	}
 
 	country_modifier = {
-		monthly_legitimacy = 0.075
-		monthly_republican_tradition = 0.075
-		monthly_devotion = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
+		monthly_republican_tradition = 0.075 # VANILLA = 0.1
+		monthly_devotion = 0.075 # VANILLA = 0.1
 		monthly_righteousness = 0.05
 		global_monthly_literacy = 0.01
 	}

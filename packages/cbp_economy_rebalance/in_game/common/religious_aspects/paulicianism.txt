@@ -16,7 +16,7 @@ name_change = {
 	religion = paulicianism
 
 	modifier = {
-        monthly_legitimacy = 0.075
+        monthly_legitimacy = 0.075 # VANILLA = 0.1
 		monthly_towards_communalism = societal_value_monthly_move
 	}
 

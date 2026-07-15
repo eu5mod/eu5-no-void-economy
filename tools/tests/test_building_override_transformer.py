@@ -23,7 +23,7 @@ class BuildingOverrideTransformerTest(unittest.TestCase):
 """
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("monthly_legitimacy = 0.3", output.read_text())
+        self.assertIn("monthly_legitimacy = 0.3 # VANILLA = 0.4", output.read_text())
         payload = json.loads(manifest.read_text())
         self.assertEqual(
             payload["changed_buildings"]["political_building"][0]["field"],

@@ -277,7 +277,7 @@ regencies.5 = {
 	}
 	option = {
 		name = regencies.5.c
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_weak_penalty
 	}
 }
@@ -365,6 +365,6 @@ regencies.7 = {
 	}
 	option = {
 		name = regencies.7.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }

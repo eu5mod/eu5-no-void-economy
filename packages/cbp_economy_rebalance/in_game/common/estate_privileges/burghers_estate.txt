@@ -167,7 +167,7 @@ novgorod_ivans_hundred = {
 		merchant_maintenance_efficiency = 0.50
 		global_burghers_estate_power = 0.25
 		burghers_estate_target_satisfaction = medium_privilege_target_satisfaction
-		monthly_republican_tradition = 0.15
+		monthly_republican_tradition = 0.15 # VANILLA = 0.2
 		global_crown_estate_power = -0.10
 	}
 	country_modifier = {

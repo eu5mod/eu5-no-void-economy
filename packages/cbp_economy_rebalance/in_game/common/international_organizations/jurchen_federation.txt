@@ -49,7 +49,7 @@
 				value = 0
 			}
 		}
-		monthly_tribal_cohesion = 0.0225
+		monthly_tribal_cohesion = 0.0225 # VANILLA = 0.03
 	}
 
 	leader_modifier = {

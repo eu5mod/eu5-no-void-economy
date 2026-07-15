@@ -2101,7 +2101,7 @@ flavor_chi.2200 = {
 
 		increase_opinion_of_expedition = yes
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_gold = {
 			value = yearly_gold
 			multiply = -0.1
@@ -2478,7 +2478,7 @@ flavor_chi.2205 = {
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {

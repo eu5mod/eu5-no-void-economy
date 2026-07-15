@@ -129,7 +129,7 @@ mysticism_vs_jurisprudence.2 = {
 	option = {
 		name = mysticism_vs_jurisprudence.2.a
 		change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_tiny_move_to_right }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 	option = {
 		name = mysticism_vs_jurisprudence.2.b

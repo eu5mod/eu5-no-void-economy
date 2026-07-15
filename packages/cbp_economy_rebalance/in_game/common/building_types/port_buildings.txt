@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 dock = {
 	audio_tier = 1
@@ -31,11 +32,11 @@ dock = {
 	
 	unique_production_methods = {
 		dock_maintenance = {
-			tar = 0.14
-			naval_supplies = 0.07
-			tools = 0.14
-			lumber = 0.14
-			cloth = 0.07
+			tar = 0.14 # VANILLA = 0.2
+			naval_supplies = 0.07 # VANILLA = 0.1
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.14 # VANILLA = 0.2
+			cloth = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 
@@ -82,11 +83,11 @@ dry_dock = {
 	
 	unique_production_methods = {
 		dry_dock_maintenance = {
-			tar = 0.28
-			naval_supplies = 0.14
-			tools = 0.28
-			lumber = 0.28
-			cloth = 0.14
+			tar = 0.28 # VANILLA = 0.4
+			naval_supplies = 0.14 # VANILLA = 0.2
+			tools = 0.28 # VANILLA = 0.4
+			lumber = 0.28 # VANILLA = 0.4
+			cloth = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 
@@ -133,11 +134,11 @@ shipyard = {
 	
 	unique_production_methods = {
 		shipyard_maintenance = {
-			tar = 0.56
-			naval_supplies = 0.28
-			tools = 0.56
-			lumber = 0.56
-			cloth = 0.28
+			tar = 0.56 # VANILLA = 0.8
+			naval_supplies = 0.28 # VANILLA = 0.4
+			tools = 0.56 # VANILLA = 0.8
+			lumber = 0.56 # VANILLA = 0.8
+			cloth = 0.28 # VANILLA = 0.4
 			category = building_maintenance
 		}
 
@@ -184,11 +185,11 @@ grand_shipyard = {
 	
 	unique_production_methods = {
 		grand_shipyard_maintenance = {
-			tar = 1.12
-			naval_supplies = 0.56
-			tools = 1.12
-			lumber = 1.12
-			cloth = 0.56
+			tar = 1.12 # VANILLA = 1.6
+			naval_supplies = 0.56 # VANILLA = 0.8
+			tools = 1.12 # VANILLA = 1.6
+			lumber = 1.12 # VANILLA = 1.6
+			cloth = 0.56 # VANILLA = 0.8
 			category = building_maintenance
 		}
 
@@ -235,11 +236,11 @@ naval_base = {
 	
 	unique_production_methods = {
 		naval_base_maintenance = {
-			tar = 2.1
-			naval_supplies = 1.05
-			tools = 2.1
-			lumber = 2.1
-			cloth = 1.05
+			tar = 2.1 # VANILLA = 3.0
+			naval_supplies = 1.05 # VANILLA = 1.5
+			tools = 2.1 # VANILLA = 3.0
+			lumber = 2.1 # VANILLA = 3.0
+			cloth = 1.05 # VANILLA = 1.5
 			category = building_maintenance
 		}
 
@@ -284,10 +285,10 @@ protected_harbor = {
 	
 	unique_production_methods = {
 		protected_harbor_maintenance = {
-			tar = 0.07
-			tools = 0.07
-			lumber = 0.07
-			stone = 0.14
+			tar = 0.07 # VANILLA = 0.1
+			tools = 0.07 # VANILLA = 0.1
+			lumber = 0.07 # VANILLA = 0.1
+			stone = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 

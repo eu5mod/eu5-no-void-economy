@@ -64,7 +64,7 @@ great_pestilence.1 = {
 			NOT = {culture = { is_culture_native_american =yes }}
 		}
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_tiny_move_to_left }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -268,7 +268,7 @@ great_pestilence.4 = {
 	option = {
 		name = great_pestilence.4.b
 		add_stability = stability_severe_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_move_to_right }
 		if = {
 			limit = {
@@ -505,7 +505,7 @@ great_pestilence.6 = { # The Need for Coin
 	option = {
 		name = great_pestilence.6.c
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = {
 			modifier = peasants_estate_less_tax_burden
 			years = 5

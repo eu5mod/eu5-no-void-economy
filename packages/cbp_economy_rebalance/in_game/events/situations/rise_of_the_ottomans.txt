@@ -592,7 +592,7 @@ rise_of_the_ottomans.105 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		ai_will_select = {
 			if = {
@@ -850,7 +850,7 @@ rise_of_the_ottomans.107 = {
 			target = scope:target_country2
 		}
 		add_prestige = prestige_weak_penalty
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -1187,7 +1187,7 @@ rise_of_the_ottomans.110 = {
 				modifier = refused_diplomatic_offer
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -2776,7 +2776,7 @@ rise_of_the_ottomans.212 = {
 			modifier = antagonism_renounced_claim
 			value = -2
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3014,7 +3014,7 @@ rise_of_the_ottomans.218 = {
 
 		ai_chance = { factor = 0 }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = {
 			type = estate_type:burghers_estate
 			value = estate_satisfaction_severe_penalty

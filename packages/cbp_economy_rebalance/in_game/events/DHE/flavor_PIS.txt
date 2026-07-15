@@ -351,7 +351,7 @@ flavor_pis.5 = {
 			change_prosperity = prosperity_mild_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = belligerent_vs_conciliatory
@@ -432,7 +432,7 @@ flavor_pis.6 = {
 			has_variable = gioco_del_ponte_satisfied_population
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		location:pisa = {
 			every_pop = {
@@ -451,7 +451,7 @@ flavor_pis.6 = {
 			has_variable = gioco_del_ponte_spread_of_culture
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		culture = {
 			add_cultural_influence = cultural_influence_mild_bonus
@@ -468,7 +468,7 @@ flavor_pis.6 = {
 			has_variable = gioco_del_ponte_promising_leader
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		scope:target_character = {
 			move_country = root
@@ -689,7 +689,7 @@ flavor_pis.1000 = {
 	option = {
 		name = flavor_pis.1000.d
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 

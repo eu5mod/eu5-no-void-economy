@@ -26,7 +26,7 @@
 	modifier = {
 		global_max_control = -0.1
 		global_monthly_control = -0.0005
-		monthly_legitimacy = -0.015
+		monthly_legitimacy = -0.015 # VANILLA = -0.02
 	}
 
 	on_start = {

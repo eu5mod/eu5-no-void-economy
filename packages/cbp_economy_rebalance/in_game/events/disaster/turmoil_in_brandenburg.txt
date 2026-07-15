@@ -87,7 +87,7 @@ turmoil_in_brandenburg.1 = {
 	option = {
 		name = turmoil_in_brandenburg.1.a
 		historical_option = yes
-		add_legitimacy = -20
+		add_legitimacy = -20 # VANILLA = -40
 		custom_tooltip = {
 			text = turmoil_in_brandenburg.1.a.at
 			every_owned_location = {
@@ -307,7 +307,7 @@ turmoil_in_brandenburg.5 = {
 		name = turmoil_in_brandenburg.5.a
 		bra_change_investment_score = { math = add value = 2 }
 		change_gold_effect = { scale = -3 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_location = {
 			change_control = control_mild_penalty
 			every_pop = {
@@ -359,7 +359,7 @@ turmoil_in_brandenburg.6 = {
 	option = {
 		name = turmoil_in_brandenburg.6.a
 		bra_change_investment_score = { math = add value = 5 }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_penalty }
 		add_country_modifier = {
 			modifier = bra_revoked_clergy_power
@@ -417,7 +417,7 @@ turmoil_in_brandenburg.7 = {
 	option = {
 		name = turmoil_in_brandenburg.7.a
 		bra_change_investment_score = { math = add value = 2 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_mild_penalty }
 		scope:target_location = {
 			change_control = control_weak_bonus
@@ -1600,7 +1600,7 @@ turmoil_in_brandenburg.1002 = {
 		}
 		if = {
 			limit = { has_variable = bra_owes_loyalty }
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 			international_organization:hre = {
 				set_vote = {
 					voter = prev
@@ -2232,7 +2232,7 @@ turmoil_in_brandenburg.1102 = {
 		trigger = { scope:emperor_ruler = { dynasty = dynasty:wittelsbach_dynasty } }
 		set_new_ruler = scope:emperor_ruler
 		scope:emperor_ruler = { add_character_modifier = { modifier = bra_fresh_emperor_ruler_of_brandenburg years = -1 mode = add_and_extend } }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = bra_wittelsbacher_neglect_var
 		remove_variable = bra_wittelsbacher_investment_var
 	}
@@ -2241,7 +2241,7 @@ turmoil_in_brandenburg.1102 = {
 		trigger = { scope:emperor_ruler = { NOT = { dynasty = dynasty:wittelsbach_dynasty } } }
 		set_new_ruler = scope:emperor_ruler
 		scope:emperor_ruler = { add_character_modifier = { modifier = bra_fresh_emperor_ruler_of_brandenburg years = -1 mode = add_and_extend } }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = bra_wittelsbacher_neglect_var
 		remove_variable = bra_wittelsbacher_investment_var
 	}
@@ -2278,7 +2278,7 @@ turmoil_in_brandenburg.1103 = {
 		trigger = { scope:dynasty_character = { dynasty = dynasty:wittelsbach_dynasty } }
 		set_new_ruler = scope:dynasty_character
 		scope:dynasty_character = { add_character_modifier = { modifier = bra_fresh_ruler_of_brandenburg years = -1 mode = add_and_extend } }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = bra_wittelsbacher_neglect_var
 		remove_variable = bra_wittelsbacher_investment_var
 	}
@@ -2287,7 +2287,7 @@ turmoil_in_brandenburg.1103 = {
 		trigger = { scope:dynasty_character = { NOT = { dynasty = dynasty:wittelsbach_dynasty } } }
 		set_new_ruler = scope:dynasty_character
 		scope:dynasty_character = { add_character_modifier = { modifier = bra_fresh_ruler_of_brandenburg years = -1 mode = add_and_extend } }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = bra_wittelsbacher_neglect_var
 		remove_variable = bra_wittelsbacher_investment_var
 	}
@@ -2326,7 +2326,7 @@ turmoil_in_brandenburg.1104 = {
 		}
 		scope:cabinet_character = { move_country = root }
 		set_new_ruler = scope:cabinet_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = turmoil_in_brandenburg.1104.b
@@ -2337,7 +2337,7 @@ turmoil_in_brandenburg.1104 = {
 		}
 		scope:cabinet_character = { move_country = root }
 		set_new_ruler = scope:cabinet_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = turmoil_in_brandenburg.1104.c
@@ -2388,7 +2388,7 @@ turmoil_in_brandenburg.1105 = {
 	option = {
 		name = turmoil_in_brandenburg.1105.a
 		set_new_ruler = scope:hohenzollern_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = bra_wittelsbacher_neglect_var
 		remove_variable = bra_wittelsbacher_investment_var
 	}
@@ -2612,7 +2612,7 @@ turmoil_in_brandenburg.1300 = {
 			value = societal_value_large_move_to_right
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		show_as_tooltip = {
 			scope:robber_baron_province = {
@@ -2937,7 +2937,7 @@ turmoil_in_brandenburg.1304  = {
 
 	option = {
 		name = turmoil_in_brandenburg.1304.c
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus

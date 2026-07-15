@@ -583,7 +583,7 @@ pilgrimage_to_cholula = {
 				add_stability = stability_severe_bonus
 			}
 			else = {
-				add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+				add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 			}
 		}
 	}

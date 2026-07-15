@@ -134,7 +134,7 @@ flavor_dai.2 = {
 	}
 	option = {
 		name = flavor_dai.2.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = flavor_dai.2.c

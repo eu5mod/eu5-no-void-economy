@@ -61,11 +61,11 @@ leader_under_sky = {
 	potential = {
 		culture = { has_culture_group = culture_group:jurchen_group }
 	}
-	monthly_legitimacy = 0.0375
-	monthly_republican_tradition = 0.0375
-	monthly_devotion = 0.0375
-	monthly_horde_unity = 0.0375
-	monthly_tribal_cohesion = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_horde_unity = 0.0375 # VANILLA = 0.05
+	monthly_tribal_cohesion = 0.0375 # VANILLA = 0.05
 	global_integration_speed_modifier = 0.2
 
 	requires = correct_box_advance_discovery

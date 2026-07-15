@@ -30,7 +30,7 @@ successors_of_genghis_khan = {
 		culture = { has_culture_group = culture_group:mongolian_group }
 	}
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 
 	requires = feudalism_advance
 }

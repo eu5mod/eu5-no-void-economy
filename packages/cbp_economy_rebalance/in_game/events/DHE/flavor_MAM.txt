@@ -41,7 +41,7 @@ flavor_mam.1 = {
 	}
 	option = {
 		name = flavor_mam.1.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1322,7 +1322,7 @@ flavor_mam.25 = {
 		name = flavor_mam.25.a
 
 		remove_country_modifier = mam_political_instability_modifier
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2602,7 +2602,7 @@ flavor_mam.43 = { #Uprooting Christianity
 
 	option = {
 		name = flavor_mam.43.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_severe_penalty }
 		add_estate_satisfaction = { type = estate_type:dhimmi_estate value = estate_satisfaction_severe_bonus }
 	}
@@ -2686,7 +2686,7 @@ flavor_mam.44 = { #Converting the Copts
 
 	option = {
 		name = flavor_mam.44.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_severe_penalty }
 		add_estate_satisfaction = { type = estate_type:dhimmi_estate value = estate_satisfaction_severe_bonus }
 	}
@@ -3480,7 +3480,7 @@ flavor_mam.56 = { #Administrative Reform
 	option = {
 		name = flavor_mam.56.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = centralization_vs_decentralization
 			value = societal_value_move_to_left
@@ -4362,7 +4362,7 @@ flavor_mam.67 = {
 
 	option = {
 		name = flavor_mam.67.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = {
 			change_character_allegiance = scope:mamluk_pretender
 		}
@@ -4415,7 +4415,7 @@ flavor_mam.68 = {
 
 	option = {
 		name = flavor_mam.68.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
@@ -4574,7 +4574,7 @@ flavor_mam.70 = {
 
 	option = {
 		name = flavor_mam.70.e
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	after = {
@@ -4837,7 +4837,7 @@ flavor_mam.72 = {
 
 	option = {
 		name = flavor_mam.72.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_location = {
 			add_location_modifier = { modifier = mamluk_commander months = 120 mode = add }
 		}
@@ -4873,7 +4873,7 @@ flavor_mam.73 = {
 
 	option = {
 		name = flavor_mam.73.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		ruler ?= { add_character_modifier = { modifier = loyal_mamluks_in_high_positions months = 120 mode = add } }
 	}
 

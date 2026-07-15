@@ -781,7 +781,7 @@ flavor_swi.1001 = { #Murder Night of Zurich - historical Murder Night
 	option = {
 		name = flavor_swi.1001.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_mild_bonus
 		set_variable = zur_coup_prevented
 	}

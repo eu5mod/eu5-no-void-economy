@@ -749,7 +749,7 @@ industrialization_events.9 = { #Economic Development
 
 	option = {
 		name = industrialization_events.9.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_minor_move_to_right }
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}
@@ -1055,7 +1055,7 @@ industrialization_events.13 = { #Industrial Urbanization
 
 	option = {
 		name = industrialization_events.13.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_minor_move_to_right }
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}
@@ -1158,7 +1158,7 @@ industrialization_events.14 = { #The Metalworks of [iron_province.GetNameWithNoT
 
 	option = {
 		name = industrialization_events.14.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_minor_move_to_right }
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}
@@ -1243,7 +1243,7 @@ industrialization_events.15 = { #Textile Mills of [textile_province.GetNameWithN
 
 	option = {
 		name = industrialization_events.15.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_minor_move_to_right }
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}
@@ -1317,7 +1317,7 @@ industrialization_events.16 = { #Shipyards of [ship_province.GetNameWithNoToolti
 
 	option = {
 		name = industrialization_events.16.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_minor_move_to_right }
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}

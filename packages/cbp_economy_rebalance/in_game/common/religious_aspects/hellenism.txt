@@ -196,7 +196,7 @@ mos_maiorum_aspect = { #https://en.wikipedia.org/wiki/Mos_maiorum
 	modifier = {
 		monthly_towards_latinization = societal_value_monthly_move
 		monthly_towards_traditionalist = societal_value_monthly_move
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		omens_offered = 1
 	}
 

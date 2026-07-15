@@ -182,7 +182,7 @@ ambrosian_republic_disaster.5 = {
 	option = {
 		name = ambrosian_republic.5.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 	}
 }
@@ -393,7 +393,7 @@ ambrosian_republic_disaster.10 = {
 		change_government_type = government_type:republic
 		add_reform = government_reform:ambrosian_republic_reform
 
-		add_republican_tradition = 5
+		add_republican_tradition = 5 # VANILLA = 10
 		add_stability = stability_ultimate_penalty
 
 		every_neighbor_country = {
@@ -449,12 +449,12 @@ ambrosian_republic_disaster.20 = {
 
 	option = {
 		name = flavor_mlo.2.a
-		add_republican_tradition = -5
+		add_republican_tradition = -5 # VANILLA = -10
 		add_stability = stability_extreme_bonus
 	}
 	option = {
 		name = flavor_mlo.2.b
-		add_republican_tradition = 5
+		add_republican_tradition = 5 # VANILLA = 10
 		add_stability = stability_extreme_penalty
 	}
 }

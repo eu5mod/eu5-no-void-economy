@@ -164,7 +164,7 @@ revolutionary_empire = {
 		}
 	}
 	country_modifier = {
-		monthly_legitimacy = 0.0375
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		global_crown_estate_power = 0.5
 		government_reform_slots = 1
 		government_size = 1

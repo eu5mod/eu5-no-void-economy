@@ -60,7 +60,7 @@ nobles_estate = {
 	#multiplied with (satisfaction - LOW_SATISFACTION_THRESHOLD)
 	satisfaction = {
 		monthly_prestige = 0.2
-		monthly_legitimacy = 0.375
+		monthly_legitimacy = 0.375 # VANILLA = 0.5
 	}
 
 	#multiplied with (relative_power - LOW_POWER_THRESHOLD) if > LOW_POWER_THRESHOLD

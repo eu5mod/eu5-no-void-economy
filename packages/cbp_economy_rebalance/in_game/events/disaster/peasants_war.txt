@@ -96,7 +96,7 @@ peasants_war.2 = {
 	option = {
 		name = peasants_war.2.b
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_tiny_move_to_right }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:target_rebel = { add_rebel_progress = -0.1 }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_weak_bonus }
 	}

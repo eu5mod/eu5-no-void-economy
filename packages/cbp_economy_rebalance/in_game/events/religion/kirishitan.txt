@@ -313,7 +313,7 @@ kirishitan.7 = { #Christianity Derided
 	}
 	option = {
 		name = kirishitan.7.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -345,7 +345,7 @@ kirishitan.8 = { #Kirishitan Community Attacked
 	option = {
 		name = kirishitan.8.a
 		change_gold_effect = { scale = -1 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = kirishitan.8.b

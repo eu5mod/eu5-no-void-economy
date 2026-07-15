@@ -421,7 +421,7 @@ propagate_religion_events.4 = { #Miracle
 
 	option = { #Divine sign
 		name = propagate_religion_events.4.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_location = {
 			location_pops_convert_to_muslim = yes
 		}
@@ -885,7 +885,7 @@ propagate_religion_events.10 = { #Islamic Syncretism
 
 	option = { #Accept it
 		name = propagate_religion_events.10.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_location = {
 			location_pops_convert_to_muslim = yes
 		}

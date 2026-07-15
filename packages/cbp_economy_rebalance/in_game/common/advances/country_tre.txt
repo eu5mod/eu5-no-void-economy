@@ -99,11 +99,11 @@ tre_byzantine_birthright = {
 
 	requires = diplomatic_training
 
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
-	monthly_devotion = 0.075
-	monthly_horde_unity = 0.075
-	monthly_tribal_cohesion = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_horde_unity = 0.075 # VANILLA = 0.1
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 }
 
 tre_trapezuntine_monasteries = {

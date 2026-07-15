@@ -101,7 +101,7 @@ flavor_nap_pap.1 = { #Lorenzo Valla
 
 		add_prestige = prestige_mild_penalty
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		kill_character_silently = scope:lorenzo_valla_scope
 	}
 }

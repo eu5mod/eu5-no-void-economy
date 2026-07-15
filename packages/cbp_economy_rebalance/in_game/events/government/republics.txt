@@ -1010,6 +1010,6 @@ republics.41 = {
 	}
 	option = {
 		name = republics.41.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }

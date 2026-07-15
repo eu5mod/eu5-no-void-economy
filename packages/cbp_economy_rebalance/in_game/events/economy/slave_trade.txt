@@ -107,7 +107,7 @@ slave_trade.5 = {
 
 	option = {
 		name = slave_trade.5.a
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_weak_penalty
 	}
 	option = {

@@ -809,7 +809,7 @@ flavor_pol.10 = { #https://en.wikipedia.org/wiki/Sigismund_III_Vasa
 			remove_reform = government_reform:religious_tolerance
 		}
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_move_to_left }
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_minor_move_to_left }
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
@@ -1506,7 +1506,7 @@ flavor_pol.19 = {
 	option = {
 		name = flavor_pol.19.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = pol_stag_maybe_more_tt
 	}
 	option = {
@@ -1554,7 +1554,7 @@ flavor_pol.20 = {
 	option = {
 		name = flavor_pol.20.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = pol_stag_maybe_more_tt
 	}
 	option = {
@@ -1604,7 +1604,7 @@ flavor_pol.21 = {
 	option = {
 		name = flavor_pol.21.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = pol_stag_last_chance_tt
 	}
 	option = {
@@ -1674,7 +1674,7 @@ flavor_pol.22 = {
 
 	option = {
 		name = flavor_pol.22.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 		custom_tooltip = pol_stag_no_more_tt
 	}
@@ -2157,7 +2157,7 @@ flavor_pol.30 = { #The Statutes of [target_character.GetNameWithNoTooltip] the G
 	option = {
 		name = flavor_pol.30.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2215,7 +2215,7 @@ flavor_pol.31 = { #Social System
 
 	option = {
 		name = flavor_pol.31.c
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_penalty
 		}
@@ -2293,7 +2293,7 @@ flavor_pol.32 = { #Private Law
 
 	option = {	#Reduce liability slightly
 		name = flavor_pol.32.c
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		if = {
 			limit = { num_subjects > 0 }
 			every_subject = {
@@ -2360,7 +2360,7 @@ flavor_pol.33 = { #Litigation Proceedings
 
 	option = { #Minorly expand judicial authority
 		name = flavor_pol.33.c
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_stability = stability_mild_penalty
 
 		change_variable = {
@@ -2558,7 +2558,7 @@ flavor_pol.36 = { #Esterka
 			move_country = root
 		}
 		add_religious_influence_if_valid = { VALUE = religious_influence_mild_penalty }
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 
 	option = {
@@ -2883,7 +2883,7 @@ flavor_pol.41 = {
 			value = societal_value_large_move_to_left
 		}
 		add_government_power = government_power_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {	#Better not
@@ -3829,7 +3829,7 @@ flavor_pol.54 = {
 			}
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -5457,7 +5457,7 @@ flavor_pol.1603 = {
 			owns = location:lubica
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_weak_bonus
 	}
 

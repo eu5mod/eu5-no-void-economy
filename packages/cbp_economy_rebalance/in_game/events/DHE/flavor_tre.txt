@@ -490,6 +490,6 @@ flavor_tre.7 = { #The Aspron
 			change_prosperity = prosperity_extreme_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }

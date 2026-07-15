@@ -267,11 +267,11 @@ country_base_values_with_taxation = {
 		modifier:enable_taxation = yes
 	}
 
-	monthly_legitimacy = -0.75
-	monthly_republican_tradition = -0.75
-	monthly_devotion = -0.75
-	monthly_horde_unity = -0.75
-	monthly_tribal_cohesion = -0.75
+	monthly_legitimacy = -0.75 # VANILLA = -1.0
+	monthly_republican_tradition = -0.75 # VANILLA = -1.0
+	monthly_devotion = -0.75 # VANILLA = -1.0
+	monthly_horde_unity = -0.75 # VANILLA = -1.0
+	monthly_tribal_cohesion = -0.75 # VANILLA = -1.0
 
 }
 
@@ -717,7 +717,7 @@ positive_yanantin = {
 		multiply = 0.01
 	}
 	monthly_rebel_growth = 0.002
-	monthly_legitimacy = -0.375
+	monthly_legitimacy = -0.375 # VANILLA = -0.5
 }
 
 balanced_yanantin = {
@@ -1044,7 +1044,7 @@ proper_culture_nobles_ratio = {
 	}
 
 	discipline = 0.1
-	monthly_legitimacy = 0.375
+	monthly_legitimacy = 0.375 # VANILLA = 0.5
 	diplomatic_reputation = 2
 	monthly_towards_aristocracy = societal_value_monthly_move
 }
@@ -1256,11 +1256,11 @@ ruler_is_not_a_commander_during_war = {
 
 	alert = yes
 
-	monthly_legitimacy = -0.375
-	monthly_tribal_cohesion = -0.375
-	monthly_devotion = -0.375
-	monthly_horde_unity = -0.375
-	monthly_republican_tradition = -0.375
+	monthly_legitimacy = -0.375 # VANILLA = -0.5
+	monthly_tribal_cohesion = -0.375 # VANILLA = -0.5
+	monthly_devotion = -0.375 # VANILLA = -0.5
+	monthly_horde_unity = -0.375 # VANILLA = -0.5
+	monthly_republican_tradition = -0.375 # VANILLA = -0.5
 }
 
 ruler_is_general_during_war = {
@@ -1404,10 +1404,10 @@ in_regency = {
 		has_regent = yes
 	}
 
-	monthly_legitimacy = -0.15
-	monthly_tribal_cohesion = -0.15
-	monthly_devotion = -0.15
-	monthly_horde_unity = -0.15
+	monthly_legitimacy = -0.15 # VANILLA = -0.2
+	monthly_tribal_cohesion = -0.15 # VANILLA = -0.2
+	monthly_devotion = -0.15 # VANILLA = -0.2
+	monthly_horde_unity = -0.15 # VANILLA = -0.2
 	#monthly_republican_tradition = -0.2 # kinda ok for a republic to have a regent?
 }
 
@@ -1418,11 +1418,11 @@ ruler_has_no_ruler_traits = {
 		}
 	}
 
-	monthly_legitimacy = -0.075
-	monthly_tribal_cohesion = -0.075
-	monthly_devotion = -0.075
-	monthly_horde_unity = -0.075
-	monthly_republican_tradition = 0.075 # new rulers in republics are often popular
+	monthly_legitimacy = -0.075 # VANILLA = -0.1
+	monthly_tribal_cohesion = -0.075 # VANILLA = -0.1
+	monthly_devotion = -0.075 # VANILLA = -0.1
+	monthly_horde_unity = -0.075 # VANILLA = -0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1; new rulers in republics are often popular
 }
 
 ruler_has_all_traits = {
@@ -1432,11 +1432,11 @@ ruler_has_all_traits = {
 		}
 	}
 
-	monthly_legitimacy = 0.075
-	monthly_tribal_cohesion = 0.075
-	monthly_devotion = 0.075
-	monthly_horde_unity = 0.075
-	monthly_republican_tradition = -0.075 # isn't he becoming a despot?
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_horde_unity = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = -0.075 # VANILLA = -0.1; isn't he becoming a despot?
 }
 
 d008_high_legitimacy = {

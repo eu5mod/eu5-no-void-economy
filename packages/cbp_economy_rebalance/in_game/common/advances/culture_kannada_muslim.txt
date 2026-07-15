@@ -102,7 +102,7 @@ bah_bahmani_primogeniture = {
         culture.language = language:kannada_language
     }
 	requires = bah_takht_e_firoza
-    monthly_legitimacy = 0.075
+    monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 ############################

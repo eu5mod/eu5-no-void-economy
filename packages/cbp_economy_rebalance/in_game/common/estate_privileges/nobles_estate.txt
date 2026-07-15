@@ -249,7 +249,7 @@ increased_civic_engagement = {
 
 	country_modifier = {
 		replace_cabinet_member_cost_modifier = -0.1
-		monthly_republican_tradition = 0.075
+		monthly_republican_tradition = 0.075 # VANILLA = 0.1
 		global_nobles_estate_power = 0.5
 		monthly_towards_innovative = societal_value_monthly_move
 	}
@@ -264,7 +264,7 @@ inherited_offices = {
 
 
 	country_modifier = {
-		monthly_republican_tradition = -0.015
+		monthly_republican_tradition = -0.015 # VANILLA = -0.02
 		replace_cabinet_member_cost_modifier = 0.5
 		nobles_estate_target_satisfaction = large_privilege_target_satisfaction
 		global_nobles_estate_power = 1.0
@@ -386,7 +386,7 @@ visconti_city_states = {
 	}
 
 	country_modifier = {
-		monthly_legitimacy = -0.0375
+		monthly_legitimacy = -0.0375 # VANILLA = -0.05
 		global_max_control = -0.05
 		monthly_towards_decentralization = societal_value_minor_monthly_move
 		global_nobles_estate_power = 0.50
@@ -408,7 +408,7 @@ general_privilege = {
 	}
 
 	country_modifier = {
-		monthly_legitimacy = 0.0375
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		global_nobles_estate_power = 0.2
 		monthly_towards_aristocracy = societal_value_minor_monthly_move
 		monthly_towards_free_trade = societal_value_minor_monthly_move
@@ -520,7 +520,7 @@ kbo_kaigama = {
 
 	country_modifier = {
 		monthly_army_tradition = 0.05
-		monthly_legitimacy = -0.015
+		monthly_legitimacy = -0.015 # VANILLA = -0.02
 		nobles_estate_target_satisfaction = medium_privilege_target_satisfaction
 		global_nobles_estate_power = 0.5
 	}
@@ -1069,7 +1069,7 @@ tribal_host = {
 	}
 
 	country_modifier = {
-		monthly_tribal_cohesion = 0.015
+		monthly_tribal_cohesion = 0.015 # VANILLA = 0.02
 		global_horses_output_modifier = 0.1
 		global_nobles_estate_power = 0.5
 	}
@@ -1083,7 +1083,7 @@ tribal_autonomy = {
 	}
 
 	country_modifier = {
-		monthly_tribal_cohesion = 0.015
+		monthly_tribal_cohesion = 0.015 # VANILLA = 0.02
 		monthly_towards_unsinicized = societal_value_minor_monthly_move
 		global_max_rural_control = -0.05
 		global_nobles_estate_power = 0.3
@@ -1591,7 +1591,7 @@ cas_fuero_viejo = {
 
 	country_modifier = {
 		monthly_towards_aristocracy = societal_value_monthly_move
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		nobles_estate_target_satisfaction = medium_privilege_target_satisfaction
 		global_nobles_estate_power = 0.2
 	}

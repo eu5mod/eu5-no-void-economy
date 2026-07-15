@@ -232,7 +232,7 @@ flavor_ira.3 = {
 	}
 	option = {
 		name = flavor_ira.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:first_sibling = {
 			banish_character_to_country_effect = {
 				target = scope:target_country
@@ -898,7 +898,7 @@ flavor_ira.13 = {
 
 	option = {
 		name = flavor_ira.13.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = {
 			modifier = ira_elitist_caste_modifier
 			years = modifier_duration_years_long
@@ -1224,7 +1224,7 @@ flavor_ira.19 = {
 		trigger = { country_has_estate = estate_type:tribes_estate }
 		qizilbash_estate_satisfaction = { value = estate_satisfaction_severe_bonus }
 		add_army_tradition = army_tradition_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1597,7 +1597,7 @@ flavor_ira.26 = {
 
 		grant_estate_privilege = estate_privilege:ira_clerical_aristocracy
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -2315,7 +2315,7 @@ flavor_ira.38 = {
 		name = flavor_ira.38.b
 
 		add_prestige = prestige_extreme_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -2663,7 +2663,7 @@ flavor_ira.42 = {
 	option = {
 		name = flavor_ira.42.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		kill_character_silently = {
 			target = scope:target_character
@@ -2904,7 +2904,7 @@ flavor_ira.45 = {
 	option = {
 		name = flavor_ira.45.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		custom_tooltip = {
 			text = ira_qajar_dynasty_may_claim_crown
@@ -3788,7 +3788,7 @@ flavor_ira.1010 = {
 		name = flavor_ira.1010.a
 		historical_option = yes
 		qizilbash_estate_satisfaction = { value = estate_satisfaction_severe_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_gold_effect = { scale = -6 }
 		support_rebel = scope:target_rebel
 		scope:target_country = {
@@ -4073,7 +4073,7 @@ flavor_ira.1100 = {
 	}
 	option = {
 		name = flavor_ira.1100.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		set_variable = { name = ira_ghilman_event value = scope:target_character }
 	}
 }

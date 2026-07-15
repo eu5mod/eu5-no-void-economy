@@ -76,7 +76,7 @@ decline_of_majapahit.2 = {
 			}
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:maj_tributary_country = {
 			add_liberty_desire = liberty_desire_mild_minus
 		}

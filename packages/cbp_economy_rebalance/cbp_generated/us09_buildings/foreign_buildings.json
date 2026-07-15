@@ -122,7 +122,7 @@
       }
     ]
   },
-  "generated_sha256": "e93cb4ef316bf390b02c92ab20b9a00c136615569b63e25c2a9293095894ab4b",
+  "generated_sha256": "d1f724fe56cefe2102f59f25f17e3b3f07b7ac0e6853b7264e9b4e011fdee0ae",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/foreign_buildings.txt",
   "source_sha256": "4f779b8a1e7ccd07af2b754e939fb2d3a08aefc9ecea6bbb703316a3cde2d76b",

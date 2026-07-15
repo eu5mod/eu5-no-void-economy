@@ -34,7 +34,7 @@ nagusa_negast = {
 	potential = {
 		has_or_had_tag = ETH
 	}
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 a_permanent_capital = {
 	age = age_3_discovery

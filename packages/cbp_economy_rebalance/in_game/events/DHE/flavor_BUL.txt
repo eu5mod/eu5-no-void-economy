@@ -70,7 +70,7 @@ flavor_bul.1 = { #Principality of Dobruja
 	option = {
 		name = flavor_bul.1.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_severe_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
@@ -117,7 +117,7 @@ flavor_bul.1 = { #Principality of Dobruja
 	option = {
 		name = flavor_bul.1.c
 		high_risk_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_severe_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
@@ -205,7 +205,7 @@ flavor_bul.2 = { #Tsardom of Vidin
 	option = {
 		name = flavor_bul.2.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
         create_country_from_cores_in_our_locations = c:VID
 		c:VID = {
@@ -226,7 +226,7 @@ flavor_bul.2 = { #Tsardom of Vidin
 	option = {
 		name = flavor_bul.2.c
 		high_risk_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
         create_country_from_cores_in_our_locations = c:VID
 		c:VID = {

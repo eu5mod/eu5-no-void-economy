@@ -108,7 +108,7 @@ flavor_chk.2 = { # Rebuilding of the Woodhenge
 
 	option = { # It would be a wasted effort
 		name = flavor_chk.2.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
 	}
 }
@@ -668,7 +668,7 @@ flavor_chk.12 = { # Veneration of [our_ruler.GetName]
 	option = { # [our_ruler.GetNameWithNoTooltip] did not save, Cahokia but instead her people.
 		name = flavor_chk.12.b
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
 	}
 }
@@ -863,7 +863,7 @@ flavor_chk.22 = { # A Center of Varying Cultures
 
 	option = { # A prosperous society
 		name = flavor_chk.22.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
 		add_migration = {
 			owner ?= ROOT #A migration tries to move the owner's own citizens.
@@ -1071,7 +1071,7 @@ flavor_chk.30 = { # Fortifying the Cahokian Center
 
 	option = { # Fortify the center of Cahokia
 		name = flavor_chk.30.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		location:cahokia = {
 			change_prosperity = prosperity_weak_penalty
 			add_location_modifier = {
@@ -1325,7 +1325,7 @@ flavor_chk.33 = { # Decline of Trading Glory
 
 	option = { # Redistribute what we can to the remaining community
 		name = flavor_chk.33.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_bonus
 		add_prestige = prestige_mild_penalty
 	}
@@ -1372,7 +1372,7 @@ flavor_chk.34 = { # Lost of shared cultural ties
 
 	option = { # We should instead focus on our preservation
 		name = flavor_chk.34.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		culture = {
 			add_cultural_tradition = cultural_tradition_severe_bonus
 		}
@@ -1447,7 +1447,7 @@ flavor_chk.35 = { # Shadow Over Cahokia
 		location:cahokia = {
 			change_location_rank_effect = { location_rank = location_rank:rural_settlement }
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_country_modifier = { modifier = chk_shadow_of_cahokia years = 100 mode = add }
 		location:cahokia = {
 			add_location_modifier = {

@@ -100,7 +100,7 @@ lat_emperor_latins_advance = {
 		has_or_had_tag = LAT
 	}
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 	subject_income_modifier = 0.025
 
 	requires = feudalism_advance

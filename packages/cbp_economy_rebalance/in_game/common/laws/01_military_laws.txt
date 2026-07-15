@@ -482,11 +482,11 @@ battle_leadership_law = {
 	ruler_general_policy = {
 		country_modifier = {
 			army_tradition_decay = -0.001
-			monthly_legitimacy = 0.0375
-			monthly_republican_tradition = 0.0375
-			monthly_devotion = 0.075
-			monthly_horde_unity = 0.075
-			monthly_tribal_cohesion = 0.075
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
+			monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+			monthly_devotion = 0.075 # VANILLA = 0.1
+			monthly_horde_unity = 0.075 # VANILLA = 0.1
+			monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 			ruler_must_be_commander_during_war = yes
 			monthly_towards_centralization = societal_value_minor_monthly_move
 			monthly_towards_absolutism = societal_value_monthly_move
@@ -735,7 +735,7 @@ mamluk_promotion_law = {
 
 	dynastic_basis = {
 		country_modifier = {
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		estate_preferences = {
 			nobles_estate

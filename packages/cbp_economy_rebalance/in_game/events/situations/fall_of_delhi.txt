@@ -694,7 +694,7 @@ fall_of_delhi.5 = {
 			limit = { has_country_modifier = dlh_outside_interference_modifier }
 			remove_country_modifier = dlh_outside_interference_modifier
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_extreme_penalty
 	}
 	after = { remove_variable = dlh_surrendered_territories_var }
@@ -1096,7 +1096,7 @@ fall_of_delhi.13 = {	#Nobles Disagree with our Authority!
 	option = {
 		name = delhi_situation.13.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		if = {
 			limit = { has_variable = outcome1 }
 			change_societal_value = { type = aristocracy_vs_plutocracy value = societal_value_tiny_move_to_left }
@@ -1118,7 +1118,7 @@ fall_of_delhi.13 = {	#Nobles Disagree with our Authority!
 		name = delhi_situation.13.b
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	after = {
@@ -1231,8 +1231,8 @@ fall_of_delhi.14 = {	#Opposer Insults our Authority!
 	option = {	#Let it slide
 		name = delhi_situation.14.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		custom_tooltip = delhi_lose_half_percentage_support_tt
 		hidden_effect = {
 			c:DLH = {
@@ -1313,7 +1313,7 @@ fall_of_delhi.15 = {
 			type = belligerent_vs_conciliatory
 			value = societal_value_minor_move_to_right
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -1600,7 +1600,7 @@ fall_of_delhi.17 = {	#Irrigation Works along the Yamuna
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -1830,7 +1830,7 @@ fall_of_delhi.19 = {
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -2040,7 +2040,7 @@ fall_of_delhi.22 = {
 				subtract = 0.01
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		custom_tooltip = {
 			text = every_supporting_pop_gains_25_satisfaction
 			scope:target_rebel = {

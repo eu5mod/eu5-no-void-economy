@@ -545,7 +545,7 @@ flavor_usa.10 = {
 	option = {
 		name = flavor_usa.10.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1190,7 +1190,7 @@ flavor_usa.1000 = {
 	option = {
 		name = flavor_usa.100.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1275,7 +1275,7 @@ flavor_usa.1002 = {
 		name = flavor_usa.1002.a
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		trigger_event_non_silently = {
 			id = flavor_usa.1003
 			days = 20

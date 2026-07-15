@@ -724,7 +724,7 @@ catholic_flavor.13 = { #[ShowBuildingTypeNameWithNoTooltip('scriptorium')] Sprea
 	option = {
 		name = catholic_flavor.13.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1027,7 +1027,7 @@ catholic_flavor.100 = {
 	}
 	option = {
 		name = catholic_flavor.100.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = { exists = scope:cardinal_nephew_country }
 			scope:cardinal_nephew_country = {

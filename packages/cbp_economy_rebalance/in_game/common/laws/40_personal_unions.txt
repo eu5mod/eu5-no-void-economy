@@ -202,7 +202,7 @@ union_codified_inheritance_law = {
 			enabled_negotiate_succession_law = yes
 		}
 		country_modifier = {
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		}
 		country_modifier = {
 			potential_trigger = {
@@ -267,7 +267,7 @@ union_codified_inheritance_law = {
 			on_union_policy_change_effect = yes
 		}
 		country_modifier = {
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		}
 		wants_this_policy_bias = {
 			add = union_member_opinion_on_maintain

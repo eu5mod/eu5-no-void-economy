@@ -323,13 +323,13 @@ language.20 = {
 		name = language.20.b
 
 		add_policy = policy:language_of_pleading_common
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_stability = stability_weak_bonus
 	}
 
 	option = {
 		name = language.20.c
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }

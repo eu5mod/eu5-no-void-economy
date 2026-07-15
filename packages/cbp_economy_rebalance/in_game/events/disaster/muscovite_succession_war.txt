@@ -282,7 +282,7 @@ muscovite_succession_war.18 = {#PRISON
 			add_mil = -20
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		ai_chance = {
 			factor = 1
@@ -477,7 +477,7 @@ muscovite_succession_war.19 = {
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		ai_chance = {
 			factor = 0.5

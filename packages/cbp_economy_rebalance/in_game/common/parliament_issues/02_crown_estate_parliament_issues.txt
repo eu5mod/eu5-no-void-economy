@@ -3,7 +3,7 @@ bolster_the_monarchy = {
 	estate = crown_estate
 
 	modifier_when_in_debate = {
-		monthly_legitimacy = 0.75
+		monthly_legitimacy = 0.75 # VANILLA = 1
 	}
 
 	allow = {
@@ -63,7 +63,7 @@ bolster_the_republic = {
 	estate = crown_estate
 
 	modifier_when_in_debate = {
-		monthly_republican_tradition = 0.75
+		monthly_republican_tradition = 0.75 # VANILLA = 1
 	}
 
 	allow = {
@@ -122,7 +122,7 @@ bolster_the_divine_mandate = {
 	estate = crown_estate
 
 	modifier_when_in_debate = {
-		monthly_devotion = 0.75
+		monthly_devotion = 0.75 # VANILLA = 1
 	}
 
 	allow = {
@@ -181,7 +181,7 @@ bolster_the_tribal_leader = {
 	estate = crown_estate
 
 	modifier_when_in_debate = {
-		monthly_tribal_cohesion = 0.75
+		monthly_tribal_cohesion = 0.75 # VANILLA = 1
 	}
 
 	allow = {
@@ -239,7 +239,7 @@ bolster_the_khan = {
 	estate = crown_estate
 
 	modifier_when_in_debate = {
-		monthly_horde_unity = 0.75
+		monthly_horde_unity = 0.75 # VANILLA = 1
 	}
 
 	allow = {
@@ -336,7 +336,7 @@ conduct_a_census = {
 	}
 
 	on_debate_passed = {
-		add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+		add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 
 	}
 	on_debate_failed = {

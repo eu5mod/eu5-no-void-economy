@@ -61,7 +61,7 @@ hindu_events.1 = {
 
 	option = {
 		name = hindu_events.1.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		scope:target_ruler = {
 			adopt_character = scope:target_child
 		}
@@ -1270,7 +1270,7 @@ hindu_events.1700 = {
 	option = {
 		name = hindu_events.1700.b
 		ruler_withdraws_with_shakti = yes
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		hidden_effect = {
 			trigger_event_silently = { id = hindu_events.1702 years = { 2 5 } }
 		}

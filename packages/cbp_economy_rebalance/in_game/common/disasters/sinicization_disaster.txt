@@ -21,10 +21,10 @@
 		sinicization_disaster_end_trigger = yes
 	}
 	modifier = {
-		monthly_tribal_cohesion = -0.1875
-		monthly_legitimacy = -0.1875
-		monthly_republican_tradition = -0.1875
-		monthly_devotion = -0.1875
+		monthly_tribal_cohesion = -0.1875 # VANILLA = -0.25
+		monthly_legitimacy = -0.1875 # VANILLA = -0.25
+		monthly_republican_tradition = -0.1875 # VANILLA = -0.25
+		monthly_devotion = -0.1875 # VANILLA = -0.25
 		monthly_rebel_growth = 0.005
 		global_estate_target_satisfaction = larger_permanent_target_satisfaction_penalty
 	}

@@ -220,7 +220,7 @@ savonarola_disaster.4 = { #Savonarola fame grows
 			limit = { has_variable = flo_savonarola_piagnoni }
 			add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_penalty }
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -263,7 +263,7 @@ savonarola_disaster.5 = { #Savonarola takes control
 	option = { #Allow him to take control
 		name = savonarola.5.a
 		set_new_ruler = character:flo_savonarola
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		historical_option = yes
 		trigger_event_silently = {
 			id = savonarola_disaster.6
@@ -630,7 +630,7 @@ savonarola_disaster.12 = { #The Medici strike back
 			}
 			set_new_ruler = scope:target_medici
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_weak_bonus
 		change_societal_value = { type = aristocracy_vs_plutocracy value = societal_value_minor_move_to_left }
 	}

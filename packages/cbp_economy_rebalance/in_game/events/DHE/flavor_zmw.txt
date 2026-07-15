@@ -246,7 +246,7 @@ flavor_zmw.3 = { #The Council of Senior Wives
 
 		unlock_government_reform_effect = { type = zmw_council_of_senior_wives }
 		add_replacing_gov_reform = { reform = government_reform:zmw_council_of_senior_wives }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -545,7 +545,7 @@ flavor_zmw.1200 = { #Christian Missionaries in Zimbabwe
 		name = flavor_zmw.1200.a
 		historical_option = yes
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = {
 			move_country = root
 		}

@@ -30,7 +30,7 @@
 	modifier = {
 		global_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
 		monthly_towards_aristocracy = societal_value_minor_monthly_move
-		monthly_legitimacy = -0.1875
+		monthly_legitimacy = -0.1875 # VANILLA = -0.25
 	}
 
 	on_start = {

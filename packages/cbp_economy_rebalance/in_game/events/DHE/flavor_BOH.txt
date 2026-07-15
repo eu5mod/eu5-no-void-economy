@@ -1157,7 +1157,7 @@ flavor_boh.21 = { #Nové Město - The New Town
 			type = centralization_vs_decentralization
 			value = societal_value_move_to_right
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -1269,7 +1269,7 @@ flavor_boh.23 = { #The Land Court of [target_area.GetNameWithNoTooltip] (Moravia
 			type = centralization_vs_decentralization
 			value = societal_value_large_move_to_right
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
 
@@ -1607,7 +1607,7 @@ flavor_boh.27 = { #The Cathedral of Saint Vitus
 		name = flavor_boh.27.b
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_extreme_penalty }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 	}
 	historical_info = flavor_boh.27.historical_info
@@ -1688,7 +1688,7 @@ flavor_boh.28 = { #Liquid Delight
 	option = {
 		name = flavor_boh.28.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 	}
 
@@ -2827,7 +2827,7 @@ flavor_boh.49 = { # Josef Dobrovský
 
 	option = {
 		name = flavor_boh.49.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2907,7 +2907,7 @@ flavor_boh.51 = { # Bohemian Brewing Traditions
 
 	option = {
 		name = flavor_boh.51.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = flavor_boh.51.a.tt
 		hidden_effect = {
 			every_owned_location = {
@@ -2957,7 +2957,7 @@ flavor_boh.52 = { # The Swamp Monster of Vizovice
 	option = {
 		name = flavor_boh.52.a
 		change_gold_effect = { scale = -3 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
 	}
 

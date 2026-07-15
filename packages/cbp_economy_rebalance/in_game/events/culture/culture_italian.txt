@@ -148,7 +148,7 @@ italian_renaissance_culture.2 = { # Depopulation of the Countryside
 
     option = { # Disperse aid to the countryside
         name = italian_renaissance_culture.2.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_gold = {
             value = root.monthly_income_trade_and_tax
             multiply = -1
@@ -294,7 +294,7 @@ italian_renaissance_culture.4 = { # Capital Becomes a Center of Humanism
 
     option = { # Discourge the spread of humanism
         name = italian_renaissance_culture.4.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_left }
         change_societal_value = { type = traditionalist_vs_innovative value = societal_value_move_to_left }
         add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
@@ -719,7 +719,7 @@ italian_renaissance_culture.11 = { # Spread of Tuscan Culture
 
     option = { # Safeguard our distinct culture
         name = italian_renaissance_culture.11.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_prestige = prestige_mild_bonus
         culture ?= {
             add_cultural_tradition = cultural_tradition_extreme_bonus
@@ -979,7 +979,7 @@ italian_renaissance_culture.15 = { # Architect of Growing Renown
 
     option = { # We do not require his services
         name = italian_renaissance_culture.15.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         hidden_effect = {
             kill_character_silently = scope:target_artist
         }
@@ -1796,7 +1796,7 @@ italian_renaissance_culture.27 = { # Vittorino da Feltre # Humanist Artist
 
     option = { # His ideas are too radical
         name = italian_renaissance_culture.27.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_left }
         hidden_effect = {
             kill_character_silently = scope:target_artist
@@ -1984,7 +1984,7 @@ italian_renaissance_culture.29 = { # Guarino da Verona # Student of Chrysoloras
 
     option = { # We do not want to patronize his work!
         name = italian_renaissance_culture.29.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_government_power = government_power_mild_bonus
         change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_left }
         hidden_effect = {

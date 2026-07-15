@@ -364,7 +364,7 @@ abrasive = {
 
 	modifier = {
 		diplomatic_reputation = -1
-		monthly_legitimacy = 0.0375
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 }
 

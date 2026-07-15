@@ -237,7 +237,7 @@ education_masses_law = {
 		}
 		country_modifier = {
 			monthly_towards_spiritualist = societal_value_tiny_monthly_move
-			monthly_tribal_cohesion = 0.0075
+			monthly_tribal_cohesion = 0.0075 # VANILLA = 0.01
 			monthly_religious_influence = 0.15
 			monthly_towards_communalism = societal_value_monthly_move
 			change_liturgical_language_cost_modifier = 0.25
@@ -943,7 +943,7 @@ administrative_system = {
 		}
 		country_modifier = {
 			monthly_towards_aristocracy = societal_value_monthly_move
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 			army_tradition_decay = -0.001
 		}
 		estate_preferences = {
@@ -1618,10 +1618,10 @@ foreign_cultural_law = {
 		country_modifier = {
 			monthly_towards_unsinicized = societal_value_monthly_move
 			cultural_influence_modifier = 0.05
-			monthly_legitimacy = 0.0225
-			monthly_republican_tradition = 0.015
-			monthly_devotion = 0.0225
-			monthly_tribal_cohesion = 0.0225
+			monthly_legitimacy = 0.0225 # VANILLA = 0.03
+			monthly_republican_tradition = 0.015 # VANILLA = 0.02
+			monthly_devotion = 0.0225 # VANILLA = 0.03
+			monthly_tribal_cohesion = 0.0225 # VANILLA = 0.03
 		}
 		estate_preferences = {
 			nobles_estate
@@ -2318,7 +2318,7 @@ amazigh_familial_connections = {
 	refuse_recognition = {
 		country_modifier = {
 			tribes_estate_target_satisfaction = big_permanent_target_satisfaction_penalty
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		estate_preferences = {
 			nobles_estate

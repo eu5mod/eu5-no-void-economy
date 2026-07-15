@@ -36,7 +36,7 @@ culture_japan.1 = { #O-Ie Sōdō
 	}
 	option = {
 		name = culture_japan.1.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
 	}
 }
@@ -384,7 +384,7 @@ culture_japan.8 = { #Attempted Coup!
 			}
 			add_purity =  honor_weak_penalty
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		kill_character = scope:target_character
 	}
 
@@ -1133,7 +1133,7 @@ culture_japan.20 = { #The Question of Residence
 
 	option = {
 		name = culture_japan.20.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		if = {
 			limit = {
 				has_heir = yes
@@ -1320,7 +1320,7 @@ culture_japan.1000  = { #Cadastral Survey
 
 	option = { #Nah
 		name = culture_japan.1000.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1593,7 +1593,7 @@ culture_japan.1102 = { #The clan Accept to Serve
 
 	option = { #Good as it is
 		name = culture_japan.1102.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1646,7 +1646,7 @@ culture_japan.1104 = { #The clan Refuse to Serve!
 
 	option = {
 		name = culture_japan.1104.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_clan = {
 			trigger_event_silently = culture_japan.1105
 		}
@@ -1904,7 +1904,7 @@ culture_japan.1202 = { #Clan comes to help
 		}
 		if = {
 			limit = { legitimacy <= 60 }
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		}
 		if = {
 			limit = { stability <= 50 }
@@ -2183,7 +2183,7 @@ culture_japan.1301 = { #The Clan Ask for Land
 
 	option = { #Diplomatic ease
 		name = culture_japan.1301.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = { #Give land

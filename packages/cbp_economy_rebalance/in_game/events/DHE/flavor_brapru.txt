@@ -291,7 +291,7 @@ flavor_brapru.6 = { #The Canton System First Chance
 	option = {
 		name = flavor_brapru.6.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -344,7 +344,7 @@ flavor_brapru.7 = { #The Canton System Second Chance
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_minor_move_to_right }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_extreme_penalty }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 	}
 }
@@ -894,7 +894,7 @@ flavor_brapru.14 = { #Königsberg Burghers rebell against us
 	}
 	option = {
 		name = flavor_brapru.14.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		location:konigsberg = {
 			every_pop = {
 				limit = {
@@ -1182,7 +1182,7 @@ flavor_brapru.19 = { #Knüppelkrieg between Spandau and Berlin
 	option = {
 		name = flavor_brapru.19.a
 		historical_option = yes
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		location:berlin = {
 			every_pop = {
 				limit = {
@@ -1547,7 +1547,7 @@ flavor_brapru.24 = { #Order of The Swan
 	option = {
 		name = flavor_brapru.24.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 flavor_brapru.25 = { #Order of The Swan - other "Hohenzollern" tags
@@ -2419,7 +2419,7 @@ flavor_brapru.35 = { #Monarch's Last Will
 
 	option = {
 		name = flavor_brapru.35.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_bonus }
 	}
 }
@@ -3052,7 +3052,7 @@ flavor_brapru.1100 = { #Construction of Berlin Palace
 
 	option = {
 		name = flavor_brapru.1100.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		location:berlin = {
 			every_pop = {
 				limit = {
@@ -3109,7 +3109,7 @@ flavor_brapru.1101 = { #Berliner Unwille
 
 	option = {
 		name = flavor_brapru.1101.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 
 		"estate(estate_type:peasants_estate)" = {
@@ -3163,7 +3163,7 @@ flavor_brapru.1200 = { #Samuel von Cocceji and the Legal Reforms of Prussia
 
 	option = {
 		name = flavor_brapru.1200.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_country_modifier = { modifier = reform_of_law years = 5 mode = add_and_extend }
 		trigger_event_silently = {
 			id = flavor_brapru.1201
@@ -3388,7 +3388,7 @@ flavor_brapru.1400 = { #Construction of Sanssouci
 	}
 	option = {
 		name = flavor_brapru.1400.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 		hidden_effect = {
 			kill_character_silently = scope:target_artist
@@ -3646,7 +3646,7 @@ flavor_brapru.1601 = { #Bankruptcy of the Kreditwerk
 		name = flavor_brapru.1601.c
 		change_gold_effect = { scale = -6 }
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -4442,7 +4442,7 @@ flavor_brapru.2000  = {
 
 	option = {
 		name = flavor_brapru.2000.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 	}
 

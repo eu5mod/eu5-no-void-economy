@@ -101,7 +101,7 @@
 			}
 		}
 		monthly_prestige = 0.02
-		monthly_legitimacy = 0.015
+		monthly_legitimacy = 0.015 # VANILLA = 0.02
 	}
 	modifier = {
 		scale = {
@@ -156,7 +156,7 @@
 
 	leader_modifier = {
 		monthly_prestige = 0.05
-		monthly_legitimacy = 0.0375
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 
 	can_lead_trigger = {

@@ -158,7 +158,7 @@ flavor_ara.4 = { #Iovianus Pontanus
 
 	option = {
 		name = flavor_ara.4.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_character2 = { move_country = root }
 	}
 }
@@ -872,7 +872,7 @@ flavor_ara.15 = { #Ordinacions de Pere el Cerimoniós
 
 	option = {
 		name = flavor_ara.15.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 	}
 }
@@ -2201,7 +2201,7 @@ flavor_ara.201 = { #Aragonese Tyranny
 
 	option = {
 		name = flavor_ara.201.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		c:ARA = {
 			trigger_event_silently = { id = flavor_ara.202  days = 20 }
 		}
@@ -2310,7 +2310,7 @@ flavor_ara.202 = { #The Trap has sprung.
 		name = flavor_ara.202.b
 		custom_tooltip = flavor_ara.202.b.tt
 		add_prestige = prestige_weak_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		c:MLL = {
 			add_liberty_desire = liberty_desire_mild_plus
 		}
@@ -2340,7 +2340,7 @@ flavor_ara.203 = { #A Counteroffer
 
 	option = {
 		name = flavor_ara.203.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		change_societal_value = { type = centralization_vs_decentralization	value = societal_value_large_move_to_left	}
 		c:MLL = {
 			add_liberty_desire = liberty_desire_mild_plus
@@ -2477,7 +2477,7 @@ flavor_ara.210 = { #Quarreling Brothers
 		historical_option = yes
 		custom_tooltip = flavor_ara.210.a.tt
 		add_prestige = prestige_weak_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
 		set_variable = { name = aragon_ruler_brother_fleeing_flag value = 1 }
 	}
@@ -2528,7 +2528,7 @@ flavor_ara.219 = { #The Union is no more
 			has_estate_privilege = estate_privilege:union_privilege
 			has_estate_privilege = estate_privilege:general_privilege
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_severe_bonus
 		add_prestige = prestige_severe_bonus
 
@@ -2541,7 +2541,7 @@ flavor_ara.219 = { #The Union is no more
 		trigger = {
 			has_estate_privilege = estate_privilege:union_privilege
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_severe_bonus
 		add_prestige = prestige_severe_bonus
 
@@ -2553,7 +2553,7 @@ flavor_ara.219 = { #The Union is no more
 		trigger = {
 			has_estate_privilege = estate_privilege:general_privilege
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_severe_bonus
 		add_prestige = prestige_severe_bonus
 
@@ -2565,7 +2565,7 @@ flavor_ara.219 = { #The Union is no more
 		trigger = {
 			not = {has_variable = union_privilege_flag}
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_severe_bonus
 		add_prestige = prestige_extreme_bonus
 	}

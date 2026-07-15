@@ -16,7 +16,7 @@
       }
     ]
   },
-  "generated_sha256": "d4f47ff26db00557f1b2e2a912c5c58948b51e4f8485608122ce8acb46b4df9f",
+  "generated_sha256": "9de66e9c6ba3580a246268ba1a6d2e585c7df23b33a92fbede725ae530062dc2",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/religion_buildings.txt",
   "source_sha256": "6e5b4534b5a10d51e95669ec5e2a83d69778018eb83ecd653b08c9ef0537ab77",

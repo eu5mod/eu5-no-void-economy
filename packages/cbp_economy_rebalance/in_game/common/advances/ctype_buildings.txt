@@ -2,7 +2,7 @@
 	age = age_1_traditions
 
 	country_type = building
-	
+
 	trade_range_modifier = 0.1
 }
 
@@ -13,7 +13,7 @@ minting_income_factor_building = {
 	age = age_2_renaissance
 
 	country_type = building
-	
+
 	minting_income_factor = 0.2
 }
 
@@ -30,7 +30,7 @@ minting_trade_range_disc_building = {
 	age = age_3_discovery
 
 	country_type = building
-	
+
 	trade_range_modifier = 0.1
 }
 
@@ -38,14 +38,14 @@ export_building_country_advance = {
 	age = age_3_discovery
 
 	country_type = building
-	
-	foreign_export_from_market_cost_modifier = 0.1
+
+	foreign_export_from_market_efficiency = -0.1
 }
 
 counter_espionage_building_country_advance = {
 	age = age_4_reformation
 
 	country_type = building
-	
+
 	counter_espionage = 0.2
 }

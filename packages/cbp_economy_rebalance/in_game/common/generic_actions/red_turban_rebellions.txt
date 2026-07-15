@@ -418,7 +418,7 @@ rtr_appease_the_court = {
 
 	effect = {
 		scope:actor = {
-			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 			add_all_estate_satisfaction = { value = estate_satisfaction_weak_bonus }
 			hidden_effect = {
 				add_gold_to_estate = { estate_type = estate_type:nobles_estate value = monthly_income_trade_and_tax }
@@ -999,7 +999,7 @@ rtr_declare_independence = {
 	effect = {
 		scope:actor = {
 			leave_all_wars_with = c:CHI
-			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 			declare_war_with_cb = {
 				target = c:CHI
 				type = casus_belli:cb_independence_war

@@ -61,7 +61,7 @@ flavor_geo.1 = {
 		}
 
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_gold_effect = { scale = -1 }
 	}
 
@@ -182,7 +182,7 @@ flavor_geo.2 = { #Trade with the West
 	option = {
 		name = flavor_geo.2.d
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -1060,7 +1060,7 @@ flavor_geo.15 = { #The Walls of [target_location.GetNameWithNoTooltip]
 	option = {
 		name = flavor_geo.15.b
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -1207,7 +1207,7 @@ flavor_geo.17 = { #A Messenger from the [target_country2.GetLongNameWithNoToolti
 				target = c:GEO
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -1877,7 +1877,7 @@ flavor_geo.25 = { #The Conversion of [target_country1.GetLongNameWithNoTooltip]
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = flavor_geo.25.c

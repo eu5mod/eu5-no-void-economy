@@ -1943,7 +1943,7 @@ little_ice_age.101 = { #A Divine Plague
 
 		change_gold_effect = { scale = -3 }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_weak_bonus }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
 
@@ -2177,7 +2177,7 @@ little_ice_age.103 = { #A Cold and Bitter place
 
 	option = {
 		name = winter_events.103.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_penalty }
 
 		abandon_colonial_charter = scope:target_charter
@@ -2332,7 +2332,7 @@ little_ice_age.105 = { #Hunger Makes a Thief of Any Man
 	option = {
 		name = winter_events.100.a
 		add_prestige = prestige_weak_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_gold = {
 			value = {
 				value = root.var:robbed_treasury_variable
@@ -2384,7 +2384,7 @@ little_ice_age.105 = { #Hunger Makes a Thief of Any Man
 	option = {
 		name = winter_events.100.b
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		add_gold = {
 			value = {

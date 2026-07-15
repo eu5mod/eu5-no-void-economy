@@ -17,8 +17,8 @@ krs_legacy_of_the_kurdish_dynasties = {
 		has_or_had_tag = KRS
 	}
 
-	monthly_legitimacy = 0.075
-	monthly_tribal_cohesion = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 
 	requires = crown_power_advance_renaissance
 }

@@ -264,7 +264,7 @@
 			has_embraced_institution = institution:legalism
 		}
 		country_modifier = {
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 			monthly_towards_conciliatory = societal_value_monthly_move
 			country_cabinet_efficiency = -0.05
 		}
@@ -735,7 +735,7 @@
 
 		country_modifier = {
 			monthly_towards_communalism = societal_value_tiny_monthly_move
-			monthly_republican_tradition = 0.0375
+			monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 			monthly_rebel_growth = -0.001
 		}
 		estate_preferences = {

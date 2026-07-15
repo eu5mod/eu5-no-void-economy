@@ -52,7 +52,7 @@ rebel.1 = {
 		name = rebel.1.a
 		historical_option = yes
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_right }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		location:rome = {
 			every_pop = {
 				limit = {
@@ -111,7 +111,7 @@ rebel.1 = {
 	option = {
 		name = rebel.1.c
 		add_prestige = prestige_weak_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 		scope:target_character = {
 			change_character_allegiance = scope:cola_rebels_scope

@@ -43,7 +43,7 @@ pounamou_carver = {
 		pounamou_carver_maintenance = {
 			gems = 0.208
 			produced = jewelry
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -122,7 +122,7 @@ hanseatic_kontor = {
 	modifier = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.1
-		merchant_capacity_from_building = 0.2875
+		merchant_capacity_from_building = 0.2875 # VANILLA = 0.25
 	}
 	
 	possible_production_methods = {
@@ -203,7 +203,7 @@ hanseatic_town_hall = {
 	
 	capital_country_modifier = {
 		country_cabinet_efficiency = 0.1
-		monthly_republican_tradition = 0.0375
+		monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 		parliament_base_support = 0.05
 	}
 	remove_if = {
@@ -259,7 +259,7 @@ fondaco = {
 	modifier = {
 		merchant_power_from_building = 1.0
 		building_owner_maritime_presence = 0.025
-		merchant_capacity_from_building = 0.23
+		merchant_capacity_from_building = 0.23 # VANILLA = 0.2
 		#Italian merchants settle in the new location
 		local_migration_attraction = 0.025
 	}
@@ -307,10 +307,10 @@ venetian_arsenal = {
 	
 	unique_production_methods = {
 		venetian_arsenal_maintenance = {
-			tar = 0.35
-			naval_supplies = 0.7
-			tools = 0.14
-			lumber = 0.7
+			tar = 0.35 # VANILLA = 0.5
+			naval_supplies = 0.7 # VANILLA = 1.0
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.7 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -369,9 +369,9 @@ kurultai = {
 	
 	unique_production_methods = {
 		kurultai_maintenance = {
-			horses = 0.14
-			leather = 0.035
-			weaponry = 0.014
+			horses = 0.14 # VANILLA = 0.2
+			leather = 0.035 # VANILLA = 0.05
+			weaponry = 0.014 # VANILLA = 0.02
 			category = building_maintenance
 		}
 	}
@@ -591,9 +591,9 @@ banking_office = {
 	
 	unique_production_methods = {
 		bank_maintenance = {
-			paper = 0.05
-			goods_gold = 0.005
-			silver = 0.005
+			paper = 0.05 # VANILLA = 0.1
+			goods_gold = 0.005 # VANILLA = 0.01
+			silver = 0.005 # VANILLA = 0.01
 			category = building_maintenance
 		}
 	}
@@ -634,8 +634,8 @@ tribes_of_galway = {
 	
 	unique_production_methods = {
 		tribes_of_galway_maintenance = {
-			leather = 0.005
-			cloth = 0.005
+			leather = 0.005 # VANILLA = 0.01
+			cloth = 0.005 # VANILLA = 0.01
 
 			category = building_maintenance
 		}
@@ -680,10 +680,10 @@ copenhagen_dockyard = {
 	
 	unique_production_methods = {
 		copenhagen_dockyard_maintenance = {
-			tar = 0.28
-			naval_supplies = 0.56
-			tools = 0.14
-			lumber = 0.7
+			tar = 0.28 # VANILLA = 0.4
+			naval_supplies = 0.56 # VANILLA = 0.8
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.7 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -731,14 +731,14 @@ caravanserai = {
 	
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.15 # VANILLA = 1
 	}
 	
 	construction_demand = caravanserai_building_construction
 	unique_production_methods = {
 		caravanserai_maintenance = {
-			jewelry = 0.005
-			cloth = 0.005
+			jewelry = 0.005 # VANILLA = 0.01
+			cloth = 0.005 # VANILLA = 0.01
 
 			category = building_maintenance
 		}
@@ -785,14 +785,14 @@ caravan_stop = {
 	
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.15 # VANILLA = 1
 	}
 	
 	construction_demand = caravan_stop_building_construction
 	unique_production_methods = {
 		caravan_stop_maintenance = {
-			goods_gold = 0.005
-			salt = 0.005
+			goods_gold = 0.005 # VANILLA = 0.01
+			salt = 0.005 # VANILLA = 0.01
 			category = building_maintenance
 		}
 	}
@@ -883,10 +883,10 @@ eng_royal_forest = {
 	unique_production_methods = {
 		eng_royal_forest_maintenance = {
 			produced = wild_game
-			output = 1.08
-			weaponry = 0.0728
-			wine = 0.0728
-			horses = 0.0728
+			output = 1.08 # VANILLA = 1.0
+			weaponry = 0.0728 # VANILLA = 0.104
+			wine = 0.0728 # VANILLA = 0.104
+			horses = 0.0728 # VANILLA = 0.104
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
@@ -999,10 +999,10 @@ north_sea_shipyards = {
 	
 	unique_production_methods = {
 		north_sea_shipyards_maintenance = {
-			tar = 0.28
-			naval_supplies = 0.56
-			tools = 0.14
-			lumber = 0.7
+			tar = 0.28 # VANILLA = 0.4
+			naval_supplies = 0.56 # VANILLA = 0.8
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.7 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -1296,14 +1296,14 @@ lieutenancy = {
 
 	unique_production_methods = {
 		lieutenancy_maintenance = {
-			tools = 0.7
-			masonry = 0.7
-			weaponry = 0.35
-			paper = 1.4
-			books = 0.35
-			goods_gold = 0.7
-			furniture = 0.7
-			fine_cloth = 0.35
+			tools = 0.7 # VANILLA = 1
+			masonry = 0.7 # VANILLA = 1
+			weaponry = 0.35 # VANILLA = 0.5
+			paper = 1.4 # VANILLA = 2
+			books = 0.35 # VANILLA = 0.5
+			goods_gold = 0.7 # VANILLA = 1
+			furniture = 0.7 # VANILLA = 1
+			fine_cloth = 0.35 # VANILLA = 0.5
 
 			category = building_maintenance
 		}
@@ -1350,11 +1350,11 @@ barcelona_royal_shipyard = {
 	
 	unique_production_methods = {
 		barcelona_royal_shipyard = {
-			tar = 0.28
-			naval_supplies = 0.7
-			tools = 0.175
-			lumber = 0.28
-			stone = 0.14
+			tar = 0.28 # VANILLA = 0.4
+			naval_supplies = 0.7 # VANILLA = 1.0
+			tools = 0.175 # VANILLA = 0.25
+			lumber = 0.28 # VANILLA = 0.4
+			stone = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}
@@ -1428,11 +1428,11 @@ ostrog = {
 
 	unique_production_methods = {
 		ostrog_maintenance = {
-			lumber = 0.14
-			tools = 0.07
-			firearms = 0.14
-			weaponry = 0.14
-			tar = 0.07
+			lumber = 0.14 # VANILLA = 0.2
+			tools = 0.07 # VANILLA = 0.1
+			firearms = 0.14 # VANILLA = 0.2
+			weaponry = 0.14 # VANILLA = 0.2
+			tar = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 
@@ -1482,8 +1482,8 @@ pomor_outpost = {
 
 	unique_production_methods = {
 		pomor_outpost_maintenance = {
-			lumber = 0.07
-			tools = 0.0175
+			lumber = 0.07 # VANILLA = 0.1
+			tools = 0.0175 # VANILLA = 0.025
 			
 
 			category = building_maintenance
@@ -1493,7 +1493,7 @@ pomor_outpost = {
 	construction_demand = pomor_outpost_construction
 
 	modifier = {
-		local_merchant_capacity = 0.2875
+		local_merchant_capacity = 0.2875 # VANILLA = 0.25
 		local_raw_material_output = 0.33
 		local_peasants_estate_power = 0.25		#25% higher here.
 	}
@@ -1549,10 +1549,10 @@ brethren_marsh = {
 	
 	unique_production_methods = {
 		brethren_marsh_maintenance = {
-			tar = 0.07
-			naval_supplies = 0.175
-			tools = 0.07
-			lumber = 0.07
+			tar = 0.07 # VANILLA = 0.1
+			naval_supplies = 0.175 # VANILLA = 0.25
+			tools = 0.07 # VANILLA = 0.1
+			lumber = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 
@@ -1668,12 +1668,12 @@ kings_manor = {
 
 	unique_production_methods = {
 		kings_manor_maintenance = {
-			tools = 0.07
-			masonry = 0.14
-			weaponry = 0.07
-			paper = 0.35
-			furniture = 0.175
-			fine_cloth = 0.175
+			tools = 0.07 # VANILLA = 0.1
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.07 # VANILLA = 0.1
+			paper = 0.35 # VANILLA = 0.5
+			furniture = 0.175 # VANILLA = 0.25
+			fine_cloth = 0.175 # VANILLA = 0.25
 
 			category = building_maintenance
 		}
@@ -1725,8 +1725,8 @@ polders = {
 	
 	unique_production_methods = {
 		polders_maintenance = {
-			clay = 0.35
-			tools = 0.035
+			clay = 0.35 # VANILLA = 0.5
+			tools = 0.035 # VANILLA = 0.05
 
 			category = building_maintenance
 		}
@@ -1885,8 +1885,8 @@ pukara_building = {
 	
 	unique_production_methods = {
 		pukara_maintenance = {
-			weaponry = 0.035
-			stone = 0.14
+			weaponry = 0.035 # VANILLA = 0.05
+			stone = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 
@@ -1931,7 +1931,7 @@ terraces = {
 
 	unique_production_methods = {
 		terraces_maintenance = {
-			salt = 0.07
+			salt = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -1967,8 +1967,8 @@ tambo = {
 
 	unique_production_methods = {
 		tambo_maintenance = {
-			wool = 0.07
-			maize = 0.035
+			wool = 0.07 # VANILLA = 0.1
+			maize = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -2055,12 +2055,12 @@ royal_society = {
 
 	unique_production_methods = {
 		royal_society_maintenance = {
-			paper = 0.7
-			books = 0.35
-			marble = 0.14
-			goods_gold = 0.07
-			fine_cloth = 0.14
-			furniture = 0.14
+			paper = 0.7 # VANILLA = 1
+			books = 0.35 # VANILLA = 0.5
+			marble = 0.14 # VANILLA = 0.2
+			goods_gold = 0.07 # VANILLA = 0.1
+			fine_cloth = 0.14 # VANILLA = 0.2
+			furniture = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 
@@ -2166,9 +2166,9 @@ peel_towers = {
 	
 	unique_production_methods = {
 		peel_towers_maintenance = {
-			stone = 0.14
-			weaponry = 0.14
-			tar = 0.07
+			stone = 0.14 # VANILLA = 0.2
+			weaponry = 0.14 # VANILLA = 0.2
+			tar = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 
@@ -2281,7 +2281,7 @@ kokufu = {
 		can_recruit_regiment_in_this_location = yes
 		gold_to_building_owner = 0.3
 		merchant_power_from_building = 0.3
-		merchant_capacity_from_building = 0.345
+		merchant_capacity_from_building = 0.345 # VANILLA = 0.3
 	}
 
 	possible_production_methods = {
@@ -2554,47 +2554,47 @@ shoen = {
 	modifier = {
 		gold_to_building_owner = 0.1
 		merchant_power_from_building = 0.1
-		merchant_capacity_from_building = 0.115
+		merchant_capacity_from_building = 0.115 # VANILLA = 0.1
 		manpower_to_building_owner = 0.001
 	}
 
 	unique_production_methods = {
 		shoen_quarries_maintenance = {
 			produced = stone
-			output = 0.54
-			tools = 0.0973
+			output = 0.54 # VANILLA = 0.5
+			tools = 0.0973 # VANILLA = 0.139
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
 		shoen_lumbermills_maintenance = {
 			produced = lumber
-			output = 0.648
-			tools = 0.1022
-			fiber_crops = 0.1092
+			output = 0.648 # VANILLA = 0.6
+			tools = 0.1022 # VANILLA = 0.146
+			fiber_crops = 0.1092 # VANILLA = 0.156
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
 		shoen_fiber_crops_farm_maintenance = {
 			produced = fiber_crops
-			output = 0.54
-			lumber = 0.1834
-			tools = 0.1029
+			output = 0.54 # VANILLA = 0.5
+			lumber = 0.1834 # VANILLA = 0.262
+			tools = 0.1029 # VANILLA = 0.147
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
 		shoen_ironsand_maintenance = {
 			produced = iron
-			output = 0.324
-			sand = 0.3745
-			tools = 0.1127
+			output = 0.324 # VANILLA = 0.3
+			sand = 0.3745 # VANILLA = 0.535
+			tools = 0.1127 # VANILLA = 0.161
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
 		shoen_masonry_maintenance = {
 			produced = masonry
-			output = 0.864
-			lumber = 0.2128
-			tools = 0.049
+			output = 0.864 # VANILLA = 0.8
+			lumber = 0.2128 # VANILLA = 0.304
+			tools = 0.049 # VANILLA = 0.07
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
@@ -2649,14 +2649,14 @@ tatara = {
 	unique_production_methods = {
 		tamagahane_blacksmith = {
 			produced = tools
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			iron = 0.417
 			debug_max_profit = rural_profit_margin
 			category = guild_input
 		}
 		tamagahane_bladesmith = {
 			produced = weaponry
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 			iron = 0.167
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -2977,11 +2977,11 @@ venetian_palaces = {
 	
 	unique_production_methods = {
 		venetian_palaces_maintenance = {
-			cloth = 0.14
-			jewelry = 0.035
-			paper = 0.175
-			marble = 0.07
-			fine_cloth = 0.07
+			cloth = 0.14 # VANILLA = 0.2
+			jewelry = 0.035 # VANILLA = 0.05
+			paper = 0.175 # VANILLA = 0.25
+			marble = 0.07 # VANILLA = 0.1
+			fine_cloth = 0.07 # VANILLA = 0.1
 			
 			category = building_maintenance
 		}
@@ -3019,7 +3019,7 @@ venetian_quarter = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.15
+		merchant_capacity_from_building = 1.15 # VANILLA = 1.0
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -3061,7 +3061,7 @@ galata = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.15
+		merchant_capacity_from_building = 1.15 # VANILLA = 1.0
 		building_owner_maritime_presence = 0.025
 	}
 	possible_production_methods = {
@@ -3165,11 +3165,11 @@ moscow_artillery_yard = {
 
 	unique_production_methods = {
 		moscow_artillery_yard_maintenance = {
-			leather = 1.4
-			paper = 0.7
-			tools = 0.35
-			cannons = 1.4
-			horses = 0.7
+			leather = 1.4 # VANILLA = 2.0
+			paper = 0.7 # VANILLA = 1.0
+			tools = 0.35 # VANILLA = 0.5
+			cannons = 1.4 # VANILLA = 2.0
+			horses = 0.7 # VANILLA = 1.0
 			
 			category = building_maintenance
 		}
@@ -3211,7 +3211,7 @@ bund = {
 	
 	unique_production_methods = {
 		bund_maintenance = {
-			tools = 0.07
+			tools = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -3274,9 +3274,9 @@ ibadat_khana = {
 	
 	unique_production_methods = {
 		ibadat_khana_maintenance = {
-			paper = 0.35
-			books = 0.7
-			furniture = 0.14
+			paper = 0.35 # VANILLA = 0.5
+			books = 0.7 # VANILLA = 1.0
+			furniture = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}
@@ -3876,11 +3876,11 @@ royal_atarazanas_seville = {
 	
 	unique_production_methods = {
 		royal_atarazanas_seville_maintenance = {
-			tar = 0.35
-			naval_supplies = 0.7
-			tools = 0.14
-			lumber = 0.28
-			stone = 0.168
+			tar = 0.35 # VANILLA = 0.5
+			naval_supplies = 0.7 # VANILLA = 1.0
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.28 # VANILLA = 0.4
+			stone = 0.168 # VANILLA = 0.24
 			category = building_maintenance
 		}
 	}
@@ -4030,10 +4030,10 @@ bey_fortress = {
 
 	unique_production_methods = {
 		bey_fortress_maintenance = {
-			stone = 0.07
-			tools = 0.07
-			weaponry = 0.14
-			tar = 0.07
+			stone = 0.07 # VANILLA = 0.1
+			tools = 0.07 # VANILLA = 0.1
+			weaponry = 0.14 # VANILLA = 0.2
+			tar = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -4141,10 +4141,10 @@ mamluk_barracks = {
 	
 	unique_production_methods = {
 		mamluk_barracks_maintenance  = {
-			leather = 0.105
-			cloth = 0.07
-			weaponry = 0.07
-			slaves_goods = 0.035
+			leather = 0.105 # VANILLA = 0.15
+			cloth = 0.07 # VANILLA = 0.1
+			weaponry = 0.07 # VANILLA = 0.1
+			slaves_goods = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -4358,13 +4358,13 @@ trans_saharan_trade_outposts = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.15
+		merchant_capacity_from_building = 1.15 # VANILLA = 1.0
 		merchant_power_from_building = 2
 	}
 	
 	unique_production_methods = {
 		trans_saharan_trade_outposts_maintenance = {
-			lumber = 0.25
+			lumber = 0.25 # VANILLA = 0.5
 			category = building_maintenance
 		}
 	}
@@ -4435,11 +4435,11 @@ bajang_ratu = {
 	unique_production_methods = {
 		
 		bajang_ratu_maintenance = {
-			stone = 0.07
-			goods_gold = 0.035
-			gems = 0.07
-			tools = 0.07
-			weaponry = 0.14
+			stone = 0.07 # VANILLA = 0.1
+			goods_gold = 0.035 # VANILLA = 0.05
+			gems = 0.07 # VANILLA = 0.1
+			tools = 0.07 # VANILLA = 0.1
+			weaponry = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 
@@ -4475,7 +4475,7 @@ bubu_building = {
 
 	unique_production_methods = {
 		bubu_building_maintenance = {
-			tools = 0.021
+			tools = 0.021 # VANILLA = 0.03
 			category = building_maintenance
 		}
 	}
@@ -4637,9 +4637,9 @@ eghabho_nore_mansion = {
 
 	unique_production_methods = {
 		eghabho_nore_mansion_maintenance = {
-			lumber = 0.14
-			masonry = 0.35
-			paper = 0.035
+			lumber = 0.14 # VANILLA = 0.2
+			masonry = 0.35 # VANILLA = 0.5
+			paper = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 
@@ -4677,9 +4677,9 @@ ribat = {
 	unique_production_methods = {
 	
 		ribat_maintenance = {
-			masonry = 0.07
-			weaponry = 0.014
-			tar = 0.014
+			masonry = 0.07 # VANILLA = 0.1
+			weaponry = 0.014 # VANILLA = 0.02
+			tar = 0.014 # VANILLA = 0.02
 			category = building_maintenance
 		}
 	}
@@ -4731,8 +4731,8 @@ por_feitoria = {
 
 	unique_production_methods = {
 		feitoria_maintenance = {
-			masonry = 0.25
-			naval_supplies = 0.25
+			masonry = 0.25 # VANILLA = 0.5
+			naval_supplies = 0.25 # VANILLA = 0.5
 			category = building_maintenance
 		}
 	}
@@ -4741,7 +4741,7 @@ por_feitoria = {
 
 	modifier = {
 		building_owner_maritime_presence = 0.025
-		merchant_capacity_from_building = 0.2875
+		merchant_capacity_from_building = 0.2875 # VANILLA = 0.25
 		merchant_power_from_building = 1
 	}
 }
@@ -4785,7 +4785,7 @@ gurgaddi = {
 		local_clergy_max_literacy = 10
 		gold_to_building_owner = 0.05
 		merchant_power_from_building = 0.1
-		merchant_capacity_from_building = 0.115
+		merchant_capacity_from_building = 0.115 # VANILLA = 0.1
 	}
 }
 
@@ -4902,10 +4902,10 @@ zhixian = {
 
 	unique_production_methods = {
 		zhixian_maintenance = {
-			paper = 0.175
-			weaponry = 0.07
-			tools = 0.035
-			fine_cloth = 0.035
+			paper = 0.175 # VANILLA = 0.25
+			weaponry = 0.07 # VANILLA = 0.1
+			tools = 0.035 # VANILLA = 0.05
+			fine_cloth = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -4992,10 +4992,10 @@ seljuk_mint = {
 	
 	unique_production_methods = {
 		seljuk_mint_maintenance  = {
-			paper = 0.07
-			books = 0.175
-			silver = 0.07
-			copper = 0.07
+			paper = 0.07 # VANILLA = 0.1
+			books = 0.175 # VANILLA = 0.25
+			silver = 0.07 # VANILLA = 0.1
+			copper = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -5053,9 +5053,9 @@ tur_kodjabashi_office = {
 
 	unique_production_methods = {
 		tur_kodjabashi_office_maintenance = {
-			paper = 0.7
-			weaponry = 0.14
-			masonry = 0.14
+			paper = 0.7 # VANILLA = 1.0
+			weaponry = 0.14 # VANILLA = 0.2
+			masonry = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}
@@ -5244,7 +5244,7 @@ porto_pisano = {
 	build_time = huge_port_building_time
 
 	modifier = {
-		local_merchant_capacity = 2.3
+		local_merchant_capacity = 2.3 # VANILLA = 2
 		local_merchant_power = 2
 	}
 	
@@ -5258,11 +5258,11 @@ porto_pisano = {
 	
 	unique_production_methods = {
 		porto_pisano_maintenance = {
-			paper = 0.35
-			naval_supplies = 0.7
-			tools = 0.14
-			lumber = 0.7
-			furniture = 0.14
+			paper = 0.35 # VANILLA = 0.5
+			naval_supplies = 0.7 # VANILLA = 1.0
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.7 # VANILLA = 1.0
+			furniture = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}

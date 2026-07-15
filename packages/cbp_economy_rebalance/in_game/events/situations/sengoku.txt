@@ -35,7 +35,7 @@ sengoku.1 = { #Ōnin War
 		}
 		if = {
 			limit = { is_japanese_emperor_or_shogun = yes }
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			add_prestige = prestige_mild_penalty
 		}
 		else_if = {
@@ -55,7 +55,7 @@ sengoku.1 = { #Ōnin War
 			NOT = { country_type = location }
 		}
 		add_prestige = prestige_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 	}
 }
@@ -156,7 +156,7 @@ sengoku.3 = { #Expansion of the [ROOT.GetCountry.GetFlavorRank] (event that turn
 	option = {
 		name = sengoku.3.b
 		add_prestige = prestige_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -362,7 +362,7 @@ sengoku.8 = { #They refused
 
 	option = {
 		name = sengoku.8.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		show_as_tooltip = {
 			add_opinion = { target = scope:target_country modifier = opinion_refused_imperial_petition }
 		}
@@ -519,7 +519,7 @@ sengoku.11 = { #They refused
 
 	option = {
 		name = sengoku.11.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		show_as_tooltip = {
 			add_casus_belli = { target = scope:target_country type = casus_belli:cb_shogunate_reassert_authority }
 			add_opinion = { target = scope:target_country modifier = opinion_refused_shogunate_authority }
@@ -815,7 +815,7 @@ sengoku.19 = { #Summoned to court
 
 	option = { #Accept
 		name = sengoku.19.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_stability = stability_mild_penalty
 		scope:actor = {
 			trigger_event_silently = sengoku.20
@@ -868,7 +868,7 @@ sengoku.20 = { #They accepted
 
 	option = {
 		name = sengoku.20.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 

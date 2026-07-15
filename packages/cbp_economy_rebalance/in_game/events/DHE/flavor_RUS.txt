@@ -288,7 +288,7 @@ flavor_rus.3 = {
 
 	option = {
 		name = flavor_rus.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		nudge_towards_isolationism = yes
 
 	}
@@ -758,7 +758,7 @@ flavor_rus.8 = {
 
 	option = {
 		name = flavor_rus.8.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_severe_bonus
 		}
@@ -979,7 +979,7 @@ flavor_rus.11 = {
 	}
 	option = {
 		name = flavor_rus.11.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1224,7 +1224,7 @@ flavor_rus.14 = {
 	option = {
 		name = flavor_rus.14.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = traditionalist_vs_innovative
@@ -1345,7 +1345,7 @@ flavor_rus.15 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		character:rus_nikita_minin = {
 			add_character_modifier = {
@@ -1441,7 +1441,7 @@ flavor_rus.16 = {
 	option = {
 		name = flavor_rus.16.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_move_to_right }
 
@@ -2154,7 +2154,7 @@ flavor_rus.23 = {
 			type = spiritualist_vs_humanist
 			value = societal_value_move_to_left
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 		option = {
@@ -2680,7 +2680,7 @@ flavor_rus.29 = {
 	option = {
 		name = flavor_rus.29.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_severe_penalty
@@ -2752,7 +2752,7 @@ flavor_rus.30 = {
 			value = societal_value_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 
@@ -3253,7 +3253,7 @@ flavor_rus.35 = {
 	option = {
 		name = flavor_rus.35.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		ruler = {
 			add_adm = -15
@@ -3361,7 +3361,7 @@ flavor_rus.37 = {
 			value = societal_value_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -4257,7 +4257,7 @@ flavor_rus.45 = {
 	option = {
 		name = flavor_rus.45.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		add_stability = stability_mild_penalty
 
@@ -4342,7 +4342,7 @@ flavor_rus.46 = {
 	option = {
 		name = flavor_rus.46.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		change_societal_value = {
 			type = individualism_vs_communalism
@@ -6767,7 +6767,7 @@ flavor_rus.63 = {
 
 		grant_estate_privilege = estate_privilege:manifesto_of_freedom
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 
 		custom_tooltip = flavor_rus.63.tt1
@@ -7171,7 +7171,7 @@ flavor_rus.66 = {
 			value = societal_value_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		ai_chance = {
 			factor = 0.5
@@ -7266,7 +7266,7 @@ flavor_rus.67 = {
 	option = {
 		name = flavor_rus.67.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = spiritualist_vs_humanist
@@ -7449,7 +7449,7 @@ flavor_rus.69 = {
 			limit = {
 				has_policy = strict_censorship
 			}
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			custom_tooltip = flavor_rus.69.tt1
 		}
 		else = {

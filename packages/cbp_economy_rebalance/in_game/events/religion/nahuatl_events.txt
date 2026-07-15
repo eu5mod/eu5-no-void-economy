@@ -29,8 +29,8 @@ nahuatl_events.1 = { #Bad Omens
 		}
 		custom_tooltip = nahuatl_events.1.a.tt
 		add_doom = doom_mild_bonus
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		hidden_effect = {
 			random = {
 				chance = 1
@@ -267,7 +267,7 @@ nahuatl_events.6 = { #Thou Shalt Give Drink, Nourishment, Food to the Sun.
 			has_variable = nahuatl_warrior_auto_sacrifice
 		}
 		add_prestige = prestige_weak_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -390,7 +390,7 @@ nahuatl_events.9 = {
 			killer = ruler
 		}
 		add_doom = doom_mild_bonus
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = nahuatl_events.9.b
@@ -486,7 +486,7 @@ nahuatl_events.11 = {
 	option = {
 		name = nahuatl_events.11.a
 		custom_tooltip = nahuatl_events.11.a.tt
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		set_variable = { name = sent_emissary_to_catch_sorcerer value = 1 }
 		random_owned_location = {
 			limit = {
@@ -707,7 +707,7 @@ nahuatl_events.15 = {
 	}
 	option = {
 		name = nahuatl_events.15.a
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		set_variable = { name = sent_emissary_to_catch_sorcerer value = 1 }
 		random_owned_location = {
 			limit = {
@@ -761,7 +761,7 @@ nahuatl_events.16 = {
 
 	option = {
 		name = nahuatl_events.16.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		kill_character = {
 			target = heir
 			reason = assassination
@@ -1124,12 +1124,12 @@ nahuatl_events.28 = {
 	option = {
 		name = nahuatl_events.28.a
 		add_doom = doom_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_artist = { move_country = root }
 	}
 	option = {
 		name = nahuatl_events.28.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_artist
 		}
@@ -2135,7 +2135,7 @@ nahuatl_events.310 = {
 					add_doom = doom_severe_bonus
 				}
 				10 = {
-					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 					add_doom = doom_mild_bonus
 				}
 				10 = {
@@ -2155,7 +2155,7 @@ nahuatl_events.310 = {
 					add_doom = doom_mild_penalty
 				}
 				10 = {
-					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 					add_doom = doom_weak_penalty
 				}
 				20 = {
@@ -2454,7 +2454,7 @@ nahuatl_events.310 = {
 					add_doom = doom_severe_bonus
 				}
 				5 = {
-					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+					add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 					add_doom = doom_mild_bonus
 				}
 				5 = {
@@ -2474,7 +2474,7 @@ nahuatl_events.310 = {
 					add_doom = doom_mild_penalty
 				}
 				15 = {
-					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 					add_doom = doom_weak_penalty
 				}
 				25 = {
@@ -2509,7 +2509,7 @@ nahuatl_events.310 = {
 					add_doom = doom_mild_penalty
 				}
 				20 = {
-					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 					add_doom = doom_weak_penalty
 				}
 				20 = {

@@ -6,7 +6,7 @@
 
 	requires = feudalism_advance
 
-	monthly_legitimacy = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	diplomatic_spending_cost = -0.005
 }
 

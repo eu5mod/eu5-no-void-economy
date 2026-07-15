@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 cloth_guild = {
 	is_foreign = no
@@ -31,7 +32,7 @@ cloth_guild = {
 			cotton = 0.8333
 
 			produced = cloth
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -41,7 +42,7 @@ cloth_guild = {
 			wool = 1.0
 
 			produced = cloth
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -51,7 +52,7 @@ cloth_guild = {
 			fiber_crops = 1.0
 
 			produced = cloth
-			output = 0.864
+			output = 0.864 # VANILLA = 0.8
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -92,7 +93,7 @@ cloth_workshop = {
 			cotton = 0.88
 			
 			produced = cloth
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -103,7 +104,7 @@ cloth_workshop = {
 			wool = 1.056
 			
 			produced = cloth
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
@@ -113,7 +114,7 @@ cloth_workshop = {
 			fiber_crops = 1.08
 			
 			produced = cloth
-			output = 0.972
+			output = 0.972 # VANILLA = 0.9
 			
 			category = workshop_input
 			debug_max_profit = workshop_profit_margin
@@ -155,7 +156,7 @@ cloth_manufactory = {
 			wool = 1.6093
 			dyes = 0.148
 			produced = cloth
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			category = guild_input
 			debug_max_profit = manufactory_profit_margin
@@ -163,7 +164,7 @@ cloth_manufactory = {
 
 		cotton_cloth_manufactory_maintenance = {
 			produced = cloth
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			cotton = 1.3412
 			dyes = 0.148
 			
@@ -175,7 +176,7 @@ cloth_manufactory = {
 			produced = cloth
 			fiber_crops = 2.1865
 			dyes = 0.0606
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 
 			category = guild_input
 			debug_max_profit = manufactory_profit_margin
@@ -214,7 +215,7 @@ textile_mill = {
 			cotton = 1.8866
 			dyes = 0.2517
 			produced = cloth
-			output = 3.24
+			output = 3.24 # VANILLA = 3
 			
 			debug_max_profit = mills_profit_margin
 			
@@ -225,7 +226,7 @@ textile_mill = {
 			wool = 1.8311
 			dyes = 0.2444
 			produced = cloth
-			output = 2.7
+			output = 2.7 # VANILLA = 2.5
 			
 			debug_max_profit = mills_profit_margin
 			
@@ -236,7 +237,7 @@ textile_mill = {
 			fiber_crops = 2.3153
 			dyes = 0.2312
 			produced = cloth
-			output = 2.7
+			output = 2.7 # VANILLA = 2.5
 			debug_max_profit = mills_profit_margin
 			
 			category = mills_input

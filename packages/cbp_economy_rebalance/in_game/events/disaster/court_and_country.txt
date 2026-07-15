@@ -106,7 +106,7 @@ court_and_country.2 = {
 				estate_satisfaction:peasants_estate < 0.5
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -778,7 +778,7 @@ court_and_country.9 = {
 			type = absolutism_vs_liberalism
 			value = societal_value_minor_move_to_right
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		scope:target_rebel = { add_rebel_progress = -0.1 }
 	}
 }
@@ -908,7 +908,7 @@ court_and_country.11 = {
 			value = societal_value_minor_move_to_right
 		}
 		add_war_exhaustion = war_exhaustion_weak_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 

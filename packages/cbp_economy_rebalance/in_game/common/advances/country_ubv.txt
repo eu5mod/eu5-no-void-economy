@@ -14,7 +14,7 @@ bavarian_legitimacy = {
 		}
 	}
 	requires = feudalism_advance
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 bavarian_imperial_knights = {
 	age = age_1_traditions

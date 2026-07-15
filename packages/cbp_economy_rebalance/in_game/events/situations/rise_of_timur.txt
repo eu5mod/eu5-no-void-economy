@@ -767,7 +767,7 @@ rise_of_timur.100 = {
 	}
 	option = {
 		name = rise_of_timur.100.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_casus_belli = { target = scope:target_country type = casus_belli:cb_timurs_conquests }
 	}
 }
@@ -1293,7 +1293,7 @@ rise_of_timur.1030 = {
 	#[ShowRegionNameWithNoTooltip('anatolia_region')] is big enough for the both of us.
 	option = {
 		name = rise_of_timur.1030.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 #Timur pushes into Anatolia

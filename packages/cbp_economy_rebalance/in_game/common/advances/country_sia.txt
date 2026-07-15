@@ -77,7 +77,7 @@ sia_royal_absolutism = {
 
 	requires = the_constitution
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 	global_crown_estate_power = 0.1
 }
 

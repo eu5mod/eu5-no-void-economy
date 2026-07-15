@@ -259,8 +259,8 @@ generic_mission_events.6 = {	#Petition for Decentralization
 			value = societal_value_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		if = {
 			limit = {
@@ -289,7 +289,7 @@ generic_mission_events.6 = {	#Petition for Decentralization
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_left }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		if = {
 			limit = {
@@ -998,7 +998,7 @@ generic_mission_events.14 = {	#Province Resists Centralization
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_tiny_move_to_right }
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -1160,7 +1160,7 @@ generic_mission_events.15 = {	#Rural Neglect
 			value = societal_value_minor_move_to_left
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		custom_tooltip = progress_towards_centralization_will_not_be_hindered_tt
 	}
@@ -1200,7 +1200,7 @@ generic_mission_events.16 = {
 
 		add_all_estate_satisfaction = { value = estate_satisfaction_weak_penalty }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -1599,7 +1599,7 @@ generic_mission_events.21 = {
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_extreme_penalty }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		custom_tooltip = will_not_hinder_our_progress_to_innovative_tt
 	}

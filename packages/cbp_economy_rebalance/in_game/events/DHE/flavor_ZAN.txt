@@ -46,7 +46,7 @@ flavor_zan.1 = {
 	option = {
 		name = flavor_zan.1.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		custom_tooltip = construct_the_building_at_another_time_tt
 	}
 }
@@ -108,7 +108,7 @@ flavor_zan.2 = {
 	option = {
 		name = flavor_zan.2.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {

@@ -97,7 +97,7 @@ papal_conclave_events.2 = { #Influencing the Vote
 		}
 		show_as_tooltip = {
 			add_prestige = prestige_mild_bonus
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 			scope:target_country = {
 				add_opinion = { target = c:PAP modifier = accepted_diplomatic_offer }
 				reverse_add_opinion = { target = c:PAP modifier = accepted_diplomatic_offer }
@@ -161,7 +161,7 @@ papal_conclave_events.4 = { #Offer Accepted
 	option = { #May the Lord bless them.
 		name = papal_conclave_events.4.a
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -264,7 +264,7 @@ papal_conclave_events.7 = { #Disqualification of a Cardinal
 
 	option = { #He is clearly not fit to be [ROOT.GetCountry.GetGovernment.GetRulerTitle]
 		name = papal_conclave_events.7.a
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
 	}
 
@@ -367,7 +367,7 @@ papal_conclave_events.10 = { #The Elected Candidate Refuses
 	option = { #We can't force him to accept
 		name = papal_conclave_events.10.b
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_right }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 

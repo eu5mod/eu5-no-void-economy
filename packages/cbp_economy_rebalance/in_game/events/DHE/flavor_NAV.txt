@@ -335,7 +335,7 @@ flavor_nav.60 = { #The Will of a Queen
 	option = {
 		name = flavor_nav.60.b
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	historical_info = flavor_nav.60.historical_info
 }

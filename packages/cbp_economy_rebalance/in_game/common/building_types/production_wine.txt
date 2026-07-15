@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 winery = {
 	is_foreign = no
@@ -33,7 +34,7 @@ winery = {
 			tools = 0.092
 
 			produced = wine
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			category = guild_input
 
 			debug_max_profit = guild_profit_margin
@@ -45,7 +46,7 @@ winery = {
 			tools = 0.093
 			
 			produced = wine
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			category = guild_input
 
 			debug_max_profit = guild_profit_margin
@@ -57,7 +58,7 @@ winery = {
 			tools = 0.093
 			
 			produced = wine
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			category = guild_input
 
@@ -95,7 +96,7 @@ winery_manufactory = {
 			tools = 0.1982
 
 			produced = wine
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			category = guild_input
 
 			debug_max_profit = manufactory_profit_margin
@@ -107,7 +108,7 @@ winery_manufactory = {
 			tools = 0.1982
 			
 			produced = wine
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			category = manufactory_input
 
 			debug_max_profit = manufactory_profit_margin
@@ -119,7 +120,7 @@ winery_manufactory = {
 			tools = 0.1927
 			
 			produced = wine
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			category = manufactory_input
 

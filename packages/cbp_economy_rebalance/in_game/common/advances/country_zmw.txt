@@ -68,7 +68,7 @@ zmw_spokesman_before_the_dead = {
 		}
 	}
 	stability_cost_efficiency = 0.1
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 
 	requires = repair_at_sea_aod
 }

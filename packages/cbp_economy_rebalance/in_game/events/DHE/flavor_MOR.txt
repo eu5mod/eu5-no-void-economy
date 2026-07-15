@@ -404,7 +404,7 @@ flavor_mor.6 = { #CONSPIRATION
 	option = {
 		name = flavor_mor.6.b
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 
 	after = {
@@ -854,7 +854,7 @@ flavor_mor.15 = {
 		name = flavor_mor.15.a
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_all_estate_satisfaction = { value = estate_satisfaction_mild_bonus }
 
 	}
@@ -1947,7 +1947,7 @@ flavor_mor.29 = { #GRAVEYARD
 
 		set_new_ruler = scope:usurper_scope
 		add_legitimacy = legitimacy_severe_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1996,7 +1996,7 @@ flavor_mor.30 = { #GRAVEYARD
 		name = flavor_mor.30.a
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_army_tradition = army_tradition_weak_bonus
 	}
 
@@ -2286,7 +2286,7 @@ flavor_mor.34 = {
 
 		set_new_ruler = scope:target_character
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {

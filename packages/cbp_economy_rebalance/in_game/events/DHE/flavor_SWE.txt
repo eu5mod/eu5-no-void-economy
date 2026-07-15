@@ -182,7 +182,7 @@ flavor_swe.3 = {
 	}
 	option = {
 		name = flavor_swe.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		c:DAN = {
 			add_opinion = { target = root modifier = swe_honored_the_kalmar_recess }
 		}
@@ -726,7 +726,7 @@ flavor_swe.13 = {
 	option = {
 		name = flavor_swe.13.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -777,7 +777,7 @@ flavor_swe.14 = {
 		name = flavor_swe.14.a
 
 		add_legitimacy = legitimacy_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_research_progress = research_progress_severe_bonus
 	}
 }
@@ -815,7 +815,7 @@ flavor_swe.15 = {
 
 	option = {
 		name = flavor_swe.15.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_research_progress = research_progress_mild_bonus
 
 		unlock_policy_effect = { type = court_of_appeals }
@@ -1144,7 +1144,7 @@ flavor_swe.21 = {
 	}
 	option = {
 		name = flavor_swe.21.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1341,7 +1341,7 @@ flavor_swe.25 = {
 	}
 	option = {
 		name = flavor_swe.25.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1417,7 +1417,7 @@ flavor_swe.27 = {
 	}
 	option = {
 		name = flavor_swe.27.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1802,7 +1802,7 @@ flavor_swe.36 = {
 	option = {
 		name = flavor_swe.36.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = flavor_swe.36.b
@@ -1851,7 +1851,7 @@ flavor_swe.37 = {
 	}
 	option = {
 		name = flavor_swe.37.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1905,7 +1905,7 @@ flavor_swe.38 = {
 	}
 	option = {
 		name = flavor_swe.38.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1967,7 +1967,7 @@ flavor_swe.39 = {
 	}
 	option = {
 		name = flavor_swe.39.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2199,7 +2199,7 @@ flavor_swe.43 = {
 	}
 	option = {
 		name = flavor_swe.43.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_tiny_move_to_left }
 	}
 }
@@ -2241,7 +2241,7 @@ flavor_swe.44 = {
 	}
 	option = {
 		name = flavor_swe.44.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2334,7 +2334,7 @@ flavor_swe.46 = {
 
 	option = {
 		name = flavor_swe.46.a
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -2409,7 +2409,7 @@ flavor_swe.47 = {
 		name = flavor_swe.47.a
 		historical_option = yes
 		set_new_ruler_with_union_if_senior = { character = scope:pretender }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 	}
 
@@ -2990,7 +2990,7 @@ flavor_swe.57 = {
 	}
 	option = {
 		name = flavor_swe.57.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3067,7 +3067,7 @@ flavor_swe.59 = {
 	option = {
 		name = flavor_swe.59.b
 		add_policy = policy:censored_press
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_left }
 	}
 }

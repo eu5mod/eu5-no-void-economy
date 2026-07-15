@@ -18,7 +18,7 @@ founding_fathers = {
 
 
 	potential = { is_subject_type = colonial_nation }
-	monthly_republican_tradition = 0.0375
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 }
 
 

@@ -300,7 +300,7 @@ flavor_bng.5 = { #Adina Mosque Pandua
 		name = flavor_bng.5.b
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_extreme_penalty }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 	}
 }

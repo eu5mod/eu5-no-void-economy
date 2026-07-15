@@ -113,6 +113,12 @@ cbp_require_match 'cbp_render_template_to_stdout' \
 cbp_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 	".cbp.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
+cbp_require_match '^MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER=0\.7' \
+	".cbp.local.env.template" \
+	'Local env template must expose the non-trade building maintenance multiplier'
+cbp_require_match '^MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER=0\.5' \
+	".cbp.local.env.template" \
+	'Local env template must expose the trade-building maintenance multiplier'
 cbp_require_match 'strip_utf8_bom_stream' \
 	"tools/generate_us09_economy_overrides.sh" \
 	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'

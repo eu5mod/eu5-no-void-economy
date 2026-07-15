@@ -46,7 +46,7 @@ flavor_khm.1000 = { #Maintenance of the Angkor Irrigation
 		location:angkor = {
 			change_prosperity = prosperity_mild_penalty
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		set_variable = khm_baray_in_disrepair
 	}
 

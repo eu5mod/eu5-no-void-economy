@@ -26,7 +26,7 @@ muslim_flavor.1 = {
 	option = {
 		name = muslim_flavor.1.a
 		trigger_event_silently = { id = muslim_flavor.2 days = 30 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 	option = {
 		name = muslim_flavor.1.b
@@ -58,7 +58,7 @@ muslim_flavor.2 = {
 
 	option = {
 		name = muslim_flavor.2.a
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		change_gold_effect = { scale = -6.00 }
 
 		custom_tooltip = {

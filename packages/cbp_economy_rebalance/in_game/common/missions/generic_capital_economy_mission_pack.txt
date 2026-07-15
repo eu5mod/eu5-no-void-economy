@@ -628,7 +628,7 @@
 			}
 		}
 		on_completion = {
-			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 		}
 	}
 

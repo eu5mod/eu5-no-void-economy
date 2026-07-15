@@ -1228,7 +1228,7 @@ flavor_mei.140 = { #Heinrich von Brühl
 		promote_to_head_of_cabinet_effect = {
 			target = scope:target_character
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
 		}

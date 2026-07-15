@@ -355,7 +355,7 @@ flavor_byz_ser.5 = {
 		custom_tooltip = SMC_remains_vassal_of_serbia
 
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 
 	option = {
@@ -418,7 +418,7 @@ flavor_byz_ser.6 = {
 		}
 
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 
 	option = {

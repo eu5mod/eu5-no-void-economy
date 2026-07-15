@@ -7,19 +7,19 @@
 # radical: rarest value you could get
 
 #Stability
-stability_radical_penalty = -50
-stability_ultimate_penalty = -25
-stability_very_extreme_penalty = -12.5
-stability_extreme_penalty = -10
-stability_severe_penalty = -6
-stability_mild_penalty = -3.5
+stability_radical_penalty = -50 # VANILLA = -100
+stability_ultimate_penalty = -25 # VANILLA = -50
+stability_very_extreme_penalty = -12.5 # VANILLA = -25
+stability_extreme_penalty = -10 # VANILLA = -20
+stability_severe_penalty = -6 # VANILLA = -12
+stability_mild_penalty = -3.5 # VANILLA = -7
 stability_weak_penalty = -2.5
-stability_weak_bonus = 1.25
+stability_weak_bonus = 1.25 # VANILLA = 2.5
 stability_mild_bonus = 7
-stability_severe_bonus = 6
-stability_extreme_bonus = 10
-stability_very_extreme_bonus = 12.5
-stability_ultimate_bonus = 25
+stability_severe_bonus = 6 # VANILLA = 12
+stability_extreme_bonus = 10 # VANILLA = 20
+stability_very_extreme_bonus = 12.5 # VANILLA = 25
+stability_ultimate_bonus = 25 # VANILLA = 50
 stability_radical_bonus = 100
 
 #Prestige
@@ -53,44 +53,44 @@ monthly_prestige_radical_bonus = 1.0
 
 #-------- Government Powers --------
 #Government Power (never use directly in script)
-government_power_radical_penalty = -25
-government_power_ultimate_penalty = -12.5
-government_power_extreme_penalty = -5
-government_power_severe_penalty = -3.75
+government_power_radical_penalty = -25 # VANILLA = -50
+government_power_ultimate_penalty = -12.5 # VANILLA = -25
+government_power_extreme_penalty = -5 # VANILLA = -10
+government_power_severe_penalty = -3.75 # VANILLA = -7.5
 government_power_mild_penalty = -5
 government_power_weak_penalty = -2.5
-government_power_weak_bonus = 1.25
-government_power_mild_bonus = 2.5
-government_power_severe_bonus = 3.75
-government_power_extreme_bonus = 5
-government_power_ultimate_bonus = 12.5
-government_power_radical_bonus = 25
+government_power_weak_bonus = 1.25 # VANILLA = 2.5
+government_power_mild_bonus = 2.5 # VANILLA = 5
+government_power_severe_bonus = 3.75 # VANILLA = 7.5
+government_power_extreme_bonus = 5 # VANILLA = 10
+government_power_ultimate_bonus = 12.5 # VANILLA = 25
+government_power_radical_bonus = 25 # VANILLA = 50
 
 #Legitimacy
-legitimacy_radical_penalty = -50
-legitimacy_ultimate_penalty = -25
-legitimacy_extreme_penalty = -10
-legitimacy_severe_penalty = -7.5
+legitimacy_radical_penalty = -50 # VANILLA = -100
+legitimacy_ultimate_penalty = -25 # VANILLA = -50
+legitimacy_extreme_penalty = -10 # VANILLA = -20
+legitimacy_severe_penalty = -7.5 # VANILLA = -15
 legitimacy_mild_penalty = -10
-legitimacy_weak_penalty = -2.5
+legitimacy_weak_penalty = -2.5 # VANILLA = -5
 legitimacy_weak_bonus = 5
-legitimacy_mild_bonus = 5
-legitimacy_severe_bonus = 7.5
-legitimacy_extreme_bonus = 10
-legitimacy_ultimate_bonus = 25
-legitimacy_radical_bonus = 50
+legitimacy_mild_bonus = 5 # VANILLA = 10
+legitimacy_severe_bonus = 7.5 # VANILLA = 15
+legitimacy_extreme_bonus = 10 # VANILLA = 20
+legitimacy_ultimate_bonus = 25 # VANILLA = 50
+legitimacy_radical_bonus = 50 # VANILLA = 100
 
 #Devotion
-devotion_radical_penalty = -50
+devotion_radical_penalty = -50 # VANILLA = -100
 devotion_ultimate_penalty = -50
-devotion_extreme_penalty = -10
-devotion_severe_penalty = -7.5
-devotion_mild_penalty = -5
+devotion_extreme_penalty = -10 # VANILLA = -20
+devotion_severe_penalty = -7.5 # VANILLA = -15
+devotion_mild_penalty = -5 # VANILLA = -10
 devotion_weak_penalty = -5
-devotion_weak_bonus = 2.5
-devotion_mild_bonus = 5
-devotion_severe_bonus = 7.5
-devotion_extreme_bonus = 10
+devotion_weak_bonus = 2.5 # VANILLA = 5
+devotion_mild_bonus = 5 # VANILLA = 10
+devotion_severe_bonus = 7.5 # VANILLA = 15
+devotion_extreme_bonus = 10 # VANILLA = 20
 devotion_ultimate_bonus = 50
 devotion_radical_bonus = 100
 
@@ -98,39 +98,39 @@ devotion_radical_bonus = 100
 republican_tradition_radical_penalty = -100
 republican_tradition_ultimate_penalty = -50
 republican_tradition_extreme_penalty = -20
-republican_tradition_severe_penalty = -7.5
-republican_tradition_mild_penalty = -5
-republican_tradition_weak_penalty = -2.5
-republican_tradition_weak_bonus = 2.5
-republican_tradition_mild_bonus = 5
-republican_tradition_severe_bonus = 7.5
-republican_tradition_extreme_bonus = 10
+republican_tradition_severe_penalty = -7.5 # VANILLA = -15
+republican_tradition_mild_penalty = -5 # VANILLA = -10
+republican_tradition_weak_penalty = -2.5 # VANILLA = -5
+republican_tradition_weak_bonus = 2.5 # VANILLA = 5
+republican_tradition_mild_bonus = 5 # VANILLA = 10
+republican_tradition_severe_bonus = 7.5 # VANILLA = 15
+republican_tradition_extreme_bonus = 10 # VANILLA = 20
 republican_tradition_ultimate_bonus = 50
 republican_tradition_radical_bonus = 100
 
 #Tribal Cohesion
 tribal_cohesion_ultimate_penalty = -50
 tribal_cohesion_extreme_penalty = -20
-tribal_cohesion_severe_penalty = -7.5
-tribal_cohesion_mild_penalty = -5
-tribal_cohesion_weak_penalty = -2.5
-tribal_cohesion_weak_bonus = 2.5
-tribal_cohesion_mild_bonus = 5
-tribal_cohesion_severe_bonus = 7.5
-tribal_cohesion_extreme_bonus = 10
+tribal_cohesion_severe_penalty = -7.5 # VANILLA = -15
+tribal_cohesion_mild_penalty = -5 # VANILLA = -10
+tribal_cohesion_weak_penalty = -2.5 # VANILLA = -5
+tribal_cohesion_weak_bonus = 2.5 # VANILLA = 5
+tribal_cohesion_mild_bonus = 5 # VANILLA = 10
+tribal_cohesion_severe_bonus = 7.5 # VANILLA = 15
+tribal_cohesion_extreme_bonus = 10 # VANILLA = 20
 tribal_cohesion_ultimate_bonus = 50
 
 #Horde Unity
 horde_unity_radical_penalty = -100
-horde_unity_ultimate_penalty = -25
-horde_unity_extreme_penalty = -10
+horde_unity_ultimate_penalty = -25 # VANILLA = -50
+horde_unity_extreme_penalty = -10 # VANILLA = -20
 horde_unity_severe_penalty = -15
-horde_unity_mild_penalty = -5
-horde_unity_weak_penalty = -2.5
-horde_unity_weak_bonus = 2.5
-horde_unity_mild_bonus = 5
+horde_unity_mild_penalty = -5 # VANILLA = -10
+horde_unity_weak_penalty = -2.5 # VANILLA = -5
+horde_unity_weak_bonus = 2.5 # VANILLA = 5
+horde_unity_mild_bonus = 5 # VANILLA = 10
 horde_unity_severe_bonus = 15
-horde_unity_extreme_bonus = 10
+horde_unity_extreme_bonus = 10 # VANILLA = 20
 horde_unity_ultimate_bonus = 50
 horde_unity_radical_bonus = 100
 
@@ -816,20 +816,20 @@ monthly_papal_authority_extreme_penalty = -0.15
 
 # Stability Investments
 
-tiny_stability_investment = 0.0075
-small_stability_investment = 0.015
-standard_stability_investment = 0.0225
-large_stability_investment = 0.075
+tiny_stability_investment = 0.0075 # VANILLA = 0.01
+small_stability_investment = 0.015 # VANILLA = 0.02
+standard_stability_investment = 0.0225 # VANILLA = 0.03
+large_stability_investment = 0.075 # VANILLA = 0.1
 
 tiny_stability_investment_penalty = -0.01
-small_stability_investment_penalty = -0.0375
-stability_investment_penalty = -0.075
-large_stability_investment_penalty = -0.15
-huge_stability_investment_penalty = -0.75
+small_stability_investment_penalty = -0.0375 # VANILLA = -0.05
+stability_investment_penalty = -0.075 # VANILLA = -0.1
+large_stability_investment_penalty = -0.15 # VANILLA = -0.2
+huge_stability_investment_penalty = -0.75 # VANILLA = -1
 
 #specials
-cabinet_stability_investment = 0.0375
-clergy_stability_investment = 0.15
+cabinet_stability_investment = 0.0375 # VANILLA = 0.05
+clergy_stability_investment = 0.15 # VANILLA = 0.2
 
 ######################################
 # Production Efficiency Impacts
@@ -1280,8 +1280,8 @@ iw_tension_loss_very_high = -2
 iw_tension_loss_decay = -2
 
 #Production Method profit margin targets (used by debug_max_profit)
-rural_profit_margin = 0.2
-guild_profit_margin = 0.2
-workshop_profit_margin = 0.25
-manufactory_profit_margin = 0.3
-mills_profit_margin = 0.35
+rural_profit_margin = 0.22 # VANILLA = 0.2
+guild_profit_margin = 0.22 # VANILLA = 0.2
+workshop_profit_margin = 0.275 # VANILLA = 0.25
+manufactory_profit_margin = 0.33 # VANILLA = 0.3
+mills_profit_margin = 0.385 # VANILLA = 0.35

@@ -266,7 +266,7 @@ scripted_effect mfa_failure_of_duchy = { #If changing this, change mfa_if_we_con
 		}
 	}
 	add_prestige = prestige_extreme_penalty
-	add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+	add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 }
 
 # Conquests of John II
@@ -773,7 +773,7 @@ flavor_mfa.1000 = {
 			value = 100
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1139,7 +1139,7 @@ flavor_mfa.1006 = {
 			scope:variable_holder = { has_variable = offer_accepted }
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {

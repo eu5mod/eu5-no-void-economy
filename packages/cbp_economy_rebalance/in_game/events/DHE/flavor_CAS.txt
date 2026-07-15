@@ -383,7 +383,7 @@ flavor_cas.5 = { #Baltasar de Zúñiga
 		historical_option = yes
 
 		change_gold_effect = { scale = -1 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_character = { move_country = root }
 	}
 
@@ -449,7 +449,7 @@ flavor_cas.6 = { #Gaspar de Guzmán, Count-Duke of Olivares
 		name = flavor_cas.6.a
 		historical_option = yes
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_character = { move_country = root }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_bonus }
 	}
@@ -507,7 +507,7 @@ flavor_cas.7 = { #Giulio Alberoni
 		name = flavor_cas.7.a
 		historical_option = yes
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_character = { move_country = root }
 	}
 
@@ -564,7 +564,7 @@ flavor_cas.8 = { #José Moñino #PRISON
 		name = flavor_cas.8.a
 		historical_option = yes
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:target_character = { move_country = root }
 		add_country_modifier = { modifier = reform_of_law years = 5 mode = add_and_extend }
 	}
@@ -1181,7 +1181,7 @@ flavor_cas.18 = { #The Succession of Pedro I
 	option = {
 		name = flavor_cas.18.a
 		scope:target_ruler = { set_character_erratic_behavior = yes }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -1245,7 +1245,7 @@ flavor_cas.20 = { #Castile Defeated - Battle of Aljubarrota
 	option = {
 		name = flavor_cas.20.a
 		historical_option = yes
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_army_tradition = army_tradition_mild_penalty
 	}
 }
@@ -1460,7 +1460,7 @@ flavor_cas.24 = { #Ordenamiento de Alcalá
 
 	option = {
 		name = flavor_cas.24.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = centralization_vs_decentralization
 			value = societal_value_move_to_right
@@ -2952,7 +2952,7 @@ flavor_cas.48 = { #Leyes de Toro
 	option = {
 		name = flavor_cas.48.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3011,7 +3011,7 @@ flavor_cas.49 = { #Nueva Recopilación
 	option = {
 		name = flavor_cas.49.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = centralization_vs_decentralization
 			value = societal_value_move_to_right
@@ -3068,7 +3068,7 @@ flavor_cas.50 = { #Novísima Recopilación
 			value = estate_satisfaction_extreme_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3367,7 +3367,7 @@ flavor_cas.55 = { #Francisco Suarez
 		scope:target_character = {
 			move_country = root
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_right }
 	}
 
@@ -3562,7 +3562,7 @@ flavor_cas.58 = { #Diego de Covarrubias
 		scope:target_character = {
 			move_country = root
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_move_to_right }
 	}
 
@@ -3947,7 +3947,7 @@ flavor_cas.65 = { #The Regimiento
 
 	option = {
 		name = flavor_cas.65.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3992,7 +3992,7 @@ flavor_cas.66 = { #The Spanish Dollar
 	option = {
 		name = flavor_cas.66.b
 		add_inflation = inflation_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = cas_spanish_dollar_not_adopted years = 10 mode = add_and_extend }
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = societal_value_tiny_move_to_right }
 	}
@@ -5042,7 +5042,7 @@ flavor_cas.80 = { #Gaspar Melchor de Jovellanos
 	option = {
 		name = flavor_cas.80.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = mercantilism_vs_free_trade
 			value = societal_value_move_to_right
@@ -5734,7 +5734,7 @@ flavor_cas.91 = { #Francisco de Quevedo
 	option = {
 		name = flavor_cas.91.b
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_character
 		}
@@ -5924,7 +5924,7 @@ flavor_cas.94 = { #A Clash of Culteranismo and Conceptismo
 			move_country = root
 		}
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -6358,7 +6358,7 @@ flavor_cas.101 = { #Royal Council of Castile
 
 	option = {
 		name = flavor_cas.101.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
@@ -6437,7 +6437,7 @@ flavor_cas.102 = { #The Nueva Planta Decrees
 
 	option = {
 		name = flavor_cas.102.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 		change_societal_value = { type = absolutism_vs_liberalism value = societal_value_move_to_right }
 	}
@@ -7045,7 +7045,7 @@ flavor_cas.112 = { #Adopting the Mita System
 
 	option = {
 		name = flavor_cas.112.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
 	}
 }
@@ -7939,7 +7939,7 @@ flavor_cas.128 = { #María de Zayas y Sotomayor
 	option = {
 		name = flavor_cas.128.b
 		add_research_progress = research_progress_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_character
 		}
@@ -8068,7 +8068,7 @@ flavor_cas.130 = { #Luisa de Medrano
 	option = {
 		name = flavor_cas.130.b
 		add_research_progress = research_progress_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_character
 		}
@@ -8485,7 +8485,7 @@ flavor_cas.137 = { #Royal Audience and Chancery
 		name = flavor_cas.137.a
 		historical_option = yes
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_location = {
 			change_prosperity = prosperity_severe_bonus
 			construct_building = {
@@ -8496,7 +8496,7 @@ flavor_cas.137 = { #Royal Audience and Chancery
 
 	option = {
 		name = flavor_cas.137.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_stability = stability_mild_penalty
 	}
 }
@@ -8548,7 +8548,7 @@ flavor_cas.138 = { #Royal Audience and Chancery of Ciudad Real
 		name = flavor_cas.138.a
 		historical_option = yes
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_location = {
 			if = {
 				limit = {
@@ -8573,7 +8573,7 @@ flavor_cas.138 = { #Royal Audience and Chancery of Ciudad Real
 
 	option = {
 		name = flavor_cas.138.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_stability = stability_mild_penalty
 	}
 }
@@ -8642,7 +8642,7 @@ flavor_cas.139 = { #Juan de Mena
 
 	option = {
 		name = flavor_cas.139.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		hidden_effect = {
 			kill_character_silently = scope:target_character
 		}
@@ -10678,7 +10678,7 @@ flavor_cas.1503 = { #Archives of the Indies Building
 	}
 	option = {
 		name = flavor_cas.1503.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 		scope:target_character = {
 			move_country = scope:exile_destination
@@ -11106,7 +11106,7 @@ flavor_cas.1802 = { #The Comuneros Revolt is crushed
 
 		unlock_policy_effect = { type = dop_law_castilian_courts_reinforced }
 		add_policy = policy:dop_law_castilian_courts_reinforced
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = aristocracy_vs_plutocracy value = societal_value_move_to_left }
 		if = {
 			limit = {
@@ -11161,7 +11161,7 @@ flavor_cas.1803 = { #Conceded to the Comuneros
 
 		unlock_policy_effect = { type = dop_law_comuneros_parliament }
 		add_policy = policy:dop_law_comuneros_parliament
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = aristocracy_vs_plutocracy value = societal_value_move_to_right }
 		if = {
 			limit = {
@@ -11526,7 +11526,7 @@ flavor_cas.2200 = { #The Iberian Wedding
 
 	option = {
 		name = flavor_cas.2200.c
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -11958,7 +11958,7 @@ flavor_cas.2301 = { #The Irmandiño Revolt Suppressed
 
 	option = {
 		name = flavor_cas.2301.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_bonus
 		}
@@ -12412,7 +12412,7 @@ flavor_cas.2400 = { #The War of the Bands
 
 	option = {
 		name = flavor_cas.2400.d
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
 		}
@@ -12465,7 +12465,7 @@ flavor_cas.2401 = { #The Royal Intervention
 
 	option = {
 		name = flavor_cas.2401.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_severe_bonus
 		}
@@ -12625,7 +12625,7 @@ flavor_cas.2403 = { #De Bandos Pacified
 	option = {
 		name = flavor_cas.2403.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = flavor_cas.2403.a.tt
 			every_owned_location = {
@@ -12942,8 +12942,8 @@ flavor_cas.2600 = { #The Bourbon Reforms
 
 	option = {
 		name = flavor_cas.2600.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 	}
 }
@@ -13501,7 +13501,7 @@ flavor_cas.2702 = { #Rebellion Crushed
 	option = {
 		name = flavor_cas.2702.b
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = belligerent_vs_conciliatory value = societal_value_move_to_right }
 		custom_tooltip = {
 			text = flavor_cas.2702.b.tt

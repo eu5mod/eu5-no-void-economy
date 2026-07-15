@@ -207,7 +207,7 @@ flavor_fra.3 = { # Seizure of the Guilds
 	}
 	option = {
 		name = flavor_fra.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate	value = estate_satisfaction_mild_bonus }
 	}
 }
@@ -503,7 +503,7 @@ flavor_fra.8 = { # Academie Française
 	}
 	option = {
 		name = flavor_fra.8.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -625,7 +625,7 @@ flavor_fra.10 = { # The Commissioning of Versailles
 	}
 	option = {
 		name = flavor_fra.10.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 	}
 }
@@ -710,7 +710,7 @@ flavor_fra.11 = { # Chambers of Reunion
 	option = {
 		name = flavor_fra.11.b
 		custom_tooltip = improve_relations_with_neighbors_with_french_provinces
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		hidden_effect = {
 			every_neighbor_country = {
 				limit = {
@@ -777,8 +777,8 @@ flavor_fra.12 = { # Plight of the Lutherans
 	option = {
 		name = flavor_fra.12.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		every_province = {
 			limit = {
 				continent = continent:europe
@@ -1210,7 +1210,7 @@ flavor_fra.17 = { # Turgot's Economic Reforms
 		scope:target_character = {
 			move_country = c:FRA
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -1275,7 +1275,7 @@ flavor_fra.18 = { # Necker announces the Budget Deficit
 
 	option = {
 		name = flavor_fra.18.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = necker_resigns
 		hidden_effect = {
 			kill_character_silently = scope:target_character
@@ -2492,7 +2492,7 @@ flavor_fra.1017 = { # Gabelle
 	option = { # No
 		name = flavor_fra.1017.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_bonus
@@ -2595,7 +2595,7 @@ flavor_fra.1023 = { # Found the Franc
 		ai_chance = {
 			base = 70
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_inflation = inflation_weak_penalty
 		change_gold_effect = { scale = 4 }
 		add_country_modifier = { modifier = minting_of_the_franc months = 312 mode = add }
@@ -2820,7 +2820,7 @@ flavor_fra.1101 = { # Son demands landed title
 
 	option = { # He shall rule as a Count
 		name = flavor_fra.1101.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:potential_lordship_location = {
 			create_country_from_location = {
 				overlord = root
@@ -2959,7 +2959,7 @@ flavor_fra.1103 = { # Consolidation of Appanage Lands
 		}
 		add_prestige = prestige_severe_bonus
 		add_legitimacy = legitimacy_severe_bonus
-		add_legitimacy = cbp_event_add_legitimacy_stability_mild_bonus_caa6341204
+		add_legitimacy = cbp_event_add_legitimacy_stability_mild_bonus_caa6341204 # VANILLA = stability_mild_bonus
 		ai_chance = {
 			base = 1
 		}
@@ -3356,7 +3356,7 @@ flavor_fra.1123 = { # King Abolishes Fouage on Deathbed... but the state ignores
 		name = flavor_fra.1123.b
 		add_policy = policy:pause_on_fouage_collection
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_weak_penalty }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		ai_chance = {
 			base = 15
 		}
@@ -3507,7 +3507,7 @@ flavor_fra.1131 = { # The Great Ordinance
 		name = flavor_fra.1131.a
 		historical_option = yes
 		custom_tooltip = marcel_will_now_oppose_the_crown
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_severe_penalty }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
@@ -3519,7 +3519,7 @@ flavor_fra.1131 = { # The Great Ordinance
 	}
 	option = { # Attempt to negotiate with Marcel
 		name = flavor_fra.1131.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_mild_penalty
 		random_list = {
 			25 = {
@@ -3957,7 +3957,7 @@ flavor_fra.1135 = { # A Royal Progress (Tour)
 	}
 	option = { # Aim to weaken the influence of Marcel
 		name = flavor_fra.1135.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_severe_bonus }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 	}
@@ -4189,7 +4189,7 @@ flavor_fra.1136 = { # Ball of the Burning Men
 		name = flavor_fra.1136.a
 		historical_option = yes
 		add_legitimacy = legitimacy_weak_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_bonus
@@ -4213,7 +4213,7 @@ flavor_fra.1136 = { # Ball of the Burning Men
 	}
 	option = { # A tragic event, but not for the chroniclers!
 		name = flavor_fra.1136.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_mild_penalty
@@ -4545,8 +4545,8 @@ flavor_fra.1160 = { # The Roaming Routiers
 	option = { # Perhaps we can negotiate with them
 		name = flavor_fra.1160.b
 		change_gold_effect = { scale = -3 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = hire_rogue_mercenaries
 			hire_mercenary = scope:rogue_company_1
@@ -4576,7 +4576,7 @@ flavor_fra.1160 = { # The Roaming Routiers
 
 	option = { # Let them roam freely
 		name = flavor_fra.1160.c
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_weak_penalty
 		custom_tooltip = {
 			text = routiers_affected_provinces_by_undisturbed_raids
@@ -5390,7 +5390,7 @@ flavor_fra.1175 = { # Disloyalty in Normandy
 	option = { # Clamp down on the Norman lords
 		name = flavor_fra.1175.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		c:NRM = {
 			add_country_modifier = { modifier = fra_disloyal_norman_lords years = 10 mode = add }
 		}
@@ -5399,7 +5399,7 @@ flavor_fra.1175 = { # Disloyalty in Normandy
 
 	option = { # Appease the Norman lords to avoid enraging other subjects
 		name = flavor_fra.1175.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_country_modifier = { modifier = fra_appeasing_norman_lords years = 10 mode = add }
 		c:NRM = {
 			add_country_modifier = { modifier = fra_disloyal_norman_lords_appeased years = 10 mode = add }
@@ -5776,7 +5776,7 @@ flavor_fra.2000 = { # Resurgence against the English ## Based around Joan of Arc
 	option = { # Our spirits will never be broken!
 		name = flavor_fra.2000.b
 		add_war_exhaustion = war_exhaustion_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = individualism_vs_communalism value = societal_value_move_to_right }
 	}
 }
@@ -6068,7 +6068,7 @@ flavor_fra.2005 = { # The Return of Joan of Arc
 		trigger = {
 			has_variable = fra_joan_peacefully_released
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_country_modifier = {
 			modifier = fra_return_of_joan_of_arc
 			months = 60
@@ -6277,7 +6277,7 @@ flavor_fra.2007 = { # Prince/Dauphin is crowned King of France
 		}
 		custom_tooltip = english_appeasement_reduced_reward_tt
 		add_prestige = prestige_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		if = {
 			limit = {
 				has_country_modifier = fra_hyw_contested_succession_appeasing_english
@@ -6689,7 +6689,7 @@ flavor_fra.2014 = { # The Praguerie
 	option = { # Agree to the Abdication
 		name = flavor_fra.2014.b
 		set_new_ruler = scope:fra_heir
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 		add_country_modifier = { modifier = fra_success_of_the_praguerie_faction years = modifier_duration_years_normal mode = add }
 	}
@@ -6757,7 +6757,7 @@ flavor_fra.2020 = { # Jacques Coeur, Master of Mint
 	option = { # We have no need for a Master of Mint
 		name = flavor_fra.2020.b
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_character
 		}
@@ -6895,7 +6895,7 @@ flavor_fra.2022 = { # Couer Negotiates with Mamluks Sultans
 	option = { # Reject the treaty negotiated by Couer!
 		name = flavor_fra.2022.b
 		add_prestige = prestige_severe_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_weak_bonus }
 	}
 }
@@ -7421,7 +7421,7 @@ flavor_fra.2035 = { # Called to Arms by the League of Public Weal
 
 	option = { # Stay out of this conflict
 		name = flavor_fra.2035.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		ai_will_select = { value = 0 }
 	}
 }
@@ -7650,7 +7650,7 @@ flavor_fra.2041 = { #The Fiscal Prudence of Louis XI (Takes current ruler name)
 				mode = add
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_bonus }
         ai_chance = {
             base = 75
@@ -7667,7 +7667,7 @@ flavor_fra.2041 = { #The Fiscal Prudence of Louis XI (Takes current ruler name)
 				mode = add
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_extreme_bonus }
         ai_chance = {
             base = 20
@@ -7898,7 +7898,7 @@ flavor_fra.2044 = { # Coaching Inns # 'Postal' inns created during the reign of 
 	option = { # An expensive endeavor
 		name = flavor_fra.2044.c
 		add_legitimacy = legitimacy_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         ai_chance = {
             base = 10
         }
@@ -8077,7 +8077,7 @@ flavor_fra.2050 = { # Succession Crisis in Brittany
             add_opinion = { target = c:FRA modifier = opinion_did_not_influence_succession }
             add_antagonism = { target = c:FRA modifier = opinion_did_not_influence_succession_antagonism }
         }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_mild_penalty
         ai_chance = {
             base = 25
@@ -8156,7 +8156,7 @@ flavor_fra.2060 = { # A Traveling King/Queen
 	option = { # <province_2> would better serve as safer region to visit.
 		name = flavor_fra.2060.b
 		add_prestige = prestige_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		ruler ?= {
 			add_dip = 10
 		}
@@ -8227,7 +8227,7 @@ flavor_fra.2061 = { # The Shrewd Sibling
 	option = { # Promote her to serve as a close advisor
 		name = flavor_fra.2061.a
 		historical_option = yes
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_sibling = {
 			add_adm = 15
 			add_dip = 15
@@ -8325,7 +8325,7 @@ flavor_fra.2063 = { # Iconography of <current_monarch>
 	option = { # Encourage it to further improve <ruler> image
 		name = flavor_fra.2063.a
 		add_prestige = prestige_mild_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		ruler ?={
 			add_character_modifier = { modifier = fra_ruler_encouraged_self_iconography years = 15 mode = add }
 		}
@@ -8577,7 +8577,7 @@ flavor_fra.2101 = { # Milanese ruler Extends Friendship
 			NOT = { is_allied_with = { target = c:MLO } }
 		}
 		name = flavor_fra.2101.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_opinion = { target = c:MLO modifier = opinion_milanese_cordial_ties }
 		reverse_add_opinion = { target = c:MLO modifier = opinion_milanese_cordial_ties }
 		ai_chance = {
@@ -8707,7 +8707,7 @@ flavor_fra.2102 = { # Milan requests aid against Naples
 	option = { # Sforza and the ambitions of Naples are not the concerns of France
 		name = flavor_fra.2102.c
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_opinion = { target = c:NAP modifier = opinion_ignored_our_ambitions }
 		add_opinion = { target = c:MLO modifier = opinion_abandoned_us_mlo }
 		if = {
@@ -8842,7 +8842,7 @@ flavor_fra.2103 = { # The Neapolitan Aftermath
 		name = flavor_fra.2103.b
 		custom_tooltip = every_independent_italian_state_loses_opinion
 		custom_tooltip = formalize_disabled_tt
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_gold = {
 			value = scope:naples_treasury.monthly_income_trade_and_tax
 			multiply = 12
@@ -9281,7 +9281,7 @@ flavor_fra.2106 = { # Fate of Milan
 	option = { # Sforza demise was all we wanted, leave the Milanese people to choose a new ruler
 		name = flavor_fra.2106.c
 		add_legitimacy = legitimacy_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		c:MLO = {
 			create_character = {
 				estate = estate_type:nobles_estate
@@ -10159,7 +10159,7 @@ flavor_fra.309 = { # Collège de France
 	option = { # Efforts for the new college would be too great an expense
 		name = flavor_fra.309.b
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_left }
 	}
 }
@@ -10217,7 +10217,7 @@ flavor_fra.310 = { # National Language of France
 		culture = {
 			add_cultural_influence = cultural_influence_weak_penalty
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 	}
 }
@@ -10676,7 +10676,7 @@ flavor_fra.330 = { # The Edict of Fontainebleau # Based on Francis I
 		name = flavor_fra.330.a
 		historical_option = yes
 		custom_tooltip = fra_hostilities_with_lutheran_nations
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_policy = policy:edict_of_fontainebleau
 		hidden_effect = {
 			every_other_country = {
@@ -11224,7 +11224,7 @@ flavor_fra.351 = { # <Ruler> converts to Calvinism
 			change_character_religion = religion:calvinist
 		}
 		custom_tooltip = ruler_may_improve_relations_with_calvinist_nations
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
 			value = estate_satisfaction_extreme_penalty
@@ -11242,7 +11242,7 @@ flavor_fra.351 = { # <Ruler> converts to Calvinism
 		}
 		set_variable = { name = council_may_demand_reconversion value = 1 }
 		custom_tooltip = council_will_condemn_but_continue_rule
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_stability = stability_mild_penalty
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
@@ -11389,7 +11389,7 @@ flavor_fra.353 = { # Council Demands Conversion # Henry IV reconversion
 	option = { # <ruler>'s personal faith has been more a benefit than hinderance
 		name = flavor_fra.353.b
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_penalty
@@ -11467,7 +11467,7 @@ flavor_fra.354 = { # Maximilen de Bethune # Fianace and Development Minister
 
 	option = { # We have no need for him
 		name = flavor_fra.354.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 		hidden_effect = {
 			kill_character_silently = scope:target_character
@@ -11840,7 +11840,7 @@ flavor_fra.373 = { # <Monarch> and the East India Company
 	option = { # Let's not let the ruler's ambition become our downfall
 		name = flavor_fra.373.b
 		custom_tooltip = fra_maintain_current_colonial_policy_but_unlock
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		ai_chance = {
 			factor = 0.25
 		}
@@ -12034,7 +12034,7 @@ flavor_fra.401 = { # Centralization Efforts of Cardinal Richelieu
 
 	option = { # Curtail some of his efforts to prevent infuriating the Nobility
 		name = flavor_fra.401.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = fra_richelieu_central_efforts_curtailed years = 15 mode = add }
 		custom_tooltip = richelieu_curtailed_keeps_nobles_strong
 		ai_chance = {
@@ -12215,7 +12215,7 @@ flavor_fra.403 = { # Day of the Dupes # Conflict between Richeliu and the Queen-
 
 	option = { # <Queen_mother> is right, exile Richeliu from Court
 		name = flavor_fra.403.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = richelieu_retires_from_court
 			kill_character_silently = scope:target_character
@@ -12278,7 +12278,7 @@ flavor_fra.404 = { # Peace of Alès # Final Hugnuenot peace settlement by Richel
 
 	option = { # The Edict of Nantes was far enough
 		name = flavor_fra.404.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = if_monarch_revokes_nantes_modifier_lost
 		add_country_modifier = { modifier = fra_richelieu_nantes_maintained years = 15 mode = add }
 		ai_chance = {
@@ -12346,7 +12346,7 @@ flavor_fra.405 = { # Richeliu's Military Budget Reforms
 
 	option = { # Reject the Reforms
 		name = flavor_fra.405.c
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		ai_chance = {
 			factor = 0.25
@@ -12404,7 +12404,7 @@ flavor_fra.406 = { # Richelieu Heretic Diplomacy condemned by court officials
 
 	option = { # We cannot continue to alienate staunch allies in the court, cease diplomacy with heretics!
 		name = flavor_fra.406.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = fra_favoring_court_allies years = 10 mode = add }
 		ai_chance = {
 			factor = 0.3
@@ -12465,7 +12465,7 @@ flavor_fra.407 = { # Ordannaces of 1627 # Ingame, this uses the current year ## 
 
 	option = { # Adopt the Ordinance, but allow the governors to issue the policy
 		name = flavor_fra.407.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = fra_richelieu_ordinance_governors years = 10 mode = add }
 		ai_chance = {
 			factor = 0.25
@@ -12526,7 +12526,7 @@ flavor_fra.408 = { # The Passing of Richelieu
 
 	option = { # The controvery surrounding Richelieu will trouble us no longer
 		name = flavor_fra.408.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		ai_chance = {
 			factor = 0.5
 		}
@@ -13249,7 +13249,7 @@ flavor_fra.415 = { # Grande Ordonnance de Procédure Civil # Code Louis/Unficati
 
 	option = { # Maintain current customary laws
 		name = flavor_fra.415.c
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_extreme_bonus
 		ai_chance = {
 			factor = 0.1
@@ -13628,7 +13628,7 @@ flavor_fra.421 = { # The Nobility and the Palace of Versailies
 				add_adm = 4
 				add_dip = 8
 			}
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         }
 		if = {
 			limit = {
@@ -13879,7 +13879,7 @@ flavor_fra.425 = { # Quartering of the Dragoons
 	option = { # The Quartering of the Dragoons should prevent any uprisings
 		name = flavor_fra.425.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = {
 			modifier = fra_quartering_of_the_dragoons
 			years = 15
@@ -13893,7 +13893,7 @@ flavor_fra.425 = { # Quartering of the Dragoons
 	option = { # This would be too costly on the state, abandon the idea!
 		name = flavor_fra.425.b
 		add_stability = stability_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		ai_chance = {
 			factor = 0.35
 		}
@@ -14895,7 +14895,7 @@ flavor_fra.502 = { # A Visit from the Russian Tsar (Based on historical event)
 	option = { # A welcome vistor, but reject any future desires to visit court
 		name = flavor_fra.502.b
 		add_prestige = prestige_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		scope:fra_ruler = {
 			add_dip = 8
         }
@@ -15355,7 +15355,7 @@ flavor_fra.509 = { # The Banque Generale Invests in the Colonies
 		name = flavor_fra.509.b
 		custom_tooltip = law_monopoly_restricted
 		change_gold_effect = { scale = 0.50 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_country_modifier = { modifier = fra_john_law_mississippi_company_limit years = 15 mode = add }
 		set_variable = { name = prevented_law_colonial_monopoly value = 1 }
 		ai_chance = {
@@ -15417,7 +15417,7 @@ flavor_fra.510 = { # Benefits of the Banque Generale
 		custom_tooltip = bank_yields_benefits_for_now
 		change_gold_effect = { scale = 12.00 }
 		add_country_modifier = { modifier = fra_general_private_bank_benefits years = 12 mode = add }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 	}
 }
@@ -15608,7 +15608,7 @@ flavor_fra.512 = { # Fallout of John Law
 		historical_option = yes
 		kill_character_silently = scope:target_character
 		add_stability = stability_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		change_gold_effect = { scale = 0.75 }
 	}
 
@@ -15858,7 +15858,7 @@ flavor_fra.523 = { # Dissent Amongst the Gallicans proponents
 		name = flavor_fra.523.a
 		historical_option = yes
 		custom_tooltip = gallicans_in_clergy_will_oppose_crown
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_country_modifier = { modifier = fra_gallicans_allies years = 12 mode = add }
 		ai_chance = {
 			factor = 0.35
@@ -16113,7 +16113,7 @@ flavor_fra.531 = { # Philibert Orry's Balancing of the Budget # Dixieme Tax
 	option = { # The Risk is too Great
 		name = flavor_fra.531.b
 		scope:philip_orry = { move_country = root }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		add_country_modifier = { modifier = fra_dixieme_financial_woes years = 5 mode = add }
 		ai_chance = {
@@ -16289,7 +16289,7 @@ flavor_fra.534 = { # End of Fleury Reign # Fleury will be scripted to 'die', alt
 		name = flavor_fra.534.a
 		historical_option = yes
 		remove_country_modifier = fra_fleury_ministry
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
         scope:fra_ruler = {
             add_character_modifier = {
                 modifier = fra_no_chief_minister
@@ -16304,7 +16304,7 @@ flavor_fra.534 = { # End of Fleury Reign # Fleury will be scripted to 'die', alt
 
 	option = { # Increase reliance on the council with Fleury passing
 		name = flavor_fra.534.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_country_modifier = fra_fleury_ministry
         scope:fra_ruler = {
             add_character_modifier = {
@@ -16643,7 +16643,7 @@ flavor_fra.544 = { # Heir Disapproves of the Supression of the Jesuits
 
 	option = { # Compromise and return some power to the Jesuits
 		name = flavor_fra.544.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_country_modifier = { modifier = fra_royal_house_feuds_compromise years = 10 mode = add }
 		ai_chance = {
 			factor = 0.3

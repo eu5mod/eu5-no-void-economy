@@ -93,9 +93,9 @@ shirazi_legacy = {
 	}
 
 	requires = imperial_ambitions
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
-	monthly_devotion = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
 }
 
 zan_gold_trade_of_africa = {

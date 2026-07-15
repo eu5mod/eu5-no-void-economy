@@ -63,7 +63,7 @@ confucian_events.1 = {
 
 	option = {
 		name = confucian_events.1.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = { modifier:allow_righteousness = yes }
 			add_righteousness = righteousness_mild_bonus
@@ -244,7 +244,7 @@ confucian_events.3 = {
 				add_pop_satisfaction = pop_satisfaction_mild_bonus
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -259,7 +259,7 @@ confucian_events.3 = {
 			}
 			change_celestial_authority = { value = celestial_authority_weak_bonus }
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_country_modifier = { modifier = converted_minister months = 121 mode = add_and_extend }
 		scope:target_character = { change_character_religion = scope:target_location.dominant_religion }
 	}
@@ -395,7 +395,7 @@ confucian_events.5 = {
 				add_location_modifier = { modifier = local_rites_represed months = 121 mode = add_and_extend }
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = { is_leader_of_international_organization = international_organization:middle_kingdom }
 			change_celestial_authority = { value = celestial_authority_weak_penalty }
@@ -464,7 +464,7 @@ confucian_events.6 = {
 			limit = { is_leader_of_international_organization = international_organization:middle_kingdom }
 			change_celestial_authority = { value = celestial_authority_weak_penalty }
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_prestige = prestige_mild_penalty
 		scope:target_location.province = {
 			every_location_in_province = {
@@ -622,7 +622,7 @@ confucian_events.8 = {
 			}
 		}
 		add_prestige = prestige_weak_penalty
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			harmony_mild_towards_equilibrium = yes
@@ -685,7 +685,7 @@ confucian_events.9 = {
 	}
 	option = {
 		name = confucian_events.9.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = { modifier:allow_righteousness = yes }
 			add_righteousness = righteousness_weak_penalty
@@ -853,7 +853,7 @@ confucian_events.12 = { #Birth and Privilege
 	}
 	option = {
 		name = confucian_events.12.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			add_harmony = harmony_weak_penalty
@@ -901,7 +901,7 @@ confucian_events.13 = { #Meritocracy
 			}
 			add_honor = honor_weak_penalty
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 	option = {
 		name = confucian_events.13.b

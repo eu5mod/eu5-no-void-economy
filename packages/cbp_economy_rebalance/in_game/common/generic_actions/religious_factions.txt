@@ -218,7 +218,7 @@ get_marriage_from_imperial_court = {
 		}
 		custom_tooltip = marriage_from_imperial_court_tt
 		scope:actor = {
-			add_legitimacy = cbp_instant_add_legitimacy_legitimacy_weak_bonus_8dfa8b579d
+			add_legitimacy = cbp_instant_add_legitimacy_legitimacy_weak_bonus_8dfa8b579d # VANILLA = legitimacy_weak_bonus
 		}
 	}
 

@@ -238,7 +238,7 @@ king_in_prussia.5 = {
 		}
 
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_casus_belli = {	target = scope:emperor_country	type = casus_belli:cb_insulted_us }
 	}
 }

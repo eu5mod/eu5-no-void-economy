@@ -211,7 +211,7 @@ personality_events.5 = {
 	option = {
 		name = personality_events.5.b
 		change_gold_effect = { scale = -2 }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -501,7 +501,7 @@ personality_events.11 = {
 	}
 	option = {
 		name = personality_events.11.c
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -1657,7 +1657,7 @@ personality_events.36 = {
 	}
 	option = {
 		name = personality_events.36.c
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -2026,7 +2026,7 @@ personality_events.46 = {
 	option = {
 		name = personality_events.46.a
 		change_gold_effect = { scale = 3 }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 	option = {
 		name = personality_events.46.b
@@ -2377,7 +2377,7 @@ personality_events.56 = {
 	}
 	option = {
 		name = personality_events.56.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		remove_from_cabinet = scope:target_advisor
 		scope:target_advisor = {
 			add_character_modifier = {
@@ -2446,7 +2446,7 @@ personality_events.57 = {
 	option = {
 		name = personality_events.57.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_legitimacy = legitimacy_weak_penalty
 	}
 }

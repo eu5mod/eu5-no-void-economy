@@ -116,8 +116,8 @@ sinicization_disaster.2 = { #Cabinet Member Holds Chinese Sympathies
 	option = {
 		name = sinicization_disaster.2.a
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:target_emperor_scope.culture = {
 			add_cultural_influence = {
 				value = scope:target_character.total_abilities
@@ -228,7 +228,7 @@ sinicization_disaster.3 = { #Clergy Resist Sinicization
 	option = {
 		name = sinicization_disaster.3.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = {
 				value = "root.estate_power(estate_type:clergy_estate)"
@@ -299,7 +299,7 @@ sinicization_disaster.4 = { #Nobles Resist Sinicization
 	option = {
 		name = sinicization_disaster.4.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = {
 				value = "root.estate_power(estate_type:nobles_estate)"
@@ -370,7 +370,7 @@ sinicization_disaster.5 = { #Burghers Resist Sinicization
 	option = {
 		name = sinicization_disaster.5.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:burghers_estate
 			value = {
 				value = "root.estate_power(estate_type:burghers_estate)"
@@ -441,7 +441,7 @@ sinicization_disaster.6 = { #Peasants Resist Sinicization
 	option = {
 		name = sinicization_disaster.6.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = {
 				value = "root.estate_power(estate_type:peasants_estate)"
@@ -724,7 +724,7 @@ sinicization_disaster.100 = {
 		trigger = { is_subject_or_below_of = c:CHI }
 
 		c:CHI = {
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 			change_celestial_authority = { value = celestial_authority_mild_bonus }
 		}
 	}

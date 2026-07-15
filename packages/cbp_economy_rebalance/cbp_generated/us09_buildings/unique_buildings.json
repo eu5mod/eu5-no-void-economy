@@ -1076,7 +1076,7 @@
       }
     ]
   },
-  "generated_sha256": "72121f06a2363971a60d94ec7a777bc3ba12b812def12aee6adcfcd8d8a2d81b",
+  "generated_sha256": "c13d1708caaad33844f240b488b24e1622951d5af9a42b42f4f46394c2a48334",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/unique_buildings.txt",
   "source_sha256": "b7853a50eda5edd9dbc291d962096ce73296b1b3e78412e28e333c3c7836080e",

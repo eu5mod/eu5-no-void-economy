@@ -144,7 +144,7 @@ flavor_vlt.1 = {
 		name = flavor_vlt.1.b
 
 		add_republican_tradition = republican_tradition_severe_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

@@ -2099,7 +2099,7 @@ red_turban_rebellions.13 = {
 	}
 	option = {
 		name = red_turban_rebellions.release_loyalist.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = rtr_release_tag_CNP
 	}
 	option = {
@@ -2191,7 +2191,7 @@ red_turban_rebellions.14 = {
 	}
 	option = {
 		name = red_turban_rebellions.release_loyalist.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = rtr_release_tag_CDN
 	}
 	option = {
@@ -2282,7 +2282,7 @@ red_turban_rebellions.15 = {
 	}
 	option = {
 		name = red_turban_rebellions.release_loyalist.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = rtr_release_tag_CSI
 	}
 	option = {
@@ -2380,7 +2380,7 @@ red_turban_rebellions.16 = {
 	}
 	option = {
 		name = red_turban_rebellions.release_loyalist.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = rtr_release_tag_CKO
 	}
 	option = {
@@ -2471,7 +2471,7 @@ red_turban_rebellions.17 = {
 	}
 	option = {
 		name = red_turban_rebellions.release_loyalist.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		remove_variable = rtr_release_tag_CNA
 	}
 	option = {
@@ -2720,7 +2720,7 @@ red_turban_rebellions.22 = {
 				}
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = red_turban_rebellions.22.a.tt
 			every_owned_location = {
@@ -3033,7 +3033,7 @@ red_turban_rebellions.36 = {
 				mode = add_and_extend
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 		if = {
 			limit = { is_ai = yes }
@@ -3189,7 +3189,7 @@ red_turban_rebellions.40 = {
 			years = 15
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -3411,7 +3411,7 @@ red_turban_rebellions.43 = {
 					check_range_bounds = no
 					move_country = root
 					root = {
-						add_stability = 0.5
+						add_stability = 0.5 # VANILLA = 1
 						add_army_tradition = 1
 					}
 				}

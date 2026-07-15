@@ -29,7 +29,7 @@
 			potential_trigger = {
 				is_leader_of_international_organization = international_organization:japanese_shogunate
 			}
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 			change_policy_cost_modifier = -0.05
 		}
 		country_modifier = {

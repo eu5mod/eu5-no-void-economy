@@ -343,7 +343,7 @@ flavor_csu.202 = { #The Aftermath
 
 		set_variable = enable_hurin_qusqu_privilege_variable
 		grant_estate_privilege = estate_privilege:hurin_qusqu_privilege
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_stability = stability_severe_bonus
 	}
 
@@ -385,8 +385,8 @@ flavor_csu.202 = { #The Aftermath
 				kill_character = this
 			}
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_gold_effect = { scale = 10 }
 	}
 }
@@ -587,7 +587,7 @@ flavor_csu.213 = { #The Evil Child
 			}
 		}
 		add_prestige = prestige_severe_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 

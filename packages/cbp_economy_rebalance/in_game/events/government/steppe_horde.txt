@@ -156,7 +156,7 @@ steppe_horde.3 = {
 			killer = scope:target_ruler
 			reason = execution
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -218,7 +218,7 @@ steppe_horde.4 = {
 			killer = scope:target_ruler
 			reason = execution
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -615,7 +615,7 @@ steppe_horde.15 = {
 	option = {
 		name = steppe_horde.15.b
 		add_horde_unity = horde_unity_weak_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 

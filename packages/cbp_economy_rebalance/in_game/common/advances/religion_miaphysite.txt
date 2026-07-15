@@ -36,7 +36,7 @@ original_christianity = {
 
 	potential = { religion = religion:miaphysite }
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 
 	requires = scholasticism
 }

@@ -581,7 +581,7 @@ town_rights_events.6 = {	# Poor quality tools flood the market
 
 		ai_will_select = { value = 1 }
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -1062,7 +1062,7 @@ town_rights_events.11 = {	# Royal Textile Rights Great Fashion
 
 		culture = { add_cultural_tradition = cultural_tradition_weak_bonus }
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -1451,7 +1451,7 @@ town_rights_events.16 = {	# Royal Book Rights Controversial Texts
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -1812,7 +1812,7 @@ town_rights_events.20 = {	# Royal Brewing Rights Grain Diverted to Drink Product
 	option = {
 		name = town_rights_events.20.c
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		add_estate_satisfaction = {
 			type = estate_type:burghers_estate

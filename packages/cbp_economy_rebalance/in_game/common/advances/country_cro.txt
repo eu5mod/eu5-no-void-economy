@@ -109,9 +109,9 @@ svn_the_slavonian_sabor = {
 		has_or_had_tag = SVN
 	}
 
-	monthly_devotion = 0.0375
-	monthly_legitimacy = 0.0375
-	monthly_republican_tradition = 0.0375
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 	parliament_base_support = 0.05
 
 	requires = late_feudal_relations

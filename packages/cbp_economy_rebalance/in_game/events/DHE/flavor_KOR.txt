@@ -220,7 +220,7 @@ scripted_effect kor_mongol_aristocrat_demand_estate_satisfaction = {
 	}
 }
 scripted_effect kor_mongol_aristocrat_demand_government_power = {
-	add_government_power = cbp_event_add_government_power_var_kor_mongol_government_power_to_pay_cdf37a8bda
+	add_government_power = cbp_event_add_government_power_var_kor_mongol_government_power_to_pay_cdf37a8bda # VANILLA = var:kor_mongol_government_power_to_pay
 	kor_mongol_transfer_demand = { type = government_power target = $target$ }
 }
 scripted_effect kor_mongol_aristocrat_demand = {
@@ -349,7 +349,7 @@ flavor_kor.3 = {
 	option = {
 		name = flavor_kor.3.a
 		scope:mongol_aristocrat = { move_country = root }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		hidden_effect = { change_variable = { name = kor_is_influenced_by_mongols add = 1 } }
 	}
 	option = {
@@ -885,7 +885,7 @@ flavor_kor.13 = {
 			text = flavor_kor.13.a.tt
 			set_variable = { name = kor_has_confucianism_active value = yes }
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1353,7 +1353,7 @@ scripted_effect support_faction_hungu = {
 }
 
 scripted_effect support_faction_gwan_hak = {
-	add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+	add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 }
 
 scripted_effect support_faction_jeol_eui = {
@@ -1867,7 +1867,7 @@ flavor_kor.27 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_policy = policy:kor_chinese_currency
 	}
 
@@ -2081,7 +2081,7 @@ flavor_kor.30 = {
 		}
 
 		add_prestige = prestige_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -2249,7 +2249,7 @@ flavor_kor.32 = {
 	option = {
 		name = flavor_kor.32.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		custom_tooltip = kor_mutiny
 	}
 }

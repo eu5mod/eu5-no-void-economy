@@ -246,7 +246,7 @@ reform_coinage_in_circle = {
 			every_imperial_circle_country_is_member_of = {
 				add_circle_satisfaction = 5
 			}
-			add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43
+			add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43 # VANILLA = government_power_mild_penalty
 			add_country_modifier = {
 				modifier = reformed_circle_coinage_leader
 				years = 5

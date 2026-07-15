@@ -83,7 +83,7 @@ flavor_chi.1 = {
 	}
 	option = {
 		name = flavor_chi.1.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_righteousness = yes }
 		}
@@ -322,7 +322,7 @@ flavor_chi.4 = {
 	}
 	option = {
 		name = flavor_chi.4.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			harmony_mild_towards_equilibrium = yes
@@ -440,7 +440,7 @@ flavor_chi.5 = {
 	}
 	option = {
 		name = flavor_chi.5.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			add_harmony = harmony_severe_bonus
@@ -993,7 +993,7 @@ flavor_chi.13 = {
 	}
 	option = {
 		name = flavor_chi.13.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_righteousness = yes }
 			add_righteousness = righteousness_severe_bonus
@@ -1126,7 +1126,7 @@ flavor_chi.15 = {	#Administrative Purge
 	option = {
 		name = flavor_chi.15.c
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			harmony_mild_towards_equilibrium = yes
@@ -1213,7 +1213,7 @@ flavor_chi.16 = {	#Mistrust in the Cabinet
 	option = {
 		name = flavor_chi.16.b
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		if = {
 			limit = {
 				OR = {
@@ -1640,7 +1640,7 @@ flavor_chi.20 = {	#Famine in [target_province.GetNameWithNoTooltip]
 	option = {
 		name = flavor_chi.20.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		custom_tooltip = target_province_loses_prosperity_and_pop_satisfaction_tt
 		hidden_effect = {
 			scope:target_province = {
@@ -2158,7 +2158,7 @@ flavor_chi.26 = {
 	option = {
 		name = flavor_chi.26.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		chi_adjust_pre_rtr_modifiers = { value = 0.15 }
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
@@ -2338,7 +2338,7 @@ flavor_chi.29 = {
 	option = {
 		name = flavor_chi.29.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_weak_penalty
 	}
 }
@@ -2804,7 +2804,7 @@ flavor_chi.37 = {
 	option = {
 		name = flavor_chi.37.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -3219,7 +3219,7 @@ flavor_chi.43 = {
 			value = societal_value_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		hidden_effect = {
 			kill_character_silently = {
@@ -3683,7 +3683,7 @@ flavor_chi.50 = {
 	option = {
 		name = flavor_chi.50.c
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -4224,7 +4224,7 @@ flavor_chi.57 = {
 			value = societal_value_minor_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -6021,7 +6021,7 @@ flavor_chi.86 = {
 	option = {
 		name = flavor_chi.86.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -6406,7 +6406,7 @@ flavor_chi.91 = {
 			factor = 0.25
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -7977,7 +7977,7 @@ flavor_chi.110 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -8928,7 +8928,7 @@ flavor_chi.124 = {
 
 		repair_grand_canal_china = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -9557,7 +9557,7 @@ flavor_chi.1102 = {
 	option = {
 		name = flavor_chi.1102.b
 		add_prestige = prestige_weak_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		if = {
 			limit = { modifier:allow_harmony = yes }
 			harmony_mild_towards_equilibrium = yes

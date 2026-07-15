@@ -83,9 +83,9 @@ bos_kingly_ambitions = {
 	}
 
 	army_heavy_infantry_power = 0.05
-	monthly_devotion = 0.0375
-	monthly_legitimacy = 0.0375
-	monthly_republican_tradition = 0.0375
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 
 	requires = regulate_court_procedures
 }

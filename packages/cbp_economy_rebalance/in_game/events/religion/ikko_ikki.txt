@@ -163,7 +163,7 @@ ikko_ikki.1 = {
 			}
 		}
 		else = {
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		}
 	}
 
@@ -483,7 +483,7 @@ ikko_ikki.4 = { #Jinaicho
 			}
 		}
 		else = {
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		}
 	}
 	option = { #Work together
@@ -755,7 +755,7 @@ ikko_ikki.7 = { #Parallel Authority
 	option = { #Use them
 		name = ikko_ikki.7.a
 		add_country_modifier = { modifier = ikko_ikki_temple_towns years = 25 mode = add_and_extend }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = { #Curtail them
@@ -763,7 +763,7 @@ ikko_ikki.7 = { #Parallel Authority
 		trigger = {
 			country_belongs_to_jodou_shinshuu = no
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_bonus }
 	}
 }
@@ -846,7 +846,7 @@ ikko_ikki.8 = { #Support of the ikko ikki
 	option = { #Pull back
 		name = ikko_ikki.8.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 	}
 }

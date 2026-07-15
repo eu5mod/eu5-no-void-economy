@@ -871,7 +871,7 @@ flavor_ach.11 = { # Exploit the Byzantine Civil war # Opportunity should Byzanti
     }
     option = { # Lets avoid involving ourselves in byzantine internal affairs.
         name = flavor_ach.11.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_prestige = prestige_weak_penalty
         add_country_modifier = { modifier = ach_avoided_byzantine_civil_war years = 10 mode = add_and_extend }
     }
@@ -914,7 +914,7 @@ flavor_ach.12 = { # The Greek Populace of Achaea ## Appeasing the Greeks
     option = { # Maintain the current status quo.
         name = flavor_ach.12.a
         historical_option = yes
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_legitimacy = legitimacy_mild_bonus
         add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_penalty }
         add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_weak_penalty }
@@ -931,7 +931,7 @@ flavor_ach.12 = { # The Greek Populace of Achaea ## Appeasing the Greeks
     option = { # Strive for a compromise with the greek elite
         name = flavor_ach.12.c
         add_prestige = prestige_mild_penalty
-        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
         add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
         add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_penalty }
         add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_severe_bonus }
@@ -1245,7 +1245,7 @@ flavor_ach.15 = { # The Passing of the Latin Emperorship
     option = { # Host a grand ceremony for Robert!
         name = flavor_ach.15.a
         add_prestige = prestige_extreme_bonus
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_country_modifier = { modifier = ach_crowning_of_a_new_emperor years = 15 mode = add }
     }
 
@@ -1356,7 +1356,7 @@ flavor_ach.16 = { # Pope Takes Interest in restoration of the Latin empire
     option = { # Reject his offer, we shall go our own path
         name = flavor_ach.16.b
         add_prestige = prestige_severe_bonus
-        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
         c:PAP = {
             add_opinion = { target = c:ACH modifier = ach_rejected_papacy_offer }
         }

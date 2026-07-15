@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 hand_cannon_guild = {
 	is_foreign = no
@@ -32,7 +33,7 @@ hand_cannon_guild = {
 			tin = 0.0211
 
 			produced = firearms
-			output = 0.324
+			output = 0.324 # VANILLA = 0.30
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -73,7 +74,7 @@ gun_smith = {
 			tools = 0.0175
 			
 			produced = firearms
-			output = 0.162
+			output = 0.162 # VANILLA = 0.15
 			
 			category = guild_input
 
@@ -88,7 +89,7 @@ gun_smith = {
 			tools = 0.2888
 
 			produced = firearms
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -100,7 +101,7 @@ gun_smith = {
 			tools = 0.3126
 
 			produced = firearms
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -114,7 +115,7 @@ gun_smith = {
 			lead = 0.1
 			saltpeter = 0.1
 			produced = firearms
-			output = 0.1728
+			output = 0.1728 # VANILLA = 0.16
 			debug_max_profit = guild_profit_margin
 			category = guild_input
 		}
@@ -122,7 +123,7 @@ gun_smith = {
 			iron = 0.1
 			saltpeter = 0.1
 			produced = firearms
-			output = 0.216
+			output = 0.216 # VANILLA = 0.20
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -165,7 +166,7 @@ guns_workshop = {
 			tools = 0.3125
 			
 			produced = firearms
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			debug_max_profit = workshop_profit_margin
 			
 			category = workshop_input
@@ -177,7 +178,7 @@ guns_workshop = {
 			tools = 0.3072
 			
 			produced = firearms
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			debug_max_profit = workshop_profit_margin
 			
 			category = workshop_input
@@ -191,7 +192,7 @@ guns_workshop = {
 			lead = 0.12
 			saltpeter = 0.12
 			produced = firearms
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
 		}
@@ -199,7 +200,7 @@ guns_workshop = {
 			iron = 0.12
 			saltpeter = 0.12
 			produced = firearms
-			output = 0.27
+			output = 0.27 # VANILLA = 0.25
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
 		}
@@ -247,7 +248,7 @@ firearms_manufactory = {
 			
 			category = manufactory_input
 			produced = firearms
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			debug_max_profit = manufactory_profit_margin
 		}
 	}
@@ -290,7 +291,7 @@ firearms_factory = {
 			
 			
 			produced = firearms
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

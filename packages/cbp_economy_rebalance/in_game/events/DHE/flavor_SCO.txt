@@ -68,7 +68,7 @@ flavor_sco.1 = {
 		name = flavor_sco.1.b
 		add_prestige = prestige_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -345,7 +345,7 @@ flavor_sco.5 = { # The First Congregation
 	option = {
 		name = flavor_sco.5.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = sco_the_first_congregation years = 12 mode = add_and_extend }
 		custom_tooltip = sco_prevent_catholic_conversion
 	}
@@ -596,8 +596,8 @@ flavor_sco.10 = {
 	}
 	option = {
 		name = flavor_sco.10.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_policy = policy:witchcraft_ignored
 	}
 }
@@ -988,7 +988,7 @@ flavor_sco.15 = { # Loch Ness Monster sighting
 
 	option = {
 		name = flavor_sco.15.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_move_to_right }
 	}
 }
@@ -1434,7 +1434,7 @@ flavor_sco.20 = { # Wild Haggis
 
 	option = {
 		name = flavor_sco.20.a # substitute
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_tiny_move_to_right }
 
 		historical_option = yes
@@ -1509,7 +1509,7 @@ flavor_sco.100 = { # Aftermath of Halidon Hill
 
 	option = { # We shall force Balliol hand.
 		name = flavor_sco.100.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_severe_bonus
 		add_country_modifier = { modifier = sco_civil_war_defensive years = 12 mode = add_and_extend }
 		change_societal_value = { type = offensive_vs_defensive value = societal_value_move_to_right }
@@ -1568,7 +1568,7 @@ flavor_sco.101 = { # The Balliol Claim
 	option = { # We will crush this insurgency and push out the Brus for good!
 		name = flavor_sco.101.a
 		historical_option = yes
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		add_country_modifier = { modifier = sbl_english_backing years = 12 mode = add_and_extend }
 	}
@@ -1776,7 +1776,7 @@ flavor_sco.104 = { # A Free and Independent Kingdom
 	option = { # Now is the time for peace and prosperity
 		name = flavor_sco.104.b
 		add_country_modifier = { modifier = sco_focus_on_peace years = 15 mode = add_and_extend }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		ai_chance = {
 			factor = 0.25
@@ -1849,7 +1849,7 @@ flavor_sco.105 = { # Rise of the Stewarts (Stuart)
 			add_dip = 7
 			add_mil = 7
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		ai_chance = {
 			factor = 0.3
@@ -1908,7 +1908,7 @@ flavor_sco.106 = { # Ascension of the Stewarts
 	option = { # The Stewarts will now preside as rulers of Scotland
 		name = flavor_sco.106.a
 		set_new_ruler = scope:target_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 	}
 
@@ -1968,7 +1968,7 @@ flavor_sco.107 = { # Scottish Clans Rebuke Stewart Rule
 	option = { # Offer concessions to appease the unruly clans
 		name = flavor_sco.107.b
 		add_policy = policy:inherited_clan_holdings
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 		add_estate_satisfaction = { type = estate_type:tribes_estate value = estate_satisfaction_severe_bonus }
 		ai_chance = {
@@ -2230,7 +2230,7 @@ flavor_sco.111 = { # English Border Enclaves
 		name = flavor_sco.111.a
 		historical_option = yes
 		add_prestige = prestige_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		c:ENG = {
 			add_opinion = { target = c:SCO modifier = opinion_sco_attacking_enclaves }
 		}
@@ -2259,7 +2259,7 @@ flavor_sco.111 = { # English Border Enclaves
 	option = { # Leave the enclaves uncontested for now
 		name = flavor_sco.111.b
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = centralization_vs_decentralization
 			value = societal_value_move_to_right
@@ -2524,7 +2524,7 @@ flavor_sco.202 = { # Expedition into the Highlands
 
 	option = { # It would be unwise to enrage the highland clans
 		name = flavor_sco.202.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = sco_did_not_press_highlands_issue years = 10 mode = add_and_extend }
 		culture:highland = { add_cultural_influence = cultural_influence_severe_bonus }
 		ai_chance = {
@@ -2661,7 +2661,7 @@ flavor_sco.204 = { # Founding of Aberdeen University
 
 	option = { # We have no need for this college
 		name = flavor_sco.204.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		ai_chance = {
 			factor = 0.25
@@ -2763,7 +2763,7 @@ flavor_sco.206 = { # The Decline of the Scottish Parliament
 	option = { # Let us move to reconvene parliament like the days of old.
 		name = flavor_sco.206.b
 		add_legitimacy = legitimacy_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = sco_summoning_of_parliament years = 12 mode = add_and_extend }
 		ai_chance = {
 			factor = 0.5
@@ -3161,7 +3161,7 @@ flavor_sco.303 = { # The Statutes of Iona
 			revoke_estate_privilege = estate_privilege:tribes_scotland_gaelic_heritage
 		}
 		grant_estate_privilege = estate_privilege:sco_statutes_of_iona
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		ai_chance = {
 			factor = 0.75
 		}
@@ -3288,7 +3288,7 @@ flavor_sco.400 = { # Expedition to the New World
 
 	option = { # Halt any colonial ambitions for now
 		name = flavor_sco.400.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_policy = policy:sco_no_colonial_affairs
 		ai_chance = {
 			factor = 0.4

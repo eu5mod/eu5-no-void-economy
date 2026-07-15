@@ -1466,7 +1466,7 @@ flavor_ser.84 = {
 		}
 
 		add_war_exhaustion = war_exhaustion_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 		remove_variable = ser_alliance_variable
 	}
@@ -2253,7 +2253,7 @@ flavor_ser.200 = { #Vidovdan
 
 	option = {
 		name = flavor_ser.200.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_bonus
@@ -2595,7 +2595,7 @@ flavor_ser.260 = { #The Secession of Zeta
 
 	option = {
 		name = flavor_ser.260.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_penalty }
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_left }

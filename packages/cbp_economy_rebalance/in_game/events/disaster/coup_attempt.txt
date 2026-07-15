@@ -192,7 +192,7 @@ coup_attempt.3 = {	#Conspiracy Member Exposed
 			25 = {
 				desc = cease_activities_and_stay
 				show_chance = no
-				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 			}
 		}
 	}
@@ -343,7 +343,7 @@ coup_attempt.5 = {	#Heir Falls Under Suspicion
 	option = {	#Leave him be
 		name = coup_attempt.5.c
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 	}
 }
@@ -655,7 +655,7 @@ coup_attempt.7 = {	#The Private Council
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		custom_tooltip = {
 			text = conspirators_will_stick_around_absolved_2_tt
 			scope:target_character_2 ?= { remove_variable = potential_conspirator_variable }

@@ -72,9 +72,9 @@ cor_capituli_di_corsica = {
 		has_or_had_tag = COR
 	}
 
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	global_monthly_prosperity = 0.001
 
 	requires = formalized_relations

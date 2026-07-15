@@ -30,7 +30,7 @@ maori_whakapapa_advance = {
 			culture = { merged_culture_group_contains_culture = culture:maori_culture }
 		}
 	}
-	monthly_tribal_cohesion = 0.075
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.1
 }
 
 maori_te_reo_advance = {

@@ -438,7 +438,7 @@ english_civil_war.256 = { #New Model Army
 			text = target_character_2_goes_away_tt
 			kill_character_silently = scope:target_character_2
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = pi_will_be_available_for_10_years_tt
 			set_variable = {

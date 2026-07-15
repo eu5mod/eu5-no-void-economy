@@ -119,7 +119,7 @@ flavor_bav.2 = {
 	option = {
 		name = flavor_bav.2.c
 		add_prestige = prestige_mild_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
 }
@@ -904,7 +904,7 @@ flavor_bav.20 = {
     option = {
         name = flavor_bav.20.b
         add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
    }
 }
 
@@ -1068,11 +1068,11 @@ flavor_bav.25 = {
     option = {
         name = flavor_bav.25.a
         add_country_modifier = { modifier = bav_reinheitsgebot }
-        add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+        add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
     }
     option = {
         name = flavor_bav.25.b
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
     }
 }
@@ -1260,7 +1260,7 @@ flavor_bav.28 = {
 
 	option = {
 		name = flavor_bav.28.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 	}
 }
@@ -1307,7 +1307,7 @@ flavor_bav.29 = {
 				modifier = bav_refused_electorship
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

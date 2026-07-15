@@ -348,7 +348,7 @@ crisis_of_the_chinese_dynasty.5 = {
 	option = {
 		name = crisis_of_the_chinese_dynasty.5.d
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		if = {
 			limit = {
 				exists = international_organization:middle_kingdom
@@ -745,6 +745,6 @@ crisis_of_the_chinese_dynasty.9 = {
 		name = crisis_of_the_chinese_dynasty.9.a
 
 		change_celestial_authority = { value = celestial_authority_weak_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }

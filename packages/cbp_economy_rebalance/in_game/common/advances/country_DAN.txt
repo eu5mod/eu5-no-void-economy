@@ -29,7 +29,7 @@ dan_rulers_of_the_north = {
 		has_or_had_tag = DAN
 	}
 	diplomatic_capacity = 1
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 
 	requires = crown_power_advance_renaissance
 }

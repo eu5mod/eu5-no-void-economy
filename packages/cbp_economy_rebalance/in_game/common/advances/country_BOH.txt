@@ -1,9 +1,10 @@
 ﻿students_of_foreign_courts = {
 	age = age_1_traditions
+	icon = students_of_foreign_courts
 	potential = {
 		has_or_had_tag = BOH
 	}
-	
+
 	country_child_education = 0.1
 	global_nobles_max_literacy = 5
 	requires = chancery_advance
@@ -14,7 +15,7 @@ wagenburg = {
 	potential = {
 		has_or_had_tag = BOH
 	}
-	
+
 	unlock_unit = a_wagenburg
 
 	requires = unlock_supply_carts
@@ -22,17 +23,19 @@ wagenburg = {
 
 bohemian_imperial_standing = {
 	age = age_2_renaissance
+	icon = bohemian_imperial_standing
 
 	potential = {
 		has_or_had_tag = BOH
 	}
 
-	diplomatic_reputation = diplomatic_reputation_weak_bonus 
+	diplomatic_reputation = diplomatic_reputation_weak_bonus
 	diplomatic_capacity = 1
 }
 
 urbanization_decrees = {
 	age = age_2_renaissance
+	icon = urbanization_decrees
 
 	potential = {
 		has_or_had_tag = BOH
@@ -45,6 +48,7 @@ urbanization_decrees = {
 
 bohemian_crystal = {
 	age = age_3_discovery
+	icon = bohemian_crystal
 
 	potential = {
 		has_or_had_tag = BOH
@@ -56,18 +60,20 @@ bohemian_crystal = {
 
 fortified_towns = {
 	age = age_3_discovery
+	icon = fortified_towns
 
 	potential = {
 		has_or_had_tag = BOH
 	}
 
 	requires = supply_depot_advance_age_3_discovery
-	global_fort_build_buildings_cost = -0.1
+	global_fort_build_buildings_efficiency = 0.2
 	global_defensive = 0.05
 }
 
 hussite_traditions = {
 	age = age_4_reformation
+	icon = hussite_traditions
 
 	potential = {
 		has_or_had_tag = BOH
@@ -84,6 +90,7 @@ hussite_traditions = {
 
 kutnohorian_deal = {
 	age = age_4_reformation
+	icon = kutnohorian_deal
 	potential = {
 		has_or_had_tag = BOH
 	}
@@ -93,7 +100,8 @@ kutnohorian_deal = {
 
 bohemian_thaler = {
 	age = age_4_reformation
-	potential = { 
+	icon = bohemian_thaler
+	potential = {
 		has_or_had_tag = BOH
 	}
 	requires = global_trade_advance

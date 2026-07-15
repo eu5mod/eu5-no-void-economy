@@ -91,7 +91,7 @@ flavor_kbo.3 = {
 	}
 	option = {
 		name = flavor_kbo.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -204,7 +204,7 @@ flavor_kbo.7 = { #Thorns of a Royal Crown
 	option = {
 		name = flavor_kbo.7.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = kbo_location_25_control_everywhere_tt
 		hidden_effect = {
@@ -408,7 +408,7 @@ flavor_kbo.10 = { #Legalism and Islam in [ROOT.GetCountry.GetName]
 	option = {
 		name = flavor_kbo.10.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -491,7 +491,7 @@ flavor_kbo.11 = { #Relocation of the Zaghawa
 
 	option = { #Leave them be
 		name = flavor_kbo.11.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_right }
 	}
 
@@ -557,14 +557,14 @@ flavor_kbo.12 = { #Legacy of the [ROOT.GetCountry.GetLongNameWithNoTooltip]
 			change_country_flag = BNU
 		}
 		set_variable = kbo_lost_kanem
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_stability = stability_weak_bonus
 	}
 
 	option = { #We are not dead yet
 		name = flavor_kbo.12.b
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -780,7 +780,7 @@ flavor_kbo.16 = { #Azalai
 			type = centralization_vs_decentralization
 			value = societal_value_large_move_to_left
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -841,7 +841,7 @@ flavor_kbo.17 = { #$sharia$ in [ROOT.GetCountry.GetNameWithNoTooltip]
 	option = {
 		name = flavor_kbo.17.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = {
 			type = traditionalist_vs_innovative
 			value = societal_value_move_to_right

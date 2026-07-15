@@ -36,7 +36,7 @@
 		muscovite_succession_war_end_trigger = yes
 	}
 	modifier = {
-		monthly_legitimacy = -0.075
+		monthly_legitimacy = -0.075 # VANILLA = -0.1
 		stability_cost_efficiency = -0.25
 	}
 

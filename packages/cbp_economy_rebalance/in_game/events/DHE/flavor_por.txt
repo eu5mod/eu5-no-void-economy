@@ -687,7 +687,7 @@ flavor_por.12 = { #Methuen Agreement
 	}
 	option = {
 		name = flavor_por.12.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		location:london.owner = {
 			add_opinion = { target = root modifier = denounced_meuthen_agreement }
 		}
@@ -1030,7 +1030,7 @@ flavor_por.19 = {
 
 		set_new_ruler = scope:joao_braganca
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		custom_tooltip = flavor_por.19.tt1
 		custom_tooltip = flavor_por.19.tt2
@@ -1350,7 +1350,7 @@ flavor_por.24 = { #The Royal Pantheon
 		name = flavor_por.24.b
 
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	historical_info = flavor_por.24.historical_info
@@ -2811,7 +2811,7 @@ flavor_por.35 = { # Ericeira's policies - Mercantilist Ideals of [target_charact
 			value = estate_satisfaction_mild_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -5382,7 +5382,7 @@ flavor_por.2004 = { # Pedro stages a Rebellion
 			type = centralization_vs_decentralization
 			value = societal_value_minor_move_to_left
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 
 		create_instant_rebellion = {
 			list = revolt_provinces

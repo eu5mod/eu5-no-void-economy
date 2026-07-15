@@ -13,7 +13,7 @@ khm_royal_procession = {
 		has_or_had_tag = KHM
 	}
 	tax_income_efficiency = medium_tax_income_efficiency_bonus
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 
 	requires = khm_religious_flexibility
 }

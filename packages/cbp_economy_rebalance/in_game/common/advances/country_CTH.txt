@@ -117,7 +117,7 @@ cth_sufet_rule = {
 	potential = {
 		has_or_had_tag = CTH
 	}
-	monthly_republican_tradition = 0.075
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	stability_investment = small_stability_investment
 
 	icon = republican_power_law_advance

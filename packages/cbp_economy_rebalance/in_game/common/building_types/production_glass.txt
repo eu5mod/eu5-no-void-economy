@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 # Age of Traditions
 
@@ -40,7 +41,7 @@ glass_guild = {
 			sand = 0.9657
 			tools = 0.3674
 			produced = glass
-			output = 0.81
+			output = 0.81 # VANILLA = 0.75
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -52,7 +53,7 @@ glass_guild = {
 			alum = 0.0408
 			lead = 0.0805
 			produced = glass
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			debug_max_profit = guild_profit_margin		#ok, with better, as it requires more.
 		
@@ -97,7 +98,7 @@ glass_workshop = {
 			alum = 0.0422
 			lead = 0.0947
 			produced = glass
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 		
@@ -142,7 +143,7 @@ glassworks = {
 			alum = 0.0431
 
 			produced = glass
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			
@@ -188,7 +189,7 @@ glass_mill = {
 			alum = 0.1452
 
 			produced = glass
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

@@ -36,7 +36,7 @@
 		if = {
 			limit = { exists = scope:actor }
 			scope:actor = {
-				add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43
+				add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43 # VANILLA = government_power_mild_penalty
 				international_organization:ilkhanate = {
 					international_organization_add_special_status = {
 						type = special_status:ilkhan_claimant

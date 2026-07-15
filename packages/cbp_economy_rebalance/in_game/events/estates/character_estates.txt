@@ -218,7 +218,7 @@ character_estates.3 = {
 			value = { value = root.estate_tax_base:peasants_estate multiply = 10 }
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

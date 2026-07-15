@@ -195,7 +195,7 @@ flavor_cro.1100 = { #The Dominion of Ivan Nelipic
 	option = {
 		name = flavor_cro.1100.a
 		historical_option = yes
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		kill_character_silently = scope:target_character
 	}
 

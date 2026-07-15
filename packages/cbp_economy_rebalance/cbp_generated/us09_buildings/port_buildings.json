@@ -188,7 +188,7 @@
       }
     ]
   },
-  "generated_sha256": "5725da400fdf23637310d5b1365295164c95b4bfdb0119aed838e468459ddbe8",
+  "generated_sha256": "59b31a55379f17ef3fcb47ff45693a091a698312e02dd87ea13997b25d92a8ff",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/port_buildings.txt",
   "source_sha256": "9dfa8e370916179ec9ee506938b6049a5ca1522ff7b3d9954b5840ca4ee7563c",

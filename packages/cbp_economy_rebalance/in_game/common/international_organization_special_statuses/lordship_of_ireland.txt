@@ -28,7 +28,7 @@ lieutenant = {
 
 	modifier = {
 		monthly_prestige = 0.1
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		diplomatic_capacity = 1
 		country_can_use_lordship_of_ireland_cb = yes
 	}
@@ -91,7 +91,7 @@ loyalist = {
 	priority = 5
 
 	modifier = {
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 
 	leader_modifier = {
@@ -160,7 +160,7 @@ absentee = {
 	}
 
 	leader_modifier = {
-		monthly_legitimacy = -0.0075
+		monthly_legitimacy = -0.0075 # VANILLA = -0.01
 	}
 
 	can_bestow_trigger = {

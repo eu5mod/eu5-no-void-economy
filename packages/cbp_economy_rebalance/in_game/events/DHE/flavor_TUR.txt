@@ -211,7 +211,7 @@ flavor_tur.5 = {
 	option = {
 		name = flavor_tur.5.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = flavor_tur.5.c
@@ -404,7 +404,7 @@ flavor_tur.7 = {
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 	option = {
 		name = flavor_tur.7.b
@@ -523,7 +523,7 @@ flavor_tur.9 = {
 		}
 		add_reform = government_reform:expanded_timariot_system
 
-		add_stability = -5
+		add_stability = -5 # VANILLA = -10
 
 		hidden_effect = {
 			root = {
@@ -620,7 +620,7 @@ flavor_tur.14 = {
 		historical_option = yes
 		change_societal_value = { type = capital_economy_vs_traditional_economy value = -10 }
 		change_societal_value = { type = centralization_vs_decentralization value = -10 }
-		add_stability = -10
+		add_stability = -10 # VANILLA = -20
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = -0.20 }
 	}
@@ -630,7 +630,7 @@ flavor_tur.14 = {
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = -0.10 }
 
-		add_stability = -5
+		add_stability = -5 # VANILLA = -10
 	}
 	option = {
 		name = flavor_tur.14.c
@@ -638,7 +638,7 @@ flavor_tur.14 = {
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = 0.20 }
 
-		add_stability = 10
+		add_stability = 10 # VANILLA = 20
 	}
 }
 
@@ -808,7 +808,7 @@ flavor_tur.16 = {
 
 		name = flavor_tur.16.b
 		destroy_rebel = scope:celali_uprising
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_move_to_right }
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 		change_societal_value = { type = belligerent_vs_conciliatory value = societal_value_move_to_right }
@@ -947,7 +947,7 @@ flavor_tur.18 = {
 			kill_character_silently = scope:mimar_sinan
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 }
@@ -1154,7 +1154,7 @@ flavor_tur.20 = {
 			hidden_effect = { kill_character_silently = scope:muhammad_koprulu }
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
@@ -2164,14 +2164,14 @@ flavor_tur.35 = {
 		name = flavor_tur.35.a
 		historical_option = yes
 		add_prestige = prestige_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_bonus }
 	}
 
 	option = {
 		name = flavor_tur.35.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -2268,7 +2268,7 @@ flavor_tur.36 = {
 	option = {
 		name = flavor_tur.36.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2901,7 +2901,7 @@ flavor_tur.47 = {
 	option = {
 		name = flavor_tur.47.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		hidden_effect = { kill_character_silently = scope:target_character }
 	}
@@ -3324,7 +3324,7 @@ flavor_tur.52 = { #The Anatolian Wheat Ban
 			value = societal_value_move_to_right
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -3408,7 +3408,7 @@ flavor_tur.53 = { #The Wolves of the Aegean
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 	option = {
@@ -3517,7 +3517,7 @@ flavor_tur.54 = { #The Pull of Piracy
 	option = {
 		name = flavor_tur.54.c
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = { type = land_vs_naval value = societal_value_minor_move_to_left }
 	}
@@ -3594,7 +3594,7 @@ flavor_tur.55 = { #The Fortress at Gallipoli
 	option = {
 		name = flavor_tur.55.b
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -4011,7 +4011,7 @@ flavor_tur.59 = { #Martial Madmen
 
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = -0.10 }
 
-		add_stability = -2.5
+		add_stability = -2.5 # VANILLA = -5
 	}
 
 	option = {
@@ -4061,7 +4061,7 @@ flavor_tur.60 = { #The Interior Service
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = 0.10 }
 
-		add_stability = 2.5
+		add_stability = 2.5 # VANILLA = 5
 	}
 
 }
@@ -4319,7 +4319,7 @@ flavor_tur.64 = { #Sibling Killing on a fine day
 		random_list = {
 
 			75 = {
-				add_government_power = 5
+				add_government_power = 5 # VANILLA = 10.00
 			}
 			25 = {
 				scope:capital_location = {
@@ -4332,7 +4332,7 @@ flavor_tur.64 = { #Sibling Killing on a fine day
 	option = {
 		name = flavor_tur.64.b
 
-		add_government_power = -15
+		add_government_power = -15 # VANILLA = -30.00
 	}
 }
 
@@ -4421,7 +4421,7 @@ flavor_tur.66 = { #Restore the Revenue
 			limit = {
 				stability < 80
 			}
-			add_stability = 5
+			add_stability = 5 # VANILLA = 10
 		}
 		else = {
 			change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_move_to_right }
@@ -4452,7 +4452,7 @@ flavor_tur.66 = { #Restore the Revenue
 
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = -0.10 }
 
-		add_stability = -10
+		add_stability = -10 # VANILLA = -20
 	}
 }
 
@@ -4665,7 +4665,7 @@ flavor_tur.69 = { #Shaykh al-Islām
 
 		add_policy = policy:separate_clergy_from_state_policy
 
-		add_government_power = 10
+		add_government_power = 10 # VANILLA = 20
 
 		remove_variable = sheikh_ul_islam
 	}
@@ -5151,7 +5151,7 @@ flavor_tur.74 = { #the Aegean Issue
 
 		change_societal_value = { type = land_vs_naval value = -3 }
 
-		add_stability = -2.5
+		add_stability = -2.5 # VANILLA = -5
 	}
 }
 
@@ -5199,11 +5199,11 @@ flavor_tur.75 = { #The Mirror of God's Will
 
 		set_new_ruler = scope:target_heir
 
-		add_stability = -10
+		add_stability = -10 # VANILLA = -20
 
 		change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_move_to_right }
 
-		add_government_power = 2.5
+		add_government_power = 2.5 # VANILLA = 5
 	}
 
 	option = {
@@ -5365,7 +5365,7 @@ flavor_tur.77 = { #The Words of a Woman
 
 		add_prestige = prestige_weak_bonus
 
-		add_government_power = -2.5
+		add_government_power = -2.5 # VANILLA = -5.00
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = -0.10 }
 
@@ -5571,7 +5571,7 @@ flavor_tur.79 = { #The Arabic Salons
 	option = {
 		name = flavor_tur.79.c
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		set_court_language = dialect:classical_arabic_dialect
 	}
@@ -5685,7 +5685,7 @@ flavor_tur.80 = { #A foothold in Italy
 	option = {
 		name = flavor_tur.80.c
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -6154,7 +6154,7 @@ flavor_tur.88 = { #The Imperial Harem
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = 0.10 }
 
-		add_stability = 2.5
+		add_stability = 2.5 # VANILLA = 5
 
 		add_policy = policy:dispersed_harem_policy
 	}
@@ -6613,7 +6613,7 @@ flavor_tur.92 = { #The Constructions of Mimar Sinan, triggered by flavor_tur.18
 	option = {
 		name = flavor_tur.92.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -7001,7 +7001,7 @@ flavor_tur.97 = { #The Legacy of a Prince, triggered by flavor_tur.96
 			hidden_effect = { kill_character_silently = scope:minister }
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
@@ -7218,7 +7218,7 @@ flavor_tur.99 = { #The Price of Ambition (Pargalı Ibrahim Pasha)
 
 		change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_move_to_left }
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -7324,7 +7324,7 @@ flavor_tur.100 = { #Constantinople by Night
 
 		custom_tooltip = crackdown.tt
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		custom_tooltip = {
 			text = flavor_tur.100.clergy_happy.tt
@@ -7718,7 +7718,7 @@ flavor_tur.104 = { #The Great Comet of CurrentYear, triggered by #flavor_tur.103
 	option = {
 		name = flavor_tur.104.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		set_variable = { name = believed_in_portents value = 1 }
 
 		root = {
@@ -8093,7 +8093,7 @@ flavor_tur.108 = { #The Great Debasement
 
 		change_gold_effect = { scale = 5 }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = capital_economy_vs_traditional_economy
@@ -8109,7 +8109,7 @@ flavor_tur.108 = { #The Great Debasement
 			value = societal_value_minor_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -8481,7 +8481,7 @@ flavor_tur.113 = { #Advice for Kings
 
 		add_prestige = prestige_mild_bonus
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		change_societal_value = {
 			type = serfdom_vs_free_subjects
@@ -8822,7 +8822,7 @@ flavor_tur.116 = { #The [GetCountryAdjective] Faction
 				type = aristocracy_vs_plutocracy
 				value = societal_value_move_to_left
 			}
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		}
 		else = { add_government_power = government_power_extreme_penalty }
 	}
@@ -8932,7 +8932,7 @@ flavor_tur.117 = { #The Reforms of [ambitious_ruler.GetName]
 	option = {
 		name = flavor_tur.117.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		scope:ambitious_ruler = {
 			add_adm = 3
@@ -9155,7 +9155,7 @@ flavor_tur.119 = { #The Guardians of Felicity
 				has_policy = valide_sultan_court_policy
 			}
 			custom_tooltip = valide_sultan_objects.tt
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		}
 
 		if = {
@@ -9375,7 +9375,7 @@ flavor_tur.121 = { #The Disaster at [reenactment_location.GetName], triggered by
 			reason = stray_fire
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 	}
 	option = {
@@ -9568,7 +9568,7 @@ flavor_tur.123 = { #[target_character.GetNameWithNoTooltip] the Mad
 
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_severe_bonus }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		if = {
 			limit = {
@@ -9922,7 +9922,7 @@ flavor_tur.125 = { #Disarming Anatolia, triggered by #flavor_tur.124
 
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_left }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_penalty }
 	}
@@ -10635,7 +10635,7 @@ flavor_tur.132 = { #The Tax Farming Reform
 		set_variable = { name = tur_malikane value = 1 }
 		custom_tooltip = malikane_available.tt
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -10814,7 +10814,7 @@ flavor_tur.134 = { #The War for Crete
 		type = belligerent_vs_conciliatory
 		value = societal_value_minor_move_to_right
 	}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	add_country_modifier = { modifier = fiscal_responsibility years = 10 mode = add_and_extend }
 	}
 }
@@ -10932,7 +10932,7 @@ flavor_tur.135 = { #The Unsavory Influences on [Sultan]
 		kill_character_silently = scope:cinci_hoca
 		set_new_ruler = heir
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 
 		add_stability = stability_severe_penalty
 
@@ -12189,7 +12189,7 @@ flavor_tur.148 = { #Blood on Silk
 
 		add_country_modifier = { modifier = war_at_court years = 5 mode = add_and_extend }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -12620,7 +12620,7 @@ flavor_tur.152 = { #The Red Coins
 
 		add_inflation = inflation_mild_penalty
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = {
 			type = mercantilism_vs_free_trade
@@ -12697,7 +12697,7 @@ flavor_tur.153 = { #The Baron de Tott
 	option = {
 		name = flavor_tur.153.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = { type = belligerent_vs_conciliatory value = societal_value_tiny_move_to_right }
 
@@ -12800,7 +12800,7 @@ flavor_tur.154 = { #The Burning of [Location]
 	option = {
 		name = flavor_tur.154.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = { type = belligerent_vs_conciliatory value = societal_value_tiny_move_to_right }
 
@@ -13131,7 +13131,7 @@ flavor_tur.157 = { #Suspicious Societies
 
 		change_societal_value = { type = mysticism_vs_jurisprudence value = societal_value_tiny_move_to_right }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_mild_penalty }
 
@@ -13393,7 +13393,7 @@ flavor_tur.160 = { #The Lord of Acre
 			40 = {
 				custom_tooltip = zahir_escapes.tt
 				kill_character_silently = scope:zahir_al_umar
-				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+				add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			}
 		}
 
@@ -13421,7 +13421,7 @@ flavor_tur.160 = { #The Lord of Acre
 			value = societal_value_minor_move_to_right
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -13693,7 +13693,7 @@ flavor_tur.164 = { #The Blessings of Baklava
 	option = {
 		name = flavor_tur.164.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -13860,7 +13860,7 @@ flavor_tur.166 = { #The Governor of Baghdad, triggered by flavor_tur.165
 			kill_character_silently = scope:hasan_pasha
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = competent_governance.a.tt
@@ -14095,7 +14095,7 @@ flavor_tur.168 = { #The Grievances of Greece
 			}
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -14559,7 +14559,7 @@ flavor_tur.173 = { #Abolishing Devshirme
 
 		add_army_tradition = army_tradition_mild_penalty
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = christians_pleased.tt
@@ -14767,7 +14767,7 @@ flavor_tur.175 = { #The Local Powers
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_tiny_move_to_left }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -14903,7 +14903,7 @@ flavor_tur.177 = { #The Vizier Victorious, triggered by flavor_tur.176
 	option = {
 		name = flavor_tur.177.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = grand_vizier_exiled.tt
@@ -14952,7 +14952,7 @@ flavor_tur.178 = { #The Bostancibashi Victorious, triggered by flavor_tur.176
 	option = {
 		name = flavor_tur.178.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		scope:bostancibasi = {
 			add_adm = 3
@@ -15038,7 +15038,7 @@ flavor_tur.179 = { #The New Order Army
 	option = {
 		name = flavor_tur.179.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_minor_move_to_right }
 
@@ -15109,7 +15109,7 @@ flavor_tur.180 = { #The Edirne Incident
 		name = flavor_tur.180.a
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_army_tradition = army_tradition_mild_penalty
 
@@ -15433,7 +15433,7 @@ flavor_tur.183 = { #The Tortoise and the Candle
 
 		add_prestige = prestige_mild_penalty
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		if = {
 			limit = {
@@ -17114,7 +17114,7 @@ flavor_tur.208 = {
 			value = societal_value_minor_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

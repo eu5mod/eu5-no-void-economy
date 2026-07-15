@@ -16,11 +16,11 @@
 			}
 			custom_tooltip = ON_RULER_DEATH_EFFECT_TT
 			show_as_tooltip = {
-				add_horde_unity = cbp_instant_add_horde_unity_root_modifier_horde_unity_hit_at_ruler_death_699a011935
+				add_horde_unity = cbp_instant_add_horde_unity_root_modifier_horde_unity_hit_at_ruler_death_699a011935 # VANILLA = root.modifier:horde_unity_hit_at_ruler_death
 			}
 		}
 		else = {
-			add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7
+			add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
 		}
 	}
 

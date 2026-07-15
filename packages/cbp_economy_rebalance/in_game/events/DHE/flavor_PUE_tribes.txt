@@ -72,7 +72,7 @@ flavor_pue.101 = { # The Chaco Roads
 	option = { # We cannot spare the resources
 		name = flavor_pue.101.b
 		add_gold = 100
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

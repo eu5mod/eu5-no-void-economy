@@ -275,7 +275,7 @@ flavor_azt.120 = {
 	}
 	option = {
 		name = flavor_azt.120.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -837,7 +837,7 @@ flavor_azt.200 = {
 				change_prosperity = prosperity_very_weak_bonus
 			}
 			add_doom = doom_mild_bonus
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		}
 		add_prestige = prestige_extreme_bonus
 	}
@@ -1083,7 +1083,7 @@ flavor_azt.230 = {
 
 		add_prestige = prestige_extreme_bonus
 		add_government_power = government_power_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	#Our foes will crumble, like dust in the wind...
@@ -1170,7 +1170,7 @@ flavor_azt.240 = {
 	option = {
 		name = flavor_azt.240.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_doom = doom_mild_bonus
 	}
 }

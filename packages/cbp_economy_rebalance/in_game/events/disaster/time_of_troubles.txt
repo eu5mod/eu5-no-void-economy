@@ -808,7 +808,7 @@ time_of_troubles.11 = {
 	option = {
 		name = time_of_troubles.11.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		switch = {
 			trigger = has_variable
 			weak_penalty_variable = {

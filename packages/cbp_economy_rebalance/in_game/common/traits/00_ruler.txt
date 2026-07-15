@@ -33,8 +33,8 @@ righteous = {
 	flavor = personality
 
 	modifier = {
-		monthly_legitimacy = 0.075
-		monthly_republican_tradition = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
+		monthly_republican_tradition = 0.075 # VANILLA = 0.1
 		marriage_desirability = 5
 	}
 }
@@ -312,7 +312,7 @@ pious = {
 	flavor = personality
 
 	modifier = {
-		monthly_devotion = 0.075
+		monthly_devotion = 0.075 # VANILLA = 0.1
 		monthly_towards_spiritualist = societal_value_monthly_move
 		religious_unity_importance_modifier = 0.2
 		court_language_is_liturgical_language_importance_modifier = 0.6

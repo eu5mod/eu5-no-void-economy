@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 # Age of Traditions
 
@@ -36,7 +37,7 @@ furniture_guild = {
 			tools = 0.1468
 
 			produced = furniture
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -72,7 +73,7 @@ furniture_workshop = {
 			tools = 0.1356
 			
 			produced = furniture
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -117,7 +118,7 @@ furniture_manufactory = {
 			tools = 0.2249
 
 			produced = furniture
-			output = 2.16
+			output = 2.16 # VANILLA = 2.0
 			
 			category = manufactory_input
 			
@@ -162,7 +163,7 @@ furniture_mill = {
 			tools = 0.4475
 			
 			produced = furniture
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

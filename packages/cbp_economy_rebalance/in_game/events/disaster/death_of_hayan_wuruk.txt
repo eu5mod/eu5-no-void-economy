@@ -101,7 +101,7 @@ death_of_hayan_wuruk.2 = { #Autonomy Demands in the [target_subject.GetLongNameW
 		scope:target_subject = {
 			add_liberty_desire = liberty_desire_mild_plus
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -117,7 +117,7 @@ death_of_hayan_wuruk.3 = { #Autonomy Demands in the [target_subject.GetLongNameW
 		name = death_of_hayan_wuruk.3.a
 
 		add_liberty_desire = liberty_desire_mild_minus
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 
 		scope:target_overlord = { trigger_event_non_silently = death_of_hayan_wuruk.5 }
 	}
@@ -196,7 +196,7 @@ death_of_hayan_wuruk.5 = { #[target_subject.GetNameWithNoTooltip] Complies with 
 		show_as_tooltip = {
 			scope:target_subject = {
 				add_liberty_desire = liberty_desire_mild_minus
-				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+				add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 			}
 		}
 	}
@@ -324,7 +324,7 @@ death_of_hayan_wuruk.6 = {	#Spread of Islam in [target_province.GetName]
 	option = {	#Demand  they profess their allegiance
 		name = death_of_hayan_wuruk.6.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:target_location = {
 			if = {
 				limit = {
@@ -457,7 +457,7 @@ death_of_hayan_wuruk.7 = { #Autonomy Demands in the [target_subject.GetLongNameW
 		every_subject = {
 			add_liberty_desire = liberty_desire_extreme_minus
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 	}
 }

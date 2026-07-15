@@ -26,9 +26,9 @@ rites_holy_sepulchre = {
 
 	icon = glory_of_rome
 
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	global_pop_conversion_speed_modifier = 0.2
 }
 

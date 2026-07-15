@@ -24,7 +24,7 @@
 		time_of_troubles_end_trigger = yes
 	}
 	modifier = {
-		monthly_legitimacy = -0.225
+		monthly_legitimacy = -0.225 # VANILLA = -0.3
 		global_monthly_food_modifier = -0.25
 		global_estate_target_satisfaction = big_permanent_target_satisfaction_penalty
 	}

@@ -188,7 +188,7 @@ flavor_nap.201 = { #Neapolitan Laws
 	}
 	option = {
 		name = flavor_nap.201.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 		c:NAP = {
 			add_opinion = { target = root modifier = opinion_backward_monarch }
@@ -257,7 +257,7 @@ flavor_nap.210 = { #Charles of Artois
 	option = {
 		name = flavor_nap.210.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		kill_character_silently = scope:charles_artus_scope
 	}
 
@@ -1027,7 +1027,7 @@ flavor_nap.250 = { #The Trial of the Queen
 			}
 			change_societal_value = { type = outward_vs_inward value = societal_value_move_to_right }
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		add_prestige = prestige_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_severe_penalty }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_weak_bonus }
@@ -1408,7 +1408,7 @@ flavor_nap.300 = { #The Future of Naples
 	option = {
 		name = flavor_nap.300.a
 		add_stability = stability_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 
 	}
 	option = {
@@ -1426,7 +1426,7 @@ flavor_nap.300 = { #The Future of Naples
 			}
 		}
 		set_new_ruler = scope:queen_sister_spouse
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 	option = {
 		name = flavor_nap.300.c
@@ -1518,7 +1518,7 @@ flavor_nap.301 = { #Neapolitan Decision
 	}
 	option = {
 		name = flavor_nap.301.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 		c:NAP = {
 			add_opinion = { target = root modifier = opinion_backward_monarch }

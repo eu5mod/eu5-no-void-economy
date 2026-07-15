@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 lacquerware_guild = {
 	is_foreign = no
@@ -34,7 +35,7 @@ lacquerware_guild = {
 			tools = 0.1204
 			
 			produced = lacquerware
-			output = 1.08
+			output = 1.08 # VANILLA = 1.0
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -73,7 +74,7 @@ lacquerware_manufactory = {
 			tools = 0.2265
 			
 			produced = lacquerware
-			output = 2.16		
+			output = 2.16 # VANILLA = 2
 			
 			
 			debug_max_profit = manufactory_profit_margin

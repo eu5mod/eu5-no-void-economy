@@ -144,7 +144,7 @@
 	institution_spread_to_subject = monthly_institution_spread_mild
 
 	overlord_modifier = {
-		monthly_legitimacy = 0.0075
+		monthly_legitimacy = 0.0075 # VANILLA = 0.01
 		monthly_towards_decentralization = societal_value_tiny_monthly_move
 	}
 

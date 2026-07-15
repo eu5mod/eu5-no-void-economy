@@ -158,7 +158,7 @@ flavor_vol.2 = { #Growth of Sanok
 	option = {
 		name = flavor_vol.2.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -225,7 +225,7 @@ flavor_vol.3 = { #Regional Capital of Lviv
 	option = {
 		name = flavor_vol.3.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {

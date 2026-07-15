@@ -31,10 +31,10 @@ jap_ancestral_legacy = {
 
 	requires = jap_land_of_the_rising_sun
 
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
-	monthly_devotion = 0.075
-	monthly_horde_unity = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_horde_unity = 0.075 # VANILLA = 0.1
 }
 
 ############################

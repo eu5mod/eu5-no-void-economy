@@ -176,7 +176,7 @@ flavor_pal.3 = {
 
 	option = {
 		name = flavor_pal.3.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_penalty
 	}
 }

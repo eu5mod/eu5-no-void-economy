@@ -109,7 +109,7 @@
 					}
 				}
 			}
-			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 			add_government_power = government_power_weak_bonus
 		}
 	}
@@ -353,7 +353,7 @@ great_pestilence_blame_the_minorities = { #Only for Colonizers
 	effect = {
 		scope:actor ?= {
 			add_country_modifier = { modifier = blame_the_minorities years = -1	mode = add_and_extend }
-			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede
+			add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
 		}
 	}
 

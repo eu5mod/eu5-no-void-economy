@@ -563,9 +563,9 @@ hussite_army_reform = {
 
 	modifier_when_in_debate = {
 		stability_investment = huge_stability_investment_penalty
-		monthly_legitimacy = -0.75
-		monthly_republican_tradition = -0.75
-		monthly_devotion = -0.75
+		monthly_legitimacy = -0.75 # VANILLA = -1
+		monthly_republican_tradition = -0.75 # VANILLA = -1
+		monthly_devotion = -0.75 # VANILLA = -1
 	}
 	allow = { has_country_modifier = hussite_military_reform_modifier }
 	on_debate_passed = {

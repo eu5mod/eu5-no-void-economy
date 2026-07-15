@@ -59,7 +59,7 @@
 			potential_trigger = {
 				is_leader_of_international_organization = international_organization:middle_kingdom
 			}
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		country_modifier = {
 			#Celestial Governor benefits
@@ -553,7 +553,7 @@ provincial_governorship = {
 					}
 				}
 			}
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 			loyalty_to_overlord = 5
 		}
 		country_modifier = {
@@ -569,7 +569,7 @@ provincial_governorship = {
 				}
 				NOT = { is_leader_of_international_organization = international_organization:middle_kingdom }
 			}
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 			loyalty_to_overlord = 2
 		}
 		wants_this_policy_bias = {
@@ -995,7 +995,7 @@ cefeng_tizhi = {
 				}
 			}
 			payment_to_overlord_modifier = 0.1
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		country_modifier = {
 			#Tributary benefits
@@ -1011,7 +1011,7 @@ cefeng_tizhi = {
 				NOT = { is_leader_of_international_organization = international_organization:middle_kingdom }
 			}
 			payment_to_overlord_modifier = 0.05
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		}
 		wants_this_policy_bias = {
 			if = {
@@ -1177,7 +1177,7 @@ keju_examination = {
 			potential_trigger = {
 				is_leader_of_international_organization = international_organization:middle_kingdom
 			}
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		country_modifier = {
 			#Celestial Governor benefits

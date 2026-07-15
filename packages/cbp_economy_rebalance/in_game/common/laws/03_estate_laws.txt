@@ -45,7 +45,7 @@ nobles_rights_laws = {
 		country_modifier = {
 			nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
 			global_nobles_estate_power = 0.1
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 		}
 		estate_preferences = {
 			nobles_estate

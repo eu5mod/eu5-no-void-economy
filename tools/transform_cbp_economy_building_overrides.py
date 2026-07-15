@@ -393,7 +393,14 @@ def transform_lines_with_plan(
             new_value = value * political_modifier_multiplier
 
         rendered_value = match.group(3) if new_value is None else format_decimal(new_value)
-        transformed.append(f"{match.group(1)}{rendered_value}{match.group(4)}")
+        suffix = match.group(4)
+        if rendered_value != match.group(3):
+            trace = f"# VANILLA = {match.group(3)}"
+            existing_comment = suffix.strip().lstrip("# ").strip()
+            suffix = f" {trace}"
+            if existing_comment:
+                suffix += f"; {existing_comment}"
+        transformed.append(f"{match.group(1)}{rendered_value}{suffix}")
 
         if rendered_value != match.group(3):
             field = key

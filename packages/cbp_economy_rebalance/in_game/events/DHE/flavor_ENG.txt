@@ -588,7 +588,7 @@ flavor_eng.5 = {
 			value = societal_value_move_to_left
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 
@@ -1791,7 +1791,7 @@ flavor_eng.15 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = flavor_eng.15.tt3
 
@@ -2233,7 +2233,7 @@ flavor_eng.19 = {
 
 		add_inflation = inflation_severe_bonus
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 	}
 
@@ -3213,7 +3213,7 @@ flavor_eng.27 = {
 
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_reform = government_reform:religious_tolerance
 
 		change_societal_value = {
@@ -3569,7 +3569,7 @@ flavor_eng.31 = {
 	}
 	option = {
 		name = flavor_eng.31.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -3950,7 +3950,7 @@ flavor_eng.37 = {
 	option = {
 		name = flavor_eng.37.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		custom_tooltip = {
 			text = flavor_eng.37.a.all_cath_pops
@@ -5055,7 +5055,7 @@ flavor_eng.51 = {
 		name = flavor_eng.51.e
 		custom_tooltip = flavor_eng.51.order_tt
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		add_policy = policy:eng_order_of_the_garter_peasants_policy
 	}
@@ -5115,7 +5115,7 @@ flavor_eng.52 = {
 		name = flavor_eng.52.a
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_extreme_penalty
 	}
 	option = {
@@ -5490,7 +5490,7 @@ flavor_eng.56 = {
 		name = flavor_eng.56.b
 
 	add_prestige = prestige_weak_penalty
-	add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+	add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	add_government_power = government_power_severe_penalty
 
 	add_gold = {
@@ -12863,7 +12863,7 @@ flavor_eng.133 = {
 		}
 		else = {
 			add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_penalty }
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			ruler = { add_trait = trait:just }
 			custom_tooltip = flavor_eng.133.tt3
 		}
@@ -14470,7 +14470,7 @@ flavor_eng.148 = {
 		}
 
 		add_inflation = inflation_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 	}
 
@@ -16947,7 +16947,7 @@ flavor_eng.168 = {
 			add_cultural_tradition = cultural_tradition_mild_bonus
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		province_definition:gloucestershire_province = {
 			every_location_in_province_definition = {
@@ -17243,7 +17243,7 @@ flavor_eng.172 = {
 			value = societal_value_move_to_left
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 
 		custom_tooltip = flavor_eng.172.tt1
 
@@ -21664,7 +21664,7 @@ flavor_eng.215 = {
 			custom_tooltip = flavor_eng.215.tt2
 		}
 		else = {
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			add_country_modifier = {
 				modifier = south_sea_bubble
 				years = 5
@@ -22773,7 +22773,7 @@ flavor_eng.224 = {
 			limit = {
 				government_type = government_type:monarchy
 			}
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 			custom_tooltip = flavor_eng.224.tt1
 		}
 
@@ -22927,7 +22927,7 @@ flavor_eng.225 = {
 			}
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		add_government_power = government_power_severe_penalty
 
@@ -24876,7 +24876,7 @@ flavor_eng.241 = {
 	option = {
 		name = flavor_eng.241.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 
 		location:london = {
 			change_prosperity = prosperity_severe_penalty

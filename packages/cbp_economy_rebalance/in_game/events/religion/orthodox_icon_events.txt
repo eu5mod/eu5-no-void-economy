@@ -115,7 +115,7 @@ orthodox_icon_events.4 = {
 
 	option = {
 		name = orthodox_icon_events.4.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

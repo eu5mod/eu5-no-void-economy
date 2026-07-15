@@ -95,5 +95,5 @@ russian_legitimization = {
 	potential = {
 		culture = { has_culture_group = culture_group:russian_group }
 	}
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }

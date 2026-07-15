@@ -332,7 +332,7 @@ flavor_dan.4 = { #Reforms of Christian II
 	option = {
 		name = flavor_dan.4.b
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -369,7 +369,7 @@ flavor_dan.5 = { #double check with Kalmar Union Work - Scandinavian Constitutio
 		historical_option = yes
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_left }
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		add_prestige = prestige_weak_bonus
 		c:SWE = {
 			add_opinion = { target = c:DAN modifier = opinion_enforced_scandinavian_constitution }
@@ -1299,7 +1299,7 @@ flavor_dan.19 = { #The Assassination of Gerhard III
 				}
 			}
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -2539,7 +2539,7 @@ flavor_dan.40 = { #Reconquest of Scania
 
 	option = {
 		name = flavor_dan.40.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_army_tradition = army_tradition_mild_bonus
 	}
 
@@ -3036,7 +3036,7 @@ flavor_dan.50 = { #The King's Law
 
 	option = {
 		name = flavor_dan.50.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_right }
 	}
 }
@@ -4174,7 +4174,7 @@ flavor_dan.1100 = { #Peder Oxe pushed into exile? #PRISON
 	}
 	option = {
 		name = flavor_dan.1100.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		scope:target_character = { move_country = root }
 	}
 }
@@ -4205,7 +4205,7 @@ flavor_dan.1101 = { #Peder Oxe recalled to service
 		name = flavor_dan.1101.a
 		historical_option = yes
 		custom_tooltip = flavor_dan.1101.a.tt
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		scope:target_character = {
 			move_country = root
 		}

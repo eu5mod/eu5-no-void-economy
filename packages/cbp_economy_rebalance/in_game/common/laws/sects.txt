@@ -21,7 +21,7 @@
 		}
 
 		country_modifier = {
-			monthly_legitimacy = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
 			global_monthly_development = 0.001
 			allow_righteousness = yes
 		}
@@ -36,7 +36,7 @@
 					}
 				}
 			}
-			monthly_legitimacy = -0.075
+			monthly_legitimacy = -0.075 # VANILLA = -0.1
 			monthly_righteousness = -0.1
 			allow_righteousness = yes
 		}
@@ -51,7 +51,7 @@
 					}
 				}
 			}
-			monthly_legitimacy = -0.0375
+			monthly_legitimacy = -0.0375 # VANILLA = -0.05
 			monthly_righteousness = -0.05
 			allow_righteousness = yes
 		}
@@ -561,7 +561,7 @@
 		}
 
 		country_modifier = {
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 			monthly_prestige = 0.1
 		}
 		country_modifier = {
@@ -575,7 +575,7 @@
 					}
 				}
 			}
-			monthly_legitimacy = -0.15
+			monthly_legitimacy = -0.15 # VANILLA = -0.2
 			monthly_prestige = -0.2
 		}
 		country_modifier = {
@@ -589,7 +589,7 @@
 					}
 				}
 			}
-			monthly_legitimacy = -0.1125
+			monthly_legitimacy = -0.1125 # VANILLA = -0.15
 			monthly_prestige = -0.15
 		}
 	}
@@ -910,7 +910,7 @@ sect_school_law = {
 		}
 
 		country_modifier = {
-			monthly_legitimacy = 0.075
+			monthly_legitimacy = 0.075 # VANILLA = 0.1
 		}
 		country_modifier = {
 			potential_trigger = {
@@ -923,7 +923,7 @@ sect_school_law = {
 					}
 				}
 			}
-			monthly_legitimacy = -0.15
+			monthly_legitimacy = -0.15 # VANILLA = -0.2
 		}
 		country_modifier = {
 			potential_trigger = {
@@ -936,7 +936,7 @@ sect_school_law = {
 					}
 				}
 			}
-			monthly_legitimacy = -0.075
+			monthly_legitimacy = -0.075 # VANILLA = -0.1
 		}
 	}
 

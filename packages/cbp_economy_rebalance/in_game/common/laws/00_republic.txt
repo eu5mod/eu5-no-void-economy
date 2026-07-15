@@ -9,7 +9,7 @@
 
 	republicanism_policy = {
 		country_modifier = {
-			monthly_republican_tradition = 0.075
+			monthly_republican_tradition = 0.075 # VANILLA = 0.1
 		}
 		estate_preferences = {
 			burghers_estate
@@ -132,7 +132,7 @@ republican_power_law = {
 	}
 	absolute_presidential_power_policy = {
 		country_modifier = {
-			monthly_republican_tradition = -0.0375
+			monthly_republican_tradition = -0.0375 # VANILLA = -0.05
 			global_crown_estate_power = 0.2
 			monthly_towards_absolutism = societal_value_monthly_move
 		}

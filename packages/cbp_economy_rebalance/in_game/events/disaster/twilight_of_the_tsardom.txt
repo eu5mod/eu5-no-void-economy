@@ -41,7 +41,7 @@ twilight_of_the_tsardom.2 = { #The Price of Survival
 
 	option = {
 		name = twilight_of_the_tsardom.2.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 		if = {
 			limit = {
@@ -189,7 +189,7 @@ twilight_of_the_tsardom.5 = { #Local Elites Question our Authority
 
 	option = {
 		name = twilight_of_the_tsardom.5.a
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:target_location = {
 			add_location_modifier = { modifier = bul_powerful_local_elites years = 20 mode = add }
 		}
@@ -341,7 +341,7 @@ twilight_of_the_tsardom.8 = { #A Rebellious Subject
 	}
 	option = {
 		name = twilight_of_the_tsardom.8.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		scope:subject_target = {
 			add_liberty_desire = 25
 		}

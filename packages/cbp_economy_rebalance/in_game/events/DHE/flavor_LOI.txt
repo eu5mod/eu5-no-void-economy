@@ -64,7 +64,7 @@ flavor_loi.10 = {
 	option = {
 		name = flavor_loi.10.b
 		culture = { add_cultural_tradition = cultural_tradition_radical_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

@@ -68,7 +68,7 @@
       }
     ]
   },
-  "generated_sha256": "e78913ffda63c94853d428271934b8766a28f2a528db8ac5fc4dc14f02f09840",
+  "generated_sha256": "cdc4a81e1af9d0dce07d30d7e0783eed296a8070153dc794f5fa396633fdfa69",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/council_hall.txt",
   "source_sha256": "1c52da42e8b231063dbae458fddda6656547010e38d0bbb409eddd6bce56c090",

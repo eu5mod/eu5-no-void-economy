@@ -10,7 +10,7 @@ ori_bulwark_of_the_hindu = {
 ori_anka_year_system = {
 	age = age_1_traditions
 	potential = { has_or_had_tag = ORI }
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 	requires = feudalism_advance
 }
 

@@ -46,7 +46,7 @@ flavor_kie.1 = { #Kyiv-Mohyla Academy
 
 		change_gold_effect = { scale = -2 }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		location:kyiv = {
 			if = {
@@ -67,7 +67,7 @@ flavor_kie.1 = { #Kyiv-Mohyla Academy
 	option = {
 		name = flavor_kie.1.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {

@@ -107,7 +107,7 @@ conquest_mission_events.1 = {
 		name = conquest_mission_events.1.b
 
 		custom_tooltip = reject_the_advances_of_the_estate_tt
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }
 
@@ -688,7 +688,7 @@ conquest_mission_events.9 = {	#Culture Spreads
 
 		change_gold_effect = { scale = -2 }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		scope:target_province = {
 			every_location_in_province = {
@@ -829,7 +829,7 @@ conquest_mission_events.10 = {	#Religion Spreads
 
 		change_gold_effect = { scale = -2 }
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		scope:target_province = {
 			every_location_in_province = {
@@ -1009,7 +1009,7 @@ conquest_mission_events.11 = {	#Local Nobles Collaborate
 			value = societal_value_move_to_right
 		}
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate

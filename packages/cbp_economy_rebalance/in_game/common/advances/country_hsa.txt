@@ -135,7 +135,7 @@ hsa_reform_the_hanstag = {
 		has_or_had_tag = HSA
 	}
 	requires = enlightened_court
-	monthly_republican_tradition = 0.0375
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 	parliament_base_support = 0.1
 }
 hsa_concept_of_mercantilism = {

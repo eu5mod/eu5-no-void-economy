@@ -12,7 +12,7 @@
 	}
 	country_modifier = {
 		global_salt_output_modifier = 0.25
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		monthly_towards_plutocracy = societal_value_minor_monthly_move
 	}
 }

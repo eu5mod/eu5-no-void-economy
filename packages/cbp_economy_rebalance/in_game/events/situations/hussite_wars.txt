@@ -391,7 +391,7 @@ hussite_wars.4 = { #The [ShowSituationNameWithNoTooltip('hussite_wars')] End
 			NOT = { c:BOH = { religion = religion:hussite } }
 		}
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_religious_influence_if_valid = { VALUE = 20 }
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
 	}
@@ -774,7 +774,7 @@ hussite_wars.8 = { #A Common Enemy
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_weak_bonus
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

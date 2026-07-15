@@ -4,7 +4,7 @@
 		culture = { has_culture_group = culture_group:haudenosaunee_group }
 	}
 	diplomatic_reputation = diplomatic_reputation_mild_bonus
-	monthly_tribal_cohesion = 0.075
+	monthly_tribal_cohesion = 0.075 # VANILLA = 0.10
 	requires = agriculture_advance
 }
 haudenosaunee_heritage = {

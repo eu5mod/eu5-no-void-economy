@@ -26,7 +26,7 @@ class PoliticalRewardTransformTest(unittest.TestCase):
 """
         result = MODULE.transform_assignments(source, MODULE.EVENT_EFFECTS, Decimal("0.5"), "event")
         self.assertEqual(result.count, 3)
-        self.assertIn("add_legitimacy = -5 # signed penalty", result.text)
+        self.assertIn("add_legitimacy = -5 # VANILLA = -10; signed penalty", result.text)
         self.assertIn("\t\tmultiply = 0.5\n\t}", result.text)
         self.assertIn("stability_mild_bonus", next(iter(result.aliases.values()))[0])
 
@@ -52,7 +52,7 @@ class PoliticalRewardTransformTest(unittest.TestCase):
         )
         self.assertEqual(result.count, 1)
         self.assertIn("add_legitimacy = cbp_instant_add_legitimacy_", result.text)
-        self.assertIn("# retained comment", result.text)
+        self.assertIn("# VANILLA = legitimacy_mild_bonus; retained comment", result.text)
 
     def test_research_fixed_values_keep_three_quarters(self):
         source = """advance = {
@@ -67,6 +67,29 @@ class PoliticalRewardTransformTest(unittest.TestCase):
     def test_scaled_numbers_are_stable(self):
         self.assertEqual(MODULE.scaled_number("0.1", Decimal("0.75")), "0.075")
         self.assertEqual(MODULE.scaled_number("-2", Decimal("0.5")), "-1")
+
+    def test_transformed_comment_keeps_vanilla_value(self):
+        self.assertEqual(
+            MODULE.transformed_comment("0.35"),
+            "# VANILLA = 0.35",
+        )
+        self.assertEqual(
+            MODULE.transformed_comment("0.35", "# source note"),
+            "# VANILLA = 0.35; source note",
+        )
+
+    def test_profit_margin_targets_are_ten_percent_higher(self):
+        expected = {
+            "0.20": "0.22",
+            "0.25": "0.275",
+            "0.30": "0.33",
+            "0.35": "0.385",
+        }
+        for vanilla, transformed in expected.items():
+            self.assertEqual(
+                MODULE.scaled_number(vanilla, MODULE.PROFIT_MARGIN_FACTOR),
+                transformed,
+            )
 
     def test_honor_is_preserved_when_it_shares_a_scaled_value(self):
         source = "add_honor = government_power_weak_bonus\n"

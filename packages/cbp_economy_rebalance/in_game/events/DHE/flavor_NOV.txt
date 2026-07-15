@@ -545,7 +545,7 @@ flavor_nov.8 = {
 
 	option = {
 		name = flavor_nov.8.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		custom_tooltip = {
 			text = flavor_nov.8.a.tt
 			scope:dvina_crisis_cause = {
@@ -1104,7 +1104,7 @@ flavor_nov.15 = {
 	option = {
 		name = flavor_nov.15.b
 		change_societal_value = { type = belligerent_vs_conciliatory value = societal_value_move_to_right }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_extreme_penalty
 		every_in_list = {
 			list = karelian_rebellion_locations
@@ -1951,7 +1951,7 @@ flavor_nov.34 = {
 	#Don't allow the Lords to seize more power!
 	option = {
 		name = flavor_nov.34.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_penalty }
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_mild_bonus }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
@@ -2063,7 +2063,7 @@ flavor_nov.36 = {
 	option = {
 		name = flavor_nov.36.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2165,7 +2165,7 @@ flavor_nov.101 = { # Ivan's Hundred Request Beeswax Monopoly
 	}
 	option = { # Prevent the association from growing stronger
 		name = flavor_nov.101.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_mild_penalty }
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 	}
@@ -2439,7 +2439,7 @@ flavor_nov.106 = { # Continued Expansion of the Posadnik
 
 	option = { # Expand the posadniks threefold!
 		name = flavor_nov.106.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_mild_bonus }
 		add_country_modifier = { modifier = nov_further_posadnik_reforms years = 30 mode = add }
 		set_variable = {
@@ -2791,7 +2791,7 @@ flavor_nov.112 = { # Minting of the Novgorodka
 	}
 	option = { # Maintain the use of other currencies
 		name = flavor_nov.112.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = { modifier = nov_reliance_on_other_currencies years = 20 mode = add }
 	}
 }

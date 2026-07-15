@@ -5,7 +5,7 @@ tnk_legitimate_rule = {
 	age = age_1_traditions
 	potential = { has_or_had_tag = TNK }
 	requires = feudalism_advance
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 tnk_resist_invaders = {
 	age = age_1_traditions

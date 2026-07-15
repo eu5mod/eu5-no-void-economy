@@ -128,11 +128,11 @@ brb_brabantine_rights = {
 		has_or_had_tag = BRB
 	}
 
-	monthly_legitimacy = 0.0375
-	monthly_republican_tradition = 0.0375
-	monthly_devotion = 0.0375
-	monthly_horde_unity = 0.0375
-	monthly_tribal_cohesion = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_horde_unity = 0.0375 # VANILLA = 0.05
+	monthly_tribal_cohesion = 0.0375 # VANILLA = 0.05
 
 	unlock_government_reform = joyous_entry_reform
 

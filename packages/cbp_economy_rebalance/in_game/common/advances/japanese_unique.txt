@@ -80,7 +80,7 @@ dte_fujiwara_hokke = {
 
 	requires = written_alphabet
 
-	monthly_legitimacy = 0.0375
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
 }
 
 htk_hatakeyama_heritage = {
@@ -138,7 +138,7 @@ kkc_disinguished_family_in_kyushu = {
 
 	requires = written_alphabet
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 ktb_southern_court = {
@@ -175,7 +175,7 @@ mri_descendant_of_oe_hiromoto = {
 
 	requires = written_alphabet
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 nbu_genji_in_the_north = {
@@ -943,7 +943,7 @@ ask_defender_of_the_imperial_court = {
 
 	requires = confessional_court
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 ask_bugyoshu_and_hokushu = {

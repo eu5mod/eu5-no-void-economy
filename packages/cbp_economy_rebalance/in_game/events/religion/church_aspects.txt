@@ -70,7 +70,7 @@ church_aspects.2 = {
 	option = {
 		name = church_aspects.2.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_prestige = prestige_mild_bonus
 	}
 }
@@ -323,14 +323,14 @@ church_aspects.8 = {
 		name = church_aspects.8.a
 		change_societal_value = { type = individualism_vs_communalism value = societal_value_minor_move_to_right }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {
 		name = church_aspects.8.b
 		change_societal_value = { type = individualism_vs_communalism value = societal_value_minor_move_to_left }
 		add_estate_satisfaction = { type = estate_type:peasants_estate value = estate_satisfaction_mild_bonus }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -361,7 +361,7 @@ church_aspects.9 = {
 
 	option = {
 		name = church_aspects.9.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -465,7 +465,7 @@ church_aspects.12 = {
 
 	option = {
 		name = church_aspects.12.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -957,7 +957,7 @@ church_aspects.24 = {
 	option = {
 		name = church_aspects.24.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		scope:target_province = {
 			every_location_in_province = {
 				every_pop = {
@@ -1054,7 +1054,7 @@ church_aspects.26 = {
 	option = {
 		name = church_aspects.26.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_religious_influence = religious_influence_mild_bonus
 	}
 }
@@ -1128,8 +1128,8 @@ church_aspects.28 = {
 	option = {
 		name = church_aspects.28.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 

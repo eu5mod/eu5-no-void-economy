@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 fine_cloth_guild = {
 	is_foreign = no
@@ -29,7 +30,7 @@ fine_cloth_guild = {
 		fine_cloth_guild_maintenance = {
 			cloth = 0.8333
 			produced = fine_cloth
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -39,7 +40,7 @@ fine_cloth_guild = {
 			wool = 1.0
 
 			produced = fine_cloth
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -49,7 +50,7 @@ fine_cloth_guild = {
 			silk = 0.875
 			
 			produced = fine_cloth
-			output = 0.756
+			output = 0.756 # VANILLA = 0.7
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin	# its ok to be a bit better..
@@ -65,7 +66,7 @@ fine_cloth_guild = {
 			wool = 1.0
 			
 			produced = fine_cloth
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -76,7 +77,7 @@ fine_cloth_guild = {
 		base_fine_cloth_guild_maintenance = {
 			produced = fine_cloth
 			dyes = 0.125
-			output = 0.108
+			output = 0.108 # VANILLA = 0.1
 
 			category = guild_input
 
@@ -87,7 +88,7 @@ fine_cloth_guild = {
 			alum = 0.0522
 			dyes = 0.2108
 			produced = fine_cloth
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -96,7 +97,7 @@ fine_cloth_guild = {
 		fur_trim_guild_maintenance = {
 			fur = 0.5
 			produced = fine_cloth
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -132,7 +133,7 @@ fine_cloth_workshop = {
 		fine_cloth_workshop_maintenance = {
 			cloth = 0.96
 			produced = fine_cloth
-			output = 0.648
+			output = 0.648 # VANILLA = 0.6
 			
 			category = workshop_input
 			
@@ -143,7 +144,7 @@ fine_cloth_workshop = {
 			wool = 1.152
 			
 			produced = fine_cloth
-			output = 0.648
+			output = 0.648 # VANILLA = 0.6
 			
 			category = workshop_input
 			debug_max_profit = workshop_profit_margin
@@ -153,7 +154,7 @@ fine_cloth_workshop = {
 			silk = 0.96
 			
 			produced = fine_cloth
-			output = 0.864
+			output = 0.864 # VANILLA = 0.8
 			
 			category = workshop_input
 			
@@ -171,7 +172,7 @@ fine_cloth_workshop = {
 			wool = 1.152
 			
 			produced = fine_cloth
-			output = 0.648
+			output = 0.648 # VANILLA = 0.6
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -183,7 +184,7 @@ fine_cloth_workshop = {
 		base_fine_cloth_workshop_maintenance = {
 			produced = fine_cloth
 			dyes = 0.144
-			output = 0.1296
+			output = 0.1296 # VANILLA = 0.12
 
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
@@ -193,7 +194,7 @@ fine_cloth_workshop = {
 			alum = 0.0579
 			dyes = 0.2566
 			produced = fine_cloth
-			output = 0.27
+			output = 0.27 # VANILLA = 0.25
 
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
@@ -202,7 +203,7 @@ fine_cloth_workshop = {
 		fur_trim_workshop_maintenance = {
 			fur = 0.6
 			produced = fine_cloth
-			output = 0.27
+			output = 0.27 # VANILLA = 0.25
 
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
@@ -244,7 +245,7 @@ fine_cloth_manufactory = {
 			silk = 2.3077
 			
 			produced = fine_cloth
-			output = 2.16
+			output = 2.16 # VANILLA = 2.0
 			
 			category = manufactory_input
 			debug_max_profit = manufactory_profit_margin
@@ -255,7 +256,7 @@ fine_cloth_manufactory = {
 			cloth = 3.0769
 
 
-			output = 2.16
+			output = 2.16 # VANILLA = 2.0
 			debug_max_profit = manufactory_profit_margin
 			
 			category = manufactory_input
@@ -269,7 +270,7 @@ fine_cloth_manufactory = {
 			dyes = 0.2308
 			
 			produced = fine_cloth
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 			
 			category = guild_input
 			debug_max_profit = manufactory_profit_margin
@@ -277,7 +278,7 @@ fine_cloth_manufactory = {
 
 		alum_fine_cloth_manufactory_maintenance = {
 			produced = fine_cloth
-			output = 0.432
+			output = 0.432 # VANILLA = 0.4
 			dyes = 0.389
 			alum = 0.097
 			
@@ -318,7 +319,7 @@ fine_cloth_mill = {
 			dyes = 0.3674
 			
 			produced = fine_cloth
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			
@@ -330,7 +331,7 @@ fine_cloth_mill = {
 			dyes = 0.3644
 			
 			produced = fine_cloth
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

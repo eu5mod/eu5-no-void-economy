@@ -85,7 +85,7 @@
 
 	overlord_modifier = {
 		stability_decay = 0.001
-		monthly_legitimacy = 0.0225
+		monthly_legitimacy = 0.0225 # VANILLA = 0.03
 		global_crown_estate_power = -0.033
 		global_nobles_estate_power = 0.025
 		global_levy_size_modifier = -0.025

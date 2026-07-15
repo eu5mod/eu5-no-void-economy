@@ -124,7 +124,7 @@ flavor_fra_dau.100 = { # Delphinal Statute
         }
         set_variable = { name = adopted_the_title_dauphin value = 1 }
         custom_tooltip = heirs_will_inherit_dauphin_title
-        add_legitimacy = 7.5
+        add_legitimacy = 7.5 # VANILLA = 15
         add_gold = {
             value = root.monthly_income_trade_and_tax
             multiply = -12
@@ -141,7 +141,7 @@ flavor_fra_dau.100 = { # Delphinal Statute
         ai_chance = {
             base = 10
         }
-        add_legitimacy = -5
+        add_legitimacy = -5 # VANILLA = -10
         add_gold = {
             value = root.monthly_income_trade_and_tax
             multiply = -8

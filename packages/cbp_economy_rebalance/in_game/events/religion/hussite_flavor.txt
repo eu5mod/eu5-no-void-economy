@@ -297,7 +297,7 @@ hussite_flavor.4 = { #"Out of Tune with the Divine"
 	option = {
 		name = hussite_flavor.4.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = hussite_flavor.4.b
@@ -486,13 +486,13 @@ hussite_flavor.6 = { #Heretic in the Cabinet
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_mild_bonus
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 
 	option = {
 		name = hussite_flavor.6.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -644,7 +644,7 @@ hussite_flavor.8 = { #Religious Clashes in location
 				multiply = -1
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -848,7 +848,7 @@ hussite_flavor.11 = {	#Hymns of the Faithful
 		name = hussite_flavor.11.a
 		trigger = { has_variable = hussite_flavor3 }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 
 	option = {

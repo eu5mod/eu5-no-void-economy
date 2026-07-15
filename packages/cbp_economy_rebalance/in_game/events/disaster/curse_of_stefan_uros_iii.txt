@@ -59,7 +59,7 @@ curse_of_stefan_uros_iii.3 = { #Province Demands Autonomy
 		scope:target_province = {
 			change_control = control_severe_penalty
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_prestige = prestige_weak_penalty
 	}
 
@@ -74,7 +74,7 @@ curse_of_stefan_uros_iii.3 = { #Province Demands Autonomy
 				add_pop_satisfaction = pop_satisfaction_extreme_penalty
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -168,7 +168,7 @@ curse_of_stefan_uros_iii.5 = { #Peasants-at-Arms
 			}
 			change_prosperity = prosperity_ultimate_penalty
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 
 	option = {
@@ -178,7 +178,7 @@ curse_of_stefan_uros_iii.5 = { #Peasants-at-Arms
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_bonus
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }
 
@@ -271,6 +271,6 @@ curse_of_stefan_uros_iii.6 = { #Province Declares Independence
 				add_pop_satisfaction = pop_satisfaction_mild_penalty
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }

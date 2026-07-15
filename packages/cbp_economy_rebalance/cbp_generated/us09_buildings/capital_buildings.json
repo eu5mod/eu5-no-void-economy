@@ -546,7 +546,7 @@
       }
     ]
   },
-  "generated_sha256": "b6927bf384ae81affa6bc38f0b6f2e26a71fa45325c5abc99dd1b8b7cb9a6cdf",
+  "generated_sha256": "95f6eadf11e7b42999d3b567c8766ea7f6530cab8db0915c71469526ca00a24f",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/capital_buildings.txt",
   "source_sha256": "e7696209f23b1605bd7720ee81070e32cf887aaa9da18520d74e06aefdbe36be",

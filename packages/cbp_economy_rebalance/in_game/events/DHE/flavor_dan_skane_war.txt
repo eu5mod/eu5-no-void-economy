@@ -62,7 +62,7 @@ flavor_dan_skane_war.1 = { #The Rebellion of Johan Offesson
 
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
 		add_stability = stability_severe_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		scope:target_character = {
 			move_country = c:DAN
 		}
@@ -119,7 +119,7 @@ flavor_dan_skane_war.2 = { #Johan Offesson arrives in Denmark
 		name = flavor_dan_skane_war.2.b
 
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		kill_character_silently = {
 			target = scope:target_character
 			reason = vanished
@@ -253,7 +253,7 @@ flavor_dan_skane_war.5 = { #Offer to purchase Scania - Denmark
 		name = flavor_dan_skane_war.5.b
 
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 
@@ -336,6 +336,6 @@ flavor_dan_skane_war.7 = {
 		name = flavor_dan_skane_war.7.a
 
 		add_prestige = prestige_weak_bonus
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 	}
 }

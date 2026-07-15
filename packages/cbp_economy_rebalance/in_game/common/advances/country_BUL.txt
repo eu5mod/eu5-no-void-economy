@@ -38,9 +38,9 @@ bul_the_bastion_of_tseverets = {
 	}
 
 	fort_maintenance_efficiency = 0.2
-	monthly_devotion = 0.075
-	monthly_legitimacy = 0.075
-	monthly_republican_tradition = 0.075
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 
 	requires = faster_levy_recruitment
 }

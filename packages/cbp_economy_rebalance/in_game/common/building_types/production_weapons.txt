@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 weapon_guild = {
 	is_foreign = no
@@ -32,7 +33,7 @@ weapon_guild = {
 			lumber = 0.0633
 			stone = 0.9051
 			produced = weaponry
-			output = 0.432
+			output = 0.432 # VANILLA = 0.4
 			category = guild_input
 			
 			debug_max_profit = guild_profit_margin
@@ -43,7 +44,7 @@ weapon_guild = {
 			tools = 0.505
 			category = guild_input
 			produced = weaponry
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			debug_max_profit = guild_profit_margin
 		}
 		weapon_guild_obsidian_maintenance = {
@@ -51,7 +52,7 @@ weapon_guild = {
 			stone = 0.463
 			gems = 0.093
 			produced = weaponry
-			output = 0.432
+			output = 0.432 # VANILLA = 0.4
 			category = guild_input
 			
 			debug_max_profit = guild_profit_margin
@@ -91,7 +92,7 @@ weapon_workshop = {
 			tools = 0.2197
 			category = workshop_input
 			produced = weaponry
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 		}
@@ -134,7 +135,7 @@ weapon_manufactory = {
 			tools = 0.4446
 			category = manufactory_input
 			produced = weaponry
-			output = 2.16
+			output = 2.16 # VANILLA = 2.0
 			debug_max_profit = manufactory_profit_margin
 		}
 	}
@@ -172,7 +173,7 @@ weapon_factory = {
 			lumber = 0.4413
 			category = mills_input
 			produced = weaponry
-			output = 4.32
+			output = 4.32 # VANILLA = 4.0
 			
 			debug_max_profit = mills_profit_margin
 		}

@@ -153,7 +153,7 @@ shurfa_status = {
 
 	requires = government_size_revolutions
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 	monthly_prestige = 0.1
 }
 

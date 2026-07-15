@@ -37,7 +37,7 @@ flavor_ori.1 = {
 	option = {
 		name = flavor_ori.1.b
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_right }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -74,7 +74,7 @@ flavor_ori.2 = {
 	option = {
 		name = flavor_ori.2.a
 		change_gold_effect = { scale = -2 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 	option = {
 		name = flavor_ori.2.b
@@ -279,7 +279,7 @@ flavor_ori.5 = {
 	option = {
 		name = flavor_ori.5.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		kill_character = scope:target_character
 	}
 }
@@ -408,7 +408,7 @@ flavor_ori.6 = {
 
 		destroy_rebel = scope:target_rebel
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -881,7 +881,7 @@ flavor_ori.13 = {
 	option = {
 		name = flavor_ori.13.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 

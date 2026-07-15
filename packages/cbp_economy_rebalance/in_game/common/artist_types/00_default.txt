@@ -86,11 +86,11 @@ calligrapher = {
 		}
 	}
 	modifier = {
-		monthly_legitimacy = 0.015
-		monthly_republican_tradition = 0.015
-		monthly_devotion = 0.015
-		monthly_horde_unity = 0.015
-		monthly_tribal_cohesion = 0.015
+		monthly_legitimacy = 0.015 # VANILLA = 0.02
+		monthly_republican_tradition = 0.015 # VANILLA = 0.02
+		monthly_devotion = 0.015 # VANILLA = 0.02
+		monthly_horde_unity = 0.015 # VANILLA = 0.02
+		monthly_tribal_cohesion = 0.015 # VANILLA = 0.02
 	}
 }
 

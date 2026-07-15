@@ -89,7 +89,7 @@ flavor_lat.1 = { # The New Latin Bureaucracy
                 culture = culture:french
             }
         }
-        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+        add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
         add_country_modifier = { modifier = lat_neapolitan_inspired_bureaucracy years = 25 mode = add }
     }
 }
@@ -338,7 +338,7 @@ flavor_lat.4 = { # Restoration of the Holy Patriarchate of Constantinople
 
     option = { # Leverage the restored office for political gain.
         name = flavor_lat.4.c
-        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
         unlock_estate_privilege_effect = { type = lat_protector_of_the_constantinople_patriarchate }
         location:constantinople = {
             change_development = development_mild_bonus
@@ -700,7 +700,7 @@ flavor_lat.9 = { # Papal Request Conversion of Byzantine Lands
 
     option = { # Allow conversion efforts, but do not fully sanction them
         name = flavor_lat.9.b
-        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+        add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
         add_religious_influence = religious_influence_mild_penalty
         show_as_tooltip = {
             unlock_law_effect = {

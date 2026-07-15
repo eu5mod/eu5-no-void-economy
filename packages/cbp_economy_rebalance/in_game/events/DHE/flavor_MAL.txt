@@ -109,7 +109,7 @@ flavor_mal.2 = {
 	#No, [ROOT.GetCountry.GetGovernment.GetRuler.GetName] is the right ruler
 	option = {
 		name = flavor_mal.2.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		ruler = {
 			add_dip = 30
 		}
@@ -314,7 +314,7 @@ flavor_mal.6 = {
 	}
 	option = {
 		name = flavor_mal.6.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -787,7 +787,7 @@ flavor_mal.14 = {
 		historical_option = yes
 
 		cancel_subject = c:JOL
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -848,7 +848,7 @@ flavor_mal.15 = {
 			}
 		}
 		add_stability = stability_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 
 }
@@ -873,7 +873,7 @@ flavor_mal.16 = {
 	option = {
 		name = flavor_mal.16.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_government_power = government_power_mild_bonus
 	}
 }
@@ -1038,7 +1038,7 @@ flavor_mal.18 = {
 			cancel_subject = c:SON
 		}
 		add_stability = stability_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -1525,7 +1525,7 @@ flavor_mal.24 = {
 
 		historical_option = yes
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 
 		if = {
 			limit = {
@@ -1587,7 +1587,7 @@ flavor_mal.25 = {
 			}
 		}
 		else = {
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+			add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 		}
 	}
 

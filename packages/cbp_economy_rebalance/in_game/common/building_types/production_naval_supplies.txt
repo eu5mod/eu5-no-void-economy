@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 naval_supplies_guild = {
 	is_foreign = no
@@ -34,7 +35,7 @@ naval_supplies_guild = {
 			cloth = 0.0486
 
 			produced = naval_supplies
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -73,7 +74,7 @@ naval_supplies_workshop = {
 			cloth = 0.1088
 
 			produced = naval_supplies
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -117,7 +118,7 @@ naval_supplies_manufactory = {
 			cloth = 0.2194
 
 			produced = naval_supplies
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			
@@ -162,7 +163,7 @@ naval_supplies_mill = {
 			cloth = 0.2281
 
 			produced = naval_supplies
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

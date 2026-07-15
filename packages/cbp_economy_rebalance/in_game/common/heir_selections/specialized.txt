@@ -337,10 +337,10 @@ matrilineal_non_exclusive = {
 			}
 			custom_tooltip = ON_RULER_DEATH_EFFECT_TT
 			show_as_tooltip = {
-				add_horde_unity = cbp_instant_add_horde_unity_root_modifier_horde_unity_hit_at_ruler_death_699a011935
+				add_horde_unity = cbp_instant_add_horde_unity_root_modifier_horde_unity_hit_at_ruler_death_699a011935 # VANILLA = root.modifier:horde_unity_hit_at_ruler_death
 			}
 		}
-		add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43
+		add_government_power = cbp_instant_add_government_power_government_power_mild_penalty_159576ea43 # VANILLA = government_power_mild_penalty
 	}
 	sibling_score = {
 	}

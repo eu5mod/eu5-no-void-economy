@@ -276,7 +276,7 @@ d008_flavor_byz.6 = { # A Trebizond-formed Byzantium restores the Empire, earnin
 
 		unlock_policy_effect = { type = byz_tagmata_policy_upgraded }
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 	}
 }

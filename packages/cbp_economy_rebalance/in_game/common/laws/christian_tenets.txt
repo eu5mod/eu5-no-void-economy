@@ -332,11 +332,11 @@ liturgical_practices = {
 					type = autocephalous_patriarchate
 				}
 			}
-			monthly_legitimacy = 0.0375
-			monthly_republican_tradition = 0.0375
-			monthly_devotion = 0.0375
-			monthly_horde_unity = 0.0375
-			monthly_tribal_cohesion = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
+			monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+			monthly_devotion = 0.0375 # VANILLA = 0.05
+			monthly_horde_unity = 0.0375 # VANILLA = 0.05
+			monthly_tribal_cohesion = 0.0375 # VANILLA = 0.05
 		}
 		country_modifier = {
 			#benefits for all members
@@ -347,11 +347,11 @@ liturgical_practices = {
 					}
 				}
 			}
-			monthly_legitimacy = 0.015
-			monthly_republican_tradition = 0.015
-			monthly_devotion = 0.015
-			monthly_horde_unity = 0.015
-			monthly_tribal_cohesion = 0.015
+			monthly_legitimacy = 0.015 # VANILLA = 0.02
+			monthly_republican_tradition = 0.015 # VANILLA = 0.02
+			monthly_devotion = 0.015 # VANILLA = 0.02
+			monthly_horde_unity = 0.015 # VANILLA = 0.02
+			monthly_tribal_cohesion = 0.015 # VANILLA = 0.02
 		}
 		wants_this_policy_bias = {
 			add = {
@@ -1029,11 +1029,11 @@ ruler_and_patriarch_tenet = {
 					type = autocephalous_patriarchate
 				}
 			}
-			monthly_legitimacy = 0.0375
-			monthly_republican_tradition = 0.0375
-			monthly_devotion = 0.0375
-			monthly_horde_unity = 0.0375
-			monthly_tribal_cohesion = 0.0375
+			monthly_legitimacy = 0.0375 # VANILLA = 0.05
+			monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+			monthly_devotion = 0.0375 # VANILLA = 0.05
+			monthly_horde_unity = 0.0375 # VANILLA = 0.05
+			monthly_tribal_cohesion = 0.0375 # VANILLA = 0.05
 		}
 		country_modifier = {
 			#benefits for all members
@@ -1044,11 +1044,11 @@ ruler_and_patriarch_tenet = {
 					}
 				}
 			}
-			monthly_legitimacy = 0.015
-			monthly_republican_tradition = 0.015
-			monthly_devotion = 0.015
-			monthly_horde_unity = 0.015
-			monthly_tribal_cohesion = 0.015
+			monthly_legitimacy = 0.015 # VANILLA = 0.02
+			monthly_republican_tradition = 0.015 # VANILLA = 0.02
+			monthly_devotion = 0.015 # VANILLA = 0.02
+			monthly_horde_unity = 0.015 # VANILLA = 0.02
+			monthly_tribal_cohesion = 0.015 # VANILLA = 0.02
 		}
 		wants_this_policy_bias = {
 			add = {

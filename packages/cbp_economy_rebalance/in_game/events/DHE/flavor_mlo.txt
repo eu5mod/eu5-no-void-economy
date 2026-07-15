@@ -1905,7 +1905,7 @@ flavor_mlo.33 = { #Renovating the Palazzo Ducale
 		name = flavor_mlo.33.b
 
 		add_prestige = prestige_weak_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 }
 
@@ -1960,7 +1960,7 @@ flavor_mlo.34 = { #The Equestrian Statue of Leonardo da Vinci
 	option = {
 		name = flavor_mlo.34.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		change_societal_value = {
 			type = traditionalist_vs_innovative
 			value = societal_value_minor_move_to_left
@@ -2234,7 +2234,7 @@ flavor_mlo.40 = {
 	option = {
 		name = flavor_mlo.40.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2310,7 +2310,7 @@ flavor_mlo.41 = {
 	option = {
 		name = flavor_mlo.41.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 	}
 }
 
@@ -2580,7 +2580,7 @@ flavor_mlo.45 = {
 	option = {
 		name = flavor_mlo.45.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 		kill_character_silently = scope:mlo_bernardino_corio_scope
 	}
 }
@@ -2754,7 +2754,7 @@ flavor_mlo.51 = {
 	option = {
 		name = flavor_mlo.51.b
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	}
 }
 

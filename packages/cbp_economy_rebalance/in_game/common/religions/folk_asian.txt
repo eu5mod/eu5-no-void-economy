@@ -984,7 +984,7 @@ shamanism = {
 
 	definition_modifier = {
 		stability_investment = tiny_stability_investment
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 
 }
@@ -996,7 +996,7 @@ tengri = { #https://en.wikipedia.org/wiki/Tengrism
 	religious_aspects = 1
 
 	definition_modifier = {
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
         army_light_cavalry_power = 0.1
 	}
 
@@ -1010,7 +1010,7 @@ tungusic_shamanism = {
 
 	definition_modifier = {
 		land_morale_attrition_cost = -0.01
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 
 }

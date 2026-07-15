@@ -703,7 +703,7 @@ institute_canonical_law = {
 	estate = clergy_estate
 
 	modifier_when_in_debate = {
-		stability_investment = 0.0375
+		stability_investment = 0.0375 # VANILLA = 0.05
 	}
 
 	allow = {

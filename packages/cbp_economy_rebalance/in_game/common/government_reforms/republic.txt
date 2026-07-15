@@ -246,7 +246,7 @@ revolutionary_autocracy = {
 		}
 	}
 	country_modifier = {
-		monthly_republican_tradition = -0.0225
+		monthly_republican_tradition = -0.0225 # VANILLA = -0.03
 		global_crown_estate_power = 0.5
 		government_reform_slots = 1
 		government_size = 1

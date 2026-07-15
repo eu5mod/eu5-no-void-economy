@@ -78,7 +78,7 @@ jurchen_confederation_events.1 = {
 		name = jurchen_confederation_events.1.a
 
 		change_societal_value = { type = centralization_vs_decentralization value = societal_value_move_to_left }
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_tribal_cohesion = tribal_cohesion_weak_penalty
 	}
 
@@ -542,7 +542,7 @@ jurchen_confederation_events.7 = {
 				min = -0.5
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -714,7 +714,7 @@ jurchen_confederation_events.10 = {
 	option = {
 		name = jurchen_confederation_events.10.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_tribal_cohesion = tribal_cohesion_weak_penalty
 		capital = {
 			change_prosperity = prosperity_severe_penalty
@@ -885,7 +885,7 @@ jurchen_confederation_events.13 = {
 
 		add_research_progress = research_progress_mild_bonus
 		add_tribal_cohesion = tribal_cohesion_mild_penalty
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_right }
 	}
 

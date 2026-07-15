@@ -192,7 +192,7 @@ cc_papal_authority = { #Stance on the nature of papal primacy
 				is_leader_of_international_organization = international_organization:catholic_church
 			}
 			monthly_religious_influence = 0.2
-			monthly_devotion = 0.15
+			monthly_devotion = 0.15 # VANILLA = 0.2
 		}
 		#benefits for all members
 		country_modifier = {
@@ -246,7 +246,7 @@ cc_papal_authority = { #Stance on the nature of papal primacy
 			potential_trigger = {
 				is_leader_of_international_organization = international_organization:catholic_church
 			}
-			monthly_devotion = 0.15
+			monthly_devotion = 0.15 # VANILLA = 0.2
 		}
 		#benefits for all members
 		country_modifier = {
@@ -464,7 +464,7 @@ cc_veneration_of_saints_and_reliquaries = { #Stance on veneration of saints and 
 			potential_trigger = {
 				is_leader_of_international_organization = international_organization:catholic_church
 			}
-			monthly_devotion = 0.075
+			monthly_devotion = 0.075 # VANILLA = 0.1
 		}
 		#benefits for all members
 		country_modifier = {

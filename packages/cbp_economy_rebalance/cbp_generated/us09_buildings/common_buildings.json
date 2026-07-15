@@ -214,7 +214,7 @@
       }
     ]
   },
-  "generated_sha256": "69446ab5dd29d09c7134e7c26957f63104749f188d67f718703ba09fc3b7ee90",
+  "generated_sha256": "8b555c5a045834bdf9c77ff1037bb6902ddd252dc14443843d846d3dea0a9ca1",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/common_buildings.txt",
   "source_sha256": "70f0112ad50e6363f2f59fe84a933d00821f74d686263cc4a9bf3553972ab536",

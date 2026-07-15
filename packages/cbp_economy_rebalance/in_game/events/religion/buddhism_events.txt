@@ -1421,7 +1421,7 @@ buddhism_events.1102 = {
 
 	option = {
 		name = buddhism_events.1102.a
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 		add_karma = karma_weak_bonus
 	}
 

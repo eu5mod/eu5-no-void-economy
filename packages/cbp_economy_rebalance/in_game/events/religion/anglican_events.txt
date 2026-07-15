@@ -211,7 +211,7 @@ anglican_events.5 = {
 	}
 	option = {
 		name = anglican_events.5.b
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 	}
 	option = {
 		name = anglican_events.5.c
@@ -608,6 +608,6 @@ anglican_events.15 = {
 		name = anglican_events.15.b
 		ruler = { change_character_religion = religion:anglican }
 		add_prestige = prestige_extreme_penalty
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 }

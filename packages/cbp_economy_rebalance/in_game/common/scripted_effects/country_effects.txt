@@ -2155,10 +2155,10 @@ set_revolution_effect = {
 	set_revolution = yes
 	hidden_effect = {
 		#Set the government currencies up
-		add_government_power = -50
-		add_government_power = 25
-		add_stability = -100
-		add_stability = 57.5
+		add_government_power = -50 # VANILLA = -100
+		add_government_power = 25 # VANILLA = 50
+		add_stability = -100 # VANILLA = -200
+		add_stability = 57.5 # VANILLA = 115
 		add_prestige = -100
 		add_prestige = 20
 		create_character = {

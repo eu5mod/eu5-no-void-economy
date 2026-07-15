@@ -108,7 +108,7 @@ tribal_organization_law = {
         country_modifier = {
             monthly_towards_centralization = societal_value_minor_monthly_move
             war_no_cb_cost_modifier = -0.1
-            monthly_tribal_cohesion = -0.0225
+            monthly_tribal_cohesion = -0.0225 # VANILLA = -0.03
             army_light_cavalry_maintenance_cost_modifier = -0.25
         }
         estate_preferences = {
@@ -236,7 +236,7 @@ tribal_cultural_identity_law = {
     tribal_identity_policy = {
         country_modifier = {
             monthly_towards_traditional_economy = societal_value_monthly_move
-            monthly_tribal_cohesion = 0.375
+            monthly_tribal_cohesion = 0.375 # VANILLA = 0.5
         }
 		estate_preferences = {
 			peasants_estate
@@ -261,7 +261,7 @@ tribal_modernization_law = {
         years = 20
         country_modifier = {
             monthly_towards_aristocracy = societal_value_large_monthly_move
-            monthly_tribal_cohesion = -0.75
+            monthly_tribal_cohesion = -0.75 # VANILLA = -1
         }
 		estate_preferences = {
 			nobles_estate
@@ -277,7 +277,7 @@ tribal_modernization_law = {
         years = 20
         country_modifier = {
             monthly_towards_plutocracy = societal_value_large_monthly_move
-            monthly_tribal_cohesion = -0.75
+            monthly_tribal_cohesion = -0.75 # VANILLA = -1
         }
 		estate_preferences = {
 			burghers_estate
@@ -293,7 +293,7 @@ tribal_modernization_law = {
         years = 20
         country_modifier = {
             monthly_towards_spiritualist = societal_value_large_monthly_move
-            monthly_tribal_cohesion = -0.75
+            monthly_tribal_cohesion = -0.75 # VANILLA = -1
         }
 		estate_preferences = {
 			clergy_estate

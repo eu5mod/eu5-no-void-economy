@@ -23,7 +23,7 @@ sme_atabegs_of_samtskhe = {
 
 	requires = global_nobles_max_literacy_advance
 
-	monthly_legitimacy = 0.075
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 }
 
 sme_proactive_diplomacy = {

@@ -141,7 +141,7 @@ sanjiao = {
 	definition_modifier = {
 		allow_righteousness = yes
 		allow_harmony = yes
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		global_max_literacy = 10
 		can_have_monasteries = yes
 	}

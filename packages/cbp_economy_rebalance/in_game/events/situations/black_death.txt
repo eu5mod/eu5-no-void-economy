@@ -402,7 +402,7 @@ black_death.1002 = { # Conflict of Fads
 	option = { # Austerity
 		name = black_death.1002.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		if = {
 			limit = {
 				has_country_modifier = black_death_austerity_movement
@@ -714,7 +714,7 @@ black_death.1006 = { # The Maid Draft
 	option = {
 		name = black_death.1006.b
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_right }
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_extreme_penalty
@@ -804,7 +804,7 @@ black_death.1007 = { # Delhi's Dilemma
 		name = black_death.1007.c
 
 		add_stability = stability_mild_penalty
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_extreme_penalty
 		}
@@ -1088,7 +1088,7 @@ black_death.1010 = { # Armenian Mud
 	option = { # Opt-out if no money
 		name = black_death.1010.c
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 
@@ -1285,13 +1285,13 @@ black_death.1012 = { # By Order of The Pope
 			value = estate_satisfaction_mild_bonus
 		}
 		add_religious_influence_if_valid = { VALUE = religious_influence_weak_bonus }
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a
+		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
 	}
 
 	option = {
 		name = black_death.1012.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_prestige = prestige_weak_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_bonus
@@ -1366,7 +1366,7 @@ black_death.1013 = { # Village Stops Paying Taxes
 	option = {
 		name = black_death.1013.c
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d
+		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
 		add_country_modifier = {
 			modifier = peasants_estate_less_tax_burden
 			years = 5
@@ -1641,7 +1641,7 @@ black_death.1016 = { # Social Cravings
 			}
 		}
 		else = {
-			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4
+			add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
 		}
 		change_societal_value = { type = serfdom_vs_free_subjects value = societal_value_minor_move_to_right }
 	}
@@ -1649,7 +1649,7 @@ black_death.1016 = { # Social Cravings
 	option = {
 		name = black_death.1016.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_mild_penalty
 		}
@@ -2148,7 +2148,7 @@ black_death.1024 = { # Silk Road Crisis
 			type = estate_type:burghers_estate
 			value = estate_satisfaction_extreme_penalty
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42
+		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
 	}
 }
 

@@ -38,7 +38,7 @@ scripted_trigger bard_10_neighbor_country_trigger = {
 }
 
 scripted_effect bard_10_neighbor_country_effect = {
-	add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516
+	add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
 	add_opinion = { target = scope:bard_country modifier = opinion_scathing_bardic_satire }
 }
 
@@ -97,7 +97,7 @@ ireland.10 = {
 	# Withold the insult!
 	option = {
 		name = ireland.10.b
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa
+		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
 
 		change_societal_value = {
 			type = belligerent_vs_conciliatory

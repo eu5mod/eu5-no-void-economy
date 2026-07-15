@@ -135,7 +135,7 @@ swiss_ambition = {
 	potential = {
 		is_swiss_for_advances = yes
 	}
-	monthly_republican_tradition = 0.075
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 
 	requires = enlightened_court
 }

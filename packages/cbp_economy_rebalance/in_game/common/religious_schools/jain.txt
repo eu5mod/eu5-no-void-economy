@@ -54,7 +54,7 @@ upkesa_gaccha_school = {
 	}
 
 	modifier = {
-		monthly_legitimacy = 0.075
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 }
 

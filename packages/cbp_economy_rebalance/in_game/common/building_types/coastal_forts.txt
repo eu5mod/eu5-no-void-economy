@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 coastal_fort = {
 	audio_tier = 1
@@ -33,11 +34,11 @@ coastal_fort = {
 	unique_production_methods = {
 		
 		coastal_fort_maintenance = {
-			stone = 0.14
-			firearms = 0.14
-			cannons = 0.35
-			tools = 0.14
-			tar = 0.14
+			stone = 0.14 # VANILLA = 0.2
+			firearms = 0.14 # VANILLA = 0.2
+			cannons = 0.35 # VANILLA = 0.5
+			tools = 0.14 # VANILLA = 0.2
+			tar = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 
@@ -83,11 +84,11 @@ naval_battery = {
 	unique_production_methods = {
 	
 		naval_battery_maintenance = {
-			stone = 0.14
-			firearms = 0.14
-			cannons = 0.7
-			tools = 0.35
-			tar = 0.14
+			stone = 0.14 # VANILLA = 0.2
+			firearms = 0.14 # VANILLA = 0.2
+			cannons = 0.7 # VANILLA = 1.0
+			tools = 0.35 # VANILLA = 0.5
+			tar = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}

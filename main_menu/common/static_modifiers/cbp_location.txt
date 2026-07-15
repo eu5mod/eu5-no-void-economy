@@ -25,7 +25,7 @@ market_center = {
 	local_merchant_power = 20
 	local_institution_growth_modifier = 0.25
 	free_building_levels = 5
-	maximum_stockpile_capacity = 0 # VANILLA VALUE IS 250
+	maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25
 }
 
 surplus_jobs = {

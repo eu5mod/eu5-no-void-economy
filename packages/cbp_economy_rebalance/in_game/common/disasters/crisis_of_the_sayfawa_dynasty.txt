@@ -33,7 +33,7 @@
 	}
 	modifier = {
 		global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
-		monthly_legitimacy = -0.225
+		monthly_legitimacy = -0.225 # VANILLA = -0.3
 		monthly_rebel_growth = 0.015
 		global_crown_estate_power = -0.2
 
