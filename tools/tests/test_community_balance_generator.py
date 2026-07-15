@@ -7,6 +7,7 @@ from tools.community_balance_generator import Intent, Target, apply_intent, gene
 from tools.generate_political_reward_overrides import (
     POLITICAL_DEFAULT_VALUE_PREFIXES,
     centralizable_script_values,
+    is_explicit_half_default_value,
 )
 
 
@@ -21,6 +22,12 @@ VANILLA = """marketplace = {
 
 
 class CommunityBalanceGeneratorTests(unittest.TestCase):
+    def test_political_intensity_selector_excludes_similarly_named_engine_fields(self):
+        self.assertFalse(is_explicit_half_default_value("has_stability_investment"))
+        self.assertFalse(is_explicit_half_default_value("stability_investment_penalty"))
+        self.assertTrue(is_explicit_half_default_value("stability_radical_penalty"))
+        self.assertTrue(is_explicit_half_default_value("horde_unity_severe_bonus"))
+
     def test_all_political_default_penalties_and_bonuses_are_halved(self):
         default_values = self.game / "main_menu/common/script_values/default_values.txt"
         default_values.parent.mkdir(parents=True, exist_ok=True)
