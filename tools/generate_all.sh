@@ -17,7 +17,7 @@ if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON
 	cbg_location_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_spec.json"
 	cbg_location_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
 	python3 "$repo_root/tools/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
-	python3 "$repo_root/tools/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$cbg_location_game_root" \
 		--spec "$cbg_location_spec" \
 		--output-root "$repo_root" \
@@ -92,7 +92,7 @@ else
 				--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
 				--trade-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}" \
 				--minting-multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
-			python3 "$repo_root/tools/community_balance_generator.py" \
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_building_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -104,7 +104,7 @@ else
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--percent "${MODEU5_US09_BONUS_PERCENT:-5}" \
 				--output "$cbg_rgo_spec"
-			python3 "$repo_root/tools/community_balance_generator.py" \
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_rgo_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -117,7 +117,7 @@ else
 				--burgher-percent "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 				--laborer-percent "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
 				--output "$cbg_pop_spec"
-			python3 "$repo_root/tools/community_balance_generator.py" \
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_pop_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -156,7 +156,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--game-root "$us177_game_root" \
 		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
 		--output "$cbg_food_spec"
-	python3 "$repo_root/tools/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_food_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -170,7 +170,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--output "$cbg_political_spec" \
 		--minting-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json" \
 		--political-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
-	python3 "$repo_root/tools/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_political_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -185,7 +185,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	python3 "$repo_root/tools/generate_cbp_cbg_default_values_spec.py" \
 		--game-root "$us177_game_root" \
 		--output "$cbg_default_values_spec"
-	python3 "$repo_root/tools/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_default_values_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \

@@ -1,5 +1,10 @@
 # Community Balance Generator
 
+The standalone modder-facing entry point is
+[`tools/cbg/README.md`](../../tools/cbg/README.md). This document records the
+CBP adoption and parity migration. Repository ownership boundaries are defined
+in [`CBG_REPOSITORY_BOUNDARY.md`](CBG_REPOSITORY_BOUNDARY.md).
+
 ## Purpose
 
 The Community Balance Generator (CBG) builds one exact-path EU5 compatibility
@@ -87,7 +92,7 @@ the marketplace family one inherited-base rule.
 ## Usage
 
 ```bash
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
   --game-root "/path/to/Europa Universalis V/game" \
   --spec mods/mod-a/community_balance.json \
   --spec mods/mod-b/community_balance.json \

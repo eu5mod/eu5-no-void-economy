@@ -40,7 +40,7 @@ write_central_script_value_override(
     centralizable_script_values(game_root),
 )
 PY
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" \
 	--spec "$work_dir/default_values.json" \
 	--output-root "$work_dir/output" \

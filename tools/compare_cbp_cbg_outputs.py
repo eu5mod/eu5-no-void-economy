@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from tools.community_balance_generator import (
+    from tools.cbg.community_balance_generator import (
         ASSIGNMENT,
         BLOCK_ASSIGNMENT,
         field_matches,
@@ -21,7 +21,7 @@ try:
         scan_objects,
     )
 except ModuleNotFoundError:
-    from community_balance_generator import (
+    from cbg.community_balance_generator import (
         ASSIGNMENT,
         BLOCK_ASSIGNMENT,
         field_matches,

@@ -1,0 +1,1 @@
+"""Community Balance Generator tests."""

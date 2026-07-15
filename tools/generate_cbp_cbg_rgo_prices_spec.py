@@ -9,9 +9,9 @@ from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
 try:
-    from tools.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
 except ModuleNotFoundError:
-    from community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
 
 
 TARGETS = (

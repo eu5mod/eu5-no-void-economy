@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path, PurePosixPath
 
-from tools.community_balance_generator import Intent, Target, apply_intent, generate, load_intents
+from tools.cbg.community_balance_generator import Intent, Target, apply_intent, generate, load_intents
 from tools.generate_political_reward_overrides import (
     POLITICAL_DEFAULT_VALUE_PREFIXES,
     centralizable_script_values,

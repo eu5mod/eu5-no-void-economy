@@ -31,7 +31,7 @@ if ! cmp -s "$tracked_spec" "$work_dir/cbp_balance.json"; then
 	exit 1
 fi
 
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" \
 	--spec "$tracked_spec" \
 	--output-root "$work_dir/output" \

@@ -11,10 +11,10 @@ from decimal import Decimal
 from pathlib import Path
 
 try:
-    from tools.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
     from tools.generate_political_reward_overrides import centralizable_script_values
 except ModuleNotFoundError:  # Direct `python3 tools/...py` execution.
-    from community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
     from generate_political_reward_overrides import centralizable_script_values
 
 

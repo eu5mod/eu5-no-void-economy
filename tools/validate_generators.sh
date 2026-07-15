@@ -130,7 +130,7 @@ cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_file "tools/generate_political_reward_overrides.py"
 cbp_require_file "tools/tests/test_political_reward_overrides.py"
-cbp_require_file "tools/community_balance_generator.py"
+cbp_require_file "tools/cbg/community_balance_generator.py"
 cbp_require_file "tools/generate_cbp_community_balance_spec.py"
 cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
@@ -160,20 +160,21 @@ cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_min
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
 cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
-cbp_require_file "tools/tests/test_community_balance_generator.py"
-cbp_require_file "tools/templates/community_balance_spec.example.json"
+cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
+cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
+cbp_require_file "tools/cbg/README.md"
 cbp_require_file "docs/technical/COMMUNITY_BALANCE_GENERATOR.md"
 cbp_require_match 'Refusing to overwrite an output not owned' \
-	"tools/community_balance_generator.py" \
+	"tools/cbg/community_balance_generator.py" \
 	'Community Balance Generator must enforce manifest-based output ownership'
 cbp_require_match 'add_custom' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover custom field insertion'
 cbp_require_match 'exclude_values' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover bulk symbolic exclusions'
 cbp_require_match '"provenance": "vanilla"' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must preserve legacy Vanilla provenance comments'
 cbp_require_match 'owned_outputs.*TARGET' \
 	"tools/generate_cbp_cbg_default_values_spec.py" \

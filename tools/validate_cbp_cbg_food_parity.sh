@@ -23,7 +23,7 @@ python3 tools/generate_us177_food_goods_manifest.py \
 	--food-production-divisor "$divisor"
 python3 tools/generate_cbp_cbg_food_spec.py \
 	--game-root "$game_root" --divisor "$divisor" --output "$work_dir/food.json"
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/food.json" \
 	--output-root "$work_dir/candidate" --manifest "$work_dir/candidate/manifest.json"
 
