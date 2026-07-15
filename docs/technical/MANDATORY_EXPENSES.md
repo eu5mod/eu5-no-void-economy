@@ -68,3 +68,11 @@ monthly_tribal_cohesion
 The modifiers are always present; the engine uses the power relevant to the
 country's current government form. Runtime validation must confirm the active
 government power's tooltip and monthly result. No reconciliation is provided.
+
+This deliberately follows vanilla's own generic-country modifier pattern. For
+example, `ruler_primary_culture`, `ruler_accepted_culture`, and their related
+static modifiers declare Legitimacy, Republican Tradition, Devotion, Horde
+Unity, and Tribal Cohesion together without a government-type condition. A CBP
+government-type dispatch would duplicate engine selection, require a fragile
+inventory of government forms, and risk a missing baseline during government
+transitions.
