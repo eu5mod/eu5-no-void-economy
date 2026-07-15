@@ -7,5 +7,5 @@ import CBP discovery and edge-case compilers from the repository-level
 They do not materialize runtime files themselves. `generate_all.sh` invokes an
 adapter to produce JSON, then invokes the generic CBG materializer.
 
-Parity validators remain under `tools/validate_cbp_cbg_*` because they validate
+Parity validators live under `tools/cbg/validator/cbp/` because they validate
 the host integration rather than the adapter mechanism itself.

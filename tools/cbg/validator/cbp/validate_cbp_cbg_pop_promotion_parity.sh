@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 source "$repo_root/tools/cbp_tool_lib.sh"
 cbp_load_local_config "${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}"

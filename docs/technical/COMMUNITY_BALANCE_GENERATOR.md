@@ -124,7 +124,7 @@ CBG master policy
 Run the focused release gate with an installed Vanilla tree:
 
 ```bash
-./tools/validate_cbp_cbg_default_values_parity.sh
+./tools/cbg/validator/cbp/validate_cbp_cbg_default_values_parity.sh
 ```
 
 The normal local generator validation runs this gate automatically:
@@ -161,7 +161,7 @@ manifest delegates physical output ownership to
 `cbp_generated/cbg_food_manifest.json`.
 
 ```bash
-./tools/validate_cbp_cbg_food_parity.sh
+./tools/cbg/validator/cbp/validate_cbp_cbg_food_parity.sh
 ```
 
 This gate compares every food override byte-for-byte with the legacy renderer.
@@ -176,7 +176,7 @@ It does not consume #188 generated manifests.
 With EU5 installed and `.cbp.local.env` configured, run:
 
 ```bash
-./tools/validate_cbp_cbg_parity.sh
+./tools/cbg/validator/cbp/validate_cbp_cbg_parity.sh
 ```
 
 This exports and checks the tracked spec, generates a clean exact-path mod,
@@ -192,7 +192,8 @@ marketplace inheritance, and Market Warehouse availability are also generated
 from Vanilla-derived rules. Matching Vanilla occurrences are discovered at
 generation time; broad policies do not carry generated file inventories.
 
-GitHub Actions runs `validate_cbp_cbg_master_spec.py` to enforce this discovery
+GitHub Actions runs `tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py`
+to enforce this discovery
 contract without proprietary game files. Full output parity remains a local or
 self-hosted release gate because `validate_cbp_cbg_parity.sh` requires the
 installed Vanilla tree.

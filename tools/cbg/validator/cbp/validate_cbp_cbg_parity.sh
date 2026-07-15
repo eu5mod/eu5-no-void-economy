@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 
 if [[ -f .cbp.local.env ]]; then
@@ -37,7 +37,7 @@ python3 tools/cbg/community_balance_generator.py \
 	--output-root "$work_dir/output" \
 	--manifest "$work_dir/output/cbg_manifest.json"
 
-python3 tools/compare_cbp_cbg_outputs.py \
+python3 tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py \
 	--game-root "$game_root" \
 	--reference-root "$repo_root/packages/cbp_economy_rebalance" \
 	--repo-root "$repo_root" \

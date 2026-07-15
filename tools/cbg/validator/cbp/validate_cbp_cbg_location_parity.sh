@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 # shellcheck source=tools/cbp_tool_lib.sh
 source "$repo_root/tools/cbp_tool_lib.sh"

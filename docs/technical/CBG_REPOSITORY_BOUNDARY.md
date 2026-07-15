@@ -11,6 +11,8 @@ tools/cbg/
   community_balance_generator.py
   adapters/
     cbp/
+  validator/
+    cbp/
   examples/
   tests/
 ```
@@ -27,9 +29,9 @@ The following root `tools/` families are CBP adapters, not part of CBG:
 ```txt
 tools/cbg/adapters/cbp/generate_cbp_cbg_*_spec.py
 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py
-tools/validate_cbp_cbg_*_parity.sh
-tools/compare_cbp_cbg_outputs.py
-tools/validate_cbp_cbg_master_spec.py
+tools/cbg/validator/cbp/validate_cbp_cbg_*_parity.sh
+tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py
+tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py
 ```
 
 They discover CBP targets, compile business exclusions and edge cases, invoke
