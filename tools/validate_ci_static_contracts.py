@@ -424,6 +424,14 @@ def validate_core_stock_test_contract(stock_test_effects: str) -> None:
 
 def validate_stock_operator_contract() -> None:
     for path in iter_scan_files(ROOT):
+        relative = path.relative_to(ROOT)
+        if (
+            relative.parts[:2] == ("packages", "cbp_economy_rebalance")
+            and not path.name.startswith("cbp_")
+        ):
+            # CBG exact-path outputs preserve Vanilla filenames and Vanilla
+            # operators. The contract applies to CBP-authored runtime files.
+            continue
         text = path.read_text(encoding="utf-8-sig", errors="ignore")
         for violation in find_violations(path, text):
             rel = violation.path.relative_to(ROOT)
