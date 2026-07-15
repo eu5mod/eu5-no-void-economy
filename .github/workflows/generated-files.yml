@@ -485,6 +485,9 @@ jobs:
       - name: Test Community Balance Generator
         run: python3 -m unittest tools.tests.test_community_balance_generator
 
+      - name: Validate CBG master specification
+        run: python3 tools/validate_cbg_master_spec.py
+
       - name: Validate ModeU5 script safety
         run: /bin/bash ./tools/validate_cbp_script_safety.sh
 

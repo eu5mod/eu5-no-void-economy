@@ -133,6 +133,7 @@ cbp_require_file "tools/community_balance_generator.py"
 cbp_require_file "tools/generate_cbp_community_balance_spec.py"
 cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
+cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/tests/test_community_balance_generator.py"
 cbp_require_file "tools/templates/community_balance_spec.example.json"
@@ -146,6 +147,7 @@ cbp_require_match 'add_custom' \
 cbp_require_match 'exclude_values' \
 	"tools/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover bulk symbolic exclusions'
+python3 "$repo_root/tools/validate_cbg_master_spec.py"
 cbp_require_match 'generate_political_reward_overrides\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must compose political reward overrides after vanilla-derived generators'

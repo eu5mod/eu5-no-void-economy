@@ -118,6 +118,11 @@ Vanilla occurrences are discovered at generation time; the config does not
 enumerate those files. Exact entries remaining in the exported spec represent
 structural building-specific policies that do not yet share one safe selector.
 
+GitHub Actions runs `validate_cbg_master_spec.py` to enforce this discovery
+contract without proprietary game files. Full output parity remains a local or
+self-hosted release gate because `validate_cbp_cbg_parity.sh` requires the
+installed Vanilla tree.
+
 The comparison intentionally preserves #188 semantics during the tooling
 migration. Changing a questionable balance result belongs in a separate
 functional change.
