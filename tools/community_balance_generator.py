@@ -51,6 +51,7 @@ class Intent:
     exclude_values: tuple[str, ...]
     where: dict[str, list[dict[str, str]]]
     exclude_objects: tuple[str, ...]
+    provenance: str
 
 
 @dataclass
@@ -210,6 +211,9 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                 isinstance(value, str) and SAFE_SCALAR.fullmatch(value) for value in exclude_objects
             ):
                 raise ValueError(f"{spec_path}: exclude_objects must contain safe top-level object names")
+            provenance = raw.get("provenance", "cbg")
+            if provenance not in {"cbg", "vanilla"}:
+                raise ValueError(f"{spec_path}: provenance must be 'cbg' or 'vanilla'")
             for relative in matches:
                 sequence += 1
                 intents.append(Intent(
@@ -226,6 +230,7 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                     exclude_values=tuple(excluded),
                     where=where,
                     exclude_objects=tuple(exclude_objects),
+                    provenance=provenance,
                 ))
     return intents, custom_fields
 
@@ -461,9 +466,15 @@ def apply_one_match(
         after = numeric_result(intent.operation, before, intent.value)
     existing = match.group("comment")
     suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
+    if intent.provenance == "vanilla":
+        comment = f"# VANILLA = {before}{suffix}"
+    else:
+        comment = (
+            f"# VANILLA/PRIOR = {before}; "
+            f"CBG {intent.owner}: {intent.operation} {intent.value}{suffix}"
+        )
     lines[index] = (
-        f"{match.group('indent')}{intent.target.field} = {after} "
-        f"# VANILLA/PRIOR = {before}; CBG {intent.owner}: {intent.operation} {intent.value}{suffix}{newline}"
+        f"{match.group('indent')}{intent.target.field} = {after} {comment}{newline}"
     )
     return {"before": before, "after": after, "line_action": "transformed"}
 
@@ -639,6 +650,8 @@ def generate(
         if not audit:
             continue
         rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
+        if file_intents and all(intent.provenance == "vanilla" for intent in file_intents):
+            rendered = rendered.rstrip("\n") + "\n"
         generated = rendered.encode("utf-8")
         if has_bom:
             generated = b"\xef\xbb\xbf" + generated

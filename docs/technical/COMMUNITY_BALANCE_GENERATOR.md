@@ -105,6 +105,44 @@ the previous generated hash.
 
 ## CBP parity migration
 
+### Phase 1: central default values
+
+The first publication milestone is deliberately limited to:
+
+```txt
+CBG master policy
+  -> main_menu/common/script_values/default_values.txt
+  -> byte-identical output to the corrected #188 generator
+  -> no other generated file
+```
+
+Run the focused release gate with an installed Vanilla tree:
+
+```bash
+./tools/validate_cbp_cbg_default_values_parity.sh
+```
+
+The normal local generator validation runs this gate automatically:
+
+```bash
+./tools/validate_generators.sh
+```
+
+When `.cbp.local.env` provides `EU5_GAME_COMMON_DIR`, an invalid Vanilla path or
+any parity difference fails the local validation. GitHub Actions intentionally
+has no proprietary Vanilla source: the same command emits an explicit `SKIP`
+there and continues with the CBG unit tests and static master-spec contract.
+
+The command generates its spec and candidate output in a temporary directory.
+It verifies that the manifest owns exactly one file and compares that file
+byte-for-byte with the current #188 package output. It never materializes CBG
+output in the repository.
+
+The dedicated static-modifier, define, building, and other #188 generators
+remain authoritative until each surface receives its own bounded parity gate.
+In particular, CBG must not replace `cbp_location.txt` with a Vanilla exact-path
+copy or publish a complete `00_defines.txt` as part of this phase.
+
 The complete CBP balance configuration is versioned at
 `tools/specs/cbp_pr188_balance.generated.json`. Its exporter discovers targets
 from the installed Vanilla tree and the `.cbp.local.env` balance parameters.
@@ -138,14 +176,13 @@ The comparison intentionally preserves #188 semantics during the tooling
 migration. Changing a questionable balance result belongs in a separate
 functional change.
 
-### Current authority boundary
+### Experimental full-surface comparison
 
-CBG is the canonical policy and migration validator. The #188 generators remain
-the package materializer during this PR because existing package validators use
-their manifests as audit evidence. Replacing that publication layer would
-rewrite hundreds of files and must be a separate mechanical PR with unchanged
-semantic parity. Do not maintain a new balance rule only in a legacy generator:
-the tracked CBG spec and its static contract must cover it.
+The broad `cbp_pr188_balance.generated.json` spec remains an analysis and
+migration aid. It is not a publication authority and must not be used to replace
+the package wholesale. The #188 generators remain the package materializer and
+their manifests remain audit evidence. Each future migration must first achieve
+a bounded, byte-identical parity gate before its ownership boundary can move.
 
 ## MVP boundary
 

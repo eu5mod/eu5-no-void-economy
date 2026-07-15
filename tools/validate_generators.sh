@@ -6,6 +6,7 @@ cd "$repo_root"
 
 # shellcheck source=tools/cbp_tool_lib.sh
 source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_local_config "${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}"
 
 required_templates=(
 	"tools/templates/cbp_stock_good_adapter.template.txt"
@@ -133,6 +134,8 @@ cbp_require_file "tools/community_balance_generator.py"
 cbp_require_file "tools/generate_cbp_community_balance_spec.py"
 cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
+cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
 cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/tests/test_community_balance_generator.py"
@@ -147,6 +150,26 @@ cbp_require_match 'add_custom' \
 cbp_require_match 'exclude_values' \
 	"tools/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover bulk symbolic exclusions'
+cbp_require_match '"provenance": "vanilla"' \
+	"tools/tests/test_community_balance_generator.py" \
+	'Community Balance Generator tests must preserve legacy Vanilla provenance comments'
+cbp_require_match 'owned_outputs.*TARGET' \
+	"tools/generate_cbp_cbg_default_values_spec.py" \
+	'Focused CBG migration must remain limited to default_values.txt'
+
+if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	cbg_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
+	cbg_default_values="$cbg_game_root/main_menu/common/script_values/default_values.txt"
+	if [[ ! -f "$cbg_default_values" ]]; then
+		printf 'Configured EU5_GAME_COMMON_DIR does not resolve to a Vanilla tree: %s\n' \
+			"$cbg_default_values" >&2
+		exit 1
+	fi
+	"$repo_root/tools/validate_cbp_cbg_default_values_parity.sh"
+else
+	printf '%s\n' \
+		'SKIP: focused CBG default_values parity requires local Vanilla EU5 sources.'
+fi
 python3 "$repo_root/tools/validate_cbg_master_spec.py"
 cbp_require_match 'generate_political_reward_overrides\.py' \
 	"tools/generate_all.sh" \

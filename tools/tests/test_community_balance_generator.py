@@ -33,6 +33,7 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
             exclude_values=(),
             where={},
             exclude_objects=(),
+            provenance="cbg",
         )
 
         outcomes = apply_intent(lines, intent, {})
@@ -50,6 +51,7 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
             owner="test", conflict="error", source_spec="test.json",
             occurrences="one", on_missing="error", exclude_values=(),
             where={}, exclude_objects=(),
+            provenance="cbg",
         )
         replace = Intent(
             target=Target(PurePosixPath("test.txt"), ("warehouse",), "location_potential"),
@@ -119,6 +121,18 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertIn("maintenance = 0.6", text)
         self.assertEqual("1.0", manifest["files"][0]["transformations"][0]["before"])
         self.assertEqual("0.6", manifest["files"][0]["transformations"][1]["after"])
+
+    def test_vanilla_provenance_matches_legacy_generator_comment(self):
+        source = self.game / "in_game/common/building_types/market.txt"
+        source.write_text(source.read_text() + "\n")
+        spec = self.spec("a.json", "mod-a", [{
+            **self.target("multiply", 0.5),
+            "provenance": "vanilla",
+        }])
+        text, _ = self.transform(spec)
+        self.assertIn("maintenance = 0.5 # VANILLA = 1.0", text)
+        self.assertNotIn("VANILLA/PRIOR", text)
+        self.assertFalse(text.endswith("\n\n"))
 
     def test_replace_and_clamp(self):
         spec = self.spec("a.json", "mod-a", [
