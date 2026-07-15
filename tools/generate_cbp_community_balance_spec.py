@@ -7,12 +7,15 @@ import argparse
 import json
 import os
 import re
+from decimal import Decimal
 from pathlib import Path
 
 try:
     from tools.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from tools.generate_political_reward_overrides import centralizable_script_values
 except ModuleNotFoundError:  # Direct `python3 tools/...py` execution.
     from community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+    from generate_political_reward_overrides import centralizable_script_values
 
 
 EVENT_FIELDS = (
@@ -39,6 +42,59 @@ PROFIT_FIELDS = (
     "manufactory_profit_margin",
     "mills_profit_margin",
 )
+MASTER_BUILDING_FIELDS = {
+    "output",
+    "local_merchant_capacity",
+    "merchant_capacity_from_building",
+    "maximum_stockpile_capacity",
+    "minting_income_factor",
+    "local_burghers_estate_power",
+}
+MARKETPLACE_BUILDINGS = {"marketplace", "merchants_quarters", "grand_marketplace"}
+
+
+def env_number(name: str, default: float) -> float:
+    try:
+        return float(os.environ.get(name, default))
+    except ValueError as exc:
+        raise ValueError(f"{name} must be numeric") from exc
+
+
+def canonical_goods() -> tuple[str, ...]:
+    text = Path("tools/cbp_goods.sh").read_text(encoding="utf-8")
+    match = re.search(r"cbp_goods=\((?P<body>.*?)\n\)", text, re.DOTALL)
+    if not match:
+        raise ValueError("Cannot read canonical cbp_goods registry")
+    return tuple(re.findall(r"[A-Za-z0-9_]+", match.group("body")))
+
+
+def food_transformations(game_root: Path) -> list[dict[str, object]]:
+    divisor = env_number("MODEU5_US177_FOOD_PRODUCTION_DIVISOR", 3)
+    if divisor <= 0:
+        raise ValueError("MODEU5_US177_FOOD_PRODUCTION_DIVISOR must be positive")
+    result: list[dict[str, object]] = []
+    for source in sorted((game_root / "in_game/common/goods").glob("*.txt")):
+        lines = source.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+        for obj in scan_objects(lines):
+            if len(obj.path) != 1:
+                continue
+            matches = field_matches(lines, obj, "food")
+            if len(matches) != 1:
+                continue
+            match = ASSIGNMENT.match(lines[matches[0]].rstrip("\r\n"))
+            if not match:
+                continue
+            value = float(match.group("value"))
+            if value <= 0:
+                continue
+            result.append({
+                "file": source.relative_to(game_root).as_posix(),
+                "object": obj.path[0],
+                "field": "food",
+                "operation": "replace",
+                "value": f"{value / divisor:.10f}".rstrip("0").rstrip("."),
+            })
+    return result
 
 
 def game_root_from_environment() -> Path:
@@ -49,64 +105,47 @@ def game_root_from_environment() -> Path:
     return path.parent.parent if path.name == "common" and path.parent.name == "in_game" else path
 
 
-def scalar_candidates(lines: list[str], building: str, field: str, old: str) -> list[tuple[str, ...]]:
-    result: list[tuple[str, ...]] = []
-    for obj in scan_objects(lines):
-        if not obj.path or obj.path[0] != building:
-            continue
-        for index in field_matches(lines, obj, field):
-            match = ASSIGNMENT.match(lines[index].rstrip("\r\n"))
-            if match and match.group("value").strip() == old:
-                result.append(obj.path)
-    return result
-
-
-def building_transformations(game_root: Path, package_root: Path) -> list[dict[str, object]]:
+def marketplace_transformations(game_root: Path, factor: float) -> list[dict[str, object]]:
+    """Unify upgraded marketplaces on Vanilla marketplace maintenance."""
     result: list[dict[str, object]] = []
-    manifest_root = package_root / "cbp_generated/us09_buildings"
-    for manifest_path in sorted(manifest_root.glob("*.json")):
-        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-        source = game_root / "in_game/common/building_types" / f"{manifest_path.stem}.txt"
-        if not source.is_file():
-            raise ValueError(f"Missing Vanilla building source: {source}")
-        lines = source.read_text(encoding="utf-8-sig").splitlines(keepends=True)
-        relative = source.relative_to(game_root).as_posix()
-        consumed: dict[tuple[str, str, str], int] = {}
-        for building, changes in payload.get("changed_buildings", {}).items():
-            for change in changes:
-                action = change["action"]
-                if action == "disable":
-                    # Availability blocks need structured block upsert support;
-                    # retained as an explicit gap in the parity report for now.
-                    continue
-                logical_field = change["field"]
-                field = logical_field.split(":", 1)[1] if logical_field.startswith("maintenance:") else logical_field
-                if field in MONTHLY_FIELDS:
-                    # The generic monthly political rule below owns these
-                    # fields across every common file, including buildings.
-                    continue
-                old = change.get("old_value")
-                candidates = scalar_candidates(lines, building, field, old)
-                identity = (building, field, str(old))
-                candidate_index = consumed.get(identity, 0)
-                if candidate_index >= len(candidates):
-                    raise ValueError(
-                        f"Cannot map {manifest_path.name}:{building}:{logical_field}: "
-                        f"manifest occurrence {candidate_index + 1} exceeds the "
-                        f"{len(candidates)} compatible Vanilla assignments with value {old}"
-                    )
-                consumed[identity] = candidate_index + 1
-                candidate = candidates[candidate_index]
-                operation = "comment_out" if action == "comment_out" else "remove" if action == "remove" else "replace"
-                entry: dict[str, object] = {
-                    "file": relative,
-                    "object": "/".join(candidate),
-                    "field": field,
-                    "operation": operation,
-                }
-                if operation == "replace":
-                    entry["value"] = change["new_value"]
-                result.append(entry)
+    source = game_root / "in_game/common/building_types/trade_buildings.txt"
+    lines = source.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+    objects = scan_objects(lines)
+    goods = set(canonical_goods())
+
+    def maintenance(building: str):
+        candidates = []
+        for obj in objects:
+            if not obj.path or obj.path[0] != building:
+                continue
+            values = {}
+            for good in goods:
+                matches = field_matches(lines, obj, good)
+                if len(matches) == 1:
+                    match = ASSIGNMENT.match(lines[matches[0]].rstrip("\r\n"))
+                    if match:
+                        values[good] = Decimal(match.group("value").strip())
+            if values:
+                candidates.append((obj, values))
+        if len(candidates) != 1:
+            raise ValueError(f"Expected one maintenance block for {building}; found {len(candidates)}")
+        return candidates[0]
+
+    _base_obj, base = maintenance("marketplace")
+    relative = source.relative_to(game_root).as_posix()
+    for building in sorted(MARKETPLACE_BUILDINGS):
+        obj, current = maintenance(building)
+        for good in sorted(current):
+            entry: dict[str, object] = {
+                "file": relative,
+                "object": "/".join(obj.path),
+                "field": good,
+                "operation": "replace" if good in base else "remove",
+            }
+            if good in base:
+                value = base[good] * Decimal(str(factor))
+                entry["value"] = format(value.normalize(), "f")
+            result.append(entry)
     return result
 
 
@@ -133,10 +172,9 @@ def bulk_rules(
     ]
 
 
-def political_transformations(package_root: Path) -> list[dict[str, object]]:
-    manifest_path = package_root / "cbp_generated/political_reward_overrides_manifest.json"
-    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    centralized = tuple(sorted(payload.get("central_script_values", {})))
+def political_transformations(game_root: Path) -> list[dict[str, object]]:
+    centralized_policy = centralizable_script_values(game_root)
+    centralized = tuple(sorted(centralized_policy))
     result: list[dict[str, object]] = []
     # Master rules discover matching assignments directly in the current
     # Vanilla tree. The old generated-file manifest is not a file selector.
@@ -163,7 +201,9 @@ def political_transformations(package_root: Path) -> list[dict[str, object]]:
             "operation": "multiply",
             "value": factor,
         }
-        for name, factor in sorted(payload.get("central_script_values", {}).items())
+        for name, factor in sorted(
+            (name, float(factor)) for name, factor in centralized_policy.items()
+        )
     )
     return result
 
@@ -172,7 +212,128 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
     transformations: list[dict[str, object]] = []
     # Keep broad business policies first so the generated spec remains readable;
     # exact structural exceptions follow them.
-    transformations.extend(political_transformations(package_root))
+    transformations.extend(political_transformations(game_root))
+    output_multiplier = 1 + env_number("MODEU5_US09_BONUS_PERCENT", 5) / 100
+    trade_capacity_multiplier = 1 + env_number(
+        "MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT", 15
+    ) / 100
+    minting_multiplier = env_number("MODEU5_US177_MINTING_MULTIPLIER", 2)
+    maintenance_multiplier = env_number("MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER", 0.7)
+    trade_maintenance_multiplier = env_number(
+        "MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER", 0.5
+    )
+    transformations.extend(bulk_rules(
+        "in_game/common/building_types/*.txt", ("output",), output_multiplier
+    ))
+    transformations.extend(food_transformations(game_root))
+    food_price = env_number("MODEU5_US177_FOOD_PRICE", 0.3)
+    transformations.append({
+        "file": "loading_screen/common/defines/00_defines.txt",
+        "object": "NMarket",
+        "field": "FOOD_PRICE",
+        "operation": "replace",
+        "value": food_price,
+    })
+    rgo_gold = round(100 / output_multiplier, 2)
+    for price in (
+        "expand_rgo_mining", "expand_rgo_farming", "expand_rgo_hunting",
+        "expand_rgo_gathering", "expand_rgo_forestry",
+    ):
+        transformations.append({
+            "file": "in_game/common/prices/00_hardcoded.txt",
+            "object": price,
+            "field": "gold",
+            "operation": "replace",
+            "value": rgo_gold,
+        })
+    for pop_type, env_name in (
+        ("burghers", "EXTRA_BURGHER_PROMOTION_SPEED"),
+        ("laborers", "EXTRA_LABORER_PROMOTION_SPEED"),
+    ):
+        found = False
+        for source in sorted((game_root / "in_game/common/pop_types").glob("*.txt")):
+            lines = source.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+            objects = [obj for obj in scan_objects(lines) if obj.path == (pop_type,)]
+            if objects and field_matches(lines, objects[0], "promotion_factor"):
+                transformations.append({
+                    "file": source.relative_to(game_root).as_posix(),
+                    "object": pop_type,
+                    "field": "promotion_factor",
+                    "operation": "multiply",
+                    "value": 1 + env_number(env_name, 10) / 100,
+                })
+                found = True
+        if not found:
+            raise ValueError(f"No promotion_factor found for {pop_type}")
+    transformations.extend(bulk_rules(
+        "in_game/common/building_types/*.txt",
+        ("local_merchant_capacity", "merchant_capacity_from_building"),
+        trade_capacity_multiplier,
+    ))
+    transformations.extend([
+        {
+            "file": "in_game/common/building_types/*.txt",
+            "object": "**",
+            "field": "maximum_stockpile_capacity",
+            "operation": "comment_out",
+            "occurrences": "all",
+            "on_missing": "skip",
+        },
+        {
+            "file": "in_game/common/building_types/trade_buildings.txt",
+            "object": "**",
+            "field": "local_burghers_estate_power",
+            "operation": "multiply",
+            "value": 0.5,
+            "occurrences": "all",
+            "on_missing": "skip",
+        },
+        {
+            "file": "in_game/common/building_types/market_buildings.txt",
+            "object": "market_warehouse",
+            "field": "location_potential",
+            "operation": "upsert_block",
+            "value": {"always": "no"},
+        },
+        {
+            "file": "in_game/common/building_types/market_buildings.txt",
+            "object": "market_warehouse",
+            "field": "country_potential",
+            "operation": "upsert_block",
+            "value": {"always": "no"},
+            "position": {"after": "location_potential"},
+        },
+    ])
+    transformations.extend(bulk_rules(
+        "in_game/common/**/*.txt", ("minting_income_factor",), minting_multiplier
+    ))
+    transformations.extend(bulk_rules(
+        "main_menu/common/static_modifiers/**/*.txt",
+        ("minting_income_factor",),
+        minting_multiplier,
+    ))
+    for good in canonical_goods():
+        for factor, trade_condition in (
+            (maintenance_multiplier, {"not_inside": [{"category": "trade_category"}]}),
+            (trade_maintenance_multiplier, {"inside": [{"category": "trade_category"}]}),
+        ):
+            transformations.append({
+                "file": "in_game/common/building_types/*.txt",
+                "object": "**",
+                "field": good,
+                "operation": "multiply",
+                "value": factor,
+                "occurrences": "all",
+                "on_missing": "skip",
+                "where": {
+                    "inside": [
+                        {"category": "building_maintenance"},
+                        *trade_condition.get("inside", []),
+                    ],
+                    "not_inside": trade_condition.get("not_inside", []),
+                },
+                "exclude_objects": sorted(MARKETPLACE_BUILDINGS),
+            })
     transformations.extend(
         {
             "file": "main_menu/common/script_values/default_values.txt",
@@ -213,14 +374,14 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
             "value": 0.2,
         },
     ])
-    transformations.extend(building_transformations(game_root, package_root))
+    transformations.extend(marketplace_transformations(game_root, trade_maintenance_multiplier))
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance",
         "transformations": transformations,
         "parity_contract": {
             "reference": "PR #188 generators",
-            "known_structural_gaps": ["market_warehouse availability block upsert"],
+            "known_structural_gaps": [],
         },
     }
 

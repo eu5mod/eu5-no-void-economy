@@ -173,7 +173,7 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
     reference_defs = merged_definitions(args.game_root, args.reference_root)
     candidate_defs = merged_definitions(args.game_root, args.candidate_root)
     mismatches: list[dict[str, Any]] = []
-    checked = {"political_files": 0, "scalar_targets": 0}
+    checked = {"political_files": 0, "master_field_surfaces": 0, "scalar_targets": 0}
 
     fields = set(EVENT_FIELDS) | set(MONTHLY_FIELDS)
     political_paths = {
@@ -228,6 +228,46 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
                 "first_difference": first_difference,
             })
 
+    candidate_manifest_path = args.candidate_root / "cbg_manifest.json"
+    if candidate_manifest_path.is_file():
+        candidate_manifest = json.loads(candidate_manifest_path.read_text(encoding="utf-8"))
+        political_fields = set(EVENT_FIELDS) | set(MONTHLY_FIELDS)
+        for entry in candidate_manifest.get("files", []):
+            relative = Path(entry["path"])
+            master_fields = sorted({
+                change.get("field")
+                for change in entry.get("transformations", [])
+                if change.get("object") == "**" and change.get("field") not in political_fields
+            } - {None})
+            if not master_fields:
+                continue
+            candidate = args.candidate_root / relative
+            reference = args.reference_root / relative
+            if not reference.is_file():
+                reference = args.game_root / relative
+            if not reference.is_file() or not candidate.is_file():
+                mismatches.append({
+                    "surface": "master",
+                    "path": str(relative),
+                    "reason": "missing reference or candidate output",
+                })
+                continue
+            for field in master_fields:
+                expected = political_occurrences(reference, {field}, reference_defs)
+                actual = political_occurrences(candidate, {field}, candidate_defs)
+                checked["master_field_surfaces"] += 1
+                if expected != actual:
+                    mismatches.append({
+                        "surface": "master",
+                        "path": str(relative),
+                        "field": field,
+                        "reason": "effective occurrence mismatch",
+                        "reference_count": len(expected),
+                        "candidate_count": len(actual),
+                        "first_reference": [(name, expr.render()) for name, expr in expected[:8]],
+                        "first_candidate": [(name, expr.render()) for name, expr in actual[:8]],
+                    })
+
     for transformation in spec.get("transformations", []):
         if transformation.get("object") in {"**", ""} and transformation.get("field") not in PROFIT_FIELDS:
             continue
@@ -235,6 +275,11 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
         reference = args.reference_root / relative
         if relative.as_posix() == "main_menu/common/static_modifiers/location.txt":
             reference = args.repo_root / "main_menu/common/static_modifiers/cbp_location.txt"
+        elif relative.as_posix() == "loading_screen/common/defines/00_defines.txt":
+            reference = (
+                args.reference_root
+                / "loading_screen/common/defines/cbp_us177_food_price_defines.txt"
+            )
         candidate = args.candidate_root / relative
         if not reference.is_file() or not candidate.is_file():
             mismatches.append({"surface": "scalar", "path": str(relative), "reason": "missing output"})

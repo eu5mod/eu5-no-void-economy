@@ -21,14 +21,15 @@ This avoids several mods independently overriding the same Vanilla file.
 | `remove` | Remove the field from the generated object. |
 | `add_field` | Add a known engine field absent from the Vanilla object. |
 | `add_custom` | Add a mod-owned field declared in `custom_fields`. |
+| `upsert_block` | Replace or insert a simple scalar child block. |
 
 `add_field` and `add_custom` deliberately differ. The former uses an existing
 engine endpoint. The latter requires an ownership declaration so two mods
 cannot silently claim the same custom identifier.
 
-Fixed and inserted values are restricted to one safe scalar token. Arithmetic
-operations accept finite numbers only; blocks and arbitrary script injection
-are outside the MVP.
+Fixed and inserted scalar values are restricted to one safe token. Arithmetic
+operations accept finite numbers only. `upsert_block` accepts a non-empty map
+of safe scalar children; arbitrary script injection remains outside the MVP.
 
 ## Conflict policy
 
@@ -77,6 +78,12 @@ and future Vanilla occurrence without carrying a generated file inventory:
 }
 ```
 
+Conditional bulk selectors use `where.inside` and `where.not_inside`. Each
+clause matches a direct assignment on an enclosing object. `exclude_objects`
+can reserve named top-level objects for a more specific policy. CBP uses this
+to distinguish trade-building maintenance from other maintenance while giving
+the marketplace family one inherited-base rule.
+
 ## Usage
 
 ```bash
@@ -99,8 +106,9 @@ the previous generated hash.
 ## CBP parity migration
 
 The complete CBP balance configuration is versioned at
-`tools/specs/cbp_pr188_balance.generated.json`. It is exported from current CBP
-generator manifests rather than maintained as a second hand-written source.
+`tools/specs/cbp_pr188_balance.generated.json`. Its exporter discovers targets
+from the installed Vanilla tree and the `.cbp.local.env` balance parameters.
+It does not consume #188 generated manifests.
 
 With EU5 installed and `.cbp.local.env` configured, run:
 
@@ -110,13 +118,16 @@ With EU5 installed and `.cbp.local.env` configured, run:
 
 This exports and checks the tracked spec, generates a clean exact-path mod,
 resolves generated script-value aliases, and compares it with current CBP
-outputs. It fails on any semantic mismatch. The PR #189 master-rule reference
-run checked 380 political files and 845 scalar targets with zero mismatches.
+outputs. It fails on any semantic mismatch. The latest PR #189 reference run
+checked 381 political files, 236 non-political master-field surfaces, and 46
+exact scalar/block targets with zero mismatches and no declared structural gap.
 
-The political surface is expressed by 20 master field rules. Their matching
-Vanilla occurrences are discovered at generation time; the config does not
-enumerate those files. Exact entries remaining in the exported spec represent
-structural building-specific policies that do not yet share one safe selector.
+The political surface is expressed by 20 master field rules and building
+maintenance by 148 good/policy rules. Production, merchant capacity, stockpile
+capacity, minting, food production, food price, RGO prices, Pop promotion,
+marketplace inheritance, and Market Warehouse availability are also generated
+from Vanilla-derived rules. Matching Vanilla occurrences are discovered at
+generation time; broad policies do not carry generated file inventories.
 
 GitHub Actions runs `validate_cbg_master_spec.py` to enforce this discovery
 contract without proprietary game files. Full output parity remains a local or
@@ -126,6 +137,15 @@ installed Vanilla tree.
 The comparison intentionally preserves #188 semantics during the tooling
 migration. Changing a questionable balance result belongs in a separate
 functional change.
+
+### Current authority boundary
+
+CBG is the canonical policy and migration validator. The #188 generators remain
+the package materializer during this PR because existing package validators use
+their manifests as audit evidence. Replacing that publication layer would
+rewrite hundreds of files and must be a separate mechanical PR with unchanged
+semantic parity. Do not maintain a new balance rule only in a legacy generator:
+the tracked CBG spec and its static contract must cover it.
 
 ## MVP boundary
 

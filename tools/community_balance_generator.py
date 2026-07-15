@@ -24,9 +24,9 @@ BLOCK_ASSIGNMENT = re.compile(
 SAFE_SCALAR = re.compile(r"[A-Za-z0-9_.:-]+")
 SUPPORTED_OPERATIONS = {
     "replace", "multiply", "add", "clamp", "comment_out", "remove",
-    "add_field", "add_custom",
+    "add_field", "add_custom", "upsert_block",
 }
-TERMINAL_OPERATIONS = {"comment_out", "remove"}
+TERMINAL_OPERATIONS = {"comment_out", "remove", "upsert_block"}
 
 
 @dataclass(frozen=True)
@@ -49,6 +49,8 @@ class Intent:
     occurrences: str
     on_missing: str
     exclude_values: tuple[str, ...]
+    where: dict[str, list[dict[str, str]]]
+    exclude_objects: tuple[str, ...]
 
 
 @dataclass
@@ -186,6 +188,28 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                 isinstance(value, str) and SAFE_SCALAR.fullmatch(value) for value in excluded
             ):
                 raise ValueError(f"{spec_path}: exclude_values must be an array of safe scalar tokens")
+            where = raw.get("where", {})
+            if isinstance(where, dict):
+                where = {
+                    key: [value] if isinstance(value, dict) else value
+                    for key, value in where.items()
+                }
+            if not isinstance(where, dict) or any(
+                key not in {"inside", "not_inside"}
+                or not isinstance(clauses, list)
+                or not all(
+                    isinstance(clause, dict)
+                    and all(isinstance(k, str) and isinstance(v, str) for k, v in clause.items())
+                    for clause in clauses
+                )
+                for key, clauses in where.items()
+            ):
+                raise ValueError(f"{spec_path}: where supports scalar inside/not_inside maps")
+            exclude_objects = raw.get("exclude_objects", [])
+            if not isinstance(exclude_objects, list) or not all(
+                isinstance(value, str) and SAFE_SCALAR.fullmatch(value) for value in exclude_objects
+            ):
+                raise ValueError(f"{spec_path}: exclude_objects must contain safe top-level object names")
             for relative in matches:
                 sequence += 1
                 intents.append(Intent(
@@ -200,6 +224,8 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                     occurrences=occurrences,
                     on_missing=on_missing,
                     exclude_values=tuple(excluded),
+                    where=where,
+                    exclude_objects=tuple(exclude_objects),
                 ))
     return intents, custom_fields
 
@@ -287,6 +313,38 @@ def matching_brace_line(lines: list[str], start: int) -> int:
         if depth == 0:
             return index
     raise ValueError(f"Unclosed value block at line {start + 1}")
+
+
+def index_matches_where(
+    lines: list[str], index: int, where: dict[str, list[dict[str, str]]], objects: list[LocatedObject]
+) -> bool:
+    if not where:
+        return True
+    containing = [obj for obj in objects if obj.start < index < obj.end]
+
+    def object_has(obj: LocatedObject, field: str, value: str) -> bool:
+        for match_index in field_matches(lines, obj, field):
+            match = ASSIGNMENT.match(lines[match_index].rstrip("\r\n"))
+            if match and match.group("value").strip() == value:
+                return True
+        return False
+
+    for clause in where.get("inside", []):
+        if not all(any(object_has(obj, field, value) for obj in containing) for field, value in clause.items()):
+            return False
+    for clause in where.get("not_inside", []):
+        if all(any(object_has(obj, field, value) for obj in containing) for field, value in clause.items()):
+            return False
+    return True
+
+
+def index_inside_excluded_object(
+    index: int, names: tuple[str, ...], objects: list[LocatedObject]
+) -> bool:
+    return any(
+        obj.path and obj.path[0] in names and obj.start < index < obj.end
+        for obj in objects
+    )
 
 
 def alias_name(intent: Intent, source: str, factor: Any) -> str:
@@ -414,8 +472,28 @@ def apply_intent(
     lines: list[str], intent: Intent, aliases: dict[str, tuple[str, str]]
 ) -> list[dict[str, Any]]:
     wildcard = intent.target.object_path == ("**",)
-    obj = None if wildcard else locate_object(lines, intent.target.object_path)
+    if wildcard:
+        obj = None
+    elif not intent.target.object_path:
+        obj = LocatedObject((), -1, len(lines), "")
+    else:
+        object_matches = [
+            item for item in scan_objects(lines) if item.path == intent.target.object_path
+        ]
+        if not object_matches and intent.on_missing == "skip":
+            return []
+        if len(object_matches) != 1:
+            raise ValueError(
+                f"Object {'/'.join(intent.target.object_path)!r} matched "
+                f"{len(object_matches)} blocks; expected exactly one"
+            )
+        obj = object_matches[0]
     matches = all_field_matches(lines, intent.target.field) if wildcard else field_matches(lines, obj, intent.target.field)
+    condition_objects = (
+        scan_objects(lines)
+        if matches and (intent.where or intent.exclude_objects)
+        else []
+    )
     matched_before_exclusions = bool(matches)
     matches = [
         index
@@ -424,7 +502,42 @@ def apply_intent(
             (match := ASSIGNMENT.match(lines[index].rstrip("\r\n")))
             and match.group("value").strip() in intent.exclude_values
         )
+        and index_matches_where(lines, index, intent.where, condition_objects)
+        and not index_inside_excluded_object(index, intent.exclude_objects, condition_objects)
     ]
+    if intent.operation == "upsert_block":
+        if not isinstance(intent.value, dict) or not intent.value:
+            raise ValueError("upsert_block value must be a non-empty scalar map")
+        rendered_children = [
+            (field, render_scalar(value, f"upsert_block {field} value"))
+            for field, value in intent.value.items()
+            if isinstance(field, str) and SAFE_SCALAR.fullmatch(field)
+        ]
+        if len(rendered_children) != len(intent.value):
+            raise ValueError("upsert_block field names must be safe scalar tokens")
+        if len(matches) > 1:
+            raise ValueError(f"upsert_block field {intent.target.field!r} matched multiple blocks")
+        indent = obj.indent + ("\t" if obj.path else "")
+        replacement = [
+            f"{indent}{intent.target.field} = {{ # CBG: upserted by {intent.owner}\n",
+            *(f"{indent}\t{field} = {value}\n" for field, value in rendered_children),
+            f"{indent}}}\n",
+        ]
+        if matches:
+            index = matches[0]
+            if not BLOCK_ASSIGNMENT.match(lines[index].rstrip("\r\n")):
+                raise ValueError("upsert_block cannot replace a scalar assignment")
+            end = matching_brace_line(lines, index)
+            lines[index : end + 1] = replacement
+            return [{"before": "<value block>", "after": intent.value, "line_action": "block_replaced"}]
+        insertion = obj.end
+        if intent.position_after:
+            anchors = field_matches(lines, obj, intent.position_after)
+            if len(anchors) != 1:
+                raise ValueError(f"Insertion anchor {intent.position_after!r} must match exactly once")
+            insertion = matching_brace_line(lines, anchors[0]) + 1
+        lines[insertion:insertion] = replacement
+        return [{"before": None, "after": intent.value, "line_action": "block_inserted"}]
     inline_outcomes = (
         apply_inline_matches(lines, intent, aliases)
         if wildcard and intent.occurrences == "all"
@@ -440,7 +553,7 @@ def apply_intent(
             if len(anchors) != 1:
                 raise ValueError(f"Insertion anchor {intent.position_after!r} must match exactly once")
             insertion = anchors[0] + 1
-        indent = obj.indent + "\t"
+        indent = obj.indent + ("\t" if obj.path else "")
         rendered = render_scalar(intent.value, f"{intent.operation} value")
         lines.insert(insertion, f"{indent}{intent.target.field} = {rendered} # CBG: added by {intent.owner}\n")
         return [{"before": None, "after": rendered, "line_action": "inserted"}]

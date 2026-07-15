@@ -1,9 +1,9 @@
 import json
 import tempfile
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
-from tools.community_balance_generator import generate, load_intents
+from tools.community_balance_generator import Intent, Target, apply_intent, generate, load_intents
 
 
 VANILLA = """marketplace = {
@@ -17,6 +17,57 @@ VANILLA = """marketplace = {
 
 
 class CommunityBalanceGeneratorTests(unittest.TestCase):
+    def test_top_level_field_can_be_transformed(self):
+        lines = ["first = 10\n", "object = {\n", "\tfirst = 20\n", "}\n"]
+        intent = Intent(
+            owner="test",
+            target=Target(PurePosixPath("test.txt"), (), "first"),
+            operation="multiply",
+            value=0.5,
+            conflict="error",
+            position_after=None,
+            source_spec="test.json",
+            sequence=0,
+            occurrences="one",
+            on_missing="error",
+            exclude_values=(),
+            where={},
+            exclude_objects=(),
+        )
+
+        outcomes = apply_intent(lines, intent, {})
+
+        self.assertEqual(outcomes[0]["after"], "5")
+        self.assertIn("first = 5", lines[0])
+        self.assertIn("first = 20", lines[2])
+
+    def test_block_can_be_replaced_or_inserted(self):
+        lines = [
+            "warehouse = {\n", "\tlocation_potential = {\n",
+            "\t\tis_market_center = yes\n", "\t}\n", "}\n",
+        ]
+        common = dict(
+            owner="test", conflict="error", source_spec="test.json",
+            occurrences="one", on_missing="error", exclude_values=(),
+            where={}, exclude_objects=(),
+        )
+        replace = Intent(
+            target=Target(PurePosixPath("test.txt"), ("warehouse",), "location_potential"),
+            operation="upsert_block", value={"always": "no"}, position_after=None,
+            sequence=1, **common,
+        )
+        insert = Intent(
+            target=Target(PurePosixPath("test.txt"), ("warehouse",), "country_potential"),
+            operation="upsert_block", value={"always": "no"},
+            position_after="location_potential", sequence=2, **common,
+        )
+
+        apply_intent(lines, replace, {})
+        apply_intent(lines, insert, {})
+
+        self.assertEqual(sum("always = no" in line for line in lines), 2)
+        self.assertFalse(any("is_market_center" in line for line in lines))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
@@ -206,6 +257,32 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         manifest = generate(self.game, self.output, intents)
         self.assertEqual(1, len(manifest["files"]))
         self.assertFalse((self.output / debug.relative_to(self.game)).exists())
+
+    def test_master_rule_filters_by_ancestor_fields(self):
+        source = self.game / "in_game/common/building_types/market.txt"
+        source.write_text(
+            "workshop = {\n\tcategory = production_category\n\treq = {\n"
+            "\t\ttools = 2\n\t\tcategory = building_maintenance\n\t}\n}\n"
+            "marketplace = {\n\tcategory = trade_category\n\treq = {\n"
+            "\t\ttools = 2\n\t\tcategory = building_maintenance\n\t}\n}\n"
+        )
+        rule = {
+            "file": "in_game/common/building_types/*.txt",
+            "object": "**",
+            "field": "tools",
+            "operation": "multiply",
+            "value": 0.5,
+            "occurrences": "all",
+            "on_missing": "skip",
+            "where": {
+                "inside": {"category": "building_maintenance"},
+                "not_inside": {"category": "trade_category"},
+            },
+        }
+        text, manifest = self.transform(self.spec("a.json", "mod-a", [rule]))
+        self.assertEqual(1, len(manifest["files"][0]["transformations"]))
+        self.assertEqual(1, text.count("tools = 1"))
+        self.assertEqual(1, text.count("tools = 2"))
 
     def test_bulk_multiply_transforms_compact_inline_assignment(self):
         source = self.game / "in_game/common/building_types/market.txt"
