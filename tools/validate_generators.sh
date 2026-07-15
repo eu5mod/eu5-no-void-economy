@@ -131,18 +131,20 @@ cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_file "tools/generate_political_reward_overrides.py"
 cbp_require_file "tools/tests/test_political_reward_overrides.py"
 cbp_require_file "tools/cbg/community_balance_generator.py"
-cbp_require_file "tools/generate_cbp_community_balance_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py"
 cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_food_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_food_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_location_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_location_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_rgo_prices_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_rgo_prices_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_pop_promotion_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_pop_promotion_parity.sh"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
@@ -183,7 +185,7 @@ cbp_require_match '"provenance": "vanilla"' \
 	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must preserve legacy Vanilla provenance comments'
 cbp_require_match 'owned_outputs.*TARGET' \
-	"tools/generate_cbp_cbg_default_values_spec.py" \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
 	'Focused CBG migration must remain limited to default_values.txt'
 cbp_require_match '"path": "main_menu/common/script_values/default_values.txt"' \
 	"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json" \
@@ -253,7 +255,7 @@ cbp_require_match '--skip-food-overrides' \
 	"tools/generate_all.sh" \
 	'legacy US-177 discovery must delegate food override ownership to CBG'
 cbp_require_match '--skip-central-default-values' \
-	"tools/generate_cbp_cbg_political_minting_spec.py" \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
 	'political policy compiler must delegate default_values.txt to its focused CBG family'
 cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
 	"tools/transform_cbp_economy_building_overrides.py" \

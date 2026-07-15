@@ -5,13 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
-try:
-    from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
-except ModuleNotFoundError:
-    from cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
 
 
 TARGETS = (

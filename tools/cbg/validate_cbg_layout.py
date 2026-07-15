@@ -12,6 +12,8 @@ REQUIRED = {
     "README.md",
     "REFERENCE.md",
     "community_balance_generator.py",
+    "adapters/README.md",
+    "adapters/cbp/README.md",
     "examples/community_balance_spec.example.json",
     "tests/test_community_balance_generator.py",
     "legacy/README.md",
@@ -36,6 +38,8 @@ def main() -> int:
             continue
         relative = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
+        if relative.startswith("adapters/"):
+            continue
         if relative != "validate_cbg_layout.py" and HOST_POLICY.search(text):
             failures.append(f"host-mod policy name leaked into tools/cbg/{relative}")
         if HOST_IMPORT.search(text):

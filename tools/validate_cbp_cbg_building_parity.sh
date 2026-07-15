@@ -35,7 +35,7 @@ mkdir -p "$work_dir/reference/in_game/common"
 	--common-dir "$EU5_GAME_COMMON_DIR" \
 	--package-common-dir "$work_dir/reference/in_game/common" \
 	--skip-rgo-prices --skip-pop-promotions >/dev/null
-python3 tools/generate_cbp_cbg_building_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py \
 	--game-root "$game_root" --output "$work_dir/buildings.json" \
 	--output-multiplier "$output_multiplier" \
 	--trade-capacity-multiplier "$trade_multiplier" \

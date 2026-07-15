@@ -96,3 +96,7 @@ python3 -m unittest tools.cbg.tests.test_community_balance_generator
 Everything outside `tools/cbg/` is integration code for the host mod and is not
 required to understand or reuse the CBG core. This directory is the clean link
 to share with other modders.
+
+Host integrations that compile complex business policy into CBG JSON live
+under [`adapters/`](adapters/). They are namespaced by host and are examples,
+not yet a stable adapter SDK.

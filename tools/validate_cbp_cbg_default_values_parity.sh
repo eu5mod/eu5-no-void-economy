@@ -21,7 +21,7 @@ target="main_menu/common/script_values/default_values.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-default-values.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 
-python3 tools/generate_cbp_cbg_default_values_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/default_values.json"
 python3 - "$game_root" "$work_dir/reference" <<'PY'

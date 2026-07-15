@@ -20,7 +20,7 @@ mkdir -p "$work_dir/reference/in_game/common"
 	--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
 	--extra-burgher-promotion-speed "$burgher" --extra-laborer-promotion-speed "$laborer" \
 	--common-dir "$EU5_GAME_COMMON_DIR" --package-common-dir "$work_dir/reference/in_game/common" >/dev/null
-python3 tools/generate_cbp_cbg_pop_promotion_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py \
 	--game-root "$game_root" --burgher-percent "$burgher" --laborer-percent "$laborer" \
 	--output "$work_dir/pop.json"
 python3 tools/cbg/community_balance_generator.py \

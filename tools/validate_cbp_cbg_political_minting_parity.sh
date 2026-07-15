@@ -20,7 +20,7 @@ python3 tools/generate_us177_minting_overrides.py \
 python3 tools/generate_political_reward_overrides.py \
 	--game-root "$game_root" --package-root "$work_dir/reference" \
 	--skip-central-default-values >/dev/null
-python3 tools/generate_cbp_cbg_political_minting_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py \
 	--game-root "$game_root" --minting-multiplier "$multiplier" \
 	--output "$work_dir/spec.json" >/dev/null
 python3 tools/cbg/community_balance_generator.py \

@@ -16,7 +16,7 @@ if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON
 	fi
 	cbg_location_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_spec.json"
 	cbg_location_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
-	python3 "$repo_root/tools/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
 	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$cbg_location_game_root" \
 		--spec "$cbg_location_spec" \
@@ -84,7 +84,7 @@ else
 			cbg_building_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
 			cbg_building_output_multiplier="$(awk -v value="${MODEU5_US09_BONUS_PERCENT:-5}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
 			cbg_building_trade_multiplier="$(awk -v value="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
-			python3 "$repo_root/tools/generate_cbp_cbg_building_spec.py" \
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--output "$cbg_building_spec" \
 				--output-multiplier "$cbg_building_output_multiplier" \
@@ -100,7 +100,7 @@ else
 				--adopt-identical-output
 			cbg_rgo_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_spec.json"
 			cbg_rgo_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
-			python3 "$repo_root/tools/generate_cbp_cbg_rgo_prices_spec.py" \
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--percent "${MODEU5_US09_BONUS_PERCENT:-5}" \
 				--output "$cbg_rgo_spec"
@@ -112,7 +112,7 @@ else
 				--adopt-identical-output
 			cbg_pop_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_spec.json"
 			cbg_pop_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_manifest.json"
-			python3 "$repo_root/tools/generate_cbp_cbg_pop_promotion_spec.py" \
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--burgher-percent "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 				--laborer-percent "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
@@ -152,7 +152,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--skip-food-overrides
 	cbg_food_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
 	cbg_food_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
-	python3 "$repo_root/tools/generate_cbp_cbg_food_spec.py" \
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py" \
 		--game-root "$us177_game_root" \
 		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
 		--output "$cbg_food_spec"
@@ -164,7 +164,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--adopt-identical-output
 	cbg_political_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
 	cbg_political_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
-	python3 "$repo_root/tools/generate_cbp_cbg_political_minting_spec.py" \
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
 		--game-root "$us177_game_root" \
 		--minting-multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}" \
 		--output "$cbg_political_spec" \
@@ -182,7 +182,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 
 	cbg_default_values_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
 	cbg_default_values_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
-	python3 "$repo_root/tools/generate_cbp_cbg_default_values_spec.py" \
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
 		--game-root "$us177_game_root" \
 		--output "$cbg_default_values_spec"
 	python3 "$repo_root/tools/cbg/community_balance_generator.py" \

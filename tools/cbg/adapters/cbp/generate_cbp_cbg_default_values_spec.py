@@ -6,20 +6,18 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 
-try:
-    from tools.generate_political_reward_overrides import (
-        PROFIT_MARGIN_FACTOR,
-        PROFIT_MARGIN_FIELDS,
-        centralizable_script_values,
-    )
-except ModuleNotFoundError:
-    from generate_political_reward_overrides import (
-        PROFIT_MARGIN_FACTOR,
-        PROFIT_MARGIN_FIELDS,
-        centralizable_script_values,
-    )
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.generate_political_reward_overrides import (
+    PROFIT_MARGIN_FACTOR,
+    PROFIT_MARGIN_FIELDS,
+    centralizable_script_values,
+)
 
 
 TARGET = "main_menu/common/script_values/default_values.txt"

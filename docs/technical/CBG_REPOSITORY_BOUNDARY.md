@@ -9,23 +9,27 @@ tools/cbg/
   README.md
   REFERENCE.md
   community_balance_generator.py
+  adapters/
+    cbp/
   examples/
   tests/
 ```
 
-It must remain free of CBP, ModeU5, US-story, and PR-migration policy. This is
-the directory linked to external modders.
+The core, documentation, examples, and tests must remain free of CBP, ModeU5,
+US-story, and PR-migration policy. Host-specific policy is isolated under a
+namespaced `adapters/<host>/` directory. `tools/cbg/` remains the directory
+linked to external modders.
 
 ## CBP integration
 
 The following root `tools/` families are CBP adapters, not part of CBG:
 
 ```txt
-generate_cbp_cbg_*_spec.py
-generate_cbp_community_balance_spec.py
-validate_cbp_cbg_*_parity.sh
-compare_cbp_cbg_outputs.py
-validate_cbp_cbg_master_spec.py
+tools/cbg/adapters/cbp/generate_cbp_cbg_*_spec.py
+tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py
+tools/validate_cbp_cbg_*_parity.sh
+tools/compare_cbp_cbg_outputs.py
+tools/validate_cbp_cbg_master_spec.py
 ```
 
 They discover CBP targets, compile business exclusions and edge cases, invoke

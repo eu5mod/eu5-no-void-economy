@@ -21,13 +21,13 @@ tracked_spec="$repo_root/tools/specs/cbp_pr188_balance.generated.json"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-parity.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 
-python3 tools/generate_cbp_community_balance_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/cbp_balance.json"
 
 if ! cmp -s "$tracked_spec" "$work_dir/cbp_balance.json"; then
 	printf '%s\n' 'Tracked CBP CBG spec is stale. Regenerate it with:' >&2
-	printf '%s\n' '  python3 tools/generate_cbp_community_balance_spec.py' >&2
+	printf '%s\n' '  python3 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py' >&2
 	exit 1
 fi
 

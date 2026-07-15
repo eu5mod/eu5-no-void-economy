@@ -21,7 +21,7 @@ python3 tools/generate_us177_food_goods_manifest.py \
 	--game-root "$game_root" --package-root "$work_dir/reference" \
 	--food-price "${MODEU5_US177_FOOD_PRICE:-0.3}" \
 	--food-production-divisor "$divisor"
-python3 tools/generate_cbp_cbg_food_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py \
 	--game-root "$game_root" --divisor "$divisor" --output "$work_dir/food.json"
 python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/food.json" \
