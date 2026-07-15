@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import math
 import os
 import re
@@ -41,6 +43,7 @@ def strip_generated_header(text: str) -> list[str]:
         "# Trade capacity multiplier: ",
         "# Building maintenance multiplier: ",
         "# Trade-building maintenance multiplier: ",
+        "# Minting income multiplier: ",
     )
     while index < len(lines) and any(
         lines[index].startswith(prefix) for prefix in generated_prefixes
@@ -150,10 +153,13 @@ def main() -> int:
 
     source_dir = common_dir / "building_types"
     output_dir = Path(args.package_common_dir) / "building_types"
+    manifest_dir = Path(args.package_common_dir).parents[1] / "cbp_generated" / "us09_buildings"
     if not source_dir.is_dir():
         raise SystemExit(f"Missing source building_types directory: {source_dir}")
     if not output_dir.is_dir():
         raise SystemExit(f"Missing generated building_types directory: {output_dir}")
+    if not manifest_dir.is_dir():
+        raise SystemExit(f"Missing generated building manifest directory: {manifest_dir}")
 
     goods = parse_goods_registry(repo_root)
     goods_set = set(goods)
@@ -167,6 +173,8 @@ def main() -> int:
     generated_files_checked = 0
     maintenance_entries_checked = 0
     stockpile_capacity_entries_checked = 0
+    manifests_checked = 0
+    expected_manifest_names: set[str] = set()
 
     for source_file in sorted(source_dir.glob("*.txt")):
         if source_file.name == "readme.txt":
@@ -176,24 +184,10 @@ def main() -> int:
         source_entries = maintenance_entries(source_lines, goods_set)
         source_stockpile_entries = active_stockpile_capacity_entries(source_lines)
         generated_file = output_dir / source_file.name
+        manifest_file = manifest_dir / f"{source_file.stem}.json"
 
-        if source_entries:
-            source_files_with_maintenance += 1
-
-        if source_entries or source_stockpile_entries:
-            if not generated_file.is_file():
-                failures.append(
-                    f"Missing generated override for targeted source file: {source_file.name}"
-                )
-                continue
-
-        if not generated_file.is_file():
-            continue
-
-        generated_text = generated_file.read_text(encoding="utf-8-sig")
-        generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
-        generated_entries = maintenance_entries(generated_body_lines, goods_set)
-        expected_body = transformer.transform_lines(
+        try:
+            expected_body, expected_changes, building_count = transformer.transform_lines_with_plan(
                 source_lines,
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
@@ -201,8 +195,38 @@ def main() -> int:
                 maintenance_multiplier=args.maintenance_multiplier,
                 trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,
+                minting_income_multiplier=float(minting_multiplier),
                 goods=goods_set,
             )
+        except ValueError as error:
+            failures.append(f"{source_file.name}: unsupported vanilla structure: {error}")
+            continue
+
+        if not expected_changes:
+            if generated_file.exists():
+                failures.append(
+                    f"{source_file.name}: override exists although no building transformation applies"
+                )
+            if manifest_file.exists():
+                failures.append(
+                    f"{source_file.name}: manifest exists although no building transformation applies"
+                )
+            continue
+
+        expected_manifest_names.add(manifest_file.name)
+        if not generated_file.is_file():
+            failures.append(f"Missing generated override for applicable source file: {source_file.name}")
+            continue
+        if not manifest_file.is_file():
+            failures.append(f"Missing building-level change manifest: {manifest_file.name}")
+            continue
+
+        if source_entries:
+            source_files_with_maintenance += 1
+
+        generated_text = generated_file.read_text(encoding="utf-8-sig")
+        generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
+        generated_entries = maintenance_entries(generated_body_lines, goods_set)
         minting_occurrences = minting_transformer.source_occurrences(
             source_file, minting_multiplier
         )
@@ -215,6 +239,31 @@ def main() -> int:
             expected_body = expected_text.splitlines()
         expected_body = normalize_generator_whitespace(expected_body)
         expected_entries = maintenance_entries(expected_body, goods_set)
+
+        try:
+            manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as error:
+            failures.append(f"{manifest_file.name}: invalid manifest: {error}")
+            continue
+        source_label = f"<EU5_GAME_COMMON_DIR>/building_types/{source_file.name}"
+        expected_manifest = transformer.build_manifest(
+            source_file=source_file,
+            source_label=source_label,
+            generated_text=generated_text,
+            changes=expected_changes,
+            building_count=building_count,
+        )
+        if manifest != expected_manifest:
+            failures.append(
+                f"{manifest_file.name}: manifest does not match the parser-derived change plan"
+            )
+        if manifest.get("source_sha256") != hashlib.sha256(source_file.read_bytes()).hexdigest():
+            failures.append(f"{manifest_file.name}: source fingerprint mismatch")
+        if manifest.get("generated_sha256") != hashlib.sha256(
+            generated_text.encode("utf-8")
+        ).hexdigest():
+            failures.append(f"{manifest_file.name}: generated fingerprint mismatch")
+        manifests_checked += 1
         generated_active_stockpile_entries = active_stockpile_capacity_entries(
             generated_body_lines
         )
@@ -279,6 +328,11 @@ def main() -> int:
 
         generated_files_checked += 1
 
+    actual_manifest_names = {path.name for path in manifest_dir.glob("*.json")}
+    stale_manifests = sorted(actual_manifest_names - expected_manifest_names)
+    if stale_manifests:
+        failures.append(f"Stale building manifests: {', '.join(stale_manifests)}")
+
     if failures:
         print("CBP US-08 building maintenance validation failed:", file=sys.stderr)
         for failure in failures:
@@ -290,7 +344,8 @@ def main() -> int:
         f"{source_files_with_maintenance} maintenance source files, "
         f"{generated_files_checked} generated building files, "
         f"{maintenance_entries_checked} maintenance entries checked, "
-        f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked."
+        f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked, "
+        f"{manifests_checked} building manifests checked."
     )
     return 0
 

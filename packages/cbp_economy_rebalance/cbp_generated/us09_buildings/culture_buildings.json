@@ -1,0 +1,132 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "confucian_academy": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.21",
+        "old_value": "0.3"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      }
+    ],
+    "jesuit_college": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.7",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ],
+    "opera_house": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.42",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lacquerware",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.42",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:wine",
+        "new_value": "0.42",
+        "old_value": "0.6"
+      }
+    ],
+    "university": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ]
+  },
+  "generated_sha256": "d76df36cc3c4ce370298d05572bc1268059c76ab3ff7fec112e65069275a64ca",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/culture_buildings.txt",
+  "source_sha256": "42f05a1c121141ae96a6cdb1c2fcbb72e4d7e461136201e3c979ed74df7b60c6",
+  "unchanged_building_count": 5
+}

@@ -1,0 +1,42 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "printing_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ],
+    "printing_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      }
+    ],
+    "printing_press_shop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "scriptorium": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.324",
+        "old_value": "0.3"
+      }
+    ]
+  },
+  "generated_sha256": "a48d3fb4170c0feaf884a33843a9412c730681c29b3d42fe953a827bd8f6e67e",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_books.txt",
+  "source_sha256": "cf613d42eb267ec8100511d06d5451608c056090a88f4a9bdb6dbaf9858709c3",
+  "unchanged_building_count": 0
+}

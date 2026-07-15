@@ -1,0 +1,24 @@
+{
+  "changed_building_count": 1,
+  "changed_buildings": {
+    "trade_company_headquarters": [
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.05",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "merchant_capacity_from_building",
+        "new_value": "0.23",
+        "old_value": "0.2"
+      }
+    ]
+  },
+  "generated_sha256": "2ef16d5f650cea5e4f8c95efe4467d3975ffbb6208ade2f3e6ae9bf427fb39a8",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/trade_company_buildings.txt",
+  "source_sha256": "fadafecdae3c24140b80161860f1d8786bdc3f33f07495f5a6c3f92a6f88867e",
+  "unchanged_building_count": 5
+}

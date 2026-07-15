@@ -1,0 +1,90 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "cloth_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.864",
+        "old_value": "0.8"
+      }
+    ],
+    "cloth_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ],
+    "cloth_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.972",
+        "old_value": "0.9"
+      }
+    ],
+    "textile_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "3.24",
+        "old_value": "3"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.7",
+        "old_value": "2.5"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.7",
+        "old_value": "2.5"
+      }
+    ]
+  },
+  "generated_sha256": "2f79b9cb2e7c4c02dc2f52899428830c118c88bf0c61e4c93b0b2c263693ed80",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_cloth.txt",
+  "source_sha256": "7bbbf43054d7581bea9e00bc37d87ec5b61b7d012e038e378576fceb46d749c5",
+  "unchanged_building_count": 0
+}

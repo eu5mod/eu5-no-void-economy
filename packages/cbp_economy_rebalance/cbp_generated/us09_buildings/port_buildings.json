@@ -1,0 +1,196 @@
+{
+  "changed_building_count": 6,
+  "changed_buildings": {
+    "dock": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      }
+    ],
+    "dry_dock": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      }
+    ],
+    "grand_shipyard": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "1.12",
+        "old_value": "1.6"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "1.12",
+        "old_value": "1.6"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "1.12",
+        "old_value": "1.6"
+      }
+    ],
+    "naval_base": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "1.05",
+        "old_value": "1.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "2.1",
+        "old_value": "3.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "1.05",
+        "old_value": "1.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "2.1",
+        "old_value": "3.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "2.1",
+        "old_value": "3.0"
+      }
+    ],
+    "protected_harbor": [
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:stone",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      }
+    ],
+    "shipyard": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      }
+    ]
+  },
+  "generated_sha256": "5725da400fdf23637310d5b1365295164c95b4bfdb0119aed838e468459ddbe8",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/port_buildings.txt",
+  "source_sha256": "9dfa8e370916179ec9ee506938b6049a5ca1522ff7b3d9954b5840ca4ee7563c",
+  "unchanged_building_count": 0
+}

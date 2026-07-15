@@ -1,0 +1,66 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "iron_foundry": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ],
+    "iron_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      }
+    ],
+    "tools_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.27",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.648",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.594",
+        "old_value": "0.55"
+      }
+    ],
+    "tools_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      }
+    ]
+  },
+  "generated_sha256": "3aeccafc855c92955591f147131cb680ccce8bdfe46b29ef99c98a826c1f828c",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_tools.txt",
+  "source_sha256": "876a873a5b9b15157106b19fc23d8b2e452b93b53b47f8769d83f17774cfd819",
+  "unchanged_building_count": 0
+}

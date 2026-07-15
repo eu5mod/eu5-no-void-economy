@@ -1,0 +1,672 @@
+{
+  "changed_building_count": 28,
+  "changed_buildings": {
+    "archive_of_the_indies": [
+      {
+        "action": "replace",
+        "field": "local_merchant_capacity",
+        "new_value": "1.15",
+        "old_value": "1"
+      }
+    ],
+    "bibliotheca_corviniana": [
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.7",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:furniture",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      }
+    ],
+    "bolshoi_theater": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fur",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:furniture",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:liquor",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ],
+    "chi_macau_port": [
+      {
+        "action": "replace",
+        "field": "local_merchant_capacity",
+        "new_value": "1.15",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "merchant_capacity_from_building",
+        "new_value": "0.23",
+        "old_value": "0.2"
+      }
+    ],
+    "college_of_poets": [
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.7",
+        "old_value": "1"
+      }
+    ],
+    "dutch_trade_outpost": [
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.125",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.025",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "merchant_capacity_from_building",
+        "new_value": "1.15",
+        "old_value": "1.0"
+      }
+    ],
+    "enderun_academy": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:firearms",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:leather",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:weaponry",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ],
+    "globe_theatre": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:fine_cloth",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:furniture",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:wine",
+        "new_value": "0.21",
+        "old_value": "0.3"
+      }
+    ],
+    "grand_apartment": [
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:furniture",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:marble",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      }
+    ],
+    "great_madrasa": [
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ],
+    "guich_garrison": [
+      {
+        "action": "replace",
+        "field": "maintenance:masonry",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.014",
+        "old_value": "0.02"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:weaponry",
+        "new_value": "0.014",
+        "old_value": "0.02"
+      }
+    ],
+    "herrenchiemsee_abbey": [
+      {
+        "action": "replace",
+        "field": "maintenance:beer",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:cloth",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      }
+    ],
+    "husuni_kubwa": [
+      {
+        "action": "replace",
+        "field": "local_merchant_capacity",
+        "new_value": "5.75",
+        "old_value": "5"
+      },
+      {
+        "action": "comment_out",
+        "field": "maximum_stockpile_capacity",
+        "new_value": null,
+        "old_value": "50"
+      }
+    ],
+    "imperial_halic_shipyards": [
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.28",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.7",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:stone",
+        "new_value": "0.168",
+        "old_value": "0.24"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      }
+    ],
+    "jewish_district": [
+      {
+        "action": "replace",
+        "field": "maintenance:furniture",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:masonry",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      }
+    ],
+    "lighthouse_of_alexandria": [
+      {
+        "action": "replace",
+        "field": "maintenance:masonry",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:weaponry",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      }
+    ],
+    "lucca_silk_production_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.648",
+        "old_value": "0.6"
+      }
+    ],
+    "phanariot_district": [
+      {
+        "action": "replace",
+        "field": "local_merchant_capacity",
+        "new_value": "5.75",
+        "old_value": "5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:masonry",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:sand",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      }
+    ],
+    "ribeira_das_naus": [
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:naval_supplies",
+        "new_value": "0.56",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:stone",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.105",
+        "old_value": "0.15"
+      }
+    ],
+    "riksbank": [
+      {
+        "action": "replace",
+        "field": "maintenance:goods_gold",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:silver",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "minting_income_factor",
+        "new_value": "0.2",
+        "old_value": "0.10"
+      }
+    ],
+    "schwaz_mine": [
+      {
+        "action": "replace",
+        "field": "maintenance:leather",
+        "new_value": "0.33369",
+        "old_value": "0.4767"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:liquor",
+        "new_value": "0.11088",
+        "old_value": "0.1584"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.55545",
+        "old_value": "0.7935"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:stone",
+        "new_value": "0.55545",
+        "old_value": "0.7935"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.27769",
+        "old_value": "0.3967"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1.0"
+      }
+    ],
+    "swi_collegium_helveticum": [
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      }
+    ],
+    "usa_academy_of_arts_and_sciences": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.175",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.7",
+        "old_value": "1"
+      }
+    ],
+    "usa_national_bank": [
+      {
+        "action": "replace",
+        "field": "maintenance:goods_gold",
+        "new_value": "0.5",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.5",
+        "old_value": "1.0"
+      }
+    ],
+    "usa_national_mint": [
+      {
+        "action": "replace",
+        "field": "maintenance:goods_gold",
+        "new_value": "0.5",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.5",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:silver",
+        "new_value": "0.5",
+        "old_value": "1.0"
+      },
+      {
+        "action": "replace",
+        "field": "minting_income_factor",
+        "new_value": "0.4",
+        "old_value": "0.2"
+      }
+    ],
+    "usa_philosophical_society": [
+      {
+        "action": "replace",
+        "field": "maintenance:beeswax",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:books",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:glass",
+        "new_value": "0.35",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "1.05",
+        "old_value": "1.5"
+      }
+    ],
+    "wisselbank": [
+      {
+        "action": "replace",
+        "field": "maintenance:goods_gold",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:paper",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:silver",
+        "new_value": "0.25",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "minting_income_factor",
+        "new_value": "0.2",
+        "old_value": "0.10"
+      }
+    ],
+    "woodhenge_of_cahokia": [
+      {
+        "action": "replace",
+        "field": "maintenance:clay",
+        "new_value": "0.7",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.7",
+        "old_value": "1"
+      }
+    ]
+  },
+  "generated_sha256": "93a743d422fbca481520aeb8d860ce5a8994264e54f13d820b6afbada98cb8a2",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/event_only_buildings.txt",
+  "source_sha256": "9f5f8c55f3dda0d3e8d0240670fd3e32859ebc6c168b5a98d88685cf7f185867",
+  "unchanged_building_count": 76
+}

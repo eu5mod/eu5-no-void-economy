@@ -1,0 +1,50 @@
+{
+  "changed_building_count": 2,
+  "changed_buildings": {
+    "winery": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "winery_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ]
+  },
+  "generated_sha256": "398c1abcd406586fefae30846e641177fcaaea8921cb42a384f56c6d9e3ffcd8",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_wine.txt",
+  "source_sha256": "6dfc89b5a6018b12eadeaecb86fb5d41cccbcaa02d3a27ee8eb8fb8fc37b7cfe",
+  "unchanged_building_count": 0
+}

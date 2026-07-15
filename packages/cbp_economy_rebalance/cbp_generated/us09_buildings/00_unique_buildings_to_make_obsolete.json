@@ -1,0 +1,30 @@
+{
+  "changed_building_count": 1,
+  "changed_buildings": {
+    "sofa_stockade": [
+      {
+        "action": "replace",
+        "field": "maintenance:clay",
+        "new_value": "0.14",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tar",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:weaponry",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      }
+    ]
+  },
+  "generated_sha256": "eeb79aeca99eecd7ea57e28c8ad7e5bfb967d0712fb03fe8e0064975b801e69d",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/00_unique_buildings_to_make_obsolete.txt",
+  "source_sha256": "39617f59b117ec93c85e395a91417136e2fe1fea497be9f05918a59e51eec1dd",
+  "unchanged_building_count": 2
+}
