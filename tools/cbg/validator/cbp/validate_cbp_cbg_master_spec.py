@@ -30,6 +30,9 @@ def expected_rules() -> set[tuple[str, str, float]]:
 
 
 def main() -> int:
+    if not SPEC.is_file():
+        print("SKIP: CBG master specification requires local Vanilla EU5 sources.")
+        return 0
     payload = json.loads(SPEC.read_text(encoding="utf-8"))
     political_fields = set(EVENT_FIELDS) | set(MONTHLY_FIELDS)
     discovered: set[tuple[str, str, float]] = set()
