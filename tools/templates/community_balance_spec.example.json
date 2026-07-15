@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "mod_id": "example-balance-mod",
+  "custom_fields": {
+    "example_custom_capacity": "modifier"
+  },
+  "transformations": [
+    {
+      "file": "in_game/common/**/*.txt",
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "object": "**",
+      "field": "monthly_legitimacy",
+      "operation": "multiply",
+      "value": 0.2,
+      "occurrences": "all",
+      "on_missing": "skip"
+    },
+    {
+      "file": "in_game/common/building_types/*.txt",
+      "object": "marketplace",
+      "field": "maintenance",
+      "operation": "multiply",
+      "value": 0.7,
+      "conflict": "compose"
+    },
+    {
+      "file": "in_game/common/building_types/market_buildings.txt",
+      "object": "market_warehouse/modifier",
+      "field": "maximum_stockpile_capacity",
+      "operation": "comment_out"
+    },
+    {
+      "file": "main_menu/common/static_modifiers/location.txt",
+      "object": "market_center",
+      "field": "example_custom_capacity",
+      "operation": "add_custom",
+      "value": 8,
+      "position": {
+        "after": "free_building_levels"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6341 @@
+{
+  "mod_id": "cbp-economy-rebalance",
+  "parity_contract": {
+    "known_structural_gaps": [],
+    "reference": "PR #188 generators"
+  },
+  "schema_version": 1,
+  "transformations": [
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_stability",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_legitimacy",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_republican_tradition",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_devotion",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_horde_unity",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_tribal_cohesion",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/events/debug/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_government_power",
+      "file": "in_game/events/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_stability",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_legitimacy",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_republican_tradition",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_devotion",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_horde_unity",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_tribal_cohesion",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [
+        "in_game/common/effect_localization/**/*.txt"
+      ],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "add_government_power",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "stability_investment",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "monthly_legitimacy",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "monthly_republican_tradition",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "monthly_devotion",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "monthly_horde_unity",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [
+        "cabinet_stability_investment",
+        "clergy_stability_investment",
+        "devotion_extreme_bonus",
+        "devotion_extreme_penalty",
+        "devotion_mild_bonus",
+        "devotion_mild_penalty",
+        "devotion_radical_penalty",
+        "devotion_severe_bonus",
+        "devotion_severe_penalty",
+        "devotion_weak_bonus",
+        "government_power_extreme_bonus",
+        "government_power_extreme_penalty",
+        "government_power_mild_bonus",
+        "government_power_radical_bonus",
+        "government_power_radical_penalty",
+        "government_power_severe_bonus",
+        "government_power_severe_penalty",
+        "government_power_ultimate_bonus",
+        "government_power_ultimate_penalty",
+        "government_power_weak_bonus",
+        "horde_unity_extreme_bonus",
+        "horde_unity_extreme_penalty",
+        "horde_unity_mild_bonus",
+        "horde_unity_mild_penalty",
+        "horde_unity_ultimate_penalty",
+        "horde_unity_weak_bonus",
+        "horde_unity_weak_penalty",
+        "huge_stability_investment_penalty",
+        "large_stability_investment",
+        "large_stability_investment_penalty",
+        "legitimacy_extreme_bonus",
+        "legitimacy_extreme_penalty",
+        "legitimacy_mild_bonus",
+        "legitimacy_radical_bonus",
+        "legitimacy_radical_penalty",
+        "legitimacy_severe_bonus",
+        "legitimacy_severe_penalty",
+        "legitimacy_ultimate_bonus",
+        "legitimacy_ultimate_penalty",
+        "legitimacy_weak_penalty",
+        "republican_tradition_extreme_bonus",
+        "republican_tradition_mild_bonus",
+        "republican_tradition_mild_penalty",
+        "republican_tradition_severe_bonus",
+        "republican_tradition_severe_penalty",
+        "republican_tradition_weak_bonus",
+        "republican_tradition_weak_penalty",
+        "small_stability_investment",
+        "small_stability_investment_penalty",
+        "stability_extreme_bonus",
+        "stability_extreme_penalty",
+        "stability_investment_penalty",
+        "stability_mild_penalty",
+        "stability_radical_penalty",
+        "stability_severe_bonus",
+        "stability_severe_penalty",
+        "stability_ultimate_bonus",
+        "stability_ultimate_penalty",
+        "stability_very_extreme_bonus",
+        "stability_very_extreme_penalty",
+        "stability_weak_bonus",
+        "standard_stability_investment",
+        "tiny_stability_investment",
+        "tribal_cohesion_extreme_bonus",
+        "tribal_cohesion_mild_bonus",
+        "tribal_cohesion_mild_penalty",
+        "tribal_cohesion_severe_bonus",
+        "tribal_cohesion_severe_penalty",
+        "tribal_cohesion_weak_bonus",
+        "tribal_cohesion_weak_penalty"
+      ],
+      "field": "monthly_tribal_cohesion",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "cabinet_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "clergy_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "devotion_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_radical_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_ultimate_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_ultimate_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "huge_stability_investment_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "large_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "large_stability_investment_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "legitimacy_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_radical_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_ultimate_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "legitimacy_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "small_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "small_stability_investment_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "stability_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_investment_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "stability_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_ultimate_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_very_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_very_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "stability_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "standard_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "tiny_stability_investment",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.75
+    },
+    {
+      "field": "tribal_cohesion_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [],
+      "field": "output",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 1.08
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "wild_game",
+      "operation": "replace",
+      "value": "1.1666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fur",
+      "operation": "replace",
+      "value": "0.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fish",
+      "operation": "replace",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "wheat",
+      "operation": "replace",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "maize",
+      "operation": "replace",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "rice",
+      "operation": "replace",
+      "value": "3.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "millet",
+      "operation": "replace",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "legumes",
+      "operation": "replace",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "potato",
+      "operation": "replace",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "livestock",
+      "operation": "replace",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "olives",
+      "operation": "replace",
+      "value": "1.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fruit",
+      "operation": "replace",
+      "value": "1.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "beeswax",
+      "operation": "replace",
+      "value": "0.8333333333"
+    },
+    {
+      "field": "FOOD_PRICE",
+      "file": "loading_screen/common/defines/00_defines.txt",
+      "object": "NMarket",
+      "operation": "replace",
+      "value": 0.3
+    },
+    {
+      "field": "gold",
+      "file": "in_game/common/prices/00_hardcoded.txt",
+      "object": "expand_rgo_mining",
+      "operation": "replace",
+      "value": 92.59
+    },
+    {
+      "field": "gold",
+      "file": "in_game/common/prices/00_hardcoded.txt",
+      "object": "expand_rgo_farming",
+      "operation": "replace",
+      "value": 92.59
+    },
+    {
+      "field": "gold",
+      "file": "in_game/common/prices/00_hardcoded.txt",
+      "object": "expand_rgo_hunting",
+      "operation": "replace",
+      "value": 92.59
+    },
+    {
+      "field": "gold",
+      "file": "in_game/common/prices/00_hardcoded.txt",
+      "object": "expand_rgo_gathering",
+      "operation": "replace",
+      "value": 92.59
+    },
+    {
+      "field": "gold",
+      "file": "in_game/common/prices/00_hardcoded.txt",
+      "object": "expand_rgo_forestry",
+      "operation": "replace",
+      "value": 92.59
+    },
+    {
+      "field": "promotion_factor",
+      "file": "in_game/common/pop_types/00_default.txt",
+      "object": "burghers",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "promotion_factor",
+      "file": "in_game/common/pop_types/00_default.txt",
+      "object": "laborers",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [],
+      "field": "local_merchant_capacity",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 1.15
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [],
+      "field": "merchant_capacity_from_building",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 1.15
+    },
+    {
+      "field": "maximum_stockpile_capacity",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "comment_out"
+    },
+    {
+      "field": "local_burghers_estate_power",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5
+    },
+    {
+      "field": "location_potential",
+      "file": "in_game/common/building_types/market_buildings.txt",
+      "object": "market_warehouse",
+      "operation": "upsert_block",
+      "value": {
+        "always": "no"
+      }
+    },
+    {
+      "field": "country_potential",
+      "file": "in_game/common/building_types/market_buildings.txt",
+      "object": "market_warehouse",
+      "operation": "upsert_block",
+      "position": {
+        "after": "location_potential"
+      },
+      "value": {
+        "always": "no"
+      }
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [],
+      "field": "minting_income_factor",
+      "file": "in_game/common/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 2.0
+    },
+    {
+      "exclude_files": [],
+      "exclude_values": [],
+      "field": "minting_income_factor",
+      "file": "main_menu/common/static_modifiers/**/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 2.0
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cotton",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cotton",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "sugar",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "sugar",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tobacco",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tobacco",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tar",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tar",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "porcelain",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "porcelain",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "naval_supplies",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "naval_supplies",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "firearms",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "firearms",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cannons",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cannons",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "weaponry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "weaponry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "glass",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "glass",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "steel",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "steel",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cloth",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cloth",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fine_cloth",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fine_cloth",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "liquor",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "liquor",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "beer",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "beer",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "paper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "paper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "books",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "books",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "jewelry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "jewelry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "leather",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "leather",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tools",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tools",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "masonry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "masonry",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lacquerware",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lacquerware",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pottery",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pottery",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "furniture",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "furniture",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "horses",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "horses",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "clay",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "clay",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "sand",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "sand",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "coal",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "coal",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "iron",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "iron",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "copper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "copper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "goods_gold",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "goods_gold",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "silver",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "silver",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "stone",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "stone",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tin",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tin",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lead",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lead",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "silk",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "silk",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "dyes",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "dyes",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "incense",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "incense",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tea",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "tea",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cocoa",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cocoa",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "coffee",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "coffee",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fiber_crops",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fiber_crops",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "ivory",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "ivory",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lumber",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "lumber",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "salt",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "salt",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "medicaments",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "medicaments",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "gems",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "gems",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pearls",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pearls",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "amber",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "amber",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "saltpeter",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "saltpeter",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "alum",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "alum",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wine",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wine",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "elephants",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "elephants",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "marble",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "marble",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "mercury",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "mercury",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "saffron",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "saffron",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pepper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "pepper",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cloves",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "cloves",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "chili",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "chili",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wool",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wool",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wild_game",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wild_game",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fur",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fur",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fish",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fish",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wheat",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "wheat",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "maize",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "maize",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "rice",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "rice",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "millet",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "millet",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "legumes",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "legumes",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "potato",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "potato",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "livestock",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "livestock",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "olives",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "olives",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fruit",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "fruit",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "beeswax",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "beeswax",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "slaves_goods",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.7,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          }
+        ],
+        "not_inside": [
+          {
+            "category": "trade_category"
+          }
+        ]
+      }
+    },
+    {
+      "exclude_objects": [
+        "grand_marketplace",
+        "marketplace",
+        "merchants_quarters"
+      ],
+      "field": "slaves_goods",
+      "file": "in_game/common/building_types/*.txt",
+      "object": "**",
+      "occurrences": "all",
+      "on_missing": "skip",
+      "operation": "multiply",
+      "value": 0.5,
+      "where": {
+        "inside": [
+          {
+            "category": "building_maintenance"
+          },
+          {
+            "category": "trade_category"
+          }
+        ],
+        "not_inside": []
+      }
+    },
+    {
+      "field": "rural_profit_margin",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "guild_profit_margin",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "workshop_profit_margin",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "manufactory_profit_margin",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "mills_profit_margin",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "value": 1.1
+    },
+    {
+      "field": "local_population_growth",
+      "file": "main_menu/common/static_modifiers/location.txt",
+      "object": "expensive_food_in_location",
+      "operation": "replace",
+      "value": 0
+    },
+    {
+      "field": "local_population_growth",
+      "file": "main_menu/common/static_modifiers/location.txt",
+      "object": "cheap_food_in_location",
+      "operation": "replace",
+      "value": 0.001
+    },
+    {
+      "field": "maximum_stockpile_capacity",
+      "file": "main_menu/common/static_modifiers/location.txt",
+      "object": "market_center",
+      "operation": "replace",
+      "value": 0
+    },
+    {
+      "field": "local_migration_attraction",
+      "file": "main_menu/common/static_modifiers/location.txt",
+      "object": "surplus_jobs",
+      "operation": "replace",
+      "value": 0.2
+    },
+    {
+      "field": "beeswax",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "grand_marketplace/unique_production_methods/grand_marketplace_maintenance",
+      "operation": "remove"
+    },
+    {
+      "field": "cloth",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "grand_marketplace/unique_production_methods/grand_marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    },
+    {
+      "field": "jewelry",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "grand_marketplace/unique_production_methods/grand_marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "paper",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "grand_marketplace/unique_production_methods/grand_marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "salt",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "grand_marketplace/unique_production_methods/grand_marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    },
+    {
+      "field": "cloth",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "marketplace/unique_production_methods/marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    },
+    {
+      "field": "jewelry",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "marketplace/unique_production_methods/marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "paper",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "marketplace/unique_production_methods/marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "salt",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "marketplace/unique_production_methods/marketplace_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    },
+    {
+      "field": "beeswax",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "merchants_quarters/unique_production_methods/merchants_quarters_maintenance",
+      "operation": "remove"
+    },
+    {
+      "field": "cloth",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "merchants_quarters/unique_production_methods/merchants_quarters_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    },
+    {
+      "field": "jewelry",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "merchants_quarters/unique_production_methods/merchants_quarters_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "paper",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "merchants_quarters/unique_production_methods/merchants_quarters_maintenance",
+      "operation": "replace",
+      "value": "0.025"
+    },
+    {
+      "field": "salt",
+      "file": "in_game/common/building_types/trade_buildings.txt",
+      "object": "merchants_quarters/unique_production_methods/merchants_quarters_maintenance",
+      "operation": "replace",
+      "value": "0.03"
+    }
+  ]
+}
