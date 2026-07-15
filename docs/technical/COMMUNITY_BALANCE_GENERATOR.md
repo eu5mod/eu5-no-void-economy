@@ -192,7 +192,7 @@ marketplace inheritance, and Market Warehouse availability are also generated
 from Vanilla-derived rules. Matching Vanilla occurrences are discovered at
 generation time; broad policies do not carry generated file inventories.
 
-GitHub Actions runs `validate_cbg_master_spec.py` to enforce this discovery
+GitHub Actions runs `validate_cbp_cbg_master_spec.py` to enforce this discovery
 contract without proprietary game files. Full output parity remains a local or
 self-hosted release gate because `validate_cbp_cbg_parity.sh` requires the
 installed Vanilla tree.

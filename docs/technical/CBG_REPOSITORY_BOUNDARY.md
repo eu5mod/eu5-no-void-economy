@@ -25,7 +25,7 @@ generate_cbp_cbg_*_spec.py
 generate_cbp_community_balance_spec.py
 validate_cbp_cbg_*_parity.sh
 compare_cbp_cbg_outputs.py
-validate_cbg_master_spec.py
+validate_cbp_cbg_master_spec.py
 ```
 
 They discover CBP targets, compile business exclusions and edge cases, invoke

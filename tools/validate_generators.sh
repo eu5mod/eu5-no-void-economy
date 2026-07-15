@@ -158,7 +158,7 @@ cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_spec
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
-cbp_require_file "tools/validate_cbg_master_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
 cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
@@ -211,7 +211,8 @@ else
 	printf '%s\n' \
 		'SKIP: focused CBG family parity requires local Vanilla EU5 sources.'
 fi
-python3 "$repo_root/tools/validate_cbg_master_spec.py"
+python3 "$repo_root/tools/cbg/validate_cbg_layout.py"
+python3 "$repo_root/tools/validate_cbp_cbg_master_spec.py"
 cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must compile and materialize political rewards through CBG'
