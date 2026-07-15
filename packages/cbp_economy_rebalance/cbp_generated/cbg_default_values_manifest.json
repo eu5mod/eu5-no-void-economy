@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "generated_sha256": "b0f906bb84c02d728e84a62d34d8b9aefac28bf43a2d3309050f73a241af1492",
+      "generated_sha256": "45bb3f68e5eedbcc1f1f323a6efeb634d4a154748a89ada030e9b6e10a96ddd5",
       "path": "main_menu/common/script_values/default_values.txt",
       "transformations": [
         {
@@ -71,6 +71,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "50",
+          "before": "100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "devotion_radical_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "-50",
           "before": "-100",
           "configured_value": 0.5,
@@ -104,11 +115,44 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "25",
+          "before": "50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "devotion_ultimate_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-25",
+          "before": "-50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "devotion_ultimate_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "2.5",
           "before": "5",
           "configured_value": 0.5,
           "conflict": "error",
           "field": "devotion_weak_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-2.5",
+          "before": "-5",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "devotion_weak_penalty",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -142,6 +186,17 @@
           "configured_value": 0.5,
           "conflict": "error",
           "field": "government_power_mild_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-2.5",
+          "before": "-5",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "government_power_mild_penalty",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -225,6 +280,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "-1.25",
+          "before": "-2.5",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "government_power_weak_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "0.22",
           "before": "0.2",
           "configured_value": 1.1,
@@ -274,6 +340,61 @@
           "configured_value": 0.5,
           "conflict": "error",
           "field": "horde_unity_mild_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "50",
+          "before": "100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "horde_unity_radical_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-50",
+          "before": "-100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "horde_unity_radical_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "7.5",
+          "before": "15",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "horde_unity_severe_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-7.5",
+          "before": "-15",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "horde_unity_severe_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "25",
+          "before": "50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "horde_unity_ultimate_bonus",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -379,6 +500,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "-5",
+          "before": "-10",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "legitimacy_mild_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "50",
           "before": "100",
           "configured_value": 0.5,
@@ -445,6 +577,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "2.5",
+          "before": "5",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "legitimacy_weak_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "-2.5",
           "before": "-5",
           "configured_value": 0.5,
@@ -489,6 +632,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "-10",
+          "before": "-20",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "republican_tradition_extreme_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "5",
           "before": "10",
           "configured_value": 0.5,
@@ -511,6 +665,28 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "50",
+          "before": "100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "republican_tradition_radical_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-50",
+          "before": "-100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "republican_tradition_radical_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "7.5",
           "before": "15",
           "configured_value": 0.5,
@@ -527,6 +703,28 @@
           "configured_value": 0.5,
           "conflict": "error",
           "field": "republican_tradition_severe_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "25",
+          "before": "50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "republican_tradition_ultimate_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-25",
+          "before": "-50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "republican_tradition_ultimate_penalty",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -621,11 +819,33 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "3.5",
+          "before": "7",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "stability_mild_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "-3.5",
           "before": "-7",
           "configured_value": 0.5,
           "conflict": "error",
           "field": "stability_mild_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "50",
+          "before": "100",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "stability_radical_bonus",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -720,6 +940,17 @@
           "owner": "cbp-economy-rebalance-default-values"
         },
         {
+          "after": "-1.25",
+          "before": "-2.5",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "stability_weak_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
           "after": "0.0225",
           "before": "0.03",
           "configured_value": 0.75,
@@ -747,6 +978,17 @@
           "configured_value": 0.5,
           "conflict": "error",
           "field": "tribal_cohesion_extreme_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-10",
+          "before": "-20",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "tribal_cohesion_extreme_penalty",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",
@@ -791,6 +1033,28 @@
           "configured_value": 0.5,
           "conflict": "error",
           "field": "tribal_cohesion_severe_penalty",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "25",
+          "before": "50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "tribal_cohesion_ultimate_bonus",
+          "line_action": "transformed",
+          "object": "",
+          "operation": "multiply",
+          "owner": "cbp-economy-rebalance-default-values"
+        },
+        {
+          "after": "-25",
+          "before": "-50",
+          "configured_value": 0.5,
+          "conflict": "error",
+          "field": "tribal_cohesion_ultimate_penalty",
           "line_action": "transformed",
           "object": "",
           "operation": "multiply",

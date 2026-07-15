@@ -4,6 +4,10 @@ import unittest
 from pathlib import Path, PurePosixPath
 
 from tools.community_balance_generator import Intent, Target, apply_intent, generate, load_intents
+from tools.generate_political_reward_overrides import (
+    POLITICAL_DEFAULT_VALUE_PREFIXES,
+    centralizable_script_values,
+)
 
 
 VANILLA = """marketplace = {
@@ -17,6 +21,26 @@ VANILLA = """marketplace = {
 
 
 class CommunityBalanceGeneratorTests(unittest.TestCase):
+    def test_all_political_default_penalties_and_bonuses_are_halved(self):
+        default_values = self.game / "main_menu/common/script_values/default_values.txt"
+        default_values.parent.mkdir(parents=True, exist_ok=True)
+        expected = {
+            f"{prefix}_{intensity}_{kind}"
+            for prefix in POLITICAL_DEFAULT_VALUE_PREFIXES
+            for intensity in ("weak", "mild", "radical")
+            for kind in ("penalty", "bonus")
+        }
+        default_values.write_text(
+            "".join(f"{name} = 10\n" for name in sorted(expected)), encoding="utf-8"
+        )
+        (self.game / "in_game/events").mkdir(parents=True, exist_ok=True)
+        (self.game / "in_game/common").mkdir(parents=True, exist_ok=True)
+
+        policies = centralizable_script_values(self.game)
+
+        self.assertEqual(set(policies), expected)
+        self.assertTrue(all(str(factor) == "0.5" for factor in policies.values()))
+
     def test_top_level_field_can_be_transformed(self):
         lines = ["first = 10\n", "object = {\n", "\tfirst = 20\n", "}\n"]
         intent = Intent(

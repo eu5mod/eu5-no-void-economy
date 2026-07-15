@@ -41,6 +41,33 @@ PROFIT_MARGIN_FIELDS = {
     "mills_profit_margin",
 }
 PROFIT_MARGIN_FACTOR = Decimal("1.10")
+POLITICAL_DEFAULT_VALUE_PREFIXES = {
+    "stability",
+    "government_power",
+    "legitimacy",
+    "devotion",
+    "republican_tradition",
+    "tribal_cohesion",
+    "horde_unity",
+}
+POLITICAL_DEFAULT_VALUE_INTENSITIES = {
+    "weak",
+    "mild",
+    "severe",
+    "extreme",
+    "very_extreme",
+    "ultimate",
+    "radical",
+}
+
+
+def is_explicit_half_default_value(name: str) -> bool:
+    return any(
+        name == f"{prefix}_{intensity}_{kind}"
+        for prefix in POLITICAL_DEFAULT_VALUE_PREFIXES
+        for intensity in POLITICAL_DEFAULT_VALUE_INTENSITIES
+        for kind in ("penalty", "bonus")
+    )
 SIMPLE_ASSIGNMENT = re.compile(
     r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_]+)[ \t]*=[ \t]*(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
 )
@@ -334,6 +361,11 @@ def centralizable_script_values(game_root: Path) -> dict[str, Decimal]:
             )
         )
     }
+    explicit_half_values = {
+        name: Decimal("0.5")
+        for name in numeric_definitions
+        if is_explicit_half_default_value(name)
+    }
     candidates = {name: factor for name, factor in target_policy.items() if name in numeric_definitions}
     shared_with_nonpolitical: set[str] = set()
     for root in [game_root / "in_game/events", game_root / "in_game/common", game_root / "main_menu/common"]:
@@ -350,11 +382,12 @@ def centralizable_script_values(game_root: Path) -> dict[str, Decimal]:
                 )
                 if field not in EVENT_EFFECTS | RESEARCH_MODIFIERS and not calculation_inside_target:
                     shared_with_nonpolitical.add(match.group("value").strip())
-    return {
+    discovered_exclusive = {
         name: factor
         for name, factor in candidates.items()
         if name not in shared_with_nonpolitical
     }
+    return {**discovered_exclusive, **explicit_half_values}
 
 
 def preserve_nonpolitical_token_uses(text: str, centralized: dict[str, Decimal]) -> TransformResult:
@@ -370,6 +403,8 @@ def preserve_nonpolitical_token_uses(text: str, centralized: dict[str, Decimal])
             continue
         token = match.group("value").strip()
         if token not in centralized:
+            continue
+        if is_explicit_half_default_value(token):
             continue
         field = match.group("field")
         calculation_inside_target = field in {"value", "add", "subtract"} and bool(

@@ -57,6 +57,14 @@
       "value": 0.5
     },
     {
+      "field": "devotion_radical_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "devotion_radical_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -81,7 +89,31 @@
       "value": 0.5
     },
     {
+      "field": "devotion_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_ultimate_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "devotion_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "devotion_weak_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -106,6 +138,14 @@
     },
     {
       "field": "government_power_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "government_power_mild_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -169,6 +209,14 @@
       "value": 0.5
     },
     {
+      "field": "government_power_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "guild_profit_margin",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -202,6 +250,46 @@
     },
     {
       "field": "horde_unity_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_radical_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_severe_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "horde_unity_ultimate_bonus",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -281,6 +369,14 @@
       "value": 0.5
     },
     {
+      "field": "legitimacy_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "legitimacy_radical_bonus",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -329,6 +425,14 @@
       "value": 0.5
     },
     {
+      "field": "legitimacy_weak_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "legitimacy_weak_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -361,6 +465,14 @@
       "value": 0.5
     },
     {
+      "field": "republican_tradition_extreme_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "republican_tradition_mild_bonus",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -377,6 +489,22 @@
       "value": 0.5
     },
     {
+      "field": "republican_tradition_radical_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_radical_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "republican_tradition_severe_bonus",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -386,6 +514,22 @@
     },
     {
       "field": "republican_tradition_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "republican_tradition_ultimate_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -457,7 +601,23 @@
       "value": 0.75
     },
     {
+      "field": "stability_mild_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "stability_mild_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "stability_radical_bonus",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -529,6 +689,14 @@
       "value": 0.5
     },
     {
+      "field": "stability_weak_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
       "field": "standard_stability_investment",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
@@ -546,6 +714,14 @@
     },
     {
       "field": "tribal_cohesion_extreme_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_extreme_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
@@ -578,6 +754,22 @@
     },
     {
       "field": "tribal_cohesion_severe_penalty",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_ultimate_bonus",
+      "file": "main_menu/common/script_values/default_values.txt",
+      "object": "",
+      "operation": "multiply",
+      "provenance": "vanilla",
+      "value": 0.5
+    },
+    {
+      "field": "tribal_cohesion_ultimate_penalty",
       "file": "main_menu/common/script_values/default_values.txt",
       "object": "",
       "operation": "multiply",
