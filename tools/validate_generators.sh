@@ -46,9 +46,9 @@ cbp_require_match 'MODEU5_LOCAL_CONFIG_FILE' \
 cbp_require_match 'generate_local_runtime_config\.sh' \
 	"tools/generate_all.sh" \
 	'generate_all must emit the local runtime config before install'
-cbp_require_match 'generate_cbp_location_overrides\.sh' \
+cbp_require_match 'generate_cbp_cbg_location_spec\.py' \
 	"tools/generate_all.sh" \
-	'generate_all must refresh CBP location overrides from the installed vanilla file'
+	'generate_all must refresh CBP location overrides through CBG from installed Vanilla'
 cbp_require_match 'EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE' \
 	"tools/generate_cbp_location_overrides.sh" \
 	'Location override generator must support an explicit vanilla source path'
@@ -138,10 +138,26 @@ cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
 cbp_require_file "tools/generate_cbp_cbg_food_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_food_parity.sh"
+cbp_require_file "tools/generate_cbp_cbg_location_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_location_parity.sh"
+cbp_require_file "tools/generate_cbp_cbg_rgo_prices_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_rgo_prices_parity.sh"
+cbp_require_file "tools/generate_cbp_cbg_pop_promotion_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_pop_promotion_parity.sh"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_location_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
 cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/tests/test_community_balance_generator.py"
@@ -185,26 +201,52 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	fi
 	"$repo_root/tools/validate_cbp_cbg_default_values_parity.sh"
 	"$repo_root/tools/validate_cbp_cbg_food_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_location_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_rgo_prices_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_pop_promotion_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_building_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_political_minting_parity.sh"
 else
 	printf '%s\n' \
-		'SKIP: focused CBG default_values parity requires local Vanilla EU5 sources.'
+		'SKIP: focused CBG family parity requires local Vanilla EU5 sources.'
 fi
 python3 "$repo_root/tools/validate_cbg_master_spec.py"
-cbp_require_match 'generate_political_reward_overrides\.py' \
+cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
 	"tools/generate_all.sh" \
-	'generate_all must compose political reward overrides after vanilla-derived generators'
+	'generate_all must compile and materialize political rewards through CBG'
 cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must materialize central default values from the focused CBG policy'
 cbp_require_match 'generate_cbp_cbg_food_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must materialize food production overrides from CBG policy'
+cbp_require_match 'generate_cbp_cbg_location_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize dedicated location overrides from CBG policy'
+cbp_require_match 'generate_cbp_cbg_rgo_prices_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize partial RGO prices from CBG policy'
+cbp_require_match 'generate_cbp_cbg_building_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize building overrides from focused CBG policy'
+cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must compose political and minting Vanilla outputs through CBG'
+cbp_require_match '--skip-rgo-prices' \
+	"tools/generate_all.sh" \
+	'legacy US-09 generation must delegate RGO price ownership to CBG'
+cbp_require_match '--skip-pop-promotions' \
+	"tools/generate_all.sh" \
+	'legacy US-09 generation must delegate Pop promotion ownership to CBG'
+cbp_require_match '--skip-building-overrides' \
+	"tools/generate_all.sh" \
+	'legacy US-09 analysis must delegate building runtime ownership to CBG'
 cbp_require_match '--skip-food-overrides' \
 	"tools/generate_all.sh" \
 	'legacy US-177 discovery must delegate food override ownership to CBG'
 cbp_require_match '--skip-central-default-values' \
-	"tools/generate_all.sh" \
-	'legacy political generation must delegate default_values.txt ownership to CBG'
+	"tools/generate_cbp_cbg_political_minting_spec.py" \
+	'political policy compiler must delegate default_values.txt to its focused CBG family'
 cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'#184 building transformer must own fixed monthly political modifier scaling'

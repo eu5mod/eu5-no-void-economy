@@ -70,6 +70,54 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertEqual(sum("always = no" in line for line in lines), 2)
         self.assertFalse(any("is_market_center" in line for line in lines))
 
+    def test_complete_object_can_be_replaced_from_compiled_edge_case_plan(self):
+        lines = ["warehouse = {\n", "\tcapacity = 20\n", "}\n"]
+        intent = Intent(
+            owner="test",
+            target=Target(PurePosixPath("test.txt"), ("warehouse",), "__object__"),
+            operation="replace_object",
+            value=["warehouse = {", "\t# capacity = 20", "}"],
+            conflict="error",
+            position_after=None,
+            source_spec="test.json",
+            sequence=0,
+            occurrences="one",
+            on_missing="error",
+            exclude_values=(),
+            where={},
+            exclude_objects=(),
+            provenance="preserve",
+        )
+
+        outcomes = apply_intent(lines, intent, {})
+
+        self.assertEqual(outcomes[0]["line_action"], "object_replaced")
+        self.assertEqual(lines, ["warehouse = {\n", "\t# capacity = 20\n", "}\n"])
+
+    def test_complete_file_can_be_replaced_from_composed_policy_ledger(self):
+        lines = ["old = 1\n"]
+        intent = Intent(
+            owner="test",
+            target=Target(PurePosixPath("test.txt"), (), "__file__"),
+            operation="replace_file",
+            value="new = 2\n",
+            conflict="error",
+            position_after=None,
+            source_spec="test.json",
+            sequence=0,
+            occurrences="one",
+            on_missing="error",
+            exclude_values=(),
+            where={},
+            exclude_objects=(),
+            provenance="preserve",
+        )
+
+        outcomes = apply_intent(lines, intent, {})
+
+        self.assertEqual(outcomes[0]["line_action"], "file_replaced")
+        self.assertEqual(lines, ["new = 2\n"])
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
@@ -144,6 +192,22 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         }])
         text, _ = self.transform(spec)
         self.assertEqual(text, original.replace("maintenance = 1.0", "maintenance = 0.5"))
+
+    def test_selected_objects_can_publish_to_dedicated_output(self):
+        spec = self.spec("a.json", "mod-a", [{
+            **self.target("replace", 0, field="maximum_stockpile_capacity"),
+            "output_file": "main_menu/common/static_modifiers/mod_location.txt",
+            "render_mode": "selected_objects",
+            "header": ["# Generated test output."],
+            "provenance": "vanilla_value",
+        }])
+        intents, _ = load_intents([spec], self.game)
+        manifest = generate(self.game, self.output, intents)
+        destination = self.output / "main_menu/common/static_modifiers/mod_location.txt"
+        text = destination.read_text()
+        self.assertTrue(text.startswith("# Generated test output.\n\nmarketplace = {"))
+        self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 200", text)
+        self.assertEqual(manifest["files"][0]["path"], destination.relative_to(self.output).as_posix())
 
     def test_replace_and_clamp(self):
         spec = self.spec("a.json", "mod-a", [

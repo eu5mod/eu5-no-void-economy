@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "generated_sha256": "c434bf8c09fa9eb18f687940c2fa4535a52678d83c15585eb814db0b45a71d09",
+      "path": "in_game/common/pop_types/00_default.txt",
+      "transformations": [
+        {
+          "after": "0.55",
+          "before": "0.5",
+          "configured_value": "0.55",
+          "conflict": "error",
+          "field": "promotion_factor",
+          "line_action": "transformed",
+          "object": "burghers",
+          "operation": "replace",
+          "owner": "cbp-us09-pop-promotion"
+        },
+        {
+          "after": "1.65",
+          "before": "1.5",
+          "configured_value": "1.65",
+          "conflict": "error",
+          "field": "promotion_factor",
+          "line_action": "transformed",
+          "object": "laborers",
+          "operation": "replace",
+          "owner": "cbp-us09-pop-promotion"
+        }
+      ],
+      "vanilla_sha256": "f0949f409bb3a81b5c2f567c893c707249d95f3beb6a64378cb291c3cd215b8b"
+    }
+  ],
+  "generator": "community_balance_generator",
+  "schema_version": 1
+}

@@ -24,9 +24,11 @@ BLOCK_ASSIGNMENT = re.compile(
 SAFE_SCALAR = re.compile(r"[A-Za-z0-9_.:-]+")
 SUPPORTED_OPERATIONS = {
     "replace", "multiply", "add", "clamp", "comment_out", "remove",
-    "add_field", "add_custom", "upsert_block",
+    "add_field", "add_custom", "upsert_block", "replace_object", "replace_file",
 }
-TERMINAL_OPERATIONS = {"comment_out", "remove", "upsert_block"}
+TERMINAL_OPERATIONS = {
+    "comment_out", "remove", "upsert_block", "replace_object", "replace_file"
+}
 
 
 @dataclass(frozen=True)
@@ -52,6 +54,10 @@ class Intent:
     where: dict[str, list[dict[str, str]]]
     exclude_objects: tuple[str, ...]
     provenance: str
+    output_file: PurePosixPath | None = None
+    render_mode: str = "full"
+    header: tuple[str, ...] = ()
+    trailing_blank_lines: int = 0
 
 
 @dataclass
@@ -177,6 +183,24 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
             if occurrences not in {"one", "all"}:
                 raise ValueError(f"{spec_path}: occurrences must be 'one' or 'all'")
             object_path = normalize_object_path(raw.get("object", ""))
+            if operation == "replace_object" and (
+                not object_path
+                or object_path == ("**",)
+                or not isinstance(raw.get("value"), list)
+                or not raw["value"]
+                or not all(isinstance(line, str) for line in raw["value"])
+            ):
+                raise ValueError(
+                    f"{spec_path}: replace_object requires one exact object and a non-empty string array"
+                )
+            if operation == "replace_file" and (
+                object_path
+                or not isinstance(raw.get("value"), str)
+                or not raw["value"]
+            ):
+                raise ValueError(
+                    f"{spec_path}: replace_file requires the root object and non-empty text"
+                )
             if object_path == ("**",) and occurrences != "all":
                 raise ValueError(f"{spec_path}: object '**' requires occurrences='all'")
             if operation in {"add_field", "add_custom"} and occurrences == "all":
@@ -212,10 +236,32 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
             ):
                 raise ValueError(f"{spec_path}: exclude_objects must contain safe top-level object names")
             provenance = raw.get("provenance", "cbg")
-            if provenance not in {"cbg", "vanilla", "preserve"}:
+            if provenance not in {"cbg", "vanilla", "vanilla_value", "preserve"}:
                 raise ValueError(
-                    f"{spec_path}: provenance must be 'cbg', 'vanilla', or 'preserve'"
+                    f"{spec_path}: unsupported provenance mode {provenance!r}"
                 )
+            output_file_raw = raw.get("output_file")
+            if output_file_raw is not None and (
+                not isinstance(output_file_raw, str)
+                or output_file_raw.startswith("/")
+                or ".." in PurePosixPath(output_file_raw).parts
+            ):
+                raise ValueError(f"{spec_path}: output_file must be a safe relative path")
+            output_file = PurePosixPath(output_file_raw) if output_file_raw else None
+            render_mode = raw.get("render_mode", "full")
+            if render_mode not in {
+                "full", "provided", "normalized", "selected_objects", "normalized_with_header",
+                "verbatim_with_header"
+            }:
+                raise ValueError(f"{spec_path}: unsupported render_mode {render_mode!r}")
+            header = raw.get("header", [])
+            if not isinstance(header, list) or not all(isinstance(line, str) for line in header):
+                raise ValueError(f"{spec_path}: header must be an array of strings")
+            trailing_blank_lines = raw.get("trailing_blank_lines", 0)
+            if not isinstance(trailing_blank_lines, int) or trailing_blank_lines < 0:
+                raise ValueError(f"{spec_path}: trailing_blank_lines must be a non-negative integer")
+            if render_mode == "selected_objects" and object_path in {(), ("**",)}:
+                raise ValueError(f"{spec_path}: selected_objects requires named object targets")
             for relative in matches:
                 sequence += 1
                 intents.append(Intent(
@@ -233,6 +279,10 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                     where=where,
                     exclude_objects=tuple(exclude_objects),
                     provenance=provenance,
+                    output_file=output_file,
+                    render_mode=render_mode,
+                    header=tuple(header),
+                    trailing_blank_lines=trailing_blank_lines,
                 ))
     return intents, custom_fields
 
@@ -470,6 +520,8 @@ def apply_one_match(
     suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
     if intent.provenance == "preserve":
         comment = existing or ""
+    elif intent.provenance == "vanilla_value":
+        comment = f"# VANILLA VALUE IS {before}"
     elif intent.provenance == "vanilla":
         comment = f"# VANILLA = {before}{suffix}"
     else:
@@ -487,6 +539,14 @@ def apply_one_match(
 def apply_intent(
     lines: list[str], intent: Intent, aliases: dict[str, tuple[str, str]]
 ) -> list[dict[str, Any]]:
+    if intent.operation == "replace_file":
+        before = "".join(lines)
+        lines[:] = intent.value.splitlines(keepends=True)
+        return [{
+            "before": f"<file sha256={sha256(before.encode('utf-8'))}>",
+            "after": f"<file lines={len(lines)}>",
+            "line_action": "file_replaced",
+        }]
     wildcard = intent.target.object_path == ("**",)
     if wildcard:
         obj = None
@@ -504,6 +564,15 @@ def apply_intent(
                 f"{len(object_matches)} blocks; expected exactly one"
             )
         obj = object_matches[0]
+    if intent.operation == "replace_object":
+        replacement = [line + "\n" for line in intent.value]
+        before = "".join(lines[obj.start : obj.end + 1])
+        lines[obj.start : obj.end + 1] = replacement
+        return [{
+            "before": f"<object sha256={sha256(before.encode('utf-8'))}>",
+            "after": f"<object lines={len(replacement)}>",
+            "line_action": "object_replaced",
+        }]
     matches = all_field_matches(lines, intent.target.field) if wildcard else field_matches(lines, obj, intent.target.field)
     condition_objects = (
         scan_objects(lines)
@@ -644,6 +713,13 @@ def generate(
     manifest_files: list[dict[str, Any]] = []
     aliases: dict[str, tuple[str, str]] = {}
     for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
+        output_contracts = {
+            (intent.output_file or relative, intent.render_mode, intent.header, intent.trailing_blank_lines)
+            for intent in file_intents
+        }
+        if len(output_contracts) != 1:
+            raise ValueError(f"Conflicting output contracts for Vanilla source {relative}")
+        output_relative, render_mode, header, trailing_blank_lines = next(iter(output_contracts))
         source = game_root / Path(relative)
         source_bytes = source.read_bytes()
         has_bom = source_bytes.startswith(b"\xef\xbb\xbf")
@@ -663,23 +739,57 @@ def generate(
                 })
         if not audit:
             continue
-        if file_intents and all(intent.provenance == "preserve" for intent in file_intents):
+        if render_mode == "provided":
+            rendered = "".join(lines)
+        elif render_mode == "selected_objects":
+            objects = {obj.path: obj for obj in scan_objects(lines)}
+            selected: list[str] = []
+            seen: set[tuple[str, ...]] = set()
+            for intent in sorted(file_intents, key=lambda item: item.sequence):
+                path = intent.target.object_path
+                if path in seen:
+                    continue
+                seen.add(path)
+                obj = objects.get(path)
+                if obj is None or len(path) != 1:
+                    raise ValueError(f"Cannot render selected object {'/'.join(path)!r}")
+                selected.append("".join(lines[obj.start : obj.end + 1]).rstrip())
+            rendered = "\n".join((*header, "", "\n\n".join(selected))).rstrip() + "\n"
+            rendered += "\n" * trailing_blank_lines
+        elif render_mode == "normalized_with_header":
+            normalized = []
+            for raw_line in lines:
+                line = raw_line.rstrip(" \t\r\n")
+                while True:
+                    updated = re.sub(r"^(\t*) +\t", r"\1\t", line)
+                    if updated == line:
+                        break
+                    line = updated
+                normalized.append(line)
+            rendered = "\n".join((*header, "", *normalized)) + "\n"
+        elif render_mode == "verbatim_with_header":
+            rendered = "\n".join((*header, "")) + "\n" + "".join(lines)
+            if not rendered.endswith("\n"):
+                rendered += "\n"
+        elif render_mode == "normalized":
+            rendered = "\n".join(line.rstrip(" \t\r\n") for line in lines) + "\n"
+        elif file_intents and all(intent.provenance == "preserve" for intent in file_intents):
             rendered = "".join(lines)
         else:
             rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
         if file_intents and all(intent.provenance == "vanilla" for intent in file_intents):
             rendered = rendered.rstrip("\n") + "\n"
         generated = rendered.encode("utf-8")
-        if has_bom:
+        if has_bom and render_mode in {"full", "normalized"}:
             generated = b"\xef\xbb\xbf" + generated
-        destination = output_root / Path(relative)
+        destination = output_root / Path(output_relative)
         assert_owned_output(
-            destination, relative, owned, generated, adopt_identical=adopt_identical
+            destination, output_relative, owned, generated, adopt_identical=adopt_identical
         )
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(generated)
         manifest_files.append({
-            "path": relative.as_posix(),
+            "path": output_relative.as_posix(),
             "vanilla_sha256": sha256(source_bytes),
             "generated_sha256": sha256(generated),
             "transformations": audit,
