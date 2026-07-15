@@ -1,6 +1,14 @@
 {
-  "changed_building_count": 28,
+  "changed_building_count": 32,
   "changed_buildings": {
+    "ablaq_palace": [
+      {
+        "action": "replace",
+        "field": "monthly_legitimacy",
+        "new_value": "0.015",
+        "old_value": "0.02"
+      }
+    ],
     "archive_of_the_indies": [
       {
         "action": "replace",
@@ -289,6 +297,20 @@
         "field": "maximum_stockpile_capacity",
         "new_value": null,
         "old_value": "50"
+      },
+      {
+        "action": "replace",
+        "field": "monthly_legitimacy",
+        "new_value": "0.0375",
+        "old_value": "0.05"
+      }
+    ],
+    "imperial_city_of_hue": [
+      {
+        "action": "replace",
+        "field": "monthly_legitimacy",
+        "new_value": "0.015",
+        "old_value": "0.02"
       }
     ],
     "imperial_halic_shipyards": [
@@ -473,6 +495,14 @@
         "old_value": "0.10"
       }
     ],
+    "schonbrunn_palace": [
+      {
+        "action": "replace",
+        "field": "monthly_legitimacy",
+        "new_value": "0.0375",
+        "old_value": "0.05"
+      }
+    ],
     "schwaz_mine": [
       {
         "action": "replace",
@@ -623,6 +653,14 @@
         "old_value": "1.5"
       }
     ],
+    "wat_chaiwatthanaram_temple_building": [
+      {
+        "action": "replace",
+        "field": "monthly_legitimacy",
+        "new_value": "0.015",
+        "old_value": "0.02"
+      }
+    ],
     "wisselbank": [
       {
         "action": "replace",
@@ -664,9 +702,9 @@
       }
     ]
   },
-  "generated_sha256": "93a743d422fbca481520aeb8d860ce5a8994264e54f13d820b6afbada98cb8a2",
+  "generated_sha256": "42b1cffa76a8a33578c0793327f76c56b50b8254e8fc5899272f85e00bf8a284",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/event_only_buildings.txt",
   "source_sha256": "9f5f8c55f3dda0d3e8d0240670fd3e32859ebc6c168b5a98d88685cf7f185867",
-  "unchanged_building_count": 76
+  "unchanged_building_count": 72
 }

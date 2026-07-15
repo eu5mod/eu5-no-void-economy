@@ -40,7 +40,7 @@
       }
     ]
   },
-  "generated_sha256": "4ee35747cbe24a0f7529392db40b2fec63fc25688a94a78481613f7238594f67",
+  "generated_sha256": "61c9c53bbd921665c4aaab2095d1fe0f6e6f7a680671c3e6b9817c2e42c2a2fd",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_dyes.txt",
   "source_sha256": "f3568245cd1f63b4a922d2f3d8c4c674502edee9b09fd5f01a22c633a978b990",

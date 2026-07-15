@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 irrigation_systems = {
 	audio_tier = 1
@@ -34,7 +35,7 @@ irrigation_systems = {
 	
 	unique_production_methods = {
 		irrigation_maintenance = {
-			tools = 0.07
+			tools = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -143,14 +144,14 @@ mason = {
 		stone_bricks = {
 			stone = 0.417
 			produced = masonry
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			debug_max_profit = rural_profit_margin
 			category = guild_input
 		}
 		clay_bricks = {
 			clay = 0.833
 			produced = masonry
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			debug_max_profit = rural_profit_margin
 			category = guild_input
 		}
@@ -185,7 +186,7 @@ mercury_patio = {
 	
 	unique_production_methods = {
 		mercury_patio_maintenance = {
-			mercury = 0.7
+			mercury = 0.7 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -226,7 +227,7 @@ tar_kiln = {
 	unique_production_methods = {	
 		tar_kiln_maintenance = {
 			produced = tar
-			output = 1.08
+			output = 1.08 # VANILLA = 1.0
 			lumber = 1.1111
 			category = guild_input
 
@@ -273,9 +274,9 @@ horse_breeders = {
 		
 		horse_breeders_maintenance = {
 			produced = horses
-			output = 1.08
-			wheat = 1.0941
-			horses = 0.2191
+			output = 1.08 # VANILLA = 1
+			wheat = 1.0941 # VANILLA = 1.563
+			horses = 0.2191 # VANILLA = 0.313
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
@@ -316,22 +317,22 @@ stone_quarry = {
 	unique_production_methods = {
 	
 		stone_quarry_maintenance = {
-			tools = 0.0749
-			lumber = 0.0889
-			leather = 0.0749
+			tools = 0.0749 # VANILLA = 0.107
+			lumber = 0.0889 # VANILLA = 0.127
+			leather = 0.0749 # VANILLA = 0.107
 
 			produced = stone
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
 
 		crude_quarry_maintenance = {
-			lumber = 0.1946
+			lumber = 0.1946 # VANILLA = 0.278
 
 			produced = stone
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
@@ -377,9 +378,9 @@ lumber_mill = {
 	unique_production_methods = {
 		lumber_mill_maintenance = {
 			produced = lumber
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
-			tools = 0.2919
+			tools = 0.2919 # VANILLA = 0.417
 
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
@@ -416,13 +417,13 @@ fiber_crops_farm = {
 	
 	unique_production_methods = {
 		fiber_crops_farm_maintenance = {
-			livestock = 0.3458
-			lumber = 0.1386
-			tools = 0.0693
+			livestock = 0.3458 # VANILLA = 0.494
+			lumber = 0.1386 # VANILLA = 0.198
+			tools = 0.0693 # VANILLA = 0.099
 			category = building_maintenance
 
 			produced = fiber_crops
-			output = 0.864
+			output = 0.864 # VANILLA = 0.8
 
 			debug_max_profit = rural_profit_margin
 		}
@@ -457,12 +458,12 @@ sand_pit = {
 	
 	unique_production_methods = {
 		sand_pit_maintenance = {
-			tools = 0.0406
-			lumber = 0.1127
+			tools = 0.0406 # VANILLA = 0.058
+			lumber = 0.1127 # VANILLA = 0.161
 			category = building_maintenance
 
 			produced = sand
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = rural_profit_margin
 		}
@@ -501,8 +502,8 @@ bog_iron_smelter = {
 	unique_production_methods = {
 		bog_iron_maintenance = {
 			produced = iron
-			output = 0.324
-			coal = 0.2625
+			output = 0.324 # VANILLA = 0.3
+			coal = 0.2625 # VANILLA = 0.375
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
@@ -542,8 +543,8 @@ clay_pit = {
 	unique_production_methods = {
 		clay_pit_maintenance = {
 			produced = clay
-			output = 1.08
-			lumber = 0.19446
+			output = 1.08 # VANILLA = 1
+			lumber = 0.19446 # VANILLA = 0.2778
 			category = building_maintenance
 			debug_max_profit = rural_profit_margin
 		}
@@ -581,9 +582,9 @@ salt_collector = {
 		
 		salt_collector_maintenance = {
 			produced = salt
-			output = 0.324
+			output = 0.324 # VANILLA = 0.3
 
-			clay = 1.4
+			clay = 1.4 # VANILLA = 2.0
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}
@@ -626,9 +627,9 @@ fruit_orchard = {
 		
 		fruit_orchard_maintenance = {
 			produced = fruit
-			output = 0.324
+			output = 0.324 # VANILLA = 0.3
 
-			lumber = 0.1169
+			lumber = 0.1169 # VANILLA = 0.167
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}

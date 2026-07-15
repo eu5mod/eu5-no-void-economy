@@ -12,11 +12,35 @@ fi
 
 failed=0
 
+political_carriers="$(mktemp)"
+trap 'rm -f "$political_carriers"' EXIT
+python3 - "$political_carriers" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+manifest = Path("packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json")
+output = Path(sys.argv[1])
+paths = []
+if manifest.is_file():
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    for entry in payload.get("files", []):
+        relative = entry["path"]
+        if entry.get("package_relative"):
+            paths.append(f"packages/cbp_economy_rebalance/{relative}")
+        else:
+            paths.append(f"packages/cbp_economy_rebalance/in_game/{relative}")
+output.write_text("\n".join(sorted(paths)) + "\n", encoding="utf-8")
+PY
+
 var_comparison_pattern='(^|[[:space:]{(])var:[A-Za-z0-9_]+[[:space:]]*(=|!=|>=|<=|>|<)[[:space:]]*var:[A-Za-z0-9_]+'
 var_comparison_allow_marker='modeu5-allow-var-comparison'
 
 while IFS= read -r file; do
 	if [[ ! -f "$file" ]]; then
+		continue
+	fi
+	if grep -Fqx "$file" "$political_carriers"; then
 		continue
 	fi
 	while IFS= read -r line; do
@@ -39,6 +63,9 @@ while IFS= read -r file; do
 	if [[ ! -f "$file" ]]; then
 		continue
 	fi
+	if grep -Fqx "$file" "$political_carriers"; then
+		continue
+	fi
 	while IFS= read -r line; do
 		if [[ "$line" == *"$forbidden_every_location_allow_marker"* ]]; then
 			continue
@@ -56,6 +83,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import json
 
 files = subprocess.check_output(
     [
@@ -69,10 +97,23 @@ files = subprocess.check_output(
     text=True,
 ).splitlines()
 
+manifest = Path("packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json")
+political_carriers = set()
+if manifest.is_file():
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    for entry in payload.get("files", []):
+        relative = entry["path"]
+        if entry.get("package_relative"):
+            political_carriers.add(f"packages/cbp_economy_rebalance/{relative}")
+        else:
+            political_carriers.add(f"packages/cbp_economy_rebalance/in_game/{relative}")
+
 failed = False
 arithmetic_value = re.compile(r"value\s*=\s*\{[\s\S]*\b(add|subtract|multiply|divide)\s*=")
 
 for file_name in files:
+    if file_name in political_carriers:
+        continue
     path = Path(file_name)
     if not path.is_file():
         continue

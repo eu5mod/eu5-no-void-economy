@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 trade_company_headquarters = {
 	audio_tier = 4
@@ -51,12 +52,12 @@ trade_company_headquarters = {
 	build_time = trade_company_headquarters_time
 	unique_production_methods = {
 		trade_company_headquarters_requirements = {
-			paper = 0.05
+			paper = 0.05 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
 	modifier = {
-		merchant_capacity_from_building = 0.23
+		merchant_capacity_from_building = 0.23 # VANILLA = 0.2
 		building_owner_maritime_presence = 0.02
 		scaled_gold_to_building_owner = 0.2
 		building_owner_overlord_maritime_presence = 0.05

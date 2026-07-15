@@ -82,7 +82,7 @@
       }
     ]
   },
-  "generated_sha256": "2f79b9cb2e7c4c02dc2f52899428830c118c88bf0c61e4c93b0b2c263693ed80",
+  "generated_sha256": "3a979c02e88762616f0a593e7cd00e63c55e569c2a1c6bcc79696c5801dfac65",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_cloth.txt",
   "source_sha256": "7bbbf43054d7581bea9e00bc37d87ec5b61b7d012e038e378576fceb46d749c5",

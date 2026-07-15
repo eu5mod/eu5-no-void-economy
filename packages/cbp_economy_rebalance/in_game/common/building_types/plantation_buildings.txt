@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 sugar_plantation = {
 	audio_tier = 2
@@ -42,12 +43,12 @@ sugar_plantation = {
 	unique_production_methods = {
 		sugar_plantation_maintenance = {
 			produced = sugar
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 		
-			slaves_goods = 0.07
-			leather = 0.035
-			tools = 0.035
-			lumber = 0.035
+			slaves_goods = 0.07 # VANILLA = 0.1
+			leather = 0.035 # VANILLA = 0.05
+			tools = 0.035 # VANILLA = 0.05
+			lumber = 0.035 # VANILLA = 0.05
 			debug_max_profit = -1  
 			category = building_maintenance
 		}
@@ -97,12 +98,12 @@ cotton_plantation = {
 	unique_production_methods = {
 		cotton_plantation_maintenance = {
 			produced = cotton
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 		
-			slaves_goods = 0.07
-			leather = 0.035
-			tools = 0.035
-			lumber = 0.035
+			slaves_goods = 0.07 # VANILLA = 0.1
+			leather = 0.035 # VANILLA = 0.05
+			tools = 0.035 # VANILLA = 0.05
+			lumber = 0.035 # VANILLA = 0.05
 			debug_max_profit = -1  
 			category = building_maintenance
 		}
@@ -153,12 +154,12 @@ tobacco_plantation = {
 	unique_production_methods = {
 		tobacco_plantation_maintenance = {
 			produced = tobacco
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 		
-			slaves_goods = 0.07
-			leather = 0.035
-			tools = 0.035
-			lumber = 0.035
+			slaves_goods = 0.07 # VANILLA = 0.1
+			leather = 0.035 # VANILLA = 0.05
+			tools = 0.035 # VANILLA = 0.05
+			lumber = 0.035 # VANILLA = 0.05
 			debug_max_profit = -1  
 			category = building_maintenance
 		}

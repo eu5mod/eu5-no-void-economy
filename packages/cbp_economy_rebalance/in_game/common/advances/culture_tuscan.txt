@@ -137,9 +137,9 @@ sie_council_priori = {
 	}
 
 	burghers_estate_target_satisfaction = 0.05
-	monthly_devotion = 0.1
-	monthly_legitimacy = 0.1
-	monthly_republican_tradition = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 
 	requires = renaissance_advance
 }
@@ -274,9 +274,9 @@ luc_counter_reform_diplomacy = {
 		has_or_had_tag = LUC
 	}
 
-	monthly_devotion = 0.1
-	monthly_legitimacy = 0.1
-	monthly_republican_tradition = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	tolerance_own = 1
 
 	requires = confessionalism_advance
@@ -306,9 +306,9 @@ sie_santa_caterina = {
 		has_or_had_tag = SIE
 	}
 
-	monthly_devotion = 0.1
-	monthly_legitimacy = 0.1
-	monthly_republican_tradition = 0.1
+	monthly_devotion = 0.075 # VANILLA = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
+	monthly_republican_tradition = 0.075 # VANILLA = 0.1
 	tolerance_own = 1
 
 	requires = crown_power_advance_reformation

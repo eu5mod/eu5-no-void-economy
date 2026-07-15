@@ -9,7 +9,7 @@
 	global_crown_estate_power = 0.1
 
 	requires = feudalism_advance
-	
+
 }
 a_mining_heritage = {
 	age = age_1_traditions
@@ -22,7 +22,7 @@ a_mining_heritage = {
 	global_monthly_development = 0.001
 
 	requires = meissen_lion
-	
+
 }
 meissner_groschen = {
 	age = age_2_renaissance

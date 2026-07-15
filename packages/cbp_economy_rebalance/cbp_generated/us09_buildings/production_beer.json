@@ -106,7 +106,7 @@
       }
     ]
   },
-  "generated_sha256": "b833c576aa68da98205a98f31a6df1f4b4fbd1b1560ed72e24bb1535f874141f",
+  "generated_sha256": "6c68a1e643d43efff11bb27601884cc8e854fbf36ae39c7302505dc6c64192d5",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_beer.txt",
   "source_sha256": "ae5e3cf1f603172155882462a8905872ac46ab3c53174dfb0c65d43627081a81",

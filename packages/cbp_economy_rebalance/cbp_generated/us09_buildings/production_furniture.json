@@ -34,7 +34,7 @@
       }
     ]
   },
-  "generated_sha256": "179a89e2482d6fd4318a3357d2a718a2af9fbb063569cbcbe172f032941a1f94",
+  "generated_sha256": "c0ad4a88eb1ecc1dd34e795f92d2e1c5f647780d53a5b7c1220058529949184b",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_furniture.txt",
   "source_sha256": "7361df6e0a1d97f8e7ab9d591764bbc7b5ceb5dd3abcc6a04c9b589025d7d2ac",

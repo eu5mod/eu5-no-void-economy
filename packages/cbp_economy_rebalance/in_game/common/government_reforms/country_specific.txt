@@ -8,7 +8,7 @@
 	}
 	country_modifier = {
 		monthly_religious_influence = 0.25
-		monthly_devotion = 0.1
+		monthly_devotion = 0.075 # VANILLA = 0.1
 		monthly_towards_traditionalist = societal_value_monthly_move
 		can_reassign_cleric = yes
 		is_pope = yes
@@ -161,12 +161,12 @@ galley_lords_reform = {
 			any_neighbor_country = {
 				has_reform = government_reform:galley_lords_reform
 			}
-			
+
 			overlord ?= { has_reform = government_reform:galley_lords_reform }
 		}
 	}
 	allow = {
-		capital = { 
+		capital = {
 			is_port = yes
 		}
 		societal_value:land_vs_naval > 25
@@ -554,7 +554,7 @@ alberghi_28 = {
 	country_modifier = {
 		nobles_estate_target_satisfaction = small_permanent_target_satisfaction
 		burghers_estate_target_satisfaction = small_permanent_target_satisfaction
-		monthly_republican_tradition = 0.05
+		monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 	}
 	years = 2
 }
@@ -664,7 +664,7 @@ byzantine_court_in_italy = {
 		}
 		global_pop_conversion_speed_modifier = 0.5
 		religious_icon_power_modifier = 0.75
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 
 	years = 0
@@ -805,7 +805,7 @@ pyrenean_fueros_reform = {
 	}
 	country_modifier = {
 		global_estate_target_satisfaction = small_permanent_target_satisfaction
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		government_reform_slots = 1
 	}
 	years = 2
@@ -912,7 +912,7 @@ ancient_french_taxation = {
 	}
 
 	country_modifier = {
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		global_peasant_enfranchisment = -0.20
 		government_reform_slots = 1
 		nobles_estate_max_tax = 0.10
@@ -1377,7 +1377,7 @@ ruling_commission_of_england = {
 		global_nobles_estate_power = 0.25
 		global_crown_estate_power = -0.25
 		monthly_towards_aristocracy = societal_value_monthly_move
-		monthly_legitimacy = -0.1
+		monthly_legitimacy = -0.075 # VANILLA = -0.1
 	}
 
 	locked = {
@@ -1407,7 +1407,7 @@ banu_hummay_amendments = {
 		government_power < 85
 	}
 	country_modifier = {
-		monthly_legitimacy = -0.05
+		monthly_legitimacy = -0.0375 # VANILLA = -0.05
 		global_crown_estate_power = -0.1
 		clergy_estate_target_satisfaction = medium_permanent_target_satisfaction
 		monthly_towards_traditionalist = societal_value_monthly_move
@@ -1645,7 +1645,7 @@ libertas_affectandi = {
 	country_modifier = {
 		government_reform_slots = 1
 		monthly_towards_aristocracy = societal_value_monthly_move
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		global_crown_estate_power = 0.1
 	}
 }
@@ -1940,7 +1940,7 @@ representative_parliament_reform = {
 	}
 	country_modifier = {
 		global_peasants_estate_power = 0.2
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		global_nobles_estate_power = -0.1
 		global_burghers_estate_power = -0.1
 		parliament_base_support = 0.33
@@ -2059,7 +2059,7 @@ shogunate = {
 	}
 
 	block_for_rebel = yes
- 
+
 	allow = {
 		NOT = { has_reform = government_reform:daimyo }
 		NOT = { has_reform = government_reform:japanese_imperial_family }
@@ -2095,7 +2095,7 @@ shogunate_kanrei_council = {
 			text = jap_kanrei_reform_when_no_longer_leader_of_shogunate
 			is_leader_of_international_organization = international_organization:japanese_shogunate
 		}
-	}	
+	}
 	country_modifier = {
 		court_spending_efficiency = -0.2
 		stability_investment = standard_stability_investment
@@ -2302,7 +2302,7 @@ kor_sadae_reform = {
 	}
 	country_modifier = {
 		selling_efficiency = medium_trade_efficiency_bonus
-		monthly_legitimacy = 0.25
+		monthly_legitimacy = 0.1875 # VANILLA = 0.25
 		scale = { # goes from -0.5 to 0.5
 			value = -0.5
 			add = {
@@ -2438,7 +2438,7 @@ byzantine_court_ceremonies_reform = {
 	country_modifier = {
 		cultural_tradition = 0.20
 		court_spending_efficiency = -0.1
-		monthly_legitimacy = 0.10
+		monthly_legitimacy = 0.075 # VANILLA = 0.10
 		monthly_prestige = 0.10
 	}
 	years = 1
@@ -2563,7 +2563,7 @@ council_of_ten = {
 	}
 	country_modifier = {
 		global_nobles_estate_power = -0.1
-		monthly_republican_tradition = 0.05
+		monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 		stability_investment = small_stability_investment
 		court_spending_efficiency = -0.05
 		government_reform_slots = 1
@@ -3054,7 +3054,7 @@ court_of_the_star_chamber_reform = {
 	country_modifier = {
 		global_monthly_control = 0.001
 		monthly_towards_communalism = societal_value_minor_monthly_move
-		monthly_legitimacy = -0.25
+		monthly_legitimacy = -0.1875 # VANILLA = -0.25
 		global_crown_estate_power = 0.1
 	}
 
@@ -3076,7 +3076,7 @@ holy_imperial_monarchy_reform = {
 		monthly_diplomats = 0.1
 		diplomatic_reputation = diplomatic_reputation_mild_bonus
 		stability_cost_efficiency = 0.2
-		monthly_legitimacy = 0.25
+		monthly_legitimacy = 0.1875 # VANILLA = 0.25
 		government_reform_slots = 1
 	}
 }
@@ -3182,7 +3182,7 @@ crown_castile_reform = {
 		monthly_towards_aristocracy = societal_value_monthly_move
 		change_policy_cost_modifier = -0.25
 		global_manpower_modifier = 0.10
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 	years = 2
 }
@@ -3361,7 +3361,7 @@ austrian_archduchy_reform = {
 		government_reform_slots = 1
 		monthly_diplomats = 0.1
 		monthly_prestige = 0.1
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 	years = 2
 }
@@ -3507,8 +3507,8 @@ anatolian_beylik = {
 
 	on_activate = {
 		if = {
-			limit = { 
-				is_situation_active = situation:rise_of_the_ottomans 
+			limit = {
+				is_situation_active = situation:rise_of_the_ottomans
 				NOT = {
 					is_target_in_global_variable_list = {
 						name = eligible_beylik_list
@@ -3605,7 +3605,7 @@ persian_feudal_theocracy = {
 	country_modifier = {
 		global_pop_conversion_speed_modifier = 0.25
 		government_size = 1
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 	years = 2
 }
@@ -3712,7 +3712,7 @@ powerful_vizierships_reform = {
 				}
 			}
 		}
-		monthly_legitimacy = -0.5
+		monthly_legitimacy = -0.375 # VANILLA = -0.5
 	}
 
 	on_deactivate = { remove_variable = viziership_variable }
@@ -4311,7 +4311,7 @@ nueva_planta = {
 		monthly_towards_centralization = societal_value_monthly_move
 		monthly_towards_absolutism = societal_value_monthly_move
 		global_crown_estate_power = 0.25
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 	}
 	years = 2
 }
@@ -4365,7 +4365,7 @@ iro_reforged_law_of_peace = {
 
 	country_modifier = {
 		government_reform_slots = 1
-		monthly_tribal_cohesion = 0.10
+		monthly_tribal_cohesion = 0.075 # VANILLA = 0.10
 		government_size = 1
 		cultures_capacity = 2
 		stability_investment = large_stability_investment
@@ -4455,11 +4455,11 @@ shahbandariyya_reform = {
 partitio_reform = {
 	unique = yes
 	content_priority = 800
-	potential = { 
+	potential = {
 		is_frankokratia_state = yes
 		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins }
 	}
-	allow = { 
+	allow = {
 		has_embraced_institution = institution:legalism
 		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins }
 	}
@@ -4476,18 +4476,18 @@ partitio_reform = {
 ach_heirs_of_the_latin_empire = {
 	unique = yes
 	content_priority = 100
-	potential = { 
+	potential = {
 		has_or_had_tag = ACH
 		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins }
 	}
-	allow = { 
+	allow = {
 		has_embraced_institution = institution:legalism
-		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins } 
+		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins }
 	}
 	country_modifier = {
 		global_crown_estate_power = 0.1
 		prestige_decay = -0.0025
-		monthly_legitimacy = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
 		government_reform_slots = 1
 		diplomatic_reputation = diplomatic_reputation_mild_bonus
 		tax_income_efficiency = medium_tax_income_efficiency_bonus
@@ -4499,17 +4499,17 @@ ach_heirs_of_the_latin_empire = {
 ath_rule_of_the_catalans = {
 	unique = yes
 	content_priority = 100
-	potential = { 
+	potential = {
 		OR = {
 			AND = {
 				has_variable = de_brienne_rule_of_athens
-				has_or_had_tag = ARG	
+				has_or_had_tag = ARG
 			}
 			has_or_had_tag = ATH
 		}
 		NOT = { has_variable = ath_catalan_company_expelled }
 	}
-	allow = { 
+	allow = {
 		NOT = { has_variable = ath_catalan_company_expelled }
 	}
 	locked = {
@@ -4533,7 +4533,7 @@ ath_rule_of_the_catalans = {
 lat_papal_restoration_claimant = {
 	unique = yes
 	content_priority = 100
-	potential = { 
+	potential = {
 		OR = {
 			has_or_had_tag = ACH
 			has_or_had_tag = ATH
@@ -4542,7 +4542,7 @@ lat_papal_restoration_claimant = {
 		}
 		NOT = { has_reform = government_reform:lat_restored_rule_of_the_latins }
 	}
-	allow = { 
+	allow = {
 		religion = religion:catholic
 		has_variable = lat_accepted_pope_latin_empire_proposal
 		NOT = { num_locations >= 70 }
@@ -4575,7 +4575,7 @@ lat_restored_rule_of_the_latins = {
 	unique = yes
 	content_priority = 200
 	potential = { tag = LAT }
-	allow = { 
+	allow = {
 		tag = LAT
 		has_unlocked_government_reform_trigger = { type = lat_restored_rule_of_the_latins }
 	}
@@ -4602,12 +4602,12 @@ lat_restored_rule_of_the_latins = {
 luc_libertas = {
 	unique = yes
 	content_priority = 100
-	potential = { 
+	potential = {
 		has_unlocked_government_reform_trigger = {
 			type = luc_libertas
 		}
 	}
-	allow = { 
+	allow = {
 		has_unlocked_government_reform_trigger = {
 			type = luc_libertas
 		}

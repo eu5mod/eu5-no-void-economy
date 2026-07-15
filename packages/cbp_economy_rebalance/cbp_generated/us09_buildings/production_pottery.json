@@ -34,7 +34,7 @@
       }
     ]
   },
-  "generated_sha256": "987bfc57be1b01aa6611734d349b28bc1ca44ec460228f46dfe5f045915087a5",
+  "generated_sha256": "4b2eb4b480375a5a164c2b78227558ea88422aee9b90276a69738e6b2a0deaff",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_pottery.txt",
   "source_sha256": "2368389cdf1e86bf20fc5acd6a911051b8f0011814d7a714fff141119944d002",

@@ -180,7 +180,7 @@
       }
     ]
   },
-  "generated_sha256": "802a75f75a1bee27d5849c6dbb9fc7f072aa128a06ccc7008679f1246d55d772",
+  "generated_sha256": "4446dffc49b6916c3aead518066dbfd1a17613f0aba281f44f0914ab0a3a02d0",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/trade_buildings.txt",
   "source_sha256": "05ca22186f1d139c801344bf980a9dbc0ba29141426e1afec0a12b99fba0ee55",

@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 cantonments = {
 	audio_tier = 2
@@ -123,8 +124,8 @@ great_madrasa = {
 	
 	unique_production_methods = {
 		great_madrasa_maintenance = {
-			paper = 0.35
-			cloth = 0.28
+			paper = 0.35 # VANILLA = 0.5
+			cloth = 0.28 # VANILLA = 0.4
 			
 			category = building_maintenance
 		}
@@ -396,9 +397,9 @@ grand_apartment = {
 	
 	unique_production_methods = {
 		grand_apartment_maintenance = {
-			furniture = 0.07
-			books = 0.07
-			marble = 0.035
+			furniture = 0.07 # VANILLA = 0.1
+			books = 0.07 # VANILLA = 0.1
+			marble = 0.035 # VANILLA = 0.05
 				
 			category = building_maintenance
 		}
@@ -566,12 +567,12 @@ enderun_academy = {
 	
 	unique_production_methods = {
 		endrun_academy_maintenance = {
-			firearms = 0.35
-			leather = 0.35
-			cloth = 0.175
-			paper = 0.35
-			weaponry = 0.35
-			fine_cloth = 0.35
+			firearms = 0.35 # VANILLA = 0.5
+			leather = 0.35 # VANILLA = 0.5
+			cloth = 0.175 # VANILLA = 0.25
+			paper = 0.35 # VANILLA = 0.5
+			weaponry = 0.35 # VANILLA = 0.5
+			fine_cloth = 0.35 # VANILLA = 0.5
 			
 			category = building_maintenance
 		}
@@ -619,11 +620,11 @@ imperial_halic_shipyards = {
 	
 	unique_production_methods = {
 		imperial_halic_shipyards_maintenance = {
-			tar = 0.35
-			naval_supplies = 0.7
-			tools = 0.14
-			lumber = 0.28
-			stone = 0.168
+			tar = 0.35 # VANILLA = 0.5
+			naval_supplies = 0.7 # VANILLA = 1.0
+			tools = 0.14 # VANILLA = 0.2
+			lumber = 0.28 # VANILLA = 0.4
+			stone = 0.168 # VANILLA = 0.24
 			category = building_maintenance
 		}
 	}
@@ -863,11 +864,11 @@ globe_theatre = {
 	
 	unique_production_methods = {
 		globe_theater_maintenance = {
-			cloth = 0.14
-			furniture = 0.07
-			wine = 0.21
-			paper = 0.35
-			fine_cloth = 0.28
+			cloth = 0.14 # VANILLA = 0.2
+			furniture = 0.07 # VANILLA = 0.1
+			wine = 0.21 # VANILLA = 0.3
+			paper = 0.35 # VANILLA = 0.5
+			fine_cloth = 0.28 # VANILLA = 0.4
 			
 			category = building_maintenance
 		}
@@ -908,14 +909,14 @@ schwaz_mine = {
 	
 	unique_production_methods = {
 		schwaz_mine_maintenance = {
-			tools = 0.27769
-			leather = 0.33369
-			lumber = 0.55545
-			stone = 0.55545
-			liquor = 0.11088
+			tools = 0.27769 # VANILLA = 0.3967
+			leather = 0.33369 # VANILLA = 0.4767
+			lumber = 0.55545 # VANILLA = 0.7935
+			stone = 0.55545 # VANILLA = 0.7935
+			liquor = 0.11088 # VANILLA = 0.1584
 			
 			produced = silver
-			output = 1.08
+			output = 1.08 # VANILLA = 1.0
 			
 			debug_max_profit = rural_profit_margin		#unique building only 1 level, acceptable to have a high profit.
 			
@@ -1025,11 +1026,11 @@ ribeira_das_naus = {
 	
 	unique_production_methods = {
 		ribeira_das_naus_maintenance = {
-			tar = 0.175
-			naval_supplies = 0.56
-			tools = 0.105
-			lumber = 0.14
-			stone = 0.07
+			tar = 0.175 # VANILLA = 0.25
+			naval_supplies = 0.56 # VANILLA = 0.8
+			tools = 0.105 # VANILLA = 0.15
+			lumber = 0.14 # VANILLA = 0.2
+			stone = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -1189,7 +1190,7 @@ wisselbank = {
 	}
 	
 	capital_country_modifier = {
-		minting_income_factor = 0.2
+		minting_income_factor = 0.2 # VANILLA = 0.10
 		minting_inflation_threshold = 0.02
 		max_bonds = 10
 		bond_interest = -0.01
@@ -1198,9 +1199,9 @@ wisselbank = {
 	
 	unique_production_methods = {
 		wissel_bank_maintenance = {
-			paper = 0.25
-			goods_gold = 0.25
-			silver = 0.25
+			paper = 0.25 # VANILLA = 0.5
+			goods_gold = 0.25 # VANILLA = 0.5
+			silver = 0.25 # VANILLA = 0.5
 			category = building_maintenance
 		}
 	}
@@ -1237,7 +1238,7 @@ riksbank = {
 	}
 	
 	capital_country_modifier = {
-		minting_income_factor = 0.2
+		minting_income_factor = 0.2 # VANILLA = 0.10
 		minting_inflation_threshold = 0.02
 		max_bonds = 10
 		bond_interest = -0.01
@@ -1246,9 +1247,9 @@ riksbank = {
 	
 	unique_production_methods = {
 		riksbank_maintenance = {
-			paper = 0.25
-			goods_gold = 0.25
-			silver = 0.25
+			paper = 0.25 # VANILLA = 0.5
+			goods_gold = 0.25 # VANILLA = 0.5
+			silver = 0.25 # VANILLA = 0.5
 			category = building_maintenance
 		}
 	}
@@ -1302,12 +1303,12 @@ bolshoi_theater = {
 	
 	unique_production_methods = {
 		bolshoi_theater_maintenance = {
-			cloth = 0.07
-			furniture = 0.07
-			liquor = 0.35
-			paper = 0.35
-			fine_cloth = 0.28
-			fur = 0.07
+			cloth = 0.07 # VANILLA = 0.1
+			furniture = 0.07 # VANILLA = 0.1
+			liquor = 0.35 # VANILLA = 0.5
+			paper = 0.35 # VANILLA = 0.5
+			fine_cloth = 0.28 # VANILLA = 0.4
+			fur = 0.07 # VANILLA = 0.1
 			
 			category = building_maintenance
 		}
@@ -1353,7 +1354,7 @@ archive_of_the_indies = {
 	modifier = {
 		local_merchant_power = 0.1
 		local_trades_per_burgher = 0.10
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.15 # VANILLA = 1
 
 	}
 	
@@ -1492,9 +1493,9 @@ chi_macau_port = {
 	}
 	
 	modifier = {
-		merchant_capacity_from_building = 0.23
+		merchant_capacity_from_building = 0.23 # VANILLA = 0.2
 		building_owner_maritime_presence = 0.025
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.15 # VANILLA = 1
 		# gold_to_location_owner = 20 CAESAR-25168
 	}
 }
@@ -1593,9 +1594,9 @@ college_of_poets = {
 	
 	unique_production_methods = {
 		college_of_poets_maintenance = {
-			paper = 0.7
-			books = 0.35
-			glass = 0.35
+			paper = 0.7 # VANILLA = 1
+			books = 0.35 # VANILLA = 0.5
+			glass = 0.35 # VANILLA = 0.5
 			category = building_maintenance
 		}
 	}
@@ -1632,9 +1633,9 @@ bibliotheca_corviniana = {
 	
 	unique_production_methods = {
 		bibliotheca_corviniana_maintenance = {
-			paper = 0.14
-			books = 0.7
-			furniture = 0.07
+			paper = 0.14 # VANILLA = 0.2
+			books = 0.7 # VANILLA = 1.0
+			furniture = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -1722,7 +1723,7 @@ ablaq_palace = {
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015 # VANILLA = 0.02
 		global_silk_output_modifier = 0.025
 	}
 	
@@ -1819,14 +1820,14 @@ dutch_trade_outpost = {
 	expensive = yes
 	build_time = trade_post_build_time
 	modifier = {
-		merchant_capacity_from_building = 1.15
+		merchant_capacity_from_building = 1.15 # VANILLA = 1.0
 		building_owner_maritime_presence = 0.025
 	}
 	
 	unique_production_methods = {
 		dutch_trade_outpost_maintenance = {
-			lumber = 0.125
-			tools = 0.025
+			lumber = 0.125 # VANILLA = 0.25
+			tools = 0.025 # VANILLA = 0.05
 
 			category = building_maintenance
 		}
@@ -2066,7 +2067,7 @@ schonbrunn_palace = {
 		local_cultural_influence = 0.5
 	}
 	capital_country_modifier = {
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 
 	possible_production_methods = {
@@ -2450,9 +2451,9 @@ swi_collegium_helveticum = {
 	}
 	unique_production_methods = {
 		swi_collegium_helveticum_maintenance = {
-			paper = 0.35
-			books = 0.175
-			glass = 0.175
+			paper = 0.35 # VANILLA = 0.5
+			books = 0.175 # VANILLA = 0.25
+			glass = 0.175 # VANILLA = 0.25
 			category = building_maintenance
 		}
 	}
@@ -2565,12 +2566,12 @@ husuni_kubwa = {
 	}
 	
 	capital_modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 		local_merchant_power = 0.15
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375 # VANILLA = 0.05
 	}
 
 	market_center_modifier = {
@@ -2630,7 +2631,7 @@ imperial_city_of_hue = {
 		local_cultural_influence = 0.25
 	}
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015 # VANILLA = 0.02
 		prestige_decay = -0.001
 	}
 	possible_production_methods = {
@@ -2682,7 +2683,7 @@ wat_chaiwatthanaram_temple_building = {
 	}
 	
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015 # VANILLA = 0.02
 	}
 	
 	possible_production_methods =  {
@@ -2874,10 +2875,10 @@ lighthouse_of_alexandria = {
 
 	unique_production_methods = {
 		lighthouse_of_alexandria_maintenance = {
-			masonry = 0.35
-			weaponry = 0.14
-			naval_supplies = 0.35
-			tar = 0.07
+			masonry = 0.35 # VANILLA = 0.5
+			weaponry = 0.14 # VANILLA = 0.2
+			naval_supplies = 0.35 # VANILLA = 0.5
+			tar = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -3281,9 +3282,9 @@ guich_garrison = {
 	unique_production_methods = {
 	
 		guich_garrison_maintenance = {
-			masonry = 0.07
-			weaponry = 0.014
-			tar = 0.014
+			masonry = 0.07 # VANILLA = 0.1
+			weaponry = 0.014 # VANILLA = 0.02
+			tar = 0.014 # VANILLA = 0.02
 			category = building_maintenance
 		}
 	}
@@ -3404,11 +3405,11 @@ herrenchiemsee_abbey = {
 	
 	unique_production_methods = {
 		herrenchiemsee_abbey_maintenance = {
-			glass = 0.28
-			paper = 0.28
-			cloth = 0.28
-			beer = 0.28
-			beeswax = 0.14
+			glass = 0.28 # VANILLA = 0.4
+			paper = 0.28 # VANILLA = 0.4
+			cloth = 0.28 # VANILLA = 0.4
+			beer = 0.28 # VANILLA = 0.4
+			beeswax = 0.14 # VANILLA = 0.2
 			
 			category = building_maintenance
 		}
@@ -3773,10 +3774,10 @@ usa_academy_of_arts_and_sciences = {
 	
 	unique_production_methods = {
 		usa_academy_of_arts_and_sciences_maintenance = {
-			paper = 0.7
-			books = 0.175
-			glass = 0.175
-			beeswax = 0.035
+			paper = 0.7 # VANILLA = 1
+			books = 0.175 # VANILLA = 0.25
+			glass = 0.175 # VANILLA = 0.25
+			beeswax = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -3827,10 +3828,10 @@ usa_philosophical_society = {
 	
 	unique_production_methods = {
 		usa_philosophical_society_maintenance = {
-			paper = 1.05
-			books = 0.35
-			glass = 0.35
-			beeswax = 0.07
+			paper = 1.05 # VANILLA = 1.5
+			books = 0.35 # VANILLA = 0.5
+			glass = 0.35 # VANILLA = 0.5
+			beeswax = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -3873,8 +3874,8 @@ usa_national_bank = {
 	
 	unique_production_methods = {
 		usa_national_bank_maintenance = {
-			paper = 0.5
-			goods_gold = 0.5
+			paper = 0.5 # VANILLA = 1.0
+			goods_gold = 0.5 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -3912,14 +3913,14 @@ usa_national_mint = {
 	build_time = generic_town_build_time
 	
 	capital_country_modifier = {
-		minting_income_factor = 0.4
+		minting_income_factor = 0.4 # VANILLA = 0.2
 	}
 	
 	unique_production_methods = {
 		usa_national_mint_maintenance = {
-			paper = 0.5
-			goods_gold = 0.5
-			silver = 0.5
+			paper = 0.5 # VANILLA = 1.0
+			goods_gold = 0.5 # VANILLA = 1.0
+			silver = 0.5 # VANILLA = 1.0
 			category = building_maintenance
 		}
 	}
@@ -3984,15 +3985,15 @@ phanariot_district = {
 
 	modifier = {
 		local_burghers_estate_power = 0.2
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 		local_trades_per_burgher = 2
 	}
 
 	unique_production_methods = {
 		phanariot_district_maintenance = {
-			masonry = 0.14
-			lumber = 0.14
-			sand = 0.14
+			masonry = 0.14 # VANILLA = 0.2
+			lumber = 0.14 # VANILLA = 0.2
+			sand = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}
@@ -4121,11 +4122,11 @@ jewish_district = {
 
 	unique_production_methods = {
 		jewish_district_maintenance = {
-			masonry = 0.35
-			tools = 0.07
-			glass = 0.14
-			furniture = 0.07
-			lumber = 0.175
+			masonry = 0.35 # VANILLA = 0.5
+			tools = 0.07 # VANILLA = 0.1
+			glass = 0.14 # VANILLA = 0.2
+			furniture = 0.07 # VANILLA = 0.1
+			lumber = 0.175 # VANILLA = 0.25
 			category = building_maintenance
 		}
 	}
@@ -4208,8 +4209,8 @@ woodhenge_of_cahokia = {
 	
 	unique_production_methods = {
 		cahokia_woodhenge_production_method = {
-			clay = 0.7
-			lumber = 0.7
+			clay = 0.7 # VANILLA = 1
+			lumber = 0.7 # VANILLA = 1
 			category = building_maintenance
 		}
 	}
@@ -4396,7 +4397,7 @@ lucca_silk_production_guild = { #Placeholder building. Should be removed once CA
 			fiber_crops = 1.0
 			
 			produced = silk
-			output = 0.648
+			output = 0.648 # VANILLA = 0.6
 			
 			category = guild_input
 		}

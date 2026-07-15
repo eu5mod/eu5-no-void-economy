@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 porcelain_guild = {
 	is_foreign = no
@@ -32,7 +33,7 @@ porcelain_guild = {
 			coal = 0.5206
 			tools = 0.0522
 			produced = porcelain
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -72,7 +73,7 @@ porcelain_manufactory = {
 			tools = 0.3077
 
 			produced = porcelain
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			

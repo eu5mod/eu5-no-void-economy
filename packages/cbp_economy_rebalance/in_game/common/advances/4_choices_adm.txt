@@ -10,9 +10,9 @@ innovativeness = {
 	age = age_2_renaissance
 	icon = scholasticism
 	for = adm
-	
+
 	requires = pound_lock_canals_advance
-	
+
 
 	global_max_literacy = 5
 }
@@ -23,7 +23,7 @@ empiricism = {
 	for = adm
 
 	requires = construction_speed_renaissance
-	
+
 	legislative_efficiency = 0.10
 }
 
@@ -34,7 +34,7 @@ court_accounting = {
 	for = adm
 
 	requires = renaissance_thought
-	
+
 	court_spending_efficiency = 0.1
 }
 
@@ -70,8 +70,8 @@ state_efficiency = {
 	age = age_2_renaissance
 	icon = road_building
 	for = adm
-	
-	
+
+
 	requires = subject_integration
 	global_distance_from_capital_speed_propagation = 0.1
 }
@@ -81,9 +81,9 @@ church_attendance_duty = {
 	age = age_2_renaissance
 	icon = smooth_administration
 	for = adm
-	
+
 	requires = global_clergy_max_literacy_advance
-	
+
 	stability_investment = small_stability_investment
 }
 
@@ -91,7 +91,7 @@ deus_vult = {
 	age = age_2_renaissance
 	icon = teu_crusader_discipline
 	for = adm
-	
+
 	requires = church_attendance_duty
 	ai_weight = { add = 160 }
 
@@ -104,7 +104,7 @@ early_anti_piracy_warfare = {
 	for = adm
 
 	requires = recruitment_improvements_renaissance
-	
+
 	anti_piracy_warfare_modifier = 0.25
 }
 
@@ -116,12 +116,12 @@ dynamic_court = {
 	age = age_3_discovery
 	icon = scholasticism
 	for = adm
-	
+
 	country_cabinet_efficiency = 0.05
 }
 missionary_schools = {
 	age = age_3_discovery
-	 
+
 	for = adm
 
 	global_pop_conversion_speed = 0.01
@@ -183,7 +183,7 @@ efficient_mining = {
 	age = age_3_discovery
 	icon = efficient_mining
 	for = adm
-	
+
 	expand_rgo_mining_cost_modifier = -0.1
 	global_iron_output_modifier = 0.1
 	global_copper_output_modifier = 0.1
@@ -192,7 +192,7 @@ efficient_mining = {
 efficient_construction_plans = {
 	age = age_3_discovery
 	for = adm
-	
+
 	global_urban_build_buildings_efficiency = 0.2
 
 }
@@ -205,7 +205,7 @@ expanded_infrastructure_network = {
 	age = age_4_reformation
 	icon = road_building
 	for = adm
-	
+
 	global_road_building_time = -0.1
 	build_gravel_road_cost_modifier = -0.1
 	build_paved_road_cost_modifier = -0.1
@@ -294,7 +294,7 @@ formalized_officer_corps = {
 	age = age_5_absolutism
 	icon = expansionism
 	for = adm
-	
+
 	army_initiative = 0.25
 }
 
@@ -374,7 +374,7 @@ formal_administration = {
 	age = age_6_revolutions
 	icon = crown_power_advance_renaissance
 	for = adm
-	
+
 	government_size = 1
 }
 optimism = {
@@ -421,14 +421,14 @@ legislative_efficiency_idea = {
 	age = age_6_revolutions
 	icon = scholasticism
 	for = adm
-		
+
 	legislative_efficiency = 0.10
 }
 benevolence = {
 	age = age_6_revolutions
 	icon = cultural_acceptance_advance
 	for = adm
-		
+
 	improve_relation_impact = 0.33
 }
 

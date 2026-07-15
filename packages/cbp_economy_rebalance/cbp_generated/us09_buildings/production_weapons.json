@@ -46,7 +46,7 @@
       }
     ]
   },
-  "generated_sha256": "b0ed8d46b14e03c168088a0ba151d5f5d5dc29c88278fa35a848a7ea4c4dfc44",
+  "generated_sha256": "3010e23876253d1b65c6ce6f7e81a2895fc5ce0cf7fdac8c60bb96b37fb6c898",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_weapons.txt",
   "source_sha256": "61a5465805982cb70d8bb650b324b67dba975461c5e50a48769975b014b35667",

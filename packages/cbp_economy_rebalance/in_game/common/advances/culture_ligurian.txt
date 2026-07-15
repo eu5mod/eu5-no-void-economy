@@ -108,7 +108,7 @@ genoese_flexibility = {
 
 	navy_maintenance_efficiency = 0.10
 	can_convert_galleys_to_light = yes
-	
+
 	unlock_government_reform = alberghi_28
 
 	requires = crown_power_advance_discovery

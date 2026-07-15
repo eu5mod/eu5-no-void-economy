@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 sergeantry = {
 	audio_tier = 1
@@ -122,11 +123,11 @@ armory = {
 		
 	unique_production_methods = {
 		armory_maintenance = {
-			firearms = 0.35
-			leather = 0.35
-			cloth = 0.07
-			paper = 0.14
-			weaponry = 0.35
+			firearms = 0.35 # VANILLA = 0.5
+			leather = 0.35 # VANILLA = 0.5
+			cloth = 0.07 # VANILLA = 0.10
+			paper = 0.14 # VANILLA = 0.20
+			weaponry = 0.35 # VANILLA = 0.5
 			
 			category = building_maintenance
 		}
@@ -168,11 +169,11 @@ training_fields = {
 	
 	unique_production_methods = {
 		training_fields_maintenance = {
-			firearms = 0.35
-			leather = 0.35
-			cloth = 0.07
-			paper = 0.14
-			weaponry = 0.35
+			firearms = 0.35 # VANILLA = 0.5
+			leather = 0.35 # VANILLA = 0.5
+			cloth = 0.07 # VANILLA = 0.10
+			paper = 0.14 # VANILLA = 0.20
+			weaponry = 0.35 # VANILLA = 0.5
 			
 			category = building_maintenance
 		}
@@ -217,11 +218,11 @@ barracks = {
 	
 	unique_production_methods = {
 		barracks_maintenance = {
-			firearms = 0.7
-			leather = 0.7
-			cloth = 0.14
-			paper = 0.28
-			weaponry = 0.7
+			firearms = 0.7 # VANILLA = 1.0
+			leather = 0.7 # VANILLA = 1.0
+			cloth = 0.14 # VANILLA = 0.20
+			paper = 0.28 # VANILLA = 0.40
+			weaponry = 0.7 # VANILLA = 1.0
 			
 			category = building_maintenance
 		}
@@ -264,11 +265,11 @@ regimental_camp = {
 	
 	unique_production_methods = {
 		regimental_camp_maintenance = {
-			firearms = 0.7
-			leather = 0.7
-			cloth = 0.14
-			paper = 0.28
-			weaponry = 0.7
+			firearms = 0.7 # VANILLA = 1.0
+			leather = 0.7 # VANILLA = 1.0
+			cloth = 0.14 # VANILLA = 0.20
+			paper = 0.28 # VANILLA = 0.40
+			weaponry = 0.7 # VANILLA = 1.0
 			
 			category = building_maintenance
 		}
@@ -314,11 +315,11 @@ conscription_center = {
 	
 	unique_production_methods = {
 		conscription_center_maintenance = {
-			firearms = 0.7
-			leather = 0.7
-			cloth = 0.14
-			paper = 0.35
-			weaponry = 0.7
+			firearms = 0.7 # VANILLA = 1.0
+			leather = 0.7 # VANILLA = 1.0
+			cloth = 0.14 # VANILLA = 0.20
+			paper = 0.35 # VANILLA = 0.50
+			weaponry = 0.7 # VANILLA = 1.0
 			
 			category = building_maintenance
 		}

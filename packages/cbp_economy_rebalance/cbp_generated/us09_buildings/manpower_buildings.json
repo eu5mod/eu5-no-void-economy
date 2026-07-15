@@ -162,7 +162,7 @@
       }
     ]
   },
-  "generated_sha256": "5b01661a9894317836184b4fbde27be6e600d33c62bccccce7551ef77037b642",
+  "generated_sha256": "9fddd918cf3a2affb7aacf7d3746b7499f8144ad3f926929f6ee45dcd012a8a0",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/manpower_buildings.txt",
   "source_sha256": "5130be1e5ef95b014fc0ec6e9f57ba8b129d82b83a5361ed2aaf4b34761db888",

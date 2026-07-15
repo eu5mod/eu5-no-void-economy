@@ -100,7 +100,7 @@ lat_emperor_latins_advance = {
 		has_or_had_tag = LAT
 	}
 
-	monthly_legitimacy = 0.1
+	monthly_legitimacy = 0.075 # VANILLA = 0.1
 	subject_income_modifier = 0.025
 
 	requires = feudalism_advance
@@ -167,7 +167,7 @@ pat_the_church_state_of_saint_andrew_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	global_manpower_modifier = 0.1
 
 	requires = organized_religion
@@ -344,7 +344,7 @@ pat_the_pilgrimage_tolls_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	monthly_religious_influence = 0.1
 
 	requires = renaissance_development
@@ -383,23 +383,23 @@ frankokratia_union_of_the_soul_advance = {
 	potential = {
 		is_frankokratia_state = yes
 	}
-    
+
 	global_pop_conversion_speed_modifier = 0.1
 
 	requires = print_culture
 }
 
 ach_knights_of_the_peloponnese_advance = {
-	age = age_3_discovery 
+	age = age_3_discovery
 	icon = finest_of_horses
 
 	potential = {
 		has_or_had_tag = ACH
 	}
-    
+
 	army_heavy_cavalry_power = 0.1
 
-	requires = pike_and_shot_advance 
+	requires = pike_and_shot_advance
 }
 
 arg_the_gibraltar_of_the_levant_advance = {
@@ -409,7 +409,7 @@ arg_the_gibraltar_of_the_levant_advance = {
 	potential = {
 		has_or_had_tag = ARG
 	}
-    
+
 	global_defensive = 0.1
 	global_fort_build_buildings_efficiency = 0.2
 
@@ -423,7 +423,7 @@ ath_the_parthenon_dukes_advance = {
 	potential = {
 		has_or_had_tag = ATH
 	}
-    
+
 	cultural_tradition_modifier = 0.1
 	embrace_institution_cost_modifier = -0.1
 
@@ -437,7 +437,7 @@ bod_the_alpine_skirmishers_advance = {
 	potential = {
 		has_or_had_tag = BOD
 	}
-    
+
 	land_morale_attrition_cost = -0.002
 
 	requires = pike_and_shot_advance
@@ -450,7 +450,7 @@ cep_the_currant_trade_advance = {
 	potential = {
 		has_or_had_tag = CEP
 	}
-    
+
 	global_trades_per_burgher = 0.2
 	trade_sea_efficiency = medium_trade_sea_efficiency_bonus
 
@@ -464,7 +464,7 @@ crt_the_malvasia_wine_export_advance = {
 	potential = {
 		has_or_had_tag = CRT
 	}
-    
+
 	global_wine_output_modifier = 0.2
 	trade_range	= 200
 
@@ -478,7 +478,7 @@ lat_the_new_praetorian_guard_advance = {
 	potential = {
 		has_or_had_tag = LAT
 	}
-    
+
 	discipline = 0.05
 
 	requires = supply_depot_advance_age_3_discovery
@@ -491,7 +491,7 @@ nax_the_marble_trade_of_paros_advance = {
 	potential = {
 		has_or_had_tag = NAX
 	}
-    
+
 	global_marble_output_modifier = 0.1
 	global_production_efficiency = small_production_efficiency_bonus
 
@@ -505,7 +505,7 @@ neg_bridgehead_of_the_euripus_advance = {
 	potential = {
 		has_or_had_tag = NEG
 	}
-    
+
 	tax_income_efficiency = small_tax_income_efficiency_bonus
 
 	requires = regulate_court_procedures
@@ -518,7 +518,7 @@ neo_the_great_companys_code_advance = {
 	potential = {
 		has_or_had_tag = NEO
 	}
-    
+
 	land_morale_movement_cost = -0.0001
 	monthly_army_tradition = 0.05
 
@@ -532,7 +532,7 @@ pat_uniate_liturgical_printing_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	global_max_literacy = 5
 
 	requires = formalized_relations
@@ -545,7 +545,7 @@ sao_the_asceticism_of_the_crissaean_crags_advance = {
 	potential = {
 		has_or_had_tag = SAO
 	}
-    
+
 	global_pop_food_consumption = -0.1
 
 	requires = formalized_relations
@@ -572,7 +572,7 @@ frankokratia_levantine_trades_advance = {
 	potential = {
 		is_frankokratia_state = yes
 	}
-    
+
 	export_efficiency = small_trade_efficiency_bonus
 
 	requires = global_trade_advance
@@ -585,7 +585,7 @@ ach_a_system_of_forts_advance = {
 	potential = {
 		has_or_had_tag = ACH
 	}
-    
+
 	fort_maintenance_efficiency = 0.20
 
 	requires = artillery_institution_advance
@@ -598,7 +598,7 @@ arg_the_artillery_school_of_argos_advance = {
 	potential = {
 		has_or_had_tag = ARG
 	}
-    
+
 	artillery_bonus_vs_fort = 1
 
 	requires = bastion_advance
@@ -611,7 +611,7 @@ ath_the_piraeus_arsenal_advance = {
 	potential = {
 		has_or_had_tag = ATH
 	}
-    
+
 	navy_maintenance_efficiency = 0.1
 	ship_build_speed = 0.1
 
@@ -625,7 +625,7 @@ bod_the_maritime_consulates_advance = {
 	potential = {
 		has_or_had_tag = BOD
 	}
-    
+
 	spy_network_construction = 0.15
 
 	requires = global_trade_advance
@@ -638,7 +638,7 @@ cep_the_chancery_of_the_three_tongues_advance = {
 	potential = {
 		has_or_had_tag = CEP
 	}
-    
+
 	stability_cost_efficiency = 0.2
 
 	requires = gov_reform_reformation_a
@@ -651,7 +651,7 @@ crt_the_cretan_labyrinth_of_fortifications_advance = {
 	potential = {
 		has_or_had_tag = CRT
 	}
-    
+
 	fort_limit_modifier = 0.25
 
 	requires = bastion_advance
@@ -664,7 +664,7 @@ lat_the_golden_gate_customs_house_advance = {
 	potential = {
 		has_or_had_tag = LAT
 	}
-    
+
 	army_maintenance_efficiency = 0.20
 	tax_income_efficiency = small_tax_income_efficiency_bonus
 
@@ -678,7 +678,7 @@ nax_naxian_sea_knights_advance = {
 	potential = {
 		has_or_had_tag = NAX
 	}
-    
+
 	navy_galley_power = 0.2
 
 	requires = naval_morale_advance_3
@@ -691,7 +691,7 @@ neg_the_eubean_tidal_mills_advance = {
 	potential = {
 		has_or_had_tag = NEG
 	}
-    
+
 	global_production_efficiency = medium_production_efficiency_bonus
 
 	requires = rgo_size_advance_reformation
@@ -704,7 +704,7 @@ neo_the_neopatras_horse_breeding_program_advance = {
 	potential = {
 		has_or_had_tag = NEO
 	}
-    
+
 	army_heavy_cavalry_power = 0.1
 
 	requires = rgo_size_advance_reformation
@@ -717,7 +717,7 @@ pat_the_patrine_mint_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	minting_income_factor = 0.2
 
 	requires = global_trade_advance
@@ -730,7 +730,7 @@ sao_the_phocian_mule_chancery_advance = {
 	potential = {
 		has_or_had_tag = SAO
 	}
-    
+
     land_cost_on_distance_from_capital_speed_propagation = 0.1
 
 	requires = global_trade_advance
@@ -743,7 +743,7 @@ the_the_via_egnatia_restoration_advance = {
 	potential = {
 		has_or_had_tag = THE
 	}
-    
+
 	global_trade_center_power = 0.05
 
 	requires = global_trade_routes_advance
@@ -756,7 +756,7 @@ frankokratia_the_frankish_greek_symbiosis_advance = {
 	potential = {
 		is_frankokratia_state = yes
 	}
-    
+
 	global_pop_assimilation_speed_modifier = 0.1
 	stability_investment = small_stability_investment
 
@@ -770,7 +770,7 @@ ach_achaean_enlightenment_advance = {
 	potential = {
 		has_or_had_tag = ACH
 	}
-    
+
 	research_speed_modifier = 0.1
 
 	requires = scientific_revolution_advance
@@ -783,7 +783,7 @@ arg_argive_maritime_insurance_advance = {
 	potential = {
 		has_or_had_tag = ARG
 	}
-    
+
 	navy_repair_efficiency = 0.2
 	tax_income_efficiency = small_tax_income_efficiency_bonus
 
@@ -797,7 +797,7 @@ ath_the_athenian_bureaucracy_advance = {
 	potential = {
 		has_or_had_tag = ATH
 	}
-    
+
 	government_size = 1
 
 	requires = scientific_revolution_advance
@@ -810,7 +810,7 @@ bod_the_spercheios_civil_chancellery_advance = {
 	potential = {
 		has_or_had_tag = BOD
 	}
-    
+
 	global_monthly_control = 0.002
 
 	requires = absolutist_court
@@ -823,7 +823,7 @@ cep_the_arsenal_of_argostoli_advance = {
 	potential = {
 		has_or_had_tag = CEP
 	}
-    
+
 	navy_repair_efficiency = 0.2
 	ship_repair_at_sea = 0.01
 
@@ -837,7 +837,7 @@ crt_the_council_of_the_two_peoples_advance = {
 	potential = {
 		has_or_had_tag = CRT
 	}
-    
+
 	stability_decay = -0.00025
 
 	requires = national_sovereignty
@@ -850,7 +850,7 @@ lat_codex_latinus_advance = {
 	potential = {
 		has_or_had_tag = LAT
 	}
-    
+
 	country_cabinet_efficiency = 0.10
 	cultural_influence_modifier = 0.10
 
@@ -864,7 +864,7 @@ nax_aegean_waystation_networks_advance = {
 	potential = {
 		has_or_had_tag = NAX
 	}
-    
+
 	global_monthly_prosperity = 0.001
 	naval_unit_attrition = -0.15
 
@@ -878,7 +878,7 @@ neg_the_triarchic_naval_academy_advance = {
 	potential = {
 		has_or_had_tag = NEG
 	}
-    
+
 	monthly_navy_tradition = 0.15
 
 	requires = naval_professionalism
@@ -891,7 +891,7 @@ neo_the_ordinance_of_the_viles_noves_advance = {
 	potential = {
 		has_or_had_tag = NEO
 	}
-	
+
 	global_monthly_development = 0.001
     town_upgrade_cost_modifier = -0.1
 
@@ -905,7 +905,7 @@ pat_the_seminary_of_diplomats_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	monthly_diplomats = 0.15
 
 	requires = power_projection_advance_5
@@ -918,7 +918,7 @@ sao_the_parnassian_wolf_pacts_advance = {
 	potential = {
 		has_or_had_tag = SAO
 	}
-    
+
 	antagonism_received_modifier = -0.1
 
 	requires = absolute_rulership
@@ -931,7 +931,7 @@ the_the_macedonian_fur_trade_advance = {
 	potential = {
 		has_or_had_tag = THE
 	}
-    
+
 	global_fur_output_modifier = 0.2
 
 	requires = rgo_size_advance_absolutism
@@ -944,7 +944,7 @@ frankokratia_the_latin_enlightenment_advance = {
 	potential = {
 		is_frankokratia_state = yes
 	}
-    
+
 	research_speed_modifier = 0.2
 
 	requires = enlightened_court
@@ -957,7 +957,7 @@ ach_villehardouins_valor_advance = {
 	potential = {
 		has_or_had_tag = ACH
 	}
-    
+
 	land_morale_recovery = 0.05
 
 	requires = levee_en_masse_advance
@@ -970,7 +970,7 @@ arg_the_curia_of_the_two_benches_advance = {
 	potential = {
 		has_or_had_tag = ARG
 	}
-    
+
 	pop_join_rebel_threshold = -0.05
 
 	requires = rights_of_man
@@ -983,7 +983,7 @@ ath_the_attican_gunpowder_mills_advance = {
 	potential = {
 		has_or_had_tag = ATH
 	}
-    
+
 	army_artillery_power = 0.1
 
 	requires = napoleonic_warfare
@@ -996,7 +996,7 @@ bod_the_oeta_riflemen_advance = {
 	potential = {
 		has_or_had_tag = BOD
 	}
-    
+
 	army_light_infantry_power = 0.05
 	army_light_infantry_maintenance_cost_modifier = -0.05
 
@@ -1011,7 +1011,7 @@ cep_the_ionian_merchant_experts_advance = {
 	potential = {
 		has_or_had_tag = CEP
 	}
-    
+
 	burghers_estate_target_satisfaction = 0.05
 	global_merchant_power = 0.2
 
@@ -1025,7 +1025,7 @@ crt_academy_of_the_stratioti_advance = {
 	potential = {
 		has_or_had_tag = CRT
 	}
-    
+
 	army_light_cavalry_build_cost_modifier = -0.1
 	army_light_cavalry_maintenance_cost_modifier = -0.05
 
@@ -1039,7 +1039,7 @@ lat_the_order_of_the_star_of_the_east_advance = {
 	potential = {
 		has_or_had_tag = LAT
 	}
-    
+
 	diplomatic_reputation = diplomatic_reputation_mild_bonus
 	monthly_army_tradition = 0.1
 
@@ -1053,7 +1053,7 @@ nax_the_aegean_hydrographic_bureau_advance = {
 	potential = {
 		has_or_had_tag = NAX
 	}
-    
+
 	ship_repair_at_sea = 0.01
 	sea_cost_on_distance_from_capital_when_maritime = -0.5
 
@@ -1067,7 +1067,7 @@ neg_the_glassworks_of_chalkis_advance = {
 	potential = {
 		has_or_had_tag = NEG
 	}
-    
+
 	global_glass_output_modifier = 0.2
 
 	requires = industrialization_advance
@@ -1080,7 +1080,7 @@ neo_the_academy_of_administration_advance = {
 	potential = {
 		has_or_had_tag = NEO
 	}
-    
+
 	legislative_efficiency = 0.10
 
 	requires = industrialization_advance
@@ -1093,7 +1093,7 @@ pat_the_port_of_sanctuary_advance = {
 	potential = {
 		has_or_had_tag = PAT
 	}
-    
+
 	global_trade_center_power = 0.05
 
 	requires = enlightenment_advance
@@ -1106,7 +1106,7 @@ sao_the_legacy_of_the_alpha_protector_advance = {
 	potential = {
 		has_or_had_tag = SAO
 	}
-    
+
 	global_integration_speed_modifier = 0.2
 
 	requires = war_score_revolutions_advance
@@ -1119,7 +1119,7 @@ the_the_university_of_thessalonica_advance = {
 	potential = {
 		has_or_had_tag = THE
 	}
-    
+
 	global_monthly_literacy = 0.02
 
 	requires = enlightenment_advance

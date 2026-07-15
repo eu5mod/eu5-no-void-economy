@@ -142,7 +142,7 @@
       }
     ]
   },
-  "generated_sha256": "4de78b8646fab1696b3a163fc9df4e1afc480e900349d790e17c7fbda84b5f1f",
+  "generated_sha256": "d6b607a247d439d77e76cf33834d09c9c2fede4174f84dfdaaa8da0d4de7da7a",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_liquor.txt",
   "source_sha256": "c7e3b2b8ef6599c0d8ca021cbf8ae3d006ffa7b7a70e5acc3410f61573a244fb",

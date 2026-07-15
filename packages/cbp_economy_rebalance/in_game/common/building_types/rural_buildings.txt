@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 bailiff = {
 	audio_tier = 2
@@ -52,10 +53,10 @@ bailiff = {
 	
 	unique_production_methods = {
 		bailiff_input = {
-			paper = 0.07
-			tools = 0.105
-			weaponry = 0.175
-			stone = 0.07
+			paper = 0.07 # VANILLA = 0.1
+			tools = 0.105 # VANILLA = 0.15
+			weaponry = 0.175 # VANILLA = 0.25
+			stone = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -102,7 +103,7 @@ fishing_village = {
 	construction_demand = village_construction
 
 	modifier = {
-		local_merchant_capacity = 0.2875
+		local_merchant_capacity = 0.2875 # VANILLA = 0.25
 		local_peasants_estate_power = 0.25		#25% higher here.
 		local_food_capacity = 50
 		local_peasant_enfranchisment = 0.01
@@ -157,10 +158,10 @@ farming_village = {
 	
 	unique_production_methods = {
 		farming_village_maintenance = {
-			tools = 0.01869
-			clay = 0.76272
+			tools = 0.01869 # VANILLA = 0.0267
+			clay = 0.76272 # VANILLA = 1.0896
 			
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			
 			produced = livestock
 			
@@ -266,7 +267,7 @@ market_village = {
 	}
 
 	modifier = {
-		local_merchant_capacity = 0.115
+		local_merchant_capacity = 0.115 # VANILLA = 0.10
 		local_merchant_power = 0.10
 		local_market_access = 0.005
 
@@ -311,7 +312,7 @@ rural_glassmaker = {
 			sand = 1.0
 
 			produced = glass
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -356,7 +357,7 @@ rural_clothmaker = {
 			wool = 0.5
 
 			produced = cloth
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -366,7 +367,7 @@ rural_clothmaker = {
 			cotton = 0.417
 
 			produced = cloth
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -376,7 +377,7 @@ rural_clothmaker = {
 			fiber_crops = 0.5
 
 			produced = cloth
-			output = 0.432
+			output = 0.432 # VANILLA = 0.4
 
 			debug_max_profit = rural_profit_margin
 			category = guild_input
@@ -412,7 +413,7 @@ charcoal_maker = {
 	unique_production_methods = {
 		char_coal_maintenance = {
 			produced = coal
-			output = 0.864
+			output = 0.864 # VANILLA = 0.8
 
 			debug_max_profit = rural_profit_margin
 		
@@ -449,7 +450,7 @@ improved_charcoal_maker = {
 	unique_production_methods = {
 		improved_char_coal_maintenance = {
 			produced = coal
-			output = 1.296
+			output = 1.296 # VANILLA = 1.2
 
 			debug_max_profit = rural_profit_margin
 		
@@ -503,7 +504,7 @@ elephant_hunting_grounds = {
 	unique_production_methods = {
 		elephant_hunting_grounds_maintenance = {
 			produced = ivory
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			tools = 0.208
 			weaponry = 0.208
@@ -551,9 +552,9 @@ windmill = {
 	unique_production_methods = {
 		
 		windmill_maintenance = {
-			tools  = 0.0175
-			lumber = 0.035
-			cloth = 0.035
+			tools  = 0.0175 # VANILLA = 0.025
+			lumber = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -598,9 +599,9 @@ local_smelters = {
 	unique_production_methods = {
 		
 		local_smelters_maintenance = {
-			tools  = 0.0175
-			lumber = 0.035
-			coal = 0.035
+			tools  = 0.0175 # VANILLA = 0.025
+			lumber = 0.035 # VANILLA = 0.05
+			coal = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -647,7 +648,7 @@ sawmill = {
 	unique_production_methods = {
 		
 		sawmill_maintenance = {
-			tools  = 0.035
+			tools  = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -690,10 +691,10 @@ sheep_farms = {
 		
 		sheep_farm_maintenance = {
 			produced = wool
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
-			lumber = 0.3472
-			tools = 0.0693
+			lumber = 0.3472 # VANILLA = 0.496
+			tools = 0.0693 # VANILLA = 0.099
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
 		}

@@ -10,6 +10,7 @@ the matching vanilla market-supply delta.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -131,9 +132,18 @@ def find_violations(path: Path, text: str) -> list[Violation]:
 
 def add_goods_supply_allowed(path: Path) -> bool:
     rel = path.relative_to(ROOT).as_posix()
+    manifest_path = ROOT / "packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
+    generated_paths: set[str] = set()
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        generated_paths = {
+            f"packages/cbp_economy_rebalance/in_game/{entry['path']}"
+            for entry in manifest.get("files", [])
+        }
     return (
         rel == "in_game/common/scripted_effects/cbp_stock_effects.txt"
         or rel.startswith("packages/cbp_core_tests/")
+        or rel in generated_paths
     )
 
 
@@ -219,7 +229,8 @@ def run(*, fix: bool) -> int:
             rel = violation.path.relative_to(ROOT)
             print(
                 f"- {rel}:{violation.line}: add_goods_supply must only be called from "
-                "in_game/common/scripted_effects/cbp_stock_effects.txt or packages/cbp_core_tests",
+                "cbp_stock_effects.txt, packages/cbp_core_tests, or a manifest-owned "
+                "vanilla exact-path political override",
                 file=sys.stderr,
             )
         return 1

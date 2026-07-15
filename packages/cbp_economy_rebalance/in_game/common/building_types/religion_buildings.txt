@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 monastery = {
 	audio_tier = 1
@@ -169,8 +170,8 @@ madrasa = {
 	
 	unique_production_methods = {
 		madrasa_maintenance = {
-			paper = 0.07
-			cloth = 0.14
+			paper = 0.07 # VANILLA = 0.1
+			cloth = 0.14 # VANILLA = 0.2
 			
 			category = building_maintenance
 		}

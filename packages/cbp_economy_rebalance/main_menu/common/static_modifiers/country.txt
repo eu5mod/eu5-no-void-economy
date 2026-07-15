@@ -6,7 +6,7 @@ years_since_game_start = {
 		category = country
 	}
 
-	building_upkeep_multiplier = 0.001
+	# building_upkeep_multiplier = 0.001
 }
 
 culture_tradition_power = {
@@ -97,22 +97,22 @@ is_bankrupt = {
 	game_data = {
 		category = country
 	}
-	
+
 	total_loan_capacity_modifier = -0.5
-	
-	
+
+
 	global_estate_target_satisfaction = small_permanent_target_satisfaction_penalty
-	
+
 	global_crown_estate_power = -0.9
-	
-	
+
+
 	global_pop_promotion_speed = -0.05
 	global_pop_demotion_speed = 0.20
-	
+
 	land_morale_modifier = -0.9
 	naval_morale_modifier = -0.9
-	
-	
+
+
 	research_speed_modifier = -0.9
 	global_construction_speed = -0.9
 
@@ -401,7 +401,7 @@ diplomatic_maintenance_mod = {
 	diplomatic_reputation = 3
 	monthly_complacency = -0.1
 	counter_espionage = 0.5
-	
+
 }
 
 
@@ -425,7 +425,7 @@ religious_tolerance = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_towards_humanist = societal_value_min_scaling_monthly_move
 }
 
@@ -433,7 +433,7 @@ religious_intolerance = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_towards_spiritualist = societal_value_min_scaling_monthly_move
 }
 
@@ -466,7 +466,7 @@ unsupported_cultures = {
 	game_data = {
 		category = country
 	}
-	
+
 	cultural_tradition_modifier = -0.25
 	cultural_influence_modifier = -0.25
 	country_cabinet_efficiency = -0.1
@@ -487,7 +487,7 @@ annexing_countries_scaled = {
 		category = country
 	}
 	monthly_legitimacy = -0.1
- 
+
 }
 
 spy_networks = {
@@ -627,7 +627,7 @@ court_language_is_market_language = {
 	game_data = {
 		category = country
 	}
-	
+
 	selling_efficiency = small_trade_efficiency_bonus
 }
 
@@ -670,7 +670,7 @@ parliament_in_session = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_estate_satisfaction_recovery = 0.01
 	court_spending_efficiency = -0.1
 }
@@ -766,7 +766,7 @@ war_declared_on_us = {
 	game_data = {
 		category = country
 	}
-	
+
 	levy_recovery_modifier = 0.33
 	monthly_complacency = -0.05
 	global_levy_recruitment_speed_modifier = 0.25
@@ -1006,7 +1006,7 @@ receiving_guarantee = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_prestige = -0.1
 }
 
@@ -1180,7 +1180,7 @@ giving_appanage_grant_admin_autonomy = {
 		category = country
 	}
 	monthly_towards_decentralization = societal_value_tiny_monthly_move
-	monthly_diplomats = -0.05	
+	monthly_diplomats = -0.05
 }
 
 our_court_resources_seized = {
@@ -1337,7 +1337,7 @@ new_colonial_nation_founded = {
 		category = country
 		decaying = yes
 	}
-	
+
 	monthly_rebel_growth = -0.01
 	global_pop_promotion_speed_modifier = 1.0
 	global_population_growth = 0.005
@@ -1662,10 +1662,10 @@ chi_clamped_down_on_eight_tigers = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = -0.5
 	stability_cost_efficiency = 0.1
-}	
+}
 
 yua_purge_of_han_bureaucrats = {
 	game_data = {
@@ -1762,7 +1762,7 @@ chi_eunuchs = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = 0.25
 }
 
@@ -1771,7 +1771,7 @@ chi_more_eunuchs = {
 		category = country
 		decaying = yes
 	}
-	
+
 	eunuch_power = 0.25
 }
 
@@ -1779,7 +1779,7 @@ chi_educated_eunuchs = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = 0.25
 }
 
@@ -1787,7 +1787,7 @@ chi_powerful_eunuch = {
 	game_data = {
 		category = country
 	}
-	
+
 	head_of_cabinet_promotion_cost_modifier = 1
 	eunuch_power = 0.5
 	legislative_efficiency = -0.1
@@ -1797,7 +1797,7 @@ chi_reverse_eunuch_powers = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = -0.25
 }
 
@@ -1805,7 +1805,7 @@ chi_eunuch_excesses = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = 0.5
 	set_cabinet_member_cost_modifier = 1
 }
@@ -1814,7 +1814,7 @@ chi_eunuch_government = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_crown_estate_power = -0.25
 }
 
@@ -1822,7 +1822,7 @@ chi_eunuch_purges = {
 	game_data = {
 		category = country
 	}
-	
+
 	eunuch_power = -0.5
 }
 
@@ -1847,8 +1847,8 @@ chi_grand_pronouncements = {
 	game_data = {
 		category = country
 	}
-	
-	tax_income_efficiency = large_tax_income_efficiency_bonus 
+
+	tax_income_efficiency = large_tax_income_efficiency_bonus
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 }
 
@@ -1856,7 +1856,7 @@ chi_grand_encyclopedia = {
 	game_data = {
 		category = country
 	}
-	
+
 	research_speed_modifier = 0.05
 }
 
@@ -1864,7 +1864,7 @@ chi_compiling_grand_encyclopedia = {
 	game_data = {
 		category = country
 	}
-	
+
 	court_spending_efficiency = -0.05
 	research_speed_modifier = 0.05
 }
@@ -1874,17 +1874,17 @@ chi_army_reform_cost = {
 		category = country
 		decaying = yes
 	}
-	
+
 	regiment_reinforcement_speed = -0.25
 	army_maintenance_efficiency = -0.1
-	
+
 }
 
 chi_large_tributary_envoy = {
 	game_data = {
 		category = country
 	}
-	
+
 	tribute_payment_received_modifier = 0.5
 }
 
@@ -1892,7 +1892,7 @@ chi_supporting_tributary_system = {
 	game_data = {
 		category = country
 	}
-	
+
 	subject_loyalty = 10
 }
 
@@ -1916,7 +1916,7 @@ chi_death_of_emperor_without_capture = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_legitimacy = -0.15
 	global_crown_estate_power = -0.25
 }
@@ -1925,7 +1925,7 @@ chi_capture_of_beijing = {
 	game_data = {
 		category = country
 	}
-	
+
 	siege_ability = 0.1
 	global_war_score_efficiency = -0.1
 }
@@ -1934,7 +1934,7 @@ chi_loss_of_confidence_in_army = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_legitimacy = -0.05
 }
 
@@ -1942,7 +1942,7 @@ chi_li_zicheng_rebellion = {
 	game_data = {
 		category = country
 	}
-	
+
 	land_morale_modifier = 0.1
 	peasants_estate_levy_size = 0.25
 }
@@ -1951,7 +1951,7 @@ chi_mandate_of_heaven_claimant = {
 	game_data = {
 		category = country
 	}
-	
+
 	cultural_influence_modifier = 0.25
 	monthly_prestige = 0.1
 }
@@ -1960,7 +1960,7 @@ chi_tumu_crisis_benefit = {
 	game_data = {
 		category = country
 	}
-	
+
 	land_morale = 0.1
 }
 
@@ -1968,7 +1968,7 @@ chi_yellow_river_works = {
 	game_data = {
 		category = country
 	}
-	
+
 	court_spending_efficiency = -0.25
 }
 
@@ -1976,7 +1976,7 @@ chi_judicial_reforms = {
 	game_data = {
 		category = country
 	}
-	
+
 	estate_enrichment = -0.1
 	global_estate_power = -0.1
 }
@@ -1985,7 +1985,7 @@ chi_ho_quy_ly_reforms = {
 	game_data = {
 		category = country
 	}
-	
+
 	change_policy_cost_modifier = -0.25
 	revoke_privilege_cost_modifier = -0.25
 }
@@ -1994,7 +1994,7 @@ chi_huolongjing = {
 	game_data = {
 		category = country
 	}
-	
+
 	army_artillery_power = 0.1
 }
 
@@ -2002,7 +2002,7 @@ chi_support_of_court_factions = {
 	game_data = {
 		category = country
 	}
-	
+
 	country_cabinet_efficiency = 0.05
 	stability_cost_efficiency = 0.2
 }
@@ -2011,7 +2011,7 @@ chi_nanyang_terror = {
 	game_data = {
 		category = country
 	}
-	
+
 	privateer_maintenance_cost_modifier = -0.25
 	slave_raid_efficiency = 0.1
 }
@@ -2020,7 +2020,7 @@ chi_cruel_punishment = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_estate_target_satisfaction = -0.05
 	pop_join_rebel_threshold = 0.02
 }
@@ -2029,7 +2029,7 @@ chi_maganimous_permission = {
 	game_data = {
 		category = country
 	}
-	
+
 	diplomatic_reputation = diplomatic_reputation_mild_bonus
 }
 
@@ -2037,7 +2037,7 @@ chi_grand_fleet_for_voyages = {
 	game_data = {
 		category = country
 	}
-	
+
 	treasure_voyage_cargo_size_modifier = 0.5
 }
 
@@ -2046,7 +2046,7 @@ chi_giraffe_qilin = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_legitimacy = 0.1
 	change_policy_cost_modifier = 0.5
 }
@@ -2080,7 +2080,7 @@ chi_chinese_rule = {
 	game_data = {
 		category = country
 	}
-	
+
 	selling_efficiency = small_trade_efficiency_bonus
 	loyalty_to_overlord = 10
 }
@@ -2807,15 +2807,15 @@ kor_solidarity_against_adversity = {
 	game_data = {
 		category = country
 	}
-	
-	monthly_war_exhaustion = -0.1	
+
+	monthly_war_exhaustion = -0.1
 }
 
 kor_diplomatic_issues = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_diplomats = -0.1
 }
 
@@ -2823,7 +2823,7 @@ kor_sayeogwon = {
 	game_data = {
 		category = country
 	}
-	
+
 	diplomatic_reputation = diplomatic_reputation_severe_bonus
 }
 
@@ -3218,7 +3218,7 @@ focus_on_covert_actions = {
 	game_data = {
 		category = country
 	}
-	
+
 	diplomatic_capacity_modifier = -0.1
 }
 
@@ -3921,7 +3921,7 @@ classics_defended = {
 	stability_cost_efficiency = -0.1
 	clergy_estate_target_satisfaction = small_permanent_target_satisfaction
 }
-	
+
 converted_minister = {
 	game_data = {
 		category = country
@@ -3944,8 +3944,8 @@ allowed_critical_novel = {
 	global_monthly_literacy = 0.01
 	monthly_righteousness = -0.05
 }
-	
-	
+
+
 hiding_from_black_death = {
 	game_data = {
 		category = country
@@ -4259,7 +4259,7 @@ self_made_men = {
 	}
 	country_cabinet_efficiency = 0.025
 }
-	
+
 rational_administration = {
 	game_data = {
 		category = country
@@ -4289,7 +4289,7 @@ nanban_trade_restrictions = {
 	}
 	global_merchant_power = 0.05
 }
-	
+
 rangaku_incident_modifier = {
 	game_data = {
 		category = country
@@ -4312,7 +4312,7 @@ nanban_production_investments = {
 	global_raw_material_output = 0.05
 	research_speed_modifier = 0.025
 }
-	
+
 firearm_restrictions = {
 	game_data = {
 		category = country
@@ -4341,7 +4341,7 @@ shinto_strengthened_local_traders = {
 	}
 	selling_efficiency = small_trade_efficiency_bonus
 }
-	
+
 shinto_converted_to_christianity = {
 	game_data = {
 		category = country
@@ -4531,8 +4531,8 @@ fra_academie_francaise = {
 	game_data = {
 		category = country
 	}
-	research_speed_modifier = 0.10 
-}	
+	research_speed_modifier = 0.10
+}
 
 fra_colbertism = {
 	game_data = {
@@ -4542,7 +4542,7 @@ fra_colbertism = {
 	monthly_towards_mercantilism = societal_value_minor_monthly_move
 	selling_efficiency = tiny_trade_efficiency_bonus
 	monthly_navy_tradition = 0.5
-}	
+}
 
 fra_colbertism_economic_focus = {
 	game_data = {
@@ -4566,7 +4566,7 @@ fra_la_secret_roy_network = {
 		category = country
 	}
 	monthly_diplomats = -0.15
-	spy_network_construction = 0.20	
+	spy_network_construction = 0.20
 	power_projection = 5
 }
 
@@ -4591,7 +4591,7 @@ fra_la_secret_roy_network_reduced = {
 	game_data = {
 		category = country
 	}
-	spy_network_construction = 0.10	
+	spy_network_construction = 0.10
 }
 
 fra_robert_redeeming_himself_court = {
@@ -4614,7 +4614,7 @@ exploiting_the_franc_coinage = {
 		category = country
 	}
 	minting_inflation_threshold = -0.02
-	minting_income_factor = 0.3	
+	minting_income_factor = 0.3
 }
 
 minting_of_the_franc = {
@@ -4631,21 +4631,21 @@ fra_sco_expanded_support_for_david = {
 	}
 	monthly_gold_income = 10
 	monthly_legitimacy = 0.10
-}	
+}
 
 french_court_education_large = {
 	game_data = {
 		category = character
 	}
 	character_child_education = 0.50
-}	
+}
 
 french_court_education_medium = {
 	game_data = {
 		category = character
 	}
 	character_child_education = 0.33
-}	
+}
 
 fra_scottish_exiles_upkeep = {
 	game_data = {
@@ -4653,18 +4653,18 @@ fra_scottish_exiles_upkeep = {
 	}
 	court_spending_efficiency = -0.025
 	monthly_prestige = 0.10
-}	
+}
 
 french_advisor_to_david_ii = {
 	game_data = {
 		category = character
 	}
-	character_cabinet_efficiency = 0.15	
+	character_cabinet_efficiency = 0.15
 }
 
 sbl_david_is_prisoner = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	siege_ability = 0.15
 	monthly_legitimacy = 0.10
@@ -4672,7 +4672,7 @@ sbl_david_is_prisoner = {
 
 david_ii_is_prisoner = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_defensive = -0.2
 	monthly_prestige = -0.20
@@ -4680,7 +4680,7 @@ david_ii_is_prisoner = {
 
 david_ii_has_been_executed = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	land_morale_modifier = -0.10
 }
@@ -4694,7 +4694,7 @@ balliol_claims_to_scotland = {
 
 fra_sided_with_antipope = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	monthly_religious_influence = -0.25
 	monthly_prestige = 0.5
@@ -4707,13 +4707,13 @@ fra_accepted_italian_pope = {
 	}
 	monthly_religious_influence = 0.10
     clergy_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
-	tolerance_own = 0.5	
+	tolerance_own = 0.5
 }
 
 fra_raids_against_english_ports_supply_debuff = {
 	game_data = {
 		category = country
-		decaying = yes	
+		decaying = yes
 	}
 	global_supply_limit_modifier = -0.33
 }
@@ -4754,7 +4754,7 @@ fra_loyal_nrm_lands = {
 	game_data = {
 		category = country
 	}
-	loyalty_to_overlord = 50	
+	loyalty_to_overlord = 50
 	global_monthly_control = 0.005
 	global_monthly_development = 0.002
 	global_monthly_prosperity = 0.001
@@ -4765,9 +4765,9 @@ fra_success_of_the_praguerie_faction = {
 	game_data = {
 		category = country
 	}
-	global_crown_estate_power = 0.10	
+	global_crown_estate_power = 0.10
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
-	global_nobles_estate_power = 0.1	
+	global_nobles_estate_power = 0.1
 }
 
 fra_royal_expenditure_managed = {
@@ -4828,18 +4828,18 @@ fra_estates_general_halts_support = {
 fra_recognized_marcel_in_parliament = {
 	game_data = {
 		category = country
-		decaying = yes	
+		decaying = yes
 	}
 	parliament_base_support = 0.20
 	burghers_estate_target_satisfaction = large_permanent_target_satisfaction
-	global_crown_estate_power = -0.10  	
+	global_crown_estate_power = -0.10
 }
 
 fra_marcel_tax_embargo = {
 	game_data = {
-		category = country	
+		category = country
 	}
-	burghers_estate_max_tax	= -1    	
+	burghers_estate_max_tax	= -1
 }
 
 fra_lavish_gifts_to_cadet_branches = {
@@ -4855,7 +4855,7 @@ fra_hyw_contested_succession = {
 		category = country
 	}
 	monthly_legitimacy = -0.5
-	global_max_control = -0.05	
+	global_max_control = -0.05
 }
 
 fra_hyw_contested_succession_appeasing_english = {
@@ -4863,8 +4863,8 @@ fra_hyw_contested_succession_appeasing_english = {
 		category = country
 	}
 	monthly_legitimacy = -0.25
-	global_max_control = -0.025	
-	monthly_prestige = -0.5	
+	global_max_control = -0.025
+	monthly_prestige = -0.5
 }
 
 fra_avenge_joan_of_arc = {
@@ -4886,7 +4886,7 @@ fra_traditional_warfare = {
 		category = country
 	}
 	army_heavy_infantry_power = 0.1
-}	
+}
 
 fra_compagnie_d_ordonnance = {
 	game_data = {
@@ -4894,7 +4894,7 @@ fra_compagnie_d_ordonnance = {
 	}
 	discipline = 0.05
 	global_manpower_modifier = 0.10
-	army_heavy_infantry_build_cost_modifier = -0.1	
+	army_heavy_infantry_build_cost_modifier = -0.1
 }
 
 fra_scaled_back_company = {
@@ -4910,8 +4910,8 @@ fra_renewed_levy_focus = {
 		category = country
 	}
 	global_levy_recruitment_speed_modifier = 0.20
-	levy_recovery_modifier = 0.1 
-	global_levy_size_modifier = 0.15	
+	levy_recovery_modifier = 0.1
+	global_levy_size_modifier = 0.15
 }
 
 fra_fiscal_tax_reforms = {
@@ -4954,7 +4954,7 @@ fra_coaching_inns_with_spys = {
 	}
 	spy_network_construction = 0.15
 	global_monthly_control = 0.005
-	war_no_cb_cost_modifier = -0.15	
+	war_no_cb_cost_modifier = -0.15
 }
 
 fra_neutral_policy_towards_italy = {
@@ -4962,7 +4962,7 @@ fra_neutral_policy_towards_italy = {
 		category = country
 	}
 	antagonism_monthly_change_modifier = 0.02
-	monthly_diplomats = 0.1	
+	monthly_diplomats = 0.1
 }
 
 fra_aligned_neapolitan_court = {
@@ -4971,16 +4971,16 @@ fra_aligned_neapolitan_court = {
 	}
 	monthly_diplomats = -0.05
 	legislative_efficiency = -0.10
-	monthly_prestige = 0.33	
+	monthly_prestige = 0.33
 }
 
 nap_aligned_neapolitan_court = {
 	game_data = {
 		category = country
 	}
-	loyalty_to_overlord = 20	
+	loyalty_to_overlord = 20
 	global_monthly_control = 0.01
-	legislative_efficiency = 0.10	
+	legislative_efficiency = 0.10
 }
 
 fra_tight_grip_over_neapolitan_court = {
@@ -4989,7 +4989,7 @@ fra_tight_grip_over_neapolitan_court = {
 	}
 	monthly_diplomats = -0.1
 	legislative_efficiency = -0.05
-	monthly_prestige = 0.33	
+	monthly_prestige = 0.33
 	tax_income_efficiency = large_tax_income_efficiency_bonus
 }
 
@@ -4997,11 +4997,11 @@ nap_tight_grip_over_neapolitan_court = {
 	game_data = {
 		category = country
 	}
-	loyalty_to_overlord = -20	
+	loyalty_to_overlord = -20
 	global_monthly_control = -0.002
 	tax_income_efficiency = huge_tax_income_efficiency_penalty
 	legislative_efficiency = -0.1
-	monthly_rebel_growth = -0.0005	
+	monthly_rebel_growth = -0.0005
 }
 
 fra_neapolitan_court_autonomy = {
@@ -5017,17 +5017,17 @@ nap_neapolitan_court_autonomy = {
 	game_data = {
 		category = country
 	}
-	loyalty_to_overlord = 45	
+	loyalty_to_overlord = 45
 	global_monthly_control = 0.005
 	legislative_efficiency = 0.05
-	monthly_rebel_growth = -0.0015	
+	monthly_rebel_growth = -0.0015
 }
 
 mlo_french_governance = {
 	game_data = {
 		category = country
 	}
-	loyalty_to_overlord = 25	
+	loyalty_to_overlord = 25
 	legislative_efficiency = -0.10
 }
 
@@ -5035,10 +5035,10 @@ appanage_league_of_weal_victory = {
 	game_data = {
 		category = country
 	}
-	global_crown_estate_power = 0.20	
-	counter_espionage = 0.50	
-	global_levy_size_modifier = 0.20	
-    french_subject_prevented_from_call_to_war = yes		
+	global_crown_estate_power = 0.20
+	counter_espionage = 0.50
+	global_levy_size_modifier = 0.20
+    french_subject_prevented_from_call_to_war = yes
 }
 
 fra_renaissance_patronage = {
@@ -5082,7 +5082,7 @@ fra_interior_focus = {
 	court_spending_efficiency = 0.2
 	global_estate_target_satisfaction = medium_permanent_target_satisfaction
 	tax_income_efficiency = medium_tax_income_efficiency_bonus
-}	
+}
 
 fra_early_canadian_colonial_efforts = {
 	game_data = {
@@ -5101,7 +5101,7 @@ fra_rejected_chateaubriant = {
 	}
 	clergy_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
 	global_crown_estate_power = -0.20
-}	
+}
 
 fra_concessions_to_huguenots = {
 	game_data = {
@@ -5111,7 +5111,7 @@ fra_concessions_to_huguenots = {
 
 	clergy_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
 	nobles_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
-	tolerance_heretic = 2	
+	tolerance_heretic = 2
 }
 
 fra_wor_declining_crown_authority = {
@@ -5119,9 +5119,9 @@ fra_wor_declining_crown_authority = {
 		category = country
 		decaying = yes
 	}
-	global_crown_estate_power = -0.20	
+	global_crown_estate_power = -0.20
 	tax_income_efficiency = large_tax_income_efficiency_penalty
-	
+
 }
 
 fra_wor_declining_crown_authority_concessions= {
@@ -5133,15 +5133,15 @@ fra_wor_declining_crown_authority_concessions= {
 	nobles_estate_target_satisfaction = huge_permanent_target_satisfaction_penalty
 	global_crown_estate_power = -0.33
 	tolerance_own = -3
-	tolerance_heretic = 5		
+	tolerance_heretic = 5
 
 }
 
 fra_treaty_of_public_weal = {
 	game_data = {
-		category = country	
+		category = country
 	}
-	global_integration_speed_modifier = -0.50	
+	global_integration_speed_modifier = -0.50
 	global_distance_from_capital_speed_propagation = -0.1
 }
 
@@ -5150,7 +5150,7 @@ appanage_greater_autonomy = {
 		category = country
 	}
 	payment_to_overlord_modifier = -1
-    french_subject_prevented_from_call_to_war = yes		
+    french_subject_prevented_from_call_to_war = yes
 }
 
 fra_royalist_victory_over_the_league_of_weal = {
@@ -5158,15 +5158,15 @@ fra_royalist_victory_over_the_league_of_weal = {
 		category = country
 	}
 	global_integration_speed_modifier = 0.20
-	subject_loyalty = 20	
-}	
+	subject_loyalty = 20
+}
 
 fra_richelieu_central_efforts = {
 	game_data = {
 		category = country
 		decaying = yes
 	}
-	global_crown_estate_power = 0.10	
+	global_crown_estate_power = 0.10
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 	global_nobles_estate_power = -0.05
 	legislative_efficiency = 0.05
@@ -5187,7 +5187,7 @@ fra_richelieu_nobility_influence_reduced = {
 	game_data = {
 		category = country
 	}
-	global_crown_estate_power = 0.05	
+	global_crown_estate_power = 0.05
 	nobles_estate_max_tax = 0.10
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 	global_nobles_estate_power = -0.08
@@ -5198,7 +5198,7 @@ fra_richelieu_compromise = {
 	game_data = {
 		category = country
 	}
-	global_crown_estate_power = -0.05	
+	global_crown_estate_power = -0.05
 	nobles_estate_max_tax = 0.05
 	nobles_estate_target_satisfaction = small_permanent_target_satisfaction_penalty
 	global_nobles_estate_power = -0.03
@@ -5208,7 +5208,7 @@ fra_richelieu_banished_supression = {
 	game_data = {
 		category = country
 	}
-	global_crown_estate_power = -0.10	
+	global_crown_estate_power = -0.10
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
 	global_nobles_estate_power = 0.05
 	stability_investment = small_stability_investment
@@ -5400,7 +5400,7 @@ fra_fallout_from_end_of_nantes = {
 	diplomatic_reputation = diplomatic_reputation_weak_penalty
 	legislative_efficiency = -0.05
 	research_speed_modifier = -0.20
-	global_production_efficiency = medium_production_efficiency_penalty	
+	global_production_efficiency = medium_production_efficiency_penalty
 }
 
 fra_quartering_of_the_dragoons = {
@@ -5417,10 +5417,10 @@ fra_academie_francaise_revitalized = {
 	game_data = {
 		category = country
 	}
-	research_speed_modifier = 0.15 
+	research_speed_modifier = 0.15
 	global_monthly_literacy = 0.05
 	court_spending_efficiency = -0.1
-}	
+}
 
 fra_clamped_down_on_opera = {
 	game_data = {
@@ -5428,7 +5428,7 @@ fra_clamped_down_on_opera = {
 	}
 	court_spending_efficiency = 0.2
 	monthly_prestige = -0.25
-}	
+}
 
 indochina_french_advisors = {
 	game_data = {
@@ -5519,7 +5519,7 @@ fra_john_law_national_bank = {
 	}
 	global_paper_output_modifier = 0.10
 	selling_efficiency = tiny_trade_efficiency_bonus
-	monthly_legitimacy = -0.05	
+	monthly_legitimacy = -0.05
 }
 
 fra_caution_national_bank = {
@@ -5527,7 +5527,7 @@ fra_caution_national_bank = {
 		category = country
 	}
 	global_paper_output_modifier = 0.05
-	monthly_legitimacy = 0.10	
+	monthly_legitimacy = 0.10
 }
 
 fra_john_law_mississippi_company  = {
@@ -5720,7 +5720,7 @@ fra_fleury_france_land_prosperity = {
 	global_monthly_prosperity = 0.001
 	monthly_towards_capital_economy = societal_value_tiny_monthly_move
 	merchant_maintenance_efficiency = 0.20
-	global_merchant_power = 0.1		
+	global_merchant_power = 0.1
 }
 
 fra_ecole_royale_mezieres = {
@@ -5833,8 +5833,8 @@ sco_civil_war_aggressive = {
 	siege_ability = 0.25
 	army_movement_speed = 0.1
 	parliament_base_support = -1
-	parliament_abolished = yes	
-}	
+	parliament_abolished = yes
+}
 
 sco_civil_war_defensive = {
 	game_data = {
@@ -5844,8 +5844,8 @@ sco_civil_war_defensive = {
 	global_defensive = 0.25
 	global_hostile_attrition = 1
 	parliament_base_support = -1
-	parliament_abolished = yes	
-}	
+	parliament_abolished = yes
+}
 
 sbl_english_backing = {
 	game_data = {
@@ -5856,48 +5856,48 @@ sbl_english_backing = {
 	levy_combat_efficiency_modifier = 0.10
 	monthly_legitimacy = -0.15
 	stability_investment = small_stability_investment
-}	
+}
 
 sco_desertion_among_balliol = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_defensive = -0.25
 	siege_ability = -0.25
 	army_movement_speed = -0.25
 	discipline = -0.10
-}	
+}
 
 sco_advance_into_england = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	siege_ability = 0.15
 	army_movement_speed = 0.10
 	discipline = 0.05
 	antagonism_monthly_change_modifier = 0.15
-}	
+}
 
 sco_auld_alliance_funding_fra = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_gold_income = -6.5
 	monthly_prestige = 0.50
 	monthly_army_tradition = 0.5
-}	
+}
 
 sco_fra_receiving_auld_funding = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_gold_income = 6.5
 	monthly_army_tradition = 0.5
-}	
+}
 
 sco_fortifying_against_england = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_defensive = 0.33
 	fort_maintenance_efficiency = 0.50
@@ -5905,7 +5905,7 @@ sco_fortifying_against_england = {
 
 sco_independence_from_england = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_prestige = 0.5
 	monthly_legitimacy = 0.5
@@ -5915,7 +5915,7 @@ sco_independence_from_england = {
 
 sco_focus_on_peace = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_monthly_control = 0.005
 	global_monthly_development = 0.002
@@ -5927,7 +5927,7 @@ sco_focus_on_peace = {
 
 sco_strong_wool_trade = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_wool_output_modifier = 0.75
 	global_monthly_development = 0.001
@@ -5937,10 +5937,10 @@ sco_strong_wool_trade = {
 
 sco_royal_purse_wool_trade = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_wool_output_modifier = 1
-	global_monthly_development = 0.003	
+	global_monthly_development = 0.003
 	tax_income_efficiency = large_tax_income_efficiency_penalty
 	monthly_gold_income = -4
 	peasants_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -5948,7 +5948,7 @@ sco_royal_purse_wool_trade = {
 
 sco_purging_enclaves = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	antagonism_received_modifier = 0.05
 	declaring_war_cost_modifier = -0.2
@@ -5963,12 +5963,12 @@ sco_introduction_of_artillery = {
 	}
 	army_tradition_from_battle = 0.5
 	artillery_bonus_vs_fort = 1
-	army_artillery_build_cost_modifier = -0.33 
+	army_artillery_build_cost_modifier = -0.33
 }
 
 sco_traditional_warfare_preferred = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	army_tradition_decay = 0.002
 	army_heavy_infantry_maintenance_cost_modifier = -0.25
@@ -5981,21 +5981,21 @@ sco_decline_of_parliament = {
 	}
 	parliament_abolished = yes
 	global_crown_estate_power = 0.2
-	legislative_efficiency = 0.10		
+	legislative_efficiency = 0.10
 }
 
 sco_summoning_of_parliament = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_crown_estate_power = -0.05
 	monthly_legitimacy = 0.25
-	parliament_base_support = 0.33	
+	parliament_base_support = 0.33
 }
 
 sco_highland_clan_tax = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	cultural_influence_modifier = 0.25
 	nobles_estate_max_tax = 0.1
@@ -6006,7 +6006,7 @@ sco_highland_clan_tax = {
 
 sco_did_not_press_highlands_issue = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	cultural_influence_modifier = -0.25
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -6015,7 +6015,7 @@ sco_did_not_press_highlands_issue = {
 
 sco_seeking_new_alliances = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	diplomatic_reputation = diplomatic_reputation_severe_bonus
 	monthly_diplomats = 0.5
@@ -6023,7 +6023,7 @@ sco_seeking_new_alliances = {
 
 sco_royal_navy_expansion = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_navy_tradition = 1
 	ship_build_speed = 0.33
@@ -6033,7 +6033,7 @@ sco_royal_navy_expansion = {
 
 sco_army_focus = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_army_tradition = 0.5
 	army_maintenance_efficiency = 0.3
@@ -6043,9 +6043,9 @@ sco_army_focus = {
 
 sco_knox_religious_turmoil = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	tolerance_own = -1 
+	tolerance_own = -1
 	tolerance_heretic = 3
 	clergy_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 	global_pop_conversion_speed_modifier = -0.2
@@ -6053,7 +6053,7 @@ sco_knox_religious_turmoil = {
 
 sco_reformation_adopted = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	tolerance_own = 2
 	tolerance_heretic = -3
@@ -6062,7 +6062,7 @@ sco_reformation_adopted = {
 
 sco_fight_the_heretics = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	tolerance_heretic = -3
 	clergy_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -6071,7 +6071,7 @@ sco_fight_the_heretics = {
 
 sco_focus_on_interior = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	monthly_diplomats = -0.2
 	global_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -6093,7 +6093,7 @@ sco_on_the_defensive = {
 	fort_maintenance_efficiency = 0.66
 	global_defensive = 0.33
 	global_hostile_attrition = 1
-}	
+}
 
 sco_the_first_congregation = {
 	game_data = {
@@ -6101,7 +6101,7 @@ sco_the_first_congregation = {
 	}
 	monthly_towards_humanist = societal_value_large_monthly_move
 	tolerance_heretic = 2
-}	
+}
 
 sco_no_east_india = {
 	game_data = {
@@ -6110,7 +6110,7 @@ sco_no_east_india = {
 	global_build_buildings_efficiency = 0.2
 	global_monthly_development = 0.002
 	stability_investment = standard_stability_investment
-}	
+}
 
 sco_global_road_construction = {
 	game_data = {
@@ -6120,7 +6120,7 @@ sco_global_road_construction = {
 	build_gravel_road_cost_modifier = -0.20
 	build_paved_road_cost_modifier = -0.20
 	build_modern_road_cost_modifier = -0.20
-}	
+}
 
 sco_darien_scheme = {
 	game_data = {
@@ -6130,7 +6130,7 @@ sco_darien_scheme = {
 	exploration_mission_speed = 0.2
 	colonial_range_modifier = 0.2
 	monthly_gold_expense = 4
-}	
+}
 
 wool_imports_banned = {
 	game_data = {
@@ -6250,7 +6250,7 @@ meissen_groschen = { #Same as trade_success
 	selling_efficiency = tiny_trade_efficiency_bonus
 }
 
-bohemian_aggression_modifier = { 
+bohemian_aggression_modifier = {
 	game_data = {
 		category = country
 		decaying = yes
@@ -6260,16 +6260,16 @@ bohemian_aggression_modifier = {
 	global_integration_speed_modifier = 0.25
 }
 
-orthodox_clerical_proceedings_modifier = {	
+orthodox_clerical_proceedings_modifier = {
 	game_data = {
-		category = country	
+		category = country
 	}
-	
-	tolerance_own = 1 
+
+	tolerance_own = 1
 	clergy_estate_target_satisfaction = medium_permanent_target_satisfaction
 }
 
-orthodox_clerical_taxation_modifier = { 
+orthodox_clerical_taxation_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6278,7 +6278,7 @@ orthodox_clerical_taxation_modifier = {
 	tax_income_efficiency = medium_tax_income_efficiency_bonus
 }
 
-orthodox_conversion_efforts_modifier = { 
+orthodox_conversion_efforts_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6296,7 +6296,7 @@ orthodox_spiritual_literature_and_understanding_modifier = {
 	tolerance_heathen = 1
 }
 
-orthodox_cabinet_examinations_modifier = { 
+orthodox_cabinet_examinations_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6306,7 +6306,7 @@ orthodox_cabinet_examinations_modifier = {
 	set_cabinet_member_cost_modifier = -0.25
 }
 
-orthodox_cabinet_eff_modifier = { 
+orthodox_cabinet_eff_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6316,7 +6316,7 @@ orthodox_cabinet_eff_modifier = {
 	replace_cabinet_member_cost_modifier = -0.5
 }
 
-orthodox_protect_the_faith_modifier = { 
+orthodox_protect_the_faith_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6325,7 +6325,7 @@ orthodox_protect_the_faith_modifier = {
 	global_integration_speed_modifier = 0.1
 }
 
-patriarch_increase_baptism_modifier = { 
+patriarch_increase_baptism_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6334,7 +6334,7 @@ patriarch_increase_baptism_modifier = {
 	monthly_religious_influence = 0.05
 }
 
-patriarch_sponsors_monasteries_modifier = { 
+patriarch_sponsors_monasteries_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6342,7 +6342,7 @@ patriarch_sponsors_monasteries_modifier = {
 	orthodox_monastery_building_cost_modifier = -0.5
 }
 
-patriarch_improved_relations_modifier = { 
+patriarch_improved_relations_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6351,7 +6351,7 @@ patriarch_improved_relations_modifier = {
 	improve_relation_impact = 0.2
 }
 
-patriarch_rally_population_modifier = { 
+patriarch_rally_population_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6359,7 +6359,7 @@ patriarch_rally_population_modifier = {
 	global_manpower_modifier = 0.10
 }
 
-patriarch_peace_modifier = { 
+patriarch_peace_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6368,7 +6368,7 @@ patriarch_peace_modifier = {
 	stability_investment = standard_stability_investment
 }
 
-pious_prosperity_modifier = { 
+pious_prosperity_modifier = {
 	game_data = {
 		category = country
 	}
@@ -6377,7 +6377,7 @@ pious_prosperity_modifier = {
 	global_monthly_control = 0.0025
 }
 
-cornish_rebellion = { 
+cornish_rebellion = {
 	game_data = {
 		category = country
 	}
@@ -6385,7 +6385,7 @@ cornish_rebellion = {
 	monthly_nationalist_rebel_growth = 0.025
 }
 
-pilgrimage_of_grace_rebellion = { 
+pilgrimage_of_grace_rebellion = {
 	game_data = {
 		category = country
 	}
@@ -6397,9 +6397,9 @@ renewal_of_life = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_doom = -0.05
-	
+
 }
 
 ned_bank_crisis = {
@@ -6503,7 +6503,7 @@ samuel_pepys_diligence = {
 	legislative_efficiency = 0.05
 }
 
-braganca_rebellion = { 
+braganca_rebellion = {
 	game_data = {
 		category = country
 	}
@@ -6573,7 +6573,7 @@ parliament_desires_change = {
 
 infrastructure_funds_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_build_buildings_efficiency = 0.2
@@ -6584,9 +6584,9 @@ infrastructure_funds_modifier = {
 
 warrior_banners_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_levy_size_modifier = 0.05
 	army_maintenance_efficiency = 0.3
 	expected_army_size_modifier = 0.1
@@ -6594,7 +6594,7 @@ warrior_banners_modifier = {
 
 foreign_donations_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	country_cabinet_efficiency = 0.1
@@ -6604,9 +6604,9 @@ foreign_donations_modifier = {
 
 jerusalem_resurgent_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	war_score_vs_other_religion_efficiency = -0.25
 	global_crown_estate_power = 0.2
 	clergy_estate_levy_size = 0.33
@@ -6625,7 +6625,7 @@ orbans_bombard_modifier = {
 
 efficient_customs_dues_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	tax_income_efficiency = large_tax_income_efficiency_bonus
 	global_burghers_estate_power = 0.25
@@ -6672,7 +6672,7 @@ fine_cloth_exports_banned = {
 
 pirate_shipwrights_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	navy_galley_build_cost_modifier = -0.2
 	navy_light_ship_build_cost_modifier = -0.2
@@ -6687,7 +6687,7 @@ shameless_privateering_modifier = {
 
 deaf_mute_servants_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	counter_espionage = 0.1
@@ -6721,38 +6721,38 @@ prolific_architects_modifier = {
 
 executed_a_ruler = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	diplomatic_reputation = diplomatic_reputation_severe_penalty
 }
 
 assassinated_character = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	diplomatic_reputation = diplomatic_reputation_mild_penalty
 }
 assassinated_heir = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	diplomatic_reputation = diplomatic_reputation_extreme_penalty
 }
 assassinated_ruler = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	diplomatic_reputation = diplomatic_reputation_ultimate_penalty
 }
 
 ser_reduced_taxation_obligation_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	tax_income_efficiency = huge_tax_income_efficiency_penalty
 	nobles_estate_max_tax = -0.5
 	nobles_estate_target_satisfaction = small_permanent_target_satisfaction
@@ -6760,7 +6760,7 @@ ser_reduced_taxation_obligation_modifier = {
 
 ser_noble_borderlands_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_towards_aristocracy = societal_value_monthly_move
@@ -6770,9 +6770,9 @@ ser_noble_borderlands_modifier = {
 
 ser_burgher_borderlands_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	monthly_towards_plutocracy = societal_value_monthly_move
 	global_monthly_control = -0.0025
 	global_burghers_estate_power = 0.5
@@ -6780,9 +6780,9 @@ ser_burgher_borderlands_modifier = {
 
 ser_clergy_borderlands_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	monthly_towards_traditionalist = societal_value_monthly_move
 	global_monthly_control = -0.0025
 	global_clergy_estate_power = 0.5
@@ -6860,7 +6860,7 @@ no_market_for_goods = {
 	global_tea_output_modifier = -0.1
 }
 
-eng_disgruntled_factory_workers_rebellion = { 
+eng_disgruntled_factory_workers_rebellion = {
 	game_data = {
 		category = country
 	}
@@ -6868,7 +6868,7 @@ eng_disgruntled_factory_workers_rebellion = {
 	monthly_peasants_estate_rebel_growth = 0.025
 }
 
-rus_decembrist_movement = { 
+rus_decembrist_movement = {
 	game_data = {
 		category = country
 	}
@@ -6877,7 +6877,7 @@ rus_decembrist_movement = {
 	monthly_peasants_estate_rebel_growth = 0.025
 }
 
-invested_in_textile_production = { 
+invested_in_textile_production = {
 	game_data = {
 		category = country
 	}
@@ -6885,7 +6885,7 @@ invested_in_textile_production = {
 	global_cloth_output_modifier = 0.1
 }
 
-invested_in_farming_output = { 
+invested_in_farming_output = {
 	game_data = {
 		category = country
 	}
@@ -6893,7 +6893,7 @@ invested_in_farming_output = {
 	global_monthly_food_modifier = 0.1
 }
 
-eng_gordon_riots = { 
+eng_gordon_riots = {
 	game_data = {
 		category = country
 	}
@@ -6902,7 +6902,7 @@ eng_gordon_riots = {
 	diplomatic_reputation = diplomatic_reputation_mild_penalty
 }
 
-committees_of_correspondence = { 
+committees_of_correspondence = {
 	game_data = {
 		category = country
 	}
@@ -6911,7 +6911,7 @@ committees_of_correspondence = {
 	loyalty_to_overlord = -10
 }
 
-blue_stockings_society = { 
+blue_stockings_society = {
 	game_data = {
 		category = country
 	}
@@ -6928,7 +6928,7 @@ tolerant_court_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	country_cabinet_efficiency = 0.1
 	clergy_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 	monthly_towards_humanist = societal_value_monthly_move
@@ -6971,7 +6971,7 @@ investing_in_the_science = {
 	}
 	research_speed_modifier = 0.05
 	global_monthly_literacy = 0.01
-	
+
 	global_estate_max_tax = -0.1
 }
 
@@ -7001,7 +7001,7 @@ nor_hollendertiden = {
 
 japanese_jokamachi = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	town_upgrade_cost_modifier = -0.5
@@ -7020,9 +7020,9 @@ jap_nanbokuchou = {
 
 jap_gokaido = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_road_building_time = -0.25
 	build_gravel_road_cost_modifier = -0.33
 	build_paved_road_cost_modifier = -0.33
@@ -7031,7 +7031,7 @@ jap_gokaido = {
 
 jap_proclamation_of_ashikaga_shogunate = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_honor = -0.2 # Installment of the North Court
@@ -7042,7 +7042,7 @@ jap_proclamation_of_ashikaga_shogunate = {
 
 jap_moronao_shitsuji = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	legislative_efficiency = 0.10
@@ -7052,7 +7052,7 @@ jap_moronao_shitsuji = {
 
 jap_lower_court_shitsuji = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	legislative_efficiency = 0.03
@@ -7062,7 +7062,7 @@ jap_lower_court_shitsuji = {
 
 jap_tadayoshi_arrival_to_stc = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -7073,7 +7073,7 @@ jap_tadayoshi_arrival_to_stc = {
 
 jap_integration_of_the_shugo_into_court = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_expense = 5
@@ -7084,7 +7084,7 @@ jap_integration_of_the_shugo_into_court = {
 
 jap_integration_of_the_shugo_into_court_pragmatic = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_expense = 8
@@ -7097,7 +7097,7 @@ jap_integration_of_the_shugo_into_court_pragmatic = {
 
 jap_senior_kanrei_clan_member = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_income = 5
@@ -7107,7 +7107,7 @@ jap_senior_kanrei_clan_member = {
 
 jap_senior_kanrei_clan_member_weakened = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_income = 3
@@ -7118,7 +7118,7 @@ jap_senior_kanrei_clan_member_weakened = {
 
 jap_kanrei_shukuro_kaigi_clan = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_income = 2.5
@@ -7128,7 +7128,7 @@ jap_kanrei_shukuro_kaigi_clan = {
 
 jap_shukuro_kaigi_expansion = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	diplomatic_reputation = 1
@@ -7150,7 +7150,7 @@ jap_board_of_retainers = {
 
 jap_samurai_dokoro_holder = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	declaring_war_cost_modifier = -0.2
@@ -7171,7 +7171,7 @@ jap_shugo_autonomy_for_submission = {
 
 jap_new_kanrei_leader = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_prestige = 0.25
@@ -7180,7 +7180,7 @@ jap_new_kanrei_leader = {
 
 jap_punitive_authority = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -7192,7 +7192,7 @@ jap_punitive_authority = {
 
 jap_half_tax_decree = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.15
@@ -7202,19 +7202,19 @@ jap_half_tax_decree = {
 
 jap_half_tax_decree_dishonor = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.15
 	global_estate_max_tax = 0.12
 	global_estate_min_tax = 0.12
 	monthly_honor = -0.33
-	stability_investment = stability_investment_penalty	
+	stability_investment = stability_investment_penalty
 }
 
 jap_shugo_tandai_of_kyushu = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_gold_income = 5
@@ -7224,7 +7224,7 @@ jap_shugo_tandai_of_kyushu = {
 
 jap_shogunal_army = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	land_morale_modifier = 0.05
@@ -7236,7 +7236,7 @@ jap_shogunal_army = {
 
 jap_shogunal_army_levy_focus = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	land_morale_modifier = -0.05
@@ -7248,7 +7248,7 @@ jap_shogunal_army_levy_focus = {
 
 jap_required_shugo_residence_in_kyoto = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	court_spending_efficiency = -0.05
@@ -7259,7 +7259,7 @@ jap_required_shugo_residence_in_kyoto = {
 
 jap_taxing_of_the_sakaya_doso = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	burghers_estate_max_tax = 0.05
@@ -7268,7 +7268,7 @@ jap_taxing_of_the_sakaya_doso = {
 
 jap_conversion_lockdown = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_pop_conversion_speed_modifier = -0.33
@@ -7276,7 +7276,7 @@ jap_conversion_lockdown = {
 
 jap_kano_school = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -7287,7 +7287,7 @@ jap_kano_school = {
 
 jap_noh_theatre_patronage = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.10
@@ -7307,7 +7307,7 @@ jap_shoin_zukuri = {
 
 jap_way_of_tea = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_prestige = 0.25
@@ -7318,7 +7318,7 @@ jap_way_of_tea = {
 
 jap_kyoto_shoshidai = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_monthly_control = 0.003
@@ -7327,7 +7327,7 @@ jap_kyoto_shoshidai = {
 
 jap_restricted_imperial_family = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.15
@@ -7335,17 +7335,17 @@ jap_restricted_imperial_family = {
 
 jap_ymt_restricted_imperial_family = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_crown_estate_power = -0.25
 }
 
 jap_kansei_reforms = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_monthly_food_modifier = 0.25
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
 	stability_investment = standard_stability_investment
@@ -7353,9 +7353,9 @@ jap_kansei_reforms = {
 
 demoralised_by_loss_of_capital = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	land_morale_modifier = -0.1
 }
 
@@ -7397,9 +7397,9 @@ struggle_against_china_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_towards_unsinicized = societal_value_large_monthly_move
-	
+
 }
 
 interdict = {
@@ -7566,7 +7566,7 @@ forbade_witch_hunts = {
 	tolerance_heretic = 2
 }
 
-pozhiloye = { 
+pozhiloye = {
 	game_data = {
 		category = country
 	}
@@ -7575,7 +7575,7 @@ pozhiloye = {
 	tax_income_efficiency = large_tax_income_efficiency_bonus
 }
 
-territorial_aggrandizement = { 
+territorial_aggrandizement = {
 	game_data = {
 		category = country
 	}
@@ -7585,7 +7585,7 @@ territorial_aggrandizement = {
 	cultural_tradition = -0.1
 }
 
-curtailed_ambitions = { 
+curtailed_ambitions = {
 	game_data = {
 		category = country
 	}
@@ -7595,7 +7595,7 @@ curtailed_ambitions = {
 	cultural_tradition = 0.1
 }
 
-the_apostle_wide_distribution = { 
+the_apostle_wide_distribution = {
 	game_data = {
 		category = country
 	}
@@ -7606,9 +7606,9 @@ the_apostle_wide_distribution = {
 
 unattended_crops = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_monthly_food_modifier = -0.25
 }
 
@@ -7677,7 +7677,7 @@ stringent_fasting_and_prayer = {
 
 enforced_central_control_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_monthly_control = 0.002
@@ -7687,7 +7687,7 @@ enforced_central_control_modifier = {
 
 open_silk_trade_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_merchant_capacity_modifier = 0.1
@@ -7707,18 +7707,18 @@ dlh_outside_interference_modifier = {
 
 dlh_heirs_of_delhi_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_integration_speed_modifier = 0.1
 	monthly_war_exhaustion = -0.05
 }
 
 dlh_situation_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	declaring_war_cost_modifier = -0.33
 	global_integration_speed_modifier = 0.1
 	antagonism_received_modifier = -0.2
@@ -7728,7 +7728,7 @@ dlh_slaves_in_cabinet = {
 	game_data = {
 		category = country
 	}
-	
+
 	country_cabinet_efficiency = 0.1
 }
 
@@ -7736,13 +7736,13 @@ dlh_iqta_holder_appeasement = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_nobles_estate_power = 0.25
 }
 
 delhi_embassies_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	diplomatic_reputation = 3
@@ -7751,7 +7751,7 @@ delhi_embassies_modifier = {
 
 delhi_loyal_governors_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_rebel_growth = -0.001
@@ -7761,7 +7761,7 @@ delhi_loyal_governors_modifier = {
 
 delhi_reaffirm_vassal_relations_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	subject_pays_vassal_cost_modifier = 0.2
@@ -7770,7 +7770,7 @@ delhi_reaffirm_vassal_relations_modifier = {
 
 delhi_appeased_the_nobles_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -7778,7 +7778,7 @@ delhi_appeased_the_nobles_modifier = {
 
 silver_famine_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
@@ -7787,7 +7787,7 @@ silver_famine_modifier = {
 
 allowed_provincial_barter_markets = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_inflation = 0.002
@@ -7797,7 +7797,7 @@ allowed_provincial_barter_markets = {
 
 dlh_coinage_reforms_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_inflation = -0.002
@@ -7805,7 +7805,7 @@ dlh_coinage_reforms_modifier = {
 
 dlh_restored_authority_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.25
@@ -7840,7 +7840,7 @@ bra_overcome_the_turmoil = {
 
 byz_relinquish_taxes_for_nobles_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	nobles_estate_max_tax = -0.25
@@ -7849,7 +7849,7 @@ byz_relinquish_taxes_for_nobles_modifier = {
 
 expanded_assembly_powers_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_estate_max_tax = 0.1
@@ -7858,7 +7858,7 @@ expanded_assembly_powers_modifier = {
 
 byz_reliance_on_italian_navies = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	ship_build_speed = 0.1
@@ -7869,7 +7869,7 @@ byz_reliance_on_italian_navies = {
 
 byz_mercantile_self_reliance_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	selling_efficiency = tiny_trade_efficiency_bonus
@@ -7948,7 +7948,7 @@ mfa_honored_claim = {
 	game_data = {
 		category = country
 	}
-	
+
 	diplomatic_reputation = 4
 }
 
@@ -7973,7 +7973,7 @@ teu_anchoress_visions = {
 	game_data = {
 		category = country
 	}
-	
+
 	clergy_estate_target_satisfaction = estate_satisfaction_weak_bonus
 	monthly_devotion = 0.15
 	monthly_towards_spiritualist = societal_value_minor_monthly_move
@@ -7983,7 +7983,7 @@ teu_extra_taxes_on_bailwicks = {
 	game_data = {
 		category = country
 	}
-	
+
 	nobles_estate_target_satisfaction = small_privilege_target_satisfaction_penalty
 }
 
@@ -8036,7 +8036,7 @@ beard_tax = {
 
 growth_of_the_cattle_trade = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_livestock_output_modifier = 0.3
 	global_wheat_output_modifier = 0.3
@@ -8067,7 +8067,7 @@ por_interpreters = {
 	game_data = {
 		category = country
 	}
-	
+
 	max_diplomats = 1
 	diplomatic_reputation = 1
 }
@@ -8077,7 +8077,7 @@ por_refused_ordinances = {
 		category = country
 		decaying = yes
 	}
-	
+
 	legislative_efficiency = -0.1
 }
 
@@ -8085,7 +8085,7 @@ por_castro_family_influences = {
 	game_data = {
 		category = country
 	}
-	
+
 	diplomatic_reputation = -2
 	diplomatic_spending_cost = 0.01
 }
@@ -8094,7 +8094,7 @@ por_misericordia = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_devastation_recovery = 0.001
 	global_monthly_prosperity = 0.001
 }
@@ -8111,7 +8111,7 @@ por_patronage_of_navigator = {
 	game_data = {
 		category = country
 	}
-	
+
 	start_exploration_sea_cost_modifier = -0.25
 	recruit_explorer_cost_modifier = -0.25
 	monthly_legitimacy = -0.15
@@ -8119,7 +8119,7 @@ por_patronage_of_navigator = {
 
 piotrokow_wislica_statutes_impact_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_levy_size_modifier = 0.1
@@ -8129,9 +8129,9 @@ piotrokow_wislica_statutes_impact_modifier = {
 
 pol_attempts_consolidation_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	revoke_privilege_cost_modifier = -0.05
 	global_crown_estate_power = 0.1
 }
@@ -8140,7 +8140,7 @@ szlachta_backing_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	parliament_base_support = 0.03
 	global_nobles_estate_power = 0.25
 	monthly_towards_aristocracy = societal_value_minor_monthly_move
@@ -8158,7 +8158,7 @@ burghers_backing_modifier = {
 
 pol_supremacy_over_the_nobles_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.5
@@ -8217,25 +8217,25 @@ pol_may_constitution_modifier = {
 
 PRU_justifying_conquest_of_royal_prussia = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
-	max_diplomats = -1 
+	max_diplomats = -1
 	monthly_diplomats = -0.1
 }
 
 PRU_fabrication = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
-	max_diplomats = -1 
+	max_diplomats = -1
 	monthly_diplomats = -0.1
 }
 
 PRU_toleranzedikt = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_towards_humanist = societal_value_monthly_move
@@ -8243,14 +8243,14 @@ PRU_toleranzedikt = {
 
 PRU_end_of_robber_barons = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_crown_estate_power = 0.2
 }
 PRU_crisis_of_the_theocracy = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	monthly_devotion = -0.25
@@ -8258,7 +8258,7 @@ PRU_crisis_of_the_theocracy = {
 }
 PRU_increase_power_projection_rating = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	power_projection = 10
@@ -8343,9 +8343,9 @@ cossacks_estate_head_of_cabinet_influence = {
 
 exodus_of_artists = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	cultural_tradition_modifier = -0.25
 	global_monthly_art_start_chance = -0.5
 }
@@ -8354,7 +8354,7 @@ posolsky_prikaz_excelling = {
 	game_data = {
 		category = country
 	}
-	
+
 	antagonism_received_modifier = -0.1
 	max_diplomats = 1
 }
@@ -8371,7 +8371,7 @@ artistic_encouragement = {
 	game_data = {
 		category = country
 	}
-	
+
 	skill_of_new_artists = 0.1
 	global_monthly_art_start_chance = 0.15
 }
@@ -8380,7 +8380,7 @@ military_influencer = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_army_tradition = 0.5
 	monthly_towards_quality = societal_value_monthly_move
 }
@@ -8389,20 +8389,20 @@ accomplished_overseeing = {
 	game_data = {
 		category = country
 	}
-	
+
 	country_cabinet_efficiency = 0.1
 	legislative_efficiency = 0.2
 }
 
 potato_varieties_introduced = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	global_potato_output_modifier = 0.25
 }
 
-grey_support = { 
+grey_support = {
 	game_data = {
 		category = country
 	}
@@ -8410,7 +8410,7 @@ grey_support = {
 	monthly_pretender_rebel_growth = 0.025
 }
 
-northern_rebellion = { 
+northern_rebellion = {
 	game_data = {
 		category = country
 	}
@@ -8433,7 +8433,7 @@ rtr_red_turban_rebellions = {
 
 rtr_appeased_the_court = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	global_estate_max_tax = -0.25
 	global_estate_target_satisfaction = large_permanent_target_satisfaction
@@ -8451,7 +8451,7 @@ peranakan_trading_rights_restriction = {
 
 maj_weathered_the_storm = {
 	game_data = {
-		category = country 
+		category = country
 	}
 	power_projection = 5
 	stability_cost_efficiency = 0.2
@@ -8487,7 +8487,7 @@ mch_manchu_identity = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_towards_sinicized = societal_value_tiny_monthly_move
 	monthly_legitimacy = 0.15
 }
@@ -8602,7 +8602,7 @@ rome_reborn = {
 	max_diplomats = 2
 	diplomatic_range = 500
 	fort_limit = 1
-	num_possible_artists = 1 
+	num_possible_artists = 1
 	cultures_capacity = 1
 	government_size = 1
 }
@@ -8650,7 +8650,7 @@ cuspinian_diplomacy = {
 
 sovereign_of_anatolia = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	global_integration_speed_modifier = 0.1
@@ -8672,7 +8672,7 @@ mam_political_instability_modifier = {
 	}
 
 	global_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
-	
+
 }
 
 pol_blocked_from_marriage_betrothal = {
@@ -8711,7 +8711,7 @@ plc_blackmail_of_the_nobles = {
 	game_data = {
 		category = country
 	}
-	
+
 	nobles_estate_agenda_impact = -0.5
 	nobles_estate_levy_size = -0.25
 	nobles_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
@@ -8724,7 +8724,7 @@ plc_strive_for_reform = {
 	}
 	revoke_privilege_cost_modifier = -0.1
 	global_nobles_estate_power = -0.25
-	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty	
+	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 }
 
 plc_diplomatic_efforts_to_unify_churches = {
@@ -8744,9 +8744,9 @@ pol_excellent_noble_education = {
 
 plc_kurland_colonial_ambitions = {
 	game_data = {
-		category = country 
+		category = country
 	}
-	
+
 	colonial_migration_size_modifier = 0.5
 	colonial_maintenance_efficiency = 1.0
 }
@@ -8755,7 +8755,7 @@ plc_zaluski_library_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_max_literacy = 10
 	research_speed_modifier = 0.1
 }
@@ -8789,7 +8789,7 @@ ned_secured_baltic_grain = {
 	}
 
 	global_population_growth = 0.005
-	
+
 }
 
 
@@ -8836,7 +8836,7 @@ mam_division_of_egypt_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	cultures_capacity = 1
 	monthly_legitimacy = 0.05
 }
@@ -8984,7 +8984,7 @@ period_of_instability_modifier = {
 
 viziernomics_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	nobles_estate_max_tax = -0.5
@@ -9278,7 +9278,7 @@ kor_support_hungu_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_crown_estate_power = 0.1
 	monthly_towards_centralization = societal_value_monthly_move
 }
@@ -9287,7 +9287,7 @@ kor_support_gwan_hak_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	country_cabinet_efficiency = 0.1
 	monthly_towards_innovative = societal_value_monthly_move
 }
@@ -9296,7 +9296,7 @@ kor_support_jeol_eui_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	stability_cost_efficiency = 0.2
 	monthly_towards_traditionalist = societal_value_monthly_move
 }
@@ -9415,7 +9415,7 @@ eth_reduced_clergy_power = {
 
 livestock_suffers_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9433,7 +9433,7 @@ wineries_suffering_modifier = {
 
 great_frost_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9457,7 +9457,7 @@ public_libraries = {
 
 foreign_coinage_ban = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	import_efficiency = medium_trade_efficiency_penalty
@@ -9503,7 +9503,7 @@ peasants_concessions_modifier = {
 
 dhimmi_concessions_modifier = {
 	game_data = {
-		category = country 
+		category = country
 	}
 
 	dhimmi_estate_max_tax = -0.2
@@ -9524,14 +9524,14 @@ chi_disaster_reform_taxation_modifier = {
 		category = country
 		decaying = yes
 	}
-	
+
 	global_estate_target_satisfaction = large_permanent_target_satisfaction_penalty
 	stability_investment = stability_investment_penalty
 }
 
 chi_renewed_taxation_system_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9563,7 +9563,7 @@ mam_bedoin_warfare = {
 
 supreme_authority_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9666,7 +9666,7 @@ reinstated_the_parliament_modifier = {
 
 decreased_morale_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9699,7 +9699,7 @@ unsupported_diplomatic_capacity = {
 
 	# This is important as it effectively puts a cap on how many relations you can have
 	# It can also be justified as saying your obligations become less credible the more of them you have
-	
+
 	diplomatic_spending_cost = 0.1
 	diplomatic_reputation = diplomatic_reputation_mild_penalty
 }
@@ -9747,7 +9747,7 @@ ori_decline_of_trade = {
 		category = country
 		decaying = yes
 	}
-	
+
 	import_efficiency = large_trade_efficiency_penalty
 	global_merchant_power = -0.15
 }
@@ -9774,11 +9774,11 @@ rejection_of_syncretism = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_pop_conversion_speed_modifier = 0.01
 	tolerance_own = 1
 }
-	
+
 violate_treaty_of_tordesillas = {
 	game_data = {
 		category = country
@@ -9862,7 +9862,7 @@ fra_religious_league_modifier = {
 
 fra_religious_league_consolidated_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -9896,7 +9896,7 @@ new_madrasas_modifier = {
 		decaying = yes
 	}
 
-	
+
 	monthly_towards_jurisprudence = societal_value_significant_monthly_move
 }
 
@@ -9942,7 +9942,7 @@ katun_celebration = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_prestige = 0.1
 	tolerance_own = 1
 	country_cabinet_efficiency = 0.1
@@ -9956,7 +9956,7 @@ katun_celebration_bad = {
 	game_data = {
 		category = country
 	}
-	
+
 	monthly_prestige = -0.05
 	country_cabinet_efficiency = -0.05
 	land_morale_modifier = -0.05
@@ -9985,7 +9985,7 @@ cas_converted_behetrias = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_nobles_estate_power = 0.25
 	monthly_towards_serfdom = societal_value_minor_monthly_move
 }
@@ -10340,7 +10340,7 @@ invest_in_members_military_modifier = {
 
 courting_dervishes_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -10493,7 +10493,7 @@ open_trade_markets_modifier = {
 
 wave_of_spiritualism_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -10502,7 +10502,7 @@ wave_of_spiritualism_modifier = {
 
 wave_of_humanism_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -10511,7 +10511,7 @@ wave_of_humanism_modifier = {
 
 conversion_efforts_modifier = {
 	game_data = {
-		category = country 
+		category = country
 		decaying = yes
 	}
 
@@ -10635,7 +10635,7 @@ iro_too_aggressive_consolidation = {
 	}
 	diplomatic_reputation = diplomatic_reputation_mild_penalty
 	improve_relation_impact = -0.33
-	antagonism_monthly_change_modifier = 0.02	
+	antagonism_monthly_change_modifier = 0.02
 }
 
 iro_shikellamy_missionaries_connections = {
@@ -10663,12 +10663,12 @@ iro_strong_tribal_unity = {
 	army_light_infantry_power = 0.20
 	global_defensive = 0.15
 	stability_investment = large_stability_investment
-	global_estate_target_satisfaction = medium_permanent_target_satisfaction	
+	global_estate_target_satisfaction = medium_permanent_target_satisfaction
 }
 
 iro_welcoming_to_outsiders = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	research_speed_modifier = 0.10
 	diplomatic_reputation = diplomatic_reputation_weak_bonus
@@ -10676,7 +10676,7 @@ iro_welcoming_to_outsiders = {
 
 iro_forbade_foreign_contact = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	stability_investment = large_stability_investment
 	monthly_tribal_cohesion = 0.25
@@ -10685,7 +10685,7 @@ iro_forbade_foreign_contact = {
 
 iro_sharing_of_three_sisters_harvest = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_monthly_prosperity = 0.005
 	monthly_tribal_cohesion = 0.10
@@ -10693,21 +10693,21 @@ iro_sharing_of_three_sisters_harvest = {
 
 iro_trading_of_furs = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_fur_output_modifier = 0.33
 }
 
 iro_beavers_depleted = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_fur_output_modifier = -0.25
 }
 
 iro_assertive_council_of_fifty = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	improve_relation_impact = -0.15
 	global_estate_target_satisfaction = medium_permanent_target_satisfaction
@@ -10716,7 +10716,7 @@ iro_assertive_council_of_fifty = {
 
 iro_disregarded_council_of_fifty_diplomacy = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_crown_estate_power = 0.1
 	nobles_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
@@ -10724,14 +10724,14 @@ iro_disregarded_council_of_fifty_diplomacy = {
 
 iro_champlain_aided_the_hurons = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	army_light_infantry_power = 0.1
 }
 
 iro_merged_tribe = {
 	game_data = {
-		category = country	
+		category = country
 		decaying = yes
 	}
 	diplomatic_reputation = diplomatic_reputation_extreme_penalty
@@ -10739,14 +10739,14 @@ iro_merged_tribe = {
 
 trading_in_firearms_iro = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	army_heavy_infantry_power = 0.15
 }
 
 iro_matriarchal_agriculture = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_food_capacity_modifier = 0.25
 	global_monthly_development = 0.002
@@ -10858,7 +10858,7 @@ chk_new_golden_age = {
 	land_cost_on_distance_from_capital_speed_propagation = 0.1
 	global_urban_build_buildings_efficiency = 0.20
 	global_monthly_development = 0.003
-	stability_investment = large_stability_investment	
+	stability_investment = large_stability_investment
 	government_size = 1
 	monthly_gold_income = 6
 }
@@ -10890,7 +10890,7 @@ chk_shadow_of_cahokia = {
 
 pue_return_to_mesa_verde = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_build_buildings_efficiency = -0.2
 	stability_investment = small_stability_investment
@@ -10899,7 +10899,7 @@ pue_return_to_mesa_verde = {
 
 pue_unifying_campaign = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	stability_investment = small_stability_investment_penalty
 	antagonism_monthly_change_modifier = 0.03
@@ -10910,7 +10910,7 @@ pue_unifying_campaign = {
 
 pue_maintain_inner_tribal_peace = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	monthly_tribal_cohesion = 0.25
 	stability_investment = small_stability_investment
@@ -10922,7 +10922,7 @@ pue_maintain_inner_tribal_peace = {
 
 pue_unification_of_the_ancestral_puebloans = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	monthly_tribal_cohesion = 0.25
 	monthly_prestige = 0.25
@@ -10934,7 +10934,7 @@ pue_unification_of_the_ancestral_puebloans = {
 
 nov_benefits_of_peterhof = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	import_efficiency = tiny_trade_efficiency_bonus
 	global_merchant_power = 0.1
@@ -10942,7 +10942,7 @@ nov_benefits_of_peterhof = {
 
 nov_financing_ushkuyniks_pirates = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	privateer_durability = 0.02
 	hire_privateer_cost_modifier = -0.33
@@ -10951,7 +10951,7 @@ nov_financing_ushkuyniks_pirates = {
 
 nov_further_posadnik_reforms = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	country_cabinet_efficiency = 0.10
 	estate_power_from_cabinet = 0.15
@@ -11016,7 +11016,7 @@ nov_expand_central_influence = {
 
 nov_allow_self_governance = {
 	game_data = {
-		category = country	
+		category = country
 	}
 	global_distance_from_capital_speed_propagation = -0.05
 	legislative_efficiency = -0.05
@@ -11102,7 +11102,7 @@ taxation_reforms_modifier = {
 		decaying = yes
 	}
 
-	
+
 	tax_income_efficiency = large_tax_income_efficiency_bonus
 	monthly_towards_centralization = 0.1
 }
@@ -11120,7 +11120,7 @@ PRU_mild_suppression = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_nobles_estate_power = -0.1
 	monthly_towards_centralization = societal_value_minor_monthly_move
 }
@@ -11129,7 +11129,7 @@ PRU_harsh_suppression = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_nobles_estate_power = -0.25
 	monthly_towards_centralization = societal_value_monthly_move
 }
@@ -11222,7 +11222,7 @@ matters_of_the_crown_modifier = {
 	game_data = {
 		category = country
 	}
-	
+
 	global_estate_target_satisfaction = medium_permanent_target_satisfaction_penalty
 	global_crown_estate_power = 0.15
 }
@@ -11333,7 +11333,7 @@ yua_dictator_powers = {
 	game_data = {
 		category = country
 	}
-	
+
 	change_policy_cost_modifier = 0.2
 	global_crown_estate_power = 0.15
 }
@@ -11394,9 +11394,9 @@ advances_in_production_modifier = {
 }
 
 new_capital_economy = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	monthly_towards_capital_economy = societal_value_significant_monthly_move
@@ -11405,9 +11405,9 @@ new_capital_economy = {
 }
 
 profit_dividents_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	trade_income = 0.1
@@ -11415,9 +11415,9 @@ profit_dividents_modifier = {
 }
 
 stronger_relations_with_china_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	monthly_towards_sinicized = societal_value_huge_monthly_move
@@ -11425,9 +11425,9 @@ stronger_relations_with_china_modifier = {
 }
 
 distanced_from_china_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	monthly_towards_unsinicized = societal_value_significant_monthly_move
@@ -11435,9 +11435,9 @@ distanced_from_china_modifier = {
 }
 
 enforced_sinicization_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	monthly_towards_sinicized = societal_value_significant_monthly_move
@@ -11445,9 +11445,9 @@ enforced_sinicization_modifier = {
 }
 
 imposed_sanctions_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	monthly_prestige = -0.15
@@ -11456,9 +11456,9 @@ imposed_sanctions_modifier = {
 }
 
 beaurocratic_improvements_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	country_cabinet_efficiency = 0.05
@@ -11466,9 +11466,9 @@ beaurocratic_improvements_modifier = {
 }
 
 merchant_advantage_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	merchant_maintenance_efficiency = 0.2
@@ -11477,36 +11477,36 @@ merchant_advantage_modifier = {
 }
 
 dysfunctional_cabinet_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	country_cabinet_efficiency = -0.2
 }
 
 sinicized_learnings_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	research_speed_modifier = 0.1
 }
 
 strengthened_local_traditions_modifier  = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	global_estate_satisfaction_recovery = 0.005
 }
 
 refused_tributes_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	tribute_payment_received_modifier = -0.25
@@ -11514,9 +11514,9 @@ refused_tributes_modifier = {
 }
 
 chinese_architectural_influences_modifier = {
-	game_data = { 
-		category = country 
-		decaying = yes 
+	game_data = {
+		category = country
+		decaying = yes
 	}
 
 	global_build_buildings_efficiency = 0.2
@@ -11524,7 +11524,7 @@ chinese_architectural_influences_modifier = {
 }
 
 coins_in_our_name_modifier = {
-	game_data = { 
+	game_data = {
 		category = country
 		decaying = yes
 	}
@@ -11535,7 +11535,7 @@ coins_in_our_name_modifier = {
 }
 
 absolutist_influences_government_modifier = {
-	game_data = { 
+	game_data = {
 		category = country
 		decaying = yes
 	}
@@ -11545,7 +11545,7 @@ absolutist_influences_government_modifier = {
 }
 
 liberal_influences_government_modifier = {
-	game_data = { 
+	game_data = {
 		category = country
 		decaying = yes
 	}
@@ -11555,7 +11555,7 @@ liberal_influences_government_modifier = {
 }
 
 victory_in_the_hyw_modifier = {
-	game_data = { 
+	game_data = {
 		category = country
 		decaying = yes
 	}
@@ -11565,68 +11565,68 @@ victory_in_the_hyw_modifier = {
 }
 
 pentarch_constantinople = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	diplomatic_reputation = diplomatic_reputation_very_weak_bonus
 }
 pentarch_rome = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	court_spending_efficiency = 0.1
 }
 pentarch_jerusalem = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	monthly_prestige = monthly_prestige_weak_bonus
 }
 pentarch_antioch = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	global_estate_target_satisfaction = tiny_permanent_target_satisfaction
 }
 pentarch_alexandria = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	research_speed_modifier = 0.025
 }
 pentarch_constantinople_upgraded = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	diplomatic_reputation = diplomatic_reputation_weak_bonus
 }
 pentarch_rome_upgraded = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	court_spending_efficiency = 0.2
 }
 pentarch_jerusalem_upgraded = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	monthly_prestige = monthly_prestige_mild_bonus
 }
 pentarch_antioch_upgraded = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	global_estate_target_satisfaction = small_permanent_target_satisfaction
 }
 pentarch_alexandria_upgraded = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	research_speed_modifier = 0.05
 }
 
 mended_schism = {
-	game_data = { 
+	game_data = {
 		category = country
 	}
 	clergy_estate_target_satisfaction = small_permanent_target_satisfaction
@@ -11843,7 +11843,7 @@ ath_rewarded_catalans_greek_lands = {
 ath_encroached_rule_of_the_catalan_company = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	global_crown_estate_power = -0.25
 	pop_join_rebel_threshold = -0.2
@@ -11854,7 +11854,7 @@ ath_encroached_rule_of_the_catalan_company = {
 ath_wary_of_the_catalan_company = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	global_nobles_estate_power = -0.25
 	global_max_control = -0.02
@@ -11866,7 +11866,7 @@ ath_wary_of_the_catalan_company = {
 lat_a_distinct_latin_bureaucracy = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	change_policy_cost_modifier = -0.20
 	legislative_efficiency = 0.20
@@ -11879,7 +11879,7 @@ lat_a_distinct_latin_bureaucracy = {
 lat_catalan_inspired_bureaucracy = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	change_policy_cost_modifier = -0.25
 	legislative_efficiency = 0.10
@@ -11891,7 +11891,7 @@ lat_catalan_inspired_bureaucracy = {
 lat_neapolitan_inspired_bureaucracy = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	change_policy_cost_modifier = -0.10
 	legislative_efficiency = 0.25
@@ -11903,7 +11903,7 @@ lat_neapolitan_inspired_bureaucracy = {
 lat_byzantine_inspired_bureaucracy = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	change_policy_cost_modifier = -0.15
 	legislative_efficiency = 0.15
@@ -11916,7 +11916,7 @@ lat_byzantine_inspired_bureaucracy = {
 lat_crusader_inspired_bureaucracy = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	change_policy_cost_modifier = -0.10
 	legislative_efficiency = 0.10
@@ -11950,7 +11950,7 @@ lat_defensive_approach_to_anatolia = {
 lat_avoided_bulgaria_serbia_campaigns = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	global_integration_speed_modifier = 0.20
 	global_monthly_control = 0.003
@@ -11963,7 +11963,7 @@ lat_avoided_bulgaria_serbia_campaigns = {
 lat_leveraged_patriarchate_for_estate_gain = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	clergy_estate_target_satisfaction = medium_permanent_target_satisfaction
 	clergy_estate_min_tax = 0.1
@@ -11972,7 +11972,7 @@ lat_leveraged_patriarchate_for_estate_gain = {
 lat_refused_to_restore_patriarchate = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 	tolerance_heretic = 2
 	tolerance_own = -0.25
@@ -12065,7 +12065,7 @@ hindered_shipbuilding_research_modifier = {
 maj_sumpah_palapa_modifier = {
 	game_data = {
 		category = country
-		decaying = yes 
+		decaying = yes
 	}
 
 	discipline = 0.05
@@ -12241,12 +12241,12 @@ italian_culture_translation_works_of_guarino = {
 }
 
 affirmation_of_biljno_polje = {
-	game_data = { 
-		category = country 
+	game_data = {
+		category = country
 	}
-	
+
 	antagonism_religion_influence = -0.1
-	monthly_diplomats = 0.1	
+	monthly_diplomats = 0.1
 }
 
 promoted_hesychastic_influences_modifier = {
@@ -12291,7 +12291,7 @@ greek_culture_allowed_translations_of_old_latin_works = {
 
 surge_in_naval_expansion_modifier = {
 	game_data = { category = country }
-	
+
 	monthly_towards_naval = societal_value_large_monthly_move
 	navy_heavy_ship_build_cost_modifier = -0.2
 	navy_maintenance_efficiency = 0.33
@@ -12300,7 +12300,7 @@ surge_in_naval_expansion_modifier = {
 
 textile_monopolies_modifier = {
 	game_data = { category = country }
-	
+
 	global_burghers_estate_power = 1
 	global_peasant_enfranchisment = -0.1
 	monthly_towards_serfdom = societal_value_huge_monthly_move
@@ -12308,7 +12308,7 @@ textile_monopolies_modifier = {
 
 quality_arms_modifier = {
 	game_data = { category = country }
-	
+
 	discipline = 0.03
 	global_weaponry_output_modifier = 0.15
 	monthly_towards_capital_economy = societal_value_huge_monthly_move
@@ -12316,7 +12316,7 @@ quality_arms_modifier = {
 
 quality_artisan_craftsmanship_modifier = {
 	game_data = { category = country }
-	
+
 	army_maintenance_efficiency = 0.1
 	diplomatic_spending_cost = -0.03
 	court_spending_efficiency = 0.1
@@ -12324,7 +12324,7 @@ quality_artisan_craftsmanship_modifier = {
 
 standardized_brewing_practices_modifier = {
 	game_data = { category = country }
-	
+
 	monthly_rebel_growth = -0.0025
 	monthly_prestige = 0.2
 	diplomatic_reputation = diplomatic_reputation_mild_bonus
@@ -12340,23 +12340,23 @@ advanced_masonry_techniques_modifier = {
 
 bul_unrecognized_imperial_title = {
 	game_data = { category = country }
-	
+
 	max_diplomats = -1
 	diplomatic_range = -500
-	
+
 	num_possible_rivals = -1
-	
+
 	num_possible_artists = -1
-	
+
 	monthly_prestige = -0.1
-	
+
 	cultures_capacity = -1
 	government_size = -1
-	
+
 	diplomatic_capacity = -1
 
 	mercenary_range_modifier = -0.5
-	
+
 }
 
 hre_internal_peace_enforced = {
@@ -12810,7 +12810,7 @@ bul_diplomatic_reintegration = {
 
 bul_mutineers_in_the_army = {
 	game_data = { category = country }
-	
+
 	land_morale_modifier = -0.1
 	land_morale_recovery = -0.01
 }

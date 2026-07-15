@@ -44,6 +44,7 @@ def strip_generated_header(text: str) -> list[str]:
         "# Building maintenance multiplier: ",
         "# Trade-building maintenance multiplier: ",
         "# Minting income multiplier: ",
+        "# Fixed monthly political modifier multiplier: ",
     )
     while index < len(lines) and any(
         lines[index].startswith(prefix) for prefix in generated_prefixes
@@ -197,6 +198,7 @@ def main() -> int:
                 us07_trade_burghers_estate_power_multiplier=us07_multiplier,
                 minting_income_multiplier=float(minting_multiplier),
                 goods=goods_set,
+                political_modifier_multiplier=0.75,
             )
         except ValueError as error:
             failures.append(f"{source_file.name}: unsupported vanilla structure: {error}")

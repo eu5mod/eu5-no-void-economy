@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 apothecary = {
 	audio_tier = 2
@@ -33,7 +34,7 @@ apothecary = {
 			fiber_crops = 0.1853
 			
 			produced = medicaments
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -43,7 +44,7 @@ apothecary = {
 			ivory = 0.0906
 
 			produced = medicaments
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 			
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -78,7 +79,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			goods_gold = 0.5208
 
 			produced = jewelry
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -87,7 +88,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			silver = 0.6944
 			
 			produced = jewelry
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -97,7 +98,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 			copper = 1.3889
 			
 			produced = jewelry
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -112,7 +113,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 		ivory_enhancement = {
 			ivory = 0.1042
 			produced = jewelry
-			output = 0.108
+			output = 0.108 # VANILLA = 0.1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -120,7 +121,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 		amber_enhancement = {
 			amber = 0.1042
 			produced = jewelry
-			output = 0.108
+			output = 0.108 # VANILLA = 0.1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -128,7 +129,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 		gems_enhancement = {
 			gems = 0.1042
 			produced = jewelry
-			output = 0.108
+			output = 0.108 # VANILLA = 0.1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -136,7 +137,7 @@ jewelry_guild = { #Jewelers, goldmiths, etc
 		pearls_enhancement = {
 			pearls = 0.1042
 			produced = jewelry
-			output = 0.108
+			output = 0.108 # VANILLA = 0.1
 			
 			category = guild_input
 			debug_max_profit = guild_profit_margin
@@ -173,7 +174,7 @@ steel_mill = {
 			iron = 2.963
 			coal = 2.963
 			produced = steel
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			category = mills_input	
@@ -210,7 +211,7 @@ perfumery = {
 			pepper = 0.2745
 			
 			produced = incense
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			debug_max_profit = manufactory_profit_margin
 	

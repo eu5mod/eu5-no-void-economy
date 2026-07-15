@@ -4,7 +4,7 @@
 	potential = {
 		has_or_had_tag = BOH
 	}
-	
+
 	country_child_education = 0.1
 	global_nobles_max_literacy = 5
 	requires = chancery_advance
@@ -15,7 +15,7 @@ wagenburg = {
 	potential = {
 		has_or_had_tag = BOH
 	}
-	
+
 	unlock_unit = a_wagenburg
 
 	requires = unlock_supply_carts
@@ -29,7 +29,7 @@ bohemian_imperial_standing = {
 		has_or_had_tag = BOH
 	}
 
-	diplomatic_reputation = diplomatic_reputation_weak_bonus 
+	diplomatic_reputation = diplomatic_reputation_weak_bonus
 	diplomatic_capacity = 1
 }
 
@@ -101,7 +101,7 @@ kutnohorian_deal = {
 bohemian_thaler = {
 	age = age_4_reformation
 	icon = bohemian_thaler
-	potential = { 
+	potential = {
 		has_or_had_tag = BOH
 	}
 	requires = global_trade_advance

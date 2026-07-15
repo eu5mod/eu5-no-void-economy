@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 paper_guild = {
 	is_foreign = no
@@ -31,7 +32,7 @@ paper_guild = {
 			leather = 0.1852
 			lumber = 0.1852
 			produced = paper
-			output = 0.54
+			output = 0.54 # VANILLA = 0.5
 
 			debug_max_profit = guild_profit_margin
 			
@@ -42,7 +43,7 @@ paper_guild = {
 			fiber_crops = 0.6667
 			lumber = 0.2222
 			produced = paper
-			output = 1.08
+			output = 1.08 # VANILLA = 1.0
 
 			debug_max_profit = guild_profit_margin
 			
@@ -53,7 +54,7 @@ paper_guild = {
 			cloth = 0.5051
 			lumber = 0.1008
 			produced = paper
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -89,7 +90,7 @@ paper_workshop = {
 		paper_workshop_fiber_pulp_maintenance = {
 			fiber_crops = 0.8
 			produced = paper
-			output = 1.08
+			output = 1.08 # VANILLA = 1.0
 
 			debug_max_profit = workshop_profit_margin
 			
@@ -99,7 +100,7 @@ paper_workshop = {
 			cloth = 0.5279
 			lumber = 0.1176
 			produced = paper
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -142,7 +143,7 @@ paper_manufactory = {
 		
 			
 			produced = paper
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			category = manufactory_input
@@ -183,7 +184,7 @@ paper_mill = {
 			fiber_crops = 1.2882
 			
 			produced = paper
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = mills_profit_margin
 			category = mills_input
@@ -193,7 +194,7 @@ paper_mill = {
 			# unlocked by paper_guild_wood_pulp_maintenance_advance
 			lumber = 4.4444
 			produced = paper
-			output = 4.86
+			output = 4.86 # VANILLA = 4.5
 			
 			debug_max_profit = mills_profit_margin		#better one
 			

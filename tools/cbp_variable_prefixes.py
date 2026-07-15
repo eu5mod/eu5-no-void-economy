@@ -165,7 +165,9 @@ def iter_eu5_files() -> list[Path]:
             continue
         files.extend(
             path for path in root.rglob("*")
-            if path.is_file() and path.suffix.lower() in EU5_SUFFIXES
+            if path.is_file()
+            and path.suffix.lower() in EU5_SUFFIXES
+            and "cbp_generated" not in path.relative_to(ROOT).parts
         )
     return sorted(set(files))
 

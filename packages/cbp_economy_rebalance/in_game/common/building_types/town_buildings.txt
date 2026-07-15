@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 temple = {
 	audio_tier = 1
@@ -67,8 +68,8 @@ construction_center = {
 
 	unique_production_methods = {
 		construction_center_maintenance = {
-			masonry = 0.14
-			tools = 0.175
+			masonry = 0.14 # VANILLA = 0.2
+			tools = 0.175 # VANILLA = 0.25
 			category = building_maintenance
 		}
 	}
@@ -104,10 +105,10 @@ counting_house = {
 
 	unique_production_methods = {
 		counting_house_maintenance = {
-			paper = 0.14
-			books = 0.035
-			goods_gold = 0.035
-			tools = 0.07
+			paper = 0.14 # VANILLA = 0.2
+			books = 0.035 # VANILLA = 0.05
+			goods_gold = 0.035 # VANILLA = 0.05
+			tools = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -178,7 +179,7 @@ granary = {
 
 	unique_production_methods = {
 		granary_maintenance = {
-			masonry = 0.14
+			masonry = 0.14 # VANILLA = 0.2
 			category = building_maintenance
 		}
 	}
@@ -232,12 +233,12 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 
 	unique_production_methods = {
 		fortress_granary_maintenance = {
-			wheat = 0.07
-			masonry = 0.14
-			weaponry = 0.035
-			cloth = 0.035
-			copper = 0.0175
-			tin = 0.007
+			wheat = 0.07 # VANILLA = 0.1
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
+			copper = 0.0175 # VANILLA = 0.025
+			tin = 0.007 # VANILLA = 0.01
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:wheat
@@ -250,12 +251,12 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 		}
 
 		fortress_millet_granary_maintenance = {
-			millet = 0.07
-			masonry = 0.14
-			weaponry = 0.035
-			cloth = 0.035
-			copper = 0.0175
-			tin = 0.007
+			millet = 0.07 # VANILLA = 0.1
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
+			copper = 0.0175 # VANILLA = 0.025
+			tin = 0.007 # VANILLA = 0.01
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:millet
@@ -268,12 +269,12 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 		}
 
 		fortress_rice_granary_maintenance = {
-			rice = 0.07
-			masonry = 0.14
-			weaponry = 0.035
-			cloth = 0.035
-			copper = 0.0175
-			tin = 0.007
+			rice = 0.07 # VANILLA = 0.1
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
+			copper = 0.0175 # VANILLA = 0.025
+			tin = 0.007 # VANILLA = 0.01
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:rice
@@ -286,12 +287,12 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 		}
 
 		fortress_maize_granary_maintenance = {
-			maize = 0.07
-			masonry = 0.14
-			weaponry = 0.035
-			cloth = 0.035
-			copper = 0.0175
-			tin = 0.007
+			maize = 0.07 # VANILLA = 0.1
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
+			copper = 0.0175 # VANILLA = 0.025
+			tin = 0.007 # VANILLA = 0.01
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:maize
@@ -304,13 +305,13 @@ fortress_granary = { #https://en.wikipedia.org/wiki/Agadir_(granary)
 		}
 
 		fortress_qullqa_maintenance = {
-			potato = 0.056
-			maize = 0.014
-			masonry = 0.14
-			weaponry = 0.035
-			cloth = 0.035
-			copper = 0.0175
-			tin = 0.007
+			potato = 0.056 # VANILLA = 0.08
+			maize = 0.014 # VANILLA = 0.02
+			masonry = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			cloth = 0.035 # VANILLA = 0.05
+			copper = 0.0175 # VANILLA = 0.025
+			tin = 0.007 # VANILLA = 0.01
 			potential = {
 				any_market_present_in_country = {
 					is_produced_in_market = goods:potato
@@ -387,10 +388,10 @@ wharf = {
 	
 	unique_production_methods = {
 		wharf_maintenance = {
-			tar = 0.07
-			naval_supplies = 0.035
-			tools = 0.07
-			lumber = 0.07
+			tar = 0.07 # VANILLA = 0.1
+			naval_supplies = 0.035 # VANILLA = 0.05
+			tools = 0.07 # VANILLA = 0.1
+			lumber = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 
@@ -403,7 +404,7 @@ wharf = {
 
 	modifier = {
 		local_sailors = 0.001
-		local_merchant_capacity = 0.115
+		local_merchant_capacity = 0.115 # VANILLA = 0.1
 		can_build_ships_in_this_location = yes
 		harbor_suitability = 0.1
 		local_repair_speed = 0.01
@@ -462,9 +463,9 @@ lazaretto = {
 
 	unique_production_methods = {
 		lazaretto_maintenance = {
-			fiber_crops = 0.105
-			books = 0.035
-			medicaments = 0.021
+			fiber_crops = 0.105 # VANILLA = 0.15
+			books = 0.035 # VANILLA = 0.05
+			medicaments = 0.021 # VANILLA = 0.03
 			category = building_maintenance
 		}
 	}
@@ -516,8 +517,8 @@ pest_house = {
 
 	unique_production_methods = {
 		pest_house_maintenance = {
-			fiber_crops = 0.07
-			incense = 0.07
+			fiber_crops = 0.07 # VANILLA = 0.10
+			incense = 0.07 # VANILLA = 0.10
 			category = building_maintenance
 		}
 	}
@@ -609,13 +610,13 @@ slave_market = {
 	unique_production_methods = {
 
 		slave_market_maintenance = {
-			leather = 0.3682
-			tools = 0.3346
-			weaponry = 0.2947
-			paper = 0.2541
+			leather = 0.3682 # VANILLA = 0.526
+			tools = 0.3346 # VANILLA = 0.478
+			weaponry = 0.2947 # VANILLA = 0.421
+			paper = 0.2541 # VANILLA = 0.363
 
 			produced = slaves_goods
-			output = 2.16
+			output = 2.16 # VANILLA = 2.0
 
 			debug_max_profit = rural_profit_margin
 			category = building_maintenance
@@ -690,9 +691,9 @@ aqueduct_system = {
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.1
-		monthly_republican_tradition = 0.1
-		monthly_devotion = 0.1
+		monthly_legitimacy = 0.075 # VANILLA = 0.1
+		monthly_republican_tradition = 0.075 # VANILLA = 0.1
+		monthly_devotion = 0.075 # VANILLA = 0.1
 	}
 }
 

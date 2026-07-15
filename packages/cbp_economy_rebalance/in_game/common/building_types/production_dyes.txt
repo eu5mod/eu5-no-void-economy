@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 dyes_guild = {
 	is_foreign = no
@@ -31,7 +32,7 @@ dyes_guild = {
 			lumber = 0.4444
 
 			produced = dyes
-			output = 0.216
+			output = 0.216 # VANILLA = 0.2
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -42,7 +43,7 @@ dyes_guild = {
 			
 			
 			produced = dyes
-			output = 0.324
+			output = 0.324 # VANILLA = 0.3
 			
 			debug_max_profit = guild_profit_margin		#better one
 			category = guild_input
@@ -82,7 +83,7 @@ dyes_workshop = {
 			lumber = 0.7305
 		
 			produced = dyes
-			output = 0.432
+			output = 0.432 # VANILLA = 0.4
 			
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
@@ -120,7 +121,7 @@ dyesworks = {
 			lumber = 3.4403
 			
 			produced = dyes
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			
@@ -160,7 +161,7 @@ dyes_mill = {
 			lumber = 7.184
 			
 			produced = dyes
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

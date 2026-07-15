@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 entrepot = {
 	audio_tier = 2
@@ -32,7 +33,7 @@ entrepot = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 	}
 	
 	market_center_modifier = {
@@ -72,7 +73,7 @@ trading_hub = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 	}
 	
 	market_center_modifier = {
@@ -113,7 +114,7 @@ customs_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 	}
 	
 	market_center_modifier = {
@@ -154,7 +155,7 @@ stock_exchange = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 	}
 	
 	market_center_modifier = {
@@ -195,7 +196,7 @@ clearing_house = {
 		location = { is_market_center = no }
 	}
 	modifier = {
-		local_merchant_capacity = 5.75
+		local_merchant_capacity = 5.75 # VANILLA = 5
 	}
 	
 	market_center_modifier = {
@@ -241,7 +242,7 @@ market_warehouse = {
 
 
 	modifier = {
-		local_merchant_capacity = 0.115
+		local_merchant_capacity = 0.115 # VANILLA = 0.1
 		local_merchant_power = 0.1
 		local_trades_per_burgher = 0.1
 	}
@@ -296,7 +297,7 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 	
 	modifier = {
 		local_merchant_power = 0.5
-		local_merchant_capacity = 1.15
+		local_merchant_capacity = 1.15 # VANILLA = 1
 		local_trades_per_burgher = 0.1
 	}
 
@@ -308,10 +309,10 @@ funduq = { #https://es.wikipedia.org/wiki/Funduq
 	
 	unique_production_methods = {
 		funduq_maintenance = {
-			books = 0.025
-			paper = 0.1
-			jewelry = 0.005
-			fine_cloth = 0.005
+			books = 0.025 # VANILLA = 0.05
+			paper = 0.1 # VANILLA = 0.2
+			jewelry = 0.005 # VANILLA = 0.01
+			fine_cloth = 0.005 # VANILLA = 0.01
 			category = building_maintenance
 		}
 

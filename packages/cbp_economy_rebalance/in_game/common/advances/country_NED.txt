@@ -13,7 +13,7 @@ brb_the_four_quartiers = {
 	potential = {
 		has_or_had_tag = BRB
 	}
-	
+
 	tax_income_efficiency = medium_tax_income_efficiency_bonus
 
 	requires = feudalism_advance
@@ -26,7 +26,7 @@ fla_cloth = {
 	potential = {
 		has_or_had_tag = FLA
 	}
-	
+
 	global_cloth_output_modifier = 0.33
 	global_fine_cloth_output_modifier = 0.1
 
@@ -41,7 +41,7 @@ frisian_trading_traditions = {
 			culture = { merged_culture_group_contains_culture = culture:frisian }
 		}
 	}
-	
+
 	trade_range_modifier = 0.1
 
 	requires = legalism_advance
@@ -53,7 +53,7 @@ gel_warring_spirit = {
 		has_or_had_tag = GEL
 	}
 	army_heavy_infantry_power = 0.1
-	
+
 	requires = feudalism_advance
 }
 
@@ -63,7 +63,7 @@ hai_expert_embassadors = {
 		has_or_had_tag = HAI
 	}
 	diplomatic_reputation = diplomatic_reputation_mild_bonus
-	
+
 	requires = feudalism_advance
 }
 
@@ -127,13 +127,13 @@ brb_brabantine_rights = {
 	potential = {
 		has_or_had_tag = BRB
 	}
-	
-	monthly_legitimacy = 0.05
-	monthly_republican_tradition = 0.05
-	monthly_devotion = 0.05
-	monthly_horde_unity = 0.05
-	monthly_tribal_cohesion = 0.05
-	
+
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_horde_unity = 0.0375 # VANILLA = 0.05
+	monthly_tribal_cohesion = 0.0375 # VANILLA = 0.05
+
 	unlock_government_reform = joyous_entry_reform
 
 	requires = government_size_renaissance
@@ -158,7 +158,7 @@ frisian_resisting_invader = {
 			culture = { merged_culture_group_contains_culture = culture:frisian }
 		}
 	}
-	
+
 	global_hostile_attrition = 1
 
 	requires = recruitment_improvements_renaissance
@@ -205,7 +205,7 @@ lie_devoted_land = {
 	requires = renaissance_court
 }
 
-lux_fortress_europe = { 
+lux_fortress_europe = {
 	age = age_2_renaissance
 	icon = recruitment_improvements_renaissance
 	potential = {
@@ -216,7 +216,7 @@ lux_fortress_europe = {
 	requires = gunpowder_advance
 }
 
-utr_blessed_land = { 
+utr_blessed_land = {
 	age = age_2_renaissance
 	potential = {
 		has_or_had_tag = UTR
@@ -237,7 +237,7 @@ an_early_urbanization = { #1437
 	requires = merchant_power_from_maritime_discovery_advance
 }
 
-brb_land_culture = { 
+brb_land_culture = {
 	age = age_3_discovery
 	potential = {
 		has_or_had_tag = BRB
@@ -266,7 +266,7 @@ frisian_legend_grutte_pier = {
 			culture = { merged_culture_group_contains_culture = culture:frisian }
 		}
 	}
-	
+
 	can_hire_privateers = yes
 	privateer_maintenance_cost_modifier = -0.1
 	privateer_durability = 0.01
@@ -326,7 +326,7 @@ lux_heirs_john_blind = {
 	requires = pike_square
 }
 
-utr_skilled_diplomats = { 
+utr_skilled_diplomats = {
 	age = age_3_discovery
 	potential = {
 		has_or_had_tag = UTR
@@ -424,6 +424,6 @@ a_fortified_border = {
 	}
 	global_defensive = 0.2
 	fort_limit_modifier = 0.2
-	
+
 	requires = siege_ability_revolutions
 }

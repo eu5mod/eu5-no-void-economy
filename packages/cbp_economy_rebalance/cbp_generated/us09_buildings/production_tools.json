@@ -58,7 +58,7 @@
       }
     ]
   },
-  "generated_sha256": "3aeccafc855c92955591f147131cb680ccce8bdfe46b29ef99c98a826c1f828c",
+  "generated_sha256": "a1a79220b93809ec3c643ec89f88a840c055b86a90bcee59eda643f71ceafabb",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_tools.txt",
   "source_sha256": "876a873a5b9b15157106b19fc23d8b2e452b93b53b47f8769d83f17774cfd819",

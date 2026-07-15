@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 # Age of Traditions
 
@@ -33,7 +34,7 @@ tools_guild = {
 		metalwork_guild_maintenance = {
 			iron = 0.8333
 			produced = tools
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -41,7 +42,7 @@ tools_guild = {
 		stone_tools_guild_maintenance = {
 			stone = 0.625
 			produced = tools
-			output = 0.27
+			output = 0.27 # VANILLA = 0.25
 			debug_max_profit = guild_profit_margin
 
 			category = guild_input
@@ -51,7 +52,7 @@ tools_guild = {
 			copper = 0.475
 			tin = 0.038
 			produced = tools
-			output = 0.648
+			output = 0.648 # VANILLA = 0.6
 			debug_max_profit = guild_profit_margin
 
 			category = guild_input
@@ -60,7 +61,7 @@ tools_guild = {
 			# unlocked by copperworking advance
 			copper = 0.4583
 			produced = tools
-			output = 0.594
+			output = 0.594 # VANILLA = 0.55
 			debug_max_profit = guild_profit_margin
 
 			category = guild_input
@@ -95,7 +96,7 @@ tools_workshop = {
 		metalwork_workshop_maintenance = {
 			iron = 0.88
 			produced = tools
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			debug_max_profit = workshop_profit_margin
 			category = workshop_input
 		}
@@ -135,7 +136,7 @@ iron_foundry = {
 			
 			category = manufactory_input
 			produced = tools
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 		}
@@ -174,7 +175,7 @@ iron_mill = {
 			
 			category = mills_input
 			produced = tools
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 		}
@@ -184,7 +185,7 @@ iron_mill = {
 			
 			category = mills_input
 			produced = tools
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 		}

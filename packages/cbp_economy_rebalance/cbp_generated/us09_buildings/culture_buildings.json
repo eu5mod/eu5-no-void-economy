@@ -124,7 +124,7 @@
       }
     ]
   },
-  "generated_sha256": "d76df36cc3c4ce370298d05572bc1268059c76ab3ff7fec112e65069275a64ca",
+  "generated_sha256": "86b13cf31689ffa081ab1d3b8adbdcbabc47b06b049d597277085dd95ba9ba7e",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/culture_buildings.txt",
   "source_sha256": "42f05a1c121141ae96a6cdb1c2fcbb72e4d7e461136201e3c979ed74df7b60c6",

@@ -17,7 +17,7 @@ hormuz_toll = {
 	icon = ayu_cosmopolitan_trade
 
 	export_efficiency = medium_trade_efficiency_bonus
-	
+
 }
 
 gate_of_the_persian_gulf = {

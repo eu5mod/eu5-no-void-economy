@@ -66,7 +66,7 @@
       }
     ]
   },
-  "generated_sha256": "d702476aa5a4040b1691accdddc45053d2c187b1190e38b7fdc75029312753c8",
+  "generated_sha256": "543083e586c56372b7545e619fe52536f11f6466d8515676e0cf274b25c6a9d4",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/coastal_forts.txt",
   "source_sha256": "36b8e0b9bce504cb87091f813087567e766d0f2730c08b922679b7be54c0422b",

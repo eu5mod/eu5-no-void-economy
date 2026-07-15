@@ -48,6 +48,19 @@ The current registry covers:
 New building transformations must be added to this engine and its manifest
 plan. Do not add a prefilter or an unregistered post-generation mutation.
 
+## Local Balance Inputs
+
+Local regeneration reads both maintenance multipliers from `.cbp.local.env`:
+
+```txt
+MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER=0.7
+MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER=0.5
+```
+
+The first applies to non-trade buildings and the second to trade buildings.
+`.cbp.local.env.template` defines the committed configuration names and
+defaults.
+
 ## Validation
 
 ```bash

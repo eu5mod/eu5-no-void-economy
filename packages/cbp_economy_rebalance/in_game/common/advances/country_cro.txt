@@ -21,7 +21,7 @@ cro_maritime_connections = {
 	potential = {
 		has_or_had_tag = CRO
 	}
-	
+
 	monthly_prestige = 0.05
 	nobles_estate_satisfaction_recovery = 0.001
 
@@ -36,7 +36,7 @@ cro_the_bashka_tablet = {
 		has_or_had_tag = CRO
 		original_tag = CRO
 	}
-	
+
 	global_crown_estate_power = 0.1
 
 	requires = feudalism_advance
@@ -109,9 +109,9 @@ svn_the_slavonian_sabor = {
 		has_or_had_tag = SVN
 	}
 
-	monthly_devotion = 0.05
-	monthly_legitimacy = 0.05
-	monthly_republican_tradition = 0.05
+	monthly_devotion = 0.0375 # VANILLA = 0.05
+	monthly_legitimacy = 0.0375 # VANILLA = 0.05
+	monthly_republican_tradition = 0.0375 # VANILLA = 0.05
 	parliament_base_support = 0.05
 
 	requires = late_feudal_relations
@@ -157,7 +157,7 @@ cro_the_croatian_press = {
 		has_or_had_tag = CRO
 		original_tag = CRO
 	}
-	
+
 	global_institution_growth_modifier = 0.20
 	global_max_literacy = 5
 

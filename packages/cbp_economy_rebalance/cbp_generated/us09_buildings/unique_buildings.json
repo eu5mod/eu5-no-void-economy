@@ -1,5 +1,5 @@
 {
-  "changed_building_count": 47,
+  "changed_building_count": 48,
   "changed_buildings": {
     "bajang_ratu": [
       {
@@ -295,6 +295,14 @@
         "field": "merchant_capacity_from_building",
         "new_value": "0.2875",
         "old_value": "0.25"
+      }
+    ],
+    "hanseatic_town_hall": [
+      {
+        "action": "replace",
+        "field": "monthly_republican_tradition",
+        "new_value": "0.0375",
+        "old_value": "0.05"
       }
     ],
     "ibadat_khana": [
@@ -1068,9 +1076,9 @@
       }
     ]
   },
-  "generated_sha256": "2b0a660d5084c71dfc1757c3b1f214b463f9771943e862e7a4ae436ef7ca39c9",
+  "generated_sha256": "c13d1708caaad33844f240b488b24e1622951d5af9a42b42f4f46394c2a48334",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/unique_buildings.txt",
   "source_sha256": "b7853a50eda5edd9dbc291d962096ce73296b1b3e78412e28e333c3c7836080e",
-  "unchanged_building_count": 63
+  "unchanged_building_count": 62
 }

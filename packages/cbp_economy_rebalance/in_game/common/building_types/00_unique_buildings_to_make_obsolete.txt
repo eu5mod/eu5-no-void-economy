@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 #This file exists so generic buildings (such as castles) can properly replace the unique ones
 sofa_stockade = {
@@ -35,9 +36,9 @@ sofa_stockade = {
 	}
 	unique_production_methods = {
 		sofa_stockade_maintenance = {
-			clay = 0.14
-			weaponry = 0.035
-			tar = 0.035
+			clay = 0.14 # VANILLA = 0.2
+			weaponry = 0.035 # VANILLA = 0.05
+			tar = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}

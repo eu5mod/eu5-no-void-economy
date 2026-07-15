@@ -40,7 +40,7 @@
       }
     ]
   },
-  "generated_sha256": "fd99afec449bdd9149210dda2adff7dfa2b85bf67feb78526f7f6d4e462819de",
+  "generated_sha256": "73c54c303e1d0522e0b5ecd1bdd8c7cb9b7e2ead265cb6fb998787c90fc8e06a",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_glass.txt",
   "source_sha256": "fe43347ba4a50a0fad3c63bd7840880e3eab1c03ffa1f976ce02b030c5b0b72f",

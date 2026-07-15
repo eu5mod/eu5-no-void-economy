@@ -58,7 +58,7 @@
       }
     ]
   },
-  "generated_sha256": "009f211f51f86c2af2d9178962e49603dab76258ac74e06f178258c3a0db8354",
+  "generated_sha256": "08930bf4393be6aafe6b276604ea789c70b995db294db46785817cd0a53994dc",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_leather.txt",
   "source_sha256": "dc204d5d3a932b34f0db85b852e1629566d0389e5d74663c95ca304e410ad097",

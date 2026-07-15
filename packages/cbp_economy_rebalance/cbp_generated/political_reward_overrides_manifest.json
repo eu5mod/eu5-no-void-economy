@@ -1,0 +1,1818 @@
+{
+  "aliases": 0,
+  "central_default_values_materializer": "community_balance_generator",
+  "central_script_values": {
+    "cabinet_stability_investment": 0.75,
+    "clergy_stability_investment": 0.75,
+    "devotion_extreme_bonus": 0.5,
+    "devotion_extreme_penalty": 0.5,
+    "devotion_mild_bonus": 0.5,
+    "devotion_mild_penalty": 0.5,
+    "devotion_radical_bonus": 0.5,
+    "devotion_radical_penalty": 0.5,
+    "devotion_severe_bonus": 0.5,
+    "devotion_severe_penalty": 0.5,
+    "devotion_ultimate_bonus": 0.5,
+    "devotion_ultimate_penalty": 0.5,
+    "devotion_weak_bonus": 0.5,
+    "devotion_weak_penalty": 0.5,
+    "government_power_extreme_bonus": 0.5,
+    "government_power_extreme_penalty": 0.5,
+    "government_power_mild_bonus": 0.5,
+    "government_power_mild_penalty": 0.5,
+    "government_power_radical_bonus": 0.5,
+    "government_power_radical_penalty": 0.5,
+    "government_power_severe_bonus": 0.5,
+    "government_power_severe_penalty": 0.5,
+    "government_power_ultimate_bonus": 0.5,
+    "government_power_ultimate_penalty": 0.5,
+    "government_power_weak_bonus": 0.5,
+    "government_power_weak_penalty": 0.5,
+    "horde_unity_extreme_bonus": 0.5,
+    "horde_unity_extreme_penalty": 0.5,
+    "horde_unity_mild_bonus": 0.5,
+    "horde_unity_mild_penalty": 0.5,
+    "horde_unity_radical_bonus": 0.5,
+    "horde_unity_radical_penalty": 0.5,
+    "horde_unity_severe_bonus": 0.5,
+    "horde_unity_severe_penalty": 0.5,
+    "horde_unity_ultimate_bonus": 0.5,
+    "horde_unity_ultimate_penalty": 0.5,
+    "horde_unity_weak_bonus": 0.5,
+    "horde_unity_weak_penalty": 0.5,
+    "huge_stability_investment_penalty": 0.75,
+    "large_stability_investment": 0.75,
+    "large_stability_investment_penalty": 0.75,
+    "legitimacy_extreme_bonus": 0.5,
+    "legitimacy_extreme_penalty": 0.5,
+    "legitimacy_mild_bonus": 0.5,
+    "legitimacy_mild_penalty": 0.5,
+    "legitimacy_radical_bonus": 0.5,
+    "legitimacy_radical_penalty": 0.5,
+    "legitimacy_severe_bonus": 0.5,
+    "legitimacy_severe_penalty": 0.5,
+    "legitimacy_ultimate_bonus": 0.5,
+    "legitimacy_ultimate_penalty": 0.5,
+    "legitimacy_weak_bonus": 0.5,
+    "legitimacy_weak_penalty": 0.5,
+    "republican_tradition_extreme_bonus": 0.5,
+    "republican_tradition_extreme_penalty": 0.5,
+    "republican_tradition_mild_bonus": 0.5,
+    "republican_tradition_mild_penalty": 0.5,
+    "republican_tradition_radical_bonus": 0.5,
+    "republican_tradition_radical_penalty": 0.5,
+    "republican_tradition_severe_bonus": 0.5,
+    "republican_tradition_severe_penalty": 0.5,
+    "republican_tradition_ultimate_bonus": 0.5,
+    "republican_tradition_ultimate_penalty": 0.5,
+    "republican_tradition_weak_bonus": 0.5,
+    "republican_tradition_weak_penalty": 0.5,
+    "small_stability_investment": 0.75,
+    "small_stability_investment_penalty": 0.75,
+    "stability_extreme_bonus": 0.5,
+    "stability_extreme_penalty": 0.5,
+    "stability_investment_penalty": 0.75,
+    "stability_mild_bonus": 0.5,
+    "stability_mild_penalty": 0.5,
+    "stability_radical_bonus": 0.5,
+    "stability_radical_penalty": 0.5,
+    "stability_severe_bonus": 0.5,
+    "stability_severe_penalty": 0.5,
+    "stability_ultimate_bonus": 0.5,
+    "stability_ultimate_penalty": 0.5,
+    "stability_very_extreme_bonus": 0.5,
+    "stability_very_extreme_penalty": 0.5,
+    "stability_weak_bonus": 0.5,
+    "stability_weak_penalty": 0.5,
+    "standard_stability_investment": 0.75,
+    "tiny_stability_investment": 0.75,
+    "tribal_cohesion_extreme_bonus": 0.5,
+    "tribal_cohesion_extreme_penalty": 0.5,
+    "tribal_cohesion_mild_bonus": 0.5,
+    "tribal_cohesion_mild_penalty": 0.5,
+    "tribal_cohesion_severe_bonus": 0.5,
+    "tribal_cohesion_severe_penalty": 0.5,
+    "tribal_cohesion_ultimate_bonus": 0.5,
+    "tribal_cohesion_ultimate_penalty": 0.5,
+    "tribal_cohesion_weak_bonus": 0.5,
+    "tribal_cohesion_weak_penalty": 0.5
+  },
+  "files": [
+    {
+      "changes": 6,
+      "created": true,
+      "path": "events/DHE/flavor_BYZ.txt",
+      "policy": "event_half",
+      "political_changes": 6,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/DHE/flavor_FRA.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 2,
+      "created": true,
+      "path": "events/DHE/flavor_FRA_DAU.txt",
+      "policy": "event_half",
+      "political_changes": 2,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 2,
+      "created": true,
+      "path": "events/DHE/flavor_HSA.txt",
+      "policy": "event_half",
+      "political_changes": 2,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 5,
+      "created": true,
+      "path": "events/DHE/flavor_MAM.txt",
+      "policy": "event_half",
+      "political_changes": 5,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 17,
+      "created": true,
+      "path": "events/DHE/flavor_TUR.txt",
+      "policy": "event_half",
+      "political_changes": 17,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 6,
+      "created": true,
+      "path": "events/DHE/flavor_VEN.txt",
+      "policy": "event_half",
+      "political_changes": 6,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 4,
+      "created": true,
+      "path": "events/DHE/flavor_chi.txt",
+      "policy": "event_half",
+      "political_changes": 4,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 4,
+      "created": true,
+      "path": "events/DHE/flavor_hol.txt",
+      "policy": "event_half",
+      "political_changes": 4,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/DHE/flavor_maj.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/DHE/flavor_ned.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 3,
+      "created": true,
+      "path": "events/DHE/flavor_pap.txt",
+      "policy": "event_half",
+      "political_changes": 3,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/DHE/flavor_swe_teu.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 2,
+      "created": true,
+      "path": "events/character/artist_events.txt",
+      "policy": "event_half",
+      "political_changes": 2,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/disaster/D008_fate_of_the_phoenix.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 3,
+      "created": true,
+      "path": "events/disaster/ambrosian_republic.txt",
+      "policy": "event_half",
+      "political_changes": 3,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/disaster/byzantine_succession_crisis.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 2,
+      "created": true,
+      "path": "events/disaster/castilian_civil_war.txt",
+      "policy": "event_half",
+      "political_changes": 2,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/disaster/horde_civil_war.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 7,
+      "created": true,
+      "path": "events/disaster/rise_of_the_szlachta.txt",
+      "policy": "event_half",
+      "political_changes": 7,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 4,
+      "created": true,
+      "path": "events/disaster/sinicization_disaster.txt",
+      "policy": "event_half",
+      "political_changes": 4,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 5,
+      "created": true,
+      "path": "events/disaster/succession_crisis.txt",
+      "policy": "event_half",
+      "political_changes": 5,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/disaster/turmoil_in_brandenburg.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/government/D008_latinization_vs_hellenization.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 8,
+      "created": true,
+      "path": "events/government/societal_values.txt",
+      "policy": "event_half",
+      "political_changes": 8,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/missionevents/generic_mission_events.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 3,
+      "created": true,
+      "path": "events/religion/hussite_flavor.txt",
+      "policy": "event_half",
+      "political_changes": 3,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/situations/black_death.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 2,
+      "created": true,
+      "path": "events/situations/colonial_revolution.txt",
+      "policy": "event_half",
+      "political_changes": 2,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "changes": 1,
+      "created": true,
+      "path": "events/situations/red_turban_rebellions.txt",
+      "policy": "event_half",
+      "political_changes": 1,
+      "preserved_nonpolitical_uses": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/colonial_nations.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_BUL.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_CHG.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_CTH.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_DAH.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_DAN.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_ETH.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_GLH.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_KOJ.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_KRS.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": "in_game/common/advances/country_NED.txt",
+      "changes": 5,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/country_NED.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_NRM.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_SER.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_TUS.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_TWS.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_USA.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_ZAN.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_bos.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_chi.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_cir.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": "in_game/common/advances/country_cro.txt",
+      "changes": 3,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/country_cro.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": "in_game/common/advances/country_geo.txt",
+      "changes": 1,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/country_geo.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_hsa.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_khm.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_mor.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_ori.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_pal.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_sia.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_sme.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_suk.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_tnk.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_tre.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": "in_game/common/advances/country_ubv.txt",
+      "changes": 1,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/country_ubv.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/country_zmw.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_albanian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_corsican.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 9,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_emilian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 9
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_group_chinese.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_group_greek.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_group_rhaetian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_group_romanian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_haudenosaunee.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_high_alemannic.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 4,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_japan.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 4
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_jurchen.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_kannada_muslim.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_maori.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_median.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_neapolitan.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_piedmontese.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_romagnol.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_russian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_ruthenian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 6,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_sardinian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 6
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_sicilian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": "in_game/common/advances/culture_tuscan.txt",
+      "changes": 9,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/culture_tuscan.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 9
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/culture_venetian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/estate_cossacks.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": "in_game/common/advances/frankokratia.txt",
+      "changes": 1,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/advances/frankokratia.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 4,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/japanese_unique.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 4
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/region_africa.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_buddhist.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_hellenism.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_hindu.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_miaphysite.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_muslim.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 10,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_orthodox.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 10
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/advances/religion_shinto.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/artist_types/00_default.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 26,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/auto_modifiers/country.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 26
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/avatars/hindu.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 7,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/bureaucracies/byz.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 7
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/bureaucracies/china.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/cabinet_actions/strengthen_government.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/cabinet_actions/stroganov_influences.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/chivalric_orders/02_german_societies.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/crisis_of_the_sayfawa_dynasty.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/curse_of_stefan_uros_iii.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/horde_civil_war.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/muscovite_succession_war.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/revolutionary_chaos.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/rise_of_the_szlachta.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 4,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/sinicization_disaster.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 4
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/time_of_troubles.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/turmoil_in_brandenburg.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/war_of_the_aragonese_union.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/disasters/war_of_the_roses.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": "in_game/common/estate_privileges/burghers_estate.txt",
+      "changes": 1,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/estate_privileges/burghers_estate.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 8,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/estate_privileges/nobles_estate.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 8
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/estates/00_default.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 1,
+      "path": "common/generic_actions/canonization.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 1,
+      "path": "common/generic_actions/negotiate_rebels.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 1,
+      "path": "common/generic_actions/the_revolution.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/gods/hellenism.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 8,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/government_reforms/common.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 8
+    },
+    {
+      "baseline": "in_game/common/government_reforms/country_specific.txt",
+      "changes": 21,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/government_reforms/country_specific.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 21
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/government_reforms/monarchy.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/government_reforms/republic.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 1,
+      "path": "common/heir_selections/monarchy.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organization_special_statuses/japanese_shogunate.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organization_special_statuses/lordship_of_ireland.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organization_special_statuses/middle_kingdom.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organizations/autocephalous_patriarchate.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organizations/jurchen_federation.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organizations/sect.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organizations/tatar_yoke.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/international_organizations/tribal_confederation.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 4,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/00_monarchy.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 4
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/00_republic.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/00_theocracies.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/00_tribes.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": "in_game/common/laws/01_common.txt",
+      "changes": 7,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/laws/01_common.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 7
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/01_legal_system.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 6,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/01_military_laws.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 6
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/02_country_specific.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 8,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/02_distribution_of_power.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 8
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/03_estate_laws.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": "in_game/common/laws/20_middle_kingdom.txt",
+      "changes": 6,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/laws/20_middle_kingdom.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 6
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/20_shogunate.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 6,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/21_jurchen_confederation.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 6
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/31_catholic_church.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/40_personal_unions.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 20,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/christian_tenets.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 20
+    },
+    {
+      "baseline": null,
+      "changes": 9,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/sects.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 9
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/laws/sikhism.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/missions/generic_estate_cooperation_mission_pack.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 1,
+      "path": "common/on_action/_hardcoded.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/parliament_issues/01_country_specific_parliament_issues.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/parliament_issues/02_crown_estate_parliament_issues.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 2,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/parliament_issues/06_peasants_estate_parliament_issues.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 2
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/parliament_issues/07_expansion_parliament_issues.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/regencies/00_mamluk_succesion.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religions/buddhist.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religions/folk_asian.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religions/folk_european.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religions/folk_north_america.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religious_aspects/hellenism.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religious_aspects/paulicianism.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religious_schools/jain.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religious_schools/shia.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 5
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/religious_schools/sufi.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 5,
+      "created": true,
+      "instant_changes": 5,
+      "path": "common/scripted_effects/country_effects.txt",
+      "policy": "instant_half",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 0
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/subject_types/D008_pronoia.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 1,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/subject_types/appanage.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 3,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/traits/00_ruler.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 3
+    },
+    {
+      "baseline": "in_game/common/traits/07_cabinet.txt",
+      "changes": 1,
+      "created": false,
+      "instant_changes": 0,
+      "path": "common/traits/07_cabinet.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 1
+    },
+    {
+      "baseline": null,
+      "changes": 4,
+      "created": true,
+      "instant_changes": 0,
+      "path": "common/traits/08_health.txt",
+      "policy": "static_three_quarters",
+      "preserved_nonpolitical_uses": 0,
+      "static_changes": 4
+    }
+  ],
+  "generator": "tools/generate_political_reward_overrides.py",
+  "policies": {
+    "instant_effects": 0.5,
+    "static_sources": 0.75
+  },
+  "profit_margin_factor": 1.1
+}

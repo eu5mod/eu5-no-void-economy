@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 tannery = {
 	is_foreign = no
@@ -36,7 +37,7 @@ tannery = {
 			
 			debug_max_profit = guild_profit_margin
 			produced = leather
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			category = guild_input
 		}
@@ -48,7 +49,7 @@ tannery = {
 			tools = 0.1627
 			
 			produced = leather
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			debug_max_profit = guild_profit_margin
 			
@@ -90,7 +91,7 @@ tanning_workshop = {
 			tools = 0.1906
 			
 			produced = leather
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -104,7 +105,7 @@ tanning_workshop = {
 			tools = 0.1867
 			
 			produced = leather
-			output = 1.188
+			output = 1.188 # VANILLA = 1.1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -150,7 +151,7 @@ tannery_manufactory = {
 			
 			
 			produced = leather
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			debug_max_profit = manufactory_profit_margin
 			
 			category = manufactory_input
@@ -163,7 +164,7 @@ tannery_manufactory = {
 			tools = 0.2652
 			
 			produced = leather
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			debug_max_profit = manufactory_profit_margin
 			category = manufactory_input
 		}
@@ -208,7 +209,7 @@ tannery_mill = {
 			
 			
 			produced = leather
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			debug_max_profit = mills_profit_margin
 			
 			category = mills_input
@@ -221,7 +222,7 @@ tannery_mill = {
 			tools = 0.391
 			
 			produced = leather
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			debug_max_profit = mills_profit_margin
 			category = mills_input
 		}

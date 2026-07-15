@@ -31,9 +31,10 @@ jobs:
             done < <(find packages/cbp_economy_rebalance/in_game/common -type f -name '*.txt' -print0)
           fi
 
-          # US-177 exact-path files intentionally preserve vanilla script objects,
-          # including vanilla-owned variable names. Remove every path owned by the
-          # generated manifests before applying the CBP-authored-variable contract.
+          # Exact-path balance overrides intentionally preserve Vanilla script
+          # objects, including Vanilla-owned variable names. Remove every path
+          # owned by their manifests before applying the CBP-authored-variable
+          # contract to the remaining package code.
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -41,6 +42,7 @@ jobs:
           package_root = Path('packages/cbp_economy_rebalance')
           manifest_root = package_root / 'cbp_generated'
           for manifest_name in (
+              'political_reward_overrides_manifest.json',
               'us177_minting_income_manifest.json',
               'us177_minting_building_manifest.json',
           ):
@@ -52,7 +54,14 @@ jobs:
                   relative = item.get('path')
                   if not isinstance(relative, str):
                       continue
-                  generated = package_root / relative
+                  if manifest_name == 'political_reward_overrides_manifest.json':
+                      generated = (
+                          package_root / relative
+                          if item.get('package_relative')
+                          else package_root / 'in_game' / relative
+                      )
+                  else:
+                      generated = package_root / relative
                   if generated.is_file():
                       generated.unlink()
           PY

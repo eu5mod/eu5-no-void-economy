@@ -27,7 +27,7 @@ akson_thai = {
 	}
 
 	requires = religious_melting_pot
-	
+
 	cultural_tradition_modifier = 0.1
 }
 
@@ -45,7 +45,7 @@ father_governs_children = {
 	}
 
 	requires = renaissance_subject_opinions_advance
-	
+
 	global_estate_target_satisfaction = small_permanent_target_satisfaction
 }
 
@@ -60,7 +60,7 @@ thai_war_elephants = {
 	}
 
 	requires = drill_army_advance
-	
+
 	unlock_unit = a_thai_elephant_cavalry
 }
 

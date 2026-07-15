@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 early_council_hall = {
 	audio_tier = 1
@@ -28,9 +29,9 @@ early_council_hall = {
 
 	unique_production_methods = {
 		early_council_hall_maintenance = {
-			paper = 0.175
-			fine_cloth = 0.035
-			books = 0.035
+			paper = 0.175 # VANILLA = 0.25
+			fine_cloth = 0.035 # VANILLA = 0.05
+			books = 0.035 # VANILLA = 0.05
 			category = building_maintenance
 		}
 	}
@@ -68,9 +69,9 @@ council_hall = {
 
 	unique_production_methods = {
 		council_hall_maintenance = {
-			paper = 0.35
-			fine_cloth = 0.07
-			books = 0.07
+			paper = 0.35 # VANILLA = 0.5
+			fine_cloth = 0.07 # VANILLA = 0.1
+			books = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}
@@ -106,10 +107,10 @@ modern_council_hall = {
 
 	unique_production_methods = {
 		modern_council_hall_maintenance = {
-			paper = 0.7
-			fine_cloth = 0.175
-			books = 0.07
-			marble = 0.07
+			paper = 0.7 # VANILLA = 1.0
+			fine_cloth = 0.175 # VANILLA = 0.25
+			books = 0.07 # VANILLA = 0.1
+			marble = 0.07 # VANILLA = 0.1
 			category = building_maintenance
 		}
 	}

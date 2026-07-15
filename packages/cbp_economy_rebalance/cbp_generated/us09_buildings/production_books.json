@@ -34,7 +34,7 @@
       }
     ]
   },
-  "generated_sha256": "a48d3fb4170c0feaf884a33843a9412c730681c29b3d42fe953a827bd8f6e67e",
+  "generated_sha256": "e9be4d43bf22db215ac48f27ce936594cf835b0fc67929d723ec0a570255483d",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_books.txt",
   "source_sha256": "cf613d42eb267ec8100511d06d5451608c056090a88f4a9bdb6dbaf9858709c3",

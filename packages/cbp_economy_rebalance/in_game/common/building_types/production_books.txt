@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 
 scriptorium = {
@@ -34,7 +35,7 @@ scriptorium = {
 			paper = 0.1995
 			lumber = 0.0998
 			produced = books
-			output = 0.324
+			output = 0.324 # VANILLA = 0.3
 
 			debug_max_profit = guild_profit_margin
 			category = guild_input
@@ -75,7 +76,7 @@ printing_press_shop = {
 			lumber = 0.2662
 			
 			produced = books
-			output = 1.08
+			output = 1.08 # VANILLA = 1
 			
 			debug_max_profit = workshop_profit_margin
 			
@@ -119,7 +120,7 @@ printing_manufactory = {
 			lumber = 0.4269
 			
 			produced = books
-			output = 2.16
+			output = 2.16 # VANILLA = 2
 			
 			debug_max_profit = manufactory_profit_margin
 			
@@ -165,7 +166,7 @@ printing_mill = {
 		
 			
 			produced = books
-			output = 4.32
+			output = 4.32 # VANILLA = 4
 			
 			debug_max_profit = mills_profit_margin
 			

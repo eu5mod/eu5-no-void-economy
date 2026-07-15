@@ -34,7 +34,7 @@
       }
     ]
   },
-  "generated_sha256": "9929b481f7fa4b5b57cf03901b40c566651e67cf8b63913bf8b6f735b26f47ba",
+  "generated_sha256": "c8e7a48a1e58b2d75457475146aaa97a174497b4276e25274a6ddc8e44cce219",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_naval_supplies.txt",
   "source_sha256": "92273cbcc904354761c35c564bc80aac3adc53b8ea0da9935122ee665fa2439e",
