@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 temple = {
 	audio_tier = 1
@@ -690,9 +691,9 @@ aqueduct_system = {
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.1
-		monthly_republican_tradition = 0.1
-		monthly_devotion = 0.1
+		monthly_legitimacy = 0.075
+		monthly_republican_tradition = 0.075
+		monthly_devotion = 0.075
 	}
 }
 

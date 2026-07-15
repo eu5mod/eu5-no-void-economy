@@ -13,6 +13,24 @@ TRANSFORMER = REPO_ROOT / "tools" / "transform_cbp_economy_building_overrides.py
 
 
 class BuildingOverrideTransformerTest(unittest.TestCase):
+    def test_fixed_monthly_political_modifier_is_scaled(self):
+        temporary, result, output, manifest = self.run_transformer(
+            """political_building = {
+\tmodifier = {
+\t\tmonthly_legitimacy = 0.4
+\t}
+}
+"""
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("monthly_legitimacy = 0.3", output.read_text())
+        payload = json.loads(manifest.read_text())
+        self.assertEqual(
+            payload["changed_buildings"]["political_building"][0]["field"],
+            "monthly_legitimacy",
+        )
+        temporary.cleanup()
+
     def run_transformer(self, source_text: str, *, basename: str = "fixture.txt"):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)

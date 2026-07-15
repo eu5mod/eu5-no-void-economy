@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 cantonments = {
 	audio_tier = 2
@@ -1722,7 +1723,7 @@ ablaq_palace = {
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015
 		global_silk_output_modifier = 0.025
 	}
 	
@@ -2066,7 +2067,7 @@ schonbrunn_palace = {
 		local_cultural_influence = 0.5
 	}
 	capital_country_modifier = {
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375
 	}
 
 	possible_production_methods = {
@@ -2570,7 +2571,7 @@ husuni_kubwa = {
 	}
 
 	capital_country_modifier = {
-		monthly_legitimacy = 0.05
+		monthly_legitimacy = 0.0375
 	}
 
 	market_center_modifier = {
@@ -2630,7 +2631,7 @@ imperial_city_of_hue = {
 		local_cultural_influence = 0.25
 	}
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015
 		prestige_decay = -0.001
 	}
 	possible_production_methods = {
@@ -2682,7 +2683,7 @@ wat_chaiwatthanaram_temple_building = {
 	}
 	
 	capital_country_modifier = {
-		monthly_legitimacy = 0.02
+		monthly_legitimacy = 0.015
 	}
 	
 	possible_production_methods =  {

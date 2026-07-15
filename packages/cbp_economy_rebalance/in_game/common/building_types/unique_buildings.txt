@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 pounamou_carver = {
 	is_special = yes
@@ -202,7 +203,7 @@ hanseatic_town_hall = {
 	
 	capital_country_modifier = {
 		country_cabinet_efficiency = 0.1
-		monthly_republican_tradition = 0.05
+		monthly_republican_tradition = 0.0375
 		parliament_base_support = 0.05
 	}
 	remove_if = {

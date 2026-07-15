@@ -121,6 +121,14 @@ cbp_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
 	'US-09 generator must fail if generated output still contains BOM bytes'
 cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
+cbp_require_file "tools/generate_political_reward_overrides.py"
+cbp_require_file "tools/tests/test_political_reward_overrides.py"
+cbp_require_match 'generate_political_reward_overrides\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must compose political reward overrides after vanilla-derived generators'
+cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'#184 building transformer must own fixed monthly political modifier scaling'
 cbp_require_match 'Building maintenance multiplier' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must document the composed US-08/US-05.3 maintenance multiplier'

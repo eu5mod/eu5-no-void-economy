@@ -8,6 +8,19 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repo_root/tools/cbp_tool_lib.sh"
 cbp_load_local_config
 
+# Political reward overrides are composed after the other exact-path package
+# generators. Remove files owned solely by the previous political run first so
+# US-09 and US-177 can rebuild their authoritative inputs without ownership
+# collisions; the final political pass below will recreate them.
+political_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
+if [[ -f "$political_manifest" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	political_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
+	python3 "$repo_root/tools/generate_political_reward_overrides.py" \
+		--game-root "$political_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--clean
+fi
+
 if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	bash "$repo_root/tools/generate_cbp_location_overrides.sh"
 else
@@ -98,6 +111,9 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--common-dir "$us177_common_dir" \
 		--package-common-dir "$repo_root/packages/cbp_economy_rebalance/in_game/common" \
 		--multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
+	python3 "$repo_root/tools/generate_political_reward_overrides.py" \
+		--game-root "$us177_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance"
 else
 	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 fi

@@ -6,6 +6,7 @@
 # Building maintenance multiplier: 0.7
 # Trade-building maintenance multiplier: 0.5
 # Minting income multiplier: 2.0
+# Fixed monthly political modifier multiplier: 0.75
 
 royal_court = {
 	audio_tier = 4
@@ -486,7 +487,7 @@ republican_assembly = {
 
 	
 	capital_country_modifier = {
-		monthly_republican_tradition = 0.1
+		monthly_republican_tradition = 0.075
 		country_cabinet_efficiency = 0.05
 	}
 	

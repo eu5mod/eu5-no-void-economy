@@ -6,13 +6,13 @@ written_alphabet = {
 	icon = abacus_advance
 	depth = 0
 	research_cost = 2.0
-	
-	
+
+
 	global_max_literacy = 5
 	global_monthly_literacy = 0.01
-	
+
 	starting_technology_level = 2
-	
+
 }
 
 cultural_traditions_law_advance = {
@@ -34,7 +34,7 @@ mapmaking = {
 	age = age_1_traditions
 	icon = maritime_advance_age_4
 	requires = written_alphabet
-	
+
 	research_cost = 1.0
 	may_explore = yes
 	unlock_law = immigration_law
@@ -44,7 +44,7 @@ colonies = {
 	age = age_1_traditions
 	icon = colonies
 	requires = mapmaking
-	
+
 	research_cost = 1.0
 	can_colonize = yes
 }
@@ -52,13 +52,13 @@ colonies = {
 codified_laws = {
 	age = age_1_traditions
 	icon = scholasticism
-	
+
 	requires = written_alphabet
-	
+
 	research_cost = 2.0
 	has_codified_laws = yes
 	allow_council_parliament = yes
-	
+
 	starting_technology_level = 2
 }
 
@@ -73,10 +73,10 @@ subjects_advance = {
 	age = age_1_traditions
 	icon = diplomatic_influence
 	research_cost = 2.5
-	
+
 	allow_subjects = yes
 	unlock_subject_type = vassal
-	
+
 	requires = codified_laws
 }
 
@@ -85,10 +85,10 @@ taxation_advance = {
 	icon = genoese_banking_traditions
 	research_cost = 2.5
 	enable_taxation = yes
-	has_stability_investment = yes
-	
+	has_stability_investment = cbp_static_inline_stability_investment_yes_8efff119ba
+
 	unlock_law = coin_laws
-	
+
 	requires = codified_laws
 }
 
@@ -96,7 +96,7 @@ state_administration_advance = {
 	age = age_1_traditions
 	research_cost = 2.5
 	unlock_law = administrative_system
-	
+
 	requires = taxation_advance
 
 	potential = {
@@ -110,11 +110,11 @@ state_administration_advance = {
 legalism_advance = {
 	age = age_1_traditions
 	icon = legalism_advance
-		
+
 	stability_cost = -0.1
-	
+
 	requires = codified_laws
-	
+
 	allow = { has_embraced_institution = institution:legalism }
 }
 
@@ -141,14 +141,14 @@ banking_country_traditions = {
 
 	age = age_1_traditions
 	icon = banking_advance
-	
-	
+
+
 	unlock_country_interaction = take_over_loan
 	minting_income_factor = 0.2
-	total_loan_capacity_modifier = 0.5 
-		
+	total_loan_capacity_modifier = 0.5
+
 	requires = medieval_administration
-	
+
 }
 
 hospital_advance = {
@@ -182,7 +182,7 @@ windmills_advance = {
 aqueduct_system = {
 	age = age_1_traditions
 
-	potential = { 
+	potential = {
 		OR = {
 			has_or_had_tag = BYZ
 			has_or_had_tag = ROM
@@ -200,14 +200,14 @@ alchemy_advance = {
 
 	global_life_expectancy = 3
 	global_disease_resistance = 0.05
-	
+
 	starting_technology_level = 3
 }
 
 apothecary_advance = {
 	age = age_1_traditions
 	requires = alchemy_advance
-	
+
 	unlock_building = apothecary
 }
 
@@ -228,22 +228,22 @@ ranching = {
 	icon = finest_of_horses
 	starting_technology_level = 1
 	requires = windmills_advance
-	
-	allow = { 
+
+	allow = {
 		OR = {
 			has_embraced_institution = institution:feudalism
 			original_capital ?= { continent = continent:europe }
 			original_capital ?= { continent = continent:asia }
 			original_capital ?= { sub_continent = sub_continent:north_africa }
 			original_capital ?= { sub_continent = sub_continent:west_africa }
-			
+
 			original_capital ?= {
-				market ?= { 
+				market ?= {
 					OR = {
-						is_produced_in_market = goods:horses 
-						is_traded_in_market = goods:horses 
+						is_produced_in_market = goods:horses
+						is_traded_in_market = goods:horses
 					}
-				} 
+				}
 			}
 		}
 	}
@@ -258,7 +258,7 @@ horse_riding_advance = {
 	unlock_levy = levy_noble_cavalry
 	unlock_levy = levy_tribal_cavalry
 
-	
+
 	starting_technology_level = 1
 }
 
@@ -274,11 +274,11 @@ feudalism_advance = {
 	unlock_government_reform = feudal_nobility
 	unlock_government_reform = margraviate
 	requires = horse_riding_advance
-	
+
 	global_nobles_max_literacy = 20
 	allow_estate_parliament = yes
 	military_tactics = 1.0
-	
+
 	allow = { has_embraced_institution = institution:feudalism }
 }
 
@@ -288,13 +288,13 @@ trade_caravans = {
 	research_cost = 2.0
 
 	requires = horse_riding_advance
-	
+
 	trade_land_efficiency = 0.66
 
 	potential = {
 		original_capital ?= { sub_continent = sub_continent:central_asia }
 	}
-	
+
 	starting_technology_level = 1
 }
 
@@ -312,10 +312,10 @@ mining_advance = {
 
 metallurgy  = {
 	age = age_1_traditions
-	
+
 	requires = mining_advance
 	research_cost = 2.0
-	
+
 	unlock_building = tools_guild
 
 }
@@ -334,7 +334,7 @@ bronze_working = {
 	icon = serbian_mining
 	requires = metallurgy
 	research_cost = 2.0
-	
+
 	can_extract_copper = yes
 	can_extract_tin = yes
 	can_extract_lead = yes
@@ -347,11 +347,11 @@ iron_working = {
 	requires = metallurgy
 	research_cost = 2.0
 	starting_technology_level = 1
-	
-	allow = { 
+
+	allow = {
 		has_embraced_institution = institution:feudalism
 	}
-	
+
 	can_extract_coal = yes
 	can_extract_iron = yes
 	unlock_building = bog_iron_smelter
@@ -368,7 +368,7 @@ advanced_mining  = {
 	icon = serbian_mining
 	requires = iron_working
 	research_cost = 2.0
-	
+
 	can_extract_saltpeter = yes
 	can_extract_alum = yes
 
@@ -378,7 +378,7 @@ fine_metals_mining = {
 	age = age_1_traditions
 	requires = bronze_working
 	research_cost = 2.0
-	
+
 	can_extract_goods_gold = yes
 	can_extract_silver = yes
 	can_extract_mercury = yes
@@ -397,21 +397,21 @@ ship_building_advance = {
 	age = age_1_traditions
 	icon = ship_building_advance
 	research_cost = 2.0
-	
+
 	ship_build_speed = 0.1
 	depth = 0
-	
+
 	starting_technology_level = 2
 }
 
 trade_advance_age_of_trad = {
 	age = age_1_traditions
 	icon = merchant_power_from_maritime_reformation_advance
-	
+
 	requires = ship_building_advance
-	
+
 	selling_efficiency = small_trade_efficiency_bonus
-	
+
 	starting_technology_level = 3
 }
 
@@ -420,54 +420,54 @@ trade_advance_age_of_trad = {
 more_merchants_age_of_trad = {
 	age = age_1_traditions
 	icon = merchants_and_trade
-	
+
 	requires = trade_advance_age_of_trad
-	
+
 	global_merchant_capacity_modifier = 0.05
-	
+
 	starting_technology_level = 3
 }
 slave_raid_advance = {
 	age = age_1_traditions
 	icon = slavery_before_death
 
-	potential = { 
+	potential = {
 		OR = {
 			has_or_had_tag = MOR
 			has_or_had_tag = TUN
 			has_or_had_tag = TLE
 			has_or_had_tag = TRP
-			
+
 			AND = {
 				num_locations > 0
 				capital = { region = region:maghreb_region }
 			}
 		}
-		
+
 	}
-	
+
 	allow_privateers_slave_raid = yes
 	can_hire_privateers = yes
-	
+
 	requires = trade_advance_age_of_trad
 }
 
 #Organized Religion
 organized_religion = {
 	age = age_1_traditions
-	
+
 	global_clergy_city_desired_pop = 0.05
 	global_clergy_max_literacy = 5
 
 	depth = 0
 	starting_technology_level = 4
-	
+
 }
 scholasticism = {
 	age = age_1_traditions
 	icon = scholasticism
 	requires = organized_religion
-	
+
 	global_institution_growth_modifier = 0.20
 
 	ai_weight = { add = 2 }
@@ -524,9 +524,9 @@ rural_rgo_traditions = {
 meritocracy_advance = {
 	age = age_1_traditions
 	icon = meritocracy
-		
+
 	country_cabinet_efficiency = 0.05
-	
+
 	depth = 0
 
 
@@ -590,7 +590,7 @@ appointed_chain_of_command = {
 	potential = {
 		original_capital ?= { sub_continent = sub_continent:east_asia }
 	}
-	
+
 	levy_combat_efficiency_modifier = 0.1
 }
 
@@ -598,7 +598,7 @@ temporary_appointments = {
 	age = age_1_traditions
 	icon = genoese_banking_traditions
 	requires = efficient_bureaucracy
-	
+
 	set_cabinet_member_cost_modifier = -0.1
 	replace_cabinet_member_cost_modifier = -0.1
 }

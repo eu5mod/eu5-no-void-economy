@@ -296,6 +296,7 @@ while IFS= read -r -d '' source_file; do
 			--trade-building-maintenance-multiplier "$trade_building_maintenance_multiplier" \
 			--us07-trade-burghers-estate-power-multiplier "$us07_trade_burghers_estate_power_multiplier" \
 			--minting-income-multiplier "$minting_income_multiplier" \
+			--political-modifier-multiplier 0.75 \
 			--goods "${cbp_goods[@]}"
 	transform_status=$?
 	set -e

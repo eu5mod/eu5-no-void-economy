@@ -347,6 +347,12 @@
         "field": "maintenance:tools",
         "new_value": "0.07",
         "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "monthly_republican_tradition",
+        "new_value": "0.075",
+        "old_value": "0.1"
       }
     ],
     "royal_court": [
@@ -540,7 +546,7 @@
       }
     ]
   },
-  "generated_sha256": "64e897d700f9dff55d461de82d34347daede6c0d5e1fbff79e698b3004583f37",
+  "generated_sha256": "b6927bf384ae81affa6bc38f0b6f2e26a71fa45325c5abc99dd1b8b7cb9a6cdf",
   "schema_version": 1,
   "source_file": "<EU5_GAME_COMMON_DIR>/building_types/capital_buildings.txt",
   "source_sha256": "e7696209f23b1605bd7720ee81070e32cf887aaa9da18520d74e06aefdbe36be",

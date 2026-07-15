@@ -14,7 +14,7 @@ bavarian_legitimacy = {
 		}
 	}
 	requires = feudalism_advance
-	monthly_legitimacy = 0.1
+	monthly_legitimacy = 0.075
 }
 bavarian_imperial_knights = {
 	age = age_1_traditions
@@ -144,6 +144,7 @@ bavarian_hofkriegsrat = {
 		}
 	}
 	military_tactics = 0.1
+	ai_weight = { add = 10 }
 
 	requires = regiment_reinforcement_speed_reformation
 }

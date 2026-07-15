@@ -1,0 +1,20 @@
+﻿strengthen_government = {
+	ability = mil
+
+	allow = {
+	}
+
+	country_modifier = {
+		monthly_legitimacy = 0.075
+		monthly_republican_tradition = 0.075
+		monthly_devotion = 0.075
+		monthly_horde_unity = 0.075
+		monthly_tribal_cohesion = 0.075
+	}
+
+	progress = {
+		scope:actor = {
+			value = government_power
+		}
+	}
+}
