@@ -48,6 +48,7 @@ def build_spec(game_root: Path, percent: Decimal) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-us09-rgo-prices",
+        "business_rule": "Reduce RGO expansion prices to offset the configured RGO output bonus.",
         "transformations": [
             {
                 "file": SOURCE,

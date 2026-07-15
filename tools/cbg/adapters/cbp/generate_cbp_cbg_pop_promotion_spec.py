@@ -90,6 +90,7 @@ def build_spec(game_root: Path, burgher: Decimal, laborer: Decimal) -> dict[str,
     return {
         "schema_version": 1,
         "mod_id": "cbp-us09-pop-promotion",
+        "business_rule": "Increase Burgher and Laborer promotion factors by their configured percentages.",
         "transformations": rules,
         "scope_contract": {"owned_outputs": outputs, "phase": "pop-promotion"},
     }

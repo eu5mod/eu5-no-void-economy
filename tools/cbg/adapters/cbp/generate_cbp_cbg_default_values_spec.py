@@ -40,6 +40,7 @@ def build_spec(game_root: Path) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-default-values",
+        "business_rule": "Scale centralized political intensity values and production profit-margin targets from Vanilla.",
         "transformations": [
             {
                 "file": TARGET,

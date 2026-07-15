@@ -110,6 +110,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-buildings",
+        "business_rule": "Apply configured production, trade-capacity, maintenance, minting, and stockpile policies to Vanilla buildings.",
         "transformations": transformations,
         "scope_contract": {
             "owned_outputs": owned_outputs,

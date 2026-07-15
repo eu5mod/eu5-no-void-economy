@@ -69,6 +69,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         return {
             "schema_version": 1,
             "mod_id": "cbp-economy-rebalance-political-minting",
+            "business_rule": "Scale political rewards and research modifiers, then compose minting changes into the same Vanilla-derived files.",
             "transformations": transformations,
             "scope_contract": {
                 "owned_outputs": sorted(paths),

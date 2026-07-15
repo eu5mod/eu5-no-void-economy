@@ -16,7 +16,9 @@ CBG has no campaign runtime cost.
 ## Console output
 
 Each materialization ends with a compact summary of generated files, expanded
-rule candidates, applied mutations, and the manifest path. Existing manifest
+rule candidates, applied mutations, and the manifest path. Add a concise
+`business_rule` to each specification to remind users which gameplay intention
+produced that technical output. Existing manifest
 metadata is also grouped into useful EU5 surfaces such as events, buildings,
 laws, government reforms, estate privileges, parliament, advances, goods, and
 script values. These are file and mutation counts; CBG does not rescan Vanilla
@@ -39,6 +41,7 @@ Create `half_stability_rewards.json`:
 {
   "schema_version": 1,
   "mod_id": "half-stability-rewards",
+  "business_rule": "Halve flat stability rewards and penalties across Vanilla political content.",
   "transformations": [
     {
       "file": [

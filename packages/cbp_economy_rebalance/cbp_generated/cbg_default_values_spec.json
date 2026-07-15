@@ -1,4 +1,5 @@
 {
+  "business_rule": "Scale centralized political intensity values and production profit-margin targets from Vanilla.",
   "mod_id": "cbp-economy-rebalance-default-values",
   "schema_version": 1,
   "scope_contract": {

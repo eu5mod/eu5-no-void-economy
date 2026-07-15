@@ -36,11 +36,19 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         output = io.StringIO()
 
         with redirect_stdout(output):
-            print_generation_summary(manifest, 8, Path("build/cbg_manifest.json"))
+            print_generation_summary(
+                manifest,
+                8,
+                Path("build/cbg_manifest.json"),
+                ["Halve stability rewards across Vanilla political surfaces."],
+            )
 
         text = output.getvalue()
         self.assertIn("CBG generation complete", text)
         self.assertIn("Rule candidates", text)
+        self.assertIn("Business rule: Halve stability rewards", text)
+        self.assertIn("./build/cbg_manifest.json", text)
+        self.assertIn("#" * 72, text)
         self.assertRegex(text, r"Events\s+1 file\s+2 mutations")
         self.assertRegex(text, r"Buildings\s+1 file\s+3 mutations")
         self.assertRegex(text, r"Laws\s+1 file\s+1 mutation")

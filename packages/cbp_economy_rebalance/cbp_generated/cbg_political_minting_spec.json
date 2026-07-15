@@ -1,4 +1,5 @@
 {
+  "business_rule": "Scale political rewards and research modifiers, then compose minting changes into the same Vanilla-derived files.",
   "mod_id": "cbp-economy-rebalance-political-minting",
   "schema_version": 1,
   "scope_contract": {

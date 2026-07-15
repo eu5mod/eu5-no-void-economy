@@ -48,6 +48,7 @@ def build_spec(game_root: Path, divisor: Decimal) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-food-production",
+        "business_rule": "Divide Vanilla food production by the configured divisor while preserving each food-good definition.",
         "transformations": transformations,
         "scope_contract": {
             "owned_outputs": sorted(grouped),

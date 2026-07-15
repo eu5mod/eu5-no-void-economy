@@ -70,8 +70,33 @@ def styled(text: str, code: str, enabled: bool) -> str:
     return f"\033[{code}m{text}\033[0m" if enabled else text
 
 
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return f"./{resolved.relative_to(Path.cwd().resolve()).as_posix()}"
+    except ValueError:
+        try:
+            return f"~/{resolved.relative_to(Path.home().resolve()).as_posix()}"
+        except ValueError:
+            return str(resolved)
+
+
+def load_business_rules(spec_paths: list[Path]) -> list[str]:
+    rules: list[str] = []
+    for spec_path in spec_paths:
+        payload = json.loads(spec_path.read_text(encoding="utf-8"))
+        rule = payload.get("business_rule")
+        if rule is None:
+            rule = f"Apply the {payload.get('mod_id', spec_path.stem)} balance policy."
+        if not isinstance(rule, str) or not rule.strip():
+            raise ValueError(f"{spec_path}: business_rule must be a non-empty string")
+        rules.append(rule.strip())
+    return rules
+
+
 def print_generation_summary(
-    manifest: dict[str, Any], intent_count: int, manifest_path: Path
+    manifest: dict[str, Any], intent_count: int, manifest_path: Path,
+    business_rules: list[str],
 ) -> None:
     aliases_path = "main_menu/common/script_values/cbg_generated_scalars.txt"
     category_files: Counter[str] = Counter()
@@ -89,14 +114,24 @@ def print_generation_summary(
 
     enabled = color_enabled()
     title = styled("CBG generation complete", "1;32", enabled)
-    cue = styled("[OK]", "1;32", enabled)
+    cue_text = "[✅]" if (sys.stdout.encoding or "").lower().startswith("utf") else "[OK]"
+    cue = styled(cue_text, "1;32", enabled)
     label = lambda value: styled(f"{value:<20}", "1;36", enabled)
     print()
+    print(styled("#" * 72, "1;35", enabled))
     print(f"{cue} {title}")
+    rule_label = styled("Business rule", "4;36", enabled)
+    if len(business_rules) == 1:
+        print(f"  {rule_label}: {business_rules[0]}")
+    else:
+        print(f"  {rule_label}:")
+        for rule in business_rules:
+            print(f"    - {rule}")
+    print()
     print(f"  {label('Output files')} {len(manifest['files']):>7}")
     print(f"  {label('Rule candidates')} {intent_count:>7}")
     print(f"  {label('Applied mutations')} {applied:>7}")
-    print(f"  {label('Manifest')} {manifest_path}")
+    print(f"  {label('Manifest')} {display_path(manifest_path)}")
 
     ordered = [item[0] for item in CONTENT_CATEGORIES] + ["Other"]
     populated = [category for category in ordered if category_files[category]]
@@ -919,6 +954,7 @@ def main() -> int:
     output_root = args.output_root.resolve()
     try:
         intents, _custom_fields = load_intents(args.spec, game_root)
+        business_rules = load_business_rules(args.spec)
         manifest_path = args.manifest or output_root / "cbg_manifest.json"
         manifest = generate(
             game_root,
@@ -931,7 +967,7 @@ def main() -> int:
         raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print_generation_summary(manifest, len(intents), manifest_path)
+    print_generation_summary(manifest, len(intents), manifest_path, business_rules)
     return 0
 
 

@@ -6,6 +6,7 @@
 {
   "schema_version": 1,
   "mod_id": "unique-mod-id",
+  "business_rule": "Explain the player-facing balance intention.",
   "custom_fields": [],
   "transformations": []
 }
@@ -13,6 +14,11 @@
 
 Each transformation selects a Vanilla source and declares one operation. Files
 are relative to the EU5 `game` directory.
+
+`business_rule` is optional presentation metadata. CBG displays it in the
+generation summary so reviewers can connect technical mutations to their
+intended gameplay effect. When several specifications are composed, each
+specification's rule is listed separately.
 
 ## Selectors
 
