@@ -115,10 +115,18 @@ git diff --check
 git diff --cached --check
 
 step '4/7' 'Install the generated and validated package set'
-./tools/install_local_packages.sh --skip-generate "${target_args[@]}"
+if ((${#target_args[@]} > 0)); then
+	./tools/install_local_packages.sh --skip-generate "${target_args[@]}"
+else
+	./tools/install_local_packages.sh --skip-generate
+fi
 
 step '5/7' 'Verify installed package provenance and content'
-./tools/install_local_packages.sh --check "${target_args[@]}"
+if ((${#target_args[@]} > 0)); then
+	./tools/install_local_packages.sh --check "${target_args[@]}"
+else
+	./tools/install_local_packages.sh --check
+fi
 
 if [[ "$clear_logs" == "yes" ]]; then
 	step '6/7' 'Clear current EU5 logs'

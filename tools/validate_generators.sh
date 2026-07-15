@@ -135,6 +135,8 @@ cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_file "tools/generate_political_reward_overrides.py"
 cbp_require_file "tools/tests/test_political_reward_overrides.py"
 cbp_require_file "tools/cbg/community_balance_generator.py"
+cbp_require_file "tools/cbg/adapters/cbp/helpers/bootstrap_cbg_manifest_from_git.py"
+cbp_require_file "tools/cbg/adapters/cbp/tests/test_manifest_bootstrap.py"
 cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py"
 cbp_require_file "tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_parity.sh"
@@ -187,9 +189,9 @@ cbp_require_match 'install_local_packages\.sh --skip-generate' \
 cbp_require_match 'dev_prepare_game\.sh' \
 	"tools/README.md" \
 	'Tools documentation must advertise the canonical developer preparation command'
-cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator' \
+cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator tools\.cbg\.adapters\.cbp\.tests\.test_manifest_bootstrap' \
 	".github/workflows/generated-files.yml" \
-	'Generated-files CI must run the relocated generic CBG test module'
+	'Generated-files CI must run generic CBG and clean-clone manifest bootstrap tests'
 cbp_require_match 'python3 tools/cbg/validator/cbp/validate_cbp_cbg_master_spec\.py' \
 	".github/workflows/generated-files.yml" \
 	'Generated-files CI must run the CBP-namespaced CBG master-spec validator'
@@ -290,6 +292,9 @@ cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
 cbp_require_match 'Building maintenance multiplier' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must document the composed US-08/US-05.3 maintenance multiplier'
+cbp_require_match 'bootstrap_cbg_manifest' \
+	"tools/generate_all.sh" \
+	'generate_all must bootstrap missing CBG ownership manifests from clean tracked outputs'
 cbp_require_match 'Trade-building maintenance multiplier' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must document the composed trade-building maintenance multiplier'

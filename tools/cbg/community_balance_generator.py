@@ -798,6 +798,35 @@ def previous_outputs(manifest_path: Path | None) -> dict[PurePosixPath, str]:
     }
 
 
+def adopt_marked_outputs(
+    output_root: Path,
+    manifest_path: Path | None,
+    relative_tree: PurePosixPath | None,
+    marker: bytes | None,
+) -> dict[PurePosixPath, str]:
+    """Bootstrap ownership for signed outputs created before CBG manifests existed."""
+    if relative_tree is None and marker is None:
+        return {}
+    if relative_tree is None or marker is None:
+        raise ValueError("Marked-output adoption requires both a tree and an exact first-line marker")
+    if manifest_path is not None and manifest_path.is_file():
+        return {}
+    tree = output_root / Path(relative_tree)
+    if not tree.is_dir():
+        return {}
+    owned: dict[PurePosixPath, str] = {}
+    for path in sorted(tree.rglob("*")):
+        if not path.is_file():
+            continue
+        content = path.read_bytes()
+        first_line = content.splitlines()[0] if content.splitlines() else b""
+        if first_line != marker:
+            continue
+        relative = PurePosixPath(path.relative_to(output_root).as_posix())
+        owned[relative] = sha256(content)
+    return owned
+
+
 def assert_owned_output(
     path: Path,
     relative: PurePosixPath,
@@ -823,9 +852,17 @@ def generate(
     intents: list[Intent],
     previous_manifest: Path | None = None,
     adopt_identical: bool = False,
+    adopt_marked_tree: PurePosixPath | None = None,
+    adopt_marker: bytes | None = None,
 ) -> dict[str, Any]:
     validate_conflicts(intents)
     owned = previous_outputs(previous_manifest)
+    owned.update(adopt_marked_outputs(
+        output_root,
+        previous_manifest,
+        adopt_marked_tree,
+        adopt_marker,
+    ))
     by_file: dict[PurePosixPath, list[Intent]] = {}
     for intent in intents:
         by_file.setdefault(intent.target.file, []).append(intent)
@@ -949,6 +986,15 @@ def main() -> int:
         action="store_true",
         help="Claim an existing output only when it is byte-identical to the generated result.",
     )
+    parser.add_argument(
+        "--adopt-marked-output-tree",
+        type=PurePosixPath,
+        help="One-time migration: claim signed files below this output-relative tree when no manifest exists.",
+    )
+    parser.add_argument(
+        "--adopt-output-marker",
+        help="Exact first line required by --adopt-marked-output-tree.",
+    )
     args = parser.parse_args()
     game_root = args.game_root.resolve()
     output_root = args.output_root.resolve()
@@ -962,6 +1008,8 @@ def main() -> int:
             intents,
             manifest_path,
             adopt_identical=args.adopt_identical_output,
+            adopt_marked_tree=args.adopt_marked_output_tree,
+            adopt_marker=args.adopt_output_marker.encode("utf-8") if args.adopt_output_marker else None,
         )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         raise SystemExit(f"Community Balance Generator failed: {exc}") from exc

@@ -487,7 +487,7 @@ jobs:
         run: /bin/bash ./tools/validate_generators.sh
 
       - name: Test Community Balance Generator
-        run: python3 -m unittest tools.cbg.tests.test_community_balance_generator
+        run: python3 -m unittest tools.cbg.tests.test_community_balance_generator tools.cbg.adapters.cbp.tests.test_manifest_bootstrap
 
       - name: Validate CBG master specification
         run: python3 tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py
