@@ -3,3 +3,7 @@
 NMarket = {
 	FOOD_PRICE = 0.3
 }
+
+NLocation = {
+	SUBSISTENCE_AGRICULTURE = 1.0
+}
