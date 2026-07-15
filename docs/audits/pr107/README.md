@@ -30,7 +30,7 @@ Read these first:
 | Source | Why it matters |
 | --- | --- |
 | `docs/audits/q8/README.md` | Defines the audit-folder pattern and the rule that an implementation track owns its current Q-docs instead of rewriting inherited history. |
-| `docs/audits/q8/Q5_flux_logique_global.md` | Defines the Q8.7 live monthly workflow, including market-local ownership and country-owned trade pass ordering. |
+| `docs/audits/q8/archives/Q5_flux_logique_global.md` | Preserves the Q8.7-era monthly workflow evidence; `RUNTIME_FLOW.md` now defines live ordering. |
 | `docs/generated_issues/us-17-trade-reconciliation.md` | US-17 issue/specification surface. |
 | `docs/generated_issues/us-20-trade-maintenance-goods-reconciliation.md` | US-20 issue/specification surface. |
 | `docs/tests/TEST-US-20-trade-maintenance-goods-reconciliation.md` | Runtime validation protocol and US20 four-case probe status. |
@@ -39,12 +39,14 @@ Read these first:
 ## PR107-owned documents
 
 ```txt
-docs/audits/pr107/Q5_workflow_state.md
+docs/audits/pr107/archives/Q5_workflow_state.md
 ```
 
 ## Rule for this folder
 
-Update this folder whenever PR #107 or a follow-up master PR changes one of these surfaces:
+This checkpoint is closed and archived. Do not update its Q5 to represent new
+runtime behavior. Update `RUNTIME_FLOW.md`, the feature specification, and a
+new dated proof record when a follow-up changes one of these surfaces:
 
 ```txt
 - execution order;

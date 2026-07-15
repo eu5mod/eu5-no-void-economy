@@ -34,7 +34,7 @@ docs/audits/q8/Q1_architecture_fichiers.md
 docs/audits/q8/Q2_systeme_cache.md
 docs/audits/q8/Q3_redondances_code.md
 docs/audits/q8/Q4_boucles_performance.md
-docs/audits/q8/Q5_flux_logique_global.md
+docs/audits/q8/archives/Q5_flux_logique_global.md
 ```
 
 ## Probe event

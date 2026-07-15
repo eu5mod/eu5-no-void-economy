@@ -24,7 +24,7 @@ repository evolves.
 | Document | Status | Current authority |
 |---|---|---|
 | [README](./pr107/README.md) | Historical baseline | This catalog and `RUNTIME_FLOW.md` |
-| [Q5 workflow state](./pr107/Q5_workflow_state.md) | Historical baseline | `RUNTIME_FLOW.md`; feature contracts remain in US-17/US-20 specifications |
+| [Q5 workflow state](./pr107/archives/Q5_workflow_state.md) | Historical baseline | `RUNTIME_FLOW.md`; feature contracts remain in US-17/US-20 specifications |
 
 ## PR126: architecture refactor baseline
 
@@ -43,9 +43,9 @@ in time. `RUNTIME_FLOW.md` supersedes them for the live global order.
 | [Q3 redundancy](./pr126/Q3_redondances_code.md) | Historical baseline | Current generator model |
 | [Q4 loops and performance](./pr126/Q4_boucles_performance.md) | Historical baseline | `RUNTIME_FLOW.md` |
 | [Q4.1 factorization conclusions](./pr126/Q4.1_factorisation_intermediate_conclusions.md) | Historical baseline | `RUNTIME_FLOW.md` |
-| [Q5 global logical flow](./pr126/Q5_flux_logique_global.md) | Superseded | `RUNTIME_FLOW.md` |
-| [Q5.1 current global flow](./pr126/Q5.1_current_global_flow.md) | Superseded | `RUNTIME_FLOW.md` |
-| [Q5.2 active-good root cause](./pr126/Q5.2_active_good_root_cause.md) | Proof record | Current generated dispatchers and validators |
+| [Q5 global logical flow](./pr126/archives/Q5_flux_logique_global.md) | Superseded | `RUNTIME_FLOW.md` |
+| [Q5.1 current global flow](./pr126/archives/Q5.1_current_global_flow.md) | Superseded | `RUNTIME_FLOW.md` |
+| [Q5.2 active-good root cause](./pr126/archives/Q5.2_active_good_root_cause.md) | Proof record | Current generated dispatchers and validators |
 | [Q6 functional description](./pr126/Q6_description_fonctionnelle.md) | Historical baseline | Current specifications and `AGENTS.md` |
 | [Q8 future optimizations](./pr126/Q8_future_optimisations.md) | Historical baseline | Q8 audit track |
 | [Q8/F9 rolling location cache](./pr126/Q8_F9_location_cache_rolling_verification.md) | Proof record | Current cache implementation and Q8 records |
@@ -98,7 +98,7 @@ Q8 records the proof stack that produced the current Q8.7 switch.
 | [Q2 cache system](./q8/Q2_systeme_cache.md) | Historical baseline | Current persistent-state documentation |
 | [Q3 redundancy](./q8/Q3_redondances_code.md) | Historical baseline | Current generator model |
 | [Q4 loops and performance](./q8/Q4_boucles_performance.md) | Historical baseline | `RUNTIME_FLOW.md` |
-| [Q5 global logical flow](./q8/Q5_flux_logique_global.md) | Superseded | `RUNTIME_FLOW.md` |
+| [Q5 global logical flow](./q8/archives/Q5_flux_logique_global.md) | Superseded | `RUNTIME_FLOW.md` |
 | [Q8.0 baseline audit](./q8/Q8_0_POST_PR126_BASELINE_AUDIT.md) | Historical baseline | Current runtime and this catalog |
 | [Q8.0 baseline results](./q8/Q8_0_POST_PR126_BASELINE_RESULTS.md) | Proof record | Current runtime tests |
 | [Q8.1/Q8.3 implementation](./q8/Q8_1_Q8_3_IMPLEMENTATION.md) | Proof record | Current implementation |
