@@ -176,16 +176,28 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
     checked = {"political_files": 0, "scalar_targets": 0}
 
     fields = set(EVENT_FIELDS) | set(MONTHLY_FIELDS)
-    for entry in political_manifest.get("files", []):
-        if entry.get("package_relative"):
+    political_paths = {
+        Path("in_game") / entry["path"]
+        for entry in political_manifest.get("files", [])
+        if not entry.get("package_relative")
+    }
+    for root_name in ("events", "common"):
+        candidate_root = args.candidate_root / "in_game" / root_name
+        if not candidate_root.is_dir():
             continue
-        relative = Path("in_game") / entry["path"]
+        for candidate_path in candidate_root.rglob("*.txt"):
+            if political_occurrences(candidate_path, fields, candidate_defs):
+                political_paths.add(candidate_path.relative_to(args.candidate_root))
+
+    for relative in sorted(political_paths):
         vanilla = args.game_root / relative
         if vanilla.is_file() and not political_occurrences(vanilla, fields, reference_defs):
             # A generated manifest can lag a Vanilla patch by one run.
             continue
         reference = args.reference_root / relative
         candidate = args.candidate_root / relative
+        if not reference.is_file():
+            reference = vanilla
         if not reference.is_file() or not candidate.is_file():
             mismatches.append({"surface": "political", "path": str(relative), "reason": "missing output"})
             continue

@@ -115,6 +115,7 @@ def bulk_rules(
     fields: tuple[str, ...],
     factor: float,
     excluded: tuple[str, ...] = (),
+    excluded_files: tuple[str, ...] = (),
 ) -> list[dict[str, object]]:
     return [
         {
@@ -126,6 +127,7 @@ def bulk_rules(
             "occurrences": "all",
             "on_missing": "skip",
             "exclude_values": list(excluded),
+            "exclude_files": list(excluded_files),
         }
         for field in fields
     ]
@@ -136,21 +138,23 @@ def political_transformations(package_root: Path) -> list[dict[str, object]]:
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     centralized = tuple(sorted(payload.get("central_script_values", {})))
     result: list[dict[str, object]] = []
-    event_paths: list[str] = []
-    common_paths: list[str] = []
-    for entry in payload.get("files", []):
-        if entry.get("package_relative"):
-            continue
-        path = entry["path"]
-        relative = f"in_game/{path}"
-        if path.startswith("events/"):
-            event_paths.append(relative)
-            continue
-        if path.startswith("common/"):
-            common_paths.append(relative)
-    result.extend(bulk_rules(event_paths, EVENT_FIELDS, 0.5, centralized))
-    result.extend(bulk_rules(common_paths, EVENT_FIELDS, 0.5, centralized))
-    result.extend(bulk_rules(common_paths, MONTHLY_FIELDS, 0.75, centralized))
+    # Master rules discover matching assignments directly in the current
+    # Vanilla tree. The old generated-file manifest is not a file selector.
+    result.extend(bulk_rules(
+        "in_game/events/**/*.txt",
+        EVENT_FIELDS,
+        0.5,
+        centralized,
+        ("in_game/events/debug/**/*.txt",),
+    ))
+    result.extend(bulk_rules(
+        "in_game/common/**/*.txt",
+        EVENT_FIELDS,
+        0.5,
+        centralized,
+        ("in_game/common/effect_localization/**/*.txt",),
+    ))
+    result.extend(bulk_rules("in_game/common/**/*.txt", MONTHLY_FIELDS, 0.75, centralized))
     result.extend(
         {
             "file": "main_menu/common/script_values/default_values.txt",
@@ -166,7 +170,8 @@ def political_transformations(package_root: Path) -> list[dict[str, object]]:
 
 def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
     transformations: list[dict[str, object]] = []
-    transformations.extend(building_transformations(game_root, package_root))
+    # Keep broad business policies first so the generated spec remains readable;
+    # exact structural exceptions follow them.
     transformations.extend(political_transformations(package_root))
     transformations.extend(
         {
@@ -208,6 +213,7 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
             "value": 0.2,
         },
     ])
+    transformations.extend(building_transformations(game_root, package_root))
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance",

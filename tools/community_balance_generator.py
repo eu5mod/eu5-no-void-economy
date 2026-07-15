@@ -141,6 +141,21 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                 for path in game_root.glob(pattern)
                 if path.is_file()
             })
+            excluded_selectors = raw.get("exclude_files", [])
+            if not isinstance(excluded_selectors, list) or not all(
+                isinstance(pattern, str)
+                and not pattern.startswith("/")
+                and ".." not in PurePosixPath(pattern).parts
+                for pattern in excluded_selectors
+            ):
+                raise ValueError(f"{spec_path}: exclude_files must be an array of safe paths/globs")
+            excluded_files = {
+                PurePosixPath(path.relative_to(game_root).as_posix())
+                for pattern in excluded_selectors
+                for path in game_root.glob(pattern)
+                if path.is_file()
+            }
+            matches = [relative for relative in matches if relative not in excluded_files]
             if not matches:
                 raise ValueError(f"{spec_path}: file selector matched nothing: {selectors}")
             field = raw.get("field")
@@ -566,7 +581,15 @@ def main() -> int:
         raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Generated {len(manifest['files'])} exact-path files from {len(intents)} transformations.")
+    applied = sum(
+        len(entry.get("transformations", []))
+        for entry in manifest["files"]
+        if entry["path"] != "main_menu/common/script_values/cbg_generated_scalars.txt"
+    )
+    print(
+        f"Generated {len(manifest['files'])} exact-path files; "
+        f"expanded {len(intents)} file-rule candidates and applied {applied} mutations."
+    )
     print(f"Manifest: {manifest_path}")
     return 0
 

@@ -60,6 +60,23 @@ This prevents a centrally transformed symbol from receiving the same factor
 again at direct call sites. Block-valued assignments remain transformable
 because their internal expression is a separate calculation.
 
+`exclude_files` defines explicit non-gameplay boundaries such as debug or
+effect-localization trees. Therefore one master rule can discover every current
+and future Vanilla occurrence without carrying a generated file inventory:
+
+```json
+{
+  "file": "in_game/common/**/*.txt",
+  "exclude_files": ["in_game/common/effect_localization/**/*.txt"],
+  "object": "**",
+  "field": "monthly_legitimacy",
+  "operation": "multiply",
+  "value": 0.2,
+  "occurrences": "all",
+  "on_missing": "skip"
+}
+```
+
 ## Usage
 
 ```bash
@@ -93,8 +110,13 @@ With EU5 installed and `.cbp.local.env` configured, run:
 
 This exports and checks the tracked spec, generates a clean exact-path mod,
 resolves generated script-value aliases, and compares it with current CBP
-outputs. It fails on any semantic mismatch. The PR #189 reference run checked
-376 political files and 845 scalar targets with zero mismatches.
+outputs. It fails on any semantic mismatch. The PR #189 master-rule reference
+run checked 380 political files and 845 scalar targets with zero mismatches.
+
+The political surface is expressed by 20 master field rules. Their matching
+Vanilla occurrences are discovered at generation time; the config does not
+enumerate those files. Exact entries remaining in the exported spec represent
+structural building-specific policies that do not yet share one safe selector.
 
 The comparison intentionally preserves #188 semantics during the tooling
 migration. Changing a questionable balance result belongs in a separate

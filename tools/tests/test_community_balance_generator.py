@@ -192,6 +192,21 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         manifest = generate(self.game, self.output, intents)
         self.assertEqual(2, len(manifest["files"]))
 
+    def test_master_rule_can_exclude_file_globs(self):
+        debug = self.game / "in_game/common/building_types/debug/probe.txt"
+        debug.parent.mkdir()
+        debug.write_text("marketplace = {\n\tmaintenance = 4\n}\n")
+        target = self.target("multiply", 0.5)
+        target.update({
+            "file": "in_game/common/building_types/**/*.txt",
+            "exclude_files": ["in_game/common/building_types/debug/**/*.txt"],
+        })
+        spec = self.spec("a.json", "mod-a", [target])
+        intents, _ = load_intents([spec], self.game)
+        manifest = generate(self.game, self.output, intents)
+        self.assertEqual(1, len(manifest["files"]))
+        self.assertFalse((self.output / debug.relative_to(self.game)).exists())
+
     def test_bulk_multiply_transforms_compact_inline_assignment(self):
         source = self.game / "in_game/common/building_types/market.txt"
         source.write_text(source.read_text() + "probe = { else = { maintenance = 4 } }\n")
