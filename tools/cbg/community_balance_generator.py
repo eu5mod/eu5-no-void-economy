@@ -6,7 +6,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import sys
+from collections import Counter
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path, PurePosixPath
@@ -29,6 +32,87 @@ SUPPORTED_OPERATIONS = {
 TERMINAL_OPERATIONS = {
     "comment_out", "remove", "upsert_block", "replace_object", "replace_file"
 }
+
+CONTENT_CATEGORIES = (
+    ("Events", "/events/"),
+    ("Buildings", "/common/building_types/"),
+    ("Laws", "/common/laws/"),
+    ("Government reforms", "/common/government_reforms/"),
+    ("Estate privileges", "/common/estate_privileges/"),
+    ("Parliament", "/common/parliament_"),
+    ("Advances", "/common/advances/"),
+    ("Goods", "/common/goods/"),
+    ("Prices", "/common/prices/"),
+    ("Pop types", "/common/pop_types/"),
+    ("Static modifiers", "/common/static_modifiers/"),
+    ("Script values", "/common/script_values/"),
+)
+
+
+def content_category(path: str) -> str:
+    normalized = f"/{path.lstrip('/')}"
+    for label, marker in CONTENT_CATEGORIES:
+        if marker in normalized:
+            return label
+    return "Other"
+
+
+def color_enabled(stream: Any = sys.stdout) -> bool:
+    setting = os.environ.get("CBG_COLOR", "auto").lower()
+    if setting == "always":
+        return True
+    if setting == "never" or "NO_COLOR" in os.environ:
+        return False
+    return bool(getattr(stream, "isatty", lambda: False)())
+
+
+def styled(text: str, code: str, enabled: bool) -> str:
+    return f"\033[{code}m{text}\033[0m" if enabled else text
+
+
+def print_generation_summary(
+    manifest: dict[str, Any], intent_count: int, manifest_path: Path
+) -> None:
+    aliases_path = "main_menu/common/script_values/cbg_generated_scalars.txt"
+    category_files: Counter[str] = Counter()
+    category_mutations: Counter[str] = Counter()
+    applied = 0
+    for entry in manifest["files"]:
+        path = entry["path"]
+        if path == aliases_path:
+            continue
+        mutations = len(entry.get("transformations", []))
+        category = content_category(path)
+        category_files[category] += 1
+        category_mutations[category] += mutations
+        applied += mutations
+
+    enabled = color_enabled()
+    title = styled("CBG generation complete", "1;32", enabled)
+    cue = styled("[OK]", "1;32", enabled)
+    label = lambda value: styled(f"{value:<20}", "1;36", enabled)
+    print()
+    print(f"{cue} {title}")
+    print(f"  {label('Output files')} {len(manifest['files']):>7}")
+    print(f"  {label('Rule candidates')} {intent_count:>7}")
+    print(f"  {label('Applied mutations')} {applied:>7}")
+    print(f"  {label('Manifest')} {manifest_path}")
+
+    ordered = [item[0] for item in CONTENT_CATEGORIES] + ["Other"]
+    populated = [category for category in ordered if category_files[category]]
+    if populated:
+        print()
+        print(f"  {styled('Edited surfaces', '1', enabled)}")
+        width = max(len(category) for category in populated)
+        for category in populated:
+            files = category_files[category]
+            mutations = category_mutations[category]
+            print(
+                f"    {category:<{width}}  "
+                f"{files:>5} file{'s' if files != 1 else ' '}  "
+                f"{mutations:>6} mutation{'s' if mutations != 1 else ''}"
+            )
+    print()
 
 
 @dataclass(frozen=True)
@@ -847,16 +931,7 @@ def main() -> int:
         raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    applied = sum(
-        len(entry.get("transformations", []))
-        for entry in manifest["files"]
-        if entry["path"] != "main_menu/common/script_values/cbg_generated_scalars.txt"
-    )
-    print(
-        f"Generated {len(manifest['files'])} exact-path files; "
-        f"expanded {len(intents)} file-rule candidates and applied {applied} mutations."
-    )
-    print(f"Manifest: {manifest_path}")
+    print_generation_summary(manifest, len(intents), manifest_path)
     return 0
 
 

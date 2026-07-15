@@ -13,6 +13,24 @@ Use CBG when you need to:
 
 CBG has no campaign runtime cost.
 
+## Console output
+
+Each materialization ends with a compact summary of generated files, expanded
+rule candidates, applied mutations, and the manifest path. Existing manifest
+metadata is also grouped into useful EU5 surfaces such as events, buildings,
+laws, government reforms, estate privileges, parliament, advances, goods, and
+script values. These are file and mutation counts; CBG does not rescan Vanilla
+objects merely to decorate the console.
+
+Colors are enabled automatically on an interactive terminal and omitted from
+redirected logs and CI output. Standard and explicit controls are supported:
+
+```bash
+NO_COLOR=1 ./tools/generate_all.sh
+CBG_COLOR=always ./tools/generate_all.sh
+CBG_COLOR=never ./tools/generate_all.sh
+```
+
 ## Five-minute example
 
 Create `half_stability_rewards.json`:

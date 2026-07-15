@@ -1,9 +1,19 @@
 import json
+import io
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path, PurePosixPath
 
-from tools.cbg.community_balance_generator import Intent, Target, apply_intent, generate, load_intents
+from tools.cbg.community_balance_generator import (
+    Intent,
+    Target,
+    apply_intent,
+    content_category,
+    generate,
+    load_intents,
+    print_generation_summary,
+)
 VANILLA = """marketplace = {
 \tmaintenance = 1.0
 \tmaximum_stockpile_capacity = 200
@@ -15,6 +25,39 @@ VANILLA = """marketplace = {
 
 
 class CommunityBalanceGeneratorTests(unittest.TestCase):
+    def test_console_summary_groups_edited_surfaces_without_rescanning(self):
+        manifest = {
+            "files": [
+                {"path": "in_game/events/test.txt", "transformations": [{}, {}]},
+                {"path": "in_game/common/laws/test.txt", "transformations": [{}]},
+                {"path": "in_game/common/building_types/test.txt", "transformations": [{}, {}, {}]},
+            ]
+        }
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            print_generation_summary(manifest, 8, Path("build/cbg_manifest.json"))
+
+        text = output.getvalue()
+        self.assertIn("CBG generation complete", text)
+        self.assertIn("Rule candidates", text)
+        self.assertRegex(text, r"Events\s+1 file\s+2 mutations")
+        self.assertRegex(text, r"Buildings\s+1 file\s+3 mutations")
+        self.assertRegex(text, r"Laws\s+1 file\s+1 mutation")
+        self.assertNotIn("\033[", text)
+
+    def test_console_content_categories_cover_requested_policy_surfaces(self):
+        self.assertEqual("Events", content_category("in_game/events/test.txt"))
+        self.assertEqual("Buildings", content_category("in_game/common/building_types/test.txt"))
+        self.assertEqual("Laws", content_category("in_game/common/laws/test.txt"))
+        self.assertEqual("Government reforms", content_category("in_game/common/government_reforms/test.txt"))
+        self.assertEqual("Estate privileges", content_category("in_game/common/estate_privileges/test.txt"))
+        self.assertEqual("Goods", content_category("in_game/common/goods/test.txt"))
+        self.assertEqual("Prices", content_category("in_game/common/prices/test.txt"))
+        self.assertEqual("Pop types", content_category("in_game/common/pop_types/test.txt"))
+        self.assertEqual("Static modifiers", content_category("main_menu/common/static_modifiers/test.txt"))
+        self.assertEqual("Script values", content_category("main_menu/common/script_values/test.txt"))
+
     def test_top_level_field_can_be_transformed(self):
         lines = ["first = 10\n", "object = {\n", "\tfirst = 20\n", "}\n"]
         intent = Intent(
