@@ -85,7 +85,7 @@ jobs:
           }
           EOF
 
-          ./tools/generate_us09_economy_overrides.sh \
+          ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh \
             --percent 10 \
             --rgo-price-percent 8 \
             --trade-capacity-percent 15 \
@@ -213,7 +213,7 @@ jobs:
           }
           EOF
 
-          ./tools/generate_us09_economy_overrides.sh \
+          ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh \
             --percent 10 \
             --rgo-price-percent 8 \
             --trade-capacity-percent 15 \
@@ -399,7 +399,7 @@ jobs:
           }
           EOF
 
-          bash ./tools/generate_us09_economy_overrides.sh \
+          bash ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh \
             --percent 10 \
             --rgo-price-percent 8 \
             --extra-burgher-promotion-speed 0 \

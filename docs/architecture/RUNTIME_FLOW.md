@@ -109,11 +109,7 @@ flowchart TB
             US20 --> TMETRIC
         end
 
-        TMETRIC --> AUDIT{"cbp_audit_enabled_trigger?"}
-        AUDIT -->|yes| STOCKREC["cbp_run_monthly_stock_reconciliation_once"]
-        AUDIT -->|no| MAINEND["main monthly stock cycle complete"]
-        STOCKREC --> MAINEND
-        MAINEND --> US04M0["cbp_run_monthly_us04_reconciliation_for_current_country"]
+        TMETRIC --> US04M0["cbp_run_monthly_us04_reconciliation_for_current_country"]
 
         subgraph US04MONTH["Monthly US-04 signed Estate reconciliation"]
             direction TB
@@ -134,8 +130,12 @@ flowchart TB
             NOOP --> US04STORE
         end
 
-        US04STORE --> MEMORY["cbp_core04_refresh_current_country_location_market_memory"]
-        US04MSKIP --> MEMORY
+        US04STORE --> AUDIT{"cbp_audit_enabled_trigger?"}
+        US04MSKIP --> AUDIT
+        AUDIT -->|yes| STOCKREC["cbp_run_monthly_stock_reconciliation_once"]
+        AUDIT -->|no| MAINEND["main monthly stock cycle complete"]
+        STOCKREC --> MAINEND
+        MAINEND --> MEMORY["cbp_core04_refresh_current_country_location_market_memory"]
         MEMORY --> MEND["end monthly_country_pulse"]
     end
 
@@ -179,9 +179,19 @@ flowchart TB
 | 2 | US-00 generated active-good pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 3 | US-10 generated pending-good pass | Resolve same-market consumption after every present country's US-00 pass. |
 | 4 | `cbp_run_monthly_country_trade_owner_cycle` | Read each current-country-owned trade once and run US-17/US-20 reconciliation. |
-| 5 | Audit reconciliation | Validate aggregate consistency without changing country stock truth. |
-| 6 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
+| 5 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
+| 6 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
 | 7 | Yearly US-04 pulse | Evolve coefficients only after reading annual outcomes, then reset counters. |
+
+### Why US-04 runs here
+
+Monthly US-04 reconciliation deliberately runs after the current-country
+trade-owner pass and immediately before `cbp_audit_enabled_trigger`. It cannot
+run before US-10 because US-10 owns base consumption and produces the accounting
+facts used by US-04. It must not run after the audit gate because its signed
+delta can mutate both country stock and the derived market aggregate through the
+central stock operators. The audit therefore observes the complete monthly
+mutation set rather than a pre-US-04 snapshot.
 
 ## Monthly ownership contract
 

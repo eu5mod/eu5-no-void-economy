@@ -126,6 +126,10 @@ cbp_require_match 'strip_utf8_bom_stream' \
 cbp_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
 	"tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh" \
 	'US-09 generator must fail if generated output still contains BOM bytes'
+if cbp_search_quiet '(^|[[:space:]])(bash[[:space:]]+)?\./tools/generate_us09_economy_overrides\.sh' ".github/workflows"; then
+	printf '%s\n' 'GitHub workflows must call the retained US-09 policy compiler through tools/cbg/adapters/cbp/helpers.' >&2
+	exit 1
+fi
 cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_file "tools/generate_political_reward_overrides.py"
