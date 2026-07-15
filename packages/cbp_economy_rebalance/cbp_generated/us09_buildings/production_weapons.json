@@ -1,0 +1,54 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "weapon_factory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4.0"
+      }
+    ],
+    "weapon_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.432",
+        "old_value": "0.4"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.432",
+        "old_value": "0.4"
+      }
+    ],
+    "weapon_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2.0"
+      }
+    ],
+    "weapon_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      }
+    ]
+  },
+  "generated_sha256": "b0ed8d46b14e03c168088a0ba151d5f5d5dc29c88278fa35a848a7ea4c4dfc44",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_weapons.txt",
+  "source_sha256": "61a5465805982cb70d8bb650b324b67dba975461c5e50a48769975b014b35667",
+  "unchanged_building_count": 0
+}

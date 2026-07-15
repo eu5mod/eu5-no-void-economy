@@ -1,0 +1,106 @@
+{
+  "changed_building_count": 3,
+  "changed_buildings": {
+    "cotton_plantation": [
+      {
+        "action": "replace",
+        "field": "maintenance:leather",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:slaves_goods",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "sugar_plantation": [
+      {
+        "action": "replace",
+        "field": "maintenance:leather",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:slaves_goods",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "tobacco_plantation": [
+      {
+        "action": "replace",
+        "field": "maintenance:leather",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:lumber",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:slaves_goods",
+        "new_value": "0.07",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "maintenance:tools",
+        "new_value": "0.035",
+        "old_value": "0.05"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ]
+  },
+  "generated_sha256": "77559eb951c204d84ba748fecb1916002f9d9eb810bca1be17ab5a1cf76363fb",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/plantation_buildings.txt",
+  "source_sha256": "201d70fe0e5ce3b80a1f63a547ba83be692b5789a194ffe75ba50a897f9a7f7d",
+  "unchanged_building_count": 0
+}

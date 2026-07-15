@@ -122,11 +122,18 @@ cbp_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
 cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_match 'Building maintenance multiplier' \
-	"tools/generate_us09_economy_overrides.sh" \
-	'US-09 Economy override generator must document the composed US-08/US-05.3 maintenance multiplier'
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must document the composed US-08/US-05.3 maintenance multiplier'
 cbp_require_match 'Trade-building maintenance multiplier' \
-	"tools/generate_us09_economy_overrides.sh" \
-	'US-09 Economy override generator must document the composed trade-building maintenance multiplier'
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must document the composed trade-building maintenance multiplier'
+cbp_require_match 'transform_lines_with_plan' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must own applicability and the building-level change plan'
+if cbp_search_quiet 'has_economy_building_target_field' "tools/generate_us09_economy_overrides.sh"; then
+	printf '%s\n' 'US-09 shell must not maintain a second building applicability prefilter.' >&2
+	exit 1
+fi
 cbp_require_match 'building_maintenance' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must target explicit building_maintenance blocks'

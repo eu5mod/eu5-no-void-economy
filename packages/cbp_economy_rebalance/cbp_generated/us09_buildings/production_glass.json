@@ -1,0 +1,48 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "glass_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.81",
+        "old_value": "0.75"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "glass_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      }
+    ],
+    "glass_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      }
+    ],
+    "glassworks": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ]
+  },
+  "generated_sha256": "fd99afec449bdd9149210dda2adff7dfa2b85bf67feb78526f7f6d4e462819de",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_glass.txt",
+  "source_sha256": "fe43347ba4a50a0fad3c63bd7840880e3eab1c03ffa1f976ce02b030c5b0b72f",
+  "unchanged_building_count": 0
+}

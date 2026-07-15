@@ -1,0 +1,66 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "tannery": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.08",
+        "old_value": "1"
+      }
+    ],
+    "tannery_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2"
+      }
+    ],
+    "tannery_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      }
+    ],
+    "tanning_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "1.188",
+        "old_value": "1.1"
+      }
+    ]
+  },
+  "generated_sha256": "009f211f51f86c2af2d9178962e49603dab76258ac74e06f178258c3a0db8354",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_leather.txt",
+  "source_sha256": "dc204d5d3a932b34f0db85b852e1629566d0389e5d74663c95ca304e410ad097",
+  "unchanged_building_count": 0
+}

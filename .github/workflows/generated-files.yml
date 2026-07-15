@@ -110,6 +110,23 @@ jobs:
           grep -q 'local_burghers_estate_power = 0.1' "$fixture_package/building_types/00_test_production.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+          test -f "$RUNNER_TEMP/us09_package/cbp_generated/us09_buildings/00_test_production.json"
+          python3 - <<'PY' "$RUNNER_TEMP/us09_package/cbp_generated/us09_buildings/00_test_production.json"
+          import json
+          import sys
+
+          payload = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert payload["changed_building_count"] == 1
+          fields = {item["field"] for item in payload["changed_buildings"]["test_production"]}
+          assert fields == {
+              "maintenance:copper",
+              "maintenance:wheat",
+              "merchant_capacity_from_building",
+              "local_merchant_capacity",
+              "output",
+          }
+          PY
+
           grep -q 'peasants' "$fixture_package/pop_types/00_pop_types.txt"
 
           cat > "$fixture_common/building_types/trade_buildings.txt" <<'EOF'
@@ -226,6 +243,9 @@ jobs:
           grep -q 'expand_rgo_mining' "$fixture_package/prices/00_hardcoded.txt"
           grep -q 'promotion_speed = 0.55' "$fixture_package/pop_types/00_pop_types.txt"
           grep -q 'promotion_speed = 1.65' "$fixture_package/pop_types/00_pop_types.txt"
+
+      - name: Validate building-aware override planning
+        run: python3 -m unittest tools.tests.test_building_override_transformer
 
       - name: Validate complete vanilla defines generator
         run: |

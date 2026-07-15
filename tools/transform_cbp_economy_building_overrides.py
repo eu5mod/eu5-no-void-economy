@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -17,6 +19,7 @@ US09_TRADE_CAPACITY_FIELDS = {
     "merchant_capacity_from_building",
 }
 STOCKPILE_CAPACITY_FIELD = "maximum_stockpile_capacity"
+MINTING_INCOME_FIELD = "minting_income_factor"
 COMMENTED_STOCKPILE_CAPACITY = re.compile(
     r"^\s*#\s*maximum_stockpile_capacity\s*=\s*"
     r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))"
@@ -29,6 +32,7 @@ MARKETPLACE_BUILDINGS = {
 }
 
 BLOCK_START = re.compile(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{")
+BLOCK_TOKEN = re.compile(r"([A-Za-z0-9_]+)\s*=\s*\{|[{}]")
 ASSIGNMENT = re.compile(
     r"^(\s*([A-Za-z0-9_]+)\s*=\s*)"
     r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))"
@@ -52,6 +56,15 @@ class NamedBlockRange:
     depth: int
 
 
+@dataclass(frozen=True)
+class BuildingChange:
+    building: str
+    field: str
+    action: str
+    old_value: str | None
+    new_value: str | None
+
+
 def format_decimal(value: float) -> str:
     if value == 0:
         return "0"
@@ -66,74 +79,106 @@ def code_without_comment(line: str) -> str:
 def find_named_blocks(lines: list[str]) -> list[NamedBlockRange]:
     stack: list[tuple[str, int, int]] = []
     ranges: list[NamedBlockRange] = []
+    depth = 0
 
     for index, line in enumerate(lines):
         stripped = line.lstrip()
         if stripped.startswith("#"):
             continue
         code = code_without_comment(line)
-        start_match = BLOCK_START.match(code)
-        if start_match:
-            stack.append((start_match.group(1), index, len(stack)))
-        for _ in range(code.count("}")):
-            if not stack:
-                break
-            key, start, depth = stack.pop()
-            ranges.append(NamedBlockRange(key=key, start=start, end=index, depth=depth))
+        for token in BLOCK_TOKEN.finditer(code):
+            key = token.group(1)
+            if key is not None:
+                stack.append((key, index, depth))
+                depth += 1
+                continue
+            if token.group(0) == "{":
+                depth += 1
+                continue
+            depth -= 1
+            if depth < 0:
+                raise ValueError(f"unexpected closing brace at line {index + 1}")
+            if stack and stack[-1][2] == depth:
+                block_key, start, block_depth = stack.pop()
+                ranges.append(
+                    NamedBlockRange(
+                        key=block_key,
+                        start=start,
+                        end=index,
+                        depth=block_depth,
+                    )
+                )
+    if depth != 0 or stack:
+        open_blocks = ", ".join(key for key, _, _ in stack)
+        raise ValueError(f"unclosed block(s): {open_blocks}")
     return ranges
 
 
+def top_level_buildings(lines: list[str]) -> list[NamedBlockRange]:
+    buildings = sorted(
+        (block for block in find_named_blocks(lines) if block.depth == 0),
+        key=lambda block: block.start,
+    )
+    names = [building.key for building in buildings]
+    duplicates = sorted({name for name in names if names.count(name) > 1})
+    if duplicates:
+        raise ValueError(f"duplicate top-level building(s): {', '.join(duplicates)}")
+    return buildings
+
+
+def building_for_line(index: int, buildings: list[NamedBlockRange]) -> str:
+    for building in buildings:
+        if building.start <= index <= building.end:
+            return building.key
+    raise ValueError(f"target assignment at line {index + 1} is outside a top-level building")
+
+
 def find_maintenance_blocks(lines: list[str]) -> list[MaintenanceRange]:
-    stack: list[dict[str, int | bool | str]] = []
+    blocks = find_named_blocks(lines)
     ranges: list[MaintenanceRange] = []
 
+    def innermost_block(index: int) -> NamedBlockRange | None:
+        containing = [block for block in blocks if block.start <= index <= block.end]
+        return max(containing, key=lambda block: block.depth, default=None)
+
+    trade_blocks: set[tuple[int, int]] = set()
+    maintenance_blocks: dict[tuple[int, int], NamedBlockRange] = {}
     for index, line in enumerate(lines):
-        stripped = line.lstrip()
-        if stripped.startswith("#"):
-            continue
-
         code = code_without_comment(line)
-        start_match = BLOCK_START.match(code)
-        if start_match:
-            stack.append(
-                {
-                    "start": index,
-                    "maintenance": False,
-                    "trade": False,
-                    "key": start_match.group(1),
-                }
-            )
-
+        containing = innermost_block(index)
+        if containing is None:
+            continue
+        identity = (containing.start, containing.end)
         if re.search(r"\bcategory\s*=\s*trade_category\b", code):
-            if stack:
-                stack[-1]["trade"] = True
-
+            trade_blocks.add(identity)
         if re.search(r"\bcategory\s*=\s*building_maintenance\b", code):
-            if stack:
-                stack[-1]["maintenance"] = True
+            maintenance_blocks[identity] = containing
 
-        for _ in range(code.count("}")):
-            if not stack:
-                break
-            block = stack.pop()
-            if block["maintenance"]:
-                trade_building = bool(block["trade"]) or any(
-                    bool(parent["trade"]) for parent in stack
-                )
-                building_key = None
-                for parent in reversed(stack):
-                    candidate = str(parent["key"])
-                    if candidate in MARKETPLACE_BUILDINGS:
-                        building_key = candidate
-                        break
-                ranges.append(
-                    MaintenanceRange(
-                        start=int(block["start"]),
-                        end=index,
-                        trade_building=trade_building,
-                        building_key=building_key,
-                    )
-                )
+    for block in maintenance_blocks.values():
+        ancestors = [
+            candidate
+            for candidate in blocks
+            if candidate.start <= block.start and candidate.end >= block.end
+        ]
+        trade_building = any(
+            (candidate.start, candidate.end) in trade_blocks for candidate in ancestors
+        )
+        building_key = next(
+            (
+                candidate.key
+                for candidate in sorted(ancestors, key=lambda item: item.depth, reverse=True)
+                if candidate.key in MARKETPLACE_BUILDINGS
+            ),
+            None,
+        )
+        ranges.append(
+            MaintenanceRange(
+                start=block.start,
+                end=block.end,
+                trade_building=trade_building,
+                building_key=building_key,
+            )
+        )
 
     return ranges
 
@@ -242,7 +287,7 @@ def disable_market_warehouse(lines: list[str], source_basename: str) -> list[str
     return result
 
 
-def transform_lines(
+def transform_lines_with_plan(
     lines: list[str],
     *,
     source_basename: str,
@@ -251,11 +296,14 @@ def transform_lines(
     maintenance_multiplier: float,
     trade_building_maintenance_multiplier: float,
     us07_trade_burghers_estate_power_multiplier: float,
+    minting_income_multiplier: float,
     goods: set[str],
-) -> list[str]:
+) -> tuple[list[str], list[BuildingChange], int]:
+    buildings = top_level_buildings(lines)
     maintenance_ranges = find_maintenance_blocks(lines)
     marketplace_maintenance = marketplace_base_maintenance(lines, maintenance_ranges, goods)
     transformed: list[str] = []
+    changes: list[BuildingChange] = []
 
     for index, line in enumerate(lines):
         stripped = line.lstrip()
@@ -274,8 +322,18 @@ def transform_lines(
 
         if key == STOCKPILE_CAPACITY_FIELD:
             indentation = line[: len(line) - len(line.lstrip())]
+            new_line = f"{indentation}# {STOCKPILE_CAPACITY_FIELD} = {match.group(3)}{match.group(4)}"
             transformed.append(
-                f"{indentation}# {STOCKPILE_CAPACITY_FIELD} = {match.group(3)}{match.group(4)}"
+                new_line
+            )
+            changes.append(
+                BuildingChange(
+                    building=building_for_line(index, buildings),
+                    field=STOCKPILE_CAPACITY_FIELD,
+                    action="comment_out",
+                    old_value=match.group(3),
+                    new_value=None,
+                )
             )
             continue
 
@@ -292,6 +350,15 @@ def transform_lines(
                 if key in marketplace_maintenance:
                     source_value = marketplace_maintenance[key]
                 elif maintenance_range.building_key != "marketplace":
+                    changes.append(
+                        BuildingChange(
+                            building=building_for_line(index, buildings),
+                            field=f"maintenance:{key}",
+                            action="remove",
+                            old_value=match.group(3),
+                            new_value=None,
+                        )
+                    )
                     continue
             new_value = source_value * multiplier
             if value < 0:
@@ -310,10 +377,138 @@ def transform_lines(
         if source_basename == "trade_buildings.txt" and key == "local_burghers_estate_power":
             new_value = value * us07_trade_burghers_estate_power_multiplier
 
+        if key == MINTING_INCOME_FIELD:
+            new_value = value * minting_income_multiplier
+
         rendered_value = match.group(3) if new_value is None else format_decimal(new_value)
         transformed.append(f"{match.group(1)}{rendered_value}{match.group(4)}")
 
-    return disable_market_warehouse(transformed, source_basename)
+        if rendered_value != match.group(3):
+            field = key
+            if maintenance_range is not None and key in goods:
+                field = f"maintenance:{key}"
+            changes.append(
+                BuildingChange(
+                    building=building_for_line(index, buildings),
+                    field=field,
+                    action="replace",
+                    old_value=match.group(3),
+                    new_value=rendered_value,
+                )
+            )
+
+    warehouse_disabled = disable_market_warehouse(transformed, source_basename)
+    if warehouse_disabled != transformed:
+        changes.append(
+            BuildingChange(
+                building="market_warehouse",
+                field="availability",
+                action="disable",
+                old_value="vanilla_potential",
+                new_value="always_no",
+            )
+        )
+
+    changes.sort(key=lambda change: (change.building, change.field, change.action))
+    return warehouse_disabled, changes, len(buildings)
+
+
+def transform_lines(
+    lines: list[str],
+    *,
+    source_basename: str,
+    output_multiplier: float,
+    trade_capacity_multiplier: float,
+    maintenance_multiplier: float,
+    trade_building_maintenance_multiplier: float,
+    us07_trade_burghers_estate_power_multiplier: float,
+    minting_income_multiplier: float,
+    goods: set[str],
+) -> list[str]:
+    transformed, _, _ = transform_lines_with_plan(
+        lines,
+        source_basename=source_basename,
+        output_multiplier=output_multiplier,
+        trade_capacity_multiplier=trade_capacity_multiplier,
+        maintenance_multiplier=maintenance_multiplier,
+        trade_building_maintenance_multiplier=trade_building_maintenance_multiplier,
+        us07_trade_burghers_estate_power_multiplier=(
+            us07_trade_burghers_estate_power_multiplier
+        ),
+        minting_income_multiplier=minting_income_multiplier,
+        goods=goods,
+    )
+    return transformed
+
+
+def sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def render_generated_text(
+    body: list[str],
+    *,
+    source_label: str,
+    source_basename: str,
+    output_multiplier: float,
+    trade_capacity_multiplier: float,
+    maintenance_multiplier: float,
+    trade_building_maintenance_multiplier: float,
+    us07_trade_burghers_estate_power_multiplier: float,
+    minting_income_multiplier: float,
+) -> str:
+    header = [
+        "# Generated by tools/generate_us09_economy_overrides.sh.",
+        "# Do not edit manually.",
+        f"# Source: {source_label}",
+        f"# Output multiplier: {format_decimal(output_multiplier)} "
+        f"({format_decimal((output_multiplier - 1) * 100)}%)",
+        f"# Trade capacity multiplier: {format_decimal(trade_capacity_multiplier)} "
+        f"({format_decimal((trade_capacity_multiplier - 1) * 100)}%)",
+        f"# Building maintenance multiplier: {format_decimal(maintenance_multiplier)}",
+        "# Trade-building maintenance multiplier: "
+        f"{format_decimal(trade_building_maintenance_multiplier)}",
+        f"# Minting income multiplier: {format_decimal(minting_income_multiplier)}",
+        "",
+    ]
+    if source_basename == "trade_buildings.txt":
+        header.extend(
+            [
+                "# US-07 composed trade-building estate-power multiplier: "
+                f"{format_decimal(us07_trade_burghers_estate_power_multiplier)}",
+                "",
+            ]
+        )
+    return "\n".join(header + body) + "\n"
+
+
+def build_manifest(
+    *,
+    source_file: Path,
+    source_label: str,
+    generated_text: str,
+    changes: list[BuildingChange],
+    building_count: int,
+) -> dict[str, object]:
+    changed_buildings: dict[str, list[dict[str, str | None]]] = {}
+    for change in changes:
+        changed_buildings.setdefault(change.building, []).append(
+            {
+                "field": change.field,
+                "action": change.action,
+                "old_value": change.old_value,
+                "new_value": change.new_value,
+            }
+        )
+    return {
+        "schema_version": 1,
+        "source_file": source_label,
+        "source_sha256": hashlib.sha256(source_file.read_bytes()).hexdigest(),
+        "generated_sha256": sha256_text(generated_text),
+        "changed_buildings": changed_buildings,
+        "changed_building_count": len(changed_buildings),
+        "unchanged_building_count": building_count - len(changed_buildings),
+    }
 
 
 def main() -> int:
@@ -327,30 +522,82 @@ def main() -> int:
     parser.add_argument("--maintenance-multiplier", required=True, type=float)
     parser.add_argument("--trade-building-maintenance-multiplier", required=True, type=float)
     parser.add_argument("--us07-trade-burghers-estate-power-multiplier", required=True, type=float)
+    parser.add_argument("--minting-income-multiplier", required=True, type=float)
     parser.add_argument("--goods", nargs="+", required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--source-label")
     args = parser.parse_args()
 
     if args.maintenance_multiplier < 0:
         raise SystemExit("maintenance multiplier must be non-negative")
     if args.trade_building_maintenance_multiplier < 0:
         raise SystemExit("trade building maintenance multiplier must be non-negative")
+    if args.minting_income_multiplier < 0:
+        raise SystemExit("minting income multiplier must be non-negative")
 
     text = args.source.read_text(encoding="utf-8-sig")
     lines = text.splitlines()
-    transformed = transform_lines(
-        lines,
-        source_basename=args.source_basename,
-        output_multiplier=args.output_multiplier,
-        trade_capacity_multiplier=args.trade_capacity_multiplier,
-        maintenance_multiplier=args.maintenance_multiplier,
-        trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
-        us07_trade_burghers_estate_power_multiplier=(
-            args.us07_trade_burghers_estate_power_multiplier
-        ),
-        goods=set(args.goods),
-    )
-    sys.stdout.write("\n".join(transformed))
-    sys.stdout.write("\n")
+    try:
+        transformed, changes, building_count = transform_lines_with_plan(
+            lines,
+            source_basename=args.source_basename,
+            output_multiplier=args.output_multiplier,
+            trade_capacity_multiplier=args.trade_capacity_multiplier,
+            maintenance_multiplier=args.maintenance_multiplier,
+            trade_building_maintenance_multiplier=args.trade_building_maintenance_multiplier,
+            us07_trade_burghers_estate_power_multiplier=(
+                args.us07_trade_burghers_estate_power_multiplier
+            ),
+            minting_income_multiplier=args.minting_income_multiplier,
+            goods=set(args.goods),
+        )
+    except ValueError as error:
+        raise SystemExit(f"Unsupported or ambiguous building structure in {args.source}: {error}")
+
+    if not changes:
+        if args.output:
+            args.output.unlink(missing_ok=True)
+        if args.manifest:
+            args.manifest.unlink(missing_ok=True)
+        return 3
+
+    if bool(args.output) != bool(args.manifest):
+        raise SystemExit("--output and --manifest must be provided together")
+
+    if args.output:
+        source_label = args.source_label or args.source.name
+        generated_text = render_generated_text(
+            transformed,
+            source_label=source_label,
+            source_basename=args.source_basename,
+            output_multiplier=args.output_multiplier,
+            trade_capacity_multiplier=args.trade_capacity_multiplier,
+            maintenance_multiplier=args.maintenance_multiplier,
+            trade_building_maintenance_multiplier=(
+                args.trade_building_maintenance_multiplier
+            ),
+            us07_trade_burghers_estate_power_multiplier=(
+                args.us07_trade_burghers_estate_power_multiplier
+            ),
+            minting_income_multiplier=args.minting_income_multiplier,
+        )
+        manifest = build_manifest(
+            source_file=args.source,
+            source_label=source_label,
+            generated_text=generated_text,
+            changes=changes,
+            building_count=building_count,
+        )
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.manifest.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(generated_text, encoding="utf-8")
+        args.manifest.write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    else:
+        sys.stdout.write("\n".join(transformed))
+        sys.stdout.write("\n")
     return 0
 
 

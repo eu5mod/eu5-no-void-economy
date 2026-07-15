@@ -1,0 +1,138 @@
+{
+  "changed_building_count": 4,
+  "changed_buildings": {
+    "fine_cloth_guild": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.54",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.54",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.756",
+        "old_value": "0.7"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.54",
+        "old_value": "0.5"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.108",
+        "old_value": "0.1"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.216",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.216",
+        "old_value": "0.2"
+      }
+    ],
+    "fine_cloth_manufactory": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2.0"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "2.16",
+        "old_value": "2.0"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.216",
+        "old_value": "0.2"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.432",
+        "old_value": "0.4"
+      }
+    ],
+    "fine_cloth_mill": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "4.32",
+        "old_value": "4"
+      }
+    ],
+    "fine_cloth_workshop": [
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.648",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.648",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.864",
+        "old_value": "0.8"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.648",
+        "old_value": "0.6"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.1296",
+        "old_value": "0.12"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.27",
+        "old_value": "0.25"
+      },
+      {
+        "action": "replace",
+        "field": "output",
+        "new_value": "0.27",
+        "old_value": "0.25"
+      }
+    ]
+  },
+  "generated_sha256": "48830e308b031a1d79c532cf6561d34be6ec3c7e6bf5c6ef3a49e2c8ace7d4db",
+  "schema_version": 1,
+  "source_file": "<EU5_GAME_COMMON_DIR>/building_types/production_fine_cloth.txt",
+  "source_sha256": "5005669adb9163fbb37adfc8fb7c89ed0523105382245dfbdac80b598518bcef",
+  "unchanged_building_count": 0
+}
