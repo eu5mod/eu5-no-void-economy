@@ -103,7 +103,20 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--game-root "$us177_game_root" \
 		--package-root "$repo_root/packages/cbp_economy_rebalance" \
 		--food-price "${MODEU5_US177_FOOD_PRICE:-0.3}" \
-		--food-production-divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}"
+		--food-production-divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
+		--skip-food-overrides
+	cbg_food_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
+	cbg_food_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
+	python3 "$repo_root/tools/generate_cbp_cbg_food_spec.py" \
+		--game-root "$us177_game_root" \
+		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
+		--output "$cbg_food_spec"
+	python3 "$repo_root/tools/community_balance_generator.py" \
+		--game-root "$us177_game_root" \
+		--spec "$cbg_food_spec" \
+		--output-root "$repo_root/packages/cbp_economy_rebalance" \
+		--manifest "$cbg_food_manifest" \
+		--adopt-identical-output
 	python3 "$repo_root/tools/generate_us177_minting_overrides.py" \
 		--game-root "$us177_game_root" \
 		--package-root "$repo_root/packages/cbp_economy_rebalance" \

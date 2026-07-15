@@ -95,6 +95,7 @@
       "source_path": "in_game/common/goods/03_food.txt"
     }
   ],
+  "food_override_materializer": "community_balance_generator",
   "food_price_endpoint": "NMarket.FOOD_PRICE",
   "food_production_divisor": "3.0",
   "generated_food_overrides": [

@@ -1,0 +1,156 @@
+{
+  "files": [
+    {
+      "generated_sha256": "bebe4a392d7ab89261a8f8829edca1674c32de925732fd09463c3aec0857aec0",
+      "path": "in_game/common/goods/03_food.txt",
+      "transformations": [
+        {
+          "after": "0.8333333333",
+          "before": "2.5",
+          "configured_value": "0.8333333333",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "beeswax",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.6666666667",
+          "before": "5.0",
+          "configured_value": "1.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "fish",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.3333333333",
+          "before": "4",
+          "configured_value": "1.3333333333",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "fruit",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "0.6666666667",
+          "before": "2.0",
+          "configured_value": "0.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "fur",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.6666666667",
+          "before": "5",
+          "configured_value": "1.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "legumes",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "2.6666666667",
+          "before": "8",
+          "configured_value": "2.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "livestock",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "2.6666666667",
+          "before": "8.0",
+          "configured_value": "2.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "maize",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.6666666667",
+          "before": "5",
+          "configured_value": "1.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "millet",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.3333333333",
+          "before": "4",
+          "configured_value": "1.3333333333",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "olives",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "2.6666666667",
+          "before": "8",
+          "configured_value": "2.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "potato",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "3.3333333333",
+          "before": "10.0",
+          "configured_value": "3.3333333333",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "rice",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "2.6666666667",
+          "before": "8.0",
+          "configured_value": "2.6666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "wheat",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        },
+        {
+          "after": "1.1666666667",
+          "before": "3.5",
+          "configured_value": "1.1666666667",
+          "conflict": "error",
+          "field": "food",
+          "line_action": "transformed",
+          "object": "wild_game",
+          "operation": "replace",
+          "owner": "cbp-economy-rebalance-food-production"
+        }
+      ],
+      "vanilla_sha256": "ebd5218cf6dd61f354d3eab27e12e8a5561e51519c55ea75e65600dc91f690fb"
+    }
+  ],
+  "generator": "community_balance_generator",
+  "schema_version": 1
+}

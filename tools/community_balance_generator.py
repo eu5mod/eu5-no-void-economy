@@ -212,8 +212,10 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
             ):
                 raise ValueError(f"{spec_path}: exclude_objects must contain safe top-level object names")
             provenance = raw.get("provenance", "cbg")
-            if provenance not in {"cbg", "vanilla"}:
-                raise ValueError(f"{spec_path}: provenance must be 'cbg' or 'vanilla'")
+            if provenance not in {"cbg", "vanilla", "preserve"}:
+                raise ValueError(
+                    f"{spec_path}: provenance must be 'cbg', 'vanilla', or 'preserve'"
+                )
             for relative in matches:
                 sequence += 1
                 intents.append(Intent(
@@ -466,7 +468,9 @@ def apply_one_match(
         after = numeric_result(intent.operation, before, intent.value)
     existing = match.group("comment")
     suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
-    if intent.provenance == "vanilla":
+    if intent.provenance == "preserve":
+        comment = existing or ""
+    elif intent.provenance == "vanilla":
         comment = f"# VANILLA = {before}{suffix}"
     else:
         comment = (
@@ -474,7 +478,8 @@ def apply_one_match(
             f"CBG {intent.owner}: {intent.operation} {intent.value}{suffix}"
         )
     lines[index] = (
-        f"{match.group('indent')}{intent.target.field} = {after} {comment}{newline}"
+        f"{match.group('indent')}{intent.target.field} = {after}"
+        f"{' ' if comment else ''}{comment}{newline}"
     )
     return {"before": before, "after": after, "line_action": "transformed"}
 
@@ -658,7 +663,10 @@ def generate(
                 })
         if not audit:
             continue
-        rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
+        if file_intents and all(intent.provenance == "preserve" for intent in file_intents):
+            rendered = "".join(lines)
+        else:
+            rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
         if file_intents and all(intent.provenance == "vanilla" for intent in file_intents):
             rendered = rendered.rstrip("\n") + "\n"
         generated = rendered.encode("utf-8")

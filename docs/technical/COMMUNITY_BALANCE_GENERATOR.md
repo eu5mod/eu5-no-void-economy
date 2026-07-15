@@ -147,6 +147,22 @@ remain authoritative until each surface receives its own bounded parity gate.
 In particular, CBG must not replace `cbp_location.txt` with a Vanilla exact-path
 copy or publish a complete `00_defines.txt` as part of this phase.
 
+### Phase 2: food-production overrides
+
+CBG also materializes the Vanilla-derived food-production files discovered by
+US-177, currently `in_game/common/goods/03_food.txt`. The #188 US-177 scanner
+remains the classification authority for food goods and source locations; its
+manifest delegates physical output ownership to
+`cbp_generated/cbg_food_manifest.json`.
+
+```bash
+./tools/validate_cbp_cbg_food_parity.sh
+```
+
+This gate compares every food override byte-for-byte with the legacy renderer.
+The dedicated `cbp_us177_food_price_defines.txt` remains outside this exact-copy
+migration because it is a CBP-owned file rather than a Vanilla-derived copy.
+
 The complete CBP balance configuration is versioned at
 `tools/specs/cbp_pr188_balance.generated.json`. Its exporter discovers targets
 from the installed Vanilla tree and the `.cbp.local.env` balance parameters.

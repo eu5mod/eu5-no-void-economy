@@ -48,6 +48,11 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--skip-food-overrides",
+        action="store_true",
+        help="Delegate Vanilla-derived food override materialization to CBG.",
+    )
     return parser.parse_args()
 
 
@@ -301,6 +306,11 @@ def main() -> int:
     payload["configured_food_price"] = format_generated_decimal(food_price)
     payload["food_production_divisor"] = format_generated_decimal(divisor)
     payload["generated_food_overrides"] = override_records
+    payload["food_override_materializer"] = (
+        "community_balance_generator"
+        if args.skip_food_overrides
+        else "generate_us177_food_goods_manifest"
+    )
     expected = (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
     define_path = (
         package_root
@@ -332,19 +342,20 @@ def main() -> int:
 
     write_atomic(output, expected)
     write_atomic(define_path, expected_define)
-    current_override_paths = set(generated_overrides)
-    for stale_path in sorted(previous_override_paths - current_override_paths):
-        candidate = package_root / stale_path
-        if candidate.is_file():
-            candidate.unlink()
-    for relative_path, generated in generated_overrides.items():
-        generated_path = package_root / relative_path
-        if generated_path.exists() and relative_path not in previous_override_paths:
-            raise SystemExit(
-                "Refusing to overwrite a package file not owned by the US-177 food "
-                f"manifest: {relative_path}"
-            )
-        write_atomic(generated_path, generated)
+    if not args.skip_food_overrides:
+        current_override_paths = set(generated_overrides)
+        for stale_path in sorted(previous_override_paths - current_override_paths):
+            candidate = package_root / stale_path
+            if candidate.is_file():
+                candidate.unlink()
+        for relative_path, generated in generated_overrides.items():
+            generated_path = package_root / relative_path
+            if generated_path.exists() and relative_path not in previous_override_paths:
+                raise SystemExit(
+                    "Refusing to overwrite a package file not owned by the US-177 food "
+                    f"manifest: {relative_path}"
+                )
+            write_atomic(generated_path, generated)
     payload = json.loads(expected)
     print(
         f"Generated US-177 food configuration: {payload['food_good_count']} goods, "

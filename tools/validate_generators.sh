@@ -136,8 +136,12 @@ cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
 cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
+cbp_require_file "tools/generate_cbp_cbg_food_spec.py"
+cbp_require_file "tools/validate_cbp_cbg_food_parity.sh"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
 cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/tests/test_community_balance_generator.py"
@@ -164,6 +168,12 @@ cbp_require_match '"path": "main_menu/common/script_values/default_values.txt"' 
 cbp_require_match '"central_default_values_materializer": "community_balance_generator"' \
 	"packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json" \
 	'Legacy political manifest must record default-values delegation to CBG'
+cbp_require_match '"food_override_materializer": "community_balance_generator"' \
+	"packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json" \
+	'US-177 manifest must record food override delegation to CBG'
+cbp_require_match '"path": "in_game/common/goods/03_food.txt"' \
+	"packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json" \
+	'CBG food manifest must own the generated Vanilla food override'
 
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	cbg_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
@@ -174,6 +184,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		exit 1
 	fi
 	"$repo_root/tools/validate_cbp_cbg_default_values_parity.sh"
+	"$repo_root/tools/validate_cbp_cbg_food_parity.sh"
 else
 	printf '%s\n' \
 		'SKIP: focused CBG default_values parity requires local Vanilla EU5 sources.'
@@ -185,6 +196,12 @@ cbp_require_match 'generate_political_reward_overrides\.py' \
 cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must materialize central default values from the focused CBG policy'
+cbp_require_match 'generate_cbp_cbg_food_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize food production overrides from CBG policy'
+cbp_require_match '--skip-food-overrides' \
+	"tools/generate_all.sh" \
+	'legacy US-177 discovery must delegate food override ownership to CBG'
 cbp_require_match '--skip-central-default-values' \
 	"tools/generate_all.sh" \
 	'legacy political generation must delegate default_values.txt ownership to CBG'

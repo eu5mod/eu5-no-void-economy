@@ -1,0 +1,117 @@
+{
+  "mod_id": "cbp-economy-rebalance-food-production",
+  "schema_version": 1,
+  "scope_contract": {
+    "discovery": "generate_us177_food_goods_manifest.build_manifest_payload",
+    "owned_outputs": [
+      "in_game/common/goods/03_food.txt"
+    ],
+    "phase": "food-production"
+  },
+  "transformations": [
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "beeswax",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "0.8333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fish",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fruit",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "fur",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "0.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "legumes",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "livestock",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "maize",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "millet",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "olives",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "potato",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "rice",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "3.3333333333"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "wheat",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "2.6666666667"
+    },
+    {
+      "field": "food",
+      "file": "in_game/common/goods/03_food.txt",
+      "object": "wild_game",
+      "operation": "replace",
+      "provenance": "preserve",
+      "value": "1.1666666667"
+    }
+  ]
+}

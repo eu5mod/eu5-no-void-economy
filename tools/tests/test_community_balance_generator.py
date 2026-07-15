@@ -134,6 +134,17 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertNotIn("VANILLA/PRIOR", text)
         self.assertFalse(text.endswith("\n\n"))
 
+    def test_preserve_provenance_changes_only_the_scalar(self):
+        source = self.game / "in_game/common/building_types/market.txt"
+        original = source.read_text().replace("maintenance = 1.0", "maintenance = 1.0 # source")
+        source.write_text(original)
+        spec = self.spec("a.json", "mod-a", [{
+            **self.target("multiply", 0.5),
+            "provenance": "preserve",
+        }])
+        text, _ = self.transform(spec)
+        self.assertEqual(text, original.replace("maintenance = 1.0", "maintenance = 0.5"))
+
     def test_replace_and_clamp(self):
         spec = self.spec("a.json", "mod-a", [
             self.target("replace", 4, conflict="compose"),
