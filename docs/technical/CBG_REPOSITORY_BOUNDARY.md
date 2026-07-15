@@ -59,9 +59,15 @@ parity, and updating `CBG_VANILLA_GENERATION_MATRIX.md`. A filename containing
 
 ## Migration evidence
 
-Tracked `cbg_*_spec.json`, `cbg_*_manifest.json`, parity scripts, and the broad
-PR188 comparison specification are CBP release evidence. They are deliberately
-outside `tools/cbg/` because other CBG users do not need them.
+Tracked `cbg_*_spec.json`, parity scripts, and the broad PR188 comparison
+specification are CBP release evidence. They are deliberately outside
+`tools/cbg/` because other CBG users do not need them.
+
+`cbg_*_manifest.json` files are local execution receipts. They are regenerated
+from the tracked specs, ignored by Git, and must not be used as policy sources
+or committed release evidence. Static CI verifies output ownership from each
+spec's `scope_contract.owned_outputs`; local Vanilla-backed parity runs verify
+the generated manifests and byte-level outputs.
 
 Once a retained compiler is replaced by declarative CBG policy, remove its
 focused parity harness in a separate cleanup change after one release cycle.
