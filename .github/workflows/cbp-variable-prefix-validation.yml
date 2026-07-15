@@ -54,7 +54,14 @@ jobs:
                   relative = item.get('path')
                   if not isinstance(relative, str):
                       continue
-                  generated = package_root / relative
+                  if manifest_name == 'political_reward_overrides_manifest.json':
+                      generated = (
+                          package_root / relative
+                          if item.get('package_relative')
+                          else package_root / 'in_game' / relative
+                      )
+                  else:
+                      generated = package_root / relative
                   if generated.is_file():
                       generated.unlink()
           PY
