@@ -1,5 +1,6 @@
 {
   "aliases": 0,
+  "central_default_values_materializer": "community_balance_generator",
   "central_script_values": {
     "cabinet_stability_investment": 0.75,
     "clergy_stability_investment": 0.75,

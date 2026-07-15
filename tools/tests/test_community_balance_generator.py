@@ -191,6 +191,33 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unresolved multi-mod conflict"):
             generate(self.game, self.output, intents)
 
+    def test_existing_identical_output_can_be_adopted_once(self):
+        spec = self.spec("a.json", "mod-a", [self.target("multiply", 0.5)])
+        intents, _ = load_intents([spec], self.game)
+        generated = generate(self.game, self.output, intents)
+        manifest_path = self.output / "manifest.json"
+        manifest_path.write_text(json.dumps(generated))
+
+        manifest_path.unlink()
+        adopted = generate(
+            self.game,
+            self.output,
+            intents,
+            manifest_path,
+            adopt_identical=True,
+        )
+        self.assertEqual(generated["files"][0]["generated_sha256"], adopted["files"][0]["generated_sha256"])
+
+    def test_existing_different_output_cannot_be_adopted(self):
+        spec = self.spec("a.json", "mod-a", [self.target("multiply", 0.5)])
+        intents, _ = load_intents([spec], self.game)
+        destination = self.output / "in_game/common/building_types/market.txt"
+        destination.parent.mkdir(parents=True)
+        destination.write_text("locally changed\n")
+
+        with self.assertRaisesRegex(ValueError, "not owned"):
+            generate(self.game, self.output, intents, adopt_identical=True)
+
     def test_nested_object_path(self):
         spec = self.spec("a.json", "mod-a", [{
             **self.target("multiply", 1.5, field="local_merchant_capacity"),

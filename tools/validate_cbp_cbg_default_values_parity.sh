@@ -18,13 +18,28 @@ fi
 
 game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
 target="main_menu/common/script_values/default_values.txt"
-reference="$repo_root/packages/cbp_economy_rebalance/$target"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-default-values.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 
 python3 tools/generate_cbp_cbg_default_values_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/default_values.json"
+python3 - "$game_root" "$work_dir/reference" <<'PY'
+import sys
+from pathlib import Path
+
+from tools.generate_political_reward_overrides import (
+    centralizable_script_values,
+    write_central_script_value_override,
+)
+
+game_root = Path(sys.argv[1])
+write_central_script_value_override(
+    game_root,
+    Path(sys.argv[2]),
+    centralizable_script_values(game_root),
+)
+PY
 python3 tools/community_balance_generator.py \
 	--game-root "$game_root" \
 	--spec "$work_dir/default_values.json" \
@@ -41,9 +56,9 @@ if paths != [sys.argv[2]]:
     raise SystemExit(f"Focused CBG scope violation: generated {paths!r}")
 PY
 
-if ! cmp -s "$reference" "$work_dir/output/$target"; then
+if ! cmp -s "$work_dir/reference/$target" "$work_dir/output/$target"; then
 	printf '%s\n' 'Focused CBG output differs from the corrected #188 default_values.txt:' >&2
-	diff -u "$reference" "$work_dir/output/$target" || true
+	diff -u "$work_dir/reference/$target" "$work_dir/output/$target" || true
 	exit 1
 fi
 

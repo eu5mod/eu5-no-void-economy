@@ -12,7 +12,6 @@ import argparse
 import hashlib
 import json
 import re
-import shutil
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
@@ -469,6 +468,11 @@ def main() -> int:
     parser.add_argument("--game-root", type=Path, required=True)
     parser.add_argument("--package-root", type=Path, required=True)
     parser.add_argument("--clean", action="store_true", help="Remove only files created solely by this generator.")
+    parser.add_argument(
+        "--skip-central-default-values",
+        action="store_true",
+        help="Leave default_values.txt to the Community Balance Generator.",
+    )
     args = parser.parse_args()
 
     source_in_game = args.game_root / "in_game"
@@ -497,11 +501,9 @@ def main() -> int:
             alias_path = args.package_root / "main_menu/common/script_values/cbp_political_reward_scalars_generated.txt"
             if alias_path.is_file():
                 alias_path.unlink()
-            central_path = args.package_root / "main_menu/common/script_values/default_values.txt"
-            if central_path.is_file():
-                central_path.unlink()
-            if baseline_root.is_dir():
-                shutil.rmtree(baseline_root)
+            # Keep unreferenced baselines as historical audit evidence. Current
+            # entries are refreshed below; deleting the whole tree creates
+            # unrelated churn when Vanilla no longer exposes an old target.
             manifest_path.unlink()
             print("Cleaned files owned solely by the political reward generator.")
             return 0
@@ -610,10 +612,7 @@ def main() -> int:
             )
         output.parent.mkdir(parents=True, exist_ok=True)
         result_text = apply_package_compatibility_sanitizers(relative, result_text)
-        if created:
-            result_text = normalize_generated_whitespace(result_text)
-        else:
-            result_text = "\n".join(line.rstrip(" \t") for line in result_text.splitlines()) + "\n"
+        result_text = normalize_generated_whitespace(result_text)
         output.write_text(result_text, encoding="utf-8-sig")
         update_composed_building_manifests(args.package_root, relative, output)
         aliases.update(static_result.aliases)
@@ -674,9 +673,15 @@ def main() -> int:
         )
     if alias_path.is_file():
         alias_path.unlink()
-    write_central_script_value_override(args.game_root, args.package_root, centralized)
+    if not args.skip_central_default_values:
+        write_central_script_value_override(args.game_root, args.package_root, centralized)
     manifest = {
         "generator": "tools/generate_political_reward_overrides.py",
+        "central_default_values_materializer": (
+            "community_balance_generator"
+            if args.skip_central_default_values
+            else "generate_political_reward_overrides"
+        ),
         "policies": {"instant_effects": 0.5, "static_sources": 0.75},
         "profit_margin_factor": float(PROFIT_MARGIN_FACTOR),
         "files": generated,

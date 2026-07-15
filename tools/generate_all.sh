@@ -18,6 +18,7 @@ if [[ -f "$political_manifest" && -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	python3 "$repo_root/tools/generate_political_reward_overrides.py" \
 		--game-root "$political_game_root" \
 		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--skip-central-default-values \
 		--clean
 fi
 
@@ -113,7 +114,20 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
 	python3 "$repo_root/tools/generate_political_reward_overrides.py" \
 		--game-root "$us177_game_root" \
-		--package-root "$repo_root/packages/cbp_economy_rebalance"
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--skip-central-default-values
+
+	cbg_default_values_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
+	cbg_default_values_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
+	python3 "$repo_root/tools/generate_cbp_cbg_default_values_spec.py" \
+		--game-root "$us177_game_root" \
+		--output "$cbg_default_values_spec"
+	python3 "$repo_root/tools/community_balance_generator.py" \
+		--game-root "$us177_game_root" \
+		--spec "$cbg_default_values_spec" \
+		--output-root "$repo_root/packages/cbp_economy_rebalance" \
+		--manifest "$cbg_default_values_manifest" \
+		--adopt-identical-output
 else
 	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 fi

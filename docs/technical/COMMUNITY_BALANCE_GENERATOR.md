@@ -107,7 +107,7 @@ the previous generated hash.
 
 ### Phase 1: central default values
 
-The first publication milestone is deliberately limited to:
+The first publication boundary is deliberately limited to:
 
 ```txt
 CBG master policy
@@ -133,10 +133,14 @@ any parity difference fails the local validation. GitHub Actions intentionally
 has no proprietary Vanilla source: the same command emits an explicit `SKIP`
 there and continues with the CBG unit tests and static master-spec contract.
 
-The command generates its spec and candidate output in a temporary directory.
-It verifies that the manifest owns exactly one file and compares that file
-byte-for-byte with the current #188 package output. It never materializes CBG
-output in the repository.
+`generate_all.sh` now materializes this package file through CBG and records its
+ownership in `cbp_generated/cbg_default_values_manifest.json`. The legacy
+political generator still discovers centralizable values and handles the other
+political edge cases, but delegates this output to CBG.
+
+The focused parity command generates its legacy reference and CBG candidate in
+a temporary directory. It verifies that the candidate manifest owns exactly
+one file and compares both outputs byte-for-byte.
 
 The dedicated static-modifier, define, building, and other #188 generators
 remain authoritative until each surface receives its own bounded parity gate.
@@ -180,8 +184,9 @@ functional change.
 
 The broad `cbp_pr188_balance.generated.json` spec remains an analysis and
 migration aid. It is not a publication authority and must not be used to replace
-the package wholesale. The #188 generators remain the package materializer and
-their manifests remain audit evidence. Each future migration must first achieve
+the package wholesale. The #188 generators remain the package materializer
+outside `default_values.txt`, and their manifests remain audit evidence. Each
+future migration must first achieve
 a bounded, byte-identical parity gate before its ownership boundary can move.
 
 ## MVP boundary

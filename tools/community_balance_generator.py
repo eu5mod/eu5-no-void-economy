@@ -605,11 +605,19 @@ def previous_outputs(manifest_path: Path | None) -> dict[PurePosixPath, str]:
     }
 
 
-def assert_owned_output(path: Path, relative: PurePosixPath, owned: dict[PurePosixPath, str]) -> None:
+def assert_owned_output(
+    path: Path,
+    relative: PurePosixPath,
+    owned: dict[PurePosixPath, str],
+    generated: bytes | None = None,
+    adopt_identical: bool = False,
+) -> None:
     if not path.exists():
         return
     expected = owned.get(relative)
     if expected is None:
+        if adopt_identical and generated is not None and path.read_bytes() == generated:
+            return
         raise ValueError(f"Refusing to overwrite an output not owned by the previous CBG manifest: {relative}")
     actual = sha256(path.read_bytes())
     if actual != expected:
@@ -621,6 +629,7 @@ def generate(
     output_root: Path,
     intents: list[Intent],
     previous_manifest: Path | None = None,
+    adopt_identical: bool = False,
 ) -> dict[str, Any]:
     validate_conflicts(intents)
     owned = previous_outputs(previous_manifest)
@@ -656,7 +665,9 @@ def generate(
         if has_bom:
             generated = b"\xef\xbb\xbf" + generated
         destination = output_root / Path(relative)
-        assert_owned_output(destination, relative, owned)
+        assert_owned_output(
+            destination, relative, owned, generated, adopt_identical=adopt_identical
+        )
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(generated)
         manifest_files.append({
@@ -696,13 +707,24 @@ def main() -> int:
     parser.add_argument("--spec", type=Path, action="append", required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument(
+        "--adopt-identical-output",
+        action="store_true",
+        help="Claim an existing output only when it is byte-identical to the generated result.",
+    )
     args = parser.parse_args()
     game_root = args.game_root.resolve()
     output_root = args.output_root.resolve()
     try:
         intents, _custom_fields = load_intents(args.spec, game_root)
         manifest_path = args.manifest or output_root / "cbg_manifest.json"
-        manifest = generate(game_root, output_root, intents, manifest_path)
+        manifest = generate(
+            game_root,
+            output_root,
+            intents,
+            manifest_path,
+            adopt_identical=args.adopt_identical_output,
+        )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
     manifest_path.parent.mkdir(parents=True, exist_ok=True)

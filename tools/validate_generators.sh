@@ -136,6 +136,8 @@ cbp_require_file "tools/compare_cbp_cbg_outputs.py"
 cbp_require_file "tools/validate_cbp_cbg_parity.sh"
 cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
 cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
+cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
 cbp_require_file "tools/validate_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/tests/test_community_balance_generator.py"
@@ -156,6 +158,12 @@ cbp_require_match '"provenance": "vanilla"' \
 cbp_require_match 'owned_outputs.*TARGET' \
 	"tools/generate_cbp_cbg_default_values_spec.py" \
 	'Focused CBG migration must remain limited to default_values.txt'
+cbp_require_match '"path": "main_menu/common/script_values/default_values.txt"' \
+	"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json" \
+	'CBG manifest must own the generated default_values.txt output'
+cbp_require_match '"central_default_values_materializer": "community_balance_generator"' \
+	"packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json" \
+	'Legacy political manifest must record default-values delegation to CBG'
 
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	cbg_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
@@ -174,6 +182,12 @@ python3 "$repo_root/tools/validate_cbg_master_spec.py"
 cbp_require_match 'generate_political_reward_overrides\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must compose political reward overrides after vanilla-derived generators'
+cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize central default values from the focused CBG policy'
+cbp_require_match '--skip-central-default-values' \
+	"tools/generate_all.sh" \
+	'legacy political generation must delegate default_values.txt ownership to CBG'
 cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'#184 building transformer must own fixed monthly political modifier scaling'
