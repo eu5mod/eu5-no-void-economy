@@ -149,19 +149,12 @@ cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_location_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
-cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
 cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
@@ -189,18 +182,18 @@ cbp_require_match '"provenance": "vanilla"' \
 cbp_require_match 'owned_outputs.*TARGET' \
 	"tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
 	'Focused CBG migration must remain limited to default_values.txt'
-cbp_require_match '"path": "main_menu/common/script_values/default_values.txt"' \
-	"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json" \
-	'CBG manifest must own the generated default_values.txt output'
+cbp_require_match '"owned_outputs": \[' \
+	"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json" \
+	'CBG default-values spec must declare its owned outputs'
 cbp_require_match '"central_default_values_materializer": "community_balance_generator"' \
 	"packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json" \
 	'Legacy political manifest must record default-values delegation to CBG'
 cbp_require_match '"food_override_materializer": "community_balance_generator"' \
 	"packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json" \
 	'US-177 manifest must record food override delegation to CBG'
-cbp_require_match '"path": "in_game/common/goods/03_food.txt"' \
-	"packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json" \
-	'CBG food manifest must own the generated Vanilla food override'
+cbp_require_match '"owned_outputs": \[' \
+	"packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json" \
+	'CBG food spec must declare its owned outputs'
 
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	cbg_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"

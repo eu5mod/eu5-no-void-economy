@@ -73,6 +73,7 @@ else
 		if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 			bash "$repo_root/tools/generate_us09_economy_overrides.sh" \
 				"${MODEU5_US09_BONUS_PERCENT:-5}" \
+				--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 				--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
 				--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 				--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
@@ -102,7 +103,7 @@ else
 			cbg_rgo_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
 			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
-				--percent "${MODEU5_US09_BONUS_PERCENT:-5}" \
+				--percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 				--output "$cbg_rgo_spec"
 			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \

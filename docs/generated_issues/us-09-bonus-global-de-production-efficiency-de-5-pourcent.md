@@ -62,14 +62,14 @@ Increase each eligible `local_merchant_capacity` and `merchant_capacity_from_bui
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
 Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.7`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
 Generate an exact-path `common/prices/00_hardcoded.txt` override for the five `expand_rgo_*` entries
-Override each targeted RGO expansion gold value by `gold x (1 / (1 + X))`
+Override each targeted RGO expansion gold value by `gold x (1 / (1 + P))`, where `P` is the independent `MODEU5_US09_RGO_PRICE_OFFSET_PERCENT` configuration.
 ```
 
 Rationale:
 
 ```txt
 This path changes source output and trade-capacity-like static fields directly when the Economy package is loaded.
-Trade-capacity compensation is independently configurable so local tests can use, for example, output/RGO `+10%` with trade capacity `+15%`.
+Production, RGO expansion-price compensation, and trade-capacity compensation are independently configurable. Local tests can use, for example, production `+8%`, RGO price offset `8%`, and trade capacity `+15%` without coupling those policies.
 It also carries the approved US-07 marketplace estate-power reduction for the same exact-path trade-building file.
 It therefore scales correctly with downstream national or technological production modifiers.
 It matches the intended compensation logic better than a flat additive `global_production_efficiency = +5%`, but it is not currently runtime-safe.

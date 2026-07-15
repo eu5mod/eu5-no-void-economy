@@ -8,5 +8,20 @@ cbp_*_generated.txt
 cbp_*_generated_l_english.yml
 tools/generated/
 
+# CBG execution receipts are local byproducts. Keep the generated CBG specs
+# tracked as reviewable policy/release evidence, but regenerate manifests from
+# those specs instead of merging developer-specific execution state.
+/packages/*/cbp_generated/cbg_*_manifest.json
+/**/cbg_manifest.json
+/tools/cbg/examples/output/
+/tools/specs/*.local.json
+/tools/specs/*.tmp.json
+
+# Python/tool caches.
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
 # Full vanilla file copied and patched locally by the defines generator.
 /loading_screen/common/defines/00_defines.txt
