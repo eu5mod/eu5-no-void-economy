@@ -226,6 +226,12 @@ python3 "$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
 cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must compile and materialize political rewards through CBG'
+cbp_require_match 'generate_cbp_community_balance_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must refresh the cross-family CBP/CBG audit specification'
+cbp_require_match 'cbp_pr188_balance\.generated\.json' \
+	"tools/generate_all.sh" \
+	'generate_all must write the tracked cross-family CBP/CBG audit specification'
 cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must materialize central default values from the focused CBG policy'

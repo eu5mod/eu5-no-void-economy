@@ -191,6 +191,13 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
 		--manifest "$cbg_default_values_manifest" \
 		--adopt-identical-output
+
+	# Refresh the cross-family audit policy from the same Vanilla tree and local
+	# balance configuration used by the focused runtime adapters above.
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py" \
+		--game-root "$us177_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--output "$repo_root/tools/specs/cbp_pr188_balance.generated.json"
 else
 	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 fi
