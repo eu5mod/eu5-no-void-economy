@@ -336,7 +336,7 @@ conduct_a_census = {
 	}
 
 	on_debate_passed = {
-		add_stability = cbp_instant_add_stability_stability_mild_bonus_3d198f7ede # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 
 	}
 	on_debate_failed = {

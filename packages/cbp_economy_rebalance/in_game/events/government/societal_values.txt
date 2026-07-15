@@ -928,7 +928,7 @@ societal_values.214 = {
 	option = {
 		name = societal_values.214.a
 		add_government_power = government_power_mild_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_weak_bonus }
 	}
 }
@@ -1546,7 +1546,7 @@ societal_values.402 = {
 		name = societal_values.402.b
 		hidden_effect = { kill_character_silently = scope:target_character }
 		change_societal_value = { type = spiritualist_vs_humanist value = societal_value_move_to_right }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 }
 
@@ -1764,7 +1764,7 @@ societal_values.408 = {
 	option = {
 		name = societal_values.408.a
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = government_power_mild_penalty
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_right }
 	}
 	option = {
@@ -4468,7 +4468,7 @@ societal_values.1104 = {
 
 	option = {
 		name = societal_values.1104.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 }
 
@@ -4498,7 +4498,7 @@ societal_values.1105 = {
 	}
 	option = {
 		name = societal_values.1105.b
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 	}
 }
 
@@ -4610,7 +4610,7 @@ societal_values.1110 = {
 
 	option = {
 		name = societal_values.1110.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 }
 
@@ -5377,7 +5377,7 @@ societal_values.1607 = {
 
 	option = {
 		name = societal_values.1607.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 }
 
@@ -6868,7 +6868,7 @@ societal_values.2005 = { # Revival of Agrarian Communities
 	option = {
 		name = societal_values.2005.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		random_owned_rural_location = {
 			province = {
 				add_province_modifier = {
@@ -6897,7 +6897,7 @@ societal_values.2005 = { # Revival of Agrarian Communities
 	option = {
 		name = societal_values.2005.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		add_country_modifier = {
 			modifier = generic_urbanization_attraction
 			years = 5
@@ -7064,7 +7064,7 @@ societal_values.2007 = { # Communal Lands
 	option = {
 		name = societal_values.2007.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		random_owned_rural_location = {
 			province = {
 				add_province_modifier = {
@@ -7158,7 +7158,7 @@ societal_values.2009 = { # Increased Bartering
 		name = societal_values.2009.a
 
 		add_legitimacy = legitimacy_weak_penalty
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		capital.market ?= {
 			add_merchant_power = {
 				country = root
@@ -7464,7 +7464,7 @@ societal_values.2014 = { # The loss of communal justice
 	option = {
 		name = societal_values.2014.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_severe_penalty
 		}
@@ -7523,7 +7523,7 @@ societal_values.2040 = { # Re-defining the family structure - Nuclear Version
 			years = 5
 			mode = add_and_extend
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_weak_penalty
 		}
@@ -7556,7 +7556,7 @@ societal_values.2015 = { # Land Reforms (edited to avoid overlap with other even
 	option = {
 		name = societal_values.2015.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_extreme_bonus
 		}
@@ -7629,7 +7629,7 @@ societal_values.2016 = { # Return to traditional justice (meant to be the invers
 	option = {
 		name = societal_values.2016.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:peasants_estate
 			value = estate_satisfaction_severe_penalty
 		}
@@ -7714,7 +7714,7 @@ societal_values.2018 = { # Community schools initiative
 	option = {
 		name = societal_values.2018.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 }
 
@@ -8691,7 +8691,7 @@ societal_values.2035 = { # Religious Tolerance
 	option = {
 		name = societal_values.2035.b
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		add_country_modifier = {
 			modifier = intolerant_tolerance
 			years = 5
@@ -8964,7 +8964,7 @@ societal_values.2100 = {
 	option = {
 		name = societal_values.2100.a
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = {
 			type = estate_type:peasants_estate
 			value = estate_satisfaction_weak_bonus
@@ -9235,7 +9235,7 @@ societal_values.2106 = {
 	option = {
 		name = societal_values.2106.a
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 		change_societal_value = {
 			type = absolutism_vs_liberalism
 			value = societal_value_move_to_left
@@ -9540,7 +9540,7 @@ societal_values.2111 = {
 		name = societal_values.2111.a
 
 		add_religious_influence = religious_influence_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -9668,7 +9668,7 @@ societal_values.2114 = {
 		name = societal_values.2114.a
 
 		add_prestige = prestige_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 }
 
@@ -10338,7 +10338,7 @@ societal_values.2214 = {
 			type = absolutism_vs_liberalism
 			value = societal_value_move_to_right
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -10743,7 +10743,7 @@ societal_values.2307 = {	#Sinicization Benefits
 
 		switch = {
 			trigger = has_variable
-			2307a = { add_stability = cbp_event_inline_add_stability_stability_mild_bonus_154260c9ea }
+			2307a = { add_stability = stability_mild_bonus }
 			2307b = { add_research_progress = research_progress_severe_bonus }
 			2307c = {
 				scope:target_character = {
@@ -11330,7 +11330,7 @@ societal_values.2303 = {	#"The Defiance of [target_country.GetNameWithNoTooltip]
 			add_cultural_influence = cultural_influence_mild_bonus
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 }
 
@@ -11438,7 +11438,7 @@ societal_values.2306 = {	#Nativism Backlash
 		switch = {
 			trigger = has_variable
 			2306a = {
-				add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+				add_legitimacy = legitimacy_mild_penalty
 			}
 			2306b = {
 				if = {
@@ -11457,7 +11457,7 @@ societal_values.2306 = {	#Nativism Backlash
 						years = 1
 						mode = extend
 					}
-					add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+					add_stability = stability_weak_penalty
 				}
 			}
 			2306c = { add_research_progress = research_progress_severe_penalty }

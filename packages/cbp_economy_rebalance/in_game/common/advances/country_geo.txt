@@ -127,4 +127,3 @@ geo_georgian_resilience = {
 
 	stability_investment = small_stability_investment
 }
-

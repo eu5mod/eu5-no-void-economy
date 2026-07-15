@@ -25,10 +25,11 @@ class PoliticalRewardTransformTest(unittest.TestCase):
 }
 """
         result = MODULE.transform_assignments(source, MODULE.EVENT_EFFECTS, Decimal("0.5"), "event")
-        self.assertEqual(result.count, 3)
+        self.assertEqual(result.count, 2)
         self.assertIn("add_legitimacy = -5 # VANILLA = -10; signed penalty", result.text)
         self.assertIn("\t\tmultiply = 0.5\n\t}", result.text)
-        self.assertIn("stability_mild_bonus", next(iter(result.aliases.values()))[0])
+        self.assertIn("add_stability = stability_mild_bonus", result.text)
+        self.assertEqual(result.aliases, {})
 
     def test_parliament_transform_is_limited_to_outcomes(self):
         source = """issue = {
@@ -41,7 +42,7 @@ class PoliticalRewardTransformTest(unittest.TestCase):
         result = MODULE.transform_assignments(
             source, MODULE.EVENT_EFFECTS, Decimal("0.5"), "parliament", {"on_debate_passed", "on_debate_failed"}
         )
-        self.assertEqual(result.count, 1)
+        self.assertEqual(result.count, 0)
         self.assertIn("modifier_when_in_debate = { add_stability = stability_mild_bonus }", result.text)
 
     def test_common_instant_effect_is_composed_from_vanilla_value(self):
@@ -50,9 +51,8 @@ class PoliticalRewardTransformTest(unittest.TestCase):
         result = MODULE.compose_simple_assignments(
             source, current, MODULE.EVENT_EFFECTS, Decimal("0.5"), "instant"
         )
-        self.assertEqual(result.count, 1)
-        self.assertIn("add_legitimacy = cbp_instant_add_legitimacy_", result.text)
-        self.assertIn("# VANILLA = legitimacy_mild_bonus; retained comment", result.text)
+        self.assertEqual(result.count, 0)
+        self.assertEqual(result.text, current)
 
     def test_research_fixed_values_keep_three_quarters(self):
         source = """advance = {
@@ -62,7 +62,8 @@ class PoliticalRewardTransformTest(unittest.TestCase):
 """
         result = MODULE.transform_assignments(source, MODULE.RESEARCH_MODIFIERS, Decimal("0.75"), "research")
         self.assertIn("monthly_legitimacy = 0.075", result.text)
-        self.assertEqual(result.count, 2)
+        self.assertEqual(result.count, 1)
+        self.assertIn("stability_investment = small_stability_investment", result.text)
 
     def test_scaled_numbers_are_stable(self):
         self.assertEqual(MODULE.scaled_number("0.1", Decimal("0.75")), "0.075")
@@ -108,14 +109,15 @@ class PoliticalRewardTransformTest(unittest.TestCase):
         self.assertEqual(result.count, 0)
         self.assertEqual(result.text, source)
 
-    def test_inline_numeric_and_shared_values_are_halved(self):
+    def test_inline_numeric_is_halved_and_shared_symbol_is_unchanged(self):
         source = "else = { add_government_power = 5 }\n10 = { add_stability = shared_value }\n"
         result = MODULE.transform_inline_assignments(
             source, MODULE.EVENT_EFFECTS, Decimal("0.5"), "inline", set()
         )
-        self.assertEqual(result.count, 2)
+        self.assertEqual(result.count, 1)
         self.assertIn("add_government_power = 2.5", result.text)
-        self.assertIn("add_stability = cbp_inline_add_stability_shared_value_", result.text)
+        self.assertIn("add_stability = shared_value", result.text)
+        self.assertEqual(result.aliases, {})
 
 
 if __name__ == "__main__":

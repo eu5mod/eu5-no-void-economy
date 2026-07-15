@@ -326,7 +326,7 @@ flavor_ven.8 = {
 	}
 	option = {
 		name = flavor_ven.8.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_navy_tradition = navy_tradition_mild_bonus
 	}
 }
@@ -752,7 +752,7 @@ flavor_ven.16 = {
 		name = flavor_ven.16.a
 
 		kill_character = scope:target_character
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_prestige = prestige_extreme_penalty
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_mild_bonus }
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_minor_move_to_left }
@@ -2976,7 +2976,7 @@ flavor_ven.59 = { #The Doge's Power Grab
 
 	option = {
 		name = flavor_ven.59.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_government_power = government_power_extreme_penalty
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_extreme_penalty }
 		change_societal_value = {
@@ -3180,7 +3180,7 @@ flavor_ven.62 = { #The Marriage of the Sea
 
 	option = {
 		name = flavor_ven.62.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		change_societal_value = { type = traditionalist_vs_innovative value = societal_value_move_to_left }
 	}
 
@@ -3697,7 +3697,7 @@ flavor_ven.71 = { #The Question of Concio
 
 	option = {
 		name = flavor_ven.71.b
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:nobles_estate value = estate_satisfaction_severe_bonus }
 		add_estate_satisfaction = { type = estate_type:burghers_estate value = estate_satisfaction_severe_penalty }
 	}
@@ -3737,7 +3737,7 @@ flavor_ven.72 = { #Magistrato alla Sanità
 				building_type = building_type:magistrato_alla_sanita
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 
 	option = {
@@ -3934,7 +3934,7 @@ flavor_ven.74 = { #Venetian Holy Inquisition
 	option = {
 		name = flavor_ven.74.c
 		add_religious_influence_if_valid = { VALUE = -10 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_estate_satisfaction = { type = estate_type:clergy_estate value = estate_satisfaction_extreme_penalty }
 	}
 }
@@ -4061,7 +4061,7 @@ flavor_ven.77 = { #Expanding Domini di Terraferma
 
 	option = {
 		name = flavor_ven.77.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_army_tradition = army_tradition_mild_bonus
 	}
 
@@ -5137,7 +5137,7 @@ flavor_ven.93 = { #The Reforms of Lazzaretto Vecchio
 		name = flavor_ven.93.a
 		historical_option = yes
 		change_gold_effect = { scale = -4 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		location:venice = {
 			add_location_modifier = { modifier = ven_reforms_of_lazzaretto_vecchio years = 20 mode = add_and_extend }
 		}
@@ -5416,7 +5416,7 @@ flavor_ven.97 = { #The Suppression of the Ridotto
 
 	option = {
 		name = flavor_ven.97.b
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		add_estate_satisfaction = {
 			type = estate_type:nobles_estate
 			value = estate_satisfaction_weak_bonus

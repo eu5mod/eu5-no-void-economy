@@ -3541,7 +3541,7 @@ on_ruler_death = {
 				government_type = government_type:steppe_horde
 				modifier:horde_unity_hit_at_ruler_death < 0
 			}
-			add_horde_unity = cbp_instant_add_horde_unity_root_modifier_horde_unity_hit_at_ruler_death_699a011935 # VANILLA = root.modifier:horde_unity_hit_at_ruler_death
+			add_horde_unity = root.modifier:horde_unity_hit_at_ruler_death
 		}
 		c:BYZ ?= { #Save new last Emperor
 			set_global_variable = {

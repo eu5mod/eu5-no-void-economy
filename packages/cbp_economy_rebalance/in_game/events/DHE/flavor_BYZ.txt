@@ -2561,7 +2561,7 @@ flavor_byz.32 = { #The Grand Domestic - Trouble on the Horizon
 		}
 
 		add_stability = stability_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 }
 
@@ -2617,7 +2617,7 @@ flavor_byz.33 = { #Question of Nationality
 
 		add_prestige = prestige_extreme_penalty
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	option = {
@@ -3314,7 +3314,7 @@ flavor_byz.41 = { #History of the Palaiologoi
 			}
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
+		add_legitimacy = legitimacy_weak_bonus
 	}
 
 	option = {
@@ -3920,7 +3920,7 @@ flavor_byz.47 = { #Court factions, bad military outcome
 				type = estate_type:nobles_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -3956,7 +3956,7 @@ flavor_byz.47 = { #Court factions, bad military outcome
 				type = estate_type:nobles_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -3992,7 +3992,7 @@ flavor_byz.47 = { #Court factions, bad military outcome
 				type = estate_type:nobles_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4028,7 +4028,7 @@ flavor_byz.47 = { #Court factions, bad military outcome
 				type = estate_type:nobles_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4221,7 +4221,7 @@ flavor_byz.49 = { #Court factions, bad bureaucratic outcome
 				value = estate_satisfaction_mild_bonus
 			}
 
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4257,7 +4257,7 @@ flavor_byz.49 = { #Court factions, bad bureaucratic outcome
 				type = estate_type:clergy_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4304,7 +4304,7 @@ flavor_byz.49 = { #Court factions, bad bureaucratic outcome
 				type = estate_type:clergy_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4351,7 +4351,7 @@ flavor_byz.49 = { #Court factions, bad bureaucratic outcome
 				type = estate_type:clergy_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4560,7 +4560,7 @@ flavor_byz.51 = { #Court factions, bad trade outcome
 				type = estate_type:burghers_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4604,7 +4604,7 @@ flavor_byz.51 = { #Court factions, bad trade outcome
 				type = estate_type:burghers_estate
 				value = estate_satisfaction_mild_bonus
 			}
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4641,7 +4641,7 @@ flavor_byz.51 = { #Court factions, bad trade outcome
 				value = estate_satisfaction_mild_bonus
 			}
 
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -4678,7 +4678,7 @@ flavor_byz.51 = { #Court factions, bad trade outcome
 				value = estate_satisfaction_mild_bonus
 			}
 
-			add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 		else = {
 			add_estate_satisfaction = {
@@ -6493,7 +6493,7 @@ flavor_byz.1102 = { #
 			value = estate_satisfaction_extreme_penalty
 		}
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 
 		custom_tooltip = church_condemns_ongoing_debates_tt
 	}

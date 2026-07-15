@@ -67,7 +67,7 @@ rise_of_the_szlachta.2 = {	#Nobles Demand Privilege
 				type = aristocracy_vs_plutocracy
 				value = societal_value_minor_move_to_left
 			}
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+			add_stability = stability_mild_bonus
 		}
 		add_estate_satisfaction = { type = estate_type:nobles_estate
 			value = estate_satisfaction_weak_bonus
@@ -116,7 +116,7 @@ rise_of_the_szlachta.2 = {	#Nobles Demand Privilege
 					value = societal_value_minor_move_to_right
 				}
 			}
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+			add_stability = stability_mild_bonus
 		}
 		add_estate_satisfaction = { type = estate_type:burghers_estate
 			value = estate_satisfaction_weak_bonus
@@ -139,7 +139,7 @@ rise_of_the_szlachta.2 = {	#Nobles Demand Privilege
 					has_variable = estate_priv_cooldown_timer_nobles
 				}
 			}
-			add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+			add_stability = stability_weak_penalty
 			add_government_power = government_power_severe_bonus
 			add_estate_satisfaction = { type = estate_type:burghers_estate
 				value = estate_satisfaction_extreme_penalty
@@ -478,7 +478,7 @@ rise_of_the_szlachta.4 = {	#Popular Backing
 		name = rise_of_the_szlachta.4.a
 		if = {
 			limit = { societal_value:aristocracy_vs_plutocracy <= -95 }
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+			add_stability = stability_mild_bonus
 		}
 		else = {
 			change_societal_value = {
@@ -520,7 +520,7 @@ rise_of_the_szlachta.4 = {	#Popular Backing
 		name = rise_of_the_szlachta.4.b
 		if = {
 			limit = { societal_value:aristocracy_vs_plutocracy >= 95 }
-			add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+			add_stability = stability_mild_bonus
 		}
 		else = {
 			change_societal_value = {

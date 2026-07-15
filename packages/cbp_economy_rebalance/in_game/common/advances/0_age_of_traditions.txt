@@ -85,7 +85,7 @@ taxation_advance = {
 	icon = genoese_banking_traditions
 	research_cost = 2.5
 	enable_taxation = yes
-	has_stability_investment = cbp_static_inline_stability_investment_yes_8efff119ba
+	has_stability_investment = yes
 
 	unlock_law = coin_laws
 
