@@ -69,6 +69,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         return {
             "schema_version": 1,
             "mod_id": "cbp-economy-rebalance-political-minting",
+            "business_rule": "Scale political rewards and research modifiers, then compose minting changes into the same Vanilla-derived files.",
             "transformations": transformations,
             "scope_contract": {
                 "owned_outputs": sorted(paths),
@@ -86,7 +87,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--game-root", type=Path, required=True)
-    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parent.parent)
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[4])
     parser.add_argument("--minting-multiplier", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--minting-discovery-manifest", type=Path)

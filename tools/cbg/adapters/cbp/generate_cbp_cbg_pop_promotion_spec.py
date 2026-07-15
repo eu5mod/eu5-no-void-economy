@@ -5,13 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from decimal import Decimal
 from pathlib import Path
 
-try:
-    from tools.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
-except ModuleNotFoundError:
-    from community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
 
 
 ALIASES = {
@@ -88,6 +90,7 @@ def build_spec(game_root: Path, burgher: Decimal, laborer: Decimal) -> dict[str,
     return {
         "schema_version": 1,
         "mod_id": "cbp-us09-pop-promotion",
+        "business_rule": "Increase Burgher and Laborer promotion factors by their configured percentages.",
         "transformations": rules,
         "scope_contract": {"owned_outputs": outputs, "phase": "pop-promotion"},
     }

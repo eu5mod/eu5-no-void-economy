@@ -4,9 +4,18 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
-from generate_cbp_community_balance_spec import EVENT_FIELDS, MONTHLY_FIELDS, canonical_goods
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.adapters.cbp.generate_cbp_community_balance_spec import (
+    EVENT_FIELDS,
+    MONTHLY_FIELDS,
+    canonical_goods,
+)
 
 
 SPEC = Path("tools/specs/cbp_pr188_balance.generated.json")

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 
 if [[ -f .cbp.local.env ]]; then
@@ -21,7 +21,7 @@ target="main_menu/common/script_values/default_values.txt"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-default-values.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 
-python3 tools/generate_cbp_cbg_default_values_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/default_values.json"
 python3 - "$game_root" "$work_dir/reference" <<'PY'
@@ -40,7 +40,7 @@ write_central_script_value_override(
     centralizable_script_values(game_root),
 )
 PY
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" \
 	--spec "$work_dir/default_values.json" \
 	--output-root "$work_dir/output" \

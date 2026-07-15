@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 # shellcheck source=tools/cbp_tool_lib.sh
 source "$repo_root/tools/cbp_tool_lib.sh"
@@ -21,9 +21,9 @@ mkdir -p "$work_dir/reference/in_game/common"
 	--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 	--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
 	--common-dir "$EU5_GAME_COMMON_DIR" --package-common-dir "$work_dir/reference/in_game/common" >/dev/null
-python3 tools/generate_cbp_cbg_rgo_prices_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py \
 	--game-root "$game_root" --percent "$percent" --output "$work_dir/rgo.json"
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/rgo.json" \
 	--output-root "$work_dir/candidate" --manifest "$work_dir/candidate/manifest.json"
 

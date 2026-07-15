@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 
 if [[ -f .cbp.local.env ]]; then
@@ -21,23 +21,23 @@ tracked_spec="$repo_root/tools/specs/cbp_pr188_balance.generated.json"
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-parity.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 
-python3 tools/generate_cbp_community_balance_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/cbp_balance.json"
 
 if ! cmp -s "$tracked_spec" "$work_dir/cbp_balance.json"; then
 	printf '%s\n' 'Tracked CBP CBG spec is stale. Regenerate it with:' >&2
-	printf '%s\n' '  python3 tools/generate_cbp_community_balance_spec.py' >&2
+	printf '%s\n' '  python3 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py' >&2
 	exit 1
 fi
 
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" \
 	--spec "$tracked_spec" \
 	--output-root "$work_dir/output" \
 	--manifest "$work_dir/output/cbg_manifest.json"
 
-python3 tools/compare_cbp_cbg_outputs.py \
+python3 tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py \
 	--game-root "$game_root" \
 	--reference-root "$repo_root/packages/cbp_economy_rebalance" \
 	--repo-root "$repo_root" \

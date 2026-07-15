@@ -7,15 +7,16 @@ import argparse
 import json
 import os
 import re
+import sys
 from decimal import Decimal
 from pathlib import Path
 
-try:
-    from tools.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
-    from tools.generate_political_reward_overrides import centralizable_script_values
-except ModuleNotFoundError:  # Direct `python3 tools/...py` execution.
-    from community_balance_generator import ASSIGNMENT, field_matches, scan_objects
-    from generate_political_reward_overrides import centralizable_script_values
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+from tools.generate_political_reward_overrides import centralizable_script_values
 
 
 EVENT_FIELDS = (
@@ -51,6 +52,32 @@ MASTER_BUILDING_FIELDS = {
     "local_burghers_estate_power",
 }
 MARKETPLACE_BUILDINGS = {"marketplace", "merchants_quarters", "grand_marketplace"}
+DEFAULT_VALUES_ONLY_POLICY = {
+    "devotion_radical_bonus",
+    "devotion_ultimate_bonus",
+    "devotion_ultimate_penalty",
+    "devotion_weak_penalty",
+    "government_power_mild_penalty",
+    "government_power_weak_penalty",
+    "horde_unity_radical_bonus",
+    "horde_unity_radical_penalty",
+    "horde_unity_severe_bonus",
+    "horde_unity_severe_penalty",
+    "horde_unity_ultimate_bonus",
+    "legitimacy_mild_penalty",
+    "legitimacy_weak_bonus",
+    "republican_tradition_extreme_penalty",
+    "republican_tradition_radical_bonus",
+    "republican_tradition_radical_penalty",
+    "republican_tradition_ultimate_bonus",
+    "republican_tradition_ultimate_penalty",
+    "stability_mild_bonus",
+    "stability_radical_bonus",
+    "stability_weak_penalty",
+    "tribal_cohesion_extreme_penalty",
+    "tribal_cohesion_ultimate_bonus",
+    "tribal_cohesion_ultimate_penalty",
+}
 
 
 def env_number(name: str, default: float) -> float:
@@ -173,7 +200,14 @@ def bulk_rules(
 
 
 def political_transformations(game_root: Path) -> list[dict[str, object]]:
-    centralized_policy = centralizable_script_values(game_root)
+    # The dedicated default_values adapter owns the explicit intensity family.
+    # Keep it out of this broad parity spec to avoid scaling both the shared
+    # scalar and call sites that the #188 materializer intentionally preserves.
+    centralized_policy = {
+        name: factor
+        for name, factor in centralizable_script_values(game_root).items()
+        if name not in DEFAULT_VALUES_ONLY_POLICY
+    }
     centralized = tuple(sorted(centralized_policy))
     result: list[dict[str, object]] = []
     # Master rules discover matching assignments directly in the current

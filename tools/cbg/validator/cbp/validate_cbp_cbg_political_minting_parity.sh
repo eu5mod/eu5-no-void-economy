@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$repo_root"
 source "$repo_root/tools/cbp_tool_lib.sh"
 cbp_load_local_config "${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}"
@@ -20,10 +20,10 @@ python3 tools/generate_us177_minting_overrides.py \
 python3 tools/generate_political_reward_overrides.py \
 	--game-root "$game_root" --package-root "$work_dir/reference" \
 	--skip-central-default-values >/dev/null
-python3 tools/generate_cbp_cbg_political_minting_spec.py \
+python3 tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py \
 	--game-root "$game_root" --minting-multiplier "$multiplier" \
 	--output "$work_dir/spec.json" >/dev/null
-python3 tools/community_balance_generator.py \
+python3 tools/cbg/community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/spec.json" \
 	--output-root "$work_dir/candidate" \
 	--manifest "$work_dir/candidate/manifest.json" >/dev/null

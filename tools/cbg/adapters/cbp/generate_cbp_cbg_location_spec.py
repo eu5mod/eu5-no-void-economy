@@ -28,6 +28,7 @@ def build_spec() -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-location-static-modifiers",
+        "business_rule": "Apply CBP food-growth, market-center stockpile, and surplus-jobs location policies.",
         "transformations": [
             {
                 "file": SOURCE,

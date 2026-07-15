@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "mod_id": "example-balance-mod",
+  "business_rule": "Reduce recurring political rewards and selected building maintenance while preserving explicit compatibility targets.",
   "custom_fields": {
     "example_custom_capacity": "modifier"
   },

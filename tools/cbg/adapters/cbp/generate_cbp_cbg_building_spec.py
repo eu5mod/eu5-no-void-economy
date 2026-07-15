@@ -6,9 +6,14 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
-from transform_cbp_economy_building_overrides import (
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.transform_cbp_economy_building_overrides import (
     format_decimal,
     render_generated_text,
     top_level_buildings,
@@ -105,6 +110,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-buildings",
+        "business_rule": "Apply configured production, trade-capacity, maintenance, minting, and stockpile policies to Vanilla buildings.",
         "transformations": transformations,
         "scope_contract": {
             "owned_outputs": owned_outputs,
@@ -117,7 +123,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--game-root", type=Path, required=True)
-    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parent.parent)
+    parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--output-multiplier", type=float, required=True)
     parser.add_argument("--trade-capacity-multiplier", type=float, required=True)

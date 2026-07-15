@@ -2,6 +2,7 @@
 
 import importlib.util
 import sys
+import tempfile
 import unittest
 from decimal import Decimal
 from pathlib import Path
@@ -15,6 +16,34 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PoliticalRewardTransformTest(unittest.TestCase):
+    def test_political_intensity_selector_excludes_similarly_named_engine_fields(self):
+        self.assertFalse(MODULE.is_explicit_half_default_value("has_stability_investment"))
+        self.assertFalse(MODULE.is_explicit_half_default_value("stability_investment_penalty"))
+        self.assertTrue(MODULE.is_explicit_half_default_value("stability_radical_penalty"))
+        self.assertTrue(MODULE.is_explicit_half_default_value("horde_unity_severe_bonus"))
+
+    def test_all_political_default_penalties_and_bonuses_are_halved(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            game = Path(temporary)
+            default_values = game / "main_menu/common/script_values/default_values.txt"
+            default_values.parent.mkdir(parents=True, exist_ok=True)
+            expected = {
+                f"{prefix}_{intensity}_{kind}"
+                for prefix in MODULE.POLITICAL_DEFAULT_VALUE_PREFIXES
+                for intensity in ("weak", "mild", "radical")
+                for kind in ("penalty", "bonus")
+            }
+            default_values.write_text(
+                "".join(f"{name} = 10\n" for name in sorted(expected)), encoding="utf-8"
+            )
+            (game / "in_game/events").mkdir(parents=True, exist_ok=True)
+            (game / "in_game/common").mkdir(parents=True, exist_ok=True)
+
+            policies = MODULE.centralizable_script_values(game)
+
+            self.assertEqual(set(policies), expected)
+            self.assertTrue(all(str(factor) == "0.5" for factor in policies.values()))
+
     def test_event_tokens_numbers_and_blocks_are_halved(self):
         source = """option = {
 \tadd_stability = stability_mild_bonus

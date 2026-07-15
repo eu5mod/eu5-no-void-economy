@@ -6,31 +6,30 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-try:
-    from tools.community_balance_generator import (
-        ASSIGNMENT,
-        BLOCK_ASSIGNMENT,
-        field_matches,
-        locate_object,
-        matching_brace_line,
-        scan_objects,
-    )
-except ModuleNotFoundError:
-    from community_balance_generator import (
-        ASSIGNMENT,
-        BLOCK_ASSIGNMENT,
-        field_matches,
-        locate_object,
-        matching_brace_line,
-        scan_objects,
-    )
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-from generate_cbp_community_balance_spec import EVENT_FIELDS, MONTHLY_FIELDS, PROFIT_FIELDS
+from tools.cbg.community_balance_generator import (
+    ASSIGNMENT,
+    BLOCK_ASSIGNMENT,
+    field_matches,
+    locate_object,
+    matching_brace_line,
+    scan_objects,
+)
+
+from tools.cbg.adapters.cbp.generate_cbp_community_balance_spec import (
+    EVENT_FIELDS,
+    MONTHLY_FIELDS,
+    PROFIT_FIELDS,
+)
 
 
 NUMBER = re.compile(r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)")

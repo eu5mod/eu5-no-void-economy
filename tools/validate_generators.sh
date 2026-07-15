@@ -130,20 +130,24 @@ cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
 cbp_require_file "tools/generate_political_reward_overrides.py"
 cbp_require_file "tools/tests/test_political_reward_overrides.py"
-cbp_require_file "tools/community_balance_generator.py"
-cbp_require_file "tools/generate_cbp_community_balance_spec.py"
-cbp_require_file "tools/compare_cbp_cbg_outputs.py"
-cbp_require_file "tools/validate_cbp_cbg_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_default_values_spec.py"
-cbp_require_file "tools/validate_cbp_cbg_default_values_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_food_spec.py"
-cbp_require_file "tools/validate_cbp_cbg_food_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_location_spec.py"
-cbp_require_file "tools/validate_cbp_cbg_location_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_rgo_prices_spec.py"
-cbp_require_file "tools/validate_cbp_cbg_rgo_prices_parity.sh"
-cbp_require_file "tools/generate_cbp_cbg_pop_promotion_spec.py"
-cbp_require_file "tools/validate_cbp_cbg_pop_promotion_parity.sh"
+cbp_require_file "tools/cbg/community_balance_generator.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_default_values_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_food_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_location_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_rgo_prices_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
@@ -158,25 +162,32 @@ cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_spec
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
 cbp_require_file "packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
-cbp_require_file "tools/validate_cbg_master_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
 cbp_require_file "tools/specs/cbp_pr188_balance.generated.json"
-cbp_require_file "tools/tests/test_community_balance_generator.py"
-cbp_require_file "tools/templates/community_balance_spec.example.json"
+cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
+cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
+cbp_require_file "tools/cbg/README.md"
 cbp_require_file "docs/technical/COMMUNITY_BALANCE_GENERATOR.md"
+cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run the relocated generic CBG test module'
+cbp_require_match 'python3 tools/cbg/validator/cbp/validate_cbp_cbg_master_spec\.py' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run the CBP-namespaced CBG master-spec validator'
 cbp_require_match 'Refusing to overwrite an output not owned' \
-	"tools/community_balance_generator.py" \
+	"tools/cbg/community_balance_generator.py" \
 	'Community Balance Generator must enforce manifest-based output ownership'
 cbp_require_match 'add_custom' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover custom field insertion'
 cbp_require_match 'exclude_values' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must cover bulk symbolic exclusions'
 cbp_require_match '"provenance": "vanilla"' \
-	"tools/tests/test_community_balance_generator.py" \
+	"tools/cbg/tests/test_community_balance_generator.py" \
 	'Community Balance Generator tests must preserve legacy Vanilla provenance comments'
 cbp_require_match 'owned_outputs.*TARGET' \
-	"tools/generate_cbp_cbg_default_values_spec.py" \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
 	'Focused CBG migration must remain limited to default_values.txt'
 cbp_require_match '"path": "main_menu/common/script_values/default_values.txt"' \
 	"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json" \
@@ -199,21 +210,28 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 			"$cbg_default_values" >&2
 		exit 1
 	fi
-	"$repo_root/tools/validate_cbp_cbg_default_values_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_food_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_location_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_rgo_prices_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_pop_promotion_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_building_parity.sh"
-	"$repo_root/tools/validate_cbp_cbg_political_minting_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_default_values_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_food_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_location_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_rgo_prices_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
 else
 	printf '%s\n' \
 		'SKIP: focused CBG family parity requires local Vanilla EU5 sources.'
 fi
-python3 "$repo_root/tools/validate_cbg_master_spec.py"
+python3 "$repo_root/tools/cbg/validator/validate_cbg_layout.py"
+python3 "$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
 cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must compile and materialize political rewards through CBG'
+cbp_require_match 'generate_cbp_community_balance_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must refresh the cross-family CBP/CBG audit specification'
+cbp_require_match 'cbp_pr188_balance\.generated\.json' \
+	"tools/generate_all.sh" \
+	'generate_all must write the tracked cross-family CBP/CBG audit specification'
 cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
 	"tools/generate_all.sh" \
 	'generate_all must materialize central default values from the focused CBG policy'
@@ -245,7 +263,7 @@ cbp_require_match '--skip-food-overrides' \
 	"tools/generate_all.sh" \
 	'legacy US-177 discovery must delegate food override ownership to CBG'
 cbp_require_match '--skip-central-default-values' \
-	"tools/generate_cbp_cbg_political_minting_spec.py" \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
 	'political policy compiler must delegate default_values.txt to its focused CBG family'
 cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
 	"tools/transform_cbp_economy_building_overrides.py" \

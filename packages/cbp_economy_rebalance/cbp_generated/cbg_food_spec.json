@@ -1,4 +1,5 @@
 {
+  "business_rule": "Divide Vanilla food production by the configured divisor while preserving each food-good definition.",
   "mod_id": "cbp-economy-rebalance-food-production",
   "schema_version": 1,
   "scope_contract": {

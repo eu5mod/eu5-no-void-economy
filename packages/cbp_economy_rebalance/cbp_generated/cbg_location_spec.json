@@ -1,4 +1,5 @@
 {
+  "business_rule": "Apply CBP food-growth, market-center stockpile, and surplus-jobs location policies.",
   "mod_id": "cbp-location-static-modifiers",
   "schema_version": 1,
   "scope_contract": {

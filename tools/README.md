@@ -2,10 +2,11 @@
 
 ## Community balance generation
 
-`community_balance_generator.py` composes declarative balance specifications
+[`cbg/`](cbg/) is the standalone, reusable Community Balance Generator.
+`cbg/community_balance_generator.py` composes declarative balance specifications
 from multiple mods into one audited exact-path compatibility mod. See
 `docs/technical/COMMUNITY_BALANCE_GENERATOR.md` and
-`tools/templates/community_balance_spec.example.json`.
+`tools/cbg/examples/community_balance_spec.example.json`.
 
 ## Local configuration
 

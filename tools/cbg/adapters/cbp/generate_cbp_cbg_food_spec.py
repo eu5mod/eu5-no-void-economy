@@ -6,20 +6,19 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from collections import defaultdict
 from decimal import Decimal
 from pathlib import Path
 
-try:
-    from tools.generate_us177_food_goods_manifest import (
-        build_manifest_payload,
-        format_generated_decimal,
-    )
-except ModuleNotFoundError:
-    from generate_us177_food_goods_manifest import (
-        build_manifest_payload,
-        format_generated_decimal,
-    )
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.generate_us177_food_goods_manifest import (
+    build_manifest_payload,
+    format_generated_decimal,
+)
 
 
 def game_root_from_environment() -> Path:
@@ -49,6 +48,7 @@ def build_spec(game_root: Path, divisor: Decimal) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-food-production",
+        "business_rule": "Divide Vanilla food production by the configured divisor while preserving each food-good definition.",
         "transformations": transformations,
         "scope_contract": {
             "owned_outputs": sorted(grouped),
