@@ -8,12 +8,13 @@ cbp_*_generated.txt
 cbp_*_generated_l_english.yml
 tools/generated/
 
-# CBG execution receipts are local byproducts. Keep the generated CBG specs
-# tracked as reviewable policy/release evidence, but regenerate manifests from
-# those specs instead of merging developer-specific execution state.
-/packages/*/cbp_generated/cbg_*_manifest.json
+# CBG/CBP JSON outputs are local, reproducible execution artifacts. Business
+# policy belongs in the adapters and configuration, not in generated ledgers.
+/packages/*/cbp_generated/*.json
+/packages/*/cbp_generated/**/*.json
 /**/cbg_manifest.json
 /tools/cbg/examples/output/
+/tools/specs/*.generated.json
 /tools/specs/*.local.json
 /tools/specs/*.tmp.json
 
