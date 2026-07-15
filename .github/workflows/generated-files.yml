@@ -482,6 +482,9 @@ jobs:
       - name: Validate generator conventions
         run: /bin/bash ./tools/validate_generators.sh
 
+      - name: Test Community Balance Generator
+        run: python3 -m unittest tools.tests.test_community_balance_generator
+
       - name: Validate ModeU5 script safety
         run: /bin/bash ./tools/validate_cbp_script_safety.sh
 

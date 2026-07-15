@@ -1,0 +1,381 @@
+#!/usr/bin/env python3
+"""Generate one auditable EU5 compatibility mod from declarative balance specs."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
+from pathlib import Path, PurePosixPath
+from typing import Any
+
+
+ASSIGNMENT = re.compile(
+    r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*"
+    r"(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
+)
+BLOCK_START = re.compile(r"^[ \t]*(?P<name>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*\{")
+SAFE_SCALAR = re.compile(r"[A-Za-z0-9_.:-]+")
+SUPPORTED_OPERATIONS = {
+    "replace", "multiply", "add", "clamp", "comment_out", "remove",
+    "add_field", "add_custom",
+}
+TERMINAL_OPERATIONS = {"comment_out", "remove"}
+
+
+@dataclass(frozen=True)
+class Target:
+    file: PurePosixPath
+    object_path: tuple[str, ...]
+    field: str
+
+
+@dataclass(frozen=True)
+class Intent:
+    owner: str
+    target: Target
+    operation: str
+    value: Any
+    conflict: str
+    position_after: str | None
+    source_spec: str
+    sequence: int
+
+
+@dataclass
+class LocatedObject:
+    path: tuple[str, ...]
+    start: int
+    end: int
+    indent: str
+
+
+def decimal(raw: Any, label: str) -> Decimal:
+    try:
+        value = Decimal(str(raw))
+    except InvalidOperation as exc:
+        raise ValueError(f"{label} must be numeric; got {raw!r}") from exc
+    if not value.is_finite():
+        raise ValueError(f"{label} must be finite; got {raw!r}")
+    return value
+
+
+def render_number(value: Decimal) -> str:
+    if value == 0:
+        return "0"
+    text = format(value.normalize(), "f")
+    return text.rstrip("0").rstrip(".") if "." in text else text
+
+
+def render_scalar(raw: Any, label: str) -> str:
+    if isinstance(raw, bool):
+        return "yes" if raw else "no"
+    if isinstance(raw, (int, float, Decimal)):
+        return render_number(decimal(raw, label))
+    value = str(raw)
+    if not SAFE_SCALAR.fullmatch(value):
+        raise ValueError(f"{label} must be one safe scalar token; got {raw!r}")
+    return value
+
+
+def sha256(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def normalize_object_path(raw: Any) -> tuple[str, ...]:
+    if isinstance(raw, str):
+        return tuple(part for part in raw.split("/") if part)
+    if isinstance(raw, list) and all(isinstance(part, str) for part in raw):
+        return tuple(raw)
+    raise ValueError("object must be a slash-separated string or a string array")
+
+
+def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent], dict[str, str]]:
+    intents: list[Intent] = []
+    custom_fields: dict[str, str] = {}
+    sequence = 0
+    for spec_path in spec_paths:
+        payload = json.loads(spec_path.read_text(encoding="utf-8"))
+        if payload.get("schema_version") != 1:
+            raise ValueError(f"{spec_path}: schema_version must be 1")
+        owner = payload.get("mod_id")
+        if not isinstance(owner, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_.-]*", owner):
+            raise ValueError(f"{spec_path}: mod_id must be a stable lowercase identifier")
+        for field, declaration in payload.get("custom_fields", {}).items():
+            if field in custom_fields and custom_fields[field] != owner:
+                raise ValueError(
+                    f"Custom field {field!r} is declared by both {custom_fields[field]} and {owner}"
+                )
+            if declaration not in {"modifier", "scripted_value", "engine_extension"}:
+                raise ValueError(f"{spec_path}: unsupported declaration for custom field {field}")
+            custom_fields[field] = owner
+        transformations = payload.get("transformations")
+        if not isinstance(transformations, list):
+            raise ValueError(f"{spec_path}: transformations must be an array")
+        for raw in transformations:
+            operation = raw.get("operation")
+            if operation not in SUPPORTED_OPERATIONS:
+                raise ValueError(f"{spec_path}: unsupported operation {operation!r}")
+            pattern = raw.get("file")
+            if not isinstance(pattern, str) or pattern.startswith("/") or ".." in PurePosixPath(pattern).parts:
+                raise ValueError(f"{spec_path}: file must be a safe game-relative path or glob")
+            matches = sorted(
+                PurePosixPath(path.relative_to(game_root).as_posix())
+                for path in game_root.glob(pattern)
+                if path.is_file()
+            )
+            if not matches:
+                raise ValueError(f"{spec_path}: file selector matched nothing: {pattern}")
+            field = raw.get("field")
+            if not isinstance(field, str) or not field:
+                raise ValueError(f"{spec_path}: field is required")
+            if operation == "add_custom" and custom_fields.get(field) != owner:
+                raise ValueError(
+                    f"{spec_path}: add_custom field {field!r} must be declared by the same mod"
+                )
+            conflict = raw.get("conflict", "error")
+            if conflict not in {"error", "compose", "last_wins"}:
+                raise ValueError(f"{spec_path}: invalid conflict policy {conflict!r}")
+            position = raw.get("position", {})
+            position_after = position.get("after") if isinstance(position, dict) else None
+            for relative in matches:
+                sequence += 1
+                intents.append(Intent(
+                    owner=owner,
+                    target=Target(relative, normalize_object_path(raw.get("object", "")), field),
+                    operation=operation,
+                    value=raw.get("value"),
+                    conflict=conflict,
+                    position_after=position_after,
+                    source_spec=spec_path.name,
+                    sequence=sequence,
+                ))
+    return intents, custom_fields
+
+
+def validate_conflicts(intents: list[Intent]) -> None:
+    grouped: dict[Target, list[Intent]] = {}
+    for intent in intents:
+        grouped.setdefault(intent.target, []).append(intent)
+    for target, chain in grouped.items():
+        owners = {item.owner for item in chain}
+        if len(owners) < 2:
+            continue
+        if any(item.conflict == "error" for item in chain):
+            raise ValueError(f"Unresolved multi-mod conflict at {target}: owners={sorted(owners)}")
+        terminal = [item for item in chain if item.operation in TERMINAL_OPERATIONS]
+        if terminal and len(chain) > 1 and chain[-1].conflict != "last_wins":
+            raise ValueError(f"Terminal operation cannot be composed at {target}")
+
+
+def scan_objects(lines: list[str]) -> list[LocatedObject]:
+    objects: list[LocatedObject] = []
+    stack: list[tuple[str, int, str, int]] = []
+    depth = 0
+    for index, line in enumerate(lines):
+        code = line.split("#", 1)[0]
+        match = BLOCK_START.match(code)
+        opens = code.count("{")
+        closes = code.count("}")
+        if match:
+            indent = line[: len(line) - len(line.lstrip(" \t"))]
+            stack.append((match.group("name"), index, indent, depth + 1))
+        depth += opens - closes
+        while stack and depth < stack[-1][3]:
+            names = tuple(entry[0] for entry in stack)
+            name, start, indent, _object_depth = stack.pop()
+            objects.append(LocatedObject(names, start, index, indent))
+    if stack:
+        raise ValueError("Unbalanced object braces")
+    return objects
+
+
+def locate_object(lines: list[str], path: tuple[str, ...]) -> LocatedObject:
+    if not path:
+        return LocatedObject((), -1, len(lines), "")
+    matches = [item for item in scan_objects(lines) if item.path == path]
+    if len(matches) != 1:
+        raise ValueError(f"Object {'/'.join(path)!r} matched {len(matches)} blocks; expected exactly one")
+    return matches[0]
+
+
+def field_matches(lines: list[str], obj: LocatedObject, field: str) -> list[int]:
+    result: list[int] = []
+    child_depth = 0
+    for index in range(obj.start + 1, obj.end):
+        code = lines[index].split("#", 1)[0]
+        if child_depth == 0:
+            match = ASSIGNMENT.match(lines[index].rstrip("\r\n"))
+            if match and match.group("field") == field:
+                result.append(index)
+        child_depth += code.count("{") - code.count("}")
+    return result
+
+
+def numeric_result(operation: str, current: str, raw_value: Any) -> str:
+    if operation == "replace":
+        return render_scalar(raw_value, "replacement value")
+    base = decimal(current, "Vanilla/current value")
+    if operation == "multiply":
+        return render_number(base * decimal(raw_value, "multiplier"))
+    if operation == "add":
+        return render_number(base + decimal(raw_value, "delta"))
+    if operation == "clamp":
+        if not isinstance(raw_value, dict):
+            raise ValueError("clamp value must contain min and/or max")
+        minimum = decimal(raw_value["min"], "clamp minimum") if "min" in raw_value else None
+        maximum = decimal(raw_value["max"], "clamp maximum") if "max" in raw_value else None
+        if minimum is not None and maximum is not None and minimum > maximum:
+            raise ValueError("clamp minimum cannot exceed maximum")
+        if minimum is not None:
+            base = max(base, minimum)
+        if maximum is not None:
+            base = min(base, maximum)
+        return render_number(base)
+    raise ValueError(f"{operation} is not a numeric operation")
+
+
+def apply_intent(lines: list[str], intent: Intent) -> dict[str, Any]:
+    obj = locate_object(lines, intent.target.object_path)
+    matches = field_matches(lines, obj, intent.target.field)
+    adding = intent.operation in {"add_field", "add_custom"}
+    if adding:
+        if matches:
+            raise ValueError(f"{intent.operation} requires an absent field at {intent.target}")
+        insertion = obj.end
+        if intent.position_after:
+            anchors = field_matches(lines, obj, intent.position_after)
+            if len(anchors) != 1:
+                raise ValueError(f"Insertion anchor {intent.position_after!r} must match exactly once")
+            insertion = anchors[0] + 1
+        indent = obj.indent + "\t"
+        rendered = render_scalar(intent.value, f"{intent.operation} value")
+        lines.insert(insertion, f"{indent}{intent.target.field} = {rendered} # CBG: added by {intent.owner}\n")
+        return {"before": None, "after": rendered, "line_action": "inserted"}
+    if len(matches) != 1:
+        raise ValueError(f"Field {intent.target.field!r} at {intent.target} matched {len(matches)} lines")
+    index = matches[0]
+    raw = lines[index]
+    newline = "\n" if raw.endswith("\n") else ""
+    match = ASSIGNMENT.match(raw.rstrip("\r\n"))
+    assert match
+    before = match.group("value").strip()
+    if intent.operation == "remove":
+        lines.pop(index)
+        return {"before": before, "after": None, "line_action": "removed"}
+    if intent.operation == "comment_out":
+        lines[index] = f"{match.group('indent')}# {raw.lstrip().rstrip()} # CBG: commented by {intent.owner}{newline}"
+        return {"before": before, "after": None, "line_action": "commented"}
+    after = numeric_result(intent.operation, before, intent.value)
+    existing = match.group("comment")
+    suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
+    lines[index] = (
+        f"{match.group('indent')}{intent.target.field} = {after} "
+        f"# VANILLA/PRIOR = {before}; CBG {intent.owner}: {intent.operation} {intent.value}{suffix}{newline}"
+    )
+    return {"before": before, "after": after, "line_action": "transformed"}
+
+
+def previous_outputs(manifest_path: Path | None) -> dict[PurePosixPath, str]:
+    if manifest_path is None or not manifest_path.is_file():
+        return {}
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if payload.get("generator") != "community_balance_generator":
+        raise ValueError(f"Refusing foreign manifest ownership: {manifest_path}")
+    return {
+        PurePosixPath(entry["path"]): entry["generated_sha256"]
+        for entry in payload.get("files", [])
+    }
+
+
+def assert_owned_output(path: Path, relative: PurePosixPath, owned: dict[PurePosixPath, str]) -> None:
+    if not path.exists():
+        return
+    expected = owned.get(relative)
+    if expected is None:
+        raise ValueError(f"Refusing to overwrite an output not owned by the previous CBG manifest: {relative}")
+    actual = sha256(path.read_bytes())
+    if actual != expected:
+        raise ValueError(f"Refusing to overwrite a locally modified CBG output: {relative}")
+
+
+def generate(
+    game_root: Path,
+    output_root: Path,
+    intents: list[Intent],
+    previous_manifest: Path | None = None,
+) -> dict[str, Any]:
+    validate_conflicts(intents)
+    owned = previous_outputs(previous_manifest)
+    by_file: dict[PurePosixPath, list[Intent]] = {}
+    for intent in intents:
+        by_file.setdefault(intent.target.file, []).append(intent)
+    manifest_files: list[dict[str, Any]] = []
+    for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
+        source = game_root / Path(relative)
+        source_bytes = source.read_bytes()
+        has_bom = source_bytes.startswith(b"\xef\xbb\xbf")
+        lines = source_bytes.decode("utf-8-sig").splitlines(keepends=True)
+        audit: list[dict[str, Any]] = []
+        for intent in sorted(file_intents, key=lambda item: item.sequence):
+            outcome = apply_intent(lines, intent)
+            audit.append({
+                "owner": intent.owner,
+                "object": "/".join(intent.target.object_path),
+                "field": intent.target.field,
+                "operation": intent.operation,
+                "configured_value": intent.value,
+                "conflict": intent.conflict,
+                **outcome,
+            })
+        rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
+        generated = rendered.encode("utf-8")
+        if has_bom:
+            generated = b"\xef\xbb\xbf" + generated
+        destination = output_root / Path(relative)
+        assert_owned_output(destination, relative, owned)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(generated)
+        manifest_files.append({
+            "path": relative.as_posix(),
+            "vanilla_sha256": sha256(source_bytes),
+            "generated_sha256": sha256(generated),
+            "transformations": audit,
+        })
+    current = {PurePosixPath(entry["path"]) for entry in manifest_files}
+    for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
+        stale_path = output_root / Path(stale)
+        if not stale_path.is_file():
+            continue
+        assert_owned_output(stale_path, stale, owned)
+        stale_path.unlink()
+    return {"schema_version": 1, "generator": "community_balance_generator", "files": manifest_files}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--game-root", type=Path, required=True)
+    parser.add_argument("--spec", type=Path, action="append", required=True)
+    parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path)
+    args = parser.parse_args()
+    game_root = args.game_root.resolve()
+    output_root = args.output_root.resolve()
+    try:
+        intents, _custom_fields = load_intents(args.spec, game_root)
+        manifest_path = args.manifest or output_root / "cbg_manifest.json"
+        manifest = generate(game_root, output_root, intents, manifest_path)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"Generated {len(manifest['files'])} exact-path files from {len(intents)} transformations.")
+    print(f"Manifest: {manifest_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
