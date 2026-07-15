@@ -1,0 +1,43 @@
+namespace = cbp_mandatory_expense_debug
+
+cbp_mandatory_expense_debug.1 = {
+	type = country_event
+	title = cbp_mandatory_expense_debug.1.title
+	desc = cbp_mandatory_expense_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = { always = no }
+
+	immediate = {
+		set_local_variable = { name = cbp_mandatory_expense_probe_failures value = 0 }
+		if = {
+			limit = { has_country_modifier = cbp_mandatory_stability_expense }
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=modifier_present stability_investment=-0.5 slider_max=1 expected_vanilla_zero_investment_baseline_slider=0.5"
+		}
+		else = {
+			change_local_variable = { name = cbp_mandatory_expense_probe_failures add = 1 }
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=stability_modifier_missing"
+		}
+		if = {
+			limit = { has_country_modifier = cbp_mandatory_government_power_expense }
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=modifier_present government_power_baselines=-1 legitimacy=-1 republican_tradition=-1 devotion=-1 horde_unity=-1 tribal_cohesion=-1 court_slider_max=3 expected_maintenance_slider=0.6667 expected_max_net=1"
+		}
+		else = {
+			change_local_variable = { name = cbp_mandatory_expense_probe_failures add = 1 }
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=government_power_modifier_missing"
+		}
+		if = {
+			limit = { local_var:cbp_mandatory_expense_probe_failures = 0 }
+			debug_log = "ModeU5 TEST PASS scenario=mandatory_expenses"
+		}
+		else = {
+			debug_log = "ModeU5 TEST FAIL scenario=mandatory_expenses"
+		}
+		remove_local_variable = cbp_mandatory_expense_probe_failures
+	}
+
+	option = {
+		name = cbp_debug.close
+	}
+}

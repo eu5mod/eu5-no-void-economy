@@ -232,6 +232,8 @@ After the 2026-07-04 PR126 current-head audit, rows that remain in this table ar
 | 148 | Pop-demand presence gate by good | US-04 | Skip local-estate scans cheaply when no Pop demands the good in the market | Confirmed as a market-scope presence gate only; TECH-01 150 provides the active quantity proxy. |
 | 149 | Location Estate demand by good | US-04, US-04-UI | Build the estate split from direct location Estate demand | Optional future improvement; not required by the TECH-01 150 proxy implementation. |
 | 150 | ModeU5 coefficient × Estate-size consumption proxy | US-04, US-04-UI | Estimate local Estate consumption when direct location Estate demand is unavailable | Accepted as the active ModeU5-owned bridge; do not claim it is a vanilla demand read. |
+| 151 | Native mandatory Stability expense through `stability_investment` | Rebalance Economy | Offset the doubled Stability slider by a flat monthly `-0.5`, making 50% reproduce vanilla behavior | Static modifier and define are implemented without reconciliation; runtime validation must confirm the budget tooltip and monthly net contribution before marking the exposure confirmed. |
+| 152 | Native mandatory Court expense across government powers | Rebalance Economy | Add `-1` to the active monthly government power while raising `GOV_POWER_INVEST_FACTOR` to `3.0`, preserving vanilla maximum growth and moving maintenance to 66.7% | Apply the same package-owned modifier to Legitimacy, Republican Tradition, Devotion, Horde Unity, and Tribal Cohesion; runtime validation must confirm each relevant government form without reconciliation. |
 
 ## Rule
 
