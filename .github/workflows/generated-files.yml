@@ -494,6 +494,9 @@ jobs:
       - name: Validate CMM configuration
         run: python3 ./tools/validate_cmm_configuration.py
 
+      - name: Validate mandatory Stability expense
+        run: python3 ./tools/validate_mandatory_expenses.py
+
       - name: Validate CI static contracts
         run: |
           set +e

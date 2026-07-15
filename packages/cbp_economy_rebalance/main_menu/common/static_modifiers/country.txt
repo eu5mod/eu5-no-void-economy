@@ -6,6 +6,7 @@ years_since_game_start = {
 		category = country
 	}
 
+	# building_upkeep_multiplier = 0.001
 }
 
 culture_tradition_power = {
