@@ -1755,7 +1755,7 @@ Dynamic 1.2 price effects are disabled or neutralized only where confirmed
 Expected:
 
 ```txt
-`./tools/generate_us09_economy_overrides.sh 5` generates offline probe candidates deterministically
+`./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 5` generates offline probe candidates deterministically
 Generated probe `building_types` candidates multiply each targeted `output =` value by `1.05`
 Generated probe `prices` candidates scale the five `expand_rgo_*` gold values by `1 / 1.05`
 No generated US-09 static candidate is loaded by the Economy package until duplicate-key-free replacement is confirmed

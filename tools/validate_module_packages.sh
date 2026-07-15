@@ -71,7 +71,7 @@ if search_lines "$local_path_pattern" \
 	tools/README.md \
 	tools/generate_all.sh \
 	tools/generate_stock_good_helpers.sh \
-	tools/generate_us09_economy_overrides.sh \
+	tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh \
 	tools/install_local_packages.sh \
 	tools/templates; then
 	printf 'Personal/local EU5 install paths must not be committed. Use <EU5_INSTALL_DIR> or <EU5_GAME_COMMON_DIR> placeholders.\n' >&2

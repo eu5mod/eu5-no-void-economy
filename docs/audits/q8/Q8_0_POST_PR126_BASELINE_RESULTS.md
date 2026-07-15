@@ -31,8 +31,8 @@ tools/templates/cbp_pr71_active_good_dispatch_good.template.txt
 Q5 flow documents are part of this baseline, not optional Q8 reading:
 
 ```txt
-docs/audits/pr126/Q5_flux_logique_global.md
-docs/audits/pr126/Q5.1_current_global_flow.md
+docs/audits/pr126/archives/Q5_flux_logique_global.md
+docs/audits/pr126/archives/Q5.1_current_global_flow.md
 ```
 
 If a Q5.2 checkpoint is added later, it should be treated as a Q5 flow subsection or immediate Q5.1 follow-up before Q8 optimisation documents. It should not be placed inside the Q8 future-optimisation section.

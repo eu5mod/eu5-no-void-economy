@@ -9,7 +9,7 @@
 # - US-00 and US-10 stay inside the existing generated-good live branch.
 # - US-00 remains a full present-country pass before US-10 starts.
 # - every_trade remains owned by the country trade-owner pass.
-# - validation/reconciliation ordering is unchanged.
+# - US-04 signed reconciliation runs after trade and before audit validation.
 # - old market-center owner remains available through the fallback switch.
 
 cbp_enable_q8_7_live_global_market_owner = {
@@ -202,6 +202,7 @@ cbp_run_monthly_stock_cycle_q8_7_owner_switch = {
 		}
 		cbp_run_monthly_country_trade_owner_cycle = yes
 		cbp_note_promoted_market_live_trade_owner_pass = yes
+		cbp_run_monthly_us04_reconciliation_for_current_country = yes
 		if = {
 			limit = { cbp_audit_enabled_trigger = yes }
 			cbp_run_monthly_stock_reconciliation_once = yes

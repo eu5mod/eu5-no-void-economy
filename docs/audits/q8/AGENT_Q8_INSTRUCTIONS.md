@@ -17,11 +17,11 @@ Do not start by rewriting runtime orchestration. Start by auditing current `main
 4. docs/audits/q8/Q2_systeme_cache.md
 5. docs/audits/q8/Q3_redondances_code.md
 6. docs/audits/q8/Q4_boucles_performance.md
-7. docs/audits/q8/Q5_flux_logique_global.md
+7. docs/audits/q8/archives/Q5_flux_logique_global.md
 8. docs/audits/q8/Q8_0_POST_PR126_BASELINE_AUDIT.md
 9. docs/audits/q8/Q8_IMPLEMENTATION_BACKLOG.md
-10. docs/audits/pr126/Q5_flux_logique_global.md
-11. docs/audits/pr126/Q5.1_current_global_flow.md
+10. docs/audits/pr126/archives/Q5_flux_logique_global.md
+11. docs/audits/pr126/archives/Q5.1_current_global_flow.md
 12. docs/audits/pr126/Q8_future_optimisations.md
 13. docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md
 14. docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md

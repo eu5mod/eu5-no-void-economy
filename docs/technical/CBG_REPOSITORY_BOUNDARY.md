@@ -11,6 +11,7 @@ tools/cbg/
   community_balance_generator.py
   adapters/
     cbp/
+      helpers/
   validator/
     cbp/
   examples/
@@ -24,11 +25,12 @@ linked to external modders.
 
 ## CBP integration
 
-The following root `tools/` families are CBP adapters, not part of CBG:
+The following namespaced families integrate CBP with the generic CBG core:
 
 ```txt
 tools/cbg/adapters/cbp/generate_cbp_cbg_*_spec.py
 tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py
+tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh
 tools/cbg/validator/cbp/validate_cbp_cbg_*_parity.sh
 tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py
 tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py
@@ -39,11 +41,14 @@ CBG, and prove that the generated runtime files preserve approved behaviour.
 
 ## Retained legacy compilers
 
-These #188-era tools are still functional policy authorities:
+These #188-era tools are still functional policy authorities. The US-09
+compiler has already moved beside the CBG adapter that consumes its discovery
+plans; the remaining tools stay at repository root until their other callers
+can be migrated without obscuring package ownership:
 
 ```txt
 generate_political_reward_overrides.py
-generate_us09_economy_overrides.sh
+tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh
 generate_us177_food_goods_manifest.py
 generate_us177_minting_overrides.py
 ```

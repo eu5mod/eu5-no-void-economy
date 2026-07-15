@@ -1748,6 +1748,7 @@ cbp_run_monthly_stock_cycle = {
 		cbp_run_monthly_promoted_market_local_cycle = yes
 		cbp_run_monthly_country_trade_owner_cycle = yes
 		cbp_note_promoted_market_live_trade_owner_pass = yes
+		cbp_run_monthly_us04_reconciliation_for_current_country = yes
 		if = {
 			limit = { cbp_audit_enabled_trigger = yes }
 			cbp_run_monthly_stock_reconciliation_once = yes

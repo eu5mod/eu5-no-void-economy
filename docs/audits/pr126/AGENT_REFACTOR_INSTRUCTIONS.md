@@ -15,7 +15,7 @@ flowchart LR
 ## Global prompt
 
 ```txt
-You are refactoring ModeU5 monthly stock orchestration. Read AGENTS.md and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q5_flux_logique_global.md,Q6_description_fonctionnelle.md}.
+You are refactoring ModeU5 monthly stock orchestration. Read AGENTS.md, docs/architecture/RUNTIME_FLOW.md, and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q6_description_fonctionnelle.md}. The PR126 Q5 is archived under docs/audits/pr126/archives/.
 
 Also read docs/technical/VARIABLE_MAP_STORAGE_MODEL.md, docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md, and docs/technical/TECH-01_engine_exposure_matrix.md.
 
@@ -112,5 +112,5 @@ US-00 monthly facts are not recomputed after consumption/trade/decay/reconciliat
 ## Suggested first prompt
 
 ```txt
-Implement PR 1 from docs/audits/pr126/AGENT_REFACTOR_INSTRUCTIONS.md. Scope: inventory/audit only. Before editing, read AGENTS.md and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q5_flux_logique_global.md,Q6_description_fonctionnelle.md}. Deliver an executable audit/check update, updated persistent-state documentation if needed, commands run, and results.
+Implement PR 1 from docs/audits/pr126/AGENT_REFACTOR_INSTRUCTIONS.md. Scope: inventory/audit only. Before editing, read AGENTS.md, docs/architecture/RUNTIME_FLOW.md, and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q6_description_fonctionnelle.md}. Treat docs/audits/pr126/archives/Q5_flux_logique_global.md as historical evidence only. Deliver an executable audit/check update, updated persistent-state documentation if needed, commands run, and results.
 ```

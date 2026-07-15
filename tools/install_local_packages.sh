@@ -7,12 +7,14 @@ default_target="${MODEU5_MOD_DIR:-${HOME}/Documents/Paradox Interactive/Europa U
 target_root="$default_target"
 action="install"
 generator="$repo_root/tools/generate_all.sh"
+run_generator="yes"
 
 usage() {
-	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
+	printf 'Usage: %s [--install|--check] [--skip-generate] [--target PATH]\n' "$0"
 	printf '\n'
 	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
 	printf 'Install mode removes each existing ModeU5 package directory before copying.\n'
+	printf '%s\n' '--skip-generate is reserved for an already generated and validated checkout.'
 	printf 'The root gameplay mod is mirrored wholesale, excluding repository-only content.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
@@ -25,6 +27,10 @@ while (($# > 0)); do
 			;;
 		--check)
 			action="check"
+			shift
+			;;
+		--skip-generate)
+			run_generator="no"
 			shift
 			;;
 		--target)
@@ -91,7 +97,7 @@ if ! command -v rsync >/dev/null 2>&1; then
 	exit 1
 fi
 
-if [[ "$action" == "install" ]]; then
+if [[ "$action" == "install" && "$run_generator" == "yes" ]]; then
 	"$generator"
 fi
 

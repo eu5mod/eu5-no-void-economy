@@ -114,6 +114,8 @@ def main() -> int:
     market_monthly_reconciliation = block(template, "cbp_monthly_reconcile_country_market_pop_demand_good___GOOD__")
     monthly_country_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_estate_accounting_for_current_country")
     monthly_country_legacy_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_reconciliation_for_current_country")
+    monthly_owner_switch = block(read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt"), "cbp_run_monthly_stock_cycle_q8_7_owner_switch")
+    monthly_legacy_cycle = block(read("in_game/common/scripted_effects/cbp_stock_effects.txt"), "cbp_run_monthly_stock_cycle")
     init_root = block(integration, "cbp_run_pop_demand_multiplier_initialization_v1")
     init_country = block(integration, "cbp_run_pop_demand_multiplier_initialization_for_current_country_v1")
     init_once = block(integration, "cbp_initialize_pop_demand_multipliers_once")
@@ -197,7 +199,19 @@ def main() -> int:
     expect("NOT = { has_variable = cbp_us04_country_multiplier_initialization_version }" in init_country_once, "US-04 country initializer must have missing country-version gate")
     expect("cbp_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 root marker must run from delayed new-campaign pulse")
     expect(on_actions.count("cbp_initialize_pop_demand_multipliers_for_current_country_once = yes") >= 2, "US-04 country initialization must run from monthly and yearly country pulses")
-    expect("cbp_run_monthly_us04_reconciliation_for_current_country = yes" in on_actions, "US-04 monthly reconciliation compatibility wrapper must be wired after monthly stock cycle")
+    expect("cbp_run_monthly_us04_reconciliation_for_current_country = yes" not in on_actions, "US-04 reconciliation must not run outside the monthly owner switch after audit")
+    for cycle_name, cycle in [
+        ("Q8.7 monthly owner switch", monthly_owner_switch),
+        ("legacy monthly cycle", monthly_legacy_cycle),
+    ]:
+        trade_position = cycle.find("cbp_run_monthly_country_trade_owner_cycle = yes")
+        us04_position = cycle.find("cbp_run_monthly_us04_reconciliation_for_current_country = yes")
+        audit_position = cycle.find("cbp_audit_enabled_trigger = yes")
+        expect(
+            -1 not in (trade_position, us04_position, audit_position)
+            and trade_position < us04_position < audit_position,
+            f"{cycle_name} must run trade-owner accounting, then US-04, then the audit gate",
+        )
     expect("cbp_run_monthly_us04_estate_accounting_for_current_country = yes" in monthly_country_legacy_runtime, "US-04 legacy monthly reconciliation wrapper must delegate to Estate-level accounting")
     expect("every_market_present_in_country = {" in monthly_country_runtime, "US-04 current-country monthly runtime must iterate country markets before goods and locations")
     expect("cbp_monthly_assess_country_market_estate_consumption_all_goods = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must call the Estate-level market/good-first dispatcher")

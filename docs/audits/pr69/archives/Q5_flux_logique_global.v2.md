@@ -12,7 +12,7 @@ source of truth. This v2 file is preserved as historical design evidence.
 This PR-specific flow evolves with PR #69 without modifying the canonical Q8 document:
 
 ```txt
-docs/audits/q8/Q5_flux_logique_global.md
+docs/audits/q8/archives/Q5_flux_logique_global.md
 ```
 
 ## Target loop

@@ -1,5 +1,9 @@
 # PR #69 audit index
 
+> **Classification:** feature-specific US-04 record. Q5 v3 is authoritative for
+> US-04 details only. For global runtime order, use
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
+
 ## Source Of Truth
 
 Read this first:
@@ -8,8 +12,8 @@ Read this first:
 Q5_flux_logique_global.v3.md
 ```
 
-Q5 v3 consolidates the probing history and is the current source of truth for
-US-04:
+Q5 v3 consolidates the probing history and is the current feature source of
+truth for US-04:
 
 ```txt
 Annual coefficient layer:       implemented

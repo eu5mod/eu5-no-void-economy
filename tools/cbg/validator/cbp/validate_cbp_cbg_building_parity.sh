@@ -24,7 +24,7 @@ work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-buildings.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$work_dir/reference/in_game/common"
 
-./tools/generate_us09_economy_overrides.sh \
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh \
 	--percent "$bonus" \
 	--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 	--trade-capacity-percent "$trade_bonus" \

@@ -219,7 +219,7 @@ printing placeholder `STATIC MODIFIER NAME ...` lines in `error.log`.
 Generate the Economy package static overrides:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh 5
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 5
 ```
 
 The generator reads vanilla `game/in_game/common/building_types` and
@@ -253,7 +253,7 @@ the same vanilla files:
 Pass the desired compensation percentage explicitly. Example:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
 MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_all.sh
 ```
 
@@ -286,15 +286,17 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
 
 ## Recommended local deployment pipeline
 
-When you want to refresh the local mod install before testing:
+Use the canonical developer command to generate, prove idempotence, validate,
+install, verify, clear logs, and print the in-game test events:
 
 ```bash
-./tools/generate_all.sh
-./tools/validate_module_packages.sh
-./tools/install_local_packages.sh
-./tools/install_local_packages.sh --check
-./tools/clear_eu5_logs.sh
+./tools/dev_prepare_game.sh
 ```
+
+Use `--target PATH` for a non-default local mod directory, `--keep-logs` when
+preserving the current logs is intentional, or `--skip-idempotence` for a
+faster explicitly non-canonical iteration. The script does not launch EU5 or
+modify Git state.
 
 ## Compact test-log summary
 
