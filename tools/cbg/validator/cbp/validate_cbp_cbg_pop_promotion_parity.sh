@@ -17,6 +17,7 @@ trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$work_dir/reference/in_game/common"
 
 ./tools/generate_us09_economy_overrides.sh "$percent" \
+	--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 	--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
 	--extra-burgher-promotion-speed "$burgher" --extra-laborer-promotion-speed "$laborer" \
 	--common-dir "$EU5_GAME_COMMON_DIR" --package-common-dir "$work_dir/reference/in_game/common" >/dev/null

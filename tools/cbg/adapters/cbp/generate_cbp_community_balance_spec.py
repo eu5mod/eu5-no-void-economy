@@ -268,7 +268,10 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
         "operation": "replace",
         "value": food_price,
     })
-    rgo_gold = round(100 / output_multiplier, 2)
+    rgo_price_multiplier = 1 + env_number(
+        "MODEU5_US09_RGO_PRICE_OFFSET_PERCENT", 8
+    ) / 100
+    rgo_gold = round(100 / rgo_price_multiplier, 2)
     for price in (
         "expand_rgo_mining", "expand_rgo_farming", "expand_rgo_hunting",
         "expand_rgo_gathering", "expand_rgo_forestry",

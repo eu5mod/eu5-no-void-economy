@@ -26,6 +26,7 @@ mkdir -p "$work_dir/reference/in_game/common"
 
 ./tools/generate_us09_economy_overrides.sh \
 	--percent "$bonus" \
+	--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 	--trade-capacity-percent "$trade_bonus" \
 	--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
 	--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \

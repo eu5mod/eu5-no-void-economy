@@ -1,5 +1,5 @@
 {
-  "business_rule": "Reduce RGO expansion prices to offset the configured RGO output bonus.",
+  "business_rule": "Reduce RGO expansion prices using their independent configured offset.",
   "mod_id": "cbp-us09-rgo-prices",
   "schema_version": 1,
   "scope_contract": {
