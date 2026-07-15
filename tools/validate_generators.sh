@@ -164,6 +164,12 @@ cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
 cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
 cbp_require_file "tools/cbg/README.md"
 cbp_require_file "docs/technical/COMMUNITY_BALANCE_GENERATOR.md"
+cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run the relocated generic CBG test module'
+cbp_require_match 'python3 tools/validate_cbp_cbg_master_spec\.py' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run the CBP-namespaced CBG master-spec validator'
 cbp_require_match 'Refusing to overwrite an output not owned' \
 	"tools/cbg/community_balance_generator.py" \
 	'Community Balance Generator must enforce manifest-based output ownership'
