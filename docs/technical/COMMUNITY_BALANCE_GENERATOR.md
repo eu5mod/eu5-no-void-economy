@@ -46,9 +46,19 @@ another operation unless the terminal entry explicitly selects `last_wins`.
 
 ## Strict selectors
 
-Files may be exact paths or game-root-relative globs. Object paths use `/`, for
+Files may be exact paths, arrays of exact paths, or game-root-relative globs. Object paths use `/`, for
 example `marketplace/modifier`. Each selected object and existing field must
 match exactly once. Ambiguous or missing targets stop generation.
+
+Bulk field rules use `"object": "**"` together with
+`"occurrences": "all"`. Numeric values are transformed directly. A symbolic
+value multiplied by a coefficient is replaced with a deterministic generated
+script-value alias in `cbg_generated_scalars.txt`.
+
+`exclude_values` may list symbolic values that a bulk rule must leave intact.
+This prevents a centrally transformed symbol from receiving the same factor
+again at direct call sites. Block-valued assignments remain transformable
+because their internal expression is a separate calculation.
 
 ## Usage
 
@@ -68,6 +78,27 @@ The manifest is also the output ownership contract. CBG refuses to overwrite a
 file absent from its previous manifest or a generated file changed since the
 previous run. Obsolete outputs are removed only while their hash still matches
 the previous generated hash.
+
+## CBP parity migration
+
+The complete CBP balance configuration is versioned at
+`tools/specs/cbp_pr188_balance.generated.json`. It is exported from current CBP
+generator manifests rather than maintained as a second hand-written source.
+
+With EU5 installed and `.cbp.local.env` configured, run:
+
+```bash
+./tools/validate_cbp_cbg_parity.sh
+```
+
+This exports and checks the tracked spec, generates a clean exact-path mod,
+resolves generated script-value aliases, and compares it with current CBP
+outputs. It fails on any semantic mismatch. The PR #189 reference run checked
+376 political files and 845 scalar targets with zero mismatches.
+
+The comparison intentionally preserves #188 semantics during the tooling
+migration. Changing a questionable balance result belongs in a separate
+functional change.
 
 ## MVP boundary
 

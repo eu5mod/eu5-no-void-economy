@@ -18,6 +18,9 @@ ASSIGNMENT = re.compile(
     r"(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
 )
 BLOCK_START = re.compile(r"^[ \t]*(?P<name>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*\{")
+BLOCK_ASSIGNMENT = re.compile(
+    r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*\{(?P<comment>[ \t]*#.*)?$"
+)
 SAFE_SCALAR = re.compile(r"[A-Za-z0-9_.:-]+")
 SUPPORTED_OPERATIONS = {
     "replace", "multiply", "add", "clamp", "comment_out", "remove",
@@ -43,6 +46,9 @@ class Intent:
     position_after: str | None
     source_spec: str
     sequence: int
+    occurrences: str
+    on_missing: str
+    exclude_values: tuple[str, ...]
 
 
 @dataclass
@@ -119,16 +125,24 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
             operation = raw.get("operation")
             if operation not in SUPPORTED_OPERATIONS:
                 raise ValueError(f"{spec_path}: unsupported operation {operation!r}")
-            pattern = raw.get("file")
-            if not isinstance(pattern, str) or pattern.startswith("/") or ".." in PurePosixPath(pattern).parts:
-                raise ValueError(f"{spec_path}: file must be a safe game-relative path or glob")
-            matches = sorted(
+            selectors = raw.get("file")
+            if isinstance(selectors, str):
+                selectors = [selectors]
+            if not isinstance(selectors, list) or not selectors or not all(
+                isinstance(pattern, str)
+                and not pattern.startswith("/")
+                and ".." not in PurePosixPath(pattern).parts
+                for pattern in selectors
+            ):
+                raise ValueError(f"{spec_path}: file must be a safe path/glob or a non-empty array of them")
+            matches = sorted({
                 PurePosixPath(path.relative_to(game_root).as_posix())
+                for pattern in selectors
                 for path in game_root.glob(pattern)
                 if path.is_file()
-            )
+            })
             if not matches:
-                raise ValueError(f"{spec_path}: file selector matched nothing: {pattern}")
+                raise ValueError(f"{spec_path}: file selector matched nothing: {selectors}")
             field = raw.get("field")
             if not isinstance(field, str) or not field:
                 raise ValueError(f"{spec_path}: field is required")
@@ -141,17 +155,36 @@ def load_intents(spec_paths: list[Path], game_root: Path) -> tuple[list[Intent],
                 raise ValueError(f"{spec_path}: invalid conflict policy {conflict!r}")
             position = raw.get("position", {})
             position_after = position.get("after") if isinstance(position, dict) else None
+            occurrences = raw.get("occurrences", "one")
+            if occurrences not in {"one", "all"}:
+                raise ValueError(f"{spec_path}: occurrences must be 'one' or 'all'")
+            object_path = normalize_object_path(raw.get("object", ""))
+            if object_path == ("**",) and occurrences != "all":
+                raise ValueError(f"{spec_path}: object '**' requires occurrences='all'")
+            if operation in {"add_field", "add_custom"} and occurrences == "all":
+                raise ValueError(f"{spec_path}: insertion operations cannot target all occurrences")
+            on_missing = raw.get("on_missing", "error")
+            if on_missing not in {"error", "skip"}:
+                raise ValueError(f"{spec_path}: on_missing must be 'error' or 'skip'")
+            excluded = raw.get("exclude_values", [])
+            if not isinstance(excluded, list) or not all(
+                isinstance(value, str) and SAFE_SCALAR.fullmatch(value) for value in excluded
+            ):
+                raise ValueError(f"{spec_path}: exclude_values must be an array of safe scalar tokens")
             for relative in matches:
                 sequence += 1
                 intents.append(Intent(
                     owner=owner,
-                    target=Target(relative, normalize_object_path(raw.get("object", "")), field),
+                    target=Target(relative, object_path, field),
                     operation=operation,
                     value=raw.get("value"),
                     conflict=conflict,
                     position_after=position_after,
                     source_spec=spec_path.name,
                     sequence=sequence,
+                    occurrences=occurrences,
+                    on_missing=on_missing,
+                    exclude_values=tuple(excluded),
                 ))
     return intents, custom_fields
 
@@ -209,10 +242,86 @@ def field_matches(lines: list[str], obj: LocatedObject, field: str) -> list[int]
         code = lines[index].split("#", 1)[0]
         if child_depth == 0:
             match = ASSIGNMENT.match(lines[index].rstrip("\r\n"))
-            if match and match.group("field") == field:
+            block = BLOCK_ASSIGNMENT.match(lines[index].rstrip("\r\n"))
+            if (match and match.group("field") == field) or (
+                block and block.group("field") == field
+            ):
                 result.append(index)
         child_depth += code.count("{") - code.count("}")
     return result
+
+
+def all_field_matches(lines: list[str], field: str) -> list[int]:
+    result = []
+    for index, line in enumerate(lines):
+        body = line.rstrip("\r\n")
+        scalar = ASSIGNMENT.match(body)
+        block = BLOCK_ASSIGNMENT.match(body)
+        if (scalar and scalar.group("field") == field) or (
+            block and block.group("field") == field
+        ):
+            result.append(index)
+    return result
+
+
+def matching_brace_line(lines: list[str], start: int) -> int:
+    depth = 0
+    for index in range(start, len(lines)):
+        code = lines[index].split("#", 1)[0]
+        depth += code.count("{") - code.count("}")
+        if depth == 0:
+            return index
+    raise ValueError(f"Unclosed value block at line {start + 1}")
+
+
+def alias_name(intent: Intent, source: str, factor: Any) -> str:
+    owner = re.sub(r"[^a-z0-9_]+", "_", intent.owner.lower()).strip("_")
+    field = re.sub(r"[^a-z0-9_]+", "_", intent.target.field.lower()).strip("_")
+    digest = hashlib.sha256(
+        f"{intent.owner}|{intent.target.field}|{source}|{factor}".encode()
+    ).hexdigest()[:12]
+    return f"cbg_{owner}_{field}_{digest}"
+
+
+def apply_inline_matches(
+    lines: list[str], intent: Intent, aliases: dict[str, tuple[str, str]]
+) -> list[dict[str, Any]]:
+    pattern = re.compile(
+        rf"(?<![A-Za-z0-9_])(?P<field>{re.escape(intent.target.field)})"
+        r"[ \t]*=[ \t]*(?P<value>-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)|[A-Za-z_][A-Za-z0-9_.:-]*)"
+    )
+    outcomes: list[dict[str, Any]] = []
+    for index, raw in enumerate(lines):
+        if ASSIGNMENT.match(raw.rstrip("\r\n")) or BLOCK_ASSIGNMENT.match(raw.rstrip("\r\n")):
+            continue
+        code, separator, comment = raw.partition("#")
+        matches = list(pattern.finditer(code))
+        if not matches:
+            continue
+        if intent.operation in TERMINAL_OPERATIONS:
+            raise ValueError(
+                f"Inline {intent.target.field} does not support {intent.operation}"
+            )
+        for match in reversed(matches):
+            before = match.group("value")
+            if before in intent.exclude_values:
+                continue
+            if intent.operation == "multiply" and not re.fullmatch(
+                r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)", before
+            ):
+                after = alias_name(intent, before, intent.value)
+                aliases[after] = (before, render_number(decimal(intent.value, "multiplier")))
+            else:
+                after = numeric_result(intent.operation, before, intent.value)
+            replacement = f"{intent.target.field} = {after}"
+            code = code[: match.start()] + replacement + code[match.end() :]
+            outcomes.append({
+                "before": before,
+                "after": after,
+                "line_action": "inline_transformed",
+            })
+        lines[index] = code + (separator + comment if separator else "")
+    return outcomes
 
 
 def numeric_result(operation: str, current: str, raw_value: Any) -> str:
@@ -238,9 +347,74 @@ def numeric_result(operation: str, current: str, raw_value: Any) -> str:
     raise ValueError(f"{operation} is not a numeric operation")
 
 
-def apply_intent(lines: list[str], intent: Intent) -> dict[str, Any]:
-    obj = locate_object(lines, intent.target.object_path)
-    matches = field_matches(lines, obj, intent.target.field)
+def apply_one_match(
+    lines: list[str], intent: Intent, index: int, aliases: dict[str, tuple[str, str]]
+) -> dict[str, Any]:
+    raw = lines[index]
+    newline = "\n" if raw.endswith("\n") else ""
+    match = ASSIGNMENT.match(raw.rstrip("\r\n"))
+    block = BLOCK_ASSIGNMENT.match(raw.rstrip("\r\n"))
+    if block:
+        if intent.operation != "multiply":
+            raise ValueError(
+                f"Block-valued {intent.target.field} supports multiply only"
+            )
+        factor = render_number(decimal(intent.value, "block multiplier"))
+        end = matching_brace_line(lines, index)
+        child_indent = re.match(r"^[ \t]*", lines[end]).group(0) + "\t"
+        lines.insert(end, f"{child_indent}multiply = {factor} # CBG: {intent.owner}\n")
+        return {
+            "before": "<value block>",
+            "after": f"<value block> * {factor}",
+            "line_action": "block_multiplier_inserted",
+        }
+    assert match
+    before = match.group("value").strip()
+    if intent.operation == "remove":
+        lines.pop(index)
+        return {"before": before, "after": None, "line_action": "removed"}
+    if intent.operation == "comment_out":
+        lines[index] = f"{match.group('indent')}# {raw.lstrip().rstrip()} # CBG: commented by {intent.owner}{newline}"
+        return {"before": before, "after": None, "line_action": "commented"}
+    if intent.operation == "multiply" and SAFE_SCALAR.fullmatch(before):
+        try:
+            decimal(before, "current value")
+        except ValueError:
+            after = alias_name(intent, before, intent.value)
+            aliases[after] = (before, render_number(decimal(intent.value, "multiplier")))
+        else:
+            after = numeric_result(intent.operation, before, intent.value)
+    else:
+        after = numeric_result(intent.operation, before, intent.value)
+    existing = match.group("comment")
+    suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
+    lines[index] = (
+        f"{match.group('indent')}{intent.target.field} = {after} "
+        f"# VANILLA/PRIOR = {before}; CBG {intent.owner}: {intent.operation} {intent.value}{suffix}{newline}"
+    )
+    return {"before": before, "after": after, "line_action": "transformed"}
+
+
+def apply_intent(
+    lines: list[str], intent: Intent, aliases: dict[str, tuple[str, str]]
+) -> list[dict[str, Any]]:
+    wildcard = intent.target.object_path == ("**",)
+    obj = None if wildcard else locate_object(lines, intent.target.object_path)
+    matches = all_field_matches(lines, intent.target.field) if wildcard else field_matches(lines, obj, intent.target.field)
+    matched_before_exclusions = bool(matches)
+    matches = [
+        index
+        for index in matches
+        if not (
+            (match := ASSIGNMENT.match(lines[index].rstrip("\r\n")))
+            and match.group("value").strip() in intent.exclude_values
+        )
+    ]
+    inline_outcomes = (
+        apply_inline_matches(lines, intent, aliases)
+        if wildcard and intent.occurrences == "all"
+        else []
+    )
     adding = intent.operation in {"add_field", "add_custom"}
     if adding:
         if matches:
@@ -254,29 +428,30 @@ def apply_intent(lines: list[str], intent: Intent) -> dict[str, Any]:
         indent = obj.indent + "\t"
         rendered = render_scalar(intent.value, f"{intent.operation} value")
         lines.insert(insertion, f"{indent}{intent.target.field} = {rendered} # CBG: added by {intent.owner}\n")
-        return {"before": None, "after": rendered, "line_action": "inserted"}
-    if len(matches) != 1:
+        return [{"before": None, "after": rendered, "line_action": "inserted"}]
+    if intent.occurrences == "one" and len(matches) != 1:
         raise ValueError(f"Field {intent.target.field!r} at {intent.target} matched {len(matches)} lines")
-    index = matches[0]
-    raw = lines[index]
-    newline = "\n" if raw.endswith("\n") else ""
-    match = ASSIGNMENT.match(raw.rstrip("\r\n"))
-    assert match
-    before = match.group("value").strip()
-    if intent.operation == "remove":
-        lines.pop(index)
-        return {"before": before, "after": None, "line_action": "removed"}
-    if intent.operation == "comment_out":
-        lines[index] = f"{match.group('indent')}# {raw.lstrip().rstrip()} # CBG: commented by {intent.owner}{newline}"
-        return {"before": before, "after": None, "line_action": "commented"}
-    after = numeric_result(intent.operation, before, intent.value)
-    existing = match.group("comment")
-    suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
-    lines[index] = (
-        f"{match.group('indent')}{intent.target.field} = {after} "
-        f"# VANILLA/PRIOR = {before}; CBG {intent.owner}: {intent.operation} {intent.value}{suffix}{newline}"
-    )
-    return {"before": before, "after": after, "line_action": "transformed"}
+    if intent.occurrences == "all" and not matches and not inline_outcomes and intent.on_missing == "skip":
+        return []
+    if intent.occurrences == "all" and not matches and not inline_outcomes and matched_before_exclusions:
+        return []
+    if intent.occurrences == "all" and not matches and not inline_outcomes:
+        raise ValueError(f"Bulk field {intent.target.field!r} at {intent.target.file} matched no lines")
+    outcomes = [apply_one_match(lines, intent, index, aliases) for index in reversed(matches)]
+    outcomes.extend(inline_outcomes)
+    return outcomes
+
+
+def render_aliases(aliases: dict[str, tuple[str, str]]) -> bytes:
+    lines = ["# Generated by Community Balance Generator.\n"]
+    for name, (source, factor) in sorted(aliases.items()):
+        lines.extend([
+            f"{name} = {{\n",
+            f"\tvalue = {source}\n",
+            f"\tmultiply = {factor}\n",
+            "}\n\n",
+        ])
+    return "".join(lines).encode("utf-8")
 
 
 def previous_outputs(manifest_path: Path | None) -> dict[PurePosixPath, str]:
@@ -314,6 +489,7 @@ def generate(
     for intent in intents:
         by_file.setdefault(intent.target.file, []).append(intent)
     manifest_files: list[dict[str, Any]] = []
+    aliases: dict[str, tuple[str, str]] = {}
     for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
         source = game_root / Path(relative)
         source_bytes = source.read_bytes()
@@ -321,16 +497,19 @@ def generate(
         lines = source_bytes.decode("utf-8-sig").splitlines(keepends=True)
         audit: list[dict[str, Any]] = []
         for intent in sorted(file_intents, key=lambda item: item.sequence):
-            outcome = apply_intent(lines, intent)
-            audit.append({
-                "owner": intent.owner,
-                "object": "/".join(intent.target.object_path),
-                "field": intent.target.field,
-                "operation": intent.operation,
-                "configured_value": intent.value,
-                "conflict": intent.conflict,
-                **outcome,
-            })
+            outcomes = apply_intent(lines, intent, aliases)
+            for outcome in reversed(outcomes):
+                audit.append({
+                    "owner": intent.owner,
+                    "object": "/".join(intent.target.object_path),
+                    "field": intent.target.field,
+                    "operation": intent.operation,
+                    "configured_value": intent.value,
+                    "conflict": intent.conflict,
+                    **outcome,
+                })
+        if not audit:
+            continue
         rendered = "".join(line.rstrip(" \t\r\n") + ("\n" if line.endswith(("\n", "\r")) else "") for line in lines)
         generated = rendered.encode("utf-8")
         if has_bom:
@@ -344,6 +523,21 @@ def generate(
             "vanilla_sha256": sha256(source_bytes),
             "generated_sha256": sha256(generated),
             "transformations": audit,
+        })
+    if aliases:
+        alias_relative = PurePosixPath(
+            "main_menu/common/script_values/cbg_generated_scalars.txt"
+        )
+        alias_bytes = render_aliases(aliases)
+        alias_destination = output_root / Path(alias_relative)
+        assert_owned_output(alias_destination, alias_relative, owned)
+        alias_destination.parent.mkdir(parents=True, exist_ok=True)
+        alias_destination.write_bytes(alias_bytes)
+        manifest_files.append({
+            "path": alias_relative.as_posix(),
+            "vanilla_sha256": None,
+            "generated_sha256": sha256(alias_bytes),
+            "transformations": [{"generated_alias_count": len(aliases)}],
         })
     current = {PurePosixPath(entry["path"]) for entry in manifest_files}
     for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
