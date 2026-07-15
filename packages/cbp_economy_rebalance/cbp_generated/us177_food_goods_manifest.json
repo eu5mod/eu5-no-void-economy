@@ -1,104 +1,97 @@
 {
   "classification_rule": "food > 0",
   "configured_food_price": "0.3",
-  "food_good_count": 14,
+  "food_good_count": 13,
   "food_goods": [
     {
-      "food_line": 324,
+      "food_line": 312,
       "food_value": "2.5",
       "good": "beeswax",
-      "object_start_line": 319,
+      "object_start_line": 307,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 72,
+      "food_line": 61,
       "food_value": "5.0",
       "good": "fish",
-      "object_start_line": 67,
+      "object_start_line": 56,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 297,
+      "food_line": 285,
       "food_value": "4.0",
       "good": "fruit",
-      "object_start_line": 292,
+      "object_start_line": 280,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 41,
+      "food_line": 30,
       "food_value": "2.0",
       "good": "fur",
-      "object_start_line": 35,
+      "object_start_line": 24,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 200,
+      "food_line": 189,
       "food_value": "5.0",
       "good": "legumes",
-      "object_start_line": 195,
+      "object_start_line": 184,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 241,
+      "food_line": 229,
       "food_value": "8.0",
       "good": "livestock",
-      "object_start_line": 236,
+      "object_start_line": 224,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 125,
+      "food_line": 114,
       "food_value": "8.0",
       "good": "maize",
-      "object_start_line": 120,
+      "object_start_line": 109,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 174,
+      "food_line": 163,
       "food_value": "5.0",
       "good": "millet",
-      "object_start_line": 169,
+      "object_start_line": 158,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 274,
+      "food_line": 262,
       "food_value": "4.0",
       "good": "olives",
-      "object_start_line": 269,
+      "object_start_line": 257,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 220,
+      "food_line": 209,
       "food_value": "8.0",
       "good": "potato",
-      "object_start_line": 215,
+      "object_start_line": 204,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 147,
+      "food_line": 136,
       "food_value": "10.0",
       "good": "rice",
-      "object_start_line": 142,
+      "object_start_line": 131,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 92,
+      "food_line": 81,
       "food_value": "8.0",
       "good": "wheat",
-      "object_start_line": 87,
+      "object_start_line": 76,
       "source_path": "in_game/common/goods/03_food.txt"
     },
     {
-      "food_line": 19,
+      "food_line": 8,
       "food_value": "3.5",
       "good": "wild_game",
-      "object_start_line": 14,
-      "source_path": "in_game/common/goods/03_food.txt"
-    },
-    {
-      "food_line": 10,
-      "food_value": "3.0",
-      "good": "wool",
-      "object_start_line": 2,
+      "object_start_line": 3,
       "source_path": "in_game/common/goods/03_food.txt"
     }
   ],
@@ -106,8 +99,8 @@
   "food_production_divisor": "3.0",
   "generated_food_overrides": [
     {
-      "food_assignment_count": 14,
-      "generated_sha256": "36285b7e557a8029b490bc4d724eca0b741a62161d9a7081384b566febebbc83",
+      "food_assignment_count": 13,
+      "generated_sha256": "bebe4a392d7ab89261a8f8829edca1674c32de925732fd09463c3aec0857aec0",
       "path": "in_game/common/goods/03_food.txt"
     }
   ],
@@ -115,7 +108,7 @@
   "source_files": [
     {
       "path": "in_game/common/goods/00_raw_materials.txt",
-      "sha256": "15348eeefdb24223a49a6780ab75afcf3b3d386e8e7cf91b4fad7cc2a8ada214"
+      "sha256": "1c5dc5435ddb65dae073d979aac935ba8409e5fc6cc1b33f369e128f98979ff3"
     },
     {
       "path": "in_game/common/goods/01_plantation_goods.txt",
@@ -127,13 +120,13 @@
     },
     {
       "path": "in_game/common/goods/03_food.txt",
-      "sha256": "22235bcc116fc00e40907c1404d314b10d86a187a2039a5f01cce3ea4ef0f69b"
+      "sha256": "ebd5218cf6dd61f354d3eab27e12e8a5561e51519c55ea75e65600dc91f690fb"
     },
     {
       "path": "in_game/common/goods/04_special.txt",
       "sha256": "969cb80d2b7c1256d1a90c9d57850a31ebe36edc86ff7b4fb8cb3313d6376556"
     }
   ],
-  "source_fingerprint_sha256": "8bc37f3aa003e06d73cc68b3f11da07e282a21c956703f83d651ae83f897a664",
+  "source_fingerprint_sha256": "835038120070d09eda291067f1b4a3a585166277375ff7ac4ea1281bb295f2be",
   "source_root": "<EU5_GAME_ROOT>/in_game/common/goods"
 }

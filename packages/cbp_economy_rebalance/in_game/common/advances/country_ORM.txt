@@ -71,5 +71,5 @@ mint_of_the_gulf = {
 
 	requires = regulate_court_procedures
 
-	minting_income_factor = 0.5
+	minting_income_factor = 0.4
 }
