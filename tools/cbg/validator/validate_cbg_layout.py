@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 REQUIRED = {
     "README.md",
     "REFERENCE.md",
+    "LICENSE.md",
     "community_balance_generator.py",
     "adapters/README.md",
     "adapters/cbp/README.md",

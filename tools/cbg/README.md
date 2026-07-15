@@ -100,3 +100,112 @@ to share with other modders.
 Host integrations that compile complex business policy into CBG JSON live
 under [`adapters/`](adapters/). They are namespaced by host and are examples,
 not yet a stable adapter SDK.
+
+## When to create an adapter
+
+A direct JSON rule is enough when the desired change maps cleanly to CBG
+selectors and operations. Create a host adapter when the policy first needs to
+discover or classify Vanilla objects, combine several rules, or preserve a
+host-specific edge case before CBG can apply deterministic mutations.
+
+The current adapter contract is intentionally small:
+
+```txt
+host policy -> adapter -> resolved CBG JSON -> CBG -> generated mod + manifest
+```
+
+For a new host called `my_mod`, use this layout:
+
+```txt
+tools/cbg/adapters/my_mod/generate_my_mod_spec.py
+tools/cbg/validator/my_mod/validate_my_mod_spec.py
+```
+
+The adapter should only compile policy. It must write an ordinary CBG
+specification and leave file parsing, mutation, provenance, conflict handling,
+and output ownership to `community_balance_generator.py`.
+
+Minimal adapter outline:
+
+```python
+#!/usr/bin/env python3
+import argparse
+import json
+from pathlib import Path
+
+
+def build_spec() -> dict:
+    return {
+        "schema_version": 1,
+        "mod_id": "my-mod-half-stability",
+        "transformations": [{
+            "file": ["in_game/common/**/*.txt", "in_game/events/**/*.txt"],
+            "object": "**",
+            "field": "add_stability",
+            "operation": "multiply",
+            "value": 0.5,
+            "occurrences": "all",
+            "on_missing": "skip",
+        }],
+    }
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--output", type=Path, required=True)
+args = parser.parse_args()
+args.output.write_text(json.dumps(build_spec(), indent=2) + "\n")
+```
+
+## Add a validator
+
+An adapter validator checks the compiled policy before Vanilla files are
+mutated. It should fail closed when required selectors, operations, values, or
+edge-case exclusions disappear. Keep it host-namespaced beside the adapter,
+because those assertions describe the host mod rather than the reusable CBG
+engine.
+
+Minimal validator outline:
+
+```python
+#!/usr/bin/env python3
+import json
+import sys
+from pathlib import Path
+
+
+spec = json.loads(Path(sys.argv[1]).read_text())
+rules = spec.get("transformations", [])
+expected = [
+    rule for rule in rules
+    if rule.get("field") == "add_stability"
+    and rule.get("operation") == "multiply"
+    and rule.get("value") == 0.5
+]
+if len(expected) != 1 or expected[0].get("occurrences") != "all":
+    raise SystemExit("my_mod stability adapter contract failed")
+print("my_mod stability adapter contract passed")
+```
+
+Run the complete path explicitly:
+
+```bash
+python3 tools/cbg/adapters/my_mod/generate_my_mod_spec.py \
+  --output build/my_mod.json
+python3 tools/cbg/validator/my_mod/validate_my_mod_spec.py build/my_mod.json
+python3 tools/cbg/community_balance_generator.py \
+  --game-root "/path/to/Europa Universalis V/game" \
+  --spec build/my_mod.json \
+  --output-root generated/my_mod
+```
+
+Adapters are policy compilers, not alternate generators. Validators secure the
+compiled intent; generic CBG tests continue to secure parsing, mutation,
+provenance, and conflict behavior.
+
+## License
+
+CBG is source-available under the
+[PolyForm Noncommercial License 1.0.0](LICENSE.md). Noncommercial modding,
+experimentation, study, and community collaboration are permitted by that
+license. Commercial use requires separate permission from the author; contact
+`ph.ausseil@gmail.com` to discuss a commercial license.
