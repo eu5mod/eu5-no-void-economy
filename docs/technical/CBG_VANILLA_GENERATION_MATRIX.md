@@ -24,3 +24,23 @@ policy decisions, but it must not publish those runtime files to the package.
 The broad `cbp_pr188_balance.generated.json` remains experimental. Migration is
 family-by-family; it must not publish `location.txt` or a complete
 `00_defines.txt` merely because those files exist in Vanilla.
+
+## Execution-role inventory
+
+CBG ownership does not mean that every pre-CBG script is obsolete. The current
+pipeline deliberately separates policy discovery from runtime publication:
+
+| Tool family | Invoked by | Role | Publishes migrated runtime files? |
+|---|---|---|---|
+| `tools/cbg/community_balance_generator.py` | `generate_all.sh` and focused parity validators | Runtime materializer from Vanilla plus a CBG specification | Yes |
+| `tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh` | `generate_all.sh` with all publication skip flags | Adapter helper compiling building discovery plans/manifests, inheritance, maintenance exceptions, and stockpile-comment policy | No |
+| `generate_political_reward_overrides.py` | Political/minting adapter and validators | Discovers political targets and encodes exclusions/centralization | No |
+| `generate_us177_food_goods_manifest.py` | `generate_all.sh` | Discovers the Vanilla food-good set and records US-177 policy | No food runtime output |
+| `generate_us177_minting_overrides.py` | Political/minting adapter and validators | Discovers numeric minting targets and rejects unsupported syntax | No |
+| `generate_cbp_location_overrides.sh` | Focused parity/fixture validation | Legacy reference renderer proving CBG byte parity | No live publication |
+| `generate_cbp_defines_override.sh` | Fixture validation only | Complete-defines probe/reference renderer | No live publication; dedicated define files remain hand-owned |
+| `postprocess_us177_minting_building_overrides.py` | Fixture/validator paths | Legacy composed-output oracle | No live publication |
+
+Deletion requires proving that no adapter, parity validator, fixture, or policy
+manifest consumes the tool. Low reference count or a legacy filename is not
+sufficient evidence.

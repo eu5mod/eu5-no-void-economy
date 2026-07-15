@@ -1,5 +1,9 @@
 # PR107 Audit — US-17 / US-20 trade reconciliation workflow state
 
+> **Classification:** historical PR checkpoint. It preserves US-17/US-20
+> evidence but does not define the current global runtime. See
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
+
 ## Purpose
 
 This folder is the historical workflow checkpoint for PR #107:

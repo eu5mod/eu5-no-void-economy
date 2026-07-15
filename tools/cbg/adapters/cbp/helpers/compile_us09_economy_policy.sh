@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../.." && pwd)"
 local_config="$repo_root/.cbp.local.env"
 
 if [[ -f "$local_config" ]]; then
@@ -17,8 +17,8 @@ source "$repo_root/tools/cbp_goods.sh"
 usage() {
 	cat <<'EOF_USAGE'
 Usage:
-  ./tools/generate_us09_economy_overrides.sh <percent> [options]
-  ./tools/generate_us09_economy_overrides.sh --percent <percent> [options]
+  ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh <percent> [options]
+  ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh --percent <percent> [options]
 
 Options:
   --percent N                            Percent increase for building output
@@ -42,11 +42,11 @@ Options:
 
 If no percent is passed and stdin is interactive, the script prompts for one.
 Examples:
-  ./tools/generate_us09_economy_overrides.sh 5
-  ./tools/generate_us09_economy_overrides.sh 10
-  ./tools/generate_us09_economy_overrides.sh --percent 7.5
-  MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_us09_economy_overrides.sh 10
-  EXTRA_BURGHER_PROMOTION_SPEED=10 EXTRA_LABORER_PROMOTION_SPEED=10 ./tools/generate_us09_economy_overrides.sh 10
+  ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 5
+  ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 10
+  ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh --percent 7.5
+  MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 10
+  EXTRA_BURGHER_PROMOTION_SPEED=10 EXTRA_LABORER_PROMOTION_SPEED=10 ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 10
 
 By default, this writes offline probe output under tools/generated/us09_economy_overrides.
 Pass --package-common-dir packages/cbp_economy_rebalance/in_game/common only
@@ -214,7 +214,7 @@ if [[ -z "$percent" ]]; then
 	if [[ -t 0 ]]; then
 		read -r -p "US-09 percent increase (5 = 5%, 10 = 10%): " percent
 	else
-		printf 'Missing percent. Pass one explicitly, for example `./tools/generate_us09_economy_overrides.sh 5`.\n' >&2
+		printf 'Missing percent. Pass one explicitly, for example `./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 5`.\n' >&2
 		exit 1
 	fi
 fi

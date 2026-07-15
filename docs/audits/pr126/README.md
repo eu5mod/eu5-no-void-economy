@@ -1,8 +1,15 @@
-# PR #126 Audit — refactor source of truth
+# PR #126 Audit — historical refactor baseline
+
+> **Classification:** historical architecture baseline. Its Q1-Q8 reports
+> explain the refactor and proposed ownership split; they are no longer the
+> current global runtime source of truth. See
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
 
 Source request: GitHub PR #126, “Developement balance”.
 
-This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code. Q8 records future optimisation findings that should not be mixed into the current runtime-validation PR unless they become correctness blockers.
+This folder is the preserved context for the PR126 stacked refactor. The Q1-Q6
+reports remain canonical evidence for that historical change, while Q8 records
+the optimization ideas that followed it.
 
 ## Reading order for an agent
 
@@ -12,7 +19,7 @@ This folder is the context base for agents that need to turn the PR126 audit int
 | 2 | [Q2 — Cache system](./Q2_systeme_cache.md) | Identify source, derived cache, work cache, ledger, or debug state |
 | 3 | [Q3 — Code redundancy](./Q3_redondances_code.md) | Distinguish acceptable generated repetition from duplication to refactor |
 | 4 | [Q4 — Loops and performance](./Q4_boucles_performance.md) | Evaluate scan cost and the promoted-market target |
-| 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
+| 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the PR126-era workflow and target workflow |
 | 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
 | 7 | [Q8 — Future optimisations](./Q8_future_optimisations.md) | Track follow-up performance findings without widening the active PR |
 | 8 | [Q8/F9 — Rolling location cache](./Q8_F9_location_cache_rolling_verification.md) | Evaluate the location owner/market cache, rolling verification, and Q4 win estimate |

@@ -69,9 +69,10 @@ if [[ "$us09_enabled" == "false" || "$us09_enabled" == "0" ]]; then
 	printf '%s\n' 'Skipping US-09 static file generation; MODEU5_ENABLE_US09_STATIC_OVERRIDES=false.'
 	remove_generated_defines_override
 else
-	if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" || -f "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
+	us09_policy_compiler="$repo_root/tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh"
+	if [[ -x "$us09_policy_compiler" || -f "$us09_policy_compiler" ]]; then
 		if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
-			bash "$repo_root/tools/generate_us09_economy_overrides.sh" \
+			bash "$us09_policy_compiler" \
 				"${MODEU5_US09_BONUS_PERCENT:-5}" \
 				--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 				--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
@@ -129,13 +130,6 @@ else
 		fi
 	fi
 
-	# if [[ -n "${EU5_GAME_DEFINES_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" || -n "${EU5_INSTALL_DIR:-}" ]]; then
-	# 	bash "$repo_root/tools/generate_cbp_defines_override.sh" \
-	# 		--output-file "$defines_output"
-	# else
-	# 	printf '%s\n' 'Skipping complete defines generation; configure EU5_GAME_DEFINES_FILE, EU5_GAME_COMMON_DIR, or EU5_INSTALL_DIR.'
-	# 	remove_generated_defines_override
-	# fi
 fi
 
 # US-177 is package-owned independently from US-09. It records the authoritative

@@ -121,10 +121,10 @@ cbp_require_match '^MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER=0\.5' \
 	".cbp.local.env.template" \
 	'Local env template must expose the trade-building maintenance multiplier'
 cbp_require_match 'strip_utf8_bom_stream' \
-	"tools/generate_us09_economy_overrides.sh" \
+	"tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh" \
 	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'
 cbp_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
-	"tools/generate_us09_economy_overrides.sh" \
+	"tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh" \
 	'US-09 generator must fail if generated output still contains BOM bytes'
 cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
 cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
@@ -161,6 +161,28 @@ cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
 cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
 cbp_require_file "tools/cbg/README.md"
 cbp_require_file "docs/technical/COMMUNITY_BALANCE_GENERATOR.md"
+cbp_require_file "docs/architecture/RUNTIME_FLOW.md"
+cbp_require_file "docs/audits/README.md"
+cbp_require_file "tools/validate_audit_catalog.py"
+cbp_require_file "tools/dev_prepare_game.sh"
+cbp_require_match 'only normative global diagram' \
+	"docs/architecture/RUNTIME_FLOW.md" \
+	'Runtime architecture must identify its normative global source of truth'
+cbp_require_match 'CBG_VANILLA_GENERATION_MATRIX\.md' \
+	"docs/technical/CBG_REPOSITORY_BOUNDARY.md" \
+	'CBG repository boundary must link retained compilers to the migration matrix'
+if cbp_search_quiet '^[[:space:]]*#[[:space:]]*(if|bash).*generate_cbp_defines_override' "tools/generate_all.sh"; then
+	cbp_search_lines '^[[:space:]]*#[[:space:]]*(if|bash).*generate_cbp_defines_override' "tools/generate_all.sh" >&2
+	printf '%s\n' 'generate_all must not retain a commented-out complete-defines generation branch.' >&2
+	exit 1
+fi
+python3 "$repo_root/tools/validate_audit_catalog.py"
+cbp_require_match 'install_local_packages\.sh --skip-generate' \
+	"tools/dev_prepare_game.sh" \
+	'Developer preparation must not regenerate after the validated generation pass'
+cbp_require_match 'dev_prepare_game\.sh' \
+	"tools/README.md" \
+	'Tools documentation must advertise the canonical developer preparation command'
 cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator' \
 	".github/workflows/generated-files.yml" \
 	'Generated-files CI must run the relocated generic CBG test module'
@@ -270,7 +292,7 @@ cbp_require_match 'Trade-building maintenance multiplier' \
 cbp_require_match 'transform_lines_with_plan' \
 	"tools/transform_cbp_economy_building_overrides.py" \
 	'Economy building transformer must own applicability and the building-level change plan'
-if cbp_search_quiet 'has_economy_building_target_field' "tools/generate_us09_economy_overrides.sh"; then
+if cbp_search_quiet 'has_economy_building_target_field' "tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh"; then
 	printf '%s\n' 'US-09 shell must not maintain a second building applicability prefilter.' >&2
 	exit 1
 fi

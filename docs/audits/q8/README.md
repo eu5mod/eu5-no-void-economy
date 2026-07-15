@@ -1,4 +1,9 @@
-# Q8 Audit — optimisation implementation source of truth
+# Q8 Audit — optimization programme and proof history
+
+> **Classification:** optimization-track audit. These documents preserve the
+> Q8 proof stack and migration decisions. The resulting current global runtime
+> is defined by
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
 
 Source request: create a new master PR after #126 merged into `main`, similar to PR #126, starting with an audit that leads to Q8 implementation.
 

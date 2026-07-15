@@ -16,7 +16,7 @@ work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-pop.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$work_dir/reference/in_game/common"
 
-./tools/generate_us09_economy_overrides.sh "$percent" \
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh "$percent" \
 	--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 	--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
 	--extra-burgher-promotion-speed "$burgher" --extra-laborer-promotion-speed "$laborer" \

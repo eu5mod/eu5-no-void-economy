@@ -43,9 +43,9 @@ Not a runtime feature:
 
 ## Generated adapters
 
-- [ ] `./tools/generate_all.sh` was run when a generator input changed.
-- [ ] Generated output is ignored by Git, idempotent, and was not hand-edited.
-- [ ] Generated output was not committed; CI regenerates it before validation.
+- [ ] `./tools/dev_prepare_game.sh` completed before the in-game test run.
+- [ ] Ephemeral generated output is ignored; distribution overrides and policy specs are tracked when their ownership contract requires it.
+- [ ] Generated output is deterministic and was not hand-edited.
 - [ ] New generated text artifacts use the `cbp_*_generated.txt` naming convention.
 - [ ] Every physical map identifier is literal and contains no remaining `$`.
 - [ ] Stock arithmetic and business rules remain in shared scripted effects, not the shell generator.
@@ -77,6 +77,13 @@ Not a runtime feature:
 - [ ] Deterministic result events use marker presence checks for possibly unset variables.
 
 ## Test plan
+
+### Canonical preparation
+
+```txt
+./tools/dev_prepare_game.sh
+Installed branch/commit:
+```
 
 ### Scenario
 
