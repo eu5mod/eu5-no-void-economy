@@ -447,7 +447,7 @@ succession_crisis.2 = { #Province Opposes Royal Authority
 		scope:succession_crisis_pretender_scope ?= {
 			add_rebel_progress = -0.05
 		}
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
+		add_legitimacy = legitimacy_weak_bonus
 	}
 }
 
@@ -583,7 +583,7 @@ succession_crisis.4 = { #Testing One's Mettle
 	option = {
 		name = succession_crisis.4.a
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
+		add_legitimacy = legitimacy_weak_bonus
 		add_stability = stability_weak_bonus
 
 		scope:target_character = {
@@ -678,7 +678,7 @@ succession_crisis.5 = { #Supports Royal Authority
 	option = {
 		name = succession_crisis.5.a
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_weak_bonus_92a0a7c8aa # VANILLA = legitimacy_weak_bonus
+		add_legitimacy = legitimacy_weak_bonus
 		custom_tooltip = every_location_gains_sat_and_loses_rebel_tt
 		hidden_effect = {
 			scope:target_province = {
@@ -1328,7 +1328,7 @@ succession_crisis.100 = {
 				mode = extend
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 	}
 	option = {
@@ -1342,7 +1342,7 @@ succession_crisis.100 = {
 				mode = extend
 			}
 		}
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_legitimacy = legitimacy_mild_bonus
 	}
 	option = {

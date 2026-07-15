@@ -1465,7 +1465,7 @@ outwards_view = {
 			sea_cost_on_distance_from_capital_when_maritime = -0.5
 		}
 		country_modifier = {
-		 	#Celestial Governor benefits
+			#Celestial Governor benefits
 			potential_trigger = {
 				international_organization:middle_kingdom = {
 					country_has_special_status = {
@@ -1549,7 +1549,7 @@ outwards_view = {
 			monthly_towards_mercantilism = societal_value_monthly_move
 		}
 		country_modifier = {
-		 	#Celestial Governor benefits
+			#Celestial Governor benefits
 			potential_trigger = {
 				international_organization:middle_kingdom = {
 					country_has_special_status = {

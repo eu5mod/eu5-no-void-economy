@@ -700,7 +700,7 @@ tanistry_elective = {
 	}
 
 	succession_effect = {
-		add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	calc = {
@@ -916,7 +916,7 @@ elective_succession = {
 	}
 	max_possible_candidates = 3
 	succession_effect = {
-		add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	calc = {
@@ -1054,7 +1054,7 @@ dynastic_elective_succession = {
 	}
 
 	succession_effect = {
-		add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 	}
 
 	calc = {
@@ -1548,7 +1548,7 @@ byzantine_succession = {
 					NOT = { modifier:byz_born_in_the_purple = yes }
 				}
 			}
-			add_legitimacy = cbp_instant_add_legitimacy_legitimacy_mild_penalty_db453866f7 # VANILLA = legitimacy_mild_penalty
+			add_legitimacy = legitimacy_mild_penalty
 		}
 	}
 

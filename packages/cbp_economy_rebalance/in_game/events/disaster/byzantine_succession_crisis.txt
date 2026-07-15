@@ -205,7 +205,7 @@ byzantine_succ_crisis.3 = { #Our Nobility Supports the Pretender
 				value = 0.1
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = government_power_mild_penalty
 	}
 
 	option = {
@@ -225,7 +225,7 @@ byzantine_succ_crisis.3 = { #Our Nobility Supports the Pretender
 			value = estate_satisfaction_mild_bonus
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 	}
 }
 
@@ -563,7 +563,7 @@ byzantine_succ_crisis.6 = { #General Abandons the Court
 	option = {
 		name = byzantine_succ_crisis.6.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		if = {
 			limit = {
 				scope:target_character2 = { has_estate = estate_type:nobles_estate }
@@ -643,7 +643,7 @@ byzantine_succ_crisis.6 = { #General Abandons the Court
 		name = byzantine_succ_crisis.6.c
 
 		custom_tooltip = byz_character_might_cause_trouble_again_tt
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 		hidden_effect = {
 			scope:target_character = { remove_variable = recently_abandoned_var }
 		}
@@ -1097,7 +1097,7 @@ byzantine_succ_crisis.10 = { 	#The Legitimization of Usury
 			}
 		}
 		change_gold_effect = { scale = 1.25	}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 	}
 }
 
@@ -1479,7 +1479,7 @@ byzantine_succ_crisis.15 = {
 		}
 
 		change_gold_effect = { scale = -12	}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = government_power_mild_penalty
 	}
 
 	option = {

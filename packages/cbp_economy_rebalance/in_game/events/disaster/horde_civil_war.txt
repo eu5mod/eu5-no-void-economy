@@ -432,7 +432,7 @@ horde_civil_war.4 = {
 		name = horde_civil_war.4.a
 		trigger = { NOT = { has_variable = horde_civil_war_can_end } }
 		add_horde_unity = horde_unity_extreme_bonus
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		horde_break_fiefdom_or_kill_ruler = {
 			target = scope:target_character
 			reason = execution
@@ -682,7 +682,7 @@ horde_civil_war.8 = {
 			reason = assassination
 			killer = scope:target_character
 		}
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 	}
 }
 #Trade Collapse
@@ -701,7 +701,7 @@ horde_civil_war.9 = {
 	option = {
 		name = horde_civil_war.9.a
 		change_gold_effect = { scale = -4 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 	}
 	option = {
 		name = horde_civil_war.9.b
@@ -735,7 +735,7 @@ horde_civil_war.10 = {
 	}
 	option = {
 		name = horde_civil_war.10.a
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		scope:target_ruler = {
 			add_character_modifier = {
 				modifier = horde_inspiring_speech

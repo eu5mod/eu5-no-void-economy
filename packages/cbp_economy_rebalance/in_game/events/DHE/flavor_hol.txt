@@ -293,7 +293,7 @@ flavor_hol.5 = {
 	option = {
 		name = flavor_hol.5.a
 		change_gold_effect = { scale = -6 }
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 		add_prestige = prestige_severe_bonus
 		culture = { add_cultural_tradition = cultural_tradition_extreme_bonus }
 	}
@@ -865,7 +865,7 @@ flavor_hol.16 = {
 	option = {
 		name = flavor_hol.16.a
 		historical_option = yes
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 		change_gold_effect = { scale = -2 }
 		scope:target_character = { move_country = root }
 	}

@@ -630,7 +630,7 @@ flavor_maj.11 = {  #The Dream of Nusantara
 			value = societal_value_huge_move_to_right
 		}
 
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = government_power_mild_penalty
 	}
 }
 

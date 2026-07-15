@@ -153,8 +153,11 @@ def transform_assignments(
             if NUMBER.fullmatch(value):
                 replacement = scaled_number(value, factor)
             else:
-                replacement = alias_name(surface, field, value, factor)
-                aliases[replacement] = (value, str(factor))
+                # Shared/non-centralizable symbolic values remain Vanilla.
+                # Creating per-surface aliases made the policy harder to audit
+                # and previously left runtime references without definitions.
+                index += 1
+                continue
             lines[index] = f"{simple.group('indent')}{field} = {replacement}{comment}{newline}"
             count += 1
             index += 1
@@ -200,8 +203,7 @@ def transform_inline_assignments(
             if NUMBER.fullmatch(value):
                 replacement = scaled_number(value, factor)
             else:
-                replacement = alias_name(surface, match.group("field"), value, factor)
-                aliases[replacement] = (value, str(factor))
+                return match.group(0)
             count += 1
             return f"{match.group('field')}{match.group('spacing')}{replacement}"
 
@@ -255,8 +257,7 @@ def compose_simple_assignments(
         if NUMBER.fullmatch(value):
             replacement = scaled_number(value, factor)
         else:
-            replacement = alias_name(surface, field, value, factor)
-            aliases[replacement] = (value, str(factor))
+            continue
         expected[key] = (field, replacement, value)
 
     if not expected:
@@ -666,7 +667,13 @@ def main() -> int:
         })
 
     alias_path = args.package_root / "main_menu/common/script_values/cbp_political_reward_scalars_generated.txt"
-    write_aliases(alias_path, aliases)
+    if aliases:
+        raise SystemExit(
+            "Political generation produced custom scalar aliases; expand centralization "
+            "or leave the shared symbolic value Vanilla instead."
+        )
+    if alias_path.is_file():
+        alias_path.unlink()
     write_central_script_value_override(args.game_root, args.package_root, centralized)
     manifest = {
         "generator": "tools/generate_political_reward_overrides.py",

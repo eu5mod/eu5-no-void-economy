@@ -34,7 +34,7 @@ colonial_revolution.2 = {
 	option = {
 		name = colonial_revolution.2.a
 
-		add_stability = cbp_event_add_stability_stability_weak_penalty_d276f28e42 # VANILLA = stability_weak_penalty
+		add_stability = stability_weak_penalty
 		custom_tooltip = colonial_revolution.1.a.tt
 	}
 }
@@ -66,7 +66,7 @@ colonial_revolution.3 = {
 	option = {
 		name = colonial_revolution.3.b
 
-		add_stability = cbp_event_add_stability_stability_mild_bonus_49d003798d # VANILLA = stability_mild_bonus
+		add_stability = stability_mild_bonus
 
 		ai_chance = {
 			factor = 0.5
@@ -119,7 +119,7 @@ colonial_revolution.5 = {
 		name = colonial_revolution.5.a
 
 		add_stability = stability_mild_penalty
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 
 	}
 	option = {
@@ -420,7 +420,7 @@ colonial_revolution.13 = {
 	option = {
 		name = colonial_revolution.13.a
 
-		add_legitimacy = cbp_event_add_legitimacy_legitimacy_mild_penalty_a366e68516 # VANILLA = legitimacy_mild_penalty
+		add_legitimacy = legitimacy_mild_penalty
 		add_prestige = prestige_severe_penalty
 		every_subject = {
 			limit = {
@@ -646,7 +646,7 @@ colonial_revolution.1000 = {
 	option = { #Nevermind
 		name = colonial_revolution.1000.d
 
-		add_government_power = cbp_event_add_government_power_prestige_weak_bonus_e1a36eed4c # VANILLA = prestige_weak_bonus
+		add_government_power = prestige_weak_bonus
 	}
 }
 
@@ -672,7 +672,7 @@ colonial_revolution.1001 = {
 		ai_chance = {
 			factor = 10
 		}
-		add_government_power = cbp_event_add_government_power_government_power_mild_penalty_8cad4269b4 # VANILLA = government_power_mild_penalty
+		add_government_power = government_power_mild_penalty
 		add_opinion_mutual_effect = {
 			target = scope:target_colony
 			modifier = accepted_diplomatic_offer
@@ -837,6 +837,6 @@ colonial_revolution.1002 = {
 				modifier = refused_diplomatic_offer
 			}
 		}
-		add_government_power = cbp_event_add_government_power_government_power_weak_penalty_baa7d5e27a # VANILLA = government_power_weak_penalty
+		add_government_power = government_power_weak_penalty
 	}
 }
