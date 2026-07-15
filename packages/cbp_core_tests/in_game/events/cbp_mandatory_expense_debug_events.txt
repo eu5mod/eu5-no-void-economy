@@ -1,0 +1,25 @@
+namespace = cbp_mandatory_expense_debug
+
+cbp_mandatory_expense_debug.1 = {
+	type = country_event
+	title = cbp_mandatory_expense_debug.1.title
+	desc = cbp_mandatory_expense_debug.1.desc
+	outcome = neutral
+	orphan = yes
+
+	trigger = { always = no }
+
+	immediate = {
+		if = {
+			limit = { has_country_modifier = cbp_mandatory_stability_expense }
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=modifier_present stability_investment=-0.5 slider_max=1 expected_vanilla_zero_investment_baseline_slider=0.5"
+		}
+		else = {
+			debug_log = "ModeU5 MANDATORY_EXPENSE PROBE result=modifier_missing"
+		}
+	}
+
+	option = {
+		name = cbp_debug.close
+	}
+}

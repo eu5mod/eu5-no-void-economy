@@ -1,0 +1,5 @@
+NEconomy = {
+	# Vanilla: 0.5. Together with the -0.5 mandatory Stability investment
+	# modifier, a 50% slider reproduces the vanilla neutral contribution.
+	STABILITY_INVEST_FACTOR = 1
+}

@@ -1,0 +1,3 @@
+﻿l_english:
+ STATIC_MODIFIER_NAME_cbp_mandatory_stability_expense: "(CBP) Mandatory Stability Expense"
+ STATIC_MODIFIER_DESC_cbp_mandatory_stability_expense: "A baseline Stability expense. Set the Stability budget slider to 50% to reproduce the vanilla zero-investment baseline."
