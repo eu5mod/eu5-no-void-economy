@@ -34,29 +34,48 @@ def main() -> int:
         return 1
 
     require_assignment(defines, "STABILITY_INVEST_FACTOR", "1", failures)
+    require_assignment(defines, "GOV_POWER_INVEST_FACTOR", "3.0", failures)
     require_assignment(modifiers, "stability_investment", "-0.5", failures)
+    for government_power in (
+        "monthly_legitimacy",
+        "monthly_republican_tradition",
+        "monthly_devotion",
+        "monthly_horde_unity",
+        "monthly_tribal_cohesion",
+    ):
+        require_assignment(modifiers, government_power, "-1", failures)
 
     modifier_text = modifiers.read_text(encoding="utf-8-sig")
     if "stability_decay" in modifier_text:
         failures.append("Mandatory Stability expense must not use percentage-based stability_decay")
 
     effects_text = effects.read_text(encoding="utf-8-sig")
-    if "has_country_modifier = cbp_mandatory_stability_expense" not in effects_text:
-        failures.append("Monthly repair must be idempotently guarded by has_country_modifier")
-    if "days = -1" not in effects_text or "mode = replace" not in effects_text:
-        failures.append("Mandatory Stability expense must be a permanent replace-mode modifier")
+    for modifier in (
+        "cbp_mandatory_stability_expense",
+        "cbp_mandatory_government_power_expense",
+    ):
+        if f"has_country_modifier = {modifier}" not in effects_text:
+            failures.append(f"Monthly repair for {modifier} must be idempotently guarded")
+    if effects_text.count("days = -1") != 2 or effects_text.count("mode = replace") != 2:
+        failures.append("Both mandatory expenses must be permanent replace-mode modifiers")
 
     on_action_text = on_actions.read_text(encoding="utf-8-sig")
-    if on_action_text.count("cbp_apply_mandatory_stability_expense_to_all_countries = yes") != 1:
-        failures.append("Package initialization must apply the expense to all countries exactly once")
+    if on_action_text.count("cbp_apply_mandatory_expenses_to_all_countries = yes") != 1:
+        failures.append("Package initialization must apply both expenses to all countries exactly once")
     if on_action_text.count("cbp_ensure_mandatory_stability_expense = yes") != 1:
-        failures.append("Monthly country pulse must repair the expense for newly created countries")
+        failures.append("Monthly country pulse must repair Stability expense for new countries")
+    if on_action_text.count("cbp_ensure_mandatory_government_power_expense = yes") != 1:
+        failures.append("Monthly country pulse must repair government-power expense for new countries")
 
     localization_text = localization.read_text(encoding="utf-8-sig")
     if "STATIC_MODIFIER_NAME_cbp_mandatory_stability_expense" not in localization_text:
         failures.append("Mandatory Stability expense modifier name is not localized")
+    if "STATIC_MODIFIER_NAME_cbp_mandatory_government_power_expense" not in localization_text:
+        failures.append("Mandatory government-power expense modifier name is not localized")
     if "50%" not in localization_text:
         failures.append("Modifier description must explain the 50% vanilla-neutral slider position")
+    if "66.7%" not in localization_text:
+        failures.append("Government-power description must explain the 66.7% maintenance point")
 
     if failures:
         print("CBP mandatory-expense validation failed:", file=sys.stderr)
@@ -64,7 +83,7 @@ def main() -> int:
             print(f"- {failure}", file=sys.stderr)
         return 1
 
-    print("CBP mandatory Stability expense validation passed")
+    print("CBP mandatory Stability and government-power expense validation passed")
     return 0
 
 

@@ -1,3 +1,5 @@
 ﻿l_english:
  STATIC_MODIFIER_NAME_cbp_mandatory_stability_expense: "(CBP) Mandatory Stability Expense"
  STATIC_MODIFIER_DESC_cbp_mandatory_stability_expense: "A baseline Stability expense. Set the Stability budget slider to 50% to reproduce the vanilla zero-investment baseline."
+ STATIC_MODIFIER_NAME_cbp_mandatory_government_power_expense: "(CBP) Mandatory Government Power Expense"
+ STATIC_MODIFIER_DESC_cbp_mandatory_government_power_expense: "An additional monthly decay for Legitimacy and equivalent government powers. Court spending maintains the active power at 66.7%, while maximum spending preserves the vanilla maximum monthly increase."

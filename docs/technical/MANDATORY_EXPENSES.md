@@ -32,8 +32,39 @@ No reconciliation fallback is implemented. TECH-01 151 remains runtime-pending
 until the Economy interface confirms the `-0.5` modifier contribution and the
 slider reaches `+1.0` before the baseline is applied.
 
-## Legitimacy
+## Court and government power
 
-Legitimacy and equivalent government-power expenses retain vanilla tuning in
-this PR. A later extension requires a separately approved baseline, slider
-surface, and neutral-point rule; it must not infer them from Stability.
+Vanilla Court spending has a fixed `-1` monthly decay and a slider maximum of
+`+2`, producing a net range from `-1` to `+1`. CBP adds another `-1` baseline
+and increases `GOV_POWER_INVEST_FACTOR` to `3.0`:
+
+```txt
+slider contribution = slider position x 3.0
+total baseline = vanilla -1 + CBP -1
+net contribution = slider contribution - 2
+```
+
+Therefore:
+
+```txt
+0% slider     -> -2.0
+50% slider    -> -0.5
+66.7% slider  ->  0.0 (maintenance point)
+100% slider   -> +1.0 (vanilla maximum monthly increase)
+```
+
+The package applies the additional `-1` to every government-power variant so
+the shared Court slider remains symmetric across government forms and through
+government changes:
+
+```txt
+monthly_legitimacy
+monthly_republican_tradition
+monthly_devotion
+monthly_horde_unity
+monthly_tribal_cohesion
+```
+
+The modifiers are always present; the engine uses the power relevant to the
+country's current government form. Runtime validation must confirm the active
+government power's tooltip and monthly result. No reconciliation is provided.

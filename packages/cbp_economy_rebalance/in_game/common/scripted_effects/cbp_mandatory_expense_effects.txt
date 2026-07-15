@@ -14,8 +14,22 @@ cbp_ensure_mandatory_stability_expense = {
 	}
 }
 
-cbp_apply_mandatory_stability_expense_to_all_countries = {
+cbp_ensure_mandatory_government_power_expense = {
+	if = {
+		limit = {
+			NOT = { has_country_modifier = cbp_mandatory_government_power_expense }
+		}
+		add_country_modifier = {
+			modifier = cbp_mandatory_government_power_expense
+			days = -1
+			mode = replace
+		}
+	}
+}
+
+cbp_apply_mandatory_expenses_to_all_countries = {
 	every_country = {
 		cbp_ensure_mandatory_stability_expense = yes
+		cbp_ensure_mandatory_government_power_expense = yes
 	}
 }
