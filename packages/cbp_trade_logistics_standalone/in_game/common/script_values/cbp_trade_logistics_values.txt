@@ -1,0 +1,6 @@
+# Effective loaded merchant-maintenance cost. A compatible define override from
+# another mod is intentionally respected.
+cbp_trade_logistics_base_merchant_maintenance_cost = {
+	value = define:NCountry|MERCHANT_MAINTENANCE_COST
+	min = 0
+}

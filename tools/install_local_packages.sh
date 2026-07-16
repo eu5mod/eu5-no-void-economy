@@ -61,6 +61,7 @@ package_ids=(
 	"cbp_core_tests"
 	"cbp_core_tests"
 	"cbp_core_tests"
+	"cbp_trade_logistics_standalone"
 )
 
 package_sources=(
@@ -71,6 +72,7 @@ package_sources=(
 	"$repo_root/packages/cbp_core_tests"
 	"$repo_root/packages/cbp_core_tests"
 	"$repo_root/packages/cbp_core_tests"
+	"$repo_root/packages/cbp_trade_logistics_standalone"
 )
 
 # The root checkout is the future single gameplay mod. Mirror it by default so
@@ -160,7 +162,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests|cbp_core_tests)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_trade_logistics_standalone)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -331,7 +333,7 @@ fi
 mkdir -p "$target_root"
 install_core
 
-for index in 1 2 3 4 5 6; do
+for ((index = 1; index < ${#package_ids[@]}; index++)); do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"

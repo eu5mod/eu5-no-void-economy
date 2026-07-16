@@ -1,0 +1,14 @@
+{
+	"id": "cbp_trade_logistics_standalone",
+	"name": "CBP Trade Logistics",
+	"version": "0.1.0",
+	"game_id": "eu5",
+	"supported_game_version": "1.*.*",
+	"short_description": "Standalone market-level US-17 and US-20 trade reconciliation. No NVE, CMM, or country-stock dependency.",
+	"tags": [
+		"Gameplay",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
+}

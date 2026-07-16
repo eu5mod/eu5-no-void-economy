@@ -103,6 +103,7 @@ fi
 
 step '3/7' 'Run canonical static validation suite'
 python3 tools/validate_us04_pop_demand_architecture.py
+python3 tools/validate_us17_us20_standalone.py
 ./tools/validate_module_packages.sh
 ./tools/audit_cbp_persistent_state.sh
 ./tools/validate_cbp_script_safety.sh
