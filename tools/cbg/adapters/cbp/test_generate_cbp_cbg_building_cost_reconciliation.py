@@ -14,7 +14,7 @@ SPEC.loader.exec_module(MODULE)
 
 
 class BuildingCostReconciliationTests(unittest.TestCase):
-    def test_comments_negative_discount_and_records_positive_contribution(self) -> None:
+    def test_reads_negative_discount_without_modifying_source(self) -> None:
         block = [
             "example = {",
             "\tmodifier = {",
@@ -22,22 +22,20 @@ class BuildingCostReconciliationTests(unittest.TestCase):
             "\t}",
             "}",
         ]
-        rendered, contribution = MODULE.comment_discount_lines(block)
-        self.assertAlmostEqual(contribution, 0.10)
-        self.assertIn("# local_build_buildings_cost = -0.10", "\n".join(rendered))
+        self.assertAlmostEqual(MODULE.discount_contribution(block), 0.10)
+        self.assertIn("local_build_buildings_cost = -0.10", "\n".join(block))
 
     def test_ignores_positive_cost_penalty(self) -> None:
         block = ["example = {", "\tlocal_build_buildings_cost = 0.10", "}"]
-        rendered, contribution = MODULE.comment_discount_lines(block)
-        self.assertEqual(rendered, block)
-        self.assertEqual(contribution, 0)
+        self.assertEqual(MODULE.discount_contribution(block), 0)
 
-    def test_runtime_formula_is_diminishing(self) -> None:
+    def test_runtime_calculates_target_then_signed_delta(self) -> None:
         contribution = MODULE.Contribution(MODULE.KINDS[0], "example", 1.0, "example.txt")
         effect = MODULE.render_effect([contribution], 1.5)
         self.assertIn("multiply = 1.5", effect)
         self.assertIn("divide = var:modeu5_building_cost_denominator", effect)
-        self.assertIn("subtract = 1", effect)
+        self.assertIn("add = var:modeu5_vanilla_building_discount", effect)
+        self.assertIn("size = var:modeu5_building_cost_reconciliation", effect)
 
     def test_only_supported_source_directories_are_scanned(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -57,11 +55,12 @@ class BuildingCostReconciliationTests(unittest.TestCase):
                 "factor": 1.5,
             })()
             payload = MODULE.build(args)
-            files = {item["file"] for item in payload["transformations"]}
-            self.assertTrue(any("/laws/" in path for path in files))
-            self.assertTrue(any("/government_reforms/" in path for path in files))
-            self.assertTrue(any("/estate_privileges/" in path for path in files))
-            self.assertFalse(any("/advances/" in path for path in files))
+            self.assertEqual(payload["transformations"], [])
+            manifest = (package / "cbp_generated/building_cost_reconciliation_sources.json").read_text()
+            self.assertIn('"category": "laws"', manifest)
+            self.assertIn('"category": "government_reforms"', manifest)
+            self.assertIn('"category": "estate_privileges"', manifest)
+            self.assertNotIn('"category": "advances"', manifest)
 
 
 if __name__ == "__main__":
