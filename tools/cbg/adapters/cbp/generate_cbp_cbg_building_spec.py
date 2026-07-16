@@ -21,7 +21,7 @@ from tools.transform_cbp_economy_building_overrides import (
 )
 
 TRADE_CAPACITY_ASSIGNMENT = re.compile(
-    r"^(\s*(?:local_merchant_capacity|merchant_capacity_from_building)\s*=\s*)"
+    r"^(\s*merchant_capacity_from_building\s*=\s*)"
     r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))(\s*(?:#.*)?)$"
 )
 FOREIGN_MARKER = re.compile(r"\bis_foreign\s*=\s*yes\b")
@@ -93,7 +93,7 @@ def header_for(
     header = rendered.splitlines()[:-1]
     header.insert(
         5,
-        "# Foreign-building trade capacity multiplier: "
+        "# Foreign-building merchant capacity multiplier: "
         f"{format_decimal(foreign_trade_capacity_multiplier)}",
     )
     return header
@@ -157,7 +157,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         "mod_id": "cbp-economy-rebalance-buildings",
         "business_rule": (
             "Apply configured production, global trade-capacity, foreign-building "
-            "trade-capacity, maintenance, minting, and stockpile policies to Vanilla buildings."
+            "merchant-capacity, maintenance, minting, and stockpile policies to Vanilla buildings."
         ),
         "transformations": transformations,
         "scope_contract": {
@@ -175,7 +175,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--output-multiplier", type=float, required=True)
     parser.add_argument("--trade-capacity-multiplier", type=float, required=True)
-    parser.add_argument("--foreign-trade-capacity-multiplier", type=float, default=4.0)
+    parser.add_argument("--foreign-trade-capacity-multiplier", type=float, default=2.0)
     parser.add_argument("--maintenance-multiplier", type=float, required=True)
     parser.add_argument("--trade-maintenance-multiplier", type=float, required=True)
     parser.add_argument("--estate-power-multiplier", type=float, default=0.5)
