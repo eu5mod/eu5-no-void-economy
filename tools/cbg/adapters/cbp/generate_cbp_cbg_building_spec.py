@@ -20,6 +20,12 @@ from tools.transform_cbp_economy_building_overrides import (
     transform_lines_with_plan,
 )
 
+TRADE_CAPACITY_ASSIGNMENT = re.compile(
+    r"^(\s*(?:local_merchant_capacity|merchant_capacity_from_building)\s*=\s*)"
+    r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))(\s*(?:#.*)?)$"
+)
+FOREIGN_MARKER = re.compile(r"\bis_foreign\s*=\s*yes\b")
+
 
 def load_goods(repo_root: Path) -> set[str]:
     text = (repo_root / "tools/cbp_goods.sh").read_text(encoding="utf-8")
@@ -33,11 +39,39 @@ def load_goods(repo_root: Path) -> set[str]:
     return goods
 
 
+def apply_foreign_trade_capacity_multiplier(
+    lines: list[str], multiplier: float
+) -> tuple[list[str], set[str]]:
+    """Compose a foreign-building multiplier after the global US-09 multiplier."""
+    result = list(lines)
+    changed_buildings: set[str] = set()
+    for building in top_level_buildings(result):
+        block = result[building.start : building.end + 1]
+        if not any(FOREIGN_MARKER.search(line.split("#", 1)[0]) for line in block):
+            continue
+        for index in range(building.start, building.end + 1):
+            match = TRADE_CAPACITY_ASSIGNMENT.match(result[index])
+            if not match:
+                continue
+            old_value = float(match.group(2))
+            new_value = format_decimal(old_value * multiplier)
+            suffix = match.group(3)
+            trace = f"# FOREIGN BUILDING x{format_decimal(multiplier)}"
+            existing_comment = suffix.strip().lstrip("# ").strip()
+            suffix = f" {trace}"
+            if existing_comment:
+                suffix += f"; {existing_comment}"
+            result[index] = f"{match.group(1)}{new_value}{suffix}"
+            changed_buildings.add(building.key)
+    return result, changed_buildings
+
+
 def header_for(
     source_basename: str,
     *,
     output_multiplier: float,
     trade_capacity_multiplier: float,
+    foreign_trade_capacity_multiplier: float,
     maintenance_multiplier: float,
     trade_maintenance_multiplier: float,
     estate_power_multiplier: float,
@@ -56,7 +90,13 @@ def header_for(
         minting_income_multiplier=minting_multiplier,
         political_modifier_multiplier=political_multiplier,
     )
-    return rendered.splitlines()[:-1]
+    header = rendered.splitlines()[:-1]
+    header.insert(
+        5,
+        "# Foreign-building trade capacity multiplier: "
+        f"{format_decimal(foreign_trade_capacity_multiplier)}",
+    )
+    return header
 
 
 def build_spec(args: argparse.Namespace) -> dict[str, object]:
@@ -80,7 +120,11 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
             political_modifier_multiplier=args.political_multiplier,
             goods=goods,
         )
-        if not changes:
+        transformed, foreign_changed = apply_foreign_trade_capacity_multiplier(
+            transformed, args.foreign_trade_capacity_multiplier
+        )
+        changed_buildings = {change.building for change in changes} | foreign_changed
+        if not changed_buildings:
             continue
         blocks = {block.key: block for block in top_level_buildings(transformed)}
         relative = f"in_game/common/building_types/{source.name}"
@@ -88,13 +132,14 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
             source.name,
             output_multiplier=args.output_multiplier,
             trade_capacity_multiplier=args.trade_capacity_multiplier,
+            foreign_trade_capacity_multiplier=args.foreign_trade_capacity_multiplier,
             maintenance_multiplier=args.maintenance_multiplier,
             trade_maintenance_multiplier=args.trade_maintenance_multiplier,
             estate_power_multiplier=args.estate_power_multiplier,
             minting_multiplier=args.minting_multiplier,
             political_multiplier=args.political_multiplier,
         )
-        for building in sorted({change.building for change in changes}):
+        for building in sorted(changed_buildings):
             block = blocks[building]
             transformations.append({
                 "file": relative,
@@ -110,7 +155,10 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-buildings",
-        "business_rule": "Apply configured production, trade-capacity, maintenance, minting, and stockpile policies to Vanilla buildings.",
+        "business_rule": (
+            "Apply configured production, global trade-capacity, foreign-building "
+            "trade-capacity, maintenance, minting, and stockpile policies to Vanilla buildings."
+        ),
         "transformations": transformations,
         "scope_contract": {
             "owned_outputs": owned_outputs,
@@ -127,12 +175,15 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--output-multiplier", type=float, required=True)
     parser.add_argument("--trade-capacity-multiplier", type=float, required=True)
+    parser.add_argument("--foreign-trade-capacity-multiplier", type=float, default=4.0)
     parser.add_argument("--maintenance-multiplier", type=float, required=True)
     parser.add_argument("--trade-maintenance-multiplier", type=float, required=True)
     parser.add_argument("--estate-power-multiplier", type=float, default=0.5)
     parser.add_argument("--minting-multiplier", type=float, required=True)
     parser.add_argument("--political-multiplier", type=float, default=0.75)
     args = parser.parse_args()
+    if args.foreign_trade_capacity_multiplier < 0:
+        raise SystemExit("foreign trade-capacity multiplier must be non-negative")
     payload = build_spec(args)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
