@@ -25,3 +25,9 @@ NEconomy = {
 	# preserves Vanilla's maximum +1 government-power growth.
 	GOV_POWER_INVEST_FACTOR = 3.0 # VANILLA = 2.0
 }
+
+NAI = {
+	# Higher Control incentives require the AI to tolerate a stronger border
+	# before annexing subjects.
+	AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED = 0.60 # VANILLA = 0.35
+}

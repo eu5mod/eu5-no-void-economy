@@ -49,8 +49,35 @@ def main() -> int:
         ("DIPLOMATIC_SPENDING_FRACTION", "0.05"),
         ("STABILIY_EXPENSE_FACTOR", "0.20"),
         ("PRESTIGE_INVEST_FACTOR", "0.05"),
+        ("AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED", "0.60"),
     ):
         require_assignment(defines, key, expected, failures)
+
+    legacy_defines = ROOT / "loading_screen/common/defines/cbp_economic_defines.txt"
+    legacy_text = legacy_defines.read_text(encoding="utf-8-sig")
+    migrated_keys = (
+        "ECONOMICAL_BASE_FROM_TAX_BASE",
+        "ECONOMICAL_BASE_FROM_POP",
+        "ECONOMICAL_BASE_FROM_TRADE_VALUE",
+        "ECONOMICAL_BASE_FROM_TRADE_PROFIT",
+        "ECONOMICAL_BASE_INTEREST",
+        "ECONOMICAL_BASE_FROM_FOREIGN_BUILDINGS",
+        "ECONOMICAL_BASE_FROM_SUBJECT",
+        "ECONOMICAL_BASE_SCALE_FROM_EACH_INSTITUTION",
+        "ECONOMICAL_BASE_ALL_HAS_TRADE",
+        "COURT_SPENDING_FRACTON",
+        "DIPLOMATIC_SPENDING_FRACTION",
+        "STABILITY_INVEST_FACTOR",
+        "STABILIY_EXPENSE_FACTOR",
+        "PRESTIGE_INVEST_FACTOR",
+        "GOV_POWER_INVEST_FACTOR",
+        "AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED",
+    )
+    for key in migrated_keys:
+        if re.search(rf"^\s*{key}\s*=", legacy_text, re.MULTILINE):
+            failures.append(
+                f"Legacy cbp_economic_defines.txt must not duplicate migrated {key}"
+            )
     require_assignment(modifiers, "stability_investment", "-0.5", failures)
     for government_power in (
         "monthly_legitimacy",
