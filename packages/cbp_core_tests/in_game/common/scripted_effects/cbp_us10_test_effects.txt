@@ -1030,7 +1030,7 @@ cbp_debug_run_us10_ui_visibility_tests = {
 			scope:gui_cbp_us10_ui_visibility_fixture_passed > 0
 		}
 		set_global_variable = gui_cbp_us10_ui_visibility_passed
-		debug_log = "ModeU5 TEST PASS scenario=us10_ui_visibility"
+		debug_log = "ModeU5 TEST PASS scenario=us10_ui_visibility consumption_requested=[THIS.GetVariable('gui_cbp_us10_ui_consumption_requested').GetValue|2] consumption_satisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_satisfied').GetValue|2] consumption_unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_consumption_unsatisfied').GetValue|2] transfer_requested=[THIS.GetVariable('gui_cbp_us10_ui_trade_requested').GetValue|2] transfer_completed=[THIS.GetVariable('gui_cbp_us10_ui_trade_transferred').GetValue|2] transfer_unsatisfied=[THIS.GetVariable('gui_cbp_us10_ui_trade_unsatisfied').GetValue|2] country_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_country_stock').GetValue|2] market_stock=[THIS.GetVariable('gui_cbp_us10_ui_visibility_market_stock').GetValue|2] fast_path_used=[THIS.GetVariable('gui_cbp_us10_ui_issue109_fast_path_used').GetValue|0] prefilter_used=[THIS.GetVariable('gui_cbp_us10_ui_visibility_prefilter_used').GetValue|0] excluded_candidates=[THIS.GetVariable('gui_cbp_us10_ui_issue109_floor_excluded_count').GetValue|0]"
 	}
 	else_if = {
 		limit = { scope:gui_cbp_us10_ui_visibility_blocked = 0 }
