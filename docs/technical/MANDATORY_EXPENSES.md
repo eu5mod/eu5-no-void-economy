@@ -8,21 +8,35 @@ bonus into a budget commitment with a vanilla-neutral midpoint.
 ```txt
 slider contribution = slider position x 1.0
 mandatory baseline = -0.5
-net contribution = slider contribution - 0.5
+positive-Stability offset = max(0, Stability / 100)
+net contribution = slider contribution - 0.5 + positive-Stability offset
 ```
 
 Therefore:
 
 ```txt
+At Stability 0:
+
 0% slider   -> -0.5
 50% slider  ->  0.0 (vanilla zero-investment baseline)
 100% slider -> +0.5 (vanilla maximum positive contribution)
+
+At Stability +25:
+
+0% slider   -> -0.25
+50% slider  -> +0.25
+100% slider -> +0.75
 ```
 
 `STABILITY_INVEST_FACTOR = 1` doubles the vanilla positive range. The permanent
 `cbp_mandatory_stability_expense` country modifier supplies the additive
-`stability_investment = -0.5` baseline. `stability_decay` is intentionally not
-used because it is a percentage decay toward zero, not a flat monthly expense.
+`stability_investment = -0.5` baseline. The
+`cbp_positive_stability_expense_offset` auto-modifier scales a unit
+`stability_investment` contribution by `Stability x 0.01`, and is active only
+while Stability is positive. Together they implement
+`-0.5 + max(0, Stability / 100)`. `stability_decay` is intentionally left
+unchanged because it is Vanilla's percentage movement toward zero, not a flat
+monthly expense.
 
 The define is grouped with the other expense-slider and Economic Base tuning in
 `loading_screen/common/defines/cbp_slider_defines.txt`.
