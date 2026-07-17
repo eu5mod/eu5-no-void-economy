@@ -867,6 +867,7 @@ def generate(
     for intent in intents:
         by_file.setdefault(intent.target.file, []).append(intent)
     manifest_files: list[dict[str, Any]] = []
+    pending_outputs: list[tuple[Path, PurePosixPath, bytes]] = []
     aliases: dict[str, tuple[str, str]] = {}
     for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
         output_contracts = {
@@ -939,11 +940,7 @@ def generate(
         if has_bom and render_mode in {"full", "normalized"}:
             generated = b"\xef\xbb\xbf" + generated
         destination = output_root / Path(output_relative)
-        assert_owned_output(
-            destination, output_relative, owned, generated, adopt_identical=adopt_identical
-        )
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(generated)
+        pending_outputs.append((destination, output_relative, generated))
         manifest_files.append({
             "path": output_relative.as_posix(),
             "vanilla_sha256": sha256(source_bytes),
@@ -956,9 +953,7 @@ def generate(
         )
         alias_bytes = render_aliases(aliases)
         alias_destination = output_root / Path(alias_relative)
-        assert_owned_output(alias_destination, alias_relative, owned)
-        alias_destination.parent.mkdir(parents=True, exist_ok=True)
-        alias_destination.write_bytes(alias_bytes)
+        pending_outputs.append((alias_destination, alias_relative, alias_bytes))
         manifest_files.append({
             "path": alias_relative.as_posix(),
             "vanilla_sha256": None,
@@ -966,11 +961,22 @@ def generate(
             "transformations": [{"generated_alias_count": len(aliases)}],
         })
     current = {PurePosixPath(entry["path"]) for entry in manifest_files}
+    for destination, relative, generated in pending_outputs:
+        assert_owned_output(
+            destination, relative, owned, generated, adopt_identical=adopt_identical
+        )
     for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
         stale_path = output_root / Path(stale)
         if not stale_path.is_file():
             continue
         assert_owned_output(stale_path, stale, owned)
+    for destination, _relative, generated in pending_outputs:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(generated)
+    for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
+        stale_path = output_root / Path(stale)
+        if not stale_path.is_file():
+            continue
         stale_path.unlink()
     return {"schema_version": 1, "generator": "community_balance_generator", "files": manifest_files}
 

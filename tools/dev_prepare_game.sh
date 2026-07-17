@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+current_step="startup"
 target_args=()
 run_idempotence="yes"
 clear_logs="yes"
@@ -63,9 +64,21 @@ done
 cd "$repo_root"
 
 step() {
+	current_step="$1 $2"
 	printf '\n%s\n' '########################################################################'
 	printf '[%s] %s\n' "$1" "$2"
 }
+
+report_failure() {
+	status=$?
+	trap - ERR
+	printf '\n%s\n' '########################################################################' >&2
+	printf '[FAILED] Local game preparation stopped during: %s\n' "$current_step" >&2
+	printf '%s\n' 'No package installation or installation verification was completed.' >&2
+	exit "$status"
+}
+
+trap report_failure ERR
 
 step '1/7' 'Generate all runtime and package artifacts'
 ./tools/generate_all.sh
