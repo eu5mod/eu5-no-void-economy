@@ -13,6 +13,7 @@ from tools.cbg.community_balance_generator import (
     generate,
     load_intents,
     print_generation_summary,
+    sha256,
 )
 VANILLA = """marketplace = {
 \tmaintenance = 1.0
@@ -341,6 +342,42 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "not owned"):
             generate(self.game, self.output, intents, adopt_identical=True)
+
+    def test_failed_ownership_preflight_writes_no_partial_outputs(self):
+        second_source = self.game / "in_game/common/building_types/warehouse.txt"
+        second_source.write_text(VANILLA)
+        spec = self.spec("a.json", "mod-a", [
+            self.target("multiply", 0.5),
+            {
+                **self.target("multiply", 0.5),
+                "file": "in_game/common/building_types/warehouse.txt",
+            },
+        ])
+        intents, _ = load_intents([spec], self.game)
+        first_output = self.output / "in_game/common/building_types/market.txt"
+        second_output = self.output / "in_game/common/building_types/warehouse.txt"
+        first_output.parent.mkdir(parents=True)
+        first_output.write_text("owned old output\n")
+        second_output.write_text("local edit\n")
+        manifest_path = self.output / "manifest.json"
+        manifest_path.write_text(json.dumps({
+            "generator": "community_balance_generator",
+            "files": [
+                {
+                    "path": "in_game/common/building_types/market.txt",
+                    "generated_sha256": sha256(first_output.read_bytes()),
+                },
+                {
+                    "path": "in_game/common/building_types/warehouse.txt",
+                    "generated_sha256": "not-the-local-edit",
+                },
+            ],
+        }))
+
+        with self.assertRaisesRegex(ValueError, "locally modified"):
+            generate(self.game, self.output, intents, manifest_path)
+
+        self.assertEqual("owned old output\n", first_output.read_text())
 
     def test_signed_legacy_tree_can_be_adopted_without_manifest(self):
         spec = self.spec("a.json", "mod-a", [self.target("multiply", 0.5)])
