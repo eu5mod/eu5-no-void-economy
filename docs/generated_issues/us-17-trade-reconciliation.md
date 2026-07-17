@@ -88,9 +88,9 @@ base_maintenance_amount =
     trade_volume * base_maintenance_unit_cost
 ```
 
-`trade_volume` is the merchant-capacity route value. The moved-goods quantity,
-which is derived through the existing literal-good transport-cost helper, is a
-separate input and must not replace `trade_volume` in this formula.
+`trade_volume` is both the native moved-goods quantity and the input used by the
+merchant-maintenance formula. Runtime copies it directly for stock movement and
+does not apply the traded good's static `transport_cost`.
 
 ## Existing merchant-maintenance efficiency
 

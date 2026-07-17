@@ -286,6 +286,7 @@ def validate_us17_us20_static_contract(
         "Trade-rework runtime must not reintroduce a market-center every_trade scaffold",
     )
 
+
     unsafe_global_counter = re.compile(
         r"set_global_variable\s*=\s*\{[^{}]*name\s*=\s*cbp_(?:trade_efficiency|us20)[^{}]*value\s*=\s*\{\s*value\s*=\s*global_var:",
         re.DOTALL,
@@ -326,8 +327,54 @@ def validate_us17_us20_static_contract(
         expect(assertion in us20_probe_effects, f"US20 E2E probe must assert {assertion}")
 
 
+def validate_native_trade_quantity_contract(
+    *, country_trade_owner_effects: str, transport_helpers: str
+) -> None:
+    capture = block(
+        country_trade_owner_effects,
+        "cbp_capture_country_trade_owner_trade_quantity",
+    )
+    expect(
+        "value = trade_volume" in capture,
+        "Native trade quantity capture must read trade_volume",
+    )
+    expect(
+        "value = scope:cbp_trade_owner_trade_volume" in capture,
+        "Native trade quantity must copy trade_volume directly",
+    )
+    expect(
+        "cbp_compute_trade_owner_goods_quantity_from_traded_good" not in capture,
+        "Native trade quantity must not pass through static transport_cost conversion",
+    )
+    expect(
+        "cbp_compute_trade_owner_goods_quantity_from_traded_good" not in transport_helpers,
+        "Generated transport helpers must not recreate the native trade-owner dispatcher",
+    )
+    expect(
+        "cbp_compute_goods_quantity_from_trade_capacity_good_glass" in transport_helpers,
+        "Generic literal-good capacity conversion helpers must remain available",
+    )
+
+
 def validate_us10_test_contract(us10_test_effects: str) -> None:
     """Keep the US-10 harness aligned with the canonical generated ledgers."""
+
+    capacity_conversion = block(
+        us10_test_effects,
+        "cbp_debug_run_us10_trade_capacity_conversion_tests",
+    )
+    expect(
+        "cbp_compute_goods_quantity_from_trade_capacity_good_glass" in capacity_conversion,
+        "US10 capacity conversion probe must use glass instead of a transport_cost=1 good",
+    )
+    expect(
+        "test_cbp_us10_conversion_glass_transport_cost = 0.5" in capacity_conversion,
+        "US10 glass probe must assert the explicit transport cost 0.5",
+    )
+    expect(
+        "test_cbp_us10_conversion_glass_quantity = 40" in capacity_conversion,
+        "US10 glass probe must assert capacity 20 converts to quantity 40",
+    )
 
     legacy_ledger_patterns = [
         "test_cbp_consumption_wheat_requested_by_market",
@@ -598,6 +645,7 @@ def main() -> int:
     stock_effects = read("in_game/common/scripted_effects/cbp_stock_effects.txt")
     core04_effects = read("in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt")
     country_trade_owner_effects = read("in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt")
+    transport_helpers = read("in_game/common/scripted_effects/cbp_transport_cost_generated.txt")
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt")
     trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
     owner_modifier_effects = read("in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt")
@@ -630,6 +678,10 @@ def main() -> int:
         owner_modifier_effects=owner_modifier_effects,
         owner_modifier_probe_events=owner_modifier_probe_events,
         owner_modifier_probe_effects=owner_modifier_probe_effects,
+    )
+    validate_native_trade_quantity_contract(
+        country_trade_owner_effects=country_trade_owner_effects,
+        transport_helpers=transport_helpers,
     )
     validate_us17_us20_static_contract(
         stock_on_actions=stock_on_actions,

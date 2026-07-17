@@ -22,8 +22,8 @@ cbp_trade_efficiency_zero_value = {
 
 # Confirmed moved-goods quantity captured by
 # cbp_capture_country_trade_owner_trade_quantity before the reconciliation
-# hook runs. It is derived from trade_volume / traded_goods:transport_cost by
-# the existing literal-good helper path.
+# hook runs. Native trade_volume is already the moved-goods quantity and is
+# copied directly; static transport_cost conversion is not part of this path.
 cbp_trade_efficiency_route_quantity = {
 	value = scope:cbp_trade_owner_goods_quantity
 	min = 0

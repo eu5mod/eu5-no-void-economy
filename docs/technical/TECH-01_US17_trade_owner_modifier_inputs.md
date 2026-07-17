@@ -64,9 +64,10 @@ base_maintenance_amount =
   * define:NCountry|MERCHANT_MAINTENANCE_COST
 ```
 
-The moved-goods quantity remains a distinct value derived through the existing
-literal-good transport-cost helper. It must not replace `trade_volume` in the
-merchant-maintenance calculation.
+For a native Vanilla trade, `trade_volume` is also the moved-goods quantity.
+Runtime copies it directly and must not divide it by the traded good's static
+`transport_cost`. The literal-good transport helpers remain available only for
+inputs that are explicitly capacity-like and for focused diagnostics.
 
 ## Maintenance formula
 
