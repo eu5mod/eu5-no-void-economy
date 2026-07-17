@@ -154,13 +154,24 @@ def main() -> int:
 
     source_dir = common_dir / "building_types"
     output_dir = Path(args.package_common_dir) / "building_types"
-    manifest_dir = Path(args.package_common_dir).parents[1] / "cbp_generated" / "us09_buildings"
+    package_root = Path(args.package_common_dir).parents[1]
+    cbg_manifest_file = package_root / "cbp_generated" / "cbg_building_manifest.json"
     if not source_dir.is_dir():
         raise SystemExit(f"Missing source building_types directory: {source_dir}")
     if not output_dir.is_dir():
         raise SystemExit(f"Missing generated building_types directory: {output_dir}")
-    if not manifest_dir.is_dir():
-        raise SystemExit(f"Missing generated building manifest directory: {manifest_dir}")
+    if not cbg_manifest_file.is_file():
+        raise SystemExit(f"Missing CBG building manifest: {cbg_manifest_file}")
+
+    try:
+        cbg_manifest = json.loads(cbg_manifest_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as error:
+        raise SystemExit(f"Invalid CBG building manifest {cbg_manifest_file}: {error}")
+    cbg_files = {
+        entry.get("path"): entry
+        for entry in cbg_manifest.get("files", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    }
 
     goods = parse_goods_registry(repo_root)
     goods_set = set(goods)
@@ -175,7 +186,7 @@ def main() -> int:
     maintenance_entries_checked = 0
     stockpile_capacity_entries_checked = 0
     manifests_checked = 0
-    expected_manifest_names: set[str] = set()
+    expected_cbg_paths: set[str] = set()
 
     for source_file in sorted(source_dir.glob("*.txt")):
         if source_file.name == "readme.txt":
@@ -185,7 +196,7 @@ def main() -> int:
         source_entries = maintenance_entries(source_lines, goods_set)
         source_stockpile_entries = active_stockpile_capacity_entries(source_lines)
         generated_file = output_dir / source_file.name
-        manifest_file = manifest_dir / f"{source_file.stem}.json"
+        cbg_path = f"in_game/common/building_types/{source_file.name}"
 
         try:
             expected_body, expected_changes, building_count = transformer.transform_lines_with_plan(
@@ -209,18 +220,15 @@ def main() -> int:
                 failures.append(
                     f"{source_file.name}: override exists although no building transformation applies"
                 )
-            if manifest_file.exists():
-                failures.append(
-                    f"{source_file.name}: manifest exists although no building transformation applies"
-                )
             continue
 
-        expected_manifest_names.add(manifest_file.name)
+        expected_cbg_paths.add(cbg_path)
         if not generated_file.is_file():
             failures.append(f"Missing generated override for applicable source file: {source_file.name}")
             continue
-        if not manifest_file.is_file():
-            failures.append(f"Missing building-level change manifest: {manifest_file.name}")
+        manifest = cbg_files.get(cbg_path)
+        if manifest is None:
+            failures.append(f"Missing CBG manifest entry: {cbg_path}")
             continue
 
         if source_entries:
@@ -242,29 +250,12 @@ def main() -> int:
         expected_body = normalize_generator_whitespace(expected_body)
         expected_entries = maintenance_entries(expected_body, goods_set)
 
-        try:
-            manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError) as error:
-            failures.append(f"{manifest_file.name}: invalid manifest: {error}")
-            continue
-        source_label = f"<EU5_GAME_COMMON_DIR>/building_types/{source_file.name}"
-        expected_manifest = transformer.build_manifest(
-            source_file=source_file,
-            source_label=source_label,
-            generated_text=generated_text,
-            changes=expected_changes,
-            building_count=building_count,
-        )
-        if manifest != expected_manifest:
-            failures.append(
-                f"{manifest_file.name}: manifest does not match the parser-derived change plan"
-            )
-        if manifest.get("source_sha256") != hashlib.sha256(source_file.read_bytes()).hexdigest():
-            failures.append(f"{manifest_file.name}: source fingerprint mismatch")
-        if manifest.get("generated_sha256") != hashlib.sha256(
-            generated_text.encode("utf-8")
-        ).hexdigest():
-            failures.append(f"{manifest_file.name}: generated fingerprint mismatch")
+        if manifest.get("vanilla_sha256") != hashlib.sha256(source_file.read_bytes()).hexdigest():
+            failures.append(f"{cbg_path}: Vanilla fingerprint mismatch")
+        if manifest.get("generated_sha256") != hashlib.sha256(generated_file.read_bytes()).hexdigest():
+            failures.append(f"{cbg_path}: generated fingerprint mismatch")
+        if not manifest.get("transformations"):
+            failures.append(f"{cbg_path}: CBG manifest has no recorded transformations")
         manifests_checked += 1
         generated_active_stockpile_entries = active_stockpile_capacity_entries(
             generated_body_lines
@@ -322,18 +313,17 @@ def main() -> int:
                         f"expected {expected_value:g}, found {generated_value:g}"
                     )
                 maintenance_entries_checked += 1
-        if generated_body_lines != expected_body:
-            failures.append(
-                f"{source_file.name}: generated building override body is stale or hand-edited"
-            )
-            continue
-
         generated_files_checked += 1
 
-    actual_manifest_names = {path.name for path in manifest_dir.glob("*.json")}
-    stale_manifests = sorted(actual_manifest_names - expected_manifest_names)
-    if stale_manifests:
-        failures.append(f"Stale building manifests: {', '.join(stale_manifests)}")
+    manifested_building_paths = {
+        path for path in cbg_files if path.startswith("in_game/common/building_types/")
+    }
+    unexpected_cbg_paths = sorted(manifested_building_paths - expected_cbg_paths)
+    if unexpected_cbg_paths:
+        failures.append(
+            "CBG manifest contains building outputs without a parser-derived change plan: "
+            + ", ".join(unexpected_cbg_paths)
+        )
 
     if failures:
         print("CBP US-08 building maintenance validation failed:", file=sys.stderr)
