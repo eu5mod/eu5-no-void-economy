@@ -54,8 +54,6 @@ def main() -> int:
     ):
         require_assignment(defines, key, expected, failures)
 
-    legacy_defines = ROOT / "loading_screen/common/defines/cbp_economic_defines.txt"
-    legacy_text = legacy_defines.read_text(encoding="utf-8-sig")
     migrated_keys = (
         "ECONOMICAL_BASE_FROM_TAX_BASE",
         "ECONOMICAL_BASE_FROM_POP",
@@ -74,11 +72,16 @@ def main() -> int:
         "GOV_POWER_INVEST_FACTOR",
         "AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED",
     )
-    for key in migrated_keys:
-        if re.search(rf"^\s*{key}\s*=", legacy_text, re.MULTILINE):
-            failures.append(
-                f"Legacy cbp_economic_defines.txt must not duplicate migrated {key}"
-            )
+    defines_directory = defines.parent
+    for other_defines in sorted(defines_directory.glob("*.txt")):
+        if other_defines == defines:
+            continue
+        other_text = other_defines.read_text(encoding="utf-8-sig")
+        for key in migrated_keys:
+            if re.search(rf"^\s*{key}\s*=", other_text, re.MULTILINE):
+                failures.append(
+                    f"{other_defines.relative_to(ROOT)} must not duplicate migrated {key}"
+                )
     require_assignment(modifiers, "stability_investment", "-0.5", failures)
     for government_power in (
         "monthly_legitimacy",
