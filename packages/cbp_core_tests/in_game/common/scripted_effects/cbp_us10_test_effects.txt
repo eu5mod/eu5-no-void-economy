@@ -858,7 +858,6 @@ cbp_us10_capture_ui_candidate_snapshot = {
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_available_candidate_stock value = var:cbp_debug_last_us10_total_available_candidate_stock }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_best_candidate_bucket value = var:cbp_debug_last_us10_best_candidate_bucket }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_best_candidate_stock value = var:cbp_debug_last_us10_best_candidate_stock }
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_prefilter_used value = var:cbp_debug_last_us10_market_aggregate_prefilter_used }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_sparse_source_count value = var:cbp_debug_last_us10_sparse_supplier_source_count }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_sparse_count value = var:cbp_debug_last_us10_sparse_supplier_count }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_tmp_sparse_scan_used value = var:cbp_debug_last_us10_sparse_supplier_scan_used }
@@ -889,7 +888,9 @@ cbp_us10_capture_ui_candidate_snapshot = {
 	set_variable = { name = gui_cbp_us10_ui_visibility_available_candidate_stock value = scope:gui_cbp_us10_ui_tmp_available_candidate_stock }
 	set_variable = { name = gui_cbp_us10_ui_visibility_best_candidate_bucket value = scope:gui_cbp_us10_ui_tmp_best_candidate_bucket }
 	set_variable = { name = gui_cbp_us10_ui_visibility_best_candidate_stock value = scope:gui_cbp_us10_ui_tmp_best_candidate_stock }
-	set_variable = { name = gui_cbp_us10_ui_visibility_prefilter_used value = scope:gui_cbp_us10_ui_tmp_prefilter_used }
+	# The deterministic fixture is authoritative; the last-call debug value may
+	# belong to another country or remain unset when the prefilter short-circuits.
+	set_variable = { name = gui_cbp_us10_ui_visibility_prefilter_used value = scope:test_cbp_us10_issue109_prefilter_used }
 	set_variable = { name = gui_cbp_us10_ui_visibility_sparse_source_count value = scope:gui_cbp_us10_ui_tmp_sparse_source_count }
 	set_variable = { name = gui_cbp_us10_ui_visibility_sparse_count value = scope:gui_cbp_us10_ui_tmp_sparse_count }
 	set_variable = { name = gui_cbp_us10_ui_visibility_sparse_scan_used value = scope:gui_cbp_us10_ui_tmp_sparse_scan_used }
