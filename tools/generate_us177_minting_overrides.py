@@ -6,10 +6,17 @@ import hashlib
 import json
 import os
 import re
+import sys
 import tempfile
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path, PurePosixPath
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import display_path
 
 
 MODIFIER = "minting_income_factor"
@@ -423,7 +430,7 @@ def main() -> int:
         f"Generated US-177 minting overrides: {len(outputs)} files, "
         f"{payload['occurrence_count']} occurrences."
     )
-    print(f"Manifest: {manifest_path}")
+    print(f"Manifest: {display_path(manifest_path)}")
     return 0
 
 

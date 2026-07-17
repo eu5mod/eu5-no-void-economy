@@ -50,6 +50,30 @@ cbp_console_failure() {
 	printf '\n' >&2
 }
 
+cbp_display_path() {
+	local input="$1"
+	local directory
+	local resolved
+	local temporary_root
+	case "$input" in
+		"$MODEU5_REPO_ROOT"/*) printf './%s' "${input#"$MODEU5_REPO_ROOT"/}"; return ;;
+		"${TMPDIR:-/tmp}"/*) printf '$TMPDIR/%s' "${input#"${TMPDIR:-/tmp}"/}"; return ;;
+		"$HOME"/*) printf '~/%s' "${input#"$HOME"/}"; return ;;
+	esac
+	directory="$(cd "$(dirname "$input")" 2>/dev/null && pwd -P)" || {
+		printf '%s' "$input"
+		return
+	}
+	resolved="$directory/$(basename "$input")"
+	temporary_root="$(cd "${TMPDIR:-/tmp}" 2>/dev/null && pwd -P)"
+	case "$resolved" in
+		"$MODEU5_REPO_ROOT"/*) printf './%s' "${resolved#"$MODEU5_REPO_ROOT"/}" ;;
+		"$temporary_root"/*) printf '$TMPDIR/%s' "${resolved#"$temporary_root"/}" ;;
+		"$HOME"/*) printf '~/%s' "${resolved#"$HOME"/}" ;;
+		*) printf '%s' "$resolved" ;;
+	esac
+}
+
 cbp_load_local_config() {
 	local local_config="${1:-$MODEU5_REPO_ROOT/.cbp.local.env}"
 
