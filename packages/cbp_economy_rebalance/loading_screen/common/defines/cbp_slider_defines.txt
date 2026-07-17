@@ -10,15 +10,16 @@ NEconomy = {
 	ECONOMICAL_BASE_SCALE_FROM_EACH_INSTITUTION = 0 # VANILLA = 0.066
 	ECONOMICAL_BASE_ALL_HAS_TRADE = yes # VANILLA = no
 
-	# EXPENSE SLIDERS
+	# SLIDERS IN PROPORTION OF ECONOMIC BASE
 	COURT_SPENDING_FRACTON = 0.20 # VANILLA = 0.1
 	DIPLOMATIC_SPENDING_FRACTION = 0.05 # VANILLA = 0.1
+	STABILIY_EXPENSE_FACTOR = 0.20 # VANILLA = 0.1
+	PRESTIGE_INVEST_FACTOR = 0.05 # VANILLA = 0.1
 
+	# DEFAULT DECAY ON SLIDERS
 	# Together with the -0.5 mandatory Stability modifier, 50% reproduces
 	# the Vanilla neutral contribution.
 	STABILITY_INVEST_FACTOR = 1 # VANILLA = 0.5
-	STABILIY_EXPENSE_FACTOR = 0.20 # VANILLA = 0.1
-	PRESTIGE_INVEST_FACTOR = 0.05 # VANILLA = 0.1
 
 	# Combined with the total -2 monthly baseline, maximum Court spending
 	# preserves Vanilla's maximum +1 government-power growth.

@@ -16,10 +16,16 @@ population, trade-value, interest, foreign-building, and institution inputs.
 Subject contribution remains at its Vanilla weight, and every country is
 eligible for trade-based Economic Base.
 
-## Expense sliders
+## Economic Base proportional sliders
 
-CBP increases the budget weight of Court and Stability expenses, reduces the
-weight of Diplomatic and Prestige spending, and retains the already documented
+`COURT_SPENDING_FRACTON`, `DIPLOMATIC_SPENDING_FRACTION`,
+`STABILIY_EXPENSE_FACTOR`, and `PRESTIGE_INVEST_FACTOR` determine the budget
+weight of their sliders in proportion to Economic Base.
+
+## Default slider decay
+
+The separate investment factors control the monthly Stability and government
+power movement produced by their sliders and retain the already documented
 mandatory-expense tuning:
 
 ```txt
