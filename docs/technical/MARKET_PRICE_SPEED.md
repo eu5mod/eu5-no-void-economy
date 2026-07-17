@@ -13,6 +13,6 @@ between the current price and target price closed each month. CBP therefore
 closes 10% of that gap instead of Vanilla's 5%; it does not multiply the price
 itself by two.
 
-This rule is independent from `NMarket.FOOD_PRICE` and
-`NMarket.FOOD_PRICE_IMPACT_ON_PRICES`. The dedicated override must not modify
-either food parameter.
+This rule shares the package-owned `cbp_market_resource_balance_defines.txt`
+file with `NMarket.FOOD_PRICE`, but the two values remain independent.
+`NMarket.FOOD_PRICE_IMPACT_ON_PRICES` remains unchanged.

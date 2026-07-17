@@ -19,7 +19,7 @@ def require_assignment(path: Path, key: str, expected: str, failures: list[str])
 
 
 def main() -> int:
-    defines = PACKAGE / "loading_screen/common/defines/cbp_mandatory_expenses_defines.txt"
+    defines = PACKAGE / "loading_screen/common/defines/cbp_slider_defines.txt"
     modifiers = PACKAGE / "main_menu/common/static_modifiers/cbp_mandatory_expenses.txt"
     effects = PACKAGE / "in_game/common/scripted_effects/cbp_mandatory_expense_effects.txt"
     on_actions = PACKAGE / "in_game/common/on_action/cbp_economy_package_on_actions.txt"
@@ -35,6 +35,22 @@ def main() -> int:
 
     require_assignment(defines, "STABILITY_INVEST_FACTOR", "1", failures)
     require_assignment(defines, "GOV_POWER_INVEST_FACTOR", "3.0", failures)
+    for key, expected in (
+        ("ECONOMICAL_BASE_FROM_TAX_BASE", "1"),
+        ("ECONOMICAL_BASE_FROM_POP", "0"),
+        ("ECONOMICAL_BASE_FROM_TRADE_VALUE", "0"),
+        ("ECONOMICAL_BASE_FROM_TRADE_PROFIT", "1"),
+        ("ECONOMICAL_BASE_INTEREST", "0"),
+        ("ECONOMICAL_BASE_FROM_FOREIGN_BUILDINGS", "0"),
+        ("ECONOMICAL_BASE_FROM_SUBJECT", "0.05"),
+        ("ECONOMICAL_BASE_SCALE_FROM_EACH_INSTITUTION", "0"),
+        ("ECONOMICAL_BASE_ALL_HAS_TRADE", "yes"),
+        ("COURT_SPENDING_FRACTON", "0.20"),
+        ("DIPLOMATIC_SPENDING_FRACTION", "0.05"),
+        ("STABILIY_EXPENSE_FACTOR", "0.20"),
+        ("PRESTIGE_INVEST_FACTOR", "0.05"),
+    ):
+        require_assignment(defines, key, expected, failures)
     require_assignment(modifiers, "stability_investment", "-0.5", failures)
     for government_power in (
         "monthly_legitimacy",

@@ -1,4 +1,0 @@
-NMarket = {
-	# VANILLA = 0.05. Prices close twice as much of the target-price gap each month.
-	MONTHLY_PRICE_CHANGE = 0.10
-}

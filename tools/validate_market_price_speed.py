@@ -14,7 +14,7 @@ DEFINES = (
     / "loading_screen"
     / "common"
     / "defines"
-    / "cbp_market_price_speed_defines.txt"
+    / "cbp_market_resource_balance_defines.txt"
 )
 
 
@@ -34,11 +34,11 @@ def main() -> int:
             )
         if "VANILLA = 0.05" not in text:
             failures.append("Market-price speed override must preserve the Vanilla 0.05 reference")
-        for unrelated_field in ("FOOD_PRICE", "FOOD_PRICE_IMPACT_ON_PRICES"):
-            if re.search(rf"^\s*{unrelated_field}\s*=", text, re.MULTILINE):
-                failures.append(
-                    f"Market-price speed override must not modify independent {unrelated_field}"
-                )
+        if re.search(r"^\s*FOOD_PRICE_IMPACT_ON_PRICES\s*=", text, re.MULTILINE):
+            failures.append(
+                "Market and resource balance override must not modify "
+                "FOOD_PRICE_IMPACT_ON_PRICES"
+            )
 
     if failures:
         print("CBP market-price speed validation failed:", file=sys.stderr)

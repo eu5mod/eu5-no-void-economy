@@ -24,6 +24,9 @@ Therefore:
 `stability_investment = -0.5` baseline. `stability_decay` is intentionally not
 used because it is a percentage decay toward zero, not a flat monthly expense.
 
+The define is grouped with the other expense-slider and Economic Base tuning in
+`loading_screen/common/defines/cbp_slider_defines.txt`.
+
 The modifier is package-owned. It is applied to all countries on game start and
 game load, then guarded on each monthly country pulse so newly created countries
 receive it without repeatedly replacing existing modifiers.

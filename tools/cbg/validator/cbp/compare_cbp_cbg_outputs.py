@@ -277,7 +277,7 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
         elif relative.as_posix() == "loading_screen/common/defines/00_defines.txt":
             reference = (
                 args.reference_root
-                / "loading_screen/common/defines/cbp_us177_food_price_defines.txt"
+                / "loading_screen/common/defines/cbp_market_resource_balance_defines.txt"
             )
         candidate = args.candidate_root / relative
         if not reference.is_file() or not candidate.is_file():
