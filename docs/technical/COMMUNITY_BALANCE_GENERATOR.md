@@ -165,7 +165,7 @@ manifest delegates physical output ownership to
 ```
 
 This gate compares every food override byte-for-byte with the legacy renderer.
-The dedicated `cbp_us177_food_price_defines.txt` remains outside this exact-copy
+The dedicated `cbp_market_resource_balance_defines.txt` remains outside this exact-copy
 migration because it is a CBP-owned file rather than a Vanilla-derived copy.
 
 The complete CBP balance configuration is versioned at
