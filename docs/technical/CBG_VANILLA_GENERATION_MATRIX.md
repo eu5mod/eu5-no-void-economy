@@ -18,7 +18,7 @@ policy decisions, but it must not publish those runtime files to the package.
 | Pop promotion | `pop_types/00_default.txt` | Version-dependent promotion-field discovery | CBG #189 | Migrated |
 | US-177 minting | 23 exact-path files; 11 composed with political outputs and building occurrences delegated to buildings | #188 numeric-only discovery and unsupported-syntax guard | CBG #189 combined political/minting family | Migrated; exact byte parity |
 | Political rewards outside central values | 177 event/common overrides; composed with minting into 189 unique outputs | #188 policy compiler: shared symbolic values, Honor exclusion, blocks, inline effects, parliament outcomes | CBG #189 | Migrated; exact 189-file byte parity |
-| Dedicated FOOD_PRICE define | `loading_screen/common/defines/cbp_us177_food_price_defines.txt` | Dedicated CBP file, not a Vanilla copy | #188 renderer | Out of exact-copy migration |
+| Market/resource defines | `loading_screen/common/defines/cbp_market_resource_balance_defines.txt` | Dedicated CBP file, not a Vanilla copy | #188 renderer | FOOD_PRICE and monthly price speed share one generated owner |
 | Dedicated CBP economic defines | `loading_screen/common/defines/cbp_economic_defines.txt` | Hand-owned dedicated override | Hand-authored | Out of migration |
 
 The broad `cbp_pr188_balance.generated.json` remains experimental. Migration is

@@ -333,7 +333,7 @@ jobs:
             "$fixture_package/loading_screen/common/defines" \
             "$fixture_package/in_game/common/auto_modifiers"
 
-          cp packages/cbp_economy_rebalance/loading_screen/common/defines/cbp_us177_food_price_defines.txt \
+          cp packages/cbp_economy_rebalance/loading_screen/common/defines/cbp_market_resource_balance_defines.txt \
             "$fixture_package/loading_screen/common/defines/"
           cp packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_us177_minting_income_auto_modifiers.txt \
             "$fixture_package/in_game/common/auto_modifiers/"
@@ -441,7 +441,8 @@ jobs:
           grep -q '"good": "wheat"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
           grep -q '"configured_food_price": "0.3"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
           grep -q '"food_production_divisor": "4.0"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"
-          grep -q 'FOOD_PRICE = 0.3' "$fixture_package/loading_screen/common/defines/cbp_us177_food_price_defines.txt"
+          grep -q 'FOOD_PRICE = 0.3' "$fixture_package/loading_screen/common/defines/cbp_market_resource_balance_defines.txt"
+          grep -q 'MONTHLY_PRICE_CHANGE = 0.10' "$fixture_package/loading_screen/common/defines/cbp_market_resource_balance_defines.txt"
           grep -q 'food = 2.0' "$fixture_package/in_game/common/goods/03_food.txt"
           grep -q 'default_market_price = 1' "$fixture_package/in_game/common/goods/03_food.txt"
           if grep -q '"good": "stone"' "$fixture_package/cbp_generated/us177_food_goods_manifest.json"; then
@@ -500,6 +501,9 @@ jobs:
 
       - name: Validate mandatory Stability expense
         run: python3 ./tools/validate_mandatory_expenses.py
+
+      - name: Validate market price adjustment speed
+        run: python3 ./tools/validate_market_price_speed.py
 
       - name: Validate CI static contracts
         run: |
