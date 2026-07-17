@@ -501,6 +501,9 @@ jobs:
       - name: Validate mandatory Stability expense
         run: python3 ./tools/validate_mandatory_expenses.py
 
+      - name: Validate market price adjustment speed
+        run: python3 ./tools/validate_market_price_speed.py
+
       - name: Validate CI static contracts
         run: |
           set +e

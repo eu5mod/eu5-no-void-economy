@@ -110,6 +110,7 @@ python3 tools/validate_us04_pop_demand_architecture.py
 python3 tools/validate_ci_static_contracts.py
 python3 tools/validate_cmm_configuration.py
 python3 tools/validate_mandatory_expenses.py
+python3 tools/validate_market_price_speed.py
 python3 tools/validate_audit_catalog.py
 git diff --check
 git diff --cached --check
