@@ -16,6 +16,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
 ASSIGNMENT = re.compile(
     r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*"
     r"(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
@@ -73,12 +75,16 @@ def styled(text: str, code: str, enabled: bool) -> str:
 def display_path(path: Path) -> str:
     resolved = path.resolve()
     try:
-        return f"./{resolved.relative_to(Path.cwd().resolve()).as_posix()}"
+        return f"./{resolved.relative_to(REPOSITORY_ROOT).as_posix()}"
     except ValueError:
         try:
-            return f"~/{resolved.relative_to(Path.home().resolve()).as_posix()}"
+            temporary_root = Path(os.environ.get("TMPDIR", "/tmp")).resolve()
+            return f"$TMPDIR/{resolved.relative_to(temporary_root).as_posix()}"
         except ValueError:
-            return str(resolved)
+            try:
+                return f"~/{resolved.relative_to(Path.home().resolve()).as_posix()}"
+            except ValueError:
+                return str(resolved)
 
 
 def load_business_rules(spec_paths: list[Path]) -> list[str]:
@@ -118,7 +124,7 @@ def print_generation_summary(
     cue = styled(cue_text, "1;32", enabled)
     label = lambda value: styled(f"{value:<20}", "1;36", enabled)
     print()
-    print(styled("#" * 72, "1;35", enabled))
+    print(styled("━" * 72, "1;35", enabled))
     print(f"{cue} {title}")
     rule_label = styled("Business rule", "4;36", enabled)
     if len(business_rules) == 1:
@@ -1018,7 +1024,13 @@ def main() -> int:
             adopt_marker=args.adopt_output_marker.encode("utf-8") if args.adopt_output_marker else None,
         )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
+        enabled = color_enabled(sys.stderr)
+        cue = styled("[FAILED]", "1;31", enabled)
+        message = styled("Community Balance Generator", "1;31", enabled)
+        print(f"\n{styled('━' * 72, '1;31', enabled)}", file=sys.stderr)
+        print(f"{cue} {message}", file=sys.stderr)
+        print(f"  {exc}", file=sys.stderr)
+        return 1
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print_generation_summary(manifest, len(intents), manifest_path, business_rules)

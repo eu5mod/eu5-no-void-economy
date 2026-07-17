@@ -14,6 +14,42 @@ MODEU5_TOOL_LIB_LOADED=1
 
 MODEU5_REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+cbp_console_color_enabled() {
+	local fd="${1:-1}"
+	[[ "${CBG_COLOR:-auto}" != "never" ]] && \
+		[[ -z "${NO_COLOR:-}" ]] && \
+		{ [[ "${CBG_COLOR:-auto}" == "always" ]] || [[ -t "$fd" ]]; }
+}
+
+cbp_console_styled() {
+	local code="$1"
+	local text="$2"
+	local fd="${3:-1}"
+	if cbp_console_color_enabled "$fd"; then
+		printf '\033[%sm%s\033[0m' "$code" "$text"
+	else
+		printf '%s' "$text"
+	fi
+}
+
+cbp_console_major_separator() {
+	cbp_console_styled '1;35' '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' "${1:-1}"
+	printf '\n'
+}
+
+cbp_console_step_separator() {
+	cbp_console_styled '1;36' '────────────────────────────────────────────────────────────────────────' "${1:-1}"
+	printf '\n'
+}
+
+cbp_console_failure() {
+	local message="$1"
+	cbp_console_styled '1;31' '[FAILED]' 2 >&2
+	printf ' ' >&2
+	cbp_console_styled '1;31' "$message" 2 >&2
+	printf '\n' >&2
+}
+
 cbp_load_local_config() {
 	local local_config="${1:-$MODEU5_REPO_ROOT/.cbp.local.env}"
 

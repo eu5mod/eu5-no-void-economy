@@ -4,18 +4,20 @@ set -Eeuo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+
 report_generation_failure() {
 	status=$?
 	trap - ERR
-	printf '\n%s\n' '########################################################################' >&2
-	printf '%s\n' '[FAILED] Overall CBP generation failed; generated outputs may not be installed.' >&2
+	printf '\n' >&2
+	cbp_console_major_separator 2 >&2
+	cbp_console_failure 'Overall CBP generation failed; generated outputs may not be installed.'
 	exit "$status"
 }
 
 trap report_generation_failure ERR
 
-# shellcheck source=tools/cbp_tool_lib.sh
-source "$repo_root/tools/cbp_tool_lib.sh"
 cbp_load_local_config
 
 bootstrap_cbg_manifest() {
@@ -230,5 +232,7 @@ else
 fi
 
 trap - ERR
-printf '\n%s\n' '########################################################################'
-printf '%s\n' '[OK] Overall CBP generation completed successfully.'
+printf '\n'
+cbp_console_major_separator
+cbp_console_styled '1;32' '[OK] Overall CBP generation completed successfully.'
+printf '\n'
