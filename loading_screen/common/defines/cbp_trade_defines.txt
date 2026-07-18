@@ -1,0 +1,3 @@
+NCountry = {
+    MERCHANT_MAINTENANCE_COST = 0.5          #VANILLA = 0.25
+}
