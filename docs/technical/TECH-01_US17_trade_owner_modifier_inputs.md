@@ -130,9 +130,11 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta maintenance_formula=verified
 ```
 
 The probe uses distinct Import and Export Efficiency fixtures, validates both
 operation paths, the upper cap, negative efficiency, four-way idempotence, and
-the live application of all four auto-modifiers.
+the live application of all four auto-modifiers. The delayed check derives its
+expected effective maintenance independently from the persisted CBP Selling and
+Import corrections, then compares it with `modifier:merchant_maintenance_efficiency`.

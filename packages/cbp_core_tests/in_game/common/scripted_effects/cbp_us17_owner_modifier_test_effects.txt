@@ -119,9 +119,22 @@ cbp_us17_prepare_live_owner_modifier_check = {
 			set_variable = { name = test_cbp_us17_probe_expected_selling value = { value = var:test_cbp_us17_probe_baseline_selling add = var:cbp_us17_native_selling_correction } }
 			set_variable = { name = test_cbp_us17_probe_expected_import value = { value = var:test_cbp_us17_probe_baseline_import add = var:cbp_us17_native_import_correction } }
 			set_variable = { name = test_cbp_us17_probe_expected_export value = { value = var:test_cbp_us17_probe_baseline_export add = var:cbp_us17_native_export_correction } }
-			set_variable = { name = test_cbp_us17_probe_expected_maintenance value = { value = var:test_cbp_us17_probe_baseline_maintenance add = var:cbp_us17_native_maintenance_correction } }
+			# Derive the expected effective maintenance independently from the
+			# persisted CBP price cancellations, not from M + R_maintenance.
+			set_variable = {
+				name = test_cbp_us17_probe_expected_maintenance
+				value = {
+					value = var:cbp_us17_native_selling_correction
+					multiply = -1
+					add = {
+						value = var:cbp_us17_native_import_correction
+						multiply = -1
+					}
+					max = cbp_trade_base_merchant_maintenance_cost
+				}
+			}
 			set_global_variable = test_cbp_us17_owner_modifiers_awaiting_live_check
-			debug_log = "ModeU5 US17 OPERATION_AWARE LIVE_REFRESH selling_correction=[THIS.GetVariable('cbp_us17_native_selling_correction').GetValue|2] import_correction=[THIS.GetVariable('cbp_us17_native_import_correction').GetValue|2] export_correction=[THIS.GetVariable('cbp_us17_native_export_correction').GetValue|2] maintenance_correction=[THIS.GetVariable('cbp_us17_native_maintenance_correction').GetValue|2] maintenance_baseline=[THIS.GetVariable('cbp_us17_native_maintenance_baseline').GetValue|2] wait_days=1"
+			debug_log = "ModeU5 US17 OPERATION_AWARE LIVE_REFRESH selling_correction=[THIS.GetVariable('cbp_us17_native_selling_correction').GetValue|2] import_correction=[THIS.GetVariable('cbp_us17_native_import_correction').GetValue|2] export_correction=[THIS.GetVariable('cbp_us17_native_export_correction').GetValue|2] maintenance_correction=[THIS.GetVariable('cbp_us17_native_maintenance_correction').GetValue|2] maintenance_baseline=[THIS.GetVariable('cbp_us17_native_maintenance_baseline').GetValue|2] expected_effective_maintenance=[THIS.GetVariable('test_cbp_us17_probe_expected_maintenance').GetValue|2] wait_days=1"
 			debug_log = "ModeU5 TEST PENDING scenario=us17_trade_owner_modifiers phase=live_auto_modifier_application wait_days=1"
 		}
 	}
@@ -148,12 +161,13 @@ cbp_debug_finish_us17_owner_modifier_probe = {
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_import_delta minimum = -0.001 maximum = 0.001 assertion = live_import_cancellation_applied }
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_export_delta minimum = -0.001 maximum = 0.001 assertion = live_export_cancellation_applied }
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_maintenance_delta minimum = -0.001 maximum = 0.001 assertion = live_maintenance_import_reference_applied }
+		debug_log = "ModeU5 US17 OPERATION_AWARE LIVE_MAINTENANCE_FORMULA selling_correction=[THIS.GetVariable('cbp_us17_native_selling_correction').GetValue|2] import_correction=[THIS.GetVariable('cbp_us17_native_import_correction').GetValue|2] expected=[THIS.GetVariable('test_cbp_us17_probe_expected_maintenance').GetValue|2] actual=[THIS.GetVariable('test_cbp_us17_probe_actual_maintenance').GetValue|2] tolerance=0.001"
 		debug_log = "ModeU5 US17 OPERATION_AWARE LIVE_RESULT selling=[THIS.GetVariable('test_cbp_us17_probe_actual_selling').GetValue|2] import=[THIS.GetVariable('test_cbp_us17_probe_actual_import').GetValue|2] export=[THIS.GetVariable('test_cbp_us17_probe_actual_export').GetValue|2] maintenance=[THIS.GetVariable('test_cbp_us17_probe_actual_maintenance').GetValue|2]"
 
 		if = {
 			limit = { scope:test_cbp_us17_owner_modifiers_failure_count = 0 }
 			set_global_variable = test_cbp_us17_owner_modifiers_passed
-			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open"
+			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open"
 		}
 		else = {
 			set_global_variable = test_cbp_us17_owner_modifiers_failed
@@ -203,6 +217,37 @@ cbp_debug_run_us17_owner_modifier_probe = {
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_selling_correction_result minimum = -0.021 maximum = -0.019 assertion = selling_price_input_cancelled }
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_reference_combined_efficiency minimum = 0.069 maximum = 0.071 assertion = maintenance_reference_uses_cancelled_selling_and_import_values }
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_maintenance_correction_result minimum = -0.011 maximum = -0.009 assertion = maintenance_correction_equals_negative_maintenance_minus_cbp_selling_minus_cbp_import }
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_effective_maintenance_fixture
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			add = scope:cbp_us17_native_maintenance_correction_result
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_expected_maintenance_from_corrections
+		value = {
+			value = scope:cbp_us17_native_selling_correction_result
+			multiply = -1
+			add = {
+				value = scope:cbp_us17_native_import_correction_result
+				multiply = -1
+			}
+			max = cbp_trade_base_merchant_maintenance_cost
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_effective_maintenance_formula_delta
+		value = {
+			value = scope:test_cbp_us17_effective_maintenance_fixture
+			add = {
+				value = scope:test_cbp_us17_expected_maintenance_from_corrections
+				multiply = -1
+			}
+		}
+	}
+	cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_effective_maintenance_fixture minimum = 0.069 maximum = 0.071 assertion = maintenance_effective_value_matches_import_reference }
+	cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_effective_maintenance_formula_delta minimum = -0.001 maximum = 0.001 assertion = maintenance_effective_value_equals_capped_inverse_cbp_corrections }
 
 	save_temporary_scope_value_as = { name = cbp_us17_route_is_export value = 0 }
 	cbp_compute_us17_operation_aware_route_values_from_baselines = yes
@@ -217,7 +262,7 @@ cbp_debug_run_us17_owner_modifier_probe = {
 	save_temporary_scope_value_as = { name = test_cbp_us17_expected_export_treasury value = { value = define:NCountry|MERCHANT_MAINTENANCE_COST multiply = 0.05 } }
 	save_temporary_scope_value_as = { name = test_cbp_us17_export_treasury_delta value = { value = scope:cbp_us17_route_treasury_delta add = { value = scope:test_cbp_us17_expected_export_treasury multiply = -1 } } }
 	cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_export_treasury_delta minimum = -0.001 maximum = 0.001 assertion = export_route_treasury_delta }
-	debug_log = "ModeU5 US17 OPERATION_AWARE CHECK import_operation=0.05 import_combined=0.07 export_operation=0.10 export_combined=0.12 native_reference=import export_delta=0.05 selling=0.02 native_maintenance=0.08 maintenance_correction=-0.01"
+	debug_log = "ModeU5 US17 OPERATION_AWARE CHECK import_operation=0.05 import_combined=0.07 export_operation=0.10 export_combined=0.12 native_reference=import export_delta=0.05 selling=0.02 native_maintenance=0.08 maintenance_correction=-0.01 effective_maintenance=0.07 maintenance_formula=verified"
 
 	# Negative operation efficiency remains meaningful and is never lower-clamped.
 	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = -0.40 }

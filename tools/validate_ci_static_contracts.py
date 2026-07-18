@@ -446,12 +446,32 @@ def validate_us17_owner_modifier_contract(
     expect("cbp_us17_owner_modifiers.11" in owner_modifier_probe_events, "US17 owner-modifier probe must keep its delayed live-modifier check")
     expect("cbp_debug_finish_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 delayed probe event must verify effective country modifiers")
 
+    prepare_live_probe = block(owner_modifier_probe_effects, "cbp_us17_prepare_live_owner_modifier_check")
+    expect(
+        re.search(
+            r"name\s*=\s*test_cbp_us17_probe_expected_maintenance.*?"
+            r"value\s*=\s*var:cbp_us17_native_selling_correction.*?multiply\s*=\s*-1.*?"
+            r"value\s*=\s*var:cbp_us17_native_import_correction.*?multiply\s*=\s*-1.*?"
+            r"max\s*=\s*cbp_trade_base_merchant_maintenance_cost",
+            prepare_live_probe,
+            re.DOTALL,
+        )
+        is not None,
+        "US17 live probe must derive expected maintenance independently from inverse persisted Selling/Import corrections",
+    )
+    expect(
+        "var:test_cbp_us17_probe_baseline_maintenance add = var:cbp_us17_native_maintenance_correction" not in prepare_live_probe,
+        "US17 live probe must not verify maintenance with the same baseline-plus-correction path under test",
+    )
+
     for assertion in [
         "import_price_input_cancelled",
         "export_price_input_cancelled",
         "selling_price_input_cancelled",
         "maintenance_reference_uses_cancelled_selling_and_import_values",
         "maintenance_correction_equals_negative_maintenance_minus_cbp_selling_minus_cbp_import",
+        "maintenance_effective_value_matches_import_reference",
+        "maintenance_effective_value_equals_capped_inverse_cbp_corrections",
         "import_route_uses_import_efficiency",
         "export_route_uses_export_efficiency",
         "import_route_uses_native_maintenance_reference_without_treasury_delta",
@@ -469,6 +489,7 @@ def validate_us17_owner_modifier_contract(
         "operation_input=import_or_export_by_Trade.IsExport",
         "native_price_inputs_cancelled=selling_import_export",
         "maintenance=import_reference_plus_export_delta",
+        "maintenance_formula=verified",
         "clamp=merchant_maintenance_cost_define",
         "negative_efficiency=preserved",
     ]:
