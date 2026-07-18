@@ -252,18 +252,65 @@ flowchart TD
 
 ### US-17 import/selling efficiency contract
 
-US-17 combines the trade owner's import and selling efficiencies as a sum, not
-an average:
+US-17 must use the native country modifier stack so Vanilla route selection,
+AI, UI, and treasury accounting all observe the same trade-profit formula. Do
+not apply a parallel per-route `add_gold` correction.
+
+Let the non-CBP baselines be `I = import_efficiency`,
+`S = selling_efficiency`, `M = merchant_maintenance_efficiency`, and
+`D = define:NCountry|MERCHANT_MAINTENANCE_COST`. Compute:
 
 ```txt
-combined_efficiency = min(import_efficiency + selling_efficiency, 1)
+C = min(I + S, D)
+selling correction = -S
+import correction = -I
+maintenance correction = C - M
 ```
 
-Do not divide this sum by two. Do not apply a lower clamp: negative combined
-efficiency remains negative and increases route maintenance. Historical variable
-names containing `average` are compatibility names only and do not define the
-business rule. Tests, documentation, and alternate formula paths must follow
-this contract; a stale fixture must never override it.
+This produces effective selling and import efficiencies of zero and an
+effective merchant-maintenance efficiency of `C`, hence a maintenance factor of
+`1 - C`. The native baseline `M` is replaced, not compounded with `C`. `D` is
+deliberately reused as the upper policy bound; do not divide the sum or apply a
+lower clamp. Negative `C` therefore remains meaningful and increases
+maintenance. Repeated refreshes must first remove the previous CBP corrections
+from effective values so monthly and on-action execution cannot drift.
+Historical route-money fixtures may retain old variable names, but they must
+not define or execute the live business rule.
+
+The literal `1` is the dimensionless 100% maintenance factor, not `D`. Let `B`
+be the native pre-efficiency merchant-maintenance amount, including `D`. Vanilla
+charges `B * (1 - M)`; CBP targets `B * (1 - C)`. Solving through the native
+modifier therefore requires `maintenance correction = C - M`. Never substitute
+the ducat-denominated define for the unitless `1`; its second role is limited to
+the explicit upper bound in `C = min(I + S, D)`.
+
+### Native modifier before reconciliation
+
+When Vanilla exposes the relevant economic behavior through a native modifier,
+prefer cancelling or transforming that modifier in the native stack. This lets
+Vanilla AI, UI, route selection, ledgers, and treasury accounting consume the
+same result.
+
+Do not leave the native modifier active and compensate later with `add_gold`,
+stock mutation, or a parallel accounting ledger. Post-processing reconciliation
+is a last resort for a confirmed missing native endpoint and must document the
+missing exposure, ownership boundary, idempotence rule, and diagnostic probe.
+
+### Shared on-action registration contract
+
+CBP owns one custom top-level registration for `on_policy_changed` and one for
+`on_reform_change` across Core and companion-package source files. Both hooks
+currently dispatch through `cbp_country_governance_changed` because they share
+the same country-scope follow-up contract.
+
+Do not add a feature-specific duplicate declaration or duplicate callback for
+either hook. Add a guarded operation to the shared dispatcher instead. If an
+optional package needs a follow-up, keep the dispatch target available from
+Core and gate its behavior on the package-presence marker so an absent package
+cannot leave an unresolved effect call.
+
+Generated or copied Vanilla `_hardcoded.txt` sources are not CBP registrations
+and are excluded from this uniqueness rule.
 
 ### Anti-spaghetti rule
 

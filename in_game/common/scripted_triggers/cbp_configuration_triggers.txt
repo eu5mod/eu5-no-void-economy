@@ -40,11 +40,23 @@ cbp_cbp_deactivated_trigger = {
 
 cbp_trade_rework_enabled_trigger = {
 	has_variable_map = cmm
-	is_key_in_variable_map = {
-		name = cmm
-		target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+	OR = {
+		# CMM displays the registered default (enabled) without necessarily
+		# materializing a map entry. Only an explicit zero disables US-17/US-20.
+		NOT = {
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+			}
+		}
+		AND = {
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+			}
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings)" = 1
+		}
 	}
-	"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings)" = 1
 }
 
 cbp_pop_consumption_offer_demand_enabled_trigger = {

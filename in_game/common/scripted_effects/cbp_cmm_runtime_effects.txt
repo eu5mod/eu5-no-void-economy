@@ -120,10 +120,6 @@ cbp_cmm_mark_planned_services_restricted = {
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
 		mod_id = no_void_economy
-		setting_id = cbp_general_gameplay_gameplay_trade_rework_settings
-	}
-	cmm_set_requires_unrestricted_tools_enabled = {
-		mod_id = no_void_economy
 		setting_id = cbp_war_subjects_balance_balance_shorter_wars_settings
 	}
 	cmm_set_requires_unrestricted_tools_enabled = {
@@ -195,22 +191,6 @@ cbp_cmm_reset_activate_goods_decay_setting = {
 		remove_from_variable_map = {
 			name = cmm
 			key = flag:no_void_economy__cbp_economic_balance_design_activate_goods_decay_settings
-		}
-	}
-}
-
-cbp_cmm_reset_trade_rework_setting = {
-	if = {
-		limit = {
-			has_variable_map = cmm
-			is_key_in_variable_map = {
-				name = cmm
-				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
-			}
-		}
-		remove_from_variable_map = {
-			name = cmm
-			key = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
 		}
 	}
 }
@@ -373,10 +353,6 @@ cbp_handle_cmm_runtime_callback = {
 
 		flag:no_void_economy__cbp_economic_balance_design_activate_goods_decay_settings = {
 			cbp_cmm_reset_activate_goods_decay_setting = yes
-		}
-
-		flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings = {
-			cbp_cmm_reset_trade_rework_setting = yes
 		}
 
 		flag:no_void_economy__cbp_war_subjects_balance_balance_shorter_wars_settings = {
