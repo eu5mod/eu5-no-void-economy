@@ -1,0 +1,26 @@
+monthly_country_pulse = {
+	on_actions = {
+		cbp_trade_profit_refresh_country
+	}
+}
+
+on_policy_changed = {
+	on_actions = {
+		cbp_trade_profit_refresh_country
+	}
+}
+
+on_reform_change = {
+	on_actions = {
+		cbp_trade_profit_refresh_country
+	}
+}
+
+cbp_trade_profit_refresh_country = {
+	effect = {
+		if = {
+			limit = { scope_type = country }
+			cbp_trade_profit_refresh_native_modifiers = yes
+		}
+	}
+}

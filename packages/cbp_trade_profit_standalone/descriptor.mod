@@ -3,5 +3,5 @@ tags={
 	"Gameplay"
 	"Trade and Economics"
 }
-name="CBP Trade Logistics"
+name="CBP Trade Profit"
 supported_version="*"

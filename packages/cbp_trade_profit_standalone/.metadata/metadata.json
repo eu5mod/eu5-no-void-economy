@@ -1,0 +1,14 @@
+{
+	"id": "cbp_trade_profit_standalone",
+	"name": "CBP Trade Profit",
+	"version": "0.1.0",
+	"game_id": "eu5",
+	"supported_game_version": "1.*.*",
+	"short_description": "Standalone US-17 trade-profit formula adjustment using Vanilla country modifiers.",
+	"tags": [
+		"Gameplay",
+		"Trade and Economics"
+	],
+	"relationships": [],
+	"game_custom_data": {}
+}

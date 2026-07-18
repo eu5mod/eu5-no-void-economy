@@ -502,8 +502,8 @@ jobs:
       - name: Validate mandatory Stability expense
         run: python3 ./tools/validate_mandatory_expenses.py
 
-      - name: Validate standalone US-17 and US-20 package
-        run: python3 ./tools/validate_us17_us20_standalone.py
+      - name: Validate formula-only standalone US-17 package
+        run: python3 ./tools/validate_us17_standalone.py
       - name: Validate market price adjustment speed
         run: python3 ./tools/validate_market_price_speed.py
 

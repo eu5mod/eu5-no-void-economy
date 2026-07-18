@@ -61,7 +61,7 @@ package_ids=(
 	"cbp_core_tests"
 	"cbp_core_tests"
 	"cbp_core_tests"
-	"cbp_trade_logistics_standalone"
+	"cbp_trade_profit_standalone"
 )
 
 package_sources=(
@@ -72,7 +72,14 @@ package_sources=(
 	"$repo_root/packages/cbp_core_tests"
 	"$repo_root/packages/cbp_core_tests"
 	"$repo_root/packages/cbp_core_tests"
-	"$repo_root/packages/cbp_trade_logistics_standalone"
+	"$repo_root/packages/cbp_trade_profit_standalone"
+)
+
+# Renamed when the former US-17/US-20 route package became the formula-only
+# US-17 product. Leaving the old directory installed would keep its US-20
+# runtime files visible to the launcher and invalidate standalone tests.
+legacy_package_ids=(
+	"cbp_trade_logistics_standalone"
 )
 
 # The root checkout is the future single gameplay mod. Mirror it by default so
@@ -162,7 +169,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_trade_logistics_standalone)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_trade_profit_standalone)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -174,6 +181,19 @@ reset_destination() {
 	# or deleted source files cannot survive in the deployment.
 	rm -rf -- "$destination"
 	mkdir -p "$destination"
+}
+
+remove_legacy_packages() {
+	local legacy_package_id
+	local legacy_destination
+
+	for legacy_package_id in "${legacy_package_ids[@]}"; do
+		legacy_destination="$target_root/$legacy_package_id"
+		if [[ -e "$legacy_destination" ]]; then
+			printf 'Removing renamed standalone package: %s\n' "$legacy_destination"
+			rm -rf -- "$legacy_destination"
+		fi
+	done
 }
 
 rsync_core_payload() {
@@ -254,6 +274,16 @@ check_payload_mirror() {
 check_packages() {
 	local failed=0
 	local index
+	local legacy_package_id
+
+	for legacy_package_id in "${legacy_package_ids[@]}"; do
+		if [[ -e "$target_root/$legacy_package_id" ]]; then
+			printf 'STALE    renamed standalone package is still installed: %s\n' \
+				"$target_root/$legacy_package_id"
+			printf '         run ./tools/install_local_packages.sh --skip-generate to remove it.\n'
+			failed=1
+		fi
+	done
 
 	for index in "${!package_ids[@]}"; do
 		local package_id="${package_ids[$index]}"
@@ -331,6 +361,7 @@ if [[ "$action" == "check" ]]; then
 fi
 
 mkdir -p "$target_root"
+remove_legacy_packages
 install_core
 
 for ((index = 1; index < ${#package_ids[@]}; index++)); do

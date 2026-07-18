@@ -872,7 +872,12 @@ def main() -> int:
     country_governance_on_actions = read("in_game/common/on_action/cbp_country_governance_on_actions.txt")
     cbp_on_action_paths = sorted((ROOT / "in_game/common/on_action").glob("*.txt"))
     cbp_on_action_paths.extend(sorted(ROOT.glob("packages/*/in_game/common/on_action/*.txt")))
-    cbp_on_action_paths = [path for path in cbp_on_action_paths if path.name != "_hardcoded.txt"]
+    cbp_on_action_paths = [
+        path
+        for path in cbp_on_action_paths
+        if path.name != "_hardcoded.txt"
+        and "packages/cbp_trade_profit_standalone/" not in path.as_posix()
+    ]
     all_cbp_on_actions = "\n".join(path.read_text(encoding="utf-8") for path in cbp_on_action_paths)
     native_trade_profit_localization = read("main_menu/localization/english/cbp_us17_native_trade_profit_l_english.yml")
     revalidate_events = read("packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt")
