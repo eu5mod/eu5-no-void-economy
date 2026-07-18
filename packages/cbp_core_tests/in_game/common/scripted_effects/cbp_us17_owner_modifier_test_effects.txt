@@ -40,11 +40,31 @@ cbp_us17_assert_native_correction_near = {
 
 cbp_us17_prepare_live_owner_modifier_check = {
 	if = {
+		limit = { NOT = { has_variable_map = cmm } }
+		set_global_variable = test_cbp_us17_owner_modifiers_blocked
+		debug_log = "ModeU5 TEST BLOCKED scenario=us17_trade_owner_modifiers reason=cmm_map_missing arithmetic_fixture=passed live_auto_modifiers=not_applicable"
+	}
+	else_if = {
 		limit = { NOT = { cbp_trade_rework_enabled_trigger = yes } }
 		set_global_variable = test_cbp_us17_owner_modifiers_blocked
-		debug_log = "ModeU5 TEST BLOCKED scenario=us17_trade_owner_modifiers reason=cmm_trade_rework_disabled arithmetic_fixture=passed live_auto_modifiers=not_applicable"
+		debug_log = "ModeU5 TEST BLOCKED scenario=us17_trade_owner_modifiers reason=cmm_trade_rework_explicitly_disabled arithmetic_fixture=passed live_auto_modifiers=not_applicable"
 	}
 	else = {
+		if = {
+			limit = {
+				NOT = {
+					is_key_in_variable_map = {
+						name = cmm
+						target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+					}
+				}
+			}
+			debug_log = "ModeU5 US17 NATIVE_MODIFIERS CMM_GATE source=registered_default value=1 result=open"
+		}
+		else = {
+			debug_log = "ModeU5 US17 NATIVE_MODIFIERS CMM_GATE source=persisted_map value=1 result=open"
+		}
+
 		# Recover the current non-CBP baseline before asking the production refresh
 		# to replace the three persisted scales.
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_selling_correction value = 0 }

@@ -152,6 +152,7 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
         re.DOTALL,
     )
     registered_settings: set[str] = set()
+    registration_bodies: dict[str, str] = {}
 
     for match in register_block_re.finditer(cmm_effects):
         body = match.group("body")
@@ -159,6 +160,7 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
         tab_id = field_value(body, "tab_id")
         group_id = field_value(body, "group_id")
         registered_settings.add(setting_id)
+        registration_bodies[setting_id] = body
         expect(setting_id in CMM_SETTINGS, f"Unexpected generated NVE CMM setting id in registration: {setting_id or '<blank>'}")
         if setting_id in CMM_SETTINGS:
             expected_tab_id, expected_group_id, _has_scripted_gui = CMM_SETTINGS[setting_id]
@@ -181,10 +183,33 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
 
     expect("no_void_economy__cbp_debug_audit_tab__cbp_debug_audit_misc_group_name" in loc, "Missing localization name for Debug & Audit / Misc group")
 
+    trade_registration = registration_bodies.get(TRADE_REWORK_SETTING, "")
+    expect(
+        field_value(trade_registration, "default_value") == "1",
+        "Trade rework must remain enabled by default in its CMM registration",
+    )
+    trade_restriction_re = re.compile(
+        rf"cmm_set_requires_unrestricted_tools_enabled\s*=\s*\{{[^{{}}]*setting_id\s*=\s*{re.escape(TRADE_REWORK_SETTING)}[^{{}}]*\}}",
+        re.DOTALL,
+    )
+    expect(
+        trade_restriction_re.search(f"{cmm_effects}\n{runtime_effects}") is None,
+        "Implemented trade rework must not be marked as an unrestricted/planned CMM service",
+    )
+    expect(
+        "cbp_cmm_reset_trade_rework_setting" not in runtime_effects,
+        "CMM callbacks must not erase the implemented trade-rework setting",
+    )
+
     trade_trigger = block(config_triggers, "cbp_trade_rework_enabled_trigger")
     expect("has_variable_map = cmm" in trade_trigger, "Trade rework trigger must require the CMM variable map")
     expect(TRADE_REWORK_FLAG in trade_trigger, "Trade rework trigger must read the normalized CMM trade-rework flag")
     expect(TRADE_REWORK_VALUE_LINK in trade_trigger, "Trade rework trigger must require CMM trade-rework value 1")
+    expect(
+        re.search(r"NOT\s*=\s*\{\s*is_key_in_variable_map", trade_trigger, re.DOTALL) is not None
+        and trade_trigger.count("is_key_in_variable_map") >= 2,
+        "Trade rework trigger must honor the enabled registered default when CMM has not materialized the key",
+    )
 
 
 def validate_us17_owner_modifier_contract(
@@ -303,7 +328,9 @@ def validate_us17_owner_modifier_contract(
         "maintenance_baseline_fully_replaced",
         "idempotent_recalculation",
         "live_auto_modifier_application",
-        "cmm_trade_rework_disabled",
+        "cmm_map_missing",
+        "cmm_trade_rework_explicitly_disabled",
+        "source=registered_default",
         "mode=native_auto_modifiers",
         "combination=sum_without_division",
         "clamp=merchant_maintenance_cost_define",
