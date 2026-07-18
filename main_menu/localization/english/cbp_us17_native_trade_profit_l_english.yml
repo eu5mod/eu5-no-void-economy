@@ -6,4 +6,4 @@ l_english:
  AUTO_MODIFIER_NAME_cbp_us17_export_efficiency_cancellation: "(CBP) Export Efficiency Reconciliation"
  AUTO_MODIFIER_DESC_cbp_us17_export_efficiency_cancellation: "Removes Export Efficiency from the origin-price margin for export operations."
  AUTO_MODIFIER_NAME_cbp_us17_merchant_maintenance_reconciliation: "(CBP) Trade Maintenance Reconciliation"
- AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Replaces native Merchant Maintenance Efficiency with Selling plus Import Efficiency; export routes receive their directional difference during reconciliation."
+ AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Replaces native Merchant Maintenance Efficiency with the capped sum of Selling, Import, and Export Efficiency; each route receives its directional difference during reconciliation."

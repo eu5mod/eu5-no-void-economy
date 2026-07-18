@@ -54,7 +54,7 @@ D = define:NCountry|MERCHANT_MAINTENANCE_COST
 trade_operation_efficiency = I for an import operation
 trade_operation_efficiency = E for an export operation
 C = min(trade_operation_efficiency + S, D)
-C_import = min(I + S, D)
+C_country = min(I + E + S, D)
 ```
 
 CBP applies four additive auto-modifier corrections:
@@ -63,19 +63,19 @@ CBP applies four additive auto-modifier corrections:
 import correction      = -I
 export correction      = -E
 selling correction     = -S
-maintenance correction = C_import - M
-C_import = min(-selling correction - import correction, D)
+maintenance correction = C_country - M
+C_country = min(-selling correction - import correction - export correction, D)
 ```
 
 The three native price-margin inputs become zero. Merchant Maintenance
-Efficiency becomes `C_import`, not zero. Country auto-modifiers cannot evaluate
-`Trade.IsExport`, so the import path is the native reference. From the existing
-country-owned `every_trade` pass, exports then apply only their directional
-difference:
+Efficiency becomes `C_country`, not zero. Country auto-modifiers cannot evaluate
+`Trade.IsExport`, so the country-visible reference values Selling, Import, and
+Export Efficiency together. From the existing country-owned `every_trade` pass,
+each route then removes the non-directional part of that reference:
 
 ```txt
-import treasury delta = 0
-export treasury delta = D * (C_export - C_import)
+import treasury delta = D * (C_import - C_country)
+export treasury delta = D * (C_export - C_country)
 final maintenance     = D * (1 - C_route)
 ```
 
@@ -88,9 +88,10 @@ Positive sums are capped by the loaded define `D`.
 EU5 exposes `Trade.IsExport` to GUI and `is_export` to trade-scope script, but
 does not expose a trade-scope modifier that can replace country Import or Export
 Efficiency inside the native profit calculation. The price inputs can be
-cancelled natively, and the native maintenance modifier can represent the import
-reference. The export difference cannot be represented by that same country
-modifier when the country owns routes in both directions.
+cancelled natively, and the native maintenance modifier can represent the
+country-level sum of Selling, Import, and Export Efficiency. Neither directional
+route result can be represented by that same country modifier when the country
+owns routes in both directions.
 
 The exact financial result therefore uses the already existing monthly
 country-owned trade loop and `add_gold`. This correction affects treasury but is
@@ -130,11 +131,12 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta maintenance_formula=verified
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified
 ```
 
 The probe uses distinct Import and Export Efficiency fixtures, validates both
 operation paths, the upper cap, negative efficiency, four-way idempotence, and
 the live application of all four auto-modifiers. The delayed check derives its
-expected effective maintenance independently from the persisted CBP Selling and
-Import corrections, then compares it with `modifier:merchant_maintenance_efficiency`.
+expected effective maintenance independently from the persisted CBP Selling,
+Import, and Export corrections, then compares it with
+`modifier:merchant_maintenance_efficiency`.

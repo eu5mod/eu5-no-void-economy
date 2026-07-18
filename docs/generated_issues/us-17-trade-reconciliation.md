@@ -24,10 +24,10 @@ C = min(E_D + S, D)
 CBP import correction      = -I
 CBP export correction      = -Ex
 CBP selling correction     = -S
-CBP maintenance correction = C_import - M
-C_import = min(-CBP selling correction - CBP import correction, D)
-import treasury delta      = 0
-export treasury delta      = D * (C_export - C_import)
+CBP maintenance correction = C_country - M
+C_country = min(-CBP selling correction - CBP import correction - CBP export correction, D)
+import treasury delta      = D * (C_import - C_country)
+export treasury delta      = D * (C_export - C_country)
 ```
 
 The sum is not averaged and has no lower clamp. Negative efficiency therefore
@@ -41,8 +41,8 @@ monthly_country_pulse(country)
      -> refresh four non-CBP country baselines
      -> every_trade
         -> Trade.IsExport selects Import or Export Efficiency
-        -> keep the native import-reference maintenance result
-        -> apply the export difference when Trade.IsExport
+        -> keep the native all-efficiencies country reference
+        -> apply the directional route difference
         -> run unchanged US-20 goods reconciliation
 ```
 
@@ -54,9 +54,9 @@ Monthly execution remains the fallback for research and temporary modifiers.
 Country `modifier:*` reads include active CBP auto-modifiers. Each refresh
 subtracts its four previous persisted corrections before recalculation. This
 reconstructs the non-CBP values and prevents drift across monthly ticks and
-save reloads. The revised maintenance formula writes state version `3`; the
-first refresh also reconstructs version `2` saves without carrying forward the
-old full-maintenance cancellation.
+save reloads. The all-efficiencies maintenance formula writes state version `4`;
+the first refresh also reconstructs older saves without carrying forward their
+previous maintenance reference.
 
 ## Ownership and boundaries
 
@@ -76,7 +76,7 @@ treasury but is not represented in Vanilla route-profit UI or AI projection.
 
 ```txt
 - three price auto-modifiers cancel Import, Export, and Selling;
-- the fourth auto-modifier replaces Maintenance with the import reference;
+- the fourth auto-modifier replaces Maintenance with the capped country sum of Selling, Import, and Export;
 - import routes select Import Efficiency;
 - export routes select Export Efficiency;
 - one route never applies both directional efficiencies;
@@ -93,7 +93,7 @@ treasury but is not represented in Vanilla route-profit UI or AI projection.
 Run `event cbp_us17_owner_modifiers.1`, wait one in-game day, and expect:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
 Full runtime protocol:
