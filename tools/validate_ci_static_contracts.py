@@ -74,7 +74,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt",
     "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
-    "in_game/localization/cbp_us17_native_trade_profit_l_english.yml",
+    "main_menu/localization/english/cbp_us17_native_trade_profit_l_english.yml",
     "in_game/gui/cbp_us10_stock_lateralview.gui",
     "in_game/gui/zz_cbp_us10_production_subtabs.gui",
     "in_game/events/cbp_cmm_warning_events.txt",
@@ -288,6 +288,8 @@ def validate_us17_owner_modifier_contract(
     expect("namespace = cbp_us17_owner_modifiers" in owner_modifier_probe_events, "US17 owner-modifier probe namespace must remain available")
     expect("cbp_us17_owner_modifiers.1" in owner_modifier_probe_events, "US17 owner-modifier probe entry event must remain available")
     expect("cbp_debug_run_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 owner-modifier event must call the focused probe")
+    expect("cbp_us17_owner_modifiers.11" in owner_modifier_probe_events, "US17 owner-modifier probe must keep its delayed live-modifier check")
+    expect("cbp_debug_finish_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 delayed probe event must verify effective country modifiers")
 
     for assertion in [
         "positive_combined_efficiency",
@@ -300,6 +302,8 @@ def validate_us17_owner_modifier_contract(
         "positive_sum_capped_by_merchant_maintenance_define",
         "maintenance_baseline_fully_replaced",
         "idempotent_recalculation",
+        "live_auto_modifier_application",
+        "cmm_trade_rework_disabled",
         "mode=native_auto_modifiers",
         "combination=sum_without_division",
         "clamp=merchant_maintenance_cost_define",
@@ -730,7 +734,7 @@ def main() -> int:
     cbp_on_action_paths.extend(sorted(ROOT.glob("packages/*/in_game/common/on_action/*.txt")))
     cbp_on_action_paths = [path for path in cbp_on_action_paths if path.name != "_hardcoded.txt"]
     all_cbp_on_actions = "\n".join(path.read_text(encoding="utf-8") for path in cbp_on_action_paths)
-    native_trade_profit_localization = read("in_game/localization/cbp_us17_native_trade_profit_l_english.yml")
+    native_trade_profit_localization = read("main_menu/localization/english/cbp_us17_native_trade_profit_l_english.yml")
     revalidate_events = read("packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt")
     us20_probe_events = read("packages/cbp_core_tests/in_game/events/cbp_us20_case12_probe_events.txt")
     us20_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt")

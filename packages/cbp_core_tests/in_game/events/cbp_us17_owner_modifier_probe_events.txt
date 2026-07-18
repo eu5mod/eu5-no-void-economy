@@ -36,6 +36,23 @@ cbp_us17_owner_modifiers.10 = {
 	immediate = {
 		cbp_enter_test_audit_runtime_mode = yes
 		cbp_debug_run_us17_owner_modifier_probe = yes
+		trigger_event_non_silently = { id = cbp_us17_owner_modifiers.11 days = 1 }
+	}
+}
+
+# Auto-modifiers are evaluated outside the scripted effect that writes their
+# scales. Check the effective country modifiers on the following day.
+cbp_us17_owner_modifiers.11 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		cbp_debug_finish_us17_owner_modifier_probe = yes
 		trigger_event_non_silently = { id = cbp_us17_owner_modifiers.2 days = 0 }
 	}
 }
