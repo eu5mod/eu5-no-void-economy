@@ -73,7 +73,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
     "in_game/gui/cbp_us10_stock_lateralview.gui",
-    "in_game/gui/scripted_widgets/cbp_us10_stock.txt",
+    "in_game/gui/zz_cbp_us10_production_subtabs.gui",
     "in_game/events/cbp_cmm_warning_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_us20_case12_probe_events.txt",
@@ -396,14 +396,18 @@ def validate_us10_test_contract(us10_test_effects: str) -> None:
     )
 
 
-def validate_us10_ui_widget_contract(*, lateralview_gui: str, scripted_widget: str, ui_effects: str, stock_loc: str) -> None:
+def validate_us10_ui_widget_contract(*, lateralview_gui: str, production_subtabs: str, ui_effects: str, stock_loc: str) -> None:
     expect(
         "template cbp_us10_stock_panel" in lateralview_gui,
         "US-10 stock lateralview file must expose the cbp_us10_stock_panel template",
     )
     expect(
-        '"gui/cbp_us10_stock_lateralview.gui" = cbp_us10_stock_panel' in scripted_widget,
-        "US-10 scripted widget registration must point at the existing cbp_us10_stock_panel template",
+        "widget = { using = cbp_us10_stock_panel }" in production_subtabs,
+        "US-10 Production subtab override must mount the cbp_us10_stock_panel template",
+    )
+    expect(
+        not (ROOT / "in_game/gui/scripted_widgets/cbp_us10_stock.txt").exists(),
+        "US-10 stock panel must not be registered as a standalone scripted widget",
     )
     expect(
         "THIS.GetVariable('cbp_us10_ui" not in ui_effects + stock_loc,
@@ -659,7 +663,7 @@ def main() -> int:
     perf10_13_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf10_13_test_effects.txt")
     us10_ui_effects = read("in_game/common/scripted_effects/cbp_us10_ui_effects.txt")
     us10_lateralview_gui = read("in_game/gui/cbp_us10_stock_lateralview.gui")
-    us10_scripted_widget = read("in_game/gui/scripted_widgets/cbp_us10_stock.txt")
+    us10_production_subtabs = read("in_game/gui/zz_cbp_us10_production_subtabs.gui")
     stock_loc = read("in_game/localization/cbp_stock_l_english.yml")
     perf14_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt")
     perf14_guarded_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt")
@@ -696,7 +700,7 @@ def main() -> int:
     validate_us10_test_contract(us10_test_effects)
     validate_us10_ui_widget_contract(
         lateralview_gui=us10_lateralview_gui,
-        scripted_widget=us10_scripted_widget,
+        production_subtabs=us10_production_subtabs,
         ui_effects=us10_ui_effects,
         stock_loc=stock_loc,
     )

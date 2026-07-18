@@ -266,9 +266,7 @@ cbp_us10_ui_select_next_market = {
 }
 
 cbp_us10_ui_compute_selected_market_capacity = {
-	# This value is consumed after several country/market scope transitions.
-	# A local variable does not survive those separate scope blocks reliably.
-	scope:cbp_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = 0 } }
+	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_selected_market_capacity_value value = 0 }
 	scope:cbp_us10_ui_selected_market_scope = { save_temporary_scope_as = cbp_market_country_cache_market }
 	cbp_rebuild_countries_present_in_market = yes
 
@@ -279,9 +277,19 @@ cbp_us10_ui_compute_selected_market_capacity = {
 			if = {
 				limit = { has_variable_map = cbp_stock_cap_by_market is_key_in_variable_map = { name = cbp_stock_cap_by_market target = scope:cbp_us10_ui_selected_market_scope } }
 				save_temporary_scope_value_as = { name = gui_cbp_us10_ui_country_market_capacity value = { value = "variable_map(cbp_stock_cap_by_market|scope:cbp_us10_ui_selected_market_scope)" min = 0 } }
-				scope:cbp_us10_ui_country = { change_variable = { name = gui_cbp_us10_ui_selected_market_capacity add = scope:gui_cbp_us10_ui_country_market_capacity } }
+				save_temporary_scope_value_as = {
+					name = gui_cbp_us10_ui_selected_market_capacity_value
+					value = {
+						value = scope:gui_cbp_us10_ui_selected_market_capacity_value
+						add = scope:gui_cbp_us10_ui_country_market_capacity
+					}
+				}
 			}
 		}
+	}
+
+	scope:cbp_us10_ui_country = {
+		set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
 	}
 }
 
@@ -297,16 +305,15 @@ cbp_us10_ui_capture_good_row = {
 		good = $good$
 	}
 	scope:cbp_us10_ui_country = {
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_row_market_capacity value = var:gui_cbp_us10_ui_selected_market_capacity }
 		set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = scope:cbp_read_country_stock }
 		set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = scope:cbp_read_country_stock_cap }
 		set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = scope:cbp_read_market_stock }
-		set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = scope:gui_cbp_us10_ui_row_market_capacity }
+		set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
 		set_variable = { name = gui_cbp_us10_ui_$key$_produced value = scope:cbp_us00_produced }
 		set_variable = { name = gui_cbp_us10_ui_$key$_added value = scope:cbp_us00_added }
 		set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = scope:cbp_us00_rejected }
 		set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = scope:cbp_read_over_capacity }
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = scope:gui_cbp_us10_ui_row_market_capacity min = 0 } }
+		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = scope:gui_cbp_us10_ui_selected_market_capacity_value min = 0 } }
 		set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = scope:gui_cbp_us10_ui_$key$_market_over_cap_value }
 		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_overproduction_percent_value value = { value = scope:cbp_us00_read_overproduction_ratio multiply = 100 min = 0 } }
 		set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = scope:gui_cbp_us10_ui_$key$_overproduction_percent_value }
