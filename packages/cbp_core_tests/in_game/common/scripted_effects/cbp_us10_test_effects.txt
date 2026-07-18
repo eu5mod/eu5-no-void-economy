@@ -930,34 +930,43 @@ cbp_us10_evaluate_ui_visibility_assertions = {
 }
 
 cbp_us10_run_ui_visibility_fixture_for_pair = {
+	save_temporary_scope_as = cbp_us10_ui_fixture_controller
 	$source_country$ = { save_temporary_scope_as = cbp_us10_source_country }
 	$source_market$ = { save_temporary_scope_as = cbp_us10_source_market }
 
-	cbp_us10_run_demand_resolution_fixture = {
-		source_country = scope:cbp_us10_source_country
-		source_market = scope:cbp_us10_source_market
+	scope:cbp_us10_ui_fixture_controller = {
+		cbp_us10_run_demand_resolution_fixture = {
+			source_country = scope:cbp_us10_source_country
+			source_market = scope:cbp_us10_source_market
+		}
+		cbp_us10_capture_ui_visibility_summary = yes
 	}
-	cbp_us10_capture_ui_visibility_summary = yes
 	c:FRA = {
+		# The production panel is optional, but its data helper is also a test
+		# endpoint. Seed every row before selection so a failed capture reports a
+		# deterministic assertion instead of reading an unset variable.
+		cbp_us10_ui_clear_table_variables = yes
 		c:FRA.capital.market = { save_temporary_scope_as = cbp_us10_ui_fixture_market }
 		cbp_us10_ui_set_selected_market = {
 			market = scope:cbp_us10_ui_fixture_market
 		}
 		cbp_us10_ui_prepare_current_market_table = yes
 	}
-	cbp_us10_run_issue109_fixture = {
-		source_country = scope:cbp_us10_source_country
-		source_market = scope:cbp_us10_source_market
+	scope:cbp_us10_ui_fixture_controller = {
+		cbp_us10_run_issue109_fixture = {
+			source_country = scope:cbp_us10_source_country
+			source_market = scope:cbp_us10_source_market
+		}
+		# Resynchronize presentation variables from the deterministic fixture after
+		# the nested effect returns to this scope. Assertions still read test_*.
+		set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_used value = scope:test_cbp_us10_issue109_fast_path_used }
+		set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_taken value = scope:test_cbp_us10_issue109_fast_path_taken }
+		set_variable = { name = gui_cbp_us10_ui_issue109_floor_excluded_count value = scope:test_cbp_us10_issue109_floor_excluded_count }
+		set_variable = { name = gui_cbp_us10_ui_visibility_prefilter_used value = scope:test_cbp_us10_issue109_prefilter_used }
+		cbp_us10_capture_ui_candidate_snapshot = yes
+		cbp_us10_log_ui_visibility_dump = yes
+		cbp_us10_evaluate_ui_visibility_assertions = yes
 	}
-	# Resynchronize presentation variables from the deterministic fixture after
-	# the nested effect returns to this scope. Assertions still read test_*.
-	set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_used value = scope:test_cbp_us10_issue109_fast_path_used }
-	set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_taken value = scope:test_cbp_us10_issue109_fast_path_taken }
-	set_variable = { name = gui_cbp_us10_ui_issue109_floor_excluded_count value = scope:test_cbp_us10_issue109_floor_excluded_count }
-	set_variable = { name = gui_cbp_us10_ui_visibility_prefilter_used value = scope:test_cbp_us10_issue109_prefilter_used }
-	cbp_us10_capture_ui_candidate_snapshot = yes
-	cbp_us10_log_ui_visibility_dump = yes
-	cbp_us10_evaluate_ui_visibility_assertions = yes
 }
 
 cbp_debug_run_us10_ui_visibility_tests = {
