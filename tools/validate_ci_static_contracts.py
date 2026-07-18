@@ -73,7 +73,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
     "in_game/gui/cbp_us10_stock_lateralview.gui",
-    "in_game/gui/scripted_widgets/cbp_us10_stock.txt",
+    "in_game/gui/zz_cbp_us10_production_subtabs.gui",
     "in_game/events/cbp_cmm_warning_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt",
     "packages/cbp_core_tests/in_game/events/cbp_us20_case12_probe_events.txt",
@@ -218,15 +218,18 @@ def validate_us17_owner_modifier_contract(
     expect("scope:cbp_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
     expect("cbp_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
 
-    average_assignment = re.search(
+    combined_assignment = re.search(
         r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
         formula,
         re.DOTALL,
     )
-    average_body = average_assignment.group("body") if average_assignment else ""
-    expect(bool(average_assignment), "US17 owner formula must calculate the buying/selling average")
-    expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
-    expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
+    combined_body = combined_assignment.group("body") if combined_assignment else ""
+    expect(bool(combined_assignment), "US17 owner formula must calculate the buying/selling combined efficiency")
+    expect("gui_cbp_trade_efficiency_buying_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
+    expect("gui_cbp_trade_efficiency_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
+    expect("divide = 2" not in combined_body, "US17 combined efficiency is a sum and must not be divided by two")
+    expect("max = 1" in combined_body, "US17 combined efficiency must have an upper cap of 1")
+    expect("min = 0" not in combined_body, "US17 combined efficiency must not have a lower clamp of 0")
 
     expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
     expect("multiply = -1" in maintenance_formula, "US17 maintenance factor must subtract merchant maintenance efficiency")
@@ -245,12 +248,13 @@ def validate_us17_owner_modifier_contract(
         "merchant_maintenance_efficiency_source",
         "base_maintenance_define_source",
         "base_maintenance_amount",
-        "negative_average_preserved",
-        "positive_average_capped",
+        "negative_sum_preserved",
+        "positive_sum_capped",
         "merchant_maintenance_factor",
         "maintenance_saving",
         "route_money_delta",
         "base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST",
+        "combination=sum_without_division",
         "clamp=maximum_only",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")
@@ -269,6 +273,13 @@ def validate_us17_us20_static_contract(
 ) -> None:
     country_cycle = block(country_trade_owner_effects, "cbp_run_monthly_country_trade_owner_cycle")
     route_effect = block(trade_reconciliation_effects, "cbp_run_us17_us20_route_reconciliation")
+    historical_formula = block(trade_reconciliation_effects, "cbp_compute_us17_us20_route_formula_from_current_values")
+    historical_combined_assignment = re.search(
+        r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
+        historical_formula,
+        re.DOTALL,
+    )
+    historical_combined_body = historical_combined_assignment.group("body") if historical_combined_assignment else ""
     live_hook_call = "cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes"
     legacy_hook_call = "cbp_run_us17_us20_route_reconciliation = yes"
     e2e_probe_call = "cbp_debug_run_us20_case12_market_loss_probe = yes"
@@ -279,12 +290,16 @@ def validate_us17_us20_static_contract(
     expect("every_trade = {" in country_cycle, "Country trade-owner cycle must use the native every_trade loop")
     expect("cbp_trade_rework_enabled_trigger = yes" in route_effect, "Historical US-17/US-20 route effect must remain defensively gated for deterministic tests")
     expect("cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes" in route_effect, "Historical US-17/US-20 route effect must prepare metrics inside the gated body")
+    expect(bool(historical_combined_assignment), "Historical US17 formula must calculate combined efficiency")
+    expect("divide = 2" not in historical_combined_body, "Historical US17 formula must follow the sum-without-division business rule")
+    expect("min = 0" not in historical_combined_body, "Historical US17 combined efficiency must preserve negative values")
     expect(live_hook_call not in q8_7_global_owner_effects, "US-17/US-20 live hook must not be placed in the Q8.7 market-local body")
     expect(live_hook_call not in stock_on_actions, "US-17/US-20 live hook must not be placed directly in monthly on_actions")
     expect(
         "every_market_center_in_country = {" not in country_trade_owner_effects + q8_7_global_owner_effects + trade_reconciliation_effects + owner_modifier_effects,
         "Trade-rework runtime must not reintroduce a market-center every_trade scaffold",
     )
+
 
     unsafe_global_counter = re.compile(
         r"set_global_variable\s*=\s*\{[^{}]*name\s*=\s*cbp_(?:trade_efficiency|us20)[^{}]*value\s*=\s*\{\s*value\s*=\s*global_var:",
@@ -326,8 +341,54 @@ def validate_us17_us20_static_contract(
         expect(assertion in us20_probe_effects, f"US20 E2E probe must assert {assertion}")
 
 
+def validate_native_trade_quantity_contract(
+    *, country_trade_owner_effects: str, transport_helpers: str
+) -> None:
+    capture = block(
+        country_trade_owner_effects,
+        "cbp_capture_country_trade_owner_trade_quantity",
+    )
+    expect(
+        "value = trade_volume" in capture,
+        "Native trade quantity capture must read trade_volume",
+    )
+    expect(
+        "value = scope:cbp_trade_owner_trade_volume" in capture,
+        "Native trade quantity must copy trade_volume directly",
+    )
+    expect(
+        "cbp_compute_trade_owner_goods_quantity_from_traded_good" not in capture,
+        "Native trade quantity must not pass through static transport_cost conversion",
+    )
+    expect(
+        "cbp_compute_trade_owner_goods_quantity_from_traded_good" not in transport_helpers,
+        "Generated transport helpers must not recreate the native trade-owner dispatcher",
+    )
+    expect(
+        "cbp_compute_goods_quantity_from_trade_capacity_good_glass" in transport_helpers,
+        "Generic literal-good capacity conversion helpers must remain available",
+    )
+
+
 def validate_us10_test_contract(us10_test_effects: str) -> None:
     """Keep the US-10 harness aligned with the canonical generated ledgers."""
+
+    capacity_conversion = block(
+        us10_test_effects,
+        "cbp_debug_run_us10_trade_capacity_conversion_tests",
+    )
+    expect(
+        "cbp_compute_goods_quantity_from_trade_capacity_good_glass" in capacity_conversion,
+        "US10 capacity conversion probe must use glass instead of a transport_cost=1 good",
+    )
+    expect(
+        "test_cbp_us10_conversion_glass_transport_cost = 0.5" in capacity_conversion,
+        "US10 glass probe must assert the explicit transport cost 0.5",
+    )
+    expect(
+        "test_cbp_us10_conversion_glass_quantity = 40" in capacity_conversion,
+        "US10 glass probe must assert capacity 20 converts to quantity 40",
+    )
 
     legacy_ledger_patterns = [
         "test_cbp_consumption_wheat_requested_by_market",
@@ -349,18 +410,26 @@ def validate_us10_test_contract(us10_test_effects: str) -> None:
     )
 
 
-def validate_us10_ui_widget_contract(*, lateralview_gui: str, scripted_widget: str, ui_effects: str, stock_loc: str) -> None:
+def validate_us10_ui_widget_contract(*, lateralview_gui: str, production_subtabs: str, ui_effects: str, stock_loc: str) -> None:
     expect(
         "template cbp_us10_stock_panel" in lateralview_gui,
         "US-10 stock lateralview file must expose the cbp_us10_stock_panel template",
     )
     expect(
-        '"gui/cbp_us10_stock_lateralview.gui" = cbp_us10_stock_panel' in scripted_widget,
-        "US-10 scripted widget registration must point at the existing cbp_us10_stock_panel template",
+        "widget = { using = cbp_us10_stock_panel }" in production_subtabs,
+        "US-10 Production subtab override must mount the cbp_us10_stock_panel template",
+    )
+    expect(
+        not (ROOT / "in_game/gui/scripted_widgets/cbp_us10_stock.txt").exists(),
+        "US-10 stock panel must not be registered as a standalone scripted widget",
     )
     expect(
         "THIS.GetVariable('cbp_us10_ui" not in ui_effects + stock_loc,
         "US-10 UI runtime dumps/localization must read gui_cbp_us10_ui* variables, matching the variables they set",
+    )
+    expect(
+        "remove_variable = gui_cbp_us10_ui_" not in ui_effects,
+        "US-10 UI refresh must initialize presentation variables to zero instead of leaving them unset",
     )
 
 
@@ -598,6 +667,7 @@ def main() -> int:
     stock_effects = read("in_game/common/scripted_effects/cbp_stock_effects.txt")
     core04_effects = read("in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt")
     country_trade_owner_effects = read("in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt")
+    transport_helpers = read("in_game/common/scripted_effects/cbp_transport_cost_generated.txt")
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt")
     trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
     owner_modifier_effects = read("in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt")
@@ -611,7 +681,7 @@ def main() -> int:
     perf10_13_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf10_13_test_effects.txt")
     us10_ui_effects = read("in_game/common/scripted_effects/cbp_us10_ui_effects.txt")
     us10_lateralview_gui = read("in_game/gui/cbp_us10_stock_lateralview.gui")
-    us10_scripted_widget = read("in_game/gui/scripted_widgets/cbp_us10_stock.txt")
+    us10_production_subtabs = read("in_game/gui/zz_cbp_us10_production_subtabs.gui")
     stock_loc = read("in_game/localization/cbp_stock_l_english.yml")
     perf14_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt")
     perf14_guarded_test_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt")
@@ -631,6 +701,10 @@ def main() -> int:
         owner_modifier_probe_events=owner_modifier_probe_events,
         owner_modifier_probe_effects=owner_modifier_probe_effects,
     )
+    validate_native_trade_quantity_contract(
+        country_trade_owner_effects=country_trade_owner_effects,
+        transport_helpers=transport_helpers,
+    )
     validate_us17_us20_static_contract(
         stock_on_actions=stock_on_actions,
         country_trade_owner_effects=country_trade_owner_effects,
@@ -644,7 +718,7 @@ def main() -> int:
     validate_us10_test_contract(us10_test_effects)
     validate_us10_ui_widget_contract(
         lateralview_gui=us10_lateralview_gui,
-        scripted_widget=us10_scripted_widget,
+        production_subtabs=us10_production_subtabs,
         ui_effects=us10_ui_effects,
         stock_loc=stock_loc,
     )

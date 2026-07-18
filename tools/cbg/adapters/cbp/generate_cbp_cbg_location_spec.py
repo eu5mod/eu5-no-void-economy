@@ -6,7 +6,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import display_path
 
 
 SOURCE = "main_menu/common/static_modifiers/location.txt"
@@ -53,7 +60,7 @@ def main() -> int:
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(build_spec(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Generated {args.output} with CBP location CBG policy.")
+    print(f"Generated {display_path(args.output)} with CBP location CBG policy.")
     return 0
 
 

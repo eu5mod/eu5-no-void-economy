@@ -10,6 +10,7 @@ from tools.cbg.community_balance_generator import (
     Target,
     apply_intent,
     content_category,
+    display_path,
     generate,
     load_intents,
     print_generation_summary,
@@ -49,11 +50,19 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertIn("Rule candidates", text)
         self.assertIn("Business rule: Halve stability rewards", text)
         self.assertIn("./build/cbg_manifest.json", text)
-        self.assertIn("#" * 72, text)
+        self.assertIn("━" * 72, text)
         self.assertRegex(text, r"Events\s+1 file\s+2 mutations")
         self.assertRegex(text, r"Buildings\s+1 file\s+3 mutations")
         self.assertRegex(text, r"Laws\s+1 file\s+1 mutation")
         self.assertNotIn("\033[", text)
+
+    def test_display_path_uses_repository_relative_path(self):
+        manifest = Path(__file__).resolve().parents[3] / "build/cbg_manifest.json"
+        self.assertEqual("./build/cbg_manifest.json", display_path(manifest))
+
+    def test_display_path_uses_compact_temporary_path(self):
+        temporary = Path(tempfile.gettempdir()) / "cbg-test/manifest.json"
+        self.assertTrue(display_path(temporary).startswith("$TMPDIR/"))
 
     def test_console_content_categories_cover_requested_policy_surfaces(self):
         self.assertEqual("Events", content_category("in_game/events/test.txt"))

@@ -3,6 +3,8 @@
 set -Eeuo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
 current_step="startup"
 target_args=()
 run_idempotence="yes"
@@ -65,15 +67,18 @@ cd "$repo_root"
 
 step() {
 	current_step="$1 $2"
-	printf '\n%s\n' '########################################################################'
-	printf '[%s] %s\n' "$1" "$2"
+	printf '\n'
+	cbp_console_step_separator
+	cbp_console_styled '1;36' "[$1] $2"
+	printf '\n'
 }
 
 report_failure() {
 	status=$?
 	trap - ERR
-	printf '\n%s\n' '########################################################################' >&2
-	printf '[FAILED] Local game preparation stopped during: %s\n' "$current_step" >&2
+	printf '\n' >&2
+	cbp_console_major_separator 2 >&2
+	cbp_console_failure "Local game preparation stopped during: $current_step"
 	printf '%s\n' 'No package installation or installation verification was completed.' >&2
 	exit "$status"
 }

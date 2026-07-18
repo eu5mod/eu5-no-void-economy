@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from tools.cbg.community_balance_generator import display_path
 from tools.generate_us177_food_goods_manifest import (
     build_manifest_payload,
     format_generated_decimal,
@@ -72,7 +73,7 @@ def main() -> int:
         json.dumps(build_spec(game_root, args.divisor), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    print(f"Generated {args.output} with US-177 food CBG policy.")
+    print(f"Generated {display_path(args.output)} with US-177 food CBG policy.")
     return 0
 
 

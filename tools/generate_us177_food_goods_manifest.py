@@ -6,10 +6,17 @@ import hashlib
 import json
 import os
 import re
+import sys
 import tempfile
 from collections import defaultdict
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from tools.cbg.community_balance_generator import display_path
 
 
 BLOCK_START = re.compile(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{")
@@ -369,7 +376,7 @@ def main() -> int:
         f"FOOD_PRICE={payload['configured_food_price']}, "
         f"production divisor={payload['food_production_divisor']}."
     )
-    print(f"Manifest: {output}")
+    print(f"Manifest: {display_path(output)}")
     return 0
 
 

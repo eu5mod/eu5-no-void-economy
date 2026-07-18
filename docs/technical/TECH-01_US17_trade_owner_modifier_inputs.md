@@ -30,7 +30,7 @@ them independently resolves to the saved trade owner.
 | Merchant maintenance efficiency | saved trade-owner country | `modifier:merchant_maintenance_efficiency` | country modifier value | CONFIRMED | Captured into `cbp_trade_efficiency_merchant_maintenance_efficiency` |
 | Base merchant maintenance unit cost | script value | `define:NCountry|MERCHANT_MAINTENANCE_COST` | define value | CONFIRMED | Captured into `cbp_trade_efficiency_base_maintenance_unit_cost` |
 | Base route maintenance | route trade context | `trade_volume × define:NCountry|MERCHANT_MAINTENANCE_COST` | derived value | CONFIRMED for controlled probe and live capture | Captured into `cbp_trade_efficiency_base_maintenance_amount` |
-| Cap average efficiency above one | transaction-local numeric value | `max = 1` | script-value upper bound | CONFIRMED | No lower clamp; negative values remain negative |
+| Cap combined efficiency above one | transaction-local numeric value | `max = 1` | script-value upper bound | CONFIRMED | Sum without division; no lower clamp; negative values remain negative |
 
 The tested EU5 build rejects these former candidate names:
 
@@ -64,9 +64,10 @@ base_maintenance_amount =
   * define:NCountry|MERCHANT_MAINTENANCE_COST
 ```
 
-The moved-goods quantity remains a distinct value derived through the existing
-literal-good transport-cost helper. It must not replace `trade_volume` in the
-merchant-maintenance calculation.
+For a native Vanilla trade, `trade_volume` is also the moved-goods quantity.
+Runtime copies it directly and must not divide it by the traded good's static
+`transport_cost`. The literal-good transport helpers remain available only for
+inputs that are explicitly capacity-like and for focused diagnostics.
 
 ## Maintenance formula
 
@@ -80,20 +81,20 @@ adjusted_base_maintenance =
     base_maintenance_amount * merchant_maintenance_factor
 ```
 
-The repurposed import/selling average then creates the additional saving:
+The repurposed import/selling sum then creates the additional saving:
 
 ```txt
-average_efficiency =
-    (import_efficiency + selling_efficiency) / 2
+combined_efficiency =
+    import_efficiency + selling_efficiency
 
-capped_average_efficiency =
-    min(average_efficiency, 1)
+capped_combined_efficiency =
+    min(combined_efficiency, 1)
 
 maintenance_saving =
-    adjusted_base_maintenance * capped_average_efficiency
+    adjusted_base_maintenance * capped_combined_efficiency
 ```
 
-EU5 bound-oriented syntax for the average deliberately contains:
+EU5 bound-oriented syntax for the sum deliberately contains:
 
 ```txt
 max = 1
@@ -105,7 +106,7 @@ and deliberately omits:
 min = 0
 ```
 
-A negative average therefore creates a negative saving and an additional route
+A negative sum therefore creates a negative saving and an additional route
 cost. The merchant-maintenance factor itself is lower-bounded at zero so a
 country efficiency above 100% does not create negative base maintenance.
 
@@ -137,9 +138,9 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST combination=sum_without_division clamp=maximum_only
 ```
 
 The probe confirms direct owner-country modifier reads, the loaded define,
-`trade_volume × define` base maintenance, negative-average preservation, the
+`trade_volume × define` base maintenance, negative-sum preservation, the
 upper cap of one, and maintenance-factor arithmetic.

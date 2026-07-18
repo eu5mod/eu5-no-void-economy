@@ -88,9 +88,9 @@ base_maintenance_amount =
     trade_volume * base_maintenance_unit_cost
 ```
 
-`trade_volume` is the merchant-capacity route value. The moved-goods quantity,
-which is derived through the existing literal-good transport-cost helper, is a
-separate input and must not replace `trade_volume` in this formula.
+`trade_volume` is both the native moved-goods quantity and the input used by the
+merchant-maintenance formula. Runtime copies it directly for stock movement and
+does not apply the traded good's static `transport_cost`.
 
 ## Existing merchant-maintenance efficiency
 
@@ -109,31 +109,30 @@ negative base maintenance.
 
 ## Maximum-only import/selling cap
 
-The repurposed average is capped only above `1`:
+The repurposed sum is capped only above `1`:
 
 ```txt
-average_efficiency =
-    (import_efficiency + selling_efficiency) / 2
+combined_efficiency =
+    import_efficiency + selling_efficiency
 
-capped_average_efficiency =
-    min(average_efficiency, 1)
+capped_combined_efficiency =
+    min(combined_efficiency, 1)
 ```
 
 EU5 bound-oriented syntax:
 
 ```txt
-divide = 2
 max = 1
 ```
 
-There is deliberately no `min = 0`. A negative average remains negative and
+There is deliberately no division by two and no `min = 0`. A negative sum remains negative and
 therefore creates an added maintenance cost.
 
 ## Maintenance-side saving
 
 ```txt
 maintenance_saving =
-    adjusted_base_maintenance * capped_average_efficiency
+    adjusted_base_maintenance * capped_combined_efficiency
 ```
 
 The complete intended route reconciliation remains:
@@ -235,7 +234,7 @@ base_maintenance_unit_cost
 base_maintenance_amount
 merchant_maintenance_factor
 adjusted_base_maintenance
-capped_average_efficiency
+capped_combined_efficiency
 maintenance_saving
 sell_price
 buy_price
@@ -262,17 +261,17 @@ The probe validates:
 - merchant_maintenance_efficiency is read from the trade-owner country;
 - the loaded MERCHANT_MAINTENANCE_COST define is read;
 - base maintenance equals trade_volume × loaded define;
-- (-0.4 + -0.2) / 2 remains -0.3;
-- (1.4 + 1.2) / 2 is capped at 1;
+- -0.4 + -0.2 remains -0.6;
+- 1.4 + 1.2 is capped at 1;
 - with base 20 and maintenance efficiency 0.20, adjusted maintenance is 16;
-- with average 0.15, maintenance saving is 2.40;
-- with old price-side bonus 35, route delta is -32.60.
+- with combined efficiency 0.30, maintenance saving is 4.80;
+- with old price-side bonus 35, route delta is -30.20.
 ```
 
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST combination=sum_without_division clamp=maximum_only
 ```
 
 Runbook:
@@ -292,8 +291,8 @@ docs/tests/TEST-US-17-owner-modifier-inputs.md
 - Maintenance efficiency is sourced from modifier:merchant_maintenance_efficiency.
 - Base cost is sourced from define:NCountry|MERCHANT_MAINTENANCE_COST.
 - Base maintenance is trade_volume × the effective loaded define.
-- The import/selling average has max = 1 and no min = 0.
-- Negative average efficiency remains negative.
+- The import/selling sum has max = 1, no division by two, and no min = 0.
+- Negative combined efficiency remains negative.
 - Maintenance efficiency contributes through max(0, 1 - efficiency).
 - Old price-side import/selling bonus is removed in the route formula.
 - Delta is accumulated on the saved trade owner.

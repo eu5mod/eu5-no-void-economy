@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+from tools.cbg.community_balance_generator import ASSIGNMENT, display_path, field_matches, scan_objects
 from tools.generate_political_reward_overrides import centralizable_script_values
 
 
@@ -437,7 +437,7 @@ def main() -> int:
         raise SystemExit(f"CBP CBG spec generation failed: {exc}") from exc
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(spec, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Generated {args.output} with {len(spec['transformations'])} transformations.")
+    print(f"Generated {display_path(args.output)} with {len(spec['transformations'])} transformations.")
     return 0
 
 
