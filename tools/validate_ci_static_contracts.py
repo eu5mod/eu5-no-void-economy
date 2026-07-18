@@ -223,7 +223,10 @@ def validate_us17_owner_modifier_contract(
     expect("cbp_us17_native_baseline_import_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
     expect("cbp_us17_native_baseline_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
     expect("divide = 2" not in combined_body, "US17 combined efficiency is a sum and must not be divided by two")
-    expect("max = 1" in combined_body, "US17 combined efficiency must have an upper cap of 1")
+    expect(
+        "max = cbp_trade_base_merchant_maintenance_cost" in combined_body,
+        "US17 combined efficiency must be capped by the loaded merchant-maintenance-cost define",
+    )
     expect("min = 0" not in combined_body, "US17 combined efficiency must not have a lower clamp of 0")
 
     expect("cbp_us17_native_baseline_maintenance_efficiency" in correction_formula, "US17 native formula must consume merchant maintenance efficiency")
@@ -291,15 +294,15 @@ def validate_us17_owner_modifier_contract(
         "import_cancelled",
         "selling_cancelled",
         "maintenance_replaced_by_combined_efficiency",
-        "merchant_maintenance_define_cancels",
+        "capped_native_maintenance_amount_equivalent",
         "negative_sum_preserved",
         "negative_efficiency_increases_maintenance",
-        "positive_sum_capped",
+        "positive_sum_capped_by_merchant_maintenance_define",
         "maintenance_baseline_fully_replaced",
         "idempotent_recalculation",
         "mode=native_auto_modifiers",
         "combination=sum_without_division",
-        "clamp=maximum_only",
+        "clamp=merchant_maintenance_cost_define",
         "treasury_reconciliation=none",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")

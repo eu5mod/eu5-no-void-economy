@@ -9,7 +9,7 @@ ownership of route profit, AI decisions, UI display, and treasury posting.
 For the non-CBP country baselines `I`, `S`, and `M`:
 
 ```txt
-C = min(I + S, 1)
+C = min(I + S, define:NCountry|MERCHANT_MAINTENANCE_COST)
 
 CBP import correction      = -I
 CBP selling correction     = -S
@@ -19,8 +19,8 @@ CBP maintenance correction = C - M
 This cancels the native price effects and replaces the native maintenance
 efficiency `M` with `C`. The resulting maintenance factor is `1 - C`. The
 configured `define:NCountry|MERCHANT_MAINTENANCE_COST` remains part of the
-native monetary base and must not replace the unitless `1` or enter the additive
-percentage correction.
+native monetary base. It is also deliberately reused as `C`'s upper policy
+bound, but it does not replace the unitless `1` in the maintenance factor.
 
 The sum is not averaged. It has no lower clamp. Negative efficiency therefore
 increases maintenance, and there is no reciprocal that could divide by zero.
@@ -66,7 +66,7 @@ must never be called from the production monthly country pass.
 - native import correction cancels the reconstructed import baseline;
 - native selling correction cancels the reconstructed selling baseline;
 - maintenance correction uses C - M so effective maintenance efficiency is C;
-- C is the sum without division, capped only above one;
+- C is the sum without division, capped by MERCHANT_MAINTENANCE_COST;
 - negative C remains negative;
 - repeated refreshes do not drift;
 - policy and reform hooks use the shared refresh;
@@ -87,7 +87,7 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=maximum_only negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
 ```
 
 Full runtime protocol:

@@ -261,7 +261,7 @@ Let the non-CBP baselines be `I = import_efficiency`,
 `D = define:NCountry|MERCHANT_MAINTENANCE_COST`. Compute:
 
 ```txt
-C = min(I + S, 1)
+C = min(I + S, D)
 selling correction = -S
 import correction = -I
 maintenance correction = C - M
@@ -269,18 +269,20 @@ maintenance correction = C - M
 
 This produces effective selling and import efficiencies of zero and an
 effective merchant-maintenance efficiency of `C`, hence a maintenance factor of
-`1 - C`. The native baseline `M` is replaced, not compounded with `C`. Do not
-divide the sum and do not apply a lower clamp. Negative `C` therefore remains
-meaningful and increases maintenance. Repeated refreshes must first remove the
-previous CBP corrections from effective values so monthly and on-action
-execution cannot drift. Historical route-money fixtures may retain old variable
-names, but they must not define or execute the live business rule.
+`1 - C`. The native baseline `M` is replaced, not compounded with `C`. `D` is
+deliberately reused as the upper policy bound; do not divide the sum or apply a
+lower clamp. Negative `C` therefore remains meaningful and increases
+maintenance. Repeated refreshes must first remove the previous CBP corrections
+from effective values so monthly and on-action execution cannot drift.
+Historical route-money fixtures may retain old variable names, but they must
+not define or execute the live business rule.
 
 The literal `1` is the dimensionless 100% maintenance factor, not `D`. Let `B`
 be the native pre-efficiency merchant-maintenance amount, including `D`. Vanilla
 charges `B * (1 - M)`; CBP targets `B * (1 - C)`. Solving through the native
 modifier therefore requires `maintenance correction = C - M`. Never substitute
-the ducat-denominated define for the unitless `1` or for that correction.
+the ducat-denominated define for the unitless `1`; its second role is limited to
+the explicit upper bound in `C = min(I + S, D)`.
 
 ### Native modifier before reconciliation
 

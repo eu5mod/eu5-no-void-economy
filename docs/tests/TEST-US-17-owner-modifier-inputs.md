@@ -9,7 +9,7 @@ Validate that US-17:
 - transfers their summed effect to merchant maintenance;
 - uses no reciprocal or division;
 - preserves negative combined efficiency;
-- caps only positive combined efficiency above one;
+- caps positive combined efficiency at MERCHANT_MAINTENANCE_COST;
 - remains stable across repeated refreshes;
 - leaves treasury accounting to Vanilla.
 ```
@@ -46,15 +46,15 @@ event cbp_us17_owner_modifiers.1
 Expected log marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=maximum_only negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
 ```
 
 The detailed checks must include:
 
 ```txt
-positive:    I=0.20 S=0.10 M=0.20 -> corrections=-0.20/-0.10/+0.10
+positive:    I=0.10 S=0.05 M=0.20 -> corrections=-0.10/-0.05/-0.05
 negative:    I=-0.40 S=-0.20 M=0.20 -> C=-0.60, final maintenance factor=1.60
-upper cap:   I=1.40 S=1.20 -> C=1
+upper cap:   I=1.40 S=1.20 -> C=MERCHANT_MAINTENANCE_COST
 idempotence: a second calculation reconstructs the original baselines
 ```
 
@@ -67,7 +67,8 @@ idempotence: a second calculation reconstructs the original baselines
 3. Confirm effective Import and Selling Efficiency are zero after the CBP
    corrections.
 4. Confirm the maintenance correction equals `C - M`, where
-   `C = min(I + S, 1)`, and effective maintenance efficiency equals `C`.
+   `C = min(I + S, MERCHANT_MAINTENANCE_COST)`, and effective maintenance
+   efficiency equals `C`.
 5. Let a second monthly tick run without changing inputs. Values and route
    profit must not drift.
 6. Change a policy and a government reform. Confirm the corrections refresh

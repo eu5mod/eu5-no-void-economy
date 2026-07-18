@@ -8,7 +8,8 @@
 #
 # US-17 is represented directly in the Vanilla modifier stack:
 #
-#   C = min(import_efficiency + selling_efficiency, 1)
+#   D = define:NCountry|MERCHANT_MAINTENANCE_COST
+#   C = min(import_efficiency + selling_efficiency, D)
 #   effective selling efficiency = 0
 #   effective import efficiency = 0
 #   effective maintenance efficiency = C
@@ -17,8 +18,8 @@
 # The equivalent additive corrections are -selling, -import, and
 # C - M. There is no lower clamp on C, so negative efficiencies remain
 # meaningful and increase maintenance. The literal 1 is the dimensionless
-# 100% factor. MERCHANT_MAINTENANCE_COST belongs to the native monetary base;
-# it does not enter this additive percentage correction. No division is used.
+# 100% factor. MERCHANT_MAINTENANCE_COST remains the native monetary base and
+# is also the configured upper bound for C. No division is used.
 
 cbp_compute_us17_native_profit_corrections_from_baselines = {
 	save_temporary_scope_value_as = {
@@ -26,7 +27,7 @@ cbp_compute_us17_native_profit_corrections_from_baselines = {
 		value = {
 			value = scope:cbp_us17_native_baseline_import_efficiency
 			add = scope:cbp_us17_native_baseline_selling_efficiency
-			max = 1
+			max = cbp_trade_base_merchant_maintenance_cost
 		}
 	}
 	save_temporary_scope_value_as = {

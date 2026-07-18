@@ -27,7 +27,7 @@ I = import_efficiency
 S = selling_efficiency
 M = merchant_maintenance_efficiency
 D = define:NCountry|MERCHANT_MAINTENANCE_COST
-C = min(I + S, 1)
+C = min(I + S, D)
 ```
 
 CBP applies three additive auto-modifier corrections:
@@ -49,12 +49,13 @@ effective maintenance factor     = 1 - C
 
 There is no division and no lower clamp on `C`. A negative import/selling sum
 therefore remains economically meaningful and increases merchant maintenance.
-Only positive sums above one are capped.
+Positive sums are capped by the loaded merchant-maintenance-cost define `D`
+(Vanilla currently uses `0.25`).
 
-The literal `1` represents the dimensionless 100% factor. `D` is a monetary
-define and therefore must not replace it. Let `B` be the native route-maintenance
-amount before merchant-maintenance efficiency, including `D`. The monetary
-equivalence is:
+The literal `1` represents the dimensionless 100% factor and must not be
+replaced by `D`. The business rule deliberately gives `D` a second role as the
+upper bound of `C`. Let `B` be the native route-maintenance amount before
+merchant-maintenance efficiency, including `D`. The monetary equivalence is:
 
 ```txt
 Vanilla maintenance = B * (1 - M)
@@ -113,7 +114,7 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=maximum_only negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
 ```
 
 The probe covers positive, negative, upper-cap, full-maintenance, and repeated
