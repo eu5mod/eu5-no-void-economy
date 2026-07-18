@@ -354,7 +354,7 @@ def validate_us17_owner_modifier_contract(
             f"US17 must define a country-scoped script value for {semantic_name} via modifier:{modifier_name}",
         )
 
-    for semantic_name in ["selling", "import", "export", "maintenance"]:
+    for semantic_name in ["selling", "import", "export"]:
         expect(
             f"cbp_us17_native_{semantic_name}_correction_result" in correction_formula,
             f"US17 must calculate the native {semantic_name} cancellation",
@@ -363,6 +363,21 @@ def validate_us17_owner_modifier_contract(
             f"cbp_us17_native_baseline_{semantic_name}_efficiency" in correction_formula,
             f"US17 {semantic_name} cancellation must consume its reconstructed baseline",
         )
+    expect("cbp_us17_native_reference_combined_efficiency" in correction_formula, "US17 must calculate the native import-reference maintenance efficiency")
+    expect("cbp_us17_native_selling_correction_result" in correction_formula, "US17 maintenance reference must reconstruct Selling Efficiency from its CBP correction")
+    expect("cbp_us17_native_import_correction_result" in correction_formula, "US17 maintenance reference must reconstruct Import Efficiency from its CBP correction")
+    expect("max = cbp_trade_base_merchant_maintenance_cost" in correction_formula, "US17 native maintenance reference must retain the configured upper cap")
+    expect(
+        re.search(
+            r"name\s*=\s*cbp_us17_native_maintenance_correction_result.*?"
+            r"value\s*=\s*scope:cbp_us17_native_baseline_maintenance_efficiency.*?multiply\s*=\s*-1.*?"
+            r"add\s*=\s*scope:cbp_us17_native_reference_combined_efficiency",
+            correction_formula,
+            re.DOTALL,
+        )
+        is not None,
+        "US17 maintenance correction must implement -M plus the capped inverse CBP selling/import corrections",
+    )
     expect("divide =" not in correction_formula, "US17 native correction formula must not divide")
     for semantic_name in ["selling", "import", "export", "maintenance"]:
         expect(
@@ -378,10 +393,13 @@ def validate_us17_owner_modifier_contract(
     expect("max = cbp_trade_base_merchant_maintenance_cost" in route_formula, "US17 combined efficiency must be capped by the merchant-maintenance-cost define")
     expect("min = 0" not in route_formula, "US17 combined efficiency must preserve negative values")
     expect("divide =" not in route_formula, "US17 operation-aware route formula must not divide")
-    expect("multiply = scope:cbp_us17_route_combined_efficiency" in route_formula, "US17 route treasury delta must apply D * C")
+    expect("cbp_us17_route_reference_combined_efficiency" in route_formula, "US17 route formula must retain the native import reference")
+    expect("cbp_us17_route_combined_efficiency_delta" in route_formula, "US17 route formula must calculate C_route - C_import")
+    expect("multiply = scope:cbp_us17_route_combined_efficiency_delta" in route_formula, "US17 route treasury delta must apply D * (C_route - C_import)")
 
     expect("cbp_reconstruct_us17_native_baselines_from_effective_values = yes" in refresh, "US17 refresh must reconstruct non-CBP baselines before recalculation")
-    expect("cbp_compute_us17_native_corrections_from_baselines = yes" in refresh, "US17 refresh must calculate all four native cancellations")
+    expect("cbp_compute_us17_native_corrections_from_baselines = yes" in refresh, "US17 refresh must calculate all four native corrections")
+    expect("cbp_us17_native_modifier_state_version value = 3" in refresh, "US17 refresh must persist maintenance-formula state version 3")
     expect("cbp_trade_rework_enabled_trigger = yes" in money_wrapper, "US17 operation-aware money wrapper must defensively gate itself")
     expect("is_export = yes" in money_wrapper, "US17 operation-aware money wrapper must read Trade.IsExport")
     expect("cbp_compute_us17_operation_aware_route_values_from_baselines = yes" in money_wrapper, "US17 money wrapper must calculate the directional route result")
@@ -432,22 +450,25 @@ def validate_us17_owner_modifier_contract(
         "import_price_input_cancelled",
         "export_price_input_cancelled",
         "selling_price_input_cancelled",
-        "maintenance_input_cancelled",
+        "maintenance_reference_uses_cancelled_selling_and_import_values",
+        "maintenance_correction_equals_negative_maintenance_minus_cbp_selling_minus_cbp_import",
         "import_route_uses_import_efficiency",
         "export_route_uses_export_efficiency",
-        "import_route_treasury_delta",
+        "import_route_uses_native_maintenance_reference_without_treasury_delta",
         "export_route_treasury_delta",
         "negative_import_sum_preserved",
+        "negative_maintenance_reference_preserved",
         "export_sum_capped_by_merchant_maintenance_define",
         "idempotent_import_baseline",
         "idempotent_export_baseline",
         "live_export_cancellation_applied",
+        "live_maintenance_import_reference_applied",
         "cmm_map_missing",
         "cmm_trade_rework_explicitly_disabled",
         "source=registered_default",
         "operation_input=import_or_export_by_Trade.IsExport",
-        "native_inputs_cancelled=selling_import_export_maintenance",
-        "maintenance=cancelled_then_route_delta",
+        "native_price_inputs_cancelled=selling_import_export",
+        "maintenance=import_reference_plus_export_delta",
         "clamp=merchant_maintenance_cost_define",
         "negative_efficiency=preserved",
     ]:

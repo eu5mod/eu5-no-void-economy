@@ -24,8 +24,10 @@ C = min(E_D + S, D)
 CBP import correction      = -I
 CBP export correction      = -Ex
 CBP selling correction     = -S
-CBP maintenance correction = -M
-route treasury delta       = D * C
+CBP maintenance correction = C_import - M
+C_import = min(-CBP selling correction - CBP import correction, D)
+import treasury delta      = 0
+export treasury delta      = D * (C_export - C_import)
 ```
 
 The sum is not averaged and has no lower clamp. Negative efficiency therefore
@@ -39,7 +41,8 @@ monthly_country_pulse(country)
      -> refresh four non-CBP country baselines
      -> every_trade
         -> Trade.IsExport selects Import or Export Efficiency
-        -> apply one US-17 route treasury delta
+        -> keep the native import-reference maintenance result
+        -> apply the export difference when Trade.IsExport
         -> run unchanged US-20 goods reconciliation
 ```
 
@@ -51,7 +54,9 @@ Monthly execution remains the fallback for research and temporary modifiers.
 Country `modifier:*` reads include active CBP auto-modifiers. Each refresh
 subtracts its four previous persisted corrections before recalculation. This
 reconstructs the non-CBP values and prevents drift across monthly ticks and
-save reloads.
+save reloads. The revised maintenance formula writes state version `3`; the
+first refresh also reconstructs version `2` saves without carrying forward the
+old full-maintenance cancellation.
 
 ## Ownership and boundaries
 
@@ -70,7 +75,8 @@ treasury but is not represented in Vanilla route-profit UI or AI projection.
 ## Acceptance contract
 
 ```txt
-- four native auto-modifiers cancel Import, Export, Selling, and Maintenance;
+- three price auto-modifiers cancel Import, Export, and Selling;
+- the fourth auto-modifier replaces Maintenance with the import reference;
 - import routes select Import Efficiency;
 - export routes select Export Efficiency;
 - one route never applies both directional efficiencies;
@@ -87,7 +93,7 @@ treasury but is not represented in Vanilla route-profit UI or AI projection.
 Run `event cbp_us17_owner_modifiers.1`, wait one in-game day, and expect:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_inputs_cancelled=selling_import_export_maintenance maintenance=cancelled_then_route_delta clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=import_reference_plus_export_delta clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
 Full runtime protocol:
