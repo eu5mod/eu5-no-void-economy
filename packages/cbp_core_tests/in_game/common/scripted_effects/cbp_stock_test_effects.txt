@@ -1514,6 +1514,13 @@ cbp_debug_run_core02_initialization_tests = {
 		}
 		c:FRA.capital.market = { save_temporary_scope_as = test_cbp_market }
 
+		# A focused probe may have deliberately exercised a partial mutation before
+		# this suite. Restore the derived aggregate before the cleanup removals so
+		# CORE-02 remains independent of test execution order.
+		cbp_rebuild_market_stock_from_country_stocks = {
+			market = scope:test_cbp_market
+			good = wheat
+		}
 		every_country = {
 			cbp_remove_stock = {
 				country = this
@@ -1586,6 +1593,10 @@ cbp_debug_run_core02_initialization_tests = {
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
 		}
 
+		cbp_rebuild_market_stock_from_country_stocks = {
+			market = scope:test_cbp_market
+			good = wheat
+		}
 		every_country = {
 			cbp_remove_stock = {
 				country = this

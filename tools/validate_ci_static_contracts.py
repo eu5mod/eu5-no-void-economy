@@ -225,6 +225,7 @@ def validate_us17_owner_modifier_contract(
     )
     average_body = average_assignment.group("body") if average_assignment else ""
     expect(bool(average_assignment), "US17 owner formula must calculate the buying/selling average")
+    expect("divide = 2" in average_body, "US17 buying/selling efficiency must be an average, not a sum")
     expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
     expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
 

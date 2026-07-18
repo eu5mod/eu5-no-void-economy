@@ -109,6 +109,7 @@ cbp_compute_us17_us20_route_formula_from_owner_modifiers = {
 		value = {
 			value = scope:gui_cbp_trade_efficiency_buying_efficiency
 			add = scope:gui_cbp_trade_efficiency_selling_efficiency
+			divide = 2
 			max = 1
 		}
 	}
