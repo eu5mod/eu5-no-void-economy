@@ -1,154 +1,93 @@
-# TEST-US-17 — Trade-owner inputs, maintenance define, and maximum-only cap
+# TEST-US-17 - Native trade-profit reconciliation
 
 ## Objective
 
-Validate the live US-17 input contract:
+Validate that US-17:
 
 ```txt
-semantic buying efficiency      <- trade owner modifier:import_efficiency
-selling efficiency              <- trade owner modifier:selling_efficiency
-merchant maintenance efficiency <- trade owner modifier:merchant_maintenance_efficiency
-base merchant maintenance cost  <- define:NCountry|MERCHANT_MAINTENANCE_COST
-base route maintenance          <- trade_volume × loaded define
+- cancels native import and selling price-margin efficiencies;
+- transfers their summed effect to merchant maintenance;
+- uses no reciprocal or division;
+- preserves negative combined efficiency;
+- caps only positive combined efficiency above one;
+- remains stable across repeated refreshes;
+- leaves treasury accounting to Vanilla.
 ```
 
-The literal modifier names `buying_efficiency` and `merchant_maintenance_cost`
-are not valid modifier types in the tested EU5 build. The first is represented by
-`import_efficiency`; the second concept is split between a base define and the
-beneficial `merchant_maintenance_efficiency` country modifier.
+## Fast preparation without regeneration
 
-The buying/selling sum is capped only above `1`:
-
-```txt
-combined_efficiency = min(import_efficiency + selling_efficiency, 1)
-```
-
-There is deliberately no lower clamp. Negative efficiency remains negative and
-therefore increases maintenance instead of being silently converted to zero.
-
-## Formula covered by the deterministic probe
-
-```txt
-base_maintenance_unit_cost =
-    define:NCountry|MERCHANT_MAINTENANCE_COST
-
-base_maintenance_amount =
-    trade_volume * base_maintenance_unit_cost
-
-merchant_maintenance_factor =
-    max(0, 1 - merchant_maintenance_efficiency)
-
-adjusted_base_maintenance =
-    base_maintenance_amount * merchant_maintenance_factor
-
-maintenance_saving =
-    adjusted_base_maintenance * combined_efficiency
-
-route_money_delta =
-    -old_price_side_bonus
-    + maintenance_saving
-```
-
-The probe reads the loaded define directly, so it automatically validates the
-value supplied by the active NVE define override rather than duplicating a
-hardcoded base cost. Seeded route prices remain necessary because their
-route-safe script surfaces are a separate TECH-01 boundary.
-
-## Clean install and run
-
-The installer now removes each existing `cbp_*` package directory before
-copying. Pull the branch and install it:
+US-17 does not change generated Vanilla overrides. When the checkout already
+contains the intended generated artifacts, validate and install them directly:
 
 ```sh
-./tools/generate_all.sh
-./tools/validate_generators.sh
-./tools/validate_module_packages.sh
-python3 ./tools/validate_ci_static_contracts.py
-./tools/install_local_packages.sh
+python3 tools/validate_ci_static_contracts.py
+./tools/validate_cbp_script_safety.sh
+git diff --check
+git diff --cached --check
+
+./tools/install_local_packages.sh --skip-generate
 ./tools/install_local_packages.sh --check
 ./tools/clear_eu5_logs.sh
 ```
 
-Then start EU5 and run:
+Use `./tools/dev_prepare_game.sh` instead only after changing `.env`, a
+generator, a CBG rule, a Vanilla-derived source, or a generated output. That
+command already generates twice, validates, installs, checks the installation,
+and clears logs; do not surround it with duplicate preparation commands.
+
+## Focused arithmetic probe
+
+Start EU5, load a campaign, and run:
 
 ```txt
 event cbp_us17_owner_modifiers.1
 ```
 
-Choose:
-
-```txt
-Run owner modifier probe
-```
-
-## Expected result
-
-Visible event option:
-
-```txt
-PASS — owner modifiers and maximum-only cap
-```
-
 Expected log marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST combination=sum_without_division clamp=maximum_only
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=maximum_only negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
 ```
 
-The probe validates:
+The detailed checks must include:
 
 ```txt
-1. Captured semantic buying efficiency equals FRA.modifier:import_efficiency.
-2. Captured selling efficiency equals FRA.modifier:selling_efficiency.
-3. Captured maintenance efficiency equals FRA.modifier:merchant_maintenance_efficiency.
-4. The base unit cost equals define:NCountry|MERCHANT_MAINTENANCE_COST.
-5. Base maintenance equals trade_volume × the loaded define.
-6. -0.4 + -0.2 remains -0.6.
-7. 1.4 + 1.2 is capped from 2.6 to 1.
-8. With seeded base maintenance 20 and maintenance efficiency 0.20:
-     maintenance factor = 0.80
-     adjusted base maintenance = 16
-     combined efficiency = 0.30
-     maintenance saving = 4.80
-9. With old price-side bonus 35:
-     route money delta = -30.20
+positive:    I=0.20 S=0.10 M=0.20 -> corrections=-0.20/-0.10/+0.10
+negative:    I=-0.40 S=-0.20 M=0.20 -> C=-0.60, final maintenance factor=1.60
+upper cap:   I=1.40 S=1.20 -> C=1
+idempotence: a second calculation reconstructs the original baselines
 ```
 
-## Post-run grep
+## Native runtime validation
 
-Use only the freshly cleared current log files:
+1. Record one owned route's displayed profit and the country's Import
+   Efficiency, Selling Efficiency, and Merchant Maintenance Efficiency.
+2. Let one monthly tick run. Confirm the three visible CBP reconciliation
+   modifiers exist on the country.
+3. Confirm effective Import and Selling Efficiency are zero after the CBP
+   corrections.
+4. Confirm the maintenance correction equals `C - M`, where
+   `C = min(I + S, 1)`, and effective maintenance efficiency equals `C`.
+5. Let a second monthly tick run without changing inputs. Values and route
+   profit must not drift.
+6. Change a policy and a government reform. Confirm the corrections refresh
+   after the engine applies each change.
+7. Obtain or console-grant a research modifier. Confirm the monthly fallback
+   incorporates it on the next monthly tick.
+8. Save, reload, let one monthly tick run, and confirm the same values remain.
+9. Run the US-20 focused and combined reconciliation probes to confirm goods
+   loss remains unchanged.
 
-```sh
-grep -E "us17_trade_owner_modifiers|US17 OWNER_MODIFIERS|ASSERT FAIL|Non-existent modifier type|Event target link 'modifier' returned an unset scope|Tried to localize with localization disabled|Failed to fetch variable|Cannot read" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/debug.log" || true
-```
+## Failure conditions
 
-Expected absence:
+Reject the run for any of these:
 
 ```txt
-ASSERT FAIL
-Non-existent modifier type
-Event target link 'modifier' returned an unset scope
-Tried to localize with localization disabled
-Failed to fetch variable
-Cannot read
+division by zero or reciprocal behavior
+negative C clamped to zero
+different correction after an unchanged second refresh
+live US-17 add_gold mutation
+missing or untranslated auto-modifier
+US-20 goods-reconciliation regression
+script-system, unset-variable, or invalid-modifier error
 ```
-
-## Remaining boundary
-
-This probe confirms the country modifier input layer, the loaded maintenance
-define, the `trade_volume × define` base amount, and the formula arithmetic.
-It does not confirm live route reads or visible accounting surfaces for:
-
-```txt
-sell price
-buy price
-export cost modifier
-trade-route profit write surface
-country trade-income accounting surface
-```
-
-Until those surfaces are confirmed, the live route-money path remains
-fail-closed after successfully capturing the owner modifiers and define-derived
-base maintenance.

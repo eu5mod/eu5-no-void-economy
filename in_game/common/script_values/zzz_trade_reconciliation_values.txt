@@ -37,8 +37,8 @@ cbp_trade_base_merchant_maintenance_cost = {
 	min = 0
 }
 
-# Country-scoped modifier inputs. These values must be evaluated while the
-# current scope is the saved trade-owner country.
+# Historical deterministic-fixture inputs. Production US-17 reconstructs the
+# country baseline and writes native auto-modifier corrections instead.
 #
 # US-17's semantic "buying efficiency" maps to EU5 import_efficiency. The
 # literal modifier:buying_efficiency does not exist in the tested build.
@@ -63,10 +63,7 @@ cbp_buying_selling_efficiency_clamped = {
 	max = 1
 }
 
-# The following route-money values still fail closed until route-safe price,
-# export-cost, and visible income/profit surfaces are confirmed. Base merchant
-# maintenance itself is no longer blocked: it is trade_volume multiplied by the
-# effective NCountry MERCHANT_MAINTENANCE_COST define.
+# Fixture-only route-money values. They are not the production US-17 path.
 cbp_trade_efficiency_old_price_side_bonus = {
 	value = 0
 }

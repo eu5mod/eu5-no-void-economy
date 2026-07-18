@@ -59,6 +59,8 @@ REQUIRED_FILES = [
     "in_game/common/on_action/cbp_stock_on_actions.txt",
     "in_game/common/on_action/cbp__cmm_on_actions.txt",
     "in_game/common/on_action/cbp_cmm_runtime_on_action.txt",
+    "in_game/common/on_action/cbp_country_governance_on_actions.txt",
+    "in_game/common/auto_modifiers/cbp_us17_native_trade_profit_auto_modifiers.txt",
     "in_game/common/script_values/zzz_trade_reconciliation_values.txt",
     "in_game/common/scripted_effects/cbp__cmm_effects.txt",
     "in_game/common/scripted_effects/cbp_cmm_runtime_effects.txt",
@@ -72,6 +74,7 @@ REQUIRED_FILES = [
     "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt",
     "in_game/common/scripted_guis/cbp__cmm_scripted_gui.txt",
     "in_game/common/scripted_triggers/cbp_configuration_triggers.txt",
+    "in_game/localization/cbp_us17_native_trade_profit_l_english.yml",
     "in_game/gui/cbp_us10_stock_lateralview.gui",
     "in_game/gui/zz_cbp_us10_production_subtabs.gui",
     "in_game/events/cbp_cmm_warning_events.txt",
@@ -188,13 +191,17 @@ def validate_us17_owner_modifier_contract(
     *,
     trade_values: str,
     owner_modifier_effects: str,
+    native_auto_modifiers: str,
+    country_governance_on_actions: str,
+    all_cbp_on_actions: str,
+    native_localization: str,
     owner_modifier_probe_events: str,
     owner_modifier_probe_effects: str,
 ) -> None:
-    capture = block(owner_modifier_effects, "cbp_capture_trade_owner_country_modifier_inputs")
-    maintenance_formula = block(owner_modifier_effects, "cbp_compute_trade_maintenance_efficiency_delta_from_owner_modifiers")
-    formula = block(owner_modifier_effects, "cbp_compute_us17_us20_route_formula_from_owner_modifiers")
-    live_wrapper = block(owner_modifier_effects, "cbp_run_us17_us20_route_reconciliation_from_owner_modifiers")
+    correction_formula = block(owner_modifier_effects, "cbp_compute_us17_native_profit_corrections_from_baselines")
+    reconstruction = block(owner_modifier_effects, "cbp_reconstruct_us17_native_baselines_from_effective_values")
+    refresh = block(owner_modifier_effects, "cbp_refresh_us17_native_profit_modifiers_for_current_country")
+    live_wrapper = block(owner_modifier_effects, "cbp_run_us20_route_loss_reconciliation")
 
     for semantic_name, modifier_name in [
         ("buying/import efficiency", "import_efficiency"),
@@ -206,56 +213,94 @@ def validate_us17_owner_modifier_contract(
             f"US17 must define a country-scoped script value for {semantic_name} via modifier:{modifier_name}",
         )
 
-    expect(
-        "value = define:NCountry|MERCHANT_MAINTENANCE_COST" in trade_values,
-        "US17 must read the effective NCountry MERCHANT_MAINTENANCE_COST define",
-    )
-    expect("gui_cbp_trade_efficiency_buying_efficiency" in capture, "US17 owner capture must store semantic buying/import efficiency")
-    expect("gui_cbp_trade_efficiency_selling_efficiency" in capture, "US17 owner capture must store selling efficiency")
-    expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in capture, "US17 owner capture must store merchant maintenance efficiency")
-    expect("gui_cbp_trade_efficiency_base_maintenance_unit_cost" in capture, "US17 owner capture must store the effective maintenance define")
-    expect("gui_cbp_trade_efficiency_base_maintenance_amount" in capture, "US17 owner capture must derive route base maintenance")
-    expect("scope:cbp_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
-    expect("cbp_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
-
     combined_assignment = re.search(
-        r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
-        formula,
+        r"name\s*=\s*cbp_us17_native_combined_efficiency(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
+        correction_formula,
         re.DOTALL,
     )
     combined_body = combined_assignment.group("body") if combined_assignment else ""
-    expect(bool(combined_assignment), "US17 owner formula must calculate the buying/selling combined efficiency")
-    expect("gui_cbp_trade_efficiency_buying_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
-    expect("gui_cbp_trade_efficiency_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
+    expect(bool(combined_assignment), "US17 native formula must calculate the import/selling combined efficiency")
+    expect("cbp_us17_native_baseline_import_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
+    expect("cbp_us17_native_baseline_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
     expect("divide = 2" not in combined_body, "US17 combined efficiency is a sum and must not be divided by two")
     expect("max = 1" in combined_body, "US17 combined efficiency must have an upper cap of 1")
     expect("min = 0" not in combined_body, "US17 combined efficiency must not have a lower clamp of 0")
 
-    expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
-    expect("multiply = -1" in maintenance_formula, "US17 maintenance factor must subtract merchant maintenance efficiency")
-    expect("min = 0" in maintenance_formula, "US17 maintenance factor must not become negative")
-    expect("gui_cbp_trade_efficiency_base_maintenance_amount" in maintenance_formula, "US17 maintenance helper must consume define-derived route base maintenance")
-    expect("cbp_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = yes" in formula, "US17 formula must calculate maintenance saving from owner modifiers")
+    expect("cbp_us17_native_baseline_maintenance_efficiency" in correction_formula, "US17 native formula must consume merchant maintenance efficiency")
+    expect("cbp_us17_native_baseline_maintenance_factor" not in correction_formula, "US17 must replace native maintenance efficiency instead of scaling its remaining factor")
+    expect(
+        re.search(
+            r"name\s*=\s*cbp_us17_native_maintenance_correction_result.*?"
+            r"value\s*=\s*scope:cbp_us17_native_combined_efficiency.*?"
+            r"value\s*=\s*scope:cbp_us17_native_baseline_maintenance_efficiency\s+multiply\s*=\s*-1",
+            correction_formula,
+            re.DOTALL,
+        )
+        is not None,
+        "US17 maintenance correction must replace the baseline with C through correction C - M",
+    )
+    expect("divide =" not in correction_formula, "US17 native correction formula must not divide")
+    expect("cbp_us17_native_previous_selling_correction" in reconstruction, "US17 refresh must remove its previous selling correction")
+    expect("cbp_us17_native_previous_import_correction" in reconstruction, "US17 refresh must remove its previous import correction")
+    expect("cbp_us17_native_previous_maintenance_correction" in reconstruction, "US17 refresh must remove its previous maintenance correction")
+    expect("cbp_reconstruct_us17_native_baselines_from_effective_values = yes" in refresh, "US17 refresh must reconstruct non-CBP baselines before recalculation")
+    expect("cbp_compute_us17_native_profit_corrections_from_baselines = yes" in refresh, "US17 refresh must calculate native modifier corrections")
     expect("cbp_trade_rework_enabled_trigger = yes" in live_wrapper, "US17 owner-modifier wrapper must defensively gate itself")
+    expect("add_gold" not in live_wrapper, "US17 live route wrapper must not add a second treasury correction")
+    expect("cbp_apply_trade_efficiency_income_reconciliation_to_trade_owner" not in live_wrapper, "US17 live route wrapper must leave money accounting to Vanilla")
+    expect("cbp_compute_us20_goods_received_delta = yes" in live_wrapper, "US17 native profit migration must preserve US20 goods reconciliation")
+
+    for modifier_name, variable_name, modifier_type in [
+        ("cbp_us17_selling_efficiency_cancellation", "cbp_us17_native_selling_correction", "selling_efficiency"),
+        ("cbp_us17_import_efficiency_cancellation", "cbp_us17_native_import_correction", "import_efficiency"),
+        ("cbp_us17_merchant_maintenance_reconciliation", "cbp_us17_native_maintenance_correction", "merchant_maintenance_efficiency"),
+    ]:
+        modifier_block = block(native_auto_modifiers, modifier_name)
+        expect(
+            re.search(rf"scales_with\s*=\s*\{{[^{{}}]*value\s*=\s*var:{variable_name}[^{{}}]*\}}", modifier_block, re.DOTALL) is not None,
+            f"{modifier_name} must scale from its persisted correction through a script-value block",
+        )
+        expect(f"{modifier_type} = 1" in modifier_block, f"{modifier_name} must write the native {modifier_type} surface")
+        expect("cbp_trade_rework_enabled_trigger = yes" in modifier_block, f"{modifier_name} must be gated by the trade-rework setting")
+        expect(f"AUTO_MODIFIER_NAME_{modifier_name}" in native_localization, f"Missing visible localization for {modifier_name}")
+
+    policy_hook = block(country_governance_on_actions, "on_policy_changed")
+    reform_hook = block(country_governance_on_actions, "on_reform_change")
+    shared_dispatcher = block(country_governance_on_actions, "cbp_country_governance_changed")
+    expect(re.findall(r"\bcbp_[a-z0-9_]+\b", policy_hook) == ["cbp_country_governance_changed"], "on_policy_changed must list only the shared country-governance dispatcher")
+    expect(re.findall(r"\bcbp_[a-z0-9_]+\b", reform_hook) == ["cbp_country_governance_changed"], "on_reform_change must list only the shared country-governance dispatcher")
+    expect(
+        len(re.findall(r"(?m)^on_policy_changed\s*=", all_cbp_on_actions)) == 1,
+        "CBP must declare exactly one shared on_policy_changed registration across Core and companion packages",
+    )
+    expect(
+        len(re.findall(r"(?m)^on_reform_change\s*=", all_cbp_on_actions)) == 1,
+        "CBP must declare exactly one shared on_reform_change registration across Core and companion packages",
+    )
+    expect(shared_dispatcher.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1, "Shared governance dispatcher must refresh US17 exactly once")
+    expect(shared_dispatcher.count("scope_type = country") == 1, "Shared governance dispatcher must fail closed outside country scope")
+    expect("cbp_us17_native_profit_policy_changed" not in all_cbp_on_actions, "Legacy duplicate US17 policy callback must not return")
+    expect("cbp_us17_native_profit_reform_changed" not in all_cbp_on_actions, "Legacy duplicate US17 reform callback must not return")
 
     expect("namespace = cbp_us17_owner_modifiers" in owner_modifier_probe_events, "US17 owner-modifier probe namespace must remain available")
     expect("cbp_us17_owner_modifiers.1" in owner_modifier_probe_events, "US17 owner-modifier probe entry event must remain available")
     expect("cbp_debug_run_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 owner-modifier event must call the focused probe")
 
     for assertion in [
-        "import_efficiency_source",
-        "selling_efficiency_source",
-        "merchant_maintenance_efficiency_source",
-        "base_maintenance_define_source",
-        "base_maintenance_amount",
+        "positive_combined_efficiency",
+        "import_cancelled",
+        "selling_cancelled",
+        "maintenance_replaced_by_combined_efficiency",
+        "merchant_maintenance_define_cancels",
         "negative_sum_preserved",
+        "negative_efficiency_increases_maintenance",
         "positive_sum_capped",
-        "merchant_maintenance_factor",
-        "maintenance_saving",
-        "route_money_delta",
-        "base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST",
+        "maintenance_baseline_fully_replaced",
+        "idempotent_recalculation",
+        "mode=native_auto_modifiers",
         "combination=sum_without_division",
         "clamp=maximum_only",
+        "treasury_reconciliation=none",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")
 
@@ -280,21 +325,26 @@ def validate_us17_us20_static_contract(
         re.DOTALL,
     )
     historical_combined_body = historical_combined_assignment.group("body") if historical_combined_assignment else ""
-    live_hook_call = "cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes"
+    live_hook_call = "cbp_run_us20_route_loss_reconciliation = yes"
     legacy_hook_call = "cbp_run_us17_us20_route_reconciliation = yes"
     e2e_probe_call = "cbp_debug_run_us20_case12_market_loss_probe = yes"
 
-    expect(country_cycle.count(live_hook_call) == 1, "Country trade-owner cycle must call the owner-modifier US-17/US-20 reconciliation exactly once")
+    expect(country_cycle.count(live_hook_call) == 1, "Country trade-owner cycle must call US20 route-loss reconciliation exactly once per trade")
     expect(legacy_hook_call not in country_cycle, "Country trade-owner live cycle must not call the historical seeded reconciliation wrapper")
-    expect("cbp_capture_trade_owner_country_modifier_inputs = yes" in country_cycle, "Country trade-owner cycle must capture modifiers in saved owner scope before reconciliation")
+    expect(country_cycle.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1, "Country trade-owner cycle must refresh US17 native modifiers exactly once before every_trade")
+    expect(
+        country_cycle.index("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") < country_cycle.index("every_trade = {"),
+        "Country trade-owner cycle must refresh US17 native modifiers before entering every_trade",
+    )
+    expect("cbp_capture_trade_owner_country_modifier_inputs = yes" not in country_cycle, "Country trade-owner live cycle must not recalculate US17 money per route")
     expect("every_trade = {" in country_cycle, "Country trade-owner cycle must use the native every_trade loop")
     expect("cbp_trade_rework_enabled_trigger = yes" in route_effect, "Historical US-17/US-20 route effect must remain defensively gated for deterministic tests")
     expect("cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes" in route_effect, "Historical US-17/US-20 route effect must prepare metrics inside the gated body")
     expect(bool(historical_combined_assignment), "Historical US17 formula must calculate combined efficiency")
     expect("divide = 2" not in historical_combined_body, "Historical US17 formula must follow the sum-without-division business rule")
     expect("min = 0" not in historical_combined_body, "Historical US17 combined efficiency must preserve negative values")
-    expect(live_hook_call not in q8_7_global_owner_effects, "US-17/US-20 live hook must not be placed in the Q8.7 market-local body")
-    expect(live_hook_call not in stock_on_actions, "US-17/US-20 live hook must not be placed directly in monthly on_actions")
+    expect(live_hook_call not in q8_7_global_owner_effects, "US20 live hook must not be placed in the Q8.7 market-local body")
+    expect(live_hook_call not in stock_on_actions, "US20 live hook must not be placed directly in monthly on_actions")
     expect(
         "every_market_center_in_country = {" not in country_trade_owner_effects + q8_7_global_owner_effects + trade_reconciliation_effects + owner_modifier_effects,
         "Trade-rework runtime must not reintroduce a market-center every_trade scaffold",
@@ -671,6 +721,13 @@ def main() -> int:
     q8_7_global_owner_effects = read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt")
     trade_reconciliation_effects = read("in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt")
     owner_modifier_effects = read("in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt")
+    native_trade_profit_auto_modifiers = read("in_game/common/auto_modifiers/cbp_us17_native_trade_profit_auto_modifiers.txt")
+    country_governance_on_actions = read("in_game/common/on_action/cbp_country_governance_on_actions.txt")
+    cbp_on_action_paths = sorted((ROOT / "in_game/common/on_action").glob("*.txt"))
+    cbp_on_action_paths.extend(sorted(ROOT.glob("packages/*/in_game/common/on_action/*.txt")))
+    cbp_on_action_paths = [path for path in cbp_on_action_paths if path.name != "_hardcoded.txt"]
+    all_cbp_on_actions = "\n".join(path.read_text(encoding="utf-8") for path in cbp_on_action_paths)
+    native_trade_profit_localization = read("in_game/localization/cbp_us17_native_trade_profit_l_english.yml")
     revalidate_events = read("packages/cbp_core_tests/in_game/events/cbp_revalidate_debug_events.txt")
     us20_probe_events = read("packages/cbp_core_tests/in_game/events/cbp_us20_case12_probe_events.txt")
     us20_probe_effects = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us20_case12_probe_effects.txt")
@@ -698,6 +755,10 @@ def main() -> int:
     validate_us17_owner_modifier_contract(
         trade_values=trade_values,
         owner_modifier_effects=owner_modifier_effects,
+        native_auto_modifiers=native_trade_profit_auto_modifiers,
+        country_governance_on_actions=country_governance_on_actions,
+        all_cbp_on_actions=all_cbp_on_actions,
+        native_localization=native_trade_profit_localization,
         owner_modifier_probe_events=owner_modifier_probe_events,
         owner_modifier_probe_effects=owner_modifier_probe_effects,
     )

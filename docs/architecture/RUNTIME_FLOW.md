@@ -97,15 +97,13 @@ flowchart TB
 
         subgraph TRADE["Current-country trade-owner pass"]
             direction TB
-            TRADE0 --> TLOOP["every_trade - confirmed country-scope iterator"]
+            TRADE0 --> US17REFRESH["refresh US-17 native country modifiers once"]
+            US17REFRESH --> TLOOP["every_trade - confirmed country-scope iterator"]
             TLOOP --> TSCOPE["save trade, owner, source market, target market, traded good"]
             TSCOPE --> TQTY["cbp_capture_country_trade_owner_trade_quantity"]
             TQTY --> TGATE{"cbp_trade_rework_enabled_trigger?"}
             TGATE -->|no| TMETRIC["record normal trade-owner metrics"]
-            TGATE -->|yes| TINPUT["capture live modifier inputs from saved trade.owner"]
-            TINPUT --> ROUTE["cbp_run_us17_us20_route_reconciliation_from_owner_modifiers"]
-            ROUTE --> US17["US-17 money-side correction when exposed"]
-            US17 --> US20["US-20 route-loss / received-goods reconciliation"]
+            TGATE -->|yes| US20["US-20 route-loss / received-goods reconciliation"]
             US20 --> TMETRIC
         end
 
@@ -178,7 +176,7 @@ flowchart TB
 | 1 | `cbp_run_monthly_capacity_refresh_for_current_country` and market capacity pass | Refresh capacity before admission, demand, transfer, or decay. |
 | 2 | US-00 generated active-good pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 3 | US-10 generated pending-good pass | Resolve same-market consumption after every present country's US-00 pass. |
-| 4 | `cbp_run_monthly_country_trade_owner_cycle` | Read each current-country-owned trade once and run US-17/US-20 reconciliation. |
+| 4 | `cbp_run_monthly_country_trade_owner_cycle` | Refresh native US-17 country modifiers once, then read each current-country-owned trade once for US-20 reconciliation. |
 | 5 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
 | 6 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
 | 7 | Yearly US-04 pulse | Evolve coefficients only after reading annual outcomes, then reset counters. |
@@ -206,6 +204,25 @@ mutation set rather than a pre-US-04 snapshot.
 | US-04 coefficient | Location x good | Durable Rebalance Economy state |
 | US-04 monthly Estate totals | Current country x market x good | Monthly ledger/diagnostic state |
 
+## Governance hook aggregation
+
+CBP extends each hardcoded governance hook once:
+
+```txt
+on_policy_changed  -> cbp_country_governance_changed
+on_reform_change   -> cbp_country_governance_changed
+```
+
+The shared dispatcher verifies country scope and runs all Core follow-ups. New
+features must extend this dispatcher rather than creating another top-level
+`on_policy_changed`, `on_reform_change`, or an identical feature callback.
+Copied Vanilla `_hardcoded.txt` files are overrides of Vanilla content, not CBP
+hook registrations, and are excluded from this rule.
+
+When a native modifier exposes the intended economic lever, change or cancel it
+inside the native modifier stack. A later `add_gold` or ledger reconciliation is
+allowed only when the missing native endpoint is confirmed and documented.
+
 ## Package and mode boundaries
 
 - Core owns initialization, stocks, capacity, US-00, US-10, trade ownership,
@@ -222,6 +239,7 @@ mutation set rather than a pre-US-04 snapshot.
 | Responsibility | Runtime source |
 |---|---|
 | Engine hooks and pulse order | `in_game/common/on_action/cbp_stock_on_actions.txt` |
+| Policy/reform hook aggregation | `in_game/common/on_action/cbp_country_governance_on_actions.txt` |
 | Q8.7 global owner and fallback switch | `in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt` |
 | Market-local US-00 then US-10 passes | `in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt` |
 | Country-owned trade pass | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |

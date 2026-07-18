@@ -1,4 +1,4 @@
-# Focused US-17 trade-owner modifier, maintenance-define, and maximum-only cap probe.
+# Focused US-17 native trade-profit modifier probe.
 # Run through event cbp_us17_owner_modifiers.1.
 
 cbp_us17_owner_modifiers_clear_test_results = {
@@ -11,183 +11,136 @@ cbp_us17_owner_modifiers_clear_test_results = {
 cbp_us17_owner_modifiers_note_failure = {
 	save_temporary_scope_value_as = {
 		name = test_cbp_us17_owner_modifiers_failure_count
-		value = {
-			value = scope:test_cbp_us17_owner_modifiers_failure_count
-			add = 1
-		}
+		value = { value = scope:test_cbp_us17_owner_modifiers_failure_count add = 1 }
 	}
 }
 
-cbp_us17_owner_modifiers_seed_common_formula_inputs = {
-	save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 1 }
-	save_temporary_scope_value_as = { name = cbp_trade_efficiency_country_modifier_inputs_available value = 1 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = 100 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_sell_price value = 1.5 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buy_price value = 1.0 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_export_cost_modifier value = 0.0 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_base_maintenance_amount value = 20 }
-	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_merchant_maintenance_efficiency value = 0 }
-	save_temporary_scope_value_as = { name = gui_cbp_us20_trade_maintenance value = 0.70 }
-	save_temporary_scope_value_as = { name = gui_cbp_us20_goods_amount_sent value = 100 }
-	save_temporary_scope_value_as = { name = gui_cbp_us20_engine_goods_amount_received value = 100 }
+cbp_us17_assert_native_correction_near = {
+	if = {
+		limit = {
+			OR = {
+				scope:$actual$ < $minimum$
+				scope:$actual$ > $maximum$
+			}
+		}
+		cbp_us17_owner_modifiers_note_failure = yes
+		error_log = "ModeU5 US17 NATIVE_MODIFIERS ASSERT FAIL assertion=$assertion$"
+	}
 }
 
 cbp_debug_run_us17_owner_modifier_probe = {
 	cbp_us17_owner_modifiers_clear_test_results = yes
 	set_global_variable = test_cbp_us17_owner_modifiers_started
 	debug_log = "ModeU5 TEST ENTERED scenario=us17_trade_owner_modifiers"
-	debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT START expected=owner_country_import_selling_merchant_maintenance_efficiency_plus_loaded_define_plus_maximum_only_cap"
+	debug_log = "ModeU5 US17 NATIVE_MODIFIERS AUDIT START expected=native_ai_ui_profit_without_division"
+	save_temporary_scope_value_as = { name = test_cbp_us17_owner_modifiers_failure_count value = 0 }
+
+	# Positive baseline: I=0.20, S=0.10, M=0.20, C=0.30.
+	# Corrections are -0.20, -0.10, and C - M = 0.10.
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = 0.20 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_selling_efficiency value = 0.10 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_maintenance_efficiency value = 0.20 }
+	cbp_compute_us17_native_profit_corrections_from_baselines = yes
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_combined_efficiency minimum = 0.299 maximum = 0.301 assertion = positive_combined_efficiency }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_import_correction_result minimum = -0.201 maximum = -0.199 assertion = import_cancelled }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_selling_correction_result minimum = -0.101 maximum = -0.099 assertion = selling_cancelled }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_maintenance_correction_result minimum = 0.099 maximum = 0.101 assertion = maintenance_replaced_by_combined_efficiency }
+	debug_log = "ModeU5 US17 NATIVE_MODIFIERS CHECK case=positive import=0.20 selling=0.10 maintenance=0.20 combined=0.30 corrections=-0.20/-0.10/+0.10 effective_maintenance=0.30 final_maintenance_factor=0.70"
+
+	# The merchant-maintenance define is monetary and cancels when deriving the
+	# additive percentage correction. Verify the resulting ducat factors remain
+	# equal without assuming the loaded define's numerical value.
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_base_maintenance_cost
+		value = define:NCountry|MERCHANT_MAINTENANCE_COST
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_target_maintenance_factor
+		value = {
+			value = 1
+			add = { value = scope:cbp_us17_native_combined_efficiency multiply = -1 }
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_effective_maintenance_factor
+		value = {
+			value = 1
+			add = { value = scope:cbp_us17_native_baseline_maintenance_efficiency multiply = -1 }
+			add = { value = scope:cbp_us17_native_maintenance_correction_result multiply = -1 }
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_target_maintenance_cost
+		value = {
+			value = scope:test_cbp_us17_base_maintenance_cost
+			multiply = scope:test_cbp_us17_target_maintenance_factor
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_effective_maintenance_cost
+		value = {
+			value = scope:test_cbp_us17_base_maintenance_cost
+			multiply = scope:test_cbp_us17_effective_maintenance_factor
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_us17_maintenance_cost_delta
+		value = {
+			value = scope:test_cbp_us17_effective_maintenance_cost
+			add = { value = scope:test_cbp_us17_target_maintenance_cost multiply = -1 }
+		}
+	}
+	cbp_us17_assert_native_correction_near = { actual = test_cbp_us17_maintenance_cost_delta minimum = -0.001 maximum = 0.001 assertion = merchant_maintenance_define_cancels }
+	debug_log = "ModeU5 US17 NATIVE_MODIFIERS CHECK case=maintenance_define_units result=equivalent define=NCountry.MERCHANT_MAINTENANCE_COST formula=volume_x_define_x_factor"
+
+	# Negative efficiencies remain negative. C=-0.60 replaces M=0.20 and raises
+	# the maintenance factor to 1.60 through a -0.80 correction.
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = -0.40 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_selling_efficiency value = -0.20 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_maintenance_efficiency value = 0.20 }
+	cbp_compute_us17_native_profit_corrections_from_baselines = yes
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_combined_efficiency minimum = -0.601 maximum = -0.599 assertion = negative_sum_preserved }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_maintenance_correction_result minimum = -0.801 maximum = -0.799 assertion = negative_efficiency_increases_maintenance }
+	debug_log = "ModeU5 US17 NATIVE_MODIFIERS CHECK case=negative combined=-0.60 maintenance_correction=-0.80 effective_maintenance=-0.60 final_maintenance_factor=1.60"
+
+	# Positive sums are capped at one, but never lower-clamped.
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = 1.40 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_selling_efficiency value = 1.20 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_maintenance_efficiency value = 0.20 }
+	cbp_compute_us17_native_profit_corrections_from_baselines = yes
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_combined_efficiency minimum = 0.999 maximum = 1.001 assertion = positive_sum_capped }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_maintenance_correction_result minimum = 0.799 maximum = 0.801 assertion = capped_sum_sets_full_maintenance_efficiency }
+
+	# The non-CBP maintenance baseline is replaced even when it exceeds 100%.
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = -0.40 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_selling_efficiency value = -0.20 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_maintenance_efficiency value = 1.20 }
+	cbp_compute_us17_native_profit_corrections_from_baselines = yes
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_maintenance_correction_result minimum = -1.801 maximum = -1.799 assertion = maintenance_baseline_fully_replaced }
+
+	# Idempotence: effective values already containing the previous CBP correction
+	# must reconstruct the same 0.20/0.10/0.20 non-CBP baseline.
+	save_temporary_scope_value_as = { name = cbp_us17_native_effective_import_efficiency value = 0.00 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_effective_selling_efficiency value = 0.00 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_effective_maintenance_efficiency value = 0.30 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_previous_import_correction value = -0.20 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_previous_selling_correction value = -0.10 }
+	save_temporary_scope_value_as = { name = cbp_us17_native_previous_maintenance_correction value = 0.10 }
+	cbp_reconstruct_us17_native_baselines_from_effective_values = yes
+	cbp_compute_us17_native_profit_corrections_from_baselines = yes
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_baseline_import_efficiency minimum = 0.199 maximum = 0.201 assertion = idempotent_import_baseline }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_baseline_selling_efficiency minimum = 0.099 maximum = 0.101 assertion = idempotent_selling_baseline }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_baseline_maintenance_efficiency minimum = 0.199 maximum = 0.201 assertion = idempotent_maintenance_baseline }
+	cbp_us17_assert_native_correction_near = { actual = cbp_us17_native_maintenance_correction_result minimum = 0.099 maximum = 0.101 assertion = idempotent_recalculation }
+	debug_log = "ModeU5 US17 NATIVE_MODIFIERS CHECK case=idempotence baseline=0.20/0.10/0.20 corrections=-0.20/-0.10/+0.10"
 
 	if = {
-		limit = { NOT = { country_exists = c:FRA } }
-		set_global_variable = test_cbp_us17_owner_modifiers_blocked
-		debug_log = "ModeU5 TEST BLOCKED scenario=us17_trade_owner_modifiers reason=missing_FRA"
+		limit = { scope:test_cbp_us17_owner_modifiers_failure_count = 0 }
+		set_global_variable = test_cbp_us17_owner_modifiers_passed
+		debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=maximum_only negative_efficiency=preserved idempotence=passed treasury_reconciliation=none"
 	}
 	else = {
-		save_temporary_scope_value_as = { name = test_cbp_us17_owner_modifiers_failure_count value = 0 }
-
-		# Confirm that the capture helper reads the current trade-owner country and
-		# derives base maintenance from the effective loaded define.
-		save_temporary_scope_value_as = { name = cbp_trade_owner_trade_volume value = 40 }
-		save_temporary_scope_value_as = { name = test_cbp_us17_expected_base_maintenance_unit_cost value = define:NCountry|MERCHANT_MAINTENANCE_COST }
-		save_temporary_scope_value_as = {
-			name = test_cbp_us17_expected_base_maintenance_amount
-			value = {
-				value = scope:cbp_trade_owner_trade_volume
-				multiply = scope:test_cbp_us17_expected_base_maintenance_unit_cost
-			}
-		}
-		c:FRA = {
-			save_temporary_scope_as = cbp_trade_owner_country
-			save_temporary_scope_value_as = { name = test_cbp_us17_expected_buying_efficiency value = modifier:import_efficiency }
-			save_temporary_scope_value_as = { name = test_cbp_us17_expected_selling_efficiency value = modifier:selling_efficiency }
-			save_temporary_scope_value_as = { name = test_cbp_us17_expected_merchant_maintenance_efficiency value = modifier:merchant_maintenance_efficiency }
-			cbp_capture_trade_owner_country_modifier_inputs = yes
-		}
-
-		if = {
-			limit = { NOT = { scope:cbp_trade_efficiency_country_modifier_inputs_available = 1 } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=country_modifier_inputs_available expected=1"
-		}
-		if = {
-			limit = { NOT = { scope:gui_cbp_trade_efficiency_buying_efficiency = scope:test_cbp_us17_expected_buying_efficiency } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=import_efficiency_source expected=trade_owner_country_modifier"
-		}
-		if = {
-			limit = { NOT = { scope:gui_cbp_trade_efficiency_selling_efficiency = scope:test_cbp_us17_expected_selling_efficiency } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=selling_efficiency_source expected=trade_owner_country_modifier"
-		}
-		if = {
-			limit = { NOT = { scope:gui_cbp_trade_efficiency_merchant_maintenance_efficiency = scope:test_cbp_us17_expected_merchant_maintenance_efficiency } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_efficiency_source expected=trade_owner_country_modifier"
-		}
-		if = {
-			limit = { NOT = { scope:gui_cbp_trade_efficiency_base_maintenance_unit_cost = scope:test_cbp_us17_expected_base_maintenance_unit_cost } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=base_maintenance_define_source expected=define_NCountry_MERCHANT_MAINTENANCE_COST"
-		}
-		if = {
-			limit = { NOT = { scope:gui_cbp_trade_efficiency_base_maintenance_amount = scope:test_cbp_us17_expected_base_maintenance_amount } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=base_maintenance_amount expected=trade_volume_times_loaded_define"
-		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=country_modifier_capture expected=trade_owner_country inputs=import_selling_merchant_maintenance_efficiency base=trade_volume_times_loaded_define"
-
-		# Lower-bound probe: -0.4 and -0.2 sum to -0.6 and must remain negative.
-		cbp_us17_owner_modifiers_seed_common_formula_inputs = yes
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buying_efficiency value = -0.4 }
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_selling_efficiency value = -0.2 }
-		cbp_compute_us17_us20_route_formula_from_owner_modifiers = yes
-		if = {
-			limit = {
-				OR = {
-					scope:gui_cbp_buying_selling_efficiency_clamped < -0.601
-					scope:gui_cbp_buying_selling_efficiency_clamped > -0.599
-				}
-			}
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=negative_sum_preserved expected=-0.60"
-		}
-		if = {
-			limit = {
-				OR = {
-					scope:gui_cbp_trade_maintenance_efficiency_delta < -12.01
-					scope:gui_cbp_trade_maintenance_efficiency_delta > -11.99
-				}
-			}
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=negative_efficiency_adds_maintenance expected=-12.00"
-		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=maximum_only_lower_side expected=negative_sum_preserved"
-
-		# Upper-bound probe: 1.4 and 1.2 sum to 2.6, capped at exactly 1.
-		cbp_us17_owner_modifiers_seed_common_formula_inputs = yes
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buying_efficiency value = 1.4 }
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_selling_efficiency value = 1.2 }
-		cbp_compute_us17_us20_route_formula_from_owner_modifiers = yes
-		if = {
-			limit = { NOT = { scope:gui_cbp_buying_selling_efficiency_clamped = 1 } }
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=positive_sum_capped expected=1"
-		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=maximum_only_upper_side expected=cap_at_1"
-
-		# Combined formula probe:
-		# old price bonus = 35
-		# capped sum = 0.30
-		# current maintenance factor = 1 - 0.20 = 0.80
-		# adjusted base maintenance = 20 * 0.80 = 16
-		# maintenance saving = 16 * 0.30 = 4.8
-		# route money delta = -35 + 4.8 = -30.2
-		cbp_us17_owner_modifiers_seed_common_formula_inputs = yes
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_buying_efficiency value = 0.20 }
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_selling_efficiency value = 0.10 }
-		save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_merchant_maintenance_efficiency value = 0.20 }
-		cbp_compute_us17_us20_route_formula_from_owner_modifiers = yes
-		if = {
-			limit = {
-				OR = {
-					scope:gui_cbp_trade_efficiency_merchant_maintenance_factor < 0.799
-					scope:gui_cbp_trade_efficiency_merchant_maintenance_factor > 0.801
-				}
-			}
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=merchant_maintenance_factor expected=0.80"
-		}
-		if = {
-			limit = {
-				OR = {
-					scope:gui_cbp_trade_maintenance_efficiency_delta < 4.79
-					scope:gui_cbp_trade_maintenance_efficiency_delta > 4.81
-				}
-			}
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=maintenance_saving expected=4.80"
-		}
-		if = {
-			limit = {
-				OR = {
-					scope:gui_cbp_trade_efficiency_route_money_delta < -30.21
-					scope:gui_cbp_trade_efficiency_route_money_delta > -30.19
-				}
-			}
-			cbp_us17_owner_modifiers_note_failure = yes
-			error_log = "ModeU5 US17 OWNER_MODIFIERS ASSERT FAIL assertion=route_money_delta expected=-30.20"
-		}
-		debug_log = "ModeU5 US17 OWNER_MODIFIERS AUDIT CHECK phase=combined_owner_modifier_formula expected=old_bonus_35_current_maintenance_16_saving_4.8_delta_minus_30.2"
-
-		if = {
-			limit = { scope:test_cbp_us17_owner_modifiers_failure_count = 0 }
-			set_global_variable = test_cbp_us17_owner_modifiers_passed
-			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST combination=sum_without_division clamp=maximum_only"
-		}
-		else = {
-			set_global_variable = test_cbp_us17_owner_modifiers_failed
-			debug_log = "ModeU5 TEST FAIL scenario=us17_trade_owner_modifiers outcome=HARD_FAILURE see_ASSERT_FAIL_entries"
-		}
+		set_global_variable = test_cbp_us17_owner_modifiers_failed
+		debug_log = "ModeU5 TEST FAIL scenario=us17_trade_owner_modifiers outcome=HARD_FAILURE see_ASSERT_FAIL_entries"
 	}
 }
