@@ -150,4 +150,4 @@ TXT
 TXT
 } > "$output"
 
-printf 'Generated %s\n' "$output"
+printf 'Generated %s\n' "$(cbp_display_path "$output")"

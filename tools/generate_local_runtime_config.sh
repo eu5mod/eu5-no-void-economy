@@ -53,4 +53,4 @@ cbp_apply_generated_local_runtime_mode = {
 }
 TXT
 
-printf 'Generated %s with ModeU5 runtime mode: %s\n' "$output" "$selected_label"
+printf 'Generated %s with ModeU5 runtime mode: %s\n' "$(cbp_display_path "$output")" "$selected_label"

@@ -4,6 +4,9 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+
 # shellcheck source=tools/cbp_goods.sh
 source "$repo_root/tools/cbp_goods.sh"
 
@@ -44,4 +47,4 @@ ALL_GOODS
 } > "$output"
 
 printf 'Generated %s US-04 per-good local Pop-demand probe modifiers plus one all-goods probe.\n' "${#cbp_goods[@]}"
-printf 'Output: %s\n' "$output"
+printf 'Output: %s\n' "$(cbp_display_path "$output")"

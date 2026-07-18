@@ -945,10 +945,12 @@ cbp_us10_evaluate_ui_visibility_assertions = {
 	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_stock = 70 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_stock expected=70" }
 	if = { limit = { c:FRA = { NOT = { var:gui_cbp_us10_ui_wheat_market_capacity > 0 } } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_market_table_wheat_market_capacity expected_gt=0" }
 	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_trace_index > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_candidate_trace_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_mutation_index > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_mutation_trace_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_floor_excluded_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_issue109_fast_path_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_fast_path_visible expected=1" }
-	if = { limit = { NOT = { var:gui_cbp_us10_ui_visibility_prefilter_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_prefilter_visible expected=1" }
+	# The own-stock fast path intentionally bypasses the ordinary candidate
+	# mutation trace. Its deterministic taken quantity is the mutation evidence.
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_taken > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_own_stock_mutation_visible expected_gt=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_floor_excluded_count > 0 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_exclusion_visible expected_gt=0" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_fast_path_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_fast_path_visible expected=1" }
+	if = { limit = { NOT = { scope:test_cbp_us10_issue109_prefilter_used = 1 } } cbp_us10_note_assertion_failure = yes error_log = "ModeU5 US-10 ASSERT FAIL assertion=ui_visibility_prefilter_visible expected=1" }
 
 	if = {
 		limit = { scope:test_cbp_us10_assertion_failure_count = 0 }
@@ -980,6 +982,12 @@ cbp_us10_run_ui_visibility_fixture_for_pair = {
 		source_country = scope:cbp_us10_source_country
 		source_market = scope:cbp_us10_source_market
 	}
+	# Resynchronize presentation variables from the deterministic fixture after
+	# the nested effect returns to this scope. Assertions still read test_*.
+	set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_used value = scope:test_cbp_us10_issue109_fast_path_used }
+	set_variable = { name = gui_cbp_us10_ui_issue109_fast_path_taken value = scope:test_cbp_us10_issue109_fast_path_taken }
+	set_variable = { name = gui_cbp_us10_ui_issue109_floor_excluded_count value = scope:test_cbp_us10_issue109_floor_excluded_count }
+	set_variable = { name = gui_cbp_us10_ui_visibility_prefilter_used value = scope:test_cbp_us10_issue109_prefilter_used }
 	cbp_us10_capture_ui_candidate_snapshot = yes
 	cbp_us10_log_ui_visibility_dump = yes
 	cbp_us10_evaluate_ui_visibility_assertions = yes

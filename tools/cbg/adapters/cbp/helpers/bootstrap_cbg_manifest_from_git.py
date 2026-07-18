@@ -10,6 +10,14 @@ import subprocess
 from pathlib import Path
 
 
+def display_path(path: Path, repo_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return f"./{resolved.relative_to(repo_root).as_posix()}"
+    except ValueError:
+        return str(path)
+
+
 def git_bytes(repo_root: Path, relative: Path) -> bytes:
     result = subprocess.run(
         ["git", "show", f"HEAD:{relative.as_posix()}"],
@@ -107,7 +115,7 @@ def main() -> int:
         "generator": "community_balance_generator",
         "files": files,
     }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Reconciled {manifest} with {len(files)} owned output(s).")
+    print(f"Reconciled {display_path(manifest, repo_root)} with {len(files)} owned output(s).")
     return 0
 
 
