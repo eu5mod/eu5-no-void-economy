@@ -1,7 +1,0 @@
-l_english:
- AUTO_MODIFIER_NAME_cbp_trade_profit_selling_efficiency_cancellation: "(CBP) Selling Efficiency Reconciliation"
- AUTO_MODIFIER_DESC_cbp_trade_profit_selling_efficiency_cancellation: "Moves Selling Efficiency out of market-price margins and into merchant-maintenance savings."
- AUTO_MODIFIER_NAME_cbp_trade_profit_import_efficiency_cancellation: "(CBP) Import Efficiency Reconciliation"
- AUTO_MODIFIER_DESC_cbp_trade_profit_import_efficiency_cancellation: "Moves Import Efficiency out of market-price margins and into merchant-maintenance savings."
- AUTO_MODIFIER_NAME_cbp_trade_profit_merchant_maintenance_reconciliation: "(CBP) Trade Maintenance Reconciliation"
- AUTO_MODIFIER_DESC_cbp_trade_profit_merchant_maintenance_reconciliation: "Applies combined Import and Selling Efficiency to merchant maintenance through Vanilla trade accounting."

@@ -1,4 +1,0 @@
-﻿l_english:
- cbp_pr182_debug.1.title: "PR-182 Market Stockpile Probe"
- cbp_pr182_debug.1.desc: "Applies and traces the CBP market stockpile capacity modifier on the current country's capital market."
- cbp_pr182_debug.1.a: "Probe market stockpile capacity"

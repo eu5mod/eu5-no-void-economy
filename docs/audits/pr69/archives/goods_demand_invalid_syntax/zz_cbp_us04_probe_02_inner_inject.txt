@@ -1,8 +1,0 @@
-# US-04 injection syntax matrix — candidate 02.
-# Outer INJECT on pop_demand, nested INJECT on the existing beer child.
-
-INJECT:pop_demand = {
-	INJECT:beer = {
-		multiply = "test_cbp_us04_live_pop_demand_multiplier_beer"
-	}
-}

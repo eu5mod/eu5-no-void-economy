@@ -1,0 +1,23 @@
+﻿# US-17 modifies the inputs consumed by Vanilla trade-profit accounting. It does
+# not scan routes or reconcile treasury values after the engine calculation.
+
+cbp_trade_profit_selling_efficiency_cancellation = {
+	requires_real = no
+	limit = { has_variable = cbp_trade_profit_native_selling_correction }
+	scales_with = { value = var:cbp_trade_profit_native_selling_correction }
+	selling_efficiency = 1
+}
+
+cbp_trade_profit_import_efficiency_cancellation = {
+	requires_real = no
+	limit = { has_variable = cbp_trade_profit_native_import_correction }
+	scales_with = { value = var:cbp_trade_profit_native_import_correction }
+	import_efficiency = 1
+}
+
+cbp_trade_profit_merchant_maintenance_reconciliation = {
+	requires_real = no
+	limit = { has_variable = cbp_trade_profit_native_maintenance_correction }
+	scales_with = { value = var:cbp_trade_profit_native_maintenance_correction }
+	merchant_maintenance_efficiency = 1
+}

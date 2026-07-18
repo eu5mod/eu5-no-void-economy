@@ -3,5 +3,5 @@ tags={
 	"Gameplay"
 	"Trade and Economics"
 }
-name="No Void Economy"
+name="CBP Trade Profit"
 supported_version="*"

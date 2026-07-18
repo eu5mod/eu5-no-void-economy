@@ -1,9 +1,0 @@
-					hbox = {
-						using = cbp_us10_stock_row
-						visible = "[GreaterThan_CFixedPoint(Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___visible').GetValue, '(CFixedPoint)0')]"
-						blockoverride "good" { widget = { using = cbp_us10_stock_good_icon_cell icon = { parentanchor = center size = { 22 22 } texture = "gfx/interface/icons/trade_goods/icon_goods___GOOD__.dds" texture_density = 2 } } }
-						blockoverride "country_stocks" { text_single = { using = cbp_us10_stock_value_cell_stock blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___country_stock').GetValue|2]/[Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___country_capacity').GetValue|2]" } } }
-						blockoverride "market_stocks" { text_single = { using = cbp_us10_stock_value_cell_stock blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___market_stock').GetValue|2]/[Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___market_capacity').GetValue|2]" } } }
-						blockoverride "overproduction" { text_single = { using = cbp_us10_stock_value_cell_overproduction blockoverride "text" { raw_text = "[Player.MakeScope.GetVariable('gui_cbp_us10_ui___GOOD___overproduction_percent').GetValue|2]%" } } }
-						blockoverride "production_efficiency" { text_single = { using = cbp_us10_stock_value_cell_efficiency blockoverride "text" { raw_text = "n/a" } } }
-					}

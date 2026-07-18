@@ -1,3 +1,0 @@
-﻿l_english:
- cbp_mandatory_expense_debug.1.title: "CBP Mandatory Expenses Probe"
- cbp_mandatory_expense_debug.1.desc: "Checks that the mandatory Stability and Legitimacy expense modifiers are present. Confirm both slider ranges and monthly contributions in the Economy interface."
