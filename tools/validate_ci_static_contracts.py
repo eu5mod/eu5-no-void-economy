@@ -24,6 +24,43 @@ REVIEW_POP_SETTING = "cbp_debug_audit_misc_review_pop_settings"
 TRADE_REWORK_FLAG = f"flag:{CMM_MOD_ID}__{TRADE_REWORK_SETTING}"
 TRADE_REWORK_VALUE_LINK = f'"variable_map(cmm|{TRADE_REWORK_FLAG})" = 1'
 
+# Every production-runtime read of a CMM value must be declared here. This makes
+# the missing-key behavior reviewable instead of letting the UI's displayed
+# default silently diverge from runtime behavior.
+CMM_RUNTIME_SETTING_POLICIES: dict[str, tuple[str, str, str, str]] = {
+    TRADE_REWORK_SETTING: ("bool", "default_value", "1", "missing_key_uses_registered_default"),
+    "cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings": (
+        "bool",
+        "default_value",
+        "0",
+        "missing_key_is_disabled",
+    ),
+    "cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings": (
+        "dropdown",
+        "default_index",
+        "1",
+        "missing_key_uses_performance_mode",
+    ),
+    "cbp_debug_audit_debug_audit_debug_messages_settings": (
+        "dropdown",
+        "default_index",
+        "1",
+        "missing_key_uses_local_runtime_config",
+    ),
+    "cbp_debug_audit_debug_audit_monthly_stock_check_settings": (
+        "dropdown",
+        "default_index",
+        "1",
+        "missing_key_is_disabled",
+    ),
+    "cbp_debug_audit_debug_audit_save_mode_settings": (
+        "dropdown",
+        "default_index",
+        "1",
+        "missing_key_uses_minimal_persistence",
+    ),
+}
+
 CMM_SETTINGS: dict[str, tuple[str, str, bool]] = {
     "cbp_general_gameplay_gameplay_war_exhaustion_political_pressure_settings": ("cbp_general_gameplay_tab", "cbp_general_gameplay_gameplay_group", False),
     TRADE_REWORK_SETTING: ("cbp_general_gameplay_tab", "cbp_general_gameplay_gameplay_group", True),
@@ -146,13 +183,21 @@ def validate_no_legacy_review_pop_id(all_text: str) -> None:
         expect(token not in all_text, f"Legacy review-pop CMM token must not remain: {token}")
 
 
-def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers: str, loc: str, scripted_gui: str) -> None:
+def validate_cmm_surface(
+    cmm_effects: str,
+    runtime_effects: str,
+    config_triggers: str,
+    configuration_effects: str,
+    loc: str,
+    scripted_gui: str,
+) -> None:
     register_block_re = re.compile(
-        r"cmm_register_(?:global_)?(?:bool|dropdown)_setting\s*=\s*\{(?P<body>.*?)\n\s*\}",
+        r"cmm_register_(?:global_)?(?P<kind>bool|dropdown)_setting\s*=\s*\{(?P<body>.*?)\n\s*\}",
         re.DOTALL,
     )
     registered_settings: set[str] = set()
     registration_bodies: dict[str, str] = {}
+    registration_kinds: dict[str, str] = {}
 
     for match in register_block_re.finditer(cmm_effects):
         body = match.group("body")
@@ -161,6 +206,7 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
         group_id = field_value(body, "group_id")
         registered_settings.add(setting_id)
         registration_bodies[setting_id] = body
+        registration_kinds[setting_id] = match.group("kind")
         expect(setting_id in CMM_SETTINGS, f"Unexpected generated NVE CMM setting id in registration: {setting_id or '<blank>'}")
         if setting_id in CMM_SETTINGS:
             expected_tab_id, expected_group_id, _has_scripted_gui = CMM_SETTINGS[setting_id]
@@ -168,6 +214,31 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
             expect(group_id == expected_group_id, f"CMM setting {setting_id} must use group_id {expected_group_id}, found {group_id or '<blank>'}")
 
     expect(registered_settings == set(CMM_SETTINGS), "Generated NVE CMM registrations must match the expected setting catalog")
+
+    runtime_value_link_re = re.compile(r"variable_map\(cmm\|flag:no_void_economy__(cbp_[a-z0-9_]+)\)")
+    runtime_read_settings: set[str] = set()
+    for path in (ROOT / "in_game").rglob("*.txt"):
+        for line in path.read_text(encoding="utf-8-sig", errors="ignore").splitlines():
+            if line.lstrip().startswith("#"):
+                continue
+            runtime_read_settings.update(runtime_value_link_re.findall(line))
+
+    declared_runtime_settings = set(CMM_RUNTIME_SETTING_POLICIES)
+    expect(
+        runtime_read_settings == declared_runtime_settings,
+        "Production CMM reads must match the reviewed missing-key policy catalog "
+        f"(undeclared={sorted(runtime_read_settings - declared_runtime_settings)}, "
+        f"stale={sorted(declared_runtime_settings - runtime_read_settings)})",
+    )
+    for setting_id, (expected_kind, default_field, expected_default, _missing_key_policy) in CMM_RUNTIME_SETTING_POLICIES.items():
+        expect(
+            registration_kinds.get(setting_id) == expected_kind,
+            f"Runtime CMM setting {setting_id} must remain a {expected_kind} registration",
+        )
+        expect(
+            field_value(registration_bodies.get(setting_id, ""), default_field) == expected_default,
+            f"Runtime CMM setting {setting_id} must keep {default_field} = {expected_default}",
+        )
 
     runtime_review_pop = block(runtime_effects, "cbp_cmm_register_review_pop")
     expect(f"setting_id = {REVIEW_POP_SETTING}" in runtime_review_pop, "Runtime review-pop registration must use the standard setting id")
@@ -209,6 +280,48 @@ def validate_cmm_surface(cmm_effects: str, runtime_effects: str, config_triggers
         re.search(r"NOT\s*=\s*\{\s*is_key_in_variable_map", trade_trigger, re.DOTALL) is not None
         and trade_trigger.count("is_key_in_variable_map") >= 2,
         "Trade rework trigger must honor the enabled registered default when CMM has not materialized the key",
+    )
+
+    pop_demand_trigger = block(config_triggers, "cbp_pop_consumption_offer_demand_enabled_trigger")
+    expect(
+        "is_key_in_variable_map" in pop_demand_trigger
+        and "cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings" in pop_demand_trigger
+        and '"variable_map(cmm|flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)" = 1'
+        in pop_demand_trigger,
+        "The default-off Pop-demand option must require an explicit persisted value 1",
+    )
+
+    main_mode_refresh = block(configuration_effects, "cbp_refresh_cbp_main_mode_from_cmm_country_scope")
+    expect(
+        re.search(r"NOT\s*=\s*\{\s*is_key_in_variable_map", main_mode_refresh, re.DOTALL) is not None
+        and "cbp_enter_cbp_performance_mode = yes" in main_mode_refresh,
+        "The default main dropdown must enter Performance Mode when its key is not materialized",
+    )
+    main_visibility_refresh = block(runtime_effects, "cbp_refresh_cbp_main_cmm_visibility")
+    expect(
+        re.search(r"NOT\s*=\s*\{\s*is_key_in_variable_map", main_visibility_refresh, re.DOTALL) is not None
+        and "set_global_variable = gui_cbp_cmm_cbp_main_enabled" in main_visibility_refresh,
+        "The main CMM visibility cache must remain enabled when the default dropdown key is absent",
+    )
+
+    configuration_refresh = block(configuration_effects, "cbp_refresh_configuration_from_cmm_country_scope")
+    for setting_id, explicit_values in [
+        ("cbp_debug_audit_debug_audit_debug_messages_settings", (2, 3)),
+        ("cbp_debug_audit_debug_audit_monthly_stock_check_settings", (2,)),
+        ("cbp_debug_audit_debug_audit_save_mode_settings", (2, 3)),
+    ]:
+        for explicit_value in explicit_values:
+            expect(
+                f'"variable_map(cmm|flag:no_void_economy__{setting_id})" = {explicit_value}' in configuration_refresh,
+                f"CMM setting {setting_id} must preserve its explicit value {explicit_value} runtime branch",
+            )
+    expect(
+        "cbp_apply_generated_local_runtime_mode = yes" in configuration_refresh,
+        "An absent Debug Messages key must continue to use the generated local runtime configuration",
+    )
+    expect(
+        "cbp_enter_minimal_accounting_persistence = yes" in configuration_refresh,
+        "An absent Save Detail key must continue to select minimal persistence",
     )
 
 
@@ -785,7 +898,7 @@ def main() -> int:
     lifecycle_doc = read("docs/technical/GAME_LOAD_LIFECYCLE.md")
 
     validate_no_legacy_review_pop_id("\n".join([cmm_effects, runtime_effects, scripted_gui, loc, read("in_game/events/cbp_review_events.txt"), read("in_game/common/scripted_effects/cbp_review_effects.txt")]))
-    validate_cmm_surface(cmm_effects, runtime_effects, config_triggers, loc, scripted_gui)
+    validate_cmm_surface(cmm_effects, runtime_effects, config_triggers, configuration_effects, loc, scripted_gui)
     validate_us17_owner_modifier_contract(
         trade_values=trade_values,
         owner_modifier_effects=owner_modifier_effects,
