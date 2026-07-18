@@ -1,58 +1,40 @@
-# ModeU5 US-17 native trade-profit modifier reconciliation and US-20 route path.
+# ModeU5 US-17 operation-aware trade-profit reconciliation and US-20 route path.
 #
-# Scope contract:
-# - refresh runs once in the monthly country trade-owner pass;
-# - import_efficiency, selling_efficiency, and merchant_maintenance_efficiency
-#   are read from that country, never from a route market or market-center owner;
-# - US-17's semantic buying-efficiency input maps to EU5 import_efficiency.
+# Country refresh cancels three native price-efficiency inputs plus maintenance:
 #
-# US-17 is represented directly in the Vanilla modifier stack:
+#   effective selling_efficiency = 0
+#   effective import_efficiency  = 0
+#   effective export_efficiency  = 0
+#   effective merchant_maintenance_efficiency = 0
 #
+# The existing country-owned every_trade pass then selects the operation input:
+#
+#   trade_operation_efficiency = import_efficiency
+#   trade_operation_efficiency = export_efficiency when is_export = yes
 #   D = define:NCountry|MERCHANT_MAINTENANCE_COST
-#   C = min(import_efficiency + selling_efficiency, D)
-#   effective selling efficiency = 0
-#   effective import efficiency = 0
-#   effective maintenance efficiency = C
-#   effective maintenance factor = 1 - C
+#   C = min(trade_operation_efficiency + selling_efficiency, D)
 #
-# The equivalent additive corrections are -selling, -import, and
-# C - M. There is no lower clamp on C, so negative efficiencies remain
-# meaningful and increase maintenance. The literal 1 is the dimensionless
-# 100% factor. MERCHANT_MAINTENANCE_COST remains the native monetary base and
-# is also the configured upper bound for C. No division is used.
+# The fourth auto-modifier cancels native merchant maintenance M. The route
+# correction is then D * C, giving a final route maintenance cost of
+# D * (1 - C). There is no lower clamp on C, so negative efficiencies remain
+# meaningful.
 
-cbp_compute_us17_native_profit_corrections_from_baselines = {
-	save_temporary_scope_value_as = {
-		name = cbp_us17_native_combined_efficiency
-		value = {
-			value = scope:cbp_us17_native_baseline_import_efficiency
-			add = scope:cbp_us17_native_baseline_selling_efficiency
-			max = cbp_trade_base_merchant_maintenance_cost
-		}
-	}
+cbp_compute_us17_native_corrections_from_baselines = {
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_selling_correction_result
-		value = {
-			value = scope:cbp_us17_native_baseline_selling_efficiency
-			multiply = -1
-		}
+		value = { value = scope:cbp_us17_native_baseline_selling_efficiency multiply = -1 }
 	}
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_import_correction_result
-		value = {
-			value = scope:cbp_us17_native_baseline_import_efficiency
-			multiply = -1
-		}
+		value = { value = scope:cbp_us17_native_baseline_import_efficiency multiply = -1 }
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_export_correction_result
+		value = { value = scope:cbp_us17_native_baseline_export_efficiency multiply = -1 }
 	}
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_maintenance_correction_result
-		value = {
-			value = scope:cbp_us17_native_combined_efficiency
-			add = {
-				value = scope:cbp_us17_native_baseline_maintenance_efficiency
-				multiply = -1
-			}
-		}
+		value = { value = scope:cbp_us17_native_baseline_maintenance_efficiency multiply = -1 }
 	}
 }
 
@@ -72,6 +54,13 @@ cbp_reconstruct_us17_native_baselines_from_effective_values = {
 		}
 	}
 	save_temporary_scope_value_as = {
+		name = cbp_us17_native_baseline_export_efficiency
+		value = {
+			value = scope:cbp_us17_native_effective_export_efficiency
+			add = { value = scope:cbp_us17_native_previous_export_correction multiply = -1 }
+		}
+	}
+	save_temporary_scope_value_as = {
 		name = cbp_us17_native_baseline_maintenance_efficiency
 		value = {
 			value = scope:cbp_us17_native_effective_maintenance_efficiency
@@ -80,11 +69,42 @@ cbp_reconstruct_us17_native_baselines_from_effective_values = {
 	}
 }
 
+cbp_compute_us17_operation_aware_route_values_from_baselines = {
+	save_temporary_scope_value_as = {
+		name = cbp_us17_trade_operation_efficiency
+		value = scope:cbp_us17_native_baseline_import_efficiency
+	}
+	if = {
+		limit = { scope:cbp_us17_route_is_export > 0 }
+		save_temporary_scope_value_as = {
+			name = cbp_us17_trade_operation_efficiency
+			value = scope:cbp_us17_native_baseline_export_efficiency
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_route_combined_efficiency
+		value = {
+			value = scope:cbp_us17_trade_operation_efficiency
+			add = scope:cbp_us17_native_baseline_selling_efficiency
+			max = cbp_trade_base_merchant_maintenance_cost
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_route_treasury_delta
+		value = {
+			value = cbp_trade_base_merchant_maintenance_cost
+			multiply = scope:cbp_us17_route_combined_efficiency
+		}
+	}
+}
+
 cbp_clear_us17_native_profit_modifiers_for_current_country = {
 	set_variable = { name = cbp_us17_native_selling_correction value = 0 }
 	set_variable = { name = cbp_us17_native_import_correction value = 0 }
+	set_variable = { name = cbp_us17_native_export_correction value = 0 }
 	set_variable = { name = cbp_us17_native_maintenance_correction value = 0 }
-	set_variable = { name = cbp_us17_native_modifier_state_version value = 1 }
+	set_variable = { name = cbp_us17_native_maintenance_baseline value = 0 }
+	set_variable = { name = cbp_us17_native_modifier_state_version value = 2 }
 }
 
 cbp_refresh_us17_native_profit_modifiers_for_current_country = {
@@ -92,6 +112,7 @@ cbp_refresh_us17_native_profit_modifiers_for_current_country = {
 		limit = { cbp_trade_rework_enabled_trigger = yes }
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_selling_correction value = 0 }
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_import_correction value = 0 }
+		save_temporary_scope_value_as = { name = cbp_us17_native_previous_export_correction value = 0 }
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_maintenance_correction value = 0 }
 		if = {
 			limit = { has_variable = cbp_us17_native_selling_correction }
@@ -102,31 +123,91 @@ cbp_refresh_us17_native_profit_modifiers_for_current_country = {
 			save_temporary_scope_value_as = { name = cbp_us17_native_previous_import_correction value = var:cbp_us17_native_import_correction }
 		}
 		if = {
+			limit = { has_variable = cbp_us17_native_export_correction }
+			save_temporary_scope_value_as = { name = cbp_us17_native_previous_export_correction value = var:cbp_us17_native_export_correction }
+		}
+		if = {
 			limit = { has_variable = cbp_us17_native_maintenance_correction }
 			save_temporary_scope_value_as = { name = cbp_us17_native_previous_maintenance_correction value = var:cbp_us17_native_maintenance_correction }
 		}
 
-		# Remove the previously applied CBP contribution from each effective value.
-		# This recovers the current non-CBP baseline and prevents monthly drift.
+		# Remove previous CBP price corrections to recover current non-CBP values.
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_selling_efficiency value = modifier:selling_efficiency }
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_import_efficiency value = modifier:import_efficiency }
+		save_temporary_scope_value_as = { name = cbp_us17_native_effective_export_efficiency value = modifier:export_efficiency }
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_maintenance_efficiency value = modifier:merchant_maintenance_efficiency }
 		cbp_reconstruct_us17_native_baselines_from_effective_values = yes
+		cbp_compute_us17_native_corrections_from_baselines = yes
 
-		cbp_compute_us17_native_profit_corrections_from_baselines = yes
 		set_variable = { name = cbp_us17_native_selling_correction value = scope:cbp_us17_native_selling_correction_result }
 		set_variable = { name = cbp_us17_native_import_correction value = scope:cbp_us17_native_import_correction_result }
+		set_variable = { name = cbp_us17_native_export_correction value = scope:cbp_us17_native_export_correction_result }
+		set_variable = { name = cbp_us17_native_maintenance_baseline value = scope:cbp_us17_native_baseline_maintenance_efficiency }
 		set_variable = { name = cbp_us17_native_maintenance_correction value = scope:cbp_us17_native_maintenance_correction_result }
-		set_variable = { name = cbp_us17_native_modifier_state_version value = 1 }
+		set_variable = { name = cbp_us17_native_modifier_state_version value = 2 }
 	}
 	else = {
 		cbp_clear_us17_native_profit_modifiers_for_current_country = yes
 	}
 }
 
-# Live route wrapper. US-17 money is already represented in Vanilla by the
-# country auto-modifiers above; this route-local path now owns US-20 only. It
-# must never add a second treasury correction for the same trade.
+# Trade scope. Trade.IsExport is exposed to script as the is_export trigger.
+cbp_run_us17_operation_aware_route_profit_reconciliation = {
+	if = {
+		limit = {
+			exists = scope:cbp_trade_owner_country
+			scope:cbp_trade_owner_country = {
+				cbp_trade_rework_enabled_trigger = yes
+				has_variable = cbp_us17_native_selling_correction
+				has_variable = cbp_us17_native_import_correction
+				has_variable = cbp_us17_native_export_correction
+				has_variable = cbp_us17_native_maintenance_baseline
+			}
+		}
+		scope:cbp_trade_owner_country = {
+			save_temporary_scope_value_as = {
+				name = cbp_us17_native_baseline_selling_efficiency
+				value = { value = var:cbp_us17_native_selling_correction multiply = -1 }
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_us17_native_baseline_import_efficiency
+				value = { value = var:cbp_us17_native_import_correction multiply = -1 }
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_us17_native_baseline_export_efficiency
+				value = { value = var:cbp_us17_native_export_correction multiply = -1 }
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_us17_native_baseline_maintenance_efficiency
+				value = var:cbp_us17_native_maintenance_baseline
+			}
+		}
+		save_temporary_scope_value_as = { name = cbp_us17_route_is_export value = 0 }
+		if = {
+			limit = { is_export = yes }
+			save_temporary_scope_value_as = { name = cbp_us17_route_is_export value = 1 }
+		}
+		cbp_compute_us17_operation_aware_route_values_from_baselines = yes
+		save_temporary_scope_value_as = {
+			name = gui_cbp_trade_efficiency_route_money_delta
+			value = scope:cbp_us17_route_treasury_delta
+		}
+		if = {
+			limit = { NOT = { scope:cbp_us17_route_treasury_delta = 0 } }
+			scope:cbp_trade_owner_country = {
+				cbp_ensure_trade_efficiency_reconciliation_accumulator = yes
+				add_gold = scope:cbp_us17_route_treasury_delta
+				change_variable = { name = gui_cbp_trade_efficiency_money_delta_total add = scope:cbp_us17_route_treasury_delta }
+				change_variable = { name = gui_cbp_trade_efficiency_treasury_delta_total add = scope:cbp_us17_route_treasury_delta }
+			}
+			cbp_note_trade_efficiency_money_delta_route = yes
+			cbp_note_trade_efficiency_treasury_application_route = yes
+		}
+	}
+}
+
+# US-20 remains separate and unchanged. It still requires the captured route
+# quantity and current owner country, and never applies US-17 money a second time.
 cbp_run_us20_route_loss_reconciliation = {
 	if = {
 		limit = { cbp_trade_rework_enabled_trigger = yes }

@@ -1,7 +1,9 @@
 l_english:
  AUTO_MODIFIER_NAME_cbp_us17_selling_efficiency_cancellation: "(CBP) Selling Efficiency Reconciliation"
- AUTO_MODIFIER_DESC_cbp_us17_selling_efficiency_cancellation: "Moves Selling Efficiency out of market-price margins and into merchant-maintenance savings."
+ AUTO_MODIFIER_DESC_cbp_us17_selling_efficiency_cancellation: "Removes Selling Efficiency from the destination-price margin before CBP applies the operation-aware trade result."
  AUTO_MODIFIER_NAME_cbp_us17_import_efficiency_cancellation: "(CBP) Import Efficiency Reconciliation"
- AUTO_MODIFIER_DESC_cbp_us17_import_efficiency_cancellation: "Moves Import Efficiency out of market-price margins and into merchant-maintenance savings."
+ AUTO_MODIFIER_DESC_cbp_us17_import_efficiency_cancellation: "Removes Import Efficiency from the origin-price margin for import operations."
+ AUTO_MODIFIER_NAME_cbp_us17_export_efficiency_cancellation: "(CBP) Export Efficiency Reconciliation"
+ AUTO_MODIFIER_DESC_cbp_us17_export_efficiency_cancellation: "Removes Export Efficiency from the origin-price margin for export operations."
  AUTO_MODIFIER_NAME_cbp_us17_merchant_maintenance_reconciliation: "(CBP) Trade Maintenance Reconciliation"
- AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Applies the combined Import and Selling Efficiency to merchant maintenance without changing Vanilla trade accounting."
+ AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Removes native Merchant Maintenance Efficiency before CBP applies the operation-aware route result."

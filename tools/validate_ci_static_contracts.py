@@ -336,13 +336,16 @@ def validate_us17_owner_modifier_contract(
     owner_modifier_probe_events: str,
     owner_modifier_probe_effects: str,
 ) -> None:
-    correction_formula = block(owner_modifier_effects, "cbp_compute_us17_native_profit_corrections_from_baselines")
+    correction_formula = block(owner_modifier_effects, "cbp_compute_us17_native_corrections_from_baselines")
     reconstruction = block(owner_modifier_effects, "cbp_reconstruct_us17_native_baselines_from_effective_values")
+    route_formula = block(owner_modifier_effects, "cbp_compute_us17_operation_aware_route_values_from_baselines")
     refresh = block(owner_modifier_effects, "cbp_refresh_us17_native_profit_modifiers_for_current_country")
-    live_wrapper = block(owner_modifier_effects, "cbp_run_us20_route_loss_reconciliation")
+    money_wrapper = block(owner_modifier_effects, "cbp_run_us17_operation_aware_route_profit_reconciliation")
+    goods_wrapper = block(owner_modifier_effects, "cbp_run_us20_route_loss_reconciliation")
 
     for semantic_name, modifier_name in [
-        ("buying/import efficiency", "import_efficiency"),
+        ("import efficiency", "import_efficiency"),
+        ("export efficiency", "export_efficiency"),
         ("selling efficiency", "selling_efficiency"),
         ("merchant maintenance efficiency", "merchant_maintenance_efficiency"),
     ]:
@@ -351,49 +354,45 @@ def validate_us17_owner_modifier_contract(
             f"US17 must define a country-scoped script value for {semantic_name} via modifier:{modifier_name}",
         )
 
-    combined_assignment = re.search(
-        r"name\s*=\s*cbp_us17_native_combined_efficiency(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
-        correction_formula,
-        re.DOTALL,
-    )
-    combined_body = combined_assignment.group("body") if combined_assignment else ""
-    expect(bool(combined_assignment), "US17 native formula must calculate the import/selling combined efficiency")
-    expect("cbp_us17_native_baseline_import_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
-    expect("cbp_us17_native_baseline_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
-    expect("divide = 2" not in combined_body, "US17 combined efficiency is a sum and must not be divided by two")
-    expect(
-        "max = cbp_trade_base_merchant_maintenance_cost" in combined_body,
-        "US17 combined efficiency must be capped by the loaded merchant-maintenance-cost define",
-    )
-    expect("min = 0" not in combined_body, "US17 combined efficiency must not have a lower clamp of 0")
-
-    expect("cbp_us17_native_baseline_maintenance_efficiency" in correction_formula, "US17 native formula must consume merchant maintenance efficiency")
-    expect("cbp_us17_native_baseline_maintenance_factor" not in correction_formula, "US17 must replace native maintenance efficiency instead of scaling its remaining factor")
-    expect(
-        re.search(
-            r"name\s*=\s*cbp_us17_native_maintenance_correction_result.*?"
-            r"value\s*=\s*scope:cbp_us17_native_combined_efficiency.*?"
-            r"value\s*=\s*scope:cbp_us17_native_baseline_maintenance_efficiency\s+multiply\s*=\s*-1",
-            correction_formula,
-            re.DOTALL,
+    for semantic_name in ["selling", "import", "export", "maintenance"]:
+        expect(
+            f"cbp_us17_native_{semantic_name}_correction_result" in correction_formula,
+            f"US17 must calculate the native {semantic_name} cancellation",
         )
-        is not None,
-        "US17 maintenance correction must replace the baseline with C through correction C - M",
-    )
+        expect(
+            f"cbp_us17_native_baseline_{semantic_name}_efficiency" in correction_formula,
+            f"US17 {semantic_name} cancellation must consume its reconstructed baseline",
+        )
     expect("divide =" not in correction_formula, "US17 native correction formula must not divide")
-    expect("cbp_us17_native_previous_selling_correction" in reconstruction, "US17 refresh must remove its previous selling correction")
-    expect("cbp_us17_native_previous_import_correction" in reconstruction, "US17 refresh must remove its previous import correction")
-    expect("cbp_us17_native_previous_maintenance_correction" in reconstruction, "US17 refresh must remove its previous maintenance correction")
+    for semantic_name in ["selling", "import", "export", "maintenance"]:
+        expect(
+            f"cbp_us17_native_previous_{semantic_name}_correction" in reconstruction,
+            f"US17 refresh must remove its previous {semantic_name} correction",
+        )
+
+    expect("cbp_us17_native_baseline_import_efficiency" in route_formula, "US17 trade_operation_efficiency must default to Import Efficiency")
+    expect("cbp_us17_native_baseline_export_efficiency" in route_formula, "US17 trade_operation_efficiency must select Export Efficiency for export routes")
+    expect("cbp_us17_route_is_export > 0" in route_formula, "US17 route formula must branch on Trade.IsExport")
+    expect("cbp_us17_trade_operation_efficiency" in route_formula, "US17 route formula must expose the directional trade_operation_efficiency")
+    expect("cbp_us17_native_baseline_selling_efficiency" in route_formula, "US17 route formula must add Selling Efficiency")
+    expect("max = cbp_trade_base_merchant_maintenance_cost" in route_formula, "US17 combined efficiency must be capped by the merchant-maintenance-cost define")
+    expect("min = 0" not in route_formula, "US17 combined efficiency must preserve negative values")
+    expect("divide =" not in route_formula, "US17 operation-aware route formula must not divide")
+    expect("multiply = scope:cbp_us17_route_combined_efficiency" in route_formula, "US17 route treasury delta must apply D * C")
+
     expect("cbp_reconstruct_us17_native_baselines_from_effective_values = yes" in refresh, "US17 refresh must reconstruct non-CBP baselines before recalculation")
-    expect("cbp_compute_us17_native_profit_corrections_from_baselines = yes" in refresh, "US17 refresh must calculate native modifier corrections")
-    expect("cbp_trade_rework_enabled_trigger = yes" in live_wrapper, "US17 owner-modifier wrapper must defensively gate itself")
-    expect("add_gold" not in live_wrapper, "US17 live route wrapper must not add a second treasury correction")
-    expect("cbp_apply_trade_efficiency_income_reconciliation_to_trade_owner" not in live_wrapper, "US17 live route wrapper must leave money accounting to Vanilla")
-    expect("cbp_compute_us20_goods_received_delta = yes" in live_wrapper, "US17 native profit migration must preserve US20 goods reconciliation")
+    expect("cbp_compute_us17_native_corrections_from_baselines = yes" in refresh, "US17 refresh must calculate all four native cancellations")
+    expect("cbp_trade_rework_enabled_trigger = yes" in money_wrapper, "US17 operation-aware money wrapper must defensively gate itself")
+    expect("is_export = yes" in money_wrapper, "US17 operation-aware money wrapper must read Trade.IsExport")
+    expect("cbp_compute_us17_operation_aware_route_values_from_baselines = yes" in money_wrapper, "US17 money wrapper must calculate the directional route result")
+    expect("add_gold = scope:cbp_us17_route_treasury_delta" in money_wrapper, "US17 route result must apply its treasury delta exactly once")
+    expect("add_gold" not in goods_wrapper, "US20 goods wrapper must not apply US17 money a second time")
+    expect("cbp_compute_us20_goods_received_delta = yes" in goods_wrapper, "US17 migration must preserve US20 goods reconciliation")
 
     for modifier_name, variable_name, modifier_type in [
         ("cbp_us17_selling_efficiency_cancellation", "cbp_us17_native_selling_correction", "selling_efficiency"),
         ("cbp_us17_import_efficiency_cancellation", "cbp_us17_native_import_correction", "import_efficiency"),
+        ("cbp_us17_export_efficiency_cancellation", "cbp_us17_native_export_correction", "export_efficiency"),
         ("cbp_us17_merchant_maintenance_reconciliation", "cbp_us17_native_maintenance_correction", "merchant_maintenance_efficiency"),
     ]:
         modifier_block = block(native_auto_modifiers, modifier_name)
@@ -430,24 +429,27 @@ def validate_us17_owner_modifier_contract(
     expect("cbp_debug_finish_us17_owner_modifier_probe = yes" in owner_modifier_probe_events, "US17 delayed probe event must verify effective country modifiers")
 
     for assertion in [
-        "positive_combined_efficiency",
-        "import_cancelled",
-        "selling_cancelled",
-        "maintenance_replaced_by_combined_efficiency",
-        "capped_native_maintenance_amount_equivalent",
-        "negative_sum_preserved",
-        "negative_efficiency_increases_maintenance",
-        "positive_sum_capped_by_merchant_maintenance_define",
-        "maintenance_baseline_fully_replaced",
-        "idempotent_recalculation",
-        "live_auto_modifier_application",
+        "import_price_input_cancelled",
+        "export_price_input_cancelled",
+        "selling_price_input_cancelled",
+        "maintenance_input_cancelled",
+        "import_route_uses_import_efficiency",
+        "export_route_uses_export_efficiency",
+        "import_route_treasury_delta",
+        "export_route_treasury_delta",
+        "negative_import_sum_preserved",
+        "export_sum_capped_by_merchant_maintenance_define",
+        "idempotent_import_baseline",
+        "idempotent_export_baseline",
+        "live_export_cancellation_applied",
         "cmm_map_missing",
         "cmm_trade_rework_explicitly_disabled",
         "source=registered_default",
-        "mode=native_auto_modifiers",
-        "combination=sum_without_division",
+        "operation_input=import_or_export_by_Trade.IsExport",
+        "native_inputs_cancelled=selling_import_export_maintenance",
+        "maintenance=cancelled_then_route_delta",
         "clamp=merchant_maintenance_cost_define",
-        "treasury_reconciliation=none",
+        "negative_efficiency=preserved",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")
 
@@ -473,17 +475,22 @@ def validate_us17_us20_static_contract(
     )
     historical_combined_body = historical_combined_assignment.group("body") if historical_combined_assignment else ""
     live_hook_call = "cbp_run_us20_route_loss_reconciliation = yes"
+    us17_money_hook_call = "cbp_run_us17_operation_aware_route_profit_reconciliation = yes"
     legacy_hook_call = "cbp_run_us17_us20_route_reconciliation = yes"
     e2e_probe_call = "cbp_debug_run_us20_case12_market_loss_probe = yes"
 
     expect(country_cycle.count(live_hook_call) == 1, "Country trade-owner cycle must call US20 route-loss reconciliation exactly once per trade")
+    expect(country_cycle.count(us17_money_hook_call) == 1, "Country trade-owner cycle must call operation-aware US17 reconciliation exactly once per trade")
     expect(legacy_hook_call not in country_cycle, "Country trade-owner live cycle must not call the historical seeded reconciliation wrapper")
     expect(country_cycle.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1, "Country trade-owner cycle must refresh US17 native modifiers exactly once before every_trade")
     expect(
         country_cycle.index("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") < country_cycle.index("every_trade = {"),
         "Country trade-owner cycle must refresh US17 native modifiers before entering every_trade",
     )
-    expect("cbp_capture_trade_owner_country_modifier_inputs = yes" not in country_cycle, "Country trade-owner live cycle must not recalculate US17 money per route")
+    expect(
+        country_cycle.index(us17_money_hook_call) < country_cycle.index(live_hook_call),
+        "Country trade-owner cycle must apply US17 money before the US20 goods follow-up",
+    )
     expect("every_trade = {" in country_cycle, "Country trade-owner cycle must use the native every_trade loop")
     expect("cbp_trade_rework_enabled_trigger = yes" in route_effect, "Historical US-17/US-20 route effect must remain defensively gated for deterministic tests")
     expect("cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes" in route_effect, "Historical US-17/US-20 route effect must prepare metrics inside the gated body")
@@ -492,6 +499,8 @@ def validate_us17_us20_static_contract(
     expect("min = 0" not in historical_combined_body, "Historical US17 combined efficiency must preserve negative values")
     expect(live_hook_call not in q8_7_global_owner_effects, "US20 live hook must not be placed in the Q8.7 market-local body")
     expect(live_hook_call not in stock_on_actions, "US20 live hook must not be placed directly in monthly on_actions")
+    expect(us17_money_hook_call not in q8_7_global_owner_effects, "US17 operation-aware hook must not be placed in the Q8.7 market-local body")
+    expect(us17_money_hook_call not in stock_on_actions, "US17 operation-aware hook must not be placed directly in monthly on_actions")
     expect(
         "every_market_center_in_country = {" not in country_trade_owner_effects + q8_7_global_owner_effects + trade_reconciliation_effects + owner_modifier_effects,
         "Trade-rework runtime must not reintroduce a market-center every_trade scaffold",
