@@ -413,6 +413,10 @@ def validate_us10_ui_widget_contract(*, lateralview_gui: str, production_subtabs
         "THIS.GetVariable('cbp_us10_ui" not in ui_effects + stock_loc,
         "US-10 UI runtime dumps/localization must read gui_cbp_us10_ui* variables, matching the variables they set",
     )
+    expect(
+        "remove_variable = gui_cbp_us10_ui_" not in ui_effects,
+        "US-10 UI refresh must initialize presentation variables to zero instead of leaving them unset",
+    )
 
 
 def validate_perf14_test_contract(perf14_text: str, stock_loc: str) -> None:

@@ -27,25 +27,26 @@ cbp_us10_ui_clear_market_selector_work_list = {
 }
 
 cbp_us10_ui_clear_good_row = {
-	remove_variable = gui_cbp_us10_ui_$key$_country_stock
-	remove_variable = gui_cbp_us10_ui_$key$_country_capacity
-	remove_variable = gui_cbp_us10_ui_$key$_market_stock
-	remove_variable = gui_cbp_us10_ui_$key$_market_capacity
-	remove_variable = gui_cbp_us10_ui_$key$_overproduction_percent
-	remove_variable = gui_cbp_us10_ui_$key$_overproduction_warning
-	remove_variable = gui_cbp_us10_ui_$key$_country_over_cap
-	remove_variable = gui_cbp_us10_ui_$key$_market_over_cap
-	remove_variable = gui_cbp_us10_ui_$key$_produced
-	remove_variable = gui_cbp_us10_ui_$key$_added
-	remove_variable = gui_cbp_us10_ui_$key$_rejected
-	remove_variable = gui_cbp_us10_ui_$key$_production_penalty_percent
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_produced value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_added value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_production_penalty_percent value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_$key$_captured value = 0 }
 }
 
 cbp_us10_ui_clear_table_variables = {
-	remove_variable = gui_cbp_us10_ui_selected_market_available
-	remove_variable = gui_cbp_us10_ui_market_count
-	remove_variable = gui_cbp_us10_ui_selected_market_index
-	remove_variable = gui_cbp_us10_ui_selected_market_capacity
+	set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_market_count value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_index value = 0 }
+	set_variable = { name = gui_cbp_us10_ui_selected_market_capacity value = 0 }
 	cbp_us10_ui_clear_good_row = { key = cotton }
 	cbp_us10_ui_clear_good_row = { key = sugar }
 	cbp_us10_ui_clear_good_row = { key = tobacco }
@@ -304,27 +305,26 @@ cbp_us10_ui_capture_good_row = {
 		market = scope:cbp_us10_ui_selected_market_scope
 		good = $good$
 	}
-	scope:cbp_us10_ui_country = {
-		set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = scope:cbp_read_country_stock }
-		set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = scope:cbp_read_country_stock_cap }
-		set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = scope:cbp_read_market_stock }
-		set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = scope:gui_cbp_us10_ui_selected_market_capacity_value }
-		set_variable = { name = gui_cbp_us10_ui_$key$_produced value = scope:cbp_us00_produced }
-		set_variable = { name = gui_cbp_us10_ui_$key$_added value = scope:cbp_us00_added }
-		set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = scope:cbp_us00_rejected }
-		set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = scope:cbp_read_over_capacity }
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = scope:gui_cbp_us10_ui_selected_market_capacity_value min = 0 } }
-		set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = scope:gui_cbp_us10_ui_$key$_market_over_cap_value }
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_overproduction_percent_value value = { value = scope:cbp_us00_read_overproduction_ratio multiply = 100 min = 0 } }
-		set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = scope:gui_cbp_us10_ui_$key$_overproduction_percent_value }
-		save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_production_penalty_percent_value value = { value = scope:cbp_us00_read_production_penalty multiply = 100 } }
-		set_variable = { name = gui_cbp_us10_ui_$key$_production_penalty_percent value = scope:gui_cbp_us10_ui_$key$_production_penalty_percent_value }
-		if = {
-			limit = { scope:cbp_us00_read_overproduction_ratio > 0.05 }
-			set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 1 }
-		}
-		else = { set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 0 } }
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_stock value = scope:cbp_read_country_stock }
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_capacity value = scope:cbp_read_country_stock_cap }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_stock value = scope:cbp_read_market_stock }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_capacity value = var:gui_cbp_us10_ui_selected_market_capacity }
+	set_variable = { name = gui_cbp_us10_ui_$key$_produced value = scope:cbp_us00_produced }
+	set_variable = { name = gui_cbp_us10_ui_$key$_added value = scope:cbp_us00_added }
+	set_variable = { name = gui_cbp_us10_ui_$key$_rejected value = scope:cbp_us00_rejected }
+	set_variable = { name = gui_cbp_us10_ui_$key$_country_over_cap value = scope:cbp_read_over_capacity }
+	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_market_over_cap_value value = { value = scope:cbp_read_market_stock subtract = var:gui_cbp_us10_ui_selected_market_capacity min = 0 } }
+	set_variable = { name = gui_cbp_us10_ui_$key$_market_over_cap value = scope:gui_cbp_us10_ui_$key$_market_over_cap_value }
+	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_overproduction_percent_value value = { value = scope:cbp_us00_read_overproduction_ratio multiply = 100 min = 0 } }
+	set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_percent value = scope:gui_cbp_us10_ui_$key$_overproduction_percent_value }
+	save_temporary_scope_value_as = { name = gui_cbp_us10_ui_$key$_production_penalty_percent_value value = { value = scope:cbp_us00_read_production_penalty multiply = 100 } }
+	set_variable = { name = gui_cbp_us10_ui_$key$_production_penalty_percent value = scope:gui_cbp_us10_ui_$key$_production_penalty_percent_value }
+	set_variable = { name = gui_cbp_us10_ui_$key$_captured value = 1 }
+	if = {
+		limit = { scope:cbp_us00_read_overproduction_ratio > 0.05 }
+		set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 1 }
 	}
+	else = { set_variable = { name = gui_cbp_us10_ui_$key$_overproduction_warning value = 0 } }
 }
 
 cbp_us10_ui_capture_all_good_rows = {
@@ -416,7 +416,7 @@ cbp_us10_ui_prepare_current_market_table = {
 			save_temporary_scope_as = cbp_us10_ui_selected_market_scope
 			scope:cbp_us10_ui_country = { set_variable = { name = gui_cbp_us10_ui_selected_market_available value = 1 } }
 			cbp_us10_ui_compute_selected_market_capacity = yes
-			cbp_us10_ui_capture_all_good_rows = yes
+			scope:cbp_us10_ui_country = { cbp_us10_ui_capture_all_good_rows = yes }
 			cbp_us10_ui_log_table = yes
 		}
 	}
@@ -425,6 +425,6 @@ cbp_us10_ui_prepare_current_market_table = {
 
 cbp_us10_ui_log_table = {
 	scope:cbp_us10_ui_country = {
-		debug_log = "ModeU5 US-10-UI TABLE market_index=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('gui_cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_available').GetValue|0]"
+		debug_log = "ModeU5 US-10-UI TABLE market_index=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('gui_cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_available').GetValue|0] wheat_captured=[THIS.GetVariable('gui_cbp_us10_ui_wheat_captured').GetValue|0] wheat_country_stock=[THIS.GetVariable('gui_cbp_us10_ui_wheat_country_stock').GetValue|2] wheat_market_stock=[THIS.GetVariable('gui_cbp_us10_ui_wheat_market_stock').GetValue|2] wheat_market_capacity=[THIS.GetVariable('gui_cbp_us10_ui_wheat_market_capacity').GetValue|2]"
 	}
 }
