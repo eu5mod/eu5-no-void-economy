@@ -1,0 +1,101 @@
+﻿# Standalone US-17 native trade-profit formula adjustment.
+#
+# D = define:NCountry|MERCHANT_MAINTENANCE_COST
+# C = min(import_efficiency + selling_efficiency, D)
+#
+# The three auto-modifiers make the effective Vanilla inputs:
+#
+#   selling_efficiency             = 0
+#   import_efficiency              = 0
+#   merchant_maintenance_efficiency = C
+#
+# The corrections are therefore -selling, -import, and C - maintenance. There
+# is no lower clamp on C: negative efficiencies remain meaningful. Rebuilding
+# each baseline without the previous standalone correction prevents drift.
+
+cbp_trade_profit_compute_native_corrections = {
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_combined_efficiency
+		value = {
+			value = scope:cbp_trade_profit_baseline_import_efficiency
+			add = scope:cbp_trade_profit_baseline_selling_efficiency
+			max = cbp_trade_profit_base_merchant_maintenance_cost
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_selling_correction_result
+		value = {
+			value = scope:cbp_trade_profit_baseline_selling_efficiency
+			multiply = -1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_import_correction_result
+		value = {
+			value = scope:cbp_trade_profit_baseline_import_efficiency
+			multiply = -1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_maintenance_correction_result
+		value = {
+			value = scope:cbp_trade_profit_combined_efficiency
+			add = {
+				value = scope:cbp_trade_profit_baseline_maintenance_efficiency
+				multiply = -1
+			}
+		}
+	}
+}
+
+cbp_trade_profit_reconstruct_native_baselines = {
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_baseline_selling_efficiency
+		value = {
+			value = scope:cbp_trade_profit_effective_selling_efficiency
+			add = { value = scope:cbp_trade_profit_previous_selling_correction multiply = -1 }
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_baseline_import_efficiency
+		value = {
+			value = scope:cbp_trade_profit_effective_import_efficiency
+			add = { value = scope:cbp_trade_profit_previous_import_correction multiply = -1 }
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_trade_profit_baseline_maintenance_efficiency
+		value = {
+			value = scope:cbp_trade_profit_effective_maintenance_efficiency
+			add = { value = scope:cbp_trade_profit_previous_maintenance_correction multiply = -1 }
+		}
+	}
+}
+
+cbp_trade_profit_refresh_native_modifiers = {
+	save_temporary_scope_value_as = { name = cbp_trade_profit_previous_selling_correction value = 0 }
+	save_temporary_scope_value_as = { name = cbp_trade_profit_previous_import_correction value = 0 }
+	save_temporary_scope_value_as = { name = cbp_trade_profit_previous_maintenance_correction value = 0 }
+	if = {
+		limit = { has_variable = cbp_trade_profit_native_selling_correction }
+		save_temporary_scope_value_as = { name = cbp_trade_profit_previous_selling_correction value = var:cbp_trade_profit_native_selling_correction }
+	}
+	if = {
+		limit = { has_variable = cbp_trade_profit_native_import_correction }
+		save_temporary_scope_value_as = { name = cbp_trade_profit_previous_import_correction value = var:cbp_trade_profit_native_import_correction }
+	}
+	if = {
+		limit = { has_variable = cbp_trade_profit_native_maintenance_correction }
+		save_temporary_scope_value_as = { name = cbp_trade_profit_previous_maintenance_correction value = var:cbp_trade_profit_native_maintenance_correction }
+	}
+
+	save_temporary_scope_value_as = { name = cbp_trade_profit_effective_selling_efficiency value = modifier:selling_efficiency }
+	save_temporary_scope_value_as = { name = cbp_trade_profit_effective_import_efficiency value = modifier:import_efficiency }
+	save_temporary_scope_value_as = { name = cbp_trade_profit_effective_maintenance_efficiency value = modifier:merchant_maintenance_efficiency }
+	cbp_trade_profit_reconstruct_native_baselines = yes
+	cbp_trade_profit_compute_native_corrections = yes
+
+	set_variable = { name = cbp_trade_profit_native_selling_correction value = scope:cbp_trade_profit_selling_correction_result }
+	set_variable = { name = cbp_trade_profit_native_import_correction value = scope:cbp_trade_profit_import_correction_result }
+	set_variable = { name = cbp_trade_profit_native_maintenance_correction value = scope:cbp_trade_profit_maintenance_correction_result }
+}

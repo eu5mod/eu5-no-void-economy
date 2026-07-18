@@ -1,0 +1,5 @@
+﻿# Respect the effective Vanilla or compatibility-patch maintenance-cost define.
+cbp_trade_profit_base_merchant_maintenance_cost = {
+	value = define:NCountry|MERCHANT_MAINTENANCE_COST
+	min = 0
+}

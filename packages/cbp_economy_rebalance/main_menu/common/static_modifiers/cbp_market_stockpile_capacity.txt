@@ -1,9 +1,0 @@
-cbp_market_stockpile_capacity = {
-	game_data = {
-		category = location
-	}
-
-	# Applied to the market-center location with a dynamic size equal to the
-	# summed country x market storage-capacity records for that market.
-	maximum_stockpile_capacity = 1
-}

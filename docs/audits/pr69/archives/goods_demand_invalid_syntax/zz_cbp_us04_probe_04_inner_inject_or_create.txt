@@ -1,8 +1,0 @@
-# US-04 injection syntax matrix — candidate 04.
-# Outer INJECT on pop_demand, nested INJECT_OR_CREATE on the existing tools child.
-
-INJECT:pop_demand = {
-	INJECT_OR_CREATE:tools = {
-		multiply = "test_cbp_us04_live_pop_demand_multiplier_tools"
-	}
-}
