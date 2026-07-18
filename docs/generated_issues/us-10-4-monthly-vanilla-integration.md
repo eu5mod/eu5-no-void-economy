@@ -91,14 +91,14 @@ This is an estimated conversion from a known capacity-like volume, not an exact
 vanilla trade quantity. Missing static `transport_cost` fields use the vanilla
 default `1`, and denominators are clamped so the helper cannot divide by zero.
 
-A separate debug probe tests the possible direct trade-scope formula:
+A native trade uses the direct trade-scope value:
 
 ```txt
-good_quantity = trade_volume / traded_goods:transport_cost
+good_quantity = trade_volume
 ```
 
-That direct formula remains `TO_TEST` in TECH-01 until a controlled runtime log
-confirms it. It must not drive stock transfer while unconfirmed.
+Static transport-cost helpers are not part of this path. They are retained for
+explicit capacity-like inputs and focused diagnostics.
 
 ## Acceptance Criteria
 
@@ -199,11 +199,12 @@ Logs remain the source of truth for PR validation comments.
 ## Known Limitations
 
 - Live vanilla Pop/Estate requested quantities remain fallback-only.
-- Exact vanilla trade requested/actual quantities remain fallback-only.
+- Vanilla requested quantity remains separate from the confirmed actual
+  `trade_volume` moved quantity.
 - `traded_in_market:<good>` is used only as a blocked trade signal.
 - The generated transport-cost helper estimates quantity from a known capacity
   volume. It does not prove the exact vanilla trade quantity endpoint.
-- The direct `trade_volume / traded_goods:transport_cost` formula is probe-only
-  until TECH-01 138 is confirmed by runtime logs.
+- Native `trade_volume` is copied directly as the moved-goods quantity; static
+  `transport_cost` conversion is limited to explicit capacity-like inputs.
 - Location-level Pop integration and US-04 read/reset timing remain follow-up
   work.

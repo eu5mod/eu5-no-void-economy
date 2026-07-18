@@ -5,13 +5,9 @@
 # the live monthly order.
 #
 # TECH-01 047 confirms every_trade as a country-scope iterator. TECH-01 056/138
-# are treated as runtime-confirmed for the actual moved-goods quantity formula,
-# but the implementation must not read `traded_goods:transport_cost` directly
-# from generic trade scope.
+# confirm that native trade_volume is already the traded-goods quantity.
 #
-#   goods_quantity = trade_volume / traded_goods:transport_cost
-#
-# PR6.1 implements this through generated literal-good transport-cost helpers.
+#   goods_quantity = trade_volume
 # The trade owner is the trade-scope `owner` scope link, not an implicit copy of
 # the country that happens to run the iterator. The country pulse/controller still
 # schedules the pass, but attribution must come from trade.owner.
@@ -32,11 +28,9 @@
 # introduced. The hook is dormant unless the CMM trade-rework setting enables
 # cbp_trade_rework_enabled_trigger.
 #
-# US-17 owner-modifier rule:
-# - buying_efficiency, selling_efficiency, and merchant_maintenance_cost are read
-#   from the saved trade owner country;
-# - the scheduler country and market-center owner are never used as substitutes;
-# - unresolved route prices/base-maintenance/income surfaces remain fail-closed.
+# US-17 is refreshed once from country scope before the route loop. Its native
+# auto-modifiers make Vanilla AI, UI, and treasury accounting consume the same
+# result. The route-local wrapper therefore handles US-20 without add_gold.
 
 cbp_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = cbp_country_trade_owner_pass_runs
@@ -152,16 +146,13 @@ cbp_capture_country_trade_owner_trade_quantity = {
 			min = 0
 		}
 	}
-
-	# Do not divide by `traded_goods:transport_cost` here. The safe current
-	# implementation is the generated literal-good helper pattern:
-	#
-	#   cbp_compute_goods_quantity_from_trade_capacity_good_<good>
-	#
-	# The generated dispatcher matches the saved traded-good scope to a literal
-	# good and then uses the existing static transport-cost denominator with
-	# the same 0.0001 clamp as the current implementation.
-	cbp_compute_trade_owner_goods_quantity_from_traded_good = yes
+	save_temporary_scope_value_as = { name = cbp_trade_owner_quantity_matched value = 0 }
+	save_temporary_scope_value_as = { name = cbp_trade_owner_goods_quantity value = 0 }
+	if = {
+		limit = { exists = scope:cbp_trade_owner_good }
+		save_temporary_scope_value_as = { name = cbp_trade_owner_goods_quantity value = scope:cbp_trade_owner_trade_volume }
+		save_temporary_scope_value_as = { name = cbp_trade_owner_quantity_matched value = 1 }
+	}
 
 	if = {
 		limit = {
@@ -183,6 +174,7 @@ cbp_capture_country_trade_owner_trade_quantity = {
 cbp_run_monthly_country_trade_owner_cycle = {
 	save_temporary_scope_as = cbp_trade_owner_controller_country
 	cbp_note_country_trade_owner_pass_run = yes
+	cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
 	if = {
 		limit = { cbp_trade_rework_enabled_trigger = yes }
 		cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
@@ -203,12 +195,8 @@ cbp_run_monthly_country_trade_owner_cycle = {
 			scope:cbp_trade_owner_country = {
 				if = {
 					limit = { cbp_trade_rework_enabled_trigger = yes }
-					# Country modifier inputs are live and confirmed here. Route prices,
-					# export cost, base maintenance and visible income/profit remain
-					# explicit fail-closed inputs until their route surfaces are proven.
-					cbp_capture_trade_owner_country_modifier_inputs = yes
 					save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 0 }
-					cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
+					cbp_run_us20_route_loss_reconciliation = yes
 				}
 			}
 		}

@@ -16,6 +16,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
 ASSIGNMENT = re.compile(
     r"^(?P<indent>[ \t]*)(?P<field>[A-Za-z0-9_.:-]+)[ \t]*=[ \t]*"
     r"(?P<value>[^#{\s][^#\r\n]*?)[ \t]*(?P<comment>#.*)?$"
@@ -73,12 +75,16 @@ def styled(text: str, code: str, enabled: bool) -> str:
 def display_path(path: Path) -> str:
     resolved = path.resolve()
     try:
-        return f"./{resolved.relative_to(Path.cwd().resolve()).as_posix()}"
+        return f"./{resolved.relative_to(REPOSITORY_ROOT).as_posix()}"
     except ValueError:
         try:
-            return f"~/{resolved.relative_to(Path.home().resolve()).as_posix()}"
+            temporary_root = Path(os.environ.get("TMPDIR", "/tmp")).resolve()
+            return f"$TMPDIR/{resolved.relative_to(temporary_root).as_posix()}"
         except ValueError:
-            return str(resolved)
+            try:
+                return f"~/{resolved.relative_to(Path.home().resolve()).as_posix()}"
+            except ValueError:
+                return str(resolved)
 
 
 def load_business_rules(spec_paths: list[Path]) -> list[str]:
@@ -118,7 +124,7 @@ def print_generation_summary(
     cue = styled(cue_text, "1;32", enabled)
     label = lambda value: styled(f"{value:<20}", "1;36", enabled)
     print()
-    print(styled("#" * 72, "1;35", enabled))
+    print(styled("━" * 72, "1;35", enabled))
     print(f"{cue} {title}")
     rule_label = styled("Business rule", "4;36", enabled)
     if len(business_rules) == 1:
@@ -867,6 +873,7 @@ def generate(
     for intent in intents:
         by_file.setdefault(intent.target.file, []).append(intent)
     manifest_files: list[dict[str, Any]] = []
+    pending_outputs: list[tuple[Path, PurePosixPath, bytes]] = []
     aliases: dict[str, tuple[str, str]] = {}
     for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
         output_contracts = {
@@ -939,11 +946,7 @@ def generate(
         if has_bom and render_mode in {"full", "normalized"}:
             generated = b"\xef\xbb\xbf" + generated
         destination = output_root / Path(output_relative)
-        assert_owned_output(
-            destination, output_relative, owned, generated, adopt_identical=adopt_identical
-        )
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(generated)
+        pending_outputs.append((destination, output_relative, generated))
         manifest_files.append({
             "path": output_relative.as_posix(),
             "vanilla_sha256": sha256(source_bytes),
@@ -956,9 +959,7 @@ def generate(
         )
         alias_bytes = render_aliases(aliases)
         alias_destination = output_root / Path(alias_relative)
-        assert_owned_output(alias_destination, alias_relative, owned)
-        alias_destination.parent.mkdir(parents=True, exist_ok=True)
-        alias_destination.write_bytes(alias_bytes)
+        pending_outputs.append((alias_destination, alias_relative, alias_bytes))
         manifest_files.append({
             "path": alias_relative.as_posix(),
             "vanilla_sha256": None,
@@ -966,11 +967,22 @@ def generate(
             "transformations": [{"generated_alias_count": len(aliases)}],
         })
     current = {PurePosixPath(entry["path"]) for entry in manifest_files}
+    for destination, relative, generated in pending_outputs:
+        assert_owned_output(
+            destination, relative, owned, generated, adopt_identical=adopt_identical
+        )
     for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
         stale_path = output_root / Path(stale)
         if not stale_path.is_file():
             continue
         assert_owned_output(stale_path, stale, owned)
+    for destination, _relative, generated in pending_outputs:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(generated)
+    for stale in sorted(set(owned) - current, key=lambda item: item.as_posix()):
+        stale_path = output_root / Path(stale)
+        if not stale_path.is_file():
+            continue
         stale_path.unlink()
     return {"schema_version": 1, "generator": "community_balance_generator", "files": manifest_files}
 
@@ -1012,7 +1024,13 @@ def main() -> int:
             adopt_marker=args.adopt_output_marker.encode("utf-8") if args.adopt_output_marker else None,
         )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
-        raise SystemExit(f"Community Balance Generator failed: {exc}") from exc
+        enabled = color_enabled(sys.stderr)
+        cue = styled("[FAILED]", "1;31", enabled)
+        message = styled("Community Balance Generator", "1;31", enabled)
+        print(f"\n{styled('━' * 72, '1;31', enabled)}", file=sys.stderr)
+        print(f"{cue} {message}", file=sys.stderr)
+        print(f"  {exc}", file=sys.stderr)
+        return 1
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print_generation_summary(manifest, len(intents), manifest_path, business_rules)

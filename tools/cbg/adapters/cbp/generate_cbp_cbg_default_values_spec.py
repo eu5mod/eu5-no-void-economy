@@ -18,6 +18,7 @@ from tools.generate_political_reward_overrides import (
     PROFIT_MARGIN_FIELDS,
     centralizable_script_values,
 )
+from tools.cbg.community_balance_generator import display_path
 
 
 TARGET = "main_menu/common/script_values/default_values.txt"
@@ -70,7 +71,7 @@ def main() -> int:
         json.dumps(build_spec(game_root), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    print(f"Generated {args.output} with default_values.txt-only CBG policy.")
+    print(f"Generated {display_path(args.output)} with default_values.txt-only CBG policy.")
     return 0
 
 

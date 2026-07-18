@@ -13,7 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, scan_objects
+from tools.cbg.community_balance_generator import ASSIGNMENT, display_path, field_matches, scan_objects
 
 
 ALIASES = {
@@ -105,7 +105,7 @@ def main() -> int:
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(build_spec(args.game_root, args.burgher_percent, args.laborer_percent), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Generated {args.output} with US-09 Pop-promotion CBG policy.")
+    print(f"Generated {display_path(args.output)} with US-09 Pop-promotion CBG policy.")
     return 0
 
 

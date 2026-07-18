@@ -10,9 +10,11 @@ from tools.cbg.community_balance_generator import (
     Target,
     apply_intent,
     content_category,
+    display_path,
     generate,
     load_intents,
     print_generation_summary,
+    sha256,
 )
 VANILLA = """marketplace = {
 \tmaintenance = 1.0
@@ -48,11 +50,19 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertIn("Rule candidates", text)
         self.assertIn("Business rule: Halve stability rewards", text)
         self.assertIn("./build/cbg_manifest.json", text)
-        self.assertIn("#" * 72, text)
+        self.assertIn("━" * 72, text)
         self.assertRegex(text, r"Events\s+1 file\s+2 mutations")
         self.assertRegex(text, r"Buildings\s+1 file\s+3 mutations")
         self.assertRegex(text, r"Laws\s+1 file\s+1 mutation")
         self.assertNotIn("\033[", text)
+
+    def test_display_path_uses_repository_relative_path(self):
+        manifest = Path(__file__).resolve().parents[3] / "build/cbg_manifest.json"
+        self.assertEqual("./build/cbg_manifest.json", display_path(manifest))
+
+    def test_display_path_uses_compact_temporary_path(self):
+        temporary = Path(tempfile.gettempdir()) / "cbg-test/manifest.json"
+        self.assertTrue(display_path(temporary).startswith("$TMPDIR/"))
 
     def test_console_content_categories_cover_requested_policy_surfaces(self):
         self.assertEqual("Events", content_category("in_game/events/test.txt"))
@@ -341,6 +351,42 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "not owned"):
             generate(self.game, self.output, intents, adopt_identical=True)
+
+    def test_failed_ownership_preflight_writes_no_partial_outputs(self):
+        second_source = self.game / "in_game/common/building_types/warehouse.txt"
+        second_source.write_text(VANILLA)
+        spec = self.spec("a.json", "mod-a", [
+            self.target("multiply", 0.5),
+            {
+                **self.target("multiply", 0.5),
+                "file": "in_game/common/building_types/warehouse.txt",
+            },
+        ])
+        intents, _ = load_intents([spec], self.game)
+        first_output = self.output / "in_game/common/building_types/market.txt"
+        second_output = self.output / "in_game/common/building_types/warehouse.txt"
+        first_output.parent.mkdir(parents=True)
+        first_output.write_text("owned old output\n")
+        second_output.write_text("local edit\n")
+        manifest_path = self.output / "manifest.json"
+        manifest_path.write_text(json.dumps({
+            "generator": "community_balance_generator",
+            "files": [
+                {
+                    "path": "in_game/common/building_types/market.txt",
+                    "generated_sha256": sha256(first_output.read_bytes()),
+                },
+                {
+                    "path": "in_game/common/building_types/warehouse.txt",
+                    "generated_sha256": "not-the-local-edit",
+                },
+            ],
+        }))
+
+        with self.assertRaisesRegex(ValueError, "locally modified"):
+            generate(self.game, self.output, intents, manifest_path)
+
+        self.assertEqual("owned old output\n", first_output.read_text())
 
     def test_signed_legacy_tree_can_be_adopted_without_manifest(self):
         spec = self.spec("a.json", "mod-a", [self.target("multiply", 0.5)])

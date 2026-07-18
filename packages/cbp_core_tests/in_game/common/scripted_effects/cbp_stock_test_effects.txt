@@ -1504,6 +1504,21 @@ cbp_debug_run_reconciliation_cadence_tests = {
 	}
 }
 
+# CORE-02 cleanup must include stale country-market records retained by an
+# existing campaign, not only owners of locations currently in the market.
+# Reuse the generated scan/store adapters so the test never writes stock maps.
+cbp_debug_rebuild_test_market_wheat_from_all_countries = {
+	save_temporary_scope_as = cbp_consistency_controller
+	$market$ = { save_temporary_scope_as = cbp_market }
+	cbp_clear_countries_present_in_market_work_cache = yes
+	every_country = {
+		save_temporary_scope_as = cbp_market_country_cache_country
+		cbp_add_country_to_current_market_country_cache = yes
+	}
+	cbp_scan_stock_sources_from_prepared_market_country_cache_good_wheat = yes
+	cbp_rebuild_market_stock_from_current_scan_good_wheat = yes
+}
+
 cbp_debug_run_core02_initialization_tests = {
 	save_temporary_scope_as = test_cbp_controller
 
@@ -1514,6 +1529,12 @@ cbp_debug_run_core02_initialization_tests = {
 		}
 		c:FRA.capital.market = { save_temporary_scope_as = test_cbp_market }
 
+		# A focused probe may have deliberately exercised a partial mutation before
+		# this suite. Restore the derived aggregate before the cleanup removals so
+		# CORE-02 remains independent of test execution order.
+		cbp_debug_rebuild_test_market_wheat_from_all_countries = {
+			market = scope:test_cbp_market
+		}
 		every_country = {
 			cbp_remove_stock = {
 				country = this
@@ -1524,9 +1545,8 @@ cbp_debug_run_core02_initialization_tests = {
 				only_remove_at_country_level = yes
 			}
 		}
-		cbp_rebuild_market_stock_from_country_stocks = {
+		cbp_debug_rebuild_test_market_wheat_from_all_countries = {
 			market = scope:test_cbp_market
-			good = wheat
 		}
 		every_country = {
 			cbp_debug_replace_country_wheat_capacity = {
@@ -1586,6 +1606,9 @@ cbp_debug_run_core02_initialization_tests = {
 			error_log = "ModeU5 deterministic CORE-02 proportional initialization allocation test failed."
 		}
 
+		cbp_debug_rebuild_test_market_wheat_from_all_countries = {
+			market = scope:test_cbp_market
+		}
 		every_country = {
 			cbp_remove_stock = {
 				country = this
@@ -1596,9 +1619,8 @@ cbp_debug_run_core02_initialization_tests = {
 				only_remove_at_country_level = yes
 			}
 		}
-		cbp_rebuild_market_stock_from_country_stocks = {
+		cbp_debug_rebuild_test_market_wheat_from_all_countries = {
 			market = scope:test_cbp_market
-			good = wheat
 		}
 		every_country = {
 			cbp_debug_replace_country_wheat_capacity = {

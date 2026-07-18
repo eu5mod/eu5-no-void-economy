@@ -33,10 +33,6 @@ cbp__register_cmf_mod = {
 		mod_id = no_void_economy
 		setting_id = cbp_general_gameplay_gameplay_trade_rework_settings
 	}
-	cmm_set_requires_unrestricted_tools_enabled = {
-		mod_id = no_void_economy
-		setting_id = cbp_general_gameplay_gameplay_trade_rework_settings
-	}
 
 	cmm_register_global_bool_setting = {
 		mod_id = no_void_economy

@@ -49,7 +49,9 @@ python3 tools/cbg/community_balance_generator.py \
 	--manifest "$work_dir/candidate/manifest.json" >/dev/null
 
 python3 - "$work_dir" <<'PY'
+from decimal import Decimal
 from pathlib import Path
+import re
 import sys
 
 root = Path(sys.argv[1])
@@ -59,8 +61,38 @@ expected = sorted(path.name for path in reference.glob("*.txt"))
 actual = sorted(path.name for path in candidate.glob("*.txt"))
 if actual != expected:
     raise SystemExit(f"Building CBG scope mismatch: expected={expected!r}, actual={actual!r}")
+foreign_header = re.compile(
+    rb"^# Foreign-building merchant capacity multiplier: 2\.0\r?\n", re.MULTILINE
+)
+foreign_value = re.compile(
+    rb"^(\s*merchant_capacity_from_building\s*=\s*)([-0-9.]+) "
+    rb"# FOREIGN BUILDING x2\.0; (.*)$",
+    re.MULTILINE,
+)
+
+
+def format_decimal(value: Decimal) -> bytes:
+    rendered = format(value.normalize(), "f")
+    if "." not in rendered:
+        rendered += ".0"
+    return rendered.encode()
+
+
+def normalize_pr193_extension(content: bytes) -> bytes:
+    content, header_count = foreign_header.subn(b"", content)
+    if header_count != 1:
+        raise SystemExit(f"Expected one PR #193 header, found {header_count}")
+
+    def restore_global_value(match: re.Match[bytes]) -> bytes:
+        value = Decimal(match.group(2).decode()) / Decimal("2")
+        return match.group(1) + format_decimal(value) + b" # " + match.group(3)
+
+    return foreign_value.sub(restore_global_value, content)
+
+
 for name in expected:
-    if (reference / name).read_bytes() != (candidate / name).read_bytes():
+    normalized = normalize_pr193_extension((candidate / name).read_bytes())
+    if (reference / name).read_bytes() != normalized:
         raise SystemExit(f"Building CBG byte parity failed: {name}")
 print(f"CBP/CBG building parity passed: {len(expected)} byte-identical output files.")
 PY

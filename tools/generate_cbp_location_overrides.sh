@@ -133,4 +133,4 @@ for name, (field, replacement) in targets.items():
 output_path.write_text("\n".join(rendered).rstrip() + "\n", encoding="utf-8")
 PY
 
-printf 'Generated %s from %s\n' "$output_file" "$source_file"
+printf 'Generated %s from %s\n' "$(cbp_display_path "$output_file")" "$(cbp_display_path "$source_file")"

@@ -136,7 +136,7 @@ Expected dump shape:
 
 ```txt
 ModeU5 TEST ENTERED scenario=us10_trade_capacity_conversion
-ModeU5 TRADE CAPACITY CONVERSION good=wheat capacity_volume=20 transport_cost=... computed_goods_quantity=...
+ModeU5 TRADE CAPACITY CONVERSION good=glass capacity_volume=20 transport_cost=0.5 computed_goods_quantity=40
 ModeU5 TRADE CAPACITY CONVERSION good=copper capacity_volume=20 transport_cost=... computed_goods_quantity=...
 ModeU5 TEST PASS scenario=us10_trade_capacity_conversion
 ```
@@ -165,10 +165,10 @@ Choose:
 Probe direct trade quantity formula
 ```
 
-This probe tests the proposed direct formula from trade scope:
+This probe tests the native quantity contract from trade scope:
 
 ```txt
-good_quantity = trade_volume / traded_goods:transport_cost
+good_quantity = trade_volume
 ```
 
 Expected dump shape if at least one vanilla trade is available:

@@ -1,4 +1,8 @@
-# ModeU5 US-17 / US-20 route-local trade reconciliation.
+# Historical deterministic US-17 / US-20 route-reconciliation scaffold.
+#
+# Production US-17 now uses native country auto-modifiers and never calls this
+# file's add_gold path. These effects remain for the combined deterministic
+# fixture and US-20 diagnostics until that fixture is split completely.
 #
 # Runtime placement:
 #   cbp_run_monthly_country_trade_owner_cycle
@@ -8,7 +12,7 @@
 #        -> cbp_run_us17_us20_route_reconciliation
 #
 # Scope and merge boundary:
-# - money-side reconciliation uses the confirmed country-scope add_gold surface;
+# - fixture-only money reconciliation uses country-scope add_gold;
 # - trade_profit / country_income display-accounting remains TECH-01 expected-blocked;
 # - US-20 loss is always removed at destination;
 # - market-level destination loss uses the central stock helper to apply a negative vanilla market-supply delta;
@@ -233,7 +237,8 @@ cbp_compute_us17_us20_route_formula_from_current_values = {
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = { value = scope:gui_cbp_trade_efficiency_route_quantity min = 0 } }
 	save_temporary_scope_value_as = {
 		name = gui_cbp_buying_selling_efficiency_clamped
-		value = { value = scope:gui_cbp_trade_efficiency_buying_efficiency add = scope:gui_cbp_trade_efficiency_selling_efficiency divide = 2 min = 0 max = 1 }
+		# The variable name is historical; the business rule is a maximum-capped sum.
+		value = { value = scope:gui_cbp_trade_efficiency_buying_efficiency add = scope:gui_cbp_trade_efficiency_selling_efficiency max = 1 }
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_sell_side_bonus

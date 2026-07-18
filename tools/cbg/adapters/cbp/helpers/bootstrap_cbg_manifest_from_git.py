@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bootstrap a missing CBG ownership manifest from clean, Git-tracked outputs."""
+"""Bootstrap or reconcile CBG ownership with clean Git-tracked outputs."""
 
 from __future__ import annotations
 
@@ -8,6 +8,14 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
+
+
+def display_path(path: Path, repo_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return f"./{resolved.relative_to(repo_root).as_posix()}"
+    except ValueError:
+        return str(path)
 
 
 def git_bytes(repo_root: Path, relative: Path) -> bytes:
@@ -32,12 +40,11 @@ def main() -> int:
     parser.add_argument("--spec", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--adopt-marked-output-tree", type=Path)
+    parser.add_argument("--adopt-output-marker")
     args = parser.parse_args()
 
     manifest = args.manifest.resolve()
-    if manifest.is_file():
-        return 0
-
     repo_result = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
         check=True,
@@ -52,6 +59,13 @@ def main() -> int:
         for item in spec.get("transformations", [])
     })
 
+    existing_files = {}
+    if manifest.is_file():
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        if payload.get("generator") != "community_balance_generator":
+            raise ValueError(f"refusing foreign manifest ownership: {manifest}")
+        existing_files = {entry["path"]: entry for entry in payload.get("files", [])}
+
     files = []
     for output in outputs:
         relative_output = Path(output)
@@ -60,17 +74,40 @@ def main() -> int:
             continue
         repo_relative = destination.relative_to(repo_root)
         current = destination.read_bytes()
-        tracked = git_bytes(repo_root, repo_relative)
-        if current != tracked:
+        try:
+            tracked = git_bytes(repo_root, repo_relative)
+        except ValueError:
+            tracked = None
+        existing = existing_files.get(relative_output.as_posix())
+        if tracked is not None and current == tracked:
+            files.append({
+                "path": relative_output.as_posix(),
+                "vanilla_sha256": None,
+                "generated_sha256": sha256(current),
+                "transformations": [{"bootstrap": "clean_git_tracked_output"}],
+            })
+            continue
+        if existing and existing.get("generated_sha256") == sha256(current):
+            files.append(existing)
+            continue
+        if args.adopt_marked_output_tree and args.adopt_output_marker:
+            adoption_tree = (output_root / args.adopt_marked_output_tree).resolve()
+            first_line = current.splitlines()[0].decode("utf-8", errors="replace") if current.splitlines() else ""
+            if destination.resolve().is_relative_to(adoption_tree) and first_line == args.adopt_output_marker:
+                files.append({
+                    "path": relative_output.as_posix(),
+                    "vanilla_sha256": None,
+                    "generated_sha256": sha256(current),
+                    "transformations": [{"bootstrap": "signed_legacy_output"}],
+                })
+                continue
+        if tracked is None:
             raise ValueError(
-                f"refusing to bootstrap ownership from a locally modified output: {repo_relative}"
+                f"refusing untracked output not owned by the existing manifest: {repo_relative}"
             )
-        files.append({
-            "path": relative_output.as_posix(),
-            "vanilla_sha256": None,
-            "generated_sha256": sha256(current),
-            "transformations": [{"bootstrap": "clean_git_tracked_output"}],
-        })
+        raise ValueError(
+            f"refusing to reconcile ownership from a locally modified output: {repo_relative}"
+        )
 
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text(json.dumps({
@@ -78,7 +115,7 @@ def main() -> int:
         "generator": "community_balance_generator",
         "files": files,
     }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"Bootstrapped {manifest} from {len(files)} clean Git-tracked output(s).")
+    print(f"Reconciled {display_path(manifest, repo_root)} with {len(files)} owned output(s).")
     return 0
 
 

@@ -19,12 +19,13 @@ def require_assignment(path: Path, key: str, expected: str, failures: list[str])
 
 
 def main() -> int:
-    defines = PACKAGE / "loading_screen/common/defines/cbp_mandatory_expenses_defines.txt"
+    defines = PACKAGE / "loading_screen/common/defines/cbp_slider_defines.txt"
     modifiers = PACKAGE / "main_menu/common/static_modifiers/cbp_mandatory_expenses.txt"
+    auto_modifiers = PACKAGE / "in_game/common/auto_modifiers/cbp_mandatory_stability_expense_auto_modifiers.txt"
     effects = PACKAGE / "in_game/common/scripted_effects/cbp_mandatory_expense_effects.txt"
     on_actions = PACKAGE / "in_game/common/on_action/cbp_economy_package_on_actions.txt"
     localization = PACKAGE / "main_menu/localization/english/cbp_mandatory_expenses_l_english.yml"
-    paths = (defines, modifiers, effects, on_actions, localization)
+    paths = (defines, modifiers, auto_modifiers, effects, on_actions, localization)
     failures = [f"Missing mandatory-expense file: {path.relative_to(ROOT)}" for path in paths if not path.is_file()]
 
     if failures:
@@ -35,6 +36,52 @@ def main() -> int:
 
     require_assignment(defines, "STABILITY_INVEST_FACTOR", "1", failures)
     require_assignment(defines, "GOV_POWER_INVEST_FACTOR", "3.0", failures)
+    for key, expected in (
+        ("ECONOMICAL_BASE_FROM_TAX_BASE", "1"),
+        ("ECONOMICAL_BASE_FROM_POP", "0"),
+        ("ECONOMICAL_BASE_FROM_TRADE_VALUE", "0"),
+        ("ECONOMICAL_BASE_FROM_TRADE_PROFIT", "1"),
+        ("ECONOMICAL_BASE_INTEREST", "0"),
+        ("ECONOMICAL_BASE_FROM_FOREIGN_BUILDINGS", "0"),
+        ("ECONOMICAL_BASE_FROM_SUBJECT", "0.05"),
+        ("ECONOMICAL_BASE_SCALE_FROM_EACH_INSTITUTION", "0"),
+        ("ECONOMICAL_BASE_ALL_HAS_TRADE", "yes"),
+        ("COURT_SPENDING_FRACTON", "0.20"),
+        ("DIPLOMATIC_SPENDING_FRACTION", "0.05"),
+        ("STABILIY_EXPENSE_FACTOR", "0.20"),
+        ("PRESTIGE_INVEST_FACTOR", "0.05"),
+        ("AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED", "0.60"),
+    ):
+        require_assignment(defines, key, expected, failures)
+
+    migrated_keys = (
+        "ECONOMICAL_BASE_FROM_TAX_BASE",
+        "ECONOMICAL_BASE_FROM_POP",
+        "ECONOMICAL_BASE_FROM_TRADE_VALUE",
+        "ECONOMICAL_BASE_FROM_TRADE_PROFIT",
+        "ECONOMICAL_BASE_INTEREST",
+        "ECONOMICAL_BASE_FROM_FOREIGN_BUILDINGS",
+        "ECONOMICAL_BASE_FROM_SUBJECT",
+        "ECONOMICAL_BASE_SCALE_FROM_EACH_INSTITUTION",
+        "ECONOMICAL_BASE_ALL_HAS_TRADE",
+        "COURT_SPENDING_FRACTON",
+        "DIPLOMATIC_SPENDING_FRACTION",
+        "STABILITY_INVEST_FACTOR",
+        "STABILIY_EXPENSE_FACTOR",
+        "PRESTIGE_INVEST_FACTOR",
+        "GOV_POWER_INVEST_FACTOR",
+        "AI_ANNEX_SUBJECT_BORDERING_CONTROL_NEEDED",
+    )
+    defines_directory = defines.parent
+    for other_defines in sorted(defines_directory.glob("*.txt")):
+        if other_defines == defines:
+            continue
+        other_text = other_defines.read_text(encoding="utf-8-sig")
+        for key in migrated_keys:
+            if re.search(rf"^\s*{key}\s*=", other_text, re.MULTILINE):
+                failures.append(
+                    f"{other_defines.relative_to(ROOT)} must not duplicate migrated {key}"
+                )
     require_assignment(modifiers, "stability_investment", "-0.5", failures)
     for government_power in (
         "monthly_legitimacy",
@@ -48,6 +95,20 @@ def main() -> int:
     modifier_text = modifiers.read_text(encoding="utf-8-sig")
     if "stability_decay" in modifier_text:
         failures.append("Mandatory Stability expense must not use percentage-based stability_decay")
+
+    auto_modifier_text = auto_modifiers.read_text(encoding="utf-8-sig")
+    required_offset_fragments = (
+        "cbp_positive_stability_expense_offset = {",
+        "stability > 0",
+        "value = stability",
+        "multiply = 0.01",
+        "stability_investment = 1",
+    )
+    for fragment in required_offset_fragments:
+        if fragment not in auto_modifier_text:
+            failures.append(f"Positive-Stability expense offset must contain: {fragment}")
+    if "stability_decay" in auto_modifier_text:
+        failures.append("Positive-Stability expense offset must not override Vanilla stability_decay")
 
     effects_text = effects.read_text(encoding="utf-8-sig")
     for modifier in (
@@ -72,6 +133,8 @@ def main() -> int:
         failures.append("Mandatory Stability expense modifier name is not localized")
     if "STATIC_MODIFIER_NAME_cbp_mandatory_government_power_expense" not in localization_text:
         failures.append("Mandatory government-power expense modifier name is not localized")
+    if "AUTO_MODIFIER_NAME_cbp_positive_stability_expense_offset" not in localization_text:
+        failures.append("Positive-Stability expense offset auto-modifier name is not localized")
     if "50%" not in localization_text:
         failures.append("Modifier description must explain the 50% vanilla-neutral slider position")
     if "66.7%" not in localization_text:
