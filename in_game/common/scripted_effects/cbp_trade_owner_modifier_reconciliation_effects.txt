@@ -16,7 +16,7 @@
 # NVE may override that define. Reading it here automatically uses the loaded
 # mod value and avoids duplicating it in scripted effects.
 #
-# The buying/selling average has only an upper bound of 1. Negative values are
+# The buying/selling sum has only an upper bound of 1. Negative values are
 # preserved and therefore create a negative maintenance saving (an added cost).
 
 cbp_capture_trade_owner_country_modifier_inputs = {
@@ -62,9 +62,9 @@ cbp_capture_trade_owner_country_modifier_inputs = {
 #   base_maintenance_amount * current_maintenance_factor
 #
 # maintenance_saving =
-#   adjusted_base_maintenance * capped_average_buying_selling_efficiency
+#   adjusted_base_maintenance * capped_combined_buying_selling_efficiency
 #
-# A negative buying/selling average is intentionally retained, producing a
+# A negative buying/selling sum is intentionally retained, producing a
 # negative saving and therefore an added route cost.
 cbp_compute_trade_maintenance_efficiency_delta_from_owner_modifiers = {
 	save_temporary_scope_value_as = {
@@ -109,7 +109,6 @@ cbp_compute_us17_us20_route_formula_from_owner_modifiers = {
 		value = {
 			value = scope:gui_cbp_trade_efficiency_buying_efficiency
 			add = scope:gui_cbp_trade_efficiency_selling_efficiency
-			divide = 2
 			max = 1
 		}
 	}

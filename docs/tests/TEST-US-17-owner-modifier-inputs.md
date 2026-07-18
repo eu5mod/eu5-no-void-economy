@@ -17,10 +17,10 @@ are not valid modifier types in the tested EU5 build. The first is represented b
 `import_efficiency`; the second concept is split between a base define and the
 beneficial `merchant_maintenance_efficiency` country modifier.
 
-The buying/selling average is capped only above `1`:
+The buying/selling sum is capped only above `1`:
 
 ```txt
-average_efficiency = min((import_efficiency + selling_efficiency) / 2, 1)
+combined_efficiency = min(import_efficiency + selling_efficiency, 1)
 ```
 
 There is deliberately no lower clamp. Negative efficiency remains negative and
@@ -42,7 +42,7 @@ adjusted_base_maintenance =
     base_maintenance_amount * merchant_maintenance_factor
 
 maintenance_saving =
-    adjusted_base_maintenance * average_efficiency
+    adjusted_base_maintenance * combined_efficiency
 
 route_money_delta =
     -old_price_side_bonus
@@ -92,7 +92,7 @@ PASS — owner modifiers and maximum-only cap
 Expected log marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST combination=sum_without_division clamp=maximum_only
 ```
 
 The probe validates:
@@ -103,15 +103,15 @@ The probe validates:
 3. Captured maintenance efficiency equals FRA.modifier:merchant_maintenance_efficiency.
 4. The base unit cost equals define:NCountry|MERCHANT_MAINTENANCE_COST.
 5. Base maintenance equals trade_volume × the loaded define.
-6. (-0.4 + -0.2) / 2 remains -0.3.
-7. (1.4 + 1.2) / 2 is capped from 1.3 to 1.
+6. -0.4 + -0.2 remains -0.6.
+7. 1.4 + 1.2 is capped from 2.6 to 1.
 8. With seeded base maintenance 20 and maintenance efficiency 0.20:
      maintenance factor = 0.80
      adjusted base maintenance = 16
-     average efficiency = 0.15
-     maintenance saving = 2.40
+     combined efficiency = 0.30
+     maintenance saving = 4.80
 9. With old price-side bonus 35:
-     route money delta = -32.60
+     route money delta = -30.20
 ```
 
 ## Post-run grep

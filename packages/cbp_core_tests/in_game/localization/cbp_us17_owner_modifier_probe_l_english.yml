@@ -1,6 +1,6 @@
 ﻿l_english:
  cbp_us17_owner_modifiers.1.title: "ModeU5 US-17 Owner Modifier Probe"
- cbp_us17_owner_modifiers.1.desc: "Validate that buying efficiency, selling efficiency, and trade maintenance cost are read from the trade-owner country, and that the buying/selling average is capped only above 1."
+ cbp_us17_owner_modifiers.1.desc: "Validate that buying efficiency, selling efficiency, and trade maintenance cost are read from the trade-owner country, and that the buying/selling sum is capped only above 1."
  cbp_us17_owner_modifiers.1.a: "Run owner modifier probe"
  cbp_us17_owner_modifiers.2.title: "ModeU5 US-17 Owner Modifier Result"
  cbp_us17_owner_modifiers.2.desc: "Review the deterministic result below and inspect debug.log for the detailed audit markers."

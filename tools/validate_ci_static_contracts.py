@@ -218,16 +218,18 @@ def validate_us17_owner_modifier_contract(
     expect("scope:cbp_trade_owner_trade_volume" in capture, "US17 base maintenance must use route trade volume")
     expect("cbp_trade_efficiency_country_modifier_inputs_available" in capture, "US17 owner capture must expose an availability marker")
 
-    average_assignment = re.search(
+    combined_assignment = re.search(
         r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
         formula,
         re.DOTALL,
     )
-    average_body = average_assignment.group("body") if average_assignment else ""
-    expect(bool(average_assignment), "US17 owner formula must calculate the buying/selling average")
-    expect("divide = 2" in average_body, "US17 buying/selling efficiency must be an average, not a sum")
-    expect("max = 1" in average_body, "US17 buying/selling average must have an upper cap of 1")
-    expect("min = 0" not in average_body, "US17 buying/selling average must not have a lower clamp of 0")
+    combined_body = combined_assignment.group("body") if combined_assignment else ""
+    expect(bool(combined_assignment), "US17 owner formula must calculate the buying/selling combined efficiency")
+    expect("gui_cbp_trade_efficiency_buying_efficiency" in combined_body, "US17 combined efficiency must include import efficiency")
+    expect("gui_cbp_trade_efficiency_selling_efficiency" in combined_body, "US17 combined efficiency must include selling efficiency")
+    expect("divide = 2" not in combined_body, "US17 combined efficiency is a sum and must not be divided by two")
+    expect("max = 1" in combined_body, "US17 combined efficiency must have an upper cap of 1")
+    expect("min = 0" not in combined_body, "US17 combined efficiency must not have a lower clamp of 0")
 
     expect("gui_cbp_trade_efficiency_merchant_maintenance_efficiency" in maintenance_formula, "US17 maintenance helper must consume merchant maintenance efficiency")
     expect("multiply = -1" in maintenance_formula, "US17 maintenance factor must subtract merchant maintenance efficiency")
@@ -246,12 +248,13 @@ def validate_us17_owner_modifier_contract(
         "merchant_maintenance_efficiency_source",
         "base_maintenance_define_source",
         "base_maintenance_amount",
-        "negative_average_preserved",
-        "positive_average_capped",
+        "negative_sum_preserved",
+        "positive_sum_capped",
         "merchant_maintenance_factor",
         "maintenance_saving",
         "route_money_delta",
         "base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST",
+        "combination=sum_without_division",
         "clamp=maximum_only",
     ]:
         expect(assertion in owner_modifier_probe_effects, f"US17 owner-modifier probe must assert {assertion}")
@@ -270,6 +273,13 @@ def validate_us17_us20_static_contract(
 ) -> None:
     country_cycle = block(country_trade_owner_effects, "cbp_run_monthly_country_trade_owner_cycle")
     route_effect = block(trade_reconciliation_effects, "cbp_run_us17_us20_route_reconciliation")
+    historical_formula = block(trade_reconciliation_effects, "cbp_compute_us17_us20_route_formula_from_current_values")
+    historical_combined_assignment = re.search(
+        r"name\s*=\s*gui_cbp_buying_selling_efficiency_clamped(?P<body>.*?)(?:\n\s*\}|\n\s*save_temporary_scope_value_as)",
+        historical_formula,
+        re.DOTALL,
+    )
+    historical_combined_body = historical_combined_assignment.group("body") if historical_combined_assignment else ""
     live_hook_call = "cbp_run_us17_us20_route_reconciliation_from_owner_modifiers = yes"
     legacy_hook_call = "cbp_run_us17_us20_route_reconciliation = yes"
     e2e_probe_call = "cbp_debug_run_us20_case12_market_loss_probe = yes"
@@ -280,6 +290,9 @@ def validate_us17_us20_static_contract(
     expect("every_trade = {" in country_cycle, "Country trade-owner cycle must use the native every_trade loop")
     expect("cbp_trade_rework_enabled_trigger = yes" in route_effect, "Historical US-17/US-20 route effect must remain defensively gated for deterministic tests")
     expect("cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes" in route_effect, "Historical US-17/US-20 route effect must prepare metrics inside the gated body")
+    expect(bool(historical_combined_assignment), "Historical US17 formula must calculate combined efficiency")
+    expect("divide = 2" not in historical_combined_body, "Historical US17 formula must follow the sum-without-division business rule")
+    expect("min = 0" not in historical_combined_body, "Historical US17 combined efficiency must preserve negative values")
     expect(live_hook_call not in q8_7_global_owner_effects, "US-17/US-20 live hook must not be placed in the Q8.7 market-local body")
     expect(live_hook_call not in stock_on_actions, "US-17/US-20 live hook must not be placed directly in monthly on_actions")
     expect(

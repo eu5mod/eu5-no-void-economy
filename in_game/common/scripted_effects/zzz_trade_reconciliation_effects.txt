@@ -233,7 +233,8 @@ cbp_compute_us17_us20_route_formula_from_current_values = {
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_quantity value = { value = scope:gui_cbp_trade_efficiency_route_quantity min = 0 } }
 	save_temporary_scope_value_as = {
 		name = gui_cbp_buying_selling_efficiency_clamped
-		value = { value = scope:gui_cbp_trade_efficiency_buying_efficiency add = scope:gui_cbp_trade_efficiency_selling_efficiency divide = 2 min = 0 max = 1 }
+		# The variable name is historical; the business rule is a maximum-capped sum.
+		value = { value = scope:gui_cbp_trade_efficiency_buying_efficiency add = scope:gui_cbp_trade_efficiency_selling_efficiency max = 1 }
 	}
 	save_temporary_scope_value_as = {
 		name = gui_cbp_trade_efficiency_sell_side_bonus

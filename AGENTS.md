@@ -250,6 +250,21 @@ flowchart TD
 - The country trade-owner pass should consider trades owned by the current country once and delegate stock consequences to handlers.
 - The new promoted-market dispatcher must remain test-only or feature-gated until comparative Normal / Performance / Audit / Debug probes pass.
 
+### US-17 import/selling efficiency contract
+
+US-17 combines the trade owner's import and selling efficiencies as a sum, not
+an average:
+
+```txt
+combined_efficiency = min(import_efficiency + selling_efficiency, 1)
+```
+
+Do not divide this sum by two. Do not apply a lower clamp: negative combined
+efficiency remains negative and increases route maintenance. Historical variable
+names containing `average` are compatibility names only and do not define the
+business rule. Tests, documentation, and alternate formula paths must follow
+this contract; a stale fixture must never override it.
+
 ### Anti-spaghetti rule
 
 Do not add new monthly broad scans as a shortcut.
