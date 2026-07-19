@@ -1,4 +1,4 @@
-# Focused US-17 / US-20 shared-Selling and 50/50 maintenance probe.
+# Focused US-17 / US-20 shared-Selling and mixed-denominator maintenance probe.
 # Run through event cbp_us17_owner_modifiers.1.
 
 cbp_us17_owner_modifiers_clear_test_results = {
@@ -34,7 +34,7 @@ cbp_us17_assert_operation_value_near = {
 			}
 		}
 		cbp_us17_owner_modifiers_note_failure = yes
-		error_log = "ModeU5 US17 50_50 ASSERT FAIL assertion=$assertion$"
+		error_log = "ModeU5 US17 MIXED_DENOMINATOR ASSERT FAIL assertion=$assertion$"
 	}
 }
 
@@ -108,11 +108,11 @@ cbp_us17_prepare_live_owner_modifier_check = {
 				}
 			}
 			set_global_variable = test_cbp_us17_owner_modifiers_failed
-			error_log = "ModeU5 US17 50_50 ASSERT FAIL assertion=live_refresh_persisted_state"
+			error_log = "ModeU5 US17 MIXED_DENOMINATOR ASSERT FAIL assertion=live_refresh_persisted_state"
 		}
 		else = {
 			set_global_variable = test_cbp_us17_owner_modifiers_awaiting_live_check
-			debug_log = "ModeU5 US17 50_50 LIVE_REFRESH coefficient=[THIS.GetVariable('cbp_us20_route_loss_coefficient').GetValue|3] selling_correction=[THIS.GetVariable('cbp_us17_native_selling_correction').GetValue|3] import_correction=[THIS.GetVariable('cbp_us17_native_import_correction').GetValue|3] export_correction=[THIS.GetVariable('cbp_us17_native_export_correction').GetValue|3] maintenance_correction=[THIS.GetVariable('cbp_us17_native_maintenance_correction').GetValue|3] state_version=[THIS.GetVariable('cbp_us17_native_modifier_state_version').GetValue|0] wait_days=1"
+			debug_log = "ModeU5 US17 MIXED_DENOMINATOR LIVE_REFRESH coefficient=[THIS.GetVariable('cbp_us20_route_loss_coefficient').GetValue|3] selling_correction=[THIS.GetVariable('cbp_us17_native_selling_correction').GetValue|3] import_correction=[THIS.GetVariable('cbp_us17_native_import_correction').GetValue|3] export_correction=[THIS.GetVariable('cbp_us17_native_export_correction').GetValue|3] maintenance_correction=[THIS.GetVariable('cbp_us17_native_maintenance_correction').GetValue|3] state_version=[THIS.GetVariable('cbp_us17_native_modifier_state_version').GetValue|0] wait_days=1"
 		}
 	}
 }
@@ -139,7 +139,7 @@ cbp_debug_finish_us17_owner_modifier_probe = {
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_selling_delta minimum = -0.001 maximum = 0.001 assertion = live_selling_shared_curve_applied }
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_import_delta minimum = -0.001 maximum = 0.001 assertion = live_import_price_effect_zero }
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_export_delta minimum = -0.001 maximum = 0.001 assertion = live_export_price_effect_zero }
-		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_maintenance_delta minimum = -0.001 maximum = 0.001 assertion = live_maintenance_50_50_applied }
+		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_maintenance_delta minimum = -0.001 maximum = 0.001 assertion = live_mixed_denominator_maintenance_applied }
 		cbp_us17_assert_operation_value_near = { actual = test_cbp_us17_probe_coefficient_delta minimum = -0.001 maximum = 0.001 assertion = shared_coefficient_persisted_upstream }
 
 		cbp_run_us17_operation_aware_route_profit_reconciliation = yes
@@ -162,7 +162,7 @@ cbp_debug_finish_us17_owner_modifier_probe = {
 		if = {
 			limit = { scope:test_cbp_us17_owner_modifiers_failure_count = 0 }
 			set_global_variable = test_cbp_us17_owner_modifiers_passed
-			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 selling_shared_coefficient=verified maintenance_cost_split=50_50 import_export_price_effect=zero route_money_delta=zero proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open"
+			debug_log = "ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 selling_shared_coefficient=verified mixed_denominator_formula=verified import_export_price_effect=zero route_money_delta=zero proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open"
 		}
 		else = {
 			set_global_variable = test_cbp_us17_owner_modifiers_failed
@@ -186,12 +186,12 @@ cbp_debug_run_us17_owner_modifier_probe = {
 	cbp_us17_owner_modifiers_clear_test_results = yes
 	set_global_variable = test_cbp_us17_owner_modifiers_started
 	debug_log = "ModeU5 TEST ENTERED scenario=us17_trade_owner_modifiers"
-	debug_log = "ModeU5 US17 50_50 AUDIT START selling=shared_coefficient maintenance_cost=half_vanilla_half_import_export"
+	debug_log = "ModeU5 US17 MIXED_DENOMINATOR AUDIT START formula=-M+1-1_over_1_plus_M_over_2_plus_5_times_parenthesized_I_plus_Ex"
 	save_temporary_scope_value_as = { name = test_cbp_us17_owner_modifiers_failure_count value = 0 }
 
 	# Fixture: S=0.10, I=0.20, Ex=0.30, M=0.08.
-	# C=0.025. Directional denominator=6. Directional efficiency=0.833333.
-	# Effective maintenance=0.08*0.5 + 0.833333*0.5 = 0.456667.
+	# C=0.025. Maintenance denominator=1+0.08/2+5*(0.20+0.30)=3.54.
+	# Effective maintenance=1-1/3.54=0.717514; correction=0.637514.
 	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_selling_efficiency value = 0.10 }
 	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_import_efficiency value = 0.20 }
 	save_temporary_scope_value_as = { name = cbp_us17_native_baseline_export_efficiency value = 0.30 }
@@ -205,9 +205,11 @@ cbp_debug_run_us17_owner_modifier_probe = {
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_selling_correction_result minimum = -0.126 maximum = -0.124 assertion = selling_correction_uses_shared_coefficient }
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_import_correction_result minimum = -0.201 maximum = -0.199 assertion = import_price_effect_cancelled }
 	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_export_correction_result minimum = -0.301 maximum = -0.299 assertion = export_price_effect_cancelled }
-	cbp_us17_assert_operation_value_near = { actual = cbp_us17_directional_maintenance_denominator minimum = 5.999 maximum = 6.001 assertion = directional_maintenance_denominator }
-	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_effective_maintenance_result minimum = 0.455 maximum = 0.458 assertion = maintenance_cost_split_50_50 }
-	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_maintenance_correction_result minimum = 0.375 maximum = 0.378 assertion = maintenance_correction_50_50 }
+	cbp_us17_assert_operation_value_near = { actual = cbp_us17_maintenance_vanilla_term minimum = 0.039 maximum = 0.041 assertion = maintenance_vanilla_half_term }
+	cbp_us17_assert_operation_value_near = { actual = cbp_us17_maintenance_directional_term minimum = 2.499 maximum = 2.501 assertion = maintenance_directional_five_term }
+	cbp_us17_assert_operation_value_near = { actual = cbp_us17_maintenance_curve_denominator minimum = 3.539 maximum = 3.541 assertion = mixed_denominator_formula }
+	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_effective_maintenance_result minimum = 0.716 maximum = 0.719 assertion = mixed_denominator_maintenance_target }
+	cbp_us17_assert_operation_value_near = { actual = cbp_us17_native_maintenance_correction_result minimum = 0.636 maximum = 0.639 assertion = mixed_denominator_maintenance_correction }
 
 	save_temporary_scope_value_as = { name = test_cbp_us17_effective_selling_fixture value = { value = scope:cbp_us17_native_baseline_selling_efficiency add = scope:cbp_us17_native_selling_correction_result } }
 	save_temporary_scope_value_as = { name = test_cbp_us17_effective_import_fixture value = { value = scope:cbp_us17_native_baseline_import_efficiency add = scope:cbp_us17_native_import_correction_result } }
@@ -238,7 +240,7 @@ cbp_debug_run_us17_owner_modifier_probe = {
 	remove_variable = cbp_us20_route_loss_coefficient
 	if = {
 		limit = { scope:test_cbp_us17_owner_modifiers_failure_count = 0 }
-		debug_log = "ModeU5 US17 50_50 AUDIT PASS coefficient=0.025 selling=-0.025 import=0 export=0 maintenance=0.4567 goods_loss=0.25"
+		debug_log = "ModeU5 US17 MIXED_DENOMINATOR AUDIT PASS coefficient=0.025 selling=-0.025 import=0 export=0 maintenance=0.7175 correction=0.6375 goods_loss=0.25"
 		cbp_us17_prepare_live_owner_modifier_check = yes
 	}
 	else = {

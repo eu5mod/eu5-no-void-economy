@@ -5,16 +5,17 @@ NCountry = {
     CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05
     CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10
 
-    # US-17 exact maintenance-cost split:
-    #   50% * Vanilla maintenance cost
-    # + 50% * directional cost where factor = 1 / (1 + (I + Ex) * scale)
-    CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT = 0.5
-    CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT = 0.5
+    # US-17 exact mixed-denominator Merchant Maintenance formula:
+    #   -M + 1 - 1 / (1 + M*weight + (I + Ex)*scale*weight)
+    # Defaults produce exactly -M + 1 - 1 / (1 + M/2 + 5*(I + Ex)).
+    CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5
     CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10
 
     # Temporary aliases retained for stacked branches and historical fixtures.
     CBP_ROUTE_LOSS_MAX = 0.05
     CBP_ROUTE_LOSS_CURVE = 10
+    CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT = 0.5
+    CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT = 0.5
     CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05
     CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10
     CBD_TRADE_MAINTENANCE_MAX_IMPACT = 0.05

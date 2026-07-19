@@ -8,5 +8,5 @@ l_english:
  AUTO_MODIFIER_NAME_cbp_us17_export_efficiency_cancellation: "(CBP) Export Efficiency Redirected"
  AUTO_MODIFIER_DESC_cbp_us17_export_efficiency_cancellation: "Removes Export Efficiency from absolute trade-price formation and redirects its value to Merchant Maintenance."
 
- AUTO_MODIFIER_NAME_cbp_us17_merchant_maintenance_reconciliation: "(CBP) 50/50 Trade Maintenance"
- AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Composes Merchant Maintenance from 50% Vanilla maintenance and 50% Import plus Export efficiency through diminishing returns."
+ AUTO_MODIFIER_NAME_cbp_us17_merchant_maintenance_reconciliation: "(CBP) Reciprocal Trade Maintenance"
+ AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Applies Merchant Maintenance Efficiency as 1 minus the reciprocal of 1 plus half native maintenance plus five times combined Import and Export Efficiency."

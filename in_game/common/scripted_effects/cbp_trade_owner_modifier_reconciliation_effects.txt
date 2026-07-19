@@ -1,6 +1,6 @@
-# CBP US-17 trade-price compensation, 50/50 maintenance split, and US-20 route loss.
+# CBP US-17 trade-price compensation, reciprocal maintenance, and US-20 route loss.
 #
-# Selling keeps the shared reciprocal curve:
+# Selling keeps the accepted shared reciprocal curve:
 #
 #   C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
 #       / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
@@ -9,23 +9,13 @@
 #   US-20 goods loss = trade_volume * C
 #
 # Import and Export are removed from the price surfaces and transferred to
-# Merchant Maintenance. The maintenance COST is split exactly 50/50:
+# Merchant Maintenance through the exact mixed-denominator rule:
 #
-#   final maintenance cost
-#     = 50% * Vanilla maintenance cost
-#     + 50% * directional maintenance cost
+#   M_effective = 1 - 1 / (1 + M/2 + 5 * (I + Ex))
+#   M_correction = -M + M_effective
 #
-# With:
-#   Vanilla maintenance factor     = 1 - M
-#   directional maintenance factor = 1 / (1 + (I + Ex) * scale)
-#
-# The native effective Merchant Maintenance Efficiency becomes:
-#
-#   M_effective
-#     = M * vanilla_weight
-#     + (1 - 1 / (1 + (I + Ex) * scale)) * directional_weight
-#
-# Defaults use vanilla_weight = directional_weight = 0.5 and scale = 10.
+# The default defines express 1/2 as COMPONENT_WEIGHT = 0.5 and
+# 5 as EFFICIENCY_SCALE * COMPONENT_WEIGHT = 10 * 0.5.
 
 # Country scope. Calculate the shared Selling/US-20 coefficient once.
 cbp_compute_us20_route_loss_coefficient_from_selling_baseline = {
@@ -80,45 +70,50 @@ cbp_compute_us17_native_corrections_from_baselines = {
 		}
 	}
 
-	# Directional half:
-	#   1 - 1 / (1 + (I + Ex) * scale)
+	# M/2.
 	save_temporary_scope_value_as = {
-		name = cbp_us17_directional_maintenance_denominator
+		name = cbp_us17_maintenance_vanilla_term
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT
+		}
+	}
+
+	# 5 * (I + Ex), expressed as (I + Ex) * scale * component_weight.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_directional_term
 		value = {
 			value = scope:cbp_us17_native_baseline_import_efficiency
 			add = scope:cbp_us17_native_baseline_export_efficiency
 			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
+			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT
+		}
+	}
+
+	# 1 + M/2 + 5 * (I + Ex).
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_curve_denominator
+		value = {
+			value = scope:cbp_us17_maintenance_vanilla_term
+			add = scope:cbp_us17_maintenance_directional_term
 			add = 1
 			min = 0.01
 		}
 	}
 	save_temporary_scope_value_as = {
-		name = cbp_us17_directional_maintenance_reciprocal
+		name = cbp_us17_maintenance_curve_reciprocal
 		value = {
 			value = 1
-			divide = scope:cbp_us17_directional_maintenance_denominator
+			divide = scope:cbp_us17_maintenance_curve_denominator
 		}
 	}
-	save_temporary_scope_value_as = {
-		name = cbp_us17_directional_maintenance_efficiency
-		value = {
-			value = 1
-			add = {
-				value = scope:cbp_us17_directional_maintenance_reciprocal
-				multiply = -1
-			}
-		}
-	}
-
-	# Exact 50/50 composition of the two maintenance components.
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_effective_maintenance_result
 		value = {
-			value = scope:cbp_us17_native_baseline_maintenance_efficiency
-			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT
+			value = 1
 			add = {
-				value = scope:cbp_us17_directional_maintenance_efficiency
-				multiply = define:NCountry|CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT
+				value = scope:cbp_us17_maintenance_curve_reciprocal
+				multiply = -1
 			}
 		}
 	}

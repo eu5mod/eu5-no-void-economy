@@ -2,77 +2,117 @@
 
 ## Functional objective
 
-US-20 models physical goods lost in transit. It does not calculate its coefficient
-per route.
+US-20 models physical goods lost in transit. It does not calculate its coefficient per route.
+
+The country refresh calculates the Selling coefficient once:
 
 ```txt
-Q = trade_volume
-C = var:cbp_us20_route_loss_coefficient
+S = reconstructed non-CBP Selling Efficiency
 
-goods_loss_quantity = Q * C
-target_received = max(Q - goods_loss_quantity, 0)
-```
-
-## Shared coefficient ownership
-
-The country refresh reconstructs non-CBP Selling Efficiency and calculates once:
-
-```txt
 C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
     / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
 ```
 
-It persists:
+It persists the result immediately:
 
 ```txt
 var:cbp_us20_route_loss_coefficient = C
 ```
 
-The same variable is consumed by US-17:
+## Shared use with US-17
+
+US-17 uses the persisted coefficient for Selling:
 
 ```txt
+Selling correction = -S - C
 effective Selling Efficiency = -C
 ```
 
-and by US-20:
+US-20 later reads the same country variable:
 
 ```txt
-goods_loss_quantity = trade_volume * C
+coefficient_input = var:cbp_us20_route_loss_coefficient
 ```
 
-US-20 contains no Selling read, Selling-baseline read, Define lookup, denominator,
-or division inside the route calculation.
+The route block contains no Selling modifier read, Selling baseline read, Define lookup, denominator calculation, or division.
 
-## Separation from Trade Maintenance
+## Goods loss
 
-Import and Export Efficiency are removed from price formation and transferred to
-Merchant Maintenance through US-17's exact 50/50 maintenance-cost rule.
+```txt
+Q = trade_volume
+C = coefficient_input
 
-They do not change US-20's physical route-loss coefficient. Merchant Maintenance
-is not an input to US-20.
+goods_loss_quantity = Q * C
+target_goods_amount_received = max(Q - goods_loss_quantity, 0)
+```
 
-## Example
+The coefficient is dimensionless. For example:
 
 ```txt
 S = 0.10
 C = 0.05 / (1 + 0.10*10) = 0.025
-trade_volume = 10
-goods_loss_quantity = 0.25
-target_received = 9.75
+Q = 10
+
+goods_loss_quantity = 10 * 0.025 = 0.25
+target received = 9.75
 ```
 
-## Runtime order
+## Separation from Merchant Maintenance
+
+US-17 also redirects Import and Export Efficiency into Merchant Maintenance using:
 
 ```txt
-country refresh
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
+```
+
+That maintenance formula does not change US-20 physical loss. US-20 continues to use only the persisted Selling coefficient `C`.
+
+## Goods-side reconciliation
+
+The captured route quantity is used as both sent quantity and engine receipt baseline:
+
+```txt
+goods_amount_sent = trade_volume
+engine_goods_amount_received = trade_volume
+```
+
+Only the difference against the target receipt is applied:
+
+```txt
+goods_reconciliation_delta =
+    target_goods_amount_received
+  - engine_goods_amount_received
+```
+
+The negative destination market-supply delta is applied through the central stock helper. Promoted destinations also reconcile the selected receiver country stock.
+
+## Runtime placement
+
+```txt
+cbp_run_monthly_country_trade_owner_cycle
+  -> reconstruct country baselines
   -> calculate C once
   -> persist C
   -> calculate US-17 corrections
   -> every_trade
+     -> capture trade_volume
+     -> zero-delta US-17 compatibility hook
      -> US-20 reads C
      -> goods_loss_quantity = trade_volume * C
-     -> apply destination reconciliation
+     -> centralized destination reconciliation
 ```
 
-The four-case destination-accounting matrix, receiver selection, central market
-supply helper and promoted-country stock reconciliation remain unchanged.
+## Acceptance contract
+
+```txt
+- coefficient is calculated once by the country refresh;
+- coefficient is persisted before US-17 Selling consumes it;
+- US-17 effective Selling equals -C;
+- US-20 reads exactly the same persisted C;
+- US-20 never recalculates C;
+- goods_loss_quantity equals trade_volume * C;
+- target receipt has a zero floor;
+- no route-level money mutation is applied;
+- Merchant Maintenance is not an input to physical goods loss;
+- no second every_trade discovery loop is introduced.
+```

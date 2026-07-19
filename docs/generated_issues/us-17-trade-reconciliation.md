@@ -1,4 +1,4 @@
-# US-17 — Shared Selling coefficient and 50/50 Trade Maintenance
+# US-17 — Shared Selling coefficient and reciprocal Trade Maintenance
 
 ## Business rule
 
@@ -13,35 +13,46 @@ M  = reconstructed non-CBP Merchant Maintenance Efficiency
 L_s = CBP_ROUTE_LOSS_COEFFICIENT_MAX
 K_s = CBP_ROUTE_LOSS_COEFFICIENT_CURVE
 K_m = CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
+W   = CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT
 ```
 
-## Selling rule remains unchanged
+Default values:
+
+```txt
+L_s = 0.05
+K_s = 10
+K_m = 10
+W   = 0.5
+```
+
+## Shared Selling coefficient
 
 The Selling curve is calculated once per country:
 
 ```txt
-coefficient_result =
-    L_s / (1 + S * K_s)
+C = L_s / (1 + S * K_s)
 ```
 
 The result is persisted immediately:
 
 ```txt
-var:cbp_us20_route_loss_coefficient = coefficient_result
+var:cbp_us20_route_loss_coefficient = C
 ```
 
-The country variable remains the single source of truth for US-17 Selling and
-US-20 physical goods loss.
-
-US-17 consumes it as:
+US-17 consumes that persisted value:
 
 ```txt
-Selling correction =
-    -S - var:cbp_us20_route_loss_coefficient
-
-effective Selling Efficiency =
-    -var:cbp_us20_route_loss_coefficient
+Selling correction = -S - C
+effective Selling Efficiency = -C
 ```
+
+US-20 consumes the same value:
+
+```txt
+goods loss = trade_volume * C
+```
+
+The Selling correction does not recalculate the curve.
 
 ## Import and Export leave price formation
 
@@ -55,87 +66,100 @@ effective Export Efficiency = 0
 
 There are no residual Import or Export price curves.
 
-## Exact 50/50 maintenance-cost rule
+## Exact Merchant Maintenance formula
 
-The final Merchant Maintenance cost is split between two independent halves:
+The requested correction is:
 
 ```txt
-final maintenance cost =
-    50% * Vanilla maintenance cost
-  + 50% * Import+Export maintenance cost
+Merchant Maintenance correction =
+    -M
+    + 1
+    - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-The two maintenance factors are:
+The production form uses the Defines:
 
 ```txt
-Vanilla factor = 1 - M
-Directional factor = 1 / (1 + (I + Ex) * K_m)
-```
+maintenance denominator =
+    1
+    + M * W
+    + (I + Ex) * K_m * W
 
-Therefore:
-
-```txt
-final maintenance factor =
-    0.5 * (1 - M)
-  + 0.5 / (1 + (I + Ex) * K_m)
-```
-
-Expressed through the native Merchant Maintenance Efficiency surface:
-
-```txt
 effective Merchant Maintenance Efficiency =
-    0.5 * M
-  + 0.5 * (1 - 1 / (1 + (I + Ex) * K_m))
+    1 - 1 / maintenance denominator
 
 Merchant Maintenance correction =
     effective Merchant Maintenance Efficiency - M
 ```
 
-This is not the rejected mixed-denominator formula
-`1 - 1 / (1 + M/2 + (I + Ex)*5)`.
-
-## Runtime placement
+With `W = 0.5` and `K_m = 10`, this is exactly:
 
 ```txt
-country refresh
-  -> reconstruct S, I, Ex and M
-  -> calculate Selling coefficient once
-  -> persist cbp_us20_route_loss_coefficient
-  -> calculate Selling, Import, Export and Maintenance corrections
-  -> persist four corrections and four baselines
-  -> every_trade
-     -> zero-delta US-17 compatibility hook
-     -> US-20 reads the persisted coefficient
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-State version is `7`.
+This is one mixed denominator. It is not an average of two separately calculated maintenance costs.
 
-## Fixture
+## Arithmetic fixture
 
 ```txt
 S  = 0.10
 I  = 0.20
 Ex = 0.30
 M  = 0.08
-K_m = 10
+trade_volume = 10
 ```
 
-Expected:
+Selling and US-20:
 
 ```txt
-Selling coefficient = 0.025
+C = 0.05 / (1 + 0.10*10) = 0.025
 effective Selling = -0.025
-effective Import = 0
-effective Export = 0
+goods loss = 10 * 0.025 = 0.25
+target received = 9.75
+```
 
-directional denominator = 1 + (0.20 + 0.30)*10 = 6
-directional efficiency = 1 - 1/6 = 0.833333
+Merchant Maintenance:
 
-effective maintenance =
-    0.5*0.08 + 0.5*0.833333
-  = 0.456667
+```txt
+M/2 = 0.04
+5*(I + Ex) = 2.50
 
-maintenance correction = 0.456667 - 0.08 = 0.376667
+denominator = 1 + 0.04 + 2.50 = 3.54
+reciprocal = 1 / 3.54 = 0.282486
+
+effective maintenance = 1 - 0.282486 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
+```
+
+## Runtime order
+
+```txt
+country refresh
+  -> reconstruct S, I, Ex and M
+  -> calculate C once
+  -> persist C
+  -> calculate Selling, Import, Export and Maintenance corrections
+  -> persist four corrections and four baselines
+  -> every_trade
+     -> zero-delta US-17 compatibility hook
+     -> US-20 reads C
+     -> goods loss = trade_volume * C
+```
+
+State version is `7`.
+
+## Acceptance contract
+
+```txt
+- Selling coefficient is calculated once and persisted before US-17 consumes it;
+- effective Selling Efficiency equals -C;
+- US-20 goods loss equals trade_volume * C;
+- effective Import and Export Efficiency equal zero;
+- effective Merchant Maintenance Efficiency equals 1 - 1/(1 + M/2 + 5*(I+Ex));
+- Merchant Maintenance correction equals -M plus that effective value;
+- no route-level add_gold mutation is applied;
+- repeated refresh reconstructs all four baselines without drift.
 ```
 
 ## Focused probe
@@ -144,11 +168,11 @@ maintenance correction = 0.456667 - 0.08 = 0.376667
 event cbp_us17_owner_modifiers.1
 ```
 
-Expected final marker includes:
+Wait one in-game day. Expected marker includes:
 
 ```txt
 selling_shared_coefficient=verified
-maintenance_cost_split=50_50
+mixed_denominator_formula=verified
 import_export_price_effect=zero
 route_money_delta=zero
 proportional_goods_loss=verified
