@@ -1,93 +1,99 @@
-# US-17 - Native trade-profit reconciliation
+# US-17 - Operation-aware trade-profit reconciliation
 
 ## Business rule
 
-Import and Selling Efficiency no longer alter the two price margins directly.
-Their combined value changes merchant maintenance instead, while Vanilla keeps
-ownership of route profit, AI decisions, UI display, and treasury posting.
-
-For the non-CBP country baselines `I`, `S`, and `M`:
+Vanilla applies Selling Efficiency to the destination price and applies exactly
+one origin-price efficiency according to route direction:
 
 ```txt
-C = min(I + S, define:NCountry|MERCHANT_MAINTENANCE_COST)
-
-CBP import correction      = -I
-CBP selling correction     = -S
-CBP maintenance correction = C - M
+trade_operation_efficiency = Import Efficiency for an import
+trade_operation_efficiency = Export Efficiency for an export
 ```
 
-This cancels the native price effects and replaces the native maintenance
-efficiency `M` with `C`. The resulting maintenance factor is `1 - C`. The
-configured `define:NCountry|MERCHANT_MAINTENANCE_COST` remains part of the
-native monetary base. It is also deliberately reused as `C`'s upper policy
-bound, but it does not replace the unitless `1` in the maintenance factor.
+CBP removes Import, Export, and Selling Efficiency from the price margins. It
+also removes native Merchant Maintenance Efficiency, then applies the selected
+operation efficiency plus Selling Efficiency to merchant maintenance.
 
-The sum is not averaged. It has no lower clamp. Negative efficiency therefore
-increases maintenance, and there is no reciprocal that could divide by zero.
+For non-CBP baselines `I`, `Ex`, `S`, and `M`:
+
+```txt
+E_D = I for an import; Ex for an export
+D = define:NCountry|MERCHANT_MAINTENANCE_COST
+C = min(E_D + S, D)
+
+CBP import correction      = -I
+CBP export correction      = -Ex
+CBP selling correction     = -S
+CBP maintenance correction = C_country - M
+C_country = min(-CBP selling correction - CBP import correction - CBP export correction, D)
+import treasury delta      = D * (C_import - C_country)
+export treasury delta      = D * (C_export - C_country)
+```
+
+The sum is not averaged and has no lower clamp. Negative efficiency therefore
+increases maintenance, while positive efficiency is capped by `D`.
 
 ## Runtime placement
 
 ```txt
 monthly_country_pulse(country)
   -> cbp_run_monthly_country_trade_owner_cycle
-     -> cbp_refresh_us17_native_profit_modifiers_for_current_country
+     -> refresh four non-CBP country baselines
      -> every_trade
-        -> capture trade owner and route quantity
-        -> cbp_run_us20_route_loss_reconciliation
-           -> US-20 received-goods reconciliation only
+        -> Trade.IsExport selects Import or Export Efficiency
+        -> keep the native all-efficiencies country reference
+        -> apply the directional route difference
+        -> run unchanged US-20 goods reconciliation
 ```
 
-Policy and reform on-actions call the same country refresh. Monthly execution
-is the authoritative fallback for research and other modifier sources.
+Policy and reform on-actions use the shared country-governance dispatcher.
+Monthly execution remains the fallback for research and temporary modifiers.
 
 ## Baseline reconstruction
 
-Because country `modifier:*` reads include the active CBP auto-modifiers, each
-refresh first subtracts its previous persisted corrections. It then calculates
-and stores new corrections from the reconstructed non-CBP values. This makes
-the operation idempotent and safe on repeated monthly ticks and save reloads.
+Country `modifier:*` reads include active CBP auto-modifiers. Each refresh
+subtracts its four previous persisted corrections before recalculation. This
+reconstructs the non-CBP values and prevents drift across monthly ticks and
+save reloads. The all-efficiencies maintenance formula writes state version `4`;
+the first refresh also reconstructs older saves without carrying forward their
+previous maintenance reference.
 
 ## Ownership and boundaries
 
 ```txt
 US-17 owner: current country in the country trade-owner pass
-US-17 money mutation: native engine only
-US-17 add_gold: forbidden in the live wrapper
-US-20 owner: route-local reconciliation
+US-17 direction: current trade via Trade.IsExport / is_export
+US-17 money mutation: one add_gold route delta
+US-20 owner: route-local goods reconciliation
 US-20 stock mutation: unchanged centralized stock/goods path
 ```
 
-The historical seeded route-money effects remain test scaffolding only. They
-must never be called from the production monthly country pass.
+EU5 exposes no trade-scope modifier able to replace Import or Export Efficiency
+inside native route-profit projection. The operation-aware delta is exact for
+treasury but is not represented in Vanilla route-profit UI or AI projection.
 
 ## Acceptance contract
 
 ```txt
-- native import correction cancels the reconstructed import baseline;
-- native selling correction cancels the reconstructed selling baseline;
-- maintenance correction uses C - M so effective maintenance efficiency is C;
-- C is the sum without division, capped by MERCHANT_MAINTENANCE_COST;
+- three price auto-modifiers cancel Import, Export, and Selling;
+- the fourth auto-modifier replaces Maintenance with the capped country sum of Selling, Import, and Export;
+- import routes select Import Efficiency;
+- export routes select Export Efficiency;
+- one route never applies both directional efficiencies;
+- C is a sum without division and is capped by D;
 - negative C remains negative;
 - repeated refreshes do not drift;
-- policy and reform hooks use the shared refresh;
 - monthly refresh occurs once before every_trade;
-- production US-17 performs no add_gold mutation;
-- US-20 route-loss reconciliation remains active;
-- all three auto-modifiers have visible localization.
+- US-17 money is applied once before US-20 goods reconciliation;
+- all four auto-modifiers have visible localization.
 ```
 
 ## Focused test
 
-Run:
+Run `event cbp_us17_owner_modifiers.1`, wait one in-game day, and expect:
 
 ```txt
-event cbp_us17_owner_modifiers.1
-```
-
-Expected marker:
-
-```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
 Full runtime protocol:

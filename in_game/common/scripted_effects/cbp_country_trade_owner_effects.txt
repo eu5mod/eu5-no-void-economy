@@ -28,9 +28,9 @@
 # introduced. The hook is dormant unless the CMM trade-rework setting enables
 # cbp_trade_rework_enabled_trigger.
 #
-# US-17 is refreshed once from country scope before the route loop. Its native
-# auto-modifiers make Vanilla AI, UI, and treasury accounting consume the same
-# result. The route-local wrapper therefore handles US-20 without add_gold.
+# US-17 is refreshed once from country scope before the route loop. The route
+# scope selects import or export efficiency through is_export and applies the
+# operation-aware maintenance delta. US-20 remains the goods-only follow-up.
 
 cbp_reset_country_trade_owner_pass_metrics = {
 	remove_global_variable = cbp_country_trade_owner_pass_runs
@@ -192,6 +192,7 @@ cbp_run_monthly_country_trade_owner_cycle = {
 		cbp_capture_country_trade_owner_trade_quantity = yes
 		if = {
 			limit = { exists = scope:cbp_trade_owner_country }
+			cbp_run_us17_operation_aware_route_profit_reconciliation = yes
 			scope:cbp_trade_owner_country = {
 				if = {
 					limit = { cbp_trade_rework_enabled_trigger = yes }

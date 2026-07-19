@@ -1,8 +1,9 @@
 # Historical deterministic US-17 / US-20 route-reconciliation scaffold.
 #
-# Production US-17 now uses native country auto-modifiers and never calls this
-# file's add_gold path. These effects remain for the combined deterministic
-# fixture and US-20 diagnostics until that fixture is split completely.
+# Production US-17 uses four native country auto-modifiers plus the operation-
+# aware add_gold effect in cbp_trade_owner_modifier_reconciliation_effects.txt.
+# It never calls this file's historical add_gold path. These effects remain for
+# the combined deterministic fixture and US-20 diagnostics.
 #
 # Runtime placement:
 #   cbp_run_monthly_country_trade_owner_cycle
