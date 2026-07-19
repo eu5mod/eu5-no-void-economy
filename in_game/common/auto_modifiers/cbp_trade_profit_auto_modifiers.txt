@@ -1,5 +1,6 @@
-﻿# US-17 removes the native country efficiencies from Vanilla trade-profit
-# accounting. The monthly trade pass then restores their operation-aware value.
+﻿# US-17 removes the native country price efficiencies from Vanilla trade-profit
+# accounting. Maintenance values all three before the monthly trade pass keeps
+# only the directionally relevant route result.
 
 cbp_trade_profit_selling_efficiency_cancellation = {
 	requires_real = no
@@ -20,4 +21,11 @@ cbp_trade_profit_export_efficiency_cancellation = {
 	limit = { has_variable = cbp_trade_profit_native_export_correction }
 	scales_with = { value = var:cbp_trade_profit_native_export_correction }
 	export_efficiency = 1
+}
+
+cbp_trade_profit_merchant_maintenance_reconciliation = {
+	requires_real = no
+	limit = { has_variable = cbp_trade_profit_native_maintenance_correction }
+	scales_with = { value = var:cbp_trade_profit_native_maintenance_correction }
+	merchant_maintenance_efficiency = 1
 }

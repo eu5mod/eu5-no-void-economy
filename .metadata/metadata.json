@@ -1,7 +1,7 @@
 {
 	"id": "cbp_trade_profit_standalone",
 	"name": "CBP Trade Profit",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"game_id": "eu5",
 	"supported_game_version": "1.*.*",
 	"short_description": "Standalone operation-aware US-17 trade-profit formula adjustment.",
