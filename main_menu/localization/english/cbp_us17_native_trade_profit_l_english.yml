@@ -1,9 +1,9 @@
-l_english:
- AUTO_MODIFIER_NAME_cbp_us17_selling_efficiency_cancellation: "(CBP) Selling Efficiency Route Loss"
- AUTO_MODIFIER_DESC_cbp_us17_selling_efficiency_cancellation: "Cancels the native Selling Efficiency baseline and replaces it with the diminishing CBP route-loss impact shared with goods lost in transit."
+﻿l_english:
+ AUTO_MODIFIER_NAME_cbp_us17_import_efficiency_cancellation: "(CBP) Import Efficiency to Maintenance"
+ AUTO_MODIFIER_DESC_cbp_us17_import_efficiency_cancellation: "Removes Import Efficiency from trade-price formation so it contributes through CBP Merchant Maintenance instead."
 
- AUTO_MODIFIER_NAME_cbp_us17_import_efficiency_cancellation: "(CBP) Import Efficiency Compensation"
- AUTO_MODIFIER_DESC_cbp_us17_import_efficiency_cancellation: "Cancels the native Import Efficiency baseline and replaces it with the diminishing CBP directional trade impact."
+ AUTO_MODIFIER_NAME_cbp_us17_export_efficiency_cancellation: "(CBP) Export Efficiency to Maintenance"
+ AUTO_MODIFIER_DESC_cbp_us17_export_efficiency_cancellation: "Removes Export Efficiency from trade-price formation so it contributes through CBP Merchant Maintenance instead."
 
- AUTO_MODIFIER_NAME_cbp_us17_export_efficiency_cancellation: "(CBP) Export Efficiency Compensation"
- AUTO_MODIFIER_DESC_cbp_us17_export_efficiency_cancellation: "Cancels the native Export Efficiency baseline and replaces it with the diminishing CBP directional trade impact."
+ AUTO_MODIFIER_NAME_cbp_us17_merchant_maintenance_reconciliation: "(CBP) Reciprocal Trade Maintenance"
+ AUTO_MODIFIER_DESC_cbp_us17_merchant_maintenance_reconciliation: "Sets effective Merchant Maintenance Efficiency to 1 minus the reciprocal of 1 plus half native maintenance efficiency plus five times combined Import and Export Efficiency."
