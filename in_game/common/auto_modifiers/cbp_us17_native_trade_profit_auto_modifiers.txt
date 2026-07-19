@@ -1,17 +1,12 @@
-# US-17 keeps the native trade-profit surfaces, but replaces each price-efficiency
-# input with a diminishing residual impact:
+# US-17 keeps the accepted Selling curve shared with US-20:
 #
-#   effective Selling Efficiency
-#     = -CBP_ROUTE_LOSS_COEFFICIENT_MAX
-#       / (1 + baseline Selling Efficiency * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+#   effective Selling Efficiency =
+#     -CBP_ROUTE_LOSS_COEFFICIENT_MAX
+#      / (1 + baseline Selling Efficiency * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
 #
-#   effective Import/Export Efficiency
-#     = -CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
-#       / (1 + baseline directional efficiency * CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE)
-#
-# The Selling residual is dimensionless. US-20 uses its positive counterpart as
-# ROUTE_LOSS_COEFFICIENT and multiplies it by trade_volume to obtain goods lost.
-# Merchant Maintenance is deliberately not modified by US-17.
+# Import and Export Efficiency are cancelled from absolute price formation.
+# Their economic value is transferred to Merchant Maintenance through an exact
+# 50% Vanilla maintenance / 50% Import+Export maintenance cost split.
 
 cbp_us17_selling_efficiency_cancellation = {
 	requires_real = no
@@ -35,4 +30,12 @@ cbp_us17_export_efficiency_cancellation = {
 	limit = { has_variable = cbp_us17_native_export_correction }
 	scales_with = { value = var:cbp_us17_native_export_correction }
 	export_efficiency = 1
+}
+
+cbp_us17_merchant_maintenance_reconciliation = {
+	requires_real = no
+	potential_trigger = { cbp_trade_rework_enabled_trigger = yes }
+	limit = { has_variable = cbp_us17_native_maintenance_correction }
+	scales_with = { value = var:cbp_us17_native_maintenance_correction }
+	merchant_maintenance_efficiency = 1
 }

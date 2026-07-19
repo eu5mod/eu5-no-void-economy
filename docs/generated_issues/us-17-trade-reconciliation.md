@@ -1,9 +1,6 @@
-# US-17 — Native trade-efficiency compensation
+# US-17 — Shared Selling coefficient and 50/50 Trade Maintenance
 
 ## Business rule
-
-US-17 keeps the native trade-profit and Merchant Maintenance paths, but replaces
-the three country price-efficiency inputs with diminishing residual effects.
 
 Definitions:
 
@@ -11,15 +8,14 @@ Definitions:
 S  = reconstructed non-CBP Selling Efficiency
 I  = reconstructed non-CBP Import Efficiency
 Ex = reconstructed non-CBP Export Efficiency
+M  = reconstructed non-CBP Merchant Maintenance Efficiency
 
-L_s = define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_MAX
-K_s = define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_CURVE
-
-L_d = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
-K_d = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE
+L_s = CBP_ROUTE_LOSS_COEFFICIENT_MAX
+K_s = CBP_ROUTE_LOSS_COEFFICIENT_CURVE
+K_m = CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
 ```
 
-## Shared coefficient calculated and persisted upstream
+## Selling rule remains unchanged
 
 The Selling curve is calculated once per country:
 
@@ -34,166 +30,127 @@ The result is persisted immediately:
 var:cbp_us20_route_loss_coefficient = coefficient_result
 ```
 
-This country variable is the single source of truth for US-17 and US-20.
+The country variable remains the single source of truth for US-17 Selling and
+US-20 physical goods loss.
 
-US-17 then reads the persisted value:
+US-17 consumes it as:
 
 ```txt
 Selling correction =
     -S - var:cbp_us20_route_loss_coefficient
 
-Import correction =
-    -I - L_d / (1 + I * K_d)
-
-Export correction =
-    -Ex - L_d / (1 + Ex * K_d)
-```
-
-The resulting native effective values are:
-
-```txt
 effective Selling Efficiency =
     -var:cbp_us20_route_loss_coefficient
-
-effective Import Efficiency =
-    -L_d / (1 + I * K_d)
-
-effective Export Efficiency =
-    -L_d / (1 + Ex * K_d)
 ```
 
-The US-17 Selling correction contains no route-loss define lookup, denominator,
-or division. It consumes the already-persisted country coefficient.
-
-## Merchant Maintenance and money
-
-Merchant Maintenance is not cancelled, reconstructed, or replaced:
+## Import and Export leave price formation
 
 ```txt
-effective merchant_maintenance_efficiency
-    = Vanilla / non-CBP merchant_maintenance_efficiency
+Import correction = -I
+Export correction = -Ex
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
 ```
 
-US-17 applies no route-level `add_gold` reconciliation. The historical route
-hook remains only as a zero-delta compatibility surface.
+There are no residual Import or Export price curves.
 
-## Coupling with US-20
+## Exact 50/50 maintenance-cost rule
 
-US-20 reads exactly the same persisted country variable:
+The final Merchant Maintenance cost is split between two independent halves:
 
 ```txt
-goods_loss_quantity =
-    trade_volume * var:cbp_us20_route_loss_coefficient
+final maintenance cost =
+    50% * Vanilla maintenance cost
+  + 50% * Import+Export maintenance cost
 ```
 
-The two stories therefore consume the same value:
+The two maintenance factors are:
 
 ```txt
-US-17:
-  effective selling_efficiency
-    = -var:cbp_us20_route_loss_coefficient
-
-US-20:
-  goods_loss_quantity
-    = trade_volume * var:cbp_us20_route_loss_coefficient
+Vanilla factor = 1 - M
+Directional factor = 1 / (1 + (I + Ex) * K_m)
 ```
 
-Import and Export use a separate max/curve pair, so their economic residual can
-be balanced independently from physical transit losses.
+Therefore:
+
+```txt
+final maintenance factor =
+    0.5 * (1 - M)
+  + 0.5 / (1 + (I + Ex) * K_m)
+```
+
+Expressed through the native Merchant Maintenance Efficiency surface:
+
+```txt
+effective Merchant Maintenance Efficiency =
+    0.5 * M
+  + 0.5 * (1 - 1 / (1 + (I + Ex) * K_m))
+
+Merchant Maintenance correction =
+    effective Merchant Maintenance Efficiency - M
+```
+
+This is not the rejected mixed-denominator formula
+`1 - 1 / (1 + M/2 + (I + Ex)*5)`.
 
 ## Runtime placement
 
 ```txt
-monthly_country_pulse(country)
-  -> cbp_run_monthly_country_trade_owner_cycle
-     -> reconstruct non-CBP Selling / Import / Export baselines
-     -> calculate coefficient_result once
-     -> persist var:cbp_us20_route_loss_coefficient
-     -> calculate US-17 corrections from the persisted variable
-     -> persist US-17 corrections and baselines
-     -> every_trade
-        -> US-17 compatibility hook returns zero money delta
-        -> US-20 reads var:cbp_us20_route_loss_coefficient
-        -> goods loss = trade_volume × coefficient
+country refresh
+  -> reconstruct S, I, Ex and M
+  -> calculate Selling coefficient once
+  -> persist cbp_us20_route_loss_coefficient
+  -> calculate Selling, Import, Export and Maintenance corrections
+  -> persist four corrections and four baselines
+  -> every_trade
+     -> zero-delta US-17 compatibility hook
+     -> US-20 reads the persisted coefficient
 ```
 
-Policy and reform changes use the same country-governance refresh. Monthly
-execution remains the fallback for research and temporary modifiers.
+State version is `7`.
 
-## Baseline reconstruction and persistence
-
-Country `modifier:*` reads include active CBP auto-modifiers. Each refresh
-subtracts the previous persisted Selling, Import, and Export corrections before
-reconstructing the non-CBP baselines.
-
-Persistent country state:
+## Fixture
 
 ```txt
-cbp_us17_native_selling_correction
-cbp_us17_native_import_correction
-cbp_us17_native_export_correction
-cbp_us17_native_selling_baseline
-cbp_us17_native_import_baseline
-cbp_us17_native_export_baseline
-cbp_us20_route_loss_coefficient
-cbp_us17_native_modifier_state_version = 6
+S  = 0.10
+I  = 0.20
+Ex = 0.30
+M  = 0.08
+K_m = 10
 ```
 
-Disabling the trade rework removes `cbp_us20_route_loss_coefficient` and clears
-the three US-17 corrections. State from the previous maintenance-reconstruction
-implementation is also removed.
-
-The reciprocal denominators have a safety floor of `0.01`, inactive for the
-normal non-negative efficiency range.
-
-## Acceptance contract
+Expected:
 
 ```txt
-- the Selling coefficient is calculated exactly once per country refresh;
-- the coefficient is persisted before the US-17 correction is calculated;
-- US-17 Selling reads var:cbp_us20_route_loss_coefficient;
-- US-17 Selling does not recalculate the route-loss curve;
-- US-20 reads the same persisted country variable;
-- US-20 contains no route-loss define lookup, denominator, or division;
-- Import and Export retain their independent reciprocal curves;
-- Merchant Maintenance Efficiency remains untouched;
-- no US-17 add_gold route delta is applied;
-- repeated refreshes reconstruct the non-CBP baselines without drift;
-- the shared refresh occurs once before every_trade;
-- disabled trade rework removes the shared coefficient;
-- all three auto-modifiers remain visible and gated.
+Selling coefficient = 0.025
+effective Selling = -0.025
+effective Import = 0
+effective Export = 0
+
+directional denominator = 1 + (0.20 + 0.30)*10 = 6
+directional efficiency = 1 - 1/6 = 0.833333
+
+effective maintenance =
+    0.5*0.08 + 0.5*0.833333
+  = 0.456667
+
+maintenance correction = 0.456667 - 0.08 = 0.376667
 ```
 
-## Focused test
-
-Run:
+## Focused probe
 
 ```txt
 event cbp_us17_owner_modifiers.1
 ```
 
-With the default fixture:
-
-```txt
-S = 0.10
-trade_volume = 10
-
-coefficient_result = 0.025
-var:cbp_us20_route_loss_coefficient = 0.025
-effective Selling Efficiency = -0.025
-US-20 goods loss = 10 × 0.025 = 0.25
-target received = 9.75
-```
-
 Expected final marker includes:
 
 ```txt
-coefficient_calculated_upstream=verified
-curve_formula=verified
-maintenance=native_untouched
+selling_shared_coefficient=verified
+maintenance_cost_split=50_50
+import_export_price_effect=zero
 route_money_delta=zero
-selling_us20_coefficient=shared
-us20_recalculation=absent
 proportional_goods_loss=verified
 idempotence=passed
 live_auto_modifier_application=passed

@@ -1,27 +1,33 @@
-# CBP US-17 native trade-efficiency compensation and US-20 route-loss coupling.
+# CBP US-17 trade-price compensation, 50/50 maintenance split, and US-20 route loss.
 #
-# US-17 no longer reconstructs Merchant Maintenance or applies route-level gold.
-# The native merchant maintenance efficiency surface is left untouched.
+# Selling keeps the shared reciprocal curve:
 #
-# The route-loss coefficient is calculated once per country during the US-17
-# refresh, persisted, and then consumed by both user stories:
-#
-#   cbp_us20_route_loss_coefficient
-#     = CBP_ROUTE_LOSS_COEFFICIENT_MAX
+#   C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
 #       / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
 #
-# US-17 uses that persisted coefficient in the native Selling correction:
+#   effective Selling Efficiency = -C
+#   US-20 goods loss = trade_volume * C
 #
-#   selling correction = -S - var:cbp_us20_route_loss_coefficient
+# Import and Export are removed from the price surfaces and transferred to
+# Merchant Maintenance. The maintenance COST is split exactly 50/50:
 #
-# US-20 uses the same persisted coefficient for physical goods loss:
+#   final maintenance cost
+#     = 50% * Vanilla maintenance cost
+#     + 50% * directional maintenance cost
 #
-#   goods_loss_quantity = trade_volume * var:cbp_us20_route_loss_coefficient
+# With:
+#   Vanilla maintenance factor     = 1 - M
+#   directional maintenance factor = 1 / (1 + (I + Ex) * scale)
 #
-# Import and Export retain their independent compensation curve.
+# The native effective Merchant Maintenance Efficiency becomes:
+#
+#   M_effective
+#     = M * vanilla_weight
+#     + (1 - 1 / (1 + (I + Ex) * scale)) * directional_weight
+#
+# Defaults use vanilla_weight = directional_weight = 0.5 and scale = 10.
 
-# Country scope. Calculate the shared, dimensionless route-loss coefficient from
-# the reconstructed non-CBP Selling Efficiency baseline.
+# Country scope. Calculate the shared Selling/US-20 coefficient once.
 cbp_compute_us20_route_loss_coefficient_from_selling_baseline = {
 	save_temporary_scope_value_as = {
 		name = cbp_us20_route_loss_denominator
@@ -29,8 +35,6 @@ cbp_compute_us20_route_loss_coefficient_from_selling_baseline = {
 			value = scope:cbp_us17_native_baseline_selling_efficiency
 			multiply = define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_CURVE
 			add = 1
-			# Parser/runtime guard only. It is inactive for the normal non-negative
-			# efficiency range and prevents division by zero for extreme penalties.
 			min = 0.01
 		}
 	}
@@ -44,10 +48,10 @@ cbp_compute_us20_route_loss_coefficient_from_selling_baseline = {
 	}
 }
 
-# Country scope. The shared Selling coefficient must already have been calculated
-# and persisted as var:cbp_us20_route_loss_coefficient.
+# Country scope. The shared coefficient must already be persisted before this
+# effect runs because the Selling correction consumes the country variable.
 cbp_compute_us17_native_corrections_from_baselines = {
-	# Selling side: cancel the baseline and retain the negative shared coefficient.
+	# Selling: preserve the accepted shared coefficient business rule.
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_selling_correction_result
 		value = {
@@ -60,47 +64,12 @@ cbp_compute_us17_native_corrections_from_baselines = {
 		}
 	}
 
-	# Import side: independent directional-efficiency compensation curve.
-	save_temporary_scope_value_as = {
-		name = cbp_us17_import_curve_denominator
-		value = {
-			value = scope:cbp_us17_native_baseline_import_efficiency
-			multiply = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE
-			add = 1
-			min = 0.01
-		}
-	}
-	save_temporary_scope_value_as = {
-		name = cbp_us17_import_residual_impact
-		value = {
-			value = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
-			divide = scope:cbp_us17_import_curve_denominator
-		}
-	}
+	# Import and Export no longer modify either absolute trade price.
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_import_correction_result
 		value = {
 			value = scope:cbp_us17_native_baseline_import_efficiency
 			multiply = -1
-			add = { value = scope:cbp_us17_import_residual_impact multiply = -1 }
-		}
-	}
-
-	# Export side: same directional curve, evaluated from Export Efficiency.
-	save_temporary_scope_value_as = {
-		name = cbp_us17_export_curve_denominator
-		value = {
-			value = scope:cbp_us17_native_baseline_export_efficiency
-			multiply = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE
-			add = 1
-			min = 0.01
-		}
-	}
-	save_temporary_scope_value_as = {
-		name = cbp_us17_export_residual_impact
-		value = {
-			value = define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
-			divide = scope:cbp_us17_export_curve_denominator
 		}
 	}
 	save_temporary_scope_value_as = {
@@ -108,7 +77,57 @@ cbp_compute_us17_native_corrections_from_baselines = {
 		value = {
 			value = scope:cbp_us17_native_baseline_export_efficiency
 			multiply = -1
-			add = { value = scope:cbp_us17_export_residual_impact multiply = -1 }
+		}
+	}
+
+	# Directional half:
+	#   1 - 1 / (1 + (I + Ex) * scale)
+	save_temporary_scope_value_as = {
+		name = cbp_us17_directional_maintenance_denominator
+		value = {
+			value = scope:cbp_us17_native_baseline_import_efficiency
+			add = scope:cbp_us17_native_baseline_export_efficiency
+			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
+			add = 1
+			min = 0.01
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_directional_maintenance_reciprocal
+		value = {
+			value = 1
+			divide = scope:cbp_us17_directional_maintenance_denominator
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_directional_maintenance_efficiency
+		value = {
+			value = 1
+			add = {
+				value = scope:cbp_us17_directional_maintenance_reciprocal
+				multiply = -1
+			}
+		}
+	}
+
+	# Exact 50/50 composition of the two maintenance components.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_effective_maintenance_result
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			multiply = define:NCountry|CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT
+			add = {
+				value = scope:cbp_us17_directional_maintenance_efficiency
+				multiply = define:NCountry|CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_maintenance_correction_result
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			multiply = -1
+			add = scope:cbp_us17_native_effective_maintenance_result
 		}
 	}
 }
@@ -135,15 +154,17 @@ cbp_reconstruct_us17_native_baselines_from_effective_values = {
 			add = { value = scope:cbp_us17_native_previous_export_correction multiply = -1 }
 		}
 	}
-	# Diagnostic-only baseline. US-17 never writes a maintenance correction.
 	save_temporary_scope_value_as = {
 		name = cbp_us17_native_baseline_maintenance_efficiency
-		value = scope:cbp_us17_native_effective_maintenance_efficiency
+		value = {
+			value = scope:cbp_us17_native_effective_maintenance_efficiency
+			add = { value = scope:cbp_us17_native_previous_maintenance_correction multiply = -1 }
+		}
 	}
 }
 
-# Compatibility surface retained for focused probes. Direction is still exposed,
-# but the route-level treasury delta is intentionally zero under the new rule.
+# Compatibility surface retained for focused probes. There is no route-level
+# treasury mutation in the native modifier implementation.
 cbp_compute_us17_operation_aware_route_values_from_baselines = {
 	save_temporary_scope_value_as = {
 		name = cbp_us17_trade_operation_efficiency
@@ -163,14 +184,13 @@ cbp_clear_us17_native_profit_modifiers_for_current_country = {
 	set_variable = { name = cbp_us17_native_selling_correction value = 0 }
 	set_variable = { name = cbp_us17_native_import_correction value = 0 }
 	set_variable = { name = cbp_us17_native_export_correction value = 0 }
+	set_variable = { name = cbp_us17_native_maintenance_correction value = 0 }
 	set_variable = { name = cbp_us17_native_selling_baseline value = 0 }
 	set_variable = { name = cbp_us17_native_import_baseline value = 0 }
 	set_variable = { name = cbp_us17_native_export_baseline value = 0 }
+	set_variable = { name = cbp_us17_native_maintenance_baseline value = 0 }
 	remove_variable = cbp_us20_route_loss_coefficient
-	# Remove state used by the previous maintenance-reconstruction implementation.
-	remove_variable = cbp_us17_native_maintenance_correction
-	remove_variable = cbp_us17_native_maintenance_baseline
-	set_variable = { name = cbp_us17_native_modifier_state_version value = 6 }
+	set_variable = { name = cbp_us17_native_modifier_state_version value = 7 }
 }
 
 cbp_refresh_us17_native_profit_modifiers_for_current_country = {
@@ -179,6 +199,7 @@ cbp_refresh_us17_native_profit_modifiers_for_current_country = {
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_selling_correction value = 0 }
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_import_correction value = 0 }
 		save_temporary_scope_value_as = { name = cbp_us17_native_previous_export_correction value = 0 }
+		save_temporary_scope_value_as = { name = cbp_us17_native_previous_maintenance_correction value = 0 }
 		if = {
 			limit = { has_variable = cbp_us17_native_selling_correction }
 			save_temporary_scope_value_as = { name = cbp_us17_native_previous_selling_correction value = var:cbp_us17_native_selling_correction }
@@ -191,16 +212,19 @@ cbp_refresh_us17_native_profit_modifiers_for_current_country = {
 			limit = { has_variable = cbp_us17_native_export_correction }
 			save_temporary_scope_value_as = { name = cbp_us17_native_previous_export_correction value = var:cbp_us17_native_export_correction }
 		}
+		if = {
+			limit = { has_variable = cbp_us17_native_maintenance_correction }
+			save_temporary_scope_value_as = { name = cbp_us17_native_previous_maintenance_correction value = var:cbp_us17_native_maintenance_correction }
+		}
 
-		# Remove previous CBP corrections to recover the current non-CBP baselines.
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_selling_efficiency value = modifier:selling_efficiency }
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_import_efficiency value = modifier:import_efficiency }
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_export_efficiency value = modifier:export_efficiency }
 		save_temporary_scope_value_as = { name = cbp_us17_native_effective_maintenance_efficiency value = modifier:merchant_maintenance_efficiency }
 		cbp_reconstruct_us17_native_baselines_from_effective_values = yes
 
-		# Strict order: calculate, persist, then consume in US-17. US-20 will read
-		# the same country variable later inside every_trade.
+		# Calculate -> persist -> consume. This ordering protects the accepted
+		# Selling/US-20 shared coefficient rule.
 		cbp_compute_us20_route_loss_coefficient_from_selling_baseline = yes
 		set_variable = { name = cbp_us20_route_loss_coefficient value = scope:cbp_us20_route_loss_coefficient_result }
 		cbp_compute_us17_native_corrections_from_baselines = yes
@@ -208,27 +232,24 @@ cbp_refresh_us17_native_profit_modifiers_for_current_country = {
 		set_variable = { name = cbp_us17_native_selling_correction value = scope:cbp_us17_native_selling_correction_result }
 		set_variable = { name = cbp_us17_native_import_correction value = scope:cbp_us17_native_import_correction_result }
 		set_variable = { name = cbp_us17_native_export_correction value = scope:cbp_us17_native_export_correction_result }
+		set_variable = { name = cbp_us17_native_maintenance_correction value = scope:cbp_us17_native_maintenance_correction_result }
 		set_variable = { name = cbp_us17_native_selling_baseline value = scope:cbp_us17_native_baseline_selling_efficiency }
 		set_variable = { name = cbp_us17_native_import_baseline value = scope:cbp_us17_native_baseline_import_efficiency }
 		set_variable = { name = cbp_us17_native_export_baseline value = scope:cbp_us17_native_baseline_export_efficiency }
-		remove_variable = cbp_us17_native_maintenance_correction
-		remove_variable = cbp_us17_native_maintenance_baseline
-		set_variable = { name = cbp_us17_native_modifier_state_version value = 6 }
+		set_variable = { name = cbp_us17_native_maintenance_baseline value = scope:cbp_us17_native_baseline_maintenance_efficiency }
+		set_variable = { name = cbp_us17_native_modifier_state_version value = 7 }
 	}
 	else = {
 		cbp_clear_us17_native_profit_modifiers_for_current_country = yes
 	}
 }
 
-# Trade scope compatibility hook. US-17 is now fully represented by the country
-# auto-modifiers, so no route-level money mutation remains.
 cbp_run_us17_operation_aware_route_profit_reconciliation = {
 	save_temporary_scope_value_as = { name = gui_cbp_trade_efficiency_route_money_delta value = 0 }
 }
 
-# Country scope. The historical effect name is retained for compatibility, but
-# US-20 no longer recalculates Selling Efficiency or the reciprocal curve. It only
-# reads the coefficient persisted earlier by the country refresh.
+# Historical effect name retained. US-20 reads the persisted shared coefficient
+# and performs no curve recalculation in trade scope.
 cbp_compute_us20_route_loss_from_selling_efficiency = {
 	save_temporary_scope_value_as = { name = cbp_us20_route_loss_coefficient_input value = 0 }
 	if = {
@@ -249,7 +270,6 @@ cbp_compute_us20_route_loss_from_selling_efficiency = {
 			min = 0
 		}
 	}
-	# Historical diagnostic name retained, carrying the shared coefficient.
 	save_temporary_scope_value_as = {
 		name = gui_cbp_us20_trade_maintenance_loss_factor
 		value = scope:cbp_us20_route_loss_coefficient_input
