@@ -260,7 +260,7 @@ cbp_compute_us17_us20_route_formula_from_current_values = {
 		name = gui_cbp_us20_trade_maintenance_loss_factor
 		value = { value = 1 add = { value = scope:gui_cbp_us20_trade_maintenance multiply = -1 } min = 0 max = 1 }
 	}
-	save_temporary_scope_value_as = { name = gui_cbp_us20_goods_received_loss value = { value = scope:gui_cbp_us20_trade_maintenance_loss_factor multiply = 0.1 } }
+	save_temporary_scope_value_as = { name = gui_cbp_us20_goods_received_loss value = { value = scope:gui_cbp_us20_trade_maintenance_loss_factor multiply =define:NCountry|CBD_TRADE_MAINTENANCE_MAX_IMPACT  } }
 	save_temporary_scope_value_as = {
 		name = gui_cbp_us20_target_goods_amount_received
 		value = { value = scope:gui_cbp_us20_goods_amount_sent add = { value = scope:gui_cbp_us20_goods_received_loss multiply = -1 } min = 0 }
