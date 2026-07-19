@@ -1,82 +1,114 @@
-# TECH-01 addendum - US-17 native trade-profit modifiers
+# TECH-01 addendum - US-17 operation-aware trade-profit inputs
 
 ## Purpose
 
-Record the production US-17 accounting surface. US-17 no longer reconstructs
-route profit with script prices or applies a parallel `add_gold` correction.
-It changes the native country modifier stack so Vanilla route selection, AI,
-UI, and treasury accounting consume one result.
+Record the production US-17 accounting surface after correcting the origin-side
+efficiency rule. Vanilla applies the directional efficiency to the source-market
+purchase cost. Import and export operations do not use the same country input:
+
+```txt
+trade_operation_efficiency = import_efficiency
+trade_operation_efficiency = export_efficiency when Trade.IsExport
+```
+
+With `Q` as moved goods, `Ps` as source price, `Pd` as destination price,
+`S` as Selling Efficiency, `M` as Merchant Maintenance Efficiency, `D` as the
+base route-maintenance cost, and `T` as sound tolls, the confirmed Vanilla
+starting point is:
+
+```txt
+Vanilla profit = Q * Pd * (1 + S)
+               - Q * Ps * (1 - trade_operation_efficiency)
+               - D * (1 - M)
+               - T
+```
+
+The distinction can only be evaluated from trade scope. A country may own both
+imports and exports in the same month, so one country-wide maintenance modifier
+cannot represent both route results.
 
 ## Confirmed engine surfaces
 
 | Business input | EU5 exposure | Scope | Status |
 |---|---|---|---|
-| Buying/import efficiency | `modifier:import_efficiency` | country | Confirmed |
+| Import efficiency | `modifier:import_efficiency` | country | Confirmed |
+| Export efficiency | `modifier:export_efficiency` | country | Confirmed |
 | Selling efficiency | `modifier:selling_efficiency` | country | Confirmed |
 | Merchant maintenance efficiency | `modifier:merchant_maintenance_efficiency` | country | Confirmed |
+| Operation direction | `is_export` / `Trade.IsExport` | trade | Confirmed |
 
 The tested build rejects `modifier:buying_efficiency` and
 `modifier:merchant_maintenance_cost`. They must not appear in executable code.
 
-## Division-free formula
+## Formula
 
-Let the current non-CBP baselines be:
+Let the current non-CBP country baselines be:
 
 ```txt
 I = import_efficiency
+E = export_efficiency
 S = selling_efficiency
 M = merchant_maintenance_efficiency
 D = define:NCountry|MERCHANT_MAINTENANCE_COST
-C = min(I + S, D)
+
+trade_operation_efficiency = I for an import operation
+trade_operation_efficiency = E for an export operation
+C = min(trade_operation_efficiency + S, D)
+C_country = min(I + E + S, D)
 ```
 
-CBP applies three additive auto-modifier corrections:
+CBP applies four additive auto-modifier corrections:
 
 ```txt
 import correction      = -I
+export correction      = -E
 selling correction     = -S
-maintenance correction = C - M
+maintenance correction = C_country - M
+C_country = min(-selling correction - import correction - export correction, D)
 ```
 
-The effective native values become:
+The three native price-margin inputs become zero. Merchant Maintenance
+Efficiency becomes `C_country`, not zero. Country auto-modifiers cannot evaluate
+`Trade.IsExport`, so the country-visible reference values Selling, Import, and
+Export Efficiency together. From the existing country-owned `every_trade` pass,
+each route then removes the non-directional part of that reference:
 
 ```txt
-effective import efficiency  = 0
-effective selling efficiency = 0
-effective maintenance efficiency = C
-effective maintenance factor     = 1 - C
+import treasury delta = D * (C_import - C_country)
+export treasury delta = D * (C_export - C_country)
+final maintenance     = D * (1 - C_route)
 ```
 
-There is no division and no lower clamp on `C`. A negative import/selling sum
-therefore remains economically meaningful and increases merchant maintenance.
-Positive sums are capped by the loaded merchant-maintenance-cost define `D`
-(Vanilla currently uses `0.25`).
+There is no division and no lower clamp on `C`. Negative operation or selling
+efficiency therefore remains meaningful and increases effective maintenance.
+Positive sums are capped by the loaded define `D`.
 
-The literal `1` represents the dimensionless 100% factor and must not be
-replaced by `D`. The business rule deliberately gives `D` a second role as the
-upper bound of `C`. Let `B` be the native route-maintenance amount before
-merchant-maintenance efficiency, including `D`. The monetary equivalence is:
+## Why route reconciliation is required
 
-```txt
-Vanilla maintenance = B * (1 - M)
-CBP target          = B * (1 - C)
-effective native    = B * (1 - M - correction)
+EU5 exposes `Trade.IsExport` to GUI and `is_export` to trade-scope script, but
+does not expose a trade-scope modifier that can replace country Import or Export
+Efficiency inside the native profit calculation. The price inputs can be
+cancelled natively, and the native maintenance modifier can represent the
+country-level sum of Selling, Import, and Export Efficiency. Neither directional
+route result can be represented by that same country modifier when the country
+owns routes in both directions.
 
-correction = C - M
-```
+The exact financial result therefore uses the already existing monthly
+country-owned trade loop and `add_gold`. This correction affects treasury but is
+not represented in Vanilla route-profit UI or AI projection. This limitation is
+preferable to silently applying Import Efficiency to export operations.
 
-The common monetary base `B` cancels when the additive percentage correction is
-solved. Reading `D` remains appropriate in absolute-gold probes, but production
-writes a native percentage modifier and must not multiply that modifier by `D`.
+US-20 remains a separate goods-only follow-up in the same loop. It does not
+apply US-17 money a second time.
 
 ## Idempotent refresh
 
 Auto-modifier values are included in `modifier:*` reads. Before recalculating,
-the shared refresh subtracts its three previously persisted corrections from
-the effective values. This reconstructs the current non-CBP baseline and
-prevents drift across repeated monthly, policy, or reform refreshes.
+the shared refresh subtracts all four previously persisted corrections from the
+effective values. This reconstructs the current non-CBP baselines and prevents
+drift across monthly, policy, and reform refreshes.
 
-Refresh surfaces:
+Refresh surfaces remain:
 
 ```txt
 on_policy_changed -> cbp_country_governance_changed
@@ -84,24 +116,9 @@ on_reform_change  -> cbp_country_governance_changed
 monthly country trade-owner pass
 ```
 
-The monthly refresh is authoritative and catches research, temporary modifiers,
-and any source without a dedicated confirmed country on-action. The two
-governance hooks deliberately share one callback and one CBP registration each;
-future consumers must extend that shared dispatcher.
-
-## Production boundary
-
-The production country pass refreshes US-17 once before `every_trade`. The
-route-local wrapper then performs US-20 goods reconciliation only. Production
-US-17 must not call `add_gold`, read route prices, or maintain a second profit
-ledger.
-
-This is the preferred architecture whenever a native modifier is available:
-cancel or transform the native input rather than reconciling its financial
-consequence after Vanilla has already evaluated AI and UI state.
-
-The older route-money effects remain only as a historical deterministic fixture
-for combined US-17/US-20 regression coverage. They are not a live fallback.
+Governance hooks refresh baselines only. Financial reconciliation remains owned
+by the monthly trade pass, preventing duplicate payments after a law or reform
+change.
 
 ## Runtime probe
 
@@ -114,9 +131,12 @@ event cbp_us17_owner_modifiers.1
 Expected marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 mode=native_auto_modifiers combination=sum_without_division clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed treasury_reconciliation=none
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified
 ```
 
-The probe covers positive, negative, upper-cap, full-maintenance, and repeated
-refresh arithmetic. In-game tooltip and route-profit checks remain required to
-confirm that the tested EU5 build updates native auto-modifiers without delay.
+The probe uses distinct Import and Export Efficiency fixtures, validates both
+operation paths, the upper cap, negative efficiency, four-way idempotence, and
+the live application of all four auto-modifiers. The delayed check derives its
+expected effective maintenance independently from the persisted CBP Selling,
+Import, and Export corrections, then compares it with
+`modifier:merchant_maintenance_efficiency`.

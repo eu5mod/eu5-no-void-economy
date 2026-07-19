@@ -38,12 +38,17 @@ cbp_trade_base_merchant_maintenance_cost = {
 }
 
 # Historical deterministic-fixture inputs. Production US-17 reconstructs the
-# country baseline and writes native auto-modifier corrections instead.
+# country baselines, cancels four native inputs, and selects Import or Export
+# Efficiency from trade scope.
 #
 # US-17's semantic "buying efficiency" maps to EU5 import_efficiency. The
 # literal modifier:buying_efficiency does not exist in the tested build.
 cbp_trade_owner_buying_efficiency = {
 	value = modifier:import_efficiency
+}
+
+cbp_trade_owner_export_efficiency = {
+	value = modifier:export_efficiency
 }
 
 cbp_trade_owner_selling_efficiency = {
