@@ -1,41 +1,59 @@
-# TEST-US-17 - Operation-aware trade-profit reconciliation
+# TEST-US-17 — Shared coefficient and proportional US-20 loss
 
 ## Objective
 
-Validate that US-17:
+Validate that the Selling route-loss coefficient is calculated once, persisted on
+the country, and then consumed by both US-17 and US-20.
 
 ```txt
-- cancels native Import, Export, and Selling Efficiency;
-- replaces Merchant Maintenance Efficiency with the country sum of Selling, Import, and Export;
-- selects Import Efficiency for import routes and Export Efficiency for exports;
-- transfers trade_operation_efficiency + Selling Efficiency to maintenance;
-- uses no reciprocal or division;
-- preserves negative combined efficiency;
-- caps positive combined efficiency at MERCHANT_MAINTENANCE_COST;
-- remains stable across repeated refreshes;
-- applies one route-local treasury delta before the unchanged US-20 goods path.
+shared coefficient C =
+    CBP_ROUTE_LOSS_COEFFICIENT_MAX
+    / (1 + Selling Efficiency * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+
+US-17 effective Selling Efficiency = -C
+US-20 goods loss = trade_volume * C
 ```
 
-## Fast preparation without regeneration
+Import and Export retain their independent compensation curves:
 
-US-17 does not change generated Vanilla overrides. When the checkout already
-contains the intended generated artifacts, validate and install directly:
+```txt
+Import residual =
+    -CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
+    / (1 + Import Efficiency * CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE)
+
+Export residual =
+    -CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
+    / (1 + Export Efficiency * CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE)
+```
+
+The test must prove:
+
+```txt
+- C is calculated before the US-17 Selling correction;
+- C is persisted as country variable cbp_us20_route_loss_coefficient;
+- US-17 Selling consumes C and does not calculate its own reciprocal curve;
+- US-20 reads the persisted C and does not recalculate it;
+- Merchant Maintenance remains on the native path;
+- US-17 applies no route-level add_gold delta;
+- US-20 multiplies C by trade_volume;
+- repeated refresh reconstructs all three non-CBP baselines without drift;
+- live auto-modifiers match the arithmetic fixture after one game day.
+```
+
+## Static preparation
 
 ```sh
+./tools/generate_all.sh
+python3 tools/validate_cmm_configuration.py
 python3 tools/validate_ci_static_contracts.py
 ./tools/validate_cbp_script_safety.sh
 git diff --check
-git diff --cached --check
-
-./tools/install_local_packages.sh --skip-generate
-./tools/install_local_packages.sh --check
-./tools/clear_eu5_logs.sh
 ```
 
-Use `./tools/dev_prepare_game.sh` only after changing configuration, a
-generator, a CBG rule, a Vanilla-derived source, or a generated output.
+The static contract must reject any define, division, Selling baseline read, or
+Selling modifier read inside the US-20 route calculation block.
 
-## Focused arithmetic probe
+## Focused probe
 
 Start EU5, load a campaign, and run:
 
@@ -43,60 +61,139 @@ Start EU5, load a campaign, and run:
 event cbp_us17_owner_modifiers.1
 ```
 
-Wait one in-game day for the delayed live-modifier check. Expected marker:
+Wait one in-game day.
+
+Expected final marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 coefficient_calculated_upstream=verified curve_formula=verified maintenance=native_untouched route_money_delta=zero selling_us20_coefficient=shared us20_recalculation=absent proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
-The detailed checks must include:
+## Arithmetic fixture
+
+Default defines:
 
 ```txt
-import: I=0.05 Ex=0.10 S=0.02 -> trade_operation_efficiency=0.05, C=0.07
-export: I=0.05 Ex=0.10 S=0.02 -> trade_operation_efficiency=0.10, C=0.12
-native corrections: Import=-0.05, Export=-0.10, Selling=-0.02, Maintenance=+0.09
-native maintenance: M + correction = 0.08 + 0.09 = C_country = 0.17
-independent maintenance formula: min(-CBP Selling correction - CBP Import correction - CBP Export correction, D) = 0.17
-import treasury delta: D * (0.07 - 0.17) = D * -0.10
-export treasury delta: D * (0.12 - 0.17) = D * -0.05
-negative: I=-0.40 S=-0.20 -> C=-0.60, with no lower clamp
-upper cap: Ex=2 S=1 -> C=MERCHANT_MAINTENANCE_COST
-idempotence: a second calculation reconstructs all four original baselines
+CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05
+CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10
+CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05
+CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10
+```
+
+Inputs:
+
+```txt
+S = 0.10
+I = 0.20
+Ex = 0.30
+M = 0.08
+trade_volume = 10
+```
+
+### Step 1 — Calculate the shared coefficient upstream
+
+```txt
+C = 0.05 / (1 + 0.10 * 10)
+C = 0.025
+```
+
+Expected temporary result:
+
+```txt
+cbp_us20_route_loss_coefficient_result = 0.025
+```
+
+Expected persisted country value after refresh:
+
+```txt
+var:cbp_us20_route_loss_coefficient = 0.025
+```
+
+### Step 2 — Feed C into US-17
+
+```txt
+Selling correction = -0.10 - 0.025 = -0.125
+Selling effective value = 0.10 - 0.125 = -0.025
+```
+
+Directional values:
+
+```txt
+Import residual = -0.05 / (1 + 0.20 * 10) = -0.016667
+Import correction = -0.20 - 0.016667 = -0.216667
+
+Export residual = -0.05 / (1 + 0.30 * 10) = -0.0125
+Export correction = -0.30 - 0.0125 = -0.3125
+```
+
+### Step 3 — Read C in US-20 without recalculation
+
+```txt
+cbp_us20_route_loss_coefficient_input =
+    var:cbp_us20_route_loss_coefficient
+
+cbp_us20_route_loss_coefficient_input = 0.025
+```
+
+US-20 result:
+
+```txt
+goods_loss_quantity = 10 * 0.025 = 0.25
+target_received = 10 - 0.25 = 9.75
+```
+
+US-20 must not evaluate this formula again:
+
+```txt
+0.05 / (1 + Selling Efficiency * 10)
+```
+
+Merchant Maintenance remains:
+
+```txt
+effective Merchant Maintenance Efficiency = 0.08
+```
+
+US-17 route money delta remains:
+
+```txt
+0
 ```
 
 ## Runtime validation
 
-1. Use a country that owns at least one import route and one export route.
-2. Record its Import, Export, Selling, and Merchant Maintenance Efficiency.
-3. Let one monthly tick run and confirm four localized CBP modifiers are shown.
-4. Confirm Import, Export, and Selling Efficiency are zero, while effective
-   Merchant Maintenance Efficiency equals `C_country` rather than zero. The
-   delayed probe reads that effective modifier and independently compares it to
-   `min(-CBP Selling correction - CBP Import correction - CBP Export correction, D)`.
-5. Confirm an import uses `Ei`, while an export uses `Ex`, in the detailed US-17
-   operation-aware diagnostics.
-6. Confirm `C = min(trade_operation_efficiency + S, D)`. Each route applies
-   `D * (C_route - C_country)` after the native all-efficiencies reference.
-7. Let a second monthly tick run without changing inputs. Corrections and route
-   results must not drift.
-8. Change a policy or government reform and confirm the shared refresh updates
-   all four baselines.
-9. Save, reload, let one monthly tick run, and confirm the same values remain.
-10. Run the US-20 focused and combined probes to confirm goods loss is unchanged.
+1. Record the country's non-CBP Selling, Import, Export, and Merchant Maintenance
+   Efficiency values.
+2. Run the focused event and wait one day.
+3. Confirm exactly three localized US-17 auto-modifiers are visible.
+4. Confirm `cbp_us20_route_loss_coefficient` exists on the country.
+5. Confirm the effective Selling Efficiency equals the negative coefficient.
+6. Confirm Import and Export equal their documented residuals.
+7. Confirm Merchant Maintenance is unchanged.
+8. Confirm no US-17 treasury delta is emitted.
+9. Confirm the US-20 transaction input equals the persisted country coefficient.
+10. Confirm `goods_loss_quantity / trade_volume` equals the coefficient.
+11. Let another refresh run without changing inputs and confirm no drift.
+12. Save, reload, and repeat the focused probe.
 
 ## Failure conditions
 
 Reject the run for any of these:
 
 ```txt
-an export route uses Import Efficiency
-Import and Export Efficiency are both applied to one route
-fewer or more than four native CBP modifiers
-effective Merchant Maintenance Efficiency incorrectly equals zero
-division by zero or reciprocal behavior
-negative C clamped to zero
-different correction after an unchanged second refresh
-more than one US-17 treasury mutation per owned route
-US-20 goods-reconciliation regression
+fewer or more than three US-17 auto-modifiers
+a Merchant Maintenance auto-modifier remains
+Merchant Maintenance changes after US-17 refresh
+US-17 applies add_gold or a non-zero route money delta
+cbp_us20_route_loss_coefficient is missing after refresh
+US-17 Selling recalculates the route-loss curve
+US-20 reads Selling Efficiency or the Selling baseline
+US-20 reads CBP_ROUTE_LOSS_COEFFICIENT_MAX/CURVE
+US-20 contains a denominator or division
+US-20 subtracts the coefficient directly as a quantity
+US-20 fails to multiply trade_volume by the coefficient
+US-17 and US-20 consume different coefficient values
+an unchanged second refresh changes a reconstructed baseline
+state version is not 6
 script-system, unset-variable, or invalid-modifier error
 ```

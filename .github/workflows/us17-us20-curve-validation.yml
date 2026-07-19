@@ -1,0 +1,104 @@
+name: US17 US20 Curve Validation
+
+on:
+  push:
+    branches:
+      - feature/us17-us20-efficiency-coupling
+  pull_request:
+    paths:
+      - 'in_game/common/auto_modifiers/cbp_us17_native_trade_profit_auto_modifiers.txt'
+      - 'in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt'
+      - 'loading_screen/common/defines/cbp_trade_defines.txt'
+      - 'packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt'
+      - 'tools/validate_ci_static_contracts.py'
+      - 'tools/validate_ci_static_contracts_legacy.py'
+      - 'tools/validate_cmm_configuration.py'
+      - '.github/workflows/us17-us20-curve-validation.yml'
+
+jobs:
+  validate-curve-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Generate local artifacts
+        run: ./tools/generate_all.sh
+
+      - name: Compile Python validators
+        run: |
+          python3 -m py_compile \
+            tools/validate_ci_static_contracts.py \
+            tools/validate_ci_static_contracts_legacy.py \
+            tools/validate_cmm_configuration.py
+
+      - name: Validate CMM configuration
+        id: cmm
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/validate_cmm_configuration.py > cmm-validation.log 2>&1
+          status=$?
+          echo "$status" > cmm-validation.status
+          cat cmm-validation.log
+          exit $status
+
+      - name: Validate static contracts
+        id: static
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/validate_ci_static_contracts.py > static-contracts.log 2>&1
+          status=$?
+          echo "$status" > static-contracts.status
+          cat static-contracts.log
+          exit $status
+
+      - name: Validate script safety
+        id: safety
+        continue-on-error: true
+        run: |
+          set +e
+          ./tools/validate_cbp_script_safety.sh > script-safety.log 2>&1
+          status=$?
+          echo "$status" > script-safety.status
+          cat script-safety.log
+          exit $status
+
+      - name: Validate patch hygiene
+        id: hygiene
+        continue-on-error: true
+        run: |
+          set +e
+          git diff --check > patch-hygiene.log 2>&1
+          status=$?
+          echo "$status" > patch-hygiene.status
+          cat patch-hygiene.log
+          exit $status
+
+      - name: Upload focused validation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: us17-us20-curve-validation-logs
+          path: |
+            *-validation.log
+            *-validation.status
+            static-contracts.log
+            static-contracts.status
+            script-safety.log
+            script-safety.status
+            patch-hygiene.log
+            patch-hygiene.status
+
+      - name: Enforce focused validation results
+        if: always()
+        run: |
+          status=0
+          for file in cmm-validation.status static-contracts.status script-safety.status patch-hygiene.status; do
+            if [ ! -f "$file" ] || [ "$(cat "$file")" != "0" ]; then
+              echo "Focused validation failed: $file" >&2
+              status=1
+            fi
+          done
+          exit $status
