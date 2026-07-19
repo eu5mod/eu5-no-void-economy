@@ -1,21 +1,21 @@
-﻿NCountry = {
-    MERCHANT_MAINTENANCE_COST = 0.5          # VANILLA = 0.25; package balance choice
+NCountry = {
+    MERCHANT_MAINTENANCE_COST = 0.5          # VANILLA = 0.25; unchanged by this stacked PR
 
-    # US-20 only: maximum dimensionless share of trade volume lost in transit when
-    # Selling Efficiency is 0. US-17 no longer applies this coefficient to prices.
+    # US-20: maximum dimensionless share of trade volume lost in transit when
+    # Selling Efficiency is 0. With the default 0.05, the maximum loss is 5%.
     CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05
     CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10
 
-    # US-17 reciprocal Merchant Maintenance formula:
-    #   1 - 1 / (1 + M * weight + (I + Ex) * scale * weight)
-    # Defaults produce exactly 1 - 1 / (1 + M/2 + (I + Ex)*5).
-    CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5
-    CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10
-
     # Temporary aliases retained for stacked branches and historical fixtures.
+    # Production US-17/US-20 reads the explicit COEFFICIENT names above.
     CBP_ROUTE_LOSS_MAX = 0.05
     CBP_ROUTE_LOSS_CURVE = 10
+
+    # US-17: residual native Import/Export Efficiency impact after cancelling the baseline.
     CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05
     CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10
+
+    # Temporary compatibility alias for the historical deterministic fixture in
+    # zzz_trade_reconciliation_effects.txt. Production US-17/US-20 does not read it.
     CBD_TRADE_MAINTENANCE_MAX_IMPACT = 0.05
 }

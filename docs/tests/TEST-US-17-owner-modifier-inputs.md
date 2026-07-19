@@ -1,23 +1,43 @@
-# TEST-US-17 — Reciprocal Merchant Maintenance
+# TEST-US-17 — Shared coefficient and proportional US-20 loss
 
 ## Objective
 
-Validate the US-17 rule:
+Validate that the Selling route-loss coefficient is calculated once, persisted on
+the country, and then consumed by both US-17 and US-20.
 
 ```txt
-Selling Efficiency stays native
-Import Efficiency effective value = 0
-Export Efficiency effective value = 0
+shared coefficient C =
+    CBP_ROUTE_LOSS_COEFFICIENT_MAX
+    / (1 + Selling Efficiency * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
 
-Merchant Maintenance effective value =
-    1 - 1 / (1 + M/2 + (I + Ex)*5)
+US-17 effective Selling Efficiency = -C
+US-20 goods loss = trade_volume * C
 ```
 
-Also verify that US-20 remains a separate physical-goods path:
+Import and Export retain their independent compensation curves:
 
 ```txt
-US-20 goods loss =
-    trade_volume * var:cbp_us20_route_loss_coefficient
+Import residual =
+    -CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
+    / (1 + Import Efficiency * CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE)
+
+Export residual =
+    -CBP_TRADE_EFFICIENCY_COMPENSATION_MAX
+    / (1 + Export Efficiency * CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE)
+```
+
+The test must prove:
+
+```txt
+- C is calculated before the US-17 Selling correction;
+- C is persisted as country variable cbp_us20_route_loss_coefficient;
+- US-17 Selling consumes C and does not calculate its own reciprocal curve;
+- US-20 reads the persisted C and does not recalculate it;
+- Merchant Maintenance remains on the native path;
+- US-17 applies no route-level add_gold delta;
+- US-20 multiplies C by trade_volume;
+- repeated refresh reconstructs all three non-CBP baselines without drift;
+- live auto-modifiers match the arithmetic fixture after one game day.
 ```
 
 ## Static preparation
@@ -30,16 +50,8 @@ python3 tools/validate_ci_static_contracts.py
 git diff --check
 ```
 
-The static contract rejects:
-
-```txt
-- a Selling auto-modifier;
-- residual Import/Export price effects;
-- a missing Merchant Maintenance auto-modifier;
-- US-17 dependence on the US-20 coefficient;
-- route-level add_gold reconciliation;
-- per-route US-20 coefficient recalculation.
-```
+The static contract must reject any define, division, Selling baseline read, or
+Selling modifier read inside the US-20 route calculation block.
 
 ## Focused probe
 
@@ -54,18 +66,18 @@ Wait one in-game day.
 Expected final marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 reciprocal_maintenance_formula=verified selling=native_untouched import_export_price_effect=zero us20_coefficient=separate route_money_delta=zero proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 coefficient_calculated_upstream=verified curve_formula=verified maintenance=native_untouched route_money_delta=zero selling_us20_coefficient=shared us20_recalculation=absent proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
 ## Arithmetic fixture
 
-Defines:
+Default defines:
 
 ```txt
-CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5
-CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10
 CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05
 CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10
+CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05
+CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10
 ```
 
 Inputs:
@@ -78,83 +90,110 @@ M = 0.08
 trade_volume = 10
 ```
 
-### US-17 denominator
+### Step 1 — Calculate the shared coefficient upstream
 
 ```txt
-denominator =
-    1 + 0.08/2 + (0.20 + 0.30)*5
-
-denominator = 3.54
+C = 0.05 / (1 + 0.10 * 10)
+C = 0.025
 ```
 
-### US-17 target and correction
+Expected temporary result:
 
 ```txt
-reciprocal = 1 / 3.54
-           = 0.282486
-
-maintenance target = 1 - 0.282486
-                   = 0.717514
-
-maintenance correction = 0.717514 - 0.08
-                       = 0.637514
+cbp_us20_route_loss_coefficient_result = 0.025
 ```
 
-Expected effective modifiers:
+Expected persisted country value after refresh:
 
 ```txt
-Selling = 0.10
-Import = 0
-Export = 0
-Merchant Maintenance = 0.717514
+var:cbp_us20_route_loss_coefficient = 0.025
 ```
 
-### US-20 separate coefficient
+### Step 2 — Feed C into US-17
 
 ```txt
-C = 0.05 / (1 + 0.10*10)
-  = 0.025
-
-goods_loss_quantity = 10*0.025
-                    = 0.25
-
-target_received = 9.75
+Selling correction = -0.10 - 0.025 = -0.125
+Selling effective value = 0.10 - 0.125 = -0.025
 ```
 
-US-17 must not read `C`. US-20 must not calculate `C` inside the route block.
+Directional values:
+
+```txt
+Import residual = -0.05 / (1 + 0.20 * 10) = -0.016667
+Import correction = -0.20 - 0.016667 = -0.216667
+
+Export residual = -0.05 / (1 + 0.30 * 10) = -0.0125
+Export correction = -0.30 - 0.0125 = -0.3125
+```
+
+### Step 3 — Read C in US-20 without recalculation
+
+```txt
+cbp_us20_route_loss_coefficient_input =
+    var:cbp_us20_route_loss_coefficient
+
+cbp_us20_route_loss_coefficient_input = 0.025
+```
+
+US-20 result:
+
+```txt
+goods_loss_quantity = 10 * 0.025 = 0.25
+target_received = 10 - 0.25 = 9.75
+```
+
+US-20 must not evaluate this formula again:
+
+```txt
+0.05 / (1 + Selling Efficiency * 10)
+```
+
+Merchant Maintenance remains:
+
+```txt
+effective Merchant Maintenance Efficiency = 0.08
+```
+
+US-17 route money delta remains:
+
+```txt
+0
+```
 
 ## Runtime validation
 
-1. Record the country’s effective Selling, Import, Export and Merchant Maintenance
-   Efficiency values before the refresh.
+1. Record the country's non-CBP Selling, Import, Export, and Merchant Maintenance
+   Efficiency values.
 2. Run the focused event and wait one day.
-3. Confirm exactly three localized US-17 auto-modifiers are visible:
-   - Import Efficiency to Maintenance;
-   - Export Efficiency to Maintenance;
-   - Reciprocal Trade Maintenance.
-4. Confirm no CBP Selling modifier is present.
-5. Confirm effective Selling equals the reconstructed native baseline.
-6. Confirm effective Import and Export equal zero.
-7. Confirm effective Merchant Maintenance matches the reciprocal formula.
+3. Confirm exactly three localized US-17 auto-modifiers are visible.
+4. Confirm `cbp_us20_route_loss_coefficient` exists on the country.
+5. Confirm the effective Selling Efficiency equals the negative coefficient.
+6. Confirm Import and Export equal their documented residuals.
+7. Confirm Merchant Maintenance is unchanged.
 8. Confirm no US-17 treasury delta is emitted.
-9. Confirm `cbp_us20_route_loss_coefficient` exists separately on the country.
-10. Confirm `goods_loss_quantity / trade_volume` equals that coefficient.
-11. Let another refresh run unchanged and confirm no drift.
-12. Save, reload, and repeat the probe.
+9. Confirm the US-20 transaction input equals the persisted country coefficient.
+10. Confirm `goods_loss_quantity / trade_volume` equals the coefficient.
+11. Let another refresh run without changing inputs and confirm no drift.
+12. Save, reload, and repeat the focused probe.
 
 ## Failure conditions
 
 Reject the run for any of these:
 
 ```txt
-Selling Efficiency changes because of a CBP auto-modifier
-Import or Export retains a non-zero price effect
-Merchant Maintenance does not match the reciprocal target
-US-17 reads cbp_us20_route_loss_coefficient
+fewer or more than three US-17 auto-modifiers
+a Merchant Maintenance auto-modifier remains
+Merchant Maintenance changes after US-17 refresh
 US-17 applies add_gold or a non-zero route money delta
-US-20 recalculates the coefficient per route
+cbp_us20_route_loss_coefficient is missing after refresh
+US-17 Selling recalculates the route-loss curve
+US-20 reads Selling Efficiency or the Selling baseline
+US-20 reads CBP_ROUTE_LOSS_COEFFICIENT_MAX/CURVE
+US-20 contains a denominator or division
+US-20 subtracts the coefficient directly as a quantity
 US-20 fails to multiply trade_volume by the coefficient
+US-17 and US-20 consume different coefficient values
 an unchanged second refresh changes a reconstructed baseline
-state version is not 7
+state version is not 6
 script-system, unset-variable, or invalid-modifier error
 ```

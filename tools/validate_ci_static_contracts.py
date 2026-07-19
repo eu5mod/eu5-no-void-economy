@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Static CI contracts for reciprocal US-17 maintenance and separated US-20 loss.
+"""Static CI contracts for the stacked US-17/US-20 shared-coefficient model.
 
 The complete pre-existing validator remains in
 ``validate_ci_static_contracts_legacy.py``. This entry point replaces only the
-US-17/US-20 contracts whose business rules changed, then delegates to legacy.
+two contracts whose business rules changed, then delegates to the legacy main so
+all unrelated checks remain active.
 """
 
 from __future__ import annotations
@@ -31,10 +32,20 @@ def validate_us17_owner_modifier_contract(
     for token in [
         "CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05",
         "CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10",
-        "CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5",
-        "CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10",
+        "CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05",
+        "CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10",
     ]:
         expect(token in defines, f"US17/US20 defines must contain {token}")
+
+    expect(
+        "CBP_ROUTE_LOSS_MAX = 0.05" in defines
+        and "CBP_ROUTE_LOSS_CURVE = 10" in defines,
+        "Previous route-loss define names must remain as temporary aliases",
+    )
+    expect(
+        "CBD_TRADE_MAINTENANCE_MAX_IMPACT = 0.05" in defines,
+        "Historical deterministic fixture alias must remain available",
+    )
 
     coefficient_formula = block(
         owner_modifier_effects,
@@ -69,7 +80,7 @@ def validate_us17_owner_modifier_contract(
         "cbp_run_us20_route_loss_reconciliation",
     )
 
-    # US-20 retains one independently persisted Selling-driven goods-loss curve.
+    # One pure calculation creates the country coefficient candidate.
     for token in [
         "cbp_us17_native_baseline_selling_efficiency",
         "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_MAX",
@@ -79,73 +90,79 @@ def validate_us17_owner_modifier_contract(
         "divide = scope:cbp_us20_route_loss_denominator",
         "min = 0.01",
     ]:
-        expect(token in coefficient_formula, f"US20 coefficient formula must contain {token}")
+        expect(token in coefficient_formula, f"Shared coefficient formula must contain {token}")
     expect(
         coefficient_formula.count("divide = scope:") == 1,
-        "US20 coefficient helper must contain exactly one reciprocal curve",
+        "Shared coefficient helper must contain exactly one reciprocal curve",
     )
     expect(
         "set_variable" not in coefficient_formula,
-        "US20 coefficient helper must be pure; country refresh owns persistence",
+        "Pure coefficient helper must return a temporary result; refresh owns persistence",
     )
 
-    # US-17 must cancel directional price effects and move them into maintenance.
+    # US-17 Selling consumes the persisted country variable. It must not calculate
+    # the reciprocal Selling curve again.
     for token in [
-        "cbp_us17_native_import_correction_result",
-        "cbp_us17_native_export_correction_result",
-        "cbp_us17_native_baseline_import_efficiency",
-        "cbp_us17_native_baseline_export_efficiency",
-        "cbp_us17_native_baseline_maintenance_efficiency",
-        "cbp_us17_directional_maintenance_term",
-        "define:NCountry|CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT",
-        "define:NCountry|CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE",
-        "cbp_us17_maintenance_curve_denominator",
-        "cbp_us17_maintenance_curve_reciprocal",
-        "cbp_us17_native_effective_maintenance_result",
-        "cbp_us17_native_maintenance_correction_result",
-        "divide = scope:cbp_us17_maintenance_curve_denominator",
-        "min = 0.01",
-    ]:
-        expect(token in correction_formula, f"US17 reciprocal formula must contain {token}")
-
-    expect(
-        correction_formula.count("multiply = -1") >= 4,
-        "US17 must cancel Import/Export and form reciprocal/correction differences",
-    )
-    expect(
-        correction_formula.count("divide = scope:") == 1,
-        "US17 reciprocal maintenance formula must contain exactly one division",
-    )
-    for forbidden in [
-        "cbp_us17_native_selling_correction_result",
+        "cbp_us17_native_baseline_selling_efficiency",
         "var:cbp_us20_route_loss_coefficient",
-        "CBP_ROUTE_LOSS_COEFFICIENT_MAX",
-        "CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
-        "CBP_TRADE_EFFICIENCY_COMPENSATION_MAX",
+        "cbp_us17_native_selling_correction_result",
+        "cbp_us17_native_baseline_import_efficiency",
+        "define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_MAX",
+        "define:NCountry|CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE",
+        "cbp_us17_native_import_correction_result",
+        "cbp_us17_native_baseline_export_efficiency",
+        "cbp_us17_native_export_correction_result",
     ]:
-        expect(
-            forbidden not in correction_formula,
-            f"US17 reciprocal maintenance must be independent of {forbidden}",
-        )
+        expect(token in correction_formula, f"US17 correction formula must contain {token}")
 
-    # Selling remains native; I, Ex and M reconstruct idempotently.
     expect(
-        "value = scope:cbp_us17_native_effective_selling_efficiency" in reconstruction,
-        "Selling baseline must equal the untouched native effective Selling Efficiency",
+        "CBP_ROUTE_LOSS_COEFFICIENT_MAX" not in correction_formula
+        and "CBP_ROUTE_LOSS_COEFFICIENT_CURVE" not in correction_formula,
+        "US17 Selling correction must not recalculate the shared curve",
     )
     expect(
-        "cbp_us17_native_previous_selling_correction" not in reconstruction,
-        "Selling reconstruction must not subtract a CBP correction",
+        "scope:cbp_us20_route_loss_coefficient_result" not in correction_formula,
+        "US17 Selling must read the persisted country variable, not the temporary result",
     )
-    for semantic_name in ["import", "export", "maintenance"]:
+    expect(
+        correction_formula.count("divide = scope:") == 2,
+        "Only Import and Export may evaluate reciprocal curves inside US17 corrections",
+    )
+    expect(
+        correction_formula.count("min = 0.01") == 2,
+        "Only the two directional curves require denominator safety floors here",
+    )
+    expect(
+        "cbp_us17_native_maintenance_correction_result" not in correction_formula,
+        "US17 must not calculate a Merchant Maintenance correction",
+    )
+    expect(
+        "merchant_maintenance_efficiency" not in native_auto_modifiers,
+        "US17 must not write the native Merchant Maintenance surface",
+    )
+    expect(
+        "cbp_us17_merchant_maintenance_reconciliation" not in native_auto_modifiers,
+        "Previous fourth auto-modifier must be removed",
+    )
+
+    for semantic_name in ["selling", "import", "export"]:
         expect(
             f"cbp_us17_native_previous_{semantic_name}_correction" in reconstruction,
-            f"US17 reconstruction must remove previous {semantic_name} correction",
+            f"US17 refresh must remove its previous {semantic_name} correction",
         )
         expect(
             f"cbp_us17_native_{semantic_name}_baseline" in refresh,
-            f"US17 refresh must persist reconstructed {semantic_name} baseline",
+            f"US17 refresh must persist its reconstructed {semantic_name} baseline",
         )
+
+    expect(
+        "cbp_us17_native_previous_maintenance_correction" not in reconstruction,
+        "Baseline reconstruction must not subtract stale maintenance correction",
+    )
+    expect(
+        "value = scope:cbp_us17_native_effective_maintenance_efficiency" in reconstruction,
+        "Diagnostic maintenance baseline must equal native effective value",
+    )
 
     coefficient_call = "cbp_compute_us20_route_loss_coefficient_from_selling_baseline = yes"
     persist_coefficient = (
@@ -153,22 +170,11 @@ def validate_us17_owner_modifier_contract(
         "value = scope:cbp_us20_route_loss_coefficient_result }"
     )
     correction_call = "cbp_compute_us17_native_corrections_from_baselines = yes"
+
     for token, message in [
-        (coefficient_call, "Country refresh must calculate US20 coefficient"),
-        (persist_coefficient, "Country refresh must persist US20 coefficient"),
-        (correction_call, "Country refresh must calculate US17 reciprocal corrections"),
-        (
-            "set_variable = { name = cbp_us17_native_maintenance_correction value = scope:cbp_us17_native_maintenance_correction_result }",
-            "Country refresh must persist maintenance correction",
-        ),
-        (
-            "set_variable = { name = cbp_us17_native_modifier_state_version value = 7 }",
-            "Reciprocal-maintenance state must use version 7",
-        ),
-        (
-            "remove_variable = cbp_us17_native_selling_correction",
-            "Migration must remove stale Selling correction",
-        ),
+        (coefficient_call, "Country refresh must calculate the shared coefficient"),
+        (persist_coefficient, "Country refresh must persist the shared coefficient"),
+        (correction_call, "Country refresh must calculate US17 corrections"),
     ]:
         expect(token in refresh, message)
 
@@ -176,15 +182,27 @@ def validate_us17_owner_modifier_contract(
         refresh.index(coefficient_call)
         < refresh.index(persist_coefficient)
         < refresh.index(correction_call),
-        "Country refresh must persist US20 state before the route pass and then compute US17",
+        "Country refresh order must be calculate -> persist -> US17 consume",
+    )
+    expect(
+        refresh.count(persist_coefficient) == 1,
+        "Country refresh must persist cbp_us20_route_loss_coefficient exactly once",
+    )
+    expect(
+        "cbp_us17_native_modifier_state_version value = 6" in refresh,
+        "Shared-coefficient state must use version 6",
     )
     expect(
         "remove_variable = cbp_us20_route_loss_coefficient" in clear,
-        "Disabling trade rework must remove the US20 coefficient",
+        "Disabling trade rework must remove the shared coefficient",
     )
     expect(
-        "cbp_us17_native_modifier_state_version value = 7" in clear,
-        "Clear path must migrate to state version 7",
+        "remove_variable = cbp_us17_native_maintenance_correction" in refresh + clear,
+        "Migration must remove stale maintenance correction state",
+    )
+    expect(
+        "remove_variable = cbp_us17_native_maintenance_baseline" in refresh + clear,
+        "Migration must remove stale maintenance baseline state",
     )
 
     expect("add_gold" not in money_wrapper, "US17 compatibility hook must not mutate treasury")
@@ -193,7 +211,7 @@ def validate_us17_owner_modifier_contract(
         "US17 compatibility hook must expose a zero money delta",
     )
 
-    # US-20 reads the persisted coefficient and multiplies it by route volume only.
+    # US-20 may only read the persisted coefficient and multiply it by route volume.
     for token in [
         "has_variable = cbp_us20_route_loss_coefficient",
         "value = var:cbp_us20_route_loss_coefficient",
@@ -203,32 +221,42 @@ def validate_us17_owner_modifier_contract(
         "gui_cbp_us20_goods_reconciliation_delta",
     ]:
         expect(token in us20_route, f"US20 route calculation must contain {token}")
+
     for forbidden in [
         "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_MAX",
         "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
         "divide =",
         "modifier:selling_efficiency",
+        "var:cbp_us17_native_selling_baseline",
     ]:
-        expect(forbidden not in us20_route, f"US20 route must not recalculate coefficient ({forbidden})")
+        expect(
+            forbidden not in us20_route,
+            f"US20 must not recalculate shared coefficient ({forbidden})",
+        )
+
     expect(
         "value = scope:gui_cbp_us20_goods_amount_sent" in us20_route
         and "multiply = scope:cbp_us20_route_loss_coefficient_input" in us20_route,
         "US20 goods loss must equal trade volume multiplied by persisted coefficient",
     )
     expect(
+        "value = scope:cbp_us20_route_loss_coefficient_input" in us20_route,
+        "Historical loss-factor diagnostic must carry the shared coefficient",
+    )
+    expect(
         "cbp_compute_us20_route_loss_from_selling_efficiency = yes" in goods_wrapper,
-        "US20 live wrapper must call its read-only coefficient consumer",
+        "US20 live wrapper must call compatibility-named read-only helper",
+    )
+    expect(
+        "cbp_apply_us20_goods_delta_to_target_market_good = yes" in goods_wrapper,
+        "US20 live wrapper must preserve centralized goods reconciliation",
     )
     expect("add_gold" not in goods_wrapper, "US20 goods wrapper must never mutate money")
 
     expected_auto_modifiers = [
+        ("cbp_us17_selling_efficiency_cancellation", "cbp_us17_native_selling_correction", "selling_efficiency"),
         ("cbp_us17_import_efficiency_cancellation", "cbp_us17_native_import_correction", "import_efficiency"),
         ("cbp_us17_export_efficiency_cancellation", "cbp_us17_native_export_correction", "export_efficiency"),
-        (
-            "cbp_us17_merchant_maintenance_reconciliation",
-            "cbp_us17_native_maintenance_correction",
-            "merchant_maintenance_efficiency",
-        ),
     ]
     for modifier_name, variable_name, modifier_type in expected_auto_modifiers:
         modifier_block = block(native_auto_modifiers, modifier_name)
@@ -242,15 +270,17 @@ def validate_us17_owner_modifier_contract(
             f"{modifier_name} must scale from its persisted correction",
         )
         expect(f"{modifier_type} = 1" in modifier_block, f"{modifier_name} must write {modifier_type}")
-        expect("cbp_trade_rework_enabled_trigger = yes" in modifier_block, f"{modifier_name} must remain gated")
-        expect(f"AUTO_MODIFIER_NAME_{modifier_name}" in native_localization, f"Missing localization for {modifier_name}")
-    expect(
-        "cbp_us17_selling_efficiency_cancellation" not in native_auto_modifiers,
-        "US17 must not alter Selling Efficiency",
-    )
+        expect(
+            "cbp_trade_rework_enabled_trigger = yes" in modifier_block,
+            f"{modifier_name} must remain gated",
+        )
+        expect(
+            f"AUTO_MODIFIER_NAME_{modifier_name}" in native_localization,
+            f"Missing localization for {modifier_name}",
+        )
     expect(
         native_auto_modifiers.count("requires_real = no") == 3,
-        "US17 must expose exactly Import, Export and Merchant Maintenance modifiers",
+        "US17 must expose exactly three curve auto-modifiers",
     )
 
     policy_hook = block(country_governance_on_actions, "on_policy_changed")
@@ -274,7 +304,7 @@ def validate_us17_owner_modifier_contract(
     )
     expect(
         shared_dispatcher.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1,
-        "Shared governance dispatcher must refresh US17/US20 country state exactly once",
+        "Shared governance dispatcher must refresh shared coefficient exactly once",
     )
 
     for token in [
@@ -287,24 +317,27 @@ def validate_us17_owner_modifier_contract(
         expect(token in owner_modifier_probe_events, f"US17 focused event surface must contain {token}")
 
     for assertion in [
-        "reciprocal_denominator_formula",
-        "reciprocal_maintenance_target",
-        "reciprocal_maintenance_correction",
-        "selling_untouched",
-        "effective_import_zero",
-        "effective_export_zero",
-        "idempotent_maintenance_baseline",
-        "live_selling_untouched",
-        "live_import_cancelled",
-        "live_export_cancelled",
-        "live_reciprocal_maintenance_applied",
-        "us20_coefficient_persisted_separately",
+        "shared_coefficient_calculated_upstream",
+        "selling_correction_uses_shared_coefficient",
+        "import_curve_correction_formula",
+        "export_curve_correction_formula",
+        "merchant_maintenance_baseline_unchanged",
+        "route_money_delta_zero",
+        "shared_coefficient_persisted_upstream",
+        "us20_reads_persisted_shared_coefficient",
+        "selling_uses_shared_coefficient",
         "us20_trade_volume_times_persisted_coefficient",
-        "reciprocal_maintenance_formula=verified",
-        "import_export_price_effect=zero",
-        "us20_coefficient=separate",
+        "us20_proportional_loss_subtracted",
+        "idempotent_selling_baseline",
+        "idempotent_import_baseline",
+        "idempotent_export_baseline",
+        "live_merchant_maintenance_untouched",
+        "coefficient_calculated_upstream=verified",
+        "selling_us20_coefficient=shared",
+        "us20_recalculation=absent",
+        "proportional_goods_loss=verified",
     ]:
-        expect(assertion in owner_modifier_probe_effects, f"Reciprocal-maintenance probe must assert {assertion}")
+        expect(assertion in owner_modifier_probe_effects, f"Shared-coefficient probe must assert {assertion}")
 
     expect(
         "value = scope:cbp_trade_owner_goods_quantity" in trade_values,
@@ -333,8 +366,12 @@ def validate_us17_us20_static_contract(
     live_hook_call = "cbp_run_us20_route_loss_reconciliation = yes"
     us17_compatibility_hook = "cbp_run_us17_operation_aware_route_profit_reconciliation = yes"
     legacy_hook_call = "cbp_run_us17_us20_route_reconciliation = yes"
+    e2e_probe_call = "cbp_debug_run_us20_case12_market_loss_probe = yes"
 
-    expect(country_cycle.count(live_hook_call) == 1, "Country cycle must call US20 once per trade")
+    expect(
+        country_cycle.count(live_hook_call) == 1,
+        "Country trade-owner cycle must call US20 route loss exactly once per trade",
+    )
     expect(
         country_cycle.count(us17_compatibility_hook) == 1,
         "Country cycle may retain exactly one zero-delta US17 compatibility hook",
@@ -342,17 +379,18 @@ def validate_us17_us20_static_contract(
     expect(legacy_hook_call not in country_cycle, "Live country cycle must not call historical seeded wrapper")
     expect(
         country_cycle.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1,
-        "Country cycle must refresh US17/US20 country state once before every_trade",
+        "Country cycle must refresh shared country state once before every_trade",
     )
     expect(
         country_cycle.index("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes")
         < country_cycle.index("every_trade = {"),
-        "Country refresh must precede every_trade",
+        "Shared coefficient refresh must precede every_trade",
     )
     expect(
         country_cycle.index(us17_compatibility_hook) < country_cycle.index(live_hook_call),
         "Zero-delta US17 hook must precede US20 goods reconciliation",
     )
+    expect("every_trade = {" in country_cycle, "Country cycle must use native every_trade iterator")
 
     compatibility_money = block(
         owner_modifier_effects,
@@ -365,11 +403,11 @@ def validate_us17_us20_static_contract(
     )
     expect(
         "cbp_compute_us20_route_loss_coefficient_from_selling_baseline" in owner_modifier_effects,
-        "Production must expose the separated US20 coefficient helper",
+        "Production must expose upstream shared-coefficient helper",
     )
     expect(
         "cbp_compute_us20_route_loss_from_selling_efficiency" in owner_modifier_effects,
-        "Production must retain the US20 coefficient consumer",
+        "Production must retain compatibility-named US20 reader",
     )
 
     expect(live_hook_call not in q8_7_global_owner_effects, "US20 live hook must not be in market-local body")
@@ -385,29 +423,66 @@ def validate_us17_us20_static_contract(
         "Trade rework must not reintroduce a second market-center every_trade scaffold",
     )
 
-    expect(
-        "cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = yes" in trade_reconciliation_effects,
-        "US20 must preserve centralized market-goods reconciliation",
+    unsafe_global_counter = re.compile(
+        r"set_global_variable\s*=\s*\{[^{}]*name\s*=\s*cbp_(?:trade_efficiency|us20)[^{}]*value\s*=\s*\{\s*value\s*=\s*global_var:",
+        re.DOTALL,
     )
     expect(
-        "cbp_select_us20_goods_receiver_country_for_promoted_market = yes" in trade_reconciliation_effects,
-        "Promoted destinations must select receiver before country-stock loss",
+        unsafe_global_counter.search(trade_reconciliation_effects + owner_modifier_effects) is None,
+        "US17/US20 counters must use change_global_variable after initialization",
     )
     expect(
-        "namespace = cbp_us20_probe" in us20_probe_events,
-        "Standalone US20 probe namespace must remain",
+        "change_global_variable = { name = cbp_trade_efficiency_routes_seen add = 1 }"
+        in trade_reconciliation_effects,
+        "Route-seen counter must retain safe increment semantics",
     )
-    for assertion in [
+    expect(
+        "change_global_variable = { name = cbp_us20_market_goods_supply_loss_routes add = 1 }"
+        in trade_reconciliation_effects,
+        "US20 market-loss counter must retain safe increment semantics",
+    )
+
+    for token, message in [
+        (
+            "save_temporary_scope_as = cbp_vanilla_market_goods_supply_good",
+            "US20 must pass saved route good to central market helper",
+        ),
+        (
+            "name = cbp_vanilla_market_goods_supply_delta value = scope:gui_cbp_us20_market_goods_supply_delta",
+            "US20 must pass negative market delta to central helper",
+        ),
+        (
+            "cbp_apply_vanilla_market_goods_supply_delta_from_saved_good = yes",
+            "US20 must apply market loss through central helper",
+        ),
+        (
+            "cbp_select_us20_goods_receiver_country_for_promoted_market = yes",
+            "Promoted destinations must select receiver before country-stock loss",
+        ),
+    ]:
+        expect(token in trade_reconciliation_effects, message)
+
+    expect(e2e_probe_call not in revalidate_events, "Experimental US20 E2E probe must remain outside stable revalidation")
+    expect("Step 13/13" in revalidate_events, "Stable revalidation must retain final US17/US20 scenario")
+    expect(e2e_probe_call in us20_probe_events, "Standalone US20 probe must call E2E effect")
+    expect("namespace = cbp_us20_probe" in us20_probe_events, "Standalone US20 probe namespace must remain")
+
+    required_probe_assertions = [
         "case1_classification_expected=1",
         "case2_classification_expected=1",
         "case3_classification_expected=2",
         "case4_classification_expected=1",
         "market_goods_supply_loss_routes_expected=5",
         "promoted_destination_country_loss_routes_expected=3",
+        "explicit_receiver_selected_expected=1",
+        "trade_owner_receiver_selected_expected=1",
+        "goods_delta_should_not_block",
+        "receiver_selection_should_not_block_for_explicit_trade_owner_or_allocator_paths",
+        "case5_allocator_receiver",
         "receivers=explicit_plus_trade_owner_plus_allocator",
-    ]:
+    ]
+    for assertion in required_probe_assertions:
         expect(assertion in us20_probe_effects, f"US20 E2E probe must assert {assertion}")
-    expect("Step 13/13" in revalidate_events, "Stable revalidation must retain final US17/US20 scenario")
 
 
 legacy.validate_us17_owner_modifier_contract = validate_us17_owner_modifier_contract
