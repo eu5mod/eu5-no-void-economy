@@ -120,11 +120,17 @@ class LocationStaticModifierParityTest(unittest.TestCase):
         )
         candidate = candidate_root / OUTPUT
         self.assertEqual(reference.read_bytes(), candidate.read_bytes())
-        return candidate.read_text(encoding="utf-8"), payload, legacy.stderr, spec_run.stderr
+        return (
+            candidate.read_text(encoding="utf-8"),
+            payload,
+            legacy.stderr,
+            spec_run.stderr,
+            source,
+        )
 
     def test_development_stockpile_capacity_is_commented_and_other_fields_are_preserved(self):
         with tempfile.TemporaryDirectory() as temporary:
-            output, payload, legacy_stderr, spec_stderr = self.run_generators(
+            output, payload, legacy_stderr, spec_stderr, _ = self.run_generators(
                 Path(temporary),
                 BASE_LOCATION_FIXTURE + DEVELOPMENT_FIXTURE,
             )
@@ -152,9 +158,42 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             self.assertIn("local_construction_speed = 0.01", development)
             self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
 
+    def test_changed_vanilla_value_warns_with_link_and_does_not_fail(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            changed_development = DEVELOPMENT_FIXTURE.replace(
+                "maximum_stockpile_capacity = 5",
+                "maximum_stockpile_capacity = 8",
+            )
+            output, payload, legacy_stderr, spec_stderr, source = self.run_generators(
+                Path(temporary),
+                BASE_LOCATION_FIXTURE + changed_development,
+            )
+
+            self.assertTrue(
+                any(
+                    rule.get("object") == "development"
+                    and rule.get("operation") == "comment_out"
+                    for rule in payload["transformations"]
+                )
+            )
+            self.assertIn(
+                "# maximum_stockpile_capacity = 8 # CBG: commented by cbp-location-static-modifiers",
+                output,
+            )
+            expected_message = (
+                "Vanilla value changed: development.maximum_stockpile_capacity "
+                "was reviewed at 5 and is now 8"
+            )
+            expected_link = source.resolve().as_uri() + "#L"
+            for warning in (legacy_stderr, spec_stderr):
+                self.assertIn("[⚠️]", warning)
+                self.assertIn(expected_message, warning)
+                self.assertIn(expected_link, warning)
+                self.assertIn("CBP will continue", warning)
+
     def test_missing_development_block_warns_and_does_not_fail_generation(self):
         with tempfile.TemporaryDirectory() as temporary:
-            output, payload, legacy_stderr, spec_stderr = self.run_generators(
+            output, payload, legacy_stderr, spec_stderr, source = self.run_generators(
                 Path(temporary),
                 BASE_LOCATION_FIXTURE,
             )
@@ -166,8 +205,9 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             ]
             self.assertEqual(development_rules, [])
             self.assertNotIn("development = {", output)
-            self.assertIn("[⚠️] Vanilla development static modifier", legacy_stderr)
-            self.assertIn("[⚠️] Vanilla development static modifier", spec_stderr)
+            for warning in (legacy_stderr, spec_stderr):
+                self.assertIn("[⚠️] Vanilla development static modifier", warning)
+                self.assertIn(source.resolve().as_uri(), warning)
             self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
 
 
