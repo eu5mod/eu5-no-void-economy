@@ -4,7 +4,7 @@
 	"version": "0.4.0",
 	"game_id": "eu5",
 	"supported_game_version": "1.*.*",
-	"short_description": "Standalone US-17 diminishing selling loss and reciprocal trade-maintenance balance.",
+	"short_description": "Standalone US-17 diminishing selling loss, reciprocal maintenance, and CBP trade-price balance.",
 	"tags": [
 		"Gameplay",
 		"Trade and Economics"

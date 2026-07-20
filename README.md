@@ -47,12 +47,31 @@ The current effective values already include the previous month's standalone
 corrections. Each refresh subtracts those stored corrections first, recovering
 the non-CBP baselines and preventing monthly drift.
 
+## Engine trade-balance Defines
+
+The standalone also carries the registered EU5 engine overrides used by the
+validated trade-balance package:
+
+```txt
+NCountry.MERCHANT_MAINTENANCE_COST = 0.5
+NMarket.MIN_PRICE_IMPACT = -0.68
+NMarket.MAX_PRICE_IMPACT = 2.16
+```
+
+`MERCHANT_MAINTENANCE_COST` is increased from the Vanilla value of `0.25`.
+The market price bounds provide the wider CBP trade-price range.
+
+These are genuine engine-defined keys. The four coefficients used by the US-17
+formula remain named script values because arbitrary custom `CBP_*` Define keys
+are not a supported runtime value surface.
+
 ## Light-product boundary
 
 This product contains only the country-level trade-profit balance:
 
 - four country auto-modifiers;
 - four named script constants;
+- one registered engine-Define file for maintenance cost and price bounds;
 - one calculation/reconstruction effect file;
 - monthly, policy-change, and reform-change refresh hooks;
 - English localization and mod metadata.
@@ -67,7 +86,8 @@ physical goods loss. This light standalone stops at the US-17 country modifier
 surface.
 
 Do not enable this standalone together with No Void Economy while NVE contains
-the same US-17 modifiers; both products would apply the corrections.
+the same US-17 modifiers or the same trade Defines; both products would apply
+the balance changes.
 
 ## Arithmetic fixture
 
@@ -128,4 +148,5 @@ configuration step is required.
 7. Advance two unchanged monthly ticks and verify that values do not drift.
 8. Change a relevant policy or government reform and verify that the baselines
    refresh.
-9. Check `error.log` for unset variables or invalid modifier/script-value reads.
+9. Check `error.log` for unknown Define keys, unset variables, or invalid
+   modifier/script-value reads.

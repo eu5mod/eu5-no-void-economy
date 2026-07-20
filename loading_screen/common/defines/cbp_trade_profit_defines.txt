@@ -1,0 +1,10 @@
+﻿NCountry = {
+	# CBP trade-balance maintenance base. Vanilla = 0.25.
+	MERCHANT_MAINTENANCE_COST = 0.5
+}
+
+NMarket = {
+	# CBP trade-balance price range.
+	MIN_PRICE_IMPACT = -0.68
+	MAX_PRICE_IMPACT = 2.16
+}
