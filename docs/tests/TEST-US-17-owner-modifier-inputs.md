@@ -1,41 +1,51 @@
-# TEST-US-17 - Operation-aware trade-profit reconciliation
+# TEST-US-17 — Shared Selling coefficient and mixed-denominator maintenance
 
 ## Objective
 
-Validate that US-17:
+Prove simultaneously that:
 
 ```txt
-- cancels native Import, Export, and Selling Efficiency;
-- replaces Merchant Maintenance Efficiency with the country sum of Selling, Import, and Export;
-- selects Import Efficiency for import routes and Export Efficiency for exports;
-- transfers trade_operation_efficiency + Selling Efficiency to maintenance;
-- uses no reciprocal or division;
-- preserves negative combined efficiency;
-- caps positive combined efficiency at MERCHANT_MAINTENANCE_COST;
-- remains stable across repeated refreshes;
-- applies one route-local treasury delta before the unchanged US-20 goods path.
+C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
+    / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+
+US-17 effective Selling Efficiency = -C
+US-20 goods loss = trade_volume * C
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
+
+effective Merchant Maintenance Efficiency =
+    1 - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-## Fast preparation without regeneration
+The test must also prove that the Merchant Maintenance correction itself is:
 
-US-17 does not change generated Vanilla overrides. When the checkout already
-contains the intended generated artifacts, validate and install directly:
+```txt
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
+```
+
+## Static preparation
 
 ```sh
+./tools/generate_all.sh
+python3 tools/validate_cmm_configuration.py
 python3 tools/validate_ci_static_contracts.py
 ./tools/validate_cbp_script_safety.sh
 git diff --check
-git diff --cached --check
-
-./tools/install_local_packages.sh --skip-generate
-./tools/install_local_packages.sh --check
-./tools/clear_eu5_logs.sh
 ```
 
-Use `./tools/dev_prepare_game.sh` only after changing configuration, a
-generator, a CBG rule, a Vanilla-derived source, or a generated output.
+The static contract rejects:
 
-## Focused arithmetic probe
+```txt
+- recalculating the Selling curve inside US-17 or US-20;
+- residual Import or Export price curves;
+- the rejected average-of-two-maintenance-costs formula;
+- use of separate Vanilla and directional weights in production;
+- any US-20 division or Selling modifier read;
+- any route-level add_gold mutation.
+```
+
+## Focused probe
 
 Start EU5, load a campaign, and run:
 
@@ -43,60 +53,104 @@ Start EU5, load a campaign, and run:
 event cbp_us17_owner_modifiers.1
 ```
 
-Wait one in-game day for the delayed live-modifier check. Expected marker:
+Wait one in-game day.
+
+Expected final marker:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 selling_shared_coefficient=verified mixed_denominator_formula=verified import_export_price_effect=zero route_money_delta=zero proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
-The detailed checks must include:
+## Arithmetic fixture
+
+Inputs:
 
 ```txt
-import: I=0.05 Ex=0.10 S=0.02 -> trade_operation_efficiency=0.05, C=0.07
-export: I=0.05 Ex=0.10 S=0.02 -> trade_operation_efficiency=0.10, C=0.12
-native corrections: Import=-0.05, Export=-0.10, Selling=-0.02, Maintenance=+0.09
-native maintenance: M + correction = 0.08 + 0.09 = C_country = 0.17
-independent maintenance formula: min(-CBP Selling correction - CBP Import correction - CBP Export correction, D) = 0.17
-import treasury delta: D * (0.07 - 0.17) = D * -0.10
-export treasury delta: D * (0.12 - 0.17) = D * -0.05
-negative: I=-0.40 S=-0.20 -> C=-0.60, with no lower clamp
-upper cap: Ex=2 S=1 -> C=MERCHANT_MAINTENANCE_COST
-idempotence: a second calculation reconstructs all four original baselines
+S = 0.10
+I = 0.20
+Ex = 0.30
+M = 0.08
+trade_volume = 10
+```
+
+### Shared Selling coefficient
+
+```txt
+C = 0.05 / (1 + 0.10*10)
+C = 0.025
+
+Selling correction = -0.10 - 0.025 = -0.125
+effective Selling = -0.025
+```
+
+### Import and Export cancellation
+
+```txt
+Import correction = -0.20
+effective Import = 0
+
+Export correction = -0.30
+effective Export = 0
+```
+
+### Merchant Maintenance
+
+```txt
+M/2 = 0.08 * 0.5 = 0.04
+5*(I + Ex) = (0.20 + 0.30) * 10 * 0.5 = 2.50
+
+denominator = 1 + 0.04 + 2.50 = 3.54
+reciprocal = 1 / 3.54 = 0.282486
+
+effective maintenance = 1 - 0.282486 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
+```
+
+Expected assertion windows:
+
+```txt
+shared coefficient: 0.024 .. 0.026
+Selling correction: -0.126 .. -0.124
+M/2 term: 0.039 .. 0.041
+5*(I+Ex) term: 2.499 .. 2.501
+denominator: 3.539 .. 3.541
+effective maintenance: 0.716 .. 0.719
+maintenance correction: 0.636 .. 0.639
+US-20 goods loss: 0.249 .. 0.251
+```
+
+### US-20
+
+```txt
+goods loss = 10 * 0.025 = 0.25
+target received = 9.75
 ```
 
 ## Runtime validation
 
-1. Use a country that owns at least one import route and one export route.
-2. Record its Import, Export, Selling, and Merchant Maintenance Efficiency.
-3. Let one monthly tick run and confirm four localized CBP modifiers are shown.
-4. Confirm Import, Export, and Selling Efficiency are zero, while effective
-   Merchant Maintenance Efficiency equals `C_country` rather than zero. The
-   delayed probe reads that effective modifier and independently compares it to
-   `min(-CBP Selling correction - CBP Import correction - CBP Export correction, D)`.
-5. Confirm an import uses `Ei`, while an export uses `Ex`, in the detailed US-17
-   operation-aware diagnostics.
-6. Confirm `C = min(trade_operation_efficiency + S, D)`. Each route applies
-   `D * (C_route - C_country)` after the native all-efficiencies reference.
-7. Let a second monthly tick run without changing inputs. Corrections and route
-   results must not drift.
-8. Change a policy or government reform and confirm the shared refresh updates
-   all four baselines.
-9. Save, reload, let one monthly tick run, and confirm the same values remain.
-10. Run the US-20 focused and combined probes to confirm goods loss is unchanged.
+1. Record the non-CBP Selling, Import, Export, and Merchant Maintenance values.
+2. Run the focused event and wait one day.
+3. Confirm exactly four localized US-17 auto-modifiers are visible.
+4. Confirm `cbp_us20_route_loss_coefficient` exists and Selling equals its negative.
+5. Confirm Import and Export equal zero.
+6. Confirm Merchant Maintenance equals the mixed-denominator target.
+7. Confirm no US-17 treasury delta is emitted.
+8. Confirm US-20 goods loss divided by trade volume equals the persisted coefficient.
+9. Let another refresh run without changing inputs and confirm no baseline drift.
+10. Save, reload, and repeat the focused probe.
 
 ## Failure conditions
 
-Reject the run for any of these:
-
 ```txt
-an export route uses Import Efficiency
-Import and Export Efficiency are both applied to one route
-fewer or more than four native CBP modifiers
-effective Merchant Maintenance Efficiency incorrectly equals zero
-division by zero or reciprocal behavior
-negative C clamped to zero
-different correction after an unchanged second refresh
-more than one US-17 treasury mutation per owned route
-US-20 goods-reconciliation regression
+Selling coefficient is recalculated or differs between US-17 and US-20
+Import or Export keeps a residual price effect
+Merchant Maintenance uses an average of two separate costs
+maintenance denominator is not 1 + M/2 + 5*(I+Ex)
+maintenance correction is not -M + 1 - reciprocal
+US-17 applies add_gold or a non-zero route money delta
+US-20 reads Selling Efficiency or recalculates the coefficient
+US-20 fails to multiply trade_volume by the coefficient
+an unchanged second refresh changes a reconstructed baseline
+state version is not 7
 script-system, unset-variable, or invalid-modifier error
 ```

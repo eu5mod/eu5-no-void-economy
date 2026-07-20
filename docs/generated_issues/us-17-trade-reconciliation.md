@@ -1,103 +1,185 @@
-# US-17 - Operation-aware trade-profit reconciliation
+# US-17 — Shared Selling coefficient and reciprocal Trade Maintenance
 
 ## Business rule
 
-Vanilla applies Selling Efficiency to the destination price and applies exactly
-one origin-price efficiency according to route direction:
+Definitions:
 
 ```txt
-trade_operation_efficiency = Import Efficiency for an import
-trade_operation_efficiency = Export Efficiency for an export
+S  = reconstructed non-CBP Selling Efficiency
+I  = reconstructed non-CBP Import Efficiency
+Ex = reconstructed non-CBP Export Efficiency
+M  = reconstructed non-CBP Merchant Maintenance Efficiency
+
+L_s = cbp_us17_us20_route_loss_coefficient_max
+K_s = cbp_us17_us20_route_loss_coefficient_curve
+K_m = cbp_us17_maintenance_efficiency_scale
+W   = cbp_us17_maintenance_component_weight
 ```
 
-CBP removes Import, Export, and Selling Efficiency from the price margins. It
-also removes native Merchant Maintenance Efficiency, then applies the selected
-operation efficiency plus Selling Efficiency to merchant maintenance.
+These are named script values owned by the mod, not custom engine Defines.
 
-For non-CBP baselines `I`, `Ex`, `S`, and `M`:
+Default values:
 
 ```txt
-E_D = I for an import; Ex for an export
-D = define:NCountry|MERCHANT_MAINTENANCE_COST
-C = min(E_D + S, D)
-
-CBP import correction      = -I
-CBP export correction      = -Ex
-CBP selling correction     = -S
-CBP maintenance correction = C_country - M
-C_country = min(-CBP selling correction - CBP import correction - CBP export correction, D)
-import treasury delta      = D * (C_import - C_country)
-export treasury delta      = D * (C_export - C_country)
+L_s = 0.05
+K_s = 10
+K_m = 10
+W   = 0.5
 ```
 
-The sum is not averaged and has no lower clamp. Negative efficiency therefore
-increases maintenance, while positive efficiency is capped by `D`.
+## Shared Selling coefficient
 
-## Runtime placement
+The Selling curve is calculated once per country:
 
 ```txt
-monthly_country_pulse(country)
-  -> cbp_run_monthly_country_trade_owner_cycle
-     -> refresh four non-CBP country baselines
-     -> every_trade
-        -> Trade.IsExport selects Import or Export Efficiency
-        -> keep the native all-efficiencies country reference
-        -> apply the directional route difference
-        -> run unchanged US-20 goods reconciliation
+C = L_s / (1 + S * K_s)
 ```
 
-Policy and reform on-actions use the shared country-governance dispatcher.
-Monthly execution remains the fallback for research and temporary modifiers.
-
-## Baseline reconstruction
-
-Country `modifier:*` reads include active CBP auto-modifiers. Each refresh
-subtracts its four previous persisted corrections before recalculation. This
-reconstructs the non-CBP values and prevents drift across monthly ticks and
-save reloads. The all-efficiencies maintenance formula writes state version `4`;
-the first refresh also reconstructs older saves without carrying forward their
-previous maintenance reference.
-
-## Ownership and boundaries
+The result is persisted immediately:
 
 ```txt
-US-17 owner: current country in the country trade-owner pass
-US-17 direction: current trade via Trade.IsExport / is_export
-US-17 money mutation: one add_gold route delta
-US-20 owner: route-local goods reconciliation
-US-20 stock mutation: unchanged centralized stock/goods path
+var:cbp_us20_route_loss_coefficient = C
 ```
 
-EU5 exposes no trade-scope modifier able to replace Import or Export Efficiency
-inside native route-profit projection. The operation-aware delta is exact for
-treasury but is not represented in Vanilla route-profit UI or AI projection.
+US-17 consumes that persisted value:
+
+```txt
+Selling correction = -S - C
+effective Selling Efficiency = -C
+```
+
+US-20 consumes the same value:
+
+```txt
+goods loss = trade_volume * C
+```
+
+The Selling correction does not recalculate the curve.
+
+## Import and Export leave price formation
+
+```txt
+Import correction = -I
+Export correction = -Ex
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
+```
+
+There are no residual Import or Export price curves.
+
+## Exact Merchant Maintenance formula
+
+The requested correction is:
+
+```txt
+Merchant Maintenance correction =
+    -M
+    + 1
+    - 1 / (1 + M/2 + 5*(I + Ex))
+```
+
+The production form uses the named script values directly:
+
+```txt
+maintenance denominator =
+    1
+    + M * W
+    + (I + Ex) * K_m * W
+
+effective Merchant Maintenance Efficiency =
+    1 - 1 / maintenance denominator
+
+Merchant Maintenance correction =
+    effective Merchant Maintenance Efficiency - M
+```
+
+With `W = 0.5` and `K_m = 10`, this is exactly:
+
+```txt
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
+```
+
+This is one mixed denominator. It is not an average of two separately calculated maintenance costs.
+
+## Arithmetic fixture
+
+```txt
+S  = 0.10
+I  = 0.20
+Ex = 0.30
+M  = 0.08
+trade_volume = 10
+```
+
+Selling and US-20:
+
+```txt
+C = 0.05 / (1 + 0.10*10) = 0.025
+effective Selling = -0.025
+goods loss = 10 * 0.025 = 0.25
+target received = 9.75
+```
+
+Merchant Maintenance:
+
+```txt
+M/2 = 0.04
+5*(I + Ex) = 2.50
+
+denominator = 1 + 0.04 + 2.50 = 3.54
+reciprocal = 1 / 3.54 = 0.282486
+
+effective maintenance = 1 - 0.282486 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
+```
+
+## Runtime order
+
+```txt
+country refresh
+  -> reconstruct S, I, Ex and M
+  -> calculate C once from named script values
+  -> persist C
+  -> calculate Selling, Import, Export and Maintenance corrections
+  -> persist four corrections and four baselines
+  -> every_trade
+     -> zero-delta US-17 compatibility hook
+     -> US-20 reads C
+     -> goods loss = trade_volume * C
+```
+
+State version is `7`. Runtime constant source version is `1`.
 
 ## Acceptance contract
 
 ```txt
-- three price auto-modifiers cancel Import, Export, and Selling;
-- the fourth auto-modifier replaces Maintenance with the capped country sum of Selling, Import, and Export;
-- import routes select Import Efficiency;
-- export routes select Export Efficiency;
-- one route never applies both directional efficiencies;
-- C is a sum without division and is capped by D;
-- negative C remains negative;
-- repeated refreshes do not drift;
-- monthly refresh occurs once before every_trade;
-- US-17 money is applied once before US-20 goods reconciliation;
-- all four auto-modifiers have visible localization.
+- mod-owned constants are named script values, not custom engine Defines;
+- the calculation helpers are authoritative direct effects, not late replacements;
+- Selling coefficient is calculated once and persisted before US-17 consumes it;
+- effective Selling Efficiency equals -C;
+- US-20 goods loss equals trade_volume * C;
+- effective Import and Export Efficiency equal zero;
+- effective Merchant Maintenance Efficiency equals 1 - 1/(1 + M/2 + 5*(I+Ex));
+- Merchant Maintenance correction equals -M plus that effective value;
+- no route-level add_gold mutation is applied;
+- repeated refresh reconstructs all four baselines without drift.
 ```
 
-## Focused test
-
-Run `event cbp_us17_owner_modifiers.1`, wait one in-game day, and expect:
+## Focused probe
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 operation_input=import_or_export_by_Trade.IsExport native_price_inputs_cancelled=selling_import_export maintenance=country_all_efficiencies_plus_route_delta maintenance_formula=verified clamp=merchant_maintenance_cost_define negative_efficiency=preserved idempotence=passed live_auto_modifier_application=passed cmm_gate=open
+event cbp_us17_owner_modifiers.1
 ```
 
-Full runtime protocol:
+Wait one in-game day. Expected marker includes:
 
 ```txt
-docs/tests/TEST-US-17-owner-modifier-inputs.md
+selling_shared_coefficient=verified
+mixed_denominator_formula=verified
+import_export_price_effect=zero
+route_money_delta=zero
+proportional_goods_loss=verified
+idempotence=passed
+live_auto_modifier_application=passed
 ```

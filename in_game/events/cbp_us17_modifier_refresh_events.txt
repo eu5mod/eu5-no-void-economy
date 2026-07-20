@@ -1,0 +1,19 @@
+namespace = cbp_us17_modifier_refresh
+
+# Hidden country continuation scheduled by modifier-source lifecycle hooks.
+# Waiting one day ensures the activated or revoked source has reached the live
+# country modifier surfaces before US-17 reconstructs its non-CBP baselines.
+cbp_us17_modifier_refresh.1 = {
+	type = country_event
+	outcome = neutral
+	title = empty_text
+	desc = empty_text
+	hidden = yes
+
+	trigger = { always = yes }
+
+	immediate = {
+		remove_variable = cbp_us17_native_modifier_refresh_scheduled
+		cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+	}
+}

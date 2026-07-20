@@ -1,0 +1,46 @@
+# US-17 invalidation hooks for estate privileges that contribute directly to
+# Selling, Import, Export, or Merchant Maintenance Efficiency in the current
+# CBP/vanilla privilege database.
+#
+# TRY_INJECT avoids replacing the original privilege definitions. Activation and
+# revocation schedule one coalesced country refresh for the following day.
+
+TRY_INJECT:novgorod_ivans_hundred = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:kbo_lake_chad_trade_privilege = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:noble_patronage = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:polish_merchant_seal = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:fra_leadership_of_marcel = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:consolidated_corruption_of_the_burghers = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:mam_muhtasibs = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:office_of_the_farima_soura_privilege = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}

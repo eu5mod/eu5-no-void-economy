@@ -1,6 +1,13 @@
-# US-17 removes the native country price efficiencies from Vanilla trade-profit
-# accounting. The existing country-owned trade pass restores their
-# operation-aware value through route maintenance reconciliation.
+# US-17 keeps the accepted Selling curve shared with US-20:
+#
+#   effective Selling Efficiency =
+#     -CBP_ROUTE_LOSS_COEFFICIENT_MAX
+#      / (1 + baseline Selling Efficiency * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+#
+# Import and Export Efficiency are cancelled from absolute price formation.
+# Their economic value is transferred to Merchant Maintenance through:
+#
+#   effective maintenance = 1 - 1 / (1 + M/2 + 5*(I + Ex))
 
 cbp_us17_selling_efficiency_cancellation = {
 	requires_real = no
