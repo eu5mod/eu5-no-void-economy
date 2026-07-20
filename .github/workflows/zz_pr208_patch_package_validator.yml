@@ -1,0 +1,65 @@
+name: PR208 Package Validator Migration
+
+on:
+  push:
+    branches:
+      - feature/cbg-replace-object-prefixed-outputs
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validator:
+    if: github.event.head_commit.message != 'Validator: accept prefixed REPLACE building outputs'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/cbg-replace-object-prefixed-outputs
+          fetch-depth: 0
+
+      - name: Migrate package validator contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("tools/validate_module_packages.sh")
+          text = path.read_text(encoding="utf-8")
+          replacements = {
+              'in_game/common/building_types/trade_buildings.txt"':
+                  'in_game/common/building_types/cbp_trade_buildings.txt"',
+              'in_game/common/building_types/market_buildings.txt"':
+                  'in_game/common/building_types/cbp_market_buildings.txt"',
+              'rf"^{re.escape(name)}\\s*=\\s*\\{{"':
+                  'rf"^(?:REPLACE:)?{re.escape(name)}\\s*=\\s*\\{{"',
+              'r"^\\s*([A-Za-z0-9_]+)\\s*=\\s*\\{"':
+                  'r"^\\s*(?:REPLACE:)?([A-Za-z0-9_]+)\\s*=\\s*\\{"',
+              "US-09 static overrides must preserve vanilla file paths; remove stale duplicate-key files:":
+                  "Remove obsolete pre-CBG US-09 duplicate-key files:",
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f"Expected validator text is missing: {old}")
+              text = text.replace(old, new)
+
+          anchor = '''require_file "$us09_market_buildings_file"\n'''
+          addition = '''require_file "$us09_market_buildings_file"\nrequire_match '^REPLACE:marketplace = \\{$' \\\n\t"$us09_trade_buildings_file" \\\n\t'US-09 trade-building override must package marketplace as a REPLACE entry'\nrequire_match '^REPLACE:market_warehouse = \\{$' \\\n\t"$us09_market_buildings_file" \\\n\t'US-09 market-building override must package market_warehouse as a REPLACE entry'\n'''
+          if addition not in text:
+              if anchor not in text:
+                  raise SystemExit("Could not locate building require_file anchor")
+              text = text.replace(anchor, addition, 1)
+
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Commit validator migration
+        run: |
+          if git diff --quiet -- tools/validate_module_packages.sh; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/validate_module_packages.sh
+          git commit -m 'Validator: accept prefixed REPLACE building outputs'
+          git push origin HEAD:feature/cbg-replace-object-prefixed-outputs
