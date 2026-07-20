@@ -15,10 +15,13 @@ if str(REPO_ROOT) not in sys.path:
 
 from tools.generate_political_reward_overrides import (
     PROFIT_MARGIN_FACTOR,
-    PROFIT_MARGIN_FIELDS,
     centralizable_script_values,
 )
 from tools.cbg.community_balance_generator import display_path
+from tools.cbg.adapters.cbp.optional_vanilla_fields import (
+    PROFIT_MARGIN_FIELDS,
+    discover_optional_root_numeric_fields,
+)
 
 
 TARGET = "main_menu/common/script_values/default_values.txt"
@@ -34,14 +37,20 @@ def game_root_from_environment() -> Path:
 
 def build_spec(game_root: Path) -> dict[str, object]:
     policies = centralizable_script_values(game_root)
+    default_values = game_root / TARGET
+    available_profit_margins = discover_optional_root_numeric_fields(
+        default_values,
+        PROFIT_MARGIN_FIELDS,
+        policy_name="production profit-margin",
+    )
     factors = {
         **policies,
-        **{name: PROFIT_MARGIN_FACTOR for name in PROFIT_MARGIN_FIELDS},
+        **{name: PROFIT_MARGIN_FACTOR for name in available_profit_margins},
     }
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-default-values",
-        "business_rule": "Scale centralized political intensity values and production profit-margin targets from Vanilla.",
+        "business_rule": "Scale centralized political intensity values and production profit-margin targets exposed by Vanilla.",
         "transformations": [
             {
                 "file": TARGET,
@@ -56,6 +65,8 @@ def build_spec(game_root: Path) -> dict[str, object]:
         "scope_contract": {
             "owned_outputs": [TARGET],
             "phase": "default-values-only",
+            "optional_vanilla_fields": list(PROFIT_MARGIN_FIELDS),
+            "active_optional_vanilla_fields": list(available_profit_margins),
         },
     }
 
