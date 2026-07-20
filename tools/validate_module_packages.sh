@@ -20,6 +20,11 @@ if root_anchor not in text:
     raise SystemExit(f"Package-validator migration anchor is missing: {root_anchor}")
 text = text.replace(root_anchor, f'repo_root="{repo_root}"', 1)
 
+nested_validator = 'bash "$generator_validator" >/dev/null'
+if nested_validator not in text:
+    raise SystemExit("Nested generator-validator command is missing")
+text = text.replace(nested_validator, 'bash -x "$generator_validator"', 1)
+
 building_root = repo_root / "packages/cbp_economy_rebalance/in_game/common/building_types"
 prefixed_trade = building_root / "cbp_trade_buildings.txt"
 prefixed_market = building_root / "cbp_market_buildings.txt"
