@@ -7,7 +7,10 @@ import argparse
 import hashlib
 import json
 import subprocess
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+
+
+REPLACE_OBJECTS = "replace_objects"
 
 
 def display_path(path: Path, repo_root: Path) -> str:
@@ -35,6 +38,26 @@ def sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def prefixed_output(source: str) -> str:
+    relative = PurePosixPath(source)
+    name = relative.name
+    if not name.startswith("cbp_"):
+        name = f"cbp_{name}"
+    return relative.with_name(name).as_posix()
+
+
+def output_for(item: dict[str, object]) -> str:
+    output = item.get("output_file")
+    if isinstance(output, str):
+        return output
+    source = item["file"]
+    if not isinstance(source, str):
+        raise ValueError("manifest bootstrap requires exact source paths")
+    if item.get("render_mode") == REPLACE_OBJECTS:
+        return prefixed_output(source)
+    return source
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--spec", type=Path, required=True)
@@ -54,10 +77,7 @@ def main() -> int:
     repo_root = Path(repo_result.stdout.strip()).resolve()
     output_root = args.output_root.resolve()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
-    outputs = sorted({
-        item.get("output_file", item["file"])
-        for item in spec.get("transformations", [])
-    })
+    outputs = sorted({output_for(item) for item in spec.get("transformations", [])})
 
     existing_files = {}
     if manifest.is_file():
@@ -67,6 +87,7 @@ def main() -> int:
         existing_files = {entry["path"]: entry for entry in payload.get("files", [])}
 
     files = []
+    current_outputs = set(outputs)
     for output in outputs:
         relative_output = Path(output)
         destination = output_root / relative_output
@@ -108,6 +129,23 @@ def main() -> int:
         raise ValueError(
             f"refusing to reconcile ownership from a locally modified output: {repo_relative}"
         )
+
+    # Preserve correctly owned outputs that became stale because the specification
+    # migrated to a new path (for example, Vanilla filename -> cbp_ filename).
+    # The following CBG run will delete these entries through its normal stale-output
+    # ownership contract. Dropping them here would leave old full-file overrides behind.
+    for output, existing in sorted(existing_files.items()):
+        if output in current_outputs:
+            continue
+        destination = output_root / output
+        if not destination.is_file():
+            continue
+        current = destination.read_bytes()
+        if existing.get("generated_sha256") != sha256(current):
+            raise ValueError(
+                f"refusing to migrate locally modified stale output: {destination.relative_to(repo_root)}"
+            )
+        files.append(existing)
 
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text(json.dumps({
