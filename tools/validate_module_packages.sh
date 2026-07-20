@@ -17,15 +17,10 @@ destination = Path(sys.argv[2])
 repo_root = Path(sys.argv[3])
 text = source.read_text(encoding="utf-8")
 
-root_anchor = 'repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"'
+root_anchor = 'repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}\")/.." && pwd)"'
 if root_anchor not in text:
     raise SystemExit(f"Package-validator migration anchor is missing: {root_anchor}")
 text = text.replace(root_anchor, f'repo_root="{repo_root}"', 1)
-
-nested_validator = 'bash "$generator_validator" >/dev/null'
-if nested_validator not in text:
-    raise SystemExit("Nested generator-validator command is missing")
-text = text.replace(nested_validator, 'bash -x "$generator_validator"', 1)
 
 building_root = repo_root / "packages/cbp_economy_rebalance/in_game/common/building_types"
 prefixed_trade = building_root / "cbp_trade_buildings.txt"
@@ -64,4 +59,4 @@ if using_replace_outputs:
 destination.write_text(text, encoding="utf-8")
 PY
 
-bash -x "$patched_validator"
+bash "$patched_validator"
