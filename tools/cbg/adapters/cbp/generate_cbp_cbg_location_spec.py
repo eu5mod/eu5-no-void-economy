@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -25,7 +26,69 @@ HEADER = [
 ]
 
 
-def build_spec() -> dict[str, object]:
+def source_from_environment() -> Path | None:
+    explicit = os.environ.get("EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE")
+    if explicit:
+        return Path(explicit).expanduser().resolve()
+    common = os.environ.get("EU5_GAME_COMMON_DIR")
+    if not common:
+        return None
+    game_root = Path(common).expanduser().resolve().parent.parent
+    return game_root / SOURCE
+
+
+def development_stockpile_available(source: Path) -> bool:
+    if not source.is_file():
+        raise SystemExit(f"Vanilla location static modifiers file is missing: {source}")
+
+    lines = source.read_text(encoding="utf-8-sig").splitlines()
+    block: list[str] | None = None
+    index = 0
+    while index < len(lines):
+        match = re.match(r"^([A-Za-z0-9_]+)\s*=\s*\{", lines[index])
+        if not match:
+            index += 1
+            continue
+        name = match.group(1)
+        depth = lines[index].count("{") - lines[index].count("}")
+        end = index
+        while depth > 0:
+            end += 1
+            if end >= len(lines):
+                raise SystemExit(f"Unclosed top-level block: {name}")
+            code = lines[end].split("#", 1)[0]
+            depth += code.count("{") - code.count("}")
+        if name == "development":
+            if block is not None:
+                raise SystemExit("Vanilla development static modifier is defined more than once")
+            block = lines[index : end + 1]
+        index = end + 1
+
+    if block is None:
+        print(
+            "[⚠️] Vanilla development static modifier is not exposed by this EU5 version; "
+            "skipping its stockpile-capacity transformation.",
+            file=sys.stderr,
+        )
+        return False
+
+    assignment = re.compile(r"^\s*maximum_stockpile_capacity\s*=\s*[^#\s]+(?:\s*(?:#.*)?)$")
+    matches = [line for line in block if assignment.match(line)]
+    if not matches:
+        print(
+            "[⚠️] Vanilla development.maximum_stockpile_capacity is not exposed by this "
+            "EU5 version; skipping this location transformation.",
+            file=sys.stderr,
+        )
+        return False
+    if len(matches) > 1:
+        raise SystemExit(
+            "Vanilla development.maximum_stockpile_capacity is defined more than once"
+        )
+    return True
+
+
+def build_spec(source_file: Path | None = None) -> dict[str, object]:
     replacement_targets = [
         ("expensive_food_in_location", "local_population_growth", os.environ.get("CBP_EXPENSIVE_FOOD_POPULATION_GROWTH", "0")),
         ("cheap_food_in_location", "local_population_growth", os.environ.get("CBP_CHEAP_FOOD_POPULATION_GROWTH", "0.001")),
@@ -46,15 +109,16 @@ def build_spec() -> dict[str, object]:
         }
         for object_name, field, value in replacement_targets
     ]
-    transformations.append({
-        "file": SOURCE,
-        "output_file": OUTPUT,
-        "render_mode": "selected_objects",
-        "header": HEADER,
-        "object": "development",
-        "field": "maximum_stockpile_capacity",
-        "operation": "comment_out",
-    })
+    if source_file is None or development_stockpile_available(source_file):
+        transformations.append({
+            "file": SOURCE,
+            "output_file": OUTPUT,
+            "render_mode": "selected_objects",
+            "header": HEADER,
+            "object": "development",
+            "field": "maximum_stockpile_capacity",
+            "operation": "comment_out",
+        })
     return {
         "schema_version": 1,
         "mod_id": "cbp-location-static-modifiers",
@@ -69,10 +133,15 @@ def build_spec() -> dict[str, object]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-file", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    source_file = args.source_file.resolve() if args.source_file else source_from_environment()
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(build_spec(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    args.output.write_text(
+        json.dumps(build_spec(source_file), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     print(f"Generated {display_path(args.output)} with CBP location CBG policy.")
     return 0
 
