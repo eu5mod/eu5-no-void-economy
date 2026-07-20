@@ -1,0 +1,15 @@
+name: CBG Replace Object Outputs
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-replace-object-outputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Test cbp-prefixed REPLACE object packaging
+        run: python3 -m unittest tools.cbg.tests.test_replace_object_outputs
