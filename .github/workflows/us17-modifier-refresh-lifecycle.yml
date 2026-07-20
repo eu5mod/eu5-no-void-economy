@@ -8,7 +8,10 @@ on:
     paths:
       - 'in_game/common/estate_privileges/cbp_us17_trade_efficiency_refresh_injections.txt'
       - 'in_game/common/on_action/cbp_us17_modifier_refresh_lifecycle_on_actions.txt'
+      - 'in_game/common/script_values/cbp_us17_us20_runtime_constants.txt'
       - 'in_game/common/scripted_effects/cbp_us17_modifier_refresh_lifecycle_effects.txt'
+      - 'in_game/common/scripted_effects/zz_cbp_us17_runtime_constant_replacements.txt'
+      - 'in_game/common/scripted_effects/zz_cbp_promoted_market_metric_guards.txt'
       - 'in_game/events/cbp_us17_modifier_refresh_events.txt'
       - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/burghers_estate.txt'
       - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/nobles_estate.txt'
@@ -29,7 +32,7 @@ jobs:
       - name: Compile validator
         run: python3 -m py_compile tools/validate_us17_modifier_refresh_lifecycle.py
 
-      - name: Validate lifecycle and privilege coverage
+      - name: Validate lifecycle, runtime constants, and privilege coverage
         run: python3 tools/validate_us17_modifier_refresh_lifecycle.py
 
       - name: Validate static contracts

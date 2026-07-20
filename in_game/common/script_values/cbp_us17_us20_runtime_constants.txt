@@ -1,0 +1,21 @@
+# US-17 / US-20 runtime constants.
+#
+# These are named script values rather than custom engine Defines. EU5's Defines
+# database exposes engine-defined keys for override; arbitrary CBP keys are not a
+# reliable runtime value surface and resolved as zero in the focused probe.
+
+cbp_us17_us20_route_loss_coefficient_max = {
+	value = 0.05
+}
+
+cbp_us17_us20_route_loss_coefficient_curve = {
+	value = 10
+}
+
+cbp_us17_maintenance_component_weight = {
+	value = 0.5
+}
+
+cbp_us17_maintenance_efficiency_scale = {
+	value = 10
+}

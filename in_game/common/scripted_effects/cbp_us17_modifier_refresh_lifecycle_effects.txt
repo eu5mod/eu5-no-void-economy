@@ -1,9 +1,8 @@
 # US-17 persisted country-modifier lifecycle.
 #
-# State version 7 belongs to PR #204. New campaigns and older saves can retain
-# missing or pre-v7 correction variables until the monthly country cycle runs.
-# The delayed start/load migration below refreshes only countries that have not
-# reached the current state version.
+# State version 7 belongs to PR #204. The additional runtime-constant marker
+# distinguishes saves calculated with valid named script values from v7 saves
+# calculated while arbitrary CBP engine Define keys resolved as zero.
 
 # Root/global scope. Called only by delayed game-start and game-load pulses.
 cbp_migrate_us17_native_profit_modifiers_all_countries = {
@@ -17,6 +16,18 @@ cbp_migrate_us17_native_profit_modifiers_all_countries = {
 		else_if = {
 			limit = {
 				var:cbp_us17_native_modifier_state_version < 7
+			}
+			cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+		}
+		else_if = {
+			limit = {
+				NOT = { has_variable = cbp_us17_runtime_constant_source_version }
+			}
+			cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+		}
+		else_if = {
+			limit = {
+				var:cbp_us17_runtime_constant_source_version < 1
 			}
 			cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
 		}

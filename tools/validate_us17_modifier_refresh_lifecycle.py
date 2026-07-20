@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate US-17 lifecycle migration and privilege invalidation coverage."""
+"""Validate US-17 lifecycle, runtime constants, and privilege coverage."""
 
 from __future__ import annotations
 
@@ -12,6 +12,13 @@ ROOT = Path(__file__).resolve().parents[1]
 EFFECTS = ROOT / "in_game/common/scripted_effects/cbp_us17_modifier_refresh_lifecycle_effects.txt"
 ON_ACTIONS = ROOT / "in_game/common/on_action/cbp_us17_modifier_refresh_lifecycle_on_actions.txt"
 EVENTS = ROOT / "in_game/events/cbp_us17_modifier_refresh_events.txt"
+RUNTIME_CONSTANTS = ROOT / "in_game/common/script_values/cbp_us17_us20_runtime_constants.txt"
+RUNTIME_REPLACEMENTS = (
+    ROOT / "in_game/common/scripted_effects/zz_cbp_us17_runtime_constant_replacements.txt"
+)
+PROMOTED_METRIC_GUARDS = (
+    ROOT / "in_game/common/scripted_effects/zz_cbp_promoted_market_metric_guards.txt"
+)
 INJECTION_FILES = (
     ROOT / "in_game/common/estate_privileges/cbp_us17_trade_efficiency_refresh_injections.txt",
     ROOT
@@ -116,12 +123,17 @@ def main() -> int:
     effects = read(EFFECTS)
     on_actions = read(ON_ACTIONS)
     events = read(EVENTS)
+    constants = read(RUNTIME_CONSTANTS)
+    replacements = read(RUNTIME_REPLACEMENTS)
+    metric_guards = read(PROMOTED_METRIC_GUARDS)
 
     for token in (
         "cbp_migrate_us17_native_profit_modifiers_all_countries",
         "every_country = {",
         "NOT = { has_variable = cbp_us17_native_modifier_state_version }",
         "var:cbp_us17_native_modifier_state_version < 7",
+        "NOT = { has_variable = cbp_us17_runtime_constant_source_version }",
+        "var:cbp_us17_runtime_constant_source_version < 1",
         "cbp_refresh_us17_native_profit_modifiers_for_current_country = yes",
         "cbp_schedule_us17_native_profit_modifier_refresh",
         "cbp_us17_native_modifier_refresh_scheduled",
@@ -150,6 +162,50 @@ def main() -> int:
     ):
         require(events, token, str(EVENTS.relative_to(ROOT)))
 
+    for token in (
+        "cbp_us17_us20_route_loss_coefficient_max = {",
+        "cbp_us17_us20_route_loss_coefficient_curve = {",
+        "cbp_us17_maintenance_component_weight = {",
+        "cbp_us17_maintenance_efficiency_scale = {",
+        "value = 0.05",
+        "value = 0.5",
+        "value = 10",
+    ):
+        require(constants, token, str(RUNTIME_CONSTANTS.relative_to(ROOT)))
+
+    for token in (
+        "REPLACE:cbp_compute_us20_route_loss_coefficient_from_selling_baseline",
+        "REPLACE:cbp_compute_us17_native_corrections_from_baselines",
+        "cbp_us17_us20_route_loss_coefficient_max",
+        "cbp_us17_us20_route_loss_coefficient_curve",
+        "cbp_us17_maintenance_component_weight",
+        "cbp_us17_maintenance_efficiency_scale",
+        "INJECT:cbp_clear_us17_native_profit_modifiers_for_current_country",
+        "INJECT:cbp_refresh_us17_native_profit_modifiers_for_current_country",
+        "cbp_us17_runtime_constant_source_version value = 1",
+    ):
+        require(replacements, token, str(RUNTIME_REPLACEMENTS.relative_to(ROOT)))
+    if "define:NCountry|CBP_" in replacements:
+        fail("runtime replacements must not read arbitrary CBP_* engine Defines")
+
+    for effect_name in (
+        "cbp_note_promoted_market_live_us00_country_pass",
+        "cbp_note_promoted_market_live_us10_country_pass",
+    ):
+        require(
+            metric_guards,
+            f"REPLACE:{effect_name}",
+            str(PROMOTED_METRIC_GUARDS.relative_to(ROOT)),
+        )
+    for token in (
+        "has_global_variable = cbp_promoted_market_live_us00_country_passes",
+        "has_global_variable = cbp_promoted_market_live_us10_country_passes",
+        "has_global_variable = cbp_promoted_market_live_us00_good_scans",
+        "has_global_variable = cbp_promoted_market_live_us10_good_scans",
+        "exists = scope:cbp_generated_stock_good_count",
+    ):
+        require(metric_guards, token, str(PROMOTED_METRIC_GUARDS.relative_to(ROOT)))
+
     expected: set[str] = set()
     for privilege_file in PRIVILEGE_FILES:
         expected.update(relevant_privileges(privilege_file))
@@ -160,6 +216,7 @@ def main() -> int:
 
     print(
         "US17 modifier refresh lifecycle validation passed: "
+        "named runtime constants and promoted-market guards verified; "
         f"{len(expected)} trade-efficiency privileges covered in Core and Economy package"
     )
     return 0

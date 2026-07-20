@@ -1,0 +1,82 @@
+# Runtime guards for promoted-market diagnostic counters.
+#
+# Zero-valued global variables can be treated as absent by Jomini, and the
+# generated good-count target may be unavailable in stale/local generated
+# payloads. These counters are diagnostics only; guard both inputs so they can
+# never interrupt the monthly economy cycle.
+
+REPLACE:cbp_note_promoted_market_live_us00_country_pass = {
+	cbp_capture_generated_stock_good_count = yes
+
+	if = {
+		limit = { has_global_variable = cbp_promoted_market_live_us00_country_passes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_us00_country_passes
+			value = {
+				value = global_var:cbp_promoted_market_live_us00_country_passes
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = cbp_promoted_market_live_us00_country_passes value = 1 }
+	}
+
+	if = {
+		limit = { exists = scope:cbp_generated_stock_good_count }
+		if = {
+			limit = { has_global_variable = cbp_promoted_market_live_us00_good_scans }
+			set_global_variable = {
+				name = cbp_promoted_market_live_us00_good_scans
+				value = {
+					value = global_var:cbp_promoted_market_live_us00_good_scans
+					add = scope:cbp_generated_stock_good_count
+				}
+			}
+		}
+		else = {
+			set_global_variable = {
+				name = cbp_promoted_market_live_us00_good_scans
+				value = scope:cbp_generated_stock_good_count
+			}
+		}
+	}
+}
+
+REPLACE:cbp_note_promoted_market_live_us10_country_pass = {
+	cbp_capture_generated_stock_good_count = yes
+
+	if = {
+		limit = { has_global_variable = cbp_promoted_market_live_us10_country_passes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_us10_country_passes
+			value = {
+				value = global_var:cbp_promoted_market_live_us10_country_passes
+				add = 1
+			}
+		}
+	}
+	else = {
+		set_global_variable = { name = cbp_promoted_market_live_us10_country_passes value = 1 }
+	}
+
+	if = {
+		limit = { exists = scope:cbp_generated_stock_good_count }
+		if = {
+			limit = { has_global_variable = cbp_promoted_market_live_us10_good_scans }
+			set_global_variable = {
+				name = cbp_promoted_market_live_us10_good_scans
+				value = {
+					value = global_var:cbp_promoted_market_live_us10_good_scans
+					add = scope:cbp_generated_stock_good_count
+				}
+			}
+		}
+		else = {
+			set_global_variable = {
+				name = cbp_promoted_market_live_us10_good_scans
+				value = scope:cbp_generated_stock_good_count
+			}
+		}
+	}
+}

@@ -1,0 +1,123 @@
+# Runtime correction for PR #204.
+#
+# The original implementation reads arbitrary CBP_* keys through the engine
+# Defines database. Those keys are not engine-defined and resolve as zero in
+# game. Replace only the two pure calculation helpers with named script-value
+# constants while preserving the accepted algebra and all persisted interfaces.
+
+REPLACE:cbp_compute_us20_route_loss_coefficient_from_selling_baseline = {
+	save_temporary_scope_value_as = {
+		name = cbp_us20_route_loss_denominator
+		value = {
+			value = scope:cbp_us17_native_baseline_selling_efficiency
+			multiply = cbp_us17_us20_route_loss_coefficient_curve
+			add = 1
+			min = 0.01
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us20_route_loss_coefficient_result
+		value = {
+			value = cbp_us17_us20_route_loss_coefficient_max
+			divide = scope:cbp_us20_route_loss_denominator
+			min = 0
+		}
+	}
+}
+
+REPLACE:cbp_compute_us17_native_corrections_from_baselines = {
+	# Selling: cancel the non-CBP baseline and leave the shared route-loss
+	# coefficient as the only effective Selling residual.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_selling_correction_result
+		value = {
+			value = scope:cbp_us17_native_baseline_selling_efficiency
+			multiply = -1
+			add = {
+				value = var:cbp_us20_route_loss_coefficient
+				multiply = -1
+			}
+		}
+	}
+
+	# Import and Export leave native price formation.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_import_correction_result
+		value = {
+			value = scope:cbp_us17_native_baseline_import_efficiency
+			multiply = -1
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_export_correction_result
+		value = {
+			value = scope:cbp_us17_native_baseline_export_efficiency
+			multiply = -1
+		}
+	}
+
+	# M / 2.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_vanilla_term
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			multiply = cbp_us17_maintenance_component_weight
+		}
+	}
+
+	# 5 * (I + Ex) = (I + Ex) * 10 * 0.5.
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_directional_term
+		value = {
+			value = scope:cbp_us17_native_baseline_import_efficiency
+			add = scope:cbp_us17_native_baseline_export_efficiency
+			multiply = cbp_us17_maintenance_efficiency_scale
+			multiply = cbp_us17_maintenance_component_weight
+		}
+	}
+
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_curve_denominator
+		value = {
+			value = scope:cbp_us17_maintenance_vanilla_term
+			add = scope:cbp_us17_maintenance_directional_term
+			add = 1
+			min = 0.01
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_maintenance_curve_reciprocal
+		value = {
+			value = 1
+			divide = scope:cbp_us17_maintenance_curve_denominator
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_effective_maintenance_result
+		value = {
+			value = 1
+			add = {
+				value = scope:cbp_us17_maintenance_curve_reciprocal
+				multiply = -1
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = cbp_us17_native_maintenance_correction_result
+		value = {
+			value = scope:cbp_us17_native_baseline_maintenance_efficiency
+			multiply = -1
+			add = scope:cbp_us17_native_effective_maintenance_result
+		}
+	}
+}
+
+# Distinguish saves refreshed with real runtime script values from v7 saves that
+# were refreshed while the custom Define keys resolved as zero.
+INJECT:cbp_clear_us17_native_profit_modifiers_for_current_country = {
+	set_variable = { name = cbp_us17_runtime_constant_source_version value = 1 }
+}
+
+INJECT:cbp_refresh_us17_native_profit_modifiers_for_current_country = {
+	set_variable = { name = cbp_us17_runtime_constant_source_version value = 1 }
+}
