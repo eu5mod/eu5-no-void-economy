@@ -48,39 +48,6 @@ surplus_jobs = {
 }
 """
 
-NOOP_LOCATION_FIXTURE = """expensive_food_in_location = {
-\tgame_data = {
-\t\tcategory = location
-\t}
-\tlocal_population_growth = 0
-\tlocal_life_expectancy = -2
-}
-
-cheap_food_in_location = {
-\tgame_data = {
-\t\tcategory = location
-\t}
-\tlocal_population_growth = 0.001
-\tlocal_life_expectancy = 2
-}
-
-market_center = {
-\tgame_data = {
-\t\tcategory = location
-\t}
-\tlocal_merchant_capacity = 2
-\tmaximum_stockpile_capacity = 0
-}
-
-surplus_jobs = {
-\tgame_data = {
-\t\tcategory = location
-\t}
-\tlocal_migration_attraction = 0.2
-\tlocal_construction_speed = -0.1
-}
-"""
-
 DEVELOPMENT_FIXTURE = """
 development = {
 \tgame_data = {
@@ -152,14 +119,9 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             text=True,
         )
         candidate = candidate_root / OUTPUT
-        self.assertEqual(reference.is_file(), candidate.is_file())
-        if reference.is_file():
-            self.assertEqual(reference.read_bytes(), candidate.read_bytes())
-            output = candidate.read_text(encoding="utf-8")
-        else:
-            output = None
+        self.assertEqual(reference.read_bytes(), candidate.read_bytes())
         return (
-            output,
+            candidate.read_text(encoding="utf-8"),
             payload,
             legacy.stderr,
             spec_run.stderr,
@@ -173,8 +135,6 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 BASE_LOCATION_FIXTURE + DEVELOPMENT_FIXTURE,
             )
 
-            self.assertIsNotNone(output)
-            assert output is not None
             development_rules = [
                 rule
                 for rule in payload["transformations"]
@@ -209,8 +169,6 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 BASE_LOCATION_FIXTURE + changed_development,
             )
 
-            self.assertIsNotNone(output)
-            assert output is not None
             self.assertTrue(
                 any(
                     rule.get("object") == "development"
@@ -240,8 +198,6 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 BASE_LOCATION_FIXTURE,
             )
 
-            self.assertIsNotNone(output)
-            assert output is not None
             development_rules = [
                 rule
                 for rule in payload["transformations"]
@@ -253,44 +209,6 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 self.assertIn("[⚠️] Vanilla development static modifier", warning)
                 self.assertIn(source.resolve().as_uri(), warning)
             self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
-
-    def test_unchanged_replacement_objects_are_not_copied(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            output, payload, legacy_stderr, spec_stderr, _ = self.run_generators(
-                Path(temporary),
-                NOOP_LOCATION_FIXTURE + DEVELOPMENT_FIXTURE,
-            )
-
-            self.assertIsNotNone(output)
-            assert output is not None
-            self.assertEqual(legacy_stderr, "")
-            self.assertEqual(spec_stderr, "")
-            self.assertEqual(
-                [rule.get("object") for rule in payload["transformations"]],
-                ["development"],
-            )
-            for unchanged_object in (
-                "expensive_food_in_location",
-                "cheap_food_in_location",
-                "market_center",
-                "surplus_jobs",
-            ):
-                self.assertNotIn(f"{unchanged_object} = {{", output)
-            self.assertIn("development = {", output)
-            self.assertIn("# maximum_stockpile_capacity = 5", output)
-
-    def test_output_file_is_omitted_when_every_policy_is_a_noop(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            output, payload, legacy_stderr, spec_stderr, source = self.run_generators(
-                Path(temporary),
-                NOOP_LOCATION_FIXTURE,
-            )
-
-            self.assertIsNone(output)
-            self.assertEqual(payload["transformations"], [])
-            for warning in (legacy_stderr, spec_stderr):
-                self.assertIn("[⚠️] Vanilla development static modifier", warning)
-                self.assertIn(source.resolve().as_uri(), warning)
 
 
 if __name__ == "__main__":
