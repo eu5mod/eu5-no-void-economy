@@ -1,6 +1,6 @@
-cbp_positive_stability_expense_offset = {
+cbp_negative_stability_expense_offset = {
 	potential_trigger = {
-		stability > 0
+		stability < 0
 	}
 
 	scales_with = {
