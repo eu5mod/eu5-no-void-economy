@@ -1,5 +1,8 @@
-﻿# US-17 modifies the inputs consumed by Vanilla trade-profit accounting. It does
-# not scan routes or reconcile treasury values after the engine calculation.
+﻿# Standalone US-17 country modifiers aligned with #204.
+#
+# Selling retains the diminishing CBP loss residual. Import and Export leave
+# absolute trade-price formation. Their reconstructed baselines feed reciprocal
+# Merchant Maintenance through the persisted correction variables.
 
 cbp_trade_profit_selling_efficiency_cancellation = {
 	requires_real = no
@@ -13,6 +16,13 @@ cbp_trade_profit_import_efficiency_cancellation = {
 	limit = { has_variable = cbp_trade_profit_native_import_correction }
 	scales_with = { value = var:cbp_trade_profit_native_import_correction }
 	import_efficiency = 1
+}
+
+cbp_trade_profit_export_efficiency_cancellation = {
+	requires_real = no
+	limit = { has_variable = cbp_trade_profit_native_export_correction }
+	scales_with = { value = var:cbp_trade_profit_native_export_correction }
+	export_efficiency = 1
 }
 
 cbp_trade_profit_merchant_maintenance_reconciliation = {
