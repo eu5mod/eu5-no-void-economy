@@ -1,0 +1,44 @@
+# US-17 persisted country-modifier lifecycle.
+#
+# State version 7 belongs to PR #204. New campaigns and older saves can retain
+# missing or pre-v7 correction variables until the monthly country cycle runs.
+# The delayed start/load migration below refreshes only countries that have not
+# reached the current state version.
+
+# Root/global scope. Called only by delayed game-start and game-load pulses.
+cbp_migrate_us17_native_profit_modifiers_all_countries = {
+	every_country = {
+		if = {
+			limit = {
+				NOT = { has_variable = cbp_us17_native_modifier_state_version }
+			}
+			cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+		}
+		else_if = {
+			limit = {
+				var:cbp_us17_native_modifier_state_version < 7
+			}
+			cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+		}
+	}
+}
+
+# Country scope. Privilege activation/deactivation can occur before all dependent
+# modifier surfaces have completed their engine-side recalculation. Coalesce
+# same-day invalidations and refresh on the following day.
+cbp_schedule_us17_native_profit_modifier_refresh = {
+	if = {
+		limit = {
+			scope_type = country
+			NOT = { has_variable = cbp_us17_native_modifier_refresh_scheduled }
+		}
+		set_variable = {
+			name = cbp_us17_native_modifier_refresh_scheduled
+			value = 1
+		}
+		trigger_event_silently = {
+			id = cbp_us17_modifier_refresh.1
+			days = 1
+		}
+	}
+}

@@ -1,0 +1,88 @@
+name: US17 Modifier Refresh Lifecycle
+
+on:
+  push:
+    branches:
+      - fix/us17-modifier-refresh-lifecycle
+  pull_request:
+    paths:
+      - 'in_game/common/estate_privileges/cbp_us17_trade_efficiency_refresh_injections.txt'
+      - 'in_game/common/on_action/cbp_us17_modifier_refresh_lifecycle_on_actions.txt'
+      - 'in_game/common/scripted_effects/cbp_us17_modifier_refresh_lifecycle_effects.txt'
+      - 'in_game/events/cbp_us17_modifier_refresh_events.txt'
+      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/burghers_estate.txt'
+      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/nobles_estate.txt'
+      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/zz_cbp_us17_trade_efficiency_refresh_injections.txt'
+      - 'tools/validate_us17_modifier_refresh_lifecycle.py'
+      - '.github/workflows/us17-modifier-refresh-lifecycle.yml'
+
+jobs:
+  validate-lifecycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Generate local artifacts
+        run: ./tools/generate_all.sh
+
+      - name: Compile validator
+        run: python3 -m py_compile tools/validate_us17_modifier_refresh_lifecycle.py
+
+      - name: Validate lifecycle and privilege coverage
+        run: python3 tools/validate_us17_modifier_refresh_lifecycle.py
+
+      - name: Validate static contracts
+        id: static
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/validate_ci_static_contracts.py > static-contracts.log 2>&1
+          status=$?
+          echo "$status" > static-contracts.status
+          exit $status
+
+      - name: Validate script safety
+        id: safety
+        continue-on-error: true
+        run: |
+          set +e
+          ./tools/validate_cbp_script_safety.sh > script-safety.log 2>&1
+          status=$?
+          echo "$status" > script-safety.status
+          exit $status
+
+      - name: Validate patch hygiene
+        id: hygiene
+        continue-on-error: true
+        run: |
+          set +e
+          git diff --check > patch-hygiene.log 2>&1
+          status=$?
+          echo "$status" > patch-hygiene.status
+          exit $status
+
+      - name: Upload focused validation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: us17-modifier-refresh-lifecycle-logs
+          path: |
+            static-contracts.log
+            static-contracts.status
+            script-safety.log
+            script-safety.status
+            patch-hygiene.log
+            patch-hygiene.status
+
+      - name: Enforce focused validation results
+        if: always()
+        run: |
+          status=0
+          for file in static-contracts.status script-safety.status patch-hygiene.status; do
+            if [ ! -f "$file" ] || [ "$(cat "$file")" != "0" ]; then
+              echo "Focused validation failed: $file" >&2
+              status=1
+            fi
+          done
+          exit $status

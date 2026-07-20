@@ -1,0 +1,28 @@
+# US-17 modifier-state migration is delayed one day so country modifiers and CMM
+# configuration are available before the country baselines are reconstructed.
+
+on_game_start = {
+	on_actions = {
+		delay = { days = 1 }
+		cbp_us17_modifier_migration_on_game_start
+	}
+}
+
+on_game_load = {
+	on_actions = {
+		delay = { days = 1 }
+		cbp_us17_modifier_migration_on_game_load
+	}
+}
+
+cbp_us17_modifier_migration_on_game_start = {
+	effect = {
+		cbp_migrate_us17_native_profit_modifiers_all_countries = yes
+	}
+}
+
+cbp_us17_modifier_migration_on_game_load = {
+	effect = {
+		cbp_migrate_us17_native_profit_modifiers_all_countries = yes
+	}
+}
