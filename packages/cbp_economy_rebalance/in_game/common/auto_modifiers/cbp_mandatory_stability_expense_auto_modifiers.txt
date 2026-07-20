@@ -5,7 +5,7 @@ cbp_negative_stability_expense_offset = {
 
 	scales_with = {
 		value = stability
-		multiply = 0.01
+		multiply = -0.01
 	}
 
 	stability_investment = 1
