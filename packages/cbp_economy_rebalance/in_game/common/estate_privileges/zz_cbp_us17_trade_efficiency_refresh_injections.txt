@@ -1,0 +1,46 @@
+# Package-local late injection for the US-17 privilege lifecycle hooks.
+#
+# The Economy package contains full Burghers and Nobles privilege overrides.
+# This file sorts after those overrides so modular package load order cannot
+# discard the Core injection. Keep this object set synchronized with the Core
+# injection and tools/validate_us17_modifier_refresh_lifecycle.py.
+
+TRY_INJECT:novgorod_ivans_hundred = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:kbo_lake_chad_trade_privilege = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:noble_patronage = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:polish_merchant_seal = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:fra_leadership_of_marcel = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:consolidated_corruption_of_the_burghers = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:mam_muhtasibs = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
+
+TRY_INJECT:office_of_the_farima_soura_privilege = {
+	on_activate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+	on_deactivate = { cbp_schedule_us17_native_profit_modifier_refresh = yes }
+}
