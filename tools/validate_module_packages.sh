@@ -57,4 +57,4 @@ if using_replace_outputs:
 destination.write_text(text, encoding="utf-8")
 PY
 
-bash "$patched_validator"
+bash -x "$patched_validator"
