@@ -15,16 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[5]
 SOURCE = "main_menu/common/static_modifiers/location.txt"
 OUTPUT = "main_menu/common/static_modifiers/cbp_location.txt"
 
-
-class LocationStaticModifierParityTest(unittest.TestCase):
-    def test_development_stockpile_capacity_is_commented_and_other_fields_are_preserved(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            game_root = root / "game"
-            source = game_root / SOURCE
-            source.parent.mkdir(parents=True, exist_ok=True)
-            source.write_text(
-                """expensive_food_in_location = {
+BASE_LOCATION_FIXTURE = """expensive_food_in_location = {
 \tgame_data = {
 \t\tcategory = location
 \t}
@@ -55,7 +46,9 @@ surplus_jobs = {
 \tlocal_migration_attraction = 0.1
 \tlocal_construction_speed = -0.1
 }
+"""
 
+DEVELOPMENT_FIXTURE = """
 development = {
 \tgame_data = {
 \t\tcategory = location
@@ -63,36 +56,79 @@ development = {
 \tmaximum_stockpile_capacity = 5
 \tlocal_construction_speed = 0.01
 }
-""",
-                encoding="utf-8",
+"""
+
+
+class LocationStaticModifierParityTest(unittest.TestCase):
+    def run_generators(self, root: Path, source_text: str):
+        game_root = root / "game"
+        source = game_root / SOURCE
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text(source_text, encoding="utf-8")
+
+        reference = root / "reference" / "cbp_location.txt"
+        legacy = subprocess.run(
+            [
+                "bash",
+                "tools/generate_cbp_location_overrides.sh",
+                "--source-file",
+                str(source),
+                "--output-file",
+                str(reference),
+            ],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        spec = root / "location.json"
+        spec_run = subprocess.run(
+            [
+                sys.executable,
+                "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py",
+                "--source-file",
+                str(source),
+                "--output",
+                str(spec),
+            ],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(spec.read_text(encoding="utf-8"))
+
+        candidate_root = root / "candidate"
+        subprocess.run(
+            [
+                sys.executable,
+                "tools/cbg/community_balance_generator.py",
+                "--game-root",
+                str(game_root),
+                "--spec",
+                str(spec),
+                "--output-root",
+                str(candidate_root),
+                "--manifest",
+                str(candidate_root / "manifest.json"),
+            ],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        candidate = candidate_root / OUTPUT
+        self.assertEqual(reference.read_bytes(), candidate.read_bytes())
+        return candidate.read_text(encoding="utf-8"), payload, legacy.stderr, spec_run.stderr
+
+    def test_development_stockpile_capacity_is_commented_and_other_fields_are_preserved(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output, payload, legacy_stderr, spec_stderr = self.run_generators(
+                Path(temporary),
+                BASE_LOCATION_FIXTURE + DEVELOPMENT_FIXTURE,
             )
 
-            reference = root / "reference" / "cbp_location.txt"
-            subprocess.run(
-                [
-                    "bash",
-                    "tools/generate_cbp_location_overrides.sh",
-                    "--source-file",
-                    str(source),
-                    "--output-file",
-                    str(reference),
-                ],
-                cwd=REPO_ROOT,
-                check=True,
-            )
-
-            spec = root / "location.json"
-            subprocess.run(
-                [
-                    sys.executable,
-                    "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py",
-                    "--output",
-                    str(spec),
-                ],
-                cwd=REPO_ROOT,
-                check=True,
-            )
-            payload = json.loads(spec.read_text(encoding="utf-8"))
             development_rules = [
                 rule
                 for rule in payload["transformations"]
@@ -101,28 +137,9 @@ development = {
             ]
             self.assertEqual(len(development_rules), 1)
             self.assertEqual(development_rules[0]["operation"], "comment_out")
+            self.assertEqual(legacy_stderr, "")
+            self.assertEqual(spec_stderr, "")
 
-            candidate_root = root / "candidate"
-            subprocess.run(
-                [
-                    sys.executable,
-                    "tools/cbg/community_balance_generator.py",
-                    "--game-root",
-                    str(game_root),
-                    "--spec",
-                    str(spec),
-                    "--output-root",
-                    str(candidate_root),
-                    "--manifest",
-                    str(candidate_root / "manifest.json"),
-                ],
-                cwd=REPO_ROOT,
-                check=True,
-            )
-            candidate = candidate_root / OUTPUT
-            self.assertEqual(reference.read_bytes(), candidate.read_bytes())
-
-            output = candidate.read_text(encoding="utf-8")
             development = output[output.index("development = {") :]
             self.assertIn(
                 "# maximum_stockpile_capacity = 5 # CBG: commented by cbp-location-static-modifiers",
@@ -133,6 +150,24 @@ development = {
                 re.compile(r"^\s*maximum_stockpile_capacity\s*=", re.MULTILINE),
             )
             self.assertIn("local_construction_speed = 0.01", development)
+            self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
+
+    def test_missing_development_block_warns_and_does_not_fail_generation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output, payload, legacy_stderr, spec_stderr = self.run_generators(
+                Path(temporary),
+                BASE_LOCATION_FIXTURE,
+            )
+
+            development_rules = [
+                rule
+                for rule in payload["transformations"]
+                if rule.get("object") == "development"
+            ]
+            self.assertEqual(development_rules, [])
+            self.assertNotIn("development = {", output)
+            self.assertIn("[⚠️] Vanilla development static modifier", legacy_stderr)
+            self.assertIn("[⚠️] Vanilla development static modifier", spec_stderr)
             self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
 
 
