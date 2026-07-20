@@ -4,14 +4,16 @@
 
 US-20 models physical goods lost in transit. It does not calculate its coefficient per route.
 
-The country refresh calculates the Selling coefficient once:
+The country refresh calculates the Selling coefficient once from named script values:
 
 ```txt
 S = reconstructed non-CBP Selling Efficiency
 
-C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
-    / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+C = cbp_us17_us20_route_loss_coefficient_max
+    / (1 + S * cbp_us17_us20_route_loss_coefficient_curve)
 ```
+
+Default values are `0.05` and `10`. These are mod-owned named script values, not custom engine Defines.
 
 It persists the result immediately:
 
@@ -34,7 +36,7 @@ US-20 later reads the same country variable:
 coefficient_input = var:cbp_us20_route_loss_coefficient
 ```
 
-The route block contains no Selling modifier read, Selling baseline read, Define lookup, denominator calculation, or division.
+The route block contains no Selling modifier read, Selling baseline read, script-value lookup, denominator calculation, or division.
 
 ## Goods loss
 
@@ -91,7 +93,7 @@ The negative destination market-supply delta is applied through the central stoc
 ```txt
 cbp_run_monthly_country_trade_owner_cycle
   -> reconstruct country baselines
-  -> calculate C once
+  -> calculate C once from named script values
   -> persist C
   -> calculate US-17 corrections
   -> every_trade
@@ -105,6 +107,7 @@ cbp_run_monthly_country_trade_owner_cycle
 ## Acceptance contract
 
 ```txt
+- mod-owned constants are named script values, not custom engine Defines;
 - coefficient is calculated once by the country refresh;
 - coefficient is persisted before US-17 Selling consumes it;
 - US-17 effective Selling equals -C;

@@ -4,7 +4,7 @@
 
 US-17 stores reconstructed non-CBP modifier baselines and CBP correction values on each country. Those variables must be recalculated when a save first adopts state version `7`, when the runtime constant source changes, and when an estate privilege changes one of the source modifiers.
 
-The authoritative refresh remains `cbp_refresh_us17_native_profit_modifiers_for_current_country`. This layer decides when the refresh must run and supplies parser-safe runtime constants for its accepted algebra.
+The authoritative refresh remains `cbp_refresh_us17_native_profit_modifiers_for_current_country`. The production calculation and source-version marker now live directly in `cbp_trade_owner_modifier_reconciliation_effects.txt`; there is no secondary calculation override.
 
 ## Runtime constant correction
 
@@ -20,7 +20,7 @@ mixed-denominator maintenance = 0
 
 Direct Import and Export cancellation still worked because those calculations did not use the custom Define keys.
 
-The runtime implementation now reads named script values:
+The authoritative runtime implementation now reads named script values directly:
 
 ```txt
 cbp_us17_us20_route_loss_coefficient_max = 0.05
@@ -41,6 +41,8 @@ A country refreshed from this source receives:
 ```txt
 cbp_us17_runtime_constant_source_version = 1
 ```
+
+The obsolete custom Define entries, compatibility aliases, and `zz_cbp_us17_runtime_constant_replacements.txt` have been removed.
 
 ## Game start and save load
 
@@ -76,7 +78,7 @@ Conditional modifier blocks inside an already-active privilege can change withou
 
 ## Promoted-market diagnostic guard
 
-The monthly error at `cbp_promoted_market_cycle_effects.txt:649-653` is independent of the US-17 formula. It comes from diagnostic counters reading an absent zero-valued global or an unset generated good-count target. Late replacement effects now initialize the globals safely and skip the diagnostic good-scan increment when the target is unavailable. These counters must never interrupt the economy cycle.
+The monthly error at `cbp_promoted_market_cycle_effects.txt:649-653` is independent of the US-17 formula. It comes from diagnostic counters reading an absent zero-valued global or an unset generated good-count target. The separate promoted-market metric replacements initialize the globals safely and skip the diagnostic good-scan increment when the target is unavailable. These counters must never interrupt the economy cycle.
 
 ## Focused runtime event
 
@@ -98,7 +100,9 @@ python3 tools/validate_us17_modifier_refresh_lifecycle.py
 
 The validator now requires:
 
-- named runtime constants and no `define:NCountry|CBP_*` reads in the runtime replacements;
-- the runtime-source migration marker;
+- named runtime constants consumed by the direct production effects;
+- no arbitrary `CBP_*`/`CBD_*` custom Defines;
+- no duplicate US-17 runtime replacement layer;
+- the runtime-source migration marker in the direct clear and refresh effects;
 - guarded promoted-market diagnostic counters;
 - identical Core and Economy-package privilege lifecycle coverage.

@@ -16,11 +16,13 @@ The tested build rejects `modifier:buying_efficiency` and `modifier:merchant_mai
 
 ```txt
 S = reconstructed non-CBP Selling Efficiency
-L_s = CBP_ROUTE_LOSS_COEFFICIENT_MAX
-K_s = CBP_ROUTE_LOSS_COEFFICIENT_CURVE
+L_s = cbp_us17_us20_route_loss_coefficient_max
+K_s = cbp_us17_us20_route_loss_coefficient_curve
 
 C = L_s / (1 + S * K_s)
 ```
+
+`L_s` and `K_s` are named script values owned by the mod. They are not custom engine Defines.
 
 The country refresh persists:
 
@@ -67,8 +69,8 @@ Let:
 M = reconstructed non-CBP Merchant Maintenance Efficiency
 I = reconstructed non-CBP Import Efficiency
 Ex = reconstructed non-CBP Export Efficiency
-W = CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT
-K = CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
+W = cbp_us17_maintenance_component_weight
+K = cbp_us17_maintenance_efficiency_scale
 ```
 
 Production calculation:
@@ -84,7 +86,7 @@ effective maintenance = 1 - reciprocal
 maintenance correction = -M + effective maintenance
 ```
 
-With the default Defines:
+With the default named script values:
 
 ```txt
 W = 0.5
@@ -100,9 +102,11 @@ maintenance correction =
     - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-The formula uses one mixed denominator. The old `CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT` and `CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT` names remain only as compatibility aliases and are not read by production code.
+The formula uses one mixed denominator. No compatibility aliases or custom `CBP_*` Define keys remain.
 
 ## Runtime helpers
+
+The implementation is direct in `cbp_trade_owner_modifier_reconciliation_effects.txt`; there is no late replacement layer.
 
 ```txt
 cbp_compute_us20_route_loss_coefficient_from_selling_baseline
@@ -137,6 +141,7 @@ cbp_us17_native_maintenance_correction
 
 cbp_us20_route_loss_coefficient
 cbp_us17_native_modifier_state_version = 7
+cbp_us17_runtime_constant_source_version = 1
 ```
 
 Each refresh subtracts the previous persisted correction from the current effective modifier before rebuilding the non-CBP baseline.

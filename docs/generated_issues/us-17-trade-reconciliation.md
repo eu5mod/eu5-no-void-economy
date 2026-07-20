@@ -10,11 +10,13 @@ I  = reconstructed non-CBP Import Efficiency
 Ex = reconstructed non-CBP Export Efficiency
 M  = reconstructed non-CBP Merchant Maintenance Efficiency
 
-L_s = CBP_ROUTE_LOSS_COEFFICIENT_MAX
-K_s = CBP_ROUTE_LOSS_COEFFICIENT_CURVE
-K_m = CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE
-W   = CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT
+L_s = cbp_us17_us20_route_loss_coefficient_max
+K_s = cbp_us17_us20_route_loss_coefficient_curve
+K_m = cbp_us17_maintenance_efficiency_scale
+W   = cbp_us17_maintenance_component_weight
 ```
+
+These are named script values owned by the mod, not custom engine Defines.
 
 Default values:
 
@@ -77,7 +79,7 @@ Merchant Maintenance correction =
     - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-The production form uses the Defines:
+The production form uses the named script values directly:
 
 ```txt
 maintenance denominator =
@@ -137,7 +139,7 @@ maintenance correction = 0.717514 - 0.08 = 0.637514
 ```txt
 country refresh
   -> reconstruct S, I, Ex and M
-  -> calculate C once
+  -> calculate C once from named script values
   -> persist C
   -> calculate Selling, Import, Export and Maintenance corrections
   -> persist four corrections and four baselines
@@ -147,11 +149,13 @@ country refresh
      -> goods loss = trade_volume * C
 ```
 
-State version is `7`.
+State version is `7`. Runtime constant source version is `1`.
 
 ## Acceptance contract
 
 ```txt
+- mod-owned constants are named script values, not custom engine Defines;
+- the calculation helpers are authoritative direct effects, not late replacements;
 - Selling coefficient is calculated once and persisted before US-17 consumes it;
 - effective Selling Efficiency equals -C;
 - US-20 goods loss equals trade_volume * C;

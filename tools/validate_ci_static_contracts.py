@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static CI contracts for the stacked US-17/US-20 mixed-denominator model.
+"""Static CI contracts for the US-17/US-20 direct named-value implementation.
 
 The complete pre-existing validator remains in
 ``validate_ci_static_contracts_legacy.py``. This entry point replaces only the
@@ -12,6 +12,21 @@ from __future__ import annotations
 import re
 
 import validate_ci_static_contracts_legacy as legacy
+
+
+CUSTOM_DEFINE_NAMES = (
+    "CBP_ROUTE_LOSS_COEFFICIENT_MAX",
+    "CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
+    "CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT",
+    "CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE",
+    "CBP_ROUTE_LOSS_MAX",
+    "CBP_ROUTE_LOSS_CURVE",
+    "CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT",
+    "CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT",
+    "CBP_TRADE_EFFICIENCY_COMPENSATION_MAX",
+    "CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE",
+    "CBD_TRADE_MAINTENANCE_MAX_IMPACT",
+)
 
 
 def validate_us17_owner_modifier_contract(
@@ -27,25 +42,41 @@ def validate_us17_owner_modifier_contract(
 ) -> None:
     expect = legacy.expect
     block = legacy.block
-    defines = legacy.read("loading_screen/common/defines/cbp_trade_defines.txt")
+    runtime_constants = legacy.read(
+        "in_game/common/script_values/cbp_us17_us20_runtime_constants.txt"
+    )
+    trade_defines = legacy.read("loading_screen/common/defines/cbp_trade_defines.txt")
 
-    for token in [
-        "CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05",
-        "CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10",
-        "CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5",
-        "CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10",
-    ]:
-        expect(token in defines, f"US17/US20 defines must contain {token}")
+    expected_runtime_values = {
+        "cbp_us17_us20_route_loss_coefficient_max": "0.05",
+        "cbp_us17_us20_route_loss_coefficient_curve": "10",
+        "cbp_us17_maintenance_component_weight": "0.5",
+        "cbp_us17_maintenance_efficiency_scale": "10",
+    }
+    for name, value in expected_runtime_values.items():
+        value_block = block(runtime_constants, name)
+        expect(
+            f"value = {value}" in value_block,
+            f"Named script value {name} must equal {value}",
+        )
+
+    for name in CUSTOM_DEFINE_NAMES:
+        expect(
+            re.search(rf"(?m)^\s*{re.escape(name)}\s*=", trade_defines) is None,
+            f"Arbitrary custom Define must be absent: {name}",
+        )
 
     expect(
-        "CBP_ROUTE_LOSS_MAX = 0.05" in defines
-        and "CBP_ROUTE_LOSS_CURVE = 10" in defines,
-        "Previous route-loss define names must remain temporary aliases",
+        "define:NCountry|CBP_" not in owner_modifier_effects
+        and "define:NCountry|CBD_" not in owner_modifier_effects,
+        "US17/US20 production must not read arbitrary custom engine Defines",
     )
     expect(
-        "CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT = 0.5" in defines
-        and "CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT = 0.5" in defines,
-        "Previous 50/50 define names must remain temporary aliases",
+        "REPLACE:cbp_compute_us20_route_loss_coefficient_from_selling_baseline"
+        not in owner_modifier_effects
+        and "REPLACE:cbp_compute_us17_native_corrections_from_baselines"
+        not in owner_modifier_effects,
+        "US17/US20 calculations must be authoritative direct effects",
     )
 
     coefficient_formula = block(
@@ -81,11 +112,10 @@ def validate_us17_owner_modifier_contract(
         "cbp_run_us20_route_loss_reconciliation",
     )
 
-    # Selling coefficient remains calculated exactly once upstream.
     for token in [
         "cbp_us17_native_baseline_selling_efficiency",
-        "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_MAX",
-        "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
+        "cbp_us17_us20_route_loss_coefficient_max",
+        "cbp_us17_us20_route_loss_coefficient_curve",
         "cbp_us20_route_loss_denominator",
         "cbp_us20_route_loss_coefficient_result",
         "divide = scope:cbp_us20_route_loss_denominator",
@@ -101,7 +131,6 @@ def validate_us17_owner_modifier_contract(
         "Pure Selling coefficient helper must return a temporary result",
     )
 
-    # Selling consumes the persisted coefficient, never a recalculated value.
     for token in [
         "cbp_us17_native_selling_correction_result",
         "cbp_us17_native_baseline_selling_efficiency",
@@ -113,12 +142,11 @@ def validate_us17_owner_modifier_contract(
         "Selling correction must consume the persisted country coefficient",
     )
     expect(
-        "CBP_ROUTE_LOSS_COEFFICIENT_MAX" not in correction_formula
-        and "CBP_ROUTE_LOSS_COEFFICIENT_CURVE" not in correction_formula,
+        "cbp_us17_us20_route_loss_coefficient_max" not in correction_formula
+        and "cbp_us17_us20_route_loss_coefficient_curve" not in correction_formula,
         "Selling correction must not recalculate the shared coefficient",
     )
 
-    # Import and Export leave price formation completely.
     for token in [
         "cbp_us17_native_import_correction_result",
         "cbp_us17_native_baseline_import_efficiency",
@@ -134,8 +162,6 @@ def validate_us17_owner_modifier_contract(
     ]:
         expect(forbidden not in correction_formula, f"Directional residual curve must be absent: {forbidden}")
 
-    # Exact requested formula:
-    # -M + 1 - 1 / (1 + M/2 + 5(I+Ex)).
     for token in [
         "cbp_us17_maintenance_vanilla_term",
         "cbp_us17_maintenance_directional_term",
@@ -143,24 +169,18 @@ def validate_us17_owner_modifier_contract(
         "cbp_us17_maintenance_curve_reciprocal",
         "cbp_us17_native_effective_maintenance_result",
         "cbp_us17_native_maintenance_correction_result",
-        "define:NCountry|CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT",
-        "define:NCountry|CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE",
+        "cbp_us17_maintenance_component_weight",
+        "cbp_us17_maintenance_efficiency_scale",
         "divide = scope:cbp_us17_maintenance_curve_denominator",
     ]:
         expect(token in correction_formula, f"Mixed-denominator maintenance formula must contain {token}")
-
     expect(
         correction_formula.count("divide = scope:") == 1,
         "US17 correction helper must contain exactly one maintenance reciprocal",
     )
     expect(
-        correction_formula.count("define:NCountry|CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT") == 2,
+        correction_formula.count("cbp_us17_maintenance_component_weight") == 2,
         "Component weight must apply once to M and once to the directional scale",
-    )
-    expect(
-        "CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT" not in correction_formula
-        and "CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT" not in correction_formula,
-        "Production must not implement the rejected split-cost formula",
     )
     expect(
         "cbp_us17_directional_maintenance_efficiency" not in correction_formula,
@@ -208,8 +228,16 @@ def validate_us17_owner_modifier_contract(
         "Mixed-denominator state must use version 7",
     )
     expect(
+        "cbp_us17_runtime_constant_source_version value = 1" in refresh,
+        "Refresh must persist the named-value source version directly",
+    )
+    expect(
         "remove_variable = cbp_us20_route_loss_coefficient" in clear,
         "Disabling trade rework must remove the shared coefficient",
+    )
+    expect(
+        "cbp_us17_runtime_constant_source_version value = 1" in clear,
+        "Clear must persist the named-value source version directly",
     )
 
     expect("add_gold" not in money_wrapper, "US17 compatibility hook must not mutate treasury")
@@ -218,7 +246,6 @@ def validate_us17_owner_modifier_contract(
         "US17 compatibility hook must expose a zero money delta",
     )
 
-    # US20 only reads the persisted coefficient and multiplies by route volume.
     for token in [
         "has_variable = cbp_us20_route_loss_coefficient",
         "value = var:cbp_us20_route_loss_coefficient",
@@ -229,8 +256,8 @@ def validate_us17_owner_modifier_contract(
     ]:
         expect(token in us20_route, f"US20 route calculation must contain {token}")
     for forbidden in [
-        "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_MAX",
-        "define:NCountry|CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
+        "cbp_us17_us20_route_loss_coefficient_max",
+        "cbp_us17_us20_route_loss_coefficient_curve",
         "divide =",
         "modifier:selling_efficiency",
         "var:cbp_us17_native_selling_baseline",
@@ -347,7 +374,7 @@ def validate_us17_owner_modifier_contract(
     )
     expect(
         "define:NCountry|MERCHANT_MAINTENANCE_COST" in trade_values,
-        "Loaded base maintenance define script value must remain available",
+        "Loaded base maintenance engine Define must remain available",
     )
 
 

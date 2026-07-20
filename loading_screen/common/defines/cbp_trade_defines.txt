@@ -1,43 +1,22 @@
 NCountry = {
     MERCHANT_MAINTENANCE_COST = 0.5          # VANILLA = 0.25; package balance choice
 
-    # Shared US-17 Selling / US-20 physical route-loss coefficient.
-    CBP_ROUTE_LOSS_COEFFICIENT_MAX = 0.05
-    CBP_ROUTE_LOSS_COEFFICIENT_CURVE = 10
-
-    # US-17 exact mixed-denominator Merchant Maintenance formula:
-    #   -M + 1 - 1 / (1 + M*weight + (I + Ex)*scale*weight)
-    # Defaults produce exactly -M + 1 - 1 / (1 + M/2 + 5*(I + Ex)).
-    CBP_TRADE_MAINTENANCE_COMPONENT_WEIGHT = 0.5
-    CBP_TRADE_MAINTENANCE_EFFICIENCY_SCALE = 10
-
-    # Temporary aliases retained for stacked branches and historical fixtures.
-    CBP_ROUTE_LOSS_MAX = 0.05
-    CBP_ROUTE_LOSS_CURVE = 10
-    CBP_TRADE_MAINTENANCE_VANILLA_WEIGHT = 0.5
-    CBP_TRADE_MAINTENANCE_DIRECTIONAL_WEIGHT = 0.5
-    CBP_TRADE_EFFICIENCY_COMPENSATION_MAX = 0.05
-    CBP_TRADE_EFFICIENCY_COMPENSATION_CURVE = 10
-    CBD_TRADE_MAINTENANCE_MAX_IMPACT = 0.05
-
     # SMALL MARKETS BALANCE
-    # SUPPLY_AND_DEMAND_STABILITY_OFFSET_CONSTANT	= 1 # VANILLA 1
-    }
+    # SUPPLY_AND_DEMAND_STABILITY_OFFSET_CONSTANT = 1 # VANILLA 1
+}
 
+NMarket = {
+    # MONTHLY_PRICE_CHANGE = 0.1
 
-    NMarket = {
-        #MONTHLY_PRICE_CHANGE = 0.1
-        
-        # PRICE VARIATION IS 10 FOLD
-        MIN_PRICE_IMPACT = -0.68
-        MAX_PRICE_IMPACT = 2.16
+    # PRICE VARIATION IS 10 FOLD
+    MIN_PRICE_IMPACT = -0.68
+    MAX_PRICE_IMPACT = 2.16
 
-        # FIVE FOLD
-        # MIN_PRICE_IMPACT = -0.55
-        # MAX_PRICE_IMPACT = 1.24
+    # FIVE FOLD
+    # MIN_PRICE_IMPACT = -0.55
+    # MAX_PRICE_IMPACT = 1.24
 
-        # EIGHT FOLD
-        # MIN_PRICE_IMPACT = -0.646
-        # MAX_PRICE_IMPACT = 1.828
-        }
-
+    # EIGHT FOLD
+    # MIN_PRICE_IMPACT = -0.646
+    # MAX_PRICE_IMPACT = 1.828
+}

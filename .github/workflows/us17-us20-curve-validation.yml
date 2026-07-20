@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - 'in_game/common/auto_modifiers/cbp_us17_native_trade_profit_auto_modifiers.txt'
+      - 'in_game/common/script_values/cbp_us17_us20_runtime_constants.txt'
       - 'in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt'
       - 'loading_screen/common/defines/cbp_trade_defines.txt'
       - 'packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us17_owner_modifier_test_effects.txt'
