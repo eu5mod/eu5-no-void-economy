@@ -1,0 +1,15 @@
+name: Location Static Modifiers
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-location-static-modifiers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Test generated location override parity
+        run: python3 -m unittest tools.cbg.adapters.cbp.tests.test_location_static_modifiers
