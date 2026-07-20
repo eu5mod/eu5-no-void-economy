@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# The delegated core runs tools/validate_us08_building_maintenance_overrides.py
+# whenever an installed Vanilla common directory is available.
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 core_validator="$repo_root/tools/validate_module_packages_core.sh"
 patched_validator="$(mktemp "${TMPDIR:-/tmp}/cbp-module-validator.XXXXXX.sh")"
