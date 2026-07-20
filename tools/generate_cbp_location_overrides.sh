@@ -61,6 +61,7 @@ cbp_make_parent_dir "$output_file"
 python3 - "$source_file" "$output_file" \
 	"$expensive_food_growth" "$cheap_food_growth" \
 	"$market_center_stockpile" "$surplus_jobs_attraction" <<'PY'
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 import os
 import re
@@ -68,6 +69,10 @@ import sys
 
 source_path = Path(sys.argv[1])
 output_path = Path(sys.argv[2])
+expected_development_stockpile = os.environ.get(
+    "CBP_EXPECTED_DEVELOPMENT_STOCKPILE_CAPACITY",
+    "5",
+)
 
 targets = {
     "expensive_food_in_location": ("local_population_growth", "replace", sys.argv[3]),
@@ -86,9 +91,22 @@ def warn(message: str) -> None:
     print(f"{prefix} {message}", file=sys.stderr)
 
 
+def vanilla_link(line_number: int | None = None) -> str:
+    link = source_path.expanduser().resolve().as_uri()
+    return f"{link}#L{line_number}" if line_number is not None else link
+
+
+def numerically_equal(left: str, right: str) -> bool:
+    try:
+        return Decimal(left) == Decimal(right)
+    except InvalidOperation:
+        return left == right
+
+
 text = source_path.read_text(encoding="utf-8-sig")
 lines = text.splitlines()
 blocks = {}
+block_starts = {}
 
 index = 0
 while index < len(lines):
@@ -109,6 +127,7 @@ while index < len(lines):
         if name in blocks:
             raise SystemExit(f"Vanilla static modifier block is defined more than once: {name}")
         blocks[name] = lines[index : end + 1]
+        block_starts[name] = index
     index = end + 1
 
 missing = sorted(name for name in required_targets if name not in blocks)
@@ -117,7 +136,8 @@ if missing:
 if "development" not in blocks:
     warn(
         "Vanilla development static modifier is not exposed by this EU5 version; "
-        "skipping its stockpile-capacity transformation."
+        "skipping its stockpile-capacity transformation. "
+        f"Review Vanilla source: {vanilla_link()}"
     )
 
 rendered = [
@@ -131,7 +151,10 @@ for name, (field, operation, replacement) in targets.items():
     block = blocks.get(name)
     if block is None:
         continue
-    assignment = re.compile(rf"^(\s*){re.escape(field)}\s*=\s*([^#\s]+)(\s*(?:#.*)?)$")
+    assignment = re.compile(
+        rf"^(\s*){re.escape(field)}\s*=\s*"
+        rf"(?P<value>[^#\s]+)(\s*(?:#.*)?)$"
+    )
     matches = []
     for line_index, line in enumerate(block):
         match = assignment.match(line)
@@ -140,7 +163,8 @@ for name, (field, operation, replacement) in targets.items():
     if not matches and name == "development":
         warn(
             "Vanilla development.maximum_stockpile_capacity is not exposed by this "
-            "EU5 version; skipping this location transformation."
+            "EU5 version; skipping this location transformation. "
+            f"Review Vanilla source: {vanilla_link()}"
         )
         continue
     if len(matches) != 1:
@@ -148,13 +172,21 @@ for name, (field, operation, replacement) in targets.items():
             f"Expected one {field} assignment in vanilla block {name}; found {len(matches)}"
         )
     line_index, match = matches[0]
-    vanilla_value = match.group(2)
+    vanilla_value = match.group("value")
+    absolute_line_number = block_starts[name] + line_index + 1
     if operation == "replace":
         block[line_index] = (
             f"{match.group(1)}{field} = {replacement}"
             f" # VANILLA VALUE IS {vanilla_value}"
         )
     elif operation == "comment_out":
+        if not numerically_equal(vanilla_value, expected_development_stockpile):
+            warn(
+                "Vanilla value changed: development.maximum_stockpile_capacity was "
+                f"reviewed at {expected_development_stockpile} and is now "
+                f"{vanilla_value}. CBP will continue and comment the current value. "
+                f"Review Vanilla source: {vanilla_link(absolute_line_number)}"
+            )
         original = block[line_index].lstrip().rstrip()
         block[line_index] = (
             f"{match.group(1)}# {original}"
