@@ -1,40 +1,114 @@
 # CBP Trade Profit
 
-A deliberately small standalone implementation of US-17.
+A deliberately small standalone implementation of the **US-17 trade-balance
+rules validated in #204**.
 
-The mod adjusts Vanilla trade profit using the direction of each trade:
+## Business rule
+
+The mod reconstructs the non-CBP country values before every refresh:
 
 ```txt
-D = NCountry.MERCHANT_MAINTENANCE_COST
-operation efficiency = import efficiency
-operation efficiency = export efficiency when Trade.IsExport
-C_route = min(operation efficiency + selling efficiency, D)
-C_country = min(selling efficiency + import efficiency + export efficiency, D)
-
-effective selling efficiency = 0
-effective import efficiency = 0
-effective export efficiency = 0
-native merchant-maintenance efficiency = C_country
-monthly route treasury correction = D * (C_route - C_country)
+S  = Selling Efficiency
+I  = Import Efficiency
+Ex = Export Efficiency
+M  = Merchant Maintenance Efficiency
 ```
 
-Three country auto-modifiers cancel the original import, export, and selling
-price contributions. A fourth redirects their capped sum to Merchant
-Maintenance Efficiency, where users and the native country surface can see that
-the values remain economically relevant. A country-owned monthly `every_trade`
-pass then keeps only Selling Efficiency plus the Import or Export Efficiency
-matching each route. Country baselines are refreshed monthly and after policy
-or government-reform changes.
+Selling retains a diminishing negative residual:
 
-EU5 does not expose a trade-scope efficiency modifier. The route-specific
-maintenance result is therefore applied to treasury through `add_gold`; it is
-economically effective but is not included in Vanilla's route-profit UI or AI
-projection. The mod does not mutate goods, markets, or stocks. It contains no
-US-20 logic, CMM integration, NVE lifecycle, country x market accounting, GUI,
-events, or optional CBP balance content.
+```txt
+C = 0.05 / (1 + 10*S)
+
+Selling correction = -S - C
+effective Selling Efficiency = -C
+```
+
+Import and Export no longer amplify absolute market-price margins:
+
+```txt
+Import correction = -I
+Export correction = -Ex
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
+```
+
+Their value is redirected into the same reciprocal maintenance rule as #204:
+
+```txt
+effective Merchant Maintenance Efficiency =
+    1 - 1 / (1 + M/2 + 5*(I + Ex))
+
+Maintenance correction =
+    effective Merchant Maintenance Efficiency - M
+```
+
+The current effective values already include the previous month's standalone
+corrections. Each refresh subtracts those stored corrections first, recovering
+the non-CBP baselines and preventing monthly drift.
+
+## Light-product boundary
+
+This product contains only the country-level trade-profit balance:
+
+- four country auto-modifiers;
+- four named script constants;
+- one calculation/reconstruction effect file;
+- monthly, policy-change, and reform-change refresh hooks;
+- English localization and mod metadata.
+
+It deliberately contains **no** route iteration, `add_gold`, goods loss, market
+or stock mutation, US-20 implementation, CMM integration, NVE lifecycle,
+country × market accounting, GUI, events, generators, or optional CBP balance
+packages.
+
+The full CBP project uses the same Selling coefficient as a source for US-20
+physical goods loss. This light standalone stops at the US-17 country modifier
+surface.
 
 Do not enable this standalone together with No Void Economy while NVE contains
-the same US-17 native modifiers; both mods would apply the formula adjustment.
+the same US-17 modifiers; both products would apply the corrections.
+
+## Arithmetic fixture
+
+With:
+
+```txt
+S = 0.10
+I = 0.20
+Ex = 0.30
+M = 0.08
+```
+
+the expected values are:
+
+```txt
+C = 0.05 / (1 + 0.10*10) = 0.025
+
+Selling correction = -0.125
+effective Selling = -0.025
+
+Import correction = -0.20
+Export correction = -0.30
+
+maintenance denominator = 1 + 0.08/2 + 5*(0.20 + 0.30) = 3.54
+effective maintenance = 1 - 1/3.54 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
+```
+
+The validated Venice example also gives:
+
+```txt
+M = 0.40
+I = 0
+Ex = 0.035
+
+effective maintenance = 1 - 1/1.375 = 0.272727
+maintenance correction = -0.127273
+```
+
+which corresponds to the observed `-12.72%` tooltip value within game
+precision.
 
 ## Install
 
@@ -44,7 +118,14 @@ configuration step is required.
 
 ## Runtime check
 
-Start or load a campaign, then let one monthly tick run. The country modifier
-list must show the four localized CBP reconciliation modifiers. Repeated
-monthly ticks must not change their values unless the country's Import, Export,
-Selling, or Merchant Maintenance Efficiency changed.
+1. Enable only **CBP Trade Profit**.
+2. Start or load a campaign and advance one monthly tick.
+3. Confirm the four localized CBP modifiers are present.
+4. Confirm Import and Export Efficiency are zero.
+5. Confirm Selling Efficiency equals the negative diminishing coefficient, not
+   zero.
+6. Confirm Merchant Maintenance follows the reciprocal formula above.
+7. Advance two unchanged monthly ticks and verify that values do not drift.
+8. Change a relevant policy or government reform and verify that the baselines
+   refresh.
+9. Check `error.log` for unset variables or invalid modifier/script-value reads.

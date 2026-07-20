@@ -1,6 +1,8 @@
-﻿# US-17 removes the native country price efficiencies from Vanilla trade-profit
-# accounting. Maintenance values all three before the monthly trade pass keeps
-# only the directionally relevant route result.
+﻿# Standalone US-17 country modifiers aligned with #204.
+#
+# Selling retains the diminishing CBP loss residual. Import and Export leave
+# absolute trade-price formation. Their reconstructed baselines feed reciprocal
+# Merchant Maintenance through the persisted correction variables.
 
 cbp_trade_profit_selling_efficiency_cancellation = {
 	requires_real = no

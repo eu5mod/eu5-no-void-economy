@@ -1,5 +1,21 @@
-﻿# Respect the effective Vanilla or compatibility-patch maintenance-cost define.
-cbp_trade_profit_base_merchant_maintenance_cost = {
-	value = define:NCountry|MERCHANT_MAINTENANCE_COST
-	min = 0
+﻿# Standalone US-17 runtime constants.
+#
+# These are named script values rather than custom engine Defines. The light
+# product mirrors the validated #204 coefficients without importing the full
+# CBP/NVE runtime.
+
+cbp_trade_profit_route_loss_coefficient_max = {
+	value = 0.05
+}
+
+cbp_trade_profit_route_loss_coefficient_curve = {
+	value = 10
+}
+
+cbp_trade_profit_maintenance_component_weight = {
+	value = 0.5
+}
+
+cbp_trade_profit_maintenance_efficiency_scale = {
+	value = 10
 }
