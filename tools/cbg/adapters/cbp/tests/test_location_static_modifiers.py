@@ -179,10 +179,10 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 rule
                 for rule in payload["transformations"]
                 if rule.get("object") == "development"
-                and rule.get("field") == "maximum_stockpile_capacity"
+                and rule.get("field") == "__object__"
             ]
             self.assertEqual(len(development_rules), 1)
-            self.assertEqual(development_rules[0]["operation"], "comment_out")
+            self.assertEqual(development_rules[0]["operation"], "replace_object")
             self.assertEqual(legacy_stderr, "")
             self.assertEqual(spec_stderr, "")
 
@@ -214,7 +214,7 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             self.assertTrue(
                 any(
                     rule.get("object") == "development"
-                    and rule.get("operation") == "comment_out"
+                    and rule.get("operation") == "replace_object"
                     for rule in payload["transformations"]
                 )
             )
@@ -291,6 +291,29 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             for warning in (legacy_stderr, spec_stderr):
                 self.assertIn("[⚠️] Vanilla development static modifier", warning)
                 self.assertIn(source.resolve().as_uri(), warning)
+
+    def test_generated_location_override_has_no_trailing_whitespace(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            dirty_source = (
+                BASE_LOCATION_FIXTURE.replace(
+                    "\tlocal_life_expectancy = -2\n",
+                    "       \n\tlocal_life_expectancy = -2   \n",
+                )
+                + DEVELOPMENT_FIXTURE.replace(
+                    "\tlocal_construction_speed = 0.01\n",
+                    "       \n\tlocal_construction_speed = 0.01\t\n",
+                )
+            )
+            output, _payload, _legacy_stderr, _spec_stderr, _ = self.run_generators(
+                Path(temporary),
+                dirty_source,
+            )
+
+            self.assertIsNotNone(output)
+            assert output is not None
+            self.assertNotRegex(output, re.compile(r"[ \t]+$", re.MULTILINE))
+            self.assertIn("local_life_expectancy = -2", output)
+            self.assertIn("local_construction_speed = 0.01", output)
 
 
 if __name__ == "__main__":
