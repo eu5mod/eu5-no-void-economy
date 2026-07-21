@@ -1,0 +1,15 @@
+name: RGO Price Policy
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-rgo-price-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Test absolute and legacy RGO price policies
+        run: python3 -m unittest tools.cbg.adapters.cbp.tests.test_rgo_price_policy
