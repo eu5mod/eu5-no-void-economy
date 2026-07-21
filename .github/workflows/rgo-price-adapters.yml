@@ -12,7 +12,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test fixed and percentage-offset adapters
-        run: python3 -m unittest tools.cbg.adapters.cbp.tests.test_rgo_price_adapters
+        run: |
+          set +e
+          python3 -m unittest tools.cbg.adapters.cbp.tests.test_rgo_price_adapters > rgo-adapter-tests.log 2>&1
+          status=$?
+          cat rgo-adapter-tests.log
+          exit $status
+
+      - name: Upload adapter test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rgo-adapter-tests
+          path: rgo-adapter-tests.log
 
       - name: Validate environment contract
         run: |
