@@ -268,10 +268,9 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
         "operation": "replace",
         "value": food_price,
     })
-    rgo_price_multiplier = 1 + env_number(
-        "MODEU5_US09_RGO_PRICE_OFFSET_PERCENT", 8
-    ) / 100
-    rgo_gold = round(100 / rgo_price_multiplier, 2)
+    rgo_gold = env_number("MODEU5_US09_RGO_PRICE", 60)
+    if rgo_gold <= 0:
+        raise ValueError("MODEU5_US09_RGO_PRICE must be positive")
     for price in (
         "expand_rgo_mining", "expand_rgo_farming", "expand_rgo_hunting",
         "expand_rgo_gathering", "expand_rgo_forestry",
