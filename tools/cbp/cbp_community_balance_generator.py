@@ -58,10 +58,18 @@ def safe_relative(raw: str, label: str) -> PurePosixPath:
     return relative
 
 
-def prepare_spec(payload: dict[str, Any], source: Path) -> tuple[dict[str, Any], set[PurePosixPath]]:
+def prepare_spec(
+    payload: dict[str, Any],
+    source: Path,
+) -> tuple[
+    dict[str, Any],
+    set[PurePosixPath],
+    dict[PurePosixPath, PurePosixPath],
+]:
     prepared = dict(payload)
     transformations: list[dict[str, Any]] = []
     replace_outputs: set[PurePosixPath] = set()
+    replace_sources: dict[PurePosixPath, PurePosixPath] = {}
 
     for original in payload.get("transformations", []):
         rule = dict(original)
@@ -108,16 +116,58 @@ def prepare_spec(payload: dict[str, Any], source: Path) -> tuple[dict[str, Any],
                 f"{source}: replace_objects output filename must start with 'cbp_'"
             )
 
+        previous_source = replace_sources.get(output_relative)
+        if previous_source is not None and previous_source != source_relative:
+            raise ValueError(
+                f"{source}: replace_objects output {output_relative} cannot combine "
+                f"multiple Vanilla source files"
+            )
+        replace_sources[output_relative] = source_relative
+
         rule["output_file"] = output_relative.as_posix()
         rule["render_mode"] = "selected_objects"
         transformations.append(rule)
         replace_outputs.add(output_relative)
 
     prepared["transformations"] = transformations
-    return prepared, replace_outputs
+    return prepared, replace_outputs, replace_sources
 
 
-def add_replace_entry_modes(path: Path, manifest_entry: dict[str, Any]) -> None:
+def preserve_object_boundary_whitespace(
+    lines: list[str],
+    objects: list[cbg.LocatedObject],
+    source_path: Path,
+) -> None:
+    """Restore horizontal whitespace stripped only at selected-object boundaries."""
+    source_lines = source_path.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+    source_objects = {
+        obj.path[0]: obj
+        for obj in cbg.scan_objects(source_lines)
+        if len(obj.path) == 1
+    }
+
+    for obj in objects:
+        source_obj = source_objects.get(obj.path[0])
+        if source_obj is None:
+            raise ValueError(
+                f"replace_objects source lacks top-level object {obj.path[0]!r}: "
+                f"{source_path}"
+            )
+
+        source_end = source_lines[source_obj.end].rstrip("\r\n")
+        source_trailing = source_end[len(source_end.rstrip(" \t")) :]
+
+        rendered_line = lines[obj.end]
+        newline = "\n" if rendered_line.endswith("\n") else ""
+        rendered_body = rendered_line.rstrip("\r\n").rstrip(" \t")
+        lines[obj.end] = f"{rendered_body}{source_trailing}{newline}"
+
+
+def add_replace_entry_modes(
+    path: Path,
+    manifest_entry: dict[str, Any],
+    source_path: Path,
+) -> None:
     lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
     objects = [obj for obj in cbg.scan_objects(lines) if len(obj.path) == 1]
     if not objects:
@@ -134,6 +184,8 @@ def add_replace_entry_modes(path: Path, manifest_entry: dict[str, Any]) -> None:
             f"replace_objects audit/render mismatch for {path}: "
             f"audit={sorted(audited)!r}, rendered={sorted(rendered)!r}"
         )
+
+    preserve_object_boundary_whitespace(lines, objects, source_path)
 
     for obj in objects:
         line = lines[obj.start]
@@ -193,14 +245,23 @@ def main() -> int:
     manifest_path = (args.manifest or output_root / "cbg_manifest.json").resolve()
     snapshot = snapshot_owned_outputs(output_root, manifest_path)
     replace_outputs: set[PurePosixPath] = set()
+    replace_sources: dict[PurePosixPath, PurePosixPath] = {}
 
     try:
         with tempfile.TemporaryDirectory(prefix="cbp-cbg-specs-") as temporary:
             prepared_specs: list[Path] = []
             for index, spec_path in enumerate(args.spec):
                 payload = json.loads(spec_path.read_text(encoding="utf-8"))
-                prepared, outputs = prepare_spec(payload, spec_path)
+                prepared, outputs, sources = prepare_spec(payload, spec_path)
                 replace_outputs.update(outputs)
+                for output_relative, source_relative in sources.items():
+                    previous_source = replace_sources.get(output_relative)
+                    if previous_source is not None and previous_source != source_relative:
+                        raise ValueError(
+                            f"replace_objects output {output_relative} cannot combine "
+                            "multiple Vanilla source files across specifications"
+                        )
+                    replace_sources[output_relative] = source_relative
                 prepared_path = Path(temporary) / f"{index:03d}-{spec_path.name}"
                 prepared_path.write_text(
                     json.dumps(prepared, indent=2, sort_keys=True) + "\n",
@@ -229,7 +290,11 @@ def main() -> int:
                 entry = entries.get(relative)
                 if entry is None:
                     continue
-                add_replace_entry_modes(output_root / Path(relative), entry)
+                add_replace_entry_modes(
+                    output_root / Path(relative),
+                    entry,
+                    game_root / Path(replace_sources[relative]),
+                )
 
             manifest_path.parent.mkdir(parents=True, exist_ok=True)
             manifest_path.write_text(
