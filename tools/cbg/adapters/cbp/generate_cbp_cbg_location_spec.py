@@ -99,10 +99,10 @@ def scalar_assignment(
     object_name: str,
     object_range: ObjectRange,
     field: str,
-) -> tuple[int, str] | None:
+) -> tuple[int, re.Match[str]] | None:
     assignment = re.compile(
-        rf"^\s*{re.escape(field)}\s*=\s*"
-        rf"(?P<value>[^#\s]+)(?:\s*(?:#.*)?)$"
+        rf"^(?P<indent>\s*){re.escape(field)}\s*=\s*"
+        rf"(?P<value>[^#\s]+)(?P<suffix>\s*(?:#.*)?)$"
     )
     start, end = object_range
     matches: list[tuple[int, re.Match[str]]] = []
@@ -114,14 +114,27 @@ def scalar_assignment(
         return None
     if len(matches) > 1:
         raise SystemExit(f"Vanilla {object_name}.{field} is defined more than once")
-    line_index, match = matches[0]
-    return line_index, match.group("value")
+    return matches[0]
 
 
-def inspect_source(
+def replace_object_rule(object_name: str, block: list[str]) -> dict[str, object]:
+    return {
+        "file": SOURCE,
+        "output_file": OUTPUT,
+        "render_mode": "selected_objects",
+        "header": HEADER,
+        "object": object_name,
+        "field": "__object__",
+        "operation": "replace_object",
+        "value": [line.rstrip(" \t") for line in block],
+        "provenance": "preserve",
+    }
+
+
+def source_transformations(
     source: Path,
     replacement_targets: list[ReplacementTarget],
-) -> tuple[list[ReplacementTarget], bool]:
+) -> list[dict[str, object]]:
     if not source.is_file():
         raise SystemExit(f"Vanilla location static modifiers file is missing: {source}")
 
@@ -129,8 +142,8 @@ def inspect_source(
     target_names = {object_name for object_name, _field, _value in replacement_targets}
     target_names.add("development")
     ranges = scan_object_ranges(lines, target_names)
+    transformations: list[dict[str, object]] = []
 
-    active_replacements: list[ReplacementTarget] = []
     for object_name, field, replacement in replacement_targets:
         object_range = ranges.get(object_name)
         if object_range is None:
@@ -138,9 +151,19 @@ def inspect_source(
         assignment = scalar_assignment(lines, object_name, object_range, field)
         if assignment is None:
             raise SystemExit(f"Missing Vanilla field: {object_name}.{field}")
-        _line_index, current_value = assignment
-        if not numerically_equal(current_value, replacement):
-            active_replacements.append((object_name, field, replacement))
+        line_index, match = assignment
+        current_value = match.group("value")
+        if numerically_equal(current_value, replacement):
+            continue
+
+        start, end = object_range
+        block = list(lines[start : end + 1])
+        local_index = line_index - start
+        block[local_index] = (
+            f"{match.group('indent')}{field} = {replacement}"
+            f" # VANILLA VALUE IS {current_value}"
+        )
+        transformations.append(replace_object_rule(object_name, block))
 
     development_range = ranges.get("development")
     if development_range is None:
@@ -149,7 +172,7 @@ def inspect_source(
             "skipping its stockpile-capacity transformation. "
             f"Review Vanilla source: {vanilla_link(source)}"
         )
-        return active_replacements, False
+        return transformations
 
     development_assignment = scalar_assignment(
         lines,
@@ -163,9 +186,10 @@ def inspect_source(
             "EU5 version; skipping this location transformation. "
             f"Review Vanilla source: {vanilla_link(source)}"
         )
-        return active_replacements, False
+        return transformations
 
-    line_index, current_value = development_assignment
+    line_index, match = development_assignment
+    current_value = match.group("value")
     if not numerically_equal(
         current_value,
         EXPECTED_DEVELOPMENT_STOCKPILE_CAPACITY,
@@ -176,7 +200,17 @@ def inspect_source(
             f"{current_value}. CBP will continue and comment the current value. "
             f"Review Vanilla source: {vanilla_link(source, line_index + 1)}"
         )
-    return active_replacements, True
+
+    start, end = development_range
+    block = list(lines[start : end + 1])
+    local_index = line_index - start
+    original = block[local_index].lstrip().rstrip()
+    block[local_index] = (
+        f"{match.group('indent')}# {original}"
+        " # CBG: commented by cbp-location-static-modifiers"
+    )
+    transformations.append(replace_object_rule("development", block))
+    return transformations
 
 
 def configured_replacement_targets() -> list[ReplacementTarget]:
@@ -204,15 +238,7 @@ def configured_replacement_targets() -> list[ReplacementTarget]:
     ]
 
 
-def build_spec(source_file: Path | None = None) -> dict[str, object]:
-    replacement_targets = configured_replacement_targets()
-    development_available = True
-    if source_file is not None:
-        replacement_targets, development_available = inspect_source(
-            source_file,
-            replacement_targets,
-        )
-
+def fallback_transformations() -> list[dict[str, object]]:
     transformations = [
         {
             "file": SOURCE,
@@ -225,20 +251,28 @@ def build_spec(source_file: Path | None = None) -> dict[str, object]:
             "value": value,
             "provenance": "vanilla_value",
         }
-        for object_name, field, value in replacement_targets
+        for object_name, field, value in configured_replacement_targets()
     ]
-    if development_available:
-        transformations.append(
-            {
-                "file": SOURCE,
-                "output_file": OUTPUT,
-                "render_mode": "selected_objects",
-                "header": HEADER,
-                "object": "development",
-                "field": "maximum_stockpile_capacity",
-                "operation": "comment_out",
-            }
-        )
+    transformations.append(
+        {
+            "file": SOURCE,
+            "output_file": OUTPUT,
+            "render_mode": "selected_objects",
+            "header": HEADER,
+            "object": "development",
+            "field": "maximum_stockpile_capacity",
+            "operation": "comment_out",
+        }
+    )
+    return transformations
+
+
+def build_spec(source_file: Path | None = None) -> dict[str, object]:
+    transformations = (
+        source_transformations(source_file, configured_replacement_targets())
+        if source_file is not None
+        else fallback_transformations()
+    )
     return {
         "schema_version": 1,
         "mod_id": "cbp-location-static-modifiers",
@@ -250,6 +284,7 @@ def build_spec(source_file: Path | None = None) -> dict[str, object]:
         "scope_contract": {
             "owned_outputs": [OUTPUT],
             "phase": "location-static-modifiers",
+            "whitespace_policy": "strip trailing horizontal whitespace from generated lines",
         },
     }
 
