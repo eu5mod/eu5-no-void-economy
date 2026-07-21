@@ -32,14 +32,12 @@ class RgoPriceAdapterTests(unittest.TestCase):
         self.game_root = Path(self.temporary.name) / "game"
         source = self.game_root / SOURCE
         source.parent.mkdir(parents=True)
-        source.write_text(
-            "\n".join(
-                [f"{name} = {{ gold = 100 }}" for name in TARGETS]
-                + ["unrelated_price = { gold = 999 }"]
-            )
-            + "\n",
-            encoding="utf-8",
-        )
+        blocks = [
+            f"{name} = {{\n\tgold = 100\n}}"
+            for name in TARGETS
+        ]
+        blocks.append("unrelated_price = {\n\tgold = 999\n}")
+        source.write_text("\n\n".join(blocks) + "\n", encoding="utf-8")
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
@@ -97,7 +95,15 @@ class RgoPriceAdapterTests(unittest.TestCase):
         environment = os.environ.copy()
         environment["MODEU5_US09_RGO_PRICE_ADAPTER"] = "fixed"
         environment["MODEU5_US09_RGO_FIXED_PRICE"] = fixed_price
-        subprocess.run(command, cwd=REPO_ROOT, env=environment, check=True, capture_output=True, text=True)
+        completed = subprocess.run(
+            command,
+            cwd=REPO_ROOT,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, completed.returncode, completed.stdout + completed.stderr)
         return json.loads(output.read_text(encoding="utf-8"))
 
     def test_environment_selects_fixed_adapter(self) -> None:
