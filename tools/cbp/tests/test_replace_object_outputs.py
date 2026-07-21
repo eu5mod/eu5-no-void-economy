@@ -109,6 +109,41 @@ class ReplaceObjectOutputTests(unittest.TestCase):
             ["marketplace"],
         )
 
+    def test_preserves_trailing_whitespace_on_selected_object_boundary(self):
+        relative = "in_game/common/building_types/production_saltpeter.txt"
+        self.write_source(
+            relative,
+            "saltpeter_guild = {\n\toutput = 1\n}\t\n\n"
+            "saltpeter_workshop = {\n\toutput = 1.1\n}\n",
+        )
+        self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-object-boundary-whitespace",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "object": "saltpeter_guild",
+                        "field": "output",
+                        "operation": "replace",
+                        "value": 1.15,
+                        "render_mode": "replace_objects",
+                        "header": ["# Generated override."],
+                        "provenance": "preserve",
+                    }
+                ],
+            }
+        )
+
+        destination = (
+            self.output
+            / "in_game/common/building_types/cbp_production_saltpeter.txt"
+        )
+        generated = destination.read_bytes()
+        self.assertIn(b"REPLACE:saltpeter_guild = {", generated)
+        self.assertIn(b"\n}\t\n", generated)
+        self.assertNotIn(b"saltpeter_workshop", generated)
+
     def test_explicit_output_must_be_cbp_prefixed(self):
         relative = "main_menu/common/static_modifiers/location.txt"
         self.write_source(relative, "development = {\n\tvalue = 1\n}\n")
