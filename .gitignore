@@ -18,6 +18,10 @@ tools/generated/
 /tools/specs/*.local.json
 /tools/specs/*.tmp.json
 
+# Vanilla-derived CBG text outputs are local build artifacts. They are generated
+# from the installed EU5 version and owned through their CBG manifests.
+/main_menu/common/static_modifiers/cbp_location.txt
+
 # Python/tool caches.
 *.py[cod]
 .pytest_cache/
