@@ -191,7 +191,8 @@ for name, (field, operation, replacement) in targets.items():
         )
     else:
         raise SystemExit(f"Unsupported location override operation: {operation}")
-    rendered_blocks.append("\n".join(block))
+    clean_block = [line.rstrip(" \t") for line in block]
+    rendered_blocks.append("\n".join(clean_block))
 
 if rendered_blocks:
     rendered = [
