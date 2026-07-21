@@ -58,6 +58,24 @@ def output_for(item: dict[str, object]) -> str:
     return source
 
 
+def output_markers(spec: dict[str, object]) -> dict[str, set[str]]:
+    """Return exact generated-header markers declared for each output."""
+    markers: dict[str, set[str]] = {}
+    for item in spec.get("transformations", []):
+        if not isinstance(item, dict):
+            continue
+        header = item.get("header")
+        if not isinstance(header, list) or not header or not isinstance(header[0], str):
+            continue
+        markers.setdefault(output_for(item), set()).add(header[0])
+    return markers
+
+
+def first_line(content: bytes) -> str:
+    lines = content.splitlines()
+    return lines[0].decode("utf-8", errors="replace") if lines else ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--spec", type=Path, required=True)
@@ -78,6 +96,7 @@ def main() -> int:
     output_root = args.output_root.resolve()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     outputs = sorted({output_for(item) for item in spec.get("transformations", [])})
+    spec_markers = output_markers(spec)
 
     existing_files = {}
     if manifest.is_file():
@@ -111,10 +130,23 @@ def main() -> int:
         if existing and existing.get("generated_sha256") == sha256(current):
             files.append(existing)
             continue
+
+        declared_markers = spec_markers.get(relative_output.as_posix(), set())
+        if tracked is None and first_line(current) in declared_markers:
+            files.append({
+                "path": relative_output.as_posix(),
+                "vanilla_sha256": None,
+                "generated_sha256": sha256(current),
+                "transformations": [{"bootstrap": "spec_signed_untracked_output"}],
+            })
+            continue
+
         if args.adopt_marked_output_tree and args.adopt_output_marker:
             adoption_tree = (output_root / args.adopt_marked_output_tree).resolve()
-            first_line = current.splitlines()[0].decode("utf-8", errors="replace") if current.splitlines() else ""
-            if destination.resolve().is_relative_to(adoption_tree) and first_line == args.adopt_output_marker:
+            if (
+                destination.resolve().is_relative_to(adoption_tree)
+                and first_line(current) == args.adopt_output_marker
+            ):
                 files.append({
                     "path": relative_output.as_posix(),
                     "vanilla_sha256": None,
