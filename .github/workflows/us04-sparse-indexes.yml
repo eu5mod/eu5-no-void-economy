@@ -1,5 +1,6 @@
 name: US04 Sparse Indexes
 
+# Validates work selection, writer repair, and persistent-state classification.
 on:
   pull_request:
   push:
