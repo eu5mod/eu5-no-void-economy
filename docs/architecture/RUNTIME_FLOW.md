@@ -19,6 +19,8 @@ Use this precedence when documents disagree:
 
 The current static performance analysis is maintained in
 [`docs/performance/FULL_RUNTIME_PERFORMANCE_ANALYSIS.md`](../performance/FULL_RUNTIME_PERFORMANCE_ANALYSIS.md).
+The idempotent capacity layer is documented in
+[`docs/performance/COUNTRY_MARKET_CAPACITY_STAMP_IMPLEMENTATION.md`](../performance/COUNTRY_MARKET_CAPACITY_STAMP_IMPLEMENTATION.md).
 
 ## Global invariants
 
@@ -66,7 +68,7 @@ flowchart TB
         SWITCH --> READY{"cbp_stock_runtime_ready_trigger?"}
         READY -->|no| MCLOSED["fail closed<br/>optional debug gate marker"]
         READY -->|yes| PREP0["cbp_prepare_performance_mode_human_relevant_markets<br/>monthly-stamped world human-country scan in Performance Mode"]
-        PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>all markets present in current country"]
+        PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>prepare country pool and ensure each present country-market record"]
         PREP1 --> PREP2["prepare monthly market-seen registry<br/>prepare human-relevant persistence list"]
         PREP2 --> OWNER{"global Q8.7 owner enabled?<br/>default: yes"}
         OWNER -->|no: explicit fallback flag| LEGACY["cbp_run_monthly_promoted_market_local_cycle<br/>every_market_center_in_country"]
@@ -87,8 +89,12 @@ flowchart TB
             LOCAL --> ACTIVE["prepare active-good work metrics"]
             ACTIVE --> CACHE["rebuild cbp_countries_present_in_market<br/>every_location_in_market + owner deduplication"]
             CACHE --> PASS1["present countries - pass 1"]
-            PASS1 --> CAP["ensure country monthly capacity pool<br/>recalculate this country-market capacity"]
-            CAP --> US00["process US-00 active goods"]
+            PASS1 --> CAPPOOL["ensure country monthly capacity pool"]
+            CAPPOOL --> CAPSTAMP{"country-market capacity stamp<br/>equals current month?"}
+            CAPSTAMP -->|yes| CAPREUSE["reuse persisted capacity maps"]
+            CAPSTAMP -->|no / missing| CAPCALC["calculate market merchant contribution<br/>write capacity maps + current-month stamp"]
+            CAPREUSE --> US00["process US-00 active goods"]
+            CAPCALC --> US00
             US00 --> ADMIT["read production -> cbp_add_stock<br/>record added/rejected facts"]
             ADMIT --> FREEZE["all present-country US-00 facts complete"]
             FREEZE --> PASS2["present countries - pass 2"]
@@ -148,6 +154,14 @@ flowchart TB
         MEMORY --> MEND["end monthly_country_pulse"]
     end
 
+    subgraph TOPOLOGY["Forced capacity refresh"]
+        direction TB
+        TC["location ownership/rank change<br/>or capital movement"] --> TPOOL["rebuild country location capacity pool"]
+        TPOOL --> TALL["every_market_present_in_country"]
+        TALL --> TRAW["raw country-market capacity writer<br/>bypass monthly stamp gate"]
+        TRAW --> TRESTAMP["rewrite capacity maps + current-month stamp"]
+    end
+
     subgraph YEARLY["Yearly US-04 adaptation"]
         direction TB
         Y0["yearly_country_pulse"] --> YP["cbp_yearly_pop_demand_adaptation_pulse"]
@@ -183,7 +197,7 @@ flowchart TB
 
 | Order | Owner/effect | Economic responsibility |
 |---|---|---|
-| 1 | Performance/relevance preparation and current-country capacity refresh | Prepare accounting boundaries and capacity before current-country work. |
+| 1 | Performance/relevance preparation and current-country capacity refresh | Prepare accounting boundaries and ensure each present country-market capacity record is current before current-country work. |
 | 2 | Q8.7 global owner, or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
 | 3 | US-00 first present-country pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 4 | US-10 second present-country pass | Resolve same-market consumption only after all US-00 facts for the market exist. |
@@ -200,7 +214,8 @@ flowchart TB
 | Country-market-good stock | Country | Durable source of truth |
 | Market-good stock | Global per-good map keyed by market | Derived aggregate/cache |
 | Country-wide capacity pool | Country, monthly stamped | Derived monthly cache |
-| Country-market capacity record | Country x market | Derived record; currently refreshed by more than one caller |
+| Country-market capacity record | Country x market | Derived capacity maps; monthly callers share one idempotent stamp gate, while initialization/topology hooks force refresh and restamp. |
+| `cbp_capacity_monthly_stamp_by_market` | Country x market | Durable scheduling stamp only; never a capacity source. |
 | `cbp_countries_present_in_market` | Current detailed market branch | Rebuilt work cache, not persistent market storage |
 | Market-local US-00 and US-10 | Q8.7 once-per-month global owner by default | Runtime work |
 | Explicit Q8.7 fallback | Current country through `every_market_center_in_country` | Debug/recovery runtime path |
@@ -221,6 +236,8 @@ flowchart TB
   owner remains only behind `cbp_q8_7_live_global_market_owner_disabled`.
 - Vanilla fallback and blocked markets record diagnostics but do not receive
   detailed CBP stock mutation from the market-local branch.
+- Monthly country-market capacity calls are idempotent. Confirmed initialization
+  and topology hooks bypass that scheduling gate and overwrite the record and stamp.
 
 ## Source map
 
@@ -232,7 +249,7 @@ flowchart TB
 | Q8.7 default-enabled trigger | `in_game/common/scripted_triggers/cbp_q8_7_global_owner_triggers.txt` |
 | Market-local US-00 then US-10 passes | `in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt` |
 | Market-to-country work-cache rebuild | `in_game/common/scripted_effects/cbp_market_country_cache_effects.txt` |
-| Country and country-market capacity | `in_game/common/scripted_effects/cbp_capacity_effects.txt` |
+| Country and country-market capacity, monthly stamp gate, forced refresh | `in_game/common/scripted_effects/cbp_capacity_effects.txt` |
 | Country-owned trade pass | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |
 | Lifecycle readiness and reconciliation | `in_game/common/scripted_effects/cbp_stock_effects.txt` |
 | CORE-04 location-market memory | `in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt` |
