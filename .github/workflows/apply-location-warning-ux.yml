@@ -1,0 +1,205 @@
+name: Apply Location Warning UX
+
+on:
+  push:
+    branches:
+      - feature/cbg-replace-object-prefixed-outputs
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/cbg-replace-object-prefixed-outputs
+          fetch-depth: 0
+
+      - name: Patch warning UX and tests
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              if new in text:
+                  return
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"{path}: expected one replacement, found {count}")
+              target.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          reference = Path("tools/cbg/adapters/cbp/reference/vanilla/location_development_reviewed.txt")
+          reference.parent.mkdir(parents=True, exist_ok=True)
+          reference.write_text(
+              """# Reviewed Vanilla reference for the optional CBP development stockpile policy.\n"
+              "# Source path when reviewed: game/main_menu/common/static_modifiers/location.txt\n"
+              "# Expected policy field: development.maximum_stockpile_capacity = 5\n"
+              "# This is an object-level comparison snapshot, not a complete Vanilla file.\n"
+              "\n"
+              "development = {\n"
+              "\tgame_data = {\n"
+              "\t\tcategory = location\n"
+              "\t}\n"
+              "\tlocal_population_capacity_modifier = 0.025\n"
+              "\tlocal_distance_from_capital_speed_propagation = 0.005\n"
+              "\tlocal_supply_limit_modifier = 0.02\n"
+              "\tblockade_force_required = 0.01\n"
+              "\tlocal_migration_attraction = 0.0025\n"
+              "\tlocal_trade_center_power = 0.001\n"
+              "\tlocal_institution_growth_modifier = 0.002\n"
+              "\tlocal_construction_speed = 0.01\n"
+              "\tlocal_monthly_food_modifier = 0.01\n"
+              "\tfree_building_levels = 1\n"
+              "\tlocal_max_rgo_size = 0.1\n"
+              "\tlocal_life_expectancy = 0.1\n"
+              "\toccupation_time = 0.01\n"
+              "\tlocal_build_buildings_cost = -0.001\n"
+              "\tmaximum_stockpile_capacity = 5\n"
+              "}\n""",
+              encoding="utf-8",
+          )
+
+          adapter = "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py"
+          replace_once(
+              adapter,
+              'OUTPUT = "main_menu/common/static_modifiers/cbp_location.txt"\n',
+              'OUTPUT = "main_menu/common/static_modifiers/cbp_location.txt"\nREVIEWED_DEVELOPMENT_REFERENCE = (\n    REPO_ROOT\n    / "tools/cbg/adapters/cbp/reference/vanilla/location_development_reviewed.txt"\n)\nDEFAULT_GENERATED_OUTPUT = REPO_ROOT / OUTPUT\n',
+          )
+          replace_once(
+              adapter,
+              '''def vanilla_link(source: Path, line_number: int | None = None) -> str:\n    link = source.expanduser().resolve().as_uri()\n    return f"{link}#L{line_number}" if line_number is not None else link\n\n\n''',
+              '''def file_link(path: Path, line_number: int | None = None) -> str:\n    link = path.expanduser().resolve().as_uri()\n    return f"{link}#L{line_number}" if line_number is not None else link\n\n\ndef warn_location_policy(\n    *,\n    source: Path,\n    generated_output: Path,\n    reason: str,\n    effect: str,\n) -> None:\n    warn(\n        "NON-FATAL: optional location transformation skipped; generation continues.\\n"\n        "      Policy: development.maximum_stockpile_capacity\\n"\n        f"      Reason: {reason}\\n"\n        f"      Effect: {effect}\\n"\n        "      Command status: dev_prepare_game is not aborted and will continue to "\n        "validation and installation unless a later step fails.\\n"\n        f"      Current Vanilla source: {file_link(source)}\\n"\n        f"      Previous reviewed reference: {file_link(REVIEWED_DEVELOPMENT_REFERENCE)}\\n"\n        f"      Generated output: {file_link(generated_output)} "\n        "(the development transformation will be absent)"\n    )\n\n\n''',
+          )
+          replace_once(
+              adapter,
+              '''def source_transformations(\n    source: Path,\n    replacement_targets: list[ReplacementTarget],\n) -> list[dict[str, object]]:\n''',
+              '''def source_transformations(\n    source: Path,\n    replacement_targets: list[ReplacementTarget],\n    generated_output: Path = DEFAULT_GENERATED_OUTPUT,\n) -> list[dict[str, object]]:\n''',
+          )
+          replace_once(
+              adapter,
+              '''    if development_range is None:\n        warn(\n            "Vanilla development static modifier is not exposed by this EU5 version; "\n            "skipping its stockpile-capacity transformation. "\n            f"Review Vanilla source: {vanilla_link(source)}"\n        )\n        return transformations\n''',
+              '''    if development_range is None:\n        warn_location_policy(\n            source=source,\n            generated_output=generated_output,\n            reason="the Vanilla 'development' object is absent in this EU5 version",\n            effect=(\n                "only this policy is omitted; all other applicable location "\n                "transformations are still generated"\n            ),\n        )\n        return transformations\n''',
+          )
+          replace_once(
+              adapter,
+              '''    if development_assignment is None:\n        warn(\n            "Vanilla development.maximum_stockpile_capacity is not exposed by this "\n            "EU5 version; skipping this location transformation. "\n            f"Review Vanilla source: {vanilla_link(source)}"\n        )\n        return transformations\n''',
+              '''    if development_assignment is None:\n        warn_location_policy(\n            source=source,\n            generated_output=generated_output,\n            reason=(\n                "the Vanilla 'development' object exists, but "\n                "maximum_stockpile_capacity is absent"\n            ),\n            effect=(\n                "only this field transformation is omitted; all other applicable "\n                "location transformations are still generated"\n            ),\n        )\n        return transformations\n''',
+          )
+          replace_once(
+              adapter,
+              'f"Review Vanilla source: {vanilla_link(source, line_index + 1)}"',
+              'f"Review Vanilla source: {file_link(source, line_index + 1)}"',
+          )
+          replace_once(
+              adapter,
+              '''def build_spec(source_file: Path | None = None) -> dict[str, object]:\n    transformations = (\n        source_transformations(source_file, configured_replacement_targets())\n        if source_file is not None\n        else fallback_transformations()\n    )\n''',
+              '''def build_spec(\n    source_file: Path | None = None,\n    generated_output: Path = DEFAULT_GENERATED_OUTPUT,\n) -> dict[str, object]:\n    transformations = (\n        source_transformations(\n            source_file,\n            configured_replacement_targets(),\n            generated_output,\n        )\n        if source_file is not None\n        else fallback_transformations()\n    )\n''',
+          )
+          replace_once(
+              adapter,
+              '''    parser.add_argument("--source-file", type=Path)\n    parser.add_argument("--output", type=Path, required=True)\n    args = parser.parse_args()\n    source_file = args.source_file.resolve() if args.source_file else source_from_environment()\n    args.output.parent.mkdir(parents=True, exist_ok=True)\n    args.output.write_text(\n        json.dumps(build_spec(source_file), indent=2, sort_keys=True) + "\\n",\n''',
+              '''    parser.add_argument("--source-file", type=Path)\n    parser.add_argument("--output", type=Path, required=True)\n    parser.add_argument(\n        "--generated-file",\n        type=Path,\n        default=DEFAULT_GENERATED_OUTPUT,\n        help="Expected generated CBG output path, used in actionable warnings.",\n    )\n    args = parser.parse_args()\n    source_file = args.source_file.resolve() if args.source_file else source_from_environment()\n    generated_output = args.generated_file.expanduser().resolve()\n    args.output.parent.mkdir(parents=True, exist_ok=True)\n    args.output.write_text(\n        json.dumps(\n            build_spec(source_file, generated_output),\n            indent=2,\n            sort_keys=True,\n        )\n        + "\\n",\n''',
+          )
+
+          shell = "tools/generate_cbp_location_overrides.sh"
+          replace_once(
+              shell,
+              'output_file="$repo_root/main_menu/common/static_modifiers/cbp_location.txt"\n',
+              'output_file="$repo_root/main_menu/common/static_modifiers/cbp_location.txt"\nreviewed_reference="$repo_root/tools/cbg/adapters/cbp/reference/vanilla/location_development_reviewed.txt"\n',
+          )
+          replace_once(
+              shell,
+              '''python3 - "$source_file" "$output_file" \\\n\t"$expensive_food_growth" "$cheap_food_growth" \\\n\t"$market_center_stockpile" "$surplus_jobs_attraction" <<'PY'\n''',
+              '''python3 - "$source_file" "$output_file" "$reviewed_reference" \\\n\t"$expensive_food_growth" "$cheap_food_growth" \\\n\t"$market_center_stockpile" "$surplus_jobs_attraction" <<'PY'\n''',
+          )
+          replace_once(
+              shell,
+              '''source_path = Path(sys.argv[1])\noutput_path = Path(sys.argv[2])\nexpected_development_stockpile = os.environ.get(\n''',
+              '''source_path = Path(sys.argv[1])\noutput_path = Path(sys.argv[2])\nreviewed_reference_path = Path(sys.argv[3])\nexpected_development_stockpile = os.environ.get(\n''',
+          )
+          replace_once(
+              shell,
+              '''    "expensive_food_in_location": ("local_population_growth", "replace", sys.argv[3]),\n    "cheap_food_in_location": ("local_population_growth", "replace", sys.argv[4]),\n    "market_center": ("maximum_stockpile_capacity", "replace", sys.argv[5]),\n    "surplus_jobs": ("local_migration_attraction", "replace", sys.argv[6]),\n''',
+              '''    "expensive_food_in_location": ("local_population_growth", "replace", sys.argv[4]),\n    "cheap_food_in_location": ("local_population_growth", "replace", sys.argv[5]),\n    "market_center": ("maximum_stockpile_capacity", "replace", sys.argv[6]),\n    "surplus_jobs": ("local_migration_attraction", "replace", sys.argv[7]),\n''',
+          )
+          replace_once(
+              shell,
+              '''def vanilla_link(line_number: int | None = None) -> str:\n    link = source_path.expanduser().resolve().as_uri()\n    return f"{link}#L{line_number}" if line_number is not None else link\n\n\n''',
+              '''def file_link(path: Path, line_number: int | None = None) -> str:\n    link = path.expanduser().resolve().as_uri()\n    return f"{link}#L{line_number}" if line_number is not None else link\n\n\ndef warn_location_policy(reason: str, effect: str) -> None:\n    warn(\n        "NON-FATAL: optional location transformation skipped; generation continues.\\n"\n        "      Policy: development.maximum_stockpile_capacity\\n"\n        f"      Reason: {reason}\\n"\n        f"      Effect: {effect}\\n"\n        "      Command status: generation is not aborted; callers such as "\n        "dev_prepare_game continue to validation and installation unless a later "\n        "step fails.\\n"\n        f"      Current Vanilla source: {file_link(source_path)}\\n"\n        f"      Previous reviewed reference: {file_link(reviewed_reference_path)}\\n"\n        f"      Generated output: {file_link(output_path)} "\n        "(the development transformation will be absent)"\n    )\n\n\n''',
+          )
+          replace_once(
+              shell,
+              '''if "development" not in blocks:\n    warn(\n        "Vanilla development static modifier is not exposed by this EU5 version; "\n        "skipping its stockpile-capacity transformation. "\n        f"Review Vanilla source: {vanilla_link()}"\n    )\n''',
+              '''if "development" not in blocks:\n    warn_location_policy(\n        "the Vanilla 'development' object is absent in this EU5 version",\n        "only this policy is omitted; all other applicable location transformations are still generated",\n    )\n''',
+          )
+          replace_once(
+              shell,
+              '''    if not matches and name == "development":\n        warn(\n            "Vanilla development.maximum_stockpile_capacity is not exposed by this "\n            "EU5 version; skipping this location transformation. "\n            f"Review Vanilla source: {vanilla_link()}"\n        )\n        continue\n''',
+              '''    if not matches and name == "development":\n        warn_location_policy(\n            "the Vanilla 'development' object exists, but maximum_stockpile_capacity is absent",\n            "only this field transformation is omitted; all other applicable location transformations are still generated",\n        )\n        continue\n''',
+          )
+          replace_once(
+              shell,
+              'f"Review Vanilla source: {vanilla_link(absolute_line_number)}"',
+              'f"Review Vanilla source: {file_link(source_path, absolute_line_number)}"',
+          )
+
+          generate_all = "tools/generate_all.sh"
+          replace_once(
+              generate_all,
+              'python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"',
+              'python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" \\\n\t\t--output "$cbg_location_spec" \\\n\t\t--generated-file "$repo_root/main_menu/common/static_modifiers/cbp_location.txt"',
+          )
+
+          tests = "tools/cbg/adapters/cbp/tests/test_location_static_modifiers.py"
+          replace_once(
+              tests,
+              '''        spec = root / "location.json"\n        spec_run = subprocess.run(\n''',
+              '''        candidate_root = root / "candidate"\n        candidate = candidate_root / OUTPUT\n        spec = root / "location.json"\n        spec_run = subprocess.run(\n''',
+          )
+          replace_once(
+              tests,
+              '''                "--output",\n                str(spec),\n            ],\n''',
+              '''                "--output",\n                str(spec),\n                "--generated-file",\n                str(candidate),\n            ],\n''',
+          )
+          replace_once(
+              tests,
+              '''        candidate_root = root / "candidate"\n        subprocess.run(\n''',
+              '''        subprocess.run(\n''',
+          )
+          replace_once(
+              tests,
+              '''        candidate = candidate_root / OUTPUT\n        self.assertEqual(reference.is_file(), candidate.is_file())\n''',
+              '''        self.assertEqual(reference.is_file(), candidate.is_file())\n''',
+          )
+          replace_once(
+              tests,
+              '''            for warning in (legacy_stderr, spec_stderr):\n                self.assertIn("[⚠️] Vanilla development static modifier", warning)\n                self.assertIn(source.resolve().as_uri(), warning)\n''',
+              '''            expected_reference = (\n                REPO_ROOT\n                / "tools/cbg/adapters/cbp/reference/vanilla/location_development_reviewed.txt"\n            ).resolve().as_uri()\n            expected_outputs = (reference.resolve().as_uri(), candidate.resolve().as_uri())\n            for warning, expected_output in zip(\n                (legacy_stderr, spec_stderr),\n                expected_outputs,\n                strict=True,\n            ):\n                self.assertIn("[⚠️] NON-FATAL", warning)\n                self.assertIn("generation continues", warning)\n                self.assertIn("only this policy is omitted", warning)\n                self.assertIn("dev_prepare_game", warning)\n                self.assertIn("Current Vanilla source:", warning)\n                self.assertIn(source.resolve().as_uri(), warning)\n                self.assertIn("Previous reviewed reference:", warning)\n                self.assertIn(expected_reference, warning)\n                self.assertIn("Generated output:", warning)\n                self.assertIn(expected_output, warning)\n''',
+          )
+          replace_once(
+              tests,
+              '''            for warning in (legacy_stderr, spec_stderr):\n                self.assertIn("[⚠️] Vanilla development static modifier", warning)\n                self.assertIn(source.resolve().as_uri(), warning)\n''',
+              '''            expected_reference = (\n                REPO_ROOT\n                / "tools/cbg/adapters/cbp/reference/vanilla/location_development_reviewed.txt"\n            ).resolve().as_uri()\n            expected_outputs = (reference.resolve().as_uri(), candidate.resolve().as_uri())\n            for warning, expected_output in zip(\n                (legacy_stderr, spec_stderr),\n                expected_outputs,\n                strict=True,\n            ):\n                self.assertIn("[⚠️] NON-FATAL", warning)\n                self.assertIn("generation continues", warning)\n                self.assertIn(source.resolve().as_uri(), warning)\n                self.assertIn(expected_reference, warning)\n                self.assertIn(expected_output, warning)\n''',
+          )
+          PY
+
+      - name: Validate warning behavior
+        run: |
+          python3 -m unittest tools.cbg.adapters.cbp.tests.test_location_static_modifiers
+          bash -n tools/generate_cbp_location_overrides.sh
+          bash -n tools/generate_all.sh
+
+      - name: Commit changes
+        run: |
+          rm .github/workflows/apply-location-warning-ux.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "UX: make optional location warnings actionable"
+          git push origin HEAD:feature/cbg-replace-object-prefixed-outputs
