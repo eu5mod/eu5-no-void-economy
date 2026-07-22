@@ -23,3 +23,6 @@ jobs:
 
       - name: Validate observability gate contracts
         run: python3 tools/validate_cbp_observability_gates.py
+
+      - name: Validate shared US17 and US20 trade gate
+        run: python3 tools/validate_cbp_trade_rework_gate.py
