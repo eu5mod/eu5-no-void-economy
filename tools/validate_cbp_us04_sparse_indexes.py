@@ -189,7 +189,7 @@ def main() -> int:
     for token in (
         "sparse",
         "cbp_<good>_us04_active_locations",
-        "ownership",
+        "Ownership-change repair",
         "prior monthly record",
     ):
         require(implementation_doc, token, "implementation documentation")
