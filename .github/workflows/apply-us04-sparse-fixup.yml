@@ -1,0 +1,178 @@
+name: Apply US04 Sparse Fixup
+
+on:
+  push:
+    branches:
+      - perf/sparse-us04-work-indexes
+
+permissions:
+  contents: write
+
+jobs:
+  fixup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: perf/sparse-us04-work-indexes
+          fetch-depth: 0
+
+      - name: Apply source updates
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              if new in text:
+                  return
+              if text.count(old) != 1:
+                  raise SystemExit(f"{path}: expected one replacement, found {text.count(old)}")
+              target.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          generator = "tools/generate_us04_pop_demand_helpers.sh"
+          replace_once(
+              generator,
+              '''            "\\t\\t\\tif = {",
+            "\\t\\t\\t\\tlimit = {",
+            "\\t\\t\\t\\t\\tOR = {",
+            "\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_coefficient_active > 0",
+            "\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_proxy_present > 0",
+            "\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_prior_record_present > 0",
+            "\\t\\t\\t\\t\\t}",''',
+              '''            "\\t\\t\\tif = {",
+            "\\t\\t\\t\\tlimit = {",
+            "\\t\\t\\t\\t\\tOR = {",
+            "\\t\\t\\t\\t\\t\\tAND = {",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_coefficient_active > 0",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_proxy_present > 0",
+            "\\t\\t\\t\\t\\t\\t}",
+            "\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_prior_record_present > 0",
+            "\\t\\t\\t\\t\\t}",''',
+          )
+          replace_once(
+              generator,
+              '''            f"\\t\\t\\t\\tcbp_us04_prepare_sparse_state_good_{good} = yes",
+            "\\t\\t\\t\\tif = {",
+            "\\t\\t\\t\\t\\tlimit = {",
+            "\\t\\t\\t\\t\\t\\tOR = {",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_coefficient_active > 0",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_proxy_present > 0",''',
+              '''            f"\\t\\t\\t\\tcbp_us04_prepare_sparse_state_good_{good} = yes",
+            "\\t\\t\\t\\tif = {",
+            "\\t\\t\\t\\t\\tlimit = {",
+            "\\t\\t\\t\\t\\t\\tAND = {",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_coefficient_active > 0",
+            "\\t\\t\\t\\t\\t\\t\\tscope:cbp_us04_sparse_proxy_present > 0",''',
+          )
+
+          resolver = "in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt"
+          target = Path(resolver)
+          text = target.read_text(encoding="utf-8")
+          blocks = [
+              "cbp_reset_us04_location_estate_proxy",
+              "cbp_record_us04_location_estate_proxy_peasants_estate",
+              "cbp_record_us04_location_estate_proxy_burghers_estate",
+              "cbp_record_us04_location_estate_proxy_nobles_estate",
+              "cbp_record_us04_location_estate_proxy_clergy_estate",
+              "cbp_reset_pop_demand_outcome",
+          ]
+          for name in blocks:
+              marker = f"{name} = {{"
+              start = text.find(marker)
+              if start < 0:
+                  raise SystemExit(f"Missing resolver block {name}")
+              open_brace = text.find("{", start)
+              depth = 0
+              end = None
+              in_quote = False
+              escaped = False
+              for i in range(open_brace, len(text)):
+                  ch = text[i]
+                  if in_quote:
+                      if escaped:
+                          escaped = False
+                      elif ch == "\\":
+                          escaped = True
+                      elif ch == '"':
+                          in_quote = False
+                      continue
+                  if ch == '"':
+                      in_quote = True
+                  elif ch == "{":
+                      depth += 1
+                  elif ch == "}":
+                      depth -= 1
+                      if depth == 0:
+                          end = i + 1
+                          break
+              if end is None:
+                  raise SystemExit(f"Unclosed resolver block {name}")
+              block = text[start:end]
+              refresh = "cbp_us04_refresh_location_sparse_index_good_$good$ = yes"
+              if refresh in block:
+                  continue
+              close = block.rfind("\n\t}")
+              if close < 0:
+                  raise SystemExit(f"Could not find location-scope close in {name}")
+              block = block[:close] + f"\n\t\t{refresh}" + block[close:]
+              text = text[:start] + block + text[end:]
+          target.write_text(text, encoding="utf-8")
+
+          validator = "tools/validate_us04_pop_demand_architecture.py"
+          replace_once(
+              validator,
+              '    helper_generator = read("tools/generate_us04_pop_demand_helpers.sh")\n',
+              '    helper_generator = read("tools/generate_us04_pop_demand_helpers.sh")\n    generated_helpers = read("in_game/common/scripted_effects/cbp_us04_pop_demand_generated.txt")\n',
+          )
+          replace_once(
+              validator,
+              '''        expect("target = scope:cbp_good" not in proxy_writer and "key = scope:cbp_good" not in proxy_writer, f"US-04 {estate} proxy writer must not persist proxy records under a saved-scope key")
+    proxy_reset = block(demand_resolver, "cbp_reset_us04_location_estate_proxy")''',
+              '''        expect("target = scope:cbp_good" not in proxy_writer and "key = scope:cbp_good" not in proxy_writer, f"US-04 {estate} proxy writer must not persist proxy records under a saved-scope key")
+        expect("cbp_us04_refresh_location_sparse_index_good_$good$ = yes" in proxy_writer, f"US-04 {estate} proxy writer must refresh sparse membership")
+    proxy_reset = block(demand_resolver, "cbp_reset_us04_location_estate_proxy")''',
+          )
+          replace_once(
+              validator,
+              '''    expect("target = scope:cbp_good" not in proxy_reset and "key = scope:cbp_good" not in proxy_reset, "US-04 proxy reset must not use saved-scope keys")
+    expect("demands_goods_by_pops = goods:__GOOD__" in market_monthly_reconciliation,''',
+              '''    expect("target = scope:cbp_good" not in proxy_reset and "key = scope:cbp_good" not in proxy_reset, "US-04 proxy reset must not use saved-scope keys")
+    expect("cbp_us04_refresh_location_sparse_index_good_$good$ = yes" in proxy_reset, "US-04 proxy reset must refresh sparse membership")
+    expect("demands_goods_by_pops = goods:__GOOD__" in market_monthly_reconciliation,''',
+          )
+          replace_once(
+              validator,
+              '''    expect("cbp_monthly_assess_location_estate_consumption_all_goods" in helper_generator, "US-04 helper generator must emit Estate-level location assessment dispatch")
+    expect(not has_executable_every_location(integration),''',
+              '''    expect("cbp_monthly_assess_location_estate_consumption_all_goods" in helper_generator, "US-04 helper generator must emit Estate-level location assessment dispatch")
+    expect("cbp_monthly_process_us04_sparse_index_all_goods" in helper_generator, "US-04 helper generator must emit the sparse monthly dispatcher")
+    expect("cbp_{good}_us04_active_locations" in helper_generator, "US-04 helper generator must emit country-owned per-good active-location lists")
+    expect("cbp_wheat_us04_active_locations" in generated_helpers, "US-04 generated output must contain the wheat sparse work list")
+    expect(not has_executable_every_location(integration),''',
+          )
+          replace_once(
+              validator,
+              '''    expect("every_market_present_in_country = {" in monthly_country_runtime, "US-04 current-country monthly runtime must iterate country markets before goods and locations")
+    expect("cbp_monthly_assess_country_market_estate_consumption_all_goods = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must call the Estate-level market/good-first dispatcher")
+    expect("cbp_monthly_reconcile_location_pop_demand_all_goods = yes" not in monthly_country_runtime, "US-04 current-country monthly runtime must not scan every owned location before the market/good gate")''',
+              '''    expect("cbp_prepare_us04_sparse_index_for_current_country = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must prepare the sparse country index")
+    expect("cbp_monthly_process_us04_sparse_index_all_goods = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must call the sparse per-good active-location dispatcher")
+    expect("every_market_present_in_country = {" not in monthly_country_runtime, "US-04 current-country monthly runtime must not retain the dense country-market iterator")
+    expect("every_owned_location = {" not in monthly_country_runtime, "US-04 current-country monthly runtime must not retain a dense owned-location iterator")
+    expect("cbp_monthly_assess_country_market_estate_consumption_all_goods = yes" not in monthly_country_runtime, "US-04 normal monthly runtime must not call the dense market/good-first compatibility dispatcher")''',
+          )
+          PY
+
+          rm .github/workflows/apply-us04-sparse-fixup.yml
+
+      - name: Commit source updates
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Perf: finalize sparse US-04 admission and writer repair"
+          git push origin HEAD:perf/sparse-us04-work-indexes
