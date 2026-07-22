@@ -543,6 +543,27 @@ cbp_prepare_country_market_capacity_current_month_stamp = {
 	}
 }
 
+# Always read the country-owned stamp map through the saved country scope. The
+# idempotent helper is called from both country and market iterator scopes.
+cbp_load_country_market_capacity_monthly_stamp = {
+	save_temporary_scope_value_as = { name = cbp_capacity_stored_month_stamp value = -1 }
+	scope:cbp_country = {
+		if = {
+			limit = {
+				has_variable_map = cbp_capacity_monthly_stamp_by_market
+				is_key_in_variable_map = {
+					name = cbp_capacity_monthly_stamp_by_market
+					target = scope:cbp_market
+				}
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_capacity_stored_month_stamp
+				value = "variable_map(cbp_capacity_monthly_stamp_by_market|scope:cbp_market)"
+			}
+		}
+	}
+}
+
 cbp_store_country_market_capacity_current_month_stamp = {
 	cbp_prepare_country_market_capacity_current_month_stamp = yes
 	scope:cbp_country = {
@@ -596,19 +617,9 @@ cbp_recalculate_country_market_capacity_from_prepared_pool_raw_shared = {
 # preparation pass and the detailed promoted-market pass.
 cbp_recalculate_country_market_capacity_from_prepared_pool_shared = {
 	cbp_prepare_country_market_capacity_current_month_stamp = yes
+	cbp_load_country_market_capacity_monthly_stamp = yes
 	if = {
-		limit = {
-			OR = {
-				NOT = { has_variable_map = cbp_capacity_monthly_stamp_by_market }
-				NOT = {
-					is_key_in_variable_map = {
-						name = cbp_capacity_monthly_stamp_by_market
-						target = scope:cbp_market
-					}
-				}
-				"variable_map(cbp_capacity_monthly_stamp_by_market|scope:cbp_market)" != scope:cbp_capacity_current_month_stamp
-			}
-		}
+		limit = { scope:cbp_capacity_stored_month_stamp != scope:cbp_capacity_current_month_stamp }
 		cbp_recalculate_country_market_capacity_from_prepared_pool_raw_shared = yes
 	}
 }
