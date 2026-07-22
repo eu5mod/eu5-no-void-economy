@@ -19,18 +19,12 @@ jobs:
 
       - name: Run embedded fixup
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          workflow = Path('.github/workflows/apply-us04-sparse-fixup.yml')
-          text = workflow.read_text(encoding='utf-8')
-          marker = "          python3 - <<'PY'\n"
-          start = text.index(marker) + len(marker)
-          end = text.index("\n          PY\n", start)
-          body = text[start:end]
-          script = "\n".join(line[10:] if line.startswith("          ") else line for line in body.splitlines()) + "\n"
-          Path('/tmp/apply_us04_sparse_fixup.py').write_text(script, encoding='utf-8')
-          PY
+          awk '
+            /          python3 - <<.PY./ { capture=1; next }
+            capture && /^          PY$/ { exit }
+            capture { sub(/^          /, ""); print }
+          ' .github/workflows/apply-us04-sparse-fixup.yml > /tmp/apply_us04_sparse_fixup.py
+          test -s /tmp/apply_us04_sparse_fixup.py
           python3 /tmp/apply_us04_sparse_fixup.py
           rm .github/workflows/apply-us04-sparse-fixup.yml
           rm .github/workflows/apply-us04-sparse-fixup-pr.yml
