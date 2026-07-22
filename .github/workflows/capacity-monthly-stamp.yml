@@ -1,0 +1,28 @@
+name: Capacity Monthly Stamp
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate monthly country-market capacity stamp
+        run: python3 tools/validate_cbp_capacity_monthly_stamp.py
+
+      - name: Audit persistent state inventory
+        run: bash tools/audit_cbp_persistent_state.sh
