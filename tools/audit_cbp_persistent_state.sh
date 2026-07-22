@@ -21,6 +21,7 @@ trap 'rm -f "$tmp_discovered" "$tmp_expected_names" "$tmp_inventory" "$tmp_uncla
 scan_files=(
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_us10_ui_helpers.sh"
+	"tools/generate_us04_pop_demand_helpers.sh"
 	"tools/templates/cbp_stock_good_adapter.template.txt"
 	"in_game/common/scripted_effects/cbp_capacity_effects.txt"
 	"in_game/common/scripted_effects/cbp_void_economy_effects.txt"
@@ -62,16 +63,23 @@ free_patterns = [
     re.compile(r"__[A-Z0-9_]+_(?:MAP|LIST)__"),
     re.compile(r"\b(?:cbp|gui_cbp)_\$\{good\}_[A-Za-z0-9_]+(?:_by_market|_markets|_suppliers|_market_stock)\b"),
     re.compile(r"\bcbp_(?:consumption|trade)___GOOD___[A-Za-z0-9_]+_by_market\b"),
+    re.compile(r"\bcbp_\{good\}_us04_active_locations\b"),
 ]
 
+
 def normalize_good(name: str) -> str:
-    normalized = name.replace("${good}", "<good>").replace("___GOOD___", "_<good>_")
+    normalized = (
+        name.replace("${good}", "<good>")
+        .replace("{good}", "<good>")
+        .replace("___GOOD___", "_<good>_")
+    )
     for good in goods:
         normalized = re.sub(rf"\bcbp_{re.escape(good)}_", "cbp_<good>_", normalized)
         normalized = re.sub(rf"\bgui_cbp_{re.escape(good)}_", "gui_cbp_<good>_", normalized)
         normalized = re.sub(rf"\bcbp_consumption_{re.escape(good)}_", "cbp_consumption_<good>_", normalized)
         normalized = re.sub(rf"\bcbp_trade_{re.escape(good)}_", "cbp_trade_<good>_", normalized)
     return normalized
+
 
 def is_state_like(name: str) -> bool:
     if name.startswith("__") and name.endswith(("MAP__", "LIST__")):
@@ -93,8 +101,10 @@ def is_state_like(name: str) -> bool:
         "cbp_<good>_active_markets",
         "cbp_<good>_dirty_markets",
         "cbp_<good>_us10_sparse_suppliers",
+        "cbp_<good>_us04_active_locations",
     }
     return name in known_lists or name in known_good_lists or name == "cbp_<good>_market_stock"
+
 
 for path in files:
     text = path.read_text(encoding="utf-8")
@@ -126,7 +136,7 @@ __STOCK_MAP__	template map placeholder	source	country	central stock operators on
 __US00_ACTIVE_MAP__	template map placeholder	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 scheduling index
 __UI_MONTHLY_CONSUMPTION_MAP__	template map placeholder	UI monthly counter	human country	US-10/UI current-month capture	monthly after UI/readers	current month only
 __UI_MONTHLY_SURPLUS_MAP__	template map placeholder	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
-__VOID_TAXABLE_PROXY_MAP__	template map placeholder	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
+__VOID_TAXABLE_PROXY_MAP__	template map placeholder	diagnostic ledger	country	US-00 ratio finalization from frozen facts	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 __VOID_WEALTH_MAP__	template map placeholder	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 cbp_<good>_active_markets	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
 cbp_<good>_added_by_market	variable map	monthly ledger	country	US-00 production rejection ledger update	monthly after readers	current month until readers reset
@@ -142,6 +152,7 @@ gui_cbp_<good>_ui_monthly_consumption_by_market	variable map	UI monthly counter	
 gui_cbp_<good>_ui_monthly_surplus_by_market	variable map	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
 cbp_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 previous-state scheduling
 cbp_<good>_us10_sparse_suppliers	global list	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
+cbp_<good>_us04_active_locations	variable list	work cache	country	load-generation rebuild / yearly verifier / coefficient-proxy-record refresh / owner-change repair	remove when no active coefficient, proxy, or prior record remains	persistent sparse scheduling only; never economic source
 cbp_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 cbp_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 cbp_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
@@ -164,7 +175,7 @@ cbp_stock_cap_by_market	variable map	capacity source	country	capacity refresh / 
 cbp_trade_<good>_requested_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 cbp_trade_<good>_transferred_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
 cbp_trade_<good>_unsatisfied_by_market	variable map	monthly ledger	country	US-10 inter-market transfer resolution	monthly after US-10.3/UI readers	current month until readers reset
-cbp_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
+cbp_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 all-goods void-wealth aggregation	strict/debug/audit or monthly after readers	strict/debug/audit or explicit UI only
 EOF
 
 cut -f1 "$tmp_inventory" | tail -n +2 | sort -u > "$tmp_expected_names"
@@ -221,7 +232,7 @@ debug_names: set[str] = set()
 work_names: set[str] = set()
 debug_pattern = re.compile(r"\bcbp_debug(?:_last)?_[A-Za-z0-9_]+\b")
 work_pattern = re.compile(
-    r"\bcbp_(?:perf\d+|performance|human_relevant|monthly|reconciliation|active_repair|us10_ui)_[A-Za-z0-9_]+\b"
+    r"\bcbp_(?:perf\d+|performance|human_relevant|monthly|reconciliation|active_repair|us10_ui|us04_sparse)_[A-Za-z0-9_]+\b"
 )
 
 for path in files:
