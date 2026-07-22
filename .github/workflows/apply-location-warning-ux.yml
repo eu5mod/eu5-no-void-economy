@@ -1,9 +1,7 @@
 name: Apply Location Warning UX
 
 on:
-  push:
-    branches:
-      - feature/cbg-replace-object-prefixed-outputs
+  pull_request:
 
 permissions:
   contents: write
