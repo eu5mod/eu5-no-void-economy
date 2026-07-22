@@ -17,7 +17,7 @@ jobs:
           ref: perf/sparse-us04-work-indexes
           fetch-depth: 0
 
-      - name: Run embedded fixup
+      - name: Extract embedded fixup
         run: |
           awk '
             /          python3 - <<.PY./ { capture=1; next }
@@ -25,9 +25,24 @@ jobs:
             capture { sub(/^          /, ""); print }
           ' .github/workflows/apply-us04-sparse-fixup.yml > /tmp/apply_us04_sparse_fixup.py
           test -s /tmp/apply_us04_sparse_fixup.py
-          python3 /tmp/apply_us04_sparse_fixup.py
+          cp /tmp/apply_us04_sparse_fixup.py apply-us04-sparse-fixup.py
+
+      - name: Run embedded fixup
+        run: |
+          set -o pipefail
+          python3 /tmp/apply_us04_sparse_fixup.py 2>&1 | tee apply-us04-sparse-fixup.log
           rm .github/workflows/apply-us04-sparse-fixup.yml
           rm .github/workflows/apply-us04-sparse-fixup-pr.yml
+
+      - name: Upload fixup diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apply-us04-sparse-fixup-diagnostics
+          path: |
+            apply-us04-sparse-fixup.py
+            apply-us04-sparse-fixup.log
+          if-no-files-found: ignore
 
       - name: Commit source updates
         run: |
