@@ -4,6 +4,10 @@
 # call from the promoted-market shell. PR7 also adds the live promoted dispatcher
 # at the bottom of this file. Each helper delegates to the current domain owner:
 # capacity, market-country cache, generated good adapters, US-00, or US-10.
+#
+# All promoted-market counters are observability-only. Their reset and increment
+# effects write only in debug/audit runtime; work lists, capacity preparation,
+# stock mutation, and the US-00-before-US-10 ordering remain unconditional.
 
 # B: prepare the current promoted market's country work cache. The cache remains
 # a rebuilt work list, never durable per-market storage and never a stock source.
@@ -128,15 +132,18 @@ cbp_handoff_scoped_inter_market_transfer = {
 # only markets already present in `cbp_performance_relevant_markets`.
 
 cbp_clear_promoted_market_cycle_work_list = {
-	remove_global_variable = cbp_promoted_market_candidate_count
-	remove_global_variable = cbp_promoted_market_count
-	remove_global_variable = cbp_promoted_market_rejected_count
-	remove_global_variable = cbp_promoted_market_shell_iterations
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		remove_global_variable = cbp_promoted_market_candidate_count
+		remove_global_variable = cbp_promoted_market_count
+		remove_global_variable = cbp_promoted_market_rejected_count
+		remove_global_variable = cbp_promoted_market_shell_iterations
 
-	set_global_variable = { name = cbp_promoted_market_candidate_count value = 0 }
-	set_global_variable = { name = cbp_promoted_market_count value = 0 }
-	set_global_variable = { name = cbp_promoted_market_rejected_count value = 0 }
-	set_global_variable = { name = cbp_promoted_market_shell_iterations value = 0 }
+		set_global_variable = { name = cbp_promoted_market_candidate_count value = 0 }
+		set_global_variable = { name = cbp_promoted_market_count value = 0 }
+		set_global_variable = { name = cbp_promoted_market_rejected_count value = 0 }
+		set_global_variable = { name = cbp_promoted_market_shell_iterations value = 0 }
+	}
 
 	if = {
 		limit = { has_global_variable_list = cbp_promoted_markets_this_cycle }
@@ -145,21 +152,27 @@ cbp_clear_promoted_market_cycle_work_list = {
 }
 
 cbp_note_promoted_market_cycle_candidate = {
-	set_global_variable = {
-		name = cbp_promoted_market_candidate_count
-		value = {
-			value = global_var:cbp_promoted_market_candidate_count
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_candidate_count
+			value = {
+				value = global_var:cbp_promoted_market_candidate_count
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_cycle_rejected = {
-	set_global_variable = {
-		name = cbp_promoted_market_rejected_count
-		value = {
-			value = global_var:cbp_promoted_market_rejected_count
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_rejected_count
+			value = {
+				value = global_var:cbp_promoted_market_rejected_count
+				add = 1
+			}
 		}
 	}
 }
@@ -173,11 +186,14 @@ cbp_add_current_market_to_promoted_market_cycle_work_list = {
 			name = cbp_promoted_markets_this_cycle
 			target = scope:cbp_promoted_market_candidate
 		}
-		set_global_variable = {
-			name = cbp_promoted_market_count
-			value = {
-				value = global_var:cbp_promoted_market_count
-				add = 1
+		if = {
+			limit = { cbp_observability_enabled_trigger = yes }
+			set_global_variable = {
+				name = cbp_promoted_market_count
+				value = {
+					value = global_var:cbp_promoted_market_count
+					add = 1
+				}
 			}
 		}
 	}
@@ -194,11 +210,14 @@ cbp_add_current_market_to_promoted_market_cycle_work_list = {
 			name = cbp_promoted_markets_this_cycle
 			target = scope:cbp_promoted_market_candidate
 		}
-		set_global_variable = {
-			name = cbp_promoted_market_count
-			value = {
-				value = global_var:cbp_promoted_market_count
-				add = 1
+		if = {
+			limit = { cbp_observability_enabled_trigger = yes }
+			set_global_variable = {
+				name = cbp_promoted_market_count
+				value = {
+					value = global_var:cbp_promoted_market_count
+					add = 1
+				}
 			}
 		}
 	}
@@ -243,11 +262,14 @@ cbp_run_monthly_promoted_market_cycle = {
 		every_in_global_list = {
 			variable = cbp_promoted_markets_this_cycle
 			save_temporary_scope_as = cbp_promoted_market
-			set_global_variable = {
-				name = cbp_promoted_market_shell_iterations
-				value = {
-					value = global_var:cbp_promoted_market_shell_iterations
-					add = 1
+			if = {
+				limit = { cbp_observability_enabled_trigger = yes }
+				set_global_variable = {
+					name = cbp_promoted_market_shell_iterations
+					value = {
+						value = global_var:cbp_promoted_market_shell_iterations
+						add = 1
+					}
 				}
 			}
 		}
@@ -262,103 +284,121 @@ cbp_run_monthly_promoted_market_cycle = {
 #   -> D same-market US-10 -> scoped consistency validation.
 
 cbp_reset_promoted_market_local_branch_metrics = {
-	remove_global_variable = cbp_promoted_market_local_branch_country_cache_rebuilds
-	remove_global_variable = cbp_promoted_market_local_branch_capacity_country_count
-	remove_global_variable = cbp_promoted_market_local_branch_us00_calls
-	remove_global_variable = cbp_promoted_market_local_branch_us10_calls
-	remove_global_variable = cbp_promoted_market_local_branch_validation_calls
-	remove_global_variable = cbp_promoted_market_local_branch_validation_failures
-	remove_global_variable = cbp_promoted_market_local_branch_markets_processed
-	remove_global_variable = cbp_promoted_market_local_branch_us10_satisfied_quantity
-	remove_global_variable = cbp_promoted_market_local_branch_step_counter
-	remove_global_variable = cbp_promoted_market_local_branch_us00_step
-	remove_global_variable = cbp_promoted_market_local_branch_us10_step
-	remove_global_variable = cbp_promoted_market_local_branch_validation_step
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		remove_global_variable = cbp_promoted_market_local_branch_country_cache_rebuilds
+		remove_global_variable = cbp_promoted_market_local_branch_capacity_country_count
+		remove_global_variable = cbp_promoted_market_local_branch_us00_calls
+		remove_global_variable = cbp_promoted_market_local_branch_us10_calls
+		remove_global_variable = cbp_promoted_market_local_branch_validation_calls
+		remove_global_variable = cbp_promoted_market_local_branch_validation_failures
+		remove_global_variable = cbp_promoted_market_local_branch_markets_processed
+		remove_global_variable = cbp_promoted_market_local_branch_us10_satisfied_quantity
+		remove_global_variable = cbp_promoted_market_local_branch_step_counter
+		remove_global_variable = cbp_promoted_market_local_branch_us00_step
+		remove_global_variable = cbp_promoted_market_local_branch_us10_step
+		remove_global_variable = cbp_promoted_market_local_branch_validation_step
 
-	set_global_variable = { name = cbp_promoted_market_local_branch_country_cache_rebuilds value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_capacity_country_count value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_us00_calls value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_us10_calls value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_validation_calls value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_validation_failures value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_markets_processed value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_us10_satisfied_quantity value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_step_counter value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_us00_step value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_us10_step value = 0 }
-	set_global_variable = { name = cbp_promoted_market_local_branch_validation_step value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_country_cache_rebuilds value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_capacity_country_count value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_us00_calls value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_us10_calls value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_validation_calls value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_validation_failures value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_markets_processed value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_us10_satisfied_quantity value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_step_counter value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_us00_step value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_us10_step value = 0 }
+		set_global_variable = { name = cbp_promoted_market_local_branch_validation_step value = 0 }
+	}
 }
 
 cbp_note_promoted_market_local_branch_country_cache_rebuild = {
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_country_cache_rebuilds
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_country_cache_rebuilds
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_country_cache_rebuilds
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_country_cache_rebuilds
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_local_branch_capacity_country = {
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_capacity_country_count
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_capacity_country_count
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_capacity_country_count
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_capacity_country_count
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_local_branch_us00 = {
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_step_counter
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_step_counter
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_step_counter
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_step_counter
+				add = 1
+			}
 		}
-	}
-	set_global_variable = { name = cbp_promoted_market_local_branch_us00_step value = global_var:cbp_promoted_market_local_branch_step_counter }
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_us00_calls
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_us00_calls
-			add = 1
+		set_global_variable = { name = cbp_promoted_market_local_branch_us00_step value = global_var:cbp_promoted_market_local_branch_step_counter }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_us00_calls
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_us00_calls
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_local_branch_us10 = {
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_step_counter
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_step_counter
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_step_counter
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_step_counter
+				add = 1
+			}
 		}
-	}
-	set_global_variable = { name = cbp_promoted_market_local_branch_us10_step value = global_var:cbp_promoted_market_local_branch_step_counter }
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_us10_calls
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_us10_calls
-			add = 1
+		set_global_variable = { name = cbp_promoted_market_local_branch_us10_step value = global_var:cbp_promoted_market_local_branch_step_counter }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_us10_calls
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_us10_calls
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_local_branch_validation = {
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_step_counter
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_step_counter
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_step_counter
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_step_counter
+				add = 1
+			}
 		}
-	}
-	set_global_variable = { name = cbp_promoted_market_local_branch_validation_step value = global_var:cbp_promoted_market_local_branch_step_counter }
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_validation_calls
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_validation_calls
-			add = 1
+		set_global_variable = { name = cbp_promoted_market_local_branch_validation_step value = global_var:cbp_promoted_market_local_branch_step_counter }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_validation_calls
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_validation_calls
+				add = 1
+			}
 		}
 	}
 }
@@ -425,11 +465,14 @@ cbp_run_promoted_market_local_branch_market_good = {
 		market = scope:cbp_market
 		good = $good$
 	}
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_us10_satisfied_quantity
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_us10_satisfied_quantity
-			add = scope:cbp_satisfied_quantity
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_us10_satisfied_quantity
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_us10_satisfied_quantity
+				add = scope:cbp_satisfied_quantity
+			}
 		}
 	}
 
@@ -443,7 +486,10 @@ cbp_run_promoted_market_local_branch_market_good = {
 		good = $good$
 	}
 	if = {
-		limit = { scope:cbp_validation_failed_after_rebuild > 0 }
+		limit = {
+			cbp_observability_enabled_trigger = yes
+			scope:cbp_validation_failed_after_rebuild > 0
+		}
 		set_global_variable = {
 			name = cbp_promoted_market_local_branch_validation_failures
 			value = {
@@ -453,11 +499,14 @@ cbp_run_promoted_market_local_branch_market_good = {
 		}
 	}
 
-	set_global_variable = {
-		name = cbp_promoted_market_local_branch_markets_processed
-		value = {
-			value = global_var:cbp_promoted_market_local_branch_markets_processed
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_local_branch_markets_processed
+			value = {
+				value = global_var:cbp_promoted_market_local_branch_markets_processed
+				add = 1
+			}
 		}
 	}
 }
@@ -495,182 +544,218 @@ cbp_run_first_promoted_market_local_branch_good = {
 # back to vanilla behavior and do not mutate ModeU5 stock.
 
 cbp_reset_promoted_market_live_dispatcher_metrics = {
-	remove_global_variable = cbp_promoted_market_live_dispatcher_runs
-	remove_global_variable = cbp_promoted_market_live_markets_detailed
-	remove_global_variable = cbp_promoted_market_live_markets_fallback
-	remove_global_variable = cbp_promoted_market_live_markets_blocked
-	remove_global_variable = cbp_promoted_market_live_owner_skips
-	remove_global_variable = cbp_promoted_market_live_country_cache_rebuilds
-	remove_global_variable = cbp_promoted_market_live_capacity_country_count
-	remove_global_variable = cbp_promoted_market_live_us00_country_passes
-	remove_global_variable = cbp_promoted_market_live_us10_country_passes
-	remove_global_variable = cbp_promoted_market_live_us00_good_scans
-	remove_global_variable = cbp_promoted_market_live_us10_good_scans
-	remove_global_variable = cbp_promoted_market_live_local_markets_processed
-	remove_global_variable = cbp_promoted_market_live_trade_owner_passes
-	remove_global_variable = cbp_promoted_market_live_validation_calls
-	remove_global_variable = cbp_promoted_market_live_validation_failures
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		remove_global_variable = cbp_promoted_market_live_dispatcher_runs
+		remove_global_variable = cbp_promoted_market_live_markets_detailed
+		remove_global_variable = cbp_promoted_market_live_markets_fallback
+		remove_global_variable = cbp_promoted_market_live_markets_blocked
+		remove_global_variable = cbp_promoted_market_live_owner_skips
+		remove_global_variable = cbp_promoted_market_live_country_cache_rebuilds
+		remove_global_variable = cbp_promoted_market_live_capacity_country_count
+		remove_global_variable = cbp_promoted_market_live_us00_country_passes
+		remove_global_variable = cbp_promoted_market_live_us10_country_passes
+		remove_global_variable = cbp_promoted_market_live_us00_good_scans
+		remove_global_variable = cbp_promoted_market_live_us10_good_scans
+		remove_global_variable = cbp_promoted_market_live_local_markets_processed
+		remove_global_variable = cbp_promoted_market_live_trade_owner_passes
+		remove_global_variable = cbp_promoted_market_live_validation_calls
+		remove_global_variable = cbp_promoted_market_live_validation_failures
 
-	set_global_variable = { name = cbp_promoted_market_live_dispatcher_runs value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_markets_detailed value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_markets_fallback value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_markets_blocked value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_owner_skips value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_country_cache_rebuilds value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_capacity_country_count value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_us00_country_passes value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_us10_country_passes value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_us00_good_scans value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_us10_good_scans value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_local_markets_processed value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_trade_owner_passes value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_validation_calls value = 0 }
-	set_global_variable = { name = cbp_promoted_market_live_validation_failures value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_dispatcher_runs value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_markets_detailed value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_markets_fallback value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_markets_blocked value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_owner_skips value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_country_cache_rebuilds value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_capacity_country_count value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_us00_country_passes value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_us10_country_passes value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_us00_good_scans value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_us10_good_scans value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_local_markets_processed value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_trade_owner_passes value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_validation_calls value = 0 }
+		set_global_variable = { name = cbp_promoted_market_live_validation_failures value = 0 }
 
-	cbp_reset_country_trade_owner_pass_metrics = yes
+		cbp_reset_country_trade_owner_pass_metrics = yes
+	}
 }
 
 cbp_prepare_monthly_promoted_market_live_dispatcher_metrics = {
-	save_temporary_scope_value_as = {
-		name = cbp_promoted_market_live_dispatcher_stamp
-		value = {
-			value = current_year
-			multiply = 12
-			add = current_month
-		}
-	}
-
 	if = {
-		limit = {
-			OR = {
-				NOT = { has_global_variable = cbp_promoted_market_live_dispatcher_stamp }
-				global_var:cbp_promoted_market_live_dispatcher_stamp != scope:cbp_promoted_market_live_dispatcher_stamp
+		limit = { cbp_observability_enabled_trigger = yes }
+		save_temporary_scope_value_as = {
+			name = cbp_promoted_market_live_dispatcher_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
 			}
 		}
-		set_global_variable = {
-			name = cbp_promoted_market_live_dispatcher_stamp
-			value = scope:cbp_promoted_market_live_dispatcher_stamp
+
+		if = {
+			limit = {
+				OR = {
+					NOT = { has_global_variable = cbp_promoted_market_live_dispatcher_stamp }
+					global_var:cbp_promoted_market_live_dispatcher_stamp != scope:cbp_promoted_market_live_dispatcher_stamp
+				}
+			}
+			set_global_variable = {
+				name = cbp_promoted_market_live_dispatcher_stamp
+				value = scope:cbp_promoted_market_live_dispatcher_stamp
+			}
+			cbp_reset_promoted_market_live_dispatcher_metrics = yes
 		}
-		cbp_reset_promoted_market_live_dispatcher_metrics = yes
-	}
-	else_if = {
-		limit = { NOT = { has_global_variable = cbp_promoted_market_live_dispatcher_runs } }
-		cbp_reset_promoted_market_live_dispatcher_metrics = yes
+		else_if = {
+			limit = { NOT = { has_global_variable = cbp_promoted_market_live_dispatcher_runs } }
+			cbp_reset_promoted_market_live_dispatcher_metrics = yes
+		}
 	}
 }
 
 cbp_note_promoted_market_live_dispatcher_run = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_dispatcher_runs
-		value = {
-			value = global_var:cbp_promoted_market_live_dispatcher_runs
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_dispatcher_runs
+			value = {
+				value = global_var:cbp_promoted_market_live_dispatcher_runs
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_detailed_market = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_markets_detailed
-		value = {
-			value = global_var:cbp_promoted_market_live_markets_detailed
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_markets_detailed
+			value = {
+				value = global_var:cbp_promoted_market_live_markets_detailed
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_fallback_market = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_markets_fallback
-		value = {
-			value = global_var:cbp_promoted_market_live_markets_fallback
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_markets_fallback
+			value = {
+				value = global_var:cbp_promoted_market_live_markets_fallback
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_blocked_market = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_markets_blocked
-		value = {
-			value = global_var:cbp_promoted_market_live_markets_blocked
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_markets_blocked
+			value = {
+				value = global_var:cbp_promoted_market_live_markets_blocked
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_country_cache_rebuild = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_country_cache_rebuilds
-		value = {
-			value = global_var:cbp_promoted_market_live_country_cache_rebuilds
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_country_cache_rebuilds
+			value = {
+				value = global_var:cbp_promoted_market_live_country_cache_rebuilds
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_capacity_country = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_capacity_country_count
-		value = {
-			value = global_var:cbp_promoted_market_live_capacity_country_count
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_capacity_country_count
+			value = {
+				value = global_var:cbp_promoted_market_live_capacity_country_count
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_us00_country_pass = {
-	cbp_capture_generated_stock_good_count = yes
-	set_global_variable = {
-		name = cbp_promoted_market_live_us00_country_passes
-		value = {
-			value = global_var:cbp_promoted_market_live_us00_country_passes
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		cbp_capture_generated_stock_good_count = yes
+		set_global_variable = {
+			name = cbp_promoted_market_live_us00_country_passes
+			value = {
+				value = global_var:cbp_promoted_market_live_us00_country_passes
+				add = 1
+			}
 		}
-	}
-	set_global_variable = {
-		name = cbp_promoted_market_live_us00_good_scans
-		value = {
-			value = global_var:cbp_promoted_market_live_us00_good_scans
-			add = scope:cbp_generated_stock_good_count
+		set_global_variable = {
+			name = cbp_promoted_market_live_us00_good_scans
+			value = {
+				value = global_var:cbp_promoted_market_live_us00_good_scans
+				add = scope:cbp_generated_stock_good_count
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_us10_country_pass = {
-	cbp_capture_generated_stock_good_count = yes
-	set_global_variable = {
-		name = cbp_promoted_market_live_us10_country_passes
-		value = {
-			value = global_var:cbp_promoted_market_live_us10_country_passes
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		cbp_capture_generated_stock_good_count = yes
+		set_global_variable = {
+			name = cbp_promoted_market_live_us10_country_passes
+			value = {
+				value = global_var:cbp_promoted_market_live_us10_country_passes
+				add = 1
+			}
 		}
-	}
-	set_global_variable = {
-		name = cbp_promoted_market_live_us10_good_scans
-		value = {
-			value = global_var:cbp_promoted_market_live_us10_good_scans
-			add = scope:cbp_generated_stock_good_count
+		set_global_variable = {
+			name = cbp_promoted_market_live_us10_good_scans
+			value = {
+				value = global_var:cbp_promoted_market_live_us10_good_scans
+				add = scope:cbp_generated_stock_good_count
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_local_market_processed = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_local_markets_processed
-		value = {
-			value = global_var:cbp_promoted_market_live_local_markets_processed
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_local_markets_processed
+			value = {
+				value = global_var:cbp_promoted_market_live_local_markets_processed
+				add = 1
+			}
 		}
 	}
 }
 
 cbp_note_promoted_market_live_trade_owner_pass = {
-	set_global_variable = {
-		name = cbp_promoted_market_live_trade_owner_passes
-		value = {
-			value = global_var:cbp_promoted_market_live_trade_owner_passes
-			add = 1
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_promoted_market_live_trade_owner_passes
+			value = {
+				value = global_var:cbp_promoted_market_live_trade_owner_passes
+				add = 1
+			}
 		}
 	}
 }
