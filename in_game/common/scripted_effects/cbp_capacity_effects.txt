@@ -8,10 +8,17 @@
 # the shared capacity maps. These effects never mutate stock.
 #
 # Q8.3 adds a monthly country capacity-pool stamp. The public
-# cbp_calculate_country_storage_capacity_pool entry point now prepares the
+# cbp_calculate_country_storage_capacity_pool entry point prepares the
 # country-wide pool facts once per country/month and reloads them for later
-# country-market capacity records. Market-specific merchant capacity is still
-# recalculated every time a country-market record is refreshed.
+# country-market capacity records.
+#
+# PERF layer B adds a country-owned map keyed by market:
+#
+#   cbp_capacity_monthly_stamp_by_market[country, market] = year * 12 + month
+#
+# The public prepared-pool country-market entry point is now idempotent within a
+# month. Forced lifecycle/topology refreshes keep using the raw entry point and
+# overwrite both the capacity record and its stamp.
 
 cbp_recalculate_country_market_capacity = {
 	$country$ = { save_temporary_scope_as = cbp_country }
@@ -25,7 +32,22 @@ cbp_recalculate_saved_country_market_storage_capacities = {
 	cbp_recalculate_country_market_capacity_shared = yes
 }
 
+# Forced all-market refresh used by initialization and topology hooks. This path
+# deliberately bypasses the monthly country-market gate.
 cbp_recalculate_saved_country_storage_capacities = {
+	scope:cbp_country = {
+		cbp_prepare_country_storage_capacity_pool_once_per_month = yes
+		every_market_present_in_country = {
+			save_temporary_scope_as = cbp_market
+			cbp_recalculate_country_market_capacity_from_prepared_pool_raw_shared = yes
+		}
+	}
+}
+
+# Monthly all-market refresh. The country pool is prepared once, then each
+# country-market record independently decides whether this month is already
+# current.
+cbp_ensure_saved_country_storage_capacities_current_month = {
 	scope:cbp_country = {
 		cbp_prepare_country_storage_capacity_pool_once_per_month = yes
 		every_market_present_in_country = {
@@ -45,7 +67,7 @@ cbp_recalculate_country_storage_capacities = {
 
 cbp_run_monthly_capacity_refresh_for_current_country = {
 	save_temporary_scope_as = cbp_country
-	cbp_recalculate_saved_country_storage_capacities = yes
+	cbp_ensure_saved_country_storage_capacities_current_month = yes
 
 	save_temporary_scope_value_as = {
 		name = cbp_monthly_capacity_refresh_stamp
@@ -510,6 +532,41 @@ cbp_store_capacity_record = {
 	}
 }
 
+cbp_prepare_country_market_capacity_current_month_stamp = {
+	save_temporary_scope_value_as = {
+		name = cbp_capacity_current_month_stamp
+		value = {
+			value = current_year
+			multiply = 12
+			add = current_month
+		}
+	}
+}
+
+cbp_store_country_market_capacity_current_month_stamp = {
+	cbp_prepare_country_market_capacity_current_month_stamp = yes
+	scope:cbp_country = {
+		if = {
+			limit = {
+				has_variable_map = cbp_capacity_monthly_stamp_by_market
+				is_key_in_variable_map = {
+					name = cbp_capacity_monthly_stamp_by_market
+					target = scope:cbp_market
+				}
+			}
+			remove_from_variable_map = {
+				name = cbp_capacity_monthly_stamp_by_market
+				key = scope:cbp_market
+			}
+		}
+		add_to_variable_map = {
+			name = cbp_capacity_monthly_stamp_by_market
+			key = scope:cbp_market
+			value = scope:cbp_capacity_current_month_stamp
+		}
+	}
+}
+
 cbp_prepare_neutral_capacity_stock_context = {
 	save_temporary_scope_value_as = { name = cbp_country_stock_before_raw value = 0 }
 }
@@ -519,17 +576,41 @@ cbp_recalculate_country_market_capacity_shared = {
 	cbp_prepare_neutral_capacity_stock_context = yes
 	cbp_calculate_country_market_capacity = yes
 	cbp_store_capacity_record = yes
+	cbp_store_country_market_capacity_current_month_stamp = yes
 	cbp_finalize_country_market_capacity = yes
 	cbp_debug_capture_country_market_capacity = yes
 }
 
-cbp_recalculate_country_market_capacity_from_prepared_pool_shared = {
+# Raw prepared-pool writer for forced initialization/topology refreshes.
+cbp_recalculate_country_market_capacity_from_prepared_pool_raw_shared = {
 	cbp_load_capacity_breakdown = yes
 	cbp_prepare_neutral_capacity_stock_context = yes
 	cbp_apply_country_storage_capacity_pool_to_current_market = yes
 	cbp_store_capacity_record = yes
+	cbp_store_country_market_capacity_current_month_stamp = yes
 	cbp_finalize_country_market_capacity = yes
 	cbp_debug_capture_country_market_capacity = yes
+}
+
+# Idempotent prepared-pool entry point used by both the current-country monthly
+# preparation pass and the detailed promoted-market pass.
+cbp_recalculate_country_market_capacity_from_prepared_pool_shared = {
+	cbp_prepare_country_market_capacity_current_month_stamp = yes
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_variable_map = cbp_capacity_monthly_stamp_by_market }
+				NOT = {
+					is_key_in_variable_map = {
+						name = cbp_capacity_monthly_stamp_by_market
+						target = scope:cbp_market
+					}
+				}
+				"variable_map(cbp_capacity_monthly_stamp_by_market|scope:cbp_market)" != scope:cbp_capacity_current_month_stamp
+			}
+		}
+		cbp_recalculate_country_market_capacity_from_prepared_pool_raw_shared = yes
+	}
 }
 
 cbp_rebuild_and_refresh_country_storage_capacities = {
