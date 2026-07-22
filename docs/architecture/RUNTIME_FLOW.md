@@ -135,7 +135,7 @@ flowchart TB
             US04GOODS --> US04LOC["every_in_list active locations<br/>verify current ownership"]
             US04LOC --> US04STATE["re-read coefficient, Estate proxy and prior record"]
             US04STATE --> US04ACTIVE{"coefficient/proxy active<br/>and market demands good?"}
-            US04ACTIVE -->|yes| DELTA["existing location-good signed delta = coefficient - 1"]
+            US04ACTIVE -->|yes| DELTA["coefficient differs from 1 AND proxy exists<br/>existing signed delta = coefficient - 1"]
             US04ACTIVE -->|no| CLEAROLD["clear prior monthly record if present"]
             DELTA --> SIGN{"delta sign?"}
             SIGN -->|positive| REMOVE["cbp_remove_stock(actual satisfiable delta)<br/>country + market aggregate + negative goods supply"]
@@ -146,7 +146,7 @@ flowchart TB
             CHARGE --> US04STORE["clear and store monthly per-good reconciliation record"]
             REFUND --> US04STORE
             NOOP --> US04STORE
-            CLEAROLD --> US04PRUNE["refresh membership; prune when coefficient=1,<br/>no proxy and no prior record"]
+            CLEAROLD --> US04PRUNE["refresh membership; prune when coefficient=1 OR no proxy,<br/>unless a prior record still needs clearing"]
             US04STORE --> US04PRUNE
         end
 

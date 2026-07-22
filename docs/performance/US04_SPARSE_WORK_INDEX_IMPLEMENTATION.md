@@ -36,12 +36,12 @@ Each country owns one variable list per supported good:
 cbp_<good>_us04_active_locations
 ```
 
-The list targets location scopes. A location is a member for one good when any
-of these conditions is true:
+The list targets location scopes. A location is a member for one good when either
+branch is true:
 
-1. `cbp_us04_reconciliation_coefficient[good]` exists and differs from `1`;
-2. at least one location-good Estate proxy map entry exists;
-3. a prior US-04 monthly reconciliation record still exists and must be cleared.
+1. `cbp_us04_reconciliation_coefficient[good]` exists and differs from `1`,
+   **and** at least one location-good Estate proxy map entry exists;
+2. a prior US-04 monthly reconciliation record still exists and must be cleared.
 
 The list is a scheduling index only. Membership cannot authorize an economic
 mutation. Before processing an entry, the generated dispatcher rechecks:
@@ -49,7 +49,7 @@ mutation. Before processing an entry, the generated dispatcher rechecks:
 - current owner;
 - current market;
 - market `demands_goods_by_pops` for the selected good;
-- coefficient/proxy activity;
+- coefficient **and** proxy activity;
 - the existing runtime-ready and option gates in the country owner;
 - the existing per-location business conditions.
 
@@ -109,15 +109,16 @@ without adding a second location traversal.
 ### Writer contract
 
 Generated annual coefficient writes refresh the corresponding good immediately
-through the all-goods annual wrapper. Any external coefficient or Estate-proxy
-writer must call:
+through the all-goods annual wrapper. The loaded Estate-proxy writers and reset
+surfaces also refresh the corresponding good immediately. Any additional external
+coefficient or Estate-proxy writer must call:
 
 ```text
 cbp_us04_refresh_sparse_index_for_location = { location = <location> }
 ```
 
 Monthly record processing refreshes membership after clearing/storing, so an
-entry remains only while one of the three membership conditions is still true.
+entry remains only while the coefficient-and-proxy branch or the prior-record branch is true.
 
 ### Ownership-change repair
 

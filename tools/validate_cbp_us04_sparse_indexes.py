@@ -17,6 +17,7 @@ RUNTIME = ROOT / "in_game/common/scripted_effects/cbp_us04_pop_demand_effects.tx
 GENERATOR = ROOT / "tools/generate_us04_pop_demand_helpers.sh"
 GENERATED = ROOT / "in_game/common/scripted_effects/cbp_us04_pop_demand_generated.txt"
 TEMPLATE = ROOT / "tools/templates/cbp_us04_pop_demand_good.template.txt"
+DEMAND_RESOLVER = ROOT / "in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt"
 STOCK_ON_ACTIONS = ROOT / "in_game/common/on_action/cbp_stock_on_actions.txt"
 CORE03_ON_ACTIONS = ROOT / "in_game/common/on_action/cbp_core03_exposure_on_actions.txt"
 STATE_DOC = ROOT / "docs/technical/PERSISTENT_STATE_AUDIT.md"
@@ -87,6 +88,7 @@ def main() -> int:
     generator = read(GENERATOR)
     generated = read(GENERATED)
     template = read(TEMPLATE)
+    demand_resolver = read(DEMAND_RESOLVER)
     stock_on_actions = read(STOCK_ON_ACTIONS)
     core03_on_actions = read(CORE03_ON_ACTIONS)
     state_doc = read(STATE_DOC)
@@ -145,6 +147,23 @@ def main() -> int:
     ):
         require(generator, token, "activity membership")
 
+    require(generator, '"\\t\\t\\t\\t\\t\\tAND = {",', "activity membership")
+
+    for writer in (
+        "cbp_reset_us04_location_estate_proxy",
+        "cbp_record_us04_location_estate_proxy_peasants_estate",
+        "cbp_record_us04_location_estate_proxy_burghers_estate",
+        "cbp_record_us04_location_estate_proxy_nobles_estate",
+        "cbp_record_us04_location_estate_proxy_clergy_estate",
+        "cbp_reset_pop_demand_outcome",
+    ):
+        writer_body = effect_body(demand_resolver, writer)
+        require(
+            writer_body,
+            "cbp_us04_refresh_location_sparse_index_good_$good$ = yes",
+            f"proxy writer {writer}",
+        )
+
     # The generated output must contain one country-owned sparse list surface and
     # one sparse processor for every canonical supported good.
     for good in goods:
@@ -191,6 +210,7 @@ def main() -> int:
         "cbp_<good>_us04_active_locations",
         "Ownership-change repair",
         "prior monthly record",
+        "coefficient **and** proxy activity",
     ):
         require(implementation_doc, token, "implementation documentation")
 

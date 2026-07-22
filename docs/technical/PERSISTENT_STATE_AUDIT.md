@@ -56,7 +56,7 @@ accepted by `tools/audit_cbp_persistent_state.sh`.
 | `cbp_<good>_dirty_markets` | global | market | dirty until reconciliation | US-11 | dirty market-good reconciliation scheduling | keep |
 | `cbp_<good>_active_markets` | global | market | rebuilt maintenance index | US-11 active validation | active market-good validation scheduling | keep |
 | `cbp_<good>_us10_sparse_suppliers` | global | country | rebuilt per current market/good scan | US-10 / PERF-14 | temporary sparse supplier work list before candidate scoring | keep as rebuilt cache, not durable per-market storage |
-| `cbp_<good>_us04_active_locations` | country | location | persistent sparse scheduling index | monthly US-04 sparse dispatcher, yearly verifier, ownership repair | avoid dense market × good × location scans; membership means coefficient differs from 1, Estate proxy exists, or prior record needs clearing | keep only while sparse dispatcher uses it; never economic source |
+| `cbp_<good>_us04_active_locations` | country | location | persistent sparse scheduling index | monthly US-04 sparse dispatcher, yearly verifier, ownership repair | avoid dense market × good × location scans; membership means coefficient differs from 1 and an Estate proxy exists, or a prior record needs clearing | keep only while sparse dispatcher uses it; never economic source |
 | `cbp_active_markets_any_good` | global | market | rebuilt maintenance index | US-11 active validation | active market scheduling across goods | keep |
 | `cbp_countries_present_in_market` | global | country | temporary rebuilt work cache | market-country cache helpers, validation | current-market country work list | keep as rebuilt cache, not durable per-market storage |
 | `cbp_market_country_cache_dirty_markets` | global | market | dirty until repair | market-country cache repair | schedule cache repair after ownership changes | keep |
@@ -104,7 +104,7 @@ this section before moving a reader or deleting a cache.
 | `cbp_<good>_dirty_markets` | work cache | global | central stock mutation marks dirty | clear after reconciliation/explicit reset |
 | `cbp_<good>_active_markets` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `cbp_<good>_us10_sparse_suppliers` | work cache | global | US-10 sparse supplier preparation | clear before each market/good rebuild |
-| `cbp_<good>_us04_active_locations` | work cache | country | load-generation rebuild, yearly verifier, coefficient/proxy/record refresh, owner-change repair | remove entry when coefficient=1 and no proxy or prior record remains; clear/rebuild after load generation changes |
+| `cbp_<good>_us04_active_locations` | work cache | country | load-generation rebuild, yearly verifier, coefficient/proxy/record refresh, owner-change repair | remove entry when coefficient=1 or no proxy remains, unless a prior record still needs clearing; clear/rebuild after load generation changes |
 | `cbp_active_markets_any_good` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `cbp_countries_present_in_market` | work cache | global | `cbp_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
 | `cbp_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |

@@ -152,7 +152,7 @@ gui_cbp_<good>_ui_monthly_consumption_by_market	variable map	UI monthly counter	
 gui_cbp_<good>_ui_monthly_surplus_by_market	variable map	UI monthly counter	human country	US-00/UI current-month capture	monthly after UI/readers	current month only
 cbp_<good>_us00_active_record_by_market	variable map	work cache	country	PERF-15 active-record probe/update	rebuild or remove when record becomes inactive	PERF-15 previous-state scheduling
 cbp_<good>_us10_sparse_suppliers	global list	work cache	global	US-10 sparse supplier preparation	clear before each market/good rebuild	rebuilt per US-10 market/good scan
-cbp_<good>_us04_active_locations	variable list	work cache	country	load-generation rebuild / yearly verifier / coefficient-proxy-record refresh / owner-change repair	remove when no active coefficient, proxy, or prior record remains	persistent sparse scheduling only; never economic source
+cbp_<good>_us04_active_locations	variable list	work cache	country	load-generation rebuild / yearly verifier / coefficient-proxy-record refresh / owner-change repair	remove when no coefficient-and-proxy activity or prior record remains	persistent sparse scheduling only; never economic source
 cbp_<good>_void_taxable_income_proxy_by_market	variable map	diagnostic ledger	country	US-00 void wealth proxy finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 cbp_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 void wealth finalization	strict/debug/audit or monthly after readers	strict/debug/audit or human-relevant only
 cbp_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
