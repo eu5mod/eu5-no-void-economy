@@ -42,9 +42,4 @@ jobs:
           path: |
             us04-sparse-index-validation.log
             us04-sparse-index-audit.log
-            tools/validate_us04_pop_demand_architecture.py
-            in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt
-            in_game/common/scripted_effects/cbp_us04_pop_demand_effects.txt
-            in_game/common/scripted_effects/cbp_us04_pop_demand_generated.txt
-            tools/generate_us04_pop_demand_helpers.sh
           if-no-files-found: ignore
