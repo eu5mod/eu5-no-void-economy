@@ -1,0 +1,151 @@
+name: Finalize US04 Sparse Contract
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v4
+        with:
+          ref: perf/sparse-us04-work-indexes
+          fetch-depth: 0
+
+      - name: Align documentation and validators
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding='utf-8')
+              if new in text:
+                  return
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected one replacement, found {count}')
+              target.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          impl = 'docs/performance/US04_SPARSE_WORK_INDEX_IMPLEMENTATION.md'
+          replace(
+              impl,
+              '''The list targets location scopes. A location is a member for one good when any
+          of these conditions is true:
+
+          1. `cbp_us04_reconciliation_coefficient[good]` exists and differs from `1`;
+          2. at least one location-good Estate proxy map entry exists;
+          3. a prior US-04 monthly reconciliation record still exists and must be cleared.'''.replace('          ', ''),
+              '''The list targets location scopes. A location is a member for one good when either
+          branch is true:
+
+          1. `cbp_us04_reconciliation_coefficient[good]` exists and differs from `1`,
+             **and** at least one location-good Estate proxy map entry exists;
+          2. a prior US-04 monthly reconciliation record still exists and must be cleared.'''.replace('          ', ''),
+          )
+          replace(impl, '- coefficient/proxy activity;', '- coefficient **and** proxy activity;')
+          replace(
+              impl,
+              'Generated annual coefficient writes refresh the corresponding good immediately\nthrough the all-goods annual wrapper. Any external coefficient or Estate-proxy\nwriter must call:',
+              'Generated annual coefficient writes refresh the corresponding good immediately\nthrough the all-goods annual wrapper. The loaded Estate-proxy writers and reset\nsurfaces also refresh the corresponding good immediately. Any additional external\ncoefficient or Estate-proxy writer must call:',
+          )
+          replace(
+              impl,
+              'entry remains only while one of the three membership conditions is still true.',
+              'entry remains only while the coefficient-and-proxy branch or the prior-record branch is true.',
+          )
+
+          state = 'docs/technical/PERSISTENT_STATE_AUDIT.md'
+          replace(
+              state,
+              'membership means coefficient differs from 1, Estate proxy exists, or prior record needs clearing',
+              'membership means coefficient differs from 1 and an Estate proxy exists, or a prior record needs clearing',
+          )
+          replace(
+              state,
+              'remove entry when coefficient=1 and no proxy or prior record remains; clear/rebuild after load generation changes',
+              'remove entry when coefficient=1 or no proxy remains, unless a prior record still needs clearing; clear/rebuild after load generation changes',
+          )
+
+          audit = 'tools/audit_cbp_persistent_state.sh'
+          replace(
+              audit,
+              'remove when no active coefficient, proxy, or prior record remains',
+              'remove when no coefficient-and-proxy activity or prior record remains',
+          )
+
+          flow = 'docs/architecture/RUNTIME_FLOW.md'
+          replace(
+              flow,
+              'US04ACTIVE -->|yes| DELTA["existing location-good signed delta = coefficient - 1"]',
+              'US04ACTIVE -->|yes| DELTA["coefficient differs from 1 AND proxy exists<br/>existing signed delta = coefficient - 1"]',
+          )
+          replace(
+              flow,
+              'CLEAROLD --> US04PRUNE["refresh membership; prune when coefficient=1,<br/>no proxy and no prior record"]',
+              'CLEAROLD --> US04PRUNE["refresh membership; prune when coefficient=1 OR no proxy,<br/>unless a prior record still needs clearing"]',
+          )
+
+          validator = 'tools/validate_cbp_us04_sparse_indexes.py'
+          replace(
+              validator,
+              'TEMPLATE = ROOT / "tools/templates/cbp_us04_pop_demand_good.template.txt"\n',
+              'TEMPLATE = ROOT / "tools/templates/cbp_us04_pop_demand_good.template.txt"\nDEMAND_RESOLVER = ROOT / "in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt"\n',
+          )
+          replace(
+              validator,
+              '    template = read(TEMPLATE)\n',
+              '    template = read(TEMPLATE)\n    demand_resolver = read(DEMAND_RESOLVER)\n',
+          )
+          replace(
+              validator,
+              '''    for token in (
+              "cbp_us04_reconciliation_coefficient",
+              "cbp_us04_proxy_estate_size_peasants_estate",
+              "cbp_us04_reconciliation_requested_quantity",
+          ):
+              require(generator, token, "activity membership")'''.replace('          ', ''),
+              '''    for token in (
+              "cbp_us04_reconciliation_coefficient",
+              "cbp_us04_proxy_estate_size_peasants_estate",
+              "cbp_us04_reconciliation_requested_quantity",
+              '"\\t\\t\\t\\t\\t\\tAND = {",',
+          ):
+              require(generator, token, "activity membership")
+
+          for writer in (
+              "cbp_reset_us04_location_estate_proxy",
+              "cbp_record_us04_location_estate_proxy_peasants_estate",
+              "cbp_record_us04_location_estate_proxy_burghers_estate",
+              "cbp_record_us04_location_estate_proxy_nobles_estate",
+              "cbp_record_us04_location_estate_proxy_clergy_estate",
+              "cbp_reset_pop_demand_outcome",
+          ):
+              writer_body = effect_body(demand_resolver, writer)
+              require(
+                  writer_body,
+                  "cbp_us04_refresh_location_sparse_index_good_$good$ = yes",
+                  f"proxy writer {writer}",
+              )'''.replace('          ', ''),
+          )
+          replace(
+              validator,
+              '        "prior monthly record",\n',
+              '        "prior monthly record",\n        "coefficient **and** proxy activity",\n',
+          )
+
+          Path('.github/workflows/finalize-us04-sparse-contract.yml').unlink()
+          PY
+
+      - name: Commit contract alignment
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "Docs: align sparse US-04 admission contract"
+          git push origin HEAD:perf/sparse-us04-work-indexes
