@@ -9,7 +9,10 @@ This is Layer A from
 normal runtime no longer writes the selected hot-path profiling counters, while
 debug and audit runtime retain the same observability surfaces.
 
-## Shared gate
+The same PR also corrects the native trade-rework option boundary discovered
+while reviewing the country trade-owner hot path.
+
+## Shared observability gate
 
 ```txt
 cbp_observability_enabled_trigger
@@ -20,7 +23,7 @@ cbp_observability_enabled_trigger
 `cbp_pr71_metrics_enabled_trigger` now delegates to the shared gate so existing
 PR7.1 generated metrics and the newly gated families use one policy.
 
-## Gated families
+## Gated counter families
 
 The implementation gates resets, increments, accumulated quantities, and related
 debug logs for:
@@ -35,6 +38,30 @@ debug logs for:
 The gate encloses generated-good count capture where that capture exists only to
 feed a profiling counter.
 
+## Trade-rework gate correction
+
+The CMM trade-rework option now owns the complete native US-17/US-20 cycle:
+
+```txt
+trade rework enabled
+  -> refresh US-17 country modifier state
+  -> every_trade
+     -> capture owner / markets / good / trade_volume
+     -> US-17 route compatibility surface
+     -> US-20 goods reconciliation
+
+trade rework disabled
+  -> clear persisted US-17/US-20 country state
+  -> skip every_trade
+```
+
+Previously, US-17 country refresh was internally gated and the route-level US-17
+wrapper returned a zero money delta, but the outer monthly call and native trade
+iterator still executed. The corrected boundary is both clearer and cheaper.
+
+Explicit ModeU5-owned inter-market transfer requests remain independent of this
+CMM option because they are not native trade-rework processing.
+
 ## State deliberately left unconditional
 
 The following are not observability and remain active in every runtime mode:
@@ -44,11 +71,12 @@ The following are not observability and remain active in every runtime mode:
 - Performance Mode market-accounting decisions;
 - market promotion result/failure state used by mutation admission;
 - country and country-market capacity calculations;
-- trade scope and `trade_volume` capture;
-- US-17 and US-20 calculations;
 - US-00 and US-10 generated dispatch;
 - US-04 reconciliation;
 - all central stock operators and consistency gates.
+
+US-17/US-20 calculations and native `every_trade` are business state, but they
+now run only inside their own CMM trade-rework gate rather than unconditionally.
 
 PERF-13 active-repair counters are unchanged because their callers are already
 restricted to debug/test repair surfaces rather than the normal monthly path.
@@ -64,6 +92,9 @@ metric effect boundary, but avoids the associated global-variable remove, set,
 and accumulation writes. Debug/audit runtime retains counters for deterministic
 proof and profiling.
 
+When trade rework is disabled, the monthly country pass also avoids the complete
+native `every_trade` traversal and all associated US-17/US-20 route preparation.
+
 This PR does not claim a measured wall-clock improvement. The benchmark matrix
 and economic-equivalence record remain defined in the full performance analysis.
 
@@ -71,12 +102,19 @@ and economic-equivalence record remain defined in the full performance analysis.
 
 `tools/validate_cbp_observability_gates.py` checks that:
 
-- the shared gate contains both debug and audit paths;
+- the shared observability gate contains both debug and audit paths;
 - selected metric effects contain the shared gate;
 - market and country work lists remain present;
 - Q8.7 retains its global month stamp and world-market owner;
 - the live market branch retains two country passes with US-00 before US-10;
-- `every_trade`, US-17, and US-20 remain in the country-owned pass;
 - market-promotion business state remains outside the observability policy.
 
-The validator runs through the `Observability Gates` GitHub Actions workflow.
+`tools/validate_cbp_trade_rework_gate.py` additionally checks that:
+
+- one authoritative CMM gate contains refresh, `every_trade`, US-17 and US-20;
+- the order remains refresh -> iterator -> US-17 -> US-20;
+- no native trade iterator or US-17/US-20 call exists outside that gate;
+- the disabled branch clears persisted country modifier/coefficient state;
+- explicit ModeU5 transfer requests remain independent.
+
+Both validators run through the `Observability Gates` GitHub Actions workflow.
