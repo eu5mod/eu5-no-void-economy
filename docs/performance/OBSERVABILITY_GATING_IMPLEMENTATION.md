@@ -10,7 +10,8 @@ normal runtime no longer writes the selected hot-path profiling counters, while
 debug and audit runtime retain the same observability surfaces.
 
 The same PR also corrects the native trade-rework option boundary discovered
-while reviewing the country trade-owner hot path.
+while reviewing the country trade-owner hot path. The detailed decision is
+recorded in [`TRADE_REWORK_GATE_CORRECTION.md`](TRADE_REWORK_GATE_CORRECTION.md).
 
 ## Shared observability gate
 
