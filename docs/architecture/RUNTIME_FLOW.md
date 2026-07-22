@@ -7,7 +7,7 @@ orchestration. It describes loaded code, not a target architecture or a historic
 PR checkpoint. Technical names are retained so each node can be located directly
 in the runtime sources.
 
-Reviewed against the branch stacked on PR #211 on 2026-07-21.
+Reviewed against the runtime branch stacked on PR #212 on 2026-07-22.
 
 Use this precedence when documents disagree:
 
@@ -104,18 +104,19 @@ flowchart TB
         SKIP --> TRADE0["cbp_run_monthly_country_trade_owner_cycle"]
         WORLDEND --> TRADE0
 
-        subgraph TRADE["Current-country trade-owner pass"]
+        subgraph TRADE["Current-country native trade-rework pass"]
             direction TB
-            TRADE0 --> US17REFRESH["refresh US-17 native country modifiers once"]
+            TRADE0 --> TGATE{"CMM trade rework enabled?"}
+            TGATE -->|no| TCLEAR["clear persisted US-17/US-20 country state<br/>skip every_trade"]
+            TGATE -->|yes| US17REFRESH["refresh US-17 native country modifiers once"]
             US17REFRESH --> TLOOP["every_trade<br/>confirmed country-scope iterator"]
             TLOOP --> TSCOPE["capture trade owner, source market,<br/>target market, good and trade_volume"]
             TSCOPE --> OWNEROK{"trade owner exists?"}
-            OWNEROK -->|yes| US17ROUTE["US-17 operation-aware route-profit reconciliation"]
+            OWNEROK -->|yes| US17ROUTE["US-17 operation-aware route-profit compatibility surface"]
             OWNEROK -->|no| TNEXT["record blocked/diagnostic outcome"]
-            US17ROUTE --> TGATE{"trade rework enabled?"}
-            TGATE -->|yes| US20["US-20 destination route-loss / goods reconciliation"]
-            TGATE -->|no| TNEXT
+            US17ROUTE --> US20["US-20 destination route-loss / goods reconciliation"]
             US20 --> TNEXT
+            TCLEAR --> TNEXT
         end
 
         TNEXT --> US04M0["cbp_run_monthly_us04_reconciliation_for_current_country"]
@@ -187,7 +188,7 @@ flowchart TB
 | 2 | Q8.7 global owner, or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
 | 3 | US-00 first present-country pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 4 | US-10 second present-country pass | Resolve same-market consumption only after all US-00 facts for the market exist. |
-| 5 | `cbp_run_monthly_country_trade_owner_cycle` | Refresh US-17 country modifiers, process every owned trade, then apply optional US-20 route reconciliation. |
+| 5 | `cbp_run_monthly_country_trade_owner_cycle` | When trade rework is enabled, refresh US-17 and run the country-owned trade iterator with US-17 then US-20; otherwise clear persisted trade-rework state and skip the iterator. |
 | 6 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
 | 7 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
 | 8 | CORE-04 location-market memory | Snapshot the current market of every owned location after monthly economic work. |
@@ -204,7 +205,7 @@ flowchart TB
 | `cbp_countries_present_in_market` | Current detailed market branch | Rebuilt work cache, not persistent market storage |
 | Market-local US-00 and US-10 | Q8.7 once-per-month global owner by default | Runtime work |
 | Explicit Q8.7 fallback | Current country through `every_market_center_in_country` | Debug/recovery runtime path |
-| Inter-market trade | Current country through `every_trade` | Country-owned runtime pass |
+| Native inter-market trade rework | Current country through `every_trade`, only while the CMM trade-rework option is enabled | Country-owned runtime pass |
 | US-04 coefficient | Location x good | Durable Rebalance Economy state |
 | US-04 monthly Estate totals | Current country x market x good | Monthly ledger/diagnostic state |
 | CORE-04 last-known market | Location | Durable topology memory |
@@ -215,6 +216,9 @@ flowchart TB
   lifecycle repair, location-market memory, and consistency validation.
 - Rebalance Economy owns US-04. Its absence or disabled CMM option makes both
   monthly reconciliation and yearly coefficient adaptation no-ops.
+- The CMM trade-rework option gates the complete native US-17/US-20 cycle. When
+  disabled, the country pass clears persisted modifier/coefficient inputs and
+  does not enter `every_trade`.
 - Performance Mode changes accounting detail and market relevance, not the
   business rule applied to a market selected for detailed accounting.
 - The Q8.7 global market owner is enabled by default. The older market-center
@@ -233,7 +237,8 @@ flowchart TB
 | Market-local US-00 then US-10 passes | `in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt` |
 | Market-to-country work-cache rebuild | `in_game/common/scripted_effects/cbp_market_country_cache_effects.txt` |
 | Country and country-market capacity | `in_game/common/scripted_effects/cbp_capacity_effects.txt` |
-| Country-owned trade pass | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |
+| Country-owned native trade gate and iterator | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |
+| US-17 country modifier state and shared US-20 coefficient | `in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt` |
 | Lifecycle readiness and reconciliation | `in_game/common/scripted_effects/cbp_stock_effects.txt` |
 | CORE-04 location-market memory | `in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt` |
 | US-04 monthly/yearly entry points | `in_game/common/scripted_effects/cbp_us04_pop_demand_effects.txt` |
