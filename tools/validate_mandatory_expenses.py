@@ -99,16 +99,16 @@ def main() -> int:
     auto_modifier_text = auto_modifiers.read_text(encoding="utf-8-sig")
     required_offset_fragments = (
         "cbp_negative_stability_expense_offset = {",
-        "stability > 0",
+        "stability < 0",
         "value = stability",
-        "multiply = 0.01",
+        "multiply = -0.01",
         "stability_investment = 1",
     )
     for fragment in required_offset_fragments:
         if fragment not in auto_modifier_text:
-            failures.append(f"Positive-Stability expense offset must contain: {fragment}")
+            failures.append(f"Negative-Stability expense offset must contain: {fragment}")
     if "stability_decay" in auto_modifier_text:
-        failures.append("Positive-Stability expense offset must not override Vanilla stability_decay")
+        failures.append("Negative-Stability expense offset must not override Vanilla stability_decay")
 
     effects_text = effects.read_text(encoding="utf-8-sig")
     for modifier in (
@@ -134,7 +134,7 @@ def main() -> int:
     if "STATIC_MODIFIER_NAME_cbp_mandatory_government_power_expense" not in localization_text:
         failures.append("Mandatory government-power expense modifier name is not localized")
     if "AUTO_MODIFIER_NAME_cbp_negative_stability_expense_offset" not in localization_text:
-        failures.append("Positive-Stability expense offset auto-modifier name is not localized")
+        failures.append("Negative-Stability expense offset auto-modifier name is not localized")
     if "50%" not in localization_text:
         failures.append("Modifier description must explain the 50% vanilla-neutral slider position")
     if "66.7%" not in localization_text:
