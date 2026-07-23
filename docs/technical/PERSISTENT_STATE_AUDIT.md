@@ -29,6 +29,7 @@ accepted by `tools/audit_cbp_persistent_state.sh`.
 | `cbp_base_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and diagnostics | keep |
 | `cbp_building_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future storage-building hook | keep |
 | `cbp_foreign_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future foreign-storage hook | keep |
+| `cbp_capacity_monthly_stamp_by_market` | country | market | monthly scheduling stamp | US-02 monthly preparation and promoted-market capacity pass | prevents duplicate country-market capacity calculation and map writes within one month | keep while monthly idempotence uses it; never capacity source |
 | `cbp_<good>_production_penalty_by_market` | country | market | gameplay carryover | US-00, generated modifiers | next-month production penalty | keep normal-runtime persistent |
 | `cbp_<good>_us00_active_record_by_market` | country | market | scheduling index | PERF-15 monthly dispatch | cheap previous-state probe | keep while PERF-15 dispatch uses it |
 | `cbp_consumption_<good>_pending_requested_by_market` | country | market | current month input queue | US-10.1 monthly runtime integration | explicit country-market consumption request waiting for the next US-10 monthly pass | remove when processed |
@@ -56,7 +57,6 @@ accepted by `tools/audit_cbp_persistent_state.sh`.
 | `cbp_<good>_dirty_markets` | global | market | dirty until reconciliation | US-11 | dirty market-good reconciliation scheduling | keep |
 | `cbp_<good>_active_markets` | global | market | rebuilt maintenance index | US-11 active validation | active market-good validation scheduling | keep |
 | `cbp_<good>_us10_sparse_suppliers` | global | country | rebuilt per current market/good scan | US-10 / PERF-14 | temporary sparse supplier work list before candidate scoring | keep as rebuilt cache, not durable per-market storage |
-| `cbp_<good>_us04_active_locations` | country | location | persistent sparse scheduling index | monthly US-04 sparse dispatcher, yearly verifier, ownership repair | avoid dense market × good × location scans; membership means coefficient differs from 1 and an Estate proxy exists, or a prior record needs clearing | keep only while sparse dispatcher uses it; never economic source |
 | `cbp_active_markets_any_good` | global | market | rebuilt maintenance index | US-11 active validation | active market scheduling across goods | keep |
 | `cbp_countries_present_in_market` | global | country | temporary rebuilt work cache | market-country cache helpers, validation | current-market country work list | keep as rebuilt cache, not durable per-market storage |
 | `cbp_market_country_cache_dirty_markets` | global | market | dirty until repair | market-country cache repair | schedule cache repair after ownership changes | keep |
@@ -82,6 +82,7 @@ this section before moving a reader or deleting a cache.
 | `cbp_base_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
 | `cbp_building_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
 | `cbp_foreign_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `cbp_capacity_monthly_stamp_by_market` | scheduling stamp | country | every successful country-market capacity refresh | overwrite with current month; missing or stale entry forces recalculation |
 | `cbp_<good>_production_penalty_by_market` | gameplay carryover | country | US-00 next-month penalty finalization | replace when next penalty is finalized |
 | `cbp_<good>_us00_active_record_by_market` | work cache | country | PERF-15 active-record probe/update | rebuild or remove when record becomes inactive |
 | `cbp_<good>_produced_by_market` | monthly ledger | country | US-00 production ingestion | monthly after readers |
@@ -104,7 +105,6 @@ this section before moving a reader or deleting a cache.
 | `cbp_<good>_dirty_markets` | work cache | global | central stock mutation marks dirty | clear after reconciliation/explicit reset |
 | `cbp_<good>_active_markets` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `cbp_<good>_us10_sparse_suppliers` | work cache | global | US-10 sparse supplier preparation | clear before each market/good rebuild |
-| `cbp_<good>_us04_active_locations` | work cache | country | load-generation rebuild, yearly verifier, coefficient/proxy/record refresh, owner-change repair | remove entry when coefficient=1 or no proxy remains, unless a prior record still needs clearing; clear/rebuild after load generation changes |
 | `cbp_active_markets_any_good` | work cache | global | mark active market / active-list repair | clear during active-list rebuild |
 | `cbp_countries_present_in_market` | work cache | global | `cbp_rebuild_countries_present_in_market` | clear before each target/promoted-market rebuild |
 | `cbp_market_country_cache_dirty_markets` | work cache | global | ownership/cache repair marks affected markets | clear during cache repair |
@@ -121,10 +121,11 @@ not durable per market, not a stock source, and not proof that a country has
 positive stock. Runtime code may use it to choose which country records to read
 or validate after it has just been rebuilt for the target market.
 
-`cbp_<good>_us04_active_locations` is also scheduling state only. Membership
-cannot authorize a stock or Estate mutation. The generated location-good effect
-must re-read the coefficient, proxy state, owner, market and Pop-demand gate
-before applying the existing signed-delta business rule.
+`cbp_capacity_monthly_stamp_by_market` is scheduling state only. Capacity maps
+remain authoritative for admission and UI. A matching stamp means those maps
+were already refreshed in the current month; it is not itself evidence of any
+capacity value. Forced initialization and topology hooks bypass the monthly gate,
+rewrite the capacity maps, and overwrite the stamp.
 
 ## Scalar Debug And Work State
 
@@ -139,7 +140,6 @@ otherwise look like hidden business state.
 | `cbp_perf13_*`, `cbp_perf14_*` | work/metric scalar | global | reset by owning probe/helper before measurement | metrics only, not business source |
 | `cbp_performance_*_count` / fallback counters | work/metric scalar | global | reset by owning performance helper | counters only, not stock source |
 | `cbp_market_sliced_verifier_*` | debug/audit verifier scalar | global | reset by Q8.6 verifier runner | diagnostics only, not business source |
-| `cbp_us04_sparse_index_load_generation` | scheduling scalar | global generation + country copy | global increments on start/load; country copy advances after rebuild | controls only whether the country-owned lists require repair; never a coefficient, quantity or mutation input |
 
 Adding a scalar debug/work family does not require a map row, but it must remain
 diagnostic or metric-only. If a scalar starts controlling business behaviour,
@@ -158,6 +158,7 @@ The current target summary is:
 Stock maps: kept
 Capacity maps: kept/shared
 Capacity breakdown maps: kept
+Capacity scheduling stamps: kept while required for idempotence
 US-00 gameplay carryover maps: kept
 US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only
 UI monthly counter maps: human country current-month only
