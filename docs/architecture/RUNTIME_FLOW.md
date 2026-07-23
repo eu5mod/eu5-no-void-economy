@@ -69,17 +69,19 @@ flowchart TB
         PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>all markets present in current country"]
         PREP1 --> PREP2["prepare monthly market-seen registry<br/>prepare human-relevant persistence list"]
         PREP2 --> OWNER{"global Q8.7 owner enabled?<br/>default: yes"}
-        OWNER -->|no: explicit fallback flag| LEGACY["cbp_run_monthly_promoted_market_local_cycle<br/>every_market_center_in_country"]
+
+        OWNER -->|no: explicit fallback flag| LEGACY["cbp_run_monthly_promoted_market_local_cycle<br/>country-scope fallback entry"]
+        LEGACY --> CENTERITER["every_market_center_in_country<br/>country → market iterator"]
+
         OWNER -->|yes| ONCE["cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         ONCE --> STAMP{"global month already processed?"}
         STAMP -->|yes| SKIP["skip market-local world pass<br/>for this later country pulse"]
-        STAMP -->|no| WORLD["every_market_in_world"]
+        STAMP -->|no| WORLD["every_market_in_world<br/>world → market iterator"]
+        WORLD --> MARKETOWNER["cbp_q8_7_run_global_market_local_owner_market<br/>market-scope wrapper"]
 
-        subgraph MARKET["Once-per-market local accounting"]
+        subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
-            WORLD --> MARKETOWNER["cbp_q8_7_run_global_market_local_owner_market"]
-            LEGACY --> MODE["cbp_prepare_market_runtime_accounting_mode"]
-            MARKETOWNER --> MODE
+            MODE["cbp_prepare_market_runtime_accounting_mode"]
             MODE --> KIND{"detailed / Vanilla fallback / blocked?"}
             KIND -->|fallback| FALLBACK["record US-00 and US-10 Vanilla fallback<br/>no CBP market mutation"]
             KIND -->|blocked| BLOCKED["record runtime blocked<br/>no CBP market mutation"]
@@ -100,7 +102,9 @@ flowchart TB
             BLOCKED --> MDONE
         end
 
-        MDONE --> WORLDEND["market iterator exhausted"]
+        CENTERITER --> MODE
+        MARKETOWNER --> MODE
+        MDONE --> WORLDEND["selected market iterator exhausted"]
         SKIP --> TRADE0["cbp_run_monthly_country_trade_owner_cycle"]
         WORLDEND --> TRADE0
 
