@@ -10,17 +10,20 @@ import re
 import sys
 from pathlib import Path
 
-import transform_cbp_economy_building_overrides as transformer
 import postprocess_us177_minting_building_overrides as minting_transformer
+import transform_cbp_economy_building_overrides as transformer
+from cbg.adapters.cbp.generate_cbp_cbg_building_spec import (
+    apply_foreign_trade_capacity_multiplier,
+)
 
 
 def parse_goods_registry(repo_root: Path) -> list[str]:
     registry = repo_root / "tools" / "cbp_goods.sh"
     text = registry.read_text(encoding="utf-8")
-    before, _, after = text.partition("cbp_goods=(")
+    _before, _separator, after = text.partition("cbp_goods=(")
     if not after:
         raise SystemExit(f"Could not find cbp_goods array in {registry}")
-    body, _, _ = after.partition(")")
+    body, _separator, _after = after.partition(")")
     goods: list[str] = []
     for raw_line in body.splitlines():
         line = raw_line.split("#", 1)[0].strip()
@@ -41,24 +44,19 @@ def strip_generated_header(text: str) -> list[str]:
         "# Source: ",
         "# Output multiplier: ",
         "# Trade capacity multiplier: ",
+        "# Foreign-building merchant capacity multiplier: ",
         "# Building maintenance multiplier: ",
         "# Trade-building maintenance multiplier: ",
         "# Minting income multiplier: ",
         "# Fixed monthly political modifier multiplier: ",
+        "# US-07 composed trade-building estate-power multiplier: ",
+        "# Only effectively changed buildings are emitted as REPLACE entries.",
     )
-    while index < len(lines) and any(
-        lines[index].startswith(prefix) for prefix in generated_prefixes
+    while index < len(lines) and (
+        not lines[index].strip()
+        or any(lines[index].startswith(prefix) for prefix in generated_prefixes)
     ):
         index += 1
-    if index < len(lines) and not lines[index].strip():
-        index += 1
-    if (
-        index < len(lines)
-        and lines[index].startswith("# US-07 composed trade-building estate-power multiplier:")
-    ):
-        index += 1
-        if index < len(lines) and not lines[index].strip():
-            index += 1
     return lines[index:]
 
 
@@ -73,6 +71,17 @@ def normalize_generator_whitespace(lines: list[str]) -> list[str]:
             line = updated
         normalized.append(line)
     return normalized
+
+
+def remove_replace_entry_modes(lines: list[str]) -> list[str]:
+    return [re.sub(r"^(\s*)REPLACE:", r"\1", line) for line in lines]
+
+
+def top_level_blocks(lines: list[str]) -> dict[str, list[str]]:
+    return {
+        block.key: lines[block.start : block.end + 1]
+        for block in transformer.top_level_buildings(lines)
+    }
 
 
 def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, float, bool]]:
@@ -120,7 +129,7 @@ def compare_float(actual: float, expected: float) -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Validate generated CBP building maintenance overrides."
+        description="Validate generated CBP building maintenance REPLACE objects."
     )
     parser.add_argument("--common-dir", type=Path, default=os.environ.get("EU5_GAME_COMMON_DIR"))
     parser.add_argument(
@@ -141,6 +150,11 @@ def main() -> int:
     )
     parser.add_argument("--maintenance-multiplier", type=float, default=0.7)
     parser.add_argument("--trade-building-maintenance-multiplier", type=float, default=0.5)
+    parser.add_argument(
+        "--foreign-trade-capacity-multiplier",
+        type=float,
+        default=2.0,
+    )
     parser.add_argument(
         "--minting-multiplier",
         default=os.environ.get("MODEU5_US177_MINTING_MULTIPLIER", "2"),
@@ -183,6 +197,7 @@ def main() -> int:
     failures: list[str] = []
     source_files_with_maintenance = 0
     generated_files_checked = 0
+    objects_checked = 0
     maintenance_entries_checked = 0
     stockpile_capacity_entries_checked = 0
     manifests_checked = 0
@@ -193,13 +208,13 @@ def main() -> int:
             continue
 
         source_lines = source_file.read_text(encoding="utf-8-sig").splitlines()
-        source_entries = maintenance_entries(source_lines, goods_set)
-        source_stockpile_entries = active_stockpile_capacity_entries(source_lines)
-        generated_file = output_dir / source_file.name
-        cbg_path = f"in_game/common/building_types/{source_file.name}"
+        source_blocks = top_level_blocks(source_lines)
+        generated_file = output_dir / f"cbp_{source_file.name}"
+        obsolete_full_file = output_dir / source_file.name
+        cbg_path = f"in_game/common/building_types/cbp_{source_file.name}"
 
         try:
-            expected_body, expected_changes, building_count = transformer.transform_lines_with_plan(
+            expected_body, expected_changes, _building_count = transformer.transform_lines_with_plan(
                 source_lines,
                 source_basename=source_file.name,
                 output_multiplier=output_multiplier,
@@ -211,32 +226,14 @@ def main() -> int:
                 goods=goods_set,
                 political_modifier_multiplier=0.75,
             )
+            expected_body, foreign_changed = apply_foreign_trade_capacity_multiplier(
+                expected_body,
+                args.foreign_trade_capacity_multiplier,
+            )
         except ValueError as error:
             failures.append(f"{source_file.name}: unsupported vanilla structure: {error}")
             continue
 
-        if not expected_changes:
-            if generated_file.exists():
-                failures.append(
-                    f"{source_file.name}: override exists although no building transformation applies"
-                )
-            continue
-
-        expected_cbg_paths.add(cbg_path)
-        if not generated_file.is_file():
-            failures.append(f"Missing generated override for applicable source file: {source_file.name}")
-            continue
-        manifest = cbg_files.get(cbg_path)
-        if manifest is None:
-            failures.append(f"Missing CBG manifest entry: {cbg_path}")
-            continue
-
-        if source_entries:
-            source_files_with_maintenance += 1
-
-        generated_text = generated_file.read_text(encoding="utf-8-sig")
-        generated_body_lines = normalize_generator_whitespace(strip_generated_header(generated_text))
-        generated_entries = maintenance_entries(generated_body_lines, goods_set)
         minting_occurrences = minting_transformer.source_occurrences(
             source_file, minting_multiplier
         )
@@ -247,72 +244,127 @@ def main() -> int:
                 source_file.name,
             )
             expected_body = expected_text.splitlines()
-        expected_body = normalize_generator_whitespace(expected_body)
-        expected_entries = maintenance_entries(expected_body, goods_set)
+
+        changed_buildings = {change.building for change in expected_changes} | foreign_changed
+        if not changed_buildings:
+            if generated_file.exists():
+                failures.append(
+                    f"{source_file.name}: prefixed override exists although no building transformation applies"
+                )
+            continue
+
+        expected_cbg_paths.add(cbg_path)
+        if obsolete_full_file.is_file():
+            failures.append(
+                f"{source_file.name}: obsolete full-file override remains beside the prefixed REPLACE output"
+            )
+        if not generated_file.is_file():
+            failures.append(
+                f"Missing generated prefixed override for applicable source file: cbp_{source_file.name}"
+            )
+            continue
+        manifest = cbg_files.get(cbg_path)
+        if manifest is None:
+            failures.append(f"Missing CBG manifest entry: {cbg_path}")
+            continue
+        if manifest.get("database_entry_mode") != "REPLACE":
+            failures.append(f"{cbg_path}: manifest must declare database_entry_mode=REPLACE")
+
+        generated_text = generated_file.read_text(encoding="utf-8-sig")
+        generated_lines = remove_replace_entry_modes(
+            normalize_generator_whitespace(strip_generated_header(generated_text))
+        )
+        expected_lines = normalize_generator_whitespace(expected_body)
+        generated_blocks = top_level_blocks(generated_lines)
+        expected_blocks = top_level_blocks(expected_lines)
+
+        if set(generated_blocks) != changed_buildings:
+            failures.append(
+                f"{source_file.name}: generated REPLACE object scope mismatch "
+                f"expected={sorted(changed_buildings)} generated={sorted(generated_blocks)}"
+            )
+            continue
+        if not all(
+            re.search(rf"^REPLACE:{re.escape(name)}\s*=\s*\{{", generated_text, re.MULTILINE)
+            for name in changed_buildings
+        ):
+            failures.append(f"{source_file.name}: one or more changed buildings lack REPLACE: mode")
 
         if manifest.get("vanilla_sha256") != hashlib.sha256(source_file.read_bytes()).hexdigest():
             failures.append(f"{cbg_path}: Vanilla fingerprint mismatch")
         if manifest.get("generated_sha256") != hashlib.sha256(generated_file.read_bytes()).hexdigest():
             failures.append(f"{cbg_path}: generated fingerprint mismatch")
-        if not manifest.get("transformations"):
-            failures.append(f"{cbg_path}: CBG manifest has no recorded transformations")
+        manifest_objects = {
+            entry.get("object")
+            for entry in manifest.get("transformations", [])
+            if isinstance(entry, dict) and entry.get("object")
+        }
+        if manifest_objects != changed_buildings:
+            failures.append(
+                f"{cbg_path}: manifest object scope mismatch "
+                f"expected={sorted(changed_buildings)} actual={sorted(manifest_objects)}"
+            )
         manifests_checked += 1
-        generated_active_stockpile_entries = active_stockpile_capacity_entries(
-            generated_body_lines
-        )
-        generated_stockpile_entries = commented_stockpile_capacity_entries(
-            generated_body_lines
-        )
 
-        if source_stockpile_entries:
-            if generated_active_stockpile_entries:
-                failures.append(
-                    f"{source_file.name}: maximum_stockpile_capacity must be commented out; "
-                    f"active generated values={generated_active_stockpile_entries}"
-                )
-            elif generated_stockpile_entries != source_stockpile_entries:
-                failures.append(
-                    f"{source_file.name}: commented maximum_stockpile_capacity values must "
-                    f"match vanilla; vanilla={source_stockpile_entries} "
-                    f"generated={generated_stockpile_entries}"
-                )
-            else:
-                stockpile_capacity_entries_checked += len(generated_stockpile_entries)
-
-        if source_entries:
-            if len(expected_entries) != len(generated_entries):
-                failures.append(
-                    f"{source_file.name}: maintenance entry count mismatch "
-                    f"expected={len(expected_entries)} generated={len(generated_entries)}"
-                )
+        for building in sorted(changed_buildings):
+            expected_block = expected_blocks.get(building)
+            generated_block = generated_blocks.get(building)
+            source_block = source_blocks.get(building, [])
+            if expected_block is None or generated_block is None:
+                failures.append(f"{source_file.name}:{building}: missing object block")
                 continue
 
-            for ordinal, (
-                (expected_key, expected_value, expected_trade_building),
-                (generated_key, generated_value, generated_trade_building),
-            ) in enumerate(
-                zip(expected_entries, generated_entries),
-                start=1,
-            ):
-                if expected_key != generated_key:
+            expected_entries = maintenance_entries(expected_block, goods_set)
+            generated_entries = maintenance_entries(generated_block, goods_set)
+            source_entries = maintenance_entries(source_block, goods_set)
+            if source_entries:
+                source_files_with_maintenance += 1
+            if len(expected_entries) != len(generated_entries):
+                failures.append(
+                    f"{source_file.name}:{building}: maintenance entry count mismatch "
+                    f"expected={len(expected_entries)} generated={len(generated_entries)}"
+                )
+            else:
+                for ordinal, (
+                    (expected_key, expected_value, expected_trade_building),
+                    (generated_key, generated_value, generated_trade_building),
+                ) in enumerate(zip(expected_entries, generated_entries), start=1):
+                    if expected_key != generated_key:
+                        failures.append(
+                            f"{source_file.name}:{building}: maintenance entry #{ordinal} key mismatch "
+                            f"expected={expected_key} generated={generated_key}"
+                        )
+                        continue
+                    if expected_trade_building != generated_trade_building:
+                        failures.append(
+                            f"{source_file.name}:{building}: {expected_key} maintenance entry #{ordinal} "
+                            "trade-building classification mismatch"
+                        )
+                        continue
+                    if not compare_float(generated_value, expected_value):
+                        failures.append(
+                            f"{source_file.name}:{building}: {expected_key} maintenance entry #{ordinal} "
+                            f"expected {expected_value:g}, found {generated_value:g}"
+                        )
+                    maintenance_entries_checked += 1
+
+            source_stockpile = active_stockpile_capacity_entries(source_block)
+            generated_active_stockpile = active_stockpile_capacity_entries(generated_block)
+            generated_commented_stockpile = commented_stockpile_capacity_entries(generated_block)
+            if source_stockpile:
+                if generated_active_stockpile:
                     failures.append(
-                        f"{source_file.name}: maintenance entry #{ordinal} key mismatch "
-                        f"expected={expected_key} generated={generated_key}"
+                        f"{source_file.name}:{building}: maximum_stockpile_capacity must be commented out"
                     )
-                    continue
-                if expected_trade_building != generated_trade_building:
+                elif generated_commented_stockpile != source_stockpile:
                     failures.append(
-                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
-                        f"trade-building classification mismatch "
-                        f"expected={expected_trade_building} generated={generated_trade_building}"
+                        f"{source_file.name}:{building}: commented stockpile values must match Vanilla; "
+                        f"vanilla={source_stockpile} generated={generated_commented_stockpile}"
                     )
-                    continue
-                if not compare_float(generated_value, expected_value):
-                    failures.append(
-                        f"{source_file.name}: {expected_key} maintenance entry #{ordinal} "
-                        f"expected {expected_value:g}, found {generated_value:g}"
-                    )
-                maintenance_entries_checked += 1
+                else:
+                    stockpile_capacity_entries_checked += len(generated_commented_stockpile)
+            objects_checked += 1
+
         generated_files_checked += 1
 
     manifested_building_paths = {
@@ -333,8 +385,9 @@ def main() -> int:
 
     print(
         "CBP US-08 building maintenance validation passed: "
-        f"{source_files_with_maintenance} maintenance source files, "
-        f"{generated_files_checked} generated building files, "
+        f"{source_files_with_maintenance} maintenance objects, "
+        f"{generated_files_checked} prefixed building files, "
+        f"{objects_checked} REPLACE objects, "
         f"{maintenance_entries_checked} maintenance entries checked, "
         f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked, "
         f"{manifests_checked} building manifests checked."

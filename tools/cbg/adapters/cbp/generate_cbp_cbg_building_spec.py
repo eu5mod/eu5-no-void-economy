@@ -7,7 +7,7 @@ import argparse
 import json
 import re
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
@@ -25,6 +25,12 @@ TRADE_CAPACITY_ASSIGNMENT = re.compile(
     r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))(\s*(?:#.*)?)$"
 )
 FOREIGN_MARKER = re.compile(r"\bis_foreign\s*=\s*yes\b")
+
+
+def cbp_prefixed(relative: str) -> str:
+    path = PurePosixPath(relative)
+    name = path.name if path.name.startswith("cbp_") else f"cbp_{path.name}"
+    return path.with_name(name).as_posix()
 
 
 def load_goods(repo_root: Path) -> set[str]:
@@ -96,6 +102,7 @@ def header_for(
         "# Foreign-building merchant capacity multiplier: "
         f"{format_decimal(foreign_trade_capacity_multiplier)}",
     )
+    header.append("# Only effectively changed buildings are emitted as REPLACE entries.")
     return header
 
 
@@ -128,6 +135,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
             continue
         blocks = {block.key: block for block in top_level_buildings(transformed)}
         relative = f"in_game/common/building_types/{source.name}"
+        output_relative = cbp_prefixed(relative)
         header = header_for(
             source.name,
             output_multiplier=args.output_multiplier,
@@ -143,15 +151,16 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
             block = blocks[building]
             transformations.append({
                 "file": relative,
+                "output_file": output_relative,
                 "object": building,
                 "field": "__object__",
                 "operation": "replace_object",
                 "value": transformed[block.start : block.end + 1],
                 "provenance": "preserve",
-                "render_mode": "verbatim_with_header",
+                "render_mode": "replace_objects",
                 "header": header,
             })
-        owned_outputs.append(relative)
+        owned_outputs.append(output_relative)
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-buildings",
@@ -163,6 +172,7 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         "scope_contract": {
             "owned_outputs": owned_outputs,
             "phase": "building-overrides",
+            "packaging": "cbp-prefixed REPLACE entries for effectively changed buildings only",
             "edge_case_compiler": "transform_cbp_economy_building_overrides.transform_lines_with_plan",
         },
     }

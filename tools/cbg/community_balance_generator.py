@@ -221,6 +221,22 @@ def render_scalar(raw: Any, label: str) -> str:
     return value
 
 
+def scalar_values_equal(left: str, right: str) -> bool:
+    """Compare Clausewitz scalar values without treating numeric formatting as a change."""
+    if left == right:
+        return True
+    try:
+        left_number = Decimal(left)
+        right_number = Decimal(right)
+    except InvalidOperation:
+        return False
+    return (
+        left_number.is_finite()
+        and right_number.is_finite()
+        and left_number == right_number
+    )
+
+
 def sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
@@ -564,10 +580,15 @@ def apply_inline_matches(
             if intent.operation == "multiply" and not re.fullmatch(
                 r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)", before
             ):
+                factor = decimal(intent.value, "multiplier")
+                if factor == 1:
+                    continue
                 after = alias_name(intent, before, intent.value)
-                aliases[after] = (before, render_number(decimal(intent.value, "multiplier")))
+                aliases[after] = (before, render_number(factor))
             else:
                 after = numeric_result(intent.operation, before, intent.value)
+                if scalar_values_equal(before, after):
+                    continue
             replacement = f"{intent.target.field} = {after}"
             code = code[: match.start()] + replacement + code[match.end() :]
             outcomes.append({
@@ -602,9 +623,35 @@ def numeric_result(operation: str, current: str, raw_value: Any) -> str:
     raise ValueError(f"{operation} is not a numeric operation")
 
 
+def scalar_block_matches(
+    lines: list[str], start: int, end: int, expected: list[tuple[str, str]]
+) -> bool:
+    """Compare a simple scalar block while ignoring formatting and comments."""
+    actual: dict[str, str] = {}
+    child_depth = 0
+    for index in range(start + 1, end):
+        raw = lines[index].rstrip("\r\n")
+        code = raw.split("#", 1)[0]
+        stripped = code.strip()
+        if child_depth == 0 and stripped:
+            match = ASSIGNMENT.match(raw)
+            if match is None:
+                return False
+            field = match.group("field")
+            if field in actual:
+                return False
+            actual[field] = match.group("value").strip()
+        child_depth += code.count("{") - code.count("}")
+        if child_depth < 0:
+            return False
+    if child_depth != 0 or set(actual) != {field for field, _value in expected}:
+        return False
+    return all(scalar_values_equal(actual[field], value) for field, value in expected)
+
+
 def apply_one_match(
     lines: list[str], intent: Intent, index: int, aliases: dict[str, tuple[str, str]]
-) -> dict[str, Any]:
+) -> dict[str, Any] | None:
     raw = lines[index]
     newline = "\n" if raw.endswith("\n") else ""
     match = ASSIGNMENT.match(raw.rstrip("\r\n"))
@@ -614,7 +661,10 @@ def apply_one_match(
             raise ValueError(
                 f"Block-valued {intent.target.field} supports multiply only"
             )
-        factor = render_number(decimal(intent.value, "block multiplier"))
+        factor_number = decimal(intent.value, "block multiplier")
+        if factor_number == 1:
+            return None
+        factor = render_number(factor_number)
         end = matching_brace_line(lines, index)
         child_indent = re.match(r"^[ \t]*", lines[end]).group(0) + "\t"
         lines.insert(end, f"{child_indent}multiply = {factor} # CBG: {intent.owner}\n")
@@ -635,12 +685,17 @@ def apply_one_match(
         try:
             decimal(before, "current value")
         except ValueError:
+            factor = decimal(intent.value, "multiplier")
+            if factor == 1:
+                return None
             after = alias_name(intent, before, intent.value)
-            aliases[after] = (before, render_number(decimal(intent.value, "multiplier")))
+            aliases[after] = (before, render_number(factor))
         else:
             after = numeric_result(intent.operation, before, intent.value)
     else:
         after = numeric_result(intent.operation, before, intent.value)
+    if scalar_values_equal(before, after):
+        return None
     existing = match.group("comment")
     suffix = f"; {existing.lstrip('# ').strip()}" if existing else ""
     if intent.provenance == "preserve":
@@ -665,8 +720,11 @@ def apply_intent(
     lines: list[str], intent: Intent, aliases: dict[str, tuple[str, str]]
 ) -> list[dict[str, Any]]:
     if intent.operation == "replace_file":
+        replacement = intent.value.splitlines(keepends=True)
+        if lines == replacement:
+            return []
         before = "".join(lines)
-        lines[:] = intent.value.splitlines(keepends=True)
+        lines[:] = replacement
         return [{
             "before": f"<file sha256={sha256(before.encode('utf-8'))}>",
             "after": f"<file lines={len(lines)}>",
@@ -691,7 +749,10 @@ def apply_intent(
         obj = object_matches[0]
     if intent.operation == "replace_object":
         replacement = [line + "\n" for line in intent.value]
-        before = "".join(lines[obj.start : obj.end + 1])
+        current = lines[obj.start : obj.end + 1]
+        if current == replacement:
+            return []
+        before = "".join(current)
         lines[obj.start : obj.end + 1] = replacement
         return [{
             "before": f"<object sha256={sha256(before.encode('utf-8'))}>",
@@ -738,6 +799,8 @@ def apply_intent(
             if not BLOCK_ASSIGNMENT.match(lines[index].rstrip("\r\n")):
                 raise ValueError("upsert_block cannot replace a scalar assignment")
             end = matching_brace_line(lines, index)
+            if scalar_block_matches(lines, index, end, rendered_children):
+                return []
             lines[index : end + 1] = replacement
             return [{"before": "<value block>", "after": intent.value, "line_action": "block_replaced"}]
         insertion = obj.end
@@ -775,7 +838,11 @@ def apply_intent(
         return []
     if intent.occurrences == "all" and not matches and not inline_outcomes:
         raise ValueError(f"Bulk field {intent.target.field!r} at {intent.target.file} matched no lines")
-    outcomes = [apply_one_match(lines, intent, index, aliases) for index in reversed(matches)]
+    outcomes: list[dict[str, Any]] = []
+    for index in reversed(matches):
+        outcome = apply_one_match(lines, intent, index, aliases)
+        if outcome is not None:
+            outcomes.append(outcome)
     outcomes.extend(inline_outcomes)
     return outcomes
 
@@ -908,8 +975,8 @@ def generate(
             objects = {obj.path: obj for obj in scan_objects(lines)}
             selected: list[str] = []
             seen: set[tuple[str, ...]] = set()
-            for intent in sorted(file_intents, key=lambda item: item.sequence):
-                path = intent.target.object_path
+            for entry in audit:
+                path = tuple(part for part in entry["object"].split("/") if part)
                 if path in seen:
                     continue
                 seen.add(path)
