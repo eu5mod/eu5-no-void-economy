@@ -68,7 +68,7 @@ flowchart TB
         READY -->|yes| PREP0["cbp_prepare_performance_mode_human_relevant_markets<br/>monthly-stamped world human-country scan in Performance Mode"]
         PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>all markets present in current country"]
         PREP1 --> PREP2["prepare monthly market-seen registry<br/>prepare human-relevant persistence list"]
-        PREP2 --> OWNER{"Use global once-per-month market owner?<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
+        PREP2 --> OWNER{"Global once-per-month market owner enabled? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
 
         OWNER -->|no: explicit fallback flag| LEGACY["Run market-center fallback cycle<br/>cbp_run_monthly_promoted_market_local_cycle"]
         LEGACY --> CENTERITER["Iterate country-owned market centers<br/>every_market_center_in_country"]
