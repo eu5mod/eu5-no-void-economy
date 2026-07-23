@@ -1,24 +1,15 @@
-# Q8.7 live global market-owner dispatcher.
+# Once-per-month global market-owner dispatcher.
 #
-# This is the runtime migration layer after the #155/#158/#159/#160 proof stack.
-# It moves the market-local owner from the market-center workaround to a
-# once-per-month native every_market_in_world pass while preserving the existing
-# mutating market-local branch internals.
+# The market-local owner is the native every_market_in_world pass. The former
+# every_market_center_in_country rollback path has been retired after sustained
+# live use of the global owner.
 #
 # Boundaries:
 # - US-00 and US-10 stay inside the existing generated-good live branch.
 # - US-00 remains a full present-country pass before US-10 starts.
 # - every_trade remains owned by the country trade-owner pass.
 # - US-04 signed reconciliation runs after trade and before audit validation.
-# - old market-center owner remains available through the fallback switch.
-
-cbp_enable_q8_7_live_global_market_owner = {
-	remove_global_variable = cbp_q8_7_live_global_market_owner_disabled
-}
-
-cbp_disable_q8_7_live_global_market_owner = {
-	set_global_variable = cbp_q8_7_live_global_market_owner_disabled
-}
+# - per-market Vanilla fallback and blocked modes remain inside the global pass.
 
 cbp_reset_q8_7_live_global_owner_metrics = {
 	remove_global_variable = cbp_q8_7_live_global_owner_runs
@@ -183,6 +174,9 @@ cbp_run_monthly_q8_7_global_market_local_cycle_once = {
 	}
 }
 
+# Historical name retained as the stable monthly entry point. It no longer
+# selects between owners: the globally month-stamped every-market pass is the
+# only live market-local execution path.
 cbp_run_monthly_stock_cycle_q8_7_owner_switch = {
 	if = {
 		limit = { cbp_stock_runtime_ready_trigger = yes }
@@ -191,14 +185,8 @@ cbp_run_monthly_stock_cycle_q8_7_owner_switch = {
 		cbp_prepare_monthly_market_seen_registry = yes
 		cbp_prepare_human_relevant_full_ledger_markets = yes
 		save_temporary_scope_as = cbp_country
-		if = {
-			limit = { cbp_q8_7_live_global_market_owner_enabled_trigger = yes }
-			cbp_run_monthly_q8_7_global_market_local_cycle_once = {
-				country = scope:cbp_country
-			}
-		}
-		else = {
-			cbp_run_monthly_promoted_market_local_cycle = yes
+		cbp_run_monthly_q8_7_global_market_local_cycle_once = {
+			country = scope:cbp_country
 		}
 		cbp_run_monthly_country_trade_owner_cycle = yes
 		cbp_note_promoted_market_live_trade_owner_pass = yes
