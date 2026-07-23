@@ -12,4 +12,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test cbp-prefixed REPLACE object packaging
-        run: python3 -m unittest tools.cbg.tests.test_replace_object_outputs
+        run: python3 -m unittest tools.tests.test_replace_object_outputs
