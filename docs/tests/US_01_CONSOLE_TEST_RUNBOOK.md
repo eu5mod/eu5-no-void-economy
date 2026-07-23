@@ -24,8 +24,8 @@ branch, and commit.
 In the launcher:
 
 ```txt
-Enable: No Void Economy / modeu5_core
-Enable for this validation run only: No Void Economy Tests / modeu5_core_tests
+Enable: No Void Economy / cbp_core
+Enable for this validation run only: No Void Economy Tests / cbp_core_tests
 Do not simultaneously enable the older eu5voideco alias.
 The three optional gameplay ModeU5 packages may remain enabled.
 ```
@@ -33,7 +33,7 @@ The three optional gameplay ModeU5 packages may remain enabled.
 Start a clean 1337 campaign where FRA and ENG exist and their capital markets
 are different.
 
-If `event modeu5_us01_debug.1` reports `not a valid ID`, the test package is
+If `event cbp_us01_debug.1` reports `not a valid ID`, the test package is
 not loaded in the active playset or the game was not restarted after changing
 the playset.
 
@@ -42,7 +42,7 @@ the playset.
 Enter:
 
 ```txt
-event modeu5_us01_debug.1
+event cbp_us01_debug.1
 ```
 
 Select:
@@ -63,7 +63,7 @@ and runs only the US-01 test.
 ## Test data
 
 The test records existing values, then applies these additions through
-`modeu5_add_stock` with the explicit test policy:
+`cbp_add_stock` with the explicit test policy:
 
 ```txt
 FRA x FRA capital market x wheat: +11
@@ -80,22 +80,22 @@ ENG capital market x wheat: +13
 FRA capital market x iron: +17
 ```
 
-The test removes exactly those additions through `modeu5_remove_stock` and
+The test removes exactly those additions through `cbp_remove_stock` and
 validates all three affected market-good aggregates.
 
 ## Debug values
 
-After each `modeu5_read_country_stock_record` call, the selected country stores:
+After each `cbp_read_country_stock_record` call, the selected country stores:
 
 ```txt
-modeu5_debug_last_record_country
-modeu5_debug_last_record_market
-modeu5_debug_last_record_good
-modeu5_debug_last_record_stock
-modeu5_debug_last_record_capacity
-modeu5_debug_last_record_available_capacity
-modeu5_debug_last_record_over_capacity
-modeu5_debug_last_record_market_stock
+cbp_debug_last_record_country
+cbp_debug_last_record_market
+cbp_debug_last_record_good
+cbp_debug_last_record_stock
+cbp_debug_last_record_capacity
+cbp_debug_last_record_available_capacity
+cbp_debug_last_record_over_capacity
+cbp_debug_last_record_market_stock
 ```
 
 ## Log review

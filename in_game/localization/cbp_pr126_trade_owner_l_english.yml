@@ -1,0 +1,7 @@
+l_english:
+ cbp_pr126_trade_owner.1.title: "ModeU5 PR126 Trade Owner Test"
+ cbp_pr126_trade_owner.1.desc: "Run the PR126 country trade-owner pass probe. Detailed results are written to debug.log with ModeU5 PR126 TRADE_OWNER markers."
+ cbp_pr126_trade_owner.1.a: "Run PR126 country trade-owner pass probe"
+ cbp_debug.test.pr126_trade_owner.pass: "PASS - PR126 country trade-owner pass"
+ cbp_debug.test.pr126_trade_owner.blocked: "BLOCKED - PR126 country trade-owner pass"
+ cbp_debug.test.pr126_trade_owner.fail: "FAIL - PR126 country trade-owner pass"

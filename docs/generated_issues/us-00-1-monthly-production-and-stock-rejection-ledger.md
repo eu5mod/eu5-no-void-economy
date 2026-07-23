@@ -16,13 +16,13 @@ Read or calculate production at `location × good`, resolve the ledger country a
 
 ## Current implementation boundary
 
-The US-00 closure PR keeps `modeu5_update_production_rejection_ledger` as the sole ledger writer and wires monthly runtime ingestion from confirmed location `goods_output(goods:<good>)`. Production is summed from the current country's owned locations in the market, added through `modeu5_add_stock`, and the returned actual-added/rejected quantities are persisted in the shared US-00 record.
+The US-00 closure PR keeps `cbp_update_production_rejection_ledger` as the sole ledger writer and wires monthly runtime ingestion from confirmed location `goods_output(goods:<good>)`. Production is summed from the current country's owned locations in the market, added through `cbp_add_stock`, and the returned actual-added/rejected quantities are persisted in the shared US-00 record.
 
 ## Runtime position
 
 ```txt
 Monthly step: 8; reset at step 19
-Depends on counters from: location-level production integration and modeu5_add_stock
+Depends on counters from: location-level production integration and cbp_add_stock
 Feeds counters to: US-00.2, US-00.3, US-00.4
 ```
 
@@ -36,10 +36,10 @@ Feeds counters to: US-00.2, US-00.3, US-00.4
 | Market attribution | location → market | `market` scope link | CONFIRMED | 004 |
 | Added quantity | ModeU5 stock operation | `actual_added_quantity` | CONFIRMED | 022 |
 | Rejected quantity | ModeU5 stock operation | `rejected_quantity` | CONFIRMED | 023 |
-| Ledger helper | ModeU5 | `modeu5_update_production_rejection_ledger` | CONFIRMED | 024 |
+| Ledger helper | ModeU5 | `cbp_update_production_rejection_ledger` | CONFIRMED | 024 |
 | Monthly ledger lifecycle | ModeU5 | initialize/accumulate/read/reset at runtime step 19 | CONFIRMED | 024, internal |
 | Production-ledger record | country × market × good | one logical record with `produced`, `added`, and `rejected` fields | CONFIRMED | 024-025, internal |
-| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_<good>_produced_by_market`, `modeu5_<good>_added_by_market`, and `modeu5_<good>_rejected_by_market` | CONFIRMED | 007, 025 |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `cbp_<good>_produced_by_market`, `cbp_<good>_added_by_market`, and `cbp_<good>_rejected_by_market` | CONFIRMED | 007, 025 |
 
 ## Variable-map storage pattern
 
@@ -55,13 +55,13 @@ logical record:
 record owner:        country
 tuple:               market × good
 field defaults:      0
-write owner:         modeu5_update_production_rejection_ledger
+write owner:         cbp_update_production_rejection_ledger
 reset:               runtime step 19, after every monthly reader
 
 confirmed physical map family:
-  modeu5_<good>_produced_by_market[market]
-  modeu5_<good>_added_by_market[market]
-  modeu5_<good>_rejected_by_market[market]
+  cbp_<good>_produced_by_market[market]
+  cbp_<good>_added_by_market[market]
+  cbp_<good>_rejected_by_market[market]
 ```
 
 The three values are one logical ledger record and must be updated through one centralized helper. They are separate native maps only because a variable-map entry stores one value and no inline multi-field record is confirmed.
@@ -74,14 +74,14 @@ in_game/common/on_action/
 in_game/events/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/tests/
-tools/templates/modeu5_stock_good_adapter.template.txt
+tools/templates/cbp_stock_good_adapter.template.txt
 tools/generate_stock_good_helpers.sh
 ```
 
 ## Dependencies
 
 ```txt
-Depends on: location production/country/location/market exposure, modeu5_add_stock, US-01, TECH-01
+Depends on: location production/country/location/market exposure, cbp_add_stock, US-01, TECH-01
 Blocks: US-00.2, US-00.3, US-00.4
 Related US: EPIC US-00, US-10-UI
 ```
@@ -89,7 +89,7 @@ Related US: EPIC US-00, US-10-UI
 ## Implementation rules
 
 - Follow `AGENTS.md` and `CLAUDE.md`.
-- Use `modeu5_update_production_rejection_ledger` for every ledger write.
+- Use `cbp_update_production_rejection_ledger` for every ledger write.
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Derive the ledger key while iterating the country: `current_country × location.market × good`.
 - Sum location output by good; do not require building-level or RGO-level profit reconstruction.
@@ -97,7 +97,7 @@ Related US: EPIC US-00, US-10-UI
 - Aggregate multiple producing locations into the same country/market/good entry.
 - Initialize or clear monthly entries, update them during each production stock-add transaction, and reset them only at runtime step 19.
 - Do not attempt to rebuild produced/added/rejected totals from end-of-month stock snapshots.
-- Do not recalculate add/reject results already returned by `modeu5_add_stock`.
+- Do not recalculate add/reject results already returned by `cbp_add_stock`.
 - Clamp negative rejected values to zero and log the anomaly.
 - Do not reset counters before all monthly consumers finish.
 - Treat a missing ledger key as zero.
@@ -145,7 +145,7 @@ Run location-level production additions with controlled rejection
 L1 and L2 iron production aggregates into Country A × M1 × iron
 L3 iron production remains in Country A × M2 × iron
 L2 grain remains separate from iron
-Totals equal modeu5_add_stock outputs
+Totals equal cbp_add_stock outputs
 No stock changes occur from ledger updates
 Counters reset only after dependent calculations
 ```

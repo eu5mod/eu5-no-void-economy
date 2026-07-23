@@ -20,13 +20,13 @@ This PR implements country-market-good monthly outcome tracking for explicit
 US-10 requests:
 
 - consumption maps:
-  - `modeu5_consumption_<good>_requested_by_market`
-  - `modeu5_consumption_<good>_satisfied_by_market`
-  - `modeu5_consumption_<good>_unsatisfied_by_market`
+  - `cbp_consumption_<good>_requested_by_market`
+  - `cbp_consumption_<good>_satisfied_by_market`
+  - `cbp_consumption_<good>_unsatisfied_by_market`
 - inter-market trade maps:
-  - `modeu5_trade_<good>_requested_by_market`
-  - `modeu5_trade_<good>_transferred_by_market`
-  - `modeu5_trade_<good>_unsatisfied_by_market`
+  - `cbp_trade_<good>_requested_by_market`
+  - `cbp_trade_<good>_transferred_by_market`
+  - `cbp_trade_<good>_unsatisfied_by_market`
 
 The maps are additive within the current month and do not persist zero values.
 Location-good Pop outcome storage also exists for explicit fallback callers.
@@ -70,11 +70,11 @@ tuple/key:    goods scope
 default:      0
 
 confirmed physical map family:
-  modeu5_pop_demand_requested_quantity
-  modeu5_pop_demand_satisfied_quantity
-  modeu5_pop_demand_unsatisfied_quantity
-  modeu5_pop_demand_satisfied_months
-  modeu5_pop_demand_unsatisfied_months
+  cbp_pop_demand_requested_quantity
+  cbp_pop_demand_satisfied_quantity
+  cbp_pop_demand_unsatisfied_quantity
+  cbp_pop_demand_satisfied_months
+  cbp_pop_demand_unsatisfied_months
 ```
 
 Country/market logical outcome record:
@@ -86,7 +86,7 @@ key:                market scope
 default:            0
 
 confirmed physical map family:
-  modeu5_<consumer_class>_<good>_<outcome>_by_market
+  cbp_<consumer_class>_<good>_<outcome>_by_market
 ```
 
 `consumer_class` and `outcome` must resolve to static approved map names. Runtime map-name construction is not assumed.

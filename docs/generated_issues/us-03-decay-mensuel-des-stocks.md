@@ -12,7 +12,7 @@ As a player, I want stored goods to decay by 1% each month so holding stock has 
 
 ## Functional objective
 
-Apply configurable monthly decay to each country stock after consumption/transfers, using `modeu5_decay_stock`, and reduce the market aggregate by exactly the same total.
+Apply configurable monthly decay to each country stock after consumption/transfers, using `cbp_decay_stock`, and reduce the market aggregate by exactly the same total.
 
 ## Runtime position
 
@@ -26,9 +26,9 @@ Feeds counters to: US-11 validation and debug
 
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
-| Monthly decay invocation | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher → `modeu5_decay_stock` at step 12 | CONFIRMED | 011, 036 |
+| Monthly decay invocation | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher → `cbp_decay_stock` at step 12 | CONFIRMED | 011, 036 |
 | Country/market/good iteration | country plus stock map families | generated per-good helpers iterating country map keys, with saved market/goods scopes | CONFIRMED | 001-008, 015-016 |
-| Central decay mutation | ModeU5 | `modeu5_decay_stock` | CONFIRMED | internal |
+| Central decay mutation | ModeU5 | `cbp_decay_stock` | CONFIRMED | internal |
 | Decay arithmetic | scripted effect/value | `change_variable` multiply/min/max operations | CONFIRMED | 026 |
 
 ## Files expected to change
@@ -55,11 +55,11 @@ Related US: US-03-UI, US-11
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/VARIABLE_MAP_STORAGE_MODEL.md`.
 - Apply decay at country-stock level only.
-- Route all mutation through `modeu5_decay_stock`.
+- Route all mutation through `cbp_decay_stock`.
 - Default to `0.01`, configurable.
 - Never calculate an independent market-level decay.
 - Prevent negative stocks and log before/after values.
-- Do not create a separate persistent decay-state map. Keep one operation's rate, before, loss, and after values local, and mutate only the US-01 stock maps through `modeu5_decay_stock`.
+- Do not create a separate persistent decay-state map. Keep one operation's rate, before, loss, and after values local, and mutate only the US-01 stock maps through `cbp_decay_stock`.
 
 ## US-specific boundary checks
 

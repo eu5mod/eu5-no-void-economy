@@ -54,7 +54,7 @@ Feeds: corrected country ownership records and US-11 diagnostics
 | Transferred location capacity contribution | location x good | US-02 per-location capacity contribution helper | CONFIRMED | 033-035, 097 |
 | Loser capacity before transfer | loser x market | existing authoritative shared capacity-map value before ModeU5 recomputation | CONFIRMED | 007, 017, 097 |
 | Loser stock before transfer | loser x market x good | authoritative country stock map | CONFIRMED | 007, 015 |
-| Same-market stock ownership transfer | loser/winner x market x good | `modeu5_transfer_stock` with `target_capacity_policy = allow_over_capacity` | CONFIRMED | 076, 099 |
+| Same-market stock ownership transfer | loser/winner x market x good | `cbp_transfer_stock` with `target_capacity_policy = allow_over_capacity` | CONFIRMED | 076, 099 |
 | Aggregate rebuild/validation | market x good | CORE-01.5 and CORE-01.6 | CONFIRMED | 019-020 |
 
 ## Persistent storage / variable-map contract
@@ -69,8 +69,8 @@ durable fields read:
   winner capacity before/after ownership change
 
 durable fields written:
-  loser stock through modeu5_transfer_stock
-  winner stock through modeu5_transfer_stock
+  loser stock through cbp_transfer_stock
+  winner stock through cbp_transfer_stock
   loser/winner capacity through US-02 helpers
 
 owner scopes:
@@ -82,8 +82,8 @@ tuple/key:
   market physical key
 
 confirmed physical map family:
-  modeu5_<good>_stock_by_market
-  modeu5_stock_cap_by_market
+  cbp_<good>_stock_by_market
+  cbp_stock_cap_by_market
 
 default value: 0
 write owners:
@@ -118,7 +118,7 @@ requested_stock_transfer = S * transfer_ratio
 Then:
 
 1. recompute loser and winner capacity for the affected market and good;
-2. call `modeu5_transfer_stock` from loser to winner in the same market with `target_capacity_policy = allow_over_capacity`;
+2. call `cbp_transfer_stock` from loser to winner in the same market with `target_capacity_policy = allow_over_capacity`;
 3. transfer the full requested share, bounded only by the loser's available stock;
 4. validate the unchanged market aggregate.
 
@@ -209,12 +209,12 @@ conqueror_receives
 ## Files expected to change
 
 ```txt
-in_game/common/on_action/modeu5_stock_on_actions.txt
-in_game/common/script_values/modeu5_stock_values.txt
-in_game/common/scripted_triggers/modeu5_stock_triggers.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/events/modeu5_debug_events.txt
+in_game/common/on_action/cbp_stock_on_actions.txt
+in_game/common/script_values/cbp_stock_values.txt
+in_game/common/scripted_triggers/cbp_stock_triggers.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/events/cbp_debug_events.txt
 in_game/localization/
 docs/technical/TECH-01_engine_exposure_matrix.md
 docs/technical/DEBUG_CONVENTIONS.md
@@ -237,7 +237,7 @@ Related US: US-01, US-02, US-10.2, US-11
 - Use US-02's exact capacity contribution logic for both totals and transferred-location shares.
 - Use the loser capacity stored before ModeU5 recomputation as the denominator.
 - Bound every ratio to `[0, 1]` and guard division by zero.
-- Use `modeu5_transfer_stock` with `target_capacity_policy = allow_over_capacity` for every positive succession transfer.
+- Use `cbp_transfer_stock` with `target_capacity_policy = allow_over_capacity` for every positive succession transfer.
 - Register gameplay mutation only from the scripted on_action called by `on_location_changed_owner`; keep peace/new-country/annexation overlap hooks diagnostic, validation-only, or residual-only.
 - Keep succession transfers same-market and free of trade income, transport cost, and trade-capacity use.
 - Do not call US-10.3 or record unsatisfied demand.
@@ -291,7 +291,7 @@ proportional split dispatcher.
 For stock-survival validation, run:
 
 ```txt
-event modeu5_core03_debug.1
+event cbp_core03_debug.1
 ```
 
 Then choose:
@@ -314,7 +314,7 @@ market_delta = 0
 Keep the older lifecycle probe available for hook-regression checks:
 
 ```txt
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 ```
 
 The probe exposes deterministic scripted fixtures for `Cadiz -> Portugal`,

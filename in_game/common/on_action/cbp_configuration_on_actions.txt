@@ -1,0 +1,23 @@
+on_game_start = {
+	on_actions = {
+		cbp_configuration_on_game_start
+	}
+}
+
+on_game_load = {
+	on_actions = {
+		cbp_configuration_on_game_load
+	}
+}
+
+cbp_configuration_on_game_start = {
+	effect = {
+		cbp_initialize_configuration_state_effect = yes
+	}
+}
+
+cbp_configuration_on_game_load = {
+	effect = {
+		cbp_repair_configuration_state_on_game_load = yes
+	}
+}

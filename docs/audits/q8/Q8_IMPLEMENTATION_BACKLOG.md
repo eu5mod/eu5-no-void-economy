@@ -89,17 +89,17 @@ Guardrails:
 Implemented.
 
 ```txt
-modeu5_mark_market_country_cache_dirty
-  -> modeu5_market_country_cache_dirty_markets
-  -> modeu5_repair_dirty_market_country_caches_if_needed
-  -> modeu5_repair_dirty_market_country_caches
+cbp_mark_market_country_cache_dirty
+  -> cbp_market_country_cache_dirty_markets
+  -> cbp_repair_dirty_market_country_caches_if_needed
+  -> cbp_repair_dirty_market_country_caches
 ```
 
 Boundary:
 
 ```txt
-modeu5_countries_present_in_market remains a rebuilt current-market work cache.
-modeu5_market_country_cache_dirty_markets remains scheduling state only.
+cbp_countries_present_in_market remains a rebuilt current-market work cache.
+cbp_market_country_cache_dirty_markets remains scheduling state only.
 No durable per-market country-list cache is introduced.
 ```
 
@@ -108,10 +108,10 @@ No durable per-market country-list cache is introduced.
 Implemented as debug/audit verifier only.
 
 ```txt
-modeu5_run_market_sliced_verifier_candidates
-  -> build modeu5_market_sliced_verifier_candidate_markets from dirty/promoted inputs
+cbp_run_market_sliced_verifier_candidates
+  -> build cbp_market_sliced_verifier_candidate_markets from dirty/promoted inputs
   -> for each candidate market:
-       modeu5_rebuild_countries_present_in_market
+       cbp_rebuild_countries_present_in_market
        record pass/fail counters
 ```
 
@@ -144,19 +144,19 @@ Replace the market-center ownership workaround with a structural market-owned pa
 ### Live implementation shape in this PR
 
 ```txt
-modeu5_run_monthly_stock_cycle_q8_7_owner_switch
+cbp_run_monthly_stock_cycle_q8_7_owner_switch
   -> country preparation stays under monthly_country_pulse
-  -> modeu5_run_monthly_q8_7_global_market_local_cycle_once
+  -> cbp_run_monthly_q8_7_global_market_local_cycle_once
        -> every_market_in_world
        -> existing market-local live branch
-  -> modeu5_run_monthly_country_trade_owner_cycle
+  -> cbp_run_monthly_country_trade_owner_cycle
   -> optional audit reconciliation
 ```
 
 The mutating market-local branch remains:
 
 ```txt
-modeu5_run_promoted_market_live_local_branch_market_all_goods
+cbp_run_promoted_market_live_local_branch_market_all_goods
 ```
 
 That helper still performs:
@@ -176,13 +176,13 @@ then:
 The old market-center owner remains available through:
 
 ```txt
-modeu5_q8_7_live_global_market_owner_disabled
+cbp_q8_7_live_global_market_owner_disabled
 ```
 
 When present, the wrapper calls the old:
 
 ```txt
-modeu5_run_monthly_promoted_market_local_cycle
+cbp_run_monthly_promoted_market_local_cycle
 ```
 
 ### Guardrails

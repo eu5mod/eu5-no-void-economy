@@ -4,25 +4,27 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_local_config "${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}"
 
 required_templates=(
-	"tools/templates/modeu5_stock_good_adapter.template.txt"
-	"tools/templates/modeu5_good_transport_helper.template.txt"
-	"tools/templates/modeu5_us10_stock_table_row.template.gui"
-	"tools/templates/modeu5_us10_market_production_good.template.txt"
-	"tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt"
-	"tools/templates/modeu5_us20_receiver_capacity_dispatch_good.template.txt"
-	"tools/templates/modeu5_us20_base_receipt_dispatch_good.template.txt"
+	"tools/templates/cbp_stock_good_adapter.template.txt"
+	"tools/templates/cbp_good_transport_helper.template.txt"
+	"tools/templates/cbp_us10_stock_table_row.template.gui"
+	"tools/templates/cbp_us10_market_production_good.template.txt"
+	"tools/templates/cbp_pr71_active_good_dispatch_good.template.txt"
+	"tools/templates/cbp_us20_receiver_capacity_dispatch_good.template.txt"
+	"tools/templates/cbp_us20_base_receipt_dispatch_good.template.txt"
 )
 
 for template in "${required_templates[@]}"; do
-	modeu5_require_file "$template"
+	cbp_require_file "$template"
 done
 
 required_common_tooling_users=(
 	"tools/generate_all.sh"
+	"tools/generate_cbp_location_overrides.sh"
 	"tools/generate_local_runtime_config.sh"
 	"tools/generate_stock_good_helpers.sh"
 	"tools/generate_good_transport_helpers.sh"
@@ -32,39 +34,24 @@ required_common_tooling_users=(
 )
 
 for script in "${required_common_tooling_users[@]}"; do
-	modeu5_require_match 'modeu5_tool_lib\.sh' "$script" "Generator must source the shared ModeU5 tool library"
+	cbp_require_match 'cbp_tool_lib\.sh' "$script" "Generator must source the shared ModeU5 tool library"
 done
 
-modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME' \
+cbp_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME' \
 	"tools/generate_local_runtime_config.sh" \
 	'Local runtime config generator must read the explicit ModeU5 debug runtime flag'
-modeu5_require_match 'MODEU5_LOCAL_CONFIG_FILE' \
+cbp_require_match 'MODEU5_LOCAL_CONFIG_FILE' \
 	"tools/generate_local_runtime_config.sh" \
 	'Local runtime config generator must allow validation to use an explicit local env file'
-modeu5_require_match 'generate_local_runtime_config\.sh' \
+cbp_require_match 'generate_local_runtime_config\.sh' \
 	"tools/generate_all.sh" \
 	'generate_all must emit the local runtime config before install'
-modeu5_require_match 'generate_us20_promoted_destination_receipt_dispatchers\.sh' \
+cbp_require_match 'generate_cbp_cbg_location_spec\.py' \
 	"tools/generate_all.sh" \
-	'generate_all must regenerate the US20 promoted-destination receipt dispatcher'
-modeu5_require_match 'modeu5_us20_receiver_capacity_dispatch_good\.template\.txt' \
-	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
-	'US20 promoted-destination generator must use the receiver-capacity per-good template'
-modeu5_require_match 'modeu5_us20_base_receipt_dispatch_good\.template\.txt' \
-	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
-	'US20 promoted-destination generator must use the base-receipt per-good template'
-modeu5_require_match 'modeu5_render_template_to_stdout' \
-	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
-	'US20 promoted-destination generator must render per-good Jomini through templates'
-modeu5_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
-	".modeu5.local.env.template" \
-	'Local env template must default ModeU5 debug runtime to false'
-modeu5_require_match 'strip_utf8_bom_stream' \
-	"tools/generate_us09_economy_overrides.sh" \
-	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'
-modeu5_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
-	"tools/generate_us09_economy_overrides.sh" \
-	'US-09 generator must fail if generated output still contains BOM bytes'
+	'generate_all must refresh CBP location overrides through CBG from installed Vanilla'
+cbp_require_match 'EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE' \
+	"tools/generate_cbp_location_overrides.sh" \
+	'Location override generator must support an explicit vanilla source path'
 
 local_runtime_tmp_normal="$(mktemp)"
 local_runtime_tmp_debug="$(mktemp)"
@@ -72,23 +59,270 @@ local_runtime_env_normal="$(mktemp)"
 local_runtime_env_debug="$(mktemp)"
 pr71_generated_tmp="$(mktemp)"
 us20_receipt_generated_tmp="$(mktemp)"
-trap 'rm -f "$local_runtime_tmp_normal" "$local_runtime_tmp_debug" "$local_runtime_env_normal" "$local_runtime_env_debug" "$pr71_generated_tmp" "$us20_receipt_generated_tmp"' EXIT
+location_source_tmp="$(mktemp)"
+location_output_tmp="$(mktemp)"
+trap 'rm -f "$local_runtime_tmp_normal" "$local_runtime_tmp_debug" "$local_runtime_env_normal" "$local_runtime_env_debug" "$pr71_generated_tmp" "$us20_receipt_generated_tmp" "$location_source_tmp" "$location_output_tmp"' EXIT
+
+cat > "$location_source_tmp" <<'EOF_LOCATION_FIXTURE'
+expensive_food_in_location = {
+	game_data = { category = location }
+	local_population_growth = -9.75
+	fixture_preserved = 41
+}
+cheap_food_in_location = {
+	local_population_growth = 8.5
+}
+capital = {
+	fixture_capital = yes
+}
+market_center = {
+	maximum_stockpile_capacity = 987
+	fixture_preserved = 42
+}
+surplus_jobs = {
+	local_migration_attraction = 6.25
+}
+EOF_LOCATION_FIXTURE
+bash "$repo_root/tools/generate_cbp_location_overrides.sh" \
+	--source-file "$location_source_tmp" \
+	--output-file "$location_output_tmp" >/dev/null
+cbp_require_match '^# Generated by tools/generate_cbp_location_overrides\.sh\.$' \
+	"$location_output_tmp" \
+	'Location override generator must identify generated output'
+cbp_require_match 'fixture_preserved = 41' \
+	"$location_output_tmp" \
+	'Location override generator must preserve unrelated vanilla fields'
+cbp_require_match 'fixture_preserved = 42' \
+	"$location_output_tmp" \
+	'Location override generator must preserve unrelated market-center fields'
+if cbp_search_quiet '^capital[[:space:]]*=' "$location_output_tmp"; then
+	printf '%s\n' 'Location override generator must not emit the vanilla capital block.' >&2
+	exit 1
+fi
+cbp_require_match 'generate_us20_promoted_destination_receipt_dispatchers\.sh' \
+	"tools/generate_all.sh" \
+	'generate_all must regenerate the US20 promoted-destination receipt dispatcher'
+cbp_require_match 'cbp_us20_receiver_capacity_dispatch_good\.template\.txt' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must use the receiver-capacity per-good template'
+cbp_require_match 'cbp_us20_base_receipt_dispatch_good\.template\.txt' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must use the base-receipt per-good template'
+cbp_require_match 'cbp_render_template_to_stdout' \
+	"tools/generate_us20_promoted_destination_receipt_dispatchers.sh" \
+	'US20 promoted-destination generator must render per-good Jomini through templates'
+cbp_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
+	".cbp.local.env.template" \
+	'Local env template must default ModeU5 debug runtime to false'
+cbp_require_match '^MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER=0\.7' \
+	".cbp.local.env.template" \
+	'Local env template must expose the non-trade building maintenance multiplier'
+cbp_require_match '^MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER=0\.5' \
+	".cbp.local.env.template" \
+	'Local env template must expose the trade-building maintenance multiplier'
+cbp_require_match 'strip_utf8_bom_stream' \
+	"tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh" \
+	'US-09 generator must strip UTF-8 BOMs from vanilla source streams'
+cbp_require_match 'Generated US-09 files must not contain UTF-8 BOM bytes' \
+	"tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh" \
+	'US-09 generator must fail if generated output still contains BOM bytes'
+if cbp_search_quiet '(^|[[:space:]])(bash[[:space:]]+)?\./tools/generate_us09_economy_overrides\.sh' ".github/workflows"; then
+	printf '%s\n' 'GitHub workflows must call the retained US-09 policy compiler through tools/cbg/adapters/cbp/helpers.' >&2
+	exit 1
+fi
+cbp_require_file "tools/transform_cbp_economy_building_overrides.py"
+cbp_require_file "tools/validate_us08_building_maintenance_overrides.py"
+cbp_require_file "tools/generate_political_reward_overrides.py"
+cbp_require_file "tools/tests/test_political_reward_overrides.py"
+cbp_require_file "tools/cbg/community_balance_generator.py"
+cbp_require_file "tools/cbg/adapters/cbp/helpers/bootstrap_cbg_manifest_from_git.py"
+cbp_require_file "tools/cbg/adapters/cbp/tests/test_manifest_bootstrap.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/compare_cbp_cbg_outputs.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_default_values_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_food_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_location_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_rgo_prices_parity.sh"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py"
+cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
+cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
+cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
+cbp_require_file "tools/cbg/README.md"
+cbp_require_file "docs/technical/COMMUNITY_BALANCE_GENERATOR.md"
+cbp_require_file "docs/architecture/RUNTIME_FLOW.md"
+cbp_require_file "docs/audits/README.md"
+cbp_require_file "tools/validate_audit_catalog.py"
+cbp_require_file "tools/dev_prepare_game.sh"
+cbp_require_match 'only normative global diagram' \
+	"docs/architecture/RUNTIME_FLOW.md" \
+	'Runtime architecture must identify its normative global source of truth'
+cbp_require_match 'CBG_VANILLA_GENERATION_MATRIX\.md' \
+	"docs/technical/CBG_REPOSITORY_BOUNDARY.md" \
+	'CBG repository boundary must link retained compilers to the migration matrix'
+if cbp_search_quiet '^[[:space:]]*#[[:space:]]*(if|bash).*generate_cbp_defines_override' "tools/generate_all.sh"; then
+	cbp_search_lines '^[[:space:]]*#[[:space:]]*(if|bash).*generate_cbp_defines_override' "tools/generate_all.sh" >&2
+	printf '%s\n' 'generate_all must not retain a commented-out complete-defines generation branch.' >&2
+	exit 1
+fi
+python3 "$repo_root/tools/validate_audit_catalog.py"
+cbp_require_match 'install_local_packages\.sh --skip-generate' \
+	"tools/dev_prepare_game.sh" \
+	'Developer preparation must not regenerate after the validated generation pass'
+cbp_require_match 'dev_prepare_game\.sh' \
+	"tools/README.md" \
+	'Tools documentation must advertise the canonical developer preparation command'
+cbp_require_match 'python3 -m unittest tools\.cbg\.tests\.test_community_balance_generator tools\.cbg\.adapters\.cbp\.tests\.test_manifest_bootstrap' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run generic CBG and clean-clone manifest bootstrap tests'
+cbp_require_match 'python3 tools/cbg/validator/cbp/validate_cbp_cbg_master_spec\.py' \
+	".github/workflows/generated-files.yml" \
+	'Generated-files CI must run the CBP-namespaced CBG master-spec validator'
+cbp_require_match 'Refusing to overwrite an output not owned' \
+	"tools/cbg/community_balance_generator.py" \
+	'Community Balance Generator must enforce manifest-based output ownership'
+cbp_require_match 'add_custom' \
+	"tools/cbg/tests/test_community_balance_generator.py" \
+	'Community Balance Generator tests must cover custom field insertion'
+cbp_require_match 'exclude_values' \
+	"tools/cbg/tests/test_community_balance_generator.py" \
+	'Community Balance Generator tests must cover bulk symbolic exclusions'
+cbp_require_match '"provenance": "vanilla"' \
+	"tools/cbg/tests/test_community_balance_generator.py" \
+	'Community Balance Generator tests must preserve legacy Vanilla provenance comments'
+cbp_require_match 'owned_outputs.*TARGET' \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
+	'Focused CBG migration must remain limited to default_values.txt'
+if [[ -f packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json ]]; then
+	cbp_require_match '"owned_outputs": \[' \
+		"packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json" \
+		'CBG default-values spec must declare its owned outputs'
+	cbp_require_match '"central_default_values_materializer": "community_balance_generator"' \
+		"packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json" \
+		'Legacy political manifest must record default-values delegation to CBG'
+	cbp_require_match '"food_override_materializer": "community_balance_generator"' \
+		"packages/cbp_economy_rebalance/cbp_generated/us177_food_goods_manifest.json" \
+		'US-177 manifest must record food override delegation to CBG'
+	cbp_require_match '"owned_outputs": \[' \
+		"packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json" \
+		'CBG food spec must declare its owned outputs'
+else
+	printf '%s\n' 'SKIP: generated CBG JSON contracts require local Vanilla EU5 sources.'
+fi
+
+if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	cbg_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
+	cbg_default_values="$cbg_game_root/main_menu/common/script_values/default_values.txt"
+	if [[ ! -f "$cbg_default_values" ]]; then
+		printf 'Configured EU5_GAME_COMMON_DIR does not resolve to a Vanilla tree: %s\n' \
+			"$cbg_default_values" >&2
+		exit 1
+	fi
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_default_values_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_food_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_location_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_rgo_prices_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
+	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
+else
+	printf '%s\n' \
+		'SKIP: focused CBG family parity requires local Vanilla EU5 sources.'
+fi
+python3 "$repo_root/tools/cbg/validator/validate_cbg_layout.py"
+python3 "$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
+cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must compile and materialize political rewards through CBG'
+cbp_require_match 'generate_cbp_community_balance_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must refresh the cross-family CBP/CBG audit specification'
+cbp_require_match 'cbp_pr188_balance\.generated\.json' \
+	"tools/generate_all.sh" \
+	'generate_all must write the tracked cross-family CBP/CBG audit specification'
+cbp_require_match 'generate_cbp_cbg_default_values_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize central default values from the focused CBG policy'
+cbp_require_match 'generate_cbp_cbg_food_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize food production overrides from CBG policy'
+cbp_require_match 'generate_cbp_cbg_location_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize dedicated location overrides from CBG policy'
+cbp_require_match 'generate_cbp_cbg_rgo_prices_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize partial RGO prices from CBG policy'
+cbp_require_match 'generate_cbp_cbg_building_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must materialize building overrides from focused CBG policy'
+cbp_require_match 'generate_cbp_cbg_political_minting_spec\.py' \
+	"tools/generate_all.sh" \
+	'generate_all must compose political and minting Vanilla outputs through CBG'
+cbp_require_match '--skip-rgo-prices' \
+	"tools/generate_all.sh" \
+	'legacy US-09 generation must delegate RGO price ownership to CBG'
+cbp_require_match '--skip-pop-promotions' \
+	"tools/generate_all.sh" \
+	'legacy US-09 generation must delegate Pop promotion ownership to CBG'
+cbp_require_match '--skip-building-overrides' \
+	"tools/generate_all.sh" \
+	'legacy US-09 analysis must delegate building runtime ownership to CBG'
+cbp_require_match '--skip-food-overrides' \
+	"tools/generate_all.sh" \
+	'legacy US-177 discovery must delegate food override ownership to CBG'
+cbp_require_match '--skip-central-default-values' \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
+	'political policy compiler must delegate default_values.txt to its focused CBG family'
+cbp_require_match 'POLITICAL_MONTHLY_FIELDS' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'#184 building transformer must own fixed monthly political modifier scaling'
+cbp_require_match 'Building maintenance multiplier' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must document the composed US-08/US-05.3 maintenance multiplier'
+cbp_require_match 'bootstrap_cbg_manifest' \
+	"tools/generate_all.sh" \
+	'generate_all must bootstrap missing CBG ownership manifests from clean tracked outputs'
+cbp_require_match 'Trade-building maintenance multiplier' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must document the composed trade-building maintenance multiplier'
+cbp_require_match 'transform_lines_with_plan' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must own applicability and the building-level change plan'
+if cbp_search_quiet 'has_economy_building_target_field' "tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh"; then
+	printf '%s\n' 'US-09 shell must not maintain a second building applicability prefilter.' >&2
+	exit 1
+fi
+cbp_require_match 'building_maintenance' \
+	"tools/transform_cbp_economy_building_overrides.py" \
+	'Economy building transformer must target explicit building_maintenance blocks'
+cbp_require_match 'validate_us08_building_maintenance_overrides.py' \
+	"tools/validate_module_packages.sh" \
+	'Module package validation must run the US-08/US-05.3 maintenance validator when vanilla sources are available'
 
 printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=false' > "$local_runtime_env_normal"
 printf '%s\n' 'MODEU5_ENABLE_DEBUG_RUNTIME=true' > "$local_runtime_env_debug"
 bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_normal" "$local_runtime_env_normal" >/dev/null
 bash "$repo_root/tools/generate_local_runtime_config.sh" "$local_runtime_tmp_debug" "$local_runtime_env_debug" >/dev/null
-modeu5_require_match 'modeu5_enter_normal_runtime_mode = yes' \
+cbp_require_match 'cbp_enter_normal_runtime_mode = yes' \
 	"$local_runtime_tmp_normal" \
 	'Local runtime config must generate normal runtime when MODEU5_ENABLE_DEBUG_RUNTIME=false'
-modeu5_require_match 'modeu5_enter_debug_runtime_mode = yes' \
+cbp_require_match 'cbp_enter_debug_runtime_mode = yes' \
 	"$local_runtime_tmp_debug" \
 	'Local runtime config must generate debug runtime when MODEU5_ENABLE_DEBUG_RUNTIME=true'
-modeu5_require_match 'modeu5_apply_generated_local_runtime_mode = yes' \
-	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
+cbp_require_match 'cbp_apply_generated_local_runtime_mode = yes' \
+	"in_game/common/scripted_effects/cbp_configuration_effects.txt" \
 	'Configuration initialization must apply the generated local runtime mode'
-modeu5_require_match 'ModeU5 debug runtime is now controlled by generated local config / CMM' \
-	"in_game/common/scripted_effects/modeu5_configuration_effects.txt" \
+cbp_require_match 'ModeU5 debug runtime is now controlled by generated local config / CMM' \
+	"in_game/common/scripted_effects/cbp_configuration_effects.txt" \
 	'EU5 engine --debug_mode must not force ModeU5 debug runtime through CMM defaults'
 
 per_good_generators=(
@@ -100,36 +334,36 @@ per_good_generators=(
 )
 
 for script in "${per_good_generators[@]}"; do
-	modeu5_require_match 'modeu5_load_goods_registry' "$script" "Per-good generator must load the canonical good registry"
+	cbp_require_match 'cbp_load_goods_registry' "$script" "Per-good generator must load the canonical good registry"
 done
 
 if command -v rg >/dev/null 2>&1; then
 	literal_good_arrays="$(
 		rg -n --glob '*.sh' '^[[:space:]]*(local[[:space:]]+)?[A-Za-z0-9_]*goods[[:space:]]*=\(' tools \
-			| grep -Ev 'tools/modeu5_goods\.sh:|goods=\("\$\{modeu5_goods\[@\]\}"\)' || true
+			| grep -Ev 'tools/cbp_goods\.sh:|goods=\("\$\{cbp_goods\[@\]\}"\)' || true
 	)"
 else
 	literal_good_arrays="$(
 		find tools -name '*.sh' -print0 \
 			| xargs -0 grep -En '^[[:space:]]*(local[[:space:]]+)?[A-Za-z0-9_]*goods[[:space:]]*=\(' \
-			| grep -Ev 'tools/modeu5_goods\.sh:|goods=\("\$\{modeu5_goods\[@\]\}"\)' || true
+			| grep -Ev 'tools/cbp_goods\.sh:|goods=\("\$\{cbp_goods\[@\]\}"\)' || true
 	)"
 fi
 
 if [[ -n "$literal_good_arrays" ]]; then
-	printf '%s\n' 'Generators must not carry local good arrays. Use tools/modeu5_goods.sh as the single good registry.' >&2
+	printf '%s\n' 'Generators must not carry local good arrays. Use tools/cbp_goods.sh as the single good registry.' >&2
 	printf '%s\n' "$literal_good_arrays" >&2
 	exit 1
 fi
 
-pr71_generated_output="in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
-us20_receipt_generated_output="in_game/common/scripted_effects/modeu5_us20_promoted_destination_receipt_dispatchers.txt"
+pr71_generated_output="in_game/common/scripted_effects/cbp_zz_pr71_active_good_dispatch_generated.txt"
+us20_receipt_generated_output="in_game/common/scripted_effects/cbp_us20_promoted_destination_receipt_dispatchers.txt"
 
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh" "$pr71_generated_tmp" >/dev/null
 bash "$repo_root/tools/generate_us20_promoted_destination_receipt_dispatchers.sh" "$us20_receipt_generated_tmp" >/dev/null
 
-if modeu5_search_quiet '__[A-Z_]+__' "$pr71_generated_tmp"; then
-	modeu5_search_lines '__[A-Z_]+__' "$pr71_generated_tmp" >&2
+if cbp_search_quiet '__[A-Z_]+__' "$pr71_generated_tmp"; then
+	cbp_search_lines '__[A-Z_]+__' "$pr71_generated_tmp" >&2
 	printf '%s\n' 'Generated PR7.1 active-good dispatch output must not contain unresolved template placeholders.' >&2
 	exit 1
 fi
@@ -139,8 +373,8 @@ if [[ -f "$pr71_generated_output" ]] && ! cmp -s "$pr71_generated_output" "$pr71
 	exit 1
 fi
 
-if modeu5_search_quiet '__[A-Z_]+__' "$us20_receipt_generated_tmp"; then
-	modeu5_search_lines '__[A-Z_]+__' "$us20_receipt_generated_tmp" >&2
+if cbp_search_quiet '__[A-Z_]+__' "$us20_receipt_generated_tmp"; then
+	cbp_search_lines '__[A-Z_]+__' "$us20_receipt_generated_tmp" >&2
 	printf '%s\n' 'Generated US20 promoted-destination receipt dispatcher must not contain unresolved template placeholders.' >&2
 	exit 1
 fi
@@ -150,135 +384,135 @@ if [[ -f "$us20_receipt_generated_output" ]] && ! cmp -s "$us20_receipt_generate
 	exit 1
 fi
 
-modeu5_require_match 'Generated by tools/generate_us20_promoted_destination_receipt_dispatchers\.sh' \
+cbp_require_match 'Generated by tools/generate_us20_promoted_destination_receipt_dispatchers\.sh' \
 	"$us20_receipt_generated_tmp" \
 	'US20 promoted-destination receipt dispatcher must be generated, not hand-maintained'
-modeu5_require_match 'modeu5_probe_us20_receiver_capacity_literal_good = \{ good = wheat \}' \
+cbp_require_match 'cbp_probe_us20_receiver_capacity_literal_good = \{ good = wheat \}' \
 	"$us20_receipt_generated_tmp" \
 	'US20 generated receiver-capacity dispatcher must include wheat'
-modeu5_require_match 'modeu5_apply_us20_promoted_destination_base_receipt_literal_good = \{ good = coffee \}' \
+cbp_require_match 'cbp_apply_us20_promoted_destination_base_receipt_literal_good = \{ good = coffee \}' \
 	"$us20_receipt_generated_tmp" \
 	'US20 generated base-receipt dispatcher must include non-fixture goods such as coffee'
-modeu5_require_match 'modeu5_apply_us20_promoted_destination_base_receipt_literal_good = \{ good = slaves_goods \}' \
+cbp_require_match 'cbp_apply_us20_promoted_destination_base_receipt_literal_good = \{ good = slaves_goods \}' \
 	"$us20_receipt_generated_tmp" \
 	'US20 generated base-receipt dispatcher must include the final canonical good registry entry'
-modeu5_require_match 'modeu5_transfer_stock = \{' \
+cbp_require_match 'cbp_transfer_stock = \{' \
 	"$us20_receipt_generated_tmp" \
 	'US20 generated base-receipt dispatcher must preserve promoted-origin transfer behavior'
-modeu5_require_match 'target_capacity_policy = allow_over_capacity' \
+cbp_require_match 'target_capacity_policy = allow_over_capacity' \
 	"$us20_receipt_generated_tmp" \
 	'US20 generated base-receipt dispatcher must preserve BR-30 soft-cap transfer receipt policy'
 
-modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_good_wheat' \
+cbp_require_match 'cbp_pr71_process_us00_monthly_market_good_wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 generated US-00 guard must contain the canonical wheat helper surface'
-modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_good_wheat' \
+cbp_require_match 'cbp_pr71_process_us10_monthly_market_good_wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 generated US-10 guard must contain the canonical wheat helper surface'
-modeu5_require_match 'modeu5_pr71_metrics_enabled_trigger' \
+cbp_require_match 'cbp_pr71_metrics_enabled_trigger' \
 	"$pr71_generated_tmp" \
 	'Q8.1 generated PR7.1 metrics must be gated behind the debug/audit metrics trigger'
-modeu5_require_match 'produced_in_market:wheat' \
+cbp_require_match 'produced_in_market:wheat' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the produced-in-market business gate'
-modeu5_require_match 'modeu5_probe_us00_previous_record_activity_good_wheat = yes' \
+cbp_require_match 'cbp_probe_us00_previous_record_activity_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must preserve the previous-record business gate'
-modeu5_require_match 'cbp_consumption_wheat_pending_requested_by_market' \
+cbp_require_match 'cbp_consumption_wheat_pending_requested_by_market' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-10 guard must preserve the pending-request map gate'
-modeu5_require_match 'modeu5_process_us00_monthly_market_good_wheat = yes' \
+cbp_require_match 'cbp_process_us00_monthly_market_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-00 guard must call the existing heavy per-good helper only after gating'
-modeu5_require_match 'modeu5_process_us10_monthly_market_good_wheat = yes' \
+cbp_require_match 'cbp_process_us10_monthly_market_good_wheat = yes' \
 	"$pr71_generated_tmp" \
 	'PR7.1 US-10 guard must call the existing heavy per-good helper only after gating'
 
-if modeu5_search_quiet '^modeu5_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp"; then
-	modeu5_search_lines '^modeu5_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp" >&2
+if cbp_search_quiet '^cbp_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp"; then
+	cbp_search_lines '^cbp_pr71_prepare_us10_pending_request_gate[[:space:]]*=' "$pr71_generated_tmp" >&2
 	printf '%s\n' 'Q8.2 aggregate US-10 pre-gate must remain deferred and absent from default generated runtime output.' >&2
 	exit 1
 fi
 
-if modeu5_search_quiet '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp"; then
-	modeu5_search_lines '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp" >&2
+if cbp_search_quiet '^cbp_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp"; then
+	cbp_search_lines '^cbp_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated_tmp" >&2
 	printf '%s\n' 'PR7.1 generator must not emit a duplicate live local-branch effect; EU5 rejects duplicate scripted-effect keys.' >&2
 	exit 1
 fi
 
-tracked_live_effect="in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt"
-modeu5_require_match 'modeu5_prepare_promoted_country_market_capacity' \
+tracked_live_effect="in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt"
+cbp_require_match 'cbp_prepare_promoted_country_market_capacity' \
 	"$tracked_live_effect" \
 	'Q4.1 loop merge must preserve per-country capacity refresh in the tracked live handoff'
-modeu5_require_match 'modeu5_pr71_prepare_active_good_metrics = yes' \
+cbp_require_match 'cbp_pr71_prepare_active_good_metrics = yes' \
 	"$tracked_live_effect" \
 	'Tracked live handoff must prepare PR7.1 active-good metrics'
-modeu5_require_match 'modeu5_pr71_process_us00_monthly_market_active_goods = yes' \
+cbp_require_match 'cbp_pr71_process_us00_monthly_market_active_goods = yes' \
 	"$tracked_live_effect" \
 	'Q4.1 loop merge must run guarded US-00 in the fused capacity/US-00 pass'
-modeu5_require_match 'modeu5_pr71_process_us10_monthly_market_pending_goods = yes' \
+cbp_require_match 'cbp_pr71_process_us10_monthly_market_pending_goods = yes' \
 	"$tracked_live_effect" \
 	'PR7.1 tracked live handoff must keep US-10 in the pending-request dispatcher'
 
-tracked_config_triggers="in_game/common/scripted_triggers/modeu5_configuration_triggers.txt"
-modeu5_require_match '^modeu5_pr71_metrics_enabled_trigger[[:space:]]*=' \
+tracked_config_triggers="in_game/common/scripted_triggers/cbp_configuration_triggers.txt"
+cbp_require_match '^cbp_pr71_metrics_enabled_trigger[[:space:]]*=' \
 	"$tracked_config_triggers" \
 	'Q8.1 must define the PR7.1 metrics trigger in the configuration trigger surface'
-modeu5_require_match '^modeu5_market_sliced_verifier_allowed_trigger[[:space:]]*=' \
+cbp_require_match '^cbp_market_sliced_verifier_allowed_trigger[[:space:]]*=' \
 	"$tracked_config_triggers" \
 	'Q8.6 must define a debug/audit gate for the market-sliced verifier surface'
 
-tracked_capacity_effect="in_game/common/scripted_effects/modeu5_capacity_effects.txt"
-modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool_raw[[:space:]]*=' \
+tracked_capacity_effect="in_game/common/scripted_effects/cbp_capacity_effects.txt"
+cbp_require_match '^cbp_calculate_country_storage_capacity_pool_raw[[:space:]]*=' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must keep a raw country capacity-pool calculator behind the stamped public entry point'
-modeu5_require_match '^modeu5_calculate_country_storage_capacity_pool[[:space:]]*=' \
+cbp_require_match '^cbp_calculate_country_storage_capacity_pool[[:space:]]*=' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must route the public country capacity-pool helper through the monthly stamp'
-modeu5_require_match 'cbp_capacity_pool_monthly_stamp' \
+cbp_require_match 'cbp_capacity_pool_monthly_stamp' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must stamp the reusable country capacity-pool facts by month'
-modeu5_require_match 'cbp_capacity_pool_cached_location_rank_per_market' \
+cbp_require_match 'cbp_capacity_pool_cached_location_rank_per_market' \
 	"$tracked_capacity_effect" \
 	'Q8.3 must cache the reusable country-wide per-market capacity share'
 
-tracked_market_country_cache="in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt"
-modeu5_require_match '^modeu5_repair_dirty_market_country_caches_if_needed[[:space:]]*=' \
+tracked_market_country_cache="in_game/common/scripted_effects/cbp_market_country_cache_effects.txt"
+cbp_require_match '^cbp_repair_dirty_market_country_caches_if_needed[[:space:]]*=' \
 	"$tracked_market_country_cache" \
 	'Q8.5 must expose a guarded dirty market-country cache repair consumer'
-modeu5_require_match 'cbp_market_country_cache_dirty_markets' \
+cbp_require_match 'cbp_market_country_cache_dirty_markets' \
 	"$tracked_market_country_cache" \
 	'Q8.5 must keep dirty market scheduling in the market-country cache surface'
 
-tracked_market_sliced_verifier="in_game/common/scripted_effects/modeu5_market_sliced_verifier_effects.txt"
-modeu5_require_file "$tracked_market_sliced_verifier"
-modeu5_require_match '^modeu5_run_market_sliced_verifier_candidates[[:space:]]*=' \
+tracked_market_sliced_verifier="in_game/common/scripted_effects/cbp_market_sliced_verifier_effects.txt"
+cbp_require_file "$tracked_market_sliced_verifier"
+cbp_require_match '^cbp_run_market_sliced_verifier_candidates[[:space:]]*=' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 must expose the bounded market-sliced verifier runner'
-modeu5_require_match 'cbp_market_sliced_verifier_candidate_markets' \
+cbp_require_match 'cbp_market_sliced_verifier_candidate_markets' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 must use a bounded candidate market list'
-modeu5_require_match 'modeu5_market_sliced_verifier_allowed_trigger' \
+cbp_require_match 'cbp_market_sliced_verifier_allowed_trigger' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 verifier must be gated behind debug/audit runtime'
-modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
+cbp_require_match 'cbp_rebuild_countries_present_in_market = yes' \
 	"$tracked_market_sliced_verifier" \
 	'Q8.6 verifier may rebuild only the current-market country work cache for candidate markets'
 
-tracked_q8_probe_effect="packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt"
-modeu5_require_match '^modeu5_q8_probe_global_market_iterator_exposure[[:space:]]*=' \
+tracked_q8_probe_effect="packages/cbp_core_tests/in_game/common/scripted_effects/cbp_q8_probe_effects.txt"
+cbp_require_match '^cbp_q8_probe_global_market_iterator_exposure[[:space:]]*=' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 must expose the test-package global market-local pass probe'
-modeu5_require_match 'every_market_in_world = \{' \
+cbp_require_match 'every_market_in_world = \{' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must exercise the native global market iterator'
-modeu5_require_match 'test_cbp_q8_7_global_market_seen_markets' \
+cbp_require_match 'test_cbp_q8_7_global_market_seen_markets' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must deduplicate visited markets'
-modeu5_require_match 'modeu5_rebuild_countries_present_in_market = yes' \
+cbp_require_match 'cbp_rebuild_countries_present_in_market = yes' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must prove the market-local country work-cache rebuild from market scope'
-modeu5_require_match 'ModeU5 TEST PASS scenario=q87_global_market_local_pass' \
+cbp_require_match 'ModeU5 TEST PASS scenario=q87_global_market_local_pass' \
 	"$tracked_q8_probe_effect" \
 	'Q8.7 probe must emit a stable runtime scenario PASS marker'
 

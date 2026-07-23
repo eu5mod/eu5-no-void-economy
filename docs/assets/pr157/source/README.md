@@ -20,7 +20,7 @@ The default selected production source is:
 review_popup_1524_event_choice_situation_wide_source.svg
   -> generated/review_popup_1524_event_choice_situation_wide_source_qr.svg
   -> review_popup_1524_event_source.svg
-  -> in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+  -> in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 The committed smoke-test source is:
@@ -31,7 +31,7 @@ review_popup_1524_ci_smoke.svg
   -> generated/review_popup_1524_ci_smoke_qr.dds
 ```
 
-To promote another raw source as the production event image during local generation, set this in `.modeu5.local.env`:
+To promote another raw source as the production event image during local generation, set this in `.cbp.local.env`:
 
 ```sh
 MODEU5_REVIEW_POPUP_SELECTED_SOURCE="my_candidate.svg"

@@ -8,7 +8,7 @@ Updated against the surviving, reviewed ModeU5 user-story set.
 README.md
 AGENTS.md
 CLAUDE.md
-docs/specs/modeu5_mvp_specifications.md
+docs/specs/cbp_mvp_specifications.md
 TEST_PLAN.md
 CORE_01_CONSOLE_TEST_RUNBOOK.md
 DEBUG_CONVENTIONS.md

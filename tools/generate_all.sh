@@ -1,31 +1,238 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_local_config
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+
+report_generation_failure() {
+	status=$?
+	trap - ERR
+	printf '\n' >&2
+	cbp_console_major_separator 2 >&2
+	cbp_console_failure 'Overall CBP generation failed; generated outputs may not be installed.'
+	exit "$status"
+}
+
+trap report_generation_failure ERR
+
+cbp_load_local_config
+
+bootstrap_cbg_manifest() {
+	python3 "$repo_root/tools/cbg/adapters/cbp/helpers/bootstrap_cbg_manifest_from_git.py" \
+		--spec "$1" \
+		--output-root "$2" \
+		--manifest "$3" \
+		"${@:4}"
+}
+
+if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+		cbg_location_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
+	else
+		cbg_location_game_root="$(cd "$(dirname "$EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE")/../../../.." && pwd)"
+	fi
+	cbg_location_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_spec.json"
+	cbg_location_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
+	bootstrap_cbg_manifest "$cbg_location_spec" "$repo_root" "$cbg_location_manifest"
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+		--game-root "$cbg_location_game_root" \
+		--spec "$cbg_location_spec" \
+		--output-root "$repo_root" \
+		--manifest "$cbg_location_manifest" \
+		--adopt-identical-output
+else
+	printf '%s\n' 'Skipping CBP location static-modifier generation; configure EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE or EU5_GAME_COMMON_DIR.'
+fi
+
+# Remove artifacts produced by the abandoned exact-path vanilla Pop-demand
+# generator. Leaving either file in a working tree would reintroduce an override
+# or duplicate the tracked injection script value during local installation.
+obsolete_us04_override="$repo_root/packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt"
+obsolete_us04_values="$repo_root/packages/cbp_economy_rebalance/in_game/common/script_values/cbp_us04_pop_demand_values_generated.txt"
+if [[ -f "$obsolete_us04_override" || -f "$obsolete_us04_values" ]]; then
+	rm -f "$obsolete_us04_override" "$obsolete_us04_values"
+	printf '%s\n' 'Removed obsolete generated US-04 Pop-demand override artifacts.'
+fi
 
 bash "$repo_root/tools/generate_local_runtime_config.sh"
 "$repo_root/tools/generate_stock_good_helpers.sh"
-python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt"
+python3 "$repo_root/tools/postprocess_perf14_promotion_guards.py" "$repo_root/in_game/common/scripted_effects/cbp_stock_goods_generated.txt"
 python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
-	"$repo_root/in_game/common/scripted_effects/modeu5_stock_goods_generated.txt" \
-	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_guarded_test_effects.txt" \
-	"$repo_root/packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_perf14_test_effects.txt"
+	"$repo_root/in_game/common/scripted_effects/cbp_stock_goods_generated.txt" \
+	"$repo_root/packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt" \
+	"$repo_root/packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
+"$repo_root/tools/generate_us04_pop_demand_helpers.sh"
+bash "$repo_root/tools/generate_us04_local_pop_demand_modifiers.sh"
+python3 "$repo_root/tools/validate_us04_pop_demand_architecture.py"
+
 "$repo_root/tools/generate_good_transport_helpers.sh"
 bash "$repo_root/tools/generate_us10_ui_helpers.sh"
 bash "$repo_root/tools/generate_us20_promoted_destination_receipt_dispatchers.sh"
 
-if [[ -x "$repo_root/tools/generate_us09_economy_overrides.sh" ]]; then
-	if [[ "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "false" || "${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}" == "0" ]]; then
-		printf '%s\n' 'Skipping US-09 static file generation; MODEU5_ENABLE_US09_STATIC_OVERRIDES=false.'
-	elif [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
-		bash "$repo_root/tools/generate_us09_economy_overrides.sh" "${MODEU5_US09_BONUS_PERCENT:-5}" --package-common-dir "$repo_root/packages/modeu5_economy_rebalance/in_game/common"
-	else
-		printf '%s\n' 'Skipping US-09 static file generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
+us09_enabled="${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}"
+defines_output="$repo_root/loading_screen/common/defines/00_defines.txt"
+
+remove_generated_defines_override() {
+	if [[ -f "$defines_output" ]] && \
+		head -n 1 "$defines_output" | grep -qx '# Generated by tools/generate_cbp_defines_override.sh.'
+	then
+		rm -f "$defines_output"
+		printf 'Removed stale generated defines override: %s\n' "$defines_output"
 	fi
+}
+
+if [[ "$us09_enabled" == "false" || "$us09_enabled" == "0" ]]; then
+	printf '%s\n' 'Skipping US-09 static file generation; MODEU5_ENABLE_US09_STATIC_OVERRIDES=false.'
+	remove_generated_defines_override
+else
+	us09_policy_compiler="$repo_root/tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh"
+	if [[ -x "$us09_policy_compiler" || -f "$us09_policy_compiler" ]]; then
+		if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+			bash "$us09_policy_compiler" \
+				"${MODEU5_US09_BONUS_PERCENT:-5}" \
+				--rgo-price-percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
+				--trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
+				--extra-burgher-promotion-speed "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
+				--extra-laborer-promotion-speed "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
+				--skip-rgo-prices \
+				--skip-pop-promotions \
+				--skip-building-overrides \
+				--package-common-dir "$repo_root/packages/cbp_economy_rebalance/in_game/common"
+			cbg_building_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_building_spec.json"
+			cbg_building_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
+			cbg_building_output_multiplier="$(awk -v value="${MODEU5_US09_BONUS_PERCENT:-5}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
+			cbg_building_trade_multiplier="$(awk -v value="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--output "$cbg_building_spec" \
+				--output-multiplier "$cbg_building_output_multiplier" \
+				--trade-capacity-multiplier "$cbg_building_trade_multiplier" \
+				--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
+				--trade-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}" \
+				--minting-multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}"
+			bootstrap_cbg_manifest \
+				"$cbg_building_spec" \
+				"$repo_root/packages/cbp_economy_rebalance" \
+				"$cbg_building_manifest" \
+				--adopt-marked-output-tree in_game/common/building_types \
+				--adopt-output-marker '# Generated by tools/generate_us09_economy_overrides.sh.'
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--spec "$cbg_building_spec" \
+				--output-root "$repo_root/packages/cbp_economy_rebalance" \
+				--manifest "$cbg_building_manifest" \
+				--adopt-identical-output \
+				--adopt-marked-output-tree in_game/common/building_types \
+				--adopt-output-marker '# Generated by tools/generate_us09_economy_overrides.sh.'
+			cbg_rgo_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_spec.json"
+			cbg_rgo_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
+				--output "$cbg_rgo_spec"
+			bootstrap_cbg_manifest "$cbg_rgo_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_rgo_manifest"
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--spec "$cbg_rgo_spec" \
+				--output-root "$repo_root/packages/cbp_economy_rebalance" \
+				--manifest "$cbg_rgo_manifest" \
+				--adopt-identical-output
+			cbg_pop_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_spec.json"
+			cbg_pop_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_pop_promotion_manifest.json"
+			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_pop_promotion_spec.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--burgher-percent "${EXTRA_BURGHER_PROMOTION_SPEED:-10}" \
+				--laborer-percent "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
+				--output "$cbg_pop_spec"
+			bootstrap_cbg_manifest "$cbg_pop_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_pop_manifest"
+			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+				--spec "$cbg_pop_spec" \
+				--output-root "$repo_root/packages/cbp_economy_rebalance" \
+				--manifest "$cbg_pop_manifest" \
+				--adopt-identical-output
+		else
+			printf '%s\n' 'Skipping US-09 static common-file generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
+		fi
+	fi
+
 fi
+
+# US-177 is package-owned independently from US-09. It records the authoritative
+# vanilla food-good set, scans the complete vanilla source tree for
+# minting_income_factor, and composes building changes with whichever exact-path
+# building files are already present.
+if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
+	us177_common_dir="${EU5_GAME_COMMON_DIR%/}"
+	us177_game_root="${us177_common_dir%/in_game/common}"
+	python3 "$repo_root/tools/generate_us177_food_goods_manifest.py" \
+		--game-root "$us177_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--food-price "${MODEU5_US177_FOOD_PRICE:-0.3}" \
+		--food-production-divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
+		--skip-food-overrides
+	cbg_food_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_spec.json"
+	cbg_food_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_food_manifest.json"
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_food_spec.py" \
+		--game-root "$us177_game_root" \
+		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
+		--output "$cbg_food_spec"
+	bootstrap_cbg_manifest "$cbg_food_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_food_manifest"
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+		--game-root "$us177_game_root" \
+		--spec "$cbg_food_spec" \
+		--output-root "$repo_root/packages/cbp_economy_rebalance" \
+		--manifest "$cbg_food_manifest" \
+		--adopt-identical-output
+	cbg_political_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_spec.json"
+	cbg_political_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_political_minting_manifest.json"
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
+		--game-root "$us177_game_root" \
+		--minting-multiplier "${MODEU5_US177_MINTING_MULTIPLIER:-2}" \
+		--output "$cbg_political_spec" \
+		--minting-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json" \
+		--political-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
+	bootstrap_cbg_manifest "$cbg_political_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_political_manifest"
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+		--game-root "$us177_game_root" \
+		--spec "$cbg_political_spec" \
+		--output-root "$repo_root/packages/cbp_economy_rebalance" \
+		--manifest "$cbg_political_manifest" \
+		--adopt-identical-output
+	rm -f \
+		"$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_minting_spec.json" \
+		"$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_minting_manifest.json"
+
+	cbg_default_values_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_spec.json"
+	cbg_default_values_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_default_values_manifest.json"
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py" \
+		--game-root "$us177_game_root" \
+		--output "$cbg_default_values_spec"
+	bootstrap_cbg_manifest "$cbg_default_values_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_default_values_manifest"
+	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+		--game-root "$us177_game_root" \
+		--spec "$cbg_default_values_spec" \
+		--output-root "$repo_root/packages/cbp_economy_rebalance" \
+		--manifest "$cbg_default_values_manifest" \
+		--adopt-identical-output
+
+	# Refresh the cross-family audit policy from the same Vanilla tree and local
+	# balance configuration used by the focused runtime adapters above.
+	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_community_balance_spec.py" \
+		--game-root "$us177_game_root" \
+		--package-root "$repo_root/packages/cbp_economy_rebalance" \
+		--output "$repo_root/tools/specs/cbp_pr188_balance.generated.json"
+else
+	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
+fi
+
+trap - ERR
+printf '\n'
+cbp_console_major_separator
+cbp_console_styled '1;32' '[OK] Overall CBP generation completed successfully.'
+printf '\n'

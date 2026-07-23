@@ -1,0 +1,269 @@
+# CORE-04 market-entry stock persistence.
+#
+# This layer handles explicit old_market -> new_market transitions for one
+# country-owned location. It does not infer missing topology exposure: callers
+# must provide the old/source market and the current/target market. All stock
+# movement delegates to cbp_transfer_stock.
+
+cbp_core04_reset_market_entry_metrics = {
+	remove_global_variable = cbp_core04_market_entry_last_result
+	remove_global_variable = cbp_core04_market_entry_last_reason
+	remove_global_variable = cbp_core04_market_entry_goods_checked
+	remove_global_variable = cbp_core04_market_entry_goods_moved
+	remove_global_variable = cbp_core04_market_entry_requested_stock_total
+	remove_global_variable = cbp_core04_market_entry_actual_stock_total
+	remove_global_variable = cbp_core04_market_entry_source_capacity
+	remove_global_variable = cbp_core04_market_entry_moved_capacity
+	remove_global_variable = cbp_core04_market_entry_move_ratio
+	remove_global_variable = cbp_core04_market_entry_gate_result
+	remove_global_variable = cbp_core04_market_entry_promotion_attempted
+	remove_global_variable = cbp_core04_market_entry_promotion_succeeded
+
+	set_global_variable = { name = cbp_core04_market_entry_last_result value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_last_reason value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_goods_checked value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_goods_moved value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_requested_stock_total value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_actual_stock_total value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_source_capacity value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_moved_capacity value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_move_ratio value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_gate_result value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_promotion_attempted value = 0 }
+	set_global_variable = { name = cbp_core04_market_entry_promotion_succeeded value = 0 }
+}
+
+cbp_core04_log_blocked_cbp_deactivated_market_entry = {
+	set_global_variable = { name = cbp_core04_market_entry_last_result value = 4 }
+	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=cbp_deactivated"
+}
+
+cbp_core04_log_blocked_mutation_gate_market_entry = {
+	set_global_variable = { name = cbp_core04_market_entry_last_result value = 4 }
+	debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=blocked reason=mutation_gate_blocked"
+}
+
+cbp_core04_mark_source_and_target_dirty = {
+	scope:cbp_core04_source_market = { save_temporary_scope_as = cbp_market_country_cache_dirty_market }
+	cbp_mark_market_country_cache_dirty = yes
+	scope:cbp_core04_target_market = { save_temporary_scope_as = cbp_market_country_cache_dirty_market }
+	cbp_mark_market_country_cache_dirty = yes
+}
+
+cbp_core04_refresh_country_after_market_entry = {
+	scope:cbp_core04_country = {
+		cbp_rebuild_and_refresh_country_storage_capacities = yes
+	}
+	cbp_core04_mark_source_and_target_dirty = yes
+	cbp_mark_human_relevant_market_for_country = {
+		country = scope:cbp_core04_country
+		market = scope:cbp_core04_target_market
+	}
+}
+
+cbp_core04_prepare_country_market_known_state = {
+	$country$ = { save_temporary_scope_as = cbp_core04_known_country }
+	$market$ = { save_temporary_scope_as = cbp_core04_known_market }
+
+	save_temporary_scope_value_as = { name = cbp_core04_country_market_known value = 0 }
+
+	scope:cbp_core04_known_country = {
+		if = {
+			limit = {
+				has_variable_map = cbp_stock_cap_by_market
+				is_key_in_variable_map = {
+					name = cbp_stock_cap_by_market
+					target = scope:cbp_core04_known_market
+				}
+			}
+			save_temporary_scope_value_as = { name = cbp_core04_country_market_known value = 1 }
+		}
+	}
+}
+
+cbp_mark_country_market_known = {
+	$country$ = { save_temporary_scope_as = cbp_country }
+	$market$ = { save_temporary_scope_as = cbp_market }
+
+	cbp_recalculate_country_market_capacity_shared = yes
+}
+
+cbp_core04_prepare_market_entry_transfer_share = {
+	cbp_calculate_location_storage_capacity = {
+		country = scope:cbp_core04_country
+		location = scope:cbp_core04_location
+	}
+
+	scope:cbp_core04_country = {
+		save_temporary_scope_as = cbp_country
+		scope:cbp_core04_source_market = { save_temporary_scope_as = cbp_market }
+		cbp_load_capacity_breakdown = yes
+		save_temporary_scope_value_as = {
+			name = cbp_core04_source_capacity_before
+			value = {
+				value = scope:cbp_country_stock_cap_raw
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = cbp_core04_moved_storage_capacity
+			value = {
+				value = scope:cbp_location_capacity_total
+				min = 0
+			}
+		}
+		save_temporary_scope_value_as = { name = cbp_core04_move_ratio value = 0 }
+		if = {
+			limit = {
+				scope:cbp_core04_source_capacity_before > 0
+				scope:cbp_core04_moved_storage_capacity > 0
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_core04_move_ratio
+				value = {
+					value = scope:cbp_core04_moved_storage_capacity
+					divide = scope:cbp_core04_source_capacity_before
+					min = 0
+					max = 1
+				}
+			}
+		}
+	}
+
+	set_global_variable = {
+		name = cbp_core04_market_entry_source_capacity
+		value = scope:cbp_core04_source_capacity_before
+	}
+	set_global_variable = {
+		name = cbp_core04_market_entry_moved_capacity
+		value = scope:cbp_core04_moved_storage_capacity
+	}
+	set_global_variable = {
+		name = cbp_core04_market_entry_move_ratio
+		value = scope:cbp_core04_move_ratio
+	}
+}
+
+cbp_core04_refresh_current_country_location_market_memory = {
+	if = {
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = cbp_core04_memory_country
+		save_temporary_scope_value_as = {
+			name = cbp_core04_market_memory_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+		every_owned_location = {
+			market = { save_temporary_scope_as = cbp_core04_current_location_market }
+			set_variable = {
+				name = cbp_core04_last_known_market
+				value = scope:cbp_core04_current_location_market
+			}
+			set_variable = {
+				name = cbp_core04_last_known_market_stamp
+				value = scope:cbp_core04_market_memory_stamp
+			}
+		}
+	}
+}
+
+cbp_core04_refresh_all_location_market_memory = {
+	if = {
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		every_country = {
+			cbp_core04_refresh_current_country_location_market_memory = yes
+		}
+		set_global_variable = {
+			name = cbp_core04_market_memory_snapshot_version
+			value = 1
+		}
+	}
+}
+
+cbp_prepare_core04_market_entry_stock_migration = {
+	cbp_core04_reset_market_entry_metrics = yes
+
+	$country$ = { save_temporary_scope_as = cbp_core04_country }
+	$source_market$ = { save_temporary_scope_as = cbp_core04_source_market }
+	$target_market$ = { save_temporary_scope_as = cbp_core04_target_market }
+	$location$ = { save_temporary_scope_as = cbp_core04_location }
+
+	if = {
+		limit = { cbp_cbp_deactivated_trigger = yes }
+		set_global_variable = { name = cbp_core04_market_entry_last_reason value = 1 }
+		cbp_core04_log_blocked_cbp_deactivated_market_entry = yes
+	}
+	else_if = {
+		limit = { scope:cbp_core04_source_market = scope:cbp_core04_target_market }
+		cbp_core04_refresh_country_after_market_entry = yes
+		set_global_variable = { name = cbp_core04_market_entry_last_result value = 2 }
+		debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation moved_stock=0 reason=same_source_target_market"
+	}
+	else = {
+		cbp_core04_prepare_country_market_known_state = {
+			country = scope:cbp_core04_country
+			market = scope:cbp_core04_target_market
+		}
+		save_temporary_scope_value_as = {
+			name = cbp_core04_target_was_known_before_gate
+			value = scope:cbp_core04_country_market_known
+		}
+
+		cbp_prepare_stock_mutation_accounting_mode = {
+			country = scope:cbp_core04_country
+			market = scope:cbp_core04_target_market
+		}
+		set_global_variable = {
+			name = cbp_core04_market_entry_gate_result
+			value = scope:cbp_stock_mutation_gate_result
+		}
+		set_global_variable = {
+			name = cbp_core04_market_entry_promotion_attempted
+			value = scope:cbp_stock_mutation_promotion_attempted
+		}
+		set_global_variable = {
+			name = cbp_core04_market_entry_promotion_succeeded
+			value = scope:cbp_stock_mutation_promotion_succeeded
+		}
+
+		if = {
+			limit = { cbp_stock_mutation_use_detailed_accounting_trigger = yes }
+			if = {
+				limit = { scope:cbp_core04_target_was_known_before_gate > 0 }
+				cbp_core04_refresh_country_after_market_entry = yes
+				set_global_variable = { name = cbp_core04_market_entry_last_result value = 2 }
+				debug_log = "ModeU5 CORE-04 MARKET_ENTRY result=known_market_oscillation moved_stock=0 reason=target_market_already_known"
+			}
+			else = {
+				cbp_core04_prepare_market_entry_transfer_share = yes
+				cbp_core04_move_market_entry_stock_all_goods = yes
+				cbp_core04_refresh_country_after_market_entry = yes
+				set_global_variable = { name = cbp_core04_market_entry_last_result value = 1 }
+				set_variable = { name = cbp_core04_debug_moved_capacity value = global_var:cbp_core04_market_entry_moved_capacity }
+				set_variable = { name = cbp_core04_debug_source_capacity value = global_var:cbp_core04_market_entry_source_capacity }
+				set_variable = { name = cbp_core04_debug_move_ratio value = global_var:cbp_core04_market_entry_move_ratio }
+				set_variable = { name = cbp_core04_debug_actual_stock_total value = global_var:cbp_core04_market_entry_actual_stock_total }
+				if = {
+					limit = { scope:cbp_stock_mutation_promotion_succeeded > 0 }
+					debug_log = "ModeU5 CORE-04 MARKET_ENTRY mode=performance result=promoted_and_migrated promotion_result=1 moved_capacity=[THIS.GetVariable('cbp_core04_debug_moved_capacity').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_debug_source_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_debug_move_ratio').GetValue|4] moved_stock=[THIS.GetVariable('cbp_core04_debug_actual_stock_total').GetValue|2]"
+				}
+				else = {
+					debug_log = "ModeU5 CORE-04 MARKET_ENTRY mode=normal result=migrated moved_capacity=[THIS.GetVariable('cbp_core04_debug_moved_capacity').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_debug_source_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_debug_move_ratio').GetValue|4] moved_stock=[THIS.GetVariable('cbp_core04_debug_actual_stock_total').GetValue|2]"
+				}
+			}
+		}
+		else_if = {
+			limit = { cbp_stock_mutation_use_market_level_fallback_trigger = yes }
+			set_global_variable = { name = cbp_core04_market_entry_last_result value = 3 }
+			set_global_variable = { name = cbp_core04_market_entry_last_reason value = 2 }
+			debug_log = "ModeU5 CORE-04 MARKET_ENTRY mode=performance result=vanilla_fallback reason=market_not_human_relevant_or_not_promoted"
+		}
+		else = {
+			set_global_variable = { name = cbp_core04_market_entry_last_reason value = 3 }
+			cbp_core04_log_blocked_mutation_gate_market_entry = yes
+		}
+	}
+}

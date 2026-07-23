@@ -1,154 +1,156 @@
-# TEST-US-17 — Trade-owner inputs, maintenance define, and maximum-only cap
+# TEST-US-17 — Shared Selling coefficient and mixed-denominator maintenance
 
 ## Objective
 
-Validate the live US-17 input contract:
+Prove simultaneously that:
 
 ```txt
-semantic buying efficiency      <- trade owner modifier:import_efficiency
-selling efficiency              <- trade owner modifier:selling_efficiency
-merchant maintenance efficiency <- trade owner modifier:merchant_maintenance_efficiency
-base merchant maintenance cost  <- define:NCountry|MERCHANT_MAINTENANCE_COST
-base route maintenance          <- trade_volume × loaded define
+C = CBP_ROUTE_LOSS_COEFFICIENT_MAX
+    / (1 + S * CBP_ROUTE_LOSS_COEFFICIENT_CURVE)
+
+US-17 effective Selling Efficiency = -C
+US-20 goods loss = trade_volume * C
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
+
+effective Merchant Maintenance Efficiency =
+    1 - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-The literal modifier names `buying_efficiency` and `merchant_maintenance_cost`
-are not valid modifier types in the tested EU5 build. The first is represented by
-`import_efficiency`; the second concept is split between a base define and the
-beneficial `merchant_maintenance_efficiency` country modifier.
-
-The buying/selling average is capped only above `1`:
+The test must also prove that the Merchant Maintenance correction itself is:
 
 ```txt
-average_efficiency = min((import_efficiency + selling_efficiency) / 2, 1)
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-There is deliberately no lower clamp. Negative efficiency remains negative and
-therefore increases maintenance instead of being silently converted to zero.
-
-## Formula covered by the deterministic probe
-
-```txt
-base_maintenance_unit_cost =
-    define:NCountry|MERCHANT_MAINTENANCE_COST
-
-base_maintenance_amount =
-    trade_volume * base_maintenance_unit_cost
-
-merchant_maintenance_factor =
-    max(0, 1 - merchant_maintenance_efficiency)
-
-adjusted_base_maintenance =
-    base_maintenance_amount * merchant_maintenance_factor
-
-maintenance_saving =
-    adjusted_base_maintenance * average_efficiency
-
-route_money_delta =
-    -old_price_side_bonus
-    + maintenance_saving
-```
-
-The probe reads the loaded define directly, so it automatically validates the
-value supplied by the active NVE define override rather than duplicating a
-hardcoded base cost. Seeded route prices remain necessary because their
-route-safe script surfaces are a separate TECH-01 boundary.
-
-## Clean install and run
-
-The installer now removes each existing `modeu5_*` package directory before
-copying. Pull the branch and install it:
+## Static preparation
 
 ```sh
 ./tools/generate_all.sh
-./tools/validate_generators.sh
-./tools/validate_module_packages.sh
-python3 ./tools/validate_ci_static_contracts.py
-./tools/install_local_packages.sh
-./tools/install_local_packages.sh --check
-./tools/clear_eu5_logs.sh
+python3 tools/validate_cmm_configuration.py
+python3 tools/validate_ci_static_contracts.py
+./tools/validate_cbp_script_safety.sh
+git diff --check
 ```
 
-Then start EU5 and run:
+The static contract rejects:
 
 ```txt
-event modeu5_us17_owner_modifiers.1
+- recalculating the Selling curve inside US-17 or US-20;
+- residual Import or Export price curves;
+- the rejected average-of-two-maintenance-costs formula;
+- use of separate Vanilla and directional weights in production;
+- any US-20 division or Selling modifier read;
+- any route-level add_gold mutation.
 ```
 
-Choose:
+## Focused probe
+
+Start EU5, load a campaign, and run:
 
 ```txt
-Run owner modifier probe
+event cbp_us17_owner_modifiers.1
 ```
 
-## Expected result
+Wait one in-game day.
 
-Visible event option:
+Expected final marker:
 
 ```txt
-PASS — owner modifiers and maximum-only cap
+ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 selling_shared_coefficient=verified mixed_denominator_formula=verified import_export_price_effect=zero route_money_delta=zero proportional_goods_loss=verified idempotence=passed live_auto_modifier_application=passed cmm_gate=open
 ```
 
-Expected log marker:
+## Arithmetic fixture
+
+Inputs:
 
 ```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only
+S = 0.10
+I = 0.20
+Ex = 0.30
+M = 0.08
+trade_volume = 10
 ```
 
-The probe validates:
+### Shared Selling coefficient
 
 ```txt
-1. Captured semantic buying efficiency equals FRA.modifier:import_efficiency.
-2. Captured selling efficiency equals FRA.modifier:selling_efficiency.
-3. Captured maintenance efficiency equals FRA.modifier:merchant_maintenance_efficiency.
-4. The base unit cost equals define:NCountry|MERCHANT_MAINTENANCE_COST.
-5. Base maintenance equals trade_volume × the loaded define.
-6. (-0.4 + -0.2) / 2 remains -0.3.
-7. (1.4 + 1.2) / 2 is capped from 1.3 to 1.
-8. With seeded base maintenance 20 and maintenance efficiency 0.20:
-     maintenance factor = 0.80
-     adjusted base maintenance = 16
-     average efficiency = 0.15
-     maintenance saving = 2.40
-9. With old price-side bonus 35:
-     route money delta = -32.60
+C = 0.05 / (1 + 0.10*10)
+C = 0.025
+
+Selling correction = -0.10 - 0.025 = -0.125
+effective Selling = -0.025
 ```
 
-## Post-run grep
-
-Use only the freshly cleared current log files:
-
-```sh
-grep -E "us17_trade_owner_modifiers|US17 OWNER_MODIFIERS|ASSERT FAIL|Non-existent modifier type|Event target link 'modifier' returned an unset scope|Tried to localize with localization disabled|Failed to fetch variable|Cannot read" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/error.log" \
-"$HOME/Documents/Paradox Interactive/Europa Universalis V/logs/debug.log" || true
-```
-
-Expected absence:
+### Import and Export cancellation
 
 ```txt
-ASSERT FAIL
-Non-existent modifier type
-Event target link 'modifier' returned an unset scope
-Tried to localize with localization disabled
-Failed to fetch variable
-Cannot read
+Import correction = -0.20
+effective Import = 0
+
+Export correction = -0.30
+effective Export = 0
 ```
 
-## Remaining boundary
-
-This probe confirms the country modifier input layer, the loaded maintenance
-define, the `trade_volume × define` base amount, and the formula arithmetic.
-It does not confirm live route reads or visible accounting surfaces for:
+### Merchant Maintenance
 
 ```txt
-sell price
-buy price
-export cost modifier
-trade-route profit write surface
-country trade-income accounting surface
+M/2 = 0.08 * 0.5 = 0.04
+5*(I + Ex) = (0.20 + 0.30) * 10 * 0.5 = 2.50
+
+denominator = 1 + 0.04 + 2.50 = 3.54
+reciprocal = 1 / 3.54 = 0.282486
+
+effective maintenance = 1 - 0.282486 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
 ```
 
-Until those surfaces are confirmed, the live route-money path remains
-fail-closed after successfully capturing the owner modifiers and define-derived
-base maintenance.
+Expected assertion windows:
+
+```txt
+shared coefficient: 0.024 .. 0.026
+Selling correction: -0.126 .. -0.124
+M/2 term: 0.039 .. 0.041
+5*(I+Ex) term: 2.499 .. 2.501
+denominator: 3.539 .. 3.541
+effective maintenance: 0.716 .. 0.719
+maintenance correction: 0.636 .. 0.639
+US-20 goods loss: 0.249 .. 0.251
+```
+
+### US-20
+
+```txt
+goods loss = 10 * 0.025 = 0.25
+target received = 9.75
+```
+
+## Runtime validation
+
+1. Record the non-CBP Selling, Import, Export, and Merchant Maintenance values.
+2. Run the focused event and wait one day.
+3. Confirm exactly four localized US-17 auto-modifiers are visible.
+4. Confirm `cbp_us20_route_loss_coefficient` exists and Selling equals its negative.
+5. Confirm Import and Export equal zero.
+6. Confirm Merchant Maintenance equals the mixed-denominator target.
+7. Confirm no US-17 treasury delta is emitted.
+8. Confirm US-20 goods loss divided by trade volume equals the persisted coefficient.
+9. Let another refresh run without changing inputs and confirm no baseline drift.
+10. Save, reload, and repeat the focused probe.
+
+## Failure conditions
+
+```txt
+Selling coefficient is recalculated or differs between US-17 and US-20
+Import or Export keeps a residual price effect
+Merchant Maintenance uses an average of two separate costs
+maintenance denominator is not 1 + M/2 + 5*(I+Ex)
+maintenance correction is not -M + 1 - reciprocal
+US-17 applies add_gold or a non-zero route money delta
+US-20 reads Selling Efficiency or recalculates the coefficient
+US-20 fails to multiply trade_volume by the coefficient
+an unchanged second refresh changes a reconstructed baseline
+state version is not 7
+script-system, unset-variable, or invalid-modifier error
+```

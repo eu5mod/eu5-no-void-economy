@@ -12,7 +12,7 @@ As a ModeU5 maintainer, I want one validation operation so every market-good div
 
 ## Functional objective
 
-Implement `modeu5_validate_stock_consistency` for one market and good. It must compare the market aggregate with the sum of country stocks, do nothing when equal, call CORE-01.5 when different, and verify that the post-rebuild difference is zero.
+Implement `cbp_validate_stock_consistency` for one market and good. It must compare the market aggregate with the sum of country stocks, do nothing when equal, call CORE-01.5 when different, and verify that the post-rebuild difference is zero.
 
 ## Runtime position
 
@@ -29,11 +29,11 @@ Feeds counters to: US-11 diagnostics and safe downstream reads
 |---|---|---|---|---|
 | Iterate countries | none/effect | `every_country` | CONFIRMED | 001 |
 | Country source stock | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Market aggregate | market x good | global per-good `cbp_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Scope passing | scripted effect | saved market and good scopes | CONFIRMED | 008 |
 | Transaction-local accumulator | country controller | `set_local_variable`, `change_local_variable`, `local_var:<name>` | CONFIRMED | 109 |
-| Rebuild effect | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
-| Validation effect | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
+| Rebuild effect | ModeU5 | `cbp_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
+| Validation effect | ModeU5 | `cbp_validate_stock_consistency` | CONFIRMED | 020 |
 | Numeric comparison and persistence precision | transaction / variable map | exact comparison pending controlled fractional arithmetic and map write/read probe | TO_TEST | 113 |
 | Monthly/four-year orchestration | country | `monthly_country_pulse`, `four_yearly_country_pulse` owned by US-11/on-actions | CONFIRMED | 011, 131 |
 
@@ -45,7 +45,7 @@ logical record and fields read: country stock source fields and market aggregate
 logical record fields written: none directly; correction delegates to CORE-01.5
 owner scope: global variable system
 tuple/key: market scope in one static map per good
-confirmed physical map family: modeu5_<good>_market_stock
+confirmed physical map family: cbp_<good>_market_stock
 physical value type: numeric
 default value: 0
 write owner: CORE-01.5 when validation requests rebuild
@@ -58,13 +58,13 @@ Expected stock, actual stock, difference, severity, rebuild-called flag, and pos
 ## Files expected to change
 
 ```txt
-in_game/common/script_values/modeu5_stock_values.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+in_game/common/script_values/cbp_stock_values.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_test_effects.txt
 in_game/events/
 in_game/localization/
-tools/templates/modeu5_stock_good_adapter.template.txt
+tools/templates/cbp_stock_good_adapter.template.txt
 docs/tests/TEST_PLAN.md
 docs/technical/DEBUG_CONVENTIONS.md
 ```
@@ -84,7 +84,7 @@ Related US: US-01, US-03, US-10, US-11
 - Calculate `expected_market_stock = sum(country_market_good_stock)`.
 - Calculate `stock_difference = actual_market_stock - expected_market_stock`.
 - If the difference is exactly zero, do not rewrite the aggregate.
-- If the difference is nonzero, record the inconsistency and call `modeu5_rebuild_market_stock_from_country_stocks`.
+- If the difference is nonzero, record the inconsistency and call `cbp_rebuild_market_stock_from_country_stocks`.
 - Use a configurable diagnostic threshold only to classify/promote the log severity, never to decide whether a nonzero difference is repaired.
 - Re-read the aggregate after rebuild and assert that the post-rebuild difference is zero.
 - Never repair country stock from market stock.
@@ -121,7 +121,7 @@ Related US: US-01, US-03, US-10, US-11
 Country A stock in Market X for wheat = 100
 Country B stock in Market X for wheat = 50
 Market X wheat aggregate deliberately set to 200
-Run modeu5_validate_stock_consistency for Market X and wheat
+Run cbp_validate_stock_consistency for Market X and wheat
 ```
 
 ### Expected result

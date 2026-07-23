@@ -90,7 +90,7 @@ jobs:
             docs/assets/pr157/generated/*
             docs/assets/pr157/review_popup_1524_event_source.svg
             docs/assets/pr157/review_popup_1524_event_source.dds
-            in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+            in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
           if-no-files-found: error
 
       - name: Commit generated assets

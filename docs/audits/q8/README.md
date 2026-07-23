@@ -1,4 +1,9 @@
-# Q8 Audit — optimisation implementation source of truth
+# Q8 Audit — optimization programme and proof history
+
+> **Classification:** optimization-track audit. These documents preserve the
+> Q8 proof stack and migration decisions. The resulting current global runtime
+> is defined by
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
 
 Source request: create a new master PR after #126 merged into `main`, similar to PR #126, starting with an audit that leads to Q8 implementation.
 
@@ -23,8 +28,8 @@ Read these first:
 
 | Source | Why it matters |
 |---|---|
-| `docs/audits/pr126/Q5_flux_logique_global.md` | Current monthly ordering and target workflow |
-| `docs/audits/pr126/Q5.1_current_global_flow.md` | Post-PR144/Q4.1/PR7.1 live-flow checkpoint and guarded-dispatch diagram |
+| `docs/audits/pr126/archives/Q5_flux_logique_global.md` | Archived PR126 monthly ordering and target workflow |
+| `docs/audits/pr126/archives/Q5.1_current_global_flow.md` | Archived post-PR144/Q4.1/PR7.1 guarded-dispatch checkpoint |
 | `docs/audits/pr126/Q8_future_optimisations.md` | Original F1–F7 future optimisation list |
 | `docs/audits/pr126/Q8_F9_location_cache_rolling_verification.md` | Location-derived dirty-set and rolling verification idea |
 | `docs/audits/pr126/Q8_F9_TECH01_storage_compatibility.md` | Storage constraints and narrowing of F9 |
@@ -32,23 +37,27 @@ Read these first:
 | `docs/technical/PERSISTENT_STATE_AUDIT.md` | Persistent map/list classification rules |
 | `docs/technical/TECH-01_engine_exposure_matrix.md` | Confirmed and unconfirmed engine exposure |
 
-Q5.x flow clarifications belong with Q5, not with the Q8 future-optimisation findings. If a Q5.2 checkpoint is added later, place it as a Q5 subsection or immediate follow-up to Q5.1 before the Q8 documents in this reading order.
+Q5.x flow clarifications are preserved in `archives/`. Any change to the live
+global flow must update `docs/architecture/RUNTIME_FLOW.md`, not create another
+Q5 checkpoint in this audit folder.
 
 ## Q8-owned audit methodology
 
 Q8 follows the same methodology as PR126, but with a different objective: optimize the post-PR126 runtime shape rather than establish the original refactor baseline.
 
-The Q8 audit owns its own Q1–Q5 documents under this folder:
+The Q8 audit retains Q1-Q4 at its root and its completed Q5 under `archives/`:
 
 ```txt
 docs/audits/q8/Q1_architecture_fichiers.md
 docs/audits/q8/Q2_systeme_cache.md
 docs/audits/q8/Q3_redondances_code.md
 docs/audits/q8/Q4_boucles_performance.md
-docs/audits/q8/Q5_flux_logique_global.md
+docs/audits/q8/archives/Q5_flux_logique_global.md
 ```
 
-Stacked Q8 PRs should update the affected Q8 Q-docs directly. They should not mutate the inherited PR126 Q1–Q5 documents unless the change intentionally corrects historical PR126 documentation.
+Completed Q8 documents are historical evidence. New implementation changes
+must update normative architecture or durable technical contracts and add a
+new dated proof record only when fresh audit evidence is required.
 
 ## Q8 implementation notes
 

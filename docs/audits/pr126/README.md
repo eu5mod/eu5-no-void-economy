@@ -1,8 +1,15 @@
-# PR #126 Audit — refactor source of truth
+# PR #126 Audit — historical refactor baseline
+
+> **Classification:** historical architecture baseline. Its Q1-Q8 reports
+> explain the refactor and proposed ownership split; they are no longer the
+> current global runtime source of truth. See
+> [`docs/architecture/RUNTIME_FLOW.md`](../../architecture/RUNTIME_FLOW.md).
 
 Source request: GitHub PR #126, “Developement balance”.
 
-This folder is the context base for agents that need to turn the PR126 audit into small, stacked, reviewable, and testable PRs. The Q1–Q6 reports are not separate historical notes: they are the canonical context to read before writing code. Q8 records future optimisation findings that should not be mixed into the current runtime-validation PR unless they become correctness blockers.
+This folder is the preserved context for the PR126 stacked refactor. The Q1-Q6
+reports remain canonical evidence for that historical change, while Q8 records
+the optimization ideas that followed it.
 
 ## Reading order for an agent
 
@@ -12,13 +19,13 @@ This folder is the context base for agents that need to turn the PR126 audit int
 | 2 | [Q2 — Cache system](./Q2_systeme_cache.md) | Identify source, derived cache, work cache, ledger, or debug state |
 | 3 | [Q3 — Code redundancy](./Q3_redondances_code.md) | Distinguish acceptable generated repetition from duplication to refactor |
 | 4 | [Q4 — Loops and performance](./Q4_boucles_performance.md) | Evaluate scan cost and the promoted-market target |
-| 5 | [Q5 — Global logical flow](./Q5_flux_logique_global.md) | Understand the current workflow and the target workflow |
+| 5 | [Q5 — Global logical flow](./archives/Q5_flux_logique_global.md) | Understand the archived PR126-era workflow and target workflow |
 | 6 | [Q6 — Functional description](./Q6_description_fonctionnelle.md) | Translate business rules into code guardrails |
 | 7 | [Q8 — Future optimisations](./Q8_future_optimisations.md) | Track follow-up performance findings without widening the active PR |
 | 8 | [Q8/F9 — Rolling location cache](./Q8_F9_location_cache_rolling_verification.md) | Evaluate the location owner/market cache, rolling verification, and Q4 win estimate |
 | 9 | [Q8/F9 — TECH-01 storage compatibility](./Q8_F9_TECH01_storage_compatibility.md) | Constrain F9 against variable-map storage limits, early-exit limits, and dirty-set-first design |
 | 10 | [Q8/F9c — Market-sliced verifier](./Q8_F9C_market_sliced_verifier.md) | Evaluate deterministic market slicing, candidate-list slicing, count probes, and Performance Mode viability |
-| 11 | [Q8.7 — Q1 to Q5 impact](./Q8.7_Q1_Q5_impact.md) | Read the Q8.7/F7 shadow-comparison consequences for Q1–Q5 before switching live runtime |
+| 11 | [Q8.7 — Q1 to Q5 impact](./Q8.7_Q1_Q5_impact.md) | Read the Q8.7/F7 shadow-comparison consequences for the archived Q1–Q5 baseline |
 | 12 | [AGENT instructions](./AGENT_REFACTOR_INSTRUCTIONS.md) | Start the refactor PR stack |
 
 ## Global executive summary
@@ -33,12 +40,12 @@ The PR126 monthly target is ownership-split: country pulse prepares country-owne
 
 | Priority | Issue | Release impact | Affected files | Recommended action | Effort |
 |---|---|---|---|---|---|
-| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `modeu5_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
-| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `modeu5_stock_effects.txt`, `modeu5_void_economy_effects.txt`, `modeu5_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
-| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `modeu5_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
-| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `modeu5_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
-| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `modeu5_configuration_effects.txt`, `modeu5_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
-| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/modeu5_core_tests/...` | Factor dump conventions, not business scenarios | M |
+| P0 | Runtime scripts rely on many convention-synchronized maps | Silent divergence is possible if a helper bypasses central operators | `cbp_stock_effects.txt`, `VARIABLE_MAP_STORAGE_MODEL.md` | Add an automated check for direct writes outside helpers | M |
+| P0 | The monthly workflow is still broad-flow rather than promoted-market driven | US-00, US-10, validation, and debug may rescan or rebuild their own world | `cbp_stock_effects.txt`, `cbp_void_economy_effects.txt`, `cbp_stock_demand_resolver_effects.txt` | Introduce the promoted-market dispatcher progressively in test-only mode, then compare modes | L |
+| P1 | Additive scheduling caches have no confirmed element-level removal | Over-validation or increasing cost after long campaigns | `cbp_performance_effects.txt`, generated adapters | Document owner, rebuild trigger, and reset policy for each cache | S |
+| P1 | US-00 reasoning mixes ingestion facts and finalization/carryover | Risk of recalculating a penalty from post-consumption/post-decay stock | `cbp_void_economy_effects.txt`, generated adapters | Freeze produced/added/rejected/ratio inputs before US-10, decay, and reconciliation | M |
+| P1 | CMM configuration, runtime gates, and package markers are scattered | Contributor confusion and false runtime-toggle assumptions | `main_menu`, `cbp_configuration_effects.txt`, `cbp_cmm_runtime_effects.txt` | Maintain a single configuration index | S |
+| P2 | Several probes contain long and similar scenarios | Costly maintenance when contracts change | `packages/cbp_core_tests/...` | Factor dump conventions, not business scenarios | M |
 | P2 | Historical optional package names are less aligned with the current contract | Playset confusion before release | `packages/*/descriptor.mod`, `MODULE_OPTION_MODEL.md` | Rename only if compatible; otherwise document the alias | M |
 
 ## Non-negotiable contracts for the PR126 stack

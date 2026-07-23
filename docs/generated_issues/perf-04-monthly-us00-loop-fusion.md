@@ -60,7 +60,7 @@ uses the already confirmed country-driven native iterator
 | Need | Scope | Method | Status | TECH-01 |
 |---|---|---|---|---|
 | Country-to-market traversal | country -> market | `every_market_present_in_country` | CONFIRMED | 117 |
-| Per-good US-00 market processing | country x market x good | generated `modeu5_process_us00_monthly_market_good_<good>` helpers | CONFIRMED | 104, 122 |
+| Per-good US-00 market processing | country x market x good | generated `cbp_process_us00_monthly_market_good_<good>` helpers | CONFIRMED | 104, 122 |
 | Produced-in-market skip gate | market x good | `produced_in_market:<good>` | CONFIRMED | 122 |
 | Non-territorial market-presence edge case | country x market | diagnostic-only deferred probe | TO_TEST | 128 |
 
@@ -68,7 +68,7 @@ uses the already confirmed country-driven native iterator
 
 ```txt
 tools/generate_stock_good_helpers.sh
-in_game/common/scripted_effects/modeu5_stock_goods_generated.txt
+in_game/common/scripted_effects/cbp_stock_goods_generated.txt
 docs/generated_issues/perf-04-monthly-us00-loop-fusion.md
 docs/generated_issues/perf-03-market-country-cache.md
 docs/tests/TEST_PLAN.md
@@ -95,11 +95,11 @@ docs/tests/US_00_VOID_ECONOMY_PIPELINE_RUNBOOK.md
 
 ## Acceptance criteria
 
-- `modeu5_run_us00_monthly_pipeline_all_goods` loops
+- `cbp_run_us00_monthly_pipeline_all_goods` loops
   `every_market_present_in_country` once for the current country.
-- The generated `modeu5_process_us00_monthly_market_all_goods` helper runs all
-  per-good US-00 market processors inside the saved `modeu5_market` scope.
-- Existing `modeu5_run_us00_monthly_pipeline_good_<good>` wrappers remain
+- The generated `cbp_process_us00_monthly_market_all_goods` helper runs all
+  per-good US-00 market processors inside the saved `cbp_market` scope.
+- Existing `cbp_run_us00_monthly_pipeline_good_<good>` wrappers remain
   available.
 - US-00 controlled and monthly runtime tests keep their existing expected dump
   semantics.
@@ -126,10 +126,10 @@ Then in a disposable campaign:
 
 ```txt
 wait until CORE-02 initialization has completed
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 choose "Run US-00 controlled pipeline test"
 wait 2 days
-event modeu5_us00_debug.1
+event cbp_us00_debug.1
 choose "Run US-00 monthly runtime smoke test"
 ```
 

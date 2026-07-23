@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""Static contracts for US-04 lifecycle, archived probes, and fail-closed reconciliation."""
+
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+failures: list[str] = []
+
+CANDIDATES = [
+    ("01", "plain_child", "wheat", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_01_plain_child.txt", "INJECT:pop_demand = {", "wheat = {", "cbp_us04_live_pop_demand_multiplier_wheat"),
+    ("02", "inner_inject", "beer", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_02_inner_inject.txt", "INJECT:pop_demand = {", "INJECT:beer = {", "cbp_us04_live_pop_demand_multiplier_beer"),
+    ("03", "inner_try_inject", "cloth", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_03_inner_try_inject.txt", "INJECT:pop_demand = {", "TRY_INJECT:cloth = {", "cbp_us04_live_pop_demand_multiplier_cloth"),
+    ("04", "inner_inject_or_create", "tools", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_04_inner_inject_or_create.txt", "INJECT:pop_demand = {", "INJECT_OR_CREATE:tools = {", "cbp_us04_live_pop_demand_multiplier_tools"),
+    ("05", "outer_try_inject", "fish", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_05_outer_try_inject.txt", "TRY_INJECT:pop_demand = {", "INJECT:fish = {", "cbp_us04_live_pop_demand_multiplier_fish"),
+    ("06", "outer_inject_or_create", "wine", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_06_outer_inject_or_create.txt", "INJECT_OR_CREATE:pop_demand = {", "INJECT:wine = {", "cbp_us04_live_pop_demand_multiplier_wine"),
+    ("07", "direct_global", "books", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_07_direct_global.txt", "INJECT:pop_demand = {", "INJECT:books = {", "global_var:test_cbp_us04_matrix_global_books"),
+    ("08", "direct_global_value_block", "furniture", "docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_08_direct_global_value_block.txt", "INJECT:pop_demand = {", "INJECT:furniture = {", "global_var:test_cbp_us04_matrix_global_furniture"),
+]
+
+
+def read(path: str) -> str:
+    target = ROOT / path
+    if not target.is_file():
+        failures.append(f"Missing US-04 file: {path}")
+        return ""
+    return target.read_text(encoding="utf-8-sig", errors="ignore")
+
+
+def executable_lines(text: str) -> list[str]:
+    return [line.split("#", 1)[0] for line in text.splitlines()]
+
+
+def has_executable_every_location(text: str) -> bool:
+    return any(re.search(r"^\s*every_location\s*=\s*\{", line) for line in executable_lines(text))
+
+
+def expect(condition: bool, message: str) -> None:
+    if not condition:
+        failures.append(message)
+
+
+def block(text: str, name: str) -> str:
+    marker = f"{name} = {{"
+    start = text.find(marker)
+    if start < 0:
+        failures.append(f"Missing US-04 block: {name}")
+        return ""
+    open_brace = text.find("{", start)
+    depth = 0
+    in_quote = False
+    escaped = False
+    index = open_brace
+    while index < len(text):
+        char = text[index]
+        if in_quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_quote = False
+        else:
+            if char == '"':
+                in_quote = True
+            elif char == "#":
+                newline = text.find("\n", index)
+                index = len(text) if newline < 0 else newline
+                continue
+            elif char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    return text[start : index + 1]
+        index += 1
+    failures.append(f"Unclosed US-04 block: {name}")
+    return ""
+
+
+def main() -> int:
+    template = read("tools/templates/cbp_us04_pop_demand_good.template.txt")
+    helper_generator = read("tools/generate_us04_pop_demand_helpers.sh")
+    pop_demand_effects = read("in_game/common/scripted_effects/cbp_us04_pop_demand_effects.txt")
+    demand_resolver = read("in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt")
+    integration = read("in_game/common/scripted_effects/cbp_us04_pop_demand_live_integration_effects.txt")
+    observed_target = read("in_game/common/scripted_effects/cbp_us04_observed_current_target_effects.txt")
+    on_actions = read("in_game/common/on_action/cbp_stock_on_actions.txt")
+    probe_values = read("packages/cbp_core_tests/in_game/common/script_values/cbp_us04_pop_demand_injection_values.txt")
+    endpoint_adapter = read("packages/cbp_core_tests/in_game/common/script_values/cbp_us04_pop_demand_endpoint_probe_values.txt")
+    endpoint_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_pop_demand_endpoint_test_effects.txt")
+    debug_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_test_effects.txt")
+    matrix_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_injection_matrix_test_effects.txt")
+    q7_q8_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q7_q8_and_target_architecture_test_effects.txt")
+    q9_candidate = read("docs/audits/pr69/archives/goods_demand_invalid_syntax/zz_cbp_us04_probe_09_replace_pop_demand_books.txt")
+    q9_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q9_replace_pop_demand_test_effects.txt")
+    q9_debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_q9_debug_events.txt")
+    q11_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_q11_pop_demand_read_probe_effects.txt")
+    debug_events = read("packages/cbp_core_tests/in_game/events/cbp_us04_debug_events.txt")
+    localization = read("packages/cbp_core_tests/in_game/localization/cbp_us04_endpoint_probe_l_english.yml")
+    summarizer = read("tools/summarize_cbp_logs.sh")
+    generate_all = read("tools/generate_all.sh")
+    gitignore = read(".gitignore")
+
+    initializer = block(template, "cbp_initialize_pop_demand_multiplier_good___GOOD__")
+    getter = block(template, "cbp_get_pop_demand_multiplier_good___GOOD__")
+    annual = block(template, "cbp_annual_adjust_location_pop_demand_good___GOOD__")
+    reconciliation_getter = block(template, "cbp_get_us04_reconciliation_coefficient_good___GOOD__")
+    reconciliation_initializer = block(template, "cbp_initialize_us04_reconciliation_coefficient_good___GOOD__")
+    monthly_reconciliation = block(template, "cbp_monthly_reconcile_location_pop_demand_good___GOOD__")
+    market_monthly_reconciliation = block(template, "cbp_monthly_reconcile_country_market_pop_demand_good___GOOD__")
+    monthly_country_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_estate_accounting_for_current_country")
+    monthly_country_legacy_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_reconciliation_for_current_country")
+    monthly_owner_switch = block(read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt"), "cbp_run_monthly_stock_cycle_q8_7_owner_switch")
+    monthly_legacy_cycle = block(read("in_game/common/scripted_effects/cbp_stock_effects.txt"), "cbp_run_monthly_stock_cycle")
+    init_root = block(integration, "cbp_run_pop_demand_multiplier_initialization_v1")
+    init_country = block(integration, "cbp_run_pop_demand_multiplier_initialization_for_current_country_v1")
+    init_once = block(integration, "cbp_initialize_pop_demand_multipliers_once")
+    init_country_once = block(integration, "cbp_initialize_pop_demand_multipliers_for_current_country_once")
+    live_wheat = block(probe_values, "cbp_us04_live_pop_demand_multiplier_wheat")
+    endpoint_probe = block(endpoint_adapter, "cbp_us04_probe_live_pop_demand_multiplier_wheat")
+
+    expect('value = "cbp_pop_demand_base_consumption_multiplier"' in initializer, "US-04 initializer must explicitly seed the 1.20 baseline")
+    expect('value = "cbp_pop_demand_base_consumption_multiplier"' in reconciliation_initializer, "US-04 reconciliation coefficient initializer must seed the 1.20 baseline")
+    expect("NOT =" in initializer and "is_key_in_variable_map" in initializer, "US-04 initializer must not overwrite an existing location × good coefficient")
+    expect("NOT =" in reconciliation_initializer and "is_key_in_variable_map" in reconciliation_initializer, "US-04 reconciliation initializer must not overwrite an existing location × good coefficient")
+    expect("name = cbp_us04_old_multiplier value = 1" in getter, "US-04 missing multiplier read must fall back to 1")
+    expect("cbp_pop_demand_base_consumption_multiplier" not in getter, "US-04 getter must not synthesize 1.20 fallback")
+    expect("name = cbp_us04_reconciliation_coefficient_value value = 1" in reconciliation_getter, "US-04 missing reconciliation coefficient must fall back to 1")
+    expect("cbp_pop_demand_base_consumption_multiplier" not in reconciliation_getter, "US-04 reconciliation getter must not synthesize 1.20 fallback")
+    expect("scope:cbp_us04_multiplier_present > 0" in annual, "US-04 annual adaptation must require an initialized record")
+    expect("scope:cbp_us04_reconciliation_coefficient_present > 0" in annual, "US-04 annual adaptation must require an initialized reconciliation coefficient")
+    expect("scope:cbp_us04_adjustment_applied > 0" in annual, "US-04 annual write must occur only after an adjustment")
+    expect("cbp_write_us04_reconciliation_coefficient_good___GOOD__" in annual, "US-04 annual adaptation must update the active reconciliation coefficient")
+    expect("cbp_read_us04_monthly_location_proxy_estate_quantities_good___GOOD__" in monthly_reconciliation, "US-04 monthly reconciliation must read ModeU5-owned location Estate proxy inputs")
+    expect("cbp_us04_proxy_estate_source_present" in monthly_reconciliation, "US-04 monthly reconciliation must distinguish active proxy input from legacy diagnostics")
+    expect("scope:cbp_us04_proxy_estate_source_present > 0" in monthly_reconciliation, "US-04 stock/estate mutation must require an active proxy source")
+    expect("cbp_us04_proxy_estate_size_total" in monthly_reconciliation, "US-04 monthly reconciliation must compute the local proxy Estate-size total")
+    expect("cbp_remove_stock" in monthly_reconciliation, "US-04 monthly reconciliation must remove satisfied proxy demand through the central stock operator")
+    expect("cbp_us04_positive_reconciliation_delta_ratio" in monthly_reconciliation, "US-04 must split positive consumption deltas from below-baseline restoration deltas")
+    expect("cbp_us04_restore_reconciliation_delta_ratio" in monthly_reconciliation, "US-04 must restore below-baseline consumption deltas when the coefficient falls below 1")
+    expect("name = cbp_us04_goods_supply_removed_quantity value = scope:cbp_us04_actual_reconciled_quantity" in monthly_reconciliation, "US-04 goods-supply reconciliation must use actual extra quantity removed, not requested total consumption")
+    expect("name = cbp_us04_goods_supply_delta value = { value = scope:cbp_us04_goods_supply_removed_quantity multiply = -1 }" in monthly_reconciliation, "US-04 goods-supply reconciliation must apply a negative delta equal to actual extra consumption")
+    expect("only_remove_at_country_level = no" in monthly_reconciliation, "US-04 positive consumption delta must ask the central remove operator to mirror the vanilla market-supply delta")
+    expect("cbp_add_stock" in monthly_reconciliation, "US-04 monthly reconciliation must restore stock for coefficients below 1")
+    expect("name = cbp_us04_goods_supply_added_quantity value = scope:cbp_us04_actual_restored_quantity" in monthly_reconciliation, "US-04 goods-supply restoration must use actual stock restored")
+    expect("only_add_at_country_level = no" in monthly_reconciliation, "US-04 below-baseline restoration must ask the central add operator to mirror the vanilla market-supply delta")
+    expect("cbp_us04_reconciliation_estate_refund_value" in monthly_reconciliation, "US-04 below-baseline restoration must compute an estate refund")
+    expect("add_gold_to_estate = { estate_type = estate_type:peasants_estate value = scope:cbp_us04_reconciliation_estate_refund_peasants_estate }" in monthly_reconciliation, "US-04 below-baseline restoration must refund Estates through positive add_gold_to_estate")
+    expect("add_goods_supply" not in monthly_reconciliation, "US-04 monthly reconciliation must delegate vanilla market-supply deltas to the central stock operators")
+    expect("add_gold_to_estate" in monthly_reconciliation, "US-04 monthly reconciliation must charge known Estates through the confirmed country-scope effect")
+    expect("reason=location_estate_demand_exposure_not_confirmed" not in monthly_reconciliation, "US-04 proxy reconciliation must not stay blocked on direct location Estate demand exposure")
+    expect("Legacy location x good records" not in monthly_reconciliation, "US-04 monthly reconciliation must not use a legacy no-estate fallback")
+    expect("cbp_read_country_stock_record" in monthly_reconciliation, "US-04 monthly reconciliation must prove country and market stock deltas after central removal")
+    expect("cbp_read_us04_monthly_location_estate_requested_quantities_good___GOOD__" in template, "US-04 must expose location-level estate requested-demand reads")
+    expect("cbp_read_us04_monthly_pop_requested_estate_quantities_good___GOOD__" in template, "US-04 must retain legacy estate requested-demand read alias")
+    for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
+        expect(f"cbp_us04_proxy_estate_size_{estate}" in template, f"US-04 template must read {estate} proxy size")
+        expect(f"cbp_record_us04_location_estate_proxy_{estate}" in demand_resolver, f"US-04 resolver must expose {estate} proxy writer")
+        proxy_writer = block(demand_resolver, f"cbp_record_us04_location_estate_proxy_{estate}")
+        expect("target = goods:$good$" in proxy_writer, f"US-04 {estate} proxy writer must test the same literal good key read by generated helpers")
+        expect("key = goods:$good$" in proxy_writer, f"US-04 {estate} proxy writer must write the same literal good key read by generated helpers")
+        expect("target = scope:cbp_good" not in proxy_writer and "key = scope:cbp_good" not in proxy_writer, f"US-04 {estate} proxy writer must not persist proxy records under a saved-scope key")
+    proxy_reset = block(demand_resolver, "cbp_reset_us04_location_estate_proxy")
+    expect("target = goods:$good$" in proxy_reset, "US-04 proxy reset must test literal good keys")
+    expect("key = goods:$good$" in proxy_reset, "US-04 proxy reset must remove literal good keys")
+    expect("target = scope:cbp_good" not in proxy_reset and "key = scope:cbp_good" not in proxy_reset, "US-04 proxy reset must not use saved-scope keys")
+    expect("demands_goods_by_pops = goods:__GOOD__" in market_monthly_reconciliation, "US-04 market monthly dispatcher must gate each good with documented market Pop-demand presence")
+    expect("every_owned_location = {" in market_monthly_reconciliation and "limit = { market = scope:cbp_us04_reconciliation_market }" in market_monthly_reconciliation, "US-04 market monthly dispatcher must scan only owned locations in the target market after the good gate")
+    expect("cbp_monthly_reconcile_location_pop_demand_good___GOOD__ = yes" in market_monthly_reconciliation, "US-04 market monthly dispatcher must delegate to the location-level blocked reconciliation helper")
+    expect("cbp_monthly_assess_country_market_estate_consumption_good___GOOD__" in template, "US-04 must expose an Estate-level country-market assessment alias")
+    expect("cbp_monthly_assess_location_estate_consumption_good___GOOD__" in template, "US-04 must expose an Estate-level location assessment alias")
+    expect("cbp_pop_demand_requested_quantity_peasants_estate" in template, "US-04 must support peasants estate requested-demand records")
+    expect("cbp_pop_demand_requested_quantity_burghers_estate" in template, "US-04 must support burghers estate requested-demand records")
+    expect("cbp_pop_demand_requested_quantity_nobles_estate" in template, "US-04 must support nobles estate requested-demand records")
+    expect("cbp_pop_demand_requested_quantity_clergy_estate" in template, "US-04 must support clergy estate requested-demand records")
+    for estate in ["peasants_estate", "burghers_estate", "nobles_estate", "clergy_estate"]:
+        expect(f"cbp_us04_reconciliation_estate_charge_{estate}" in template, f"US-04 monthly reconciliation must record {estate} charge diagnostics")
+        expect(f"cbp_us04_reconciliation_estate_refund_{estate}" in template, f"US-04 monthly reconciliation must record {estate} refund diagnostics")
+    expect("cbp_us04_monthly_requested_quantity_estate_total" in template, "US-04 must keep estate requested total diagnostics available")
+    expect("cbp_us04_reconciliation_estate_charge" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate charge amount")
+    expect("cbp_us04_reconciliation_estate_refund" in monthly_reconciliation, "US-04 monthly reconciliation must record the estate refund amount")
+
+    expect("cbp_initialize_pop_demand_multiplier_all_goods" in helper_generator, "US-04 helper generator must still emit the all-good initializer")
+    expect("cbp_initialize_us04_reconciliation_coefficient_all_goods" in helper_generator, "US-04 helper generator must emit the active reconciliation initializer")
+    expect("cbp_monthly_reconcile_country_market_pop_demand_all_goods" in helper_generator, "US-04 helper generator must emit country-market monthly reconciliation dispatch")
+    expect("cbp_monthly_assess_country_market_estate_consumption_all_goods" in helper_generator, "US-04 helper generator must emit Estate-level country-market assessment dispatch")
+    expect("cbp_monthly_reconcile_location_pop_demand_all_goods" in helper_generator, "US-04 helper generator must retain location-level monthly reconciliation dispatch for deterministic fixtures")
+    expect("cbp_monthly_assess_location_estate_consumption_all_goods" in helper_generator, "US-04 helper generator must emit Estate-level location assessment dispatch")
+    expect(not has_executable_every_location(integration), "US-04 must not use invalid executable every_location effect")
+    expect("set_global_variable" in init_root and "cbp_us04_multiplier_initialization_version" in init_root, "US-04 root initializer must only mark global version")
+    expect("every_owned_location = {" in init_country and "cbp_initialize_pop_demand_multiplier_all_goods = yes" in init_country, "US-04 country initializer must traverse owned locations and seed all goods")
+    expect("cbp_us04_country_multiplier_initialization_version" in init_country, "US-04 country initializer must stamp country version")
+    expect("NOT = { has_global_variable = cbp_us04_multiplier_initialization_version }" in init_once, "US-04 root initializer must have missing-version gate")
+    expect("global_var:cbp_us04_multiplier_initialization_version < 1" in init_once, "US-04 root initializer must support version upgrades")
+    expect("NOT = { has_variable = cbp_us04_country_multiplier_initialization_version }" in init_country_once, "US-04 country initializer must have missing country-version gate")
+    expect("cbp_initialize_pop_demand_multipliers_once = yes" in on_actions, "US-04 root marker must run from delayed new-campaign pulse")
+    expect(on_actions.count("cbp_initialize_pop_demand_multipliers_for_current_country_once = yes") >= 2, "US-04 country initialization must run from monthly and yearly country pulses")
+    expect("cbp_run_monthly_us04_reconciliation_for_current_country = yes" not in on_actions, "US-04 reconciliation must not run outside the monthly owner switch after audit")
+    for cycle_name, cycle in [
+        ("Q8.7 monthly owner switch", monthly_owner_switch),
+        ("legacy monthly cycle", monthly_legacy_cycle),
+    ]:
+        trade_position = cycle.find("cbp_run_monthly_country_trade_owner_cycle = yes")
+        us04_position = cycle.find("cbp_run_monthly_us04_reconciliation_for_current_country = yes")
+        audit_position = cycle.find("cbp_audit_enabled_trigger = yes")
+        expect(
+            -1 not in (trade_position, us04_position, audit_position)
+            and trade_position < us04_position < audit_position,
+            f"{cycle_name} must run trade-owner accounting, then US-04, then the audit gate",
+        )
+    expect("cbp_run_monthly_us04_estate_accounting_for_current_country = yes" in monthly_country_legacy_runtime, "US-04 legacy monthly reconciliation wrapper must delegate to Estate-level accounting")
+    expect("every_market_present_in_country = {" in monthly_country_runtime, "US-04 current-country monthly runtime must iterate country markets before goods and locations")
+    expect("cbp_monthly_assess_country_market_estate_consumption_all_goods = yes" in monthly_country_runtime, "US-04 current-country monthly runtime must call the Estate-level market/good-first dispatcher")
+    expect("cbp_monthly_reconcile_location_pop_demand_all_goods = yes" not in monthly_country_runtime, "US-04 current-country monthly runtime must not scan every owned location before the market/good gate")
+    expect("active_proxy" in debug_test, "US-04 debug test must classify Estate-level accounting as active proxy reconciliation")
+    expect("scenario=us04_estate_level_accounting" in debug_test, "US-04 debug test must include the PR #167 Estate-level accounting probe")
+    estate_spec = read("docs/specifications/US04_ESTATE_LEVEL_ACCOUNTING.md")
+    expect("cbp_us04_reconciliation_coefficient(location, good)" in estate_spec, "US-04 Estate spec must document the ModeU5 coefficient-based local consumption proxy")
+    expect("proxy_estate_size_at_location" in estate_spec, "US-04 Estate spec must document the Estate size term for the local proxy")
+    expect("reconciliation_removed_stock_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation removes stock")
+    expect("reconciliation_goods_supply_removed_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation removes the same extra quantity from goods supply")
+    expect("coefficient_below_one_goods_supply_added" in debug_test, "US-04 debug test must assert below-baseline coefficients restore vanilla goods supply")
+    expect("coefficient_below_one_stock_restoration" in debug_test, "US-04 debug test must assert below-baseline coefficients restore country and market stock")
+    expect("coefficient_below_one_estate_refund" in debug_test, "US-04 debug test must assert below-baseline coefficients refund estates")
+    expect("reconciliation_estate_charge_with_proxy" in debug_test, "US-04 debug test must assert that active proxy reconciliation charges estates")
+    expect("ModeU5 TEST PASS scenario=us04_estate_level_accounting" in debug_test, "US-04 Estate-level accounting probe must now pass when proxy inputs are present")
+
+    combined_candidates = ""
+    for candidate_id, syntax_name, good, path, outer, inner, value_ref in CANDIDATES:
+        candidate = read(path)
+        combined_candidates += candidate
+        expect(outer in candidate, f"US-04 candidate {candidate_id} missing outer syntax")
+        expect(inner in candidate, f"US-04 candidate {candidate_id} missing inner syntax")
+        expect(value_ref in candidate, f"US-04 candidate {candidate_id} missing value reference")
+        if candidate_id not in {"07", "08"}:
+            expect(value_ref in probe_values, f"US-04 archived probe values missing {value_ref}")
+        if candidate_id in {"01", "02", "03", "04", "05", "06"}:
+            expect(f"id={candidate_id} syntax={syntax_name}" in matrix_test, f"US-04 matrix test missing candidate {candidate_id}")
+        else:
+            expect(f"id={candidate_id} syntax={syntax_name} good={good}" in q7_q8_test, f"US-04 focused Q7/Q8 test missing candidate {candidate_id}")
+            expect(f"goods_demand_in_market(goods:{good})" in q7_q8_test, f"US-04 focused Q7/Q8 test must read {good} demand")
+
+    expect("REPLACE:" not in combined_candidates and "TRY_REPLACE:" not in combined_candidates, "US-04 probes 01-08 must remain additive/non-destructive")
+    expect("generate_us04_injection_matrix_test.py" not in generate_all, "US-04 injection matrix must not be generated")
+    expect(not (ROOT / "tools/generate_us04_injection_matrix_test.py").exists(), "US-04 injection matrix generator must remain deleted")
+    expect(not (ROOT / "packages/cbp_economy_rebalance/in_game/common/goods_demand/zz_cbp_us04_pop_demand_injection_probe.txt").exists(), "Obsolete aggregate probe must remain deleted")
+
+    expect("cbp_pop_demand_base_consumption_multiplier" not in probe_values, "Archived injection values must never use 1.20 as fallback")
+    expect("value = 1" in live_wheat, "Archived injection values must start from multiplier 1")
+    expect("has_global_variable = cbp_us04_multiplier_initialization_version" in probe_values, "Archived injection values must require completed initialization")
+    expect('value = "cbp_us04_live_pop_demand_multiplier_wheat"' in endpoint_probe, "Endpoint probe must delegate to the shared test wheat value")
+
+    expect("cbp_us04_current_pop_consumption_target_books_by_market" in observed_target, "Observed-current architecture must persist books target by market")
+    expect("goods_demand_in_market(goods:books)" in observed_target, "Observed-current architecture must observe current books demand")
+    expect("multiply = $baseline_multiplier$" in observed_target, "Observed-current architecture must initialize observed demand by baseline multiplier")
+    expect("multiply = $factor$" in observed_target, "Observed-current architecture must transition current target by yearly factor")
+    expect("cbp_resolve_stock_consumption" in observed_target and "requested_quantity = scope:cbp_us04_current_consumption_target" in observed_target, "Observed-current target must feed ModeU5 stock consumption")
+
+    expect("scenario=us04_q7_q8_positive_globals" in q7_q8_test, "Focused Q7/Q8 scenario marker missing")
+    expect("scenario=us04_observed_current_target_architecture" in q7_q8_test, "Observed-current architecture scenario marker missing")
+    expect("cbp_us04_q7_q8_finalize = yes" in debug_events, "Debug event must retain direct-console focused Q7/Q8 probe")
+    expect("cbp_debug_run_us04_estate_level_accounting_probe = yes" in debug_events, "Visible US-04 debug option C must run the Estate-level accounting probe")
+    expect("cbp_us04_debug.1.c" in debug_events and "Estate-level location accounting" in localization, "Estate-level accounting option must be present and localized")
+
+    expect("TEST PACKAGE ONLY / DESTRUCTIVE PROBE" in q9_candidate, "Q9 destructive candidate must be clearly marked test-only")
+    expect("REPLACE:pop_demand = {" in q9_candidate, "Q9 must use REPLACE:pop_demand")
+    expect("books = {" in q9_candidate and "global_var:test_cbp_us04_q9_replace_global_books" in q9_candidate, "Q9 must replace books demand with a dynamic global source")
+    expect("scenario=us04_q9_replace_pop_demand" in q9_test, "Q9 scenario marker missing")
+    expect("goods_demand_in_market(goods:books)" in q9_test, "Q9 must read books demand")
+    expect("goods_demand_in_market(goods:wool)" in q9_test, "Q9 must keep a wool control")
+    expect("test_cbp_us04_q9_replace_global_books value = 4.0" in q9_test, "Q9 must raise replacement source to 4.0")
+    expect("reason=no_target_response" in q9_test, "Q9 must classify no-response failures")
+    expect("namespace = cbp_us04_q9_debug" in q9_debug_events, "Q9 must use an isolated debug namespace")
+    expect("cbp_us04_q9_debug.1" in q9_debug_events and "cbp_us04_q9_debug.3" in q9_debug_events, "Q9 isolated console event chain must be present")
+    expect("id = cbp_us04_q9_debug.3 days = 35" in q9_debug_events, "Q9 must wait across a monthly tick before final capture")
+    expect("cbp_us04_q9_replace" not in debug_events, "Normal core test launcher must not reference isolated Q9 effects")
+    q11_executable = "\n".join(executable_lines(q11_test))
+    for invalid_syntax in [
+        "pop_demand(goods:",
+        "demand:pop_demand(goods:",
+        "pop_demand:books",
+        "pop_demand:wheat",
+        ".pop_demand(goods:",
+    ]:
+        expect(invalid_syntax not in q11_executable, f"Q11 loaded probe must not execute archived invalid syntax: {invalid_syntax}")
+    expect("reason=direct_pop_demand_read_not_confirmed" in q11_test, "Q11 loaded probe must report blocked direct Pop-demand reads")
+    expect("no_invalid_value_links_executed=1" in q11_test, "Q11 loaded probe must explicitly report that invalid value links were not executed")
+
+    expect("INJECTION (CONTROL|CANDIDATE|RESULT|MATRIX" in summarizer, "Summarizer must include US-04 injection control/candidate/result lines")
+    expect("VANILLA DEMAND" in summarizer, "Summarizer must include US-04 vanilla-demand probe lines")
+    expect('expected_mode" != "none"' in summarizer and 'Expected scenario checking disabled.' in summarizer, "Summarizer must support --expected none")
+
+    expect("generate_us04_pop_demand_override.py" not in generate_all, "US-04 generation pipeline must not regenerate vanilla pop_demand")
+    expect("packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt" not in gitignore, "Obsolete exact-path vanilla pop_demands.txt must not remain ignored")
+    expect(not (ROOT / "tools/generate_us04_pop_demand_override.py").exists(), "Obsolete vanilla Pop-demand override generator must remain deleted")
+    expect(not (ROOT / "packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt").exists(), "No exact-path vanilla pop_demands.txt override may be present")
+    expect(not any((ROOT / "packages/cbp_economy_rebalance/in_game/common/goods_demand").glob("zz_cbp_us04_probe_*.txt")), "Archived US-04 pop_demand probes must not live in the campaign economy package")
+    expect(not any((ROOT / "packages/cbp_core_tests/in_game/common/goods_demand").glob("zz_cbp_us04_probe_*.txt")), "Archived invalid-syntax US-04 pop_demand probes must not live in a loadable test package")
+    expect(not (ROOT / "packages/cbp_economy_rebalance/in_game/common/script_values/cbp_us04_pop_demand_injection_values.txt").exists(), "Archived US-04 injection script values must not live in the campaign economy package")
+    expect(not (ROOT / "packages/cbp_economy_rebalance/in_game/common/goods_demand/zz_cbp_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the production economy package")
+    expect(not (ROOT / "packages/cbp_core_tests/in_game/common/goods_demand/zz_cbp_us04_probe_09_replace_pop_demand_books.txt").exists(), "Q9 destructive replacement probe must never live in the normal core test package")
+
+    for marker in ["reason=missing_map_not_vanilla", "reason=missing_initialization_gate_not_vanilla", "reason=disabled_gate_not_vanilla"]:
+        expect(marker in endpoint_test, f"Endpoint test must assert {marker}")
+
+    if failures:
+        print("ModeU5 US-04 Pop-demand architecture validation failed:", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
+
+    print("ModeU5 US-04 archived probes and proxy reconciliation validation passed")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

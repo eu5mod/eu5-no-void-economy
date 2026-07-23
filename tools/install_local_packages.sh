@@ -7,12 +7,15 @@ default_target="${MODEU5_MOD_DIR:-${HOME}/Documents/Paradox Interactive/Europa U
 target_root="$default_target"
 action="install"
 generator="$repo_root/tools/generate_all.sh"
+run_generator="yes"
 
 usage() {
-	printf 'Usage: %s [--install|--check] [--target PATH]\n' "$0"
+	printf 'Usage: %s [--install|--check] [--skip-generate] [--target PATH]\n' "$0"
 	printf '\n'
 	printf 'Publishes the ModeU5 package roots as sibling local mods.\n'
 	printf 'Install mode removes each existing ModeU5 package directory before copying.\n'
+	printf '%s\n' '--skip-generate is reserved for an already generated and validated checkout.'
+	printf 'The root gameplay mod is mirrored wholesale, excluding repository-only content.\n'
 	printf 'Default target: %s\n' "$default_target"
 }
 
@@ -24,6 +27,10 @@ while (($# > 0)); do
 			;;
 		--check)
 			action="check"
+			shift
+			;;
+		--skip-generate)
+			run_generator="no"
 			shift
 			;;
 		--target)
@@ -47,22 +54,50 @@ while (($# > 0)); do
 done
 
 package_ids=(
-	"modeu5_core"
-	"modeu5_economy_rebalance"
-	"modeu5_trade_rebalance"
-	"modeu5_war_rebalance"
-	"modeu5_core_tests"
+	"cbp_core"
+	"cbp_economy_rebalance"
+	"cbp_trade_rebalance"
+	"cbp_war_rebalance"
+	"cbp_core_tests"
+	"cbp_core_tests"
+	"cbp_core_tests"
 )
 
 package_sources=(
 	"$repo_root"
-	"$repo_root/packages/modeu5_economy_rebalance"
-	"$repo_root/packages/modeu5_trade_rebalance"
-	"$repo_root/packages/modeu5_war_rebalance"
-	"$repo_root/packages/modeu5_core_tests"
+	"$repo_root/packages/cbp_economy_rebalance"
+	"$repo_root/packages/cbp_trade_rebalance"
+	"$repo_root/packages/cbp_war_rebalance"
+	"$repo_root/packages/cbp_core_tests"
+	"$repo_root/packages/cbp_core_tests"
+	"$repo_root/packages/cbp_core_tests"
 )
 
-if [[ "$action" == "install" ]]; then
+# The root checkout is the future single gameplay mod. Mirror it by default so
+# engine roots such as loading_screen/ cannot be silently forgotten when they
+# are added. Only repository/development content is excluded from publication.
+core_publish_excludes=(
+	"/.git/"
+	"/.github/"
+	"/docs/"
+	"/packages/"
+	"/tools/"
+	"/.cbp.local.env"
+	"/.cbp.local.env.template"
+	"/.gitignore"
+	"/AGENTS.md"
+	"/CLAUDE.md"
+	"/README.md"
+	"/README.template.md"
+	"/TEST_PLAN.md"
+)
+
+if ! command -v rsync >/dev/null 2>&1; then
+	printf 'rsync is required to install or check the local package set.\n' >&2
+	exit 1
+fi
+
+if [[ "$action" == "install" && "$run_generator" == "yes" ]]; then
 	"$generator"
 fi
 
@@ -125,7 +160,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		modeu5_core|modeu5_economy_rebalance|modeu5_trade_rebalance|modeu5_war_rebalance|modeu5_core_tests)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests|cbp_core_tests)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -133,21 +168,37 @@ reset_destination() {
 			;;
 	esac
 
-	# Removing the whole package root is intentional. rsync --delete only cleans
-	# within copied subdirectories and otherwise leaves stale files from previous
-	# layouts, generated adapters, or packages, causing duplicate database keys.
+	# Removing the whole package root is intentional. It guarantees that renamed
+	# or deleted source files cannot survive in the deployment.
 	rm -rf -- "$destination"
 	mkdir -p "$destination"
 }
 
+rsync_core_payload() {
+	local destination="$1"
+	local -a rsync_args
+	local exclude
+
+	rsync_args=(-a --delete --exclude '.DS_Store')
+	for exclude in "${core_publish_excludes[@]}"; do
+		rsync_args+=(--exclude "$exclude")
+	done
+
+	rsync "${rsync_args[@]}" "$repo_root/" "$destination/"
+}
+
+rsync_companion_payload() {
+	local source="$1"
+	local destination="$2"
+
+	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
+}
+
 install_core() {
-	local destination="$target_root/modeu5_core"
+	local destination="$target_root/cbp_core"
 
 	reset_destination "$destination"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/.metadata/" "$destination/.metadata/"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/in_game/" "$destination/in_game/"
-	rsync -a --delete --exclude '.DS_Store' "$repo_root/main_menu/" "$destination/main_menu/"
-	cp "$repo_root/descriptor.mod" "$destination/descriptor.mod"
+	rsync_core_payload "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
 }
@@ -157,9 +208,45 @@ install_companion() {
 	local destination="$2"
 
 	reset_destination "$destination"
-	rsync -a --delete --exclude '.DS_Store' "$source/" "$destination/"
+	rsync_companion_payload "$source" "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
+}
+
+check_payload_mirror() {
+	local package_id="$1"
+	local source="$2"
+	local destination="$3"
+	local expected
+	local drift
+
+	expected="$(mktemp -d)"
+	if [[ "$package_id" == "cbp_core" ]]; then
+		rsync_core_payload "$expected"
+	else
+		rsync_companion_payload "$source" "$expected"
+	fi
+	normalize_eu5_text_encoding "$expected"
+
+	# Ignore provenance because installed_at_utc is intentionally deployment-specific.
+	# Compare content, type, links, and permissions, but not modification times:
+	# BOM normalization recreates files through temporary files on every pass.
+	drift="$(
+		rsync -rlpnic --delete \
+			--exclude '.DS_Store' \
+			--exclude 'MODEU5_SOURCE.txt' \
+			"$expected/" "$destination/" |
+			awk '$1 == ".f..T...." || $1 == ".f..t...." { next } { print }'
+	)"
+	rm -rf -- "$expected"
+
+	if [[ -n "$drift" ]]; then
+		printf 'DRIFT    %s does not mirror its source payload:\n' "$package_id"
+		printf '%s\n' "$drift" | sed 's/^/         /'
+		return 1
+	fi
+
+	return 0
 }
 
 check_packages() {
@@ -168,6 +255,7 @@ check_packages() {
 
 	for index in "${!package_ids[@]}"; do
 		local package_id="${package_ids[$index]}"
+		local source="${package_sources[$index]}"
 		local destination="$target_root/$package_id"
 
 		if [[ ! -f "$destination/descriptor.mod" ]]; then
@@ -196,9 +284,9 @@ check_packages() {
 			failed=1
 		fi
 
-		if [[ "$package_id" == "modeu5_core" ]]; then
-			local pr71_generated="$destination/in_game/common/scripted_effects/modeu5_zz_pr71_active_good_dispatch_generated.txt"
-			if [[ -f "$pr71_generated" ]] && grep -Eq '^modeu5_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
+		if [[ "$package_id" == "cbp_core" ]]; then
+			local pr71_generated="$destination/in_game/common/scripted_effects/cbp_zz_pr71_active_good_dispatch_generated.txt"
+			if [[ -f "$pr71_generated" ]] && grep -Eq '^cbp_run_promoted_market_live_local_branch_market_all_goods[[:space:]]*=' "$pr71_generated"; then
 				printf '         stale PR7.1 generated dispatch defines duplicate live effect: %s\n' "$pr71_generated"
 				printf '         run ./tools/generate_all.sh and ./tools/install_local_packages.sh before testing.\n'
 				failed=1
@@ -217,6 +305,10 @@ check_packages() {
 				! -name 'MODEU5_SOURCE.txt' \
 				-print0
 		)
+
+		if ! check_payload_mirror "$package_id" "$source" "$destination"; then
+			failed=1
+		fi
 	done
 
 	while IFS= read -r -d '' metadata_file; do
@@ -236,15 +328,10 @@ if [[ "$action" == "check" ]]; then
 	exit $?
 fi
 
-if ! command -v rsync >/dev/null 2>&1; then
-	printf 'rsync is required to install the local package set.\n' >&2
-	exit 1
-fi
-
 mkdir -p "$target_root"
 install_core
 
-for index in 1 2 3 4; do
+for index in 1 2 3 4 5 6; do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"
@@ -257,5 +344,3 @@ if [[ -e "$target_root/eu5voideco" ]]; then
 	printf '\nOlder single-package path detected: %s\n' "$target_root/eu5voideco"
 	printf 'If the launcher shows two "No Void Economy" entries, disable the one backed by eu5voideco.\n'
 fi
-
-printf '\nRefresh the launcher, add the four campaign ModeU5 entries to one playset, and enable the test package only for deterministic validation sessions.\n'

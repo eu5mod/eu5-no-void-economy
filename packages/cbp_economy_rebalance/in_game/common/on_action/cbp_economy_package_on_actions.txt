@@ -1,0 +1,40 @@
+# Initialize package state on a new campaign and when loading an existing save.
+on_game_start = {
+	on_actions = {
+		cbp_economy_rebalance_package_initialize
+	}
+}
+
+on_game_load = {
+	on_actions = {
+		cbp_economy_rebalance_package_initialize
+	}
+}
+
+monthly_country_pulse = {
+	on_actions = {
+		cbp_economy_rebalance_monthly_country_pulse
+	}
+}
+
+cbp_economy_rebalance_package_initialize = {
+	effect = {
+		set_global_variable = cbp_economy_rebalance_loaded
+		set_global_variable = {
+			name = cbp_economy_package_version
+			value = 101
+		}
+		cbp_apply_mandatory_expenses_to_all_countries = yes
+		cbp_apply_us09_base_rgo_size_bonus = yes
+		cbp_refresh_all_market_center_stockpile_capacity = yes
+	}
+}
+
+cbp_economy_rebalance_monthly_country_pulse = {
+	effect = {
+		cbp_ensure_mandatory_stability_expense = yes
+		cbp_ensure_mandatory_government_power_expense = yes
+		cbp_refresh_us09_base_rgo_size_bonus_for_current_country = yes
+		cbp_refresh_market_center_stockpile_capacity_for_current_country = yes
+	}
+}

@@ -58,9 +58,9 @@ eu5voideco/
 │   ├── events/
 │   └── localization/
 ├── packages/
-│   ├── modeu5_economy_rebalance/
-│   ├── modeu5_trade_rebalance/
-│   └── modeu5_war_rebalance/
+│   ├── cbp_economy_rebalance/
+│   ├── cbp_trade_rebalance/
+│   └── cbp_war_rebalance/
 └── tools/
 ```
 
@@ -82,7 +82,7 @@ eu5voideco/
 1. Run `./tools/install_local_packages.sh`.
 2. Run `./tools/install_local_packages.sh --check`.
 3. Verify `MODEU5_SOURCE.txt` and that no stale duplicate shadows
-   `modeu5_core`.
+   `cbp_core`.
 4. Enable the intended packages in the launcher.
 5. Launch the game.
 6. Check `error.log`, `game.log`, and `system.log`.

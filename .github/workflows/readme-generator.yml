@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - README.template.md
-      - .modeu5.local.env.template
+      - .cbp.local.env.template
       - .github/workflows/readme-generator.yml
   # Regenerate README whenever `main` is updated (e.g. after merge)
   push:
@@ -13,7 +13,7 @@ on:
       - main
     paths:
       - README.template.md
-      - .modeu5.local.env.template
+      - .cbp.local.env.template
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
           import sys
 
           template_path = Path("README.template.md")
-          env_path = Path(".modeu5.local.env.template")
+          env_path = Path(".cbp.local.env.template")
           output_path = Path("README.md")
 
           def format_decimal(value: Decimal) -> str:
@@ -56,6 +56,7 @@ jobs:
 
           formatters = {
               "MODEU5_US09_BONUS_PERCENT": as_direct_percent,
+              "MODEU5_US09_RGO_PRICE_OFFSET_PERCENT": as_direct_percent,
               "MODEU5_US15_BONUS_PERCENT": as_ratio_percent,
               "MODEU5_US16_CASSUS_BELLI_VALIDITY": as_plain_value,
           }

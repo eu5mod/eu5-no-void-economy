@@ -11,8 +11,8 @@ It is intentionally not five stacked PRs. The probes are simple and belong toget
 Adds one shared probe effect file and one shared event menu in the test package:
 
 ```txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_q8_probe_effects.txt
-packages/modeu5_core_tests/in_game/events/modeu5_q8_probe_debug_events.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_q8_probe_effects.txt
+packages/cbp_core_tests/in_game/events/cbp_q8_probe_debug_events.txt
 ```
 
 Adds one static structural audit:
@@ -34,7 +34,7 @@ docs/audits/q8/Q1_architecture_fichiers.md
 docs/audits/q8/Q2_systeme_cache.md
 docs/audits/q8/Q3_redondances_code.md
 docs/audits/q8/Q4_boucles_performance.md
-docs/audits/q8/Q5_flux_logique_global.md
+docs/audits/q8/archives/Q5_flux_logique_global.md
 ```
 
 ## Probe event
@@ -42,7 +42,7 @@ docs/audits/q8/Q5_flux_logique_global.md
 Run from the test package:
 
 ```txt
-event modeu5_q8_probe_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 Available options:
@@ -59,18 +59,18 @@ Q8.7 only
 The aggregate runtime entry point is:
 
 ```txt
-modeu5_debug_run_q8_remaining_candidate_probes
+cbp_debug_run_q8_remaining_candidate_probes
 ```
 
 ## Five probes in this PR
 
 | Track | Probe effect | What it checks | What it does not do |
 |---|---|---|---|
-| Q8.2 / F2 | `modeu5_q8_probe_us10_pending_gate` | Reads the canonical wheat pending-request map for the capital market and records whether the country-market probe surface is usable. | Does not add a generated aggregate has-any-pending gate. |
-| Q8.4 / F4 | `modeu5_q8_probe_helper_inventory` | Adds a runtime marker for the helper-inventory probe and pairs with static script checks for generated heavy-helper calls. | Does not split guarded helpers from body helpers. |
-| Q8.5 / F5/F9a | `modeu5_q8_probe_dirty_cache_lifecycle` | Marks the capital market dirty, repairs dirty market-country caches, and checks repair count. | Does not mutate stock or expand the dirty cache model. |
-| Q8.6 / F9c | `modeu5_q8_probe_market_sliced_verifier_candidate` | Builds and verifies a candidate-market slice list using the capital market. | Does not run a live verifier or repair market stock. |
-| Q8.7 / F7 | `modeu5_q8_probe_global_market_iterator_exposure` | Isolated test-package exposure check for the global market iterator. | Does not replace the current market-center ownership workaround. |
+| Q8.2 / F2 | `cbp_q8_probe_us10_pending_gate` | Reads the canonical wheat pending-request map for the capital market and records whether the country-market probe surface is usable. | Does not add a generated aggregate has-any-pending gate. |
+| Q8.4 / F4 | `cbp_q8_probe_helper_inventory` | Adds a runtime marker for the helper-inventory probe and pairs with static script checks for generated heavy-helper calls. | Does not split guarded helpers from body helpers. |
+| Q8.5 / F5/F9a | `cbp_q8_probe_dirty_cache_lifecycle` | Marks the capital market dirty, repairs dirty market-country caches, and checks repair count. | Does not mutate stock or expand the dirty cache model. |
+| Q8.6 / F9c | `cbp_q8_probe_market_sliced_verifier_candidate` | Builds and verifies a candidate-market slice list using the capital market. | Does not run a live verifier or repair market stock. |
+| Q8.7 / F7 | `cbp_q8_probe_global_market_iterator_exposure` | Isolated test-package exposure check for the global market iterator. | Does not replace the current market-center ownership workaround. |
 
 ## Guardrails
 
@@ -103,7 +103,7 @@ PENDING because runtime logs are still required before implementing Q8.2/Q8.4/Q8
 Runtime event used:
 
 ```txt
-event modeu5_q8_probe_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 Observed PASS markers:
@@ -122,13 +122,13 @@ Interpretation:
 ```txt
 Q8 probe runtime validation: PASS.
 Full revalidation suite: NOT REQUIRED for this PR.
-event modeu5_revalidate_debug.1: NOT REQUIRED for #150 validation.
+event cbp_revalidate_debug.1: NOT REQUIRED for #150 validation.
 ```
 
 ## Known cleanup items
 
 ```txt
-- Q8.7 emitted PASS with count=129, but error.log also reported unset-counter script errors around modeu5_test_q8_7_global_market_count. Harden the counter guard if a clean error log is required.
+- Q8.7 emitted PASS with count=129, but error.log also reported unset-counter script errors around test_cbp_q8_7_global_market_count. Harden the counter guard if a clean error log is required.
 - Q8 probe event localization keys are missing. This is cosmetic for the probe event and does not invalidate the runtime PASS markers.
 ```
 

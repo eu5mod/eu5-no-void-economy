@@ -49,7 +49,7 @@ Package selection occurs before campaign load. Adding or removing a package mid-
 
 The default supported playset enables Core, Rebalance Economy, Rebalance Estate Power, and Rebalance Early Blobbing together. Optional means removable before campaign start, not disabled by default. Core must never synthesize a companion package marker when that package is absent.
 
-ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `modeu5_debug_level` use EU5's built-in Game Rules screen and are fixed when the campaign starts. Do not create an in-game configuration panel.
+ModeU5 configuration is pre-campaign. Optional packages are selected in the launcher/mod playset. Script-safe settings such as `cbp_debug_level` use EU5's built-in Game Rules screen and are fixed when the campaign starts. Do not create an in-game configuration panel.
 
 ## Variable-map storage rule
 
@@ -100,9 +100,9 @@ an adapter but must never carry a map name.
 
 US-02 storage capacity is the explicit exception to per-good record storage:
 capacity is identical for every good in one country-market relation, so persist
-it once in country-scoped `modeu5_stock_cap_by_market` and related breakdown
+it once in country-scoped `cbp_stock_cap_by_market` and related breakdown
 maps keyed by market. Generated per-good adapters read that shared capacity and
-must not recreate `modeu5_<good>_stock_cap_by_market`.
+must not recreate `cbp_<good>_stock_cap_by_market`.
 
 US-02 capacity is derived from one country-level location pool plus the current
 market's own trade capacity. Sum the country's owned-location rank contribution
@@ -130,12 +130,12 @@ No user story may directly mutate stock variables.
 All stock mutations must go through centralized scripted effects:
 
 ```txt
-modeu5_add_stock
-modeu5_remove_stock
-modeu5_transfer_stock
-modeu5_decay_stock
-modeu5_rebuild_market_stock_from_country_stocks
-modeu5_validate_stock_consistency
+cbp_add_stock
+cbp_remove_stock
+cbp_transfer_stock
+cbp_decay_stock
+cbp_rebuild_market_stock_from_country_stocks
+cbp_validate_stock_consistency
 ```
 
 If an implementation writes directly to `country_market_good_stock` or `market_good_stock` outside these effects, stop and refactor.
@@ -152,19 +152,19 @@ A monthly economic cycle must follow this logical sequence:
 3. Recalculate stock capacities when needed.
 4. Read or estimate vanilla production.
 5. Calculate ModeU5-recognized production.
-6. Add stockable production through modeu5_add_stock.
+6. Add stockable production through cbp_add_stock.
 7. Update market stock through the centralized operation.
 8. Update US-00.1 production / added / rejected ledger.
 9. Resolve Pop and Estate consumption through US-10.1.
 10. Track satisfied and unsatisfied quantities through US-10.3.
 11. Resolve inter-market transfers through US-10.2 when applicable.
-12. Apply monthly decay through modeu5_decay_stock.
+12. Apply monthly decay through cbp_decay_stock.
 13. Calculate US-00.2 overproduction ratios.
 14. Calculate US-00.4 void wealth.
 15. Calculate US-00.3 next-month production penalties.
 16. If the Rebalance Economy package is loaded, calculate the US-05 Economic Base.
 17. If the Rebalance Economy package is loaded, display the US-05 formula inputs and result when exposure permits.
-18. Validate stock consistency through modeu5_validate_stock_consistency.
+18. Validate stock consistency through cbp_validate_stock_consistency.
 19. Reset monthly counters only after every consumer has read them.
 ```
 
@@ -183,7 +183,7 @@ transferred_stock
    / loser_storage_capacity_before
 ```
 
-Use the same US-02 location-capacity helper for the numerator and capacity totals. Apply the quantity through `modeu5_transfer_stock` in the same market. The loser retains the formula's complementary share and `market_good_stock` remains unchanged.
+Use the same US-02 location-capacity helper for the numerator and capacity totals. Apply the quantity through `cbp_transfer_stock` in the same market. The loser retains the formula's complementary share and `market_good_stock` remains unchanged.
 
 Sequential location transfers must produce the same result as one aggregate split. New-country/release hooks validate and finalize; they must not duplicate location-level transfers. Annexation finalizers transfer any residual stock of the disappearing country to its successor.
 
@@ -262,7 +262,7 @@ US-00 is a pipeline:
 
 ```txt
 production vanilla
-→ modeu5_add_stock
+→ cbp_add_stock
 → actual_added_quantity / rejected_quantity
 → US-00.1 monthly production rejection ledger
 → US-00.2 overproduction ratio and stability buffer
@@ -280,22 +280,22 @@ country × market × good
 Required counters or maps:
 
 ```txt
-modeu5_<good>_produced_by_market[market]
-modeu5_<good>_added_by_market[market]
-modeu5_<good>_rejected_by_market[market]
-modeu5_<good>_overproduction_ratio_by_market[market]
-modeu5_<good>_effective_overproduction_ratio_by_market[market]
-modeu5_<good>_void_wealth_by_market[market]
-modeu5_<good>_void_taxable_income_proxy_by_market[market]
-modeu5_<good>_production_penalty_by_market[market]
+cbp_<good>_produced_by_market[market]
+cbp_<good>_added_by_market[market]
+cbp_<good>_rejected_by_market[market]
+cbp_<good>_overproduction_ratio_by_market[market]
+cbp_<good>_effective_overproduction_ratio_by_market[market]
+cbp_<good>_void_wealth_by_market[market]
+cbp_<good>_void_taxable_income_proxy_by_market[market]
+cbp_<good>_production_penalty_by_market[market]
 ```
 
-These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a global `modeu5_<good>_market_stock` map keyed by market because controlled runtime testing confirmed that Market scope does not support variables. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
+These are fields of one logical `country × market × good` record. With currently confirmed exposure, they are physically stored as a synchronized family of country-scoped, per-good maps keyed by market. Market-level stock uses a global `cbp_<good>_market_stock` map keyed by market because controlled runtime testing confirmed that Market scope does not support variables. Country-wide totals with no remaining keyed dimension stay ordinary country variables.
 
 All ledger writes must go through:
 
 ```txt
-modeu5_update_production_rejection_ledger
+cbp_update_production_rejection_ledger
 ```
 
 The overproduction buffer affects the production penalty, not the fact that rejected value is tracked.
@@ -309,7 +309,7 @@ US-10 resolves demand from stock. It does not own the stock and never mutates st
 US-10 uses:
 
 ```txt
-modeu5_resolve_stock_demand
+cbp_resolve_stock_demand
 ```
 
 US-10.1 handles consumption within one market. This is a stock-availability resolution, not intra-market trade.
@@ -344,7 +344,7 @@ Cost of the Court / Government Power when it produces Legitimacy
 Target base:
 
 ```txt
-modeu5_slider_cost_base = Wealth + Trade Income
+cbp_slider_cost_base = Wealth + Trade Income
 ```
 
 US-05 uses direct formula replacement only. Monthly gold adjustments, modifiers that emulate a cost difference, and slider reconciliation are outside the selected design. If the Wealth value or the Stability/Court formula hook is unavailable, keep US-05 blocked rather than introducing a second implementation path.

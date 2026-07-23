@@ -1,0 +1,199 @@
+cbp_core_package_loaded_trigger = {
+	has_global_variable = cbp_core_package_loaded
+}
+
+cbp_economy_rebalance_loaded_trigger = {
+	has_global_variable = cbp_economy_rebalance_loaded
+}
+
+cbp_trade_rebalance_loaded_trigger = {
+	has_global_variable = cbp_trade_rebalance_loaded
+}
+
+cbp_war_rebalance_loaded_trigger = {
+	has_global_variable = cbp_war_rebalance_loaded
+}
+
+cbp_normal_runtime_mode_trigger = {
+	has_global_variable = cbp_runtime_mode_normal
+}
+
+cbp_debug_runtime_mode_trigger = {
+	has_global_variable = cbp_runtime_mode_debug
+}
+
+cbp_audit_runtime_mode_trigger = {
+	has_global_variable = cbp_runtime_mode_audit
+}
+
+cbp_performance_mode_enabled_trigger = {
+	has_global_variable = cbp_performance_mode_enabled
+}
+
+cbp_cbp_normal_mode_trigger = {
+	has_global_variable = cbp_normal_mode_enabled
+}
+
+cbp_cbp_deactivated_trigger = {
+	has_global_variable = cbp_cbp_deactivated
+}
+
+cbp_trade_rework_enabled_trigger = {
+	has_variable_map = cmm
+	OR = {
+		# CMM displays the registered default (enabled) without necessarily
+		# materializing a map entry. Only an explicit zero disables US-17/US-20.
+		NOT = {
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+			}
+		}
+		AND = {
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings
+			}
+			"variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_gameplay_trade_rework_settings)" = 1
+		}
+	}
+}
+
+cbp_pop_consumption_offer_demand_enabled_trigger = {
+	cbp_economy_rebalance_loaded_trigger = yes
+	has_variable_map = cmm
+	is_key_in_variable_map = {
+		name = cmm
+		target = flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings
+	}
+	"variable_map(cmm|flag:no_void_economy__cbp_economic_balance_design_pop_consumption_influenced_by_offer_demand_settings)" = 1
+}
+
+cbp_detailed_country_market_accounting_enabled_trigger = {
+	OR = {
+		scope:cbp_detailed_country_market_accounting_enabled > 0
+		AND = {
+			cbp_performance_mode_enabled_trigger = yes
+			scope:cbp_accounting_decision_market_human_relevant > 0
+		}
+	}
+}
+
+cbp_market_detailed_accounting_promoted_trigger = {
+	has_global_variable_list = cbp_detailed_accounting_promoted_markets
+	is_target_in_global_variable_list = {
+		name = cbp_detailed_accounting_promoted_markets
+		target = scope:cbp_market
+	}
+}
+
+cbp_detailed_country_market_stock_mutation_allowed_trigger = {
+	OR = {
+		cbp_cbp_normal_mode_trigger = yes
+		AND = {
+			cbp_performance_mode_enabled_trigger = yes
+			cbp_market_detailed_accounting_promoted_trigger = yes
+		}
+	}
+}
+
+cbp_market_level_fallback_required_trigger = {
+	scope:cbp_market_level_fallback_required > 0
+	NOT = { scope:cbp_accounting_decision_market_human_relevant > 0 }
+}
+
+cbp_stock_mutation_use_detailed_accounting_trigger = {
+	scope:cbp_stock_mutation_use_detailed_accounting > 0
+}
+
+cbp_stock_mutation_use_market_level_fallback_trigger = {
+	scope:cbp_stock_mutation_use_market_level_fallback > 0
+}
+
+cbp_stock_mutation_blocked_trigger = {
+	scope:cbp_stock_mutation_blocked > 0
+}
+
+cbp_market_runtime_use_detailed_accounting_trigger = {
+	scope:cbp_market_runtime_use_detailed_accounting > 0
+}
+
+cbp_market_runtime_use_vanilla_fallback_trigger = {
+	scope:cbp_market_runtime_use_vanilla_fallback > 0
+}
+
+cbp_market_runtime_blocked_trigger = {
+	scope:cbp_market_runtime_blocked > 0
+}
+
+cbp_debug_enabled_trigger = {
+	cbp_debug_runtime_mode_trigger = yes
+}
+
+cbp_verbose_debug_enabled_trigger = {
+	cbp_debug_runtime_mode_trigger = yes
+	has_global_variable = cbp_debug_level
+	global_var:cbp_debug_level > 1
+}
+
+cbp_audit_enabled_trigger = {
+	cbp_audit_runtime_mode_trigger = yes
+}
+
+cbp_accounting_minimal_persistence_trigger = {
+	has_global_variable = cbp_accounting_persistence_minimal
+}
+
+cbp_accounting_strict_persistence_trigger = {
+	has_global_variable = cbp_accounting_persistence_strict
+}
+
+cbp_accounting_human_relevant_persistence_trigger = {
+	has_global_variable = cbp_accounting_persistence_human_relevant
+}
+
+cbp_human_relevant_full_ledger_market_trigger = {
+	cbp_accounting_human_relevant_persistence_trigger = yes
+	has_global_variable_list = cbp_performance_relevant_markets
+	is_target_in_global_variable_list = {
+		name = cbp_performance_relevant_markets
+		target = scope:cbp_market
+	}
+}
+
+cbp_us00_full_ledger_persistence_allowed_trigger = {
+	OR = {
+		cbp_accounting_strict_persistence_trigger = yes
+		cbp_human_relevant_full_ledger_market_trigger = yes
+		cbp_debug_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
+	}
+}
+
+cbp_debug_capture_enabled_trigger = {
+	cbp_debug_enabled_trigger = yes
+}
+
+cbp_pr71_metrics_enabled_trigger = {
+	OR = {
+		cbp_debug_capture_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
+	}
+}
+
+cbp_full_validation_allowed_trigger = {
+	cbp_audit_enabled_trigger = yes
+}
+
+cbp_market_sliced_verifier_allowed_trigger = {
+	OR = {
+		cbp_debug_enabled_trigger = yes
+		cbp_audit_enabled_trigger = yes
+	}
+}
+
+cbp_stock_runtime_ready_trigger = {
+	cbp_initialization_complete_trigger = yes
+	has_global_variable = cbp_stock_schema_version
+	global_var:cbp_stock_schema_version = cbp_current_stock_schema_version
+}

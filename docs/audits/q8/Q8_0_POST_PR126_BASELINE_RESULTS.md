@@ -18,21 +18,21 @@ baseline commit observed in #147: 865d7109d7310bdab2ef4318698244efba86540f
 Primary files inspected:
 
 ```txt
-in_game/common/on_action/modeu5_stock_on_actions.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt
-in_game/common/scripted_effects/modeu5_capacity_effects.txt
-in_game/common/scripted_effects/modeu5_stock_demand_resolver_effects.txt
-in_game/common/scripted_effects/modeu5_market_country_cache_effects.txt
+in_game/common/on_action/cbp_stock_on_actions.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt
+in_game/common/scripted_effects/cbp_capacity_effects.txt
+in_game/common/scripted_effects/cbp_stock_demand_resolver_effects.txt
+in_game/common/scripted_effects/cbp_market_country_cache_effects.txt
 tools/generate_pr71_active_good_dispatch_helpers.sh
-tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt
+tools/templates/cbp_pr71_active_good_dispatch_good.template.txt
 ```
 
 Q5 flow documents are part of this baseline, not optional Q8 reading:
 
 ```txt
-docs/audits/pr126/Q5_flux_logique_global.md
-docs/audits/pr126/Q5.1_current_global_flow.md
+docs/audits/pr126/archives/Q5_flux_logique_global.md
+docs/audits/pr126/archives/Q5.1_current_global_flow.md
 ```
 
 If a Q5.2 checkpoint is added later, it should be treated as a Q5 flow subsection or immediate Q5.1 follow-up before Q8 optimisation documents. It should not be placed inside the Q8 future-optimisation section.
@@ -45,14 +45,14 @@ Current shape:
 
 ```txt
 monthly_country_pulse
-  -> modeu5_monthly_stock_cycle_pulse
-     -> modeu5_run_monthly_stock_cycle
-        -> modeu5_prepare_performance_mode_human_relevant_markets
-        -> modeu5_run_monthly_capacity_refresh_for_current_country
-        -> modeu5_prepare_monthly_market_seen_registry
-        -> modeu5_prepare_human_relevant_full_ledger_markets
-        -> modeu5_run_monthly_promoted_market_local_cycle
-        -> modeu5_run_monthly_country_trade_owner_cycle
+  -> cbp_monthly_stock_cycle_pulse
+     -> cbp_run_monthly_stock_cycle
+        -> cbp_prepare_performance_mode_human_relevant_markets
+        -> cbp_run_monthly_capacity_refresh_for_current_country
+        -> cbp_prepare_monthly_market_seen_registry
+        -> cbp_prepare_human_relevant_full_ledger_markets
+        -> cbp_run_monthly_promoted_market_local_cycle
+        -> cbp_run_monthly_country_trade_owner_cycle
         -> optional monthly stock reconciliation in Audit mode
 ```
 
@@ -93,21 +93,21 @@ Relevant surfaces:
 
 ```txt
 tools/generate_pr71_active_good_dispatch_helpers.sh
-tools/templates/modeu5_pr71_active_good_dispatch_good.template.txt
-in_game/common/scripted_effects/modeu5_promoted_market_cycle_effects.txt
+tools/templates/cbp_pr71_active_good_dispatch_good.template.txt
+in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt
 ```
 
 Evidence from static shape:
 
 ```txt
-modeu5_run_promoted_market_live_local_branch_market_all_goods
-  -> modeu5_pr71_prepare_active_good_metrics
+cbp_run_promoted_market_live_local_branch_market_all_goods
+  -> cbp_pr71_prepare_active_good_metrics
   -> every present country:
-       modeu5_note_promoted_market_live_us00_country_pass
-       modeu5_pr71_process_us00_monthly_market_active_goods
+       cbp_note_promoted_market_live_us00_country_pass
+       cbp_pr71_process_us00_monthly_market_active_goods
   -> every present country:
-       modeu5_note_promoted_market_live_us10_country_pass
-       modeu5_pr71_process_us10_monthly_market_pending_goods
+       cbp_note_promoted_market_live_us10_country_pass
+       cbp_pr71_process_us10_monthly_market_pending_goods
 ```
 
 The generated template increments:
@@ -158,11 +158,11 @@ Static shape:
 
 ```txt
 for each country present in promoted market:
-  modeu5_pr71_process_us10_monthly_market_pending_goods
+  cbp_pr71_process_us10_monthly_market_pending_goods
     -> for each generated good:
-         read modeu5_consumption_<good>_pending_requested_by_market[market]
+         read cbp_consumption_<good>_pending_requested_by_market[market]
          if quantity > 0:
-           modeu5_process_us10_monthly_market_good_<good>
+           cbp_process_us10_monthly_market_good_<good>
 ```
 
 Interpretation:
@@ -208,20 +208,20 @@ The capacity subsystem already distinguishes:
 Current monthly country refresh:
 
 ```txt
-modeu5_run_monthly_capacity_refresh_for_current_country
-  -> modeu5_recalculate_saved_country_storage_capacities
-     -> modeu5_calculate_country_storage_capacity_pool
+cbp_run_monthly_capacity_refresh_for_current_country
+  -> cbp_recalculate_saved_country_storage_capacities
+     -> cbp_calculate_country_storage_capacity_pool
      -> every_market_present_in_country:
-          modeu5_recalculate_country_market_capacity_from_prepared_pool_shared
+          cbp_recalculate_country_market_capacity_from_prepared_pool_shared
 ```
 
 Current promoted-market local branch:
 
 ```txt
 for each country present in promoted market:
-  modeu5_prepare_promoted_country_market_capacity
-    -> modeu5_calculate_country_storage_capacity_pool
-    -> modeu5_recalculate_country_market_capacity_from_prepared_pool_shared
+  cbp_prepare_promoted_country_market_capacity
+    -> cbp_calculate_country_storage_capacity_pool
+    -> cbp_recalculate_country_market_capacity_from_prepared_pool_shared
 ```
 
 Interpretation:
@@ -273,8 +273,8 @@ Target next action:
 
 ```txt
 Inventory callers of:
-- modeu5_process_us00_monthly_market_good_<good>
-- modeu5_process_us10_monthly_market_good_<good>
+- cbp_process_us00_monthly_market_good_<good>
+- cbp_process_us10_monthly_market_good_<good>
 
 Only generate body helpers after every caller is classified as guarded or legacy-safe.
 ```
@@ -293,17 +293,17 @@ Finding:
 
 ```txt
 The market-country cache layer already has:
-- modeu5_countries_present_in_market
-- modeu5_market_country_cache_dirty_markets
-- modeu5_mark_market_country_cache_dirty
-- modeu5_repair_dirty_market_country_caches
+- cbp_countries_present_in_market
+- cbp_market_country_cache_dirty_markets
+- cbp_mark_market_country_cache_dirty
+- cbp_repair_dirty_market_country_caches
 ```
 
 The current live promoted-market path still rebuilds `countries_present_in_market` directly for the current promoted market:
 
 ```txt
-modeu5_prepare_promoted_market_country_cache
-  -> modeu5_rebuild_countries_present_in_market
+cbp_prepare_promoted_market_country_cache
+  -> cbp_rebuild_countries_present_in_market
 ```
 
 Interpretation:
@@ -450,7 +450,7 @@ Documentation-only result. Suggested static checks before merging the stacked PR
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 git diff --check
 ```
 

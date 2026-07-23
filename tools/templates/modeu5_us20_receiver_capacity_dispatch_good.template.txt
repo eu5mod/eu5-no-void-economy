@@ -1,1 +1,0 @@
-		if = { limit = { scope:cbp_us20_route_good_matched = 0 scope:modeu5_trade_owner_good = goods:__GOOD__ } modeu5_probe_us20_receiver_capacity_literal_good = { good = __GOOD__ } }

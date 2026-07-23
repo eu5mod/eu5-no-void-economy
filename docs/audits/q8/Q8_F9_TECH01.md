@@ -38,13 +38,13 @@ The static script validates that all five probe entry points exist and that Q8.7
 The runtime validation event for PR #150 is:
 
 ```txt
-event modeu5_q8_probe_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 The full revalidation suite event is not required for #150:
 
 ```txt
-event modeu5_revalidate_debug.1   # not required for Q8 probe validation
+event cbp_revalidate_debug.1   # not required for Q8 probe validation
 ```
 
 The revalidation summarizer may report zero full-suite scenarios if only the Q8 probe event was run. That does not invalidate PR #150.
@@ -122,7 +122,7 @@ Do not compare unset numeric variables in result-event triggers.
 The runtime evidence is sufficient for probe PASS, but the log is not clean:
 
 ```txt
-- Q8.7 emitted PASS count=129 but also produced unset-counter script errors around modeu5_test_q8_7_global_market_count.
+- Q8.7 emitted PASS count=129 but also produced unset-counter script errors around test_cbp_q8_7_global_market_count.
 - Q8 probe event localization keys are missing.
 ```
 
@@ -133,8 +133,8 @@ These should be handled as cleanup before treating #150 as clean-log validated.
 For PR #150:
 
 ```txt
-Required runtime validation event: event modeu5_q8_probe_debug.1
-Not required: event modeu5_revalidate_debug.1
+Required runtime validation event: event cbp_q8_probe_debug.1
+Not required: event cbp_revalidate_debug.1
 ```
 
 A future Q8 implementation PR must not cite #150 as authorization to change gameplay runtime. It may cite #150 only as probe evidence for the five candidate surfaces.

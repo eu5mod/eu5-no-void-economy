@@ -3,7 +3,7 @@
 This file is a short pointer for reviewers. The full analysis lives in:
 
 ```txt
-docs/audits/pr126/Q5.2_active_good_root_cause.md
+docs/audits/pr126/archives/Q5.2_active_good_root_cause.md
 ```
 
 ## Summary

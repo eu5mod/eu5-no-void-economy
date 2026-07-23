@@ -1,0 +1,304 @@
+# Deterministic CORE-04 market-entry stock migration probe.
+#
+# This test simulates old_market -> new_market with explicit scopes. It does
+# not require a vanilla market-topology hook and should be run on disposable
+# saves because it clears wheat stock in two markets.
+
+cbp_core04_test_clear_target_capacity = {
+	$country$ = { save_temporary_scope_as = cbp_core04_test_capacity_country }
+	$market$ = { save_temporary_scope_as = cbp_core04_test_capacity_market }
+
+	scope:cbp_core04_test_capacity_country = {
+		if = {
+			limit = {
+				has_variable_map = cbp_stock_cap_by_market
+				is_key_in_variable_map = {
+					name = cbp_stock_cap_by_market
+					target = scope:cbp_core04_test_capacity_market
+				}
+			}
+			remove_from_variable_map = {
+				name = cbp_stock_cap_by_market
+				key = scope:cbp_core04_test_capacity_market
+			}
+		}
+		if = {
+			limit = {
+				has_variable_map = cbp_base_capacity_by_market
+				is_key_in_variable_map = {
+					name = cbp_base_capacity_by_market
+					target = scope:cbp_core04_test_capacity_market
+				}
+			}
+			remove_from_variable_map = {
+				name = cbp_base_capacity_by_market
+				key = scope:cbp_core04_test_capacity_market
+			}
+		}
+	}
+}
+
+cbp_core04_test_read_wheat_totals = {
+	cbp_read_country_stock_record = {
+		country = scope:cbp_core04_test_country
+		market = scope:cbp_core04_test_source_market
+		good = wheat
+	}
+	save_temporary_scope_value_as = { name = test_cbp_core04_test_source_stock value = scope:cbp_read_country_stock }
+	save_temporary_scope_value_as = { name = test_cbp_core04_test_source_market_stock value = scope:cbp_read_market_stock }
+
+	cbp_read_country_stock_record = {
+		country = scope:cbp_core04_test_country
+		market = scope:cbp_core04_test_target_market
+		good = wheat
+	}
+	save_temporary_scope_value_as = { name = test_cbp_core04_test_target_stock value = scope:cbp_read_country_stock }
+	save_temporary_scope_value_as = { name = test_cbp_core04_test_target_market_stock value = scope:cbp_read_market_stock }
+
+	save_temporary_scope_value_as = {
+		name = test_cbp_core04_test_total_stock
+		value = {
+			value = scope:test_cbp_core04_test_source_stock
+			add = scope:test_cbp_core04_test_target_stock
+		}
+	}
+}
+
+cbp_core04_test_seed_wheat_fixture = {
+	cbp_perf14_clear_wheat_stock_in_market = { market = scope:cbp_core04_test_source_market }
+	cbp_perf14_clear_wheat_stock_in_market = { market = scope:cbp_core04_test_target_market }
+	cbp_core04_test_clear_target_capacity = {
+		country = scope:cbp_core04_test_country
+		market = scope:cbp_core04_test_target_market
+	}
+	cbp_recalculate_country_market_capacity = {
+		country = scope:cbp_core04_test_country
+		market = scope:cbp_core04_test_source_market
+		good = wheat
+	}
+	cbp_add_stock = {
+		country = scope:cbp_core04_test_country
+		market = scope:cbp_core04_test_source_market
+		good = wheat
+		quantity = $quantity$
+		capacity_policy = allow_over_capacity
+		only_add_at_country_level = yes
+	}
+}
+
+cbp_core04_test_select_fixture_markets = {
+	save_temporary_scope_as = cbp_core04_test_country
+	capital = {
+		save_temporary_scope_as = cbp_core04_test_location
+		market = { save_temporary_scope_as = cbp_core04_test_source_market }
+	}
+
+	set_local_variable = { name = test_cbp_core04_test_target_found value = 0 }
+	every_market_present_in_country = {
+		save_temporary_scope_as = cbp_core04_test_iterated_market
+		if = {
+			limit = {
+				scope:cbp_core04_test_iterated_market != scope:cbp_core04_test_source_market
+			}
+			save_temporary_scope_as = cbp_core04_test_target_market
+			scope:cbp_core04_test_country = {
+				set_local_variable = { name = test_cbp_core04_test_target_found value = 1 }
+			}
+		}
+	}
+	save_temporary_scope_value_as = {
+		name = test_cbp_core04_test_target_found
+		value = local_var:test_cbp_core04_test_target_found
+	}
+}
+
+cbp_core04_test_prepare_result_dump = {
+	set_variable = { name = gui_cbp_core04_ui_last_result value = global_var:cbp_core04_market_entry_last_result }
+	set_variable = { name = gui_cbp_core04_ui_gate_result value = global_var:cbp_core04_market_entry_gate_result }
+	set_variable = { name = gui_cbp_core04_ui_goods_checked value = global_var:cbp_core04_market_entry_goods_checked }
+	set_variable = { name = gui_cbp_core04_ui_goods_moved value = global_var:cbp_core04_market_entry_goods_moved }
+	set_variable = { name = gui_cbp_core04_ui_requested_total value = global_var:cbp_core04_market_entry_requested_stock_total }
+	set_variable = { name = gui_cbp_core04_ui_actual_total value = global_var:cbp_core04_market_entry_actual_stock_total }
+	set_variable = { name = gui_cbp_core04_ui_source_capacity value = global_var:cbp_core04_market_entry_source_capacity }
+	set_variable = { name = gui_cbp_core04_ui_moved_capacity value = global_var:cbp_core04_market_entry_moved_capacity }
+	set_variable = { name = gui_cbp_core04_ui_ratio value = global_var:cbp_core04_market_entry_move_ratio }
+	set_variable = { name = gui_cbp_core04_ui_source_stock value = scope:test_cbp_core04_test_source_stock }
+	set_variable = { name = gui_cbp_core04_ui_target_stock value = scope:test_cbp_core04_test_target_stock }
+	set_variable = { name = gui_cbp_core04_ui_total_stock value = scope:test_cbp_core04_test_total_stock }
+}
+
+cbp_core04_test_log_normal_first_entry_dump = {
+	cbp_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=normal_first_entry result=[THIS.GetVariable('cbp_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('cbp_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('cbp_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('cbp_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('cbp_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('cbp_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('cbp_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('cbp_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('cbp_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('cbp_core04_ui_goods_moved').GetValue|0]"
+}
+
+cbp_core04_test_log_known_market_oscillation_dump = {
+	cbp_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=known_market_oscillation result=[THIS.GetVariable('cbp_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('cbp_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('cbp_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('cbp_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('cbp_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('cbp_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('cbp_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('cbp_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('cbp_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('cbp_core04_ui_goods_moved').GetValue|0]"
+}
+
+cbp_core04_test_log_performance_promoted_first_entry_dump = {
+	cbp_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=performance_promoted_first_entry result=[THIS.GetVariable('cbp_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('cbp_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('cbp_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('cbp_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('cbp_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('cbp_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('cbp_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('cbp_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('cbp_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('cbp_core04_ui_goods_moved').GetValue|0]"
+}
+
+cbp_core04_test_log_deactivated_blocked_dump = {
+	cbp_core04_test_prepare_result_dump = yes
+	debug_log = "ModeU5 CORE-04 DUMP phase=deactivated_blocked result=[THIS.GetVariable('cbp_core04_ui_last_result').GetValue|0] gate=[THIS.GetVariable('cbp_core04_ui_gate_result').GetValue|0] source_stock=[THIS.GetVariable('cbp_core04_ui_source_stock').GetValue|2] target_stock=[THIS.GetVariable('cbp_core04_ui_target_stock').GetValue|2] total=[THIS.GetVariable('cbp_core04_ui_total_stock').GetValue|2] requested=[THIS.GetVariable('cbp_core04_ui_requested_total').GetValue|2] actual=[THIS.GetVariable('cbp_core04_ui_actual_total').GetValue|2] source_capacity=[THIS.GetVariable('cbp_core04_ui_source_capacity').GetValue|2] moved_capacity=[THIS.GetVariable('cbp_core04_ui_moved_capacity').GetValue|2] ratio=[THIS.GetVariable('cbp_core04_ui_ratio').GetValue|4] goods_checked=[THIS.GetVariable('cbp_core04_ui_goods_checked').GetValue|0] goods_moved=[THIS.GetVariable('cbp_core04_ui_goods_moved').GetValue|0]"
+}
+
+cbp_core04_note_assertion_failure = {
+	save_temporary_scope_value_as = {
+		name = test_cbp_core04_assertion_failure_count
+		value = {
+			value = scope:test_cbp_core04_assertion_failure_count
+			add = 1
+		}
+	}
+}
+
+cbp_debug_run_core04_market_entry_test = {
+	debug_log = "ModeU5 TEST ENTERED scenario=core04_market_entry"
+	remove_global_variable = test_cbp_core04_market_entry_passed
+	remove_global_variable = test_cbp_core04_market_entry_failed
+	remove_global_variable = test_cbp_core04_market_entry_blocked
+
+	save_temporary_scope_value_as = { name = test_cbp_core04_assertion_failure_count value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 0 }
+	save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_value value = 1 }
+	if = {
+		limit = {
+			has_variable_map = cmm
+			is_key_in_variable_map = {
+				name = cmm
+				target = flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings
+			}
+		}
+		save_temporary_scope_value_as = { name = test_cbp_perf14_original_cmm_main_present value = 1 }
+		save_temporary_scope_value_as = {
+			name = test_cbp_perf14_original_cmm_main_value
+			value = "variable_map(cmm|flag:no_void_economy__cbp_general_gameplay_country_level_stocks_countries_have_own_stocks_settings)"
+		}
+	}
+
+	cbp_core04_test_select_fixture_markets = yes
+
+	if = {
+		limit = {
+			cbp_stock_runtime_ready_trigger = yes
+			scope:test_cbp_core04_test_target_found > 0
+		}
+		cbp_perf14_set_cmm_main_mode_for_test = { value = 2 }
+		cbp_core04_test_seed_wheat_fixture = { quantity = 120 }
+		cbp_prepare_core04_market_entry_stock_migration = {
+			country = scope:cbp_core04_test_country
+			source_market = scope:cbp_core04_test_source_market
+			target_market = scope:cbp_core04_test_target_market
+			location = scope:cbp_core04_test_location
+		}
+		cbp_core04_test_read_wheat_totals = yes
+		cbp_core04_test_log_normal_first_entry_dump = yes
+		if = {
+			limit = {
+				OR = {
+					NOT = { global_var:cbp_core04_market_entry_last_result = 1 }
+					scope:test_cbp_core04_test_target_stock <= 0
+					scope:test_cbp_core04_test_total_stock < 119.99
+					scope:test_cbp_core04_test_total_stock > 120.01
+				}
+			}
+			cbp_core04_note_assertion_failure = yes
+			debug_log = "ModeU5 CORE-04 FAIL_REASON reason=normal_first_entry_invariant"
+		}
+
+		save_temporary_scope_value_as = { name = test_cbp_core04_known_source_before value = scope:test_cbp_core04_test_source_stock }
+		save_temporary_scope_value_as = { name = test_cbp_core04_known_target_before value = scope:test_cbp_core04_test_target_stock }
+		cbp_prepare_core04_market_entry_stock_migration = {
+			country = scope:cbp_core04_test_country
+			source_market = scope:cbp_core04_test_source_market
+			target_market = scope:cbp_core04_test_target_market
+			location = scope:cbp_core04_test_location
+		}
+		cbp_core04_test_read_wheat_totals = yes
+		cbp_core04_test_log_known_market_oscillation_dump = yes
+		if = {
+			limit = {
+				OR = {
+					NOT = { global_var:cbp_core04_market_entry_last_result = 2 }
+					scope:test_cbp_core04_test_source_stock != scope:test_cbp_core04_known_source_before
+					scope:test_cbp_core04_test_target_stock != scope:test_cbp_core04_known_target_before
+				}
+			}
+			cbp_core04_note_assertion_failure = yes
+			debug_log = "ModeU5 CORE-04 FAIL_REASON reason=known_market_oscillation_invariant"
+		}
+
+		cbp_perf14_set_cmm_main_mode_for_test = { value = 1 }
+		cbp_clear_detailed_accounting_promoted_markets = yes
+		cbp_clear_performance_relevant_markets = yes
+		cbp_mark_human_relevant_market_for_country = {
+			country = scope:cbp_core04_test_country
+			market = scope:cbp_core04_test_target_market
+		}
+		cbp_core04_test_seed_wheat_fixture = { quantity = 80 }
+		cbp_prepare_core04_market_entry_stock_migration = {
+			country = scope:cbp_core04_test_country
+			source_market = scope:cbp_core04_test_source_market
+			target_market = scope:cbp_core04_test_target_market
+			location = scope:cbp_core04_test_location
+		}
+		cbp_core04_test_read_wheat_totals = yes
+		cbp_core04_test_log_performance_promoted_first_entry_dump = yes
+		if = {
+			limit = {
+				OR = {
+					NOT = { global_var:cbp_core04_market_entry_last_result = 1 }
+					NOT = { global_var:cbp_core04_market_entry_promotion_attempted = 1 }
+					NOT = { global_var:cbp_core04_market_entry_promotion_succeeded = 1 }
+					scope:test_cbp_core04_test_target_stock <= 0
+					scope:test_cbp_core04_test_total_stock < 79.99
+					scope:test_cbp_core04_test_total_stock > 80.01
+				}
+			}
+			cbp_core04_note_assertion_failure = yes
+			debug_log = "ModeU5 CORE-04 FAIL_REASON reason=performance_first_entry_invariant"
+		}
+
+		# CORE-04 deactivation is a market-entry gate invariant. Force the derived
+		# runtime mode directly so this probe does not depend on a brittle CMM test key.
+		cbp_enter_cbp_deactivated_mode = yes
+		cbp_prepare_core04_market_entry_stock_migration = {
+			country = scope:cbp_core04_test_country
+			source_market = scope:cbp_core04_test_source_market
+			target_market = scope:cbp_core04_test_target_market
+			location = scope:cbp_core04_test_location
+		}
+		cbp_core04_test_read_wheat_totals = yes
+		cbp_core04_test_log_deactivated_blocked_dump = yes
+		if = {
+			limit = { NOT = { global_var:cbp_core04_market_entry_last_result = 4 } }
+			cbp_core04_note_assertion_failure = yes
+			debug_log = "ModeU5 CORE-04 FAIL_REASON reason=deactivated_block_invariant"
+		}
+
+		cbp_perf14_restore_cmm_main_mode_after_test = yes
+
+		if = {
+			limit = { scope:test_cbp_core04_assertion_failure_count <= 0 }
+			set_global_variable = test_cbp_core04_market_entry_passed
+			debug_log = "ModeU5 CORE-04 RESULT market_entry PASS"
+			debug_log = "ModeU5 TEST PASS scenario=core04_market_entry"
+		}
+		else = {
+			set_global_variable = test_cbp_core04_market_entry_failed
+			debug_log = "ModeU5 CORE-04 RESULT market_entry FAIL"
+			debug_log = "ModeU5 TEST FAIL scenario=core04_market_entry"
+		}
+	}
+	else = {
+		cbp_perf14_restore_cmm_main_mode_after_test = yes
+		set_global_variable = test_cbp_core04_market_entry_blocked
+		debug_log = "ModeU5 CORE-04 RESULT market_entry BLOCKED reason=missing_runtime_or_second_market"
+		debug_log = "ModeU5 TEST BLOCKED scenario=core04_market_entry"
+	}
+}

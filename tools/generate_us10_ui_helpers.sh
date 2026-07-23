@@ -3,19 +3,19 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_goods_registry
-goods=("${modeu5_goods[@]}")
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_goods_registry
+goods=("${cbp_goods[@]}")
 
-stock_table_row_template="$repo_root/tools/templates/modeu5_us10_stock_table_row.template.gui"
-market_production_good_template="$repo_root/tools/templates/modeu5_us10_market_production_good.template.txt"
+stock_table_row_template="$repo_root/tools/templates/cbp_us10_stock_table_row.template.gui"
+market_production_good_template="$repo_root/tools/templates/cbp_us10_market_production_good.template.txt"
 
-table_output="${1:-$repo_root/in_game/gui/modeu5_us10_stock_table.gui}"
-market_production_output="${2:-$repo_root/in_game/common/scripted_effects/modeu5_us10_ui_market_production_effects.txt}"
+table_output="${1:-$repo_root/in_game/gui/cbp_us10_stock_table.gui}"
+market_production_output="${2:-$repo_root/in_game/common/scripted_effects/cbp_us10_ui_market_production_effects.txt}"
 
-modeu5_require_file "$stock_table_row_template"
-modeu5_require_file "$market_production_good_template"
+cbp_require_file "$stock_table_row_template"
+cbp_require_file "$market_production_good_template"
 
 mkdir -p "$(dirname "$table_output")" "$(dirname "$market_production_output")"
 
@@ -32,11 +32,11 @@ write_stock_table() {
 # US-10 spec columns:
 # Good | Country Stocks | Market Stocks | Overproduction | Production Efficiency
 #
-# Row visibility is generated for every ModeU5 stock good from tools/modeu5_goods.sh
+# Row visibility is generated for every ModeU5 stock good from tools/cbp_goods.sh
 # and is based on the selected-market vanilla production trigger, with stock
 # presence kept as a temporary visibility fallback while diagnostics stabilize.
 
-template modeu5_us10_stock_header_cell_good {
+template cbp_us10_stock_header_cell_good {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 38 22 }
 	maximumsize = { 38 22 }
@@ -47,7 +47,7 @@ template modeu5_us10_stock_header_cell_good {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_header_cell_stock {
+template cbp_us10_stock_header_cell_stock {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 84 22 }
 	maximumsize = { 84 22 }
@@ -58,7 +58,7 @@ template modeu5_us10_stock_header_cell_stock {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_header_cell_overproduction {
+template cbp_us10_stock_header_cell_overproduction {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 74 22 }
 	maximumsize = { 74 22 }
@@ -69,7 +69,7 @@ template modeu5_us10_stock_header_cell_overproduction {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_header_cell_efficiency {
+template cbp_us10_stock_header_cell_efficiency {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 62 22 }
 	maximumsize = { 62 22 }
@@ -80,7 +80,7 @@ template modeu5_us10_stock_header_cell_efficiency {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_value_cell_stock {
+template cbp_us10_stock_value_cell_stock {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 84 22 }
 	maximumsize = { 84 22 }
@@ -90,7 +90,7 @@ template modeu5_us10_stock_value_cell_stock {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_value_cell_overproduction {
+template cbp_us10_stock_value_cell_overproduction {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 74 22 }
 	maximumsize = { 74 22 }
@@ -100,7 +100,7 @@ template modeu5_us10_stock_value_cell_overproduction {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_value_cell_efficiency {
+template cbp_us10_stock_value_cell_efficiency {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 62 22 }
 	maximumsize = { 62 22 }
@@ -110,7 +110,7 @@ template modeu5_us10_stock_value_cell_efficiency {
 	block "text" { raw_text = "" }
 }
 
-template modeu5_us10_stock_good_icon_cell {
+template cbp_us10_stock_good_icon_cell {
 	layoutpolicy_horizontal = fixed
 	minimumsize = { 38 24 }
 	maximumsize = { 38 24 }
@@ -123,7 +123,7 @@ template modeu5_us10_stock_good_icon_cell {
 	}
 }
 
-template modeu5_us10_stock_row {
+template cbp_us10_stock_row {
 	layoutpolicy_horizontal = fixed
 	layoutpolicy_vertical = fixed
 	minimumsize = { 370 26 }
@@ -132,16 +132,16 @@ template modeu5_us10_stock_row {
 
 	block "good" {
 		widget = {
-			using = modeu5_us10_stock_good_icon_cell
+			using = cbp_us10_stock_good_icon_cell
 		}
 	}
-	block "country_stocks" { text_single = { using = modeu5_us10_stock_value_cell_stock } }
-	block "market_stocks" { text_single = { using = modeu5_us10_stock_value_cell_stock } }
-	block "overproduction" { text_single = { using = modeu5_us10_stock_value_cell_overproduction } }
-	block "production_efficiency" { text_single = { using = modeu5_us10_stock_value_cell_efficiency } }
+	block "country_stocks" { text_single = { using = cbp_us10_stock_value_cell_stock } }
+	block "market_stocks" { text_single = { using = cbp_us10_stock_value_cell_stock } }
+	block "overproduction" { text_single = { using = cbp_us10_stock_value_cell_overproduction } }
+	block "production_efficiency" { text_single = { using = cbp_us10_stock_value_cell_efficiency } }
 }
 
-template modeu5_us10_stock_table {
+template cbp_us10_stock_table {
 	layoutpolicy_horizontal = fixed
 	layoutpolicy_vertical = expanding
 	minimumsize = { 520 760 }
@@ -162,11 +162,11 @@ template modeu5_us10_stock_table {
 			minimumsize = { 370 24 }
 			maximumsize = { 370 24 }
 			spacing = 4
-			text_single = { using = modeu5_us10_stock_header_cell_good blockoverride "text" { raw_text = "Good" } }
-			text_single = { using = modeu5_us10_stock_header_cell_stock blockoverride "text" { raw_text = "Country" } }
-			text_single = { using = modeu5_us10_stock_header_cell_stock blockoverride "text" { raw_text = "Market" } }
-			text_single = { using = modeu5_us10_stock_header_cell_overproduction blockoverride "text" { raw_text = "Overprod." } }
-			text_single = { using = modeu5_us10_stock_header_cell_efficiency blockoverride "text" { raw_text = "Eff." } }
+			text_single = { using = cbp_us10_stock_header_cell_good blockoverride "text" { raw_text = "Good" } }
+			text_single = { using = cbp_us10_stock_header_cell_stock blockoverride "text" { raw_text = "Country" } }
+			text_single = { using = cbp_us10_stock_header_cell_stock blockoverride "text" { raw_text = "Market" } }
+			text_single = { using = cbp_us10_stock_header_cell_overproduction blockoverride "text" { raw_text = "Overprod." } }
+			text_single = { using = cbp_us10_stock_header_cell_efficiency blockoverride "text" { raw_text = "Eff." } }
 		}
 
 		scrollarea = {
@@ -188,7 +188,7 @@ TXT
 
 	for good in "${goods[@]}"; do
 		printf '\n'
-		modeu5_render_template_to_stdout "$stock_table_row_template" "GOOD=$good"
+		cbp_render_template_to_stdout "$stock_table_row_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'
@@ -213,9 +213,9 @@ write_market_production_effects() {
 # dynamic variable-map names survive in the generated output.
 #
 # Compatibility marker for older validators:
-# modeu5_us10_ui_capture_market_produced_row = { good = wheat key = wheat }
+# cbp_us10_ui_capture_market_produced_row = { good = wheat key = wheat }
 
-modeu5_us10_ui_clear_all_market_produced_rows = {
+cbp_us10_ui_clear_all_market_produced_rows = {
 TXT
 
 	for good in "${goods[@]}"; do
@@ -233,16 +233,16 @@ TXT
 
 	for good in "${goods[@]}"; do
 		cat <<TXT
-modeu5_us10_ui_capture_market_produced_row_good_${good} = {
-	scope:modeu5_us10_ui_country = {
+cbp_us10_ui_capture_market_produced_row_good_${good} = {
+	scope:cbp_us10_ui_country = {
 		set_local_variable = { name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator value = 0 }
 		set_variable = { name = gui_cbp_us10_ui_${good}_is_produced_in_market value = 0 }
 	}
 
-	scope:modeu5_us10_ui_selected_market_scope = {
+	scope:cbp_us10_ui_selected_market_scope = {
 		if = {
 			limit = { is_produced_in_market = goods:${good} }
-			scope:modeu5_us10_ui_country = {
+			scope:cbp_us10_ui_country = {
 				set_variable = { name = gui_cbp_us10_ui_${good}_is_produced_in_market value = 1 }
 			}
 		}
@@ -252,15 +252,15 @@ modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 		limit = { has_global_variable_list = cbp_countries_present_in_market }
 		every_in_global_list = {
 			variable = cbp_countries_present_in_market
-			save_temporary_scope_as = modeu5_us10_ui_market_country
+			save_temporary_scope_as = cbp_us10_ui_market_country
 
-			modeu5_read_void_economy_record = {
-				country = scope:modeu5_us10_ui_market_country
-				market = scope:modeu5_us10_ui_selected_market_scope
+			cbp_read_void_economy_record = {
+				country = scope:cbp_us10_ui_market_country
+				market = scope:cbp_us10_ui_selected_market_scope
 				good = ${good}
 			}
 
-			scope:modeu5_us10_ui_country = {
+			scope:cbp_us10_ui_country = {
 				change_local_variable = {
 					name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator
 					add = scope:cbp_us00_produced
@@ -269,7 +269,7 @@ modeu5_us10_ui_capture_market_produced_row_good_${good} = {
 		}
 	}
 
-	scope:modeu5_us10_ui_country = {
+	scope:cbp_us10_ui_country = {
 		save_temporary_scope_value_as = {
 			name = gui_cbp_us10_ui_${good}_ledger_produced_by_market_value
 			value = local_var:gui_cbp_us10_ui_${good}_ledger_produced_by_market_accumulator
@@ -303,19 +303,19 @@ TXT
 	done
 
 	cat <<'TXT'
-modeu5_us10_ui_capture_all_market_produced_rows = {
+cbp_us10_ui_capture_all_market_produced_rows = {
 TXT
 
 	for good in "${goods[@]}"; do
-		modeu5_render_template_to_stdout "$market_production_good_template" "GOOD=$good"
+		cbp_render_template_to_stdout "$market_production_good_template" "GOOD=$good"
 	done
 
 	cat <<'TXT'
 }
 
-modeu5_us10_ui_capture_selected_market_produced_by_market = {
-	save_temporary_scope_as = modeu5_us10_ui_country
-	modeu5_us10_ui_clear_all_market_produced_rows = yes
+cbp_us10_ui_capture_selected_market_produced_by_market = {
+	save_temporary_scope_as = cbp_us10_ui_country
+	cbp_us10_ui_clear_all_market_produced_rows = yes
 	set_variable = { name = gui_cbp_us10_ui_produced_positive_rows value = 0 }
 	set_variable = { name = gui_cbp_us10_ui_stock_fallback_rows value = 0 }
 	set_variable = { name = gui_cbp_us10_ui_countries_present_in_market_count value = 0 }
@@ -324,29 +324,29 @@ modeu5_us10_ui_capture_selected_market_produced_by_market = {
 		limit = { has_global_variable_list = gui_cbp_us10_ui_selected_market }
 		every_in_global_list = {
 			variable = gui_cbp_us10_ui_selected_market
-			save_temporary_scope_as = modeu5_us10_ui_selected_market_scope
-			scope:modeu5_us10_ui_selected_market_scope = { save_temporary_scope_as = modeu5_market_country_cache_market }
-			modeu5_rebuild_countries_present_in_market = yes
+			save_temporary_scope_as = cbp_us10_ui_selected_market_scope
+			scope:cbp_us10_ui_selected_market_scope = { save_temporary_scope_as = cbp_market_country_cache_market }
+			cbp_rebuild_countries_present_in_market = yes
 
 			if = {
 				limit = { has_global_variable_list = cbp_countries_present_in_market }
 				every_in_global_list = {
 					variable = cbp_countries_present_in_market
-					scope:modeu5_us10_ui_country = {
+					scope:cbp_us10_ui_country = {
 						set_variable = { name = gui_cbp_us10_ui_countries_present_in_market_count value = { value = var:gui_cbp_us10_ui_countries_present_in_market_count add = 1 } }
 					}
 				}
 			}
 
-			modeu5_us10_ui_capture_all_market_produced_rows = yes
+			cbp_us10_ui_capture_all_market_produced_rows = yes
 		}
 	}
 }
 
-modeu5_us10_ui_prepare_current_market_table_for_production_ui = {
-	modeu5_us10_ui_prepare_current_market_table = yes
-	modeu5_us10_ui_capture_selected_market_produced_by_market = yes
-	scope:modeu5_us10_ui_country = {
+cbp_us10_ui_prepare_current_market_table_for_production_ui = {
+	cbp_us10_ui_prepare_current_market_table = yes
+	cbp_us10_ui_capture_selected_market_produced_by_market = yes
+	scope:cbp_us10_ui_country = {
 		debug_log = "ModeU5 US-10-UI FILTER market_index=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_index').GetValue|0] market_count=[THIS.GetVariable('gui_cbp_us10_ui_market_count').GetValue|0] selected_market_available=[THIS.GetVariable('gui_cbp_us10_ui_selected_market_available').GetValue|0] countries_present=[THIS.GetVariable('gui_cbp_us10_ui_countries_present_in_market_count').GetValue|0] vanilla_rows=[THIS.GetVariable('gui_cbp_us10_ui_produced_positive_rows').GetValue|0] stock_fallback_rows=[THIS.GetVariable('gui_cbp_us10_ui_stock_fallback_rows').GetValue|0] wheat_flag=[THIS.GetVariable('gui_cbp_us10_ui_wheat_is_produced_in_market').GetValue|0] wheat_ledger=[THIS.GetVariable('gui_cbp_us10_ui_wheat_ledger_produced_by_market').GetValue|2] iron_flag=[THIS.GetVariable('gui_cbp_us10_ui_iron_is_produced_in_market').GetValue|0] iron_ledger=[THIS.GetVariable('gui_cbp_us10_ui_iron_ledger_produced_by_market').GetValue|2] cloth_flag=[THIS.GetVariable('gui_cbp_us10_ui_cloth_is_produced_in_market').GetValue|0] cloth_ledger=[THIS.GetVariable('gui_cbp_us10_ui_cloth_ledger_produced_by_market').GetValue|2]"
 	}
 }

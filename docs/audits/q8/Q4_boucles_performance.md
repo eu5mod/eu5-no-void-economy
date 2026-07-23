@@ -130,7 +130,7 @@ Q8.7 — isolated global market iterator exposure probe before dispatcher replac
 Runtime validation attached to #150 on 2026-07-06 shows all five probes passed through:
 
 ```txt
-event modeu5_q8_probe_debug.1
+event cbp_q8_probe_debug.1
 ```
 
 The probe layer itself is passed; implementation still requires separate PRs and clean-log hardening where relevant.
@@ -165,18 +165,18 @@ monthly US-10 -> iterate sparse pending work -> clear index after processing
 Q8.5 changes dirty-cache repair from probe-only evidence to a guarded repair consumer:
 
 ```txt
-modeu5_repair_dirty_market_country_caches_if_needed
+cbp_repair_dirty_market_country_caches_if_needed
 ```
 
 The dirty repair path remains candidate-scoped:
 
 ```txt
-producers: confirmed lifecycle hooks that call modeu5_mark_market_country_cache_dirty
-consumer: modeu5_repair_dirty_market_country_caches / if_needed wrapper
+producers: confirmed lifecycle hooks that call cbp_mark_market_country_cache_dirty
+consumer: cbp_repair_dirty_market_country_caches / if_needed wrapper
 scope: dirty markets only
 ```
 
-It does not introduce durable per-market country-list storage and therefore does not change the Q4 assumption that `modeu5_countries_present_in_market` is a rebuilt current-market work cache.
+It does not introduce durable per-market country-list storage and therefore does not change the Q4 assumption that `cbp_countries_present_in_market` is a rebuilt current-market work cache.
 
 ## Q8.6 implementation update
 
@@ -184,14 +184,14 @@ Q8.6 adds a bounded debug/audit verifier slice:
 
 ```txt
 candidate producers:
-  modeu5_market_country_cache_dirty_markets
-  modeu5_promoted_markets_this_cycle
+  cbp_market_country_cache_dirty_markets
+  cbp_promoted_markets_this_cycle
 
 candidate list:
-  modeu5_market_sliced_verifier_candidate_markets
+  cbp_market_sliced_verifier_candidate_markets
 
 runner:
-  modeu5_run_market_sliced_verifier_candidates
+  cbp_run_market_sliced_verifier_candidates
 ```
 
 Work shape:
@@ -229,12 +229,12 @@ Normal Mode universe shadow comparison:
     == every_country -> every_market_center_in_country
 
 Performance Mode relevant-market shadow comparison:
-  modeu5_performance_relevant_markets
-    == every_market_in_world filtered to modeu5_performance_relevant_markets
+  cbp_performance_relevant_markets
+    == every_market_in_world filtered to cbp_performance_relevant_markets
 
 Performance Mode market-owner workshape shadow:
   current market-center workaround
-    == every_market_in_world filtered to modeu5_performance_relevant_markets
+    == every_market_in_world filtered to cbp_performance_relevant_markets
     -> rebuild countries_present_in_market
     -> count present-country work surface
 
@@ -248,7 +248,7 @@ The #160 Performance Mode proof stack adds only lightweight loop shapes:
 
 ```txt
 every_market_in_world
-  -> if market in modeu5_performance_relevant_markets
+  -> if market in cbp_performance_relevant_markets
      -> rebuild countries_present_in_market
      -> count countries / pass surfaces only
 ```

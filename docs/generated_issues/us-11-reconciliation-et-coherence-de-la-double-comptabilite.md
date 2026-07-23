@@ -33,14 +33,14 @@ Feeds counters to: diagnostics and safe downstream reads
 |---|---|---|---|---|
 | Iterate countries/markets/goods | none/country/location → country/market/goods | `every_country`, `every_market_in_world`, `every_goods`, owned locations and scope links | CONFIRMED | 001-006 |
 | Scope passing | scripted effect | `save_scope_as`, `save_temporary_scope_as`, explicit parameters | CONFIRMED | 008 |
-| Country source record | country × market × good | logical `stock` field backed by country-scoped `modeu5_<good>_stock_by_market` maps keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate storage | market × good | global per-good `modeu5_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
-| Rebuild aggregate | ModeU5 | `modeu5_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
-| Validate consistency | ModeU5 | `modeu5_validate_stock_consistency` | CONFIRMED | 020 |
+| Country source record | country × market × good | logical `stock` field backed by country-scoped `cbp_<good>_stock_by_market` maps keyed by market | CONFIRMED | 007, 015 |
+| Market aggregate storage | market × good | global per-good `cbp_<good>_market_stock` map keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Rebuild aggregate | ModeU5 | `cbp_rebuild_market_stock_from_country_stocks` | CONFIRMED | 019 |
+| Validate consistency | ModeU5 | `cbp_validate_stock_consistency` | CONFIRMED | 020 |
 | Monthly audit invocation | country | `monthly_country_pulse` gated by dedicated audit mode | CONFIRMED | 011, 100-101 |
 | Four-year invocation | country | `four_yearly_country_pulse` with one global year stamp | CONFIRMED | 131 |
 | Deterministic debug invocation | effect scope | event triggers and logs | CONFIRMED | 013 |
-| Dirty market index by good | global variable system → market | one deduplicated `modeu5_<good>_dirty_markets` global variable list per good | CONFIRMED | 111 |
+| Dirty market index by good | global variable system → market | one deduplicated `cbp_<good>_dirty_markets` global variable list per good | CONFIRMED | 111 |
 | One global pass per cycle | country pulse → global state | `current_year`, `current_month`, guarded global cycle stamps | CONFIRMED | 112 |
 
 ## Files expected to change
@@ -82,7 +82,7 @@ Related US: US-01, US-03, US-10, US-00
 - Run one four-year active-index reconciliation pass and guard it with a persistent `current_year` stamp because country pulses execute once per country.
 - CORE-03 lifecycle hooks do not reconcile immediately; centralized stock operators mark dirty market/good records and the next permitted cadence repairs them.
 - Guard monthly and four-year entry points with persistent calendar stamps because country pulses execute once per country.
-- Treat `monthly_country_pulse` / `four_yearly_country_pulse` as outer country iterations. When reconciliation is called from a country pulse, preselect the current country as `modeu5_reconciliation_controller`; use the global `every_country` controller fallback only for non-country initialization, audit, or debug entry points.
+- Treat `monthly_country_pulse` / `four_yearly_country_pulse` as outer country iterations. When reconciliation is called from a country pulse, preselect the current country as `cbp_reconciliation_controller`; use the global `every_country` controller fallback only for non-country initialization, audit, or debug entry points.
 - Keep the monthly seen-market registry separate from reconciliation state. It records markets reached by country pulses and can support future market-owned scheduling, but US-11 still validates explicit dirty/active market-good indexes and never uses the registry as a stock source.
 - Fail closed while CORE-02 initialization is incomplete. Manual deterministic tests may invoke the underlying reconciliation effect directly.
 - Never repair country stocks from market stock.

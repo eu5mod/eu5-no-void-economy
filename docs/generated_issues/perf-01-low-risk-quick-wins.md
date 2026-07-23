@@ -28,20 +28,20 @@ make normal/debug/audit modes explicit
 | Need | Scope | Method | Status | TECH-01 |
 |---|---|---|---|---|
 | Persistent mode flags | global | `set_global_variable` / `has_global_variable` | CONFIRMED | 007 |
-| Debug gate | global trigger | `modeu5_debug_capture_enabled_trigger` | CONFIRMED | N/A |
-| Audit-only full validation | global trigger | `modeu5_full_validation_allowed_trigger` | CONFIRMED | N/A |
+| Debug gate | global trigger | `cbp_debug_capture_enabled_trigger` | CONFIRMED | N/A |
+| Audit-only full validation | global trigger | `cbp_full_validation_allowed_trigger` | CONFIRMED | N/A |
 | Missing map entry means zero | country/global map readers | existing safe-default reads | CONFIRMED | 007 |
 | Opening stock source | market | `stockpile_in_market(goods:<good>)` | CONFIRMED | existing CORE-02 exposure |
 
 ## Files expected to change
 
 ```txt
-in_game/common/scripted_effects/modeu5_configuration_effects.txt
-in_game/common/scripted_triggers/modeu5_configuration_triggers.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-tools/templates/modeu5_stock_good_adapter.template.txt
-packages/modeu5_core_tests/in_game/common/scripted_effects/modeu5_stock_test_effects.txt
+in_game/common/scripted_effects/cbp_configuration_effects.txt
+in_game/common/scripted_triggers/cbp_configuration_triggers.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+tools/templates/cbp_stock_good_adapter.template.txt
+packages/cbp_core_tests/in_game/common/scripted_effects/cbp_stock_test_effects.txt
 docs/technical/DEBUG_CONVENTIONS.md
 docs/tests/TEST_PLAN.md
 docs/tests/PERF_01_LOW_RISK_QUICK_WINS_RUNBOOK.md
@@ -63,8 +63,8 @@ and the current debug/test package conventions.
 
 ## Acceptance criteria
 
-- Normal runtime sets `modeu5_runtime_mode_normal` when debug is off.
-- Basic debug sets `modeu5_runtime_mode_debug`.
+- Normal runtime sets `cbp_runtime_mode_normal` when debug is off.
+- Basic debug sets `cbp_runtime_mode_debug`.
 - Verbose debug remains a visibility setting only. Deterministic reconciliation fixtures can use test-audit mode.
 - Debug capture effects are no-op in normal runtime.
 - Zero stock/capacity/aggregate values are not persisted to variable maps by generated adapters.

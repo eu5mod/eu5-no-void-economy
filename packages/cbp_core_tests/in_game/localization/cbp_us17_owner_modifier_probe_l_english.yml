@@ -1,0 +1,9 @@
+﻿l_english:
+ cbp_us17_owner_modifiers.1.title: "ModeU5 US-17 Operation-Aware Profit Probe"
+ cbp_us17_owner_modifiers.1.desc: "Validate distinct Import and Export Efficiency paths, refresh the current country, then verify the effective price modifiers after one day."
+ cbp_us17_owner_modifiers.1.a: "Run operation-aware profit probe"
+ cbp_us17_owner_modifiers.2.title: "ModeU5 US-17 Operation-Aware Result"
+ cbp_us17_owner_modifiers.2.desc: "Review the deterministic result below and inspect debug.log for the detailed audit markers."
+ cbp_us17_owner_modifiers.pass: "PASS — calculation and live modifiers"
+ cbp_us17_owner_modifiers.fail: "FAIL — inspect ASSERT FAIL entries"
+ cbp_us17_owner_modifiers.blocked: "BLOCKED — Trade Rework is disabled in CMM"

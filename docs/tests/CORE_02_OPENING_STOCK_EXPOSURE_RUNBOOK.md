@@ -15,7 +15,7 @@ Close EU5, then run:
 ./tools/clear_eu5_logs.sh
 ```
 
-Confirm that `packages/modeu5_core_tests` was installed and that the installed
+Confirm that `packages/cbp_core_tests` was installed and that the installed
 test package's `MODEU5_SOURCE.txt` identifies:
 
 ```txt
@@ -31,7 +31,7 @@ branch: spike/core-02-opening-stock-exposure
 4. Open the console and run:
 
 ```txt
-event modeu5_core02_probe.1
+event cbp_core02_probe.1
 ```
 
 The technical minimum is one complete in-game day because the probe is attached
@@ -49,10 +49,10 @@ PASS - stockpile_in_market(goods:wheat) returned a value
 ```
 
 The global numeric variable
-`modeu5_core02_probe_opening_wheat_stock` must exist. Zero is a valid opening
+`cbp_core02_probe_opening_wheat_stock` must exist. Zero is a valid opening
 value and must not be treated as probe failure.
 
-No `modeu5_<good>_stock_by_market` entry, market cache, schema version, or
+No `cbp_<good>_stock_by_market` entry, market cache, schema version, or
 initialization-state variable may be created by this probe.
 
 ## Log review
@@ -85,14 +85,14 @@ passed on campaign date `1337.4.7`.
 The post-test save contained:
 
 ```txt
-modeu5_core02_probe_started_after_delay = yes
-modeu5_core02_probe_market_found = yes
-modeu5_core02_probe_opening_wheat_stock = <numeric value>
-modeu5_core02_probe_value_read = yes
-modeu5_core02_probe_passed = yes
+cbp_core02_probe_started_after_delay = yes
+cbp_core02_probe_market_found = yes
+cbp_core02_probe_opening_wheat_stock = <numeric value>
+cbp_core02_probe_value_read = yes
+cbp_core02_probe_passed = yes
 ```
 
-`modeu5_core02_probe_failed` was absent. The save contained no ModeU5 stock
+`cbp_core02_probe_failed` was absent. The save contained no ModeU5 stock
 map entry, market-stock cache, schema version, initialization state, or
 CORE-01 test marker. The current logs contained no ModeU5 script error from
 the probe.

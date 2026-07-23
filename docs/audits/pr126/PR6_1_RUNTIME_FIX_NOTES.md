@@ -9,11 +9,11 @@ PR6.1 fixes runtime errors observed after PR6 was merged into `developement-bala
 The PR6 probe produced:
 
 ```txt
-Div/0 near common/scripted_effects/modeu5_country_trade_owner_effects.txt
-Undefined event target 'modeu5_pr126_trade_owner_target_market'
-Undefined event target 'modeu5_target_market'
+Div/0 near common/scripted_effects/cbp_country_trade_owner_effects.txt
+Undefined event target 'cbp_pr126_trade_owner_target_market'
+Undefined event target 'cbp_target_market'
 Invalid right side during comparison 'scope'
-Failed to fetch variable for 'modeu5_country_trade_owner_pass_runs'
+Failed to fetch variable for 'cbp_country_trade_owner_pass_runs'
 ```
 
 ## Root causes
@@ -29,7 +29,7 @@ Runtime testing showed this implementation shape is not safe from generic trade 
 The formula remains correct, but it must be implemented through the generated literal-good transport-cost helpers:
 
 ```txt
-modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+cbp_compute_goods_quantity_from_trade_capacity_good_<good>
 ```
 
 2. The PR6 test market selector could leave the target-market event target unset when the current country did not expose two distinct markets through `every_market_present_in_country`.
@@ -53,7 +53,7 @@ every_trade
 The safe quantity-conversion path is the generated literal-good helper family:
 
 ```txt
-modeu5_compute_goods_quantity_from_trade_capacity_good_<good>
+cbp_compute_goods_quantity_from_trade_capacity_good_<good>
 ```
 
 A future native trade stock-mutating dispatcher must bridge `traded_goods` to a literal generated good adapter before calling the stock-affecting inter-market transfer handlers.

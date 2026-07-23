@@ -6,9 +6,9 @@ This runbook validates the active-market scheduling indexes added for Issue #60
 PR 4:
 
 ```txt
-modeu5_<good>_active_markets
-modeu5_active_markets_any_good
-modeu5_validate_active_stock_consistency
+cbp_<good>_active_markets
+cbp_active_markets_any_good
+cbp_validate_active_stock_consistency
 ```
 
 The goal is not to remove strict audits. It is to prove that active validation
@@ -46,7 +46,7 @@ Setup:
 Start a disposable campaign where FRA and ENG exist.
 Run:
 
-event modeu5_debug.1
+event cbp_debug.1
 
 Choose "Test US-11 dirty-record reconciliation".
 ```
@@ -64,8 +64,8 @@ Expected internal behavior:
 ```txt
 The fixture clears active and dirty lists.
 The fixture adds wheat stock in FRA's capital market.
-The stock write marks modeu5_wheat_active_markets.
-The stock write marks modeu5_active_markets_any_good.
+The stock write marks cbp_wheat_active_markets.
+The stock write marks cbp_active_markets_any_good.
 Dirty validation repairs the first corruption.
 Active validation repairs the second corruption through the active market list.
 Active validation rebuilds the current-market country work cache once for the
@@ -93,7 +93,7 @@ Setup:
 Start a disposable initialized campaign.
 Run:
 
-event modeu5_debug.1
+event cbp_debug.1
 
 Choose "Test US-11 reconciliation cadence gates".
 ```
@@ -112,8 +112,8 @@ automatic reconciliation cadences.
 When reviewing a monthly runtime smoke test, also inspect:
 
 ```txt
-modeu5_monthly_markets_seen_new_count
-modeu5_monthly_markets_seen_duplicate_count
+cbp_monthly_markets_seen_new_count
+cbp_monthly_markets_seen_duplicate_count
 ```
 
 `duplicate_count > 0` is not an error by itself. It means multiple countries
@@ -137,4 +137,4 @@ the logs contain no ModeU5 script errors.
 Active lists are scheduling indexes, not proof that a market still has nonzero
 stock or capacity. They may be overinclusive until a future repair/rebuild layer
 can characterize safe list-item removal. Strict exhaustive validation remains
-available through `modeu5_validate_all_stock_consistency`.
+available through `cbp_validate_all_stock_consistency`.

@@ -12,7 +12,7 @@ As a ModeU5 feature author, I want stock decay to use one dedicated operation so
 
 ## Functional objective
 
-Implement `modeu5_decay_stock` for one explicit country, market, and good record. It must calculate decay from the country source stock, update the country and market values by the same quantity, and expose the loss without treating it as unsatisfied demand.
+Implement `cbp_decay_stock` for one explicit country, market, and good record. It must calculate decay from the country source stock, update the country and market values by the same quantity, and expose the loss without treating it as unsatisfied demand.
 
 ## Runtime position
 
@@ -28,7 +28,7 @@ Feeds counters to: US-03-UI/debug, CORE-01.6
 | Need | Scope | Candidate | Status | TECH-01 ID |
 |---|---|---|---|---|
 | Country stock field | country x market x good | country-scoped per-good stock map keyed by market | CONFIRMED | 007, 015 |
-| Market aggregate | market x good | global per-good `modeu5_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
+| Market aggregate | market x good | global per-good `cbp_<good>_market_stock` keyed by market | FALLBACK_ACCEPTED | 007, 016 |
 | Decay arithmetic | transaction | multiply plus bounded min/max | CONFIRMED | 026 |
 | Fractional precision and persistence | transaction / variable map | controlled fractional arithmetic and map write/read probe | TO_TEST | 113 |
 | Monthly invocation | country | caller orchestration through `monthly_country_pulse` | CONFIRMED | 011 |
@@ -41,10 +41,10 @@ logical dimensions: country x market x good
 logical record and fields read/written: stock
 owner scope: country
 tuple/key: market x good logical tuple; market scope physical key
-confirmed physical map family: modeu5_<good>_stock_by_market
+confirmed physical map family: cbp_<good>_stock_by_market
 physical value type: numeric
 default value: 0
-write owner: modeu5_decay_stock for decay mutations
+write owner: cbp_decay_stock for decay mutations
 readers: US-01/UI, US-03/UI, US-11
 reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ```
@@ -54,9 +54,9 @@ reset/rebuild lifecycle: durable; market cache rebuilt by CORE-01.5
 ## Files expected to change
 
 ```txt
-in_game/common/script_values/modeu5_stock_values.txt
-in_game/common/scripted_effects/modeu5_stock_effects.txt
-in_game/common/scripted_effects/modeu5_debug_effects.txt
+in_game/common/script_values/cbp_stock_values.txt
+in_game/common/scripted_effects/cbp_stock_effects.txt
+in_game/common/scripted_effects/cbp_debug_effects.txt
 in_game/events/
 main_menu/localization/english/
 docs/tests/TEST_PLAN.md
@@ -76,9 +76,9 @@ Related US: US-01, US-03, US-03-UI, US-11
 - Follow all mandatory project and storage-model rules.
 - Operate on one country, market, and good record per call; US-03 owns iteration and scheduling.
 - Use the caller rate when provided; callers that want the configured default
-  must pass `decay_rate = modeu5_default_monthly_decay_rate` explicitly to
-  `modeu5_decay_stock`.
-- Do not reintroduce a per-good `modeu5_decay_stock_default` dispatch layer:
+  must pass `decay_rate = cbp_default_monthly_decay_rate` explicitly to
+  `cbp_decay_stock`.
+- Do not reintroduce a per-good `cbp_decay_stock_default` dispatch layer:
   EU5's static analyzer reports its saved default scopes as unset even when the
   runtime wrapper would set them, creating avoidable non-blocking log noise.
 - Bound the effective decay rate to `[0, 1]` and log an out-of-range input.

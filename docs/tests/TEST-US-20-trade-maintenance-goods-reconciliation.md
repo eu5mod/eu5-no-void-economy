@@ -35,16 +35,16 @@ Promoted-destination base receipt:
 
 ```txt
 origin non-promoted:
-  modeu5_add_stock(... capacity_policy = allow_over_capacity)
+  cbp_add_stock(... capacity_policy = allow_over_capacity)
 
 origin promoted:
-  modeu5_transfer_stock(... target_capacity_policy = allow_over_capacity)
+  cbp_transfer_stock(... target_capacity_policy = allow_over_capacity)
 ```
 
 Promoted-destination receiver loss:
 
 ```txt
-modeu5_apply_us20_promoted_destination_country_loss_by_route_good
+cbp_apply_us20_promoted_destination_country_loss_by_route_good
 ```
 
 The route-good dispatchers are generated from the canonical ModeU5 goods
@@ -136,7 +136,7 @@ execution.
 ./tools/generate_all.sh
 ./tools/validate_generators.sh
 ./tools/validate_module_packages.sh
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ./tools/normalize_cmm_value_links.sh --check
 python3 ./tools/validate_cmm_configuration.py
 git diff --check
@@ -154,13 +154,13 @@ Install the exact branch head and clear logs:
 Run the stable baseline:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 Run the standalone probe:
 
 ```txt
-event modeu5_us20_probe.1
+event cbp_us20_probe.1
 ```
 
 The console event only schedules a hidden continuation. The probe effect and its
@@ -190,7 +190,7 @@ The two case-3 classifications are the explicit-receiver and allocator paths.
 ## Post-run grep
 
 ```sh
-grep -R -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|US20 CASE12|BASE_RECEIPT|RECEIVER_SELECTION|rejected=stored_receiver|allocator_candidate|RECEIVER_CAPACITY_DISPATCH|BASE_RECEIPT_DISPATCH|COUNTRY_LOSS_DISPATCH|ASSERT FAIL|Failed to fetch variable for .modeu5_us20|global_var returned an unset scope|Tried to localize with localization disabled" \
+grep -R -E "main_revalidation_summary|us17_us20_route_reconciliation|us20_case12_market_loss_probe|US20 CASE12|BASE_RECEIPT|RECEIVER_SELECTION|rejected=stored_receiver|allocator_candidate|RECEIVER_CAPACITY_DISPATCH|BASE_RECEIPT_DISPATCH|COUNTRY_LOSS_DISPATCH|ASSERT FAIL|Failed to fetch variable for .cbp_us20|global_var returned an unset scope|Tried to localize with localization disabled" \
 "$HOME/Documents/Paradox Interactive/Europa Universalis V/logs" || true
 ```
 
@@ -211,7 +211,7 @@ ASSERT FAIL
 RECEIVER_CAPACITY_DISPATCH blocked
 BASE_RECEIPT_DISPATCH blocked
 COUNTRY_LOSS_DISPATCH blocked
-Failed to fetch variable for 'modeu5_us20...
+Failed to fetch variable for 'cbp_us20...
 global_var returned an unset scope
 Tried to localize with localization disabled
 ```

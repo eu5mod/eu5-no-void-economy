@@ -37,7 +37,7 @@ Let one monthly tick pass.
 Expected:
 
 ```txt
-modeu5_runtime_mode_normal is the active diagnostic mode.
+cbp_runtime_mode_normal is the active diagnostic mode.
 Opening-stock initialization skips zero-source market x good pairs before the
 country-capacity scan and still increments the zero-source counter.
 Startup, normal monthly runtime, and verbose debug runtime do not call
@@ -61,13 +61,13 @@ Setup:
 ```txt
 Run a focused deterministic test event, for example:
 
-event modeu5_debug.1
+event cbp_debug.1
 ```
 
 Expected:
 
 ```txt
-The test fixture enters test-audit mode through modeu5_debug_clear_stock_test_results.
+The test fixture enters test-audit mode through cbp_debug_clear_stock_test_results.
 CORE stock debug captures and deterministic dump values remain visible.
 Full validation remains available to explicit audit/test flows, but verbose
 debug alone does not enable automatic audit reconciliation.

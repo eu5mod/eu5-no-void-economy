@@ -18,7 +18,7 @@ outputs:
 production event output:
   docs/assets/pr157/review_popup_1524_event_source.svg
   docs/assets/pr157/review_popup_1524_event_source.dds
-  in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+  in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Raw SVGs in `source/` are inputs only. The DDS generator skips that folder so it does not create unprocessed DDS files from raw candidates.
@@ -47,7 +47,7 @@ source/review_popup_1524_event_choice_situation_wide_source.svg
   -> generated/review_popup_1524_event_choice_situation_wide_source_qr.svg
   -> review_popup_1524_event_source.svg
   -> review_popup_1524_event_source.dds
-  -> in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+  -> in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Any raw SVG added under `source/` is also processed:
@@ -91,7 +91,7 @@ generated/*_qr.dds
 The event-format image is also packaged for EU5 event use:
 
 ```txt
-in_game/gfx/interface/illustrations/modeu5_review/modeu5_review_popup_1524_event.dds
+in_game/gfx/interface/illustrations/cbp_review/cbp_review_popup_1524_event.dds
 ```
 
 Those `.dds` files are generated artifacts, but they are committed so pull requests carry both the editable source images and the generated texture previews.
@@ -112,11 +112,11 @@ The event template contains the `<!-- MODEU5_QR_OVERLAY -->` marker after the te
 
 Raw SVGs in `source/` do not need the marker. If the marker is absent, the generator injects the QR overlay before `</svg>`.
 
-The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.modeu5.local.env`.
+The QR code points to the forum support/discussion URL stored in `review_popup_1524_qr_url.txt`. Change that file to regenerate the QR code and event image. For local experiments, the generator can also read optional `MODEU5_REVIEW_POPUP_*` overrides from `.cbp.local.env`.
 
 ## Local QR overlay overrides
 
-The committed defaults are CI-safe and require no local env file. To tune the layout locally, copy `.modeu5.local.env.template` to `.modeu5.local.env` and uncomment/change any of these values:
+The committed defaults are CI-safe and require no local env file. To tune the layout locally, copy `.cbp.local.env.template` to `.cbp.local.env` and uncomment/change any of these values:
 
 ```sh
 MODEU5_REVIEW_POPUP_QR_URL="https://forum.paradoxplaza.com/forum/threads/eu5-1-3-modding-wishlist.1928171/#post-31349701"
@@ -177,7 +177,7 @@ List generated files in zsh-safe form:
 find docs/assets/pr157/generated -maxdepth 1 -name '*.svg' -print
 find docs/assets/pr157/generated -maxdepth 1 -name '*.dds' -print
 find docs/assets/pr157 -maxdepth 1 -name '*.dds' -print
-find in_game/gfx/interface/illustrations/modeu5_review -maxdepth 1 -name '*.dds' -print
+find in_game/gfx/interface/illustrations/cbp_review -maxdepth 1 -name '*.dds' -print
 ```
 
 Avoid bare unmatched zsh globs such as `docs/assets/pr157/*.dds` before the files exist; zsh raises `no matches found` instead of passing the literal glob through.

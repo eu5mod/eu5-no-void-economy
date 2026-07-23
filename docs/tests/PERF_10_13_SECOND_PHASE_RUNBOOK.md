@@ -17,7 +17,7 @@ Close EU5, then run:
 
 ```sh
 ./tools/generate_all.sh
-./tools/audit_modeu5_per_good_loops.sh
+./tools/audit_cbp_per_good_loops.sh
 ./tools/validate_module_packages.sh
 git diff --check
 ```
@@ -52,7 +52,7 @@ Use a disposable validation save.
 Run:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 Select:
@@ -64,7 +64,7 @@ Revalidate main operations
 Wait for the final result event. Then close EU5 and run:
 
 ```sh
-./tools/summarize_modeu5_test_logs.sh
+./tools/summarize_cbp_logs.sh
 ```
 
 Expected compact result:
@@ -89,7 +89,7 @@ ModeU5 PERF-11 RESULT active_repair PASS
 Run:
 
 ```txt
-event modeu5_perf12_debug.1
+event cbp_perf12_debug.1
 ```
 
 Select:

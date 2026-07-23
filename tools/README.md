@@ -1,14 +1,22 @@
 # Tools
 
+## Community balance generation
+
+[`cbg/`](cbg/) is the standalone, reusable Community Balance Generator.
+`cbg/community_balance_generator.py` composes declarative balance specifications
+from multiple mods into one audited exact-path compatibility mod. See
+`docs/technical/COMMUNITY_BALANCE_GENERATOR.md` and
+`tools/cbg/examples/community_balance_spec.example.json`.
+
 ## Local configuration
 
 Copy the local configuration template once:
 
 ```bash
-cp .modeu5.local.env.template .modeu5.local.env
+cp .cbp.local.env.template .cbp.local.env
 ```
 
-Then edit `.modeu5.local.env` with your local EU5 install path and local runtime preferences:
+Then edit `.cbp.local.env` with your local EU5 install path and local runtime preferences:
 
 ```bash
 EU5_GAME_COMMON_DIR="<EU5_INSTALL_DIR>/game/in_game/common"
@@ -16,15 +24,21 @@ MODEU5_ENABLE_DEBUG_RUNTIME=false
 MODEU5_US09_BONUS_PERCENT=5
 ```
 
-The real `.modeu5.local.env` file is ignored by Git. Do not commit personal
+The real `.cbp.local.env` file is ignored by Git. Do not commit personal
 install paths.
+
+`generate_all.sh` derives the vanilla location-static-modifier source from
+`EU5_GAME_COMMON_DIR`. `EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE` may override
+that path. `generate_cbp_location_overrides.sh` copies the selected vanilla
+blocks and changes only their configured target assignment, so unrelated
+vanilla balance changes flow into the generated override automatically.
 
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
 the EU5 engine `--debug_mode` launch argument:
 
 ```txt
-false = generated local runtime config enters modeu5_runtime_mode_normal
-true  = generated local runtime config enters modeu5_runtime_mode_debug
+false = generated local runtime config enters cbp_runtime_mode_normal
+true  = generated local runtime config enters cbp_runtime_mode_debug
 ```
 
 Use `false` when comparing performance with normal users. Use `true` only when
@@ -42,8 +56,8 @@ docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md
 
 Short version:
 
-- `tools/modeu5_goods.sh` is the single good registry.
-- per-good generators load it through `tools/modeu5_tool_lib.sh`;
+- `tools/cbp_goods.sh` is the single good registry.
+- per-good generators load it through `tools/cbp_tool_lib.sh`;
 - repeated generated blocks should live in `tools/templates/`;
 - `tools/validate_generators.sh` enforces the convention and is called by
   `tools/validate_module_packages.sh`.
@@ -66,14 +80,14 @@ vanilla source path is configured.
 Generated local runtime config is written to:
 
 ```txt
-in_game/common/scripted_effects/modeu5_local_runtime_config_generated.txt
+in_game/common/scripted_effects/cbp_local_runtime_config_generated.txt
 ```
 
-It is ignored by Git and generated from `.modeu5.local.env`. Do not edit it
+It is ignored by Git and generated from `.cbp.local.env`. Do not edit it
 manually.
 
-Any new generated text artifact should follow the `modeu5_*_generated.txt` or
-`modeu5_*_generated_l_english.yml` naming convention so it is ignored by Git and
+Any new generated text artifact should follow the `cbp_*_generated.txt` or
+`cbp_*_generated_l_english.yml` naming convention so it is ignored by Git and
 caught by the generated-file validation guard.
 
 Regenerate only the local runtime config:
@@ -89,9 +103,9 @@ Regenerate only the stock adapters:
 ```
 
 The shell only expands
-`tools/templates/modeu5_stock_good_adapter.template.txt`. Map access remains EU5
+`tools/templates/cbp_stock_good_adapter.template.txt`. Map access remains EU5
 script in that template; shared validation and arithmetic remain in
-`modeu5_stock_effects.txt`.
+`cbp_stock_effects.txt`.
 
 The generated adapters also contain the literal per-good US-11 dirty-list
 names and dispatch glue. Dirty-record policy, cycle guards, reconciliation
@@ -109,14 +123,14 @@ Generate static good transport-cost helpers:
 reads `common/goods/*` and emits one helper per good into:
 
 ```txt
-in_game/common/scripted_effects/modeu5_transport_cost_generated.txt
+in_game/common/scripted_effects/cbp_transport_cost_generated.txt
 ```
 
 The helpers convert a known trade-capacity-like volume into an estimated goods
 quantity:
 
 ```txt
-modeu5_computed_goods_quantity = capacity_volume / static transport_cost
+cbp_computed_goods_quantity = capacity_volume / static transport_cost
 ```
 
 This is a diagnostic capacity-to-quantity conversion, not exact vanilla trade
@@ -125,10 +139,10 @@ generated with `transport_cost = 1` so runtime references fail closed instead
 of calling missing effects.
 
 Do not edit
-`in_game/common/scripted_effects/modeu5_stock_goods_generated.txt` manually.
+`in_game/common/scripted_effects/cbp_stock_goods_generated.txt` manually.
 The generated output is ignored by Git and must not be committed. The same rule
-applies to `modeu5_transport_cost_generated.txt` and
-`modeu5_local_runtime_config_generated.txt`. After changing the template,
+applies to `cbp_transport_cost_generated.txt` and
+`cbp_local_runtime_config_generated.txt`. After changing the template,
 goods registry, local-runtime generator, or transport-cost generator, run
 `./tools/generate_all.sh` and then `./tools/validate_module_packages.sh`;
 generation must be idempotent and no physical map identifier may retain `$`.
@@ -136,7 +150,7 @@ generation must be idempotent and no physical map identifier may retain `$`.
 Audit the intentional generated per-good loops:
 
 ```bash
-./tools/audit_modeu5_per_good_loops.sh
+./tools/audit_cbp_per_good_loops.sh
 ```
 
 This audit documents the remaining legitimate per-good stock, US-00, CORE-02,
@@ -147,7 +161,7 @@ inside the generated US-10 monthly trade-signal guard.
 Audit the structured persistent state surface:
 
 ```bash
-./tools/audit_modeu5_persistent_state.sh
+./tools/audit_cbp_persistent_state.sh
 ```
 
 This audit classifies ModeU5 persistent variable maps and variable lists. It
@@ -176,7 +190,7 @@ expression. The generated-file workflow runs the check mode in CI.
 Validate scripted-test assertion safety:
 
 ```bash
-./tools/validate_modeu5_script_safety.sh
+./tools/validate_cbp_script_safety.sh
 ```
 
 This check fails on direct variable-to-variable comparisons such as
@@ -190,8 +204,8 @@ The same generator also writes the US-00 per-good production-penalty static
 modifiers to:
 
 ```txt
-main_menu/common/static_modifiers/modeu5_us00_modifiers_generated.txt
-main_menu/localization/english/modeu5_us00_static_modifiers_generated_l_english.yml
+main_menu/common/static_modifiers/cbp_us00_modifiers_generated.txt
+main_menu/localization/english/cbp_us00_static_modifiers_generated_l_english.yml
 ```
 
 Those static modifiers are unit-sized location modifiers. Runtime code applies
@@ -200,16 +214,16 @@ static file must define `game_data.category = location` and must not hard-code a
 fixed penalty value. The matching generated localization prevents EU5 from
 printing placeholder `STATIC MODIFIER NAME ...` lines in `error.log`.
 
-## US-09 economy override probe
+## US-09 / US-08 composed Economy static overrides
 
-Generate the US-09 static-override probe output:
+Generate the Economy package static overrides:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh 5
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 5
 ```
 
 The generator reads vanilla `game/in_game/common/building_types` and
-`game/in_game/common/prices/00_hardcoded.txt`, then writes offline probe
+`game/in_game/common/prices/00_hardcoded.txt`, then writes composed generated
 output under:
 
 ```txt
@@ -217,28 +231,39 @@ tools/generated/us09_economy_overrides/common/building_types/
 tools/generated/us09_economy_overrides/common/prices/
 ```
 
+When run through `./tools/generate_all.sh`, the same generator writes the loaded
+Rebalance Economy package exact-path overrides under:
+
+```txt
+packages/cbp_economy_rebalance/in_game/common/building_types/
+packages/cbp_economy_rebalance/in_game/common/prices/
+```
+
+The building override generator composes the approved static changes that share
+the same vanilla files:
+
+- US-09 output and trade-capacity compensation;
+- US-09 trade-capacity compensation can use an independent
+  `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT`; if unset, it defaults to `15`;
+- US-07 `trade_buildings.txt` `local_burghers_estate_power x 0.5`;
+- US-08/US-05.3 building maintenance quantities multiplied by `0.7`;
+- US-08/US-05.3 marketplace and other `trade_category` building maintenance
+  quantities multiplied by `0.5`.
+
 Pass the desired compensation percentage explicitly. Example:
 
 ```bash
-./tools/generate_us09_economy_overrides.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
+./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
+MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_all.sh
 ```
 
-If `.modeu5.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
+If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
 needed.
 
-Do not copy these files into the loaded Economy package as an implementation
-until duplicate-key static override loading has a clean runtime proof. The
-current engine log showed package-local duplicate `building_types` and `prices`
-entries are not applied cleanly and create load noise.
-
-For a local probe only, you can deliberately target the loaded package:
-
-```bash
-MODEU5_ENABLE_UNVERIFIED_US09_STATIC_OVERRIDES=1 ./tools/generate_all.sh
-```
-
-Do not edit generated `zzzz_modeu5_us09_*.txt` files manually. Do not edit
-installed vanilla files in place.
+Do not reintroduce generated `zzzz_cbp_us09_*.txt` or other non-vanilla
+filenames for loaded static overrides. They create duplicate keys instead of
+replacing vanilla definitions. Do not edit generated package building files
+manually, and do not edit installed vanilla files in place.
 
 If no percentage is passed and the shell is interactive, the generator prompts
 for one.
@@ -247,24 +272,38 @@ Generated US-09 files record only placeholder source labels such as
 `<EU5_GAME_COMMON_DIR>/building_types/production_tools.txt`; never commit a
 personal install path from the local machine.
 
-## Recommended local deployment pipeline
-
-When you want to refresh the local mod install before testing:
+When `EU5_GAME_COMMON_DIR` is configured, validate the maintenance composition
+against the local vanilla source:
 
 ```bash
-./tools/generate_all.sh
-./tools/validate_module_packages.sh
-./tools/install_local_packages.sh
-./tools/install_local_packages.sh --check
-./tools/clear_eu5_logs.sh
+python3 tools/validate_us08_building_maintenance_overrides.py \
+  --common-dir "$EU5_GAME_COMMON_DIR" \
+  --package-common-dir packages/cbp_economy_rebalance/in_game/common \
+  --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
+  --maintenance-multiplier 0.7 \
+  --trade-building-maintenance-multiplier 0.5
 ```
+
+## Recommended local deployment pipeline
+
+Use the canonical developer command to generate, prove idempotence, validate,
+install, verify, clear logs, and print the in-game test events:
+
+```bash
+./tools/dev_prepare_game.sh
+```
+
+Use `--target PATH` for a non-default local mod directory, `--keep-logs` when
+preserving the current logs is intentional, or `--skip-idempotence` for a
+faster explicitly non-canonical iteration. The script does not launch EU5 or
+modify Git state.
 
 ## Compact test-log summary
 
 After running the broad in-game revalidation event:
 
 ```txt
-event modeu5_revalidate_debug.1
+event cbp_revalidate_debug.1
 ```
 
 choose:

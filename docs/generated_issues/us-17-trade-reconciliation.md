@@ -1,329 +1,185 @@
-# US-17 — Trade maintenance and import/selling efficiency in the Q8.7 route loop
+# US-17 — Shared Selling coefficient and reciprocal Trade Maintenance
 
-## Source mapping
+## Business rule
+
+Definitions:
 
 ```txt
-#105 defines the trade-maintenance-efficiency model.
-#120 defines the import/selling-efficiency reinterpretation.
-#161 defines the Q8.7 country trade-owner route-loop placement.
+S  = reconstructed non-CBP Selling Efficiency
+I  = reconstructed non-CBP Import Efficiency
+Ex = reconstructed non-CBP Export Efficiency
+M  = reconstructed non-CBP Merchant Maintenance Efficiency
+
+L_s = cbp_us17_us20_route_loss_coefficient_max
+K_s = cbp_us17_us20_route_loss_coefficient_curve
+K_m = cbp_us17_maintenance_efficiency_scale
+W   = cbp_us17_maintenance_component_weight
 ```
 
-## Runtime placement
+These are named script values owned by the mod, not custom engine Defines.
+
+Default values:
 
 ```txt
-modeu5_run_monthly_stock_cycle_q8_7_owner_switch
-  -> modeu5_run_monthly_country_trade_owner_cycle
-     -> every_trade
-        -> save trade owner
-        -> save source market
-        -> save target market
-        -> save traded good
-        -> capture trade_volume
-        -> capture confirmed moved-goods quantity
-        -> enter saved trade-owner country scope
-        -> capture country modifier and define-derived maintenance inputs
-        -> run US-17 / US-20 route reconciliation
+L_s = 0.05
+K_s = 10
+K_m = 10
+W   = 0.5
 ```
 
-The live insertion point is:
+## Shared Selling coefficient
+
+The Selling curve is calculated once per country:
 
 ```txt
-scope:modeu5_trade_owner_country = {
-  modeu5_capture_trade_owner_country_modifier_inputs = yes
-  modeu5_run_us17_us20_route_reconciliation_from_owner_modifiers = yes
-}
+C = L_s / (1 + S * K_s)
 ```
 
-US-17 must not add a second route-discovery pass and must not run inside the
-market-local `every_market_in_world` body.
-
-## Correct engine inputs
-
-The tested EU5 build exposes:
+The result is persisted immediately:
 
 ```txt
-modifier:import_efficiency
-modifier:selling_efficiency
-modifier:merchant_maintenance_efficiency
-define:NCountry|MERCHANT_MAINTENANCE_COST
+var:cbp_us20_route_loss_coefficient = C
 ```
 
-The former candidate names below are invalid modifier types and must not appear
-in executable script:
+US-17 consumes that persisted value:
 
 ```txt
-modifier:buying_efficiency
-modifier:merchant_maintenance_cost
+Selling correction = -S - C
+effective Selling Efficiency = -C
 ```
 
-US-17 keeps the semantic field name `buying_efficiency`, but its engine source
-is `import_efficiency`.
-
-The three country modifiers are read only from:
+US-20 consumes the same value:
 
 ```txt
-scope:modeu5_trade_owner_country
+goods loss = trade_volume * C
 ```
 
-They must never be read from the scheduler country, market-center owner, source
-market owner, or target market owner unless that scope independently resolves
-to the saved trade owner.
+The Selling correction does not recalculate the curve.
 
-## Base merchant maintenance
-
-The base cost is a define, not a country modifier:
+## Import and Export leave price formation
 
 ```txt
-base_maintenance_unit_cost =
-    define:NCountry|MERCHANT_MAINTENANCE_COST
+Import correction = -I
+Export correction = -Ex
+
+effective Import Efficiency = 0
+effective Export Efficiency = 0
 ```
 
-NVE already overrides this define. The script reads the effective loaded value
-rather than duplicating or hardcoding it.
+There are no residual Import or Export price curves.
 
-The route base amount is:
+## Exact Merchant Maintenance formula
+
+The requested correction is:
 
 ```txt
-base_maintenance_amount =
-    trade_volume * base_maintenance_unit_cost
+Merchant Maintenance correction =
+    -M
+    + 1
+    - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-`trade_volume` is the merchant-capacity route value. The moved-goods quantity,
-which is derived through the existing literal-good transport-cost helper, is a
-separate input and must not replace `trade_volume` in this formula.
-
-## Existing merchant-maintenance efficiency
-
-The country modifier is beneficial and reduces base maintenance:
+The production form uses the named script values directly:
 
 ```txt
-merchant_maintenance_factor =
-    max(0, 1 - merchant_maintenance_efficiency)
+maintenance denominator =
+    1
+    + M * W
+    + (I + Ex) * K_m * W
 
-adjusted_base_maintenance =
-    base_maintenance_amount * merchant_maintenance_factor
+effective Merchant Maintenance Efficiency =
+    1 - 1 / maintenance denominator
+
+Merchant Maintenance correction =
+    effective Merchant Maintenance Efficiency - M
 ```
 
-The factor is lower-bounded at zero so an efficiency above 100% does not create
-negative base maintenance.
-
-## Maximum-only import/selling cap
-
-The repurposed average is capped only above `1`:
+With `W = 0.5` and `K_m = 10`, this is exactly:
 
 ```txt
-average_efficiency =
-    (import_efficiency + selling_efficiency) / 2
-
-capped_average_efficiency =
-    min(average_efficiency, 1)
+-M + 1 - 1 / (1 + M/2 + 5*(I + Ex))
 ```
 
-EU5 bound-oriented syntax:
+This is one mixed denominator. It is not an average of two separately calculated maintenance costs.
+
+## Arithmetic fixture
 
 ```txt
-divide = 2
-max = 1
+S  = 0.10
+I  = 0.20
+Ex = 0.30
+M  = 0.08
+trade_volume = 10
 ```
 
-There is deliberately no `min = 0`. A negative average remains negative and
-therefore creates an added maintenance cost.
-
-## Maintenance-side saving
+Selling and US-20:
 
 ```txt
-maintenance_saving =
-    adjusted_base_maintenance * capped_average_efficiency
+C = 0.05 / (1 + 0.10*10) = 0.025
+effective Selling = -0.025
+goods loss = 10 * 0.025 = 0.25
+target received = 9.75
 ```
 
-The complete intended route reconciliation remains:
+Merchant Maintenance:
 
 ```txt
-old_price_side_bonus =
-    quantity * sell_price * selling_efficiency
-  + quantity * buy_price * import_efficiency * (1 + export_cost_modifier)
+M/2 = 0.04
+5*(I + Ex) = 2.50
 
-route_reconciliation_delta =
-    -old_price_side_bonus
-    + maintenance_saving
-    + new_import_selling_efficiency_effect
+denominator = 1 + 0.04 + 2.50 = 3.54
+reciprocal = 1 / 3.54 = 0.282486
+
+effective maintenance = 1 - 0.282486 = 0.717514
+maintenance correction = 0.717514 - 0.08 = 0.637514
 ```
 
-The current implementation leaves `new_import_selling_efficiency_effect` at
-zero because the reinterpretation is represented through old bonus removal and
-the maintenance-side saving. It remains a distinct debug field.
-
-## Money owner and application boundary
-
-The route delta belongs to:
+## Runtime order
 
 ```txt
-scope:modeu5_trade_owner_country
+country refresh
+  -> reconstruct S, I, Ex and M
+  -> calculate C once from named script values
+  -> persist C
+  -> calculate Selling, Import, Export and Maintenance corrections
+  -> persist four corrections and four baselines
+  -> every_trade
+     -> zero-delta US-17 compatibility hook
+     -> US-20 reads C
+     -> goods loss = trade_volume * C
 ```
 
-The confirmed cash surface is:
+State version is `7`. Runtime constant source version is `1`.
+
+## Acceptance contract
 
 ```txt
-add_gold = route_reconciliation_delta
+- mod-owned constants are named script values, not custom engine Defines;
+- the calculation helpers are authoritative direct effects, not late replacements;
+- Selling coefficient is calculated once and persisted before US-17 consumes it;
+- effective Selling Efficiency equals -C;
+- US-20 goods loss equals trade_volume * C;
+- effective Import and Export Efficiency equal zero;
+- effective Merchant Maintenance Efficiency equals 1 - 1/(1 + M/2 + 5*(I+Ex));
+- Merchant Maintenance correction equals -M plus that effective value;
+- no route-level add_gold mutation is applied;
+- repeated refresh reconstructs all four baselines without drift.
 ```
 
-This proves signed treasury mutation only. It does not prove that the vanilla
-trade-route profit display or country trade-income ledger changes by the same
-amount.
-
-Until the route-profit/country-income relationship is confirmed in TECH-01:
+## Focused probe
 
 ```txt
-- ModeU5 may calculate and accumulate the route delta;
-- ModeU5 may exercise add_gold in deterministic tests;
-- visible route-profit and country-income accounting remains blocked;
-- the missing accounting surface remains visible in diagnostics.
+event cbp_us17_owner_modifiers.1
 ```
 
-## Current live-input boundary
-
-Confirmed and captured:
+Wait one in-game day. Expected marker includes:
 
 ```txt
-trade_volume
-import_efficiency
-selling_efficiency
-merchant_maintenance_efficiency
-MERCHANT_MAINTENANCE_COST define
-base_maintenance_amount = trade_volume × define
-```
-
-Still blocked pending route-safe exposure:
-
-```txt
-sell price
-buy price
-export cost modifier
-trade-route profit read/write surface
-country trade-income accounting surface
-```
-
-Therefore the live route-money path still fails closed when the price inputs are
-unavailable, but it must not report owner modifiers or base maintenance as
-unavailable.
-
-## US-20 separation
-
-US-20 retains its separate route-maintenance input for received-goods loss:
-
-```txt
-modeu5_us20_trade_maintenance
-```
-
-Do not substitute `merchant_maintenance_efficiency` or the merchant-maintenance
-define for the US-20 preserved route-maintenance value. US-17 is money-side
-reconciliation; US-20 is received-goods reconciliation.
-
-## Debug contract
-
-```txt
-trade_owner
-source_market
-target_market
-traded_good
-trade_volume
-moved_goods_quantity
-import_efficiency
-selling_efficiency
-merchant_maintenance_efficiency
-base_maintenance_unit_cost
-base_maintenance_amount
-merchant_maintenance_factor
-adjusted_base_maintenance
-capped_average_efficiency
-maintenance_saving
-sell_price
-buy_price
-export_cost_modifier
-old_price_side_bonus
-route_reconciliation_delta
-trade_owner_accumulated_delta
-accounting_mode_detailed_or_fallback
-```
-
-## Deterministic probe
-
-Run:
-
-```txt
-event modeu5_us17_owner_modifiers.1
-```
-
-The probe validates:
-
-```txt
-- import_efficiency is read from the trade-owner country;
-- selling_efficiency is read from the trade-owner country;
-- merchant_maintenance_efficiency is read from the trade-owner country;
-- the loaded MERCHANT_MAINTENANCE_COST define is read;
-- base maintenance equals trade_volume × loaded define;
-- (-0.4 + -0.2) / 2 remains -0.3;
-- (1.4 + 1.2) / 2 is capped at 1;
-- with base 20 and maintenance efficiency 0.20, adjusted maintenance is 16;
-- with average 0.15, maintenance saving is 2.40;
-- with old price-side bonus 35, route delta is -32.60.
-```
-
-Expected marker:
-
-```txt
-ModeU5 TEST PASS scenario=us17_trade_owner_modifiers hard_failures=0 owner_inputs=import_selling_merchant_maintenance_efficiency base_cost=define_NCountry_MERCHANT_MAINTENANCE_COST clamp=maximum_only
-```
-
-Runbook:
-
-```txt
-docs/tests/TEST-US-17-owner-modifier-inputs.md
-```
-
-## Acceptance checks
-
-```txt
-- The route hook runs from the country trade-owner every_trade loop.
-- No second every_market_center_in_country route pass is added.
-- No US-17 route hook runs in the every_market_in_world market-local body.
-- Semantic buying efficiency is sourced from modifier:import_efficiency.
-- Selling efficiency is sourced from modifier:selling_efficiency.
-- Maintenance efficiency is sourced from modifier:merchant_maintenance_efficiency.
-- Base cost is sourced from define:NCountry|MERCHANT_MAINTENANCE_COST.
-- Base maintenance is trade_volume × the effective loaded define.
-- The import/selling average has max = 1 and no min = 0.
-- Negative average efficiency remains negative.
-- Maintenance efficiency contributes through max(0, 1 - efficiency).
-- Old price-side import/selling bonus is removed in the route formula.
-- Delta is accumulated on the saved trade owner.
-- No stock-side mutation is introduced by US-17.
-- Missing route price and accounting surfaces remain explicit.
-- The focused probe passes without parser, unset-scope, or localization errors.
-```
-
-## Coverage conclusion
-
-```txt
-Implemented statically:
-  Q8.7 placement
-  trade-owner attribution
-  import_efficiency country read
-  selling_efficiency country read
-  merchant_maintenance_efficiency country read
-  effective maintenance define read
-  trade_volume × define base maintenance
-  maximum-only import/selling cap
-  maintenance-factor arithmetic
-  deterministic formula probe
-  signed treasury test surface
-
-Runtime rerun required:
-  corrected owner-input and define probe
-
-Still not production-complete:
-  live route price reads
-  live export-cost read
-  visible route-profit mutation
-  visible country trade-income accounting
+selling_shared_coefficient=verified
+mixed_denominator_formula=verified
+import_export_price_effect=zero
+route_money_delta=zero
+proportional_goods_loss=verified
+idempotence=passed
+live_auto_modifier_application=passed
 ```

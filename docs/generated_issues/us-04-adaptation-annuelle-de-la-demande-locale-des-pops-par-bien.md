@@ -1,642 +1,486 @@
 # US-04 — Annual local Pop demand adjustment
 
-Labels: `blocked:engine-exposure`, `module:economy`
+Labels: `module:economy`, `engine-exposure:proxy`
 
-## User Story
+## User story
+
+As a player, I want actual Pop demand in each location to adapt slowly after a full year of availability or shortage.
+
+## Target loop
 
 ```txt
-US-04 — Annual local Pop demand adjustment
+vanilla Pop requested demand
+  -> monthly satisfied / shortage outcomes
+  -> yearly location × good coefficient adjustment
+  -> monthly ModeU5 reconciliation while vanilla demand is not dynamically mutable
 ```
 
-As a player, I want Pop good demand in each location to adapt slowly after a full year of availability or shortage.
+## Runtime state
 
-## Functional objective
-
-Track Pop good demand satisfaction at `location × good`.
-
-Adapt actual Pop good demand by changing the good coefficient used by the vanilla `pop_demand` demand definition.
-
-The primary implementation must use the vanilla `pop_demand` goods-demand definition. The per-good coefficient is implemented as a script value evaluated from Pop scope.
-
-Each location has a local Pop-demand adaptation multiplier for each good. All Pops in the same location use the same multiplier for the same good.
-
-Source notes:
-
-- `pop_demand` is the vanilla Pop-demand coefficient surface.
-- The vanilla `pop_demands.txt` file states that the hardcoded `pop_demand` checks script values from Pop scope.
-- EU5 variable maps support scoped persistent associative storage.
-- Location variable-map access from a Pop-scope script value remains prototype-gated.
-
-Target runtime representation, subject to prototype:
+Persistent owner:
 
 ```txt
-location-scoped variable map:
-  name  = modeu5_pop_demand_multiplier
-  key   = <goods scope>
-  value = numeric multiplier
+location
 ```
 
-Each `location × good` multiplier entry must be initialized to `1` before use. If missing map entries do not safely resolve to `1`, the script value must provide an explicit fallback.
-
-Representation:
+Persistent key/value:
 
 ```txt
-adapted_pop_demand_coefficient[good] =
-    base_pop_demand_coefficient[good]
-    × location.variable_map(modeu5_pop_demand_multiplier|good)
+cbp_pop_demand_multiplier[goods:<good>] = coefficient
+cbp_us04_reconciliation_coefficient[goods:<good>] = active ModeU5 coefficient
+cbp_us04_reconciliation_requested_quantity[goods:<good>] = last monthly input
+cbp_us04_reconciliation_extra_quantity[goods:<good>] = proxy base × max(0, coefficient - 1)
+cbp_us04_reconciliation_removed_quantity[goods:<good>] = stock actually removed
+cbp_us04_reconciliation_goods_supply_removed_quantity[goods:<good>] = actual extra quantity mirrored to vanilla market supply
+cbp_us04_reconciliation_restored_quantity[goods:<good>] = stock actually restored for coefficients below 1
+cbp_us04_reconciliation_goods_supply_added_quantity[goods:<good>] = actual restored quantity mirrored to vanilla market supply
+cbp_us04_reconciliation_unsatisfied_quantity[goods:<good>] = extra demand not removed
+cbp_us04_reconciliation_country_stock_delta[goods:<good>] = country-market stock change magnitude
+cbp_us04_reconciliation_market_stock_delta[goods:<good>] = market aggregate stock change magnitude
+cbp_us04_reconciliation_estate_charge[goods:<good>] = positive estate charge amount
+cbp_us04_reconciliation_estate_refund[goods:<good>] = positive estate refund amount
+cbp_pop_demand_requested_quantity_<estate>[goods:<good>] = estate-specific monthly requested quantity
+cbp_us04_reconciliation_estate_requested_total[goods:<good>] = estate-specific requested quantity total
+cbp_us04_reconciliation_estate_charge_<estate>[goods:<good>] = positive charge amount per estate
+cbp_us04_reconciliation_estate_refund_<estate>[goods:<good>] = positive refund amount per estate
 ```
 
-After 12 satisfied months, multiply the local Pop-demand multiplier by `1.01`.
+`cbp_pop_demand_multiplier` is retained as archived PR69 probe state.
+Runtime gameplay uses `cbp_us04_reconciliation_coefficient`.
 
-After 12 unsatisfied months, multiply the local Pop-demand multiplier by `0.99`.
-
-Mixed years and zero-demand years leave the multiplier unchanged. The annual adjustment is multiplicative and compounds over time.
-
-## Module / availability
+## Safety invariant
 
 ```txt
-Package: Rebalance Economy
-Activation: optional companion package
-Behavior when absent:
-  do not initialize or update Pop-demand multipliers
-  vanilla Pop-demand coefficients remain unchanged
-  Core US-10.3 outcome tracking may continue for diagnostics
+1.20 = explicit one-time initialized saved state
+1.00 = disabled, missing, uninitialized, or invalid fallback
 ```
 
-## Runtime position
+A missing record must never silently recreate the `1.20` baseline outside the
+versioned initialization path.
+
+## One-time initialization
+
+After the existing one-day campaign-start delay, ModeU5 records the schema
+version and then initializes owned locations lazily from country scope. Runtime
+probes showed that a root-scope `every_location` initializer is not safe enough
+to be the production path.
 
 ```txt
-Monthly step:
-  1. Vanilla evaluates actual Pop good demand through the `pop_demand` demand definition.
-  2. The relevant good coefficient is evaluated as a script value from Pop scope.
-  3. From Pop scope, the script value resolves the Pop's location.
-  4. The coefficient reads the ModeU5 multiplier stored at location × good in a location-scoped variable map.
-  5. Adapted Pop good demand is passed to US-10.1 stock resolution.
-  6. US-10.3 records requested quantity, removed quantity, and satisfaction ratio.
-  7. US-04 updates monthly satisfaction counters for location × good.
+if global cbp_us04_multiplier_initialization_version is missing or < 1:
+    mark initialization version = 1
 
-Feeds:
-  next year's actual Pop demand coefficient through `pop_demand`
+on country monthly/yearly preparation:
+    if country cbp_us04_country_multiplier_initialization_version is missing or < 1:
+        every_owned_location
+          -> every supported good helper
+             -> missing key: write 1.20
+             -> existing key: preserve value
+        country initialization version = 1
 ```
 
-Example coefficient shape:
+The version gate is saved globally and per initialized country. Reloading a
+campaign does not apply `1.20` again to already-initialized country-owned
+locations, while newly encountered owned locations can still be initialized by
+the country-scoped path.
+
+## Yearly adjustment
+
+Only an existing record may be changed:
 
 ```txt
-pop_demand = {
-    wine = modeu5_pop_demand_coefficient_wine
+12 satisfied / 0 shortage -> current × 1.01
+0 satisfied / 12 shortage -> current × 0.99
+mixed year                -> no write
+zero-observation year     -> no write
+missing multiplier key    -> no write
+```
+
+Annual counters reset after the decision reads them.
+
+## Vanilla integration status
+
+ModeU5 must not copy or regenerate Paradox's `pop_demand` formulas because
+those formulas may change between minor and major EU5 versions.
+
+PR #69 probes determined that EU5 1.2+ does not expose a reliable script path
+to update engine `pop_demand × good` dynamically during a campaign.
+
+Historical injection and replacement probes remain archived under:
+
+```txt
+docs/audits/pr69/
+docs/audits/pr69/archives/
+packages/cbp_core_tests/
+```
+
+Current PR #69 source of truth:
+
+```txt
+docs/audits/pr69/Q5_flux_logique_global.v3.md
+```
+
+The old experimental coefficient remains initialized and updated, but US-04
+must not claim that the engine consumes it.
+
+## Proxy reconciliation strategy
+
+Until a dynamic local vanilla Pop-demand endpoint exists, US-04 reconciles extra
+ModeU5 demand through an explicit ModeU5-owned location Estate proxy. A plain
+`location × good` aggregate is still not sufficient because it cannot identify
+which estate should pay for the extra consumption, and a fixed fallback Estate is
+not a safe production substitute for real local composition.
+
+The long-term target production shape is a US-10-compatible signed demand delta,
+not an independent full-consumption resolver. In the current branch, US-04 is
+wired after the monthly stock cycle and therefore applies only the signed
+coefficient delta:
+
+```txt
+monthly country pulse
+  -> current country
+  -> every_market_present_in_country as target market
+  -> generated per-good US-04 signed reconciliation adapter
+  -> for each good demanded by Pops in the target market
+  -> every_owned_location limited to location.market = target market
+```
+
+If the promoted-market dispatcher owns the local monthly branch later, the
+equivalent target shape is:
+
+```txt
+promoted market shell
+  -> target promoted market
+  -> rebuild countries_present_in_market
+  -> each present country
+  -> generated per-good US-04 signed reconciliation adapter
+  -> for each good demanded by Pops in the target market
+  -> that country's owned locations in the target market
+```
+
+The documented cheap gate is market-scoped:
+
+```txt
+target market = {
+  demands_goods_by_pops = goods:<good>
 }
 ```
 
-Prototype target for coefficient lookup:
+It is the first fast skip before owned-location and local-estate scans. It
+answers whether the market has Pop demand for the good; it does not provide
+quantity or estate split.
+
+This fallback rule is global. If the detailed US-04 path cannot enter, the game
+keeps vanilla/no ModeU5 additional demand regardless of Normal, Debug, Audit, or
+Performance accounting mode. Performance Mode only changes accounting sparsity.
+
+For each `country × market × location × estate × good`, US-04 calculates:
 
 ```txt
-modeu5_pop_demand_coefficient_wine = {
-    value = 1
+future direct path, if TECH-01 149 is confirmed:
+estate_requested_quantity =
+  direct location Estate requested quantity for goods:<good>
 
-    multiply = {
-        desc = "POP_DEMAND_LOCAL_PREFERENCE"
-        value = {
-            location = {
-                value = "variable_map(modeu5_pop_demand_multiplier|goods:wine)"
-            }
-        }
-    }
-}
+current TECH-01 150 proxy path:
+estate_requested_quantity =
+  cbp_us04_reconciliation_coefficient(location, good)
+  × proxy_estate_size_at_location
+
+estate_extra_quantity =
+  proxy_estate_size_at_location
+  × max(0, cbp_us04_reconciliation_coefficient - 1)
+
+estate_restored_quantity =
+  proxy_estate_size_at_location
+  × max(0, 1 - cbp_us04_reconciliation_coefficient)
+
+total_extra_quantity =
+  sum(estate_extra_quantity for all estates)
+
+total_restored_quantity =
+  sum(estate_restored_quantity for all estates)
 ```
 
-If the nested `location = { value = "variable_map(...)" }` form does not parse from Pop-scope script values, the prototype must test equivalent scope-link or saved-scope forms.
-
-Yearly adjustment effect model:
+The current monthly hook runs after the monthly stock cycle. Therefore US-04 is
+a signed monthly reconciliation delta, not a second full consumption pass:
 
 ```txt
-# Conceptual:
-# location.pop_demand_multiplier[wine] *= 1.01
+coefficient = 1.20 -> remove the additional 20% through cbp_remove_stock
+coefficient = 1.00 -> no stock or vanilla supply correction
+coefficient = 0.99 -> restore 1% through cbp_add_stock
 ```
 
-Variable maps do not overwrite existing keys when `add_to_variable_map` is called. To update a multiplier, the implementation must remove the old key and re-add the updated numeric value.
+Both central stock calls update country × market × good stock and the market ×
+good aggregate/cache in the same transaction. US-04 must never debit the whole
+consumption again; US-10 owns full consumption resolution. US-04 only applies
+the coefficient delta.
 
-Prototype target for yearly multiplier update:
+The charge side uses the confirmed country-scope vanilla effect:
 
 ```txt
-set_local_variable = {
-    name = modeu5_temp_multiplier
-    value = "variable_map(modeu5_pop_demand_multiplier|goods:wine)"
-}
-
-change_local_variable = {
-    name = modeu5_temp_multiplier
-    multiply = 1.01
-}
+add_gold_to_estate = { estate_type = estate_type:<estate> value = -estate_charge }
 ```
 
-The exact `goods:wine` event-target syntax must be confirmed by prototype.
-
-## Required scopes / values / effects
-
-| Need | Scope | Candidate | Status | TECH-01 ID |
-|---|---|---|---|---|
-| Unmet Pop-relevant need signal | country × market × good | `US-10.3` actual Pop-demand satisfaction outcome, adapted for the US-04 runtime target `location × good`; optional market shortage trigger is diagnostic only | NOT_CONFIRMED | 037 |
-| Population/type inputs | location | `num_pop_type`, `percentage_pop_type_in_location`; used only if US-04 needs local debug/reconstruction of Pop demand | CONFIRMED | 038 |
-| Modify vanilla demand locally | location × good × Pop context | per-good `pop_demand` script value evaluated from Pop scope, reading a location-scoped variable-map entry such as `"variable_map(modeu5_pop_demand_multiplier|<goods key>)"` | CONFIRMED | 039 |
-| Yearly counters | location × good | location-scoped ModeU5 variable maps keyed by goods scope, e.g. `modeu5_pop_demand_satisfied_months` and `modeu5_pop_demand_unsatisfied_months` | CONFIRMED | 040 |
-| Yearly pulse | country | `yearly_country_pulse` drives iteration over owned locations and goods to apply yearly adjustment to location-scoped variable-map entries | CONFIRMED | 012 |
-
-### 037 unmet-need prototype
-
-Source of information:
+The refund side uses the same confirmed country-scope effect with a positive
+value:
 
 ```txt
-https://eu5.paradoxwikis.com/Goods_modding#Pop_demands
-https://eu5.paradoxwikis.com/Variable#Variable_maps
-in_game/common/goods_demand/pop_demands.txt
+add_gold_to_estate = { estate_type = estate_type:<estate> value = estate_refund }
 ```
 
-Prototype candidate:
-
-```text
-goods_has_unmet_pop_relevant_demand_in_market = {
-    # Scope: goods
-    # Argument: market = <market scope>
-
-    is_demanded_in_market_by_pops = $market$
-
-    $market$ = {
-        goods_demand_in_market = {
-            goods = prev
-
-            value > {
-                value = goods_supply_in_market(prev)
-                add = stockpile_in_market(prev)
-            }
-        }
-    }
-}
-```
-
-This prototype is only a coarse unmet-need signal. It must not be used as the US-10.1 `requested_quantity`.
-
-For US-04 annual adjustment, the authoritative signal must come from US-10.3:
+When the proxy records estate-specific extra quantities, US-04 splits the charge
+by each estate's share of the additional demand that was actually satisfied:
 
 ```txt
-location × good requested quantity
-location × good removed quantity
-location × good satisfaction ratio
+actual_removed_quantity =
+  satisfied quantity returned by the central stock removal path
+
+estate_actual_quantity =
+  actual_removed_quantity
+  × estate_extra_quantity
+  / total_extra_quantity
+
+estate_charge =
+  estate_actual_quantity × market_price(goods:<good>)
 ```
 
-Market-level shortage alone is not sufficient to adjust a location-local multiplier.
-
-## Files expected to change
+For coefficients below 1, the restored delta is split with the same proxy
+weights:
 
 ```txt
-in_game/common/goods_demand/
-in_game/common/script_values/
-in_game/common/scripted_effects/
-in_game/common/on_action/
-in_game/events/
-in_game/localization/
-docs/technical/TECH-01_engine_exposure_matrix.md
-docs/tests/
+estate_restored_quantity =
+  actual_restored_quantity
+  × estate_restore_quantity
+  / total_restore_quantity
+
+estate_refund =
+  estate_restored_quantity × market_price(goods:<good>)
 ```
 
-## Dependencies
+US-04 also mirrors the stock delta to vanilla market supply through the central
+stock operators:
 
 ```txt
-Depends on:
-  US-10.1
-  US-10.3
-  yearly pulse
-  TECH-01
-  prototype confirming `pop_demand` script values execute from Pop scope
-  prototype confirming Pop scope can resolve the Pop's location
-  prototype confirming Pop-scope script values can read location-scoped variable maps
-  prototype confirming goods scopes can be used as variable-map keys
-  prototype confirming numeric variable-map entries can be read, multiplied, removed, and re-added
-  prototype confirming dynamic goods iteration can preserve or re-enter the owning location scope
+positive delta:
+  cbp_remove_stock
+    only_remove_at_country_level = no
+    vanilla market-supply delta = -actual_removed_quantity
 
-Blocks:
-  US-04-UI
-
-Related US:
-  US-10-UI
+negative delta:
+  cbp_add_stock
+    only_add_at_country_level = no
+    vanilla market-supply delta = actual_restored_quantity
 ```
 
-## Implementation rules
+This avoids double imputation: only the additional satisfied/restored
+consumption delta is mirrored to vanilla supply, never the full requested
+consumption. US-04 must not call `add_goods_supply` directly; direct vanilla
+market-supply writes are centralized in `cbp_stock_effects.txt`.
 
-- Follow `AGENTS.md` and `CLAUDE.md`.
-- Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not run US-04 when the Rebalance Economy package is absent.
-- Apply only to Pop good demand.
-- Never apply to building, production, construction, or army demand.
-- Use the vanilla `pop_demand` demand definition as the primary coefficient surface.
-- Implement each affected good's `pop_demand` coefficient as a script value.
-- Evaluate the coefficient from Pop scope.
-- Resolve the Pop's location from Pop scope.
-- Read the local `location × good` multiplier from a ModeU5 persistent location-scoped variable map.
-- The primary multiplier map name is `modeu5_pop_demand_multiplier`.
-- The multiplier map key is the goods scope.
-- The multiplier map value is a numeric multiplier.
-- Initialize every `location × good` multiplier map entry to `1` before it can be read by `pop_demand`.
-- If initialization cannot be guaranteed, the coefficient script value must use a safe fallback that returns `1` when the local multiplier map entry is missing or invalid.
-- Treat logical `location.pop_demand_multiplier[good]` as design notation.
-- Runtime storage should use location-scoped variable maps unless prototype evidence proves they cannot be read safely from `pop_demand` script values.
-- Do not rely on undocumented non-map forms such as:
-  - `location.var:modeu5_pop_demand_multiplier:wine`
-  - `location.var:modeu5_pop_demand_multiplier.var:wine`
-  - `modeu5_pop_demand_multiplier(wine)`
-  - `modeu5_pop_demand_multiplier(good = wine)`
-- Use the documented quoted variable-map lookup form:
-  - `"variable_map(modeu5_pop_demand_multiplier|<goods key>)"`
-- Do not assume scripted-effect arguments resolve inside quoted variable-map expressions.
-- If a dynamic key must be passed into a quoted variable-map expression, save it to a local variable first and use the local variable as the key argument.
-- Variable-map names are identifiers and cannot be parameterized through `$args$` or variables.
-- Apply the adapted coefficient before calling `modeu5_resolve_stock_demand`.
-- Treat zero requested quantity as neither satisfied nor unsatisfied.
-- Reset annual counters only after yearly adjustment.
-- Annual demand adaptation is multiplicative:
-  - fully satisfied year: `location.pop_demand_multiplier[good] ×= 1.01`
-  - fully unsatisfied year: `location.pop_demand_multiplier[good] ×= 0.99`
-- Implement multiplier updates by reading the existing map value, multiplying it, removing the old key, and re-adding the updated value.
-- Do not implement annual adaptation as an additive percentage-point change such as `+ 0.01` or `- 0.01`.
-- A simulated-demand fallback is allowed only if direct `pop_demand` coefficient integration is proven unavailable.
-- Estate-level, market-level, country-level, or temporary-demand fallbacks are not equivalent and require separate design approval.
-
-## Variable-map storage pattern
-
-US-04 and US-10.3 share the following logical location × good demand record:
+The legacy bridge maps remain diagnostic/test-only:
 
 ```txt
-location.pop_demand_record[good] = {
-    multiplier
-    requested_quantity
-    satisfied_quantity
-    unsatisfied_quantity
-    satisfied_months
-    unsatisfied_months
-}
+cbp_pop_demand_requested_quantity_peasants_estate
+cbp_pop_demand_requested_quantity_burghers_estate
+cbp_pop_demand_requested_quantity_nobles_estate
+cbp_pop_demand_requested_quantity_clergy_estate
 ```
 
-The confirmed physical representation is a synchronized family of location-scoped variable maps because one native map entry holds one value:
+These maps are not the production business surface. They are a deterministic
+bridge for current tests and documentation of the required per-estate accounting
+shape.
+
+The active production proxy maps are:
 
 ```txt
-modeu5_pop_demand_multiplier
-modeu5_pop_demand_satisfied_months
-modeu5_pop_demand_unsatisfied_months
+cbp_us04_proxy_estate_size_peasants_estate
+cbp_us04_proxy_estate_size_burghers_estate
+cbp_us04_proxy_estate_size_nobles_estate
+cbp_us04_proxy_estate_size_clergy_estate
 ```
 
-Map structure:
+When no proxy or estate-specific source exists for a location/good, US-04 does
+not remove stock and does not charge any estate for that location/good.
+
+PR #69 proved Pop-to-location ModeU5 endpoint access and market-level observed
+demand paths. It did not promote a direct vanilla `pop -> pop_demand × good`
+read/write expression in TECH-01. PR #167 deliberately avoids that dependency
+by using the ModeU5-owned local proxy.
+
+The target runtime shape is:
 
 ```txt
-map name: modeu5_pop_demand_multiplier
-key:      goods scope
-value:    numeric multiplier
-default:  1
+for each relevant country × market:
+  for each good:
+    if target market does not demand goods:<good> by Pops:
+      skip this market × good before scanning locations
+
+    for each owned location in market:
+      preferred:
+        read location x estate x good requested quantity
+
+      proxy candidate:
+        cbp_us04_reconciliation_coefficient(location, good)
+        x proxy_estate_size_at_location
+
+      after the location-estate calculation:
+        if coefficient > 1:
+          consume only the extra satisfied quantity through cbp_remove_stock
+          subtract that actual extra delta from vanilla supply
+          charge estates only for the satisfied extra quantity
+        if coefficient < 1:
+          restore only the below-baseline delta through cbp_add_stock
+          add that actual restored delta back to vanilla supply
+          refund estates for the restored quantity using the same proxy split
 ```
 
-Counter map structure:
+Do not use raw `pop_size` as a demand proxy and do not fallback to
+`peasants_estate`. `proxy_estate_size_at_location` is only acceptable as the
+size term of the confirmed `cbp_us04_reconciliation_coefficient × size`
+formula.
+
+## Compatibility cleanup
+
+`generate_all.sh` deletes obsolete local artifacts from the abandoned exact-path
+vanilla generator:
 
 ```txt
-map name: modeu5_pop_demand_satisfied_months
-key:      goods scope
-value:    numeric count
-default:  0
-
-map name: modeu5_pop_demand_unsatisfied_months
-key:      goods scope
-value:    numeric count
-default:  0
+packages/cbp_economy_rebalance/in_game/common/goods_demand/pop_demands.txt
+packages/cbp_economy_rebalance/in_game/common/script_values/
+cbp_us04_pop_demand_values_generated.txt
 ```
 
-Example physical storage for wine on a location:
+This prevents a stale exact-path override or duplicate production value from
+entering a local install.
+
+## Runtime validation
+
+Use a clean new campaign and let at least one full in-game day pass.
+
+Run:
 
 ```txt
-add_to_variable_map = {
-    name = modeu5_pop_demand_multiplier
-    key = goods:wine
-    value = 1
-}
+event cbp_us04_debug.1
 ```
 
-Example physical lookup for wine on that same location:
+### Adaptation and reconciliation fixture
+
+Expected:
 
 ```txt
-"variable_map(modeu5_pop_demand_multiplier|goods:wine)"
+base_multiplier=1.2000
+wheat_multiplier=1.2120
+wheat_reconciliation_coefficient=1.2120
+beer_reconciliation_coefficient=1.1880
+cloth_reconciliation_coefficient=1.2000
+tools_reconciliation_coefficient=1.2000
+wheat_reconciliation_requested=121.20
+wheat_reconciliation_extra=21.20
+wheat_reconciliation_removed=21.20
+wheat_reconciliation_goods_supply_removed=21.20
+wheat_reconciliation_unsatisfied=0.00
+wheat_stock_after_reconciliation=178.80
+wheat_reconciliation_estate_requested_total=121.20
+wheat_estate_charge_peasants=>0
+wheat_estate_charge_burghers=>0
+wheat_estate_charge_nobles=0.00
+wheat_estate_charge_clergy=0.00
+PASS
 ```
 
-The exact goods event-target syntax, such as `goods:wine`, must be confirmed by prototype.
+### Initialization lifecycle
 
-## Dynamic goods iteration pattern
-
-A dynamic goods-iterator implementation is preferred if engine support is confirmed.
-
-Prototype target:
+Expected:
 
 ```txt
-every_owned_location = {
-    save_scope_as = modeu5_current_location
-
-    every_goods = {
-        set_local_variable = {
-            name = modeu5_current_good
-            value = this
-        }
-
-        scope:modeu5_current_location = {
-            modeu5_annual_adjust_location_pop_demand_current_good = yes
-        }
-    }
-}
+version=1
+wheat=1.2000
+beer=1.2000
+second initialization call is idempotent
+deleted wheat key is not recreated
+missing fallback=1.0000
+PASS
 ```
 
-Inside `modeu5_annual_adjust_location_pop_demand_current_good`, the implementation should use `local_var:modeu5_current_good` as the variable-map key.
+## Archived PR69 probes
 
-Prototype target for a satisfied-year update:
+The following probe families are retained as historical evidence only:
 
 ```txt
-set_local_variable = {
-    name = modeu5_temp_satisfied_months
-    value = "variable_map(modeu5_pop_demand_satisfied_months|local_var:modeu5_current_good)"
-}
-
-if = {
-    limit = {
-        local_var:modeu5_temp_satisfied_months = 12
-    }
-
-    set_local_variable = {
-        name = modeu5_temp_multiplier
-        value = "variable_map(modeu5_pop_demand_multiplier|local_var:modeu5_current_good)"
-    }
-
-    change_local_variable = {
-        name = modeu5_temp_multiplier
-        multiply = 1.01
-    }
-
-    remove_from_variable_map = {
-        name = modeu5_pop_demand_multiplier
-        key = local_var:modeu5_current_good
-    }
-
-    add_to_variable_map = {
-        name = modeu5_pop_demand_multiplier
-        key = local_var:modeu5_current_good
-        value = local_var:modeu5_temp_multiplier
-    }
-}
+event cbp_us04_debug.1
+event cbp_us04_q9_debug.1
 ```
 
-Prototype target for an unsatisfied-year update:
+They must not be used as acceptance criteria for production integration.
+
+## Static validation
 
 ```txt
-set_local_variable = {
-    name = modeu5_temp_unsatisfied_months
-    value = "variable_map(modeu5_pop_demand_unsatisfied_months|local_var:modeu5_current_good)"
-}
-
-if = {
-    limit = {
-        local_var:modeu5_temp_unsatisfied_months = 12
-    }
-
-    set_local_variable = {
-        name = modeu5_temp_multiplier
-        value = "variable_map(modeu5_pop_demand_multiplier|local_var:modeu5_current_good)"
-    }
-
-    change_local_variable = {
-        name = modeu5_temp_multiplier
-        multiply = 0.99
-    }
-
-    remove_from_variable_map = {
-        name = modeu5_pop_demand_multiplier
-        key = local_var:modeu5_current_good
-    }
-
-    add_to_variable_map = {
-        name = modeu5_pop_demand_multiplier
-        key = local_var:modeu5_current_good
-        value = local_var:modeu5_temp_multiplier
-    }
-}
+tools/validate_us04_pop_demand_architecture.py
 ```
 
-After yearly adjustment, counters must be reset by removing and re-adding the current good key with value `0`:
+The validator rejects:
 
 ```txt
-remove_from_variable_map = {
-    name = modeu5_pop_demand_satisfied_months
-    key = local_var:modeu5_current_good
-}
-
-add_to_variable_map = {
-    name = modeu5_pop_demand_satisfied_months
-    key = local_var:modeu5_current_good
-    value = 0
-}
-
-remove_from_variable_map = {
-    name = modeu5_pop_demand_unsatisfied_months
-    key = local_var:modeu5_current_good
-}
-
-add_to_variable_map = {
-    name = modeu5_pop_demand_unsatisfied_months
-    key = local_var:modeu5_current_good
-    value = 0
-}
+- exact-path vanilla pop_demands.txt override;
+- vanilla formula generator;
+- copied wheat value formula;
+- treating PR69 injection/replacement probes as production integration;
+- 1.20 read fallback;
+- missing-record yearly recreation;
+- missing initialization gate.
 ```
 
-Do not depend on a runtime `$current_good$` token inside `every_goods`.
+## Accepted annual fixture
 
-Invalid or not confirmed:
+Previously validated:
 
 ```txt
-every_goods = {
-    change_variable = {
-        name = modeu5_pop_demand_multiplier_$current_good$
-        multiply = 1.01
-    }
-}
+1.2000 -> 1.2120 after full satisfaction
+1.2000 -> 1.1880 after full shortage
+mixed and zero-observation unchanged
+annual counters reset
 ```
 
-Preferred dynamic pattern:
+## Accepted proxy reconciliation fixture
+
+Validated by the deterministic probe:
 
 ```txt
-every_goods = {
-    set_local_variable = {
-        name = modeu5_current_good
-        value = this
-    }
-
-    scope:modeu5_current_location = {
-        value = "variable_map(modeu5_pop_demand_multiplier|local_var:modeu5_current_good)"
-    }
-}
+requested=121.20
+coefficient=1.212
+extra=21.20
+removed=21.20
+unsatisfied=0.00
+stock 200 -> 178.80
+estate charge > 0
 ```
-
-This pattern is still prototype-gated until confirmed in-game.
-
-## Fallback storage pattern
-
-If location-scoped variable maps cannot be read from `pop_demand` script values, US-04 may fall back to macro-generated per-good location variables.
-
-Fallback logical model:
-
-```txt
-location.pop_demand_multiplier[good]
-```
-
-Fallback runtime variables:
-
-```txt
-modeu5_pop_demand_multiplier_<good>
-modeu5_pop_demand_satisfied_months_<good>
-modeu5_pop_demand_unsatisfied_months_<good>
-```
-
-Example fallback physical variables for wine:
-
-```txt
-modeu5_pop_demand_multiplier_wine
-modeu5_pop_demand_satisfied_months_wine
-modeu5_pop_demand_unsatisfied_months_wine
-```
-
-Fallback yearly call pattern:
-
-```txt
-every_owned_location = {
-    modeu5_annual_adjust_location_pop_demand_good = { good = wine }
-    modeu5_annual_adjust_location_pop_demand_good = { good = beer }
-    modeu5_annual_adjust_location_pop_demand_good = { good = lumber }
-}
-```
-
-Fallback must be documented as a fallback, not the primary design.
-
-## US-specific boundary checks
-
-- [ ] Only 12/12 satisfied or 12/12 unsatisfied changes the multiplier.
-- [ ] Mixed years do not change the multiplier.
-- [ ] Zero-demand years do not change the multiplier.
-- [ ] A shortage for one good does not alter another good's multiplier.
-- [ ] A shortage in one location does not alter another location's multiplier.
-- [ ] All Pops in the same location share the same multiplier for the same good.
-- [ ] Two different locations may have different multipliers for the same good.
-- [ ] The same location may have different multipliers for different goods.
-- [ ] Building, production, construction, and army demand are unaffected.
-- [ ] The multiplier update is multiplicative and compounds over time.
-- [ ] The logical map model is represented physically by location-scoped variable maps.
-- [ ] Per-good variables are used only as a fallback if variable-map access fails in the `pop_demand` script-value context.
 
 ## Acceptance criteria
 
-- [ ] Actual Pop good demand is adapted through the vanilla `pop_demand` demand definition.
-- [ ] The good's Pop-demand coefficient is implemented as a script value.
-- [ ] The good's Pop-demand coefficient is evaluated from Pop scope.
-- [ ] The Pop-scope coefficient resolves the Pop's location.
-- [ ] The Pop-scope coefficient reads the relevant ModeU5 multiplier for `location × good`.
-- [ ] The logical multiplier endpoint is represented as `location.pop_demand_multiplier[good]`.
-- [ ] The primary runtime multiplier storage is represented as a location-scoped variable map named `modeu5_pop_demand_multiplier`.
-- [ ] The variable-map key is the goods scope.
-- [ ] The variable-map value is the numeric multiplier.
-- [ ] Demand passed to US-10 equals base Pop good demand times the adapted Pop-demand coefficient.
-- [ ] Monthly satisfaction uses actual requested quantity and removed stock / satisfaction result from US-10.3.
-- [ ] Twelve satisfied months multiply the local multiplier by `1.01`.
-- [ ] Twelve unsatisfied months multiply the local multiplier by `0.99`.
-- [ ] Annual adjustments compound over time.
-- [ ] The multiplier is never adjusted by simply adding or subtracting `0.01`.
-- [ ] Variable-map updates remove the old key and re-add the updated value.
-- [ ] Mixed and zero-demand years make no change.
-- [ ] Building inputs are unaffected.
-- [ ] Debug exposes:
-  - Pop scope used for coefficient evaluation
-  - resolved location
-  - good
-  - variable-map key used for the good
-  - base Pop-demand coefficient
-  - local `location × good` multiplier
-  - adapted Pop-demand coefficient
-  - requested quantity
-  - removed quantity
-  - satisfaction ratio
-  - monthly satisfaction counter
-  - monthly shortage counter
-  - yearly adjustment result
-  - storage mode, variable-map or fallback per-good variable
-  - fallback mode, if active
-- [ ] TECH-01 and annual test evidence are updated.
+- [x] Versioned one-time `1.20` initializer implemented.
+- [x] Missing-state live fallback is `1`.
+- [x] Yearly runtime changes existing records only.
+- [x] Exact-path vanilla regeneration removed.
+- [x] PR69 injection/replacement probes archived as non-production evidence.
+- [x] Active reconciliation coefficient implemented.
+- [x] Monthly ModeU5 reconciliation uses the #167 local-consumption proxy.
+- [x] Proxy reconciliation proves country stock, market aggregate, and estate gold mutation occur through confirmed central surfaces.
+- [x] Country-scope estate gold charge endpoint is wired for known estates.
+- [x] Legacy diagnostic estate split maps remain deterministic/test-only.
+- [x] Stale override cleanup implemented.
+- [x] Static architecture validator implemented.
+- [ ] New-campaign initialization probe passes.
+- [ ] Live US-10.3 location outcome handoff is confirmed.
+- [x] The #167 local-consumption proxy is confirmed as the active ModeU5-owned runtime calculation.
+- [ ] Exact live vanilla Pop/Estate requested demand per estate is confirmed as a future replacement for the proxy.
 
-## Manual test scenario
-
-### Setup
+## Current status
 
 ```txt
-Locations L1 and L2 each contain Pops demanding wine and beer.
-Initialize all location × good multiplier entries to 1.
-Record 12 satisfied wine months for L1.
-Record 12 unsatisfied wine months for L2.
-Record a mixed beer year for both locations.
-Inspect the multiplier and annual-counter maps before and after yearly_country_pulse.
+Annual adaptation fixture:             PASS
+Proxy stock reconciliation:            IMPLEMENTED via TECH-01 150
+Vanilla pop_demand mutation:           REJECTED FOR PRODUCTION
+Estate gold charge effect:             CONFIRMED / wired for proxy reconciliation
+Exact vanilla estate demand read:       NOT_CONFIRMED / optional future replacement
+TECH-01 #039:                          NOT_CONFIRMED
 ```
-
-### Expected result
-
-```txt
-L1 wine multiplier becomes 1.01.
-L2 wine multiplier becomes 0.99.
-Both beer multipliers remain 1.
-No location or good overwrites another map entry.
-Existing multiplier entries are updated through remove/re-add.
-Annual counters reset only after the yearly adjustment reads them.
-Missing entries use the documented safe default.
-Debug identifies owner scope, goods key, old value, new value, and storage mode.
-```
-
-## Known limitations
-
-A mutable runtime endpoint such as the following is still not confirmed:
-
-```txt
-location.pop_demand_<good>
-pop.pop_demand_<good>
-country.pop_demand_<good>
-set_pop_demand
-change_pop_demand
-```
-
-US-04 therefore does not depend on such an endpoint.
-
-The preferred endpoint is the `pop_demand` good coefficient evaluated from Pop scope.
-
-Direct gameplay implementation is blocked until prototypes confirm whether a Pop-scope `pop_demand` script value can:
-
-```txt
-1. resolve the Pop's location
-2. read a persistent location-scoped variable map
-3. use a goods scope as a variable-map key
-4. return an adapted coefficient
-```
-
-The logical target storage is:
-
-```txt
-location.pop_demand_multiplier[good]
-```
-
-The primary runtime-compatible representation is:
-
-```txt
-location-scoped variable map:
-  name  = modeu5_pop_demand_multiplier
-  key   = <goods scope>
-  value = numeric multiplier
-```
-
-The fallback runtime-compatible representation is:
-
-```txt
-location.var:modeu5_pop_demand_multiplier_<good>
-```
-
-Fallback per-good variables are not required for acceptance if location-scoped variable maps work from the `pop_demand` script-value context.

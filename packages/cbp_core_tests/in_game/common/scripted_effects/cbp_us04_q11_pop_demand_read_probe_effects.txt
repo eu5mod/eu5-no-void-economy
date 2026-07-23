@@ -1,0 +1,70 @@
+# US-04 Q11 read-only probe summary for vanilla Pop-demand x good access.
+#
+# The historical probe candidates were executed during PR #69 and archived in
+# docs/audits/pr69/. They proved that the tested direct Pop-demand syntaxes are
+# not valid readable script values in the current engine. Keep this loaded test
+# fail-closed: do not execute known-invalid value links again, because they add
+# recurring error.log noise without producing new evidence.
+#
+# Expected use:
+#   event cbp_us04_q11_debug.1
+#
+# Interpretation:
+# - `every_pop` remains usable for scope traversal probes.
+# - `pop_demand(goods:<good>)`, `pop_demand:<good>`,
+#   `demand:pop_demand(goods:<good>)`, and saved-Pop dot-chain variants are
+#   archived negative evidence and must not be evaluated by loaded scripts.
+# - US-04 production reconciliation uses the ModeU5-owned Estate-size proxy.
+
+cbp_us04_q11_clear_state = {
+	remove_global_variable = test_cbp_us04_q11_pop_demand_read_passed
+	remove_global_variable = test_cbp_us04_q11_pop_demand_read_blocked
+	remove_global_variable = test_cbp_us04_q11_seen_every_pop
+	remove_global_variable = test_cbp_us04_q11_seen_random_pop
+	clear_saved_scope = cbp_us04_q11_capital_market
+	clear_saved_scope = cbp_us04_q11_saved_every_pop
+	clear_saved_scope = cbp_us04_q11_saved_random_pop
+}
+
+cbp_us04_q11_pop_demand_read_probe = {
+	debug_log = "ModeU5 TEST ENTERED scenario=us04_q11_pop_demand_read_probe"
+	cbp_us04_q11_clear_state = yes
+
+	# Positive control for Pop-scope traversal only. Do not evaluate archived
+	# Pop-demand value-link candidates here.
+	debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 phase=pop_scope_iterator_candidates"
+	capital = {
+		every_pop = {
+			limit = { NOT = { has_global_variable = test_cbp_us04_q11_seen_every_pop } }
+			save_temporary_scope_as = cbp_us04_q11_saved_every_pop
+			set_global_variable = test_cbp_us04_q11_seen_every_pop
+			debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=entered"
+		}
+	}
+	capital = {
+		random_pop = {
+			save_temporary_scope_as = cbp_us04_q11_saved_random_pop
+			set_global_variable = test_cbp_us04_q11_seen_random_pop
+			debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=entered"
+		}
+	}
+
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q11_seen_every_pop }
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=seen"
+	}
+	else = {
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=every_pop status=not_seen"
+	}
+	if = {
+		limit = { has_global_variable = test_cbp_us04_q11_seen_random_pop }
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=seen"
+	}
+	else = {
+		debug_log = "ModeU5 US-04 POP DEMAND READ PROBE q11 iterator=random_pop status=not_seen"
+	}
+
+	debug_log = "ModeU5 US-04 POP DEMAND READ RESULT q11 BLOCKED reason=direct_pop_demand_read_not_confirmed archived_negative_evidence=1 no_invalid_value_links_executed=1"
+	set_global_variable = test_cbp_us04_q11_pop_demand_read_blocked
+	debug_log = "ModeU5 TEST BLOCKED scenario=us04_q11_pop_demand_read_probe reason=direct_pop_demand_read_not_confirmed"
+}

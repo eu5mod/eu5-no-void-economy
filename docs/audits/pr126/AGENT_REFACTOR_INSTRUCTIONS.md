@@ -15,7 +15,7 @@ flowchart LR
 ## Global prompt
 
 ```txt
-You are refactoring ModeU5 monthly stock orchestration. Read AGENTS.md and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q5_flux_logique_global.md,Q6_description_fonctionnelle.md}.
+You are refactoring ModeU5 monthly stock orchestration. Read AGENTS.md, docs/architecture/RUNTIME_FLOW.md, and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q6_description_fonctionnelle.md}. The PR126 Q5 is archived under docs/audits/pr126/archives/.
 
 Also read docs/technical/VARIABLE_MAP_STORAGE_MODEL.md, docs/technical/GENERATOR_AND_VALIDATOR_MODEL.md, and docs/technical/TECH-01_engine_exposure_matrix.md.
 
@@ -23,7 +23,7 @@ Implement only the assigned PR step. Keep the patch small. Preserve the current 
 
 When an iterator, scope link, value, effect, or ownership rule is unconfirmed, record it in TECH-01 or keep the implementation test-only with an accepted fallback.
 
-Reuse the existing generator model: tools/modeu5_tool_lib.sh, tools/modeu5_goods.sh, tools/templates/, tools/generate_all.sh, and tools/validate_generators.sh.
+Reuse the existing generator model: tools/cbp_tool_lib.sh, tools/cbp_goods.sh, tools/templates/, tools/generate_all.sh, and tools/validate_generators.sh.
 ```
 
 ## PR 1 — File/Cache inventory executable audit
@@ -34,7 +34,7 @@ Task: extend the existing audit scripts against the latest `developement-balance
 
 Likely files:
 
-- `tools/audit_modeu5_persistent_state.sh`
+- `tools/audit_cbp_persistent_state.sh`
 - `docs/technical/PERSISTENT_STATE_AUDIT.md`
 - `docs/audits/pr126/Q2_systeme_cache.md` if findings need correction
 
@@ -64,7 +64,7 @@ Acceptance: monthly dispatcher order remains semantically unchanged; tests can c
 
 Goal: implement the outer target shell, not the full logic.
 
-Task: add `modeu5_run_monthly_promoted_market_cycle` as test-only or behind a disabled feature gate. Build a promoted-market candidate/work list from `every_market_present_in_country`. In Performance mode, restrict to human/performance-relevant markets; in Normal mode, treat all current-country markets as candidates. Add or document a deterministic promoted-market processing-owner guard for the future stock-affecting local branch.
+Task: add `cbp_run_monthly_promoted_market_cycle` as test-only or behind a disabled feature gate. Build a promoted-market candidate/work list from `every_market_present_in_country`. In Performance mode, restrict to human/performance-relevant markets; in Normal mode, treat all current-country markets as candidates. Add or document a deterministic promoted-market processing-owner guard for the future stock-affecting local branch.
 
 Acceptance: promoted-market count is observable; Normal and Performance promotion differ as expected; `every_market_promoted` is implemented as a ModeU5 work-list/helper pattern, not assumed to be a native EU5 iterator. Candidate registration may happen from country pulse, but the future market-local mutation branch must be once per promoted market, not once per country present. The shell must not pretend that `every_trade` is a promoted-market iterator.
 
@@ -80,7 +80,7 @@ Acceptance: US-00 and same-market consumption do not rescan all markets independ
 
 Goal: add the country-level trade pass after the local branch is stable.
 
-Task: add a country-scoped `every_trade` pass that processes trades assigned to the current country as ModeU5 trade owner. Do not filter the pass down to the currently promoted market. The pass delegates stock consequences to existing add/remove/transfer handlers, including `modeu5_resolve_inter_market_stock_transfer` and `modeu5_transfer_stock`, instead of writing stock directly. Same-market resolution remains stock consumption. Keep future trade systems such as US-17 and US-20 in mind as consumers of this complete pass.
+Task: add a country-scoped `every_trade` pass that processes trades assigned to the current country as ModeU5 trade owner. Do not filter the pass down to the currently promoted market. The pass delegates stock consequences to existing add/remove/transfer handlers, including `cbp_resolve_inter_market_stock_transfer` and `cbp_transfer_stock`, instead of writing stock directly. Same-market resolution remains stock consumption. Keep future trade systems such as US-17 and US-20 in mind as consumers of this complete pass.
 
 Acceptance: each trade-owner pass considers its assigned trades once; `source_market == target_market` stays same-market; `source_market != target_market` enters inter-market through handlers; requested/transferred/unsatisfied quantities are recorded separately; no direct stock-map write is introduced in the trade loop.
 
@@ -88,7 +88,7 @@ Acceptance: each trade-owner pass considers its assigned trades once; `source_ma
 
 Goal: replace the old broad path only after shell/local/trade tests pass.
 
-Task: switch `modeu5_run_monthly_stock_cycle` to call the promoted-market local branch and the country trade-owner pass after readiness and capacity prerequisites. Add comparative probes for Normal, Performance, Audit, and Debug. Record promoted markets, owner skips, cache rebuilds, goods scanned, trade candidates, validations, rebuilds, and stock operator calls.
+Task: switch `cbp_run_monthly_stock_cycle` to call the promoted-market local branch and the country trade-owner pass after readiness and capacity prerequisites. Add comparative probes for Normal, Performance, Audit, and Debug. Record promoted markets, owner skips, cache rebuilds, goods scanned, trade candidates, validations, rebuilds, and stock operator calls.
 
 Acceptance: Normal and Performance produce comparable stock/ledger outcomes on controlled fixtures; Performance reduces promoted-market/good scans without dropping country-owned trades; each promoted market-local mutation runs once; Audit and Debug add diagnostics without changing business results.
 
@@ -112,5 +112,5 @@ US-00 monthly facts are not recomputed after consumption/trade/decay/reconciliat
 ## Suggested first prompt
 
 ```txt
-Implement PR 1 from docs/audits/pr126/AGENT_REFACTOR_INSTRUCTIONS.md. Scope: inventory/audit only. Before editing, read AGENTS.md and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q5_flux_logique_global.md,Q6_description_fonctionnelle.md}. Deliver an executable audit/check update, updated persistent-state documentation if needed, commands run, and results.
+Implement PR 1 from docs/audits/pr126/AGENT_REFACTOR_INSTRUCTIONS.md. Scope: inventory/audit only. Before editing, read AGENTS.md, docs/architecture/RUNTIME_FLOW.md, and docs/audits/pr126/{README.md,Q1_architecture_fichiers.md,Q2_systeme_cache.md,Q3_redondances_code.md,Q4_boucles_performance.md,Q6_description_fonctionnelle.md}. Treat docs/audits/pr126/archives/Q5_flux_logique_global.md as historical evidence only. Deliver an executable audit/check update, updated persistent-state documentation if needed, commands run, and results.
 ```

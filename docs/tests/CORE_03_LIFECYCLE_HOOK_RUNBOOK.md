@@ -52,7 +52,7 @@ branch: <current CORE-03 branch>
 The probe hub is:
 
 ```txt
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 ```
 
 ## Scripted deterministic fixtures
@@ -115,7 +115,7 @@ For each manual scenario:
 
 ```txt
 Reload the baseline Castile save
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 ```
 
 Then:
@@ -124,7 +124,7 @@ Then:
 1. choose the matching manual scenario option
 2. perform exactly one controlled lifecycle action
 3. wait two days only when a country finalizer is expected
-4. reopen `event modeu5_core03_probe.1`
+4. reopen `event cbp_core03_probe.1`
 5. select `Open lifecycle probe report`
 ```
 
@@ -139,7 +139,7 @@ expected, and produced the expected lifecycle markers.
 
 ```txt
 Reload the baseline Castile save
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 Choose: Run scripted Scenario A - transfer Cadiz to Portugal
 Unpause until the report opens
 ```
@@ -159,7 +159,7 @@ NOT OBSERVED - Delayed country finalizer
 
 ```txt
 Reload the baseline Castile save
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 Choose: Run scripted Scenario B - create the Leon vassal
 Unpause until the report opens
 ```
@@ -180,7 +180,7 @@ NOT OBSERVED is acceptable for on_released_country in this scripted creation fix
 
 ```txt
 Reload the baseline Castile save
-event modeu5_core03_probe.1
+event cbp_core03_probe.1
 Choose: Run scripted Scenario C - auto-annex Leon
 Unpause until the report opens
 ```
@@ -264,11 +264,11 @@ At least one delayed finalizer after location hooks
 Record which of these markers exist:
 
 ```txt
-modeu5_core03_probe_annexed_observed
-modeu5_core03_probe_diplomatic_annexed_observed
-modeu5_core03_probe_military_annexed_observed
-modeu5_core03_probe_civil_war_annexed_observed
-modeu5_core03_probe_multiple_finalizers_observed
+cbp_core03_probe_annexed_observed
+cbp_core03_probe_diplomatic_annexed_observed
+cbp_core03_probe_military_annexed_observed
+cbp_core03_probe_civil_war_annexed_observed
+cbp_core03_probe_multiple_finalizers_observed
 ```
 
 ## Recommended record sheet

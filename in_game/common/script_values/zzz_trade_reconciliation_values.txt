@@ -12,19 +12,19 @@
 # The executable route hook lives in:
 #   in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt
 # with the owner-modifier implementation in:
-#   in_game/common/scripted_effects/modeu5_trade_owner_modifier_reconciliation_effects.txt
+#   in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt
 # and is called from:
-#   modeu5_run_monthly_country_trade_owner_cycle -> every_trade
+#   cbp_run_monthly_country_trade_owner_cycle -> every_trade
 
-modeu5_trade_efficiency_zero_value = {
+cbp_trade_efficiency_zero_value = {
 	value = 0
 }
 
 # Confirmed moved-goods quantity captured by
-# modeu5_capture_country_trade_owner_trade_quantity before the reconciliation
-# hook runs. It is derived from trade_volume / traded_goods:transport_cost by
-# the existing literal-good helper path.
-modeu5_trade_efficiency_route_quantity = {
+# cbp_capture_country_trade_owner_trade_quantity before the reconciliation
+# hook runs. Native trade_volume is already the moved-goods quantity and is
+# copied directly; static transport_cost conversion is not part of this path.
+cbp_trade_efficiency_route_quantity = {
 	value = scope:cbp_trade_owner_goods_quantity
 	min = 0
 }
@@ -32,61 +32,62 @@ modeu5_trade_efficiency_route_quantity = {
 # Effective loaded base merchant-maintenance cost. NVE may override this define;
 # reading the define here prevents the route formula from duplicating or
 # hardcoding the configured value.
-modeu5_trade_base_merchant_maintenance_cost = {
+cbp_trade_base_merchant_maintenance_cost = {
 	value = define:NCountry|MERCHANT_MAINTENANCE_COST
 	min = 0
 }
 
-# Country-scoped modifier inputs. These values must be evaluated while the
-# current scope is the saved trade-owner country.
+# Historical deterministic-fixture inputs. Production US-17 reconstructs the
+# country baselines, cancels four native inputs, and selects Import or Export
+# Efficiency from trade scope.
 #
 # US-17's semantic "buying efficiency" maps to EU5 import_efficiency. The
 # literal modifier:buying_efficiency does not exist in the tested build.
-modeu5_trade_owner_buying_efficiency = {
+cbp_trade_owner_buying_efficiency = {
 	value = modifier:import_efficiency
 }
 
-modeu5_trade_owner_selling_efficiency = {
+cbp_trade_owner_export_efficiency = {
+	value = modifier:export_efficiency
+}
+
+cbp_trade_owner_selling_efficiency = {
 	value = modifier:selling_efficiency
 }
 
-modeu5_trade_owner_merchant_maintenance_efficiency = {
+cbp_trade_owner_merchant_maintenance_efficiency = {
 	value = modifier:merchant_maintenance_efficiency
 }
 
 # #120 support value. The average is capped only at 1. Negative values are
 # deliberately preserved because negative efficiency must increase maintenance
 # rather than being silently converted to zero.
-modeu5_buying_selling_efficiency_clamped = {
-	value = modeu5_trade_owner_buying_efficiency
-	add = modeu5_trade_owner_selling_efficiency
-	divide = 2
+cbp_buying_selling_efficiency_clamped = {
+	value = cbp_trade_owner_buying_efficiency
+	add = cbp_trade_owner_selling_efficiency
 	max = 1
 }
 
-# The following route-money values still fail closed until route-safe price,
-# export-cost, and visible income/profit surfaces are confirmed. Base merchant
-# maintenance itself is no longer blocked: it is trade_volume multiplied by the
-# effective NCountry MERCHANT_MAINTENANCE_COST define.
-modeu5_trade_efficiency_old_price_side_bonus = {
+# Fixture-only route-money values. They are not the production US-17 path.
+cbp_trade_efficiency_old_price_side_bonus = {
 	value = 0
 }
 
-modeu5_trade_maintenance_efficiency_effect = {
+cbp_trade_maintenance_efficiency_effect = {
 	value = 0
 }
 
-modeu5_buying_selling_efficiency_effect = {
+cbp_buying_selling_efficiency_effect = {
 	value = 0
 }
 
-modeu5_trade_efficiency_route_money_delta = {
-	value = modeu5_trade_efficiency_old_price_side_bonus
+cbp_trade_efficiency_route_money_delta = {
+	value = cbp_trade_efficiency_old_price_side_bonus
 	multiply = -1
-	add = modeu5_trade_maintenance_efficiency_effect
-	add = modeu5_buying_selling_efficiency_effect
+	add = cbp_trade_maintenance_efficiency_effect
+	add = cbp_buying_selling_efficiency_effect
 }
 
-modeu5_us20_goods_received_delta = {
+cbp_us20_goods_received_delta = {
 	value = 0
 }

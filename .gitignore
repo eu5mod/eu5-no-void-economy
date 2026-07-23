@@ -1,8 +1,28 @@
 .DS_Store
-.modeu5.local.env
+.cbp.local.env
 __pycache__
 # Generated ModeU5 script adapters.
 # Regenerate locally with ./tools/generate_all.sh; do not commit the output.
-modeu5_*_generated.txt
-modeu5_*_generated_l_english.yml
+cbp_*_generated.txt
+
+cbp_*_generated_l_english.yml
 tools/generated/
+
+# CBG/CBP JSON outputs are local, reproducible execution artifacts. Business
+# policy belongs in the adapters and configuration, not in generated ledgers.
+/packages/*/cbp_generated/*.json
+/packages/*/cbp_generated/**/*.json
+/**/cbg_manifest.json
+/tools/cbg/examples/output/
+/tools/specs/*.generated.json
+/tools/specs/*.local.json
+/tools/specs/*.tmp.json
+
+# Python/tool caches.
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Full vanilla file copied and patched locally by the defines generator.
+/loading_screen/common/defines/00_defines.txt

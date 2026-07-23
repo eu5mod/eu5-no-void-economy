@@ -3,15 +3,15 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_transport_cost_generated.txt}"
-template="$repo_root/tools/templates/modeu5_good_transport_helper.template.txt"
+output="${1:-$repo_root/in_game/common/scripted_effects/cbp_transport_cost_generated.txt}"
+template="$repo_root/tools/templates/cbp_good_transport_helper.template.txt"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_local_config
-modeu5_load_goods_registry
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_local_config
+cbp_load_goods_registry
 
-modeu5_require_file "$template"
+cbp_require_file "$template"
 
 common_dir="${EU5_GAME_COMMON_DIR:-}"
 goods_dir=""
@@ -21,7 +21,7 @@ fi
 
 mkdir -p "$(dirname "$output")"
 
-python3 - "$output" "$goods_dir" "$template" "${modeu5_goods[@]}" <<'PY'
+python3 - "$output" "$goods_dir" "$template" "${cbp_goods[@]}" <<'PY'
 from pathlib import Path
 import re
 import sys
@@ -96,39 +96,6 @@ def render_good_block(good: str, raw_cost: float, defaulted: int) -> str:
         )
     return rendered.rstrip()
 
-def render_trade_owner_dispatcher(goods: list[str]) -> list[str]:
-    lines: list[str] = [
-        "# Generated PR126 trade-owner quantity dispatcher.",
-        "# Converts native trade_volume through the literal-good static transport helpers.",
-        "# Caller must set:",
-        "# - modeu5_trade_owner_good",
-        "# - cbp_trade_owner_trade_volume",
-        "",
-        "modeu5_compute_trade_owner_goods_quantity_from_traded_good = {",
-        "\tsave_temporary_scope_value_as = { name = cbp_trade_owner_quantity_matched value = 0 }",
-        "\tsave_temporary_scope_value_as = { name = cbp_trade_owner_goods_quantity value = 0 }",
-    ]
-    for good in goods:
-        lines.extend(
-            [
-                "\tif = {",
-                "\t\tlimit = {",
-                "\t\t\tscope:cbp_trade_owner_quantity_matched = 0",
-                f"\t\t\tscope:modeu5_trade_owner_good = goods:{good}",
-                "\t\t}",
-                f"\t\tmodeu5_compute_goods_quantity_from_trade_capacity_good_{good} = {{",
-                "\t\t\tcapacity_volume = scope:cbp_trade_owner_trade_volume",
-                "\t\t}",
-                "\t\tsave_temporary_scope_value_as = { name = cbp_trade_owner_goods_quantity value = scope:cbp_computed_goods_quantity }",
-                "\t\tsave_temporary_scope_value_as = { name = cbp_trade_owner_quantity_matched value = 1 }",
-                "\t}",
-            ]
-        )
-    lines.append("}")
-    return lines
-
-
-
 costs: dict[str, float] = {}
 source_mode = "safe defaults"
 if goods_dir_arg:
@@ -165,7 +132,5 @@ if missing_goods:
         ]
     )
 
-lines.extend(render_trade_owner_dispatcher(wanted_goods))
-lines.append("")
 output.write_text("\n".join(lines), encoding="utf-8")
 PY

@@ -19,7 +19,7 @@ Calculate configurable country storage capacity per market, share that same capa
 ```txt
 Monthly step: 1 when recalculation is needed
 Depends on: country/location/market/trade-capacity exposure
-Feeds counters to: modeu5_add_stock, US-01, US-10.2
+Feeds counters to: cbp_add_stock, US-01, US-10.2
 ```
 
 ## Required scopes / values / effects
@@ -32,7 +32,7 @@ Feeds counters to: modeu5_add_stock, US-01, US-10.2
 | Country merchant capacity in a market | market(country) | `scope:<market>.merchant_capacity(<country>)` | CONFIRMED | 116 |
 | Initial country-market scan | country → market | `every_market_present_in_country` | CONFIRMED | 117 |
 | Capacity record fields | country × market | logical `capacity`, `base_capacity`, `building_capacity`, and `foreign_capacity` fields shared by every good | CONFIRMED | 017, internal |
-| Confirmed physical storage | country-scoped synchronized map family keyed by market | `modeu5_stock_cap_by_market`, `modeu5_base_capacity_by_market`, `modeu5_building_capacity_by_market`, `modeu5_foreign_capacity_by_market` | CONFIRMED | 007, 017 |
+| Confirmed physical storage | country-scoped synchronized map family keyed by market | `cbp_stock_cap_by_market`, `cbp_base_capacity_by_market`, `cbp_building_capacity_by_market`, `cbp_foreign_capacity_by_market` | CONFIRMED | 007, 017 |
 
 ## Variable-map storage pattern
 
@@ -49,12 +49,12 @@ tuple:        market
 default:      0
 
 confirmed physical total field:
-  modeu5_stock_cap_by_market
+  cbp_stock_cap_by_market
 
 physical breakdown fields:
-  modeu5_base_capacity_by_market
-  modeu5_building_capacity_by_market
-  modeu5_foreign_capacity_by_market
+  cbp_base_capacity_by_market
+  cbp_building_capacity_by_market
+  cbp_foreign_capacity_by_market
 ```
 
 The total field is authoritative for stock operations. Breakdown fields are
@@ -127,7 +127,7 @@ Related US: US-02-UI, CORE-02, CORE-03, US-07
 - Treat capacity as an admission bound for ordinary production/trade and as a proportional weight for CORE-02/CORE-03.
 - Recalculate at the beginning of the shared monthly cycle before any stock admission, demand resolution, transfer, decay, or void-economy calculation.
 - Recalculate predictably after location ownership, location rank, capital, or merchant-capacity changes.
-- Use `modeu5_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
+- Use `cbp_calculate_location_storage_capacity` for the CORE-03 transferred-location numerator; it intentionally captures only the local settlement-rank/capital contribution carried by that location.
 - Compute owned-location rank/capital contribution once in the country pool without a per-market location scan.
 - Divide the location pool by the count of markets present in the country.
 - Add the target market's own merchant-capacity contribution when writing each country-market capacity key.
@@ -195,12 +195,12 @@ The result event displays the tested stock, capacity, target market trade contri
 ### Marketplace timing probe
 
 ```txt
-Run event modeu5_us02_debug.1
+Run event cbp_us02_debug.1
 Select "Probe +10 marketplaces - step 1"
 The probe adds 10 marketplace levels to FRA's capital
 Confirm whether storage capacity increases immediately
 If the result is pending, wait at least one monthly tick
-Run event modeu5_us02_debug.1 again
+Run event cbp_us02_debug.1 again
 Select "Probe +10 marketplaces - step 2 after monthly tick"
 Confirm whether persisted storage capacity was refreshed by the monthly tick or fails
 ```

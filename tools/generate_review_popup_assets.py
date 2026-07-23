@@ -12,7 +12,7 @@ import qrcode
 import qrcode.image.svg
 
 ROOT = Path(__file__).resolve().parent.parent
-LOCAL_ENV_PATH = ROOT / ".modeu5.local.env"
+LOCAL_ENV_PATH = ROOT / ".cbp.local.env"
 PR157 = ROOT / "docs" / "assets" / "pr157"
 SOURCE_DIR = PR157 / "source"
 GENERATED_DIR = PR157 / "generated"
@@ -107,7 +107,7 @@ def build_qr_overlay(qr_inner_svg: str, qr_width: float, qr_height: float) -> st
     qr_origin_x = QR_X + (QR_SIZE - scaled_w) / 2
     qr_origin_y = QR_Y + (QR_SIZE - scaled_h) / 2
     return f"""
-  <g id="modeu5_support_qr_overlay" transform="translate({CARD_X} {CARD_Y})">
+  <g id="cbp_support_qr_overlay" transform="translate({CARD_X} {CARD_Y})">
     <rect x="8" y="10" width="{CARD_W}" height="{CARD_H}" rx="14" fill="#3f2b1d" opacity="0.32"/>
     <rect x="0" y="0" width="{CARD_W}" height="{CARD_H}" rx="14" fill="#ead9b8" stroke="#38271b" stroke-width="5"/>
     <rect x="12" y="12" width="{CARD_W - 24}" height="{CARD_H - 24}" rx="10" fill="none" stroke="#7a5433" stroke-width="2" opacity="0.75"/>

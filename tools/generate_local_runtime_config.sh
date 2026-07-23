@@ -2,12 +2,12 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-output="${1:-$repo_root/in_game/common/scripted_effects/modeu5_local_runtime_config_generated.txt}"
-local_config="${2:-${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.modeu5.local.env}}"
+output="${1:-$repo_root/in_game/common/scripted_effects/cbp_local_runtime_config_generated.txt}"
+local_config="${2:-${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}}"
 
-# shellcheck source=tools/modeu5_tool_lib.sh
-source "$repo_root/tools/modeu5_tool_lib.sh"
-modeu5_load_local_config "$local_config"
+# shellcheck source=tools/cbp_tool_lib.sh
+source "$repo_root/tools/cbp_tool_lib.sh"
+cbp_load_local_config "$local_config"
 
 normalize_bool() {
 	local raw="${1:-false}"
@@ -26,15 +26,15 @@ normalize_bool() {
 	esac
 }
 
-modeu5_make_parent_dir "$output"
+cbp_make_parent_dir "$output"
 
 debug_enabled="$(normalize_bool "${MODEU5_ENABLE_DEBUG_RUNTIME:-false}")"
 
 if [[ "$debug_enabled" == "true" ]]; then
-	selected_effect='modeu5_enter_debug_runtime_mode = yes'
+	selected_effect='cbp_enter_debug_runtime_mode = yes'
 	selected_label='debug'
 else
-	selected_effect='modeu5_enter_normal_runtime_mode = yes'
+	selected_effect='cbp_enter_normal_runtime_mode = yes'
 	selected_label='normal'
 fi
 
@@ -46,11 +46,11 @@ cat > "$output" <<TXT
 # Selected ModeU5 runtime mode: ${selected_label}
 #
 # This decouples ModeU5 debug runtime from the EU5 engine --debug_mode launch
-# argument. Use .modeu5.local.env to choose ModeU5 debug behaviour explicitly.
+# argument. Use .cbp.local.env to choose ModeU5 debug behaviour explicitly.
 
-modeu5_apply_generated_local_runtime_mode = {
+cbp_apply_generated_local_runtime_mode = {
 	${selected_effect}
 }
 TXT
 
-printf 'Generated %s with ModeU5 runtime mode: %s\n' "$output" "$selected_label"
+printf 'Generated %s with ModeU5 runtime mode: %s\n' "$(cbp_display_path "$output")" "$selected_label"

@@ -8,10 +8,10 @@ Not every repetition is a problem. In ModeU5, some redundancy is required becaus
 
 | Repeated element | Type | Status | Refactor rule | Priority |
 |---|---|---|---|---|
-| Per-good adapters | Necessary generated repetition | Keep | Use `tools/modeu5_goods.sh`, template, and validation; do not factor by hand | P0 |
+| Per-good adapters | Necessary generated repetition | Keep | Use `tools/cbp_goods.sh`, template, and validation; do not factor by hand | P0 |
 | Per-good map families | Engine / variable-map limitation | Keep | Full literal identifiers; no runtime map name parameter | P0 |
 | Generated block templates | Controlled repetition | Strengthen | Add/adapt a template if a repeated block becomes a divergence source | P1 |
-| `modeu5_debug_last_*` dumps | Standardized debug | Document | Central naming convention, no business wrapper hiding inputs | P2 |
+| `cbp_debug_last_*` dumps | Standardized debug | Document | Central naming convention, no business wrapper hiding inputs | P2 |
 | core_tests probe scenarios | Separate business tests | Keep carefully | Factor logging helpers, not scenarios | P2 |
 | Map read/delete/rewrite | Map-imposed pattern | Encapsulate | Centralize record-level helpers; do not bypass | P1 |
 | Initialization/schema guard | Fail-closed | Tolerate | Single trigger only if already confirmed and more readable | P1 |
@@ -24,8 +24,8 @@ Not every repetition is a problem. In ModeU5, some redundancy is required becaus
 The standard generation model is:
 
 ```txt
-tools/modeu5_tool_lib.sh      shared helpers
-tools/modeu5_goods.sh         canonical goods registry
+tools/cbp_tool_lib.sh      shared helpers
+tools/cbp_goods.sh         canonical goods registry
 tools/templates/              generated block templates
 tools/generate_all.sh         generation entry point
 tools/validate_generators.sh  generator convention validation
@@ -39,7 +39,7 @@ An agent must extend this existing model. It must not create a standalone genera
 |---|---:|---|
 | 74 literal adapters from the same template | Yes | Keep; the diff is large but auditable |
 | 74 hand-copied blocks in a non-generated file | No | Replace with template/generator |
-| Literal `modeu5_<good>_...` family in a generated file | Yes | Required for EU5 |
+| Literal `cbp_<good>_...` family in a generated file | Yes | Required for EU5 |
 | Scripted-effect parameter containing a map name to construct | No | Generate a literal helper per good |
 | Two similar probes covering two business contracts | Yes | Keep distinct |
 | Two identical probes differing only by dump format | No | Factor the dump |
