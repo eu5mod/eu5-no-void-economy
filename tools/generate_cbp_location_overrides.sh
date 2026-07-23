@@ -109,10 +109,10 @@ suppress_direct_mktemp_fixture_warning = (
 def warn(message: str) -> None:
     if suppress_direct_mktemp_fixture_warning:
         return
-    prefix = "[⚠️]"
+    rendered = f"[⚠️] {message}"
     if "NO_COLOR" not in os.environ and sys.stderr.isatty():
-        prefix = f"\033[1;33m{prefix}\033[0m"
-    print(f"{prefix} {message}", file=sys.stderr)
+        rendered = f"\033[38;5;208m{rendered}\033[0m"
+    print(rendered, file=sys.stderr)
 
 
 def file_link(path: Path, line_number: int | None = None) -> str:
