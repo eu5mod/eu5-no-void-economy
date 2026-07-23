@@ -7,7 +7,7 @@ orchestration. It describes loaded code, not a target architecture or a historic
 PR checkpoint. Technical names are retained so each node can be located directly
 in the runtime sources.
 
-Reviewed against the runtime branch stacked on PR #212 on 2026-07-22.
+Reviewed against the branch stacked on PR #215 on 2026-07-24.
 
 Use this precedence when documents disagree:
 
@@ -60,7 +60,7 @@ flowchart TB
     M0["Start monthly country pulse<br/>monthly_country_pulse"] --> MP["Run monthly stock cycle<br/>cbp_monthly_stock_cycle_pulse"]
     MP --> MINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
     MINIT --> CMMREFRESH["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
-    CMMREFRESH --> SWITCH["Select market traversal<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+    CMMREFRESH --> SWITCH["Run market-local phase<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch<br/>stable compatibility entry point"]
     SWITCH --> READY{"Stock runtime ready?<br/>cbp_stock_runtime_ready_trigger"}
     READY -->|no| MCLOSED["Skip monthly economic work<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
 
@@ -75,20 +75,15 @@ flowchart TB
 
     subgraph MARKETPHASE["Market traversal and local accounting (Q8.7)"]
         direction TB
-        OWNER{"Run every market or every market center per market owner? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: every market"}
-
-        OWNER -->|Every market| ONCE["Run every-market traversal once this month<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        ONCE["Run every-market traversal once this month<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         ONCE --> STAMP{"Every-market traversal already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
         STAMP -->|yes: later country pulse| SKIP["Bypass every-market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         STAMP -->|no: first eligible country pulse| WORLD["Every market<br/>every_market_in_world"]
         WORLD --> MARKETOWNER["Dispatch current market to shared accounting<br/>cbp_q8_7_run_global_market_local_owner_market"]
 
-        OWNER -->|Every owner market center| LEGACY["Run current-country market-center traversal<br/>cbp_run_monthly_promoted_market_local_cycle"]
-        LEGACY --> CENTERITER["Every owner market center<br/>every_market_center_in_country"]
-
         subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
-            MODE["cbp_prepare_market_runtime_accounting_mode"]
+            MARKETOWNER --> MODE["cbp_prepare_market_runtime_accounting_mode"]
             MODE --> KIND{"detailed / Vanilla fallback / blocked?"}
             KIND -->|fallback| FALLBACK["record US-00 and US-10 Vanilla fallback<br/>no CBP market mutation"]
             KIND -->|blocked| BLOCKED["record runtime blocked<br/>no CBP market mutation"]
@@ -109,13 +104,11 @@ flowchart TB
             BLOCKED --> MDONE
         end
 
-        CENTERITER --> MODE
-        MARKETOWNER --> MODE
-        MDONE --> MARKETEND["Selected market traversal exhausted"]
+        MDONE --> MARKETEND["Every-market traversal exhausted"]
         SKIP --> MARKETEND
     end
 
-    PREP2 --> OWNER
+    PREP2 --> ONCE
 
     subgraph COUNTRYPOST["Monthly country completion"]
         direction TB
@@ -219,12 +212,17 @@ does not remove every country x market operation: the preparation phase still
 refreshes current-country markets, and each detailed market still iterates the
 countries present in that market for capacity, US-00, and US-10.
 
+The first eligible monthly country pulse executes `every_market_in_world`. The
+global month stamp makes every later country pulse bypass that traversal and
+continue with its own country-owned trade and US-04 work. No runtime selector or
+market-center rollback route remains.
+
 ## Economic ordering contract
 
 | Order | Owner/effect | Economic responsibility |
 |---|---|---|
 | 1 | Monthly country preparation | Prepare accounting boundaries and current-country capacity before market-local work. |
-| 2 | Once-per-month global market owner (Q8.7), or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
+| 2 | Once-per-month global market owner (Q8.7) | Select each market's accounting mode and own market-local execution through `every_market_in_world`. |
 | 3 | US-00 first present-country pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 4 | US-10 second present-country pass | Resolve same-market consumption only after all US-00 facts for the market exist. |
 | 5 | Monthly country completion through `cbp_run_monthly_country_trade_owner_cycle` | When trade rework is enabled, refresh US-17 and run the country-owned trade iterator with US-17 then US-20; otherwise clear persisted trade-rework state and skip the iterator. |
@@ -242,8 +240,7 @@ countries present in that market for capacity, US-00, and US-10.
 | Country-wide capacity pool | Country, monthly stamped | Derived monthly cache |
 | Country-market capacity record | Country x market | Derived record; currently refreshed by more than one caller |
 | `cbp_countries_present_in_market` | Current detailed market branch | Rebuilt work cache, not persistent market storage |
-| Market-local US-00 and US-10 | Q8.7 once-per-month global owner by default | Runtime work |
-| Explicit Q8.7 fallback | Current country through `every_market_center_in_country` | Debug/recovery runtime path |
+| Market-local US-00 and US-10 | Once-per-month `every_market_in_world` owner | Runtime work |
 | Native inter-market trade rework | Current country through `every_trade`, only while the CMM trade-rework option is enabled | Country-owned runtime pass |
 | US-04 coefficient | Location x good | Durable Rebalance Economy state |
 | US-04 monthly Estate totals | Current country x market x good | Monthly ledger/diagnostic state |
@@ -260,8 +257,8 @@ countries present in that market for capacity, US-00, and US-10.
   does not enter `every_trade`.
 - Performance Mode changes accounting detail and market relevance, not the
   business rule applied to a market selected for detailed accounting.
-- The Q8.7 global market owner is enabled by default. The older market-center
-  owner remains only behind `cbp_q8_7_live_global_market_owner_disabled`.
+- The once-per-month `every_market_in_world` pass is the only live market-local
+  owner. The retired market-center route remains historical audit evidence only.
 - Vanilla fallback and blocked markets record diagnostics but do not receive
   detailed CBP stock mutation from the market-local branch.
 
@@ -271,8 +268,7 @@ countries present in that market for capacity, US-00, and US-10.
 |---|---|
 | Engine hooks and pulse order | `in_game/common/on_action/cbp_stock_on_actions.txt` |
 | Runtime modes and market accounting decisions | `in_game/common/scripted_effects/cbp_configuration_effects.txt` |
-| Q8.7 global owner and fallback switch | `in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt` |
-| Q8.7 default-enabled trigger | `in_game/common/scripted_triggers/cbp_q8_7_global_owner_triggers.txt` |
+| Once-per-month global market owner | `in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt` |
 | Market-local US-00 then US-10 passes | `in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt` |
 | Market-to-country work-cache rebuild | `in_game/common/scripted_effects/cbp_market_country_cache_effects.txt` |
 | Country and country-market capacity | `in_game/common/scripted_effects/cbp_capacity_effects.txt` |
