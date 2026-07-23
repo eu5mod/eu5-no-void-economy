@@ -84,7 +84,33 @@ targets = {
 required_targets = set(targets) - {"development"}
 
 
+def is_temporary_staging_path(path: Path) -> bool:
+    resolved = path.expanduser().resolve()
+    temporary_roots = [Path("/tmp")]
+    configured_root = os.environ.get("TMPDIR")
+    if configured_root:
+        temporary_roots.append(Path(configured_root))
+    for root in temporary_roots:
+        try:
+            resolved.relative_to(root.expanduser().resolve())
+        except ValueError:
+            continue
+        return True
+    return False
+
+
+# validate_generators.sh deliberately exercises the compatibility path with a
+# synthetic source and output under TMPDIR. Those notices describe the fixture,
+# not installed Vanilla, and must not appear as user-facing preparation warnings.
+suppress_temporary_staging_warnings = (
+    is_temporary_staging_path(source_path)
+    and is_temporary_staging_path(output_path)
+)
+
+
 def warn(message: str) -> None:
+    if suppress_temporary_staging_warnings:
+        return
     prefix = "[⚠️]"
     if "NO_COLOR" not in os.environ and sys.stderr.isatty():
         prefix = f"\033[1;33m{prefix}\033[0m"
