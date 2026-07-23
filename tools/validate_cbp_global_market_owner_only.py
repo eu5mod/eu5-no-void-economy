@@ -35,9 +35,25 @@ def block(text: str, name: str) -> str:
     raise AssertionError(f"Unclosed scripted block: {name}")
 
 
+def uncommented_script(text: str) -> str:
+    return "\n".join(line.split("#", 1)[0] for line in text.splitlines())
+
+
+def mermaid_block(markdown: str) -> str:
+    marker = "```mermaid"
+    start = markdown.find(marker)
+    require(start >= 0, "Normative runtime document must contain a Mermaid diagram")
+    body_start = start + len(marker)
+    end = markdown.find("```", body_start)
+    require(end >= 0, "Normative Mermaid diagram must be closed")
+    return markdown[body_start:end]
+
+
 def main() -> int:
     effects = EFFECTS_PATH.read_text(encoding="utf-8")
+    live_effects = uncommented_script(effects)
     runtime_flow = RUNTIME_FLOW_PATH.read_text(encoding="utf-8")
+    runtime_mermaid = mermaid_block(runtime_flow)
 
     require(
         not TRIGGERS_PATH.exists(),
@@ -53,11 +69,11 @@ def main() -> int:
         "cbp_run_monthly_promoted_market_local_cycle = yes",
         "every_market_center_in_country",
     ):
-        require(forbidden not in effects, f"Retired owner path reintroduced: {forbidden}")
+        require(forbidden not in live_effects, f"Retired owner path reintroduced: {forbidden}")
 
-    monthly_owner = block(effects, "cbp_run_monthly_stock_cycle_q8_7_owner_switch")
-    global_cycle = block(effects, "cbp_run_monthly_q8_7_global_market_local_cycle_once")
-    market_body = block(effects, "cbp_q8_7_run_global_market_local_owner_market")
+    monthly_owner = block(live_effects, "cbp_run_monthly_stock_cycle_q8_7_owner_switch")
+    global_cycle = block(live_effects, "cbp_run_monthly_q8_7_global_market_local_cycle_once")
+    market_body = block(live_effects, "cbp_q8_7_run_global_market_local_owner_market")
 
     global_call = "cbp_run_monthly_q8_7_global_market_local_cycle_once = {"
     trade_call = "cbp_run_monthly_country_trade_owner_cycle = yes"
@@ -93,12 +109,12 @@ def main() -> int:
         require(required in market_body, f"Per-market accounting mode missing: {required}")
 
     require(
-        "every_market_center_in_country" not in runtime_flow,
-        "Normative runtime flow must not expose the retired market-center path",
+        "every_market_center_in_country" not in runtime_mermaid,
+        "Normative runtime diagram must not expose the retired market-center path",
     )
     require(
-        "every_market_in_world" in runtime_flow,
-        "Normative runtime flow must expose the sole every-market path",
+        "every_market_in_world" in runtime_mermaid,
+        "Normative runtime diagram must expose the sole every-market path",
     )
 
     print("Global market owner-only contract: OK")
