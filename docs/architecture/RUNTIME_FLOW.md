@@ -73,18 +73,18 @@ flowchart TB
 
     READY -->|yes| PREP0
 
-    subgraph MARKETPHASE["Market traversal and local accounting"]
+    subgraph MARKETPHASE["Market traversal and local accounting (Q8.7)"]
         direction TB
-        OWNER{"Run every market or every market center owned by the current country?<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: every market"}
-
-        OWNER -->|Every market center owned by current country| LEGACY["Run current-country market-center traversal<br/>cbp_run_monthly_promoted_market_local_cycle"]
-        LEGACY --> CENTERITER["Every market center owned by current country<br/>every_market_center_in_country"]
+        OWNER{"Run every market or every market center per market owner? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: every market"}
 
         OWNER -->|Every market| ONCE["Run every-market traversal once this month<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         ONCE --> STAMP{"Every-market traversal already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
         STAMP -->|yes: later country pulse| SKIP["Bypass every-market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         STAMP -->|no: first eligible country pulse| WORLD["Every market<br/>every_market_in_world"]
         WORLD --> MARKETOWNER["Dispatch current market to shared accounting<br/>cbp_q8_7_run_global_market_local_owner_market"]
+
+        OWNER -->|Every owner market center| LEGACY["Run current-country market-center traversal<br/>cbp_run_monthly_promoted_market_local_cycle"]
+        LEGACY --> CENTERITER["Every owner market center<br/>every_market_center_in_country"]
 
         subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
