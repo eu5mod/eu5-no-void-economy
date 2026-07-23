@@ -57,6 +57,10 @@ replacements = {
         'r"^\\s*(?:REPLACE:)?([A-Za-z0-9_]+)\\s*=\\s*\\{"',
     'US-09 static overrides must preserve vanilla file paths; remove stale duplicate-key files:':
         'Remove obsolete pre-CBG US-09 duplicate-key files:',
+    'bash "$generator_validator" >/dev/null': '''if ! generator_validator_stderr="$(bash "$generator_validator" 2>&1 >/dev/null)"; then
+\tprintf '%s\\n' "$generator_validator_stderr" >&2
+\texit 1
+fi''',
 }
 for old, new in replacements.items():
     if old not in text:
