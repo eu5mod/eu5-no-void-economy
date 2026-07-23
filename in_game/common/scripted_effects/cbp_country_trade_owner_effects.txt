@@ -25,116 +25,150 @@
 # #107 extension: US-17/#105, #120, and US-20/#118 route reconciliation is wired
 # into the existing every_trade body after route scopes and quantity are captured.
 # This preserves the #161 Q8.7 boundary: no market-scope every_trade loop is
-# introduced. The hook is dormant unless the CMM trade-rework setting enables
-# cbp_trade_rework_enabled_trigger.
+# introduced.
 #
-# US-17 is refreshed once from country scope before the route loop. The route
-# scope selects import or export efficiency through is_export and applies the
-# operation-aware maintenance delta. US-20 remains the goods-only follow-up.
+# The CMM trade-rework option owns the entire native trade-rework cycle:
+# - enabled: refresh US-17 country modifiers, iterate trades, run the retained
+#   route-level US-17 compatibility surface, then apply US-20 goods reconciliation;
+# - disabled: clear any persisted US-17/US-20 country state and skip every_trade.
+#
+# Trade-owner counters are observability-only and write only in debug/audit
+# runtime. Explicit ModeU5-owned transfer requests remain independent of the
+# native-trade rework option.
 
 cbp_reset_country_trade_owner_pass_metrics = {
-	remove_global_variable = cbp_country_trade_owner_pass_runs
-	remove_global_variable = cbp_country_trade_owner_trades_seen
-	remove_global_variable = cbp_country_trade_owner_inter_market_trades
-	remove_global_variable = cbp_country_trade_owner_owner_mismatches
-	remove_global_variable = cbp_country_trade_owner_quantity_confirmed_trades
-	remove_global_variable = cbp_country_trade_owner_quantity_blocked_trades
-	remove_global_variable = cbp_country_trade_owner_explicit_requests
-	remove_global_variable = cbp_country_trade_owner_inter_market_transfers
-	remove_global_variable = cbp_country_trade_owner_requested_quantity
-	remove_global_variable = cbp_country_trade_owner_confirmed_trade_quantity
-	remove_global_variable = cbp_country_trade_owner_transferred_quantity
-	remove_global_variable = cbp_country_trade_owner_unsatisfied_quantity
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		remove_global_variable = cbp_country_trade_owner_pass_runs
+		remove_global_variable = cbp_country_trade_owner_trades_seen
+		remove_global_variable = cbp_country_trade_owner_inter_market_trades
+		remove_global_variable = cbp_country_trade_owner_owner_mismatches
+		remove_global_variable = cbp_country_trade_owner_quantity_confirmed_trades
+		remove_global_variable = cbp_country_trade_owner_quantity_blocked_trades
+		remove_global_variable = cbp_country_trade_owner_explicit_requests
+		remove_global_variable = cbp_country_trade_owner_inter_market_transfers
+		remove_global_variable = cbp_country_trade_owner_requested_quantity
+		remove_global_variable = cbp_country_trade_owner_confirmed_trade_quantity
+		remove_global_variable = cbp_country_trade_owner_transferred_quantity
+		remove_global_variable = cbp_country_trade_owner_unsatisfied_quantity
 
-	set_global_variable = { name = cbp_country_trade_owner_pass_runs value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_trades_seen value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_inter_market_trades value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_owner_mismatches value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_quantity_confirmed_trades value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_quantity_blocked_trades value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_explicit_requests value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_inter_market_transfers value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_requested_quantity value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_confirmed_trade_quantity value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_transferred_quantity value = 0 }
-	set_global_variable = { name = cbp_country_trade_owner_unsatisfied_quantity value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_pass_runs value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_trades_seen value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_inter_market_trades value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_owner_mismatches value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_quantity_confirmed_trades value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_quantity_blocked_trades value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_explicit_requests value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_inter_market_transfers value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_requested_quantity value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_confirmed_trade_quantity value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_transferred_quantity value = 0 }
+		set_global_variable = { name = cbp_country_trade_owner_unsatisfied_quantity value = 0 }
+	}
 }
 
 cbp_note_country_trade_owner_pass_run = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_pass_runs
-		value = { value = global_var:cbp_country_trade_owner_pass_runs add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_pass_runs
+			value = { value = global_var:cbp_country_trade_owner_pass_runs add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_trade_seen = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_trades_seen
-		value = { value = global_var:cbp_country_trade_owner_trades_seen add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_trades_seen
+			value = { value = global_var:cbp_country_trade_owner_trades_seen add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_inter_market_trade = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_inter_market_trades
-		value = { value = global_var:cbp_country_trade_owner_inter_market_trades add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_inter_market_trades
+			value = { value = global_var:cbp_country_trade_owner_inter_market_trades add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_owner_mismatch = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_owner_mismatches
-		value = { value = global_var:cbp_country_trade_owner_owner_mismatches add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_owner_mismatches
+			value = { value = global_var:cbp_country_trade_owner_owner_mismatches add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_quantity_confirmed_trade = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_quantity_confirmed_trades
-		value = { value = global_var:cbp_country_trade_owner_quantity_confirmed_trades add = 1 }
-	}
-	set_global_variable = {
-		name = cbp_country_trade_owner_confirmed_trade_quantity
-		value = { value = global_var:cbp_country_trade_owner_confirmed_trade_quantity add = scope:cbp_trade_owner_goods_quantity }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_quantity_confirmed_trades
+			value = { value = global_var:cbp_country_trade_owner_quantity_confirmed_trades add = 1 }
+		}
+		set_global_variable = {
+			name = cbp_country_trade_owner_confirmed_trade_quantity
+			value = { value = global_var:cbp_country_trade_owner_confirmed_trade_quantity add = scope:cbp_trade_owner_goods_quantity }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_quantity_blocked_trade = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_quantity_blocked_trades
-		value = { value = global_var:cbp_country_trade_owner_quantity_blocked_trades add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_quantity_blocked_trades
+			value = { value = global_var:cbp_country_trade_owner_quantity_blocked_trades add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_explicit_request = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_explicit_requests
-		value = { value = global_var:cbp_country_trade_owner_explicit_requests add = 1 }
-	}
-	save_temporary_scope_value_as = { name = cbp_country_trade_owner_requested_delta value = { value = $requested_quantity$ min = 0 } }
-	set_global_variable = {
-		name = cbp_country_trade_owner_requested_quantity
-		value = { value = global_var:cbp_country_trade_owner_requested_quantity add = scope:cbp_country_trade_owner_requested_delta }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_explicit_requests
+			value = { value = global_var:cbp_country_trade_owner_explicit_requests add = 1 }
+		}
+		save_temporary_scope_value_as = { name = cbp_country_trade_owner_requested_delta value = { value = $requested_quantity$ min = 0 } }
+		set_global_variable = {
+			name = cbp_country_trade_owner_requested_quantity
+			value = { value = global_var:cbp_country_trade_owner_requested_quantity add = scope:cbp_country_trade_owner_requested_delta }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_inter_market_transfer = {
-	set_global_variable = {
-		name = cbp_country_trade_owner_inter_market_transfers
-		value = { value = global_var:cbp_country_trade_owner_inter_market_transfers add = 1 }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		set_global_variable = {
+			name = cbp_country_trade_owner_inter_market_transfers
+			value = { value = global_var:cbp_country_trade_owner_inter_market_transfers add = 1 }
+		}
 	}
 }
 
 cbp_note_country_trade_owner_outcome_quantities = {
-	save_temporary_scope_value_as = { name = cbp_country_trade_owner_transferred_delta value = { value = $transferred_quantity$ min = 0 } }
-	save_temporary_scope_value_as = { name = cbp_country_trade_owner_unsatisfied_delta value = { value = $unsatisfied_quantity$ min = 0 } }
-	set_global_variable = {
-		name = cbp_country_trade_owner_transferred_quantity
-		value = { value = global_var:cbp_country_trade_owner_transferred_quantity add = scope:cbp_country_trade_owner_transferred_delta }
-	}
-	set_global_variable = {
-		name = cbp_country_trade_owner_unsatisfied_quantity
-		value = { value = global_var:cbp_country_trade_owner_unsatisfied_quantity add = scope:cbp_country_trade_owner_unsatisfied_delta }
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		save_temporary_scope_value_as = { name = cbp_country_trade_owner_transferred_delta value = { value = $transferred_quantity$ min = 0 } }
+		save_temporary_scope_value_as = { name = cbp_country_trade_owner_unsatisfied_delta value = { value = $unsatisfied_quantity$ min = 0 } }
+		set_global_variable = {
+			name = cbp_country_trade_owner_transferred_quantity
+			value = { value = global_var:cbp_country_trade_owner_transferred_quantity add = scope:cbp_country_trade_owner_transferred_delta }
+		}
+		set_global_variable = {
+			name = cbp_country_trade_owner_unsatisfied_quantity
+			value = { value = global_var:cbp_country_trade_owner_unsatisfied_quantity add = scope:cbp_country_trade_owner_unsatisfied_delta }
+		}
 	}
 }
 
@@ -166,50 +200,49 @@ cbp_capture_country_trade_owner_trade_quantity = {
 	}
 }
 
-# Country-scoped native trade-owner pass. It classifies trades reached from the
-# current country iterator, but attributes each trade through the trade-scope
-# `owner` link. The current country is retained only as the controller/scheduler
-# so tests can detect whether country-scoped every_trade ever yields a trade whose
-# owner differs from the country that scheduled the pass.
+# Country-scoped native trade-owner pass. The CMM trade-rework option gates the
+# full US-17/US-20 runtime surface, including the native every_trade traversal.
 cbp_run_monthly_country_trade_owner_cycle = {
 	save_temporary_scope_as = cbp_trade_owner_controller_country
-	cbp_note_country_trade_owner_pass_run = yes
-	cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
+
 	if = {
 		limit = { cbp_trade_rework_enabled_trigger = yes }
+		cbp_note_country_trade_owner_pass_run = yes
+		cbp_refresh_us17_native_profit_modifiers_for_current_country = yes
 		cbp_prepare_trade_efficiency_reconciliation_runtime_metrics_once = yes
 		cbp_reset_trade_efficiency_reconciliation_accumulator = yes
-	}
 
-	every_trade = {
-		save_temporary_scope_as = cbp_trade_owner_trade
-		cbp_note_country_trade_owner_trade_seen = yes
+		every_trade = {
+			save_temporary_scope_as = cbp_trade_owner_trade
+			cbp_note_country_trade_owner_trade_seen = yes
 
-		owner = { save_temporary_scope_as = cbp_trade_owner_country }
-		from_market = { save_temporary_scope_as = cbp_trade_owner_source_market }
-		to_market = { save_temporary_scope_as = cbp_trade_owner_target_market }
-		traded_goods = { save_temporary_scope_as = cbp_trade_owner_good }
-		cbp_capture_country_trade_owner_trade_quantity = yes
-		if = {
-			limit = { exists = scope:cbp_trade_owner_country }
-			cbp_run_us17_operation_aware_route_profit_reconciliation = yes
-			scope:cbp_trade_owner_country = {
-				if = {
-					limit = { cbp_trade_rework_enabled_trigger = yes }
+			owner = { save_temporary_scope_as = cbp_trade_owner_country }
+			from_market = { save_temporary_scope_as = cbp_trade_owner_source_market }
+			to_market = { save_temporary_scope_as = cbp_trade_owner_target_market }
+			traded_goods = { save_temporary_scope_as = cbp_trade_owner_good }
+			cbp_capture_country_trade_owner_trade_quantity = yes
+			if = {
+				limit = { exists = scope:cbp_trade_owner_country }
+				cbp_run_us17_operation_aware_route_profit_reconciliation = yes
+				scope:cbp_trade_owner_country = {
 					save_temporary_scope_value_as = { name = cbp_trade_efficiency_formula_inputs_available value = 0 }
 					cbp_run_us20_route_loss_reconciliation = yes
 				}
 			}
-		}
 
-		if = {
-			limit = {
-				NOT = { scope:cbp_trade_owner_country = scope:cbp_trade_owner_controller_country }
+			if = {
+				limit = {
+					NOT = { scope:cbp_trade_owner_country = scope:cbp_trade_owner_controller_country }
+				}
+				cbp_note_country_trade_owner_owner_mismatch = yes
 			}
-			cbp_note_country_trade_owner_owner_mismatch = yes
-		}
 
-		cbp_note_country_trade_owner_inter_market_trade = yes
+			cbp_note_country_trade_owner_inter_market_trade = yes
+		}
+	}
+	else = {
+		# Remove persisted auto-modifier inputs when the option is disabled.
+		cbp_clear_us17_native_profit_modifiers_for_current_country = yes
 	}
 }
 

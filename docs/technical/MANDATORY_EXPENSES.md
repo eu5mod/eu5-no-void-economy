@@ -31,7 +31,7 @@ At Stability +25:
 `STABILITY_INVEST_FACTOR = 1` doubles the vanilla positive range. The permanent
 `cbp_mandatory_stability_expense` country modifier supplies the additive
 `stability_investment = -0.5` baseline. The
-`cbp_positive_stability_expense_offset` auto-modifier scales a unit
+`cbp_negative_stability_expense_offset` auto-modifier scales a unit
 `stability_investment` contribution by `Stability x 0.01`, and is active only
 while Stability is positive. Together they implement
 `-0.5 + max(0, Stability / 100)`. `stability_decay` is intentionally left
