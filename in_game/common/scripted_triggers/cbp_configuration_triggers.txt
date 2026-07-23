@@ -174,11 +174,18 @@ cbp_debug_capture_enabled_trigger = {
 	cbp_debug_enabled_trigger = yes
 }
 
-cbp_pr71_metrics_enabled_trigger = {
+# Shared observability gate for global counters, profiling state, and debug-only
+# work-shape metrics. Business state, ownership stamps, and work lists must not
+# depend on this trigger.
+cbp_observability_enabled_trigger = {
 	OR = {
 		cbp_debug_capture_enabled_trigger = yes
 		cbp_audit_enabled_trigger = yes
 	}
+}
+
+cbp_pr71_metrics_enabled_trigger = {
+	cbp_observability_enabled_trigger = yes
 }
 
 cbp_full_validation_allowed_trigger = {

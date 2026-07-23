@@ -2,17 +2,21 @@
 #
 # PERF-02 builds the country -> native market side. PERF-03 adds a
 # market -> countries-present work cache in cbp_market_country_cache_effects.
-# PERF-13 counters are intentionally inert in normal runtime unless a
-# debug/test path calls them. They do not mutate stock.
+# PERF-02/PERF-14 discovery and fallback counters write only in debug/audit
+# runtime. Relevant/promoted market lists and promotion result state remain
+# business-active in every runtime mode. PERF-13 remains a debug/test surface.
 
 cbp_clear_performance_relevant_markets = {
-	remove_global_variable = cbp_performance_human_country_count
-	remove_global_variable = cbp_performance_relevant_market_native_iterations
-	remove_global_variable = cbp_performance_relevant_market_added_count
+	if = {
+		limit = { cbp_observability_enabled_trigger = yes }
+		remove_global_variable = cbp_performance_human_country_count
+		remove_global_variable = cbp_performance_relevant_market_native_iterations
+		remove_global_variable = cbp_performance_relevant_market_added_count
 
-	set_global_variable = { name = cbp_performance_human_country_count value = 0 }
-	set_global_variable = { name = cbp_performance_relevant_market_native_iterations value = 0 }
-	set_global_variable = { name = cbp_performance_relevant_market_added_count value = 0 }
+		set_global_variable = { name = cbp_performance_human_country_count value = 0 }
+		set_global_variable = { name = cbp_performance_relevant_market_native_iterations value = 0 }
+		set_global_variable = { name = cbp_performance_relevant_market_added_count value = 0 }
+	}
 
 	if = {
 		limit = { has_global_variable_list = cbp_performance_relevant_markets }
@@ -22,16 +26,19 @@ cbp_clear_performance_relevant_markets = {
 
 cbp_prepare_performance_relevant_market_counters = {
 	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_human_country_count } }
-		set_global_variable = { name = cbp_performance_human_country_count value = 0 }
-	}
-	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_relevant_market_native_iterations } }
-		set_global_variable = { name = cbp_performance_relevant_market_native_iterations value = 0 }
-	}
-	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_relevant_market_added_count } }
-		set_global_variable = { name = cbp_performance_relevant_market_added_count value = 0 }
+		limit = { cbp_observability_enabled_trigger = yes }
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_human_country_count } }
+			set_global_variable = { name = cbp_performance_human_country_count value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_relevant_market_native_iterations } }
+			set_global_variable = { name = cbp_performance_relevant_market_native_iterations value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_relevant_market_added_count } }
+			set_global_variable = { name = cbp_performance_relevant_market_added_count value = 0 }
+		}
 	}
 }
 
@@ -46,11 +53,14 @@ cbp_mark_performance_relevant_market = {
 			name = cbp_performance_relevant_markets
 			target = scope:cbp_performance_relevant_market
 		}
-		set_global_variable = {
-			name = cbp_performance_relevant_market_added_count
-			value = {
-				value = global_var:cbp_performance_relevant_market_added_count
-				add = 1
+		if = {
+			limit = { cbp_observability_enabled_trigger = yes }
+			set_global_variable = {
+				name = cbp_performance_relevant_market_added_count
+				value = {
+					value = global_var:cbp_performance_relevant_market_added_count
+					add = 1
+				}
 			}
 		}
 	}
@@ -67,11 +77,14 @@ cbp_mark_performance_relevant_market = {
 			name = cbp_performance_relevant_markets
 			target = scope:cbp_performance_relevant_market
 		}
-		set_global_variable = {
-			name = cbp_performance_relevant_market_added_count
-			value = {
-				value = global_var:cbp_performance_relevant_market_added_count
-				add = 1
+		if = {
+			limit = { cbp_observability_enabled_trigger = yes }
+			set_global_variable = {
+				name = cbp_performance_relevant_market_added_count
+				value = {
+					value = global_var:cbp_performance_relevant_market_added_count
+					add = 1
+				}
 			}
 		}
 	}
@@ -135,11 +148,14 @@ cbp_add_country_present_markets_to_performance_relevant_list = {
 	scope:cbp_performance_country = {
 		every_market_present_in_country = {
 			save_temporary_scope_as = cbp_performance_relevant_market
-			set_global_variable = {
-				name = cbp_performance_relevant_market_native_iterations
-				value = {
-					value = global_var:cbp_performance_relevant_market_native_iterations
-					add = 1
+			if = {
+				limit = { cbp_observability_enabled_trigger = yes }
+				set_global_variable = {
+					name = cbp_performance_relevant_market_native_iterations
+					value = {
+						value = global_var:cbp_performance_relevant_market_native_iterations
+						add = 1
+					}
 				}
 			}
 			cbp_mark_performance_relevant_market = yes
@@ -177,11 +193,14 @@ cbp_rebuild_human_relevant_markets = {
 	every_country = {
 		limit = { is_ai = no }
 		save_temporary_scope_as = cbp_performance_country
-		set_global_variable = {
-			name = cbp_performance_human_country_count
-			value = {
-				value = global_var:cbp_performance_human_country_count
-				add = 1
+		if = {
+			limit = { cbp_observability_enabled_trigger = yes }
+			set_global_variable = {
+				name = cbp_performance_human_country_count
+				value = {
+					value = global_var:cbp_performance_human_country_count
+					add = 1
+				}
 			}
 		}
 		cbp_add_country_present_markets_to_performance_relevant_list = yes
@@ -190,33 +209,31 @@ cbp_rebuild_human_relevant_markets = {
 
 cbp_prepare_vanilla_fallback_counters = {
 	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_vanilla_fallback_us00_markets } }
-		set_global_variable = { name = cbp_performance_vanilla_fallback_us00_markets value = 0 }
-	}
-	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_vanilla_fallback_us10_markets } }
-		set_global_variable = { name = cbp_performance_vanilla_fallback_us10_markets value = 0 }
-	}
-	if = {
-		limit = { NOT = { has_global_variable = cbp_performance_blocked_runtime_markets } }
-		set_global_variable = { name = cbp_performance_blocked_runtime_markets value = 0 }
+		limit = { cbp_observability_enabled_trigger = yes }
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_vanilla_fallback_us00_markets } }
+			set_global_variable = { name = cbp_performance_vanilla_fallback_us00_markets value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_vanilla_fallback_us10_markets } }
+			set_global_variable = { name = cbp_performance_vanilla_fallback_us10_markets value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_global_variable = cbp_performance_blocked_runtime_markets } }
+			set_global_variable = { name = cbp_performance_blocked_runtime_markets value = 0 }
+		}
 	}
 }
 
 cbp_note_us00_vanilla_fallback_market = {
-	cbp_prepare_vanilla_fallback_counters = yes
-	set_global_variable = {
-		name = cbp_performance_vanilla_fallback_us00_markets
-		value = {
-			value = global_var:cbp_performance_vanilla_fallback_us00_markets
-			add = 1
-		}
-	}
 	if = {
-		limit = {
-			OR = {
-				cbp_debug_enabled_trigger = yes
-				cbp_audit_enabled_trigger = yes
+		limit = { cbp_observability_enabled_trigger = yes }
+		cbp_prepare_vanilla_fallback_counters = yes
+		set_global_variable = {
+			name = cbp_performance_vanilla_fallback_us00_markets
+			value = {
+				value = global_var:cbp_performance_vanilla_fallback_us00_markets
+				add = 1
 			}
 		}
 		debug_log = "ModeU5 PERF-14 VANILLA_FALLBACK system=US00 reason=market_not_human_relevant_or_not_promoted"
@@ -224,19 +241,14 @@ cbp_note_us00_vanilla_fallback_market = {
 }
 
 cbp_note_us10_vanilla_fallback_market = {
-	cbp_prepare_vanilla_fallback_counters = yes
-	set_global_variable = {
-		name = cbp_performance_vanilla_fallback_us10_markets
-		value = {
-			value = global_var:cbp_performance_vanilla_fallback_us10_markets
-			add = 1
-		}
-	}
 	if = {
-		limit = {
-			OR = {
-				cbp_debug_enabled_trigger = yes
-				cbp_audit_enabled_trigger = yes
+		limit = { cbp_observability_enabled_trigger = yes }
+		cbp_prepare_vanilla_fallback_counters = yes
+		set_global_variable = {
+			name = cbp_performance_vanilla_fallback_us10_markets
+			value = {
+				value = global_var:cbp_performance_vanilla_fallback_us10_markets
+				add = 1
 			}
 		}
 		debug_log = "ModeU5 PERF-14 VANILLA_FALLBACK system=US10 reason=market_not_human_relevant_or_not_promoted"
@@ -244,19 +256,14 @@ cbp_note_us10_vanilla_fallback_market = {
 }
 
 cbp_note_runtime_blocked_market = {
-	cbp_prepare_vanilla_fallback_counters = yes
-	set_global_variable = {
-		name = cbp_performance_blocked_runtime_markets
-		value = {
-			value = global_var:cbp_performance_blocked_runtime_markets
-			add = 1
-		}
-	}
 	if = {
-		limit = {
-			OR = {
-				cbp_debug_enabled_trigger = yes
-				cbp_audit_enabled_trigger = yes
+		limit = { cbp_observability_enabled_trigger = yes }
+		cbp_prepare_vanilla_fallback_counters = yes
+		set_global_variable = {
+			name = cbp_performance_blocked_runtime_markets
+			value = {
+				value = global_var:cbp_performance_blocked_runtime_markets
+				add = 1
 			}
 		}
 		debug_log = "ModeU5 PERF-14 RUNTIME_BLOCKED reason=cbp_deactivated"
