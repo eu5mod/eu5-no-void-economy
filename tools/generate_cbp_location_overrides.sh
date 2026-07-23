@@ -84,32 +84,30 @@ targets = {
 required_targets = set(targets) - {"development"}
 
 
-def is_temporary_staging_path(path: Path) -> bool:
+def is_direct_mktemp_file(path: Path) -> bool:
     resolved = path.expanduser().resolve()
     temporary_roots = [Path("/tmp")]
     configured_root = os.environ.get("TMPDIR")
     if configured_root:
         temporary_roots.append(Path(configured_root))
-    for root in temporary_roots:
-        try:
-            resolved.relative_to(root.expanduser().resolve())
-        except ValueError:
-            continue
-        return True
-    return False
+    return any(
+        resolved.parent == root.expanduser().resolve()
+        and resolved.name.startswith("tmp.")
+        for root in temporary_roots
+    )
 
 
-# validate_generators.sh deliberately exercises the compatibility path with a
-# synthetic source and output under TMPDIR. Those notices describe the fixture,
-# not installed Vanilla, and must not appear as user-facing preparation warnings.
-suppress_temporary_staging_warnings = (
-    is_temporary_staging_path(source_path)
-    and is_temporary_staging_path(output_path)
+# validate_generators.sh deliberately uses two direct mktemp files. Their paths
+# describe the synthetic fixture, not installed Vanilla. Nested temporary test
+# trees retain warnings so the public warning contract remains fully tested.
+suppress_direct_mktemp_fixture_warning = (
+    is_direct_mktemp_file(source_path)
+    and is_direct_mktemp_file(output_path)
 )
 
 
 def warn(message: str) -> None:
-    if suppress_temporary_staging_warnings:
+    if suppress_direct_mktemp_fixture_warning:
         return
     prefix = "[⚠️]"
     if "NO_COLOR" not in os.environ and sys.stderr.isatty():
