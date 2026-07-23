@@ -41,7 +41,7 @@ flowchart TB
     subgraph LIFECYCLE["Campaign start and save load"]
         direction TB
         GS["on_game_start"] -->|delay 1 day| GSP["cbp_start_game_stock_initialization_pulse"]
-        GSP --> US04INIT["cbp_initialize_pop_demand_multipliers_once"]
+        GSP --> US04INIT["Initialize demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_once"]
         GSP --> CORE02["cbp_start_game_stock_initialization_dispatcher"]
         CORE02 --> SCHEMA{"schema compatible and initialization complete?"}
         SCHEMA -->|yes| OPEN["cbp_stock_runtime_ready_trigger = yes"]
@@ -49,9 +49,8 @@ flowchart TB
         GSP --> MEM0["cbp_core04_refresh_all_location_market_memory"]
 
         GL["on_game_load"] -->|delay 1 day| GLP["cbp_load_game_stock_initialization_pulse"]
-        GLP --> LOADREPAIR["cbp_repair_stock_lifecycle_on_game_load"]
-        LOADREPAIR --> LOADUS04["initialize missing US-04 state + repair current-schema marker"]
-        LOADUS04 --> LREADY{"runtime ready after repair?"}
+        GLP --> LOADREPAIR["Repair lifecycle and missing demand-adaptation state<br/>cbp_repair_stock_lifecycle_on_game_load"]
+        LOADREPAIR --> LREADY{"runtime ready after repair?"}
         LREADY -->|no| CORE02
         LREADY -->|yes| KEEP["preserve current stock schema/state"]
         CORE02 --> LOADMEM["refresh all location-market memory"]
@@ -61,23 +60,24 @@ flowchart TB
     subgraph MONTHLY["Monthly country pulse"]
         direction TB
         M0["monthly_country_pulse"] --> MP["cbp_monthly_stock_cycle_pulse"]
-        MP --> MCFG["initialize current-country US-04 state<br/>refresh CMM integration marker"]
-        MCFG --> SWITCH["cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
-        SWITCH --> READY{"cbp_stock_runtime_ready_trigger?"}
+        MP --> MINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
+        MINIT --> CMMREFRESH["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
+        CMMREFRESH --> SWITCH["Select market-local owner<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+        SWITCH --> READY{"Stock runtime ready?<br/>cbp_stock_runtime_ready_trigger"}
         READY -->|no| MCLOSED["fail closed<br/>optional debug gate marker"]
         READY -->|yes| PREP0["cbp_prepare_performance_mode_human_relevant_markets<br/>monthly-stamped world human-country scan in Performance Mode"]
         PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>all markets present in current country"]
         PREP1 --> PREP2["prepare monthly market-seen registry<br/>prepare human-relevant persistence list"]
-        PREP2 --> OWNER{"global Q8.7 owner enabled?<br/>default: yes"}
+        PREP2 --> OWNER{"Use global once-per-month market owner?<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
 
-        OWNER -->|no: explicit fallback flag| LEGACY["cbp_run_monthly_promoted_market_local_cycle<br/>country-scope fallback entry"]
-        LEGACY --> CENTERITER["every_market_center_in_country<br/>country → market iterator"]
+        OWNER -->|no: explicit fallback flag| LEGACY["Run market-center fallback cycle<br/>cbp_run_monthly_promoted_market_local_cycle"]
+        LEGACY --> CENTERITER["Iterate country-owned market centers<br/>every_market_center_in_country"]
 
-        OWNER -->|yes| ONCE["cbp_run_monthly_q8_7_global_market_local_cycle_once"]
-        ONCE --> STAMP{"global month already processed?"}
+        OWNER -->|yes| ONCE["Run global market-local cycle once<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        ONCE --> STAMP{"Global market pass already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
         STAMP -->|yes| SKIP["skip market-local world pass<br/>for this later country pulse"]
-        STAMP -->|no| WORLD["every_market_in_world<br/>world → market iterator"]
-        WORLD --> MARKETOWNER["cbp_q8_7_run_global_market_local_owner_market<br/>market-scope wrapper"]
+        STAMP -->|no| WORLD["Iterate every world market<br/>every_market_in_world"]
+        WORLD --> MARKETOWNER["Dispatch one market through global owner<br/>cbp_q8_7_run_global_market_local_owner_market"]
 
         subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
@@ -122,14 +122,14 @@ flowchart TB
             US20 --> TNEXT
         end
 
-        TNEXT --> US04M0["cbp_run_monthly_us04_reconciliation_for_current_country"]
+        TNEXT --> US04M0["Run monthly Estate-demand reconciliation<br/>cbp_run_monthly_us04_reconciliation_for_current_country"]
 
-        subgraph US04MONTH["Monthly US-04 signed Estate reconciliation"]
+        subgraph US04MONTH["Monthly Estate-demand reconciliation (US-04)"]
             direction TB
-            US04M0 --> US04MGATE{"runtime ready + offer/demand option enabled?"}
-            US04MGATE -->|no| US04MSKIP["skip US-04 mutation"]
-            US04MGATE -->|yes| US04MARKETS["every_market_present_in_country"]
-            US04MARKETS --> US04GOODS["all supported goods<br/>market demand gate before location work"]
+            US04M0 --> US04MGATE{"Runtime ready and demand rebalance enabled?<br/>cbp_stock_runtime_ready_trigger<br/>cbp_pop_consumption_offer_demand_enabled_trigger"}
+            US04MGATE -->|no| US04MSKIP["Exit without Estate-demand mutation<br/>cbp_run_monthly_us04_estate_accounting_for_current_country"]
+            US04MGATE -->|yes| US04MARKETS["Iterate markets present in country<br/>every_market_present_in_country"]
+            US04MARKETS --> US04GOODS["Assess Estate consumption for supported goods<br/>cbp_monthly_assess_country_market_estate_consumption_all_goods"]
             US04GOODS --> PROXY["per owned location in market:<br/>coefficient x proxy Estate size"]
             PROXY --> DELTA["signed delta = coefficient - 1"]
             DELTA --> SIGN{"delta sign?"}
@@ -152,15 +152,16 @@ flowchart TB
         MEMORY --> MEND["end monthly_country_pulse"]
     end
 
-    subgraph YEARLY["Yearly US-04 adaptation"]
+    subgraph YEARLY["Yearly demand-coefficient adaptation (US-04)"]
         direction TB
-        Y0["yearly_country_pulse"] --> YP["cbp_yearly_pop_demand_adaptation_pulse"]
-        YP --> YINIT["initialize current-country state + refresh CMM marker"]
-        YINIT --> YRUN["cbp_run_yearly_pop_demand_adaptation_for_current_country"]
-        YRUN --> YGATE{"runtime ready + offer/demand option enabled?"}
-        YGATE -->|no| YSKIP["skip yearly adaptation"]
-        YGATE -->|yes| YLOC["every_owned_location"]
-        YLOC --> YGOOD["all supported goods"]
+        Y0["yearly_country_pulse"] --> YP["Run yearly demand-adaptation pulse<br/>cbp_yearly_pop_demand_adaptation_pulse"]
+        YP --> YINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
+        YINIT --> YCMM["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
+        YCMM --> YRUN["Adapt yearly demand coefficients<br/>cbp_run_yearly_pop_demand_adaptation_for_current_country"]
+        YRUN --> YGATE{"Runtime ready and demand rebalance enabled?<br/>cbp_stock_runtime_ready_trigger<br/>cbp_pop_consumption_offer_demand_enabled_trigger"}
+        YGATE -->|no| YSKIP["Exit without coefficient mutation<br/>cbp_run_yearly_pop_demand_adaptation_for_current_country"]
+        YGATE -->|yes| YLOC["Iterate owned locations<br/>every_owned_location"]
+        YLOC --> YGOOD["Adjust all supported goods<br/>cbp_annual_adjust_location_pop_demand_all_goods"]
         YGOOD --> YREAD["read annual satisfied and unsatisfied counters"]
         YREAD --> YCASE{"annual outcome?"}
         YCASE -->|12 satisfied / 0 shortage| YUP["coefficient x 1.01"]
