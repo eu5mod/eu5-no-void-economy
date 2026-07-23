@@ -1,0 +1,5 @@
+NDiplomacy = {
+    #GREAT_POWER_POINTS_THRESHOLD = 40 # GP points needed to be a Great • Power
+    REGIONAL_POWER_POINTS_THRESHOLD = 15
+    #GREAT_POWER_AREA_WEALTH_DIVISOR = 5
+}
