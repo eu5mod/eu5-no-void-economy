@@ -1,0 +1,28 @@
+name: Observability Gates
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate observability gate contracts
+        run: python3 tools/validate_cbp_observability_gates.py
+
+      - name: Validate shared US17 and US20 trade gate
+        run: python3 tools/validate_cbp_trade_rework_gate.py
