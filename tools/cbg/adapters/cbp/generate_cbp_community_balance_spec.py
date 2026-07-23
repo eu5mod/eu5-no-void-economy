@@ -8,13 +8,17 @@ import json
 import os
 import re
 import sys
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from tools.cbg.adapters.cbp.generate_cbp_cbg_rgo_prices_spec import (
+    FIXED_ADAPTER,
+    build_selected_spec as build_selected_rgo_price_spec,
+)
 from tools.cbg.community_balance_generator import ASSIGNMENT, display_path, field_matches, scan_objects
 from tools.generate_political_reward_overrides import centralizable_script_values
 
@@ -85,6 +89,31 @@ def env_number(name: str, default: float) -> float:
         return float(os.environ.get(name, default))
     except ValueError as exc:
         raise ValueError(f"{name} must be numeric") from exc
+
+
+def env_decimal(name: str, default: str) -> Decimal:
+    raw = os.environ.get(name, default)
+    try:
+        return Decimal(raw)
+    except InvalidOperation as exc:
+        raise ValueError(f"{name} must be numeric") from exc
+
+
+def rgo_price_transformations(game_root: Path) -> list[dict[str, object]]:
+    """Mirror the one selected focused RGO adapter in the cross-family audit spec."""
+    selected = build_selected_rgo_price_spec(
+        game_root,
+        os.environ.get("MODEU5_US09_RGO_PRICE_ADAPTER", FIXED_ADAPTER),
+        env_decimal("MODEU5_US09_RGO_FIXED_PRICE", "60"),
+        env_decimal("MODEU5_US09_RGO_PRICE_OFFSET_PERCENT", "8"),
+    )
+    return [
+        {
+            key: rule[key]
+            for key in ("file", "object", "field", "operation", "value")
+        }
+        for rule in selected["transformations"]
+    ]
 
 
 def canonical_goods() -> tuple[str, ...]:
@@ -268,21 +297,7 @@ def build_spec(game_root: Path, package_root: Path) -> dict[str, object]:
         "operation": "replace",
         "value": food_price,
     })
-    rgo_price_multiplier = 1 + env_number(
-        "MODEU5_US09_RGO_PRICE_OFFSET_PERCENT", 8
-    ) / 100
-    rgo_gold = round(100 / rgo_price_multiplier, 2)
-    for price in (
-        "expand_rgo_mining", "expand_rgo_farming", "expand_rgo_hunting",
-        "expand_rgo_gathering", "expand_rgo_forestry",
-    ):
-        transformations.append({
-            "file": "in_game/common/prices/00_hardcoded.txt",
-            "object": price,
-            "field": "gold",
-            "operation": "replace",
-            "value": rgo_gold,
-        })
+    transformations.extend(rgo_price_transformations(game_root))
     for pop_type, env_name in (
         ("burghers", "EXTRA_BURGHER_PROMOTION_SPEED"),
         ("laborers", "EXTRA_LABORER_PROMOTION_SPEED"),

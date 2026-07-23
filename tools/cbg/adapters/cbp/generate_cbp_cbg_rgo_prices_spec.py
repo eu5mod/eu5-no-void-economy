@@ -22,6 +22,8 @@ TARGETS = (
     "expand_rgo_gathering", "expand_rgo_forestry",
 )
 SOURCE = "in_game/common/prices/00_hardcoded.txt"
+FIXED_ADAPTER = "fixed"
+OFFSET_ADAPTER = "offset"
 
 
 def compact(value: Decimal, places: int) -> str:
@@ -42,7 +44,10 @@ def build_spec(game_root: Path, percent: Decimal) -> dict[str, object]:
     objects = {obj.path: obj for obj in scan_objects(lines)}
     replacements: dict[str, str] = {}
     for name in TARGETS:
-        matches = field_matches(lines, objects[(name,)], "gold")
+        obj = objects.get((name,))
+        if obj is None:
+            raise ValueError(f"Missing RGO expansion price object: {name}")
+        matches = field_matches(lines, obj, "gold")
         if len(matches) != 1 or not (match := ASSIGNMENT.match(lines[matches[0]].rstrip("\r\n"))):
             raise ValueError(f"Expected one numeric gold field in {name}")
         adjusted = (Decimal(match.group("value")) * factor).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -70,14 +75,32 @@ def build_spec(game_root: Path, percent: Decimal) -> dict[str, object]:
     }
 
 
+def build_selected_spec(
+    game_root: Path,
+    adapter: str,
+    fixed_price: Decimal,
+    percent: Decimal,
+) -> dict[str, object]:
+    """Select exactly one RGO-price adapter and return its focused CBG spec."""
+    if adapter == FIXED_ADAPTER:
+        from tools.cbg.adapters.cbp.generate_cbp_cbg_fixed_rgo_prices_spec import (
+            build_spec as build_fixed_spec,
+        )
+
+        return build_fixed_spec(game_root, fixed_price)
+    if adapter == OFFSET_ADAPTER:
+        return build_spec(game_root, percent)
+    raise ValueError(f"Unsupported RGO price adapter: {adapter}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--game-root", type=Path, required=True)
     parser.add_argument("--percent", type=Decimal, required=True)
     parser.add_argument(
         "--adapter",
-        choices=("fixed", "offset"),
-        default=os.environ.get("MODEU5_US09_RGO_PRICE_ADAPTER", "fixed"),
+        choices=(FIXED_ADAPTER, OFFSET_ADAPTER),
+        default=os.environ.get("MODEU5_US09_RGO_PRICE_ADAPTER", FIXED_ADAPTER),
         help="RGO price policy adapter; defaults to MODEU5_US09_RGO_PRICE_ADAPTER or fixed.",
     )
     parser.add_argument(
@@ -89,13 +112,15 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
-    if args.adapter == "fixed":
-        from tools.cbg.adapters.cbp.generate_cbp_cbg_fixed_rgo_prices_spec import build_spec as build_fixed_spec
-
-        payload = build_fixed_spec(args.game_root, args.fixed_price)
+    payload = build_selected_spec(
+        args.game_root,
+        args.adapter,
+        args.fixed_price,
+        args.percent,
+    )
+    if args.adapter == FIXED_ADAPTER:
         policy = f"fixed ({compact(args.fixed_price, 10)})"
     else:
-        payload = build_spec(args.game_root, args.percent)
         policy = f"offset ({compact(args.percent, 10).removesuffix('.0')}%)"
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
