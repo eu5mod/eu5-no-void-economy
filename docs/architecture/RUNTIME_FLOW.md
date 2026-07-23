@@ -60,7 +60,7 @@ flowchart TB
     M0["Start monthly country pulse<br/>monthly_country_pulse"] --> MP["Run monthly stock cycle<br/>cbp_monthly_stock_cycle_pulse"]
     MP --> MINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
     MINIT --> CMMREFRESH["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
-    CMMREFRESH --> SWITCH["Select market-local owner<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+    CMMREFRESH --> SWITCH["Select market traversal<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
     SWITCH --> READY{"Stock runtime ready?<br/>cbp_stock_runtime_ready_trigger"}
     READY -->|no| MCLOSED["Skip monthly economic work<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
 
@@ -73,18 +73,18 @@ flowchart TB
 
     READY -->|yes| PREP0
 
-    subgraph MARKETPHASE["Market-local accounting and traversal (Q8.7)"]
+    subgraph MARKETPHASE["Market traversal and local accounting"]
         direction TB
-        OWNER{"Global Q8.7 owner enabled?<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
+        OWNER{"Run every market or every market center owned by the current country?<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: every market"}
 
-        OWNER -->|no: explicit fallback flag| LEGACY["Run market-center fallback cycle<br/>cbp_run_monthly_promoted_market_local_cycle"]
-        LEGACY --> CENTERITER["Iterate country-owned market centers<br/>every_market_center_in_country"]
+        OWNER -->|Every market center owned by current country| LEGACY["Run current-country market-center traversal<br/>cbp_run_monthly_promoted_market_local_cycle"]
+        LEGACY --> CENTERITER["Every market center owned by current country<br/>every_market_center_in_country"]
 
-        OWNER -->|yes| ONCE["Run global market-local cycle once<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
-        ONCE --> STAMP{"Global market pass already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
-        STAMP -->|yes: later country pulse| SKIP["Bypass global market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
-        STAMP -->|no: first eligible country pulse| WORLD["Iterate every world market<br/>every_market_in_world"]
-        WORLD --> MARKETOWNER["Dispatch one market through global owner<br/>cbp_q8_7_run_global_market_local_owner_market"]
+        OWNER -->|Every market| ONCE["Run every-market traversal once this month<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        ONCE --> STAMP{"Every-market traversal already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
+        STAMP -->|yes: later country pulse| SKIP["Bypass every-market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        STAMP -->|no: first eligible country pulse| WORLD["Every market<br/>every_market_in_world"]
+        WORLD --> MARKETOWNER["Dispatch current market to shared accounting<br/>cbp_q8_7_run_global_market_local_owner_market"]
 
         subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
@@ -111,7 +111,7 @@ flowchart TB
 
         CENTERITER --> MODE
         MARKETOWNER --> MODE
-        MDONE --> MARKETEND["Selected market iterator exhausted"]
+        MDONE --> MARKETEND["Selected market traversal exhausted"]
         SKIP --> MARKETEND
     end
 
