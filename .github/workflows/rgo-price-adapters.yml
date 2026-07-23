@@ -1,0 +1,33 @@
+name: RGO Price Adapters
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-rgo-price-adapters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Test fixed and percentage-offset adapters
+        run: |
+          set +e
+          python3 -m unittest tools.cbg.adapters.cbp.tests.test_rgo_price_adapters > rgo-adapter-tests.log 2>&1
+          status=$?
+          cat rgo-adapter-tests.log
+          exit $status
+
+      - name: Upload adapter test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rgo-adapter-tests
+          path: rgo-adapter-tests.log
+
+      - name: Validate environment contract
+        run: |
+          grep -q '^MODEU5_US09_RGO_PRICE_ADAPTER=fixed$' .cbp.local.env.template
+          grep -q '^MODEU5_US09_RGO_FIXED_PRICE=60 ' .cbp.local.env.template
+          grep -q '^MODEU5_US09_RGO_PRICE_OFFSET_PERCENT=' .cbp.local.env.template

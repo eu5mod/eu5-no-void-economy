@@ -29,6 +29,7 @@ accepted by `tools/audit_cbp_persistent_state.sh`.
 | `cbp_base_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and diagnostics | keep |
 | `cbp_building_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future storage-building hook | keep |
 | `cbp_foreign_capacity_by_market` | country | market | durable capacity breakdown | US-02, UI/debug | capacity explanation and future foreign-storage hook | keep |
+| `cbp_capacity_monthly_stamp_by_market` | country | market | monthly scheduling stamp | US-02 monthly preparation and promoted-market capacity pass | prevents duplicate country-market capacity calculation and map writes within one month | keep while monthly idempotence uses it; never capacity source |
 | `cbp_<good>_production_penalty_by_market` | country | market | gameplay carryover | US-00, generated modifiers | next-month production penalty | keep normal-runtime persistent |
 | `cbp_<good>_us00_active_record_by_market` | country | market | scheduling index | PERF-15 monthly dispatch | cheap previous-state probe | keep while PERF-15 dispatch uses it |
 | `cbp_consumption_<good>_pending_requested_by_market` | country | market | current month input queue | US-10.1 monthly runtime integration | explicit country-market consumption request waiting for the next US-10 monthly pass | remove when processed |
@@ -81,6 +82,7 @@ this section before moving a reader or deleting a cache.
 | `cbp_base_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
 | `cbp_building_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
 | `cbp_foreign_capacity_by_market` | capacity breakdown | country | capacity refresh, initialization, owner/rank/capital hooks | replace during capacity refresh |
+| `cbp_capacity_monthly_stamp_by_market` | scheduling stamp | country | every successful country-market capacity refresh | overwrite with current month; missing or stale entry forces recalculation |
 | `cbp_<good>_production_penalty_by_market` | gameplay carryover | country | US-00 next-month penalty finalization | replace when next penalty is finalized |
 | `cbp_<good>_us00_active_record_by_market` | work cache | country | PERF-15 active-record probe/update | rebuild or remove when record becomes inactive |
 | `cbp_<good>_produced_by_market` | monthly ledger | country | US-00 production ingestion | monthly after readers |
@@ -119,6 +121,12 @@ not durable per market, not a stock source, and not proof that a country has
 positive stock. Runtime code may use it to choose which country records to read
 or validate after it has just been rebuilt for the target market.
 
+`cbp_capacity_monthly_stamp_by_market` is scheduling state only. Capacity maps
+remain authoritative for admission and UI. A matching stamp means those maps
+were already refreshed in the current month; it is not itself evidence of any
+capacity value. Forced initialization and topology hooks bypass the monthly gate,
+rewrite the capacity maps, and overwrite the stamp.
+
 ## Scalar Debug And Work State
 
 The executable audit also counts scalar debug/work variables. These are not
@@ -150,6 +158,7 @@ The current target summary is:
 Stock maps: kept
 Capacity maps: kept/shared
 Capacity breakdown maps: kept
+Capacity scheduling stamps: kept while required for idempotence
 US-00 gameplay carryover maps: kept
 US-00 full diagnostic ledger maps: strict/debug/audit or human-relevant only
 UI monthly counter maps: human country current-month only

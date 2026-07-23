@@ -147,6 +147,7 @@ cbp_<good>_void_wealth_by_market	variable map	diagnostic ledger	country	US-00 vo
 cbp_active_markets_any_good	global list	work cache	global	mark active market / active-list repair	clear during active-list rebuild	additive until rebuild/repair
 cbp_base_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
 cbp_building_capacity_by_market	variable map	capacity breakdown	country	capacity refresh / init / owner-rank-capital hooks	replace during capacity refresh	with capacity refresh
+cbp_capacity_monthly_stamp_by_market	variable map	monthly scheduling stamp	country	every successful country-market capacity refresh	overwrite on refresh; stale month forces recalculation	country-market capacity idempotence guard
 cbp_consumption_<good>_pending_requested_by_market	variable map	monthly input queue	country	explicit US-10 request enqueue	remove when processed by monthly pass	removed when US-10 monthly pass consumes it
 cbp_consumption_<good>_requested_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset
 cbp_consumption_<good>_satisfied_by_market	variable map	monthly ledger	country	US-10 same-market consumption resolution	monthly after US-10.3/UI readers	current month until readers reset

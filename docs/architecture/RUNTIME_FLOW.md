@@ -1,11 +1,13 @@
-# Q5 - Current End-to-End Runtime Flow
+# Current End-to-End Runtime Flow
 
 ## Status and precedence
 
-This document is the **only normative global diagram** of the current ModeU5
-runtime orchestration. It describes loaded code, not a target architecture or
-historical PR checkpoint. Technical names are kept deliberately so a reader can
-move directly from a diagram node to `rg` and the owning scripted effect.
+This document is the **only normative global diagram** of the current CBP runtime
+orchestration. It describes loaded code, not a target architecture or a historical
+PR checkpoint. Technical names are retained so each node can be located directly
+in the runtime sources.
+
+Reviewed against the runtime branch stacked on PR #212 on 2026-07-22.
 
 Use this precedence when documents disagree:
 
@@ -13,7 +15,10 @@ Use this precedence when documents disagree:
 2. This document defines current global orchestration and phase ownership.
 3. `docs/technical/` defines durable storage and engine-exposure contracts.
 4. Feature specifications define business rules within this flow.
-5. `docs/audits/` preserves historical evidence and feature projections.
+5. `docs/audits/` preserves historical evidence and superseded checkpoints.
+
+The current static performance analysis is maintained in
+[`docs/performance/FULL_RUNTIME_PERFORMANCE_ANALYSIS.md`](../performance/FULL_RUNTIME_PERFORMANCE_ANALYSIS.md).
 
 ## Global invariants
 
@@ -36,126 +41,154 @@ flowchart TB
     subgraph LIFECYCLE["Campaign start and save load"]
         direction TB
         GS["on_game_start"] -->|delay 1 day| GSP["cbp_start_game_stock_initialization_pulse"]
-        GSP --> US04INIT["cbp_initialize_pop_demand_multipliers_once"]
-        US04INIT --> CORE02["cbp_start_game_stock_initialization_dispatcher"]
+        GSP --> US04INIT["Initialize demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_once"]
+        GSP --> CORE02["cbp_start_game_stock_initialization_dispatcher"]
         CORE02 --> SCHEMA{"schema compatible and initialization complete?"}
         SCHEMA -->|yes| OPEN["cbp_stock_runtime_ready_trigger = yes"]
         SCHEMA -->|no| CLOSED["fail closed / diagnostics only"]
         GSP --> MEM0["cbp_core04_refresh_all_location_market_memory"]
 
         GL["on_game_load"] -->|delay 1 day| GLP["cbp_load_game_stock_initialization_pulse"]
-        GLP --> REPAIR["cbp_repair_stock_lifecycle_on_game_load"]
-        REPAIR --> RREADY{"runtime already ready?"}
-        RREADY -->|yes| KEEP["preserve current schema and state"]
-        RREADY -->|no| CORE02
-        KEEP --> MEM0
+        GLP --> LOADREPAIR["Repair lifecycle and missing demand-adaptation state<br/>cbp_repair_stock_lifecycle_on_game_load"]
+        LOADREPAIR --> LREADY{"runtime ready after repair?"}
+        LREADY -->|no| CORE02
+        LREADY -->|yes| KEEP["preserve current stock schema/state"]
+        CORE02 --> LOADMEM["refresh all location-market memory"]
+        KEEP --> LOADMEM
     end
 
-    subgraph MONTHLY["Monthly country pulse"]
-        direction TB
-        M0["monthly_country_pulse"] --> MP["cbp_monthly_stock_cycle_pulse"]
-        MP --> MCFG["initialize US-04 country state + refresh CMM marker"]
-        MCFG --> SWITCH["cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
-        SWITCH --> READY{"cbp_stock_runtime_ready_trigger?"}
-        READY -->|no| MCLOSED["fail closed / optional debug gate marker"]
-        READY -->|yes| PREP["prepare relevance + current-country capacity + monthly registries"]
-        PREP --> OWNER{"cbp_q8_7_live_global_market_owner_enabled_trigger?"}
-        OWNER -->|no: rollback path| LEGACY["cbp_run_monthly_promoted_market_local_cycle<br/>every_market_center_in_country"]
-        OWNER -->|yes| ONCE["cbp_run_monthly_q8_7_global_market_local_cycle_once"]
-        ONCE --> STAMP{"global month stamp already processed?"}
-        STAMP -->|yes| SKIP["skip global market-local pass for this country pulse"]
-        STAMP -->|no| WORLD["every_market_in_world"]
+    M0["Start monthly country pulse<br/>monthly_country_pulse"] --> MP["Run monthly stock cycle<br/>cbp_monthly_stock_cycle_pulse"]
+    MP --> MINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
+    MINIT --> CMMREFRESH["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
+    CMMREFRESH --> SWITCH["Select market traversal<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+    SWITCH --> READY{"Stock runtime ready?<br/>cbp_stock_runtime_ready_trigger"}
+    READY -->|no| MCLOSED["Skip monthly economic work<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
 
-        subgraph MARKET["Once-per-market local accounting"]
+    subgraph COUNTRYPRE["Monthly country preparation"]
+        direction TB
+        PREP0["Prepare human-relevant markets in Performance Mode<br/>cbp_prepare_performance_mode_human_relevant_markets"]
+        PREP0 --> PREP1["Refresh current-country capacity<br/>cbp_run_monthly_capacity_refresh_for_current_country"]
+        PREP1 --> PREP2["Prepare monthly market registries<br/>cbp_prepare_monthly_market_seen_registry<br/>cbp_prepare_human_relevant_full_ledger_markets"]
+    end
+
+    READY -->|yes| PREP0
+
+    subgraph MARKETPHASE["Market traversal and local accounting (Q8.7)"]
+        direction TB
+        OWNER{"Run every market or every market center per market owner? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: every market"}
+
+        OWNER -->|Every market| ONCE["Run every-market traversal once this month<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        ONCE --> STAMP{"Every-market traversal already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
+        STAMP -->|yes: later country pulse| SKIP["Bypass every-market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        STAMP -->|no: first eligible country pulse| WORLD["Every market<br/>every_market_in_world"]
+        WORLD --> MARKETOWNER["Dispatch current market to shared accounting<br/>cbp_q8_7_run_global_market_local_owner_market"]
+
+        OWNER -->|Every owner market center| LEGACY["Run current-country market-center traversal<br/>cbp_run_monthly_promoted_market_local_cycle"]
+        LEGACY --> CENTERITER["Every owner market center<br/>every_market_center_in_country"]
+
+        subgraph MARKET["Shared once-per-market local accounting"]
             direction TB
-            WORLD --> MARKETOWNER["cbp_q8_7_run_global_market_local_owner_market"]
-            LEGACY --> MODE["cbp_prepare_market_runtime_accounting_mode"]
-            MARKETOWNER --> MODE
+            MODE["cbp_prepare_market_runtime_accounting_mode"]
             MODE --> KIND{"detailed / Vanilla fallback / blocked?"}
-            KIND -->|fallback| FALLBACK["note US-00 and US-10 Vanilla fallback<br/>no ModeU5 market mutation"]
-            KIND -->|blocked| BLOCKED["note runtime blocked<br/>no ModeU5 market mutation"]
+            KIND -->|fallback| FALLBACK["record US-00 and US-10 Vanilla fallback<br/>no CBP market mutation"]
+            KIND -->|blocked| BLOCKED["record runtime blocked<br/>no CBP market mutation"]
             KIND -->|detailed| LOCAL["cbp_run_promoted_market_live_local_branch_market_all_goods"]
-            LOCAL --> ACTIVE["cbp_pr71_prepare_active_good_metrics"]
-            ACTIVE --> CACHE["cbp_prepare_promoted_market_country_cache<br/>rebuild cbp_countries_present_in_market"]
-            CACHE --> PASS1["every_in_global_list: present countries - pass 1"]
-            PASS1 --> CAP["cbp_prepare_promoted_country_market_capacity"]
-            CAP --> US00["cbp_pr71_process_us00_monthly_market_active_goods"]
-            US00 --> ADMIT["read production -> cbp_add_stock -> record added/rejected facts"]
-            ADMIT --> FREEZE["all present-country US-00 facts complete before consumption"]
-            FREEZE --> PASS2["every_in_global_list: present countries - pass 2"]
-            PASS2 --> US10["cbp_pr71_process_us10_monthly_market_pending_goods"]
-            US10 --> CONSUME["US-10 same-market demand -> cbp_remove_stock"]
+            LOCAL --> ACTIVE["prepare active-good work metrics"]
+            ACTIVE --> CACHE["rebuild cbp_countries_present_in_market<br/>every_location_in_market + owner deduplication"]
+            CACHE --> PASS1["present countries - pass 1"]
+            PASS1 --> CAP["ensure country monthly capacity pool<br/>recalculate this country-market capacity"]
+            CAP --> US00["process US-00 active goods"]
+            US00 --> ADMIT["read production -> cbp_add_stock<br/>record added/rejected facts"]
+            ADMIT --> FREEZE["all present-country US-00 facts complete"]
+            FREEZE --> PASS2["present countries - pass 2"]
+            PASS2 --> US10["process US-10 pending goods"]
+            US10 --> CONSUME["same-market demand -> cbp_remove_stock"]
             CONSUME --> OUTCOME["record requested / satisfied / unsatisfied outcomes"]
             OUTCOME --> MDONE["finish detailed market"]
             FALLBACK --> MDONE
             BLOCKED --> MDONE
         end
 
-        MDONE --> WORLDEND["global/fallback market iterator exhausted"]
-        SKIP --> TRADE0["cbp_run_monthly_country_trade_owner_cycle"]
-        WORLDEND --> TRADE0
+        CENTERITER --> MODE
+        MARKETOWNER --> MODE
+        MDONE --> MARKETEND["Selected market traversal exhausted"]
+        SKIP --> MARKETEND
+    end
 
-        subgraph TRADE["Current-country trade-owner pass"]
+    PREP2 --> OWNER
+
+    subgraph COUNTRYPOST["Monthly country completion"]
+        direction TB
+        TRADE0["Process country-owned trades<br/>cbp_run_monthly_country_trade_owner_cycle"]
+
+        subgraph TRADE["Current-country native trade-rework pass"]
             direction TB
-            TRADE0 --> US17REFRESH["refresh US-17 native country modifiers once"]
-            US17REFRESH --> TLOOP["every_trade - confirmed country-scope iterator"]
-            TLOOP --> TSCOPE["save trade, owner, source market, target market, traded good"]
-            TSCOPE --> TQTY["cbp_capture_country_trade_owner_trade_quantity"]
-            TQTY --> TGATE{"cbp_trade_rework_enabled_trigger?"}
-            TGATE -->|no| TMETRIC["record normal trade-owner metrics"]
-            TGATE -->|yes| US20["US-20 route-loss / received-goods reconciliation"]
-            US20 --> TMETRIC
+            TRADE0 --> TGATE{"CMM trade rework enabled?"}
+            TGATE -->|no| TCLEAR["clear persisted US-17/US-20 country state<br/>skip every_trade"]
+            TGATE -->|yes| US17REFRESH["refresh US-17 native country modifiers once"]
+            US17REFRESH --> TLOOP["every_trade<br/>confirmed country-scope iterator"]
+            TLOOP --> TSCOPE["capture trade owner, source market,<br/>target market, good and trade_volume"]
+            TSCOPE --> OWNEROK{"trade owner exists?"}
+            OWNEROK -->|yes| US17ROUTE["US-17 operation-aware route-profit compatibility surface"]
+            OWNEROK -->|no| TNEXT["record blocked/diagnostic outcome"]
+            US17ROUTE --> US20["US-20 destination route-loss / goods reconciliation"]
+            US20 --> TNEXT
+            TCLEAR --> TNEXT
         end
 
-        TMETRIC --> US04M0["cbp_run_monthly_us04_reconciliation_for_current_country"]
+        TNEXT --> US04M0["Run monthly Estate-demand reconciliation<br/>cbp_run_monthly_us04_reconciliation_for_current_country"]
 
-        subgraph US04MONTH["Monthly US-04 signed Estate reconciliation"]
+        subgraph US04MONTH["Monthly Estate-demand reconciliation (US-04)"]
             direction TB
-            US04M0 --> US04MGATE{"runtime ready + offer/demand option enabled?"}
-            US04MGATE -->|no| US04MSKIP["skip US-04 mutation"]
-            US04MGATE -->|yes| US04MARKETS["cbp_run_monthly_us04_estate_accounting_for_current_country<br/>every_market_present_in_country"]
-            US04MARKETS --> US04GOODS["cbp_monthly_assess_country_market_estate_consumption_all_goods"]
-            US04GOODS --> PROXY["per good: location coefficient x proxy Estate size"]
+            US04M0 --> US04MGATE{"Runtime ready and demand rebalance enabled?<br/>cbp_stock_runtime_ready_trigger<br/>cbp_pop_consumption_offer_demand_enabled_trigger"}
+            US04MGATE -->|no| US04MSKIP["Exit without Estate-demand mutation<br/>cbp_run_monthly_us04_estate_accounting_for_current_country"]
+            US04MGATE -->|yes| US04MARKETS["Iterate markets present in country<br/>every_market_present_in_country"]
+            US04MARKETS --> US04GOODS["Assess Estate consumption for supported goods<br/>cbp_monthly_assess_country_market_estate_consumption_all_goods"]
+            US04GOODS --> PROXY["per owned location in market:<br/>coefficient x proxy Estate size"]
             PROXY --> DELTA["signed delta = coefficient - 1"]
             DELTA --> SIGN{"delta sign?"}
             SIGN -->|positive| REMOVE["cbp_remove_stock(actual satisfiable delta)<br/>country + market aggregate + negative goods supply"]
-            REMOVE --> CHARGE["market price x actual removed<br/>add_gold_to_estate negative by Estate share"]
+            REMOVE --> CHARGE["market price x actual removed<br/>negative add_gold_to_estate by Estate share"]
             SIGN -->|negative| RESTORE["cbp_add_stock(restored delta)<br/>country + market aggregate + positive goods supply"]
-            RESTORE --> REFUND["market price x actual restored<br/>add_gold_to_estate positive by Estate share"]
-            SIGN -->|zero/missing proxy| NOOP["no mutation / diagnostic record"]
-            CHARGE --> US04STORE["store monthly reconciliation record"]
+            RESTORE --> REFUND["market price x actual restored<br/>positive add_gold_to_estate by Estate share"]
+            SIGN -->|zero / missing proxy| NOOP["no mutation / diagnostic record"]
+            CHARGE --> US04STORE["clear and store monthly per-good reconciliation record"]
             REFUND --> US04STORE
             NOOP --> US04STORE
+            US04STORE --> US04END["Estate-demand reconciliation complete"]
+            US04MSKIP --> US04END
         end
 
-        US04STORE --> AUDIT{"cbp_audit_enabled_trigger?"}
-        US04MSKIP --> AUDIT
-        AUDIT -->|yes| STOCKREC["cbp_run_monthly_stock_reconciliation_once"]
+        US04END --> AUDIT{"cbp_audit_enabled_trigger?"}
+        AUDIT -->|yes| STOCKREC["cbp_run_monthly_stock_reconciliation_once<br/>global month stamp"]
         AUDIT -->|no| MAINEND["main monthly stock cycle complete"]
         STOCKREC --> MAINEND
-        MAINEND --> MEMORY["cbp_core04_refresh_current_country_location_market_memory"]
-        MEMORY --> MEND["end monthly_country_pulse"]
+        MAINEND --> MEMORY["Refresh current-country location-market memory<br/>cbp_core04_refresh_current_country_location_market_memory<br/>every_owned_location"]
+        MEMORY --> MEND["Complete monthly country pulse<br/>monthly_country_pulse"]
     end
 
-    subgraph YEARLY["Yearly US-04 adaptation"]
+    MARKETEND --> TRADE0
+    MCLOSED --> MEMORY
+
+    subgraph YEARLY["Yearly demand-coefficient adaptation (US-04)"]
         direction TB
-        Y0["yearly_country_pulse"] --> YP["cbp_yearly_pop_demand_adaptation_pulse"]
-        YP --> YINIT["initialize country state + refresh CMM marker"]
-        YINIT --> YRUN["cbp_run_yearly_pop_demand_adaptation_for_current_country"]
-        YRUN --> YGATE{"runtime ready + offer/demand option enabled?"}
-        YGATE -->|no| YSKIP["skip yearly adaptation"]
-        YGATE -->|yes| YLOC["every_owned_location"]
-        YLOC --> YGOOD["cbp_annual_adjust_location_pop_demand_all_goods"]
-        YGOOD --> YREAD["per good: read annual satisfied and unsatisfied month counters"]
-        YREAD --> YCOEF["read persisted cbp_us04_reconciliation_coefficient"]
-        YCOEF --> YCASE{"annual outcome?"}
+        Y0["yearly_country_pulse"] --> YP["Run yearly demand-adaptation pulse<br/>cbp_yearly_pop_demand_adaptation_pulse"]
+        YP --> YINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
+        YINIT --> YCMM["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
+        YCMM --> YRUN["Adapt yearly demand coefficients<br/>cbp_run_yearly_pop_demand_adaptation_for_current_country"]
+        YRUN --> YGATE{"Runtime ready and demand rebalance enabled?<br/>cbp_stock_runtime_ready_trigger<br/>cbp_pop_consumption_offer_demand_enabled_trigger"}
+        YGATE -->|no| YSKIP["Exit without coefficient mutation<br/>cbp_run_yearly_pop_demand_adaptation_for_current_country"]
+        YGATE -->|yes| YLOC["Iterate owned locations<br/>every_owned_location"]
+        YLOC --> YGOOD["Adjust all supported goods<br/>cbp_annual_adjust_location_pop_demand_all_goods"]
+        YGOOD --> YREAD["read annual satisfied and unsatisfied counters"]
+        YREAD --> YCASE{"annual outcome?"}
         YCASE -->|12 satisfied / 0 shortage| YUP["coefficient x 1.01"]
         YCASE -->|0 satisfied / 12 shortage| YDOWN["coefficient x 0.99"]
         YCASE -->|mixed / no observation| YSAME["coefficient unchanged"]
         YUP --> YWRITE["persist location x good coefficient"]
         YDOWN --> YWRITE
         YSAME --> YWRITE
-        YWRITE --> YRESET["reset annual counters after all readers"]
+        YWRITE --> YRESET["reset annual counters"]
     end
 
     subgraph PERIODIC["Periodic consistency safety net"]
@@ -169,27 +202,36 @@ flowchart TB
     end
 ```
 
+The engine still invokes `monthly_country_pulse` once per country. The pulse entry
+and runtime-ready gate precede three functional ownership phases: country
+preparation, a globally month-stamped market phase, and country completion. Only
+the first eligible country pulse executes `every_market_in_world`; later country
+pulses bypass that middle traversal and continue with their own country-owned
+trade, demand-reconciliation, audit, and location-memory work.
+
+Each functional group exposes a single completion boundary. Decision diamonds may
+branch internally, but their branches converge before control leaves the group.
+The fail-closed runtime path is routed outside the preparation group and joins the
+mandatory location-memory step directly.
+
+This removes repeated **market-local economic execution per country pulse**. It
+does not remove every country x market operation: the preparation phase still
+refreshes current-country markets, and each detailed market still iterates the
+countries present in that market for capacity, US-00, and US-10.
+
 ## Economic ordering contract
 
 | Order | Owner/effect | Economic responsibility |
 |---|---|---|
-| 1 | `cbp_run_monthly_capacity_refresh_for_current_country` and market capacity pass | Refresh capacity before admission, demand, transfer, or decay. |
-| 2 | US-00 generated active-good pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
-| 3 | US-10 generated pending-good pass | Resolve same-market consumption after every present country's US-00 pass. |
-| 4 | `cbp_run_monthly_country_trade_owner_cycle` | Refresh native US-17 country modifiers once, then read each current-country-owned trade once for US-20 reconciliation. |
-| 5 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
-| 6 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
-| 7 | Yearly US-04 pulse | Evolve coefficients only after reading annual outcomes, then reset counters. |
-
-### Why US-04 runs here
-
-Monthly US-04 reconciliation deliberately runs after the current-country
-trade-owner pass and immediately before `cbp_audit_enabled_trigger`. It cannot
-run before US-10 because US-10 owns base consumption and produces the accounting
-facts used by US-04. It must not run after the audit gate because its signed
-delta can mutate both country stock and the derived market aggregate through the
-central stock operators. The audit therefore observes the complete monthly
-mutation set rather than a pre-US-04 snapshot.
+| 1 | Monthly country preparation | Prepare accounting boundaries and current-country capacity before market-local work. |
+| 2 | Once-per-month global market owner (Q8.7), or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
+| 3 | US-00 first present-country pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
+| 4 | US-10 second present-country pass | Resolve same-market consumption only after all US-00 facts for the market exist. |
+| 5 | Monthly country completion through `cbp_run_monthly_country_trade_owner_cycle` | When trade rework is enabled, refresh US-17 and run the country-owned trade iterator with US-17 then US-20; otherwise clear persisted trade-rework state and skip the iterator. |
+| 6 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
+| 7 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
+| 8 | CORE-04 location-market memory | Snapshot the current market of every owned location after monthly economic work. |
+| 9 | Yearly US-04 pulse | Evolve coefficients after reading annual outcomes, then reset counters. |
 
 ## Monthly ownership contract
 
@@ -197,59 +239,54 @@ mutation set rather than a pre-US-04 snapshot.
 |---|---|---|
 | Country-market-good stock | Country | Durable source of truth |
 | Market-good stock | Global per-good map keyed by market | Derived aggregate/cache |
-| Capacity prerequisites | Current country and current detailed market | Derived capacity records |
-| `cbp_countries_present_in_market` | Current detailed market branch | Rebuilt work cache |
-| Market-local US-00 and US-10 | Q8.7 once-per-month global market owner | Runtime work |
-| Inter-market trade | Current country through `every_trade` | Country-owned runtime pass |
+| Country-wide capacity pool | Country, monthly stamped | Derived monthly cache |
+| Country-market capacity record | Country x market | Derived record; currently refreshed by more than one caller |
+| `cbp_countries_present_in_market` | Current detailed market branch | Rebuilt work cache, not persistent market storage |
+| Market-local US-00 and US-10 | Q8.7 once-per-month global owner by default | Runtime work |
+| Explicit Q8.7 fallback | Current country through `every_market_center_in_country` | Debug/recovery runtime path |
+| Native inter-market trade rework | Current country through `every_trade`, only while the CMM trade-rework option is enabled | Country-owned runtime pass |
 | US-04 coefficient | Location x good | Durable Rebalance Economy state |
 | US-04 monthly Estate totals | Current country x market x good | Monthly ledger/diagnostic state |
-
-## Governance hook aggregation
-
-CBP extends each hardcoded governance hook once:
-
-```txt
-on_policy_changed  -> cbp_country_governance_changed
-on_reform_change   -> cbp_country_governance_changed
-```
-
-The shared dispatcher verifies country scope and runs all Core follow-ups. New
-features must extend this dispatcher rather than creating another top-level
-`on_policy_changed`, `on_reform_change`, or an identical feature callback.
-Copied Vanilla `_hardcoded.txt` files are overrides of Vanilla content, not CBP
-hook registrations, and are excluded from this rule.
-
-When a native modifier exposes the intended economic lever, change or cancel it
-inside the native modifier stack. A later `add_gold` or ledger reconciliation is
-allowed only when the missing native endpoint is confirmed and documented.
+| CORE-04 last-known market | Location | Durable topology memory |
 
 ## Package and mode boundaries
 
 - Core owns initialization, stocks, capacity, US-00, US-10, trade ownership,
-  lifecycle repair, and consistency validation.
+  lifecycle repair, location-market memory, and consistency validation.
 - Rebalance Economy owns US-04. Its absence or disabled CMM option makes both
   monthly reconciliation and yearly coefficient adaptation no-ops.
+- The CMM trade-rework option gates the complete native US-17/US-20 cycle. When
+  disabled, the country pass clears persisted modifier/coefficient inputs and
+  does not enter `every_trade`.
 - Performance Mode changes accounting detail and market relevance, not the
   business rule applied to a market selected for detailed accounting.
+- The Q8.7 global market owner is enabled by default. The older market-center
+  owner remains only behind `cbp_q8_7_live_global_market_owner_disabled`.
 - Vanilla fallback and blocked markets record diagnostics but do not receive
-  detailed ModeU5 stock mutation from the market-local branch.
+  detailed CBP stock mutation from the market-local branch.
 
 ## Source map
 
 | Responsibility | Runtime source |
 |---|---|
 | Engine hooks and pulse order | `in_game/common/on_action/cbp_stock_on_actions.txt` |
-| Policy/reform hook aggregation | `in_game/common/on_action/cbp_country_governance_on_actions.txt` |
+| Runtime modes and market accounting decisions | `in_game/common/scripted_effects/cbp_configuration_effects.txt` |
 | Q8.7 global owner and fallback switch | `in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt` |
+| Q8.7 default-enabled trigger | `in_game/common/scripted_triggers/cbp_q8_7_global_owner_triggers.txt` |
 | Market-local US-00 then US-10 passes | `in_game/common/scripted_effects/cbp_promoted_market_cycle_effects.txt` |
-| Country-owned trade pass | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |
+| Market-to-country work-cache rebuild | `in_game/common/scripted_effects/cbp_market_country_cache_effects.txt` |
+| Country and country-market capacity | `in_game/common/scripted_effects/cbp_capacity_effects.txt` |
+| Country-owned native trade gate and iterator | `in_game/common/scripted_effects/cbp_country_trade_owner_effects.txt` |
+| US-17 country modifier state and shared US-20 coefficient | `in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt` |
 | Lifecycle readiness and reconciliation | `in_game/common/scripted_effects/cbp_stock_effects.txt` |
+| CORE-04 location-market memory | `in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt` |
 | US-04 monthly/yearly entry points | `in_game/common/scripted_effects/cbp_us04_pop_demand_effects.txt` |
 | Generated US-04 per-good accounting | `tools/templates/cbp_us04_pop_demand_good.template.txt` |
+| Canonical supported-goods registry | `tools/cbp_goods.sh` |
 
 ## Change rule
 
 Any PR that changes a pulse, phase owner, runtime gate, relative economic order,
-or central stock mutation contract must update this document in the same
-change. Audit diagrams may preserve proof and history, but must be archived and
-link here once their implementation track is complete.
+central stock mutation contract, or hot-path iterator must update this document
+in the same change. Audit diagrams may preserve proof and history, but must link
+here once their implementation track is complete.

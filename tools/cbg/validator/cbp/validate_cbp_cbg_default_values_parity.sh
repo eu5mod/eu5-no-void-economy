@@ -25,19 +25,31 @@ python3 tools/cbg/adapters/cbp/generate_cbp_cbg_default_values_spec.py \
 	--game-root "$game_root" \
 	--output "$work_dir/default_values.json"
 python3 - "$game_root" "$work_dir/reference" <<'PY'
+import io
 import sys
 from pathlib import Path
 
-from tools.generate_political_reward_overrides import (
-    centralizable_script_values,
-    write_central_script_value_override,
+import tools.generate_political_reward_overrides as political_rewards
+from tools.cbg.adapters.cbp.optional_vanilla_fields import (
+    PROFIT_MARGIN_FIELDS,
+    discover_optional_root_numeric_fields,
 )
 
 game_root = Path(sys.argv[1])
-write_central_script_value_override(
+available_profit_margins = discover_optional_root_numeric_fields(
+    game_root / "main_menu/common/script_values/default_values.txt",
+    PROFIT_MARGIN_FIELDS,
+    policy_name="production profit-margin",
+    warning_stream=io.StringIO(),
+)
+# The legacy #188 reference materializer predates optional Vanilla fields.
+# Narrow its historical mandatory set to the fields exposed by this game version
+# so parity tests the same compatibility contract as the focused CBG adapter.
+political_rewards.PROFIT_MARGIN_FIELDS = set(available_profit_margins)
+political_rewards.write_central_script_value_override(
     game_root,
     Path(sys.argv[2]),
-    centralizable_script_values(game_root),
+    political_rewards.centralizable_script_values(game_root),
 )
 PY
 python3 tools/cbg/community_balance_generator.py \

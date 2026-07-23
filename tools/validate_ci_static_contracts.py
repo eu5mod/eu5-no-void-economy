@@ -13,7 +13,6 @@ import re
 
 import validate_ci_static_contracts_legacy as legacy
 
-
 CUSTOM_DEFINE_NAMES = (
     "CBP_ROUTE_LOSS_COEFFICIENT_MAX",
     "CBP_ROUTE_LOSS_COEFFICIENT_CURVE",
@@ -399,7 +398,7 @@ def validate_us17_us20_static_contract(
 
     expect(
         country_cycle.count(live_hook_call) == 1,
-        "Country trade-owner cycle must call US20 route loss exactly once per trade",
+        "Country trade-owner cycle must call US20 route loss exactly once per enabled trade",
     )
     expect(
         country_cycle.count(us17_compatibility_hook) == 1,
@@ -408,16 +407,23 @@ def validate_us17_us20_static_contract(
     expect(legacy_hook_call not in country_cycle, "Live country cycle must not call historical seeded wrapper")
     expect(
         country_cycle.count("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes") == 1,
-        "Country cycle must refresh shared country state once before every_trade",
+        "Country cycle must refresh shared country state once when trade rework is enabled",
     )
     expect(
-        country_cycle.index("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes")
-        < country_cycle.index("every_trade = {"),
-        "Shared country refresh must precede every_trade",
+        country_cycle.index("cbp_trade_rework_enabled_trigger = yes")
+        < country_cycle.index("cbp_refresh_us17_native_profit_modifiers_for_current_country = yes")
+        < country_cycle.index("every_trade = {")
+        < country_cycle.index(us17_compatibility_hook)
+        < country_cycle.index(live_hook_call),
+        "Trade rework order must remain gate -> refresh -> every_trade -> US17 -> US20",
     )
     expect(
-        country_cycle.index(us17_compatibility_hook) < country_cycle.index(live_hook_call),
-        "Zero-delta US17 hook must precede US20 goods reconciliation",
+        country_cycle.count("cbp_trade_rework_enabled_trigger = yes") == 1,
+        "Country trade-owner cycle must use one authoritative trade-rework gate",
+    )
+    expect(
+        "cbp_clear_us17_native_profit_modifiers_for_current_country = yes" in country_cycle,
+        "Disabled trade-rework branch must clear persisted US17/US20 country state",
     )
     expect("every_trade = {" in country_cycle, "Country cycle must use native every_trade iterator")
 
