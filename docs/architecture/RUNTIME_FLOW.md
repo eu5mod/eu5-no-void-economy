@@ -71,7 +71,7 @@ flowchart TB
         PREP1 --> PREP2["Prepare monthly market registries<br/>cbp_prepare_monthly_market_seen_registry<br/>cbp_prepare_human_relevant_full_ledger_markets"]
     end
 
-    subgraph MARKETPHASE["Once-per-month market-local accounting (Q8.7)"]
+    subgraph MARKETPHASE["Market-local accounting and traversal (Q8.7)"]
         direction TB
         PREP2 --> OWNER{"Global once-per-month market owner enabled? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
 
