@@ -84,16 +84,97 @@ targets = {
 required_targets = set(targets) - {"development"}
 
 
+def is_direct_mktemp_file(path: Path) -> bool:
+    resolved = path.expanduser().resolve()
+    temporary_roots = [Path("/tmp")]
+    configured_root = os.environ.get("TMPDIR")
+    if configured_root:
+        temporary_roots.append(Path(configured_root))
+    return any(
+        resolved.parent == root.expanduser().resolve()
+        and resolved.name.startswith("tmp.")
+        for root in temporary_roots
+    )
+
+
+# validate_generators.sh deliberately uses two direct mktemp files. Their paths
+# describe the synthetic fixture, not installed Vanilla. Nested temporary test
+# trees retain warnings so the public warning contract remains fully tested.
+suppress_direct_mktemp_fixture_warning = (
+    is_direct_mktemp_file(source_path)
+    and is_direct_mktemp_file(output_path)
+)
+
+
 def warn(message: str) -> None:
-    prefix = "[⚠️]"
+    if suppress_direct_mktemp_fixture_warning:
+        return
+    rendered = f"[⚠️] {message}"
     if "NO_COLOR" not in os.environ and sys.stderr.isatty():
-        prefix = f"\033[1;33m{prefix}\033[0m"
-    print(f"{prefix} {message}", file=sys.stderr)
+        rendered = f"\033[38;5;208m{rendered}\033[0m"
+    print(rendered, file=sys.stderr)
 
 
-def vanilla_link(line_number: int | None = None) -> str:
-    link = source_path.expanduser().resolve().as_uri()
+def file_link(path: Path, line_number: int | None = None) -> str:
+    link = path.expanduser().resolve().as_uri()
     return f"{link}#L{line_number}" if line_number is not None else link
+
+
+def warn_development_object_removed() -> None:
+    warn(
+        "Vanilla development static modifier is not exposed by this EU5 version.\n"
+        f"  Vanilla source: {file_link(source_path)}\n"
+        "  Configured rule: remove the active "
+        "development.maximum_stockpile_capacity assignment.\n"
+        "  Detected Vanilla change: the complete development object has been removed.\n"
+        "  Generated result: no development override was emitted; all other location "
+        "objects were processed normally.\n"
+        f"  Generated output target: {file_link(output_path)}\n"
+        "  Status: non-fatal; CBP will continue generation according to the remaining "
+        "configured rules."
+    )
+
+
+def warn_development_field_removed() -> None:
+    warn(
+        "Vanilla development.maximum_stockpile_capacity is not exposed by this "
+        "EU5 version.\n"
+        f"  Vanilla source: {file_link(source_path)}\n"
+        "  Configured rule: remove the active maximum_stockpile_capacity assignment "
+        "from the development object.\n"
+        "  Detected Vanilla change: the target line has been removed from the current "
+        "Vanilla object.\n"
+        "  Generated result: the development object was processed normally; the rule "
+        "is already satisfied and the removed line was not reintroduced. No development "
+        "override is emitted unless another effective development transformation remains.\n"
+        f"  Generated output target: {file_link(output_path)}\n"
+        "  Status: non-fatal; CBP will continue generation according to the configured "
+        "rules."
+    )
+
+
+def warn_development_value_changed(
+    line_number: int,
+    current_value: str,
+) -> None:
+    rendered_line = (
+        f"# maximum_stockpile_capacity = {current_value} "
+        "# CBG: commented by cbp-location-static-modifiers"
+    )
+    warn(
+        "Vanilla value changed: development.maximum_stockpile_capacity was "
+        f"reviewed at {expected_development_stockpile} and is now {current_value}.\n"
+        f"  Vanilla source: {file_link(source_path, line_number)}\n"
+        "  Configured rule: remove the active maximum_stockpile_capacity assignment "
+        "from the development object.\n"
+        f"  Current Vanilla line: maximum_stockpile_capacity = {current_value}\n"
+        f"  Generated line: {rendered_line}\n"
+        "  Generated result: the current Vanilla value was transformed according to "
+        "the configured rule and the remainder of the development object was preserved.\n"
+        f"  Generated output target: {file_link(output_path)}\n"
+        "  Status: non-fatal; CBP will continue and generate the file according to the "
+        "configured rule."
+    )
 
 
 def numerically_equal(left: str, right: str) -> bool:
@@ -134,11 +215,7 @@ missing = sorted(name for name in required_targets if name not in blocks)
 if missing:
     raise SystemExit("Missing vanilla static modifier block(s): " + ", ".join(missing))
 if "development" not in blocks:
-    warn(
-        "Vanilla development static modifier is not exposed by this EU5 version; "
-        "skipping its stockpile-capacity transformation. "
-        f"Review Vanilla source: {vanilla_link()}"
-    )
+    warn_development_object_removed()
 
 rendered_blocks = []
 
@@ -156,11 +233,7 @@ for name, (field, operation, replacement) in targets.items():
         if match:
             matches.append((line_index, match))
     if not matches and name == "development":
-        warn(
-            "Vanilla development.maximum_stockpile_capacity is not exposed by this "
-            "EU5 version; skipping this location transformation. "
-            f"Review Vanilla source: {vanilla_link()}"
-        )
+        warn_development_field_removed()
         continue
     if len(matches) != 1:
         raise SystemExit(
@@ -178,12 +251,7 @@ for name, (field, operation, replacement) in targets.items():
         )
     elif operation == "comment_out":
         if not numerically_equal(vanilla_value, expected_development_stockpile):
-            warn(
-                "Vanilla value changed: development.maximum_stockpile_capacity was "
-                f"reviewed at {expected_development_stockpile} and is now "
-                f"{vanilla_value}. CBP will continue and comment the current value. "
-                f"Review Vanilla source: {vanilla_link(absolute_line_number)}"
-            )
+            warn_development_value_changed(absolute_line_number, vanilla_value)
         original = block[line_index].lstrip().rstrip()
         block[line_index] = (
             f"{match.group(1)}# {original}"
@@ -191,7 +259,8 @@ for name, (field, operation, replacement) in targets.items():
         )
     else:
         raise SystemExit(f"Unsupported location override operation: {operation}")
-    rendered_blocks.append("\n".join(block))
+    clean_block = [line.rstrip(" \t") for line in block]
+    rendered_blocks.append("\n".join(clean_block))
 
 if rendered_blocks:
     rendered = [

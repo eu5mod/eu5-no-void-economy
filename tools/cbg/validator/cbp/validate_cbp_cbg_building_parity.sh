@@ -43,7 +43,7 @@ python3 tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py \
 	--maintenance-multiplier "$maintenance" \
 	--trade-maintenance-multiplier "$trade_maintenance" \
 	--minting-multiplier "$minting" >/dev/null
-python3 tools/cbg/community_balance_generator.py \
+python3 tools/cbg/cbp_community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/buildings.json" \
 	--output-root "$work_dir/candidate" \
 	--manifest "$work_dir/candidate/manifest.json" >/dev/null
@@ -51,19 +51,28 @@ python3 tools/cbg/community_balance_generator.py \
 python3 - "$work_dir" <<'PY'
 from decimal import Decimal
 from pathlib import Path
+import json
 import re
 import sys
+
+from tools.cbg.community_balance_generator import scan_objects
 
 root = Path(sys.argv[1])
 reference = root / "reference/in_game/common/building_types"
 candidate = root / "candidate/in_game/common/building_types"
-expected = sorted(path.name for path in reference.glob("*.txt"))
-actual = sorted(path.name for path in candidate.glob("*.txt"))
-if actual != expected:
-    raise SystemExit(f"Building CBG scope mismatch: expected={expected!r}, actual={actual!r}")
-foreign_header = re.compile(
-    rb"^# Foreign-building merchant capacity multiplier: 2\.0\r?\n", re.MULTILINE
-)
+spec = json.loads((root / "buildings.json").read_text(encoding="utf-8"))
+expected_objects: dict[str, set[str]] = {}
+for rule in spec["transformations"]:
+    source_name = Path(rule["file"]).name
+    expected_objects.setdefault(source_name, set()).add(rule["object"])
+
+expected_files = sorted(f"cbp_{name}" for name in expected_objects)
+actual_files = sorted(path.name for path in candidate.glob("*.txt"))
+if actual_files != expected_files:
+    raise SystemExit(
+        f"Building CBG scope mismatch: expected={expected_files!r}, actual={actual_files!r}"
+    )
+
 foreign_value = re.compile(
     rb"^(\s*merchant_capacity_from_building\s*=\s*)([-0-9.]+) "
     rb"# FOREIGN BUILDING x2\.0; (.*)$",
@@ -79,10 +88,6 @@ def format_decimal(value: Decimal) -> bytes:
 
 
 def normalize_pr193_extension(content: bytes) -> bytes:
-    content, header_count = foreign_header.subn(b"", content)
-    if header_count != 1:
-        raise SystemExit(f"Expected one PR #193 header, found {header_count}")
-
     def restore_global_value(match: re.Match[bytes]) -> bytes:
         value = Decimal(match.group(2).decode()) / Decimal("2")
         return match.group(1) + format_decimal(value) + b" # " + match.group(3)
@@ -90,9 +95,40 @@ def normalize_pr193_extension(content: bytes) -> bytes:
     return foreign_value.sub(restore_global_value, content)
 
 
-for name in expected:
-    normalized = normalize_pr193_extension((candidate / name).read_bytes())
-    if (reference / name).read_bytes() != normalized:
-        raise SystemExit(f"Building CBG byte parity failed: {name}")
-print(f"CBP/CBG building parity passed: {len(expected)} byte-identical output files.")
+def object_blocks(content: bytes, *, replace_entries: bool) -> dict[str, bytes]:
+    text = content.decode("utf-8-sig")
+    if replace_entries:
+        text = re.sub(r"^(\s*)REPLACE:", r"\1", text, flags=re.MULTILINE)
+    lines = text.splitlines(keepends=True)
+    blocks = {}
+    for obj in scan_objects(lines):
+        if len(obj.path) != 1:
+            continue
+        blocks[obj.path[0]] = "".join(lines[obj.start : obj.end + 1]).encode()
+    return blocks
+
+
+for source_name, names in sorted(expected_objects.items()):
+    reference_path = reference / source_name
+    candidate_path = candidate / f"cbp_{source_name}"
+    reference_blocks = object_blocks(reference_path.read_bytes(), replace_entries=False)
+    candidate_content = candidate_path.read_bytes()
+    if b"REPLACE:" not in candidate_content:
+        raise SystemExit(f"Building CBG output lacks REPLACE entries: {candidate_path.name}")
+    candidate_blocks = object_blocks(candidate_content, replace_entries=True)
+    if set(candidate_blocks) != names:
+        raise SystemExit(
+            f"Building object scope mismatch for {source_name}: "
+            f"expected={sorted(names)!r}, actual={sorted(candidate_blocks)!r}"
+        )
+    for name in sorted(names):
+        normalized = normalize_pr193_extension(candidate_blocks[name])
+        if reference_blocks.get(name) != normalized:
+            raise SystemExit(f"Building CBG object parity failed: {source_name}:{name}")
+
+print(
+    "CBP/CBG building REPLACE parity passed: "
+    f"{len(expected_files)} prefixed files, "
+    f"{sum(len(names) for names in expected_objects.values())} objects."
+)
 PY
