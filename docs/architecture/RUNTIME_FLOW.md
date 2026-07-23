@@ -57,17 +57,22 @@ flowchart TB
         KEEP --> LOADMEM
     end
 
-    subgraph MONTHLY["Monthly country pulse"]
+    M0["Start monthly country pulse<br/>monthly_country_pulse"] --> MP["Run monthly stock cycle<br/>cbp_monthly_stock_cycle_pulse"]
+
+    subgraph COUNTRYPRE["Monthly country preparation"]
         direction TB
-        M0["monthly_country_pulse"] --> MP["cbp_monthly_stock_cycle_pulse"]
         MP --> MINIT["Initialize current-country demand multipliers once<br/>cbp_initialize_pop_demand_multipliers_for_current_country_once"]
         MINIT --> CMMREFRESH["Refresh live demand integration marker<br/>cbp_refresh_pop_demand_live_integration_from_cmm_country_scope"]
         CMMREFRESH --> SWITCH["Select market-local owner<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
         SWITCH --> READY{"Stock runtime ready?<br/>cbp_stock_runtime_ready_trigger"}
-        READY -->|no| MCLOSED["fail closed<br/>optional debug gate marker"]
-        READY -->|yes| PREP0["cbp_prepare_performance_mode_human_relevant_markets<br/>monthly-stamped world human-country scan in Performance Mode"]
-        PREP0 --> PREP1["cbp_run_monthly_capacity_refresh_for_current_country<br/>all markets present in current country"]
-        PREP1 --> PREP2["prepare monthly market-seen registry<br/>prepare human-relevant persistence list"]
+        READY -->|no| MCLOSED["Skip monthly economic work<br/>cbp_run_monthly_stock_cycle_q8_7_owner_switch"]
+        READY -->|yes| PREP0["Prepare human-relevant markets in Performance Mode<br/>cbp_prepare_performance_mode_human_relevant_markets"]
+        PREP0 --> PREP1["Refresh current-country capacity<br/>cbp_run_monthly_capacity_refresh_for_current_country"]
+        PREP1 --> PREP2["Prepare monthly market registries<br/>cbp_prepare_monthly_market_seen_registry<br/>cbp_prepare_human_relevant_full_ledger_markets"]
+    end
+
+    subgraph MARKETPHASE["Once-per-month market-local accounting (Q8.7)"]
+        direction TB
         PREP2 --> OWNER{"Global once-per-month market owner enabled? (Q8.7)<br/>cbp_q8_7_live_global_market_owner_enabled_trigger<br/>default: yes"}
 
         OWNER -->|no: explicit fallback flag| LEGACY["Run market-center fallback cycle<br/>cbp_run_monthly_promoted_market_local_cycle"]
@@ -75,8 +80,8 @@ flowchart TB
 
         OWNER -->|yes| ONCE["Run global market-local cycle once<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
         ONCE --> STAMP{"Global market pass already processed this month?<br/>cbp_q8_7_live_global_market_owner_month_stamp"}
-        STAMP -->|yes| SKIP["skip market-local world pass<br/>for this later country pulse"]
-        STAMP -->|no| WORLD["Iterate every world market<br/>every_market_in_world"]
+        STAMP -->|yes: later country pulse| SKIP["Bypass global market traversal<br/>cbp_run_monthly_q8_7_global_market_local_cycle_once"]
+        STAMP -->|no: first eligible country pulse| WORLD["Iterate every world market<br/>every_market_in_world"]
         WORLD --> MARKETOWNER["Dispatch one market through global owner<br/>cbp_q8_7_run_global_market_local_owner_market"]
 
         subgraph MARKET["Shared once-per-market local accounting"]
@@ -104,9 +109,13 @@ flowchart TB
 
         CENTERITER --> MODE
         MARKETOWNER --> MODE
-        MDONE --> WORLDEND["selected market iterator exhausted"]
-        SKIP --> TRADE0["cbp_run_monthly_country_trade_owner_cycle"]
-        WORLDEND --> TRADE0
+        MDONE --> MARKETEND["Selected market iterator exhausted"]
+        SKIP --> MARKETEND
+    end
+
+    subgraph COUNTRYPOST["Monthly country completion"]
+        direction TB
+        MARKETEND --> TRADE0["Process country-owned trades<br/>cbp_run_monthly_country_trade_owner_cycle"]
 
         subgraph TRADE["Current-country trade-owner pass"]
             direction TB
@@ -148,8 +157,9 @@ flowchart TB
         AUDIT -->|yes| STOCKREC["cbp_run_monthly_stock_reconciliation_once<br/>global month stamp"]
         AUDIT -->|no| MAINEND["main monthly stock cycle complete"]
         STOCKREC --> MAINEND
-        MAINEND --> MEMORY["cbp_core04_refresh_current_country_location_market_memory<br/>every_owned_location"]
-        MEMORY --> MEND["end monthly_country_pulse"]
+        MAINEND --> MEMORY["Refresh current-country location-market memory<br/>cbp_core04_refresh_current_country_location_market_memory<br/>every_owned_location"]
+        MCLOSED --> MEMORY
+        MEMORY --> MEND["Complete monthly country pulse<br/>monthly_country_pulse"]
     end
 
     subgraph YEARLY["Yearly demand-coefficient adaptation (US-04)"]
@@ -184,15 +194,27 @@ flowchart TB
     end
 ```
 
+The engine still invokes `monthly_country_pulse` once per country. The diagram
+separates that call into country preparation, a globally month-stamped market
+phase, and country completion. Only the first eligible country pulse executes
+`every_market_in_world`; later country pulses bypass that middle traversal and
+continue with their own country-owned trade, demand-reconciliation, audit, and
+location-memory work.
+
+This removes repeated **market-local economic execution per country pulse**. It
+does not remove every country x market operation: the preparation phase still
+refreshes current-country markets, and each detailed market still iterates the
+countries present in that market for capacity, US-00, and US-10.
+
 ## Economic ordering contract
 
 | Order | Owner/effect | Economic responsibility |
 |---|---|---|
-| 1 | Performance/relevance preparation and current-country capacity refresh | Prepare accounting boundaries and capacity before current-country work. |
-| 2 | Q8.7 global owner, or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
+| 1 | Monthly country preparation | Prepare accounting boundaries and current-country capacity before market-local work. |
+| 2 | Once-per-month global market owner (Q8.7), or explicit market-center fallback | Select each market's accounting mode and own market-local execution. |
 | 3 | US-00 first present-country pass | Apply prior penalty, read production, admit through `cbp_add_stock`, and freeze production facts. |
 | 4 | US-10 second present-country pass | Resolve same-market consumption only after all US-00 facts for the market exist. |
-| 5 | `cbp_run_monthly_country_trade_owner_cycle` | Refresh US-17 country modifiers, process every owned trade, then apply optional US-20 route reconciliation. |
+| 5 | Monthly country completion through `cbp_run_monthly_country_trade_owner_cycle` | Refresh US-17 country modifiers, process every owned trade, then apply optional US-20 route reconciliation. |
 | 6 | Monthly US-04 reconciliation | Apply only the signed coefficient delta; US-10 already owns base consumption. |
 | 7 | Audit reconciliation | Validate aggregate consistency after every monthly stock mutation, including US-04. |
 | 8 | CORE-04 location-market memory | Snapshot the current market of every owned location after monthly economic work. |
