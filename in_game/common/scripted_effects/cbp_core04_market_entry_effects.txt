@@ -157,6 +157,9 @@ cbp_core04_refresh_current_country_location_market_memory = {
 			}
 		}
 		every_owned_location = {
+			# Reuse this authoritative monthly location traversal. Do not add a
+			# separate monthly loop for the owner-core Control floor.
+			cbp_enforce_owner_core_control_floor = yes
 			market = { save_temporary_scope_as = cbp_core04_current_location_market }
 			set_variable = {
 				name = cbp_core04_last_known_market
