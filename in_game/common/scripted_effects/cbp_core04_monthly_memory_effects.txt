@@ -1,0 +1,31 @@
+# Monthly CORE-04 location-market memory refresh.
+#
+# This monthly path deliberately excludes the owner-core Control floor. The
+# floor's unobserved core-status fallback runs yearly, while owner and rank
+# changes remain event-driven.
+
+cbp_core04_refresh_current_country_location_market_memory_monthly = {
+	if = {
+		limit = { cbp_stock_runtime_ready_trigger = yes }
+		save_temporary_scope_as = cbp_core04_memory_country
+		save_temporary_scope_value_as = {
+			name = cbp_core04_market_memory_stamp
+			value = {
+				value = current_year
+				multiply = 12
+				add = current_month
+			}
+		}
+		every_owned_location = {
+			market = { save_temporary_scope_as = cbp_core04_current_location_market }
+			set_variable = {
+				name = cbp_core04_last_known_market
+				value = scope:cbp_core04_current_location_market
+			}
+			set_variable = {
+				name = cbp_core04_last_known_market_stamp
+				value = scope:cbp_core04_market_memory_stamp
+			}
+		}
+	}
+}
