@@ -53,6 +53,9 @@ on_location_changed_rank = {
 cbp_capacity_location_rank_changed_pulse = {
 	effect = {
 		cbp_handle_location_capacity_changed = yes
+		# Rank is one of the floor inputs, so enforce the new threshold immediately
+		# in the existing hardcoded rank-change hook.
+		cbp_enforce_owner_core_control_floor = yes
 	}
 }
 
