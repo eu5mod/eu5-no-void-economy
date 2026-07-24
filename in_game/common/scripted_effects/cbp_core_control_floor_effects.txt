@@ -1,0 +1,70 @@
+# Permanent owner-core Control floor.
+#
+# A location that is a core of its current owner receives a minimum effective
+# Control according to its current location rank:
+#
+# rural settlement = 0.25
+# town             = 0.30
+# city/megalopolis = 0.35
+#
+# The effect is location-scoped, additive-only, and idempotent. It never lowers
+# Control and stores no persistent per-location state.
+
+cbp_enforce_owner_core_control_floor = {
+	if = {
+		limit = { exists = owner }
+		owner = { save_temporary_scope_as = cbp_core_control_floor_owner }
+
+		if = {
+			limit = {
+				is_core_of = scope:cbp_core_control_floor_owner
+				OR = {
+					location_rank = location_rank:city
+					location_rank = location_rank:megalopolis
+				}
+				local_control < 0.35
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_core_control_floor_delta
+				value = {
+					value = 0.35
+					subtract = local_control
+					min = 0
+				}
+			}
+			change_control = scope:cbp_core_control_floor_delta
+		}
+		else_if = {
+			limit = {
+				is_core_of = scope:cbp_core_control_floor_owner
+				location_rank = location_rank:town
+				local_control < 0.30
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_core_control_floor_delta
+				value = {
+					value = 0.30
+					subtract = local_control
+					min = 0
+				}
+			}
+			change_control = scope:cbp_core_control_floor_delta
+		}
+		else_if = {
+			limit = {
+				is_core_of = scope:cbp_core_control_floor_owner
+				location_rank = location_rank:rural_settlement
+				local_control < 0.25
+			}
+			save_temporary_scope_value_as = {
+				name = cbp_core_control_floor_delta
+				value = {
+					value = 0.25
+					subtract = local_control
+					min = 0
+				}
+			}
+			change_control = scope:cbp_core_control_floor_delta
+		}
+	}
+}
