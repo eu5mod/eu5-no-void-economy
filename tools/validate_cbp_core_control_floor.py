@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FLOOR_FILE = ROOT / "in_game/common/scripted_effects/cbp_core_control_floor_effects.txt"
 CORE04_FILE = ROOT / "in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt"
 CORE03_ON_ACTION = ROOT / "in_game/common/on_action/cbp_core03_exposure_on_actions.txt"
+STOCK_ON_ACTION = ROOT / "in_game/common/on_action/cbp_stock_on_actions.txt"
 DOC_FILE = ROOT / "docs/technical/PERMANENT_CORE_CONTROL_FLOOR.md"
 
 EFFECT = "cbp_enforce_owner_core_control_floor"
@@ -51,7 +52,8 @@ def extract_block(text: str, key: str) -> str:
 def main() -> None:
     floor = read(FLOOR_FILE)
     core04 = read(CORE04_FILE)
-    on_action = read(CORE03_ON_ACTION)
+    owner_on_action = read(CORE03_ON_ACTION)
+    stock_on_action = read(STOCK_ON_ACTION)
     documentation = read(DOC_FILE)
 
     require(floor.count(f"{EFFECT} = {{") == 1, "floor effect must have one definition")
@@ -94,11 +96,19 @@ def main() -> None:
     require("cbp_core04_refresh_current_country_location_market_memory = yes" in global_refresh,
             "start/load refresh must reuse the same country location loop")
 
-    owner_change = extract_block(on_action, "cbp_core03_probe_location_changed_owner")
+    owner_change = extract_block(owner_on_action, "cbp_core03_probe_location_changed_owner")
     succession_pos = owner_change.find("cbp_core03_handle_location_changed_owner = yes")
     owner_floor_pos = owner_change.find(f"{EFFECT} = yes")
     require(succession_pos >= 0 and owner_floor_pos > succession_pos,
             "owner-change hook must enforce the floor after CORE-03 succession")
+
+    require("on_location_changed_rank = {" in stock_on_action,
+            "rank-change hardcoded on-action must remain registered")
+    rank_change = extract_block(stock_on_action, "cbp_capacity_location_rank_changed_pulse")
+    capacity_pos = rank_change.find("cbp_handle_location_capacity_changed = yes")
+    rank_floor_pos = rank_change.find(f"{EFFECT} = yes")
+    require(capacity_pos >= 0 and rank_floor_pos > capacity_pos,
+            "rank-change pulse must enforce the floor after capacity refresh")
 
     runtime_occurrences: list[str] = []
     for path in (ROOT / "in_game/common").rglob("*.txt"):
@@ -107,12 +117,15 @@ def main() -> None:
             runtime_occurrences.append(str(path.relative_to(ROOT)))
     require(sorted(runtime_occurrences) == sorted([
         "in_game/common/on_action/cbp_core03_exposure_on_actions.txt",
+        "in_game/common/on_action/cbp_stock_on_actions.txt",
         "in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt",
         "in_game/common/scripted_effects/cbp_core_control_floor_effects.txt",
     ]), f"unexpected runtime floor integration surfaces: {runtime_occurrences}")
 
     require("No separate monthly `every_owned_location` traversal" in documentation,
             "documentation must record the no-duplicate-loop contract")
+    require("No confirmed integration-status on-action" in documentation,
+            "documentation must record the unresolved integration-status exposure")
 
     print("[PASS] permanent owner-core Control floor static contract")
 
