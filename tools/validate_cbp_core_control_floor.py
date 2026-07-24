@@ -9,11 +9,14 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 FLOOR_FILE = ROOT / "in_game/common/scripted_effects/cbp_core_control_floor_effects.txt"
 CORE04_FILE = ROOT / "in_game/common/scripted_effects/cbp_core04_market_entry_effects.txt"
+MONTHLY_MEMORY_FILE = ROOT / "in_game/common/scripted_effects/cbp_core04_monthly_memory_effects.txt"
 CORE03_ON_ACTION = ROOT / "in_game/common/on_action/cbp_core03_exposure_on_actions.txt"
 STOCK_ON_ACTION = ROOT / "in_game/common/on_action/cbp_stock_on_actions.txt"
 DOC_FILE = ROOT / "docs/technical/PERMANENT_CORE_CONTROL_FLOOR.md"
 
 EFFECT = "cbp_enforce_owner_core_control_floor"
+COMBINED_REFRESH = "cbp_core04_refresh_current_country_location_market_memory"
+MONTHLY_REFRESH = "cbp_core04_refresh_current_country_location_market_memory_monthly"
 
 
 def fail(message: str) -> None:
@@ -52,6 +55,7 @@ def extract_block(text: str, key: str) -> str:
 def main() -> None:
     floor = read(FLOOR_FILE)
     core04 = read(CORE04_FILE)
+    monthly_memory = read(MONTHLY_MEMORY_FILE)
     owner_on_action = read(CORE03_ON_ACTION)
     stock_on_action = read(STOCK_ON_ACTION)
     documentation = read(DOC_FILE)
@@ -80,21 +84,29 @@ def main() -> None:
     require(floor.count("subtract = local_control") == 3,
             "each floor delta must subtract current local_control")
 
-    monthly = extract_block(core04, "cbp_core04_refresh_current_country_location_market_memory")
-    require(monthly.count("every_owned_location = {") == 1,
-            "CORE-04 monthly memory effect must retain one owned-location loop")
-    iterator_pos = monthly.find("every_owned_location = {")
-    floor_pos = monthly.find(f"{EFFECT} = yes", iterator_pos)
+    combined = extract_block(core04, COMBINED_REFRESH)
+    require(combined.count("every_owned_location = {") == 1,
+            "combined CORE-04 refresh must retain one owned-location loop")
+    iterator_pos = combined.find("every_owned_location = {")
+    floor_pos = combined.find(f"{EFFECT} = yes", iterator_pos)
     require(floor_pos > iterator_pos,
-            "monthly floor call must be inside the existing CORE-04 location loop")
-    require(monthly.find("cbp_core04_last_known_market", floor_pos) > floor_pos,
-            "floor call must share the location-memory loop before memory writes")
+            "combined CORE-04 refresh must enforce the floor inside its location loop")
+    require(combined.find("cbp_core04_last_known_market", floor_pos) > floor_pos,
+            "combined CORE-04 refresh must retain location-memory writes")
+
+    monthly = extract_block(monthly_memory, MONTHLY_REFRESH)
+    require(monthly.count("every_owned_location = {") == 1,
+            "monthly CORE-04 memory refresh must retain one owned-location loop")
+    require(EFFECT not in monthly,
+            "monthly CORE-04 memory refresh must not evaluate the Control floor")
+    require("cbp_core04_last_known_market" in monthly,
+            "monthly CORE-04 memory refresh must retain market-memory writes")
 
     global_refresh = extract_block(core04, "cbp_core04_refresh_all_location_market_memory")
     require("every_country = {" in global_refresh,
             "start/load refresh must retain its existing country traversal")
-    require("cbp_core04_refresh_current_country_location_market_memory = yes" in global_refresh,
-            "start/load refresh must reuse the same country location loop")
+    require(f"{COMBINED_REFRESH} = yes" in global_refresh,
+            "start/load refresh must reuse the combined location loop")
 
     owner_change = extract_block(owner_on_action, "cbp_core03_probe_location_changed_owner")
     succession_pos = owner_change.find("cbp_core03_handle_location_changed_owner = yes")
@@ -110,6 +122,18 @@ def main() -> None:
     require(capacity_pos >= 0 and rank_floor_pos > capacity_pos,
             "rank-change pulse must enforce the floor after capacity refresh")
 
+    monthly_pulse = extract_block(stock_on_action, "cbp_monthly_stock_cycle_pulse")
+    require(f"{MONTHLY_REFRESH} = yes" in monthly_pulse,
+            "monthly pulse must use the memory-only CORE-04 refresh")
+    require(f"{COMBINED_REFRESH} = yes" not in monthly_pulse,
+            "monthly pulse must not call the combined Control-floor refresh")
+
+    yearly_pulse = extract_block(stock_on_action, "cbp_yearly_pop_demand_adaptation_pulse")
+    yearly_adaptation_pos = yearly_pulse.find("cbp_run_yearly_pop_demand_adaptation_for_current_country = yes")
+    yearly_floor_pos = yearly_pulse.find(f"{COMBINED_REFRESH} = yes")
+    require(yearly_adaptation_pos >= 0 and yearly_floor_pos > yearly_adaptation_pos,
+            "yearly pulse must run the combined Control-floor refresh after adaptation")
+
     runtime_occurrences: list[str] = []
     for path in (ROOT / "in_game/common").rglob("*.txt"):
         text = path.read_text(encoding="utf-8-sig")
@@ -122,8 +146,10 @@ def main() -> None:
         "in_game/common/scripted_effects/cbp_core_control_floor_effects.txt",
     ]), f"unexpected runtime floor integration surfaces: {runtime_occurrences}")
 
-    require("No separate monthly `every_owned_location` traversal" in documentation,
-            "documentation must record the no-duplicate-loop contract")
+    require("No monthly Control-floor evaluation" in documentation,
+            "documentation must record the monthly exclusion contract")
+    require("yearly country pulse" in documentation,
+            "documentation must record the yearly fallback cadence")
     require("No confirmed integration-status on-action" in documentation,
             "documentation must record the unresolved integration-status exposure")
 
