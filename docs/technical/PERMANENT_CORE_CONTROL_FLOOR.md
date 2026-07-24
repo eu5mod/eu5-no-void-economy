@@ -36,9 +36,9 @@ status, so non-core conquests receive no floor while a returned owner core recei
 the correct floor immediately.
 
 The repository already subscribes to the hardcoded `on_location_changed_rank`
-on-action. Its existing `cbp_capacity_location_rank_changed_pulse` now invokes the
-same floor effect after refreshing location capacity, so promotion or demotion is
-handled immediately without waiting for a monthly pulse.
+on-action. Its existing `cbp_capacity_location_rank_changed_pulse` invokes the same
+floor effect after refreshing location capacity, so promotion or demotion is
+handled immediately.
 
 ### Integration/core-status exposure
 
@@ -49,25 +49,44 @@ The reviewed hardcoded on-action list exposes `on_location_changed_owner` and
 `on_location_became_core` callback.
 
 This is an exposure boundary, not proof that no internal engine callback exists.
-The monthly safety path remains necessary until local Vanilla files, current
-script-docs output, or a controlled runtime probe confirms a reliable location
-integration/core-status hook. Patching the cabinet action's implementation directly
-would be more invasive and less compatible than retaining the existing fused loop.
+Core status can also change without ownership or rank changing, so a low-frequency
+fallback remains necessary until local Vanilla files, current script-docs output,
+or a controlled runtime probe confirms a reliable callback.
 
-### Monthly and start/load safety path
+### Yearly safety path
 
-The safety check is fused into the existing CORE-04 location-memory traversal:
+The fallback runs once per yearly country pulse, after the existing yearly US-04
+adaptation:
 
 ```txt
-cbp_core04_refresh_current_country_location_market_memory
-  -> every_owned_location
-     -> cbp_enforce_owner_core_control_floor
-     -> refresh cbp_core04_last_known_market
+cbp_yearly_pop_demand_adaptation_pulse
+  -> cbp_run_yearly_pop_demand_adaptation_for_current_country
+  -> cbp_core04_refresh_current_country_location_market_memory
+     -> every_owned_location
+        -> cbp_enforce_owner_core_control_floor
+        -> refresh cbp_core04_last_known_market
 ```
 
-No separate monthly `every_owned_location` traversal is introduced.
+A location becoming or ceasing to be a core without an owner or rank change is
+therefore reconciled no later than the next yearly country pulse.
 
-The existing start/load repair path already delegates to the same country effect:
+### Monthly CORE-04 path
+
+The monthly stock cycle still requires location-market memory refresh, but it now
+uses a dedicated memory-only effect:
+
+```txt
+cbp_monthly_stock_cycle_pulse
+  -> cbp_core04_refresh_current_country_location_market_memory_monthly
+     -> every_owned_location
+        -> refresh cbp_core04_last_known_market
+```
+
+**No monthly Control-floor evaluation** occurs in this traversal.
+
+### Campaign start and save repair
+
+The existing global CORE-04 refresh retains the combined effect:
 
 ```txt
 cbp_core04_refresh_all_location_market_memory
@@ -75,9 +94,8 @@ cbp_core04_refresh_all_location_market_memory
      -> cbp_core04_refresh_current_country_location_market_memory
 ```
 
-Therefore fresh campaigns and loaded saves converge through the same authoritative
-loop. A location becoming a core without an owner or rank change is corrected no
-later than the next monthly country pulse.
+Fresh campaigns and lifecycle repair paths can therefore establish or repair the
+floor without waiting for the first yearly pulse.
 
 ## Persistence and performance
 
@@ -85,10 +103,10 @@ The floor stores no country or location variable, modifier, list, or stamp. Its
 eligibility is derived directly from current owner, current core status, current
 rank, and current Control.
 
-The monthly implementation adds only constant-time checks and, when needed, one
-positive `change_control` mutation inside a traversal that already exists for every
-owned location. Owner and rank changes normally avoid waiting for this fallback
-because they are handled by their dedicated hardcoded on-actions.
+The high-frequency monthly location traversal performs market-memory work only.
+Owner and rank changes remain event-driven. The unresolved core-status edge case
+adds one constant-time floor check per owned location only during the yearly
+country pulse and during one-time lifecycle repair.
 
 ## Validation contract
 
@@ -100,12 +118,13 @@ Static validation requires:
 - no subtractive or negative Control mutation;
 - immediate owner-change re-evaluation through the existing CORE-03 on-action;
 - immediate rank-change re-evaluation through `on_location_changed_rank`;
-- the safety call inside the existing CORE-04 `every_owned_location` body;
-- no `every_owned_location` inside the dedicated floor effect file;
+- use of the memory-only CORE-04 effect from the monthly country pulse;
+- absence of the Control-floor effect from the monthly memory traversal;
+- use of the combined CORE-04 effect from the yearly country pulse;
 - start/load reuse of `cbp_core04_refresh_all_location_market_memory`;
 - an explicit record that integration/core-status event exposure is not confirmed.
 
 Runtime acceptance still requires an in-game test because static validation cannot
-prove the observed timing of Control recalculation relative to the engine's own
-monthly Control tick, nor prove that no undocumented integration-status hook exists
-in the installed game build.
+prove the observed timing of Control recalculation relative to the engine's native
+Control tick, nor prove that no undocumented integration-status hook exists in the
+installed game build.
