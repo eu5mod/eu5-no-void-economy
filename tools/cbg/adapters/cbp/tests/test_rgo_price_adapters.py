@@ -16,6 +16,7 @@ from tools.cbg.adapters.cbp.generate_cbp_cbg_fixed_rgo_prices_spec import build_
 from tools.cbg.adapters.cbp.generate_cbp_cbg_rgo_prices_spec import (
     FIXED_ADAPTER,
     OFFSET_ADAPTER,
+    OUTPUT,
     build_selected_spec,
     build_spec as build_offset_spec,
 )
@@ -25,6 +26,7 @@ from tools.cbg.community_balance_generator import ASSIGNMENT, field_matches, sca
 
 REPO_ROOT = Path(__file__).resolve().parents[5]
 SOURCE = Path("in_game/common/prices/00_hardcoded.txt")
+GENERATED = Path(OUTPUT)
 TARGETS = (
     "expand_rgo_mining",
     "expand_rgo_farming",
@@ -60,7 +62,8 @@ class RgoPriceAdapterTests(unittest.TestCase):
 
     @staticmethod
     def materialized_values(path: Path) -> dict[str, Decimal]:
-        lines = path.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+        text = path.read_text(encoding="utf-8-sig").replace("REPLACE:", "")
+        lines = text.splitlines(keepends=True)
         objects = {obj.path: obj for obj in scan_objects(lines)}
         values: dict[str, Decimal] = {}
         for name in TARGETS:
@@ -84,7 +87,7 @@ class RgoPriceAdapterTests(unittest.TestCase):
         completed = subprocess.run(
             [
                 sys.executable,
-                "tools/cbg/community_balance_generator.py",
+                "tools/cbg/cbp_community_balance_generator.py",
                 "--game-root",
                 str(self.game_root),
                 "--spec",
@@ -100,7 +103,7 @@ class RgoPriceAdapterTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(0, completed.returncode, completed.stdout + completed.stderr)
-        return output / SOURCE
+        return output / GENERATED
 
     def test_fixed_adapter_sets_every_target_to_sixty(self) -> None:
         payload = build_fixed_spec(self.game_root, Decimal("60"))

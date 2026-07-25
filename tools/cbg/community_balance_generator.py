@@ -936,20 +936,35 @@ def generate(
         adopt_marked_tree,
         adopt_marker,
     ))
-    by_file: dict[PurePosixPath, list[Intent]] = {}
+    by_output_contract: dict[
+        tuple[PurePosixPath, PurePosixPath, str, tuple[str, ...], int],
+        list[Intent],
+    ] = {}
     for intent in intents:
-        by_file.setdefault(intent.target.file, []).append(intent)
+        relative = intent.target.file
+        output_relative = intent.output_file or relative
+        contract = (
+            relative,
+            output_relative,
+            intent.render_mode,
+            intent.header,
+            intent.trailing_blank_lines,
+        )
+        by_output_contract.setdefault(contract, []).append(intent)
     manifest_files: list[dict[str, Any]] = []
     pending_outputs: list[tuple[Path, PurePosixPath, bytes]] = []
+    pending_output_paths: set[PurePosixPath] = set()
     aliases: dict[str, tuple[str, str]] = {}
-    for relative, file_intents in sorted(by_file.items(), key=lambda item: item[0].as_posix()):
-        output_contracts = {
-            (intent.output_file or relative, intent.render_mode, intent.header, intent.trailing_blank_lines)
-            for intent in file_intents
-        }
-        if len(output_contracts) != 1:
-            raise ValueError(f"Conflicting output contracts for Vanilla source {relative}")
-        output_relative, render_mode, header, trailing_blank_lines = next(iter(output_contracts))
+    for contract, file_intents in sorted(
+        by_output_contract.items(),
+        key=lambda item: (item[0][0].as_posix(), item[0][1].as_posix()),
+    ):
+        relative, output_relative, render_mode, header, trailing_blank_lines = contract
+        if output_relative in pending_output_paths:
+            raise ValueError(
+                f"Multiple Vanilla source contracts target output {output_relative}"
+            )
+        pending_output_paths.add(output_relative)
         source = game_root / Path(relative)
         source_bytes = source.read_bytes()
         has_bom = source_bytes.startswith(b"\xef\xbb\xbf")
@@ -983,7 +998,10 @@ def generate(
                 obj = objects.get(path)
                 if obj is None or len(path) != 1:
                     raise ValueError(f"Cannot render selected object {'/'.join(path)!r}")
-                selected.append("".join(lines[obj.start : obj.end + 1]).rstrip())
+                block = "".join(lines[obj.start : obj.end + 1]).splitlines()
+                selected.append(
+                    "\n".join(line.rstrip(" \t") for line in block).rstrip()
+                )
             rendered = "\n".join((*header, "", "\n\n".join(selected))).rstrip() + "\n"
             rendered += "\n" * trailing_blank_lines
         elif render_mode == "normalized_with_header":

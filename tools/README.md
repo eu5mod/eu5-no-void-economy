@@ -29,9 +29,9 @@ install paths.
 
 `generate_all.sh` derives the vanilla location-static-modifier source from
 `EU5_GAME_COMMON_DIR`. `EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE` may override
-that path. `generate_cbp_location_overrides.sh` copies the selected vanilla
-blocks and changes only their configured target assignment, so unrelated
-vanilla balance changes flow into the generated override automatically.
+that path. `generate_cbp_location_overrides.sh` copies only changed Vanilla
+objects into the dedicated `cbp_location.txt` output and marks them `REPLACE:`,
+so unrelated Vanilla balance changes remain untouched.
 
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
 the EU5 engine `--debug_mode` launch argument:
@@ -231,13 +231,18 @@ tools/generated/us09_economy_overrides/common/building_types/
 tools/generated/us09_economy_overrides/common/prices/
 ```
 
-When run through `./tools/generate_all.sh`, the same generator writes the loaded
-Rebalance Economy package exact-path overrides under:
+When run through `./tools/generate_all.sh`, CBG writes tracked, CBP-prefixed
+Rebalance Economy overrides under:
 
 ```txt
-packages/cbp_economy_rebalance/in_game/common/building_types/
+packages/cbp_economy_rebalance/in_game/common/building_types/cbp_*.txt
 packages/cbp_economy_rebalance/in_game/common/prices/
 ```
+
+Structural building changes use complete `REPLACE:<building>` objects.
+Modifier-only changes use sparse `cbp_inject_*.txt` files whose additive values
+are calculated as `target - Vanilla`. Unchanged Vanilla buildings are not
+copied into the mod.
 
 The building override generator composes the approved static changes that share
 the same vanilla files:
@@ -297,6 +302,21 @@ Use `--target PATH` for a non-default local mod directory, `--keep-logs` when
 preserving the current logs is intentional, or `--skip-idempotence` for a
 faster explicitly non-canonical iteration. The script does not launch EU5 or
 modify Git state.
+
+Installation is a clean publication, not an incremental copy. Before copying
+the first package, `install_local_packages.sh` removes and recreates every
+managed `cbp_*` package directory and removes the known legacy `eu5voideco`
+deployment. Its final mirror check fails if the deployed tree contains a stale
+file that is absent from the source payload. It never removes the parent EU5
+`mod` directory or unrelated mods.
+
+To install an already generated and validated checkout without regenerating:
+
+```bash
+./tools/install_local_packages.sh --skip-generate
+./tools/install_local_packages.sh --check
+./tools/clear_eu5_logs.sh
+```
 
 ## Compact test-log summary
 

@@ -24,39 +24,19 @@ if root_anchor not in text:
 text = text.replace(root_anchor, f'repo_root="{repo_root}"', 1)
 
 building_root = repo_root / "packages/cbp_economy_rebalance/in_game/common/building_types"
-prefixed_trade = building_root / "cbp_trade_buildings.txt"
-prefixed_market = building_root / "cbp_market_buildings.txt"
-legacy_trade = building_root / "trade_buildings.txt"
-legacy_market = building_root / "market_buildings.txt"
+trade_output = building_root / "cbp_trade_buildings.txt"
+market_output = building_root / "cbp_market_buildings.txt"
+generated_outputs = [path for path in (trade_output, market_output) if path.is_file()]
 
-prefixed_present = [path for path in (prefixed_trade, prefixed_market) if path.is_file()]
-legacy_present = [path for path in (legacy_trade, legacy_market) if path.is_file()]
-
-if prefixed_present and len(prefixed_present) != 2:
+if generated_outputs and len(generated_outputs) != 2:
     raise SystemExit(
         "Incomplete CBG building generation: both cbp_trade_buildings.txt and "
-        "cbp_market_buildings.txt must be present"
-    )
-if legacy_present:
-    rendered = ", ".join(path.name for path in legacy_present)
-    raise SystemExit(
-        "Obsolete full-file building override(s) remain after REPLACE migration: "
-        + rendered
+        "cbp_market_buildings.txt REPLACE outputs must be present"
     )
 
-using_replace_outputs = len(prefixed_present) == 2
+using_generated_outputs = len(generated_outputs) == 2
 
 replacements = {
-    'in_game/common/building_types/trade_buildings.txt"':
-        'in_game/common/building_types/cbp_trade_buildings.txt"',
-    'in_game/common/building_types/market_buildings.txt"':
-        'in_game/common/building_types/cbp_market_buildings.txt"',
-    'rf"^{re.escape(name)}\\s*=\\s*\\{{"':
-        'rf"^(?:REPLACE:)?{re.escape(name)}\\s*=\\s*\\{{"',
-    'r"^\\s*([A-Za-z0-9_]+)\\s*=\\s*\\{"':
-        'r"^\\s*(?:REPLACE:)?([A-Za-z0-9_]+)\\s*=\\s*\\{"',
-    'US-09 static overrides must preserve vanilla file paths; remove stale duplicate-key files:':
-        'Remove obsolete pre-CBG US-09 duplicate-key files:',
     'bash "$generator_validator" >/dev/null': '''if ! generator_validator_stderr="$(bash "$generator_validator" 2>&1 >/dev/null)"; then
 \tprintf '%s\\n' "$generator_validator_stderr" >&2
 \texit 1
@@ -67,20 +47,10 @@ for old, new in replacements.items():
         raise SystemExit(f"Package-validator migration anchor is missing: {old}")
     text = text.replace(old, new)
 
-if using_replace_outputs:
-    anchor = '''require_file "$us09_market_buildings_file"\n'''
-    addition = '''require_file "$us09_market_buildings_file"\nrequire_match '^REPLACE:marketplace = \\{$' \\
-\t"$us09_trade_buildings_file" \\
-\t'US-09 trade-building override must package marketplace as a REPLACE entry'\nrequire_match '^REPLACE:market_warehouse = \\{$' \\
-\t"$us09_market_buildings_file" \\
-\t'US-09 market-building override must package market_warehouse as a REPLACE entry'\n'''
-    if anchor not in text:
-        raise SystemExit("Package-validator building require_file anchor is missing")
-    text = text.replace(anchor, addition, 1)
-else:
+if not using_generated_outputs:
     # A clean checkout intentionally has no Vanilla-derived building artifacts.
     # Keep validating all source-owned package files, but skip checks whose only
-    # input is a locally generated cbp_ building file.
+    # input is a locally generated CBP-prefixed REPLACE building file.
     required = '''require_file "$us09_trade_buildings_file"\nrequire_file "$us09_market_buildings_file"\n'''
     if required not in text:
         raise SystemExit("Package-validator clean-state require_file anchor is missing")

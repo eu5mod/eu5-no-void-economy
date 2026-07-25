@@ -38,7 +38,7 @@ if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON
 	cbg_location_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
 	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
 	bootstrap_cbg_manifest "$cbg_location_spec" "$repo_root" "$cbg_location_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$cbg_location_game_root" \
 		--spec "$cbg_location_spec" \
 		--output-root "$repo_root" \
@@ -136,7 +136,7 @@ else
 				--percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 				--output "$cbg_rgo_spec"
 			bootstrap_cbg_manifest "$cbg_rgo_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_rgo_manifest"
-			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+			python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_rgo_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -150,7 +150,7 @@ else
 				--laborer-percent "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
 				--output "$cbg_pop_spec"
 			bootstrap_cbg_manifest "$cbg_pop_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_pop_manifest"
-			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+			python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_pop_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -165,8 +165,8 @@ fi
 
 # US-177 is package-owned independently from US-09. It records the authoritative
 # vanilla food-good set, scans the complete vanilla source tree for
-# minting_income_factor, and composes building changes with whichever exact-path
-# building files are already present.
+# minting_income_factor, and composes building changes into the same complete
+# REPLACE:<building> objects already planned by the building adapter.
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	us177_common_dir="${EU5_GAME_COMMON_DIR%/}"
 	us177_game_root="${us177_common_dir%/in_game/common}"
@@ -183,7 +183,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
 		--output "$cbg_food_spec"
 	bootstrap_cbg_manifest "$cbg_food_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_food_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_food_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -198,7 +198,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--minting-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json" \
 		--political-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
 	bootstrap_cbg_manifest "$cbg_political_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_political_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_political_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \

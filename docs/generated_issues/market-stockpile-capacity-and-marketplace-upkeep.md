@@ -11,7 +11,12 @@
 
 ## Static generation contract
 
-Building files under `packages/cbp_economy_rebalance/in_game/common/building_types` remain generated exact-path overrides. Do not hand-edit them. The shared Python transformer owns warehouse disabling and marketplace-chain maintenance normalization so regeneration preserves both changes.
+Building files under `packages/cbp_economy_rebalance/in_game/common/building_types`
+are generated, tracked CBP-prefixed database-entry files. Structural warehouse
+and marketplace-chain changes use complete `REPLACE:<building>` objects.
+Modifier-only stockpile cancellation uses sparse `INJECT:<building>` deltas.
+Do not hand-edit them. Exact-path full-file copies are forbidden because EU5
+loads them beside Vanilla and duplicates database entries.
 
 ## Runtime modifier contract
 

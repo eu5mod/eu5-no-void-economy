@@ -14,6 +14,8 @@ import postprocess_us177_minting_building_overrides as minting_transformer
 import transform_cbp_economy_building_overrides as transformer
 from cbg.adapters.cbp.generate_cbp_cbg_building_spec import (
     apply_foreign_trade_capacity_multiplier,
+    build_injection_fragment,
+    requires_complete_replace,
 )
 
 
@@ -73,15 +75,22 @@ def normalize_generator_whitespace(lines: list[str]) -> list[str]:
     return normalized
 
 
-def remove_replace_entry_modes(lines: list[str]) -> list[str]:
-    return [re.sub(r"^(\s*)REPLACE:", r"\1", line) for line in lines]
-
-
 def top_level_blocks(lines: list[str]) -> dict[str, list[str]]:
     return {
         block.key: lines[block.start : block.end + 1]
         for block in transformer.top_level_buildings(lines)
     }
+
+
+def strip_database_entry_modes(lines: list[str]) -> list[str]:
+    return [
+        re.sub(
+            r"^(?P<indent>[ \t]*)(?:REPLACE|INJECT|TRY_INJECT):",
+            r"\g<indent>",
+            line,
+        )
+        for line in lines
+    ]
 
 
 def maintenance_entries(lines: list[str], goods: set[str]) -> list[tuple[str, float, bool]]:
@@ -129,7 +138,7 @@ def compare_float(actual: float, expected: float) -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Validate generated CBP building maintenance REPLACE objects."
+        description="Validate generated CBP REPLACE/INJECT building overrides."
     )
     parser.add_argument("--common-dir", type=Path, default=os.environ.get("EU5_GAME_COMMON_DIR"))
     parser.add_argument(
@@ -210,8 +219,12 @@ def main() -> int:
         source_lines = source_file.read_text(encoding="utf-8-sig").splitlines()
         source_blocks = top_level_blocks(source_lines)
         generated_file = output_dir / f"cbp_{source_file.name}"
-        obsolete_full_file = output_dir / source_file.name
+        injected_file = output_dir / f"cbp_inject_{source_file.name}"
+        unsafe_exact_file = output_dir / source_file.name
         cbg_path = f"in_game/common/building_types/cbp_{source_file.name}"
+        injected_cbg_path = (
+            f"in_game/common/building_types/cbp_inject_{source_file.name}"
+        )
 
         try:
             expected_body, expected_changes, _building_count = transformer.transform_lines_with_plan(
@@ -234,84 +247,176 @@ def main() -> int:
             failures.append(f"{source_file.name}: unsupported vanilla structure: {error}")
             continue
 
-        minting_occurrences = minting_transformer.source_occurrences(
-            source_file, minting_multiplier
-        )
-        if minting_occurrences:
-            expected_text = minting_transformer.apply_expected_values(
-                "\n".join(expected_body) + "\n",
-                minting_occurrences,
-                source_file.name,
-            )
-            expected_body = expected_text.splitlines()
-
         changed_buildings = {change.building for change in expected_changes} | foreign_changed
+        replace_buildings = {
+            change.building
+            for change in expected_changes
+            if requires_complete_replace(change)
+        }
+        inject_buildings = changed_buildings - replace_buildings
         if not changed_buildings:
-            if generated_file.exists():
+            if generated_file.exists() or injected_file.exists() or unsafe_exact_file.exists():
                 failures.append(
-                    f"{source_file.name}: prefixed override exists although no building transformation applies"
+                    f"{source_file.name}: override exists although no transformation applies"
                 )
             continue
 
-        expected_cbg_paths.add(cbg_path)
-        if obsolete_full_file.is_file():
+        if unsafe_exact_file.is_file():
             failures.append(
-                f"{source_file.name}: obsolete full-file override remains beside the prefixed REPLACE output"
+                f"{source_file.name}: complete exact-path copies duplicate Vanilla database entries; "
+                "generate prefixed database-entry objects"
             )
-        if not generated_file.is_file():
-            failures.append(
-                f"Missing generated prefixed override for applicable source file: cbp_{source_file.name}"
-            )
-            continue
-        manifest = cbg_files.get(cbg_path)
-        if manifest is None:
-            failures.append(f"Missing CBG manifest entry: {cbg_path}")
-            continue
-        if manifest.get("database_entry_mode") != "REPLACE":
-            failures.append(f"{cbg_path}: manifest must declare database_entry_mode=REPLACE")
-
-        generated_text = generated_file.read_text(encoding="utf-8-sig")
-        generated_lines = remove_replace_entry_modes(
-            normalize_generator_whitespace(strip_generated_header(generated_text))
-        )
         expected_lines = normalize_generator_whitespace(expected_body)
-        generated_blocks = top_level_blocks(generated_lines)
+        while expected_lines and not expected_lines[0].strip():
+            expected_lines.pop(0)
         expected_blocks = top_level_blocks(expected_lines)
 
-        if set(generated_blocks) != changed_buildings:
+        generated_blocks: dict[str, list[str]] = {}
+        if replace_buildings:
+            expected_cbg_paths.add(cbg_path)
+            if not generated_file.is_file():
+                failures.append(
+                    "Missing generated REPLACE override for applicable source file: "
+                    f"{generated_file.name}"
+                )
+            else:
+                generated_text = generated_file.read_text(encoding="utf-8-sig")
+                generated_lines = normalize_generator_whitespace(
+                    strip_database_entry_modes(strip_generated_header(generated_text))
+                )
+                generated_blocks = top_level_blocks(generated_lines)
+                if set(generated_blocks) != replace_buildings:
+                    failures.append(
+                        f"{source_file.name}: generated REPLACE object set mismatch "
+                        f"expected={sorted(replace_buildings)} "
+                        f"generated={sorted(generated_blocks)}"
+                    )
+                replace_entries = re.findall(
+                    r"^[ \t]*REPLACE:([A-Za-z0-9_.:-]+)[ \t]*=",
+                    generated_text,
+                    re.MULTILINE,
+                )
+                if set(replace_entries) != replace_buildings:
+                    failures.append(
+                        f"{generated_file.name}: every structural building must "
+                        "be marked REPLACE"
+                    )
+                manifest = cbg_files.get(cbg_path)
+                if manifest is None:
+                    failures.append(f"Missing CBG manifest entry: {cbg_path}")
+                else:
+                    if manifest.get("database_entry_mode") != "REPLACE":
+                        failures.append(
+                            f"{cbg_path}: manifest must declare REPLACE entries"
+                        )
+                    if manifest.get("vanilla_sha256") != hashlib.sha256(
+                        source_file.read_bytes()
+                    ).hexdigest():
+                        failures.append(f"{cbg_path}: Vanilla fingerprint mismatch")
+                    if manifest.get("generated_sha256") != hashlib.sha256(
+                        generated_file.read_bytes()
+                    ).hexdigest():
+                        failures.append(f"{cbg_path}: generated fingerprint mismatch")
+                    manifest_objects = {
+                        entry.get("object")
+                        for entry in manifest.get("transformations", [])
+                        if isinstance(entry, dict) and entry.get("object")
+                    }
+                    if manifest_objects != replace_buildings:
+                        failures.append(
+                            f"{cbg_path}: manifest object scope mismatch "
+                            f"expected={sorted(replace_buildings)} "
+                            f"actual={sorted(manifest_objects)}"
+                        )
+                    manifests_checked += 1
+                generated_files_checked += 1
+        elif generated_file.exists():
             failures.append(
-                f"{source_file.name}: generated REPLACE object scope mismatch "
-                f"expected={sorted(changed_buildings)} generated={sorted(generated_blocks)}"
+                f"{generated_file.name}: REPLACE output exists without a "
+                "structural mutation"
             )
-            continue
-        if not all(
-            re.search(rf"^REPLACE:{re.escape(name)}\s*=\s*\{{", generated_text, re.MULTILINE)
-            for name in changed_buildings
-        ):
-            failures.append(f"{source_file.name}: one or more changed buildings lack REPLACE: mode")
 
-        if manifest.get("vanilla_sha256") != hashlib.sha256(source_file.read_bytes()).hexdigest():
-            failures.append(f"{cbg_path}: Vanilla fingerprint mismatch")
-        if manifest.get("generated_sha256") != hashlib.sha256(generated_file.read_bytes()).hexdigest():
-            failures.append(f"{cbg_path}: generated fingerprint mismatch")
-        manifest_objects = {
-            entry.get("object")
-            for entry in manifest.get("transformations", [])
-            if isinstance(entry, dict) and entry.get("object")
-        }
-        if manifest_objects != changed_buildings:
+        injected_blocks: dict[str, list[str]] = {}
+        if inject_buildings:
+            expected_cbg_paths.add(injected_cbg_path)
+            if not injected_file.is_file():
+                failures.append(
+                    "Missing generated INJECT override for additive changes: "
+                    f"{injected_file.name}"
+                )
+            else:
+                injected_text = injected_file.read_text(encoding="utf-8-sig")
+                injected_lines = normalize_generator_whitespace(
+                    strip_database_entry_modes(strip_generated_header(injected_text))
+                )
+                injected_blocks = top_level_blocks(injected_lines)
+                if set(injected_blocks) != inject_buildings:
+                    failures.append(
+                        f"{source_file.name}: generated INJECT object set mismatch "
+                        f"expected={sorted(inject_buildings)} "
+                        f"generated={sorted(injected_blocks)}"
+                    )
+                inject_entries = re.findall(
+                    r"^[ \t]*INJECT:([A-Za-z0-9_.:-]+)[ \t]*=",
+                    injected_text,
+                    re.MULTILINE,
+                )
+                if set(inject_entries) != inject_buildings:
+                    failures.append(
+                        f"{injected_file.name}: every additive building must "
+                        "be marked INJECT"
+                    )
+                manifest = cbg_files.get(injected_cbg_path)
+                if manifest is None:
+                    failures.append(f"Missing CBG manifest entry: {injected_cbg_path}")
+                else:
+                    if manifest.get("database_entry_mode") != "INJECT":
+                        failures.append(
+                            f"{injected_cbg_path}: manifest must declare INJECT entries"
+                        )
+                    if manifest.get("vanilla_sha256") != hashlib.sha256(
+                        source_file.read_bytes()
+                    ).hexdigest():
+                        failures.append(
+                            f"{injected_cbg_path}: Vanilla fingerprint mismatch"
+                        )
+                    if manifest.get("generated_sha256") != hashlib.sha256(
+                        injected_file.read_bytes()
+                    ).hexdigest():
+                        failures.append(
+                            f"{injected_cbg_path}: generated fingerprint mismatch"
+                        )
+                    manifest_objects = {
+                        entry.get("object")
+                        for entry in manifest.get("transformations", [])
+                        if isinstance(entry, dict) and entry.get("object")
+                    }
+                    if manifest_objects != inject_buildings:
+                        failures.append(
+                            f"{injected_cbg_path}: manifest object scope mismatch "
+                            f"expected={sorted(inject_buildings)} "
+                            f"actual={sorted(manifest_objects)}"
+                        )
+                    manifests_checked += 1
+                generated_files_checked += 1
+        elif injected_file.exists():
             failures.append(
-                f"{cbg_path}: manifest object scope mismatch "
-                f"expected={sorted(changed_buildings)} actual={sorted(manifest_objects)}"
+                f"{injected_file.name}: INJECT output exists without an "
+                "additive mutation"
             )
-        manifests_checked += 1
 
-        for building in sorted(changed_buildings):
+        for building in sorted(replace_buildings):
             expected_block = expected_blocks.get(building)
             generated_block = generated_blocks.get(building)
             source_block = source_blocks.get(building, [])
             if expected_block is None or generated_block is None:
                 failures.append(f"{source_file.name}:{building}: missing object block")
+                continue
+            if generated_block != expected_block:
+                failures.append(
+                    f"{source_file.name}:{building}: generated building body differs "
+                    "from the parser-derived complete building object"
+                )
                 continue
 
             expected_entries = maintenance_entries(expected_block, goods_set)
@@ -365,7 +470,40 @@ def main() -> int:
                     stockpile_capacity_entries_checked += len(generated_commented_stockpile)
             objects_checked += 1
 
-        generated_files_checked += 1
+        transformed_blocks = {
+            block.key: expected_body[block.start : block.end + 1]
+            for block in transformer.top_level_buildings(expected_body)
+        }
+        for building in sorted(inject_buildings):
+            generated_block = injected_blocks.get(building)
+            expected_fragment = normalize_generator_whitespace(
+                build_injection_fragment(source_lines, expected_body, building)
+            )
+            if generated_block is None:
+                failures.append(
+                    f"{source_file.name}:{building}: missing INJECT object block"
+                )
+                continue
+            if generated_block != expected_fragment:
+                failures.append(
+                    f"{source_file.name}:{building}: generated additive delta "
+                    "does not produce the parser-derived target"
+                )
+            source_stockpile = active_stockpile_capacity_entries(
+                source_blocks.get(building, [])
+            )
+            if source_stockpile:
+                target_stockpile = active_stockpile_capacity_entries(
+                    transformed_blocks.get(building, [])
+                )
+                if target_stockpile:
+                    failures.append(
+                        f"{source_file.name}:{building}: target stockpile "
+                        "capacity was not cancelled"
+                    )
+                else:
+                    stockpile_capacity_entries_checked += len(source_stockpile)
+            objects_checked += 1
 
     manifested_building_paths = {
         path for path in cbg_files if path.startswith("in_game/common/building_types/")
@@ -377,6 +515,17 @@ def main() -> int:
             + ", ".join(unexpected_cbg_paths)
         )
 
+    unsafe_exact_outputs = sorted(
+        path.name
+        for path in output_dir.glob("*.txt")
+        if not path.name.startswith("cbp_")
+    )
+    if unsafe_exact_outputs:
+        failures.append(
+            "Runtime-unsafe exact-path building copies remain: "
+            + ", ".join(unsafe_exact_outputs)
+        )
+
     if failures:
         print("CBP US-08 building maintenance validation failed:", file=sys.stderr)
         for failure in failures:
@@ -386,8 +535,8 @@ def main() -> int:
     print(
         "CBP US-08 building maintenance validation passed: "
         f"{source_files_with_maintenance} maintenance objects, "
-        f"{generated_files_checked} prefixed building files, "
-        f"{objects_checked} REPLACE objects, "
+        f"{generated_files_checked} prefixed REPLACE/INJECT building files, "
+        f"{objects_checked} changed objects, "
         f"{maintenance_entries_checked} maintenance entries checked, "
         f"{stockpile_capacity_entries_checked} disabled stockpile-capacity lines checked, "
         f"{manifests_checked} building manifests checked."

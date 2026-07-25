@@ -29,6 +29,9 @@ cbp_debug_run_us04_initialization_test = {
 		debug_log = "ModeU5 TEST BLOCKED scenario=us04_pop_demand_initialization reason=day1_initialization_not_completed"
 	}
 	else = {
+		# The event runs from player-country scope. Exercise the public lazy
+		# migration before reading records so an existing v2 save is repairable.
+		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		capital = { save_temporary_scope_as = cbp_us04_initialization_test_location }
 		scope:cbp_us04_initialization_test_location = {
 			cbp_get_pop_demand_multiplier_good_wheat = yes
@@ -42,7 +45,7 @@ cbp_debug_run_us04_initialization_test = {
 		if = {
 			limit = {
 				OR = {
-					global_var:cbp_us04_multiplier_initialization_version != 1
+					global_var:cbp_us04_multiplier_initialization_version != 3
 					scope:test_cbp_us04_initialization_wheat_present_before = 0
 					scope:test_cbp_us04_initialization_beer_present_before = 0
 					scope:test_cbp_us04_initialization_wheat_before < 1.199
@@ -103,7 +106,7 @@ cbp_debug_run_us04_initialization_test = {
 		set_variable = { name = gui_cbp_us04_initialization_ui_wheat value = scope:test_cbp_us04_initialization_wheat_before }
 		set_variable = { name = gui_cbp_us04_initialization_ui_beer value = scope:test_cbp_us04_initialization_beer_before }
 		set_variable = { name = gui_cbp_us04_initialization_ui_missing value = scope:test_cbp_us04_initialization_missing_read_after_call }
-		debug_log = "ModeU5 US-04 INITIALIZATION DUMP version=[THIS.GetVariable('cbp_us04_initialization_ui_version').GetValue|0] wheat=[THIS.GetVariable('cbp_us04_initialization_ui_wheat').GetValue|4] beer=[THIS.GetVariable('cbp_us04_initialization_ui_beer').GetValue|4] missing_fallback=[THIS.GetVariable('cbp_us04_initialization_ui_missing').GetValue|4]"
+		debug_log = "ModeU5 US-04 INITIALIZATION DUMP version=[THIS.GetVariable('gui_cbp_us04_initialization_ui_version').GetValue|0] wheat=[THIS.GetVariable('gui_cbp_us04_initialization_ui_wheat').GetValue|4] beer=[THIS.GetVariable('gui_cbp_us04_initialization_ui_beer').GetValue|4] missing_fallback=[THIS.GetVariable('gui_cbp_us04_initialization_ui_missing').GetValue|4]"
 
 		if = {
 			limit = { scope:test_cbp_us04_initialization_failure_count = 0 }

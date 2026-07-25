@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -14,18 +15,32 @@ ON_ACTIONS = ROOT / "in_game/common/on_action/cbp_us17_modifier_refresh_lifecycl
 EVENTS = ROOT / "in_game/events/cbp_us17_modifier_refresh_events.txt"
 RUNTIME_CONSTANTS = ROOT / "in_game/common/script_values/cbp_us17_us20_runtime_constants.txt"
 PRODUCTION_EFFECTS = ROOT / "in_game/common/scripted_effects/cbp_trade_owner_modifier_reconciliation_effects.txt"
+HISTORICAL_RECONCILIATION = ROOT / "in_game/common/scripted_effects/zzz_trade_reconciliation_effects.txt"
 OBSOLETE_REPLACEMENTS = ROOT / "in_game/common/scripted_effects/zz_cbp_us17_runtime_constant_replacements.txt"
 TRADE_DEFINES = ROOT / "loading_screen/common/defines/cbp_trade_defines.txt"
 PROMOTED_METRIC_GUARDS = ROOT / "in_game/common/scripted_effects/zz_cbp_promoted_market_metric_guards.txt"
-INJECTION_FILES = (
-    ROOT / "in_game/common/estate_privileges/cbp_us17_trade_efficiency_refresh_injections.txt",
+INJECTION_FILE = (
+    ROOT / "in_game/common/estate_privileges/cbp_us17_trade_efficiency_refresh_injections.txt"
+)
+OBSOLETE_PACKAGE_INJECTION = (
     ROOT
-    / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/zz_cbp_us17_trade_efficiency_refresh_injections.txt",
+    / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/"
+    "zz_cbp_us17_trade_efficiency_refresh_injections.txt"
 )
-PRIVILEGE_FILES = (
-    ROOT / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/burghers_estate.txt",
-    ROOT / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/nobles_estate.txt",
+PACKAGE_PRIVILEGE_OUTPUTS = (
+    ROOT / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/cbp_burghers_estate.txt",
+    ROOT / "packages/cbp_economy_rebalance/in_game/common/estate_privileges/cbp_nobles_estate.txt",
 )
+SUPPORTED_PRIVILEGES = {
+    "novgorod_ivans_hundred",
+    "kbo_lake_chad_trade_privilege",
+    "noble_patronage",
+    "polish_merchant_seal",
+    "fra_leadership_of_marcel",
+    "consolidated_corruption_of_the_burghers",
+    "mam_muhtasibs",
+    "office_of_the_farima_soura_privilege",
+}
 
 CUSTOM_DEFINE_NAMES = (
     "CBP_ROUTE_LOSS_COEFFICIENT_MAX",
@@ -44,7 +59,9 @@ CUSTOM_DEFINE_NAMES = (
 RELEVANT_MODIFIER = re.compile(
     r"\b(?:selling_efficiency|import_efficiency|export_efficiency|merchant_maintenance_efficiency)\s*="
 )
-TOP_LEVEL_ENTRY = re.compile(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{")
+TOP_LEVEL_ENTRY = re.compile(
+    r"^\s*(?:REPLACE:)?([A-Za-z0-9_]+)\s*=\s*\{"
+)
 INJECTION_ENTRY = re.compile(r"^TRY_INJECT:([A-Za-z0-9_]+)\s*=\s*\{", re.MULTILINE)
 
 
@@ -155,6 +172,7 @@ def main() -> int:
     events = read(EVENTS)
     constants = read(RUNTIME_CONSTANTS)
     production = read(PRODUCTION_EFFECTS)
+    historical_reconciliation = read(HISTORICAL_RECONCILIATION)
     trade_defines = read(TRADE_DEFINES)
     metric_guards = read(PROMOTED_METRIC_GUARDS)
 
@@ -169,6 +187,13 @@ def main() -> int:
             fail(f"arbitrary custom Define must be removed: {name}")
     if "define:NCountry|CBP_" in production or "define:NCountry|CBD_" in production:
         fail("production runtime must not read arbitrary custom engine Defines")
+    if "CBD_TRADE_MAINTENANCE_MAX_IMPACT" in historical_reconciliation:
+        fail("historical reconciliation must not read the retired CBD custom Define")
+    require(
+        historical_reconciliation,
+        "multiply = cbp_us17_us20_route_loss_coefficient_max",
+        str(HISTORICAL_RECONCILIATION.relative_to(ROOT)),
+    )
     if "REPLACE:cbp_compute_us20_route_loss_coefficient_from_selling_baseline" in production:
         fail("authoritative calculation must be a direct effect, not a late replacement")
     if "REPLACE:cbp_compute_us17_native_corrections_from_baselines" in production:
@@ -274,18 +299,42 @@ def main() -> int:
     ):
         require(metric_guards, token, str(PROMOTED_METRIC_GUARDS.relative_to(ROOT)))
 
-    expected: set[str] = set()
-    for privilege_file in PRIVILEGE_FILES:
-        expected.update(relevant_privileges(privilege_file))
+    expected = set(SUPPORTED_PRIVILEGES)
+    common_dir = os.environ.get("EU5_GAME_COMMON_DIR")
+    if common_dir:
+        vanilla_privileges = (
+            Path(common_dir) / "estate_privileges/burghers_estate.txt",
+            Path(common_dir) / "estate_privileges/nobles_estate.txt",
+        )
+        discovered: set[str] = set()
+        for privilege_file in vanilla_privileges:
+            discovered.update(relevant_privileges(privilege_file))
+        if discovered != expected:
+            fail(
+                "installed Vanilla trade-efficiency privilege set changed: "
+                f"expected={sorted(expected)}, discovered={sorted(discovered)}"
+            )
 
-    validated = [validate_injections(path, expected) for path in INJECTION_FILES]
-    if set(validated[0]) != set(validated[1]):
-        fail("Core and Economy package privilege injection sets differ")
+    package_relevant: set[str] = set()
+    for privilege_file in PACKAGE_PRIVILEGE_OUTPUTS:
+        package_relevant.update(relevant_privileges(privilege_file))
+    if not package_relevant <= expected:
+        fail(
+            "generated privilege replacements contain unregistered trade-efficiency "
+            f"objects: {sorted(package_relevant - expected)}"
+        )
+
+    if OBSOLETE_PACKAGE_INJECTION.exists():
+        fail(
+            "package-local privilege injections duplicate the Core TRY_INJECT "
+            f"registrations: {OBSOLETE_PACKAGE_INJECTION.relative_to(ROOT)}"
+        )
+    validate_injections(INJECTION_FILE, expected)
 
     print(
         "US17 modifier refresh lifecycle validation passed: "
         "direct named-value implementation and promoted-market guards verified; "
-        f"{len(expected)} trade-efficiency privileges covered in Core and Economy package"
+        f"{len(expected)} trade-efficiency privileges covered by one Core injection set"
     )
     return 0
 

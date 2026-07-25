@@ -11,19 +11,20 @@ policy decisions, but it must not publish those runtime files to the package.
 | Family | Runtime outputs | Edge-case authority | Materializer | Status |
 |---|---|---|---|---|
 | Central political values and profit margins | `main_menu/common/script_values/default_values.txt` | `centralizable_script_values()` from #188 | CBG #189 | Migrated |
-| US-177 food production | Vanilla food-good source files, currently `in_game/common/goods/03_food.txt` | US-177 food classification and source-line discovery | CBG #189 | Migrated |
-| Location static modifiers | `main_menu/common/static_modifiers/cbp_location.txt` | Dedicated block extraction; intentionally not an exact-path Vanilla copy | CBG #189 | Migrated |
-| US-09/US-08 buildings | 41 `in_game/common/building_types/*.txt` files | #188 building-plan compiler: inheritance, maintenance categories, marketplace exceptions, stockpile comments | CBG #189 | Migrated; exact 41-file byte parity |
-| RGO prices | `prices/00_hardcoded.txt` partial object override | Duplicate-key-safe selected-object output | CBG #189 | Migrated |
-| Pop promotion | `pop_types/00_default.txt` | Version-dependent promotion-field discovery | CBG #189 | Migrated |
-| US-177 minting | 23 exact-path files; 11 composed with political outputs and building occurrences delegated to buildings | #188 numeric-only discovery and unsupported-syntax guard | CBG #189 combined political/minting family | Migrated; exact byte parity |
-| Political rewards outside central values | 177 event/common overrides; composed with minting into 189 unique outputs | #188 policy compiler: shared symbolic values, Honor exclusion, blocks, inline effects, parliament outcomes | CBG #189 | Migrated; exact 189-file byte parity |
+| US-177 food production | `in_game/common/goods/cbp_03_food.txt` with selected complete `REPLACE:<good>` objects | US-177 food classification and source-line discovery | CBG #189 | Migrated; unrelated goods are not redeclared |
+| Location static modifiers | Dedicated `main_menu/common/static_modifiers/cbp_location.txt` with selected `REPLACE:` objects | Dedicated field policy preserving each changed object while leaving unrelated Vanilla objects untouched | CBG #189 plus CBP database-entry adapter | Migrated; explicit replacement prevents duplicate static-modifier registration |
+| US-09/US-08 buildings | CBP-prefixed complete `REPLACE:<building>` files for structural changes and sparse `cbp_inject_*.txt` files for additive modifier deltas | #188 building-plan compiler: inheritance, maintenance categories, marketplace exceptions, stockpile cancellation | CBG #189 plus CBP database-entry adapter | Migrated; all rules touching one building are composed before choosing the least intrusive proven entry mode |
+| RGO prices | `prices/cbp_00_hardcoded.txt` with selected `REPLACE:` objects | Duplicate-key-safe selected-object output that preserves the rest of the Vanilla price registry | CBG #189 | Migrated |
+| Pop promotion | `pop_types/cbp_00_default.txt` with complete `REPLACE:<pop_type>` objects | Version-dependent promotion-field discovery | CBG #189 | Migrated |
+| US-177 minting | CBP-prefixed complete `REPLACE:<object>` entries for common databases; exact-path files retained only for event databases; building occurrences delegated to the building family | #188 numeric-only discovery and unsupported-syntax guard | CBG #189 combined political/minting family | Migrated; object parity for common databases and byte parity for events |
+| Political rewards outside central values | Complete `REPLACE:<object>` entries for common databases and exact-path event overrides, composed with minting into 189 outputs | #188 policy compiler: shared symbolic values, Honor exclusion, blocks, inline effects, parliament outcomes | CBG #189 | Migrated; 270 common-object replacements plus byte-identical event outputs |
 | Market/resource defines | `loading_screen/common/defines/cbp_market_resource_balance_defines.txt` | Dedicated CBP file, not a Vanilla copy | #188 renderer | FOOD_PRICE and monthly price speed share one generated owner |
 | Dedicated CBP economic defines | `loading_screen/common/defines/cbp_economic_defines.txt` | Hand-owned dedicated override | Hand-authored | Out of migration |
 
 The broad `cbp_pr188_balance.generated.json` remains experimental. Migration is
-family-by-family; it must not publish `location.txt` or a complete
-`00_defines.txt` merely because those files exist in Vanilla.
+family-by-family. Location modifiers use explicit selected-object replacement;
+a complete `00_defines.txt` must not be published merely because it exists in
+Vanilla.
 
 ## Execution-role inventory
 

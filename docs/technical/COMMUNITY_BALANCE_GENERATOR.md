@@ -147,10 +147,22 @@ The focused parity command generates its legacy reference and CBG candidate in
 a temporary directory. It verifies that the candidate manifest owns exactly
 one file and compares both outputs byte-for-byte.
 
-The dedicated static-modifier, define, building, and other #188 generators
-remain authoritative until each surface receives its own bounded parity gate.
-In particular, CBG must not replace `cbp_location.txt` with a Vanilla exact-path
-copy or publish a complete `00_defines.txt` as part of this phase.
+The dedicated static-modifier, define, building, and other #188 compilers
+remain edge-case authorities until each surface receives its own bounded parity
+gate. Location modifiers are published as selected `REPLACE:` entries in
+`cbp_location.txt`. Dedicated CBP define files remain hand-owned; CBG must not
+publish a complete `00_defines.txt`.
+
+Building materialization is selected by mutation semantics. Changes to nested
+production methods, maintenance registries, removals, or availability blocks
+produce complete `REPLACE:<building>` entries. Proven additive modifier fields
+produce sparse `INJECT:<building>` entries whose value is the delta from
+Vanilla to the configured target. This avoids replacing an entire building
+merely to change one modifier while still preventing duplicate nested
+production-method registrations.
+The production, trade-capacity, maintenance, estate-power, stockpile, and
+minting responsibilities remain separate CBG rules; only their final
+materialization is composed per building.
 
 ### Phase 2: food-production overrides
 

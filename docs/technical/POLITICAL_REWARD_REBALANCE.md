@@ -72,8 +72,10 @@ Manifest-owned exact-path files may contain unchanged vanilla
 `add_goods_supply` calls. The stock static validator recognizes those files as
 generated vanilla carriers rather than CBP-authored stock mutations. When the
 vanilla source contains the obsolete `building_upkeep_multiplier` modifier,
-the generator removes that line because the package already implements the
-confirmed upkeep behavior through `cbp_building_upkeep_auto_modifiers.txt`.
+the generator removes that line because the package implements zero Crown
+upkeep through the supported `BUILDING_UPKEEP_FACTOR` define. Do not restore
+the removed `building_upkeep_costs` auto modifier: EU5 1.3 rejects that
+modifier type.
 
 The script-safety validator applies the same exact-path manifest exemption to
 unchanged vanilla content inside those carriers. The exemption does not apply

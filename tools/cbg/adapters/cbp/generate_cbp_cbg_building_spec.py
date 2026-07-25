@@ -7,13 +7,16 @@ import argparse
 import json
 import re
 import sys
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tools.transform_cbp_economy_building_overrides import (
+    ASSIGNMENT,
+    BuildingChange,
+    find_named_blocks,
     format_decimal,
     render_generated_text,
     top_level_buildings,
@@ -25,12 +28,26 @@ TRADE_CAPACITY_ASSIGNMENT = re.compile(
     r"(-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))(\s*(?:#.*)?)$"
 )
 FOREIGN_MARKER = re.compile(r"\bis_foreign\s*=\s*yes\b")
-
-
-def cbp_prefixed(relative: str) -> str:
-    path = PurePosixPath(relative)
-    name = path.name if path.name.startswith("cbp_") else f"cbp_{path.name}"
-    return path.with_name(name).as_posix()
+ADDITIVE_MODIFIER_FIELDS = {
+    "local_burghers_estate_power",
+    "local_merchant_capacity",
+    "maximum_stockpile_capacity",
+    "merchant_capacity_from_building",
+    "minting_income_factor",
+    "monthly_devotion",
+    "monthly_horde_unity",
+    "monthly_legitimacy",
+    "monthly_republican_tradition",
+    "monthly_tribal_cohesion",
+}
+MODIFIER_BLOCKS = {
+    "capital_country_modifier",
+    "capital_modifier",
+    "foreign_country_modifier",
+    "market_center_modifier",
+    "modifier",
+    "raw_modifier",
+}
 
 
 def load_goods(repo_root: Path) -> set[str]:
@@ -102,8 +119,102 @@ def header_for(
         "# Foreign-building merchant capacity multiplier: "
         f"{format_decimal(foreign_trade_capacity_multiplier)}",
     )
-    header.append("# Only effectively changed buildings are emitted as REPLACE entries.")
     return header
+
+
+def requires_complete_replace(change: BuildingChange) -> bool:
+    """Return whether INJECT cannot safely express this mutation."""
+    return (
+        change.action in {"disable", "remove"}
+        or change.field == "output"
+        or change.field.startswith("maintenance:")
+    )
+
+
+def modifier_assignments(
+    building_lines: list[str],
+) -> dict[tuple[str, str], tuple[float, str]]:
+    """Read additive modifier fields as ``(modifier block, field)`` values."""
+    blocks = find_named_blocks(building_lines)
+    assignments: dict[tuple[str, str], tuple[float, str]] = {}
+    for index, line in enumerate(building_lines):
+        match = ASSIGNMENT.match(line)
+        if match is None or match.group(2) not in ADDITIVE_MODIFIER_FIELDS:
+            continue
+        ancestors = sorted(
+            (
+                block
+                for block in blocks
+                if block.start <= index <= block.end
+            ),
+            key=lambda block: block.depth,
+        )
+        path = tuple(block.key for block in ancestors[1:])
+        if len(path) != 1 or path[0] not in MODIFIER_BLOCKS:
+            raise ValueError(
+                f"{ancestors[0].key}.{match.group(2)} is not in one supported "
+                "additive modifier block"
+            )
+        key = (path[0], match.group(2))
+        if key in assignments:
+            raise ValueError(
+                f"{ancestors[0].key} contains duplicate modifier assignment "
+                f"{path[0]}.{match.group(2)}"
+            )
+        assignments[key] = (float(match.group(3)), match.group(3))
+    return assignments
+
+
+def build_injection_fragment(
+    source_lines: list[str],
+    transformed_lines: list[str],
+    building: str,
+) -> list[str]:
+    """Render a sparse INJECT fragment whose deltas produce the target values."""
+    source_blocks = {block.key: block for block in top_level_buildings(source_lines)}
+    transformed_blocks = {
+        block.key: block for block in top_level_buildings(transformed_lines)
+    }
+    source = source_blocks[building]
+    transformed = transformed_blocks[building]
+    before = modifier_assignments(source_lines[source.start : source.end + 1])
+    after = modifier_assignments(
+        transformed_lines[transformed.start : transformed.end + 1]
+    )
+
+    deltas: dict[str, list[tuple[str, str]]] = {}
+    for key, (old_value, old_literal) in before.items():
+        modifier_block, field = key
+        target = after.get(key)
+        if target is None:
+            if field != "maximum_stockpile_capacity":
+                raise ValueError(
+                    f"{building}.{modifier_block}.{field} disappeared from a "
+                    "supposedly additive injection"
+                )
+            target_value = 0.0
+            target_literal = "0"
+        else:
+            target_value, target_literal = target
+        if target_value == old_value:
+            continue
+        delta = format_decimal(target_value - old_value)
+        trace = f"# VANILLA = {old_literal}; TARGET = {target_literal}"
+        deltas.setdefault(modifier_block, []).append(
+            (field, f"{delta} {trace}")
+        )
+
+    if not deltas:
+        raise ValueError(f"{building} was selected for INJECT but has no modifier delta")
+
+    rendered = [f"{building} = {{"]
+    for modifier_block in sorted(deltas):
+        rendered.append(f"\t{modifier_block} = {{")
+        for field, value in sorted(deltas[modifier_block]):
+            rendered.append(f"\t\t{field} = {value}")
+        rendered.append("\t}")
+    rendered.append("}")
+    return rendered
 
 
 def build_spec(args: argparse.Namespace) -> dict[str, object]:
@@ -133,9 +244,12 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         changed_buildings = {change.building for change in changes} | foreign_changed
         if not changed_buildings:
             continue
+        complete_replacements = {
+            change.building for change in changes if requires_complete_replace(change)
+        }
+        injected_buildings = changed_buildings - complete_replacements
         blocks = {block.key: block for block in top_level_buildings(transformed)}
         relative = f"in_game/common/building_types/{source.name}"
-        output_relative = cbp_prefixed(relative)
         header = header_for(
             source.name,
             output_multiplier=args.output_multiplier,
@@ -147,11 +261,10 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
             minting_multiplier=args.minting_multiplier,
             political_multiplier=args.political_multiplier,
         )
-        for building in sorted(changed_buildings):
+        for building in sorted(complete_replacements):
             block = blocks[building]
             transformations.append({
                 "file": relative,
-                "output_file": output_relative,
                 "object": building,
                 "field": "__object__",
                 "operation": "replace_object",
@@ -160,7 +273,29 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
                 "render_mode": "replace_objects",
                 "header": header,
             })
-        owned_outputs.append(output_relative)
+        if complete_replacements:
+            owned_outputs.append(
+                f"in_game/common/building_types/cbp_{source.name}"
+            )
+        for building in sorted(injected_buildings):
+            transformations.append({
+                "file": relative,
+                "object": building,
+                "field": "__object__",
+                "operation": "replace_object",
+                "value": build_injection_fragment(
+                    source_lines,
+                    transformed,
+                    building,
+                ),
+                "provenance": "preserve",
+                "render_mode": "inject_objects",
+                "header": header,
+            })
+        if injected_buildings:
+            owned_outputs.append(
+                f"in_game/common/building_types/cbp_inject_{source.name}"
+            )
     return {
         "schema_version": 1,
         "mod_id": "cbp-economy-rebalance-buildings",
@@ -172,7 +307,11 @@ def build_spec(args: argparse.Namespace) -> dict[str, object]:
         "scope_contract": {
             "owned_outputs": owned_outputs,
             "phase": "building-overrides",
-            "packaging": "cbp-prefixed REPLACE entries for effectively changed buildings only",
+            "packaging": (
+                "CBP-prefixed complete REPLACE:<building> objects for structural "
+                "mutations, plus sparse INJECT:<building> modifier deltas when "
+                "Vanilla plus the generated delta equals the configured target"
+            ),
             "edge_case_compiler": "transform_cbp_economy_building_overrides.transform_lines_with_plan",
         },
     }
@@ -197,9 +336,17 @@ def main() -> int:
     payload = build_spec(args)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    replace_count = sum(
+        rule.get("render_mode") == "replace_objects"
+        for rule in payload["transformations"]
+    )
+    inject_count = sum(
+        rule.get("render_mode") == "inject_objects"
+        for rule in payload["transformations"]
+    )
     print(
         f"Generated {args.output} with {len(payload['transformations'])} "
-        "CBG building object replacements."
+        f"CBG building mutations ({replace_count} REPLACE, {inject_count} INJECT)."
     )
     return 0
 

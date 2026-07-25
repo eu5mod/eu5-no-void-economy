@@ -273,7 +273,7 @@ def compare(args: argparse.Namespace) -> dict[str, Any]:
         relative = Path(transformation["file"])
         reference = args.reference_root / relative
         if relative.as_posix() == "main_menu/common/static_modifiers/location.txt":
-            reference = args.repo_root / "main_menu/common/static_modifiers/cbp_location.txt"
+            reference = args.reference_root / relative
         elif relative.as_posix() == "loading_screen/common/defines/00_defines.txt":
             reference = (
                 args.reference_root
