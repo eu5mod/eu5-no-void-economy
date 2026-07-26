@@ -114,6 +114,17 @@ awk -F '\t' '
 	}
 ' "$scenario_state_file" >"$incomplete_scenario_file" || true
 
+# `main_revalidation` is an orchestration wrapper. Its terminal verdict is
+# emitted by `main_revalidation_summary`, so do not report the wrapper as
+# incomplete once that summary has reached any terminal state.
+if grep -qE $'^main_revalidation_summary\t(PASS|FAIL|BLOCKED)$' \
+	<(awk -F '\t' '{ last[$1] = $2 } END { for (scenario in last) print scenario "\t" last[scenario] }' "$scenario_state_file")
+then
+	awk -F '\t' '$1 != "main_revalidation"' "$incomplete_scenario_file" \
+		>"$incomplete_scenario_file.filtered"
+	mv "$incomplete_scenario_file.filtered" "$incomplete_scenario_file"
+fi
+
 grep -hE 'ModeU5 DEBUG_LEVEL ' "$all_lines_file" \
 	| grep -v 'Tried to localize with localization disabled' \
 	>"$debug_level_file" || true

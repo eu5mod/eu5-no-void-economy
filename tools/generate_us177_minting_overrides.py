@@ -28,8 +28,8 @@ SCAN_ROOTS = (
     PurePosixPath("main_menu/common/static_modifiers"),
     PurePosixPath("main_menu/common/auto_modifiers"),
 )
-# Building definitions are already owned by the composed US-07/US-09 exact-path
-# generator. That generator scales minting_income_factor in the same output file.
+# Building definitions are already owned by the composed US-07/US-09 building
+# adapter. It scales minting_income_factor in the same REPLACE object.
 DELEGATED_PREFIXES = (PurePosixPath("in_game/common/building_types"),)
 TOKEN = re.compile(rf"\b{re.escape(MODIFIER)}\b")
 NUMERIC_ASSIGNMENT = re.compile(

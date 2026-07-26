@@ -14,7 +14,12 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from tools.cbg.community_balance_generator import ASSIGNMENT, display_path, field_matches, scan_objects
-from tools.cbg.adapters.cbp.generate_cbp_cbg_rgo_prices_spec import SOURCE, TARGETS, compact
+from tools.cbg.adapters.cbp.generate_cbp_cbg_rgo_prices_spec import (
+    OUTPUT,
+    SOURCE,
+    TARGETS,
+    compact,
+)
 
 
 def build_spec(game_root: Path, fixed_price: Decimal) -> dict[str, object]:
@@ -45,10 +50,10 @@ def build_spec(game_root: Path, fixed_price: Decimal) -> dict[str, object]:
         "transformations": [
             {
                 "file": SOURCE,
-                "output_file": SOURCE,
-                "render_mode": "selected_objects",
+                "output_file": OUTPUT,
+                "render_mode": "replace_objects",
                 "header": header,
-                "trailing_blank_lines": 1,
+                "trailing_blank_lines": 0,
                 "object": name,
                 "field": "gold",
                 "operation": "replace",
@@ -57,7 +62,11 @@ def build_spec(game_root: Path, fixed_price: Decimal) -> dict[str, object]:
             }
             for name in TARGETS
         ],
-        "scope_contract": {"owned_outputs": [SOURCE], "phase": "rgo-prices"},
+        "scope_contract": {
+            "owned_outputs": [OUTPUT],
+            "phase": "rgo-prices",
+            "packaging": "CBP-prefixed REPLACE entries preserve unrelated Vanilla prices",
+        },
     }
 
 

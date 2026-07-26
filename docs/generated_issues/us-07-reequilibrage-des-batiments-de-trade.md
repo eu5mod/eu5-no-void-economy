@@ -14,7 +14,11 @@ As a player, I want trade buildings rebalanced to fit ModeU5 storage and logisti
 
 Review confirmed vanilla trade-building fields, reduce marketplace trading/estate power as specified, and reassess only explicitly approved costs, capacities, or modifiers.
 
-Current static-packaging constraint: the approved `trade_buildings.txt` `local_burghers_estate_power` reduction is composed into the US-09 Rebalance Economy exact-path building override because US-09 also edits the same vanilla file for trade-capacity compensation. This avoids two companion packages shipping competing versions of the same static definitions.
+Current static-packaging constraint: the approved `trade_buildings.txt`
+`local_burghers_estate_power` reduction is composed into the Rebalance Economy
+single generated building entry because US-09 also edits that building for
+trade-capacity compensation. This avoids two companion packages shipping
+competing versions of the same static definition.
 
 ## Module / availability
 
@@ -66,7 +70,7 @@ Related US: US-02, US-08
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`.
 - Keep US-07 static overrides physically outside the Core package; a runtime toggle cannot restore overwritten vanilla definitions.
-- When a US-07 static field overlaps a US-09 exact-path generated file, compose the field in the US-09 generator instead of shipping two competing static overrides.
+- When a US-07 static field overlaps a US-09 generated building object, compose the field in the shared building adapter instead of shipping two competing static overrides.
 - Verify exact building files and field names before override.
 - Keep changes limited to explicitly reviewed trade buildings.
 - Do not infer unexposed modifiers.
@@ -106,4 +110,7 @@ No unrelated building behavior changes
 
 ## Known limitations
 
-Building modifier and pricing fields, including both marketplace-power modifier names, are documented. The current package composition covers only the approved `local_burghers_estate_power` reduction in the US-09 exact-path trade-building override; `local_merchant_power` is intentionally left unchanged.
+Building modifier and pricing fields, including both marketplace-power
+modifier names, are documented. The current package composition covers only
+the approved `local_burghers_estate_power` reduction in generated trade-building
+`REPLACE:` objects; `local_merchant_power` is intentionally left unchanged.

@@ -121,14 +121,14 @@ class PoliticalRewardTransformTest(unittest.TestCase):
                 transformed,
             )
 
-    def test_honor_is_preserved_when_it_shares_a_scaled_value(self):
-        source = "add_honor = government_power_weak_bonus\n"
+    def test_honor_values_remain_out_of_scope(self):
+        source = "add_honor = honor_weak_bonus\n"
         result = MODULE.preserve_nonpolitical_token_uses(
             source, {"government_power_weak_bonus": Decimal("0.5")}
         )
-        self.assertEqual(result.count, 1)
-        self.assertIn("add_honor = cbp_preserve_add_honor_", result.text)
-        self.assertEqual(next(iter(result.aliases.values()))[1], "preserve:0.5")
+        self.assertEqual(result.count, 0)
+        self.assertEqual(result.text, source)
+        self.assertEqual(result.aliases, {})
 
     def test_political_use_keeps_the_central_scaled_value(self):
         source = "add_government_power = government_power_weak_bonus\n"

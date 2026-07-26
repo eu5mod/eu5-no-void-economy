@@ -115,7 +115,8 @@ non-trade building maintenance goods quantity = vanilla quantity * 0.7
 trade-category building maintenance goods quantity = vanilla quantity * 0.5
 ```
 
-That maintenance change is generated from vanilla `common/building_types` and
-composed into the same exact-path building override files as US-07 and US-09.
+That maintenance change is generated from Vanilla `common/building_types` and
+composed into the same per-building generation plan as US-07 and
+US-09.
 It does not implement the original US-08 fixed building/RGO construction-price
 objective above.
