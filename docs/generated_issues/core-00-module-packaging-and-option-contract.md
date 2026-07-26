@@ -191,4 +191,13 @@ No custom in-game configuration panel is present
 
 ## Known limitations
 
-EU5 custom game rules and `has_game_rule` are confirmed from local vanilla files, but ModeU5 no longer uses custom game rules for configuration. Conditional runtime replacement of arbitrary static building/RGO numeric fields is not confirmed, so package separation is required for US-08 and for any non-overlapping US-07 static surface. The overlapping US-07 `trade_buildings.txt` estate-power field is intentionally composed into the US-09 Economy exact-path override to avoid duplicate static definitions. Package lifecycle warnings are visible but cannot prevent a user from changing a playset. Enabling a companion activates Core, but deactivation does not cascade and the packages remain sibling mods.
+EU5 custom game rules and `has_game_rule` are confirmed from local Vanilla
+files, but ModeU5 no longer uses custom game rules for configuration.
+Conditional runtime replacement of arbitrary static building/RGO numeric
+fields is not confirmed, so package separation is required for US-08 and for
+any non-overlapping US-07 static surface. The overlapping US-07
+`trade_buildings.txt` estate-power field is intentionally composed into the
+same Economy per-building generation plan as US-09 to avoid competing static
+definitions. Package lifecycle warnings are visible but cannot prevent a user
+from changing a playset. Enabling a companion activates Core, but deactivation
+does not cascade and the packages remain sibling mods.

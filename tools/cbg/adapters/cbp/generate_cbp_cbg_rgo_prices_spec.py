@@ -22,6 +22,7 @@ TARGETS = (
     "expand_rgo_gathering", "expand_rgo_forestry",
 )
 SOURCE = "in_game/common/prices/00_hardcoded.txt"
+OUTPUT = "in_game/common/prices/cbp_00_hardcoded.txt"
 FIXED_ADAPTER = "fixed"
 OFFSET_ADAPTER = "offset"
 
@@ -59,10 +60,10 @@ def build_spec(game_root: Path, percent: Decimal) -> dict[str, object]:
         "transformations": [
             {
                 "file": SOURCE,
-                "output_file": SOURCE,
-                "render_mode": "selected_objects",
+                "output_file": OUTPUT,
+                "render_mode": "replace_objects",
                 "header": header,
-                "trailing_blank_lines": 1,
+                "trailing_blank_lines": 0,
                 "object": name,
                 "field": "gold",
                 "operation": "replace",
@@ -71,7 +72,11 @@ def build_spec(game_root: Path, percent: Decimal) -> dict[str, object]:
             }
             for name in TARGETS
         ],
-        "scope_contract": {"owned_outputs": [SOURCE], "phase": "rgo-prices"},
+        "scope_contract": {
+            "owned_outputs": [OUTPUT],
+            "phase": "rgo-prices",
+            "packaging": "CBP-prefixed REPLACE entries preserve unrelated Vanilla prices",
+        },
     }
 
 

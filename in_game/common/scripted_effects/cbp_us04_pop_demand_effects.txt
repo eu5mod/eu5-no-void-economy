@@ -9,10 +9,90 @@
 # location x good x estate consumption, aggregated to country x market x good x
 # estate before any stock or gold mutation. This remains fail-closed until a
 # confirmed engine exposure supplies exact location-level estate requested
-# quantities. The target production design is a pre-US-10 additional-demand
-# preparation pass: country -> market -> market-level good demand gate -> owned
-# locations. That path is global behavior for all runtime modes; Performance
-# Mode only changes accounting detail, not whether US-04 falls back to vanilla.
+# quantities.
+#
+# PERF Layer D replaces the dense monthly country -> market -> all goods ->
+# owned-location traversal with country-owned per-good lists of active locations.
+# A location-good is active when its coefficient differs from 1, an Estate proxy
+# exists, or a prior monthly record still requires clearing. The index is only a
+# scheduling cache; generated location-good effects remain the economic owner.
+
+cbp_advance_us04_sparse_index_load_generation = {
+	if = {
+		limit = { NOT = { has_global_variable = cbp_us04_sparse_index_load_generation } }
+		set_global_variable = { name = cbp_us04_sparse_index_load_generation value = 1 }
+	}
+	else = {
+		change_global_variable = { name = cbp_us04_sparse_index_load_generation add = 1 }
+	}
+}
+
+cbp_prepare_us04_sparse_index_generation = {
+	if = {
+		limit = { NOT = { has_global_variable = cbp_us04_sparse_index_load_generation } }
+		set_global_variable = { name = cbp_us04_sparse_index_load_generation value = 1 }
+	}
+}
+
+cbp_rebuild_us04_sparse_index_for_current_country = {
+	save_temporary_scope_as = cbp_us04_sparse_rebuild_country
+	cbp_prepare_us04_sparse_index_generation = yes
+	cbp_us04_clear_sparse_index_for_current_country = yes
+
+	every_owned_location = {
+		cbp_us04_refresh_location_sparse_index_all_goods = yes
+	}
+
+	set_variable = {
+		name = cbp_us04_sparse_index_load_generation
+		value = global_var:cbp_us04_sparse_index_load_generation
+	}
+}
+
+cbp_prepare_us04_sparse_index_for_current_country = {
+	cbp_prepare_us04_sparse_index_generation = yes
+	if = {
+		limit = {
+			OR = {
+				NOT = { has_variable = cbp_us04_sparse_index_load_generation }
+				var:cbp_us04_sparse_index_load_generation != global_var:cbp_us04_sparse_index_load_generation
+			}
+		}
+		cbp_rebuild_us04_sparse_index_for_current_country = yes
+	}
+}
+
+# Public write-repair surface. Any location-good coefficient or Estate-proxy
+# writer outside the generated yearly helpers must call this after replacing its
+# map entry. It is safe to call repeatedly.
+cbp_us04_refresh_sparse_index_for_location = {
+	$location$ = { save_temporary_scope_as = cbp_us04_sparse_refresh_location }
+	scope:cbp_us04_sparse_refresh_location = {
+		cbp_us04_refresh_location_sparse_index_all_goods = yes
+	}
+}
+
+# Ownership changes are the only confirmed topology mutation that can move a
+# location between country-owned lists. Remove from the old owner, then evaluate
+# current state against the new owner.
+cbp_us04_handle_location_changed_owner = {
+	save_temporary_scope_as = cbp_us04_sparse_location
+
+	if = {
+		limit = { exists = scope:loser }
+		scope:loser = {
+			save_temporary_scope_as = cbp_us04_sparse_country
+			cbp_us04_remove_location_from_country_sparse_index_all_goods = yes
+		}
+	}
+
+	if = {
+		limit = { exists = scope:winner }
+		scope:cbp_us04_sparse_location = {
+			cbp_us04_refresh_location_sparse_index_all_goods = yes
+		}
+	}
+}
 
 cbp_run_yearly_pop_demand_adaptation_for_current_country = {
 	if = {
@@ -20,8 +100,17 @@ cbp_run_yearly_pop_demand_adaptation_for_current_country = {
 			cbp_stock_runtime_ready_trigger = yes
 			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
+		# The yearly business traversal is retained as the authoritative verifier.
+		# Clear first; each generated all-goods adjustment refreshes membership after
+		# applying and resetting the location-good annual state.
+		cbp_prepare_us04_sparse_index_generation = yes
+		cbp_us04_clear_sparse_index_for_current_country = yes
 		every_owned_location = {
 			cbp_annual_adjust_location_pop_demand_all_goods = yes
+		}
+		set_variable = {
+			name = cbp_us04_sparse_index_load_generation
+			value = global_var:cbp_us04_sparse_index_load_generation
 		}
 	}
 }
@@ -37,10 +126,8 @@ cbp_run_monthly_us04_estate_accounting_for_current_country = {
 			cbp_stock_runtime_ready_trigger = yes
 			cbp_pop_consumption_offer_demand_enabled_trigger = yes
 		}
-		every_market_present_in_country = {
-			save_temporary_scope_as = cbp_us04_reconciliation_market
-			cbp_monthly_assess_country_market_estate_consumption_all_goods = yes
-		}
+		cbp_prepare_us04_sparse_index_for_current_country = yes
+		cbp_monthly_process_us04_sparse_index_all_goods = yes
 	}
 }
 
@@ -59,6 +146,7 @@ cbp_run_monthly_us04_estate_accounting_for_location = {
 		}
 		scope:cbp_us04_reconciliation_target_location = {
 			cbp_monthly_assess_location_estate_consumption_all_goods = yes
+			cbp_us04_refresh_location_sparse_index_all_goods = yes
 		}
 	}
 }
@@ -80,8 +168,12 @@ cbp_us04_debug_run_location_pop_demand_adaptation_fixture = {
 	$location$ = { save_temporary_scope_as = cbp_us04_fixture_location }
 	scope:cbp_us04_fixture_location = {
 		cbp_annual_adjust_location_pop_demand_good_wheat = yes
+		cbp_us04_refresh_location_sparse_index_good_wheat = yes
 		cbp_annual_adjust_location_pop_demand_good_beer = yes
+		cbp_us04_refresh_location_sparse_index_good_beer = yes
 		cbp_annual_adjust_location_pop_demand_good_cloth = yes
+		cbp_us04_refresh_location_sparse_index_good_cloth = yes
 		cbp_annual_adjust_location_pop_demand_good_tools = yes
+		cbp_us04_refresh_location_sparse_index_good_tools = yes
 	}
 }

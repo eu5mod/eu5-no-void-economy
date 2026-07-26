@@ -118,6 +118,7 @@ cbp_us20_case12_probe_cleanup_poisoned_receiver_fixture = {
 }
 
 cbp_us20_case12_probe_seed_without_explicit_receiver = {
+	save_temporary_scope_as = test_cbp_us20_market_classification_override
 	c:FRA = {
 		save_temporary_scope_as = cbp_trade_owner_controller_country
 		save_temporary_scope_as = cbp_trade_owner_country
